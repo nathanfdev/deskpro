@@ -196,6 +196,10 @@ class UsersourceUpgrader
 	{
 		$o = new OptionsArray($this->options);
 		$adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck';
+
+		$php = $o->get('password_php', '');
+		$php .= "\n\n\$is_valid = \$pass;\n";
+
 		$adapter_settings = array(
 			'connection_options' => array(
 				'driver'   => 'pdo_mysql',
@@ -212,7 +216,7 @@ class UsersourceUpgrader
 			'field_password'   => $o->get('field_password', ''),
 			'field_first_name' => $o->get('field_first_name', ''),
 			'field_last_name'  => $o->get('field_last_name', ''),
-			'password_php'     => $o->get('password_php', ''),
+			'password_php'     => $php,
 		);
 
 		$params = $this->parseDsn($o->get('db_dsn'));
