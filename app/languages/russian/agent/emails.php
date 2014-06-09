@@ -62,7 +62,6 @@
 	'agent.emails.ticket_action_status_resolved'                           => 'РЕШЕН',
 	'agent.emails.ticket_action_status_user'                               => 'ОЖИДАНИЕ ПОЛЬЗОВАТЕЛЯ',
 	'agent.emails.ticket_action_updated'                                   => 'ОБНОВЛЕНО',
-	'agent.emails.ticket_created_link'                                     => '{{name}} ({{email}}) создан агентом для вас по ссылке {{link}}',
 	'agent.emails.ticket_sla_failed'                                       => 'SLA НЕ ВЫПОЛНЕНО',
 	'agent.emails.ticket_sla_warning'                                      => 'SLA ПРЕДУПРЕЖДЕНИЕ',
 	'agent.emails.ticket_was_created'                                      => '{{name}} создал новый тикет',

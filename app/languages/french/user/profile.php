@@ -49,7 +49,7 @@
 	'user.profile.register_done_validate_email'                            => 'Merci pour votre inscription. Pour que votre compte  devienne entièrement actif il vous faut consulter votre boite mail et cliquer sur le lien d\'activation reçu.',
 	'user.profile.register_email_exists'                                   => 'Cette adresse email appartient déjà à un autre utilisateur.',
 	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">Inscrivez-vous</a> ou connectez-vous ci-dessous.',
-	'user.profile.register_password_min_length'                            => 'Merci d\'entrer un mot de passe d\'au moins 5 caractères',
+	'user.profile.register_password_min_length'                            => 'Minimum de {{count}} caractère|Minimum de {{count}} caractères',
 	'user.profile.register_password_mismatch'                              => 'Les deux champs "mot de passe" ne sont pas identiques',
 	'user.profile.remove_email_address'                                    => 'Supprimer l\'adresse email',
 	'user.profile.remove_your_current_picture'                             => 'Supprimer votre image actuelle',
