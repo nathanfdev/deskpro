@@ -58,7 +58,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			for g in groups
 				enabled = false
 				for check in agent.usergroups
-					if check.id = g.id
+					if check.id == g.id
 						enabled = true
 						break
 

@@ -51,7 +51,7 @@
           _ref3 = agent.usergroups;
           for (_m = 0, _len4 = _ref3.length; _m < _len4; _m++) {
             check = _ref3[_m];
-            if (check.id = g.id) {
+            if (check.id === g.id) {
               enabled = true;
               break;
             }
