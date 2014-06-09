@@ -307,7 +307,7 @@
         fieldScope.type = tabType;
         fieldScope.removeRow = (function(_this) {
           return function() {
-            var f, idx, tab, viewValue, _i, _len;
+            var f, fid, field_id, idx, tab, viewValue, _i, _len;
             viewValue = _this.ngModel.$viewValue[tabType];
             for (idx = _i = 0, _len = viewValue.length; _i < _len; idx = ++_i) {
               f = viewValue[idx];
@@ -318,8 +318,14 @@
             }
             fieldRow.remove();
             fieldScope.$destroy();
+            field_id = field.field_id || null;
+            if (field_id) {
+              fid = field.field_type + '_' + field_id;
+            } else {
+              fid = field.field_type;
+            }
             tab = _this.els["" + tabType + "_tab"].find('.form-elements');
-            return tab.find("[data-fid=\"" + field.id + "\"]").show();
+            return tab.find("[data-fid=\"" + fid + "\"]").show();
           };
         })(this);
         if (_ref = field.id, __indexOf.call(this.required_fields[tabType], _ref) >= 0) {
@@ -338,7 +344,7 @@
        */
 
       InterfaceHandler.prototype.render = function() {
-        var doReorder, draggableEls, elementMap, f, field, fieldEl, fieldRow, form, form_model, forms, layoutFieldEls, listEl, newFields, order, orderMap, prevField, prevFieldEl, typeName, worksheetEl, _i, _j, _k, _l, _len, _len1, _len2, _len3, _results;
+        var doReorder, draggableEls, elementMap, f, fid, field, fieldEl, fieldRow, field_id, form, form_model, forms, layoutFieldEls, listEl, nameCheck, newFields, order, orderMap, prevField, prevFieldEl, tabEl, typeName, use_form_model, validNames, worksheetEl, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _results;
         forms = [
           {
             typeName: 'user',
@@ -354,9 +360,22 @@
           typeName = form.typeName;
           form_model = this.ngModel.$viewValue[form.typeName];
           worksheetEl = this.els[form.worksheetName];
+          tabEl = this.els[form.typeName + '_tab'];
           listEl = worksheetEl.find('ul').first();
           layoutFieldEls = worksheetEl.find('.layout-field');
-          draggableEls = this.els["" + typeName + "_tab"].find('.form-elements');
+          validNames = [];
+          tabEl.find('.form-elements').find('.layout-field').each(function() {
+            return validNames.push($(this).data('field-type') + '_' + ($(this).data('field-id') || '0'));
+          });
+          use_form_model = [];
+          for (_j = 0, _len1 = form_model.length; _j < _len1; _j++) {
+            field = form_model[_j];
+            nameCheck = field.field_type + '_' + (field.field_id || '0');
+            if (validNames.indexOf(nameCheck) !== -1) {
+              use_form_model.push(field);
+            }
+          }
+          draggableEls = tabEl.find('.form-elements');
           draggableEls.show();
           draggableEls.find('li').each(function() {
             var $el, fid, field_id;
@@ -372,8 +391,8 @@
           orderMap = {};
           elementMap = {};
           newFields = [];
-          for (order = _j = 0, _len1 = form_model.length; _j < _len1; order = ++_j) {
-            field = form_model[order];
+          for (order = _k = 0, _len2 = use_form_model.length; _k < _len2; order = ++_k) {
+            field = use_form_model[order];
             fieldEl = layoutFieldEls.filter('.field-' + field.id);
             if (!fieldEl[0]) {
               newFields.push(field);
@@ -389,16 +408,20 @@
               return $(this).remove();
             }
           });
-          for (_k = 0, _len2 = newFields.length; _k < _len2; _k++) {
-            field = newFields[_k];
+          for (_l = 0, _len3 = newFields.length; _l < _len3; _l++) {
+            field = newFields[_l];
+            nameCheck = field.field_type + '_' + (field.field_id || '0');
+            if (validNames.indexOf(nameCheck) === -1) {
+              continue;
+            }
             fieldRow = this.createFieldRow(typeName, field);
             elementMap[field.id] = fieldRow;
             order = orderMap[field.id];
             if (order === 0) {
               listEl.prepend(fieldRow);
             } else {
-              prevField = form_model[order - 1];
-              if (prevField) {
+              prevField = use_form_model[order - 1];
+              if (prevField && elementMap[prevField.id]) {
                 prevFieldEl = elementMap[prevField.id];
                 fieldRow.insertAfter(prevFieldEl);
               } else {
@@ -419,18 +442,24 @@
           });
           if (doReorder) {
             layoutFieldEls.detach();
-            for (order = _l = 0, _len3 = form_model.length; _l < _len3; order = ++_l) {
-              field = form_model[order];
+            for (_m = 0, _len4 = use_form_model.length; _m < _len4; _m++) {
+              field = use_form_model[_m];
               fieldEl = layoutFieldEls.filter('.field-' + field.id);
               fieldEl.appendTo(listEl);
             }
           }
           _results.push((function() {
-            var _len4, _m, _results1;
+            var _len5, _n, _results1;
             _results1 = [];
-            for (_m = 0, _len4 = form_model.length; _m < _len4; _m++) {
-              f = form_model[_m];
-              _results1.push(draggableEls.find("[data-fid=\"" + f.id + "\"]").hide());
+            for (_n = 0, _len5 = use_form_model.length; _n < _len5; _n++) {
+              f = use_form_model[_n];
+              field_id = f.field_id || null;
+              if (field_id) {
+                fid = f.field_type + '_' + field_id;
+              } else {
+                fid = f.field_type;
+              }
+              _results1.push(draggableEls.find("[data-fid=\"" + fid + "\"]").hide());
             }
             return _results1;
           })());

@@ -269,8 +269,14 @@ define [
 				fieldRow.remove()
 				fieldScope.$destroy()
 
+				field_id = field.field_id || null
+				if field_id
+					fid = field.field_type + '_' + field_id
+				else
+					fid = field.field_type
+
 				tab = @els["#{tabType}_tab"].find('.form-elements')
-				tab.find("[data-fid=\"#{field.id}\"]").show()
+				tab.find("[data-fid=\"#{fid}\"]").show()
 
 			if field.id in @required_fields[tabType]
 				fieldScope.removeRow = ->
@@ -298,11 +304,23 @@ define [
 				typeName    = form.typeName
 				form_model  = @ngModel.$viewValue[form.typeName]
 				worksheetEl = @els[form.worksheetName]
+				tabEl       = @els[form.typeName + '_tab']
 				listEl      = worksheetEl.find('ul').first()
 
 				layoutFieldEls = worksheetEl.find('.layout-field');
 
-				draggableEls = @els["#{typeName}_tab"].find('.form-elements')
+				validNames = []
+				tabEl.find('.form-elements').find('.layout-field').each(->
+					validNames.push($(this).data('field-type') + '_' + ($(this).data('field-id') || '0'));
+				)
+
+				use_form_model = []
+				for field in form_model
+					nameCheck = field.field_type + '_' + (field.field_id || '0')
+					if validNames.indexOf(nameCheck) != -1
+						use_form_model.push(field)
+
+				draggableEls = tabEl.find('.form-elements')
 				draggableEls.show()
 				draggableEls.find('li').each( ->
 					$el = $(this)
@@ -320,7 +338,7 @@ define [
 
 				# Check for new elements
 				newFields = []
-				for field, order in form_model
+				for field, order in use_form_model
 					fieldEl = layoutFieldEls.filter('.field-' + field.id)
 					if not fieldEl[0]
 						newFields.push(field)
@@ -338,6 +356,10 @@ define [
 
 				# Add new elements
 				for field in newFields
+					nameCheck = field.field_type + '_' + (field.field_id || '0')
+					if validNames.indexOf(nameCheck) == -1
+						continue
+
 					fieldRow = @createFieldRow(typeName, field)
 					elementMap[field.id] = fieldRow
 					order = orderMap[field.id]
@@ -345,8 +367,8 @@ define [
 					if order == 0
 						listEl.prepend(fieldRow)
 					else
-						prevField = form_model[order-1]
-						if prevField
+						prevField = use_form_model[order-1]
+						if prevField and elementMap[prevField.id]
 							prevFieldEl = elementMap[prevField.id]
 							fieldRow.insertAfter(prevFieldEl)
 						else
@@ -366,12 +388,18 @@ define [
 
 				if doReorder
 					layoutFieldEls.detach()
-					for field, order in form_model
+					for field in use_form_model
 						fieldEl = layoutFieldEls.filter('.field-' + field.id)
 						fieldEl.appendTo(listEl)
 
-				for f in form_model
-					draggableEls.find("[data-fid=\"#{f.id}\"]").hide();
+				for f in use_form_model
+					field_id = f.field_id || null
+					if field_id
+						fid = f.field_type + '_' + field_id
+					else
+						fid = f.field_type
+
+					draggableEls.find("[data-fid=\"#{fid}\"]").hide();
 
 	return ['$compile', 'LoggerManager', 'DataService', '$q', '$timeout', ($compile, LoggerManager, DataService, $q, $timeout) ->
 

@@ -183,4 +183,20 @@ define ->
 					return i
 			return -1
 
+
+		###
+ 		# Sets the values of an array. This is different from simply assigning
+    	# a variable because this will modify `array` "in place".
+    	#
+    	# @param {Array} array
+    	# @param {Array} values
+    	# @return array
+		###
+		setTo: (array, values) ->
+			array.length = 0
+			for v in values
+				array.push(v)
+
+			return array
+
 	return new Arrays()
