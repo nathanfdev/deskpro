@@ -1,7 +1,23 @@
 define ->
 	class LayoutEditorField
-		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria) ->
-			@_initEvents()
+		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout) ->
+
+			@scope.ticketFieldTitleFilter = (f) =>
+				@scope.field.field_type == 'ticket_field' and (f.id+'') == (@scope.field.field_id+'')
+			@scope.userFieldTitleFilter = (f) =>
+				@scope.field.field_type == 'user_field' and (f.id+'') == (@scope.field.field_id+'')
+
+			$q.all([TicketFields.loadList(), UserFields.loadList()]).then( (results) =>
+				tFields = results[0]
+				uFields = results[1]
+
+				@scope.custom_ticket_fields = tFields;
+				@scope.custom_user_fields   = uFields;
+
+				$timeout(=>
+					@_initEvents()
+				, 1)
+			)
 
 		_initEvents: ->
 			if not @scope.isSticky
@@ -81,13 +97,17 @@ define ->
 				}
 			});
 
-	return [ '$modal', 'dpObTypesDefTicketCriteria', ($modal, dpObTypesDefTicketCriteria) ->
+	return [ '$modal', 'dpObTypesDefTicketCriteria', 'DataService', '$q', '$timeout', ($modal, dpObTypesDefTicketCriteria, DataService, $q, $timeout) ->
 		directive = {}
 		directive.restrict    = 'E'
 		directive.replace     = true
 		directive.templateUrl = "TicketDeps/layout-editor-field.html"
+
+		TicketFields = DataService.get('TicketFields')
+		UserFields   = DataService.get('UserFields')
+
 		directive.link = (scope, element, attrs, ngModel) ->
-			handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria)
+			handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout)
 
 		return directive
 	]

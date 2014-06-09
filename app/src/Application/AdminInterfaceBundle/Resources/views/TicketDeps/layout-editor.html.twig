@@ -18,15 +18,22 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="message" data-is-required="1"><span>Message</span></li>
 
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="department"><span>Department</span></li>
-							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_product') %}disabled{% endif %}" data-field-type="product"><span>Product</span></li>
-							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_category') %}disabled{% endif %}" data-field-type="category"><span>Category</span></li>
-							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_priority') %}disabled{% endif %}" data-field-type="priority"><span>Priority</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.product}" data-field-type="product"><span>Product</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.category}" data-field-type="category"><span>Category</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.priority}" data-field-type="priority"><span>Priority</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="cc"><span>CC</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="captcha"><span>CAPTCHA</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="attach"><span>Attachments</span></li>
-							{% for field in app.getTicketFieldManager().getDisplayArray() %}
-								<li class="dp-layout-editor-layout-field layout-field {% if not field.field_def.is_enabled %}disabled{% endif %}" data-field-type="ticket_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
-							{% endfor %}
+
+							<li
+								ng-repeat="field in custom_ticket_fields"
+								ng-class="{'disabled': !field.is_enabled}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="ticket_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
 						</ul>
 					</article>
 				</div>
@@ -40,9 +47,15 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_name"><span>Name</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
-							{% for field in app.getPersonFieldManager().getDisplayArray() %}
-								<li class="dp-layout-editor-layout-field layout-field {% if not field.field_def.is_enabled %}disabled{% endif %}" data-field-type="user_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
-							{% endfor %}
+							<li
+								ng-repeat="field in custom_user_fields"
+								ng-class="{'disabled': !field.is_enabled}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="user_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
 						</ul>
 					</article>
 				</div>
@@ -59,15 +72,19 @@
 					</header>
 					<article>
 						<ul>
-							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_product') %}disabled{% endif %}" data-field-type="product"><span>Product</span></li>
-							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_category') %}disabled{% endif %}" data-field-type="category"><span>Category</span></li>
-							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_workflow') %}disabled{% endif %}" data-field-type="workflow"><span>Workflow</span></li>
-							<li class="dp-layout-editor-layout-field layout-field {% if not app.getSetting('core.use_ticket_priority') %}disabled{% endif %}" data-field-type="priority"><span>Priority</span></li>
-							{% for field in app.getTicketFieldManager().getDisplayArray() %}
-								{% if field.getTypeName() != 'display' %}
-									<li class="dp-layout-editor-layout-field layout-field {% if not field.field_def.is_enabled %}disabled{% endif %}" data-field-type="ticket_field" data-field-id="{{ field.field_def.id }}"><span>{{ field.field_def.title }}</span></li>
-								{% endif %}
-							{% endfor %}
+							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.product}" data-field-type="product"><span>Product</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.category}" data-field-type="category"><span>Category</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.workflow}" data-field-type="workflow"><span>Workflow</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.priority}" data-field-type="priority"><span>Priority</span></li>
+							<li
+								ng-repeat="field in custom_ticket_fields"
+								ng-class="{'disabled': !field.is_enabled}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="ticket_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
 						</ul>
 					</article>
 				</div>

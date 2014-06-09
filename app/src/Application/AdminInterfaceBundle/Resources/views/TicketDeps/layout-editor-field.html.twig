@@ -63,15 +63,11 @@
 		<h4>User Language</h4>
 	</div>
 
-	{% for field in app.getTicketFieldManager().getDisplayArray() %}
-		<div ng-if="field.field_type == 'ticket_field' && field.field_id == '{{ field.field_def.id }}'">
-			<h4>{{ field.field_def.title }}</h4>
-		</div>
-	{% endfor %}
+	<div ng-repeat="f in custom_ticket_fields | filter:ticketFieldTitleFilter ">
+		<h4>{{ ng_var('f.title') }}</h4>
+	</div>
 
-	{% for field in app.getPersonFieldManager().getDisplayArray() %}
-		<div ng-if="field.field_type == 'user_field' && field.field_id == '{{ field.field_def.id }}'">
-			<h4>{{ field.field_def.title }}</h4>
-		</div>
-	{% endfor %}
+	<div ng-repeat="f in custom_user_fields | filter:userFieldTitleFilter ">
+		<h4>{{ ng_var('f.title') }}</h4>
+	</div>
 </div>

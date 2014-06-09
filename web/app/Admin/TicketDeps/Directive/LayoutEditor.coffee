@@ -6,7 +6,7 @@ define [
 	Arrays
 ) ->
 	class InterfaceHandler
-		constructor: (scope, element, attr, ngModel, $compile, logger) ->
+		constructor: (scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger) ->
 			@scope    = scope
 			@element  = element
 			@ngModel  = ngModel
@@ -82,6 +82,35 @@ define [
 			@ngModel.$render = =>
 				@render()
 
+			$q.all([TicketFields.loadList(), UserFields.loadList()]).then( (results) =>
+				tFields = results[0]
+				uFields = results[1]
+
+				@scope.field_status         = TicketFields.field_enabled;
+				@scope.custom_ticket_fields = tFields;
+				@scope.custom_user_fields   = uFields;
+
+				$timeout(=>
+					@_reInitTab('user', @els.user_tab)
+					@_reInitTab('agent', @els.agent_tab)
+
+					@render()
+				, 1)
+			)
+
+		_reInitTab: (tabType, tab) ->
+			# moves disabled items to end of the list
+			tab.find('.form-elements').find('li.disabled').not('.done-init').each(->
+				el = $(this)
+				parent = el.closest('ul')
+				el.detach().appendTo(parent)
+			)
+			tab.find('.form-elements').find('li').not('.disabled').not('.done-init').draggable({
+				appendTo: 'body',
+				helper: 'clone',
+				connectToSortable: tab.find('.form-worksheet').find('ul')
+			})
+
 		_initTab: (tabType, tab) ->
 			me = @
 			ngModel = @ngModel
@@ -96,12 +125,14 @@ define [
 				el = $(this)
 				parent = el.closest('ul')
 				el.detach().appendTo(parent)
-			)
+			).addClass('done-init')
+
 			tab.find('.form-elements').find('li').not('.disabled').draggable({
 				appendTo: 'body',
 				helper: 'clone',
 				connectToSortable: tab.find('.form-worksheet').find('ul')
-			})
+			}).addClass('done-init')
+
 			tab.find('.form-worksheet').find('ul').sortable({
 				items: "> li",
 				axis: 'y',
@@ -342,7 +373,8 @@ define [
 				for f in form_model
 					draggableEls.find("[data-fid=\"#{f.id}\"]").hide();
 
-	return ['$compile', 'LoggerManager', ($compile, LoggerManager) ->
+	return ['$compile', 'LoggerManager', 'DataService', '$q', '$timeout', ($compile, LoggerManager, DataService, $q, $timeout) ->
+
 		directive = {}
 		directive.restrict    = 'E'
 		directive.require     = 'ngModel'
@@ -352,7 +384,11 @@ define [
 
 		directive.link = (scope, element, attrs, ngModel) ->
 			logger = LoggerManager.get('directive.dpLayoutEditor')
-			interfaceHandler = new InterfaceHandler(scope, element, attrs, ngModel, $compile, logger)
+
+			TicketFields = DataService.get('TicketFields')
+			UserFields   = DataService.get('UserFields')
+
+			interfaceHandler = new InterfaceHandler(scope, element, attrs,  ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger)
 
 		return directive
 	]

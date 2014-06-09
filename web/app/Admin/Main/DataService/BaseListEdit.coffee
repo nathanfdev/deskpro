@@ -21,6 +21,7 @@ define [
 			@orderField        = 'display_order'
 			@subLists          = []
 			@pagination        = {}
+			@isReloadWaiting   = false
 			@init()
 
 
@@ -32,12 +33,20 @@ define [
 
 
 		###
+    	# If data has changed, then the next time this list
+    	# is loaded should be new
+    	###
+		setReloadNext: ->
+			@isReloadWaiting = true
+
+
+		###
 		# Loads list of accounts
 		#
 		# @return {Promise}
 		###
 		loadList: (reload) ->
-			if reload
+			if reload or @isReloadWaiting
 				@loadListPromise = null
 				@isListLoaded = false
 

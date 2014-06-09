@@ -16,6 +16,7 @@
         this.orderField = 'display_order';
         this.subLists = [];
         this.pagination = {};
+        this.isReloadWaiting = false;
         this.init();
       }
 
@@ -28,6 +29,16 @@
 
 
       /*
+        	 * If data has changed, then the next time this list
+        	 * is loaded should be new
+       */
+
+      Admin_Main_DataService_BaseListEdit.prototype.setReloadNext = function() {
+        return this.isReloadWaiting = true;
+      };
+
+
+      /*
       		 * Loads list of accounts
       		 *
       		 * @return {Promise}
@@ -35,7 +46,7 @@
 
       Admin_Main_DataService_BaseListEdit.prototype.loadList = function(reload) {
         var deferred;
-        if (reload) {
+        if (reload || this.isReloadWaiting) {
           this.loadListPromise = null;
           this.isListLoaded = false;
         }

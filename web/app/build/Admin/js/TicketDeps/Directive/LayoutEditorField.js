@@ -2,14 +2,35 @@
   define(function() {
     var LayoutEditorField;
     LayoutEditorField = (function() {
-      function LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria) {
+      function LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout) {
         this.scope = scope;
         this.element = element;
         this.attrs = attrs;
         this.ngModel = ngModel;
         this.$modal = $modal;
         this.dpObTypesDefTicketCriteria = dpObTypesDefTicketCriteria;
-        this._initEvents();
+        this.scope.ticketFieldTitleFilter = (function(_this) {
+          return function(f) {
+            return _this.scope.field.field_type === 'ticket_field' && (f.id + '') === (_this.scope.field.field_id + '');
+          };
+        })(this);
+        this.scope.userFieldTitleFilter = (function(_this) {
+          return function(f) {
+            return _this.scope.field.field_type === 'user_field' && (f.id + '') === (_this.scope.field.field_id + '');
+          };
+        })(this);
+        $q.all([TicketFields.loadList(), UserFields.loadList()]).then((function(_this) {
+          return function(results) {
+            var tFields, uFields;
+            tFields = results[0];
+            uFields = results[1];
+            _this.scope.custom_ticket_fields = tFields;
+            _this.scope.custom_user_fields = uFields;
+            return $timeout(function() {
+              return _this._initEvents();
+            }, 1);
+          };
+        })(this));
       }
 
       LayoutEditorField.prototype._initEvents = function() {
@@ -113,15 +134,17 @@
 
     })();
     return [
-      '$modal', 'dpObTypesDefTicketCriteria', function($modal, dpObTypesDefTicketCriteria) {
-        var directive;
+      '$modal', 'dpObTypesDefTicketCriteria', 'DataService', '$q', '$timeout', function($modal, dpObTypesDefTicketCriteria, DataService, $q, $timeout) {
+        var TicketFields, UserFields, directive;
         directive = {};
         directive.restrict = 'E';
         directive.replace = true;
         directive.templateUrl = "TicketDeps/layout-editor-field.html";
+        TicketFields = DataService.get('TicketFields');
+        UserFields = DataService.get('UserFields');
         directive.link = function(scope, element, attrs, ngModel) {
           var handler;
-          return handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria);
+          return handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout);
         };
         return directive;
       }

@@ -4,7 +4,7 @@
   define(['angular', 'DeskPRO/Util/Arrays'], function(angular, Arrays) {
     var InterfaceHandler;
     InterfaceHandler = (function() {
-      function InterfaceHandler(scope, element, attr, ngModel, $compile, logger) {
+      function InterfaceHandler(scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger) {
         this.scope = scope;
         this.element = element;
         this.ngModel = ngModel;
@@ -101,7 +101,36 @@
             return _this.render();
           };
         })(this);
+        $q.all([TicketFields.loadList(), UserFields.loadList()]).then((function(_this) {
+          return function(results) {
+            var tFields, uFields;
+            tFields = results[0];
+            uFields = results[1];
+            _this.scope.field_status = TicketFields.field_enabled;
+            _this.scope.custom_ticket_fields = tFields;
+            _this.scope.custom_user_fields = uFields;
+            return $timeout(function() {
+              _this._reInitTab('user', _this.els.user_tab);
+              _this._reInitTab('agent', _this.els.agent_tab);
+              return _this.render();
+            }, 1);
+          };
+        })(this));
       }
+
+      InterfaceHandler.prototype._reInitTab = function(tabType, tab) {
+        tab.find('.form-elements').find('li.disabled').not('.done-init').each(function() {
+          var el, parent;
+          el = $(this);
+          parent = el.closest('ul');
+          return el.detach().appendTo(parent);
+        });
+        return tab.find('.form-elements').find('li').not('.disabled').not('.done-init').draggable({
+          appendTo: 'body',
+          helper: 'clone',
+          connectToSortable: tab.find('.form-worksheet').find('ul')
+        });
+      };
 
       InterfaceHandler.prototype._initTab = function(tabType, tab) {
         var me, ngModel, requiredFields;
@@ -116,12 +145,12 @@
           el = $(this);
           parent = el.closest('ul');
           return el.detach().appendTo(parent);
-        });
+        }).addClass('done-init');
         tab.find('.form-elements').find('li').not('.disabled').draggable({
           appendTo: 'body',
           helper: 'clone',
           connectToSortable: tab.find('.form-worksheet').find('ul')
-        });
+        }).addClass('done-init');
         return tab.find('.form-worksheet').find('ul').sortable({
           items: "> li",
           axis: 'y',
@@ -413,7 +442,7 @@
 
     })();
     return [
-      '$compile', 'LoggerManager', function($compile, LoggerManager) {
+      '$compile', 'LoggerManager', 'DataService', '$q', '$timeout', function($compile, LoggerManager, DataService, $q, $timeout) {
         var directive;
         directive = {};
         directive.restrict = 'E';
@@ -422,9 +451,11 @@
         directive.replace = true;
         directive.scope = {};
         directive.link = function(scope, element, attrs, ngModel) {
-          var interfaceHandler, logger;
+          var TicketFields, UserFields, interfaceHandler, logger;
           logger = LoggerManager.get('directive.dpLayoutEditor');
-          return interfaceHandler = new InterfaceHandler(scope, element, attrs, ngModel, $compile, logger);
+          TicketFields = DataService.get('TicketFields');
+          UserFields = DataService.get('UserFields');
+          return interfaceHandler = new InterfaceHandler(scope, element, attrs, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger);
         };
         return directive;
       }
