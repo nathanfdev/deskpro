@@ -73,7 +73,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 
 	public function checkPermission(Ticket $ticket, Person $person)
 	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'reply')) {
+		if (!$person->PermissionsManager->TicketChecker->canReply($ticket, 'reply')) {
 			return false;
 		}
 
