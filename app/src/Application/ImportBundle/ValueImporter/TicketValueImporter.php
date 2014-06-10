@@ -164,14 +164,14 @@ class TicketValueImporter extends AbstractValueImporter
 		
 		//Ref
 		if (!$tval->ref) {
-			$record['ref'] = md5(uniqid(null, true));
+			$record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
 		} else {
 			$query = 'SELECT id FROM tickets WHERE ref = ?';
 		
 			$duplicateRef = $this->getDb()->fetchColumn($query, array($tval->ref));
 			
 			if ($duplicateRef) {
-				$record['ref'] = md5(uniqid(null, true));
+				$record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
 			} else {
 				$record['ref'] = $tval->ref;
 			}
