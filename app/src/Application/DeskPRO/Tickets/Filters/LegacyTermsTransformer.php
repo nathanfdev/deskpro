@@ -359,6 +359,13 @@ class LegacyTermsTransformer
 					'options' => $options->all()
 				);
 
+			case 'FilterOrgName':
+				return array(
+					'type'    => 'org_name',
+					'op'      => $term->getTermOperator(),
+					'options' => $options->all()
+				);
+
 			case 'FilterOrgDateCreated':
 				return array(
 					'type'    => 'org_date_created',
@@ -743,6 +750,9 @@ class LegacyTermsTransformer
 
 			case 'person_contact_im':
 				return new Terms\FilterUserContactIm($op, $options);
+
+			case 'org_name':
+				return new Terms\FilterOrgName($op, $options);
 
 			case 'org_date_created':
 				return new Terms\FilterOrgDateCreated($op, $options);
