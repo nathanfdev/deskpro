@@ -591,7 +591,7 @@ DeskPRO.Admin.ElementHandler.PortalEditor = new Orb.Class({
 			this.iframeDocument = iframe.document;
 		} else {
 			this.iframeDocument = null;
-			DP.console.error("Could not get iframe document");
+			DP.console.warn("Could not get iframe document");
 		}
 
 		this.iframeWindow = this.iframeDocument.window;

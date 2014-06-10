@@ -1325,7 +1325,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	getDisplayName: function(type, id) {
 		if (!window.DESKPRO_NAME_REGISTRY[type] || !window.DESKPRO_NAME_REGISTRY[type][id]) {
 			if (!window.DESKPRO_NAME_REGISTRY[type]) {
-				DP.console.error('Unknown name type %s', type);
+				DP.console.warn('Unknown name type %s', type);
 			}
 
 			return null;
@@ -1346,7 +1346,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var agentEl = $('#agent_offline_list .agent-' + agent_id);
 
 		if (!agentEl.length) {
-			DP.console.error('Unknown agent %i', agent_id);
+			DP.console.warn('Unknown agent %i', agent_id);
 			return null;
 		}
 
@@ -1375,7 +1375,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var teamEl = $('#agent_team_list .team-' + team_id);
 
 		if (!teamEl.length) {
-			DP.console.error('Unknown team %i', team_id);
+			DP.console.warn('Unknown team %i', team_id);
 			return null;
 		}
 
@@ -1629,7 +1629,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//#################################################################
 
 	addListPage: function(page) {
-		DP.console.error('Invalid call to addListPage for %o', page);
+		DP.console.warn('Invalid call to addListPage for %o', page);
 		this.setListPage(page);
 	},
 
@@ -1668,7 +1668,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!handler) {
-			DP.console.error('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
+			DP.console.warn('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
 			return;
 		}
 
@@ -1814,7 +1814,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!el.data('route')) {
-			DP.console.error('Element has no route: %o', el);
+			DP.console.warn('Element has no route: %o', el);
 			DP.console.trace();
 			return;
 		}
@@ -2048,7 +2048,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		routeData = routeData || {};
 		if (!url) {
-			DP.console.error('No URL provided! routeData: %o', routeData);
+			DP.console.warn('No URL provided! routeData: %o', routeData);
 			return;
 		}
 
@@ -2632,7 +2632,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var m = routeData.url.match(/tickets\/([0-9]+)/);
 			if (!m || !m[1]) {
-				console.error('Bad page loader call: ' + routeData.url + ' %o', routeData);
+				console.warn('Bad page loader call: ' + routeData.url + ' %o', routeData);
 				return;
 			}
 			var ticketId = m[1];
@@ -3115,7 +3115,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var handler = this.sections[section_id];
 		if (!handler) {
 			if (section_id != 'test_section') {
-				DP.console.error('Invalid section: %s', section_id);
+				DP.console.warn('Invalid section: %s', section_id);
 			}
 			return;
 		}
@@ -3324,7 +3324,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				if (!DeskPRO_Window.sections.agent_chat_section) {
-					DP.console.error('The agent chat section is not enabled');
+					DP.console.warn('The agent chat section is not enabled');
 					return;
 				}
 
@@ -3555,7 +3555,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!url) {
-			DP.console.error('getSectionData: Unknown section %s', section_id);
+			DP.console.warn('getSectionData: Unknown section %s', section_id);
 			return;
 		}
 

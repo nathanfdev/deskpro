@@ -161,7 +161,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 	runChecks: function() {
 		if (this.runChecksRecursionCount > 30) {
-			console.error('runChecks running too many times: %o', this.depItems);
+			console.warn('runChecks running too many times: %o', this.depItems);
 			return;
 		}
 
