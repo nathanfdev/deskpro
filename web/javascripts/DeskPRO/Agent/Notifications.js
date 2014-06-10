@@ -180,11 +180,6 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 					DeskPRO_Window.runPageRouteFromElement(row);
 					self.removeRow(row);
 				},
-				notifyClose: function() {
-					if (!self._isRemoving && !row.data('notification-timeout')) {
-						self.removeRow(row);
-					}
-				},
 				timeout: DESKPRO_PERSON_NOTIFICATION_DISMISS || null
 			});
 			notification.show();
