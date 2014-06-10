@@ -66,7 +66,6 @@ class Build1400056732 extends AbstractBuild
 			$this->out("Re-compiling {$info['name']}");
 
 			try {
-
 				$code = $info['template_code'];
 				$code = str_replace(array_keys($replacements), array_values($replacements), $code);
 
@@ -84,6 +83,14 @@ class Build1400056732 extends AbstractBuild
 		if ($failed) {
 			$this->saveUpgradeData('201404', 'bad-templates', $failed_data);
 			$db->executeUpdate("DELETE FROM templates WHERE id IN (" . implode(',', $failed) . ")");
+		}
+
+		// Rename custom templates
+		$custom_names = $db->fetchAllKeyValue("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_user:custom_%' OR name LIKE 'DeskPRO:emails_agent:custom_'");
+
+		foreach ($custom_names as $id => $name) {
+			$new_name = preg_replace('#^DeskPRO:emails_(user|agent):custom_(.*?)\.html\.twig$#', 'DeskPRO:emails_custom:$1_$2.html.twig', $name);
+			$db->update('templates', array('name' => $new_name), array('id' => $id));
 		}
 	}
 }
