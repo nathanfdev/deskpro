@@ -120,7 +120,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 */
-	protected $filesize;
+	protected $filesize = 0;
 
 	/**
 	 * The files mimetype
