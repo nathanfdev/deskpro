@@ -145,7 +145,7 @@ class TicketLog extends AbstractEntityRepository
 	 */
 	public function filterTicketLogs($ticket_logs, $filter_type)
 	{
-		$type_map = array(
+		static $type_map = array(
 			'message'  => array('message_removed', 'message_edit', 'message_created'),
 			'note'     => array('message_note_created'),
 			'notif'    => array('agent_notify', 'user_notify'),
@@ -154,6 +154,10 @@ class TicketLog extends AbstractEntityRepository
 			'triggers' => array('executed_triggers'),
 			'status'   => array('status'),
 		);
+
+		if (!isset($type_map[$filter_type])) {
+			return array();
+		}
 
 		$types = $type_map[$filter_type];
 
