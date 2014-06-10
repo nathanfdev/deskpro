@@ -145,7 +145,7 @@ define [
 
 			options.push({
 				title: 'Delete Ticket',
-				value: 'DeleteTicket'
+				value: 'SetDeleted'
 			})
 
 			options.push({
@@ -588,8 +588,7 @@ define [
 					}
 			}
 
-		getDeleteTicket: (options = {}) ->
-			options.propName = 'delete_ticket'
+		getSetDeleted: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
 

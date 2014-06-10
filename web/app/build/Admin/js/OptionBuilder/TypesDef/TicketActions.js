@@ -118,7 +118,7 @@
         });
         options.push({
           title: 'Delete Ticket',
-          value: 'DeleteTicket'
+          value: 'SetDeleted'
         });
         options.push({
           title: 'Add Agent Reply',
@@ -739,12 +739,11 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getDeleteTicket = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetDeleted = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'delete_ticket';
         def = this.getStandardIs(options);
         return def;
       };
