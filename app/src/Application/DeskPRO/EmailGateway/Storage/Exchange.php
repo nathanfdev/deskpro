@@ -257,6 +257,7 @@ class Exchange
 		$request->Folders->Folder              = new EWSType_FolderType();
 		$request->Folders->Folder->DisplayName = $name;
 		$request->ParentFolderId               = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+		$request->ParentFolderId->DistinguishedFolderId = new \stdClass();
 		$request->ParentFolderId->DistinguishedFolderId->Id = EWSType_DistinguishedFolderIdNameType::MESSAGE_FOLDER_ROOT;
 
 		$response = $this->service->CreateFolder($request);
@@ -319,6 +320,8 @@ class Exchange
 			$response->ResponseMessages->FindFolderResponseMessage->ResponseClass == 'Success'
 		) {
 			return $response->ResponseMessages->FindFolderResponseMessage->RootFolder->Folders->Folder;
+		} else {
+			return array();
 		}
 	}
 
