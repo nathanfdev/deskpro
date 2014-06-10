@@ -544,7 +544,7 @@
           options = {};
         }
         options.propName = 'cc_address';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -555,7 +555,7 @@
           options = {};
         }
         options.propName = 'cc_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -566,7 +566,7 @@
           options = {};
         }
         options.propName = 'email_header_match';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -577,7 +577,7 @@
           options = {};
         }
         options.propName = 'subject';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -588,7 +588,7 @@
           options = {};
         }
         options.propName = 'message';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -620,7 +620,7 @@
           options = {};
         }
         options.propName = 'attach_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -631,7 +631,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -642,7 +642,7 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -748,7 +748,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -803,7 +803,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'not_contains'];
         def = this.getStandardInput(options);
         return def;
       };

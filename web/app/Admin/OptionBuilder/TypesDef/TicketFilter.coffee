@@ -456,31 +456,31 @@ define [
 
 		getFilterCcAddress: (options = {}) ->
 			options.propName = 'cc_address'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
 		getFilterCcName: (options = {}) ->
 			options.propName = 'cc_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
 		getFilterEmailHeader: (options = {}) ->
 			options.propName = 'email_header_match'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
 		getFilterSubject: (options = {}) ->
 			options.propName = 'subject'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
 		getFilterMessage: (options = {}) ->
 			options.propName = 'message'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
@@ -497,19 +497,19 @@ define [
 
 		getFilterHasAttachName: (options = {}) ->
 			options.propName = 'attach_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
 		getFilterUserName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
 		getFilterUserEmailAddress: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
@@ -565,7 +565,7 @@ define [
 
 		getFilterOrgName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
@@ -595,7 +595,7 @@ define [
 
 		getFilterOrgEmailDomain: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'not_contains']
 			def = @getStandardInput(options)
 			return def
 
