@@ -77,6 +77,6 @@ class CheckUserField extends AbstractCheckCustomField
 	 */
 	public function getTermType()
 	{
-		return 'CheckTicketField' . $this->getTermOptions()->get('field_id');
+		return 'CheckUserField' . $this->getTermOptions()->get('field_id');
 	}
 }
