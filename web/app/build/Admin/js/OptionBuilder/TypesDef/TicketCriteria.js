@@ -120,6 +120,10 @@
           title: 'Priority',
           value: 'CheckPriority'
         });
+        options.push({
+          title: 'Urgency',
+          value: 'CheckUrgency'
+        });
         if (types.indexOf('web.agent') !== -1) {
           options.push({
             title: 'Workflow',
@@ -277,12 +281,16 @@
         }
         options = [];
         options.push({
-          title: 'Day of week',
+          title: 'Current day of week',
           value: 'CheckDayOfWeek'
         });
         options.push({
-          title: 'Time of day',
+          title: 'Current time of day',
           value: 'CheckTimeOfDay'
+        });
+        options.push({
+          title: 'Ticket Created Date',
+          value: 'CheckDateCreated'
         });
         set_options.push({
           title: 'Dates',
@@ -300,6 +308,10 @@
         options.push({
           title: 'Check Trigger Variable',
           value: 'CheckUserVar'
+        });
+        options.push({
+          title: 'Check Current Agent',
+          value: 'CheckPerformer'
         });
         set_options.push({
           title: 'Trigger Control',
@@ -417,6 +429,17 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUrgency = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'urgency1';
+        options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckCategory = function(options) {
         var def;
         if (options == null) {
@@ -464,6 +487,19 @@
             value: -1
           }
         ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckPerformer = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'person_ids';
+        options.dataName = 'agents';
+        options.operators = ['contains', 'not_contains'];
+        options.template = 'OptionBuilder/type-criteria-performer.html';
         def = this.getStandardSelect(options);
         return def;
       };
@@ -1028,6 +1064,15 @@
             };
           }
         };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckDateCreated = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
+        return def;
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckTimeOfDay = function(options) {

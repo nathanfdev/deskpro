@@ -132,6 +132,11 @@ define [
 				value: 'CheckPriority'
 			})
 
+			options.push({
+				title: 'Urgency',
+				value: 'CheckUrgency'
+			})
+
 			if types.indexOf('web.agent') != -1
 				options.push({
 					title: 'Workflow',
@@ -334,13 +339,18 @@ define [
 			options = []
 
 			options.push({
-				title: 'Day of week',
+				title: 'Current day of week',
 				value: 'CheckDayOfWeek'
 			})
 
 			options.push({
-				title: 'Time of day',
+				title: 'Current time of day',
 				value: 'CheckTimeOfDay'
+			})
+
+			options.push({
+				title: 'Ticket Created Date',
+				value: 'CheckDateCreated'
 			})
 
 			#options.push({
@@ -372,6 +382,11 @@ define [
 			options.push({
 				title: 'Check Trigger Variable',
 				value: 'CheckUserVar'
+			})
+
+			options.push({
+				title: 'Check Current Agent',
+				value: 'CheckPerformer'
 			})
 
 			set_options.push({
@@ -455,6 +470,12 @@ define [
 			def = @getStandardSelect(options)
 			return def
 
+		getCheckUrgency: (options = {}) ->
+			options.propName = 'urgency1'
+			options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+			def = @getStandardInput(options)
+			return def
+
 		getCheckCategory: (options = {}) ->
 			options.propName = 'category_ids'
 			options.dataName = 'ticket_cats'
@@ -480,6 +501,14 @@ define [
 				{title: 'Unassigned', value: 0},
 				{title: 'Current Agent', value: -1}
 			]
+			def = @getStandardSelect(options)
+			return def
+
+		getCheckPerformer: (options = {}) ->
+			options.propName = 'person_ids'
+			options.dataName = 'agents'
+			options.operators = ['contains', 'not_contains']
+			options.template = 'OptionBuilder/type-criteria-performer.html';
 			def = @getStandardSelect(options)
 			return def
 
@@ -804,6 +833,10 @@ define [
 						return value
 					}
 			}
+
+		getCheckDateCreated: (options = {}) ->
+			def = @getDateInput(options)
+			return def
 
 		getCheckTimeOfDay: (options = {}) ->
 			me = @

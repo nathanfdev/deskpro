@@ -479,13 +479,13 @@
                     if (!model.date1) {
                       model.date1 = new Date();
                     }
-                    value.options.date1 = model.date1.getTime() / 1000;
+                    value.options.date1 = parseInt(model.date1.getTime() / 1000);
                   }
                   if ((model.op === 'gte' || model.op === 'between') && model.date2) {
                     if (!model.date2) {
                       model.date2 = new Date();
                     }
-                    value.options.date2 = model.date2.getTime() / 1000;
+                    value.options.date2 = parseInt(model.date2.getTime() / 1000);
                   }
                 } else {
                   if ((model.op === 'lte' || model.op === 'between') && model.date1_relative) {
@@ -499,8 +499,6 @@
                     value.options.date2_relative_type = d2[1];
                   }
                 }
-                console.log(model);
-                console.log(value);
                 return value;
               }
             };

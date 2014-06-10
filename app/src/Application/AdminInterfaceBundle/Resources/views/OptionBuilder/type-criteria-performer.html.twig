@@ -1,0 +1,18 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap"><label>The current agent</label></td>
+				<td width="100%">
+					<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;">
+						<option value="contains">is</option>
+						<option value="not_contains">is not</option>
+					</select>
+					<select multiple ui-select2 ng-model="model.value" style="width: 60%">
+						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

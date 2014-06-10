@@ -337,6 +337,20 @@ class TriggerTermConverter
 		));
 	}
 
+	private function upgradeTerm_agent_performer($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckPerformer($op, array(
+			'person_ids' => $this->getSingleArrayValue($options, 'agent_ids')
+		));
+	}
+
+	private function upgradeTerm_person_name($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckUserName($op, array(
+			'name' => $options->get('name', 'NO NAME')
+		));
+	}
+
 	private function upgradeTerm_person_label($type, $op, OptionsArray $options)
 	{
 		$labels = explode(',', $options->get('label', ''));
@@ -361,7 +375,7 @@ class TriggerTermConverter
 		$opt = $this->getSingleArrayValue($options, 'product');
 		if (!$opt) {
 			// badly named in old version
-			$this->getSingleArrayValue($options, 'category');
+			$opt = $this->getSingleArrayValue($options, 'category');
 		}
 
 		return new Terms\CheckProduct($op, array('product_ids' => $opt));
@@ -414,6 +428,18 @@ class TriggerTermConverter
 			'time1' => $options->get('hour1', '00') . ':' . $options->get('minute1', '00'),
 			'tz'    => 'UTC',
 			'var'   => 'date_created'
+		));
+	}
+
+	private function upgradeTerm_date_created($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckDateCreated($op, array(
+			'date1'               => $options->get('date1'),
+			'date2'               => $options->get('date2'),
+			'date1_relative'      => $options->get('date1_relative'),
+			'date2_relative'      => $options->get('date2_relative'),
+			'date1_relative_type' => $options->get('date1_relative_type'),
+			'date2_relative_type' => $options->get('date2_relative_type'),
 		));
 	}
 
