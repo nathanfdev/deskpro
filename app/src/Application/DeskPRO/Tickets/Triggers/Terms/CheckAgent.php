@@ -52,9 +52,6 @@ class CheckAgent extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addValidNames('agent_ids');
-		$options->addCallbackCheckedOption('agent_ids', function($v) {
-			return (is_array($v) && !empty($v));
-		});
 		return $options;
 	}
 
