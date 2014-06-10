@@ -230,7 +230,8 @@ class TicketSearchController extends AbstractController
 				$q = $this->in->getString('term');
 			}
 
-			$searcher->addTerm('text', 'is', array('query' => $q));
+			$searcher->addTerm('ticket_message', 'is', array('query' => $q));
+			$searcher->addTerm('date_created', 'gte', array('date1' => strtotime("-60 days")));
 			$results = $searcher->getMatches();
 			$results = Arrays::castToType($results, 'integer');
 
