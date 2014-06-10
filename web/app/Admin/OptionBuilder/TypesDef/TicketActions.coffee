@@ -288,7 +288,7 @@ define [
 							getDataFormatter: ->
 								return {
 									getViewValue: (value = {}, data) ->
-										return data || {}
+										return value.options || {}
 									getValue: (model = {}, data) ->
 										value = {}
 										value.type = opt.action_name
@@ -299,7 +299,7 @@ define [
 
 				if options.length
 					set_options.push({
-						title: 'Ticket Options',
+						title: 'Other Actions',
 						subOptions: options
 					})
 
@@ -437,7 +437,6 @@ define [
 				return {
 					getViewValue: (value = {}, data) ->
 						options = value?.options || {}
-						console.log(options)
 						return {
 							add_labels:       (options.add_labels || []).join(', '),
 							remove_labels:    (options.remove_labels || []).join(', '),

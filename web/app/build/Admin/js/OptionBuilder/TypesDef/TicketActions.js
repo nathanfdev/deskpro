@@ -237,7 +237,7 @@
                       if (value == null) {
                         value = {};
                       }
-                      return data || {};
+                      return value.options || {};
                     },
                     getValue: function(model, data) {
                       var value;
@@ -256,7 +256,7 @@
           }
           if (options.length) {
             set_options.push({
-              title: 'Ticket Options',
+              title: 'Other Actions',
               subOptions: options
             });
           }
@@ -485,7 +485,6 @@
                   value = {};
                 }
                 options = (value != null ? value.options : void 0) || {};
-                console.log(options);
                 return {
                   add_labels: (options.add_labels || []).join(', '),
                   remove_labels: (options.remove_labels || []).join(', ')

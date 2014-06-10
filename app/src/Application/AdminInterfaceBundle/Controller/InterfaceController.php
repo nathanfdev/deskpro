@@ -69,10 +69,7 @@ class InterfaceController extends AbstractController
 
 		$tpl_name = $this->getRealViewName($view_name);
 
-		$rendered = null;
-		if ($this->tpl->exists($tpl_name)) {
-			$rendered = $this->renderView($tpl_name, $this->getViewParams($tpl_name));
-		}
+		$rendered = $this->renderTemplateView($tpl_name);
 
 		if ($load_data) {
 			$rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
@@ -95,9 +92,7 @@ class InterfaceController extends AbstractController
 			$tpl_name = $this->getRealViewName($view_name);
 
 			$rendered = null;
-			if ($this->tpl->exists($tpl_name)) {
-				$rendered = $this->renderView($tpl_name, $this->getViewParams($tpl_name));
-			}
+			$rendered = $this->renderTemplateView($tpl_name);
 
 			$views[] = array(
 				'id'       => $id,
@@ -144,6 +139,33 @@ class InterfaceController extends AbstractController
 	}
 
 	####################################################################################################################
+
+	private function renderTemplateView($tpl_name)
+	{
+		$m = null;
+
+		if ($this->tpl->exists($tpl_name)) {
+			return $this->renderView($tpl_name, $this->getViewParams($tpl_name));
+		} else if (preg_match('#^Apps:(.*?):(.*?)$#', $tpl_name, $m)) {
+			$app_name = $m[1];
+			$tpl_name = $m[2];
+
+			$app_manager = $this->container->getAppManager();
+			if ($app_manager->isPackageInstalled($app_name)) {
+				$package = $app_manager->getPackage($app_name);
+				if ($package->native_name) {
+					$native_package = $app_manager->getNativePackageConfig($package);
+
+					$real_path = @realpath($native_package->getNativeDir() . '/Resources/views/' . $tpl_name);
+					if ($real_path && strpos($real_path, $native_package->getNativeDir()) === 0 && file_exists($real_path)) {
+						return file_get_contents($real_path);
+					}
+				}
+			}
+		}
+
+		return '';
+	}
 
 	private function getRealViewName($view_name)
 	{

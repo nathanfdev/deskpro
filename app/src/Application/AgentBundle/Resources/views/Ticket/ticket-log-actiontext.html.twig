@@ -5,6 +5,8 @@
 {%- endmacro -%}
 {% if log.action_type == 'free' %}
 	{{ log.details.message }}
+{% elseif log.action_type == 'app_message' %}
+	App #{{ log.details.app_id }} {{ log.details.app_title }} &mdash; {{ log.details.message }}
 {% elseif log.action_type == 'action_starter' %}
 	{% if log.details.event == 'new.email.user' %}
 		{{ phrase('agent.tickets.log_new_email_user') }}

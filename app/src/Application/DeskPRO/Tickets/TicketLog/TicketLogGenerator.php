@@ -530,6 +530,16 @@ class TicketLogGenerator
 					'lost_data'   => $new['lost_data']
 				);
 
+			case 'app_message':
+				return array(
+					'action_type'    => 'app_message',
+					'app_id'         => $new['app_id'],
+					'app_title'      => $new['app_title'],
+					'package_name'   => $new['package_name'],
+					'package_title'  => $new['package_title'],
+					'message'        => $new['message']
+				);
+
 			default:
 				return array();
 		}

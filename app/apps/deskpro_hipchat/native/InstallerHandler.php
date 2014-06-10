@@ -81,8 +81,7 @@ class InstallerHandler implements InstallerHandlerInterface
 	 */
 	private function refreshTriggerAction(InstallerContext $context)
 	{
-		$action_name = "com_deskpro_apps_hipchat_" . $context->getApp()->id;
-
+		$action_name = 'HipChatAction' . $context->getApp()->id;
 		$rec = array(
 			'app_id'      => $context->getApp()->id,
 			'action_name' => $action_name,

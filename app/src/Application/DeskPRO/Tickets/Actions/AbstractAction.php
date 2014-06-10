@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Orb\Util\CheckedOptionsArray;
+use Orb\Util\OptionsArray;
 use Orb\Util\Util;
 
 /**
@@ -48,13 +49,28 @@ abstract class AbstractAction implements ActionDefinitionInterface
 	 */
 	private $options;
 
+	/**
+	 * @var \Orb\Util\OptionsArray
+	 */
+	private $meta;
+
 
 	/**
 	 * @param array  $options
 	 */
 	public function __construct(array $options = array())
 	{
+		$this->meta = new OptionsArray();
 		$this->_initOptions($options);
+	}
+
+
+	/**
+	 * @return OptionsArray
+	 */
+	public function getMetaData()
+	{
+		return $this->meta;
 	}
 
 
