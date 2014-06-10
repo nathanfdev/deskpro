@@ -483,7 +483,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'agent_team_ids';
+        options.propName = 'team_ids';
         options.dataName = 'agent_teams';
         options.extraOptions = [
           {

@@ -419,7 +419,7 @@ define [
 			return def
 
 		getFilterAgentTeam: (options = {}) ->
-			options.propName = 'agent_team_ids'
+			options.propName = 'team_ids'
 			options.dataName = 'agent_teams'
 			options.extraOptions = [
 				{title: 'No Team', value: 0},
