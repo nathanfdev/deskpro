@@ -156,7 +156,6 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 			}
 		} catch (\Exception $e) {
 			$elastica_logger->error("Exception: {$e->getMessage()}");
-			dp_log(KernelErrorHandler::formatBacktrace($e->getTrace()));
 			$error = true;
 		}
 
