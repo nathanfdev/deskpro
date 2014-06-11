@@ -33,7 +33,8 @@
           return function(data) {
             _this.macro = data.macro;
             _this.agents = data.agents;
-            return _this.form = data.form;
+            _this.form = data.form;
+            return console.log(_this.form);
           };
         })(this));
         return promise;

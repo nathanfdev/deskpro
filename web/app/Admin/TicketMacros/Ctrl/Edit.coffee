@@ -24,6 +24,8 @@ define [
 				@macro  = data.macro
 				@agents = data.agents
 				@form   = data.form
+
+				console.log(@form)
 			)
 			return promise
 
