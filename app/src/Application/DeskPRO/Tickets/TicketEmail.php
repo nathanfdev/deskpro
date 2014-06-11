@@ -355,6 +355,10 @@ class TicketEmail
 					$this->logger->info(sprintf("[TicketEmail] Message has no attachments"));
 				}
 			}
+
+			if ($this->user_mode == 'user' && $last_message && $last_message->person->is_agent) {
+				$vars['show_rating_link'] = true;
+			}
 		}
 
 		if ($this->user_mode == self::MODE_USER && $this->ticket->person_email && $this->ticket->person_email->person == $this->to_person) {
