@@ -103,8 +103,8 @@ class TicketSettings
 	 */
 	public function resetSettings()
 	{
-		$this->satisfaction_enabled       = (bool)$this->settings->get('core_tickets.enable_feedback');
-		$this->satisfaction_agentread     = (bool)$this->settings->get('core_tickets.feedback_agents_read');
+		$this->satisfaction_enabled       = (bool)$this->settings->get('core.tickets.enable_feedback');
+		$this->satisfaction_agentread     = (bool)$this->settings->get('core.tickets.feedback_agents_read');
 
 		$this->kbsuggest_web_enabled      = (bool)$this->settings->get('core.show_ticket_suggestions');
 
@@ -225,8 +225,8 @@ class TicketSettings
 	 */
 	public function saveSettings()
 	{
-		$this->settings->setSetting('core_tickets.enable_feedback',      (int)$this->satisfaction_enabled);
-		$this->settings->setSetting('core_tickets.feedback_agents_read', (int)$this->satisfaction_agentread);
+		$this->settings->setSetting('core.tickets.enable_feedback',      (int)$this->satisfaction_enabled);
+		$this->settings->setSetting('core.tickets.feedback_agents_read', (int)$this->satisfaction_agentread);
 		$this->settings->setSetting('core.show_ticket_suggestions',      (int)$this->kbsuggest_web_enabled);
 
 		$this->settings->setSetting('core_tickets.enable_timelog',       (int)$this->timelog_enabled);
