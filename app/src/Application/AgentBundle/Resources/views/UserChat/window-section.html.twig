@@ -59,14 +59,18 @@
 						<h3>{{ phrase('agent.chat.title_active_chats') }}</h3>
 						<em class="counter list-counter" id="userchat_list_allagents_counter" data-count-key="counts.active" data-count="{{ counts.active|default(0) }}">{{ counts.active|default(0) }}</em>
 					</div>
-					<ul class="nav-list nav-list-small indented">
+					<ul class="nav-list-small indented">
 						{% for agent_id,agent_name in agent_names %}
 							{% if agent_id != app.user.id %}
-								<li class="" {% if not counts[agent_id] %}style="display: none"{% endif %} id="userchat_list_{{ agent_id }}">
-									<span class="title" data-route="listpane:{{ path('agent_userchat_list_active', {'agent_id': agent_id}) }}">
-										<span class="list-counter" data-count-key="counts.{{ agent_id }}" id="userchat_list_{{ agent_id }}_counter">{{ counts[agent_id]|default(0) }}</span>
-										{{ agent_name }}
-									</span>
+								<li {% if not counts[agent_id] %}style="display: none"{% endif %} id="userchat_list_{{ agent_id }}">
+									<div class="item is-nav-item" data-route="listpane:{{ path('agent_userchat_list_active', {'agent_id': agent_id}) }}">
+										<h3>{{ agent_name }}</h3>
+										<div class="float-side">
+											<em class="counter list-counter" data-count-key="counts.{{ agent_id }}" id="userchat_list_{{ agent_id }}_counter">
+												{{ counts[agent_id]|default(0) }}
+											</em>
+										</div>
+									</div>
 								</li>
 							{% endif %}
 						{% endfor %}
