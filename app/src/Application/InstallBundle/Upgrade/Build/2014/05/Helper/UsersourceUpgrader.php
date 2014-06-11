@@ -48,7 +48,7 @@ class UsersourceUpgrader
 	/**
 	 * @var array
 	 */
-	private $info;
+	private $us_info;
 
 	/**
 	 * @var string
@@ -63,15 +63,15 @@ class UsersourceUpgrader
 
 	/**
 	 * @param DeskproContainer $container
-	 * @param array            $info
+	 * @param array            $us_info
 	 */
-	public function __construct(DeskproContainer $container, array $info)
+	public function __construct(DeskproContainer $container, array $us_info)
 	{
 		$this->container = $container;
 
-		$this->info = $info;
-		$this->type = $info['source_type'];
-		$this->options = unserialize($info['options']);
+		$this->us_info = $us_info;
+		$this->type    = $us_info['source_type'];
+		$this->options = unserialize($us_info['options']);
 	}
 
 
@@ -80,7 +80,7 @@ class UsersourceUpgrader
 	 */
 	public function upgrade()
 	{
-		switch ($this->info['source_type']) {
+		switch ($this->us_info['source_type']) {
 			case 'active_directory':
 				$this->upgradeActiveDirectory();
 				break;
@@ -139,7 +139,7 @@ class UsersourceUpgrader
 
 		$app = new AppInstance();
 		$app->package = $package;
-		$app->title = $package->title;
+		$app->title = $this->us_info['title'] ?: $package->title;
 		$app->setSettings($app_settings);
 		$this->container->getEm()->persist($app);
 		$this->container->getEm()->flush();
@@ -159,7 +159,7 @@ class UsersourceUpgrader
 			'source_type' => $adapter_class,
 			'options'     => json_encode($adapter_settings),
 			'app_id'      => $app ? $app->id : null
-		), array('id' => $this->info['id']));
+		), array('id' => $this->us_info['id']));
 	}
 
 
