@@ -9493,6 +9493,20 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   font-size: 11pt;
 }
 
+.dp-pane-help-box,
+.dp-item-list .help-box {
+  padding: 5px;
+  margin: 9px;
+  margin-bottom: 3px;
+  background-color: #fff;
+  border: 1px dotted #888;
+  border-radius: 2px;
+}
+
+.dp-pane-help-box {
+  margin: 9px;
+}
+
 .dp-item-list li.group-section .as-open {
   display: none !important;
 }
@@ -9518,15 +9532,6 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .dp-item-list li.group-section > a {
   cursor: pointer;
-}
-
-.dp-item-list li.group-section .help-box {
-  padding: 5px;
-  margin: 9px;
-  margin-bottom: 3px;
-  background-color: #fff;
-  border: 1px dotted #888;
-  border-radius: 2px;
 }
 
 .dp-item-list li.group-section .group-section-wrapper {

@@ -19,12 +19,29 @@
 
       Admin_TicketMacros_Ctrl_Edit.prototype.init = function() {
         this.macroData = this.DataService.get('TicketMacros');
+        this.$scope.me_id = window.DP_PERSON_ID;
         this.macroId = parseInt(this.$stateParams.id);
         this.macro = null;
         this.agents = null;
         this.form = null;
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
-        return this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
+        this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
+        return this.$scope.$watch('EditCtrl.form.person_id', (function(_this) {
+          return function(id) {
+            var a, name;
+            id = parseInt(id);
+            name = 'unknown agent';
+            if (id && !isNaN(id)) {
+              a = _this.agents.filter(function(a) {
+                return a.id === id;
+              });
+              if (a[0]) {
+                name = a[0].display_name;
+              }
+            }
+            return _this.$scope.for_agent_name = name;
+          };
+        })(this));
       };
 
       Admin_TicketMacros_Ctrl_Edit.prototype.initialLoad = function() {

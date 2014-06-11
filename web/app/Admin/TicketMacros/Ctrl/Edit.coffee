@@ -10,6 +10,7 @@ define [
 
 		init: ->
 			@macroData  = @DataService.get('TicketMacros')
+			@$scope.me_id = window.DP_PERSON_ID
 
 			@macroId = parseInt(@$stateParams.id)
 			@macro  = null
@@ -18,6 +19,16 @@ define [
 
 			@actionsTypeDef    = @dpObTypesDefTicketActions
 			@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
+
+			@$scope.$watch('EditCtrl.form.person_id', (id) =>
+				id = parseInt(id)
+				name = 'unknown agent'
+				if id && !isNaN(id)
+					a = @agents.filter((a) -> a.id == id)
+					if a[0] then name = a[0].display_name
+
+				@$scope.for_agent_name = name
+			)
 
 		initialLoad: ->
 			promise = @macroData.loadEditMacroData(@macroId || null).then( (data) =>

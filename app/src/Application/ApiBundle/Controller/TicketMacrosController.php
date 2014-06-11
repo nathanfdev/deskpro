@@ -123,9 +123,10 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
 			$macro->is_global = true;
 		}
 
-		$actions = new MacroActions();
-		$actions->importFromArray(array('actions' => $this->in->getArrayValue('actions')));
-		$macro->actions = $actions;
+		//TODO
+		//$actions = new MacroActions();
+		//$actions->importFromArray(array('actions' => $this->in->getArrayValue('actions')));
+		//$macro->actions = $actions;
 
 		$this->em->persist($macro);
 		$this->em->flush();

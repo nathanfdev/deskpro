@@ -34,6 +34,10 @@
 			<p class="dp-empty-list-notice" ng-if="!ListCtrl.list.length">
 				{{ phrase('adm.ticket_macros.no_macros') }}
 			</p>
+			<div class="dp-pane-help-box">
+				You can view and manage permissions on macros here. To created and edit macros, you need to
+				go to the Agent Interface.
+			</div>
 			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
 				<li ng-repeat="macro in filterList" dp-state-mark="tickets.macros.edit.{{ ng_var('macro.id') }}" data-id="{{ ng_var('macro.id') }}">
 					<a href="{{ ng_href('tickets.macros.edit', '{id: macro.id}') }}">
@@ -51,9 +55,11 @@
 					</a>
 				</li>
 			</ul>
+			{#
 			<div class="dp-add-control">
 				<a class="btn btn-default" href="{{ ng_href('tickets.macros.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
+			#}
 		</article>
 	</section>
 	{{ ng_tpl('AdminInterfaceBundle:TicketMacros:delete-modal.html.twig') }}
