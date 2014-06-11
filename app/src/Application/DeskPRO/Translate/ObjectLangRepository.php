@@ -365,6 +365,11 @@ class ObjectLangRepository
 		}
 
 		foreach ($recs as $rec) {
+
+			if (!trim($rec->value)) {
+				continue;
+			}
+
 			$obj_ref = $rec->ref;
 			$lang_id = $rec->language->getId();
 
