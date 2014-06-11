@@ -137,6 +137,10 @@ class UsersourceUpgrader
 		$manager = $this->container->getAppManager();
 		$package = $manager->getPackage($package_name);
 
+		if ($this->us_info['is_enabled']) {
+			$app_settings['enable_usersource'] = true;
+		}
+
 		$app = new AppInstance();
 		$app->package = $package;
 		$app->title = $this->us_info['title'] ?: $package->title;
