@@ -44,7 +44,7 @@
             scope.options = [];
             scope.selected = [];
             scope.defaultLinkParams = '';
-            scope.type = attrs.type;
+            scope.type = attrs.type || 'builtIn';
             scope.$watch(attrs.possibleValues, (function(_this) {
               return function(newVal) {
                 var valueToDecorate;
@@ -137,7 +137,8 @@
               linkParams = scope.selected.join(',');
               return scope.report_link = $state.href('builder.edit', {
                 id: scope.reportId,
-                params: linkParams
+                params: linkParams,
+                type: scope.type
               });
             };
 

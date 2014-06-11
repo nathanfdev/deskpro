@@ -48,7 +48,7 @@ define ->
 				scope.options = []
 				scope.selected = []
 				scope.defaultLinkParams = ''
-				scope.type = attrs.type
+				scope.type = attrs.type || 'builtIn'
 
 				scope.$watch(attrs.possibleValues, (newVal) =>
 
@@ -136,7 +136,7 @@ define ->
 
 				updateLink = ->
 					linkParams = scope.selected.join(',')
-					scope.report_link = $state.href('builder.edit', {id: scope.reportId, params:linkParams})
+					scope.report_link = $state.href('builder.edit', {id: scope.reportId, params:linkParams, type: scope.type})
 
 				###
 				# Going to correponding route after changing selected options inside select box
