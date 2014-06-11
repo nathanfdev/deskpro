@@ -283,6 +283,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
 					rowScope.rowOpts.withCheck = true
 					rowScope.rowOpts.withCheckId = Util.uid('check')
 
+				rowScope.rowOpts.rowIdx = @rowsCount+1
+				rowScope.rowOpts.tagString = @options.tagString || null
+				rowScope.rowOpts.tagClass = @options.tagClass || ''
 				element = @$compile(tpl)(rowScope)
 
 				rowScope.rowFn = {}
@@ -353,6 +356,11 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			@rowsCount--
 			if @rowsCount == 0
 				@els.noOptionsMessage.show()
+			else
+				idx = 0
+				for own row of @rows
+					row.scope.rowOpts.rowIdx = idx
+					idx++
 
 			return true
 

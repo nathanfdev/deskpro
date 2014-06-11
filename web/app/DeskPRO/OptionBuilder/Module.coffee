@@ -44,8 +44,8 @@ define [
 				replace: true,
 				transclude: true,
 				link: (scope, element, attrs) ->
-					if scope.tag?
-						tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.tag).text(scope.tag)
+					if scope.rowOpts?.rowIdx > 1 and scope.rowOpts?.tagString
+						tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.rowOpts.tagClass).text(scope.rowOpts?.tagString)
 						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'))
 					else
 						tag = $('<em class="dp-ob-row-tag"></em>').addClass('no-tag')

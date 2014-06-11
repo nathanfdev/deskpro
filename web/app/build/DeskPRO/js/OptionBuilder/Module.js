@@ -27,9 +27,9 @@
           replace: true,
           transclude: true,
           link: function(scope, element, attrs) {
-            var tag;
-            if (scope.tag != null) {
-              tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.tag).text(scope.tag);
+            var tag, _ref, _ref1, _ref2;
+            if (((_ref = scope.rowOpts) != null ? _ref.rowIdx : void 0) > 1 && ((_ref1 = scope.rowOpts) != null ? _ref1.tagString : void 0)) {
+              tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.rowOpts.tagClass).text((_ref2 = scope.rowOpts) != null ? _ref2.tagString : void 0);
               return tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'));
             } else {
               tag = $('<em class="dp-ob-row-tag"></em>').addClass('no-tag');

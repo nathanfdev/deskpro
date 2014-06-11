@@ -328,6 +328,9 @@
               rowScope.rowOpts.withCheck = true;
               rowScope.rowOpts.withCheckId = Util.uid('check');
             }
+            rowScope.rowOpts.rowIdx = _this.rowsCount + 1;
+            rowScope.rowOpts.tagString = _this.options.tagString || null;
+            rowScope.rowOpts.tagClass = _this.options.tagClass || '';
             element = _this.$compile(tpl)(rowScope);
             rowScope.rowFn = {};
             rowScope.rowFn.removeRow = function() {
@@ -396,7 +399,7 @@
        */
 
       DeskPRO_OptionBuilder_Controller.prototype.removeRowById = function(scopeId) {
-        var row;
+        var idx, row, _ref;
         row = this.rows[scopeId];
         delete this.rows[scopeId];
         delete this.$scope.saveTarget[scopeId];
@@ -406,6 +409,14 @@
         this.rowsCount--;
         if (this.rowsCount === 0) {
           this.els.noOptionsMessage.show();
+        } else {
+          idx = 0;
+          _ref = this.rows;
+          for (row in _ref) {
+            if (!__hasProp.call(_ref, row)) continue;
+            row.scope.rowOpts.rowIdx = idx;
+            idx++;
+          }
         }
         return true;
       };
