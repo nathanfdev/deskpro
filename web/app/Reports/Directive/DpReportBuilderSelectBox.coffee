@@ -21,7 +21,7 @@ define ->
 			restrict: 'AE',
 			replace: true,
 			template: """
-				<a href="{{ state_path('builder.edit', {id: reportId, type: 'builtIn', params: defaultLinkParams}) }}">
+				<a ng-href="{{report_link}}">
 					<span ng-repeat="text in texts" style="margin-left: 5px">
 						<span style="vertical-align:middle;" ng-bind-html="text"></span>
 						<select ng-if="options[$index]" ng-model="selected[$index]" ui-select2="{dropdownAutoWidth:true}" style="min-width:70px;" ng-change="changeLinkParams()">
@@ -35,22 +35,20 @@ define ->
 			link: (scope, element, attrs) ->
 
 				###
-
- 			Below variables will look like following
-
- 			scope.texts = ['Number of tickets created','grouped by',' & ']
-				scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
-																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
-																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
-				]
-				scope.selected = ['today', 'agent', 'department']
-
- 			###
-
+				# Below variables will look like following
+				#
+				# scope.texts = ['Number of tickets created','grouped by',' & ']
+				# scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
+				# 																	[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
+				# 																	[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
+				# ]
+				# scope.selected = ['today', 'agent', 'department']
+				###
 				scope.texts = []
 				scope.options = []
 				scope.selected = []
 				scope.defaultLinkParams = ''
+				scope.type = attrs.type
 
 				scope.$watch(attrs.possibleValues, (newVal) =>
 
@@ -61,14 +59,14 @@ define ->
 					scope.reportId = scope.$eval(attrs.reportId)
 					buildDirectiveVariables(valueToDecorate)
 					scope.defaultLinkParams = scope.selected.join(',')
+					updateLink()
 				)
 
 
 				###
 				# This function builds directive by constructing it on 'the fly' using DOM operations
- 			# The reason for doing so - problems with inner directives that were compiled with $compile() functionality
+				# The reason for doing so - problems with inner directives that were compiled with $compile() functionality
 				###
-
 				buildDirectiveVariables = (value) ->
 
 					lastPiece = value
@@ -91,10 +89,8 @@ define ->
 
 				###
 				# Returning select box options that was rendered according to 'input' parameter
- 			###
-
+				###
 				collectSelectOptions = (input) ->
-
 					possibleValues = scope.$eval(attrs.possibleValues)
 					choices = {}
 					extras = {}
@@ -138,11 +134,15 @@ define ->
 						selected: (if extras.default then extras.default else options[0].value)
 					}
 
-				###
- 			# Going to correponding route after changing selected options inside select box
-				###
+				updateLink = ->
+					linkParams = scope.selected.join(',')
+					scope.report_link = $state.href('builder.edit', {id: scope.reportId, params:linkParams})
 
+				###
+				# Going to correponding route after changing selected options inside select box
+				###
 				scope.changeLinkParams = () ->
+					updateLink()
 					linkParams = scope.selected.join(',')
 					$state.go('builder.edit', {id: scope.reportId, params:linkParams})
 		}
