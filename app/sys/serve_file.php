@@ -641,6 +641,12 @@ class FilestorageLoader extends LoaderAbstract
 				$mimetype = 'application/pdf';
 				break;
 
+			case 'Reports-Manual.pdf':
+				$path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/reports-manual/en_US.pdf';
+				$filename = 'Reports Manual.pdf';
+				$mimetype = 'application/pdf';
+				break;
+
 			case 'Agent-Manual.pdf':
 				$path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
 				$filename = 'Agent Manual.pdf';
