@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Mail\Mailer;
+use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\TicketLayout\TicketLayoutManager;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\EntityManager;
@@ -76,6 +77,7 @@ class TicketEmailBuilder
 	{
 		$build = new self();
 		$build->setEm($container->getEm())
+			->setSettings($container->getSettingsHandler())
 			->setMailer($container->getMailer())
 			->setTranslate($container->getTranslator())
 			->setTicketFieldManager($container->getTicketFieldManager())
@@ -91,6 +93,16 @@ class TicketEmailBuilder
 	public function buildTicketEmail()
 	{
 		return new TicketEmail($this->options->all());
+	}
+
+	/**
+	 * @param Settings $settings
+	 * @return $this
+	 */
+	public function setSettings(Settings $settings)
+	{
+		$this->options->set('settings', $settings);
+		return $this;
 	}
 
 	/**

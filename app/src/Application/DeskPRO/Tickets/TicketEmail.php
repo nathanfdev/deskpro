@@ -47,6 +47,11 @@ class TicketEmail
 	const MODE_AGENT = 'agent';
 
 	/**
+	 * @var \Application\DeskPRO\Settings\Settings
+	 */
+	private $settings;
+
+	/**
 	 * @var \Application\DeskPRO\Mail\Mailer
 	 */
 	private $mailer;
@@ -151,6 +156,7 @@ class TicketEmail
 	{
 		$opt = new CheckedOptionsArray();
 		$opt->addRequiredNames(
+			'settings',
 			'mailer',
 			'translate',
 			'em',
@@ -178,6 +184,7 @@ class TicketEmail
 		$this->template_name           = $opt->get('template_name');
 		$this->from_name               = $opt->get('from_name', '');
 
+		$this->settings                = $opt->get('settings');
 		$this->mailer                  = $opt->get('mailer');
 		$this->translate               = $opt->get('translate');
 		$this->em                      = $opt->get('em');
@@ -356,7 +363,7 @@ class TicketEmail
 				}
 			}
 
-			if ($this->user_mode == 'user' && $last_message && $last_message->person->is_agent) {
+			if ($this->settings->get('core.tickets.enable_feedback') && $this->user_mode == 'user' && $last_message && $last_message->person->is_agent && !$last_message->is_agent_note) {
 				$vars['show_rating_link'] = true;
 			}
 		}
