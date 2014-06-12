@@ -73,7 +73,7 @@ class SetLanguage extends AbstractContainerAwareAction implements ActionInterfac
 			$lang = null;
 		}
 
-		$ticket->category = $lang;
+		$ticket->language = $lang;
 	}
 
 
