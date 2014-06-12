@@ -350,6 +350,7 @@ class Sla extends DomainObject
 					$work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
 					$work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
 					$work_hours->get('work_days', array(1, 2, 3, 4, 5)),
+					$work_hours->get('work_timezone', 'UTC'),
 					$work_hours->get('holidays', array())
 				);
 			} else {
