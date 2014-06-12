@@ -352,7 +352,7 @@ class TriggerActionConverter
 	private function upgradeAction_set_sla_complete($type, OptionsArray $options)
 	{
 		if ($options->get('sla_complete')) {
-			return new Actions\SetSlaComplete(array(
+			return new Actions\SetSlasComplete(array(
 				'sla_ids' => array($options->get('sla_id')),
 				'sla_status' => 'nochange'
 			));
