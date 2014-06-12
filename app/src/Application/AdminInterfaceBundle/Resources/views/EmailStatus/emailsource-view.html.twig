@@ -31,8 +31,8 @@
 					<td>
 						{{ ng_var('ViewSource.source.status') }} (<span title="{{ ng_var('ViewSource.source.date_status') }}" am-time-ago="ViewSource.source.date_status"></span>)
 						<div ng-if="ViewSource.source.status == 'error'">
-							{{ ng_var('ViewSource.source.error_code') }} &middot;
-							<button class="btn btn-primary" ng-click="ViewSource.startReprocessEmail()">Reprocess Email</button>
+							{{ ng_var('ViewSource.source.error_code') }} &mdash;
+							<button class="btn btn-primary btn-xs" ng-click="ViewSource.startReprocess()">Reprocess Email</button>
 						</div>
 					</td>
 				</tr>
