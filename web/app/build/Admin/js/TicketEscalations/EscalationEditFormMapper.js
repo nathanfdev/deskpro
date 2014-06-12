@@ -39,7 +39,7 @@
       };
 
       Admin_TicketEscalations_EscalationEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
-        var crit, crit_set, id, postData, row, _, _ref, _ref1;
+        var id, postData, row, _ref, _ref1;
         postData = {};
         postData.title = formModel.title;
         postData.event_trigger = formModel.event_trigger;
@@ -52,20 +52,11 @@
           postData.actions.push(row);
         }
         postData.terms = [];
-        _ref1 = formModel.terms_set;
-        for (_ in _ref1) {
-          if (!__hasProp.call(_ref1, _)) continue;
-          crit_set = _ref1[_];
-          for (_ in crit_set) {
-            if (!__hasProp.call(crit_set, _)) continue;
-            crit = crit_set[_];
-            if (crit.type) {
-              postData.terms.push(crit);
-            }
-          }
-          if (postData.terms.length) {
-            break;
-          }
+        _ref1 = formModel.terms;
+        for (id in _ref1) {
+          if (!__hasProp.call(_ref1, id)) continue;
+          row = _ref1[id];
+          postData.terms.push(row);
         }
         return postData;
       };
