@@ -537,13 +537,8 @@ class PersonController extends AbstractController
 
 					$person->setOrganization(null);
 
-					// Regenerate the HTML block
-					$html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', array(
-						'person' => $person,
-					));
-
 					$data['organization_id'] = 0;
-					$data['html'] = $html;
+					$data['html'] = '';
 				}
 
 				if ($person->organization) {
