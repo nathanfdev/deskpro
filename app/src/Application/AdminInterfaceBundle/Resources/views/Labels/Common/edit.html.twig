@@ -31,7 +31,7 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="!LabelsEdit.is_new">
+					<div class="dp-delete-control" ng-if="!LabelsEdit.is_new && (LabelsEdit.old_label == form.label)">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.LabelsList.startDelete(LabelsEdit.old_label);">Delete</button>
 					</div>
 
