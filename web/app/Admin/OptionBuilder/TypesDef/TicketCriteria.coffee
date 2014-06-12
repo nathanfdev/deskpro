@@ -244,12 +244,12 @@ define [
 			})
 
 			options.push({
-				title: 'User is awaiting agent validation',
+				title: 'Check agent validation status',
 				value: 'CheckUserValidAgent'
 			})
 
 			options.push({
-				title: 'User is awaiting email validation',
+				title: 'Check email validation status',
 				value: 'CheckUserValidEmail'
 			})
 
@@ -757,14 +757,62 @@ define [
 			return def
 
 		getCheckUserValidAgent: (options = {}) ->
-			options.propName = 'is_valid_agent'
-			def = @getStandardIs(options)
-			return def
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html')
+
+				getData: ->
+					return {}
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+								op: value.op || 'is',
+								options: [
+									{ value: 'is', title: 'User has been validated by an agent' },
+									{ value: 'not', title: 'User is waiting to be validated by an agent' }
+								]
+							}
+
+						getValue: (model = {}, data) ->
+							return {
+								type: 'CheckUserValidEmail',
+								op: model.op || 'is'
+								options: { run:true }
+							}
+					}
+			}
 
 		getCheckUserValidEmail: (options = {}) ->
-			options.propName = 'is_valid_email'
-			def = @getStandardIs(options)
-			return def
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html')
+
+				getData: ->
+					return {}
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+							op: value.op || 'is',
+							options: [
+								{ value: 'is', title: 'User has validated their email address' },
+								{ value: 'not', title: 'User has not yet validated their email address' }
+							]
+							}
+
+						getValue: (model = {}, data) ->
+							return {
+							type: 'CheckUserValidEmail',
+							op: model.op || 'is'
+							options: { run:true }
+							}
+					}
+			}
 
 		getCheckOrgName: (options = {}) ->
 			options.propName = 'name'

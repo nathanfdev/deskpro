@@ -209,11 +209,11 @@
           value: 'CheckUserIsNew'
         });
         options.push({
-          title: 'User is awaiting agent validation',
+          title: 'Check agent validation status',
           value: 'CheckUserValidAgent'
         });
         options.push({
-          title: 'User is awaiting email validation',
+          title: 'Check email validation status',
           value: 'CheckUserValidEmail'
         });
         options.push({
@@ -938,23 +938,101 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserValidAgent = function(options) {
-        var def;
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'is_valid_agent';
-        def = this.getStandardIs(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is',
+                  options: [
+                    {
+                      value: 'is',
+                      title: 'User has been validated by an agent'
+                    }, {
+                      value: 'not',
+                      title: 'User is waiting to be validated by an agent'
+                    }
+                  ]
+                };
+              },
+              getValue: function(model, data) {
+                if (model == null) {
+                  model = {};
+                }
+                return {
+                  type: 'CheckUserValidEmail',
+                  op: model.op || 'is',
+                  options: {
+                    run: true
+                  }
+                };
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserValidEmail = function(options) {
-        var def;
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'is_valid_email';
-        def = this.getStandardIs(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is',
+                  options: [
+                    {
+                      value: 'is',
+                      title: 'User has validated their email address'
+                    }, {
+                      value: 'not',
+                      title: 'User has not yet validated their email address'
+                    }
+                  ]
+                };
+              },
+              getValue: function(model, data) {
+                if (model == null) {
+                  model = {};
+                }
+                return {
+                  type: 'CheckUserValidEmail',
+                  op: model.op || 'is',
+                  options: {
+                    run: true
+                  }
+                };
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgName = function(options) {
