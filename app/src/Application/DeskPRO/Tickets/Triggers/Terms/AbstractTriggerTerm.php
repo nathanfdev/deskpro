@@ -208,6 +208,10 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 					}
 				}
 
+				if ($value === null) {
+					$value = array();
+				}
+
 				// Means we found an array collection syntax like emails[]
 				// so we still have values after to get.
 				// E.g., emails[].email means $value is now emails[], but we need
