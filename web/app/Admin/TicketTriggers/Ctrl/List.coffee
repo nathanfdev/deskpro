@@ -91,6 +91,7 @@ define [
 			if @eventType == 'newticket'
 				promises.push @TicketAccountsData.loadList(true).then( (recs) =>
 					@accounts = recs.values()
+					@accounts = @accounts.filter((x) -> x.account_type != 'outgoing')
 				)
 
 			d = @$q.defer()

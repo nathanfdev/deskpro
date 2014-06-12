@@ -114,7 +114,10 @@
         if (this.eventType === 'newticket') {
           promises.push(this.TicketAccountsData.loadList(true).then((function(_this) {
             return function(recs) {
-              return _this.accounts = recs.values();
+              _this.accounts = recs.values();
+              return _this.accounts = _this.accounts.filter(function(x) {
+                return x.account_type !== 'outgoing';
+              });
             };
           })(this)));
         }
