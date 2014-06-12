@@ -61,6 +61,10 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		$fwd_for = $input->getOption('fwd-for') ? $input->getOption('fwd-for') : false;
 		$subject = $input->getOption('subject') ?: 'Test Email - %TIME%';
 
+		if ($subject == "EMPTY") {
+			$subject = "";
+		}
+
 		$email_pre = "";
 
 		$email_pre_html = "";

@@ -668,9 +668,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	public function setSubject($subject)
 	{
+		if (!$subject) {
+			$subject = '';
+		}
+
 		$subject = Strings::standardEol($subject);
 		$subject = Strings::trimLines($subject);
 		$subject = preg_replace("#\n+#", ' ', $subject);
+
+		if (!$subject) {
+			$subject = "(No Subject)";
+		}
 
 		$this->setModelField('subject', $subject);
 
