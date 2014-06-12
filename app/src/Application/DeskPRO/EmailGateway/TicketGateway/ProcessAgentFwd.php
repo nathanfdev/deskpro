@@ -182,8 +182,13 @@ class ProcessAgentFwd extends ProcessAbstract
 		# Create the ticket
 		#------------------------------
 
+		$subject = $email_info['subject'];
+		if (!$subject) {
+			$subject = App::$container->getTranslator()->phrase('user.tickets.no_subject');
+		}
+
 		$ticket = $this->getTicketManager()->createTicket();
-		$ticket->subject       = $email_info['subject'];
+		$ticket->subject       = $subject;
 		$ticket->person        = $user;
 		$ticket->status        = 'awaiting_agent';
 		$ticket->email_account = $this->account;
@@ -352,8 +357,13 @@ class ProcessAgentFwd extends ProcessAbstract
 		# Create the ticket
 		#------------------------------
 
+		$subject = $user_reader->getSubject()->getSubjectUtf8();
+		if (!$subject) {
+			$subject = App::$container->getTranslator()->phrase('user.tickets.no_subject');
+		}
+
 		$ticket = $this->getTicketManager()->createTicket();
-		$ticket->subject       = $user_reader->getSubject()->getSubjectUtf8();
+		$ticket->subject       = $subject;
 		$ticket->person        = $user;
 		$ticket->status        = 'awaiting_agent';
 		$ticket->email_account = $this->account;
