@@ -91,7 +91,6 @@ class ProcessReply extends ProcessAbstract
 	{
 		$this->logMessage("doNewRelpy context $context");
 		
-		//TODO
 		$this->processBlobs();
 
 		if ($context == 'user') {
@@ -107,6 +106,8 @@ class ProcessReply extends ProcessAbstract
 				'email'
 			);
 		}
+
+		$executor_context->setEmailContext($this->reader);
 
 		if ($this->logger) {
 			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);

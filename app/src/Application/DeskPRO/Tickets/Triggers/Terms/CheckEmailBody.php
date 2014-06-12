@@ -68,6 +68,7 @@ class CheckEmailBody extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		if (!$context->hasEmailContext()) {
+			$context->getLogger()->debug('Not email context');
 			return false;
 		}
 

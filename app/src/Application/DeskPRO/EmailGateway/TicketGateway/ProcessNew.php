@@ -236,6 +236,8 @@ class ProcessNew extends ProcessAbstract
 			'email'
 		);
 
+		$executor_context->setEmailContext($this->reader);
+
 		if ($this->logger) {
 			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
 			$executor_context->getLogger()->pushHandler($orb_logger_adapter);

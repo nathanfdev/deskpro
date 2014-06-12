@@ -98,6 +98,8 @@ class ProcessAgentFwd extends ProcessAbstract
 			'email'
 		);
 
+		$executor_context->setEmailContext($this->reader);
+
 		#------------------------------
 		# Read in email props and create cutter
 		#------------------------------
@@ -300,6 +302,8 @@ class ProcessAgentFwd extends ProcessAbstract
 			'newticket',
 			'email'
 		);
+
+		$executor_context->setEmailContext($this->reader);
 
 		$user_raw_source = $has_eml_attach->getFileContents();
 		$user_reader = new EzcReader();
