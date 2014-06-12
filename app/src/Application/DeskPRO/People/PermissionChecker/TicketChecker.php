@@ -308,10 +308,10 @@ class TicketChecker extends AbstractChecker
 			$set_suffix = 'others';
 		}
 
-		$perm_gloabl   = 'agent_tickets.modify_' . $set_suffix;
+		$perm_global   = 'agent_tickets.modify_' . $set_suffix;
 		$perm_specific = 'agent_tickets.modify_' . $op . '_' . $set_suffix;
 
-		if ($this->person->hasPerm($perm_gloabl) || $this->person->hasPerm($perm_specific)) {
+		if ($this->person->hasPerm($perm_global) || $this->person->hasPerm($perm_specific)) {
 			return true;
 		}
 
