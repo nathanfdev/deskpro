@@ -127,13 +127,13 @@ class ReportsBuilderController extends AbstractController
 
 		$reports_builder = $this->container->getSystemService('reports_builder');
 		$report          = $reports_builder->getById($id);
-		$rendered_result = $reports_builder->getRenderedResult($id);
-		$query_parts     = $reports_builder->getQueryParts($id);
 
 		if (!$report) {
-
 			throw $this->createNotFoundException();
 		}
+
+		$rendered_result = $reports_builder->getRenderedResult($id);
+		$query_parts     = $reports_builder->getQueryParts($id);
 
 		return $this->createApiResponse(
 			array(

@@ -47,12 +47,12 @@ class ReportsBillingController extends AbstractController
 
 		$reports_billing = $this->container->getSystemService('reports_billing');
 		$report          = $reports_billing->getById($id);
-		$rendered_result = $reports_billing->getRenderedResult($id);
 
 		if (!$report) {
-
 			throw $this->createNotFoundException();
 		}
+
+		$rendered_result = $reports_billing->getRenderedResult($id);
 
 		return $this->createApiResponse(
 			array(
