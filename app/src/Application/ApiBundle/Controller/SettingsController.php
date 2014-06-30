@@ -231,7 +231,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 		if ($blob_id) {
 			$blob = $this->em->find('DeskPRO:Blob', $blob_id);
 			if (!$blob || $blob->authcode != $blob_auth) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		}
 
