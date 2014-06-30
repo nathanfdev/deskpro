@@ -995,7 +995,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	public function removeParticipantPerson($person_or_id)
 	{
 		$person = $person_or_id;
-		if (!($person instanceof Person)) {
+		if ($person && !($person instanceof Person)) {
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
 		}
 
