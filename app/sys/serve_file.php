@@ -1302,18 +1302,14 @@ class FilestorageLoader extends LoaderAbstract
 
 		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
 		header('Content-Length: ' . $filesize);
-		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
-		header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+		header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
 		header('Cache-Control: max-age=31556926,private');
 
 		if ($content !== null) {
 			echo $content;
 		} else {
-			if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
-				header("X-Sendfile: $filepath");
-			} else {
-				readfile($filepath);
-			}
+			readfile($filepath);
 		}
 	}
 

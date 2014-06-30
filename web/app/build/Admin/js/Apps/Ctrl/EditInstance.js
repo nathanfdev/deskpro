@@ -73,12 +73,13 @@
             installCtrl = null;
             loadingAssets = [];
             getResourcePath = function(tag, name) {
-              var asset;
+              var asset, cachebust;
               asset = _this.pack.assets.filter(function(x) {
                 return x.tag === tag && x.name === name;
               })[0];
               if (asset) {
-                return asset.blob.relative_url;
+                cachebust = window.DP_BUILD_TIME;
+                return asset.blob.relative_url + '?' + cachebust;
               } else {
                 return null;
               }
@@ -87,7 +88,6 @@
               loadingAssets.push(_this.$http.get(path, {
                 responseType: "text"
               }).success(function(data) {
-                console.log(form_template);
                 return _this.dpTemplateManager.setTemplate(form_template, data);
               }));
             }
