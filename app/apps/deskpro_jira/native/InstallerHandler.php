@@ -81,7 +81,7 @@ class InstallerHandler implements InstallerHandlerInterface
 	private function _doInstall(InstallerContext $context)
 	{
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled',        1);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.baseUrl',        $context->getApp()->getSetting('jira_url'));
+		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.baseUrl',        rtrim($context->getApp()->getSetting('jira_url'), '/') . '/');
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.username',       $context->getApp()->getSetting('jira_username'));
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.password',       $context->getApp()->getSetting('jira_password'));
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultProject', $context->getApp()->getSetting('jira_default_project'));

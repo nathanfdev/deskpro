@@ -157,7 +157,7 @@ class Service
 	{
 		$defaultParams = array(
 			'timeout'         => 20,
-			'connect_timeout' => 1.5
+			'connect_timeout' => 15
 		);
 		
 		$params = array_merge($defaultParams, $params);
@@ -401,8 +401,8 @@ class Service
 	public function getCreateMeta()
 	{
 		return $this->get('rest/api/latest/issue/createmeta', array(), array(
-			'timeout'         => 2,
-			'connect_timeout' => 1
+			'timeout'         => 15,
+			'connect_timeout' => 10
 		));
 	}
 	

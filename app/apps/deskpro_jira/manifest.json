@@ -30,16 +30,16 @@
 		},
 		{
 			"name": "jira_password",
-			"type": "text",
+			"type": "password",
 			"label": "Your JIRA Password",
 			"description": "Enter your JIRA password",
 			"native_only": true
 		},
 		{
-			"name": "jire_default_project",
+			"name": "jira_default_project",
 			"type": "text",
 			"label": "Default Project",
-			"description": "Enter the default project to use.",
+			"description": "Enter the key for the default project to use. The key is the unique uppercase string that is used to identify a project.",
 			"native_only": true
 		},
 		{

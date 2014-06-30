@@ -1,38 +1,3 @@
-/** function jira() {
-	$("#" + pageMeta.baseId + "_actions_menu_trigger").after("<li data-action='export-jira'><i class=\"icon-share\"></i> {{ phrase('agent.jira.export_jira') }}</li>");
-
-	$("#" + pageMeta.baseId + "_tasks_wrap_tab").after('<li class="off" data-tab-for="#' + pageMeta.baseId + '_jira_wrap" id="' + pageMeta.baseId + '_jira_wrap_tab">JIRA (<span id="' + pageMeta.baseId + '_jira_count">0</span>)</li>');
-
-	$("#" + pageMeta.baseId + "_tasks_wrap").after('<article id="' + pageMeta.baseId + '_jira_wrap" style="display: none;" class=""><div style="width: 100%; text-align: center;"><img src="/web/images/spinners/loading-big-circle.gif"/><br/>Please wait while we fetch the latest JIRA activities on this ticket.</div></article>');
-
-	$("*[data-action='export-jira']").on("click", function(){
-		var overlay = new DeskPRO.UI.Overlay({
-			destroyOnClose: true,
-			contentMethod: 'ajax',
-			contentAjax: { url: BASE_URL + 'agent/jira/export/' + pageMeta.ticket_id },
-			onOverlayOpened: function() {	
-				selectProject("{{ app.getSetting('core.apps_jira.defaultProject') }}");
-			}
-		});
-
-		overlay.open();
-	});
-
-	$("#" + pageMeta.baseId + "_jira_wrap_tab").click(function() {
-		//$("#" + pageMeta.baseId + "_jira_wrap").html("<h1 style='text-align: center;'>Loading . . .Please wait</h1>");
-		$("#" + pageMeta.baseId + "_jira_wrap").load(BASE_URL + 'agent/jira/issues/1', function(){
-			$("#" + pageMeta.baseId + "_jira_wrap_tab").children('span').text($("#" + pageMeta.baseId + "_jira_wrap #issue-count").text());
-		});
-
-	});
-}
-
-function format(state) {
-	var originalOption = state.element;
-
-	return "<img class='icon' src='" + $(originalOption).data('icon') + "' />" + state.text;
-} */
-
 Orb.createNamespace('DeskPRO.Agent.Jira');
 
 DeskPRO.Agent.Jira.Widget = new Orb.Class({
@@ -73,18 +38,26 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 	bindExportOverlay: function() {
 		var self = this;
 		
-		$("#" + self.baseId + "_export_jira_trigger").on("click", function(){			
-			var overlay = new DeskPRO.UI.Overlay({
-				
+		$("#" + self.baseId + "_export_jira_trigger").on("click", function() {
+
+			var loadingOverlay = new DeskPRO.UI.Overlay({
 				destroyOnClose: true,
-				
+				contentMethod: 'element',
+				contentElement: $('<div><div class="alert-overlay mass-actions-overlay"><div class="overlay-title"><h4>Loading</h4></div><div class="overlay-content">Loading JIRA options... Please wait.</div></div></div>')
+			});
+			loadingOverlay.open();
+
+			var overlay = new DeskPRO.UI.Overlay({
+				destroyOnClose: true,
 				contentMethod: 'ajax',
-				
 				contentAjax: { url: BASE_URL + 'agent/jira/export/' + self.ticketId },
-				
 				onOverlayOpened: function() {
+					loadingOverlay.close();
+
 					self.selectProject(self.defaultProject);
-					
+					$("#jira-issue-project").on('change', function() {
+						self.lookupMeta();
+					})
 					self.bindExportFormSubmit();
 				}
 			});
@@ -129,7 +102,10 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 	
 	lookupMeta: function() {
 		var self				= this;
-		
+
+		$('#jira-meta-fields').hide();
+		$('#jira-meta-loading').show();
+
 		var projectDropdown		= $('#jira-issue-project');
 		
 		var typeDropdown		= $('#jira-issue-type');
@@ -206,6 +182,9 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 				
 				escapeMarkup: function(m) { return m; }
 			});
+
+			$('#jira-meta-fields').show();
+			$('#jira-meta-loading').hide();
 		});
 	},
 	
@@ -282,11 +261,8 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 		
 		var overlay = new DeskPRO.UI.Overlay({
 			destroyOnClose: true,
-			
 			contentMethod: 'ajax',
-			
 			contentAjax: { url: BASE_URL + 'agent/jira/' + issue_id + '/comment'},
-			
 			onOverlayOpened: function() {
 				self.bindCommentFormSubmit();
 			}
@@ -302,11 +278,8 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 		
 		var overlay = new DeskPRO.UI.Overlay({
 			destroyOnClose: true,
-			
 			contentMethod: 'ajax',
-			
 			contentAjax: { url: BASE_URL + 'agent/jira/unlink/' + ticketId + '/' + issue_id},
-			
 			onOverlayOpened: function() {
 				self.bindUnlinkFormSubmit();
 			}
@@ -324,14 +297,14 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 			current.text(day.fromNow());
 		});
 	},
-			
+
 	fetchJiraComments: function() {
 		var self = this;
-		
+
 		$.get(BASE_URL + 'agent/jira/issue/' + self.ticketId + '/fetchcomments', function(){
 			setTimeout(function () {
 				self.fetchJiraComments();
-			}, 1000);
+			}, 60000);
 		});
 	},
 	

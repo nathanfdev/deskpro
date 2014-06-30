@@ -4,7 +4,7 @@
 		padding: 0px;
 	}
 </style>
-<form method="POST" class="actions-overlay export-jira" data-target="{{ path('jira_export', {'ticket_id': ticket.id}) }}" style="width: 650px; height: 570px;">
+<form method="POST" class="actions-overlay export-jira" data-target="{{ path('jira_export', {'ticket_id': ticket.id}) }}" style="width: 650px; height: 585px;">
 	<div class="overlay-title">
 		<h4>{{ phrase('agent.jira.export_jira') }}</h4>
 	</div>
@@ -17,27 +17,32 @@
 		</div>
 		<br/>
 		<br/>
-		<div style="display: inline-block; width: 50%; float: left;">
-			<label for="jira-issue-project">{{ phrase('agent.jira.labels.project')}} *</label>
-			<select class="dpe_select"  style="width: 60%; float: right;" name="project" id="jira-issue-project">
-				{% for project in projects %}
-					<option value={{project.key}}>{{ project.name }}</option>
-				{% endfor %}
-			</select>
+		<div id="jira-meta-fields" style="display: none">
+			<div style="display: inline-block; width: 50%; float: left;">
+				<label for="jira-issue-project">{{ phrase('agent.jira.labels.project')}} *</label>
+				<select class="dpe_select"  style="width: 60%; float: right;" name="project" id="jira-issue-project">
+					{% for project in projects %}
+						<option value="{{project.key}}" {% if project.key == app.getSetting('core.apps_jira.defaultProject') %}selected="selected"{% endif %}>{{ project.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div style="display: inline-block; width: 50%; float: left;">
+				<label for="jira-issue-type">{{ phrase('agent.jira.labels.type')}} *</label>
+				<select class="dpe_select" style="width: 60%; float: right;" name="issuetype" id="jira-issue-type"  data-style-type="icons" data-select-icon-size="22"></select>
+			</div>
+			<br/>
+			<br/>
+			<div style="display: inline-block; width: 50%; float: left;">
+				<label for="jira-issue-priority">{{ phrase('agent.jira.labels.priority')}} *</label>
+				<select class="dpe_select"  style="width: 60%; float: right;" name="priority" id="jira-issue-priority"></select>
+			</div>
+			<div style="display: inline-block; width: 50%; float: left;">
+				<label for="jira-issue-assignee">{{ phrase('agent.jira.labels.assignee')}} *</label>
+				<select class="dpe_select" style="width: 60%; float: right;" name="assignee" id="jira-issue-assignee"  data-style-type="icons" data-select-icon-size="22"></select>
+			</div>
 		</div>
-		<div style="display: inline-block; width: 50%; float: left;">
-			<label for="jira-issue-type">{{ phrase('agent.jira.labels.type')}} *</label>
-			<select class="dpe_select" style="width: 60%; float: right;" name="issuetype" id="jira-issue-type"  data-style-type="icons" data-select-icon-size="22"></select>
-		</div>
-		<br/>
-		<br/>
-		<div style="display: inline-block; width: 50%; float: left;">
-			<label for="jira-issue-priority">{{ phrase('agent.jira.labels.priority')}} *</label>
-			<select class="dpe_select"  style="width: 60%; float: right;" name="priority" id="jira-issue-priority"></select>
-		</div>
-		<div style="display: inline-block; width: 50%; float: left;">
-			<label for="jira-issue-assignee">{{ phrase('agent.jira.labels.assignee')}} *</label>
-			<select class="dpe_select" style="width: 60%; float: right;" name="assignee" id="jira-issue-assignee"  data-style-type="icons" data-select-icon-size="22"></select>
+		<div id="jira-meta-loading">
+			Loading project options...
 		</div>
 		<br/>	
 		<br/>

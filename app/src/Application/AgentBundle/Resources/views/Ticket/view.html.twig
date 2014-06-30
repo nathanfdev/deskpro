@@ -362,7 +362,7 @@ pageMeta.lang = {{ {
 					</li>
 				{% endif %}
 				{% if app.getsetting('core.apps_jira.enabled') %}
-					<li data-tab-for="#{{ baseId }}_jira_wrap">JIRA (<span id="{{ baseId }}_jira_count" class="jira_issue_count">0</span>)</li>
+					<li data-tab-for="#{{ baseId }}_jira_wrap" id="{{ baseId }}_jira_wrap_tab">JIRA (<span id="{{ baseId }}_jira_count" class="jira_issue_count">0</span>)</li>
 				{% endif %}
 			</ul>
 		</nav>
