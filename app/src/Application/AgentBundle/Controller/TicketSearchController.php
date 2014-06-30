@@ -889,7 +889,7 @@ class TicketSearchController extends AbstractController
         $view_type = $this->in->getString('view_type');
 
 		/** @var $filter \Application\DeskPRO\Entity\TicketFilter */
-		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
+		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id ?: 0);
 
 		if (!$filter) {
 			throw $this->createNotFoundException();
@@ -997,6 +997,10 @@ class TicketSearchController extends AbstractController
 	public function runNamedFilterAction($filter_name)
 	{
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
+		if (!$filter) {
+			throw $this->createNotFoundException();
+		}
+
 		return $this->runFilterAction($filter['id']);
 	}
 
