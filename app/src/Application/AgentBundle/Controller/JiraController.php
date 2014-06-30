@@ -292,9 +292,22 @@ class JiraController extends AbstractController
 		}
 		
 		$transformedIssues = array();
-		
+
+		$remove = array();
+
 		foreach ($jiraIssues as $issue) {
-			$transformedIssues[] = $service->findIssue($issue->issue);
+			try {
+				$transformedIssues[] = $service->findIssue($issue->issue);
+			} catch (\Exception $e) {
+				// Removed from jira, delete from deskpro
+				$remove[] = $issue;
+			}
+		}
+
+		if ($remove) {
+			$jiraIssues = array_filter($jiraIssues, function($i) use ($remove) { return in_array($i, $remove); });
+			foreach ($remove as $i) $this->em->remove($i);
+			$this->em->flush();
 		}
 		
 		return $this->render('AgentBundle:Jira:issues-table.html.twig', array(

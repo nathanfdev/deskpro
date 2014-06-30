@@ -156,8 +156,8 @@ class Service
 	public function get($uri, array $headers = array(), $params = array())
 	{
 		$defaultParams = array(
-			'timeout'         => 20,
-			'connect_timeout' => 15
+			'timeout'         => 40,
+			'connect_timeout' => 40
 		);
 		
 		$params = array_merge($defaultParams, $params);
