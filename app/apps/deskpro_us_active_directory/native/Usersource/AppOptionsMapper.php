@@ -65,7 +65,7 @@ class AppOptionsMapper
 		$options['username']               = $settings->get('service_username');
 		$options['password']               = $settings->get('service_password');
 		$options['accountDomainName']      = $settings->get('domain_name');
-		$options['accountDomainNameShort'] = $settings->get('domain_name_short');
+		$options['accountDomainNameShort'] = $settings->get('short_domain_name');
 		$options['accountFilterFormat']    = $settings->get('filter');
 
 		switch ($settings->get('secure')) {
