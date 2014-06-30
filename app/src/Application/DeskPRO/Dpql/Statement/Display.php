@@ -1057,7 +1057,7 @@ class Display
 		if (empty($parts['from'])) {
 			return '';
 		} else {
-			$offset = ($parts['offset'] ? " OFFSET $parts[offset]" : '');
+			$offset = (!empty($parts['offset']) ? " OFFSET {$parts['offset']}" : '');
 			if ($parts['select'] === '') {
 				$parts['select'] = 'COUNT()';
 			}
@@ -1075,11 +1075,11 @@ class Display
 			return "DISPLAY $display"
 				. "\nSELECT $parts[select]"
 				. "\nFROM $parts[from]"
-				. ($parts['where'] ? "\nWHERE $parts[where]" :'')
-				. ($parts['splitBy'] ? "\nSPLIT BY $parts[splitBy]" :'')
-				. ($parts['groupBy'] ? "\nGROUP BY $parts[groupBy]" :'')
-				. ($parts['orderBy'] ? "\nORDER BY $parts[orderBy]" :'')
-				. ($parts['limit'] ? "\nLIMIT $parts[limit]$offset" :'');
+				. (!empty($parts['where'])   ? "\nWHERE $parts[where]"        : '')
+				. (!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]"   : '')
+				. (!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]"   : '')
+				. (!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]"   : '')
+				. (!empty($parts['limit'])   ? "\nLIMIT $parts[limit]$offset" : '');
 		}
 	}
 
