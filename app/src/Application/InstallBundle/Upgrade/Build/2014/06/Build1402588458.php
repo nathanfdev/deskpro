@@ -66,7 +66,7 @@ class Build1402588458 extends AbstractBuild
 	private function procTriggerTerms($terms, $term_type, $new_op)
 	{
 		$terms = json_decode($terms, true);
-		$terms['@DATA']['terms'] = $this->procTermsSet($terms['@DATA']['terms'], $term_type, $new_op);
+		$terms['@DATA']['terms'] = $this->procTermsSet($terms['@DATA']['terms'] ?: array(), $term_type, $new_op);
 
 		return json_encode($terms);
 	}
