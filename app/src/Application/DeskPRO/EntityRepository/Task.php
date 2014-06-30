@@ -535,7 +535,7 @@ class Task extends AbstractEntityRepository
          * @param string $filter_type
 	 * @return task object
 	 */
-	public function filterTasksForPerson(Entity\Person $person, $filter_type = 'total')
+	public function filterTasksForPerson(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
 	{
 		$today = $person->getDateTime();
 		$today->setTime(0,0,0);
@@ -569,6 +569,22 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('date_due', $today);
 		}
 
+		if ($state !== null) {
+			if ($state == 'complete') {
+				$qb->andWhere('t.is_completed = true');
+			} elseif ($state == 'incomplete') {
+				$qb->andWhere('t.is_completed = false');
+			}
+		}
+
+		if ($limit) {
+			$qb->setMaxResults($limit);
+		}
+
+		if ($offset) {
+			$qb->setFirstResult($offset);
+		}
+
 		$qb->setParameter('person_id', $person['id']);
 		$query = $qb->getQuery();
 		return $query->getResult();
@@ -581,7 +597,7 @@ class Task extends AbstractEntityRepository
          * @param string $filter_type
 	 * @return Task Object
 	 */
-	public function filterTaksForPersonTeams(Entity\Person $person, $filter_type = 'total')
+	public function filterTaksForPersonTeams(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
 	{
 		$today = $person->getDateTime();
 		$today->setTime(0,0,0);
@@ -611,6 +627,22 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('date_due', $today);
 		}
 
+		if ($state !== null) {
+			if ($state == 'complete') {
+				$qb->andWhere('t.is_completed = true');
+			} elseif ($state == 'incomplete') {
+				$qb->andWhere('t.is_completed = false');
+			}
+		}
+
+		if ($limit) {
+			$qb->setMaxResults($limit);
+		}
+
+		if ($offset) {
+			$qb->setFirstResult($offset);
+		}
+
 		$qb->setParameter('person_id', $person['id']);
 
 		$query = $qb->getQuery();
@@ -623,7 +655,7 @@ class Task extends AbstractEntityRepository
 	 * @param Person $person The person
 	 * @return int
 	 */
-	public function filterDelegatedTasksForPerson(Entity\Person $person, $filter_type = 'total')
+	public function filterDelegatedTasksForPerson(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
 	{
 		$today = $person->getDateTime();
 		$today->setTime(0,0,0);
@@ -655,6 +687,22 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('today', $today);
 		}
 
+		if ($state !== null) {
+			if ($state == 'complete') {
+				$qb->andWhere('t.is_completed = true');
+			} elseif ($state == 'incomplete') {
+				$qb->andWhere('t.is_completed = false');
+			}
+		}
+
+		if ($limit) {
+			$qb->setMaxResults($limit);
+		}
+
+		if ($offset) {
+			$qb->setFirstResult($offset);
+		}
+
 		$qb->setParameters('person_id', $person['id']);
 		$query = $qb->getQuery();
 		return $query->getResult();
@@ -666,7 +714,7 @@ class Task extends AbstractEntityRepository
          * @param string $filter_type
 	 * @return int
 	 */
-	public function filterAllPendingTasks(Entity\Person $person, $filter_type = 'total')
+	public function filterAllPendingTasks(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
 	{
 		$today = $person->getDateTime();
 		$today->setTime(0,0,0);
@@ -702,6 +750,22 @@ class Task extends AbstractEntityRepository
 		} else {
 			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
 			$qb->setParameter('person', $person);
+		}
+
+		if ($state !== null) {
+			if ($state == 'complete') {
+				$qb->andWhere('t.is_completed = true');
+			} elseif ($state == 'incomplete') {
+				$qb->andWhere('t.is_completed = false');
+			}
+		}
+
+		if ($limit) {
+			$qb->setMaxResults($limit);
+		}
+
+		if ($offset) {
+			$qb->setFirstResult($offset);
 		}
 
 		$query = $qb->getQuery();

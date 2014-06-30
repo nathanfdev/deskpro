@@ -246,24 +246,48 @@ class TaskController extends AbstractController
      *
      * @param string $search_type
      * @param string $search_categoty
-     * @return html view of the task list
+     * @return string view of the task list
      */
     public function taskListAction($search_type = null, $search_categoty = null)
     {
-        $person = $this->person;
         $task_type = false;
 
-        if ($search_type == 'own') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterTasksForPerson($person, $search_categoty);
-        } else if ($search_type == 'team') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterTaksForPersonTeams($person, $search_categoty);
-        } else if ($search_type == 'delegate') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterDelegatedTasksForPerson($person, $search_categoty);
-        } else if ($search_type == 'all') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person, $search_categoty);
-        }
+		$per_page         = 50;
+		$page             = $this->in->getUInt('page') ?: 1;
+		$completed_page   = $this->in->getUInt('completed_page') ?: 1;
+		$offset           = ($page - 1) * $per_page;
+		$completed_offset = ($completed_page - 1) * $per_page;
 
-		usort($all_tasks, function($a, $b) {
+		$has_next           = false;
+		$has_next_completed = false;
+		$has_prev           = $offset != 0;
+		$has_prev_completed = $completed_offset != 0;
+
+		/** @var \Application\DeskPRO\EntityRepository\Task $task_repos */
+		$task_repos = $this->em->getRepository('DeskPRO:Task');
+
+		switch ($search_type) {
+			case 'own':
+				$filter_method = 'filterTasksForPerson';
+				break;
+
+			case 'team':
+				$filter_method = 'filterTaksForPersonTeams';
+				break;
+
+			case 'delegate':
+				$filter_method = 'filterDelegatedTasksForPerson';
+				break;
+
+			case 'all':
+				$filter_method = 'filterAllPendingTasks';
+				break;
+		}
+
+		$tasks           = $task_repos->$filter_method($this->person, $search_categoty, $per_page+1, $offset, 'incomplete');
+		$completed_tasks = $task_repos->$filter_method($this->person, $search_categoty, $per_page+1, $completed_offset, 'complete');
+
+        $sort_fn = function($a, $b) {
 			$a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
 			$b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
 
@@ -272,17 +296,18 @@ class TaskController extends AbstractController
 			}
 
 			return ($a_time < $b_time) ? -1 : 1;
-		});
+		};
 
-		$tasks = array();
-		$completed_tasks = array();
+		usort($tasks, $sort_fn);
+		usort($completed_tasks, $sort_fn);
 
-		foreach ($all_tasks as $t) {
-			if ($t->is_completed) {
-				$completed_tasks[$t->id] = $t;
-			} else {
-				$tasks[$t->id] = $t;
-			}
+		if (count($tasks) == $per_page+1) {
+			array_pop($tasks);
+			$has_next = true;
+		}
+		if (count($completed_tasks) == $per_page+1) {
+			array_pop($completed_tasks);
+			$has_next_completed = true;
 		}
 
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -408,15 +433,22 @@ class TaskController extends AbstractController
 
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
-			'agents' => $agents,
-			'agent_teams' => $agent_teams,
-            'tasks' => $tasks,
+			'agents'          => $agents,
+			'agent_teams'     => $agent_teams,
+            'tasks'           => $tasks,
             'completed_tasks' => $completed_tasks,
-			'tasks_grouped' => $tasks_grouped,
-        	'task_type' => $task_type,
-			'search_type' => $search_type,
+			'tasks_grouped'   => $tasks_grouped,
+        	'task_type'       => $task_type,
+			'search_type'     => $search_type,
 			'search_category' => $search_categoty,
-			'group_by' => $group_by,
+			'group_by'        => $group_by,
+
+			'page'               => $page,
+			'has_next'           => $has_next,
+			'has_prev'           => $has_prev,
+			'completed_page'     => $completed_page,
+			'has_next_completed' => $has_next_completed,
+			'has_prev_completed' => $has_prev_completed
         ));
     }
 
