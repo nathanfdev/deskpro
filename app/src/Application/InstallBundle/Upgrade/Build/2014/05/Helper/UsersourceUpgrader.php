@@ -184,7 +184,7 @@ class UsersourceUpgrader
 			'service_username'  => $o->get('username', ''),
 			'service_password'  => $o->get('password', ''),
 			'domain_name'       => $o->get('accountDomainName'),
-			'domain_name_short' => $o->get('accountDomainNameShort'),
+			'short_domain_name' => $o->get('accountDomainNameShort'),
 			'filter'            => $o->get('accountFilterFormat'),
 		);
 
