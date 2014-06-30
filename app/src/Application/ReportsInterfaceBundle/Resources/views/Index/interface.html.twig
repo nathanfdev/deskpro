@@ -61,9 +61,11 @@
 			<li tooltip="Go to Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
 				<a href="/{{ path('user')|ltrim('/') }}admin/#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
 			</li>
-			<li tooltip="Go to Admin Interface" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
-				<a href="/{{ path('user')|ltrim('/') }}admin/"><i class="app-icon app-icon-admin-ifce"></i></a>
-			</li>
+			{% if app.user.can_admin %}
+				<li tooltip="Go to Admin Interface" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
+					<a href="/{{ path('user')|ltrim('/') }}admin/"><i class="app-icon app-icon-admin-ifce"></i></a>
+				</li>
+			{% endif %}
 			<li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right" class="user-ifce-btn">
 				<a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i class="app-icon app-icon-user-ifce"></i></a>
 			</li>

@@ -33,7 +33,7 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 
 class ApiCombinerController extends AbstractController implements ProtectedControllerInterface
 {
@@ -42,16 +42,11 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 	 */
 	public function getPermissionStrategy()
 	{
-		return new AdminManagePermission();
+		return new PassPermission();
 	}
 
 	function getAction()
 	{
-		// Currently can only be used by admins
-		if (!$this->person->can_admin) {
-			return $this->createApiErrorResponse("admin_required", "api-combine can only be used by admins");
-		}
-
 		$data = array();
 
 		$returned_data = array();
