@@ -57,9 +57,9 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 	 */
 	private function callApiAction(AgentRequestContext $context)
 	{
-		$user     = $context->getApp()->getSetting('api_user');
-		$password = $context->getApp()->getSetting('api_password');
-		$token    = $context->getApp()->getSetting('api_security_token');
+		$user     = $context->getAppSetting('api_user');
+		$password = $context->getAppSetting('api_password');
+		$token    = $context->getAppSetting('api_security_token');
 
 		if (!$user || !$password || !$token) {
 			return $context->createJsonResponse(array('error' => 'API user, password or token missing. Please configure the plugin.'));
