@@ -255,7 +255,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		$this->em->remove($group);
 		$this->em->flush();
 
-		$this->createApiDeleteResponse(array('old_group_id' => $old_id));
+		return $this->createApiDeleteResponse(array('old_group_id' => $old_id));
 	}
 
 
