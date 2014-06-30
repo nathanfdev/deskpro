@@ -54,7 +54,7 @@ class InstallerHandler implements InstallerHandlerInterface
 	public function uninstall(InstallerContext $context)
 	{
 		$action_name = "deskpro_hipchat_" . $context->getApp()->id;
-		$context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", $action_name);
+		$context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", array($action_name));
 	}
 
 
