@@ -616,22 +616,6 @@ class PersonController extends AbstractController
 
 				break;
 
-			case 'set-slas':
-				$sla_ids = $this->in->getCleanValueArray('sla_ids', 'uint', 'discard');
-				$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
-
-
-				foreach ($slas AS $sla) {
-					if (in_array($sla->id, $sla_ids)) {
-						$sla->addPerson($person);
-					} else {
-						$sla->removePerson($person);
-					}
-					$this->em->persist($sla);
-				}
-
-				break;
-
 			case 'password':
 				if (!$this->person->hasPerm('agent_people.reset_password')) {
 					throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();

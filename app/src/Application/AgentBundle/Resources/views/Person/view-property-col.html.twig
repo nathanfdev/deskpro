@@ -167,52 +167,6 @@
 {% endif %}
 {# /Organization Box #}
 
-{# SLAs Box #}
-{{ dp_app_loc(baseId, 'slas.before') }}
-{% if app.getDataService('Sla').getPersonOrgAssociableSlas() and (perms.edit or person.slas|length) %}
-	<div class="profile-box-container dp-simpletab-container summary" id="{{baseId}}_sla_box">
-		<header>
-			{% if perms.edit %}
-			<div class="controls">
-				<span class="edit-gear edit-trigger"></span>
-				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
-				<button class="cancel cancel-trigger" style="display: none">{{ phrase('agent.general.cancel') }}</button>
-				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
-			</div>
-			{% endif %}
-			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
-				<ul>
-					<li data-tab-for="#{{ baseId }}_sla_body">{{ phrase('agent.general.slas') }}</li>
-				</ul>
-			</nav>
-		</header>
-		<section>
-			<div id="{{baseId}}_sla_body">
-				<div id="{{baseId}}_sla_display_box" class="contact-list">
-					<ul>
-					{% for sla in app.getDataService('Sla').getPersonOrgAssociableSlas() %}
-						<li class="sla-row sla-row-{{ sla.id }}" {% if not person.hasSla(sla) %}style="display: none"{% endif %}>{{ sla.title }}</li>
-					{% endfor %}
-					<li class="no-slas" style="padding-left: 0; {% if person.slas|length %}display: none;{% endif %}}">{{ phrase('agent.people.no_slas') }}</li>
-					</ul>
-				</div>
-				<div id="{{baseId}}_sla_edit_box" class="contact-list" style="display: none;">
-					<ul>
-					{% for sla in app.getDataService('Sla').getPersonOrgAssociableSlas() %}
-						<li class="sla-row">
-							<label><input type="checkbox" value="{{ sla.id }}" name="sla_ids[]" class="sla-check sla-check-{{ sla.id }}" {% if person.hasSla(sla) %}checked="checked"{% endif %} /> {{ sla.title }}</label>
-						</li>
-					{% endfor %}
-					</ul>
-				</div>
-			</div>
-			{{ dp_app_loc(baseId, 'slas.tab') }}
-		</section>
-	</div>
-{% endif %}
-{{ dp_app_loc(baseId, 'slas.after') }}
-{# /SLAs Box#}
-
 {# Usergroups and Usersources #}
 {{ dp_app_loc(baseId, 'usergroups.before') }}
 <div class="profile-box-container dp-simpletab-container summary" id="{{baseId}}_ug_box">

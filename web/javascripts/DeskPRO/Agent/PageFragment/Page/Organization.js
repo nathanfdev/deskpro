@@ -395,7 +395,6 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		}
 
 		this.initUgEditor();
-		this.initSlaEditor();
 	},
 
 	refreshPropBox: function() {
@@ -722,88 +721,6 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				var id = $(this).val();
 				displayBox.find('li.ug-row-' + id).show();
 			});
-
-			showSaving();
-			$.ajax({
-				url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/ajax-save',
-				type: 'POST',
-				dataType: 'json',
-				data: formData,
-				context: this,
-				complete: function() {
-					showNormal();
-				},
-				success: function(data) {
-					showNormal();
-				}
-			});
-		});
-	},
-
-	initSlaEditor: function() {
-		var self = this;
-		var slaBox = this.getEl('sla_box');
-		if (!slaBox.length) {
-			return;
-		}
-
-		var editBtn   = slaBox.find('.edit-trigger');
-		var cancelBtn = slaBox.find('.cancel-trigger');
-		var saveBtn   = slaBox.find('.save-trigger');
-		var noSlas     = slaBox.find('.no-slas');
-
-		var displayBox = this.getEl('sla_display_box');
-		var editBox    = this.getEl('sla_edit_box');
-
-		var showEdit = function() {
-			slaBox.removeClass('loading');
-			editBtn.hide();
-			saveBtn.show();
-			cancelBtn.show();
-			displayBox.hide();
-			editBox.show();
-		};
-		var showSaving = function() {
-			slaBox.addClass('loading');
-			editBtn.hide();
-			saveBtn.hide();
-			cancelBtn.hide();
-			displayBox.show();
-			editBox.hide();
-		};
-		var showNormal = function() {
-			slaBox.removeClass('loading');
-			editBtn.show();
-			saveBtn.hide();
-			cancelBtn.hide();
-			displayBox.show();
-			editBox.hide();
-		};
-
-		editBtn.on('click', function() {
-			showEdit();
-		});
-		cancelBtn.on('click', function() {
-			showNormal();
-		});
-		saveBtn.on('click', function() {
-			var checks = editBox.find(':checkbox.sla-check:checked');
-
-			var formData = checks.serializeArray();
-			formData.push({name: 'action', value: 'set-slas'});
-
-			displayBox.find('li.sla-row').hide();
-
-			checks.each(function() {
-				var id = $(this).val();
-				displayBox.find('li.sla-row-' + id).show();
-			});
-
-			if (checks.length) {
-				noSlas.hide();
-			} else {
-				noSlas.show();
-			}
 
 			showSaving();
 			$.ajax({
