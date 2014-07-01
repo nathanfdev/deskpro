@@ -92,7 +92,7 @@
       };
 
       Admin_Main_Ctrl_Home.prototype.loadMethodTests = function() {
-        var $http, checkUrl, http_method, makeCheck, masterP, promises;
+        var $http, checkRes, checkUrl, http_method, makeCheck, masterP, promises;
         promises = [];
         http_method = {};
         $http = this.$http;
@@ -126,7 +126,7 @@
         promises.push(makeCheck('put'));
         promises.push(makeCheck('delete'));
         masterP = this.$q.all(promises);
-        return masterP.then((function(_this) {
+        checkRes = (function(_this) {
           return function() {
             var any, k, v;
             _this.$scope.http_method_checks = http_method;
@@ -139,10 +139,10 @@
                 break;
               }
             }
-            console.log(any);
             return _this.$scope.http_method_errors = any;
           };
-        })(this));
+        })(this);
+        return masterP.then(checkRes, checkRes);
       };
 
 

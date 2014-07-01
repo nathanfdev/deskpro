@@ -112,7 +112,7 @@ define [
 			promises.push makeCheck('delete')
 
 			masterP = @$q.all(promises)
-			masterP.then(=>
+			checkRes = =>
 				@$scope.http_method_checks = http_method
 
 				any = false
@@ -121,9 +121,9 @@ define [
 						any = true
 						break
 
-				console.log(any)
 				@$scope.http_method_errors = any
-			)
+
+			masterP.then(checkRes, checkRes)
 
 		###
 		# Saves new agent form
