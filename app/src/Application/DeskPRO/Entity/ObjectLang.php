@@ -73,7 +73,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $value;
+	protected $value = '';
 
 	/**
 	 * @var object
@@ -107,6 +107,10 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 			$ol->setObject($object);
 		} else {
 			$ol->setRef($object);
+		}
+
+		if ($value === null || $value === false) {
+			$value = '';
 		}
 
 		$ol->setPropName($prop_name);
