@@ -1080,7 +1080,7 @@
                 if (value == null) {
                   value = {};
                 }
-                return value;
+                return value.options || {};
               },
               getValue: function(model, data) {
                 var value;

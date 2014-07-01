@@ -829,7 +829,7 @@ define [
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
-							return value
+							return value.options || {}
 						getValue: (model = {}, data) ->
 							value = {}
 							value.type = 'WebHook'
