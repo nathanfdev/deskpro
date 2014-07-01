@@ -143,7 +143,7 @@
        */
 
       Admin_TicketTriggers_Ctrl_EditBase.prototype.saveTrigger = function() {
-        var act, crit, crit_set, enabled, is_new, mode, postData, promise, set, _, _ref, _ref1, _ref2, _ref3;
+        var act, crit, crit_set, enabled, has_stop_triggers_action, is_new, mode, postData, promise, set, _, _ref, _ref1, _ref2, _ref3;
         if (this.$scope.form_props.$invalid) {
           return;
         }
@@ -193,6 +193,7 @@
             postData.criteria_sets.push(set);
           }
         }
+        has_stop_triggers_action = false;
         if (this.$scope.form.actions) {
           _ref3 = this.$scope.form.actions;
           for (_ in _ref3) {
@@ -200,6 +201,9 @@
             act = _ref3[_];
             if (act.type) {
               postData.actions.push(act);
+              if (act.type === 'ModStopTriggers') {
+                has_stop_triggers_action = true;
+              }
             }
           }
         }
@@ -218,12 +222,14 @@
               _this.trigger.is_enabled = true;
             }
             _this.trigger.title = postData.title;
+            _this.trigger.has_stop_triggers_action = has_stop_triggers_action;
             _this.stopSpinner('saving', true).then(function() {
               return _this.Growl.success("Saved");
             });
             _this.dpTriggers.mergeDataModel({
               id: _this.trigger.id,
-              title: _this.trigger.title
+              title: _this.trigger.title,
+              has_stop_triggers_action: has_stop_triggers_action
             });
             _this.skipDirtyState();
             if (is_new) {

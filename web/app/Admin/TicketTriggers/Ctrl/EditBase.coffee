@@ -154,10 +154,13 @@ define [
 				if set.length
 					postData.criteria_sets.push(set)
 
+			has_stop_triggers_action = false
 			if @$scope.form.actions
 				for own _, act of @$scope.form.actions
 					if act.type
 						postData.actions.push(act)
+						if act.type == 'ModStopTriggers'
+							has_stop_triggers_action = true
 
 			@startSpinner('saving')
 			if @trigger.id
@@ -174,6 +177,7 @@ define [
 					@trigger.is_enabled = true
 
 				@trigger.title = postData.title
+				@trigger.has_stop_triggers_action = has_stop_triggers_action
 
 				@stopSpinner('saving', true).then(=>
 					@Growl.success("Saved")
@@ -181,7 +185,8 @@ define [
 
 				@dpTriggers.mergeDataModel({
 					id: @trigger.id,
-					title: @trigger.title
+					title: @trigger.title,
+					has_stop_triggers_action: has_stop_triggers_action
 				})
 
 				@skipDirtyState()

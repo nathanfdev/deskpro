@@ -131,30 +131,8 @@
 						<div class="pull-right toggle-wrapper">
 							<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="List.updateTriggerEnabledState(trigger);"></button>
 						</div>
-						<div class="pull-right">
-							<em class="tag" ng-if="trigger.by_agent">
-								agent
-								<span ng-if="trigger.event_trigger_options.by_agent.length == 3"><span>&rsaquo; all</span></span>
-									<span ng-if="trigger.event_trigger_options.by_agent.length != 3">
-										&rsaquo; <span dp-comma-separated>
-											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('web') !== -1">web</span>
-											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('email') !== -1">email</span>
-											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('api') !== -1">api</span>
-										</span>
-									</span>
-							</em>
-							<em class="tag" ng-if="trigger.by_user" style="margin-left: 6px;">
-								user
-								<span ng-if="trigger.event_trigger_options.by_user.length == 5"><span>&rsaquo; all</span></span>
-									<span ng-if="trigger.event_trigger_options.by_user.length != 5">
-										&rsaquo; <span dp-comma-separated>
-											<span ng-if="trigger.event_trigger_options.by_user.indexOf('portal') !== -1 || trigger.event_trigger_options.by_user.indexOf('form') !== -1 || trigger.event_trigger_options.by_user.indexOf('widget') !== -1">web</span>
-											<span ng-if="trigger.event_trigger_options.by_user.indexOf('email') !== -1">email</span>
-											<span ng-if="trigger.event_trigger_options.by_user.indexOf('api') !== -1">api</span>
-										</span>
-									</span>
-							</em>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="List.startTriggerDelete(trigger); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+						<div ng-if="trigger.has_stop_triggers_action" class="pull-right" title="This trigger has a 'stop processing triggers' action. When this trigger matches, any trigger after it will NOT be run.">
+							<i class="fa fa-chain-broken"></i>
 						</div>
 						<h4>
 							<span class="title-id" title="ID">#{{ ng_var('trigger.id') }}</span>

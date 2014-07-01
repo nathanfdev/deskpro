@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Tickets\Actions\ModStopTriggers;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -242,6 +243,23 @@ class TicketTrigger extends DomainObject
 
 
 	/**
+	 * @return bool
+	 */
+	public function hasStopTriggersAction()
+	{
+		if (!$this->actions) return false;
+
+		foreach ($this->actions as $a) {
+			if ($a instanceof ModStopTriggers) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -253,6 +271,7 @@ class TicketTrigger extends DomainObject
 		$data['by_user_mode']  = $this->by_user_mode;
 		$data['terms']         = $this->terms->exportToArray();
 		$data['actions']       = $this->actions->exportToArray();
+		$data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
 		return $data;
 	}
 
