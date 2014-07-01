@@ -228,7 +228,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 					$ret = "Prepend reply text";
 				}
 
-				if (!$this->is_html) {
+				if ($this->is_html) {
 					$html = $this->reply_text;
 				} else {
 					$html = '<p>' . nl2br(htmlspecialchars(trim($this->reply_text), \ENT_QUOTES)) . '</p>';
@@ -238,7 +238,7 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
 				return $ret;
 			}
 
-			$ret = $tr->phrase('agent.tickets.add_reply_x_action', array('desc' => $desc));
+			return $tr->phrase('agent.tickets.add_reply_x_action', array('desc' => $desc));
 		}
 
 		return $tr->phrase('agent.tickets.add_reply_action');
