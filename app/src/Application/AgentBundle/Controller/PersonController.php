@@ -1234,7 +1234,7 @@ class PersonController extends AbstractController
 		$person = $this->getPersonOr404($person_id);
 
 		if (!$this->person->hasPerm('agent_people.login_as') || !$person || $person->is_agent) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		foreach (array('dpsid') as $cookie_name) {

@@ -554,7 +554,7 @@ class TaskController extends AbstractController
 		$task = $this->_getTaskOr404($task_id);
 
 		if ($task->person->getId() != $this->person->getId()) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$this->em->remove($task);
@@ -883,7 +883,7 @@ class TaskController extends AbstractController
 		foreach ($task->comments AS $key => $comment) {
 			if ($comment->id == $comment_id) {
 				if ($comment->person->getId() != $this->person->getId()) {
-					return $this->createNotFoundException();
+					throw $this->createNotFoundException();
 				}
 
 				$task->comments->remove($key);

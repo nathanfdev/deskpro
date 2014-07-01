@@ -160,14 +160,14 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	{
 		$tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
 		if (!$tmp) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$admin = $this->container->getAgentData()->get($tmp->getData('admin_id'));
 		$person = $this->container->getAgentData()->get($tmp->getData('agent_id'));
 
 		if (!$admin || !$admin->can_admin || !$person || !$person->is_agent) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$this->session->set('auth_person_id', $person->id);

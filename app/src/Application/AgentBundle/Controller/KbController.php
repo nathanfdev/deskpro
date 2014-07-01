@@ -724,7 +724,7 @@ class KbController extends AbstractController
 		$pending_article = $this->em->find('DeskPRO:ArticlePendingCreate', $pending_article_id);
 
 		if (!$pending_article) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$data = array();

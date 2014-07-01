@@ -716,7 +716,7 @@ class AppsController extends AbstractController
 
 		$handler_class = $native_config->getApiPackageRequestHandlerClass();
 		if (!$handler_class) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$context = new ApiPackageRequestContext(
@@ -757,7 +757,7 @@ class AppsController extends AbstractController
 
 		$handler_class = $native_config->getApiAppRequestHandlerClass();
 		if (!$handler_class) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$context = new ApiPackageRequestContext(

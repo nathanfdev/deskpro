@@ -999,14 +999,14 @@ HTML;
 	{
 		$tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
 		if (!$tmp) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$agent  = $this->container->getAgentData()->get($tmp->getData('agent_id'));
 		$person = $this->em->getRepository('DeskPRO:Person')->find($tmp->getData('person_id'));
 
 		if (!$agent || !$agent->is_agent || !$agent->hasPerm('agent_people.login_as') || !$person || $person->is_agent) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$this->session->set('auth_person_id', $person->id);

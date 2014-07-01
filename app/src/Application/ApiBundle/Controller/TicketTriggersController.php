@@ -347,7 +347,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 	{
 		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
 		if (!$trigger) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$old_id = $trigger->id;

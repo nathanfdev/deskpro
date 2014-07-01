@@ -77,7 +77,7 @@ class BlobsController extends AbstractController
 	{
 		$blob = $this->em->find('DeskPRO:Blob', $id);
 		if (!$blob || $blob->authcode != $auth) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		return $this->createApiResponse(array(

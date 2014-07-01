@@ -618,7 +618,7 @@ class TaskController extends AbstractController
 		$task = $this->getTaskOr404($task_id);
 
 		if ($task->person->getId() != $this->person->getId()) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$this->db->beginTransaction();

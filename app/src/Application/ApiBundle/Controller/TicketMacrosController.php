@@ -85,7 +85,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
 	{
 		$macro = $this->em->find('DeskPRO:TicketMacro', $id);
 		if (!$macro) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$data = $this->getApiData($macro);
@@ -104,7 +104,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
 		if ($id) {
 			$macro = $this->em->find('DeskPRO:TicketMacro', $id);
 			if (!$macro) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		} else {
 			$macro = new TicketMacro();
@@ -144,7 +144,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
 	{
 		$macro = $this->em->find('DeskPRO:TicketMacro', $id);
 		if (!$macro) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$old_id = $macro->id;

@@ -239,7 +239,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 
 			$ext = strtolower(Strings::getExtension($blob->getFilename()));
 			if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg', 'ico'))) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			$file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
@@ -250,7 +250,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 					try {
 						$im->readimageblob($file, $blob->getFilename());
 					} catch (\Exception $e) {
-						return $this->createNotFoundException();
+						throw $this->createNotFoundException();
 					}
 					$im->scaleImage(16, 16, true);
 					$im->setImageFormat('ico');
@@ -258,7 +258,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 				} else {
 					$gd = @imagecreatefromstring($file);
 					if (!$gd) {
-						return $this->createNotFoundException();
+						throw $this->createNotFoundException();
 					}
 					$width = imagesx($gd);
 					$height = imagesy($gd);
