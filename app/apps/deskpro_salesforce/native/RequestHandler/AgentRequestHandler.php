@@ -37,6 +37,7 @@ namespace deskpro_salesforce\RequestHandler;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestHandlerInterface;
 use Application\DeskPRO\Entity\DataStore;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 class AgentRequestHandler implements AgentRequestHandlerInterface
 {
@@ -127,27 +128,35 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 
 		$fields_list = implode(', ', $fields);
 
-		$response = $sforce->query("
-			SELECT $fields_list
-			FROM Contact
-			WHERE Email = '" . addslashes($email) . "'
-		");
-		foreach ($response->records AS $record) {
-			if (@$record->fields->Title && @$record->fields->Department) {
-				$departmentTitle = @$record->fields->Department . ', ' . @$record->fields->Title;
-			} else {
-				$departmentTitle = @$record->fields->Department . @$record->fields->Title;
-			}
+		try {
+			$response = $sforce->query("
+				SELECT $fields_list
+				FROM Contact
+				WHERE Email = '" . addslashes($email) . "'
+			");
+		} catch (\Exception $e) {
+			$response = null;
+			KernelErrorHandler::logException($e, false, 'salesforce_' . $e->getMessage());
+		}
 
-			$matches[] = array(
-				'id' => $record->Id,
-				'name' => @$record->fields->FirstName . ' ' . @$record->fields->LastName,
-				'email' => @$record->fields->Email,
-				'title' => @$record->fields->Title,
-				'department' => @$record->fields->Department,
-				'departmentTitle' => @$departmentTitle,
-				'profile' => 'https://na8.salesforce.com/' . $record->Id
-			);
+		if ($response) {
+			foreach ($response->records AS $record) {
+				if (@$record->fields->Title && @$record->fields->Department) {
+					$departmentTitle = @$record->fields->Department . ', ' . @$record->fields->Title;
+				} else {
+					$departmentTitle = @$record->fields->Department . @$record->fields->Title;
+				}
+
+				$matches[] = array(
+					'id' => $record->Id,
+					'name' => @$record->fields->FirstName . ' ' . @$record->fields->LastName,
+					'email' => @$record->fields->Email,
+					'title' => @$record->fields->Title,
+					'department' => @$record->fields->Department,
+					'departmentTitle' => @$departmentTitle,
+					'profile' => 'https://na8.salesforce.com/' . $record->Id
+				);
+			}
 		}
 
 		return $matches;
