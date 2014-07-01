@@ -58,6 +58,7 @@ use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
@@ -2885,7 +2886,13 @@ class TicketController extends AbstractController
 		}
 
 		$from_name = $this->person->getDisplayName();
-		$email->setFrom($from_email, $from_name);
+
+		try {
+			$email->setFrom($from_email, $from_name);
+		} catch (\Swift_RfcComplianceException $e) {
+			KernelErrorHandler::logException($e, false);
+			throw $this->createNotFoundException();
+		}
 
 		$tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
 		if ($tr) {
