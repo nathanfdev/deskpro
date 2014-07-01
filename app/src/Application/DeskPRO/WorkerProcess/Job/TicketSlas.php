@@ -65,16 +65,14 @@ class TicketSlas extends AbstractJob
 		};
 
 		$count_failed = $proc->processAllFailed($context_factory);
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
-
 		$count_warning = $proc->processAllWarning($context_factory);
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
 
 		if ($count_warning || $count_failed) {
 			$this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
 		}
+
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
+		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
 
 		unset($GLOBALS['DP_ESCALATION_RUNNING']);
 	}
