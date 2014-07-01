@@ -3140,11 +3140,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 						);
 						break;
 					default:
-						$context = $tm->createSystemExecutorContext(
-							App::getCurrentPerson(),
-							$event_type,
-							'api'
-						);
+						$context = $tm->createSystemExecutorContext();
 						break;
 				}
 			}
