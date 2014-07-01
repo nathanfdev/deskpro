@@ -195,6 +195,11 @@ class AgentsController extends AbstractController implements ProtectedController
 		$set_emails = array_unique($set_emails);
 		$set_emails = Arrays::removeFalsey($set_emails);
 
+		$email_validator = $this->container->getSystemService('email_address_validator');
+		$set_emails = array_filter($set_emails, function($e) use ($email_validator) {
+			return $email_validator->isValidUserEmail($e);
+		});
+
 		$find_existing = array();
 		foreach ($set_emails as $email_addr) {
 			$exist = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email_addr);
