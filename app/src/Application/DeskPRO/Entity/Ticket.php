@@ -3116,25 +3116,34 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			}
 
 			if (defined('DP_INTERFACE')) {
+				$person = App::getCurrentPerson();
+
+				if (!$person || !$person->id) {
+					$person = null;
+				}
+
 				switch (DP_INTERFACE) {
 					case 'admin':
 					case 'agent':
 						$context = $tm->createAgentExecutorContext(
-							App::getCurrentPerson(),
+							$person,
 							$event_type,
 							'web'
 						);
 						break;
 					case 'user':
+						if (!$person && $this->person) {
+							$person = $this->person;
+						}
 						$context = $tm->createUserExecutorContext(
-							App::getCurrentPerson(),
+							$person,
 							$event_type,
 							'portal'
 						);
 						break;
 					case 'api':
 						$context = $tm->createAgentExecutorContext(
-							App::getCurrentPerson(),
+							$person,
 							$event_type,
 							'api'
 						);
