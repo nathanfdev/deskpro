@@ -143,6 +143,12 @@ class WorkHoursSet implements WorkHoursInterface
 			}
 		}
 
+		// Some bad configurations (eg no work days) could cause bad
+		// dates, so this prevents an error below
+		if (!$date_end || !$date_end->getTimestamp()) {
+			return null;
+		}
+
 		return new \DateTime('@' . $date_end->getTimestamp());
 	}
 
