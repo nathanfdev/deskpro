@@ -183,7 +183,7 @@ class TriggerData extends AbstractDefaultData
 		#-----
 
 		$trigger = new TicketTrigger();
-		$trigger->event_trigger = 'newticket';
+		$trigger->event_trigger = 'newreply';
 		$trigger->run_order = 1000;
 		$trigger->by_agent_mode = array('email');
 		$trigger->is_enabled = true;
