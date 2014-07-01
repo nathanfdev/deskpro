@@ -161,7 +161,7 @@ class Exchange extends AbstractFetcher
 			$this->messages = array();
 		}
 
-		$this->logger->log("Read %d messages", count($this->messages));
+		$this->logger->log(sprintf("Read %d messages", count($this->messages)), 'debug');
 
 		return $this->storage;
 	}
