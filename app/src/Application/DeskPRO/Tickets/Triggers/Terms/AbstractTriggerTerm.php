@@ -383,7 +383,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			$check_ids = array();
 		}
 
-		$check_ids = array_fill_keys($check_ids, true);
+		if ($check_ids) {
+			$check_ids = array_fill_keys($check_ids, true);
+		}
 
 		$check_fn = function($value) use ($op, $id_prop, $check_ids) {
 			$has = false;
