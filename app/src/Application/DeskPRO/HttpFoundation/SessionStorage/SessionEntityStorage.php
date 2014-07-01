@@ -190,10 +190,15 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 			$this->em->flush();
 		}
 
+		$is_started = (bool)session_id();
+
 		session_id($session->getSessionCode());
 		$this->session = $session;
 
-		session_start();
+		if (!$is_started) {
+			session_start();
+		}
+
 		$this->loadSession();
 
 		$this->started = true;
