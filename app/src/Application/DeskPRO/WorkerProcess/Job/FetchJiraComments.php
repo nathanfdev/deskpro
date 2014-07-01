@@ -49,18 +49,18 @@ class FetchJiraComments extends AbstractJob
 			return true;
 		}
 		
-		$baseUrl	= App::getSetting('core.apps_jira.baseUrl');
-		
-		$username	= App::getSetting('core.apps_jira.username');
-		
-		$password	= App::getSetting('core.apps_jira.password');
-		
+		$baseUrl  = App::getSetting('core.apps_jira.baseUrl');
+		$username = App::getSetting('core.apps_jira.username');
+		$password = App::getSetting('core.apps_jira.password');
+
 		$service = new \Orb\Jira\Service($baseUrl, array(
 			'username'	=> $username,
 			'password'	=> $password,
 			'debug'		=> true
 		), App::getOrm());
-		
-		$service->fetchAllComment();
+
+		try {
+			$service->fetchAllComment();
+		} catch (\Exception $e) {}
 	}
 }

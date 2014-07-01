@@ -440,18 +440,19 @@ class Service
 	 */
 	public function fetchAllComment()
 	{
-		//Fetch all the exported JIRA Issues
 		$jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
-		
 		$jiraIssues = $jiraIssueRepository->findAll();
-		
+
 		foreach ($jiraIssues as $jiraIssue) {
 			$issue_id = $jiraIssue->issue;
-			
-			$this->_fetchCommentsByIssueId($issue_id);
+			try {
+				$this->_fetchCommentsByIssueId($issue_id);
+			} catch (\Exception $e) {
+				// Could be a 404 etc
+			}
 		}
 	}
-	
+
 	/**
 	 * Fetches comments on given JIRA issue
 	 * 
@@ -480,9 +481,7 @@ class Service
 			$ticket = $jiraIssue->ticket;
 			
 			$savedComments = $jiraIssue->comments;
-			
-			//var_dump($savedComments); die;
-			
+
 			foreach ($comments as $comment) {
 				foreach ($savedComments as $savedComment) {
 					if ($savedComment->jiraId === (int) $comment['id']) {
