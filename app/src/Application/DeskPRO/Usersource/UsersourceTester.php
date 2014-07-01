@@ -143,12 +143,8 @@ class UsersourceTester
 		if ($result && $result->isValid() && $result->getIdentity()) {
 			$result_raw = "DATA RECORD:\n=======================================================\n";
 			$result_raw .= var_export($result->getIdentity()->getRawData(), true);
-			$result_raw .= "\n\n\n\n";
-			$result_raw .= "RAW RESULT:\n=======================================================\n";
-			$result_raw .= print_r($result, true);
 		} else {
-			$result_raw = "No Identity\n\n\n";
-			$result_raw .= print_r($result, true);
+			$result_raw = "No Identity";
 		}
 
 		$clean = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');
