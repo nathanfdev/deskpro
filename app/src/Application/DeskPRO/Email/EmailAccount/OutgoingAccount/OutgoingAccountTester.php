@@ -145,10 +145,9 @@ class OutgoingAccountTester
 	/**
 	 * Test with SMTP
 	 */
-	private function _testSmtp()
+	private function _testSmtp($account_config)
 	{
-		/** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig $account_config */
-		$account_config = $this->account_config;
+		/** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig $account_config */;
 
 		$this->swift_arraylogger->add("Testing SmtpAccount");
 
@@ -175,10 +174,9 @@ class OutgoingAccountTester
 	/**
 	 * Test with gmail
 	 */
-	private function _testGmail()
+	private function _testGmail($account_config)
 	{
 		/** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\GmailConfig $account_config */
-		$account_config = $this->account_config;
 
 		$this->swift_arraylogger->add("Testing GmailAccount");
 		$smtp = new SmtpConfig();
@@ -199,7 +197,7 @@ class OutgoingAccountTester
 	/**
 	 * Test with mail
 	 */
-	public function _testMail()
+	public function _testMail($account_config)
 	{
 		$this->swift_arraylogger->add("Testing PhpMailAccount");
 		$this->swift_arraylogger->add("(No detailed logging is available using the PHP mail() transport.)");
