@@ -2,7 +2,7 @@
 	<strong>
 		{% if person.organization_position %}{{ person.organization_position }}, {% endif %}
 		{% if person.organization_manager %}Manager, {% endif %}
-		<a class="org_link as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}">{{ person.organization.name }}</a>
+		{% if person.organization.id %}<a class="org_link as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}">{{ person.organization.name }}</a>{% endif %}
 	</strong>
 
 	{% set members_count_row %}

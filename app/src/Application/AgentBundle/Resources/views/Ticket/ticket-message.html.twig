@@ -8,7 +8,7 @@
 			width="40"
 			height="40"
 			{% if message.person.is_agent %}class="agent-link" data-agent-id="{{ message.person.id }}"
-			{% else %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
+			{% elseif message.person.id %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
 			{% endif %}
 		/>{% if message.person.is_disabled %}<span class="person-disabled"></span>{% endif %}</div>
 	<div class="content">
