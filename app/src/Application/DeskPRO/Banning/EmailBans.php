@@ -197,6 +197,14 @@ class EmailBans
 	/**
 	 * @return int
 	 */
+	public function getCount()
+	{
+		return $this->em->getRepository('DeskPRO:BanEmail')->getCount($this->search_phrase);
+	}
+
+	/**
+	 * @return int
+	 */
 
 	public function count()
 	{

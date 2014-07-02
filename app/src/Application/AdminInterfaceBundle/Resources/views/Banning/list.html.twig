@@ -60,7 +60,7 @@
 	</section>
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3 ng-pluralize count="ListCtrl.list.email_bans.length || 0"
+			<h3 ng-pluralize count="ListCtrl.pagination.email_bans.total || ListCtrl.list.email_bans.length || 0"
 				when="{{ ng_plural_phrase('adm.general.x_email_bans') }}">
 
 			</h3>

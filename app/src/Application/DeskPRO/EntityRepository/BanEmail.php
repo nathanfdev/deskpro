@@ -38,6 +38,8 @@ use Application\DeskPRO\App;
 
 class BanEmail extends AbstractEntityRepository
 {
+	protected $counts = array();
+
 	/**
 	 * Get a list of emails suitable for display
 	 */
@@ -71,16 +73,7 @@ class BanEmail extends AbstractEntityRepository
 
 	public function getPageCount($per_page = 20, $search_phrase = '')
 	{
-		$where = '';
-
-		if (!empty($search_phrase)) {
-
-			$where = "banned_email LIKE '%" . $search_phrase . "%'";
-		}
-
-		$count = App::getDb()->count('ban_emails', $where);
-
-		return ceil($count / $per_page);
+		return ceil($this->getCount($search_phrase) / $per_page);
 	}
 
 	public function getPatterns($reload = false)
@@ -129,5 +122,23 @@ class BanEmail extends AbstractEntityRepository
 		}
 
 		return false;
+	}
+
+	public function getCount($search_phrase = '')
+	{
+		if (isset($this->counts[$search_phrase])) {
+			return $this->counts[$search_phrase];
+		}
+
+		$where = '';
+
+		if (!empty($search_phrase)) {
+
+			$where = "banned_email LIKE '%" . $search_phrase . "%'";
+		}
+
+		$count = App::getDb()->count('ban_emails', $where);
+
+		return $this->counts[$search_phrase] = (int) $count;
 	}
 }

@@ -92,6 +92,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 						 'email_bans' => array(
 							 'num_pages' => $email_bans->getPageCount(),
 							 'page'      => $email_ban_page,
+							 'total'     => $email_bans->getCount(),
 						 ),
 					 ),
 					 'ip_bans'    => $ip_bans->getAllAsNestedArray(),
