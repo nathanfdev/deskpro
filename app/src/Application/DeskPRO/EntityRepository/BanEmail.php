@@ -60,6 +60,7 @@ class BanEmail extends AbstractEntityRepository
 			ORDER BY banned_email ASC
 			LIMIT " . $from . ", " . $limit . "
 		");
+		$this->counts[$search_phrase] = count($list);
 
 		return $list;
 	}
@@ -126,7 +127,7 @@ class BanEmail extends AbstractEntityRepository
 
 	public function getCount($search_phrase = '')
 	{
-		if (isset($this->counts[$search_phrase])) {
+		if (is_string($search_phrase) && isset($this->counts[$search_phrase])) {
 			return $this->counts[$search_phrase];
 		}
 

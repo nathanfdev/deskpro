@@ -38,6 +38,8 @@ use Application\DeskPRO\App;
 
 class BanIp extends AbstractEntityRepository
 {
+	protected $counts = array();
+
 	/**
 	 * Get a list of IPs suitable for display
 	 * @param int    $from
@@ -63,6 +65,7 @@ class BanIp extends AbstractEntityRepository
 			ORDER BY ip_start ASC
 			LIMIT " . $from . ", " . $limit . "
 		");
+		$this->counts[$search_phrase] = count($list);
 
 		return $list;
 	}
@@ -76,6 +79,15 @@ class BanIp extends AbstractEntityRepository
 
 	public function getPageCount($per_page = 20, $search_phrase = '')
 	{
+		return ceil($this->getCount($search_phrase) / $per_page);
+	}
+
+	public function getCount($search_phrase = '')
+	{
+		if (is_string($search_phrase) && isset($this->counts[$search_phrase])) {
+			return $this->counts[$search_phrase];
+		}
+
 		$where = '';
 
 		if (!empty($search_phrase)) {
@@ -85,7 +97,7 @@ class BanIp extends AbstractEntityRepository
 
 		$count = App::getDb()->count('ban_ips', $where);
 
-		return ceil($count / $per_page);
+		return $this->counts[$search_phrase] = (int) $count;
 	}
 
 	/**

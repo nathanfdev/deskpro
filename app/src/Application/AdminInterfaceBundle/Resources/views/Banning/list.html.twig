@@ -2,7 +2,7 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3 ng-pluralize count="ListCtrl.list.ip_bans.length || 0"
+			<h3 ng-pluralize count="ListCtrl.pagination.email_bans.total || ListCtrl.list.ip_bans.length || 0"
 				when="{{ ng_plural_phrase('adm.general.x_ip_bans') }}">
 
 			</h3>
@@ -12,7 +12,7 @@
 			<div class="alert">
 				<input type="text" ng-model="ListCtrl.search_phrase.ip_ban" style="width: 200px; display: inline-block;"
 					   class="form-control">
-				<button class="btn btn-primary" ng-click="ListCtrl.reloadList(true, false)">Search</button>
+				<button class="btn btn-primary" ng-click="ListCtrl.goFirstIpBanPage()">Search</button>
 			</div>
 
 			<ul class="dp-item-list">
