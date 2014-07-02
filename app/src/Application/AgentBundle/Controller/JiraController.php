@@ -140,7 +140,6 @@ class JiraController extends AbstractController
 				$meta['assignee'][$assignee['key']] = $assignee;
 			}
 
-			// todo meta save
 			$this->meta['projects'][$projectKey] = $meta;
 			$this->saveMeta();
 		}
@@ -170,7 +169,6 @@ class JiraController extends AbstractController
 				$meta['issuetypes'][$issueType['id']] = $issueType;
 			}
 
-			// todo save meta
 			$this->meta['projects'][$projectKey] = $meta;
 			$this->saveMeta();
 		}
@@ -190,7 +188,6 @@ class JiraController extends AbstractController
 			foreach( $service->lookupPriorities($projectKey) as $priority )
 				$meta['priorities'][$priority['id']] = $priority;
 
-			// todo save meta
 			$this->meta['projects'][$projectKey] = $meta;
 			$this->saveMeta();
 		}

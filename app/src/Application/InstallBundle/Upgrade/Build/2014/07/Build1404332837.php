@@ -29,63 +29,28 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace deskpro_jira;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\Entity\AppPackage;
 
-class InstallerHandler implements InstallerHandlerInterface
+class Build1404332837 extends AbstractBuild
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
+	public function run()
 	{
-		$this->_doInstall($context);
-	}
+		$this->out("Upgrade JIRA App");
+		$em = $this->container->getEm();
+		$rep = $em->getRepository('DeskPRO:AppPackage');
 
+		/** @var $package AppPackage */
+		if( ! $package = $rep->find('deskpro_jira') ) {
+			return;
+		}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled', null);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
-
-
-	/**
-	 * @param InstallerContext $context
-	 */
-	private function _doInstall(InstallerContext $context)
-	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled',        1);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.baseUrl',        $context->getApp()->getSetting('jira_url'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.username',       $context->getApp()->getSetting('jira_username'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.password',       $context->getApp()->getSetting('jira_password'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultProject', $context->getApp()->getSetting('jira_default_project'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultTags',    $context->getApp()->getSetting('jira_default_tags'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultPriority',$context->getApp()->getSetting('jira_default_priority'));
+		$manifest = json_decode(file_get_contents(DP_ROOT . '/apps/deskpro_jira/manifest.json'), 1);
+		$package['settings_def'] = $manifest['settings_def'];
+		$em->flush();
 	}
 }
