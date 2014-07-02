@@ -450,6 +450,15 @@ define(['angular'], function(angular) {
 		}
 	}]);
 
+	AgentApp.directive('dragToDownload', [function() {
+		return {
+			link: function(scope, element, attr) {
+				element.addClass('dragout');
+				DeskPRO_Window.util.filedownload(element);
+			}
+		}
+	}]);
+
 	AgentApp.directive('dpTextOverflow', [function() {
 		return {
 			restrict: 'A',

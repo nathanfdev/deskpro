@@ -434,8 +434,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			},
 			
 			filedownload: function(el) {
-				el.find("a.dragout").on("dragstart", function(evt) { 
+				if (!el.is('.dragout')) {
+					el = el.find('.dragout');
+				}
+				el.on("dragstart", function(evt) {
 					var fileDetails = $(this).data('downloadurl');
+					if (!fileDetails) {
+						fileDetails = $(this).attr('drag-to-download');
+					}
 					
 					if (evt.dataTransfer) {
 						evt.dataTransfer.setData("DownloadURL",fileDetails);
