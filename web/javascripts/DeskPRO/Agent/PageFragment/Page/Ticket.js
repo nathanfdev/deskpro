@@ -1300,6 +1300,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
 
 		DeskPRO_Window.initStickyTips(messageEl);
+		
+		DeskPRO_Window.util.filedownload(messageEl);
 
 		$('.timeago', messageEl).timeago();
 

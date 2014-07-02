@@ -432,6 +432,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				return $(el).fileupload(options);
 			},
+			
+			filedownload: function(el) {
+				el.find("a.dragout").on("dragstart", function(evt) { 
+					var fileDetails = $(this).data('downloadurl');
+					
+					if (evt.dataTransfer) {
+						evt.dataTransfer.setData("DownloadURL",fileDetails);
+					} else {
+						evt.originalEvent.dataTransfer.setData("DownloadURL",fileDetails);
+					}
+				});
+			},
 
 			updateUserEmailAddressDisplay: function(person_id, email) {
 				var sel = $('b.pemail-' + person_id);
