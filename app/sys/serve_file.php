@@ -1275,6 +1275,7 @@ class FilestorageLoader extends LoaderAbstract
 
 		$filepath = $path_info['filepath'];
 		$basepath = $path_info['basepath'];
+		$basepath_std = str_replace('\\', '/', $basepath);
 
 		$mimetype = ContentTypes::getContentTypeFromFilename($filename);
 		if (!$mimetype) {
@@ -1284,9 +1285,11 @@ class FilestorageLoader extends LoaderAbstract
 		$content = null;
 		if ($type == 'html') {
 			$content = file_get_contents($filepath);
-			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($basepath) {
+			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($basepath, $basepath_std) {
 				$path = @realpath($basepath . $m[1]);
-				if (!$path || !is_file($path) || strpos($path, $basepath) !== 0) {
+				$path_std = str_replace('\\', '/', $path);
+
+				if (!$path || !is_file($path) || strpos($path_std, $basepath_std) !== 0) {
 					return '<!-- Invalid include file: ' . $m[1] . ' -->';
 				}
 

@@ -326,7 +326,9 @@ class PackageInstaller
 			$content = file_get_contents($asset_info['real_path']);
 			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($package) {
 				$path = @realpath($package->getPath() . '/html/' . $m[1]);
-				if (!$path || !is_file($path) || strpos($path, $package->getPath()) !== 0) {
+				$path_std = str_replace('\\', '/', $path);
+
+				if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
 					return '<!-- Invalid include file: ' . $m[1] . ' -->';
 				}
 
