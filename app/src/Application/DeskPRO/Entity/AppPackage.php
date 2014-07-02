@@ -164,6 +164,7 @@ class AppPackage extends DomainObject
 
 	/**
 	 * @param Blob $blob
+	 * @param string $filename
 	 * @return AppAsset
 	 */
 	public function addAssetFromBlob(Blob $blob, $filename = null)
@@ -226,7 +227,7 @@ class AppPackage extends DomainObject
 	{
 		foreach ($this->assets as $asset) {
 			if ($asset->name == $name) {
-				return $name;
+				return $asset;
 			}
 		}
 

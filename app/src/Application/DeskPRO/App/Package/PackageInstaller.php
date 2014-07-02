@@ -215,16 +215,16 @@ class PackageInstaller
 			$this->em->persist($asset);
 		}
 
-		#------------------------------
-		# Save
-		#------------------------------
-
 		$this->em->flush();
+
+		#------------------------------
+		# Remove old assets and blobs
+		#------------------------------
 
 		// Need to delete old blobs at the end after AppAsset.blob has been overwritten
 		// because AppAsset.blob has a delete cascade relation.
 		foreach ($old_blobs as $b) {
-			//$this->blob_storage->deleteBlobRecord($b);
+			$this->blob_storage->deleteBlobRecord($b);
 		}
 
 		return $def;
@@ -283,33 +283,26 @@ class PackageInstaller
 	 */
 	private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
 	{
-		if ($tag) {
-			if ($filename) {
-				$asset = null;
-				foreach ($def->getTaggedAssets($tag) as $a) {
-					if ($a->name == $filename) {
-						$asset = $a;
-						break;
-					}
-				}
-			} else {
-				$asset = $def->getTaggedAsset($tag);
-			}
+		if (!$filename) {
+			$filename = $blob->filename;
+		}
 
-			if ($asset) {
-				if ($asset->blob && $asset->blob->id != $blob->id) {
-					$old_blobs[] = $asset->blob;
-				}
+		$asset = $def->getAsset($filename);
+
+		if ($asset) {
+			if ($asset->blob && $asset->blob->id != $blob->id) {
+				$old_blobs[] = $asset->blob;
+				$asset->blob = null;
 			}
 		}
 
 		if (!$asset) {
-			$asset = $def->addAssetFromBlob($blob);
+			$asset = $def->addAssetFromBlob($blob, $filename);
 		} else {
 			$asset->blob = $blob;
 		}
 
-		$asset->name = $filename ? $filename : $blob->filename;
+		$asset->name = $filename;
 		$asset->tag = $tag;
 
 		return $asset;
