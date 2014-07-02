@@ -2942,7 +2942,8 @@ class TicketController extends AbstractController
 				'to'         => array_keys($to),
 				'to_string'  => implode(', ', array_keys($to)),
 				'from_email' => $from_email,
-				'from_name'  => $from_name
+				'from_name'  => $from_name,
+				'custom_message' => $custom_message ?: null
 			)),
 			'date_created' => date('Y-m-d H:i:s')
 		));

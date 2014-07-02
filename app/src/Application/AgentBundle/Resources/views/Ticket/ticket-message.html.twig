@@ -185,15 +185,31 @@
 			</ul>
 		{%endif%}
 		{% if ticket_fwd_logs[message.id] %}
-			<ul class="attachment-list">
+			<ul class="attachment-list fwd-list">
 				{% for log in ticket_fwd_logs[message.id] %}
-					<li style="background: none; padding-left: 0;">
+					<li style="background: none; padding: 0; font-size: 11px; line-height: 18px;">
 						{% if log.person %}
-							<span class="agent-icon" style="background-image: url({{ log.person.getPictureUrl(16) }});">{{ log.person.display_name }}</span>
+							<span class="agent-icon" style="background-image: url({{ log.person.getPictureUrl(16) }}); line-height: 16px; display: inline-block;">{{ log.person.display_name }}</span>
 						{% else %}
 							{{ log.details.from_name }}
 						{% endif %}
 						forwarded this message to {{ log.details.to_string }} (sent from {{ log.details.from_email }}).
+						{% if log.details.custom_message %}
+							{% set tmpId = el_uid() %}
+							<span class="open-el-overlay" style="background: #fff; border: 1px solid #aaa; border-radius: 2px; font-size: 11px; cursor: pointer; padding: 1px 1px;" data-content-el="{{ tmpId }}">View Agent Message</span>
+							<div style="display: none" id="{{ tmpId }}">
+								<div>
+									<div class="overlay-title">
+										<h4>Message</h4>
+									</div>
+
+									<div class="overlay-content">
+										<div style="margin-bottom: 10px; font-size: 11px; color: #888">This custom message was sent along with the forwarded message:</div>
+										{{ log.details.custom_message|nl2br }}
+									</div>
+								</div>
+							</div>
+						{% endif %}
 					</li>
 				{% endfor %}
 			</ul>

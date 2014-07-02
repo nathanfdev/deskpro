@@ -1460,6 +1460,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$(this).attr('title', $(this).text()).text(counterText).removeClass('message-id-txt');
 			}
 		});
+
+		messageEl.find('.open-el-overlay').on('click', function() {
+			var contentEl = $('#' + $(this).data('content-el'));
+			if (!contentEl[0]) {
+				return;
+			}
+
+			contentEl = contentEl.clone()
+
+			var o = new DeskPRO.UI.Overlay({
+				contentMethod: 'element',
+				contentElement: contentEl,
+				destroyOnClose: true,
+				fullScreen: true,
+				fullScreenMargin: '100px'
+			});
+			o.open();
+		});
 	},
 
 	refreshMessageTranslation: function(messageEl) {
@@ -2253,6 +2271,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					emailInputWrap = wrapper.find('.email-address-wrap');
 
 				DeskPRO.ElementHandler_Exec(wrapper);
+
+				msgInput.TextAreaExpander();
+				$('iframe.forward_overlay_iframe').load(function() {
+					$(this).height(document.getElementById($(this).attr('id')).contentWindow.document.body.scrollHeight);
+				});
 
 				emailInputWrap.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 					emailInput.val(email);

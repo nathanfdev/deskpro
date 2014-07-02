@@ -3,7 +3,7 @@
 		<h4>{{ phrase('agent.tickets.forward_message') }}</h4>
 	</div>
 
-	<div class="overlay-content">
+	<div class="overlay-content" style="overflow: hidden;">
 		<form action="{{ path('agent_ticket_fwd_send', {ticket_id: ticket.id, message_id: message.id}) }}" method="post">
 			<div class="forward-wrapper">
 				<div class="header-line">
@@ -47,7 +47,7 @@
 					<div class="label">{{ phrase('agent.general.subject') }}:</div>
 					<div class="input"><input type="text" name="subject" placeholder="{{ phrase('agent.general.subject') }}" value="FW: {{ ticket.subject }}" /></div>
 				</div>
-				<div class="message-area">
+				<div class="message-area" style="overflow: auto;max-height: 426px;">
 					{% if top %}
 						<div class="uneditable-message">
 							{{ top|raw }}
@@ -65,7 +65,7 @@
 						{{ phrase('agent.general.date') }}: {{ date_created|date('fulltime') }}
 					</div>
 					<div class="orig-message">
-						<iframe src="{{ path('agent_ticket_message_raw', {ticket_id: ticket.id, message_id: message.id, raw: security_token('view_raw', 10800), _rt: security_token('request_token', 10800)}) }}" frameborder="0" marginheight="0" marginwidth="0" width="100%" style="margin:0;border:0;"></iframe>
+						<iframe src="{{ path('agent_ticket_message_raw', {ticket_id: ticket.id, message_id: message.id, raw: security_token('view_raw', 10800), _rt: security_token('request_token', 10800)}) }}" frameborder="0" marginheight="0" marginwidth="0" width="100%" style="margin:0;border:0;" class="forward_overlay_iframe"></iframe>
 					</div>
 				</div>
 			</div>
