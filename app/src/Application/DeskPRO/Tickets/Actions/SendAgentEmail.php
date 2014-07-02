@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
@@ -186,12 +187,51 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
 		$sent_count = 0;
 
+		$state = $ticket->getStateChangeRecorder();
+		$fn_check_new_part = function($agent) use ($state, $ticket) {
+			$has = false;
+			foreach ($ticket->participants as $p) {
+				if ($p->person === $agent) {
+					$has = true;
+					break;
+				}
+			}
+			if (!$has) {
+				return false;
+			}
+
+			foreach ($state->getChangesForField('participants') as $change) {
+				if ($change instanceof ChangeCollection) {
+					foreach ($change->getAddedElements() as $p) {
+						if ($p->person === $agent) {
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		};
+
 		foreach ($agents as $agent) {
 			$sent_count++;
 
 			$context->getLogger()->debug(sprintf("[SendAgentEmail] Sending to <Person:%d> %s", $agent->id, $agent->getDisplayName()));
 
 			$vars = $default_vars;
+
+			$type_flag = null;
+			if ($state->hasChangedField('agent') && $ticket->agent && $ticket->agent === $agent) {
+				$type_flag = 'assigned';
+			} else if ($state->hasChangedField('agent_team') && $ticket->agent_team && $agent->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+				$type_flag = 'assigned_team';
+			} else if ($state->hasChangedField('participants') && $fn_check_new_part($agent)) {
+				$type_flag = 'added_part';
+			} else if ($state->hasChangedField('status')) {
+				$type_flag = 'status_changed';
+			}
+
+			$vars['type_flag'] = $type_flag;
 
 			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
 				->setTicket($ticket)
