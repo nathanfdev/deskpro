@@ -127,7 +127,7 @@ class JiraController extends AbstractController
 		// init memory
 		$meta = $this->getMeta($projectKey);
 
-		if( null === @$meta['assignee'] )
+		if( ! isset($meta['assignee']) )
 		{
 			$service = $this->_getService();
 			$meta['assignee'] = array();
@@ -159,7 +159,7 @@ class JiraController extends AbstractController
 		// init memory
 		$meta = $this->getMeta($projectKey);
 
-		if( null === @$meta['issuetypes'] )
+		if( ! isset($meta['issuetypes']) )
 		{
 			$service = $this->_getService();
 			$meta['issuetypes'] = array();
@@ -183,7 +183,7 @@ class JiraController extends AbstractController
 		// init memory
 		$meta = $this->getMeta($projectKey);
 
-		if( null === @$meta['priorities'] )
+		if( ! isset($meta['priorities']) )
 		{
 			$meta['priorities'] = array();
 			$service = $this->_getService();
@@ -200,18 +200,15 @@ class JiraController extends AbstractController
 
 	protected function getMeta($projectKey = null)
 	{
-		/** @var \Doctrine\Common\Cache\FilesystemCache $cache */
-		$cache = $this->get('app.cache');
+		/** @var \Application\DeskPRO\EntityRepository\Cache $cache */
+		$cache = $this->em->getRepository('DeskPRO:Cache');
 		$key = 'jira.meta';
 
 		// memory
 		if( $this->meta ) {
 			$meta = $this->meta;
 		// file
-		} else if( $data = $cache->fetch($key) ) {
-			$meta = unserialize($data);
-		// api
-		} else {
+		} else if( ! $meta = $cache->load($key) ) {
 			$meta = $this->_getService()->getCreateMeta();
 			$projects = array();
 			foreach( $meta['projects'] as $project )
@@ -233,16 +230,16 @@ class JiraController extends AbstractController
 		if( null === $projectKey )
 			return $this->meta;
 
-		return @$this->meta['projects'][$projectKey];
+		return isset($this->meta['projects'][$projectKey]) ? $this->meta['projects'][$projectKey] : null;
 	}
 
 	protected function saveMeta($meta = null)
 	{
-		$meta = $meta ?: $this->meta;
+		$this->meta = $meta ?: $this->meta;
 		/** @var \Doctrine\Common\Cache\FilesystemCache $cache */
-		$cache = $this->get('app.cache');
+		$cache = $this->em->getRepository('DeskPRO:Cache');
 		$key = 'jira.meta';
-		$cache->save($key, serialize($meta), 86400);
+		$cache->save($key, $this->meta, 86400);
 	}
 	
 	protected function _processPost(\Application\DeskPRO\Entity\Ticket $ticket)
