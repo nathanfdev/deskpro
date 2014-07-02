@@ -205,10 +205,6 @@
 		{% if log.details.email %}
 			{{ phrase('agent.tickets.from_email', {'address':log.details.email}) }}
 		{% endif %}
-		&mdash;
-		{% if log.details.message_id %}
-			<a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: log.details.message_id, _rt: security_token('request_token', 10800)}) }}" onclick="window.open($(this).attr('href'), 'msgwin', 'status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=600,width=780'); return false;">{{ phrase('agent.general.view') }} <i class="icon-external-link" style="font-size: 11px;"></i></a>
-		{% endif %}
 	{% elseif log.action_type == 'message_removed' %}
 		{% if log.details.is_agent_note %}
 			<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.tickets.log_note_deleted') }}</span>
