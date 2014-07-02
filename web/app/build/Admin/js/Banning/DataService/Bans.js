@@ -121,7 +121,7 @@
 
       Bans.prototype.deleteBanById = function(id) {
         var promise;
-        promise = this.Api.sendDelete('/banning_' + this.type + '/' + id).success((function(_this) {
+        promise = this.Api.sendDelete('/banning_' + this.type + '/' + window.encodeURIComponent(id)).success((function(_this) {
           return function() {
             return _this.removeListModelById(id);
           };
@@ -141,7 +141,7 @@
         var data, deferred;
         deferred = this.$q.defer();
         if (id) {
-          this.Api.sendGet('/banning_' + this.type + '/' + id).then((function(_this) {
+          this.Api.sendGet('/banning_' + this.type + '/' + window.encodeURIComponent(id)).then((function(_this) {
             return function(result) {
               var data;
               data = {};
@@ -178,7 +178,7 @@
         sendData = {};
         sendData[this.type + '_ban'] = postData;
         if (model['banned_' + this.type]) {
-          promise = this.Api.sendPostJson('/banning_' + this.type + '/' + model['banned_' + this.type], sendData).success((function(_this) {
+          promise = this.Api.sendPostJson('/banning_' + this.type + '/' + window.encodeURIComponent(model['banned_' + this.type]), sendData).success((function(_this) {
             return function(data) {
               return model['banned_' + _this.type] = data['banned_' + _this.type];
             };
