@@ -257,6 +257,11 @@ class BanningController extends AbstractController implements ProtectedControlle
 
 	public function removeIpAction($id)
 	{
+		if (null === $id) {
+			$this->em->getRepository('DeskPRO:BanIp')->removeAll();
+			return $this->createSuccessResponse();
+		}
+
 		/**
 		 * @var \Application\DeskPRO\Banning\IpBans $ip_bans
 		 */
@@ -298,6 +303,11 @@ class BanningController extends AbstractController implements ProtectedControlle
 		/**
 		 * @var \Application\DeskPRO\Banning\EmailBans $email_bans
 		 */
+
+		if (null === $id) {
+			$this->em->getRepository('DeskPRO:BanEmail')->removeAll();
+			return $this->createSuccessResponse();
+		}
 
 		$email_bans = $this->container->getSystemService('email_bans');
 		$email_ban  = $email_bans->getById($id);

@@ -98,6 +98,17 @@ define [
 			return @formMapper
 
 		###
+		# Remove complete list
+		#
+		# @param {String} "email"|"ip"
+		# @return {promise}
+		###
+
+		deleteBanByType: (type) ->
+
+			@Api.sendDelete('/banning_' + type)
+
+		###
   # Remove a model
   #
   # @param {Integer} id

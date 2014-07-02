@@ -199,6 +199,44 @@
         })(this));
       };
 
+
+      /*
+      		 * Show the delete dlg
+       */
+
+      Admin_Banning_Ctrl_List.prototype.deleteList = function(list) {
+        var inst;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Banning/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.multiple = true;
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then((function(_this) {
+          return function() {
+            if (list === _this.list.email_bans) {
+              return _this.banData.deleteBanByType('email').then(function() {
+                _this.reloadList(false, true);
+                return _this.$state.go('crm.banning');
+              });
+            } else {
+              return _this.banData.deleteBanByType('ip').then(function() {
+                _this.reloadList(true);
+                return _this.$state.go('crm.banning');
+              });
+            }
+          };
+        })(this));
+      };
+
       return Admin_Banning_Ctrl_List;
 
     })(Admin_Ctrl_Base);

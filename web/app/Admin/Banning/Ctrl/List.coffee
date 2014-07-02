@@ -156,4 +156,35 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@applyErrorResponseToView(info)
 			)
 
+		###
+		# Show the delete dlg
+		###
+
+		deleteList: (list) ->
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Banning/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.multiple = true
+					$scope.confirm = ->
+						$modalInstance.close()
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+				]
+			});
+
+			inst.result.then(=>
+				if list == @list.email_bans
+					@banData.deleteBanByType('email').then( =>
+						@reloadList(false, true)
+						@$state.go('crm.banning')
+					)
+				else
+					@banData.deleteBanByType('ip').then( =>
+						@reloadList(true)
+						@$state.go('crm.banning')
+					)
+			)
+
 	Admin_Banning_Ctrl_List.EXPORT_CTRL()

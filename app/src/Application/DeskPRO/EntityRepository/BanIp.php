@@ -117,4 +117,9 @@ class BanIp extends AbstractEntityRepository
 
 		return $banned ? true : false;
 	}
+
+	public function removeAll()
+	{
+		App::getDb()->executeQuery(sprintf('DELETE FROM %s', $this->getTableName()));
+	}
 }

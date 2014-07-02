@@ -55,6 +55,10 @@
 				   href="{{ ng_href('crm.banning.gocreate_ip') }}">
 					<i class="fa fa-plus"></i> New IP Ban
 				</a>
+
+                <button class="btn btn-danger" ng-click="$event.preventDefault();ListCtrl.deleteList(ListCtrl.list.ip_bans);" ng-if="ListCtrl.list.ip_bans.length">
+                    Delete all
+                </button>
 			</div>
 		</article>
 	</section>
@@ -114,7 +118,12 @@
 				   href="{{ ng_href('crm.banning.gocreate_email') }}">
 					<i class="fa fa-plus"></i> New Email Ban
 				</a>
+
+                <button class="btn btn-danger" ng-click="$event.preventDefault();ListCtrl.deleteList(ListCtrl.list.email_bans);" ng-if="ListCtrl.list.email_bans.length">
+                    Delete all
+                </button>
 			</div>
+
 		</article>
 	</section>
 {% endblock %}

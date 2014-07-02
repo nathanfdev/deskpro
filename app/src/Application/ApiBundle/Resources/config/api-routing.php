@@ -3913,6 +3913,21 @@ $collection->create('api_banning_email_save', array(
 	'methods'     => array('POST'),
 ));
 
+
+$collection->create('api_banning_ip_remove_all', array(
+	'path'        => '/banning_ip',
+	'controller'  => 'ApiBundle:Banning:removeIp',
+	'methods'     => array('DELETE'),
+	'defaults'    => array('id' => null),
+));
+
+$collection->create('api_banning_email_remove_all', array(
+	'path'        => '/banning_email',
+	'controller'  => 'ApiBundle:Banning:removeEmail',
+	'methods'     => array('DELETE'),
+	'defaults'    => array('id' => null),
+));
+
 $collection->create('api_banning_ip_remove', array(
 	'path'        => '/banning_ip/{id}',
 	'controller'  => 'ApiBundle:Banning:removeIp',

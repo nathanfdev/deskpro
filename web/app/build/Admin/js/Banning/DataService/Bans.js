@@ -113,6 +113,18 @@
 
 
       /*
+      		 * Remove complete list
+      		 *
+      		 * @param {String} "email"|"ip"
+      		 * @return {promise}
+       */
+
+      Bans.prototype.deleteBanByType = function(type) {
+        return this.Api.sendDelete('/banning_' + type);
+      };
+
+
+      /*
        * Remove a model
        *
        * @param {Integer} id

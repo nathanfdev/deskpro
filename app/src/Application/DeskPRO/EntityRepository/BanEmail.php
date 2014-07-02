@@ -142,4 +142,9 @@ class BanEmail extends AbstractEntityRepository
 
 		return $this->counts[$search_phrase] = (int) $count;
 	}
+
+	public function removeAll()
+	{
+		App::getDb()->executeQuery(sprintf('DELETE FROM %s', $this->getTableName()));
+	}
 }
