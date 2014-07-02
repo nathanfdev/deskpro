@@ -303,6 +303,8 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 			$download_url = App::getSetting('core.deskpro_url');
 			$download_url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[2], 'filename' => $m[3]), false), '/');
 
+			$extra = 'data-downloadurl="' . $download_url . '" data-blob-authid="' . $m[2] . '"';
+
 			// Add a sign code
 			// There was a bug briefly in the wild where a blob that failed to save using its primary fs
 			// adapter could have the wrong authcode and be served from the db, which means any embedded images saved in the text of messages
@@ -332,12 +334,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 				}
 
 				if (!$do_link) {
-					$replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
+					$replace = sprintf('<img src="%s" title="%s" class="dragout" '.$extra.' />', $url, $m[3]);
 				} else {
-					$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image"><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
+					$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout" '.$extra.'><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
 				}
 			} else {
-				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image">%s</a>', $download_url, $m[3]);
+				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout" '.$extra.'>%s</a>', $download_url, $m[3]);
 			}
 
 			return $replace;

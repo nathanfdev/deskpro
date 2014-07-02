@@ -430,22 +430,51 @@ JS;
 
     public function acceptTempUploadAction()
     {
-		$file = $this->request->files->get('file-upload');
-		$accept = $this->container->getAttachmentAccepter();
+		$copy_blobauth = $this->in->getString('copy_blob');
 
-		$error = $accept->getError($file, 'agent');
-		if (!$error && $this->in->getBool('is_image')) {
-			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
-			$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
-			$accept->addRestrictionSet('only_images', $set);
-			$error = $accept->getError($file, 'only_images');
-		}
-		if ($error) {
-			$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
-			return $this->createJsonResponse(array($error));
-		}
+		if ($copy_blobauth) {
 
-		$blob = $accept->accept($file);
+			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
+			if (!$blob) {
+				$error = array();
+				$error['error_code'] = 'no_file';
+				$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_no_file');
+				return $this->createJsonResponse($error);
+			}
+
+			if ($this->in->getBool('is_image') && !$blob->isImage()) {
+				$error = array(
+					'error_code' => 'not_in_allowed_exts',
+					'error_detail' => implode(',', array('gif', 'png', 'jpg', 'jpeg'))
+				);
+				$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				return $this->createJsonResponse($error);
+			}
+
+			$bs = $this->container->getBlobStorage();
+			$raw_file = $bs->copyBlobRecordToString($blob);
+
+			$blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type);
+			unset($raw_file);
+
+		} else {
+			$file = $this->request->files->get('file-upload');
+			$accept = $this->container->getAttachmentAccepter();
+
+			$error = $accept->getError($file, 'agent');
+			if (!$error && $this->in->getBool('is_image')) {
+				$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+				$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+				$accept->addRestrictionSet('only_images', $set);
+				$error = $accept->getError($file, 'only_images');
+			}
+			if ($error) {
+				$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				return $this->createJsonResponse(array($error));
+			}
+
+			$blob = $accept->accept($file);
+		}
 
 		if ($this->in->getString('attach_to_object')) {
 			switch ($this->in->getString('attach_to_object')) {
@@ -503,45 +532,73 @@ JS;
 
 	public function acceptRedactorImageUploadAction()
 	{
-		/** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
-		$file = $this->request->files->get('file');
-		$accept = $this->container->getAttachmentAccepter();
+		$copy_blobauth = $this->in->getString('copy_blob');
 
-		$filename = $this->in->getString('filename');
-		if ($filename) {
-			// override filename
-			$file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
-				$file->getPathname(), $filename, $file->getClientMimeType(), $file->getClientSize(), $file->getError()
-			);
-		}
+		if ($copy_blobauth) {
 
-		$error = $accept->getError($file, 'agent');
-		if (!$error) {
-			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
-			$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
-			$accept->addRestrictionSet('only_images', $set);
-			$error = $accept->getError($file, 'only_images');
-		}
-		if ($error) {
-			$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
+			if (!$blob) {
+				$error = array();
+				$error['error_code'] = 'no_file';
+				$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_no_file');
+				return $this->createJsonResponse($error);
+			}
 
-			$res = $this->createJsonResponse($error);
+			if (!$blob->isImage()) {
+				$error = array(
+					'error_code' => 'not_in_allowed_exts',
+					'error_detail' => implode(',', array('gif', 'png', 'jpg', 'jpeg'))
+				);
+				$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				return $this->createJsonResponse($error);
+			}
+
+			$bs = $this->container->getBlobStorage();
+			$raw_file = $bs->copyBlobRecordToString($blob);
+
+			$blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type);
+			unset($raw_file);
+
 		} else {
-			$blob = $accept->accept($file);
+			/** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
+			$file = $this->request->files->get('file');
+			$accept = $this->container->getAttachmentAccepter();
 
-			$res = $this->createJsonResponse(array(
-				'blob_id'           => $blob['id'],
-				'blob_auth'         => $blob->authcode,
-				'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
-				'download_url'      => $blob->getDownloadUrl(true),
-				'filename'          => $blob['filename'],
-				'filesize_readable' => $blob->getReadableFilesize(),
-				'is_image'          => $blob->isImage(),
+			$filename = $this->in->getString('filename');
+			if ($filename) {
+				// override filename
+				$file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
+					$file->getPathname(), $filename, $file->getClientMimeType(), $file->getClientSize(), $file->getError()
+				);
+			}
 
-				// needed for Redactor
-				'filelink'     => $blob->getDownloadUrl(true)
-			));
+			$error = $accept->getError($file, 'agent');
+			if (!$error) {
+				$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+				$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+				$accept->addRestrictionSet('only_images', $set);
+				$error = $accept->getError($file, 'only_images');
+			}
+			if ($error) {
+				$error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				return $this->createJsonResponse($error);
+			} else {
+				$blob = $accept->accept($file);
+			}
 		}
+
+		$res = $this->createJsonResponse(array(
+			'blob_id'           => $blob['id'],
+			'blob_auth'         => $blob->authcode,
+			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+			'download_url'      => $blob->getDownloadUrl(true),
+			'filename'          => $blob['filename'],
+			'filesize_readable' => $blob->getReadableFilesize(),
+			'is_image'          => $blob->isImage(),
+
+			// needed for Redactor
+			'filelink'     => $blob->getDownloadUrl(true)
+		));
 
 		return $res;
 	}

@@ -295,6 +295,13 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getAuthId()
 	{
+		// Note: The ID is part of the authcode
+		// The format of the authcode is handled by the blobstorage system
+		// See DeskproBlobStorage
+		// (So this is why this isn't specifically including $this->id here)
+
+		// Typically you just look up on the authcode which is unique in the table.
+
 		return $this->authcode;
 	}
 
