@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "Clearing /deskpro-cache..."
-sudo rm -rf /deskpro-cache/*
-echo "--> Done"

@@ -1,6 +1,0 @@
-#!/bin/bash
-
-pkill -f log.io-server
-pkill -f log.io-harvester
-
-echo "Done"
