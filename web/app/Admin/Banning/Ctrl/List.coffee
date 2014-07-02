@@ -100,6 +100,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@pagination.email_bans.page--
 
 		###
+		#
+		###
+
+		goFirstEmailBanPage: ->
+
+			@pagination.email_bans.page = 0
+
+		###
 		# Show the delete dlg
 		###
 

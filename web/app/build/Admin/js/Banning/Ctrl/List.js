@@ -129,6 +129,15 @@
 
 
       /*
+      		 *
+       */
+
+      Admin_Banning_Ctrl_List.prototype.goFirstEmailBanPage = function() {
+        return this.pagination.email_bans.page = 0;
+      };
+
+
+      /*
       		 * Show the delete dlg
        */
 
