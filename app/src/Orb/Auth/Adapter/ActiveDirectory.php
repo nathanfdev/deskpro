@@ -87,6 +87,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	public function __construct(array $options)
 	{
 		$this->options = array_merge($this->options, $options);
+		$this->options['accountCanonicalForm'] = 4;
 	}
 
 
