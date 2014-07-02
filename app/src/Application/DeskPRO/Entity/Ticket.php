@@ -65,7 +65,7 @@ use Orb\Util\Util;
  * @property AgentTeam $agent_team
  * @property Organization $organization
  * @property ChatConversation $linked_chat
- * @property TicketAttachment[] $attachment
+ * @property TicketAttachment[] $attachments
  * @property TicketAccessCode[] $access_codes
  * @property TicketMessage[] $messages
  * @property CustomDataTicket[] $custom_data
@@ -3577,7 +3577,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketAttachment',
 			'cascade'              => array('remove', 'persist', 'merge', ),
 			'mappedBy'             => 'ticket',
-			'fetch'                => 'EXTRA_LAZY'
+			'fetch'                => 'EXTRA_LAZY',
+			'dpApi'                => true,
+			'dpApiDeep'            => true
 		));
 		$metadata->mapOneToMany(array(
 			'fieldName'            => 'access_codes',

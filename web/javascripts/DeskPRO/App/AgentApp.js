@@ -32,6 +32,10 @@ define(['angular'], function(angular) {
 		$httpProvider.interceptors.push('dpAppAssetInterceptor');
 	}]);
 
+	AgentApp.run(['$rootScope', function($rootScope) {
+		$rootScope.DP_ASSET_URL = window.ASSETS_BASE_URL;
+	}]);
+
 	AgentApp.filter('formatTimestampAgo', function() {
 		return function(ts) {
 			var m;

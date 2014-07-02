@@ -596,9 +596,8 @@ pageMeta.lang = {{ {
 {% endif %}
 {{ dp_app_loc(baseId, 'messages.before') }}
 
-<div class="profile-box-container ticket-messages">
+<div class="profile-box-container ticket-messages dp-simpletab-container">
 	<header>
-		{% set messageTabs = dp_widgets_raw('ticket', 'messages', 'tab') %}
 		<nav id="{{ baseId }}_messagebox_tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
 				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">{{ phrase('agent.tickets.messages') }}</li>
@@ -609,9 +608,6 @@ pageMeta.lang = {{ {
 					</li>
 				{% endif %}
 				<li data-tab-for="#{{ baseId }}_times">{{ phrase('agent.general.dates_and_times') }}</li>
-			{% for widget in messageTabs %}
-				<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
-			{% endfor %}
 			</ul>
 		</nav>
 	</header>
@@ -769,7 +765,7 @@ pageMeta.lang = {{ {
 			{% endif %}
 		</table>
 	</section>
-	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', 'article', ticket_api) }}
+	{{ dp_app_loc(baseId, 'messages.tab') }}
 </div>
 
 {{ dp_app_loc(baseId, 'messages.after') }}
