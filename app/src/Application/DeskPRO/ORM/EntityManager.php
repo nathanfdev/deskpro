@@ -134,46 +134,64 @@ class EntityManager extends UnprivateEntityManager
 		}
 	}
 
-	public function flush($entity = null)
+	/**
+	 * Flush the current changeset.
+	 *
+	 * Note that $entity here is DISCARDED.
+	 * - Using vanilla Doctrine, specifying an $entity here forces a flush of just
+	 * one entity changeset but results in the rest of changeset being discarded!
+	 * - This feature is poorly documented either way so I dont know if it's a bug or
+	 * by design. But to make it more explicit, this argument is ignored.
+	 * - If you truly want this behaviour, then use flushSpecificChangeset().
+	 *
+	 * @param null $entity
+	 */
+	public function flush($entity = null /* note: arg is ignored, see phpdoc comment */)
 	{
-		if (!$entity && $this->_delayedInsert) {
+		if ($this->_delayedInsert) {
 			foreach ($this->_delayedInsert AS $persist) {
 				$this->persist($persist);
 			}
 			$this->_delayedInsert = array();
 		}
-		if (!$entity && $this->_delayedUpdate) {
+		if ($this->_delayedUpdate) {
 			foreach ($this->_delayedUpdate AS $closure) {
 				$closure($this);
 			}
 			$this->_delayedUpdate = array();
 		}
 
-		parent::flush($entity);
+		parent::flush(null);
 
-		if (!$entity) {
-			$flush_again = false;
+		$flush_again = false;
 
-			if ($this->_delayedInsert) {
-				foreach ($this->_delayedInsert AS $persist) {
-					$this->persist($persist);
-				}
-				$this->_delayedInsert = array();
-				$flush_again = true;
+		if ($this->_delayedInsert) {
+			foreach ($this->_delayedInsert AS $persist) {
+				$this->persist($persist);
 			}
-
-			if ($this->_delayedUpdate) {
-				foreach ($this->_delayedUpdate AS $closure) {
-					$closure($this);
-				}
-				$this->_delayedUpdate = array();
-				$flush_again = true;
-			}
-
-			if ($flush_again) {
-				$this->flush();
-			}
+			$this->_delayedInsert = array();
+			$flush_again = true;
 		}
+
+		if ($this->_delayedUpdate) {
+			foreach ($this->_delayedUpdate AS $closure) {
+				$closure($this);
+			}
+			$this->_delayedUpdate = array();
+			$flush_again = true;
+		}
+
+		if ($flush_again) {
+			$this->flush();
+		}
+	}
+
+	/**
+	 * @param $entity
+	 */
+	public function flushSpecificChangeset($entity)
+	{
+		parent::flush($entity);
 	}
 
 	public function clearNot($class_name)
