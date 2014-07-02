@@ -272,10 +272,16 @@ class DpKernel extends AbstractKernel
 	 */
 	public function registerBundleDirs()
 	{
-		return array(
+		$bundle_dirs = array(
 			'Application'        => DP_ROOT.'/src/Application',
 			'Bundle'             => DP_ROOT.'/src/Bundle',
 		);
+
+		if (defined('DPC_IS_CLOUD')) {
+			$bundle_dirs['Cloud'] = DP_ROOT.'/src/Cloud';
+		}
+
+		return $bundle_dirs;
 	}
 
 
@@ -284,11 +290,7 @@ class DpKernel extends AbstractKernel
 	 */
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		if (defined('DPC_IS_CLOUD')) {
-			$loader->load(DP_ROOT.'/sys/config-cloud/config_'.$this->getEnvironment().'.php');
-		} else {
-			$loader->load(DP_ROOT.'/sys/config/config_'.$this->getEnvironment().'.php');
-		}
+		$loader->load(DP_ROOT.'/sys/config/config_'.$this->getEnvironment().'.php');
 	}
 
 
@@ -337,7 +339,8 @@ class DpKernel extends AbstractKernel
 
 		if (defined('DPC_IS_CLOUD')) {
 			$bundles = array_merge($bundles, array(
-				new \Cloud\ApiBundle\CloudApiBundle()
+				new \Cloud\ApiBundle\CloudApiBundle(),
+				new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
 			));
 		}
 

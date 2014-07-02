@@ -179,6 +179,12 @@ class InterfaceController extends AbstractController
 			$tpl_name = "AdminInterfaceBundle:$view_name";
 		}
 
+		if (defined('DPC_IS_CLOUD')) {
+			if ($this->tpl->exists('Cloud'.$tpl_name)){
+				$tpl_name = 'Cloud'.$tpl_name;
+			}
+		}
+
 		return $tpl_name;
 	}
 
