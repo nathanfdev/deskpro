@@ -400,6 +400,7 @@ class Service
 	
 	public function getCreateMeta()
 	{
+		// todo this may cause "Operation timed out after 1xxx milliseconds" without any handling
 		return $this->get('rest/api/latest/issue/createmeta', array(), array(
 			'timeout'         => 2,
 			'connect_timeout' => 1

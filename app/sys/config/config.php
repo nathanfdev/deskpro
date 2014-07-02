@@ -241,6 +241,14 @@ foreach (array(
 	$container->setDefinition('validator.deskpro.' . strtolower($alias), $definition);
 }
 
+// app layer caching
+$definition = new Definition();
+$definition->setClass('Doctrine\\Common\\Cache\\FilesystemCache');
+$definition->setArguments(array(
+	'%kernel.cache_dir%/app_cache',
+));
+$container->setDefinition('app.cache', $definition);
+
 ############################################################################
 # Framework Configuration
 ############################################################################

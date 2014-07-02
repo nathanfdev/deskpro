@@ -9,6 +9,8 @@ namespace Application\AgentBundle\Controller;
  */
 class JiraController extends AbstractController
 {
+	protected $meta;
+
 	public function preAction($action, $arguments = null)
 	{
 		if (!$this->settings->get('core.apps_jira.enabled')) {
@@ -35,15 +37,13 @@ class JiraController extends AbstractController
 		if ('POST' === $this->request->getMethod()) {
 			return $this->_processPost($ticket);
 		}
-		
-		$service = $this->_getService();
-		
+
 		$em = $this->em;
-		
+
 		$repo = $em->getRepository('Application\DeskPRO\Entity\JiraIssue');
-				
-		$meta = $service->getCreateMeta(); 
-		
+
+		$meta = $this->getMeta();
+
 		$projects = array();
 		
 		foreach ($meta[$meta['expand']] as $projectParams) {
@@ -124,32 +124,125 @@ class JiraController extends AbstractController
 	
 	protected function _lookupAssignee($projectKey)
 	{
-		$service = $this->_getService();
-		
-		$response = $service->lookupAssignees($projectKey);
-		
-		foreach ($response as &$assignee) {
-			$assignee['avatarUrls']['xsmall']	= $assignee['avatarUrls']['16x16'];
-			$assignee['avatarUrls']['small']	= $assignee['avatarUrls']['24x24'];
-			$assignee['avatarUrls']['medium']	= $assignee['avatarUrls']['32x32'];
+		// init memory
+		$meta = $this->getMeta($projectKey);
+
+		if( null === @$meta['assignee'] )
+		{
+			$service = $this->_getService();
+			$meta['assignee'] = array();
+
+			foreach( $service->lookupAssignees($projectKey) as &$assignee )
+			{
+				$assignee['avatarUrls']['xsmall']	= $assignee['avatarUrls']['16x16'];
+				$assignee['avatarUrls']['small']	= $assignee['avatarUrls']['24x24'];
+				$assignee['avatarUrls']['medium']	= $assignee['avatarUrls']['32x32'];
+				$meta['assignee'][$assignee['key']] = $assignee;
+			}
+
+			// todo meta save
+			$this->meta['projects'][$projectKey] = $meta;
+			$this->saveMeta();
 		}
-		
-		return $response;
+
+
+		return $meta['assignee'];
 	}
-	
-	
+
+	/**
+	 * todo join with meta build (do not iterate issuetypes twice)
+	 * @param $projectKey
+	 * @return array
+	 */
 	protected function _lookupIssueType($projectKey)
 	{
-		$service = $this->_getService();
-		
-		return $service->lookupIssueType($projectKey);
+		// init memory
+		$meta = $this->getMeta($projectKey);
+
+		if( null === @$meta['issuetypes'] )
+		{
+			$service = $this->_getService();
+			$meta['issuetypes'] = array();
+
+			foreach( $service->lookupIssueType($projectKey) as $issueType )
+			{
+				if( $issueType['subtask'] ) continue;
+				$meta['issuetypes'][$issueType['id']] = $issueType;
+			}
+
+			// todo save meta
+			$this->meta['projects'][$projectKey] = $meta;
+			$this->saveMeta();
+		}
+
+		return $meta['issuetypes'];
 	}
 	
 	protected function _lookupPriorities($projectKey)
 	{
-		$service = $this->_getService();
-		
-		return $service->lookupPriorities($projectKey);
+		// init memory
+		$meta = $this->getMeta($projectKey);
+
+		if( null === @$meta['priorities'] )
+		{
+			$meta['priorities'] = array();
+			$service = $this->_getService();
+			foreach( $service->lookupPriorities($projectKey) as $priority )
+				$meta['priorities'][$priority['id']] = $priority;
+
+			// todo save meta
+			$this->meta['projects'][$projectKey] = $meta;
+			$this->saveMeta();
+		}
+
+		return $meta['priorities'];
+	}
+
+	protected function getMeta($projectKey = null)
+	{
+		/** @var \Doctrine\Common\Cache\FilesystemCache $cache */
+		$cache = $this->get('app.cache');
+		$key = 'jira.meta';
+
+		// memory
+		if( $this->meta ) {
+			$meta = $this->meta;
+		// file
+		} else if( $data = $cache->fetch($key) ) {
+			$meta = unserialize($data);
+		// api
+		} else {
+			$meta = $this->_getService()->getCreateMeta();
+			$projects = array();
+			foreach( $meta['projects'] as $project )
+			{
+				$issues = array();
+				foreach( $project['issuetypes'] as $issueType )
+					$issues[$issueType['id']] = $issueType;
+
+				$project['issuetypes'] = $issues;
+				$projects[$project['key']] = $project;
+			}
+
+			$meta['projects'] = $projects;
+			$this->saveMeta($meta);
+		}
+
+		$this->meta = $meta;
+
+		if( null === $projectKey )
+			return $this->meta;
+
+		return @$this->meta['projects'][$projectKey];
+	}
+
+	protected function saveMeta($meta = null)
+	{
+		$meta = $meta ?: $this->meta;
+		/** @var \Doctrine\Common\Cache\FilesystemCache $cache */
+		$cache = $this->get('app.cache');
+		$key = 'jira.meta';
+		$cache->save($key, serialize($meta), 86400);
 	}
 	
 	protected function _processPost(\Application\DeskPRO\Entity\Ticket $ticket)
