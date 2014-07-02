@@ -381,7 +381,14 @@
 		</ul>
 	</div>
 {% elseif log.action_type == 'message_forwarded' %}
-	<span class="new-val expand" data-set=".set-detail">Forwarded message</span> by {{ log.details.agent_name }}: #{{ log.details.message_id }} to {{ log.details.to_string }} (from {{ log.details.from_email }})
+	<span class="new-val expand" data-set=".set-detail">Forwarded message</span> by {{ log.details.agent_name }}: #{{ log.details.message_id }} to {{ log.details.to_string }}
+	{% if log.details.cc_string or log.details.bcc_string %}
+		with
+		{% if log.details.cc_string %}{{ log.details.cc_string }} CC'd{% endif %}
+		{% if log.details.cc_string and log.details.bcc_string %}and{% endif %}
+		{% if log.details.bcc_string %}{{ log.details.bcc_string }} BCC'd{% endif %}
+	{% endif %}
+	(from {{ log.details.from_email }})
 	<div class="expand-set set-detail" style="display: none">
 		{% if log.details.custom_message %}
 			{{ log.details.custom_message|nl2br }}

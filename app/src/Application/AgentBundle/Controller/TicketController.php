@@ -2784,15 +2784,58 @@ class TicketController extends AbstractController
 
 		$custom_message = $this->in->getString('custom_message');
 
-		$raw_to = \ezcMailTools::parseEmailAddresses($this->in->getString('to'));
-		$to = array();
-		foreach ($raw_to as $addr) {
-			if ($addr->email && StringEmail::isValueValid($addr->email)) {
-				$to[$addr->email] = $addr->name;
+		$all_raw_to   = $this->in->getCleanValueArray('to', 'str', 'str');
+		$all_to_types = $this->in->getCleanValueArray('to_type', 'str', 'str');
+
+		$tos  = array();
+		$ccs  = array();
+		$bccs = array();
+
+		$helpdesk_addresses = array();
+
+		foreach ($all_raw_to as $rowid => $to) {
+			$to = trim($to);
+			if (!$to) continue;
+
+			$raw_to = \ezcMailTools::parseEmailAddresses($to);
+			if (!$raw_to) continue;
+
+			$type = isset($all_to_types[$rowid]) ? $all_to_types[$rowid] : 'to';
+			switch ($type) {
+				case 'to':
+					$var = &$tos;
+					break;
+				case 'cc':
+					$var = &$ccs;
+					break;
+				case 'bcc':
+					$var = &$bccs;
+					break;
+				default:
+					$var = &$tos;
+					break;
 			}
+
+			foreach ($raw_to as $addr) {
+				if ($addr->email && StringEmail::isValueValid($addr->email)) {
+					if ($this->container->getEmailAccountManager()->findAccountForEmailAddress($addr->email)) {
+						$helpdesk_addresses[] = $addr->email;
+					} else {
+						$var[$addr->email] = $addr->name;
+					}
+				}
+			}
+			unset($var);
 		}
 
-		if (!$to) {
+		if ($helpdesk_addresses) {
+			return $this->createJsonResponse(array(
+				'error'     => 'to_helpdesk_address',
+				'addresses' => $helpdesk_addresses
+			));
+		}
+
+		if (!$tos) {
 			return $this->createJsonResponse(array('error' => 'invalid_to'));
 		}
 
@@ -2857,7 +2900,15 @@ class TicketController extends AbstractController
 		$message_raw = $message->procInlineAttach($message_raw);
 
 		$email = $this->container->getMailer()->createMessage();
-		$email->setTo($to);
+		foreach ($tos as $k => $x) {
+			$email->addTo($k, $x);
+		}
+		foreach ($ccs as $k => $x) {
+			$email->addCc($k, $x);
+		}
+		foreach ($bccs as $k => $x) {
+			$email->addBcc($k, $x);
+		}
 		$email->setBody($message_raw, 'text/html');
 		$email->setSubject($subject);
 
@@ -2936,13 +2987,18 @@ class TicketController extends AbstractController
 			'person_id'    => $this->person->id,
 			'action_type'  => 'message_forwarded',
 			'details'      => serialize(array(
-				'message_id' => $message_id,
-				'agent_id'   => $this->person->id,
-				'agent_name' => $this->person->getDisplayName(),
-				'to'         => array_keys($to),
-				'to_string'  => implode(', ', array_keys($to)),
-				'from_email' => $from_email,
-				'from_name'  => $from_name,
+				'message_id'     => $message_id,
+				'agent_id'       => $this->person->id,
+				'agent_name'     => $this->person->getDisplayName(),
+				'to'             => array_keys($tos),
+				'cc'             => array_keys($ccs),
+				'bcc'            => array_keys($bccs),
+				'all_rec_string' => implode(', ', array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))),
+				'to_string'      => implode(', ', array_keys($tos)),
+				'cc_string'      => implode(', ', array_keys($ccs)),
+				'bcc_string'     => implode(', ', array_keys($bccs)),
+				'from_email'     => $from_email,
+				'from_name'      => $from_name,
 				'custom_message' => $custom_message ?: null
 			)),
 			'date_created' => date('Y-m-d H:i:s')

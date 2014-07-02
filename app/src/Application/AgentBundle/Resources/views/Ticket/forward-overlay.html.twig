@@ -7,39 +7,58 @@
 		<form action="{{ path('agent_ticket_fwd_send', {ticket_id: ticket.id, message_id: message.id}) }}" method="post">
 			<div class="forward-wrapper">
 				<div class="header-line">
-					<div class="label">{{ phrase('agent.general.to') }}:</div>
+					<div class="label">
+						Recipients:
+					</div>
+					<div style="margin-left: 96px;">
+						{% for i in 1..25 %}
+							<div class="to_line {% if i == 1 %}is_visible{% endif %}" style="{% if i != 1 %}display: none;{% endif %} margin-bottom: 4px;">
+								{% set to_id = el_uid() %}
+								<div style="display: inline-block">
+									<select name="to_type[{{ to_id }}]">
+										<option value="to">To</option>
+										<option value="cc">CC</option>
+										<option value="bcc">BCC</option>
+									</select>
+								</div>
+								<div
+									class="email-address-wrap input"
+									style="position: relative; top: 3px; display: inline-block;"
+									data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+									data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'with_agents': 1}) }}"
+									data-search-param="term"
+									data-position-bound="#{{to_id}}"
+								>
+									<input
+										id="{{to_id}}"
+										class="email-address-input term"
+										type="text"
+										name="to[{{ to_id }}]"
+										value=""
+										placeholder="{{ phrase('agent.general.email_address') }}"
+										style="width: 500px;"
+									/>
 
-					{% set to_id = el_uid() %}
-					<div
-						class="input email-address-wrap"
-						data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
-						data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'with_agents': 1}) }}"
-						data-search-param="term"
-						data-position-bound="#{{to_id}}"
-					>
-						<input
-							id="{{to_id}}"
-							class="email-address-input term"
-							type="text"
-							name="to"
-							value=""
-							placeholder="{{ phrase('agent.general.email_address') }}"
-						/>
+									<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+										<li>
+											<a>
+											<span class="user-name"></span>
+											<address>&lt;<span class="user-email"></span>&gt;</address>
+											<div class="bound-fade"></div>
+										</a></li>
+									</script>
+									<div class="person-search-box" style="display: none">
+										<section>
+											<ul class="results-list">
 
-						<script type="text/x-deskpro-tmpl" class="user-row-tpl">
-							<li>
-								<a>
-								<span class="user-name"></span>
-								<address>&lt;<span class="user-email"></span>&gt;</address>
-								<div class="bound-fade"></div>
-							</a></li>
-						</script>
-						<div class="person-search-box" style="display: none">
-							<section>
-								<ul class="results-list">
-
-								</ul>
-							</section>
+											</ul>
+										</section>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+						<div style="margin: 8px 0 0 0;">
+							<span class="add-to-btn" style="background: #fff; border: 1px solid #aaa; border-radius: 3px; font-size: 11px; cursor: pointer; padding: 1px 3px;">Add another recipient</span>
 						</div>
 					</div>
 				</div>

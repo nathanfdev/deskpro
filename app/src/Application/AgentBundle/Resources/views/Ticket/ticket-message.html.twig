@@ -193,7 +193,14 @@
 						{% else %}
 							{{ log.details.from_name }}
 						{% endif %}
-						forwarded this message to {{ log.details.to_string }} (sent from {{ log.details.from_email }}).
+						forwarded this message to {{ log.details.to_string }}
+						{% if log.details.cc_string or log.details.bcc_string %}
+							with
+							{% if log.details.cc_string %}{{ log.details.cc_string }} CC'd{% endif %}
+							{% if log.details.cc_string and log.details.bcc_string %}and{% endif %}
+							{% if log.details.bcc_string %}{{ log.details.bcc_string }} BCC'd{% endif %}
+						{% endif %}
+						(sent from {{ log.details.from_email }}).
 						{% if log.details.custom_message %}
 							{% set tmpId = el_uid() %}
 							<span class="open-el-overlay" style="background: #fff; border: 1px solid #aaa; border-radius: 2px; font-size: 11px; cursor: pointer; padding: 1px 1px;" data-content-el="{{ tmpId }}">View Agent Message</span>

@@ -2274,13 +2274,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				msgInput.TextAreaExpander();
 				$('iframe.forward_overlay_iframe').load(function() {
-					$(this).height(document.getElementById($(this).attr('id')).contentWindow.document.body.scrollHeight);
+					$(this).height(this.contentWindow.document.body.scrollHeight);
 				});
 
 				emailInputWrap.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 					emailInput.val(email);
 					sb.close();
 				});
+
+				wrapper.find('.add-to-btn').on('click', function(ev) {
+					ev.preventDefault();
+					wrapper.find('.to_line').not('.is_visible').first().addClass('is_visible').show();
+				})
 
 				msgInput.on('change keyup keydown', function() {
 					var txt = $.trim($(this).val());
@@ -2311,6 +2316,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						success: function(data) {
 							if (data.error && data.error == 'invalid_to') {
 								DeskPRO_Window.showAlert('Please enter a valid To address');
+								footer.removeClass('loading');
+							} else if (data.error && data.error == 'to_helpdesk_address') {
+								DeskPRO_Window.showAlert($('<div>You have entered an email address that is handled by DeskPRO: ' + data.addresses.join(', ') + '<br/><br/>If you want another helpdesk agent to view this message, try one of these alternatives:<br/>&bull; Assign the agent or add them as a follower<br/>&bull; Change the department<br/>&bull; Split the ticket</div>'));
 								footer.removeClass('loading');
 							} else {
 								DeskPRO_Window.showAlert('Your message has been sent.');
