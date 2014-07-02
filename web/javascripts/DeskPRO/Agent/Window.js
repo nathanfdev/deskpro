@@ -265,6 +265,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			fileupload: function(el, options) {
 
+				var plainEl = $(el).get(0);
+
 				var setel;
 				if (!options) options = {};
 
@@ -430,6 +432,41 @@ DeskPRO.Agent.Window = new Orb.Class({
 					}
 				})
 
+				// drop could have an auth, which we handle manually (ie not fileupload jquery plugin)
+				$(el).on('drop', function(event) {
+					var auth = event.originalEvent.dataTransfer.getData('DpAuthId');
+					if (!auth) return;
+
+					// Need slight delay to make sure an attached redactor editor isnt handling this
+					window.setTimeout((function() {
+						if (event.originalEvent.__DpIsRteHandling) {
+							return;
+						}
+
+						$(this).trigger('fileuploadstart');
+						options.start.apply(plainEl, [event]);
+
+						$.ajax({
+							url: options.url,
+							dataType: 'html',
+							data: { copy_blob: auth },
+							cache: false,
+							type: 'POST',
+							success: function (data) {
+								var json = $.parseJSON(data);
+
+								$(this).trigger('fileuploaddone');
+								if (typeof json.error == 'undefined') {
+									options.done.apply(plainEl, [event, { result: json}])
+								} else {
+									options.stop.apply(plainEl, [event]);
+								}
+
+							}
+						});
+					}).call(this), 100);
+				});
+
 				return $(el).fileupload(options);
 			},
 			
@@ -438,6 +475,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					el = el.find('.dragout');
 				}
 				el.on("dragstart", function(evt) {
+					var blobAuthId = $(this).data('blob-authid');
 					var fileDetails = $(this).data('downloadurl');
 					if (!fileDetails) {
 						fileDetails = $(this).attr('drag-to-download');
@@ -445,8 +483,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 					
 					if (evt.dataTransfer) {
 						evt.dataTransfer.setData("DownloadURL",fileDetails);
+						if (blobAuthId) evt.dataTransfer.setData("DpAuthId", blobAuthId);
 					} else {
 						evt.originalEvent.dataTransfer.setData("DownloadURL",fileDetails);
+						if (blobAuthId) evt.originalEvent.dataTransfer.setData("DpAuthId", blobAuthId);
 					}
 				});
 			},

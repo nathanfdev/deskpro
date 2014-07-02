@@ -237,35 +237,58 @@ DeskPRO.Agent.RteEditor = {
 			dropTarget.bind('drop', function(event) {
 				event.preventDefault();
 
-				var file = event.originalEvent.dataTransfer.files[0];
-				if (!file) {
-					return;
+				var auth = event.originalEvent.dataTransfer.getData('DpAuthId');
+				if (auth) {
+					event.originalEvent.__DpIsRteHandling = true;
+					$.ajax({
+						url: api.opts.imageUpload,
+						dataType: 'html',
+						data: { copy_blob: auth },
+						cache: false,
+						type: 'POST',
+						success: $.proxy(function (data) {
+							var json = $.parseJSON(data);
+
+							if (typeof json.error == 'undefined') {
+								$.proxy(api.imageUploadCallback, api)(json);
+							} else {
+								$.proxy(api.opts.imageUploadErrorCallback, api)(api, json);
+								$.proxy(api.imageUploadCallback, api)(false);
+							}
+
+						}, api)
+					});
+				} else {
+					var file = event.originalEvent.dataTransfer.files[0];
+					if (!file) {
+						return;
+					}
+					var fd = new FormData();
+
+					// append file data
+					fd.append('file', file);
+
+					$.ajax({
+						url: api.opts.imageUpload,
+						dataType: 'html',
+						data: fd,
+						cache: false,
+						contentType: false,
+						processData: false,
+						type: 'POST',
+						success: $.proxy(function (data) {
+							var json = $.parseJSON(data);
+
+							if (typeof json.error == 'undefined') {
+								$.proxy(api.imageUploadCallback, api)(json);
+							} else {
+								$.proxy(api.opts.imageUploadErrorCallback, api)(api, json);
+								$.proxy(api.imageUploadCallback, api)(false);
+							}
+
+						}, api)
+					});
 				}
-				var fd = new FormData();
-
-				// append file data
-				fd.append('file', file);
-
-				$.ajax({
-					url: api.opts.imageUpload,
-					dataType: 'html',
-					data: fd,
-					cache: false,
-					contentType: false,
-					processData: false,
-					type: 'POST',
-					success: $.proxy(function(data) {
-						var json = $.parseJSON(data);
-
-						if (typeof json.error == 'undefined') {
-							$.proxy(api.imageUploadCallback, api)(json);
-						} else {
-							$.proxy(api.opts.imageUploadErrorCallback, api)(api, json);
-							$.proxy(api.imageUploadCallback, api)(false);
-						}
-
-					}, api)
-				});
 			});
 
 			if (dropZone.length) {
