@@ -217,13 +217,8 @@ class AppsController extends AbstractController
 		$app->package = $package;
 		$app->title = $this->in->getString('settings.dp_app.title') ?: $package->title;
 
-		$settings = $this->_readAppSettings($package, $this->in->getCleanValueArray('settings'));
-		if ($settings) {
-			$app->setSettings($settings);
-		}
-
-		$this->em->persist($app);
-		$this->em->flush();
+		$context = null;
+		$handler = null;
 
 		if ($package->native_name) {
 			$native_app = $manager->getNativeApp($app);
@@ -234,6 +229,15 @@ class AppsController extends AbstractController
 				$handler->install($context);
 			}
 		}
+
+		$settings = $this->_readAppSettings($package, $this->in->getCleanValueArray('settings'));
+		if ($handler) {
+			$settings = $handler->processSettings($context, $settings);
+		}
+		$app->setSettings($settings ?: array());
+
+		$this->em->persist($app);
+		$this->em->flush();
 
 		return $this->createApiCreateResponse(
 			array('id' => $app->id),
@@ -334,10 +338,9 @@ class AppsController extends AbstractController
 		$settings = $this->_readAppSettings($app->package, $this->in->getCleanValueArray('settings'));
 
 		$app->title = $this->in->getString('settings.dp_app.title') ?: $app->package->title;
-		$app->setSettings($settings);
 
-		$this->em->persist($app);
-		$this->em->flush();
+		$context = null;
+		$handler = null;
 
 		if ($app->package->native_name) {
 			$native_app = $manager->getNativeApp($app);
@@ -345,9 +348,18 @@ class AppsController extends AbstractController
 			if ($class) {
 				$context = new InstallerContext($this->container, $native_app, $this->in->getCleanValueArray('settings'));
 				$handler = new $class();
-				$handler->updateSettings($context);
 			}
 		}
+
+		if ($handler) {
+			$settings = $handler->processSettings($context, $settings);
+		}
+		$app->setSettings($settings ?: array());
+
+		$this->em->persist($app);
+		$this->em->flush();
+
+		$handler->updateSettings($context);
 
 		// If this is a custom app, we can update assets from here as well
 		if ($package->is_custom) {

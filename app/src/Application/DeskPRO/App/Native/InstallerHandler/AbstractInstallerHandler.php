@@ -34,43 +34,61 @@
 
 namespace Application\DeskPRO\App\Native\InstallerHandler;
 
-interface InstallerHandlerInterface
+abstract class AbstractInstallerHandler implements InstallerHandlerInterface
 {
 	/**
 	 * @param InstallerContext $context
 	 * @param array $settings
 	 * @return array
 	 */
-	public function processSettings(InstallerContext $context, array $settings);
+	public function processSettings(InstallerContext $context, array $settings)
+	{
+		return $settings;
+	}
 
 	/**
 	 * @param InstallerContext $context
 	 * @param array $settings
 	 * @return array
 	 */
-	public function validateSettings(InstallerContext $context, array $settings);
+	public function validateSettings(InstallerContext $context, array $settings)
+	{
+		return $settings;
+	}
 
 	/**
 	 * @param InstallerContext $context
 	 * @return void
 	 */
-	public function install(InstallerContext $context);
+	public function install(InstallerContext $context)
+	{
+
+	}
 
 	/**
 	 * @param InstallerContext $context
 	 * @return void
 	 */
-	public function uninstall(InstallerContext $context);
+	public function uninstall(InstallerContext $context)
+	{
+
+	}
 
 	/**
 	 * @param InstallerContext $context
 	 * @return void
 	 */
-	public function updateSettings(InstallerContext $context);
+	public function updateSettings(InstallerContext $context)
+	{
+
+	}
 
 	/**
 	 * @param InstallerContext $context
 	 * @return void
 	 */
-	public function updatePackage(InstallerContext $context);
+	public function updatePackage(InstallerContext $context)
+	{
+
+	}
 }
