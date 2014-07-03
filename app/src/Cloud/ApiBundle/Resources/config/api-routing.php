@@ -25,7 +25,6 @@ $collection->create('api_dpc_call_resetpass', array(
 
 $collection->rewriteController('ApiBundle:License', 'CloudApiBundle:License');
 $collection->removeRoutes(
-	'api_dp_license',
 	'api_dp_license_save',
 	'api_dp_keyfile',
 	'api_dp_license_versioninfo',

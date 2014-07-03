@@ -72,8 +72,11 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 			$ctrl_name = null;
 			$ctrl_path = $route_info['_controller'];
 			$m = null;
-			if (preg_match('#^Application\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
-				$ctrl_name = $m[1] . ':' . $m[2] . ':' . $m[3];
+			if (preg_match('#^(Application|Cloud)\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
+				$ctrl_name = $m[2] . ':' . $m[3] . ':' . $m[4];
+				if ($m[1] == 'Cloud') {
+					$ctrl_name = 'Cloud' . $ctrl_name;
+				}
 			}
 
 			$route_id = $route_info['_route'];

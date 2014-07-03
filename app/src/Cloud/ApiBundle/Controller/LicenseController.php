@@ -36,9 +36,46 @@ namespace Cloud\ApiBundle\Controller;
 
 use Application\ApiBundle\Controller\LicenseController as BaseLicenseController;
 use Application\DeskPRO\Entity\TmpData;
+use DeskPRO\Kernel\License;
+use Orb\Util\Dates;
 
 class LicenseController extends BaseLicenseController
 {
+	####################################################################################################################
+	# get-license
+	####################################################################################################################
+
+	public function getLicenseAction()
+	{
+		$lic = License::getLicense();
+
+		$is_expired = false;
+		$expire_in_days = 0;
+
+		if ($lic->getExpireDate()) {
+			$is_expired = $lic->getExpireDate()->format('U') < time();
+			if (!$is_expired) {
+				$lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
+				$expire_in_days = $lic_expire_parts['days'];
+				$expire_in_days += $lic_expire_parts['years'] * 365;
+			}
+		}
+
+		return $this->createApiResponse(array(
+			'license' => array(
+				'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
+				'isExpired'   => $is_expired,
+				'expireDays'  => $expire_in_days,
+				'isDemo'      => $lic->isDemo() ? true : false,
+				'maxAgents'   => $lic->getMaxAgents()
+			)
+		));
+	}
+
+	####################################################################################################################
+	# get-billing-login-token
+	####################################################################################################################
+
 	public function getBillingLoginTokenAction()
 	{
 		$tmpdata = new TmpData();

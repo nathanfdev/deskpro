@@ -2,6 +2,11 @@
   define(['DeskPRO/Util/Util'], function(Util) {
     var RouteMutator, newRoutes, routeModify;
     routeModify = {
+      "home": {
+        route: {
+          controller: 'Admin_Cloud_Main_Ctrl_Home'
+        }
+      },
       "license": {
         route: {
           controller: 'Admin_Cloud_License_Ctrl_License'

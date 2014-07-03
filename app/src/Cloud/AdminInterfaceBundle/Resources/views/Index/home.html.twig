@@ -68,6 +68,41 @@
 		<a href="{{ ng_href('agents.login_log') }}">View login logs &rarr;</a>
 	</div>
 
+	<div ng-if="Home.license.isDemo" class="alert" ng-class="{'alert-success': Home.license.expireDays >= 29, 'alert-info': Home.license.expireDays < 29 && Home.license.expireDays >= 7, 'alert-danger': Home.license.expireDays < 7}" style="margin: 15px 15px 0 15px;">
+		<div ng-if="Home.license.expireDays >= 29">
+			<h3 style="margin-top: 8px;">Welcome to your DeskPRO Demo</h3>
+			<p>
+				Welcome to your fully-functional DeskPRO demo.
+			</p>
+			<p>
+				You have 30 days to try DeskPRO. When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
+				Feel free to enter your billing information now&mdash;you get 30 days free even if you decide to subscribe now.
+			</p>
+		</div>
+		<div ng-if="Home.license.expireDays < 29 && Home.license.expireDays >= 7">
+			<h3 style="margin-top: 8px;">DeskPRO Demo</h3>
+			<p>
+				Your DeskPRO demo will expire in {{ ng_var('Home.license.expireDays') }} days.
+			</p>
+			<p>
+				When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
+				Feel free to enter your billing information now&mdash;you get 30 days free even if you decide to subscribe now.
+			</p>
+		</div>
+		<div ng-if="Home.license.expireDays < 7">
+			<h3 style="margin-top: 8px;">Demo Expiring Soon</h3>
+			<p>
+				Your DeskPRO demo will expire in <span ng-if="Home.license.expireDays == 1">1 day</span><span ng-if="Home.license.expireDays > 1">{{ ng_var('Home.license.expireDays') }} days</span>.
+			</p>
+			<p>
+				When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
+			</p>
+			<p>
+				We recommend entering your billing information now to ensure your helpdesk remains active.
+			</p>
+		</div>
+	</div>
+
 	<div class="dp-interface-buttons">
 		<table cellspacing="35" width="100%">
 			<tbody>
@@ -92,7 +127,7 @@
 				</td>
 				<td class="dp-item" width="33%">
 					<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
-							<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
+							<div class="title-wrap"><h3>Billing</h3></div>
 							<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
 							<strong>
 								Manage your DeskPRO account.

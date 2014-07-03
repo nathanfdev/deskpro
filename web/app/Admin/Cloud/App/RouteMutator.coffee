@@ -4,6 +4,7 @@ define [
 	Util
 ) ->
 	routeModify = {
+		"home":                      { route: {controller: 'Admin_Cloud_Main_Ctrl_Home'} }
 		"license":                   { route: {controller: 'Admin_Cloud_License_Ctrl_License'} }
 		"dev_ui":                    { cancel: true }
 		"dev_ui_table":              { cancel: true }

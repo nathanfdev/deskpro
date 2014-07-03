@@ -68,7 +68,7 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
 	 */
 	public function rewriteController($find_controller, $replace_controller)
 	{
-		$this->ops[] = array('removeController', array($find_controller, $replace_controller));
+		$this->ops[] = array('rewriteController', array($find_controller, $replace_controller));
 
 		$find_controller    = trim($find_controller, ':') . ':';
 		$replace_controller = trim($replace_controller, ':') . ':';
