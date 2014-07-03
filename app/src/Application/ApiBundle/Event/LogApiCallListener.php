@@ -36,7 +36,7 @@ use Application\DeskPRO\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
 
-class ControllerPostActionListener
+class LogApiCallListener
 {
 	public function onControllerPostAction(PrePostEvent $event, $eventName, ContainerAwareEventDispatcher $dispatcher)
 	{

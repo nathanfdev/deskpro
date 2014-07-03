@@ -74,15 +74,10 @@ class CoreExtension extends Extension
 		$container->setDefinition('deskpro.auditlog.writer.db', $definition);
 
 	    $container
-		    ->register('kernel.listener.controller_post_action', 'Application\\ApiBundle\\Event\\ControllerPostActionListener')
+		    ->register('kernel.listener.controller_post_action', 'Application\\ApiBundle\\Event\\LogApiCallListener')
 		    ->addTag('kernel.event_listener', array(
 			    'event' => 'DeskPRO_onControllerPostAction', 'method' => 'onControllerPostAction')
 		    )
-//		    ->setArguments(array(
-//			    new Reference('deskpro.api.request_auth'),
-//			    new Reference('doctrine.orm.entity_manager'),
-//		    ))
-//		    ->setScope('request')
 	    ;
     }
 
