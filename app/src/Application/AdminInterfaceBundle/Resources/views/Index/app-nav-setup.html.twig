@@ -9,6 +9,15 @@
 					<i class="fa fa-caret-right"></i>
 				</a>
 			</li>
+			{% if app.isCloud() %}
+				<li dp-state-mark="setup.cloud_custom_domain">
+					<a href="{{ ng_href('setup.cloud_custom_domain') }}">
+						<i class="fa fa-link"></i>
+						<span>Domain / URL Setup</span>
+						<i class="fa fa-caret-right"></i>
+					</a>
+				</li>
+			{% endif %}
 			<li dp-state-mark="setup.languages">
 				<a href="{{ ng_href('setup.languages') }}">
 					<i class="fa fa-globe"></i>

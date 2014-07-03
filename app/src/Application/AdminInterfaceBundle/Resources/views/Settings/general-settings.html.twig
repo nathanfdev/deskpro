@@ -27,19 +27,21 @@
 						</span>
 						<input type="text" class="form-control" ng-model="settings.deskpro_name" style="width: 40%" />
 					</div>
-					<div class="inner-group">
-						<label>
-							<h4>
-								Helpdesk URL
-							</h4>
-						</label>
-						<span class="help-block">
-							The primary URL for your helpdesk. This URL is used whenever the system needs
-							to link to your helpdesk. For example, in email notifications.
-						</span>
+					{% if not app.isCloud() %}
+						<div class="inner-group">
+							<label>
+								<h4>
+									Helpdesk URL
+								</h4>
+							</label>
+							<span class="help-block">
+								The primary URL for your helpdesk. This URL is used whenever the system needs
+								to link to your helpdesk. For example, in email notifications.
+							</span>
 
-						<input type="text" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
-					</div>
+							<input type="text" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
+						</div>
+					{% endif %}
 				</div>
 			</div>
 		</div>

@@ -28,7 +28,12 @@ define [
 	}
 
 	newRoutes = [
-
+		{
+			id: 'setup.cloud_custom_domain',
+			url: '/cloud-custom-domain',
+			templateName: 'Setup/custom-domain.html',
+			controller: 'Admin_Cloud_Settings_Ctrl_CustomDomain'
+		}
 	]
 
 	class RouteMutator

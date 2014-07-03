@@ -194,7 +194,10 @@ class GeneralSettings
 	 */
 	public function saveSettings()
 	{
-		$this->settings->setSetting('core.deskpro_url',  $this->deskpro_url);
+		if ($this->deskpro_url) {
+			$this->settings->setSetting('core.deskpro_url', $this->deskpro_url);
+		}
+
 		$this->settings->setSetting('core.deskpro_name', $this->deskpro_name);
 		$this->settings->setSetting('core.site_url',  $this->site_url);
 		$this->settings->setSetting('core.site_name', $this->site_name);

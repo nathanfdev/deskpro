@@ -48,6 +48,19 @@ $collection->create('api_dpc_call_resetpass', array(
 # Settings
 ########################################################################################################################
 
+$collection->create('api_cloud_urlsettings', array(
+	'path'       => '/settings/cloud/url-settings',
+	'controller' => 'CloudApiBundle:Settings:getUrlSettings',
+	'methods'    => array('GET')
+));
+
+$collection->create('api_cloud_urlsettings_save', array(
+	'path'       => '/settings/cloud/url-settings',
+	'controller' => 'CloudApiBundle:Settings:saveUrlSettings',
+	'methods'    => array('POST')
+));
+
+$collection->rewriteController('ApiBundle:Settings', 'CloudApiBundle:Settings');
 $collection->removeRoutes(
 	'api_all_settings_raw',
 	'api_all_settings_raw_save'
