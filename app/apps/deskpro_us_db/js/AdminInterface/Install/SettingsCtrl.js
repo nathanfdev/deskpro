@@ -2,6 +2,10 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 	return ['$scope', 'Api', '$q', '$modal', function($scope, Api, $q, $modal) {
 		$scope.enableCustomFooter();
 
+		if (window.DP_IS_CLOUD) {
+			$scope.is_cloud = true;
+		}
+
 		//##############################################################################################################
 		//# Test modal
 		//##############################################################################################################

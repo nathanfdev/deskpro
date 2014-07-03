@@ -66,6 +66,15 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 		$password = $context->getIn()->getString('password');
 		$options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
 
+		if (defined('DPC_IS_CLOUD')) {
+			if ($app_id = $context->getIn()->getString('app_id')) {
+				$app = $context->getContainer()->getAppManager()->getApp($app_id);
+				$options['password_php'] = $app->getSetting('php_code');
+			} else {
+				$options['password_php'] = '';
+			}
+		}
+
 		$tester = UsersourceTester::createFromOptions('Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck', $options);
 		$tester->test($username, $password);
 
