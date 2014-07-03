@@ -89,7 +89,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		goFirstIpBanPage: ->
 
-			@pagination.ip_bans.page = 1
+			@pagination.ip_bans.page = 0
 
 		###
  	  #
@@ -113,7 +113,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		goFirstEmailBanPage: ->
 
-			@pagination.email_bans.page = 1
+			@pagination.email_bans.page = 0
 
 		###
 		# Show the delete dlg

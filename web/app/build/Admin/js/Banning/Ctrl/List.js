@@ -115,7 +115,7 @@
        */
 
       Admin_Banning_Ctrl_List.prototype.goFirstIpBanPage = function() {
-        return this.pagination.ip_bans.page = 1;
+        return this.pagination.ip_bans.page = 0;
       };
 
 
@@ -142,7 +142,7 @@
        */
 
       Admin_Banning_Ctrl_List.prototype.goFirstEmailBanPage = function() {
-        return this.pagination.email_bans.page = 1;
+        return this.pagination.email_bans.page = 0;
       };
 
 
