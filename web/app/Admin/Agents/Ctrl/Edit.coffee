@@ -20,6 +20,7 @@ define [
 			@hasPermOverrides = false
 
 			@$scope.$watch('EditCtrl.form.emails_list', (emails_list) =>
+				if not emails_list then return
 				if not @form.email_primary or @form.email_primary == '' or emails_list.indexOf(@form.email_primary) == -1
 					if emails_list.length
 						@form.email_primary = emails_list[0]

@@ -29,6 +29,9 @@
         this.hasPermOverrides = false;
         this.$scope.$watch('EditCtrl.form.emails_list', (function(_this) {
           return function(emails_list) {
+            if (!emails_list) {
+              return;
+            }
             if (!_this.form.email_primary || _this.form.email_primary === '' || emails_list.indexOf(_this.form.email_primary) === -1) {
               if (emails_list.length) {
                 return _this.form.email_primary = emails_list[0];
