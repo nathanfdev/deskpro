@@ -33,8 +33,17 @@
 
 namespace Application\DeskPRO\Routing;
 
+use \Symfony\Component\Routing\RouteCollection as BaseRouteCollection;
+
 class RouteCollection extends \Symfony\Component\Routing\RouteCollection
 {
+	/**
+	 * Array of operations to be run when this collection is resolved onto another collection
+	 *
+	 * @var array
+	 */
+	private $ops = array();
+
 	/**
 	 * @param string $name
 	 * @param array $info
@@ -59,6 +68,8 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
 	 */
 	public function rewriteController($find_controller, $replace_controller)
 	{
+		$this->ops[] = array('removeController', array($find_controller, $replace_controller));
+
 		$find_controller    = trim($find_controller, ':') . ':';
 		$replace_controller = trim($replace_controller, ':') . ':';
 
@@ -79,6 +90,8 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
 	 */
 	public function removeController($find_controller)
 	{
+		$this->ops[] = array('removeController', array($find_controller));
+
 		$find_controller = trim($find_controller, ':') . ':';
 		foreach ($this as $name => $route) {
 			$ctrl = $route->getDefault('_controller');
@@ -102,14 +115,41 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
 		if (func_num_args() != 1) {
 			$args = func_get_args();
 			foreach ($args as $a) {
-				$this->nullRoute($a);
+				$this->removeRoutes($a);
 			}
 		} else if (is_array($name)) {
 			foreach ($name as $a) {
-				$this->nullRoute($a);
+				$this->removeRoutes($a);
 			}
 		} else {
 			$this->remove($name);
+			$this->ops[] = array('removeRoutes', array($name));
 		}
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getMutateOps()
+	{
+		return $this->ops;
+	}
+
+
+	/**
+	 * @param BaseRouteCollection $collection
+	 */
+	public function addCollection(BaseRouteCollection $collection)
+	{
+		// If this is a RouteCollection then we need to run the
+		// remove* and rewriteController ops on the existing collection
+		if ($collection instanceof RouteCollection) {
+			foreach ($collection->getMutateOps() as $info) {
+				call_user_func_array(array($this, $info[0]), $info[1]);
+			}
+		}
+
+		parent::addCollection($collection);
 	}
 }
