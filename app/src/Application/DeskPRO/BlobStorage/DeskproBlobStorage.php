@@ -644,12 +644,14 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @param Blob $blob
+	 * @param Blob   $blob
 	 * @param string $adapter_id
-	 * @return void
+	 * @param bool   $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
+	 *                            Otherwise, you can still check error state based on the return value.
+	 * @return bool
 	 * @throws \Exception
 	 */
-	public function deleteBlob(Blob $blob, $adapter_id)
+	public function deleteBlob(Blob $blob, $adapter_id, $ex_on_error = false)
 	{
 		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Deleting {$blob->getPath()} from $adapter_id");
 
@@ -659,18 +661,26 @@ class DeskproBlobStorage implements Loggable
 			$data = $adapter->deleteBlob($blob);
 		} catch (\Exception $e) {
 			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete failed: {$e->getCode()} {$e->getMessage()}");
-			throw $e;
+			if ($ex_on_error) {
+				throw $e;
+			}
+			return false;
 		}
 
 		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete success");
+
+		return true;
 	}
 
 
 	/**
 	 * @param BlobEntity $blob_entity
-	 * @return void
+	 * @param bool       $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
+	 *                                Otherwise, you can still check error state based on the return value.
+	 * @return bool
+	 * @throws \Exception
 	 */
-	public function deleteBlobRecord(BlobEntity $blob_entity)
+	public function deleteBlobRecord(BlobEntity $blob_entity, $ex_on_error = false)
 	{
 		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Deleting {$blob_entity->getId()} from {$blob_entity->storage_loc}");
 
@@ -682,10 +692,15 @@ class DeskproBlobStorage implements Loggable
 			$this->em->flush();
 		} catch (\Exception $e) {
 			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Delete failed: {$e->getCode()} {$e->getMessage()}");
-			throw $e;
+			if ($ex_on_error) {
+				throw $e;
+			}
+			return false;
 		}
 
 		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Delete success");
+
+		return true;
 	}
 
 
