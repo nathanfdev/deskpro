@@ -1,6 +1,8 @@
 language: php
 php:
+  - 5.3
   - 5.4
+  - 5.5
 before_script: app/testing/travis-ci/before_script.sh
 after_failure: app/testing/travis-ci/after_failure.sh
 after_success:
