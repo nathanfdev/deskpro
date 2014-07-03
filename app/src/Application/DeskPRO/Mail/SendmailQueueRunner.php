@@ -37,7 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\SendmailQueue;
 use Application\DeskPRO\Mail\Transport\DeskproQueueTransport;
-use Cloud\Mail\Transport\DelegatingTransport;
+use Application\DeskPRO\Mail\Transport\DelegatingTransport;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
