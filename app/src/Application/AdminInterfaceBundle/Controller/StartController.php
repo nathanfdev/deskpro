@@ -37,6 +37,15 @@ use Application\DeskPRO\Entity\ApiToken;
 
 class StartController extends AbstractController
 {
+	public function preAction($action, $arguments = null)
+	{
+		if (defined('DPC_IS_CLOUD')) {
+			throw $this->createNotFoundException();
+		}
+
+		return parent::preAction($action, $arguments);
+	}
+
 	####################################################################################################################
 	# index
 	####################################################################################################################
