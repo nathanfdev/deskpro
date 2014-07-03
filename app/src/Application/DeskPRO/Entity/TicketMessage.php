@@ -334,12 +334,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 				}
 
 				if (!$do_link) {
-					$replace = sprintf('<img src="%s" title="%s" class="dragout" '.$extra.' />', $url, $m[3]);
+					$replace = sprintf('<img src="%s" title="%s" class="dragout" %s/>', $url, $m[3], $extra);
 				} else {
-					$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout" '.$extra.'><img src="%s" title="%s" /></a>', $download_url, $url, $m[3]);
+					$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout" %s><img src="%s" title="%s" /></a>', $download_url, $extra, $url, $m[3]);
 				}
 			} else {
-				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout" '.$extra.'>%s</a>', $download_url, $m[3]);
+				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout" %s>%s</a>', $download_url, $extra, $m[3]);
 			}
 
 			return $replace;
