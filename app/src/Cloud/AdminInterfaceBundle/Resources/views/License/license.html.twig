@@ -1,4 +1,9 @@
 {% extends 'AdminInterfaceBundle:Layout:fill-page.html.twig' %}
 {% block fillpage_content %}
-	XXX
+	<div class="dpc-license-page">
+		<div class="iframe-loading" ng-show="iframe_loading">
+			<i class="spinner-editor"></i>
+		</div>
+		<div class="iframe-holder" ng-if="!iframe_loading && iframe_code" dp-html-render-var="iframe_code"></div>
+	</div>
 {% endblock %}

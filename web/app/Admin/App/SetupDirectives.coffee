@@ -175,3 +175,13 @@ define [
 							is_running = false
 			}
 		])
+
+		Module.directive('dpHtmlRenderVar', [ ->
+			return {
+				restrict: 'A',
+				link: (scope, element, attrs) ->
+					scope.$watch(attrs.dpHtmlRenderVar, (newVal) ->
+						element.html(newVal)
+					)
+			}
+		])

@@ -37,7 +37,7 @@
       Module.directive('dpPortalEditor', Admin_Portal_Directive_PortalEditor);
       Module.directive('dpTicketLayoutEditor', Admin_TicketDeps_Directive_LayoutEditor);
       Module.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
-      return Module.directive('dpMoveListToPos', [
+      Module.directive('dpMoveListToPos', [
         '$timeout', function($timeout) {
           return {
             restrict: 'A',
@@ -101,6 +101,18 @@
                   return is_running = false;
                 }
               };
+            }
+          };
+        }
+      ]);
+      return Module.directive('dpHtmlRenderVar', [
+        function() {
+          return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+              return scope.$watch(attrs.dpHtmlRenderVar, function(newVal) {
+                return element.html(newVal);
+              });
             }
           };
         }

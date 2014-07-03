@@ -18,11 +18,17 @@
       Admin_Cloud_License_Ctrl_License.DEPS = ['$window'];
 
       Admin_Cloud_License_Ctrl_License.prototype.init = function() {
-        return null;
+        return this.$scope.iframe_loading = true;
       };
 
       Admin_Cloud_License_Ctrl_License.prototype.initialLoad = function() {
-        console.log("Done");
+        this.Api.sendGet('/dp_license/cloud/billing-login-token').then((function(_this) {
+          return function(result) {
+            console.log(result.data);
+            _this.$scope.iframe_loading = false;
+            return _this.$scope.iframe_code = '<iframe src="' + result.data.ma_url + '" frameborder="0"></iframe>';
+          };
+        })(this));
         return null;
       };
 

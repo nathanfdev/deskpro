@@ -23,47 +23,20 @@ $collection->create('api_dpc_call_resetpass', array(
 # License
 ########################################################################################################################
 
-$collection->create('api_dp_license', array(
-	'path'        => '/dp_license',
-	'controller'  => 'ApiBundle:License:getLicense',
+$collection->rewriteController('ApiBundle:License', 'CloudApiBundle:License');
+$collection->nullRoute(
+	'api_dp_license',
+	'api_dp_license_save',
+	'api_dp_keyfile',
+	'api_dp_license_versioninfo',
+	'api_dp_license_latestversion',
+	'api_dp_license_news'
+);
+
+$collection->create('api_dpc_call_resetpass', array(
+	'path'        => '/dp_license/cloud/billing-login-token',
+	'controller'  => 'CloudApiBundle:License:getBillingLoginToken',
 	'methods'     => array('GET'),
-));
-
-$collection->create('api_dp_license_save', array(
-	'path'        => '/dp_license',
-	'controller'  => 'ApiBundle:License:setLicense',
-	'methods'     => array('POST'),
-));
-
-$collection->create('api_dp_keyfile', array(
-	'path'         => '/dp_license/keyfile.{_format}',
-	'controller'   => 'ApiBundle:License:downloadKeyfile',
-	'methods'      => array('GET'),
-	'requirements' => array('_format' => 'txt|json'),
-));
-
-$collection->create('api_dp_license_supportrequest', array(
-	'path'         => '/dp_license/support-request',
-	'controller'   => 'ApiBundle:License:sendSupportRequest',
-	'methods'      => array('POST'),
-));
-
-$collection->create('api_dp_license_versioninfo', array(
-	'path'         => '/dp_license/version-info',
-	'controller'   => 'ApiBundle:License:getVersionInfo',
-	'methods'      => array('GET'),
-));
-
-$collection->create('api_dp_license_latestversion', array(
-	'path'         => '/dp_license/latest-version-info',
-	'controller'   => 'ApiBundle:License:getLatestVersion',
-	'methods'      => array('GET'),
-));
-
-$collection->create('api_dp_license_news', array(
-	'path'         => '/dp_license/news',
-	'controller'   => 'ApiBundle:License:getNews',
-	'methods'      => array('GET'),
 ));
 
 return $collection;

@@ -12452,6 +12452,44 @@ table.agent-perms-table .toggle-wrap i {
   vertical-align: baseline;
 }
 
+.dpc-license-page {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.dpc-license-page .iframe-loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+}
+
+.dpc-license-page .iframe-holder {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #fff;
+}
+
+.dpc-license-page .iframe-holder iframe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
 #upgrader {
   width: 100%;
   height: 100%;

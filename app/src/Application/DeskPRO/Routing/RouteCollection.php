@@ -35,10 +35,72 @@ namespace Application\DeskPRO\Routing;
 
 class RouteCollection extends \Symfony\Component\Routing\RouteCollection
 {
+	/**
+	 * @param string $name
+	 * @param array $info
+	 * @return Route
+	 */
 	public function create($name, array $info)
 	{
 		$route = Route::create($info);
 		$this->add($name, $route);
 		return $route;
+	}
+
+	/**
+	 * Rewrites all existing routes with a given controller to use a new controller
+	 * instead.
+	 *
+	 * Used mainly in cloud routing to rewrite routes to use a Cloud controller
+	 * which overrides behaviour.
+	 *
+	 * @param string $find_controller
+	 * @param string $replace_controller
+	 */
+	public function rewriteController($find_controller, $replace_controller)
+	{
+		$find_controller    = trim($find_controller, ':') . ':';
+		$replace_controller = trim($replace_controller, ':') . ':';
+
+		foreach ($this as $route) {
+			$ctrl = $route->getDefault('_controller');
+			if (strpos($ctrl, $find_controller) === 0) {
+				$ctrl = str_replace($find_controller, $replace_controller, $ctrl);
+				$route->setDefault('_controller', $ctrl);
+			}
+		}
+	}
+
+
+	/**
+	 * Modifies an existing route $name to serve a not found page.
+	 *
+	 * Used mainly in cloud routing to disable routes that dont apply.
+	 *
+	 * @param string|array $name... A name or array of names or multiple arguments of the same
+	 * @return null|\Symfony\Component\Routing\Route
+	 */
+	public function nullRoute($name)
+	{
+		if (func_num_args() != 1) {
+			$args = func_get_args();
+			foreach ($args as $a) {
+				$this->nullRoute($a);
+			}
+			return null;
+		} else if (is_array($name)) {
+			foreach ($name as $a) {
+				$this->nullRoute($a);
+			}
+			return null;
+		} else {
+			$route = $this->get($name);
+			if (!$route) {
+				return null;
+			}
+
+			$route->setDefault('_controller', 'DeskPRO:Misc:notFound');
+			return $route;
+		}
 	}
 }

@@ -26,46 +26,25 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage ApiBundle
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace Cloud\ApiBundle\Controller;
+namespace Application\DeskPRO\Controller;
 
-use Application\ApiBundle\Controller\LicenseController as BaseLicenseController;
-use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-class LicenseController extends BaseLicenseController
+class MiscController extends AbstractController
 {
-	public function getBillingLoginTokenAction()
+	public function emptyAction()
 	{
-		$tmpdata = new TmpData();
-		$tmpdata->setType('dpc_billing_access');
-		$tmpdata->setData('person_info', array(
-			'helpdesk_url'     => rtrim($this->container->getSetting('core.deskpro_url'), '/'),
-			'asset_url'        => str_replace('/index.php', '', rtrim($this->container->getSetting('core.deskpro_url'), '/')),
-			'person_id'        => $this->person->getId(),
-			'first_name'       => $this->person->first_name,
-			'last_name'        => $this->person->last_name,
-			'name'             => $this->person->getDisplayName(),
-			'email'            => $this->person->getPrimaryEmailAddress(),
-			'picture_url_24'   => $this->person->getPictureUrl(24),
-			'can_admin'        => $this->person->can_admin,
-			'can_agent'        => $this->person->can_agent,
-			'can_billing'      => $this->person->can_billing,
-			'can_reports'      => $this->person->can_reports,
-			'can_portal'       => $this->container->getSetting('user.portal_enabled'),
-		));
-		$tmpdata->date_expire = new \DateTime('+15 minutes');
+		return $this->createResponse('');
+	}
 
-		$this->em->persist($tmpdata);
-		$this->em->flush();
-
-		return $this->createJsonResponse(array(
-			'code'   => $tmpdata->getCode(),
-			'ma_url' => DP_MA_SERVER . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode()
-		));
+	public function notFoundAction()
+	{
+		throw $this->createNotFoundException();
 	}
 }

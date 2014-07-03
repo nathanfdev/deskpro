@@ -4,10 +4,15 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@CTRL_AS   = 'Ctrl'
 		@DEPS      = ['$window']
 
-		init: -> null
+		init: ->
+			@$scope.iframe_loading = true
 
 		initialLoad: ->
-			console.log("Done")
+			@Api.sendGet('/dp_license/cloud/billing-login-token').then( (result) =>
+				console.log(result.data)
+				@$scope.iframe_loading = false
+				@$scope.iframe_code    = '<iframe src="' + result.data.ma_url + '" frameborder="0"></iframe>'
+			)
 			return null
 
 	Admin_Cloud_License_Ctrl_License.EXPORT_CTRL()
