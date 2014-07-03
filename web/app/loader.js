@@ -43,6 +43,7 @@ requirejs.config({
 		"jstz":                            "vendor/detect_timezone",
 
 		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/AdminLoad"),
+		"CloudAdminLoad":                  (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/Cloud/CloudAdminLoad"),
 		"AdminUpgradeLoad":                (DP_USE_RJS_BUILD ? "app/build/AdminUpgrade/js/build" : "app/AdminUpgrade/AdminUpgradeLoad"),
 		"AdminStartLoad":                  (DP_USE_RJS_BUILD ? "app/build/AdminStart/js/build" : "app/AdminStart/AdminStartLoad"),
 		"ReportsLoad":                     (DP_USE_RJS_BUILD ? "app/build/Reports/js/build" : "app/Reports/ReportsLoad"),

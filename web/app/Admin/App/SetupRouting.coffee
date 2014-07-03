@@ -1,7 +1,9 @@
 define [
 	'AdminRouting',
+	'Admin/Cloud/App/RouteMutator'
 ], (
-	AdminRouting
+	AdminRouting,
+	Admin_Cloud_App_RouteMutator
 ) ->
 	return (Module) ->
 		Module.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
@@ -14,7 +16,10 @@ define [
 					return dpTemplateManager.get(view)
 				]
 
-			for route in AdminRouting
+			if window.DP_IS_CLOUD
+				routeMutator = new Admin_Cloud_App_RouteMutator()
+
+			procRoute = (route) ->
 				id = route.id
 				url = route.url
 
@@ -55,4 +60,15 @@ define [
 					opts.views[viewName] = v
 
 				$stateProvider.state(id, opts)
+
+			for route in AdminRouting
+				if routeMutator
+					route = routeMutator.processRoute(route)
+					continue if not route
+
+				procRoute(route)
+
+			if routeMutator
+				for route in routeMutator.getExtraRoutes()
+					procRoute(route)
 		])

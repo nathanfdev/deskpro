@@ -183,7 +183,10 @@ define([
 	'Admin/KbSettings/Ctrl/KbSettings',
 	'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
 	'Admin/NewsSettings/Ctrl/NewsSettings',
-	'Admin/FeedbackSettings/Ctrl/FeedbackSettings'
+	'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
+
+	'CloudAdminLoad'
+
 ], function(angular) {
 	return {
 		start: function() {

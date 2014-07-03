@@ -41,6 +41,7 @@
 		"jstz":                            "../vendor/detect_timezone",
 
 		"AdminLoad":                       "Admin/AdminLoad",
+		"CloudAdminLoad":                  "Admin/Cloud/CloudAdminLoad",
 		"AdminUpgradeLoad":                "AdminUpgrade/AdminUpgradeLoad",
 		"AdminStartLoad":                  "AdminStart/AdminStartLoad",
 		"ReportsLoad":                     "Reports/ReportsLoad",
