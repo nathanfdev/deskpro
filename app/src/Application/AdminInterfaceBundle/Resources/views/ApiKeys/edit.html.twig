@@ -4,9 +4,20 @@
 
 	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
+
+            <nav class="dp-blocktabs responsive">
+                <ul>
+                    <li class="active" dp-tab-btn="api.keys"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('adm.api_keys.keys_title') }}</a></li>
+                    <li class="pipe">|</li>
+                    <li dp-tab-btn="api.logs"><a href="#"><i class="fa fa-key"></i> {{ phrase('adm.api_keys.logs_title') }}</a></li>
+                </ul>
+            </nav>
+
 			<article class="form-horizontal dp-form">
-				<div class="panel panel-fill indent">
-					<div class="panel-body">
+
+                <div dp-tab-body="api.keys">
+				    <div class="panel panel-fill indent">
+					    <div class="panel-body">
 						<div class="form-group">
 							<div class="col-lg-3">
 								<h3>Description</h3>
@@ -81,7 +92,32 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				    </div>
+                </div>
+                <div dp-tab-body="api.logs">
+                    <div class="panel panel-fill indent">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ phrase('adm.api_keys.request') }}</th>
+                                                <th>{{ phrase('adm.api_keys.response') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>test</td>
+                                                <td>test</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 			</article>
 
 			<footer>

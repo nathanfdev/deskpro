@@ -72,6 +72,18 @@ class CoreExtension extends Extension
 		$definition->setFactoryMethod('getAuditDbWriter');
 		$definition->addTag('deskpro.auditlog.writers');
 		$container->setDefinition('deskpro.auditlog.writer.db', $definition);
+
+	    $container
+		    ->register('kernel.listener.controller_post_action', 'Application\\ApiBundle\\Event\\ControllerPostActionListener')
+		    ->addTag('kernel.event_listener', array(
+			    'event' => 'DeskPRO_onControllerPostAction', 'method' => 'onControllerPostAction')
+		    )
+//		    ->setArguments(array(
+//			    new Reference('deskpro.api.request_auth'),
+//			    new Reference('doctrine.orm.entity_manager'),
+//		    ))
+//		    ->setScope('request')
+	    ;
     }
 
 	public function getXsdValidationBasePath()

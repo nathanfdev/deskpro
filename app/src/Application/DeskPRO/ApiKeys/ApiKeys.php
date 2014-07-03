@@ -108,6 +108,7 @@ class ApiKeys
 			$data['note']                      = $api_key->note;
 			$data['code']                      = $api_key->code;
 			$data['keyString']                 = $api_key->keyString;
+			$data['logs']                      = $api_key->logs->toArray();
 
 			if ($api_key->person) {
 				$data['person'] = $api_key->person->toApiData(false, false);
