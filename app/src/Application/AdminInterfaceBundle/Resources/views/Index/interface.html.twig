@@ -141,9 +141,11 @@
 			<li tooltip="{{ phrase('adm.general.apps') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="apps">
 				<a href="#/apps"><i class="app-icon app-icon-apps"></i></a>
 			</li>
-			<li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="server">
-				<a href="#/server"><i class="app-icon app-icon-server"></i></a>
-			</li>
+			{% if not app.isCloud() %}
+				<li tooltip="{{ phrase('adm.general.apps_server') }}" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="server">
+					<a href="#/server"><i class="app-icon app-icon-server"></i></a>
+				</li>
+			{% endif %}
 		</ul>
 
 		<ul class="btm">

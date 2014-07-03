@@ -73,34 +73,43 @@ class RouteCollection extends \Symfony\Component\Routing\RouteCollection
 
 
 	/**
-	 * Modifies an existing route $name to serve a not found page.
+	 * Remove all routes for a given controller
+	 *
+	 * @param string $find_controller
+	 */
+	public function removeController($find_controller)
+	{
+		$find_controller = trim($find_controller, ':') . ':';
+		foreach ($this as $name => $route) {
+			$ctrl = $route->getDefault('_controller');
+			if (strpos($ctrl, $find_controller) === 0) {
+				$this->remove($name);
+			}
+		}
+	}
+
+
+	/**
+	 * Removes an existing route $name.
 	 *
 	 * Used mainly in cloud routing to disable routes that dont apply.
 	 *
 	 * @param string|array $name... A name or array of names or multiple arguments of the same
-	 * @return null|\Symfony\Component\Routing\Route
+	 * @return void
 	 */
-	public function nullRoute($name)
+	public function removeRoutes($name)
 	{
 		if (func_num_args() != 1) {
 			$args = func_get_args();
 			foreach ($args as $a) {
 				$this->nullRoute($a);
 			}
-			return null;
 		} else if (is_array($name)) {
 			foreach ($name as $a) {
 				$this->nullRoute($a);
 			}
-			return null;
 		} else {
-			$route = $this->get($name);
-			if (!$route) {
-				return null;
-			}
-
-			$route->setDefault('_controller', 'DeskPRO:Misc:notFound');
-			return $route;
+			$this->remove($name);
 		}
 	}
 }
