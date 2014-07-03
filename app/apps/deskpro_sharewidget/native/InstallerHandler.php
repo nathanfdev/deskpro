@@ -34,12 +34,10 @@
 
 namespace deskpro_sharewidget;
 
-use Application\DeskPRO\App\Native\EventHandler\EventContext;
-use Application\DeskPRO\App\Native\EventHandler\EventHandlerInterface;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
-class InstallerHandler implements InstallerHandlerInterface
+class InstallerHandler extends AbstractInstallerHandler
 {
 	/**
 	 * {@inheritDoc}
