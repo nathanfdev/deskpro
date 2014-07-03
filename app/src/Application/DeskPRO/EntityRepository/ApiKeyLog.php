@@ -47,9 +47,12 @@ class ApiKeyLog extends AbstractEntityRepository
 	 */
 	public function cleanup(\Application\DeskPRO\Entity\ApiKey $key)
 	{
+		// double included select to allow deleting from same table
 		$this->_em->getConnection()->executeQuery(sprintf('
 				DELETE FROM %1$s WHERE id < (
-					SELECT id FROM %1$s ORDER BY id DESC limit %2$d, 1
+					SELECT * FROM (
+						SELECT id FROM %1$s ORDER BY id DESC limit %2$d, 1
+					) as log
 				)
 			', $this->getTableName(), self::LIMIT),
 			array('key' => $key->getKeyString())

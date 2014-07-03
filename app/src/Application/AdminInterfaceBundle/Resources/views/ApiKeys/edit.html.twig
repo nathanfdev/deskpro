@@ -95,28 +95,41 @@
 				    </div>
                 </div>
                 <div dp-tab-body="api.logs">
-                    <div class="panel panel-fill indent">
-                        <div class="panel-body">
-                            <div class="form-group">
+                    <ul class="dp-item-list">
+                        <li dp-li-group-section ng-repeat="item in EditCtrl.api_key.logs">
+                            <a href="#" class="toggle" ng-click="$event.preventDefault();">
+                                <div class="row">
+                                    <div class="col-lg-4">{{ ng_var('item.request.method') }}</div>
+                                    <div class="col-lg-4">{{ ng_var('item.request.path') }}</div>
+                                    <div class="col-lg-4">{{ ng_var('item.time') }}</div>
+                                </div>
+                            </a>
+                            <div class="group-section-wrapper row-fluid">
                                 <div class="col-lg-12">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>{{ phrase('adm.api_keys.request') }}</th>
-                                                <th>{{ phrase('adm.api_keys.response') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>test</td>
-                                                <td>test</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <h4>{{ phrase('adm.api_keys.request') }}</h4>
+
+                                    <dl class="dl-horizontal">
+                                        <dt>{{ phrase('adm.api_keys.path') }}</dt>
+                                        <dd>{{ ng_var('item.request.path') }}</dd>
+                                        <dt>{{ phrase('adm.api_keys.method') }}</dt>
+                                        <dd>{{ ng_var('item.request.method') }}</dd>
+                                        <div ng-repeat="(key,val) in item.request.payload">
+                                            <dt>{{ ng_var('key') }}</dt>
+                                            <dd>{{ ng_var('val') }}</dd>
+                                        </div>
+                                    </dl>
+                                    <h4>{{ phrase('adm.api_keys.response') }}</h4>
+                                    <dl class="dl-horizontal">
+                                        <dt>{{ phrase('adm.api_keys.status') }}</dt>
+                                        <dd>{{ ng_var('item.response.status') }}</dd>
+                                        <dt>{{ phrase('adm.api_keys.content') }}</dt>
+                                        <dd>{{ ng_var('item.response.content') }}</dd>
+                                    </dl>
+                                    <br />
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 </div>
 			</article>
 

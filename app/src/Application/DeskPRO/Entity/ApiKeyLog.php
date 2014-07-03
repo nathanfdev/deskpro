@@ -87,7 +87,13 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
 	}
 
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['time'] = date('Y-m-d H:i:s', $data['time']);
 
+		return $data;
+	}
 
 	############################################################################
 	# Doctrine Metadata

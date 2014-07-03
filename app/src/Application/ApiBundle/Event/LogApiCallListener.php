@@ -72,5 +72,7 @@ class LogApiCallListener
 		);
 		$em->persist($log);
 		$em->flush();
+		// not sure if this would be good decision to remove outdated log entries on each api request
+		$em->getRepository('DeskPRO:ApiKeyLog')->cleanup($key);
 	}
 } 
