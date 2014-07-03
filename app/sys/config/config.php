@@ -113,11 +113,7 @@ $container->setDefinition('swiftmailer.mailer', $definition);
 
 // swiftmailer.transport.dp_delegating
 $definition = new Definition();
-if (defined('DPC_IS_CLOUD')) {
-	$definition->setClass('Cloud\\Mail\\Transport\\DelegatingTransport');
-} else {
-	$definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
-}
+$definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
 $definition->setArguments(array(
 	new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
 ));

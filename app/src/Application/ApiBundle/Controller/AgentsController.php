@@ -48,6 +48,7 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
+use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -253,6 +254,9 @@ class AgentsController extends AbstractController implements ProtectedController
 				throw $this->createNotFoundException();
 			}
 		} else {
+			$r = $this->preNewAgent(1);
+			if ($r) return $r;
+
 			$is_new = true;
 			$agent = new Person();
 			$agent->setPassword(Strings::random(20));
@@ -397,6 +401,26 @@ class AgentsController extends AbstractController implements ProtectedController
 		} else {
 			return $this->createSuccessResponse(array('person_id' => $agent->id));
 		}
+	}
+
+	/**
+	 * @param int $num
+	 * @return Response|null
+	 */
+	protected function preNewAgent($num)
+	{
+		$current_agents = $this->db->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent = 1 AND is_deleted = 0
+		");
+
+		$max_agents = License::getLicense()->getMaxAgents();
+		if ($max_agents && $current_agents+$num > $max_agents) {
+			return $this->createApiErrorResponse('license_agents_reached', "Your license allows $max_agents. You cannot create $num more agents until you upgrade your license.");
+		}
+
+		return null;
 	}
 
 	####################################################################################################################
