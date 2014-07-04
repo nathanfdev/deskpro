@@ -76,10 +76,10 @@ class EmailAccountsController extends BaseEmailAccountsController
 
 			// If not using a custom address, then outgoing account should always be mail
 			if (!$data['use_custom_email_address']) {
-				$data['outgoing_type'] = 'mail';
+				$data['outgoing_type'] = 'php_mail';
 			}
 
-			$data['out_gmail_account']['user'] = $data['custom_email_address'];
+			$data['out_gmail_account']['user'] = !empty($data['custom_email_address']) ? $data['custom_email_address'] : $data['address'];
 
 			// All incoming types are 'noop' because they aren't actually processed in the same way on cron
 			$data['incoming_type'] = 'noop';
