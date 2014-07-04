@@ -24,8 +24,9 @@
 		Allow from all
 	</Directory>
 
-	ErrorLog "%TRAVIS_BUILD_DIR%/logs/apache-error.log"
-    CustomLog "%TRAVIS_BUILD_DIR%/logs/apache-access.log" combined
+	ErrorLog ${APACHE_LOG_DIR}/error.log
 
 	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
