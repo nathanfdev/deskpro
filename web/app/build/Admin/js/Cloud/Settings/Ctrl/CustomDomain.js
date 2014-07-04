@@ -25,17 +25,28 @@
 
       Admin_Cloud_Settings_Ctrl_CustomDomain.prototype.save = function() {
         var postData;
+        this.$scope.form_error = null;
         this.startSpinner('saving');
         postData = {
           settings: this.$scope.form
         };
-        return this.Api.sendPostJson('/settings/cloud/url-settings', postData).then(function() {
-          return this.stopSpinner('saving').then((function(_this) {
-            return function() {
+        return this.Api.sendPostJson('/settings/cloud/url-settings', postData).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving').then(function() {
               return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
-            };
-          })(this));
-        });
+            });
+          };
+        })(this), (function(_this) {
+          return function(res) {
+            var _ref;
+            _this.stopSpinner('saving', true);
+            if (((_ref = res.data) != null ? _ref.error_code : void 0) != null) {
+              return _this.$scope.form_error = res.data.error_code;
+            } else {
+              return _this.$scope.form_error = 'server_error';
+            }
+          };
+        })(this));
       };
 
       return Admin_Cloud_Settings_Ctrl_CustomDomain;

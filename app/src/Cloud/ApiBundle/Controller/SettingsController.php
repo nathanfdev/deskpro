@@ -74,14 +74,14 @@ class SettingsController extends BaseSettingsController
 		$in_settings = new OptionsArray($this->in->getArrayValue('settings'));
 		$set_settings = array();
 
-		if ($in_settings->get('cloud_custom_domain')) {
-			$domain = preg_replace('#^https?://', '', strtolower($in_settings->get('cloud_custom_domain')));
-			$domain = str_replace('/', '', $domain);
+		if ($in_settings->get('domain_choice') == 'custom') {
+			$domain = preg_replace('#^https?://#', '', strtolower($in_settings->get('cloud_custom_domain')));
+			$domain = trim($domain, '/');
 
 			$url_test = 'http://' . $domain . '/';
 			$url_bits = @parse_url($url_test);
 
-			if (empty($url_bits['host']) || strpos($url_bits['host'], 'deskpro.com') !== false) {
+			if (empty($url_bits['host']) || strpos($url_bits['host'], 'deskpro.com') !== false || $url_bits['host'] != $domain) {
 				return $this->createApiErrorResponse('invalid_custom_domain', 'The domain you entered appears to be invalid');
 			}
 
