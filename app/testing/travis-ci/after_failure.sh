@@ -39,18 +39,18 @@ if [ -e /var/log/Xvfb.log ] ; then
 	cat /var/log/Xvfb.log
 fi
 
-if [ -e /var/log/apache2/access.log ] ; then
+if [ -e %TRAVIS_BUILD_DIR%/logs/apache-access.log ] ; then
 	echo ""
 	echo "[System] /var/log/apache2/access.log"
 	echo "======================================================="
 	echo ""
-	cat /var/log/apache2/access.log
+	cat %TRAVIS_BUILD_DIR%/logs/apache-access.log
 fi
 
-if [ -e /var/log/apache2/error.log ] ; then
+if [ -e %TRAVIS_BUILD_DIR%/logs/apache-error.log ] ; then
 	echo ""
 	echo "[System] /var/log/apache2/error.log"
 	echo "======================================================="
 	echo ""
-	cat /var/log/apache2/error.log
+	cat %TRAVIS_BUILD_DIR%/logs/apache-error.log
 fi
