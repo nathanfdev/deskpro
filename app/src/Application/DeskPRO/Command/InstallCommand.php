@@ -227,20 +227,18 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			'data' => DP_BUILD_TIME
 		));
 
-		if (defined('BUILDING_CLOUD')) {
-			App::getDb()->replace('settings', array(
-				'name' => 'core.deskpro_build',
-				'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-			));
-			App::getDb()->replace('settings', array(
-				'name' => 'core.deskpro_build_num',
-				'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
-			));
-			App::getDb()->replace('settings', array(
-				'name' => 'core.install_build',
-				'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-			));
-		}
+		App::getDb()->replace('settings', array(
+			'name' => 'core.deskpro_build',
+			'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+		));
+		App::getDb()->replace('settings', array(
+			'name' => 'core.deskpro_build_num',
+			'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+		));
+		App::getDb()->replace('settings', array(
+			'name' => 'core.install_build',
+			'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
+		));
 
 		App::getDb()->replace('settings', array(
 			'name' => 'core.install_timestamp',
