@@ -16,8 +16,12 @@ class GetPersonTest extends AbstractApiResultTest
 		$result = $this->getApi()->people->findById($testPersonId);
 		
 		$data = $result->getData();
-		
-		$this->assertArrayHasKey('person', $data);
+
+		try {
+			$this->assertArrayHasKey('person', $data);
+		} catch (\Exception $e) {
+			throw new \Exception(print_r($data, 1));
+		}
 		
 		$this->_assertPersonsAreEqual($this->_getExpectedPerson(), $data['person']);
 	}
