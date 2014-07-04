@@ -339,6 +339,16 @@ class Api
 		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
 		$response = curl_exec($curl);
+
+		if (false === $response) {
+			curl_setopt($curl, CURLOPT_VERBOSE, true);
+			$verbose = fopen('php://temp', 'rw+');
+			curl_setopt($curl, CURLOPT_STDERR, $verbose);
+			curl_exec($curl);
+			rewind($verbose);
+			throw new \Exception(stream_get_contents($verbose));
+		}
+
 		curl_close($curl);
 
 		do {
