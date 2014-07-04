@@ -181,7 +181,7 @@ class OutgoingAccountTester
 		$this->swift_arraylogger->add("Testing GmailAccount");
 		$smtp = new SmtpConfig();
 		$data = array(
-			'username'    => $account_config->user,
+			'user'        => $account_config->user,
 			'password'    => $account_config->password,
 			'host'        => 'smtp.gmail.com',
 			'port'        => 465,
