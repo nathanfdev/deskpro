@@ -38,11 +38,13 @@
 
       Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel.prototype.apply = function() {
         this.account.address = this.form.address;
+        if (this.account.options == null) {
+          this.account.options = {};
+        }
         if (this.form.use_custom_email_address && this.form.custom_email_address) {
-          if (this.account.options == null) {
-            this.account.options = {};
-          }
           return this.account.options.custom_email_address = this.form.custom_email_address;
+        } else {
+          return this.account.options.custom_email_address = null;
         }
       };
 

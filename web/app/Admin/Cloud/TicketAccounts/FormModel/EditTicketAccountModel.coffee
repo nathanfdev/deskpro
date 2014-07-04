@@ -32,8 +32,10 @@ define [
 
 		apply: ->
 			@account.address = @form.address
+			if not @account.options?
+				@account.options = {}
 
 			if @form.use_custom_email_address and @form.custom_email_address
-				if not @account.options?
-					@account.options = {}
 				@account.options.custom_email_address = @form.custom_email_address
+			else
+				@account.options.custom_email_address = null
