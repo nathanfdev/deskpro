@@ -1,6 +1,5 @@
 #!/bin/bash
-sudo cat /var/log/apache2/error.log
-sudo cat /var/log/apache2/access.log
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 echo ""

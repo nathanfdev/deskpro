@@ -4,7 +4,7 @@ namespace Application\DeskPRO\NewSearch\Filter;
 
 use Application\DeskPRO\Entity\Person;
 
-abstract class AbstractFilter implements FilterInterface
+abstract class AbstractFilter
 {
     protected $person;
 
