@@ -49,6 +49,10 @@
         return _results;
       };
 
+      Admin_TicketAccounts_Ctrl_Edit.prototype.getFormModel = function() {
+        return new EditTicketAccountModel(this.account || {}, this.deps || [], this.trigger || {});
+      };
+
       Admin_TicketAccounts_Ctrl_Edit.prototype.initialLoad = function() {
         var data_promise, dep_promise, final_promise, get, proms, trigger_data_promise, trigger_promise;
         dep_promise = this.DataService.get('TicketDeps').loadList().then((function(_this) {
@@ -99,9 +103,7 @@
           }).then((function(_this) {
             return function(result) {
               _this.account = result.data.email_account.email_account;
-              _this.trigger = result.data.email_account.trigger;
-              _this.form_model = new EditTicketAccountModel(_this.account);
-              return _this.$scope.form = _this.form_model.form;
+              return _this.trigger = result.data.email_account.trigger;
             };
           })(this));
           proms.push(data_promise);
@@ -109,12 +111,15 @@
         final_promise = this.$q.all(proms);
         final_promise.then((function(_this) {
           return function() {
-            _this.form_model = new EditTicketAccountModel(_this.account, _this.deps, _this.trigger);
-            if (!_this.accountId) {
-              _this.form_model.form.incoming_account_type = '';
-              _this.form_model.form.outgoing_account_type = 'smtp';
-            }
+            _this.form_model = _this.getFormModel();
             _this.$scope.form = _this.form_model.form;
+            if (!_this.accountId) {
+              _this.$scope.form.incoming_type = '';
+              _this.$scope.form.outgoing_type = 'smtp';
+            }
+            if (!_this.$scope.form.outgoing_type) {
+              _this.$scope.form.outgoing_type = 'php_mail';
+            }
             return _this.updateCriteriaOptionTypes();
           };
         })(this));

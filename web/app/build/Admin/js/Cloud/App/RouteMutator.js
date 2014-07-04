@@ -12,6 +12,16 @@
           controller: 'Admin_Cloud_License_Ctrl_License'
         }
       },
+      "tickets.ticket_accounts.create": {
+        route: {
+          controller: 'Admin_Cloud_TicketAccounts_Ctrl_Edit'
+        }
+      },
+      "tickets.ticket_accounts.edit": {
+        route: {
+          controller: 'Admin_Cloud_TicketAccounts_Ctrl_Edit'
+        }
+      },
       "dev_ui": {
         cancel: true
       },

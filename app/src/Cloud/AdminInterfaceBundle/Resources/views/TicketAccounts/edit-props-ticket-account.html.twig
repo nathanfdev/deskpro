@@ -1,0 +1,55 @@
+<div class="form-group" ng-show="form.account_type == 'tickets'">
+	<div class="col-lg-3">
+		<h3>{{ phrase('agent.general.email_address') }} *</h3>
+	</div>
+	<div class="col-lg-9">
+		<div class="inner-group" dp-error-class="form_props.title">
+			<input type="text" class="form-control" name="title" ng-model="form.address_name" style="width: 200px;" required autofocus /><span style="font-size: 130%; margin-left: 3px;">@{{ constant('DPC_SITE_DOMAIN') }}</span>
+			<span class="help-block">
+				Enter the main DeskPRO email address for this account.
+			</span>
+		</div>
+
+		<div class="inner-group">
+			<label>
+				<input type="checkbox" ng-model="form.use_custom_email_address" />
+				<h4>Use a custom email address</h4>
+			</label>
+			<div ng-show="form.use_custom_email_address">
+				<input type="text" class="form-control" ng-model="form.custom_email_address" placeholder="Example: support@your-site.com" style="width: 50%;" />
+				<span class="help-block">
+					<p>
+						&bull; For <strong>incoming</strong> email, you must configure an email forwarder on your mail server so mail is forwarded into the
+						DeskPRO email address you defined above<span ng-show="form.address_name.length"> ({{ ng_var('form.address_name') }}@{{ constant('DPC_SITE_DOMAIN') }})</span>.
+					</p>
+					<p>
+						&bull; For <strong>outgoing</strong> email, DeskPRO will send email from this address. You can optionally enter a custom SMTP account below for DeskPRO to use
+						when sending from this email address.
+					</p>
+					<p>
+						When properly configured, your end-users will always use your custom email address (they will never see the default {{ ng_var('form.address_name') }}@{{ constant('DPC_SITE_DOMAIN') }} email address).
+					</p>
+				</span>
+			</div>
+		</div>
+
+		<div class="inner-group">
+			<label>
+				<input type="checkbox" ng-model="form.with_email_aliases" />
+				<h4>Add custom email aliases</h4>
+			</label>
+			<div ng-show="form.with_email_aliases">
+				<input type="text" class="form-control" ng-model="form.other_addresses" style="width: 50%;" />
+				<span class="help-block">
+					<p>
+						Enter email aliases here; separate multiple addresses by commas. You can forward mail from addresses you list here to the {{ ng_var('form.address_name') }}@{{ constant('DPC_SITE_DOMAIN') }} account.
+					</p>
+					<p>
+						Aliases differ from the custom email address setting (above) in that they only define which addresses forward into this account. They do not change the 'From' address on outgoing email, so users
+						don't see these addresses on emails sent <em>out</em> by DeskPRO.
+					</p>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>

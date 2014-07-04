@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount;
 
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -140,6 +141,8 @@ class EditEmailAccount
 			}
 
 			$this->account->other_addresses = $emails_arr;
+		} else {
+			$this->account->other_addresses = null;
 		}
 
 		$this->account->incoming_account = $this->getIncomingAccountConfig();
@@ -206,19 +209,18 @@ class EditEmailAccount
 		switch ($this->incoming_type) {
 			case 'pop3':
 				return $this->in_pop3_account;
-				break;
 
 			case 'imap':
 				return $this->in_imap_account;
-				break;
 
 			case 'exchange':
 				return $this->in_exchange_account;
-				break;
 
 			case 'gmail':
 				return $this->in_gmail_account;
-				break;
+
+			case 'noop':
+				return new NoopConfig();
 
 			default:
 				return null;
@@ -234,13 +236,11 @@ class EditEmailAccount
 		switch ($this->outgoing_type) {
 			case 'smtp':
 				return $this->out_smtp_account;
-				break;
 
 			case 'gmail':
 				return $this->out_gmail_account;
-				break;
 
-			case 'mail':
+			case 'php_mail':
 				return new PhpMailConfig();
 
 			default;

@@ -132,7 +132,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 			$edit_account
 		);
 
-		$data = $this->in->getAll('post');
+		$data = $this->getSaveFormData($account);
 
 		// Copy gmail config into the transport
 		if ($data['incoming_type'] == 'gmail') {
@@ -155,6 +155,16 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 				'email_account_id' => $account->id,
 			), $this->generateUrl('api_emailaccounts_get', array('id' => $account->id)));
 		}
+	}
+
+
+	/**
+	 * @param EmailAccount $account
+	 * @return array
+	 */
+	protected function getSaveFormData(EmailAccount $account = null)
+	{
+		return $this->in->getAll('post');
 	}
 
 
@@ -218,7 +228,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 			$edit_account
 		);
 
-		$data = $this->in->getAll('post');
+		$data = $this->getTestOutgoingFormData();
 		$form->submit($data);
 
 		$tester = new OutgoingAccountTester($edit_account->getOutgoingAccountConfig());
@@ -233,5 +243,13 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 			'is_success'    => $tester->isSuccess(),
 			'log'           => $tester->getLog(),
 		));
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getTestOutgoingFormData()
+	{
+		return $this->in->getAll('post');
 	}
 }

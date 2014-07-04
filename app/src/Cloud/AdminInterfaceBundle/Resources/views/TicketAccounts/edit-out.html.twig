@@ -2,9 +2,9 @@
 {# Outgoing Account Details #}
 {##################################################################################################}
 
-<div class="form-group" ng-hide="form.incoming_type == 'gmail'">
+<div class="form-group" ng-if="form.use_custom_email_address">
 	<div class="col-lg-3">
-		<h3>Outgoing Email *</h3>
+		<h3>Outgoing Email</h3>
 	</div>
 	<div class="col-lg-9">
 
@@ -19,7 +19,7 @@
 				style="min-width: 240px"
 			>
 				<option value="">Select type</option>
-				<option value="php_mail">Send mail using PHP mail()</option>
+				<option value="php_mail">Send mail through DeskPRO</option>
 				<option value="smtp">SMTP</option>
 				<option value="gmail">GMail or Google Apps</option>
 			</select>
@@ -31,20 +31,20 @@
 
 		<div class="ng-hide" ng-show="form.outgoing_type == 'php_mail'">
 			<div class="inner-group">
-				<table width="100%" class="inner-form-table">
-					<tr>
-						<th width="75">PHP Mail</th>
-						<td>
-							Send mail through the server <code><a href="http://www.php.net/mail" target="_blank">mail()</a></code> function.
-						</td>
-					</tr>
-					<tr>
-						<th>&nbsp;</th>
-						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
-						</td>
-					</tr>
-				</table>
+				<p style="margin-top: 5px;">
+					<strong>Important:</strong> You will need to make DNS changes to configure SPF and DKIM. These changes are required to tell ISP's that DeskPRO servers
+					are allowed to send email using your email addresses.
+				</p>
+				<p>
+					If you fail to implement these DNS records, email deliverability may suffer considerably as ISP's
+					may think messages are spam.
+				</p>
+				<p>
+					<a href="https://support.deskpro.com/kb/articles/180" target="_blank">Click here to read more about configuring SPF and DKIM</a>.
+				</p>
+				<p>
+					<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Outgoing Email</button>
+				</p>
 			</div>
 		</div>
 
@@ -105,8 +105,8 @@
 					<tr>
 						<th width="100">Email Address</th>
 						<td>
-							<span ng-show="form.address">{{ ng_var('form.address') }}</span>
-							<span ng-hide="form.address">Enter your email address above</span>
+							<span ng-show="form.custom_email_address">{{ ng_var('form.custom_email_address') }}</span>
+							<span ng-hide="form.custom_email_address">Enter your email address above</span>
 						</td>
 					</tr>
 					<tr>

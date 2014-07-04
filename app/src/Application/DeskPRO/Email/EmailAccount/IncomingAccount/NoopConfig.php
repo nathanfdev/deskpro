@@ -29,49 +29,39 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type;
+namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 
-class EditEmailAccountType extends AbstractType
+class NoopConfig implements AccountConfigInterface
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function serializeJsonArray()
 	{
-		$builder->add('address',         'email', array('required' => true));
-		$builder->add('is_enabled',      'checkbox', array('required' => false));
-		$builder->add('account_type',    'text',  array('required' => true));
-		$builder->add('other_addresses', 'text',  array('required' => false));
-
-		$builder->add('incoming_type', 'choice', array(
-			'choices'  => array('gmail' => 'gmail', 'pop3' => 'pop3', 'imap' => 'imap', 'exchange' => 'exchange', 'noop' => 'noop'),
-			'required' => true
-		));
-		$builder->add('in_gmail_account',    new IncomingAccount\GmailAccountType());
-		$builder->add('in_pop3_account',     new IncomingAccount\Pop3AccountType());
-		$builder->add('in_imap_account',     new IncomingAccount\ImapAccountType());
-		$builder->add('in_exchange_account', new IncomingAccount\ExchangeAccountType());
-
-		$builder->add('outgoing_type', 'choice', array(
-			'choices'  => array('gmail' => 'gmail', 'smtp' => 'smtp', 'php_mail' => 'php_mail'),
-			'required' => true
-		));
-		$builder->add('out_gmail_account', new OutgoingAccount\GmailAccountType());
-		$builder->add('out_smtp_account',  new OutgoingAccount\SmtpAccountType());
+		return array();
 	}
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public static function unserializeJsonArray(array $data)
 	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\EditEmailAccount\\EditEmailAccount',
-		));
+		$obj = new self();
+		return $obj;
 	}
 
-	public function getName()
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getType()
 	{
-		return 'email_account';
+		return 'noop';
 	}
 }

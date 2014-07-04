@@ -34,6 +34,9 @@ define [
 			for opt in setActionOptions
 				@$scope.actionOptionTypes.push(opt)
 
+		getFormModel: ->
+			return new EditTicketAccountModel(@account || {}, @deps || [], @trigger || {})
+
 		initialLoad: ->
 			dep_promise = @DataService.get('TicketDeps').loadList().then( (list) =>
 				@deps = list
@@ -75,8 +78,6 @@ define [
 				}).then( (result) =>
 					@account = result.data.email_account.email_account
 					@trigger = result.data.email_account.trigger
-					@form_model = new EditTicketAccountModel(@account)
-					@$scope.form = @form_model.form
 				)
 
 				proms.push(data_promise)
@@ -84,13 +85,17 @@ define [
 			final_promise = @$q.all(proms)
 
 			final_promise.then(=>
-				@form_model = new EditTicketAccountModel(@account, @deps, @trigger)
-
-				if not @accountId
-					@form_model.form.incoming_account_type = ''
-					@form_model.form.outgoing_account_type = 'smtp'
+				@form_model = @getFormModel()
 
 				@$scope.form = @form_model.form
+
+				if not @accountId
+					@$scope.form.incoming_type = ''
+					@$scope.form.outgoing_type = 'smtp'
+
+				if not @$scope.form.outgoing_type
+					@$scope.form.outgoing_type = 'php_mail'
+
 				@updateCriteriaOptionTypes()
 			)
 			return final_promise
