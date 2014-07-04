@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
@@ -174,6 +175,8 @@ class Runner
 		} else {
 			$this->accounts = $this->account_manager->getAllActiveAccounts('with_fetcher');
 		}
+
+		$this->accounts = array_filter($this->accounts, function($a) { return !($a->incoming_account instanceof NoopConfig); });
 	}
 
 
