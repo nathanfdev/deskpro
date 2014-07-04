@@ -1,14 +1,14 @@
 language: php
 php:
   - 5.3.3
-#  - 5.4
-#  - 5.5
-#  - 5.6
+  - 5.4
+  - 5.5
+  - 5.6
 before_script: app/testing/travis-ci/before_script.sh
 after_failure: app/testing/travis-ci/after_failure.sh
 after_success:
   - app/testing/travis-ci/after_success.sh
-script: app/testing/bin/run-integration-tests
+script: app/testing/bin/run-tests
 addons:
   firefox: '25.0'
 notifications:
@@ -16,9 +16,7 @@ notifications:
     rooms:
       secure: bqrfROrUT4nmOdLkMRRS09BgIJ6CwGUcND76j5dRkwdGzKrsDYU/FyvLr3sjMZ611ehHOGz/cScBY1ZyuYNBAdqzBL8K1RtbvdukX0Ktt+BUJPepIXfV1T8wtvce0DhVvc2ILzoBynoCsmts1/qQNcKDI+4/5z0rA1GK8m9u7ao=
 branches:
-  only:
-#    - master
-    - hotfix/travis
+  only: master
 cache:
   apt: true
 services:
