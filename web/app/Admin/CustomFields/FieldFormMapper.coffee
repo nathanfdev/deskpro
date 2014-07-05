@@ -122,6 +122,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 							else
 								formTypeOpts.field_type = 'select'
 
+						formTypeOpts.multiple = parseInt(fieldModel.options.multiple || 0)
+
 						if fieldModel.options.required || fieldModel.options.min_length
 							formTypeOpts.user_validation = 'required'
 						if fieldModel.options.agent_required || fieldModel.options.agent_min_length
@@ -133,7 +135,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 							formTypeOpts.options = fieldModel.choices
 
 						if fieldModel.default_value
-							formTypeOpts.default_value = parseInt(fieldModel.default_value)
+							formTypeOpts.default_value = fieldModel.default_value
 
 					when "toggle"
 						formTypeOpts.label_text = fieldModel.options.label_text || ''
