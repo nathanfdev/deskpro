@@ -135,7 +135,6 @@
                   formTypeOpts.field_type = 'select';
                 }
               }
-              formTypeOpts.multiple = parseInt(fieldModel.options.multiple || 0);
               if (fieldModel.options.required || fieldModel.options.min_length) {
                 formTypeOpts.user_validation = 'required';
               }
@@ -148,9 +147,7 @@
               if (fieldModel.choices && fieldModel.choices.length) {
                 formTypeOpts.options = fieldModel.choices;
               }
-              if (fieldModel.default_value) {
-                formTypeOpts.default_value = fieldModel.default_value;
-              }
+              formTypeOpts.default_value = fieldModel.default_value;
               break;
             case "toggle":
               formTypeOpts.label_text = fieldModel.options.label_text || '';
