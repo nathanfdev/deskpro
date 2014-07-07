@@ -47,10 +47,11 @@ class BanEmail extends AbstractEntityRepository
 	public function getList($from = 0, $limit = 20, $search_phrase = '')
 	{
 		$where = '';
+		$params = array();
 
 		if (!empty($search_phrase)) {
-
-			$where = " WHERE banned_email LIKE '%" . $search_phrase . "%'";
+			$where = " WHERE banned_email LIKE :search";
+			$params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
 		}
 
 		$list = App::getDb()->fetchAllCol("
@@ -59,7 +60,7 @@ class BanEmail extends AbstractEntityRepository
 			$where
 			ORDER BY banned_email ASC
 			LIMIT " . $from . ", " . $limit . "
-		");
+		", $params);
 		$this->counts[$search_phrase] = count($list);
 
 		return $list;
