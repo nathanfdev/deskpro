@@ -8,6 +8,25 @@
     SetupDirectives(ReportsModule);
     SetupRouting(ReportsModule);
     SetupTemplates(ReportsModule);
+    ReportsModule.factory('dpHttpSessionInterceptor', [
+      '$q', function($q) {
+        return {
+          responseError: function(rejection) {
+            var _ref;
+            if ((rejection.status != null) && (((_ref = rejection.data) != null ? _ref.error : void 0) != null) && rejection.status === 403 && rejection.data.error === "session_expired") {
+              return window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'reports/' + window.location.hash);
+            } else {
+              return $q.reject(rejection);
+            }
+          }
+        };
+      }
+    ]);
+    ReportsModule.config([
+      '$httpProvider', function($httpProvider) {
+        return $httpProvider.interceptors.push('dpHttpSessionInterceptor');
+      }
+    ]);
     ReportsModule.service('SessionPing', [
       'Api', function(Api) {
         return new Reports_Main_Service_SessionPing(Api);

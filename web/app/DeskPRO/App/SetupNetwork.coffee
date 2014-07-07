@@ -17,6 +17,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				request: (config) ->
 					addRunningCount()
 
+					config.headers['X-Requested-With'] = 'XMLHttpRequest'
+
 					if window.DP_SESSION_ID and not config.headers?['X-DeskPRO-Session-ID']?
 						config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
 					if window.DP_REQUEST_TOKEN and not config.headers?['X-DeskPRO-Request-Token']?

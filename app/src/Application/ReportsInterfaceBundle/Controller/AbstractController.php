@@ -72,17 +72,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				$return = $this->request->getRequestUri();
 			}
-
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array(
-					'error' => 'session_expired'
-				);
-
-				return $this->createJsonResponse($data, 403);
-			}
 		}
 
 		if (!$this->_userHasPermissions()) {
+			if ($this->request->isXmlHttpRequest()) {
+				$data = array('error' => 'session_expired');
+				return $this->createJsonResponse($data, 403);
+			}
+
 			return $this->redirectRoute('agent');
 		}
 

@@ -18,7 +18,7 @@
 
       Reports_Main_Service_SessionPing.prototype.startInterval = function(timeout) {
         if (timeout == null) {
-          timeout = 10000;
+          timeout = 180000;
         }
         if (this.interval) {
           window.clearInterval(this.interval);
@@ -53,7 +53,7 @@
 
       Reports_Main_Service_SessionPing.prototype.ping = function() {
         var p;
-        p = this.Api.sendGet('/my/session/renew-request-token');
+        p = this.Api.sendGet('/my/session/renew-request-token?session_id=' + window.DP_SESSION_ID);
         p.success(function(data) {
           if (data.request_token) {
             return window.DP_REQUEST_TOKEN = data.request_token;

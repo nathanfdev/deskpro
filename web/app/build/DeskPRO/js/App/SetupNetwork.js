@@ -19,6 +19,7 @@
             request: function(config) {
               var next, _ref, _ref1, _ref2;
               addRunningCount();
+              config.headers['X-Requested-With'] = 'XMLHttpRequest';
               if (window.DP_SESSION_ID && (((_ref = config.headers) != null ? _ref['X-DeskPRO-Session-ID'] : void 0) == null)) {
                 config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID;
               }
