@@ -38,6 +38,7 @@ define ['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
 		saveAndContinue: ->
 			@$scope.email_is_error = null
 			postData = @form_model.getFormData()
+			postData.is_enabled = true
 
 			if not postData.address or postData.address.length < 3 or postData.address.indexOf('@') == -1
 				@$scope.email_is_error = 'invalid_email'

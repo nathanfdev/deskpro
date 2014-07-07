@@ -52,6 +52,7 @@
         var postData, promise;
         this.$scope.email_is_error = null;
         postData = this.form_model.getFormData();
+        postData.is_enabled = true;
         if (!postData.address || postData.address.length < 3 || postData.address.indexOf('@') === -1) {
           this.$scope.email_is_error = 'invalid_email';
           return;
