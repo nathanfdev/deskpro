@@ -695,9 +695,10 @@ class Strings
 	 *
 	 * @param  string  $str        The string to parse, or an array of lines
 	 * @param  int     $dupe_mode  What to do when dupe keys are found
+	 * @param  string  $sep_str    The character to separate keys from values (usually '=' or ':', but can be anthing, e.g. '=>')
 	 * @return array
 	 */
-	public static function parseEqualsLines($str, $dupe_mode = self::EQUALSLINES_DUPE_OVERWRITE)
+	public static function parseEqualsLines($str, $dupe_mode = self::EQUALSLINES_DUPE_OVERWRITE, $sep_str = '=')
 	{
 		if (!is_array($str)) {
 			$str = self::standardEol($str);
@@ -714,7 +715,7 @@ class Strings
 			// Ignore 'comments'
 			if ($line[0] == '#') continue;
 
-			$vals = explode('=', $line, 2);
+			$vals = explode($sep_str, $line, 2);
 			if (!isset($vals[1])) continue; // wrong array size, should be two items
 
 			$key = trim($vals[0]);
