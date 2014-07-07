@@ -54,13 +54,13 @@ class BanEmail extends AbstractEntityRepository
 			$params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
 		}
 
-		$list = App::getDb()->fetchAllCol("
+		$list = App::getDb()->fetchAllCol(sprintf("
 			SELECT banned_email
 			FROM ban_emails
-			$where
+			%s
 			ORDER BY banned_email ASC
-			LIMIT " . $from . ", " . $limit . "
-		", $params);
+			LIMIT %d, %d
+		", $where, $from, $limit), $params);
 		$this->counts[$search_phrase] = count($list);
 
 		return $list;
