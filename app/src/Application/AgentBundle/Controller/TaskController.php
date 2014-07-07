@@ -373,21 +373,26 @@ class TaskController extends AbstractController
 		} else {
 			$group_by = 'date';
 
-			$now = new \DateTime();
+			$now = $this->person->getDateTime();
+
 			$today = clone $now;
 			$today->setTime(23, 59, 59);
+			$today = Dates::convertToUtcDateTime($today);
 
-			$yesterday = clone $today;
+			$yesterday = clone $now;
 			$yesterday->modify('-1 day');
+			$yesterday = Dates::convertToUtcDateTime($yesterday);
 
 			$week = clone $now;
 			$week->modify("-" . $now->format('w') . ' days');
 			$week->modify('+7 days');
+			$week = Dates::convertToUtcDateTime($week);
 
 			$month = clone $now;
 			$month->setDate($now->format('Y'), $now->format('n'), 1);
 			$month->modify('+1 month');
 			$month->modify('-1 day');
+			$month = Dates::convertToUtcDateTime($month);
 
 			$tasks_grouped = array(
 				'overdue' => array(
@@ -415,13 +420,13 @@ class TaskController extends AbstractController
 			foreach ($tasks as $t) {
 				if (!$t->date_due) {
 					$key = 'today';
-				} else if ($t->date_due < $yesterday) {
+				} else if ($t->date_due <= $yesterday) {
 					$key = 'overdue';
-				} else if ($t->date_due < $today) {
+				} else if ($t->date_due <= $today) {
 					$key = 'today';
-				} else if ($t->date_due < $week) {
+				} else if ($t->date_due <= $week) {
 					$key = 'week';
-				} else if ($t->date_due < $month) {
+				} else if ($t->date_due <= $month) {
 					$key = 'month';
 				} else {
 					$key = 'future';
