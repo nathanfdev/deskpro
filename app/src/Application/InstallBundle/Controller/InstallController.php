@@ -761,6 +761,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			throw $e;
 		}
 
+		$app_syncer = new \Application\DeskPRO\App\Native\NativeAppsSync(
+			$this->container,
+			$this->container->getAppManager(),
+			new \Application\DeskPRO\App\Package\PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
+			null
+		);
+		$app_syncer->runSync();
+
 		$prev_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
 		if (!$prev_time) {
 			$prev_time = 0.0;

@@ -221,6 +221,14 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			));
 		}
 
+		$app_syncer = new \Application\DeskPRO\App\Native\NativeAppsSync(
+			$this->getContainer(),
+			$this->getContainer()->getAppManager(),
+			new \Application\DeskPRO\App\Package\PackageInstaller($this->getContainer()->getEm(), $this->getContainer()->getBlobStorage(), $this->getContainer()->getImagine()),
+			null
+		);
+		$app_syncer->runSync();
+
 		App::getDb()->replace('install_data', array(
 			'build' => 'default',
 			'name' => 'install_build',
