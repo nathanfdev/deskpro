@@ -210,9 +210,6 @@ class ProcessAgentFwd extends ProcessAbstract
 		// Add agent reply if there was one
 		$agent_ticket_message = null;
 		if ($agent_reply) {
-			//TODO
-			//$ticket->getTicketLogger()->recordExtra('is_fwd_reply', true);
-
 			$this->logMessage('[TicketGatewayProcessor] Adding agent reply');
 			$agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 
@@ -242,7 +239,6 @@ class ProcessAgentFwd extends ProcessAbstract
 			App::getOrm()->persist($blob);
 		}
 
-		//TODO
 		$tracker_extras = array(
 			'fwd_via_agent' => $this->person
 		);
@@ -269,6 +265,18 @@ class ProcessAgentFwd extends ProcessAbstract
 
 				$cc_emails[] = $e_a;
 			}
+		}
+
+		#------------------------------
+		# Reply actions
+		#------------------------------
+
+		if ($this->ticket_email->reply_actions) {
+			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+			$reply_actions_context = new ReplyActionsContext();
+			$reply_actions_context->ticket = $ticket;
+			$reply_actions_context->message = $ticket_message;
+			$reply_actions_apply->apply($reply_actions_context);
 		}
 
 		#------------------------------
@@ -452,6 +460,22 @@ class ProcessAgentFwd extends ProcessAbstract
 
 			$blob->is_temp = false;
 			App::getOrm()->persist($blob);
+		}
+
+		#------------------------------
+		# Reply actions
+		#------------------------------
+
+		if ($this->ticket_email->reply_actions) {
+			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+			$reply_actions_context = new ReplyActionsContext();
+			$reply_actions_context->ticket = $ticket;
+			if ($agent_ticket_message) {
+				$reply_actions_context->message = $agent_ticket_message;
+			} else {
+				$reply_actions_context->message = $ticket_message;
+			}
+			$reply_actions_apply->apply($reply_actions_context);
 		}
 
 		#------------------------------

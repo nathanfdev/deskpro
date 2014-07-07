@@ -312,6 +312,18 @@ class ProcessNew extends ProcessAbstract
 		}
 
 		#------------------------------
+		# Reply actions
+		#------------------------------
+
+		if ($this->ticket_email->reply_actions) {
+			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+			$reply_actions_context = new ReplyActionsContext();
+			$reply_actions_context->ticket = $ticket;
+			$reply_actions_context->message = $ticket_message;
+			$reply_actions_apply->apply($reply_actions_context);
+		}
+
+		#------------------------------
 		# Process new ticket
 		#------------------------------
 

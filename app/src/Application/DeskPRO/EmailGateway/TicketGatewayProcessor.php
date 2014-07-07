@@ -299,6 +299,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		$ticket_email->email_body_html = $email_body_html;
 		$ticket_email->email_body_text = $email_body_text;
 		$ticket_email->is_dp3_reply    = $is_dp3_reply;
+		$ticket_email->reply_actions   = $reply_actions;
 
 		if ($ticket && $person) {
 			App::$container->getTicketManager()->markAsManaged($ticket);
