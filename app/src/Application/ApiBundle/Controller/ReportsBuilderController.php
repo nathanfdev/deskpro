@@ -48,14 +48,11 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 
-		return $this->createApiResponse(
-			array(
-				 'reports' => $reports_builder->getAll()
-			)
-		);
+		return $this->createApiResponse(array(
+			'reports' => $reports_builder->getAll()
+		));
 	}
 
 
@@ -68,14 +65,11 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 
-		return $this->createApiResponse(
-			array(
-				 'reports' => $reports_builder->getCustomReports()
-			)
-		);
+		return $this->createApiResponse(array(
+			 'reports' => $reports_builder->getCustomReports()
+		));
 	}
 
 
@@ -88,14 +82,11 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 
-		return $this->createApiResponse(
-			array(
-				 'reports' => $reports_builder->getBuiltInReports()
-			)
-		);
+		return $this->createApiResponse(array(
+			'reports' => $reports_builder->getBuiltInReports()
+		));
 	}
 
 
@@ -108,7 +99,6 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 
 		return $this->createApiResponse($reports_builder->getGroupParams());
@@ -124,7 +114,6 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 		$report          = $reports_builder->getById($id);
 
@@ -135,14 +124,12 @@ class ReportsBuilderController extends AbstractController
 		$rendered_result = $reports_builder->getRenderedResult($id);
 		$query_parts     = $reports_builder->getQueryParts($id);
 
-		return $this->createApiResponse(
-			array(
-				 'rendered_result' => $rendered_result,
-				 'query_parts'     => $query_parts,
-				 'report'          => $this->getApiData($report),
-				 'type'            => $report->is_custom ? 'custom' : 'builtIn',
-			)
-		);
+		return $this->createApiResponse(array(
+			'rendered_result' => $rendered_result,
+			'query_parts'     => $query_parts,
+			'report'          => $this->getApiData($report),
+			'type'            => $report->is_custom ? 'custom' : 'builtIn',
+		));
 	}
 
 
@@ -155,18 +142,14 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 
 		if ($id) {
-
 			$report = $reports_builder->getById($id);
-
 			if (!$report) {
 				throw $this->createNotFoundException();
 			}
 		} else {
-
 			$report = $reports_builder->createNew();
 		}
 
@@ -175,27 +158,18 @@ class ReportsBuilderController extends AbstractController
 		}
 
 		if ($error = $reports_builder->getErrors($id, 'from_request')) {
-
-			return $this->createApiResponse(
-				array(
-					 'error' => $error
-				)
-			);
+			return $this->createApiResponse(array('error' => $error));
 		} else {
 
 			$postData = $this->in->getAll('req');
-
 			$report_edit = new ReportEdit($report);
 
 			$form = $this->createForm(new ReportType(), $report_edit, array('cascade_validation' => true));
 			$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'report'), true);
 
 			if ($form->isValid()) {
-
 				$report_edit->save($this->em);
-
 			} else {
-
 				return $this->createApiValidationErrorResponse(
 					$this->container->getValidator()->validate($report)
 				);
@@ -204,13 +178,11 @@ class ReportsBuilderController extends AbstractController
 			$reports_builder->saveQuery($report, 'from_request');
 			$rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
 
-			return $this->createApiResponse(
-				array(
-					 'success'         => true,
-					 'id'              => $report->id,
-					 'rendered_result' => $rendered_result,
-				)
-			);
+			return $this->createApiResponse(array(
+				 'success'         => true,
+				 'id'              => $report->id,
+				 'rendered_result' => $rendered_result,
+			));
 		}
 	}
 
@@ -224,12 +196,10 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 		$report          = $reports_builder->getById($id);
 
 		if (!$report) {
-
 			throw $this->createNotFoundException();
 		}
 
@@ -249,12 +219,10 @@ class ReportsBuilderController extends AbstractController
 			throw $e;
 		}
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $new_report->id
-			)
-		);
+		return $this->createApiResponse(array(
+			 'success' => true,
+			 'id'      => $new_report->id
+		));
 	}
 
 
@@ -267,7 +235,6 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 		$report          = $reports_builder->getById($id);
 
@@ -294,25 +261,16 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 
 		if ($error = $reports_builder->getErrors($id, 'from_request')) {
-
-			return $this->createApiResponse(
-				array(
-					 'error' => $error
-				)
-			);
+			return $this->createApiResponse(array('error' => $error));
 		} else {
-
 			$rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
 
-			return $this->createApiResponse(
-				array(
-					 'rendered_result' => $rendered_result,
-				)
-			);
+			return $this->createApiResponse(array(
+				'rendered_result' => $rendered_result,
+			));
 		}
 	}
 
@@ -326,7 +284,6 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
 
 		return $this->createApiResponse($reports_builder->parseInput());
@@ -342,8 +299,8 @@ class ReportsBuilderController extends AbstractController
 		/**
 		 * @var \Application\DeskPRO\Reports\Builder $reports_builder
 		 */
-
 		$reports_builder = $this->container->getSystemService('reports_builder');
+
 		return $reports_builder->outputDownloadContent($id, $type);
 	}
 }
