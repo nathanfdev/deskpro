@@ -678,6 +678,7 @@
         if (!this.$scope.form_props.$valid) {
           return;
         }
+        this.$scope.$broadcast('agent.save');
         this.email_dupe_error = false;
         this.email_sysaccount_error = false;
         this.invalid_phone_error = false;

@@ -5,6 +5,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
 		init: ->
 			@$scope.password_settings = {}
+			@$scope.$on 'agent.save', => @saveSettings()
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
@@ -65,7 +66,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
 			@Api.sendPostJson('/password_settings', {settings: settings}).success( =>
 				@stopSpinner('saving').then(=>
-					@Growl.success(@getRegisteredMessage('saved_settings'))
+					message = @getRegisteredMessage('saved_settings')
+					@Growl.success(message) if message && message.length
 				)
 			).error( (info, code) =>
 				@stopSpinner('saving', true)

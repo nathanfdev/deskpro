@@ -16,7 +16,12 @@
       Admin_Settings_Ctrl_PasswordSettings.CTRL_AS = 'Settings';
 
       Admin_Settings_Ctrl_PasswordSettings.prototype.init = function() {
-        return this.$scope.password_settings = {};
+        this.$scope.password_settings = {};
+        return this.$scope.$on('agent.save', (function(_this) {
+          return function() {
+            return _this.saveSettings();
+          };
+        })(this));
       };
 
       Admin_Settings_Ctrl_PasswordSettings.prototype.initialLoad = function() {
@@ -69,7 +74,11 @@
         }).success((function(_this) {
           return function() {
             return _this.stopSpinner('saving').then(function() {
-              return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
+              var message;
+              message = _this.getRegisteredMessage('saved_settings');
+              if (message && message.length) {
+                return _this.Growl.success(message);
+              }
             });
           };
         })(this)).error((function(_this) {
