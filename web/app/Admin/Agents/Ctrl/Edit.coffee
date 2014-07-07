@@ -477,8 +477,6 @@ define [
 			if not @$scope.form_props.$valid
 				return
 
-			@$scope.$broadcast 'agent.save'
-
 			@email_dupe_error = false
 			@email_sysaccount_error = false
 			@invalid_phone_error = false

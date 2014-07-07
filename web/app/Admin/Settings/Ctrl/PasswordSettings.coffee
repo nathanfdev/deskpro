@@ -5,7 +5,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
 		init: ->
 			@$scope.password_settings = {}
-			@$scope.$on 'agent.save', => @saveSettings()
 
 		initialLoad: ->
 			data_promise = @Api.sendDataGet({
