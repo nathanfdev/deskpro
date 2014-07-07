@@ -55,6 +55,7 @@ class SetActionTimes implements TicketSaveActionInterface
 
 			if (!$ticket->date_first_agent_reply) {
 				$ticket->date_first_agent_reply = new \DateTime();
+				$ticket->total_to_first_reply  = $ticket->date_first_agent_reply->getTimestamp() - $ticket->date_created->getTimestamp();
 			}
 		}
 		if ($state->hasChangedField('status') || $state->hasChangedField('hidden_status')) {

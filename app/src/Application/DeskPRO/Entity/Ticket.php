@@ -1301,7 +1301,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 					$this['date_last_agent_reply'] = $now;
 				}
 
-				if (!$this->date_first_agent_reply) {
+				if (!$this->date_first_agent_reply && !$message->is_agent_note) {
 					$this['date_first_agent_reply'] = $now;
 					$this['total_to_first_reply'] = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
 				}
