@@ -488,7 +488,7 @@ class TaskController extends AbstractController
 
         $comment_txt = $this->in->getString('comment');
 
-		if (!$comment_txt) {
+		if (!$comment_txt || !$task) {
 			return $this->createJsonResponse(array(
 				'error' => true,
 				'error_code' => 'no_message'

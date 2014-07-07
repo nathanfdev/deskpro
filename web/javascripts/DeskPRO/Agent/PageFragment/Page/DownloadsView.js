@@ -415,13 +415,18 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 	saveNewComment: function() {
 
+		var val = $.trim($('textarea', this.newCommentWrapper).val());
+		if (!val || !val.length) {
+			return;
+		}
+
 		var loadingOn = $('.loading-on', this.newCommentWrapper).show();
 		var loadingOff = $('.loading-off', this.newCommentWrapper).hide();
 
 		var data = [];
 		data.push({
 			name: 'content',
-			value: $('textarea', this.newCommentWrapper).val()
+			value: val
 		});
 
 		$.ajax({

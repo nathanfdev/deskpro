@@ -148,6 +148,10 @@ class DownloadsController extends AbstractController
 	{
 		$download = $this->em->find('DeskPRO:Download', $download_id);
 
+		if (!$download || !$this->in->getString('content')) {
+			throw $this->createNotFoundException();
+		}
+
 		$comment = new DownloadComment();
 		$comment->download = $download;
 		$comment->person = $this->person;

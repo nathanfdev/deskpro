@@ -123,6 +123,10 @@ class NewsController extends AbstractController
 	{
 		$news = $this->em->find('DeskPRO:News', $news_id);
 
+		if (!$news || !$this->in->getString('content')) {
+			throw $this->createNotFoundException();
+		}
+
 		$comment = new NewsComment();
 		$comment->news = $news;
 		$comment->person = $this->person;
