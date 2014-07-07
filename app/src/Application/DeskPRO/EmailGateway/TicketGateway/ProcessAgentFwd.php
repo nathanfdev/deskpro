@@ -214,6 +214,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			$agent_reply = nl2br(htmlspecialchars($agent_reply, \ENT_QUOTES, 'UTF-8'));
 
 			$agent_ticket_message = new TicketMessage();
+			$agent_ticket_message->date_created->modify('+1 second');
 			$agent_ticket_message->person = $this->person;
 			$agent_ticket_message->setMessageHtml($agent_reply);
 			$ticket->addMessage($agent_ticket_message);
@@ -275,7 +276,11 @@ class ProcessAgentFwd extends ProcessAbstract
 			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
 			$reply_actions_context = new ReplyActionsContext();
 			$reply_actions_context->ticket = $ticket;
-			$reply_actions_context->message = $ticket_message;
+			if ($agent_ticket_message) {
+				$reply_actions_context->message = $agent_ticket_message;
+			} else {
+				$reply_actions_context->message = $ticket_message;
+			}
 			$reply_actions_apply->apply($reply_actions_context);
 		}
 
@@ -407,6 +412,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			$this->logMessage('[TicketGatewayProcessor] Adding agent reply');
 
 			$agent_ticket_message = new TicketMessage();
+			$agent_ticket_message->date_created->modify('+1 second');
 			$agent_ticket_message->person = $this->person;
 			$agent_ticket_message->setMessageHtml($agent_reply);
 			$ticket->addMessage($agent_ticket_message);
