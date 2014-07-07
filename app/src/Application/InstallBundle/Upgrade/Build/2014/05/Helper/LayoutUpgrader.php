@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
 use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
 use Application\DeskPRO\TicketLayout;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 class LayoutUpgrader
 {
@@ -101,6 +102,8 @@ class LayoutUpgrader
 			}
 
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			$field->enableOnNew();
 			if (!$has_view) $field->enableOnView();
 			if (!$has_edit) $field->enableOnEdit();
@@ -112,6 +115,8 @@ class LayoutUpgrader
 			}
 
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			if ($layout->has($field->getId())) {
 				$field = $layout->get($field->getId());
 			} else {
@@ -126,6 +131,8 @@ class LayoutUpgrader
 			}
 
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			if ($layout->has($field->getId())) {
 				$field = $layout->get($field->getId());
 			} else {
@@ -187,10 +194,15 @@ class LayoutUpgrader
 	 */
 	private function convertField(array $info)
 	{
-		$field = $this->getFieldFromLegacyField($info);
-		$crit = $this->getCriteriaFromLegacyField($info);
-		if ($crit) {
-			$field->setCriteria($crit);
+		try {
+			$field = $this->getFieldFromLegacyField($info);
+			$crit = $this->getCriteriaFromLegacyField($info);
+			if ($crit) {
+				$field->setCriteria($crit);
+			}
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e);
+			return null;
 		}
 
 		// Default to all off
