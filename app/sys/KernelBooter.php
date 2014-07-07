@@ -328,9 +328,11 @@ class KernelBooter
 		dp_pagelog_set('request_id', defined('DP_REQUEST_ID') ? DP_REQUEST_ID : null);
 		dp_pagelog_set('page_url', $request->getRequestUri());
 
-		if (dp_trust_proxy_data()) {
-			\Application\DeskPRO\HttpFoundation\Request::trustProxyData();
-			\Symfony\Component\HttpFoundation\Request::trustProxyData();
+		if ($trust_proxies = dp_trust_proxy_data()) {
+			if (is_array($trust_proxies)) {
+				\Application\DeskPRO\HttpFoundation\Request::setTrustedProxies($trust_proxies);
+				\Symfony\Component\HttpFoundation\Request::setTrustedProxies($trust_proxies);
+			}
 		}
 
 		define('DP_REQUEST_URL', $request->getUri());

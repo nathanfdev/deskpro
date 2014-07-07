@@ -230,7 +230,7 @@ $DP_CONFIG['import'] = array(
 # https://support.deskpro.com/kb/articles/176        #
 ######################################################
 
-$DP_CONFIG['trust_proxy_data'] = false;
+$DP_CONFIG['trust_proxy_data'] = array();
 
 # ~~~~~~~~~~~~~~~~ DEBUG & LOGS ~~~~~~~~~~~~~~~~~~~~~~
 
