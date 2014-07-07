@@ -29,48 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-/**
- * Fetch JIRA Comments
- */
-class FetchJiraComments extends AbstractJob
+class Build1404749955 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 60; // 1 minute
-
-	const LIMIT = 25; // should be in config?
-	const TIMELIMIT = 30;
-
 	public function run()
 	{
-		if (!App::getSetting('core.apps_jira.enabled')) {
-			return true;
-		}
-		
-		$baseUrl	= App::getSetting('core.apps_jira.baseUrl');
-		
-		$username	= App::getSetting('core.apps_jira.username');
-		
-		$password	= App::getSetting('core.apps_jira.password');
-
-		$em = App::getOrm();
-		$service = new \Orb\Jira\Service($baseUrl, array(
-			'username'	=> $username,
-			'password'	=> $password,
-			'debug'		=> true
-		), $em);
-
-		$rep = $em->getRepository('DeskPRO:JiraIssue');
-		$start = time();
-		foreach ($rep->findBy(array(), array('lastSynced' => 'ASC'), self::LIMIT) as $issue) {
-			$service->_fetchCommentsByIssueId($issue->issue);
-			if (time() - $start > self::TIMELIMIT) break;
-		}
-//		$service->fetchAllComment(self::LIMIT);
+		$this->out("My Upgrade Class");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD last_synced INT NOT NULL DEFAULT 0");
 	}
 }

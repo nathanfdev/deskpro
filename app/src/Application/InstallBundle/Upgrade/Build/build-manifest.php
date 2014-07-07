@@ -1409,4 +1409,9 @@
     'file' => '/Users/n3b/projects/deskpro/app/src/Application/InstallBundle/Upgrade/Build/2014/07/Build1404332837.php',
     'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build1404332837',
   ),
+  1404749955 => 
+  array (
+    'file' => '/Users/n3b/projects/deskpro/app/src/Application/InstallBundle/Upgrade/Build/2014/07/Build1404749955.php',
+    'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build1404749955',
+  ),
 );

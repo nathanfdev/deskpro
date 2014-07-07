@@ -439,12 +439,15 @@ class Service
 	/**
 	 * Fetches all the comments on all associated JIRA issues
 	 */
-	public function fetchAllComment()
+	public function fetchAllComment($limit = 0)
 	{
 		//Fetch all the exported JIRA Issues
+		/** @var \Application\DeskPRO\EntityRepository\JiraIssue $jiraIssueRepository */
 		$jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 		
-		$jiraIssues = $jiraIssueRepository->findAll();
+		$jiraIssues = $limit
+			? $jiraIssueRepository->findAll()
+			: $jiraIssueRepository->findBy(array(), array('lastSynced' => 'ASC'), $limit);
 		
 		foreach ($jiraIssues as $jiraIssue) {
 			$issue_id = $jiraIssue->issue;
@@ -458,7 +461,7 @@ class Service
 	 * 
 	 * @param type $issue_id JIRA issue ID
 	 */
-	private function _fetchCommentsByIssueId($issue_id)
+	public function _fetchCommentsByIssueId($issue_id)
 	{
 		$jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 		
@@ -545,7 +548,8 @@ class Service
 				$this->_em->persist($jiraIssue);
 			}
 		}
-		
+
+		$jiraIssue['lastSynced'] = time();
 		$this->_em->flush();
 	}
 }
