@@ -161,10 +161,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 			throw ValidationException::create($this->getFormValidationErrorsString($form));
 		}
 
-		return $this->createApiResponse(array(
-			 'success' => true,
-			 'id'      => $api_key->id,
-		));
+		return $this->getAction($api_key['id']);
 	}
 
 	####################################################################################################################
