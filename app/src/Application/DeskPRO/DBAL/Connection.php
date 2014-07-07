@@ -414,6 +414,15 @@ class Connection extends \Doctrine\DBAL\Connection
 		return $this->fetchColumn($sql, $params);
 	}
 
+	public function countWithPlaceholders($tableName, $where = null, array $params = array())
+	{
+		$this->connect();
+
+		$sql = "SELECT COUNT(*) FROM `$tableName` " . $where;
+
+		return $this->fetchColumn($sql, $params);
+	}
+
 
 	/**
 	 * @param string $query

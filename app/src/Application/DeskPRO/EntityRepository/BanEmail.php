@@ -133,13 +133,14 @@ class BanEmail extends AbstractEntityRepository
 		}
 
 		$where = '';
+		$params = array();
 
 		if (!empty($search_phrase)) {
-
-			$where = "banned_email LIKE '%" . $search_phrase . "%'";
+			$where = "banned_email LIKE :search";
+			$params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
 		}
 
-		$count = App::getDb()->count('ban_emails', $where);
+		$count = App::getDb()->countWithPlaceholders('ban_emails', $where, $params);
 
 		return $this->counts[$search_phrase] = (int) $count;
 	}

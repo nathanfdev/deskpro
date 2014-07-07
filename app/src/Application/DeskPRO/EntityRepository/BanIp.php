@@ -52,19 +52,20 @@ class BanIp extends AbstractEntityRepository
 	public function getList($from = 0, $limit = 20, $search_phrase = '')
 	{
 		$where = '';
+		$params = array();
 
 		if (!empty($search_phrase)) {
-
-			$where = " WHERE banned_ip LIKE '%" . $search_phrase . "%'";
+			$where = " WHERE banned_ip LIKE :search";
+			$params['search'] = '%' . $search_phrase . '%';
 		}
 
-		$list = App::getDb()->fetchAllCol("
+		$list = App::getDb()->fetchAllCol(sprintf("
 			SELECT banned_ip
 			FROM ban_ips
-			$where
+			%s
 			ORDER BY ip_start ASC
-			LIMIT " . $from . ", " . $limit . "
-		");
+			LIMIT %d, %d
+		", $where, $from, $limit), $params);
 		$this->counts[$search_phrase] = count($list);
 
 		return $list;
@@ -89,13 +90,14 @@ class BanIp extends AbstractEntityRepository
 		}
 
 		$where = '';
+		$params = array();
 
 		if (!empty($search_phrase)) {
-
-			$where = "banned_ip LIKE '%" . $search_phrase . "%'";
+			$where = "banned_ip LIKE :search";
+			$params['search'] = '%' . $search_phrase . '%';
 		}
 
-		$count = App::getDb()->count('ban_ips', $where);
+		$count = App::getDb()->countWithPlaceholders('ban_ips', $where, $params);
 
 		return $this->counts[$search_phrase] = (int) $count;
 	}
