@@ -24,7 +24,8 @@
         this.setSubLists(['ip_bans', 'email_bans']);
         return this.search_phrase = {
           ip_ban: '',
-          email_ban: ''
+          email_ban: '',
+          email_wildcard: false
         };
       };
 
@@ -60,7 +61,8 @@
           ip_ban_page: this.pagination.ip_bans.page,
           email_ban_page: this.pagination.email_bans.page,
           ip_ban_search_phrase: this.search_phrase.ip_ban,
-          email_ban_search_phrase: this.search_phrase.email_ban
+          email_ban_search_phrase: this.search_phrase.email_ban,
+          email_ban_wildcard: this.search_phrase.email_wildcard ? 1 : 0
         }).success((function(_this) {
           return function(data) {
             var models;

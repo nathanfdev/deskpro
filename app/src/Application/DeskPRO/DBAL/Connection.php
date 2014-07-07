@@ -418,7 +418,8 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		$this->connect();
 
-		$sql = "SELECT COUNT(*) FROM `$tableName` " . $where;
+		$where = $where ?: '1';
+		$sql = "SELECT COUNT(*) FROM `$tableName` WHERE " . $where;
 
 		return $this->fetchColumn($sql, $params);
 	}

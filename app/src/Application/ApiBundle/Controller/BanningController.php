@@ -62,6 +62,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 		$email_ban_page          = $this->in->getUint('email_ban_page');
 		$ip_ban_search_phrase    = $this->in->getString('ip_ban_search_phrase');
 		$email_ban_search_phrase = $this->in->getString('email_ban_search_phrase');
+		$email_ban_wildcard      = $this->in->getUInt('email_ban_wildcard');
 
 		/**
 		 * @var \Application\DeskPRO\Banning\IpBans $ip_bans
@@ -79,7 +80,8 @@ class BanningController extends AbstractController implements ProtectedControlle
 		$email_bans = $this->container->getSystemService('email_bans');
 		$email_bans
 			->setPage($email_ban_page)
-			->setSearchPhrase($email_ban_search_phrase);
+			->setSearchPhrase($email_ban_search_phrase)
+			->setWildcard($email_ban_wildcard);
 
 		return $this->createApiResponse(
 			array(

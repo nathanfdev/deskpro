@@ -75,6 +75,11 @@
 				<input type="text" ng-model="ListCtrl.search_phrase.email_ban" style="width: 200px; display: inline-block;"
 					   class="form-control">
 				<button class="btn btn-primary" ng-click="ListCtrl.goFirstEmailBanPage()">Search</button>
+                <br /><br />
+                <label>
+                    <input type="checkbox" ng-model="ListCtrl.search_phrase.email_wildcard" ng-click="ListCtrl.goFirstEmailBanPage()" />
+                    Only Wildcards
+                </label>
 			</div>
 
 			<ul class="dp-item-list">

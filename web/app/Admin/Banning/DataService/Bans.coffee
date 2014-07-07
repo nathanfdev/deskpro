@@ -20,6 +20,7 @@ define [
 			@search_phrase = {
 				ip_ban: '',
 				email_ban: ''
+				email_wildcard: false
 			}
 
 		###
@@ -54,6 +55,7 @@ define [
 				email_ban_page: @pagination.email_bans.page,
 				ip_ban_search_phrase: @search_phrase.ip_ban
 				email_ban_search_phrase: @search_phrase.email_ban
+				email_ban_wildcard: if @search_phrase.email_wildcard then 1 else 0
 
 			}).success( (data) =>
 
