@@ -9,6 +9,7 @@ define [
 	'Reports/App/SetupRouting',
 	'DeskPRO/App/SetupServices',
 	'Reports/App/SetupTemplates',
+	'Reports/Main/Service/SessionPing',
 ], (
 	angular,
 	ReportsModule,
@@ -19,7 +20,9 @@ define [
 	SetupNetwork,
 	SetupRouting,
 	SetupServices,
-	SetupTemplates
+	SetupTemplates,
+
+	Reports_Main_Service_SessionPing
 ) ->
 
 	SetupServices(ReportsModule)
@@ -29,6 +32,15 @@ define [
 	SetupDirectives(ReportsModule)
 	SetupRouting(ReportsModule)
 	SetupTemplates(ReportsModule)
+
+	ReportsModule.service('SessionPing', ['Api', (Api) ->
+		return new Reports_Main_Service_SessionPing(Api)
+	])
+	ReportsModule.run(['SessionPing', (SessionPing) ->
+		window.setTimeout(->
+			SessionPing.startInterval()
+		, 20000)
+	])
 
 	if window.parent?.DP_FRAME_OVERLAYS?.reports
 		window.parent.DP_FRAME_OVERLAYS.reports.callLoaded()
