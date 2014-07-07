@@ -32,12 +32,7 @@
         this.query_error = null;
         this.show_query_editor = false;
         this.editor_mode = 'builder';
-        this.query_parts_synced = true;
-        return this.$scope.$watch('EditCtrl.report.query', (function(_this) {
-          return function() {
-            return _this.query_parts_synced = false;
-          };
-        })(this));
+        return this.query_parts_synced = true;
       };
 
       Reports_Builder_Ctrl_Edit.prototype.initialLoad = function() {
@@ -48,7 +43,8 @@
             _this.group_params = _this.$scope.$parent.ListCtrl.group_params;
             _this.query_parts = data.query_parts;
             _this.report = data.report;
-            return _this.form = data.form;
+            _this.form = data.form;
+            return _this.query_parts_synced = true;
           };
         })(this));
         return promise;
@@ -137,7 +133,7 @@
       Reports_Builder_Ctrl_Edit.prototype.switchToBuilder = function() {
         this.startSpinner('builder_loading');
         this.editor_mode = 'builder';
-        return this.syncQueryParts.then((function(_this) {
+        return this.syncQueryParts().then((function(_this) {
           return function() {
             return _this.stopSpinner('builder_loading', true);
           };
@@ -270,7 +266,9 @@
         run = (function(_this) {
           return function() {
             var promise;
-            promise = _this.Api.sendPost('/reports/builder/clone/' + _this.report.id);
+            promise = _this.Api.sendPostJson('/reports/builder/clone/' + _this.report.id, {
+              parts: _this.query_parts
+            });
             return promise.success(function(data) {
               return _this.reportData.loadList(true).then(function() {
                 _this.stopSpinner('builder_loading', true);

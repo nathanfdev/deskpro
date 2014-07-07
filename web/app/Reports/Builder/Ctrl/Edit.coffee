@@ -24,10 +24,6 @@ define [
 			@editor_mode = 'builder'
 			@query_parts_synced = true
 
-			@$scope.$watch('EditCtrl.report.query', =>
-				@query_parts_synced = false
-			)
-
 		initialLoad: ->
 			promise = @reportData.loadEditReportData(@$stateParams.id || null, @$stateParams.params || null).then( (data) =>
 				@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
@@ -35,6 +31,7 @@ define [
 				@query_parts = data.query_parts
 				@report  = data.report
 				@form = data.form
+				@query_parts_synced = true
 			)
 			return promise
 
@@ -109,7 +106,7 @@ define [
 			@startSpinner('builder_loading')
 
 			@editor_mode = 'builder'
-			@syncQueryParts.then(=>
+			@syncQueryParts().then(=>
 				@stopSpinner('builder_loading', true)
 			)
 
@@ -219,7 +216,9 @@ define [
 			@startSpinner('saving')
 
 			run = =>
-				promise = @Api.sendPost('/reports/builder/clone/' + @report.id)
+				promise = @Api.sendPostJson('/reports/builder/clone/' + @report.id, {
+					parts: @query_parts
+				})
 
 				promise.success((data) =>
 

@@ -111,7 +111,7 @@
 						<i class="spinner-flat"></i>
 					</span>
 					<div dp-hide-spinning="query_loading" class="query-editor-text" id="query-text">
-						<textarea name="query" class="expander form-control" ng-model="EditCtrl.report.query" style="height: 100px;">
+						<textarea name="query" class="expander form-control" ng-model="EditCtrl.report.query" ng-change="EditCtrl.query_parts_synced = false" style="height: 100px;">
 						</textarea>
 					</div>
 				</div>

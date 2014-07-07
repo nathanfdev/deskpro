@@ -33,6 +33,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\Form\Type\ReportType;
 use Application\DeskPRO\Reports\ReportEdit;
@@ -208,6 +209,14 @@ class ReportsBuilderController extends AbstractController
 		$new_report->description = $report->description;
 		$new_report->query       = $report->query;
 
+		$parts = $this->in->getArrayValue('parts');
+		if ($parts) {
+			$query = Display::getQueryStringFromParts($parts);
+			if ($query) {
+				$new_report->query = $query;
+			}
+		}
+
 		$this->em->getConnection()->beginTransaction();
 
 		try {
@@ -220,8 +229,8 @@ class ReportsBuilderController extends AbstractController
 		}
 
 		return $this->createApiResponse(array(
-			 'success' => true,
-			 'id'      => $new_report->id
+			'success' => true,
+			'id'      => $new_report->id
 		));
 	}
 
