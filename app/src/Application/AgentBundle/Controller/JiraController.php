@@ -307,6 +307,7 @@ class JiraController extends AbstractController
 	 */
 	protected function getTicketOr404($ticket_id, $check_perm = null)
 	{
+		// todo clean
 		$q = $this->em->createQuery("
 			SELECT t, person, person_primary_email, agent,
 				agent_team, language, department, product, category, workflow, priority,

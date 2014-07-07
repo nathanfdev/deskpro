@@ -3,6 +3,7 @@
 namespace Orb\Jira;
 
 use Guzzle\Http\Client;
+use Guzzle\Http\Exception\BadResponseException;
 
 /**
  * JIRA Web Service Wrapper<br/>
@@ -94,12 +95,12 @@ class Service
 	 * @return \JIRA\Service
 	 * @throws \Exception if the debug mode is off
 	 */
-	public function addError($error)
+	public function addError($error, $code = 0)
 	{
 		if (!$this->_debug) {
 			$this->_errors[] = $error;
 		} else {
-			throw new \Exception($error);
+			throw new \Exception($error, (int) $code);
 		}
 		
 		return $this;
@@ -140,7 +141,11 @@ class Service
 			}
 			
 		} catch (\Exception $e) {
-			$this->addError($e->getMessage());
+			if ($e instanceof BadResponseException) {
+				$this->addError($e->getMessage(), $e->getResponse()->getStatusCode());
+			} else {
+				$this->addError($e->getMessage());
+			}
 		}
 		
 		return false;
@@ -472,9 +477,18 @@ class Service
 		if (!$jiraIssues) {
 			return false;
 		}
-		
+
+		try {
 		//Reaching this point means there are DeskPRO tickets associated to this issue_id 
 		$issue		= $this->findIssue($issue_id);
+		} catch (\Exception $e) {
+			if (404 === $e->getCode()) {
+				foreach ($jiraIssues as $issue) {
+					$this->_em->remove($issue);
+				}
+				return $this->_em->flush();
+			}
+		}
 		
 		$jiraRepository	= $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
 		
