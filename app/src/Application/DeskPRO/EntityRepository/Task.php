@@ -670,7 +670,7 @@ class Task extends AbstractEntityRepository
 		$qb->from('DeskPRO:Task', 't');
 		$qb->innerJoin('t.person', 'p');
 		$qb->leftJoin('t.assigned_agent', 'aa');
-		$qb->where('p.id= :person_id');
+		$qb->where('p.id = :person_id');
 		$qb->andWhere('aa.id IS NOT NULL');
 		$qb->andWhere('aa.id != :person_id');
 		$qb->orderBy('t.id', 'DESC');
@@ -703,7 +703,7 @@ class Task extends AbstractEntityRepository
 			$qb->setFirstResult($offset);
 		}
 
-		$qb->setParameters('person_id', $person['id']);
+		$qb->setParameter('person_id', $person['id']);
 		$query = $qb->getQuery();
 		return $query->getResult();
 	}
