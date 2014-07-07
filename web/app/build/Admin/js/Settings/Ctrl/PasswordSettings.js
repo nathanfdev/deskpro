@@ -16,12 +16,7 @@
       Admin_Settings_Ctrl_PasswordSettings.CTRL_AS = 'Settings';
 
       Admin_Settings_Ctrl_PasswordSettings.prototype.init = function() {
-        this.$scope.password_settings = {};
-        return this.$scope.$on('agent.save', (function(_this) {
-          return function() {
-            return _this.saveSettings();
-          };
-        })(this));
+        return this.$scope.password_settings = {};
       };
 
       Admin_Settings_Ctrl_PasswordSettings.prototype.initialLoad = function() {

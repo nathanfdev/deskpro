@@ -296,6 +296,13 @@ define(function() {
 		controller: 'Admin_Agents_Ctrl_DeletedRestore'
 	});
 
+	routes.push({
+		id: 'agents.settings',
+		url: '/settings',
+		templateName: 'Agents/settings.html',
+		controller: 'Admin_Settings_Ctrl_PasswordSettings'
+	});
+
 	//###
 	//# Agent Login Log
 	//###
