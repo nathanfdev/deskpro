@@ -205,8 +205,8 @@ class ReportsBuilderController extends AbstractController
 		}
 
 		$new_report              = $reports_builder->createNew();
-		$new_report->title       = $report->title;
-		$new_report->description = $report->description;
+		$new_report->title       = $this->in->getString('title') ?: $report->title;
+		$new_report->description = $this->in->getString('description') ?: $report->description;
 		$new_report->query       = $report->query;
 
 		$parts = $this->in->getArrayValue('parts');

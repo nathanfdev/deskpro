@@ -267,7 +267,9 @@
           return function() {
             var promise;
             promise = _this.Api.sendPostJson('/reports/builder/clone/' + _this.report.id, {
-              parts: _this.query_parts
+              parts: _this.query_parts,
+              title: _this.form.title,
+              description: _this.form.description
             });
             return promise.success(function(data) {
               return _this.reportData.loadList(true).then(function() {

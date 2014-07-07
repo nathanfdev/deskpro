@@ -217,7 +217,9 @@ define [
 
 			run = =>
 				promise = @Api.sendPostJson('/reports/builder/clone/' + @report.id, {
-					parts: @query_parts
+					parts: @query_parts,
+					title: @form.title,
+					description: @form.description
 				})
 
 				promise.success((data) =>
