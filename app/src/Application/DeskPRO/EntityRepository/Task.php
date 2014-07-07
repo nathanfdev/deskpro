@@ -79,7 +79,7 @@ class Task extends AbstractEntityRepository
 	public function countOverdueTasks(Entity\Person $person)
 	{
 		$date = $person->getDateTime();
-		$date->setTime(23, 59, 59);
+		$date->setTime(0, 0, 0);
 		$date = Dates::convertToUtcDateTime($date);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
@@ -210,7 +210,7 @@ class Task extends AbstractEntityRepository
         public function countOverdueTasksForPerson(Entity\Person $person)
         {
 			$date = $person->getDateTime();
-			$date->setTime(23, 59, 59);
+			$date->setTime(0, 0, 0);
 			$date = Dates::convertToUtcDateTime($date);
 
             $qb = $this->getEntityManager()->createQueryBuilder();
@@ -735,8 +735,8 @@ class Task extends AbstractEntityRepository
 			$qb->setParameter('today', $today);
 			$qb->setParameter('tomorrow', $tomorrow);
 		} elseif($filter_type == 'future') {
-			$qb->andWhere('t.date_due > :today ');
-			$qb->setParameter('today', $today);
+			$qb->andWhere('t.date_due > :tomorrow ');
+			$qb->setParameter('tomorrow', $tomorrow);
 		} elseif($filter_type == 'overdue') {
 			$qb->andWhere('t.date_due < :today');
 			$qb->setParameter('today', $today);
