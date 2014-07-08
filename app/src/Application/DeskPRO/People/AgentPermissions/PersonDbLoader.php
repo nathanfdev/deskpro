@@ -69,6 +69,7 @@ class PersonDbLoader
 		'agent_chat'    => 'chat',
 		'agent_publish' => 'publish',
 		'agent_general' => 'general',
+		'agent_tasks'   => 'tasks',
 	);
 
 

@@ -77,6 +77,9 @@
 			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
 			<li dp-tab-btn="main.perms.publish"><a href="#"><i class="fa fa-book"></i> Publish</a></li>
 			<li dp-tab-btn="main.perms.profile"><a href="#"><i class="fa fa-pencil"></i> Profile</a></li>
+			{% if app.getSetting('core.apps_tasks') %}
+                <li dp-tab-btn="main.perms.tasks"><a href="#"><i class="fa fa-calendar-o"></i> { phrase('adm.agents.perm_title_tasks') }}</a></li>
+            {% endif %}
 		</ul>
 	</nav>
 
@@ -229,4 +232,11 @@
 		</tbody>
 	</table>
 	{# /GENERAL PERMISSIONS #}
+
+    {# TASKS PERMISSIONS #}
+    <table class="table table-hover" dp-tab-body="main.perms.tasks">
+        {{ _self.perm_row('tasks', 'use') }}
+        </tbody>
+    </table>
+    {# /TASKS PERMISSIONS #}
 </div>

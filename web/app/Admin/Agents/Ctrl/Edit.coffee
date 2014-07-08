@@ -133,7 +133,8 @@ define [
 				org: {},
 				chat: {},
 				publish: {},
-				general: {}
+				general: {},
+				tasks: {}
 			}
 
 			@ugEffectiveDepPerms = {
