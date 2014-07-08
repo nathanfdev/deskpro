@@ -142,7 +142,8 @@ class ProcessReply extends ProcessAbstract
 				$this->ticket,
 				$this->ticket_email,
 				$this->cleaner,
-				array($this, 'replaceInlineAttachTokens')
+				array($this, 'replaceInlineAttachTokens'),
+				$this->getLogger()
 			);
 		}
 

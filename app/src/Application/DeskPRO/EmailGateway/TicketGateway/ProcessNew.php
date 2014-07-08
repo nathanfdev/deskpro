@@ -107,7 +107,8 @@ class ProcessNew extends ProcessAbstract
 			null,
 			$this->ticket_email,
 			$this->cleaner,
-			array($this, 'replaceInlineAttachTokens')
+			array($this, 'replaceInlineAttachTokens'),
+			$this->getLogger()
 		);
 
 		$run_reply_cutter = $this->ticket_email->force_reply_cutter;

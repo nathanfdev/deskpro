@@ -99,8 +99,12 @@ class TicketIncomingEmailMessage
 	 * @param Cleaner $cleaner
 	 * @param null $token_replace_callback
 	 */
-	public function __construct(Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, $token_replace_callback = null)
+	public function __construct(Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, $token_replace_callback = null, Logger $logger = null)
 	{
+		if ($logger) {
+			$this->setLogger($logger);
+		}
+
 		$reader = $ticket_email->reader;
 
 		$this->subject = $reader->getSubject()->getSubjectUtf8();
@@ -116,6 +120,17 @@ class TicketIncomingEmailMessage
 		$inline_images = new InlineImageTokens($reader);
 		$inline_images2 = new InlineImageTokens($reader);
 
+		if ($ticket) {
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true -- ticket exists, so this is a reply');
+			$do_cut = true;
+		} else if ($ticket_email->force_reply_cutter) {
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true -- force_reply_cutter is on');
+			$do_cut = true;
+		} else {
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=false');
+			$do_cut = false;
+		}
+
 		$orig_text = $ticket_email->email_body_text;
 		$did_html_trim = false;
 		$is_text = false;
@@ -125,7 +140,7 @@ class TicketIncomingEmailMessage
 		$precut_do_plaintext = false;
 
 		if ($ticket_email->email_body_html) {
-			$this->logMessage('[TicketIncomingEmailMessage] doNewReply read HTML email');
+			$this->logMessage('[TicketIncomingEmailMessage] read HTML email');
 			$this->body = $ticket_email->email_body_html;
 			if (!$this->body) {
 				$this->body = $ticket_email->email_body_html;
@@ -152,18 +167,41 @@ class TicketIncomingEmailMessage
 			// We'll try to find a cut-mark now and trim the document down to see if we can still use it
 			// (We dont alway cut first because we want an in-tact 'full body' if possible)
 			if (substr_count($this->body, '>') > 15000) {
-				$this->logMessage('[TicketIncomingEmailMessage] Document too complex, pre-cut');
+				if ($do_cut) {
+					$this->logMessage('[TicketIncomingEmailMessage] Document too complex, pre-cut');
 
-				$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-				if ($ticket) {
-					$generic_cut = $cut->cutQuoteBlock($this->body, $this->body_is_html);
+					$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+					if ($ticket) {
+						$generic_cut = $cut->cutQuoteBlock($this->body, $this->body_is_html);
+					} else {
+						$generic_cut = $this->body;
+					}
+
+					// If we had no successful cut or the body is still too complex, use the plaintext version
+					if ($this->body == $generic_cut || substr_count($this->body, '>') > 15000) {
+						$this->logMessage('[TicketIncomingEmailMessage] Cut document still too complex, using plaintext');
+
+						$this->body = $ticket_email->email_body_text;
+						if ($this->body) {
+							$this->body = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
+						} else {
+							$this->body = strip_tags($ticket_email->email_body_html);
+							$this->body = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
+						}
+						$this->body_is_html = false;
+
+						$precut_do_plaintext = true;
+
+					// The trimmed document is short enough to use
+					} else {
+						$this->logMessage('[TicketIncomingEmailMessage] Using cut-trimmed document');
+
+						$did_html_trim = true;
+						$this->body = $generic_cut;
+						$this->body_is_html = true;
+					}
 				} else {
-					$generic_cut = $this->body;
-				}
-
-				// If we had no successful cut or the body is still too complex, use the plaintext version
-				if ($this->body == $generic_cut || substr_count($this->body, '>') > 15000) {
-					$this->logMessage('[TicketIncomingEmailMessage] Cut document still too complex, using plaintext');
+					$this->logMessage('[TicketIncomingEmailMessage] Cut document too complex, using plaintext');
 
 					$this->body = $ticket_email->email_body_text;
 					if ($this->body) {
@@ -175,14 +213,6 @@ class TicketIncomingEmailMessage
 					$this->body_is_html = false;
 
 					$precut_do_plaintext = true;
-
-					// The trimmed document is short enough to use
-				} else {
-					$this->logMessage('[TicketIncomingEmailMessage] Using cut-trimmed document');
-
-					$did_html_trim = true;
-					$this->body = $generic_cut;
-					$this->body_is_html = true;
 				}
 			}
 		}
@@ -190,7 +220,7 @@ class TicketIncomingEmailMessage
 		if ($precut_do_plaintext || !$ticket_email->email_body_html) {
 			$is_text = true;
 
-			$this->logMessage('[TicketIncomingEmailMessage] doNewReply read text email');
+			$this->logMessage('[TicketIncomingEmailMessage] read text email');
 			$txt = $ticket_email->email_body_text;
 			if (!$txt && $ticket_email->email_body_text) {
 				$txt = $ticket_email->email_body_text;
@@ -213,41 +243,43 @@ class TicketIncomingEmailMessage
 
 			// Always generic cut from the DP_TOP_MARK position first
 			// The PatternCutter will trim off the remaining quoted headers
-			$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-			$generic_cut = $cut->cutQuoteBlock($this->body, false);
-			if ($this->body != $generic_cut) {
-				$this->logMessage("Generic cutter matched");
-				$this->body = $generic_cut;
-				$this->generic_cut = $generic_cut;
-				$this->found_top_marker = true;
-				$has_cut = true;
-			} else {
-				$this->logMessage("Generic cutter did not match");
-				$this->found_top_marker = false;
-			}
-
-			$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
-			$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
-			$cutter->addPatterns($pattern_config->all());
-
-			$this->body = $cutter->cutQuoteBlock($this->body, false);
-
-			if ($cutter->getMatchedPatterns()) {
-				$has_text_cut = true;
-				foreach ($cutter->getMatchedPatterns() as $p) {
-					$this->logMessage("Text cutter matched pattern: " . $p->getPattern());
+			if ($do_cut) {
+				$cut = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+				$generic_cut = $cut->cutQuoteBlock($this->body, false);
+				if ($this->body != $generic_cut) {
+					$this->logMessage("Generic cutter matched");
+					$this->body = $generic_cut;
+					$this->generic_cut = $generic_cut;
+					$this->found_top_marker = true;
+					$has_cut = true;
+				} else {
+					$this->logMessage("Generic cutter did not match");
+					$this->found_top_marker = false;
 				}
-			} else {
-				$this->logMessage("Text cutter did not match any pattern");
-			}
 
-			// Run generic cutter as well, in case it matches higher
-			$parts = $cut->splitFromFirstHeaderText($this->body);
-			if ($parts && count($parts) == 2) {
-				$this->logMessage("Split header cutter matched, cut from standard quote headers");
-				$this->body = trim($parts[0]);
-			} else {
-				$this->logMessage("Split header cutter did not match");
+				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
+				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
+				$cutter->addPatterns($pattern_config->all());
+
+				$this->body = $cutter->cutQuoteBlock($this->body, false);
+
+				if ($cutter->getMatchedPatterns()) {
+					$has_text_cut = true;
+					foreach ($cutter->getMatchedPatterns() as $p) {
+						$this->logMessage("Text cutter matched pattern: " . $p->getPattern());
+					}
+				} else {
+					$this->logMessage("Text cutter did not match any pattern");
+				}
+
+				// Run generic cutter as well, in case it matches higher
+				$parts = $cut->splitFromFirstHeaderText($this->body);
+				if ($parts && count($parts) == 2) {
+					$this->logMessage("Split header cutter matched, cut from standard quote headers");
+					$this->body = trim($parts[0]);
+				} else {
+					$this->logMessage("Split header cutter did not match");
+				}
 			}
 
 			$this->body = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
@@ -269,40 +301,42 @@ class TicketIncomingEmailMessage
 
 			// Always generic cut from the DP_TOP_MARK position first
 			// The PatternCutter will trim off the remaining quoted headers
-			$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-			if ($ticket) {
-				$generic_cut = $generic_cutter->cutQuoteBlock($this->body, $this->body_is_html);
-			} else {
-				$generic_cut = $this->body;
-			}
-
-			if ($this->body != $generic_cut) {
-				$this->body = $generic_cut;
-				$this->generic_cut = $generic_cut;
-				$this->found_top_marker = true;
-				$has_cut = true;
-			} else {
-				$this->found_top_marker = false;
-			}
-
-			if ($this->body_is_html) {
-				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
-				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
-				$cutter->addPatterns($pattern_config->all());
-
-				$this->body = $cutter->cutQuoteBlock($this->body, true);
-
-				if ($cutter->getMatchedPatterns()) {
-					$has_cut = true;
-					foreach ($cutter->getMatchedPatterns() as $p) {
-						$this->logMessage("Cutter matched pattern: " . $p->getPattern());
-					}
+			if ($do_cut) {
+				$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
+				if ($ticket) {
+					$generic_cut = $generic_cutter->cutQuoteBlock($this->body, $this->body_is_html);
 				} else {
-					$this->logMessage("Cutter did not match any pattern");
+					$generic_cut = $this->body;
 				}
-			}
 
-			$this->body .= $generic_cutter->cutBottomBlock($this->body_raw, true);
+				if ($this->body != $generic_cut) {
+					$this->body = $generic_cut;
+					$this->generic_cut = $generic_cut;
+					$this->found_top_marker = true;
+					$has_cut = true;
+				} else {
+					$this->found_top_marker = false;
+				}
+
+				if ($this->body_is_html) {
+					$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
+					$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
+					$cutter->addPatterns($pattern_config->all());
+
+					$this->body = $cutter->cutQuoteBlock($this->body, true);
+
+					if ($cutter->getMatchedPatterns()) {
+						$has_cut = true;
+						foreach ($cutter->getMatchedPatterns() as $p) {
+							$this->logMessage("Cutter matched pattern: " . $p->getPattern());
+						}
+					} else {
+						$this->logMessage("Cutter did not match any pattern");
+					}
+				}
+
+				$this->body .= $generic_cutter->cutBottomBlock($this->body_raw, true);
+			}
 		}
 
 		// Cut down the quoted message part to 10000 chars
