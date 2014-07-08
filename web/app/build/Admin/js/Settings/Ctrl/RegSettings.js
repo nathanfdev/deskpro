@@ -28,7 +28,6 @@
         }).then((function(_this) {
           return function(res) {
             _this.$scope.settings = res.data.settings.registration_settings;
-            console.log(_this.$scope.settings);
             return _this.settings = angular.copy(_this.$scope.settings);
           };
         })(this));

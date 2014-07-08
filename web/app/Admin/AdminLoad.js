@@ -156,7 +156,6 @@ define([
 	'Admin/Server/Ctrl/ServerFileCheck',
 	'Admin/Server/Ctrl/ServerReportFile',
 	'Admin/Settings/Ctrl/AdvancedSettings',
-	'Admin/Settings/Ctrl/EmailSettings',
 	'Admin/Settings/Ctrl/ElasticSearch',
 	'Admin/Settings/Ctrl/GeneralSettings',
 	'Admin/Settings/Ctrl/PortalSettings',
