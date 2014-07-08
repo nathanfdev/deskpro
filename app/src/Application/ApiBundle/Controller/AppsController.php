@@ -217,6 +217,11 @@ class AppsController extends AbstractController
 		$app->package = $package;
 		$app->title = $this->in->getString('settings.dp_app.title') ?: $package->title;
 
+		// Need to persist now so we have an actual app record
+		// (the id may be used in the installer)
+		$this->em->persist($app);
+		$this->em->flush();
+
 		$context = null;
 		$handler = null;
 
