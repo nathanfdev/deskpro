@@ -123,7 +123,7 @@ class ReportsBuilderController extends AbstractController
 		}
 
 		$rendered_result = $reports_builder->getRenderedResult($id);
-		$query_parts     = $reports_builder->getQueryParts($id);
+		$query_parts     = $reports_builder->getQueryParts($id, false);
 
 		return $this->createApiResponse(array(
 			'rendered_result' => $rendered_result,

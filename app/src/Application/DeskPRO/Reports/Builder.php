@@ -253,6 +253,9 @@ class Builder
 	}
 
 
+
+
+
 	/**
 	 * @param ReportBuilder $report
 	 * @throws \Exception
@@ -276,18 +279,24 @@ class Builder
 	 * @param int $id
 	 * @return array
 	 */
-	public function getQueryParts($id)
+	public function getQueryParts($id, $with_params = true)
 	{
 		$parts = array();
 
 		$report = $this->repository->find($id);
 
-		$params = $this->getParamsInput('params');
+		if ($with_params) {
+			$params = $this->getParamsInput('params');
+		}
 		$query  = $report->query;
 
 		try {
 			$compiler  = new Compiler();
-			$input     = $compiler->replacePlaceholders($query, $params);
+			if ($with_params) {
+				$input = $compiler->replacePlaceholders($query, $params);
+			} else {
+				$input = $query;
+			}
 			$statement = $compiler->lexAndParse($input);
 			$parts     = $this->getDpqlPartsForInput($statement);
 		} catch(\Exception $e) {

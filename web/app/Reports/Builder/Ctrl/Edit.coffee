@@ -11,6 +11,7 @@ define [
 		init: ->
 			if @$stateParams.type == 'builtIn'
 				@reportData = @DataService.get('ReportBuilderBuiltIn')
+				@customList = @DataService.get('ReportBuilderCustom')
 				@reportType = 'builtIn'
 			if @$stateParams.type == 'custom'
 				@reportData = @DataService.get('ReportBuilderCustom')
@@ -224,7 +225,12 @@ define [
 
 				promise.success((data) =>
 
-					@reportData.loadList(true).then(=>
+					proms = [@reportData.loadList(true)]
+
+					if @customList
+						proms.push(@customList.loadList(true))
+
+					@$q.all(proms).then(=>
 						@stopSpinner('builder_loading', true)
 						@stopSpinner('query_loading', true)
 						@stopSpinner('saving', true).then(=>

@@ -20,6 +20,7 @@
       Reports_Builder_Ctrl_Edit.prototype.init = function() {
         if (this.$stateParams.type === 'builtIn') {
           this.reportData = this.DataService.get('ReportBuilderBuiltIn');
+          this.customList = this.DataService.get('ReportBuilderCustom');
           this.reportType = 'builtIn';
         }
         if (this.$stateParams.type === 'custom') {
@@ -272,7 +273,12 @@
               description: _this.form.description
             });
             return promise.success(function(data) {
-              return _this.reportData.loadList(true).then(function() {
+              var proms;
+              proms = [_this.reportData.loadList(true)];
+              if (_this.customList) {
+                proms.push(_this.customList.loadList(true));
+              }
+              return _this.$q.all(proms).then(function() {
                 _this.stopSpinner('builder_loading', true);
                 _this.stopSpinner('query_loading', true);
                 return _this.stopSpinner('saving', true).then(function() {
