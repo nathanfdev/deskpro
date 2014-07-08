@@ -24,6 +24,25 @@
                 </div>
 
                 <div class="form-group">
+                    <div class="col-lg-12" style="margin-top: 20px;">
+                        <label ng-repeat="group in groups" style="width: 100%;">
+                            <input type="checkbox" ng-model="group.perms.tasks.use" ng-change="updateAgents()" />
+                            {{ ng_var('group.title') }}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-12" style="margin-top: 20px;">
+                        <label ng-repeat="agent in agents" style="width: 100%;">
+                            <input type="checkbox" ng-model="agent.perms.tasks.use" ng-checked="agent._checked" ng-disabled="agent._disabled" ng-change="updateAgents()" />
+                            <span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
+                            <span class="title-text">{{ ng_var('agent.display_name') }}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label style="width: 200px;margin-top: 20px;">
