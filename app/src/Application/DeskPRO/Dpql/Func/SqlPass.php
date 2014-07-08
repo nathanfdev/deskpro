@@ -85,6 +85,8 @@ class SqlPass extends AbstractFunc
 		'DATE_FORMAT' => array('string', 2),
 		'DATEDIFF' => array('number', 2),
 		'DAYOFYEAR' => array('number', 1),
+		'DAYOFMONTH' => array('number', 1),
+		'DAY' => array('number', 1),
 		'DEGREES' => array('number', 1),
 		'ELT' => array('string', 4, -1),
 		'EXP' => array('number', 1),
@@ -168,6 +170,7 @@ class SqlPass extends AbstractFunc
 		'TIMEDIFF' => array('time', 2),
 		'TIMESTAMP' => array('datetime', 1, 2),
 		'TO_DAYS' => array('number', 1),
+		'TO_SECONDS' => array('number', 1),
 		'TRIM' => array('string', 1),
 		'TRUNCATE' => array('number', 1),
 		'UCASE' => array('string', 1),
@@ -182,7 +185,15 @@ class SqlPass extends AbstractFunc
 		'WEEK' => array('number', 1, 2),
 		'WEEKDAY' => array('number', 1),
 		'WEEKOFYEAR' => array('number', 1),
-		'YEARWEEK' => array('numberraw', 1, 2)
+		'YEAR' => array('string', 1, 1),
+		'YEARWEEK' => array('numberraw', 1, 2),
+		'CURDATE' => array('date', 0),
+		'CURRENT_DATE' => array('date', 0),
+		'CURTIME' => array('time', 0),
+		'CURRENT_TIME' => array('time', 0),
+		'NOW' => array('datetime', 0),
+		'CURRENT_TIMESTAMP' => array('datetime', 0),
+		'CONVERT_TZ' => array('datetime', 3),
 	);
 
 	/**
