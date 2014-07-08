@@ -631,6 +631,7 @@ class DeskproBlobStorage implements Loggable
 				$data = null;
 			} else {
 				$this->logger->logDebug("[DeskproBlobStorage] (saveBlobStringToFile) Successfully saved {$blob_entity->filesize} bytes");
+				$data = $blob_entity->filesize;
 			}
 		}
 
