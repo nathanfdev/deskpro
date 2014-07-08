@@ -284,8 +284,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 				$ticket['language'] = $person->getRealLanguage();
 
 			// Or if this is the web interface, then set the current lang the user is viewing
-			} elseif (!strpos($this->creation_system, 'gateway')) {
-				$ticket['language'] = App::getSession()->getLanguage();
+			} elseif (strpos($this->creation_system, 'gateway') === false) {
+				$l = App::getSession()->getLanguage();
+
+				// Make sure its a real language and not
+				// the SystemLanguage object
+				if ($l && $l->id) {
+					$ticket['language'] = $l;
+				}
 			}
 
 			if ($this->sent_to) {
