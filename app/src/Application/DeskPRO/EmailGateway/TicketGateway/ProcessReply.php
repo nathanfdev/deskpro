@@ -280,13 +280,15 @@ class ProcessReply extends ProcessAbstract
 		# Reply actions
 		#------------------------------
 
-		$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-		$reply_actions_context = new ReplyActionsContext();
-		$reply_actions_context->ticket = $this->ticket;
-		if ($did_add_message) {
-			$reply_actions_context->message = $message;
+		if ($this->ticket_email->reply_actions) {
+			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+			$reply_actions_context = new ReplyActionsContext();
+			$reply_actions_context->ticket = $this->ticket;
+			if ($did_add_message) {
+				$reply_actions_context->message = $message;
+			}
+			$reply_actions_apply->apply($reply_actions_context);
 		}
-		$reply_actions_apply->apply($reply_actions_context);
 
 		#------------------------------
 		# Default switch status
