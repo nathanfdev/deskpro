@@ -1323,9 +1323,9 @@ $collection->create('agent_tasksearch_getsectiondata', array(
 ));
 
 $collection->create('agent_task_list', array(
-	'path'        => '/tasks/list/{search_type}/{search_categoty}',
+	'path'        => '/tasks/list/{search_type}/{search_category}',
 	'controller'  => 'AgentBundle:Task:taskList',
-	'defaults'    => array('search_type' => NULL, 		'search_categoty' => NULL),
+	'defaults'    => array('search_type' => NULL, 'search_category' => NULL),
 	'options'     => array('fragment_name' => 'tasks', 'fragment_type' => 'list'),
 ));
 

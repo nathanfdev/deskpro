@@ -78,16 +78,15 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueTasks(Entity\Person $person)
 	{
-		$date = $person->getDateTime();
-		$date = Dates::convertToUtcDateTime($date);
+		$now = new \DateTime();
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('COUNT(t.id)')
 		   ->from('DeskPRO:Task', 't')
 		   ->where('t.is_completed = :is_completed')
-		   ->andWhere('t.date_due < :date_due')
+		   ->andWhere('t.date_due <= :date_due')
 		   ->setParameter('is_completed', false)
-		   ->setParameter('date_due', $date);
+		   ->setParameter('date_due', $now);
 
 		$person->loadHelper('Agent');
 		if ($person->Agent->getTeamIds()) {
@@ -151,6 +150,7 @@ class Task extends AbstractEntityRepository
 	public function countDueFutureTasks(Entity\Person $person)
 	{
 		$today = $person->getDateTime();
+		$today->setTime(23, 59, 59);
 		$today = Dates::convertToUtcDateTime($today);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
@@ -275,6 +275,7 @@ class Task extends AbstractEntityRepository
 	public function countDueFutureTasksForPerson(Entity\Person $person)
 	{
 		$date = $person->getDateTime();
+		$date->setTime(23, 59, 59);
 		$date = Dates::convertToUtcDateTime($date);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
@@ -502,6 +503,7 @@ class Task extends AbstractEntityRepository
 	public function countDueFutureDelegatedTasksForPerson(Entity\Person $person)
 	{
 		$today = $person->getDateTime();
+		$today->setTime(23, 59, 59);
 		$today = Dates::convertToUtcDateTime($today);
 
 		$qb = $this->getEntityManager()->createQueryBuilder();
@@ -539,52 +541,66 @@ class Task extends AbstractEntityRepository
 		$tomorrow->setTime(23, 59, 59);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
-		$now = $person->getDateTime();
+		$now = new \DateTime();
 
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('t');
-		$qb->from('DeskPRO:Task', 't');
-		$qb->innerJoin('t.person', 'p');
-		$qb->leftJoin('t.assigned_agent', 'aa');
-		$qb->leftJoin('t.assigned_agent_team', 'at');
-		$qb->andWhere('p.id = :person_id AND aa.id IS NULL AND at.id IS NULL');
-		$qb->orWhere('aa.id = :person_id');
-		$qb->orderBy('t.date_created', 'ASC');
-		$qb->addOrderBy('t.id', 'DESC');
+		$params = array();
 
-		if ($filter_type == 'today') {
-			$qb->andWhere('(t.date_due >= :today AND t.date_due <= :tomorrow) OR t.date_due IS NULL');
-			$qb->setParameter('today', $today);
-			$qb->setParameter('tomorrow', $tomorrow);
+		if($filter_type == 'today') {
+			$where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
+			$params[] = $today->format('Y-m-d H:i:s');
+			$params[] = $tomorrow->format('Y-m-d H:i:s');
+		} elseif($filter_type == 'future') {
+			$where_part = '(date_due >= ?)';
+			$params[] = $tomorrow->format('Y-m-d H:i:s');
+		} elseif($filter_type == 'overdue') {
+			$where_part = '(date_due < ?)';
+			$params[] = $now->format('Y-m-d H:i:s');
+		} else {
+			$where_part = '1';
+		}
 
-		} elseif ($filter_type == 'future') {
-			$qb->andWhere('t.date_due > :tomorrow');
-			$qb->setParameter('tomorrow', $now);
-
-		} elseif ($filter_type == 'overdue') {
-			$qb->andWhere('t.date_due < :date_due');
-			$qb->setParameter('date_due', $now);
+		$person->loadHelper('Agent');
+		if ($team_ids = $person->Agent->getTeamIds()) {
+			$team_ids = implode(',', $team_ids);
+			$where_part .= ' AND ( (person_id = ? OR assigned_agent_id = ? OR assigned_agent_team_id IN ('.$team_ids.')))';
+			$params[] = $person->id;
+			$params[] = $person->id;
+		} else {
+			$where_part .= ' AND ( (person_id = ? OR assigned_agent_id = ?))';
+			$params[] = $person->id;
+			$params[] = $person->id;
 		}
 
 		if ($state !== null) {
 			if ($state == 'complete') {
-				$qb->andWhere('t.is_completed = true');
+				$where_part .= ' AND is_completed = 1';
 			} elseif ($state == 'incomplete') {
-				$qb->andWhere('t.is_completed = false');
+				$where_part .= ' AND is_completed = 0';
 			}
 		}
 
 		if ($limit) {
-			$qb->setMaxResults($limit);
+			if ($offset) {
+				$limit_part = "LIMIT $offset, $limit";
+			} else {
+				$limit_part = "LIMIT 0, $limit";
+			}
 		}
 
-		if ($offset) {
-			$qb->setFirstResult($offset);
+		$result_ids = App::getDb()->fetchAllCol("
+			SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
+			FROM tasks
+			WHERE $where_part
+			ORDER BY sort_date_due ASC, id DESC
+			$limit_part
+		", $params);
+
+		$results = array();
+		if ($result_ids) {
+			$results = $this->getByIds($result_ids, true);
 		}
 
-		$qb->setParameter('person_id', $person['id']);
-		$query = $qb->getQuery();
-		return $query->getResult();
+		return $results;
 	}
 
         /**
@@ -604,49 +620,63 @@ class Task extends AbstractEntityRepository
 		$tomorrow->setTime(23, 59, 59);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
-		$now = $person->getDateTime();
+		$now = new \DateTime();
 
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('t');
-		$qb->from('DeskPRO:Task', 't');
-		$qb->innerJoin('t.assigned_agent_team', 'aat');
-		$qb->innerJoin('aat.members', 'm');
-		$qb->where('m.id = :person_id');
-		$qb->orderBy('t.date_created', 'ASC');
-		$qb->addOrderBy('t.id', 'DESC');
+		$params = array();
 
-		if($filter_type == 'today')	{
-			$qb->andWhere('(t.date_due >= :today AND t.date_due <= :tomorrow) OR t.date_due IS NULL');
-			$qb->setParameter('today', $today);
-			$qb->setParameter('tomorrow', $tomorrow);
-		} else if($filter_type == 'future') {
-			$qb->andWhere('t.date_due > :tomorrow');
-			$qb->setParameter('tomorrow', $now);
-		} else if($filter_type == 'overdue') {
-			$qb->andWhere('t.date_due < :date_due');
-			$qb->setParameter('date_due', $now);
+		if($filter_type == 'today') {
+			$where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
+			$params[] = $today->format('Y-m-d H:i:s');
+			$params[] = $tomorrow->format('Y-m-d H:i:s');
+		} elseif($filter_type == 'future') {
+			$where_part = '(date_due >= ?)';
+			$params[] = $tomorrow->format('Y-m-d H:i:s');
+		} elseif($filter_type == 'overdue') {
+			$where_part = '(date_due < ?)';
+			$params[] = $now->format('Y-m-d H:i:s');
+		} else {
+			$where_part = '1';
+		}
+
+		$person->loadHelper('Agent');
+		if ($team_ids = $person->Agent->getTeamIds()) {
+			$team_ids = implode(',', $team_ids);
+			$where_part .= ' AND (assigned_agent_team_id IN ('.$team_ids.'))';
+		} else {
+			// Doesnt belong to any teams, so nothing to show
+			return array();
 		}
 
 		if ($state !== null) {
 			if ($state == 'complete') {
-				$qb->andWhere('t.is_completed = true');
+				$where_part .= ' AND is_completed = 1';
 			} elseif ($state == 'incomplete') {
-				$qb->andWhere('t.is_completed = false');
+				$where_part .= ' AND is_completed = 0';
 			}
 		}
 
 		if ($limit) {
-			$qb->setMaxResults($limit);
+			if ($offset) {
+				$limit_part = "LIMIT $offset, $limit";
+			} else {
+				$limit_part = "LIMIT 0, $limit";
+			}
 		}
 
-		if ($offset) {
-			$qb->setFirstResult($offset);
+		$result_ids = App::getDb()->fetchAllCol("
+			SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
+			FROM tasks
+			WHERE $where_part
+			ORDER BY sort_date_due ASC, id DESC
+			$limit_part
+		", $params);
+
+		$results = array();
+		if ($result_ids) {
+			$results = $this->getByIds($result_ids, true);
 		}
 
-		$qb->setParameter('person_id', $person['id']);
-
-		$query = $qb->getQuery();
-		return $query->getResult();
+		return $results;
 	}
 
         /**
@@ -665,50 +695,64 @@ class Task extends AbstractEntityRepository
 		$tomorrow->setTime(23, 59, 59);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
-		$now = $person->getDateTime();
+		$now = new \DateTime();
 
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('t');
-		$qb->from('DeskPRO:Task', 't');
-		$qb->innerJoin('t.person', 'p');
-		$qb->leftJoin('t.assigned_agent', 'aa');
-		$qb->where('p.id = :person_id');
-		$qb->andWhere('aa.id IS NOT NULL');
-		$qb->andWhere('aa.id != :person_id');
-		$qb->orderBy('t.date_created', 'ASC');
-		$qb->addOrderBy('t.id', 'DESC');
+		$params = array();
 
 		if($filter_type == 'today') {
-			$qb->andWhere('(t.date_due >= :today AND t.date_due <= :tomorrow) OR t.date_due IS NULL');
-			$qb->setParameter('today', $today);
-			$qb->setParameter('tomorrow', $tomorrow);
-		} elseif ($filter_type == 'future') {
-			$qb->andWhere('t.date_due > :tomorrow ');
-			$qb->setParameter('tomorrow', $now);
-		} elseif ($filter_type == 'overdue') {
-			$qb->andWhere('t.date_due < :today');
-			$qb->setParameter('today', $now);
+			$where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
+			$params[] = $today->format('Y-m-d H:i:s');
+			$params[] = $tomorrow->format('Y-m-d H:i:s');
+		} elseif($filter_type == 'future') {
+			$where_part = '(date_due >= ?)';
+			$params[] = $tomorrow->format('Y-m-d H:i:s');
+		} elseif($filter_type == 'overdue') {
+			$where_part = '(date_due < ?)';
+			$params[] = $now->format('Y-m-d H:i:s');
+		} else {
+			$where_part = '1';
+		}
+
+		$person->loadHelper('Agent');
+		if ($team_ids = $person->Agent->getTeamIds()) {
+			$team_ids = implode(',', $team_ids);
+			$where_part .= ' AND (assigned_agent_id != ? assigned_agent_team_id NOT IN IN ('.$team_ids.'))';
+			$params[] = $person->id;
+		} else {
+			$where_part .= ' AND (assigned_agent_id != ?)';
+			$params[] = $person->id;
 		}
 
 		if ($state !== null) {
 			if ($state == 'complete') {
-				$qb->andWhere('t.is_completed = true');
+				$where_part .= ' AND is_completed = 1';
 			} elseif ($state == 'incomplete') {
-				$qb->andWhere('t.is_completed = false');
+				$where_part .= ' AND is_completed = 0';
 			}
 		}
 
 		if ($limit) {
-			$qb->setMaxResults($limit);
+			if ($offset) {
+				$limit_part = "LIMIT $offset, $limit";
+			} else {
+				$limit_part = "LIMIT 0, $limit";
+			}
 		}
 
-		if ($offset) {
-			$qb->setFirstResult($offset);
+		$result_ids = App::getDb()->fetchAllCol("
+			SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
+			FROM tasks
+			WHERE $where_part
+			ORDER BY sort_date_due ASC, id DESC
+			$limit_part
+		", $params);
+
+		$results = array();
+		if ($result_ids) {
+			$results = $this->getByIds($result_ids, true);
 		}
 
-		$qb->setParameter('person_id', $person['id']);
-		$query = $qb->getQuery();
-		return $query->getResult();
+		return $results;
 	}
 
         /**
@@ -727,55 +771,66 @@ class Task extends AbstractEntityRepository
 		$tomorrow->setTime(23, 59, 59);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
-		$now = $person->getDateTime();
+		$now = new \DateTime();
 
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('t');
-		$qb->from('DeskPRO:Task', 't');
-		$qb->innerJoin('t.person', 'p');
-		$qb->orderBy('t.date_created', 'ASC');
-		$qb->addOrderBy('t.id', 'DESC');
+		$params = array();
 
 		if($filter_type == 'today') {
-			$qb->andWhere('(t.date_due >= :today AND t.date_due <= :tomorrow) OR t.date_due IS NULL');
-			$qb->setParameter('today', $today);
-			$qb->setParameter('tomorrow', $tomorrow);
+			$where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
+			$params[] = $today->format('Y-m-d H:i:s');
+			$params[] = $tomorrow->format('Y-m-d H:i:s');
 		} elseif($filter_type == 'future') {
-			$qb->andWhere('t.date_due > :tomorrow ');
-			$qb->setParameter('tomorrow', $now);
+			$where_part = '(date_due >= ?)';
+			$params[] = $tomorrow->format('Y-m-d H:i:s');
 		} elseif($filter_type == 'overdue') {
-			$qb->andWhere('t.date_due < :today');
-			$qb->setParameter('today', $now);
+			$where_part = '(date_due < ?)';
+			$params[] = $now->format('Y-m-d H:i:s');
+		} else {
+			$where_part = '1';
 		}
 
 		$person->loadHelper('Agent');
-		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
-			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
+		if ($team_ids = $person->Agent->getTeamIds()) {
+			$team_ids = implode(',', $team_ids);
+			$where_part .= ' AND ( (person_id = ? OR assigned_agent_id = ? OR assigned_agent_team_id IN ('.$team_ids.')) OR visibility = 1)';
+			$params[] = $person->id;
+			$params[] = $person->id;
 		} else {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
+			$where_part .= ' AND ( (person_id = ? OR assigned_agent_id = ?) OR visibility = 1)';
+			$params[] = $person->id;
+			$params[] = $person->id;
 		}
 
 		if ($state !== null) {
 			if ($state == 'complete') {
-				$qb->andWhere('t.is_completed = true');
+				$where_part .= ' AND is_completed = 1';
 			} elseif ($state == 'incomplete') {
-				$qb->andWhere('t.is_completed = false');
+				$where_part .= ' AND is_completed = 0';
 			}
 		}
 
 		if ($limit) {
-			$qb->setMaxResults($limit);
+			if ($offset) {
+				$limit_part = "LIMIT $offset, $limit";
+			} else {
+				$limit_part = "LIMIT 0, $limit";
+			}
 		}
 
-		if ($offset) {
-			$qb->setFirstResult($offset);
+		$result_ids = App::getDb()->fetchAllCol("
+			SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
+			FROM tasks
+			WHERE $where_part
+			ORDER BY sort_date_due ASC, id DESC
+			$limit_part
+		", $params);
+
+		$results = array();
+		if ($result_ids) {
+			$results = $this->getByIds($result_ids, true);
 		}
 
-		$query = $qb->getQuery();
-		return $query->getResult();
+		return $results;
 	}
 
 	public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $person_context, $all = false)

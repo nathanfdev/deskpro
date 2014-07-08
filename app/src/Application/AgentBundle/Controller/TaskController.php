@@ -245,14 +245,14 @@ class TaskController extends AbstractController
      * render the task list
      *
      * @param string $search_type
-     * @param string $search_categoty
+     * @param string $search_category
      * @return string view of the task list
      */
-    public function taskListAction($search_type = null, $search_categoty = null)
+    public function taskListAction($search_type = null, $search_category = null)
     {
         $task_type = false;
 
-		$per_page         = 50;
+		$per_page         = 100;
 		$page             = $this->in->getUInt('page') ?: 1;
 		$completed_page   = $this->in->getUInt('completed_page') ?: 1;
 		$offset           = ($page - 1) * $per_page;
@@ -284,22 +284,8 @@ class TaskController extends AbstractController
 				break;
 		}
 
-		$tasks           = $task_repos->$filter_method($this->person, $search_categoty, $per_page+1, $offset, 'incomplete');
-		$completed_tasks = $task_repos->$filter_method($this->person, $search_categoty, $per_page+1, $completed_offset, 'complete');
-
-        $sort_fn = function($a, $b) {
-			$a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
-			$b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
-
-			if ($a_time == $b_time) {
-				return 0;
-			}
-
-			return ($a_time < $b_time) ? -1 : 1;
-		};
-
-		usort($tasks, $sort_fn);
-		usort($completed_tasks, $sort_fn);
+		$tasks           = $task_repos->$filter_method($this->person, $search_category, $per_page+1, $offset, 'incomplete');
+		$completed_tasks = $task_repos->$filter_method($this->person, $search_category, $per_page+1, $completed_offset, 'complete');
 
 		if (count($tasks) == $per_page+1) {
 			array_pop($tasks);
@@ -336,10 +322,6 @@ class TaskController extends AbstractController
 				$tasks_grouped[$key]['tasks'][] = $t;
 			}
 
-			uasort($tasks_grouped, function($a, $b) {
-				return strcmp($a['title'], $b['title']);
-			});
-
 			$key = 'agent:' . $this->person->id;
 			if (isset($tasks_grouped[$key])) {
 				$tmp = $tasks_grouped[$key];
@@ -360,10 +342,6 @@ class TaskController extends AbstractController
 				$tasks_grouped[$key]['tasks'][] = $t;
 			}
 
-			uasort($tasks_grouped, function($a, $b) {
-				return strcmp($a['title'], $b['title']);
-			});
-
 			if (isset($tasks_grouped[$this->person->id])) {
 				$tmp = $tasks_grouped[$this->person->id];
 				$tmp['title'] = 'Me';
@@ -375,14 +353,16 @@ class TaskController extends AbstractController
 
 			$now = $this->person->getDateTime();
 
+			$today_start = clone $now;
+			$today_start->setTime(0,0,0);
+			$today_start = Dates::convertToUtcDateTime($today_start);
+
 			$today = clone $now;
 			$today->setTime(23, 59, 59);
 			$today = Dates::convertToUtcDateTime($today);
 
-			$yesterday = clone $now;
-			$yesterday->modify('-1 day');
-			$yesterday->setTime(23, 59, 59);
-			$yesterday = Dates::convertToUtcDateTime($yesterday);
+			$overdue = clone $now;
+			$overdue = Dates::convertToUtcDateTime($overdue);
 
 			$week = clone $now;
 			$week->modify("-" . $now->format('w') . ' days');
@@ -400,6 +380,10 @@ class TaskController extends AbstractController
 			$tasks_grouped = array(
 				'overdue' => array(
 					'title' => 'Overdue',
+					'tasks' => array()
+				),
+				'overdue_today' => array(
+					'title' => 'Today (Overdue)',
 					'tasks' => array()
 				),
 				'today' => array(
@@ -423,7 +407,9 @@ class TaskController extends AbstractController
 			foreach ($tasks as $t) {
 				if (!$t->date_due) {
 					$key = 'today';
-				} else if ($t->date_due <= $yesterday) {
+				} else if ($t->date_due >= $today_start && $t->date_due < $overdue) {
+					$key = 'overdue_today';
+				} else if ($t->date_due <= $overdue) {
 					$key = 'overdue';
 				} else if ($t->date_due <= $today) {
 					$key = 'today';
@@ -448,7 +434,7 @@ class TaskController extends AbstractController
 			'tasks_grouped'   => $tasks_grouped,
         	'task_type'       => $task_type,
 			'search_type'     => $search_type,
-			'search_category' => $search_categoty,
+			'search_category' => $search_category,
 			'group_by'        => $group_by,
 
 			'page'               => $page,

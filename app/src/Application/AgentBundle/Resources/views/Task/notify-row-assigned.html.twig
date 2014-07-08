@@ -1,9 +1,9 @@
 <<li class="task task-row-{{ task.id }} inside"
 	data-type="tasks"
 	{% if task.assigned_agent %}
-		data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_categoty': 'total'}) }}"
+		data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_category': 'total'}) }}"
 	{% elseif task.assigned_agent_team %}
-		data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_categoty': 'total'}) }}"
+		data-route="listpane:{{ path('agent_task_list',{'search_type': 'team', 'search_category': 'total'}) }}"
 	{% endif %}
 	data-route-notabreload="1"
 >
