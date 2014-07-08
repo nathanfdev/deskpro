@@ -95,6 +95,7 @@ define([
 	'Admin/Languages/Ctrl/Settings',
 	'Admin/Languages/Ctrl/TranslateModal',
 	'Admin/License/Ctrl/License',
+	'Admin/Tasks/Ctrl/Edit',
 	'Admin/Templates/Ctrl/EmailTemplateEditor',
 	'Admin/Templates/Ctrl/EmailGroupList',
 	'Admin/Templates/Ctrl/EmailList',

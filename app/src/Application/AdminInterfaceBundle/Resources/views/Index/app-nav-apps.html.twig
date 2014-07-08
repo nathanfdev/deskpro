@@ -2,8 +2,9 @@
 {% block nav_content %}
 	<nav class="dp-appnav">
 		<ul>
-			<li dp-state-mark="apps.apps"><a href="#/apps/apps"><i class="fa fa-puzzle-piece"></i> Apps</a></li>
-			<li dp-state-mark="apps.api_keys"><a href="#/apps/api_keys"><i class="fa fa-key"></i> API Keys</a></li>
+			<li dp-state-mark="apps.apps"><a href="#/apps/apps"><i class="fa fa-puzzle-piece"></i> {{ phrase('adm.general.apps') }}</a></li>
+			<li dp-state-mark="apps.api_keys"><a href="#/apps/api_keys"><i class="fa fa-key"></i> {{ phrase('adm.general.api_keys') }}</a></li>
+            <li dp-state-mark="apps.tasks"><a href="#/apps/tasks"><i class="fa fa-tasks"></i> {{ phrase('adm.general.tasks') }}</a></li>
 		</ul>
 	</nav>
 {% endblock %}

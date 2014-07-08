@@ -1832,6 +1832,16 @@ define(function() {
 		controller: 'Admin_ApiKeys_Ctrl_Edit'
 	});
 
+	//###
+	//# Tasks
+	//###
+	routes.push({
+		id: 'apps.tasks',
+		url: '/tasks',
+		templateName: 'Tasks/edit.html',
+		controller: 'Admin_Tasks_Ctrl_Edit'
+	});
+
 	//##################################################################################################################
 	// Server
 	//##################################################################################################################

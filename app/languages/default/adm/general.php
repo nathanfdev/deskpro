@@ -1,6 +1,8 @@
 <?php return array(
 	'adm.general.agent_perms'                        => 'Agent Permissions',
 	'adm.general.apps'                               => 'Apps',
+	'adm.general.api_keys'                           => 'API Keys',
+	'adm.general.tasks'                              => 'Tasks',
 	'adm.general.apps_agents'                        => 'Agents',
 	'adm.general.apps_chat'                          => 'Chat',
 	'adm.general.apps_crm'                           => 'CRM',
