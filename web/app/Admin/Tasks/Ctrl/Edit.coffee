@@ -8,12 +8,25 @@ define [
 		@CTRL_AS   = 'EditCtrl'
 		@DEPS      = ['$stateParams']
 
-
 		init: ->
+			@data = @DataService.get('Tasks')
+
 
 
 
 		initialLoad: ->
+			@data.load().then( (settings) => @$scope.settings = settings )
+
+		save: ->
+			@startSpinner('saving')
+			@data.save().then(
+				=>
+					console.log 'success'
+					@stopSpinner('saving')
+				=>
+					console.log 'fail'
+					@stopSpinner('saving')
+			)
 
 
 

@@ -22,6 +22,7 @@ define [
 	'Admin/RoundRobin/DataService/RoundRobin',
 	'Admin/AgentGroups/DataService/AgentGroups',
 	'Admin/AgentTeams/DataService/AgentTeams',
+	'Admin/Tasks/DataService/Tasks',
 ], (
 	Strings,
 	DataService_TicketFields,
@@ -46,6 +47,7 @@ define [
 	DataService_RoundRobin,
 	DataService_AgentGroups,
 	DataService_AgentTeams,
+	DataService_Tasks,
 ) ->
 	###
 	# A simple wrapper around the data services

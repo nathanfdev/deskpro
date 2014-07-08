@@ -99,6 +99,13 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'tasks',
+		url: '/tasks',
+		templateName: 'Index/app-nav-tasks.html',
+		controller: 'Admin_Main_Ctrl_Nav'
+	});
+
+	routes.push({
 		id: 'server',
 		url: '/server',
 		templateName: 'Index/app-nav-server.html',
@@ -1832,13 +1839,13 @@ define(function() {
 		controller: 'Admin_ApiKeys_Ctrl_Edit'
 	});
 
-	//###
-	//# Tasks
-	//###
+	//##################################################################################################################
+	// Tasks
+	//##################################################################################################################
 	routes.push({
-		id: 'apps.tasks',
-		url: '/tasks',
-		templateName: 'Tasks/edit.html',
+		id: 'tasks.settings',
+		url: '/settings',
+		templateName: 'Tasks/settings.html',
 		controller: 'Admin_Tasks_Ctrl_Edit'
 	});
 

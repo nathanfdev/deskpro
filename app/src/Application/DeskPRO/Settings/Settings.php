@@ -161,14 +161,13 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	/**
 	 * Get the value of a setting
 	 *
-	 * @param string $name
-	 * @return null|string
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
+	 * @param $name
+	 * @param null $default
+	 * @return mixed|null
 	 */
-	public function get($name)
+	public function get($name, $default = null)
 	{
-		if (!$name) return null;
+		if (!$name) return $default;
 
 		if ($this->settings === null) {
 			$this->_loadSettings();
@@ -178,7 +177,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 			return call_user_func($this->virtual_settings[$name], $this);
 		}
 
-		return isset($this->settings[$name]) ? $this->settings[$name] : null;
+		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
 	}
 
 
