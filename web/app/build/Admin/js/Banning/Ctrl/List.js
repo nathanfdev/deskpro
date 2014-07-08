@@ -15,7 +15,7 @@
 
       Admin_Banning_Ctrl_List.CTRL_AS = 'ListCtrl';
 
-      Admin_Banning_Ctrl_List.DEPS = ['Api', '$http'];
+      Admin_Banning_Ctrl_List.DEPS = ['Api', '$http', 'Growl'];
 
       Admin_Banning_Ctrl_List.prototype.init = function() {
         this.banData = this.DataService.get('Bans');
@@ -25,11 +25,13 @@
         this.$scope.exportUrl = this.$http.formatApiUrl('/banning/export_emails');
         this.$scope.$on('fileuploaddone', (function(_this) {
           return function(e, data) {
+            _this.Growl.success('Import finished successfully');
             return _this.goFirstEmailBanPage();
           };
         })(this));
         return this.$scope.$on('fileuploadfail', (function(_this) {
           return function(e, data) {
+            _this.Growl.error('Import failed');
             return _this.goFirstEmailBanPage();
           };
         })(this));

@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_Banning_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_Banning_Ctrl_List'
 		@CTRL_AS = 'ListCtrl'
-		@DEPS      = ['Api', '$http']
+		@DEPS      = ['Api', '$http', 'Growl']
 
 		init: ->
 			@banData = @DataService.get('Bans')
@@ -10,11 +10,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.exportUrl = @$http.formatApiUrl('/banning/export_emails')
 
 			@$scope.$on('fileuploaddone', (e, data) =>
+				@Growl.success 'Import finished successfully'
 				@goFirstEmailBanPage()
 			)
 
 			@$scope.$on('fileuploadfail', (e, data) =>
-				# todo error handling
+				@Growl.error 'Import failed'
 				@goFirstEmailBanPage()
 			)
 
