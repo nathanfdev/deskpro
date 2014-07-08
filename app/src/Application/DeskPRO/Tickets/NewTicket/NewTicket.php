@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Input\Parser\CcListParser;
 
 /**
  * New ticket acts as the processor and domain object for a newticket form
@@ -461,7 +462,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			App::getOrm()->persist($ticket);
 
 			if ($this->ticket->cc_emails) {
-				$ccs = explode(',', $this->ticket->cc_emails);
+				$cc_parser = new CcListParser(App::$container->getSystemService('EmailAddressValidator'));
+				$ccs = $cc_parser->parse($this->ticket->cc_emails);
 
 				foreach ($ccs as &$_) {
 					$_ = trim(strtolower($_));
