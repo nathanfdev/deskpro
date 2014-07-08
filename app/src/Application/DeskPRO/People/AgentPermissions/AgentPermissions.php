@@ -39,6 +39,7 @@ use Application\DeskPRO\People\AgentPermissions\Value\GeneralPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\OrgPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions;
+use Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
 
 class AgentPermissions
@@ -73,6 +74,11 @@ class AgentPermissions
 	 */
 	public $ticket;
 
+	/**
+	 * @var \Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions
+	 */
+	public $tasks;
+
 	public function __construct()
 	{
 		$this->chat    = new ChatPermissions();
@@ -81,6 +87,7 @@ class AgentPermissions
 		$this->people  = new PeoplePermissions();
 		$this->publish = new PublishPermissions();
 		$this->ticket  = new TicketPermissions();
+		$this->tasks   = new TasksPermissions();
 	}
 
 
@@ -124,12 +131,13 @@ class AgentPermissions
 	 */
 	public function fromArray(array $perms)
 	{
-		foreach (array('chat', 'general', 'org', 'people', 'publish', 'ticket') as $prop) {
+		foreach (array('chat', 'general', 'org', 'people', 'publish', 'ticket', 'tasks') as $prop) {
 			if (!isset($perms[$prop])) continue;
 
 			foreach ($this->$prop->getNames() as $name) {
 				$this->$prop->$name = isset($perms[$prop][$name]) ? ((bool)$perms[$prop][$name]) : false;
 			}
 		}
+		$a = 1;
 	}
 }

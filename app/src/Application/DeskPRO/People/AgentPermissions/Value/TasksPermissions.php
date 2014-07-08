@@ -31,54 +31,16 @@
  * @package DeskPRO
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\DeskPRO\People\AgentPermissions\Value;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\DeskPRO\Exception\ValidationException;
-
-/**
-* @SWG\Resource(
-* 	resourcePath="/tasks",
-* 	description="Operations about Tasks",
-* 	basePath="/api/tasks"
-* )
-*/
-
-class TasksController extends AbstractController implements ProtectedControllerInterface
+class TasksPermissions implements PermissionValueInterface
 {
-	const KEY_ENABLED = 'core.apps_tasks';
-	const KEY_REMINDER = 'task_reminder_time';
+	public $use = false;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
+	public function getNames()
 	{
-		return new AdminManagePermission();
-	}
-
-	/**
-	 * get tasks settings
-	 *
-	 * @return Response
-	 */
-	public function settingsAction()
-	{
-		return $this->createApiResponse(array(
-			'enabled' => $this->settings->get(self::KEY_ENABLED, 0),
-			self::KEY_REMINDER => $this->settings->get(self::KEY_REMINDER, '09:00'),
-			'agents' => array(),
-			'permission_groups' => array(),
-		));
-	}
-
-	/**
-	 * update tasks settings
-	 */
-	public function updateSettingsAction()
-	{
-		$this->settings->setSetting(self::KEY_ENABLED, $this->in->getUInt('enabled'));
-		$this->settings->setSetting(self::KEY_REMINDER, $this->in->getString(self::KEY_REMINDER));
-		return $this->settingsAction();
+		return array(
+			'use',
+		);
 	}
 }

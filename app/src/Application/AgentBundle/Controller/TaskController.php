@@ -36,6 +36,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\ApiBundle\Controller\TasksController;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Task;
@@ -43,12 +44,24 @@ use Application\DeskPRO\Entity\TaskComment;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Handles viewing and editing tasks
  */
 class TaskController extends AbstractController
 {
+	public function preAction($action, $arguments = null)
+	{
+		if (!$this->settings->get(TasksController::KEY_ENABLED, 0)) {
+			throw new NotFoundHttpException;
+		}
+
+
+
+		parent::preAction($action, $arguments);
+	}
+
     public function getSectionDataAction()
 	{
         $task_repository = $this->em->getRepository('DeskPRO:Task');
