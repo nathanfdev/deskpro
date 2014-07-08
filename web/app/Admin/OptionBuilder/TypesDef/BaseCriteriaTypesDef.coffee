@@ -60,7 +60,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				options.single = true
 				return @getStandardSelect(options)
 			else
-				if not options.operators then options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+				if not options.operators then options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 				return @getStandardInput(options)
 
 		###

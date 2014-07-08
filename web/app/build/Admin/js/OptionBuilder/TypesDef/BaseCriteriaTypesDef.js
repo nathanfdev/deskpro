@@ -106,7 +106,7 @@
           return this.getStandardSelect(options);
         } else {
           if (!options.operators) {
-            options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+            options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
           }
           return this.getStandardInput(options);
         }

@@ -498,7 +498,7 @@
         }
         options.propName = 'person_ids';
         options.dataName = 'agents';
-        options.operators = ['contains', 'not_contains'];
+        options.operators = ['contains', 'notcontains'];
         options.template = 'OptionBuilder/type-criteria-performer.html';
         def = this.getStandardSelect(options);
         return def;
@@ -573,7 +573,7 @@
           options = {};
         }
         options.propName = 'subject';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -584,7 +584,7 @@
           options = {};
         }
         options.propName = 'body';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -595,7 +595,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -606,7 +606,7 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -617,7 +617,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -628,7 +628,7 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -639,7 +639,7 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -650,7 +650,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -709,7 +709,7 @@
         options.propName = 'labels';
         options.type_title = 'Labels';
         options.tags = true;
-        options.operators = ['contains', 'not_contains'];
+        options.operators = ['contains', 'notcontains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -731,7 +731,7 @@
           options = {};
         }
         options.propName = 'subject';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -742,7 +742,7 @@
           options = {};
         }
         options.propName = 'message';
-        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -791,7 +791,7 @@
           options = {};
         }
         options.propName = 'creation_system_option';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -802,7 +802,7 @@
           options = {};
         }
         options.propName = 'message';
-        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -813,7 +813,7 @@
           options = {};
         }
         options.propName = 'message';
-        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -845,7 +845,7 @@
           options = {};
         }
         options.propName = 'attach_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -856,7 +856,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -867,7 +867,7 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -878,7 +878,7 @@
           options = {};
         }
         options.propName = 'labels';
-        options.operators = ['contains', 'not_contains'];
+        options.operators = ['contains', 'notcontains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -1041,7 +1041,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -1052,7 +1052,7 @@
           options = {};
         }
         options.propName = 'labels';
-        options.operators = ['contains', 'not_contains'];
+        options.operators = ['contains', 'notcontains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -1063,7 +1063,7 @@
           options = {};
         }
         options.propName = 'email_domain';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };

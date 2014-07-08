@@ -507,7 +507,7 @@ define [
 		getCheckPerformer: (options = {}) ->
 			options.propName = 'person_ids'
 			options.dataName = 'agents'
-			options.operators = ['contains', 'not_contains']
+			options.operators = ['contains', 'notcontains']
 			options.template = 'OptionBuilder/type-criteria-performer.html';
 			def = @getStandardSelect(options)
 			return def
@@ -553,49 +553,49 @@ define [
 
 		getCheckEmailSubject: (options = {}) ->
 			options.propName = 'subject'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailBody: (options = {}) ->
 			options.propName = 'body'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailToName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailToAddress: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailFromName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailFromAddress: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailCcAddress: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailCcName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
@@ -636,7 +636,7 @@ define [
 			options.propName = 'labels'
 			options.type_title = 'Labels'
 			options.tags = true
-			options.operators = ['contains', 'not_contains']
+			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
 			return def
 
@@ -648,13 +648,13 @@ define [
 
 		getCheckSubject: (options = {}) ->
 			options.propName = 'subject'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckAgentMessage: (options = {}) ->
 			options.propName = 'message'
-			options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
@@ -676,19 +676,19 @@ define [
 
 		getCheckCreationSystemOption: (options = {}) ->
 			options.propName = 'creation_system_option'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckAgentNote: (options = {}) ->
 			options.propName = 'message'
-			options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckUserMessage: (options = {}) ->
 			options.propName = 'message'
-			options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
@@ -705,25 +705,25 @@ define [
 
 		getCheckHasAttachName: (options = {}) ->
 			options.propName = 'attach_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckUserName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckUserEmail: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckUserLabels: (options = {}) ->
 			options.propName = 'labels'
-			options.operators = ['contains', 'not_contains']
+			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
 			return def
 
@@ -816,19 +816,19 @@ define [
 
 		getCheckOrgName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckOrgLabel: (options = {}) ->
 			options.propName = 'labels'
-			options.operators = ['contains', 'not_contains']
+			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckOrgEmailDomain: (options = {}) ->
 			options.propName = 'email_domain'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 

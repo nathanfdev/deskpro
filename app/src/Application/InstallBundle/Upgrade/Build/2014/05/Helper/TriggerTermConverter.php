@@ -253,7 +253,7 @@ class TriggerTermConverter
 		}
 
 		if ($op == 'is') $op = 'contains';
-		else if ($op == 'not') $op = 'not_contains';
+		else if ($op == 'not') $op = 'notcontains';
 
 		return new Terms\CheckLabel($op, array('labels' => $labels));
 	}
