@@ -34,7 +34,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\DeskPRO\Exception\ValidationException;
+use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
+use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 
 /**
 * @SWG\Resource(
@@ -64,11 +65,35 @@ class TasksController extends AbstractController implements ProtectedControllerI
 	 */
 	public function settingsAction()
 	{
+		$agents = array();
+
+		foreach ($this->container->getAgentData()->getAgents() as $agent) {
+			$agent_data = $agent->toApiData();
+			$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
+			$agent_data['perms'] = $perm_loader->getEffectivePermissions()->toArray();
+			$agents[] = $agent_data;
+		}
+
+		$ugs = $this->em->createQuery("
+				SELECT ug
+				FROM DeskPRO:Usergroup ug
+				WHERE ug.is_agent_group = true
+				ORDER BY ug.title ASC
+			")->execute();
+
+		$groups = $this->getApiData($ugs);
+		$ids = array_map(function($g){ return $g['id']; }, $groups);
+
+		$loader = new GroupsDbLoader($ids, $this->em);
+		foreach ($groups as &$group) {
+			$group['perms'] = $loader->getGroupPermissions($group['id']);
+		}
+
 		return $this->createApiResponse(array(
 			'enabled' => $this->settings->get(self::KEY_ENABLED, 0),
 			self::KEY_REMINDER => $this->settings->get(self::KEY_REMINDER, '09:00'),
-			'agents' => array(),
-			'permission_groups' => array(),
+			'agents' => $agents,
+			'groups' => $groups,
 		));
 	}
 
