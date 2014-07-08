@@ -3875,6 +3875,18 @@ $collection->create('api_banning', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_banning_email_export', array(
+	'path'        => '/banning/export_emails',
+	'controller'  => 'ApiBundle:Banning:exportEmails',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_banning_email_import', array(
+	'path'        => '/banning/import_emails',
+	'controller'  => 'ApiBundle:Banning:importEmails',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_banning_ip_create', array(
 	'path'        => '/banning_ip',
 	'controller'  => 'ApiBundle:Banning:saveIp',
@@ -3939,7 +3951,6 @@ $collection->create('api_banning_email_remove', array(
 	'controller'  => 'ApiBundle:Banning:removeEmail',
 	'methods'     => array('DELETE'),
 ));
-
 
 ########################################################################################################################
 # CRM User Groups

@@ -2,9 +2,21 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_Banning_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_Banning_Ctrl_List'
 		@CTRL_AS = 'ListCtrl'
+		@DEPS      = ['Api', '$http']
 
 		init: ->
 			@banData = @DataService.get('Bans')
+			@$scope.fileUploadOptions = {url: @$http.formatApiUrl('/banning/import_emails') }
+			@$scope.exportUrl = @$http.formatApiUrl('/banning/export_emails')
+
+			@$scope.$on('fileuploaddone', (e, data) =>
+				@goFirstEmailBanPage()
+			)
+
+			@$scope.$on('fileuploadfail', (e, data) =>
+				# todo error handling
+				@goFirstEmailBanPage()
+			)
 
 		###
 		# Loads the list
@@ -25,7 +37,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		###
 		#	Here we watching scope 'page' variable in order to load new page of results
- 	# Reason - 'ng-change' is not working for ui-select2
+ 	  # Reason - 'ng-change' is not working for ui-select2
 		###
 
 		initializeScopeWatching: ->

@@ -12,7 +12,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				'settings': '/registration_settings'
 			}).then( (res) =>
 				@$scope.settings = res.data.settings.registration_settings
-				console.log(@$scope.settings)
 				@settings = angular.copy(@$scope.settings)
 			)
 

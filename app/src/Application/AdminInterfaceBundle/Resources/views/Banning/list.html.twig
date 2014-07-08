@@ -66,8 +66,24 @@
 		<header>
 			<h3 ng-pluralize count="ListCtrl.pagination.email_bans.total || ListCtrl.list.email_bans.length || 0"
 				when="{{ ng_plural_phrase('adm.general.x_email_bans') }}">
-
 			</h3>
+            <h3 class="pull-right" style="border: none;">
+
+                <button style="position: relative;" tooltip="Export">
+                    <a ng-href="{{ ng_var('exportUrl') }}" style="color: black;">
+                        <i class="fa fa-download"></i>
+                    </a>
+                </button>
+
+                <button class="fileinput-button" tooltip="Import">
+                    <form method="POST" enctype="multipart/form-data" file-upload="fileUploadOptions"
+                          action="{{ ng_var('fileUploadOptions.url') }}">
+                        <i class="fa fa-upload"></i>
+                        <input type="file" name="file" dp-change="submit();queue=[];">
+                    </form>
+                </button>
+
+            </h3>
 		</header>
 		<article>
 
@@ -93,7 +109,7 @@
 				</li>
 			</ul>
 
-			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.list.email_bans">
+			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.pagination.email_bans.num_pages > 1">
 				<span dp-show-spinning="paginating_email_bans">
 					<i class="spinner-flat"></i>
 				</span>

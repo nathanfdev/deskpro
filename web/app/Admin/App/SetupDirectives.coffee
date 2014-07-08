@@ -33,6 +33,7 @@ define [
 	'Admin/Main/Directive/DpToggleSwitch',
 	'Admin/Main/Directive/DpTristateCheck',
 	'Admin/Main/Directive/DpWorkingHours',
+	'Admin/Main/Directive/DpChange',
 
 	'Admin/Portal/Directive/PortalEditor',
 	'Admin/TicketDeps/Directive/LayoutEditor',
@@ -72,6 +73,7 @@ define [
 	Admin_Main_Directive_DpToggleSwitch,
 	Admin_Main_Directive_DpTristateCheck,
 	Admin_Main_Directive_DpWorkingHours,
+	Admin_Main_Directive_DpChange,
 
 	Admin_Portal_Directive_PortalEditor,
 	Admin_TicketDeps_Directive_LayoutEditor,
@@ -112,6 +114,7 @@ define [
 		Module.directive('dpToggleSwitch',                 Admin_Main_Directive_DpToggleSwitch)
 		Module.directive('dpTristateCheck',                Admin_Main_Directive_DpTristateCheck)
 		Module.directive('dpWorkingHours',                 Admin_Main_Directive_DpWorkingHours)
+		Module.directive('dpChange',                       Admin_Main_Directive_DpChange)
 
 		Module.directive('dpPortalEditor',                 Admin_Portal_Directive_PortalEditor)
 

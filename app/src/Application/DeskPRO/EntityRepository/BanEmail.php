@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Doctrine\ORM\Query;
 
 class BanEmail extends AbstractEntityRepository
 {
@@ -160,5 +161,16 @@ class BanEmail extends AbstractEntityRepository
 	public function removeAll()
 	{
 		App::getDb()->executeQuery(sprintf('DELETE FROM %s', $this->getTableName()));
+	}
+
+	/**
+	 * complete list of email bans
+	 * @return array
+	 */
+	public function getAll()
+	{
+		return $this->_em->createQuery(
+			'SELECT e.banned_email FROM DeskPRO:BanEmail e'
+		)->execute(array(), Query::HYDRATE_SCALAR);
 	}
 }
