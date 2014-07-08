@@ -24,7 +24,8 @@
         this.setSubLists(['ip_bans', 'email_bans']);
         return this.search_phrase = {
           ip_ban: '',
-          email_ban: ''
+          email_ban: '',
+          email_wildcard: false
         };
       };
 
@@ -60,7 +61,8 @@
           ip_ban_page: this.pagination.ip_bans.page,
           email_ban_page: this.pagination.email_bans.page,
           ip_ban_search_phrase: this.search_phrase.ip_ban,
-          email_ban_search_phrase: this.search_phrase.email_ban
+          email_ban_search_phrase: this.search_phrase.email_ban,
+          email_ban_wildcard: this.search_phrase.email_wildcard ? 1 : 0
         }).success((function(_this) {
           return function(data) {
             var models;
@@ -113,6 +115,18 @@
 
 
       /*
+      		 * Remove complete list
+      		 *
+      		 * @param {String} "email"|"ip"
+      		 * @return {promise}
+       */
+
+      Bans.prototype.deleteBanByType = function(type) {
+        return this.Api.sendDelete('/banning_' + type);
+      };
+
+
+      /*
        * Remove a model
        *
        * @param {Integer} id
@@ -121,7 +135,7 @@
 
       Bans.prototype.deleteBanById = function(id) {
         var promise;
-        promise = this.Api.sendDelete('/banning_' + this.type + '/' + id).success((function(_this) {
+        promise = this.Api.sendDelete('/banning_' + this.type + '/' + window.encodeURIComponent(id)).success((function(_this) {
           return function() {
             return _this.removeListModelById(id);
           };
@@ -141,7 +155,7 @@
         var data, deferred;
         deferred = this.$q.defer();
         if (id) {
-          this.Api.sendGet('/banning_' + this.type + '/' + id).then((function(_this) {
+          this.Api.sendGet('/banning_' + this.type + '/' + window.encodeURIComponent(id)).then((function(_this) {
             return function(result) {
               var data;
               data = {};
@@ -178,7 +192,7 @@
         sendData = {};
         sendData[this.type + '_ban'] = postData;
         if (model['banned_' + this.type]) {
-          promise = this.Api.sendPostJson('/banning_' + this.type + '/' + model['banned_' + this.type], sendData).success((function(_this) {
+          promise = this.Api.sendPostJson('/banning_' + this.type + '/' + window.encodeURIComponent(model['banned_' + this.type]), sendData).success((function(_this) {
             return function(data) {
               return model['banned_' + _this.type] = data['banned_' + _this.type];
             };

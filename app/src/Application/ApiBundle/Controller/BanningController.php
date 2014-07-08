@@ -36,10 +36,15 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Banning\EmailBanEdit;
+use Application\DeskPRO\Banning\EmailBans;
 use Application\DeskPRO\Banning\Form\Type\EmailBanType;
 use Application\DeskPRO\Banning\Form\Type\IpBanType;
 use Application\DeskPRO\Banning\IpBanEdit;
+use Application\DeskPRO\EntityRepository\BanEmail;
 use Application\DeskPRO\Exception\ValidationException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BanningController extends AbstractController implements ProtectedControllerInterface
 {
@@ -62,6 +67,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 		$email_ban_page          = $this->in->getUint('email_ban_page');
 		$ip_ban_search_phrase    = $this->in->getString('ip_ban_search_phrase');
 		$email_ban_search_phrase = $this->in->getString('email_ban_search_phrase');
+		$email_ban_wildcard      = $this->in->getUInt('email_ban_wildcard');
 
 		/**
 		 * @var \Application\DeskPRO\Banning\IpBans $ip_bans
@@ -79,7 +85,8 @@ class BanningController extends AbstractController implements ProtectedControlle
 		$email_bans = $this->container->getSystemService('email_bans');
 		$email_bans
 			->setPage($email_ban_page)
-			->setSearchPhrase($email_ban_search_phrase);
+			->setSearchPhrase($email_ban_search_phrase)
+			->setWildcard($email_ban_wildcard);
 
 		return $this->createApiResponse(
 			array(
@@ -88,10 +95,12 @@ class BanningController extends AbstractController implements ProtectedControlle
 						 'ip_bans'    => array(
 							 'num_pages' => $ip_bans->getPageCount(),
 							 'page'      => $ip_ban_page,
+							 'total'     => $ip_bans->getCount(),
 						 ),
 						 'email_bans' => array(
 							 'num_pages' => $email_bans->getPageCount(),
 							 'page'      => $email_ban_page,
+							 'total'     => $email_bans->getCount(),
 						 ),
 					 ),
 					 'ip_bans'    => $ip_bans->getAllAsNestedArray(),
@@ -226,20 +235,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 		}
 
 		$postData = $this->in->getAll('post');
-
-		$email_ban_edit = new EmailBanEdit($email_ban);
-
-		$form = $this->createForm(new EmailBanType(), $email_ban_edit, array('cascade_validation' => true));
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, 'email_ban'), true);
-
-		if ($form->isValid()) {
-
-			$email_ban_edit->save($this->em);
-
-		} else {
-
-			throw ValidationException::create($this->getFormValidationErrorsString($form));
-		}
+		$this->createOrUpdateEmailBan($email_ban, $postData);
 
 		return $this->createApiResponse(
 			array(
@@ -255,6 +251,11 @@ class BanningController extends AbstractController implements ProtectedControlle
 
 	public function removeIpAction($id)
 	{
+		if (null === $id) {
+			$this->em->getRepository('DeskPRO:BanIp')->removeAll();
+			return $this->createSuccessResponse();
+		}
+
 		/**
 		 * @var \Application\DeskPRO\Banning\IpBans $ip_bans
 		 */
@@ -297,6 +298,11 @@ class BanningController extends AbstractController implements ProtectedControlle
 		 * @var \Application\DeskPRO\Banning\EmailBans $email_bans
 		 */
 
+		if (null === $id) {
+			$this->em->getRepository('DeskPRO:BanEmail')->removeAll();
+			return $this->createSuccessResponse();
+		}
+
 		$email_bans = $this->container->getSystemService('email_bans');
 		$email_ban  = $email_bans->getById($id);
 
@@ -323,5 +329,79 @@ class BanningController extends AbstractController implements ProtectedControlle
 		}
 
 		return $this->createSuccessResponse(array('old_id' => $old_id));
+	}
+
+	/**
+	 * export all emails into file
+	 * @return StreamedResponse
+	 */
+	public function exportEmailsAction()
+	{
+		/** @var BanEmail $bs */
+		$rep = $this->em->getRepository('DeskPRO:BanEmail');
+
+		$response = new StreamedResponse();
+		$disp = $response->headers->makeDisposition(
+			ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+			'banned_emails.txt'
+		);
+		$response->headers->set('Content-Disposition', $disp);
+		$response->setCallback(function () use ($rep) {
+			foreach ($rep->getAll() as $k => $email) {
+				if ($k > 0) echo ',';
+				echo $email['banned_email'];
+			}
+		});
+
+		return $response;
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\BanEmail $model
+	 * @param array $data
+	 * @throws \Application\DeskPRO\Exception\ValidationException
+	 */
+	protected function createOrUpdateEmailBan(\Application\DeskPRO\Entity\BanEmail $model, array $data)
+	{
+		$email_ban_edit = new EmailBanEdit($model);
+
+		$form = $this->createForm(new EmailBanType(), $email_ban_edit, array('cascade_validation' => true));
+		$form->submit($this->deleteExtraDataFromRequest($form, $data, 'email_ban'), true);
+
+		if ($form->isValid()) {
+			$email_ban_edit->save($this->em);
+		} else {
+			throw ValidationException::create($this->getFormValidationErrorsString($form));
+		}
+	}
+
+	/**
+	 * import emails from file
+	 * @return Response
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	public function importEmailsAction()
+	{
+		/** @var $file UploadedFile */
+		if (! ($file = $this->request->files->get('file')) instanceof UploadedFile) {
+			throw $this->createNotFoundException();
+		}
+
+		/** @var EmailBans $email_bans */
+		$email_bans = $this->container->getSystemService('email_bans');
+		$content = file_get_contents($file->getPath() . '/' . $file->getFilename());
+
+		foreach (explode(',', $content) as $email) {
+			try {
+				$this->createOrUpdateEmailBan(
+					$email_bans->createNew(),
+					array('email_ban' => array('banned_email' => trim($email)))
+				);
+			} catch (\Exception $e) {
+				// silent
+			}
+		}
+
+		return $this->createApiResponse(array('filename' => true));
 	}
 }

@@ -20,6 +20,7 @@ define [
 			@search_phrase = {
 				ip_ban: '',
 				email_ban: ''
+				email_wildcard: false
 			}
 
 		###
@@ -54,6 +55,7 @@ define [
 				email_ban_page: @pagination.email_bans.page,
 				ip_ban_search_phrase: @search_phrase.ip_ban
 				email_ban_search_phrase: @search_phrase.email_ban
+				email_ban_wildcard: if @search_phrase.email_wildcard then 1 else 0
 
 			}).success( (data) =>
 
@@ -98,6 +100,17 @@ define [
 			return @formMapper
 
 		###
+		# Remove complete list
+		#
+		# @param {String} "email"|"ip"
+		# @return {promise}
+		###
+
+		deleteBanByType: (type) ->
+
+			@Api.sendDelete('/banning_' + type)
+
+		###
   # Remove a model
   #
   # @param {Integer} id
@@ -106,7 +119,7 @@ define [
 
 		deleteBanById: (id) ->
 
-			promise = @Api.sendDelete('/banning_' + @type + '/' + id).success( =>
+			promise = @Api.sendDelete('/banning_' + @type + '/' + window.encodeURIComponent(id)).success( =>
 				@removeListModelById(id)
 			)
 
@@ -125,7 +138,7 @@ define [
 
 			if id
 
-				@Api.sendGet('/banning_' + @type + '/' + id).then( (result) =>
+				@Api.sendGet('/banning_' + @type + '/' + window.encodeURIComponent(id)).then( (result) =>
 
 					data = {}
 					data[@type + '_ban'] = result.data[@type + '_ban']
@@ -167,7 +180,7 @@ define [
 			sendData[@type + '_ban'] = postData
 
 			if model['banned_' + @type]
-				promise = @Api.sendPostJson('/banning_' + @type + '/' + model['banned_' + @type], sendData).success( (data) =>
+				promise = @Api.sendPostJson('/banning_' + @type + '/' + window.encodeURIComponent(model['banned_' + @type]), sendData).success( (data) =>
 					model['banned_' + @type] = data['banned_' + @type]
 				)
 			else

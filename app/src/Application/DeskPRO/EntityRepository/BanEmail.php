@@ -35,29 +35,38 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Doctrine\ORM\Query;
 
 class BanEmail extends AbstractEntityRepository
 {
+	protected $counts = array();
+
 	/**
 	 * Get a list of emails suitable for display
 	 */
 
-	public function getList($from = 0, $limit = 20, $search_phrase = '')
+	public function getList($from = 0, $limit = 20, $search_phrase = '', $wildcard = false)
 	{
-		$where = '';
+		$where = '1';
+		$params = array();
 
 		if (!empty($search_phrase)) {
-
-			$where = " WHERE banned_email LIKE '%" . $search_phrase . "%'";
+			$where .= " AND banned_email LIKE :search";
+			$params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
 		}
 
-		$list = App::getDb()->fetchAllCol("
+		if ($wildcard) {
+			$where .= ' AND banned_email LIKE "%\%%"';
+		}
+
+		$list = App::getDb()->fetchAllCol(sprintf("
 			SELECT banned_email
 			FROM ban_emails
-			$where
+			WHERE %s
 			ORDER BY banned_email ASC
-			LIMIT " . $from . ", " . $limit . "
-		");
+			LIMIT %d, %d
+		", $where, $from, $limit), $params);
+		$this->counts[$search_phrase] = count($list);
 
 		return $list;
 	}
@@ -65,22 +74,12 @@ class BanEmail extends AbstractEntityRepository
 	/**
 	 * @param int $per_page
 	 * @param string $search_phrase
-	 *
+	 * @param bool $wildcard
 	 * @return int
 	 */
-
-	public function getPageCount($per_page = 20, $search_phrase = '')
+	public function getPageCount($per_page = 20, $search_phrase = '', $wildcard = false)
 	{
-		$where = '';
-
-		if (!empty($search_phrase)) {
-
-			$where = "banned_email LIKE '%" . $search_phrase . "%'";
-		}
-
-		$count = App::getDb()->count('ban_emails', $where);
-
-		return ceil($count / $per_page);
+		return ceil($this->getCount($search_phrase, $wildcard) / $per_page);
 	}
 
 	public function getPatterns($reload = false)
@@ -129,5 +128,49 @@ class BanEmail extends AbstractEntityRepository
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param string $search_phrase
+	 * @param bool $wildcard
+	 * @return int
+	 */
+	public function getCount($search_phrase = '', $wildcard = false)
+	{
+		if (is_string($search_phrase) && isset($this->counts[$search_phrase])) {
+			return $this->counts[$search_phrase];
+		}
+
+		$where = '1';
+		$params = array();
+
+		if (!empty($search_phrase)) {
+			$where .= " AND banned_email LIKE :search";
+			$params['search'] = '%' . str_replace('%', '\%', $search_phrase) . '%';
+		}
+
+		if ($wildcard) {
+			$where .= ' AND banned_email LIKE "%\%%"';
+		}
+
+		$count = App::getDb()->countWithPlaceholders('ban_emails', $where, $params);
+
+		return $this->counts[$search_phrase] = (int) $count;
+	}
+
+	public function removeAll()
+	{
+		App::getDb()->executeQuery(sprintf('DELETE FROM %s', $this->getTableName()));
+	}
+
+	/**
+	 * complete list of email bans
+	 * @return array
+	 */
+	public function getAll()
+	{
+		return $this->_em->createQuery(
+			'SELECT e.banned_email FROM DeskPRO:BanEmail e'
+		)->execute(array(), Query::HYDRATE_SCALAR);
 	}
 }
