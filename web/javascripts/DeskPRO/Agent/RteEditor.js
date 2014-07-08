@@ -112,7 +112,15 @@ DeskPRO.Agent.RteEditor = {
 		api.$editor.addClass('unreset');
 
 		editor.bind('keydown', function(ev) {
-			ev.stopPropagation();
+
+			// - If no control keys are being pressed, prevent
+			// propagation of key events so they dont cause
+			// letter keyboard shortcuts (e.g., 't' for new ticket)
+			// - But allow other key combos to propagate so other combos,
+			// like close tab, still work
+			if (!(ev.metaKey || ev.ctrlKey)) {
+				ev.stopPropagation();
+			}
 
 			if (ev.metaKey && !ev.ctrlKey) { // pressing "cmd" on a mac
 				var sel;
@@ -120,7 +128,7 @@ DeskPRO.Agent.RteEditor = {
 					var adjustmentType = ev.shiftKey ? "extend" : "move";
 
 					switch (ev.keyCode) {
-					case 39: // right - act like "end" in windows
+						case 39: // right - act like "end" in windows
 							sel.modify(adjustmentType, "right", "lineboundary");
 							ev.preventDefault();
 							break;
