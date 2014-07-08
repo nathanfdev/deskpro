@@ -381,17 +381,20 @@ class TaskController extends AbstractController
 
 			$yesterday = clone $now;
 			$yesterday->modify('-1 day');
+			$yesterday->setTime(23, 59, 59);
 			$yesterday = Dates::convertToUtcDateTime($yesterday);
 
 			$week = clone $now;
 			$week->modify("-" . $now->format('w') . ' days');
 			$week->modify('+7 days');
+			$week->setTime(23, 59, 59);
 			$week = Dates::convertToUtcDateTime($week);
 
 			$month = clone $now;
 			$month->setDate($now->format('Y'), $now->format('n'), 1);
 			$month->modify('+1 month');
 			$month->modify('-1 day');
+			$month->setTime(23, 59, 59);
 			$month = Dates::convertToUtcDateTime($month);
 
 			$tasks_grouped = array(
