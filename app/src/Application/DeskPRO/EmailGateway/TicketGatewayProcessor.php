@@ -370,7 +370,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] NOT a reply to a DeskPRO email');
 		}
 
-		$reply_proc = new ProcessReply($ticket, $person, $ticket_email);
+		// todo injection
+		$translator = App::$container->getTranslator();
+		$reply_proc = new ProcessReply($ticket, $person, $ticket_email, $translator);
 		$reply_proc->setLogger($this->logger);
 
 		if (
@@ -509,7 +511,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$ticket_email->force_reply_cutter = $reply_as_new;
 
-			$new_proc = new ProcessNew($this->account, $person, $ticket_email);
+			// todo injection
+			$translator = App::$container->getTranslator();
+			$new_proc = new ProcessNew($this->account, $person, $ticket_email, $translator);
 			$new_proc->setLogger($this->logger);
 
 			$obj = $new_proc->run();

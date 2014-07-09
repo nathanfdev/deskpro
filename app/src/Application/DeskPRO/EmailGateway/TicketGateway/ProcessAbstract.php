@@ -92,6 +92,11 @@ abstract class ProcessAbstract
 	protected $reader;
 
 	/**
+	 * @var \Application\DeskPRO\Translate\Translate
+	 */
+	protected $translator;
+
+	/**
 	 * @return mixed
 	 */
 	abstract public function run();
@@ -263,7 +268,10 @@ abstract class ProcessAbstract
 			$file = new UploadedFile($path, $attach->getFileNameUtf8(), $attach->getMimeType());
 
 			if ($error = $accept->getError($file, $this->person->is_agent ? 'emails.agent' : 'emails.user')) {
-				// todo log error
+				$errorMessage = $this->translator
+					->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				$this->logMessage($errorMessage);
+
 				continue;
 			}
 

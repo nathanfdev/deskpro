@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
+use Application\DeskPRO\Translate\Translate;
 
 class ProcessReply extends ProcessAbstract
 {
@@ -63,13 +64,14 @@ class ProcessReply extends ProcessAbstract
 	 * @param Person $person
 	 * @param TicketIncomingEmail $ticket_email
 	 */
-	public function __construct(Ticket $ticket, Person $person, TicketIncomingEmail $ticket_email)
+	public function __construct(Ticket $ticket, Person $person, TicketIncomingEmail $ticket_email, Translate $translator)
 	{
 		$this->ticket       = $ticket;
 		$this->person       = $person;
 		$this->ticket_email = $ticket_email;
 		$this->reader       = $ticket_email->reader;
 		$this->cleaner      = App::get('deskpro.core.input_cleaner');
+		$this->translator   = $translator;
 	}
 
 	/**
