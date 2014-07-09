@@ -231,28 +231,39 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	/**
 	 * Create a JSONP response.
 	 *
+	 * Remember that personal data (e.g., account info) should never be exposed via jsonp.
+	 *
 	 * @param string $content
 	 * @param int $status_code
+	 * @param string $callback_name
 	 * @return Response
 	 */
 	public function createJsonpResponse($content, $status_code = 200, $callback_name = null)
 	{
 		if (!$callback_name) {
-			$callback_name = preg_replace('#[^a-zA-Z0-9_]#', '', @$_GET['callback']);
+			$callback_name = preg_replace('#[^a-zA-Z0-9_\.]#', '', @$_GET['callback']);
 		}
 		if (!$callback_name) {
 			$callback_name = 'jsonp_callback';
 		}
 
+		if (strlen($callback_name) > 200) {
+			$callback_name = substr($callback_name, 0, 200);
+		}
+
 		$response = $this->container->get('response');
 		$response->headers->set('Content-Type', 'text/javascript');
+		$response->headers->set('X-Content-Type-Options', 'nosniff');
 		$response->setStatusCode($status_code);
 
 		if (is_array($content)) {
 			$content = Util::jsonEncode($content);
 		}
 
-		$response->setContent("$callback_name($content);");
+		// The prepended JS comment here hinders the "rosetta flash" (CVE-2014-4671)
+		// CSRF attack against clients using old flash players
+
+		$response->setContent("/**/$callback_name($content);");
 
 		return $response;
 	}
