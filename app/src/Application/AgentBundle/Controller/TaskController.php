@@ -57,7 +57,9 @@ class TaskController extends AbstractController
 			throw new NotFoundHttpException;
 		}
 
-
+		if (!$this->person->hasPerm('agent_tasks.use')) {
+			throw new NotFoundHttpException;
+		}
 
 		parent::preAction($action, $arguments);
 	}
