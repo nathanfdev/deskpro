@@ -53,16 +53,6 @@ class ProcessNew extends ProcessAbstract
 	protected $ticket_email;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
-
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
-	 */
-	protected $reader;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\EmailAccount
 	 */
 	protected $account;

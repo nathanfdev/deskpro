@@ -54,16 +54,6 @@ class ProcessReply extends ProcessAbstract
 	protected $ticket;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
-
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
-	 */
-	protected $reader;
-
-	/**
 	 * @var \Orb\Input\Cleaner\Cleaner
 	 */
 	protected $cleaner;

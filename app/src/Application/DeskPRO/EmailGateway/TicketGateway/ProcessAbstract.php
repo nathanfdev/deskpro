@@ -81,6 +81,16 @@ abstract class ProcessAbstract
 	protected $dupe_inline_blobs = array();
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person;
+
+	/**
+	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
+	 */
+	protected $reader;
+
+	/**
 	 * @return mixed
 	 */
 	abstract public function run();
@@ -239,6 +249,10 @@ abstract class ProcessAbstract
 	{
 		if ($this->processed_blobs !== null) return $this->processed_blobs;
 		$this->processed_blobs = array();
+		// todo add additional rules for email context
+		$accept = App::$container->getAttachmentAccepter();
+		// todo create templ UploadedFile?
+//		$error = $accept->getError($file, $this->person->is_agent ? 'agent' : 'user');
 
 		foreach ($this->reader->getAttachments() as $attach) {
 
