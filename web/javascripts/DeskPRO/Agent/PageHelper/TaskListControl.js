@@ -209,7 +209,17 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			backdrop.on('click', close);
 			optOverlay.find('.close-trigger').on('click', close);
 		});
+		var dueDateClick = false;
 		el.on('click', '.opt-trigger.date_due', function(ev) {
+			if (dueDateClick) {
+				window.setTimeout(function() {
+					dueDateClick = false;
+				}, 400);
+				return;
+			}
+
+			ev.stopPropagation();
+			dueDateClick = true;
 			openForEl = $(this).closest('article.task');
 
 			var dateFormat = openForEl.data('date-format');
@@ -220,24 +230,29 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				date = new Date();
 			}
 
-			openForEl.datepicker('dialog', date, function(date, inst) {
+			var elPos = $(this).offset();
+
+			openForEl.datepicker('dialog', date, function (date, inst) {
 				sendUpdate(openForEl, 'date_due', date);
 				label.text(date);
 			}, {
 				dateFormat: dateFormat,
 				showButtonPanel: true,
-				beforeShow: function(input) {
-					setTimeout(function() {
+				beforeShow: function (input) {
+					setTimeout(function () {
 						var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
 
 						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
-						btn.unbind("click").bind("click", function () { $.datepicker._clearDate( input ); label.text('No due date'); });
-						btn.appendTo( buttonPane );
+						btn.unbind("click").bind("click", function () {
+							$.datepicker._clearDate(input);
+							label.text('No due date');
+						});
+						btn.appendTo(buttonPane);
 
 						$(input).datepicker("widget").css('z-index', 30001);
-					},1);
+					}, 1);
 				}
-			}, ev);
+			}, [elPos.left, elPos.top]);
 		});
 		el.on('click', '.expand-collapse-icon', function(ev) {
 			var row = $(this).closest('article.task');
