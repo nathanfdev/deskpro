@@ -193,6 +193,8 @@ class TemplatingExtension extends \Twig_Extension
 			'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
 			'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
 
+			'regex_replace'          => new \Twig_Filter_Method($this, 'regexReplace'),
+
 			'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
 
 			'trans'                  => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
@@ -1610,6 +1612,23 @@ class TemplatingExtension extends \Twig_Extension
 	public function jsonEncodeInHtml($data)
 	{
 		return \Application\DeskPRO\Util::jsonEncode($data);
+	}
+
+	public function regexReplace($string, $regex, $replace, $limit = -1)
+	{
+		$regex = Strings::getInputRegexPattern($regex);
+
+		if (!$regex) {
+			return $string;
+		}
+
+		$result = preg_replace($regex, $replace, $string, $limit);
+
+		if ($result === null) {
+			return $string;
+		}
+
+		return $result;
 	}
 
 	public function js_error_tracking($loc, array $options = array())

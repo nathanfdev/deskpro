@@ -1,0 +1,24 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" width="50"><label class="row-label">Set Subject</label></td>
+				<td>
+					<table class="display-table spaced" width="100%">
+						<tr>
+							<td>
+								<textarea type="text" ng-model="model.subject" class="form-control" style="width: 90%; height: 100px; font-family: Monaco, Consolas, monospace; font-size: 11px;"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" ng-model="model.with_formatter" /> Use advanced formatting
+								<i style="color: #aaa;" class="fa fa-question-circle" tooltip="This allows you to use advanced formatting and variables using the same syntax you can use with replies and snippets. Note that new lines and extra whitespace will be automatically removed in the result."></i>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>
