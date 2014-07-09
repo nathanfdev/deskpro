@@ -716,7 +716,7 @@ class Task extends AbstractEntityRepository
 		$person->loadHelper('Agent');
 		if ($team_ids = $person->Agent->getTeamIds()) {
 			$team_ids = implode(',', $team_ids);
-			$where_part .= ' AND (assigned_agent_id != ? assigned_agent_team_id NOT IN IN ('.$team_ids.'))';
+			$where_part .= ' AND (assigned_agent_id != ? AND assigned_agent_team_id NOT IN ('.$team_ids.'))';
 			$params[] = $person->id;
 		} else {
 			$where_part .= ' AND (assigned_agent_id != ?)';
