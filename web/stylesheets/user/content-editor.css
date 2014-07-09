@@ -21,6 +21,13 @@ cite {border-bottom:1px dashed blue}
 acronym {border-bottom:1px dotted #CCC; cursor:help}
 abbr {border-bottom:1px dashed #CCC; cursor:help}
 
+hr {
+	margin: 8px 0;
+	border: none;
+	height: 1px;
+	background: #ccc;
+}
+
 /* IE */
 * html body {
 scrollbar-3dlight-color:#F0F0EE;
