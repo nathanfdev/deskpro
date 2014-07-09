@@ -12,6 +12,10 @@ if (window.jQuery && ('ontouchstart' in window || 'msmaxtouchpoints' in window.n
 		return event;
 	}
 
+	jQuery.fn.click = function() {
+		return jQuery.fn.on.apply(this, ['click', arguments[0]]);
+	};
+
 	// Change event type and re-apply .on() method
 	jQuery.fn.on = function() {
 		var fnKey = 1, oldFn, hasClicked = false;
@@ -33,6 +37,40 @@ if (window.jQuery && ('ontouchstart' in window || 'msmaxtouchpoints' in window.n
 		// so the original 'down' event doesnt fire after touch has ended
 		// - We want to cancel double-clicking that can sometimes happen when click and touch
 		// both fire
+		arguments[fnKey] = function() {
+			if (window.DP_SCROLL_CANCEL_TOUCH) {
+				window.DP_SCROLL_CANCEL_TOUCH = false;
+				hasClicked = false;
+				return;
+			}
+			if (hasClicked) {
+				hasClicked = false;
+				return;
+			}
+			hasClicked = true;
+			window.setTimeout(function() {
+				hasClicked = false;
+			}, 80);
+			return oldFn.apply(this, arguments);
+		};
+
+		originalOnMethod.apply(this, arguments);
+		return this;
+	};
+
+	// Change event type and re-apply .on() method
+	jQuery.fn.one = function() {
+		var fnKey = 1, oldFn, hasClicked = false;
+
+		if (typeof arguments[2] == 'function') {
+			fnKey = 2;
+		}
+		oldFn = arguments[fnKey];
+		if (!oldFn) {
+			return this;
+		}
+		arguments[0] = replaceEventName(arguments[0]);
+
 		arguments[fnKey] = function() {
 			if (window.DP_SCROLL_CANCEL_TOUCH) {
 				window.DP_SCROLL_CANCEL_TOUCH = false;
