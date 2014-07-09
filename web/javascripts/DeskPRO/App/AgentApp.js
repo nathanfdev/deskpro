@@ -21,6 +21,7 @@ define(['angular'], function(angular) {
 					config.dpIsAppAsset = true;
 				} else {
 					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/')
+					config.headers['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 				}
 
 				return config;
