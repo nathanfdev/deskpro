@@ -384,7 +384,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 					}
 
 					if (data.data && data.data.api_data && self.ticketPage) {
-						self.ticketPage.meta.api_data = data.data.api_data;
+						self.ticketPage.updateTicketApiData(data.data.api_data);
 					}
 
 					if (callback) {

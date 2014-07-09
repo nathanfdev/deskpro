@@ -1124,6 +1124,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 
+	updateTicketApiData: function(data) {
+		if (!data) {
+			return;
+		}
+		this.meta.api_data = data;
+
+		if (this.meta.api_data.subject) {
+			var namef       = this.getEl('showname');
+			var editName    = this.getEl('editname');
+
+			namef.text(this.meta.api_data.subject);
+			editName.find('input').first().val(this.meta.api_data.subject);
+		}
+	},
+
 	handleTicketUpdate: function(data) {
 		var self = this;
 		if (data.client_messages) {
@@ -1150,7 +1165,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		if (data.api_data) {
-			this.meta.api_data = data.api_data;
+			this.updateTicketApiData(data.api_data);
 		}
 
 		var new_messages = null;
