@@ -231,7 +231,6 @@ class AppsController extends AbstractController
 			if ($class) {
 				$context = new InstallerContext($this->container, $native_app, $this->in->getCleanValueArray('settings'));
 				$handler = new $class();
-				$handler->install($context);
 			}
 		}
 
@@ -243,6 +242,8 @@ class AppsController extends AbstractController
 
 		$this->em->persist($app);
 		$this->em->flush();
+
+		$handler->install($context);
 
 		return $this->createApiCreateResponse(
 			array('id' => $app->id),
