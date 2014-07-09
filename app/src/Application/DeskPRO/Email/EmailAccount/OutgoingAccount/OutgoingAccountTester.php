@@ -88,15 +88,28 @@ class OutgoingAccountTester
 			->setTo($to_address);
 
 		try {
-			if ($this->account_config instanceof SmtpConfig) {
-				$this->_testSmtp($this->account_config);
-			} else if ($this->account_config instanceof GmailConfig) {
-				$this->_testGmail($this->account_config);
-			} else if ($this->account_config instanceof PhpMailConfig) {
-				$this->_testMail($this->account_config);
+			if (defined('DP_EMAIL_TRANSPORT_FACTORY') && DP_EMAIL_TRANSPORT_FACTORY) {
+				$tr = call_user_func(DP_EMAIL_TRANSPORT_FACTORY, 'test', $this->account_config, $this->account_config->getType(), $this->account_config);
+				if ($tr) {
+					$this->sendWithTransport($tr);
+					if (defined('DPC_IS_CLOUD')) {
+						$this->swift_arraylogger->clear();
+						$this->swift_arraylogger->add("Mail was accepted to DeskPRO queue server");
+					}
+				} else {
+					throw new \RuntimeException("Custom transport factory did not return a transport");
+				}
 			} else {
-				$this->is_success = false;
-				$this->swift_arraylogger->add("Unknown account type: " . get_class($this->account_config));
+				if ($this->account_config instanceof SmtpConfig) {
+					$this->_testSmtp($this->account_config);
+				} else if ($this->account_config instanceof GmailConfig) {
+					$this->_testGmail($this->account_config);
+				} else if ($this->account_config instanceof PhpMailConfig) {
+					$this->_testMail($this->account_config);
+				} else {
+					$this->is_success = false;
+					$this->swift_arraylogger->add("Unknown account type: " . get_class($this->account_config));
+				}
 			}
 		} catch (\Exception $e) {
 			$this->swift_arraylogger->add("[error] ({$e->getCode()}) Failed");

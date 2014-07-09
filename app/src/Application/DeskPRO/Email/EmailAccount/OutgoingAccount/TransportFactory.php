@@ -45,6 +45,13 @@ class TransportFactory
 	 */
 	public function createTransport(AccountConfigInterface $config)
 	{
+		if (defined('DP_EMAIL_TRANSPORT_FACTORY') && DP_EMAIL_TRANSPORT_FACTORY) {
+			$tr = call_user_func(DP_EMAIL_TRANSPORT_FACTORY, 'default', $config, $config->getType(), $config);
+			if ($tr) {
+				return $tr;
+			}
+		}
+
 		switch ($config->getType()) {
 			case 'smtp':     return $this->createSmtpTransport($config);
 			case 'gmail':    return $this->createGmailTransport($config);
