@@ -23,6 +23,9 @@ if (window.jQuery && ('ontouchstart' in window || 'msmaxtouchpoints' in window.n
 			fnKey = 2;
 		}
 		oldFn = arguments[fnKey];
+		if (!oldFn) {
+			return this;
+		}
 		arguments[0] = replaceEventName(arguments[0]);
 
 		// We need to override handling of touch events a bit
