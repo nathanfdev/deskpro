@@ -50,7 +50,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countPendingTasks(Entity\Person $person)
 	{
-		return $this->filterAllPendingTasks($person, '#total');
+		return $this->filterAllPendingTasks($person, '#total', null, null, 'incomplete');
 	}
 
 	/**
@@ -61,7 +61,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueTasks(Entity\Person $person)
 	{
-		return $this->filterAllPendingTasks($person, '#overdue');
+		return $this->filterAllPendingTasks($person, '#overdue', null, null, 'incomplete');
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayTasks(Entity\Person $person)
 	{
-		return $this->filterAllPendingTasks($person, '#today');
+		return $this->filterAllPendingTasks($person, '#today', null, null, 'incomplete');
 	}
 
     /**
@@ -83,7 +83,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureTasks(Entity\Person $person)
 	{
-		return $this->filterAllPendingTasks($person, '#future');
+		return $this->filterAllPendingTasks($person, '#future', null, null, 'incomplete');
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countPendingTasksForPerson(Entity\Person $person)
 	{
-		return $this->filterTasksForPerson($person, '#total');
+		return $this->filterTasksForPerson($person, '#total', null, null, 'incomplete');
 	}
 
 	/**
@@ -105,7 +105,7 @@ class Task extends AbstractEntityRepository
 	 */
         public function countOverdueTasksForPerson(Entity\Person $person)
         {
-			return $this->filterTasksForPerson($person, '#overdue');
+			return $this->filterTasksForPerson($person, '#overdue', null, null, 'incomplete');
     }
 
 	/**
@@ -116,7 +116,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayTasksForPerson(Entity\Person $person)
 	{
-		return $this->filterTasksForPerson($person, '#today');
+		return $this->filterTasksForPerson($person, '#today', null, null, 'incomplete');
 	}
 
 
@@ -128,7 +128,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureTasksForPerson(Entity\Person $person)
 	{
-		return $this->filterTasksForPerson($person, '#future');
+		return $this->filterTasksForPerson($person, '#future', null, null, 'incomplete');
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countPendingTaksForPersonTeams(Entity\Person $person)
 	{
-		return $this->filterTaksForPersonTeams($person, '#total');
+		return $this->filterTaksForPersonTeams($person, '#total', null, null, 'incomplete');
 	}
 
 	/**
@@ -150,7 +150,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueTasksForPersonTeams(Entity\Person $person)
 	{
-		return $this->filterTaksForPersonTeams($person, '#overdue');
+		return $this->filterTaksForPersonTeams($person, '#overdue', null, null, 'incomplete');
 	}
 
 	/**
@@ -161,7 +161,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayTasksForPersonTeams(Entity\Person $person)
 	{
-		return $this->filterTaksForPersonTeams($person, '#today');
+		return $this->filterTaksForPersonTeams($person, '#today', null, null, 'incomplete');
 	}
 
         /**
@@ -172,7 +172,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureTasksForPersonTeams(Entity\Person $person)
 	{
-		return $this->filterTaksForPersonTeams($person, '#future');
+		return $this->filterTaksForPersonTeams($person, '#future', null, null, 'incomplete');
 	}
 
 
@@ -184,7 +184,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countPendingDelegatedTasksForPerson(Entity\Person $person)
 	{
-		return $this->filterDelegatedTasksForPerson($person, '#total');
+		return $this->filterDelegatedTasksForPerson($person, '#total', null, null, 'incomplete');
 	}
 
 	/**
@@ -195,7 +195,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueDelegatedTasksForPerson(Entity\Person $person)
 	{
-		return $this->filterDelegatedTasksForPerson($person, '#overdue');
+		return $this->filterDelegatedTasksForPerson($person, '#overdue', null, null, 'incomplete');
 	}
 
 	/**
@@ -206,7 +206,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayDelegatedTasksForPerson(Entity\Person $person)
 	{
-		return $this->filterDelegatedTasksForPerson($person, '#today');
+		return $this->filterDelegatedTasksForPerson($person, '#today', null, null, 'incomplete');
 	}
 
         /**
@@ -217,7 +217,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureDelegatedTasksForPerson(Entity\Person $person)
 	{
-		return $this->filterDelegatedTasksForPerson($person, '#future');
+		return $this->filterDelegatedTasksForPerson($person, '#future', null, null, 'incomplete');
 	}
 
     /**
