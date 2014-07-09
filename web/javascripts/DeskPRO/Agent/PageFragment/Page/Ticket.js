@@ -1545,7 +1545,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (h >= 600) {
 			if (!article.hasClass('with-clipped-body')) {
 				article.addClass('with-clipped-body');
-				article.find('.fade-bar-longmsg').one('click', function(ev) {
+				article.find('.fade-bar-longmsg').on('click', function(ev) {
 					ev.stopPropagation();
 					article.addClass('clipped-show');
 				});
