@@ -39,6 +39,7 @@ use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class ProcessAbstract
 {
@@ -249,10 +250,9 @@ abstract class ProcessAbstract
 	{
 		if ($this->processed_blobs !== null) return $this->processed_blobs;
 		$this->processed_blobs = array();
+
 		// todo add additional rules for email context
 		$accept = App::$container->getAttachmentAccepter();
-		// todo create templ UploadedFile?
-//		$error = $accept->getError($file, $this->person->is_agent ? 'agent' : 'user');
 
 		foreach ($this->reader->getAttachments() as $attach) {
 
@@ -260,11 +260,16 @@ abstract class ProcessAbstract
 				continue;
 			}
 
-			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
-				$attach->getFileContents(),
-				$attach->getFileName(),
-				$attach->getMimeType()
-			);
+			$path = tempnam(sys_get_temp_dir(), 'tmp_attachment_');
+			$file = new UploadedFile($path, $attach->getFileNameUtf8(), $attach->getMimeType());
+
+			if ($error = $accept->getError($file, $this->person->is_agent ? 'agent' : 'user')) {
+				// todo log error
+				continue;
+			}
+
+			$blob = $accept->accept($file);
+			unlink($file->getRealPath());
 
 			$this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
 			$this->processed_blobs[$blob->id] = $blob;

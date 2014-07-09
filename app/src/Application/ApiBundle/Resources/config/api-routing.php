@@ -2931,6 +2931,18 @@ $collection->create('api_emailaccounts', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_emailaccounts_settings_get', array(
+	'path'        => '/email_accounts/settings',
+	'controller'  => 'ApiBundle:EmailAccounts:getSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_emailaccounts_settings_set', array(
+	'path'        => '/email_accounts/settings',
+	'controller'  => 'ApiBundle:EmailAccounts:setSettings',
+	'methods'     => array('PUT'),
+));
+
 $collection->create('api_emailaccounts_create', array(
 	'path'        => '/email_accounts',
 	'controller'  => 'ApiBundle:EmailAccounts:save',
