@@ -1583,6 +1583,25 @@ class Strings
 	}
 
 	/**
+	 * A better strip_tags().
+	 *
+	 * PHP's strip_tags() doesn't strip style or script tags (amongst others) very well, so this attempts to strip them out completely.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function stripTags($string)
+	{
+		$tag_names = array('head', 'style', 'script', 'object', 'embed', 'applet');
+
+		foreach ($tag_names as $t) {
+			$string = preg_replace("#<{$t}[^>]*?>.*?</$t>#isu", "\n", $string);
+		}
+
+		return strip_tags($string);
+	}
+
+	/**
 	 * Parses out data URLs in <img> tags and replaces them with unique tokens you can later
 	 * str_replace with real paths.
 	 *
