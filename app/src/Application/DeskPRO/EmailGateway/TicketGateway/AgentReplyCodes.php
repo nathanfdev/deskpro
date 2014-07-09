@@ -102,7 +102,7 @@ class AgentReplyCodes implements Loggable
 			$text = preg_replace('#(<p[^>]+>)#', "$1\n", $text);
 			$text = preg_replace('#</div>#', "</div>\n", $text);
 			$text = preg_replace('#</p>#', "</p>\n", $text);
-			$text = strip_tags($text);
+			$text = Strings::stripTags($text);
 		}
 
 		$text = Strings::standardEol($text);
