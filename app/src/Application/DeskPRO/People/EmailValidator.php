@@ -196,8 +196,10 @@ class EmailValidator
 
 						$feedback->validating = null;
 						if ($feedback->status_code == 'hidden.user_validating') {
-							if ($this->person->is_agent_confirmed) {
-								$feedback->setStatus('new');
+							if (!$this->person->hasPerm('feedback.no_submit_validate')) {
+								$feedback->setStatusCode('hidden.validating');
+							} else {
+								$feedback->setStatusCode('new');
 							}
 						}
 

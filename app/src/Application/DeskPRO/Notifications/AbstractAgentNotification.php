@@ -133,7 +133,6 @@ abstract class AbstractAgentNotification
 			$message = App::getMailer()->createMessage();
 			$message->setTemplate($tpl, $vars);
 			$message->setToPerson($agent);
-			$message->setFrom(App::getSetting('core.default_from_email'), App::getSetting('core.deskpro_name'));
 			App::getMailer()->send($message);
 		}
 	}
