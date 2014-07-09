@@ -243,7 +243,9 @@ class AppsController extends AbstractController
 		$this->em->persist($app);
 		$this->em->flush();
 
-		$handler->install($context);
+		if ($handler) {
+			$handler->install($context);
+		}
 
 		return $this->createApiCreateResponse(
 			array('id' => $app->id),
@@ -365,7 +367,9 @@ class AppsController extends AbstractController
 		$this->em->persist($app);
 		$this->em->flush();
 
-		$handler->updateSettings($context);
+		if ($handler) {
+			$handler->updateSettings($context);
+		}
 
 		// If this is a custom app, we can update assets from here as well
 		if ($package->is_custom) {
