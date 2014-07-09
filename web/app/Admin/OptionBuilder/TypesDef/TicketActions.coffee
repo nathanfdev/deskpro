@@ -451,6 +451,29 @@ define [
 				}
 			}
 
+		getSetSubject: (options = {}) ->
+			me = @
+			return {
+				getTemplate: -> return me.dpTemplateManager.get('OptionBuilder/type-actions-set-subject.html')
+				getData: -> return {}
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+							return {
+								subject: options.subject || '',
+								with_formatter: options.with_formatter || false
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'SetSubject'
+							value.options = {}
+							value.options.subject = model.subject || ''
+							value.options.with_formatter = !!model.with_formatter
+							return value
+					}
+			}
+
 		getSetStatus: (options = {}) ->
 			options.propName = 'status'
 			options.template = 'OptionBuilder/type-actions-status.html'

@@ -507,6 +507,48 @@
         };
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetSubject = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-set-subject.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                return {
+                  subject: options.subject || '',
+                  with_formatter: options.with_formatter || false
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetSubject';
+                value.options = {};
+                value.options.subject = model.subject || '';
+                value.options.with_formatter = !!model.with_formatter;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetStatus = function(options) {
         var def;
         if (options == null) {
