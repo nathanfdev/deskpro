@@ -50,24 +50,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countPendingTasks(Entity\Person $person)
 	{
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->where('t.is_completed = :is_completed')
-		   ->setParameter('is_completed', false);
-
-		$person->loadHelper('Agent');
-		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
-			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
-		} else {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility =1');
-			$qb->setParameter('person', $person);
-		}
-
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterAllPendingTasks($person, '#total');
 	}
 
 	/**
@@ -78,28 +61,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueTasks(Entity\Person $person)
 	{
-		$now = new \DateTime();
-
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->where('t.is_completed = :is_completed')
-		   ->andWhere('t.date_due <= :date_due')
-		   ->setParameter('is_completed', false)
-		   ->setParameter('date_due', $now);
-
-		$person->loadHelper('Agent');
-		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
-			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
-		} else {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
-		}
-
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterAllPendingTasks($person, '#overdue');
 	}
 
 	/**
@@ -110,35 +72,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayTasks(Entity\Person $person)
 	{
-		$d1 = $person->getDateTime();
-		$d1->setTime(0,0,0);
-		$d1 = Dates::convertToUtcDateTime($d1);
-
-		$d2 = $person->getDateTime();
-		$d2->setTime(23, 59, 59);
-		$d2 = Dates::convertToUtcDateTime($d2);
-
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->andWhere('(t.date_due >= :d1 AND t.date_due <= :d2) OR t.date_due IS NULL')
-		   ->andWhere('t.is_completed = false');
-
-		$person->loadHelper('Agent');
-		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
-			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
-		} else {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
-		}
-
-		$qb->setParameter('d1', $d1);
-		$qb->setParameter('d2', $d2);
-
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterAllPendingTasks($person, '#today');
 	}
 
     /**
@@ -149,30 +83,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureTasks(Entity\Person $person)
 	{
-		$today = $person->getDateTime();
-		$today->setTime(23, 59, 59);
-		$today = Dates::convertToUtcDateTime($today);
-
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->andWhere('t.date_due > :today')
-		   ->andWhere('t.is_completed = false');
-
-		$person->loadHelper('Agent');
-		if ($person->Agent->getTeamIds()) {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person OR t.assigned_agent_team IN (:agent_teams)) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
-			$qb->setParameter('agent_teams', $person->Agent->getTeamIds());
-		} else {
-			$qb->andWhere('(t.person = :person OR t.assigned_agent = :person) OR t.visibility = 1');
-			$qb->setParameter('person', $person);
-		}
-
-		$qb->setParameter('today', $today);
-
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterAllPendingTasks($person, '#future');
 	}
 
 	/**
@@ -183,20 +94,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countPendingTasksForPerson(Entity\Person $person)
 	{
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->innerJoin('t.person', 'p')
-		   ->leftJoin('t.assigned_agent', 'aa')
-		   ->leftJoin('t.assigned_agent_team', 'at')
-		   ->andWhere('p.id = :person_id AND aa.id IS NULL AND at.id IS NULL')
-		   ->orWhere('aa.id = :person_id')
-		   ->andWhere('t.is_completed = false');
-
-		$qb->setParameter('person_id', $person['id']);
-
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterTasksForPerson($person, '#total');
 	}
 
 	/**
@@ -207,25 +105,7 @@ class Task extends AbstractEntityRepository
 	 */
         public function countOverdueTasksForPerson(Entity\Person $person)
         {
-			$date = $person->getDateTime();
-			$date = Dates::convertToUtcDateTime($date);
-
-            $qb = $this->getEntityManager()->createQueryBuilder();
-            $qb->select('COUNT(t.id)')
-			   ->from('DeskPRO:Task', 't')
-			   ->innerJoin('t.person', 'p')
-			   ->leftJoin('t.assigned_agent', 'aa')
-			   ->leftJoin('t.assigned_agent_team', 'at')
-			   ->andWhere('p.id = :person_id AND aa.id IS NULL AND at.id IS NULL')
-			   ->orWhere('aa.id = :person_id')
-			   ->andWhere('t.is_completed = :is_completed')
-			   ->andWhere('t.date_due < :date_due')
-			   ->setParameter('person_id', $person['id'])
-			   ->setParameter('is_completed', false)
-			   ->setParameter('date_due', $date,\Doctrine\DBAL\Types\Type::DATETIME);
-
-            $query = $qb->getQuery();
-            return $query->getSingleScalarResult();
+			return $this->filterTasksForPerson($person, '#overdue');
     }
 
 	/**
@@ -236,33 +116,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayTasksForPerson(Entity\Person $person)
 	{
-		$d1 = $person->getDateTime();
-		$d1->setTime(0, 0, 0);
-		$d1 = Dates::convertToUtcDateTime($d1);
-
-		$d2 = $person->getDateTime();
-		$d2->setTime(23, 59, 59);
-		$d2 = Dates::convertToUtcDateTime($d2);
-
-		$qb = $this->getEntityManager()->createQueryBuilder();
-
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->innerJoin('t.person', 'p')
-		   ->leftJoin('t.assigned_agent', 'aa')
-		   ->leftJoin('t.assigned_agent_team', 'at')
-		   ->andWhere('p.id = :person_id AND aa.id IS NULL AND at.id IS NULL')
-		   ->orWhere('aa.id = :person_id')
-		   ->andWhere('t.is_completed = false')
-		   ->andWhere('(t.date_due >= :d1 AND t.date_due <= :d2) OR t.date_due IS NULL');
-
-		$qb->setParameters(array(
-			'person_id' => $person['id'],
-			'd1' => $d1,
-			'd2' => $d2
-		));
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterTasksForPerson($person, '#today');
 	}
 
 
@@ -274,29 +128,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureTasksForPerson(Entity\Person $person)
 	{
-		$date = $person->getDateTime();
-		$date->setTime(23, 59, 59);
-		$date = Dates::convertToUtcDateTime($date);
-
-		$qb = $this->getEntityManager()->createQueryBuilder();
-
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->innerJoin('t.person', 'p')
-		   ->leftJoin('t.assigned_agent', 'aa')
-		   ->leftJoin('t.assigned_agent_team', 'at')
-		   ->andWhere('p.id = :person_id AND aa.id IS NULL AND at.id IS NULL')
-		   ->orWhere('aa.id = :person_id')
-		   ->andWhere('t.is_completed = :is_completed')
-		   ->andWhere('t.date_due > :date');
-
-		$qb->setParameters(array(
-			'person_id' => $person['id'],
-			'is_completed' => false,
-			'date' => $date,
-		));
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterTasksForPerson($person, '#future');
 	}
 
 	/**
@@ -307,16 +139,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countPendingTaksForPersonTeams(Entity\Person $person)
 	{
-		$query = $this->getEntityManager()->createQuery("
-			SELECT COUNT(t.id)
-			FROM DeskPRO:Task t
-			JOIN t.assigned_agent_team at
-			JOIN at.members m
-			WHERE m.id = ?1
-			AND t.is_completed = false
-		");
-
-		return $query->setParameter(1, $person['id'])->getSingleScalarResult();
+		return $this->filterTaksForPersonTeams($person, '#total');
 	}
 
 	/**
@@ -327,23 +150,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueTasksForPersonTeams(Entity\Person $person)
 	{
-		$query = $this->getEntityManager()->createQuery("
-			SELECT COUNT(t.id)
-			FROM DeskPRO:Task t
-			JOIN t.assigned_agent_team at
-			JOIN at.members m
-			WHERE m.id = ?1
-			AND t.is_completed = false
-			AND t.date_due < ?2
-		");
-
-		$date = $person->getDateTime();
-		$date->setTime(0, 0, 0);
-		$date = Dates::convertToUtcDateTime($date);
-
-		return $query->setParameter(1, $person['id'])
-			->setParameter(2, $date, \Doctrine\DBAL\Types\Type::DATETIME)
-			->getSingleScalarResult();
+		return $this->filterTaksForPersonTeams($person, '#overdue');
 	}
 
 	/**
@@ -354,31 +161,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayTasksForPersonTeams(Entity\Person $person)
 	{
-		$query = $this->getEntityManager()->createQuery("
-			SELECT COUNT(t.id)
-			FROM DeskPRO:Task t
-			JOIN t.assigned_agent_team at
-			JOIN at.members m
-			WHERE m.id = :person_id
-			AND t.is_completed = false
-			AND (
-				(t.date_due >= :d1 AND t.date_due <= :d2)
-				OR t.date_due IS NULL
-			)
-		");
-
-		$d1 = $person->getDateTime();
-		$d1->setTime(0, 0 ,0);
-		$d1 = Dates::convertToUtcDateTime($d1);
-
-		$d2 = $person->getDateTime();
-		$d2->setTime(23, 59, 59);
-		$d2 = Dates::convertToUtcDateTime($d2);
-
-		return $query->setParameter('person_id', $person['id'])
-			->setParameter('d1', $d1)
-			->setParameter('d2', $d2)
-			->getSingleScalarResult();
+		return $this->filterTaksForPersonTeams($person, '#today');
 	}
 
         /**
@@ -389,23 +172,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureTasksForPersonTeams(Entity\Person $person)
 	{
-		$query = $this->getEntityManager()->createQuery("
-			SELECT COUNT(t.id)
-			FROM DeskPRO:Task t
-			JOIN t.assigned_agent_team at
-			JOIN at.members m
-			WHERE m.id = :person_id
-			AND t.is_completed = false
-			AND t.date_due > :today
-		");
-
-		$today = $person->getDateTime();
-		$today->setTime(23,59,59);
-		$today = Dates::convertToUtcDateTime($today);
-
-		return $query->setParameter('person_id', $person['id'])
-			->setParameter('today', $today, \Doctrine\DBAL\Types\Type::DATETIME)
-			->getSingleScalarResult();
+		return $this->filterTaksForPersonTeams($person, '#future');
 	}
 
 
@@ -417,17 +184,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countPendingDelegatedTasksForPerson(Entity\Person $person)
 	{
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-			->from('DeskPRO:Task', 't')
-			->innerJoin('t.person', 'p')
-			->leftJoin('t.assigned_agent', 'aa')
-			->where('p.id= :person_id AND aa.id IS NOT NULL AND aa.id != :person_id AND t.is_completed = :is_completed')
-			->setParameter('person_id', $person['id'])
-			->setParameter('is_completed', false)
-			;
-		$query = $qb->getQuery();//print $query->getSQL(); exit;
-		return $query->getSingleScalarResult();
+		return $this->filterDelegatedTasksForPerson($person, '#total');
 	}
 
 	/**
@@ -438,24 +195,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countOverdueDelegatedTasksForPerson(Entity\Person $person)
 	{
-		$date = $person->getDateTime();
-		$date = Dates::convertToUtcDateTime($date);
-
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->innerJoin('t.person', 'p')
-		   ->leftJoin('t.assigned_agent', 'aa')
-		   ->where('p.id= :person_id')
-		   ->andWhere('aa.id IS NOT NULL')
-		   ->andWhere('aa.id != :person_id')
-		   ->andWhere('t.is_completed = :is_completed AND t.date_due < :date_due')
-		   ->setParameter('person_id', $person['id'])
-		   ->setParameter('is_completed', false)
-		   ->setParameter('date_due', $date, \Doctrine\DBAL\Types\Type::DATETIME);
-
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterDelegatedTasksForPerson($person, '#overdue');
 	}
 
 	/**
@@ -466,32 +206,7 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueTodayDelegatedTasksForPerson(Entity\Person $person)
 	{
-		$d1 = $person->getDateTime();
-		$d1->setTime(0, 0, 0);
-		$d1 = Dates::convertToUtcDateTime($d1);
-
-		$d2 = $person->getDateTime();
-		$d2->setTime(23, 59, 59);
-		$d2 = Dates::convertToUtcDateTime($d2);
-
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->innerJoin('t.person', 'p')
-		   ->leftJoin('t.assigned_agent', 'aa')
-		   ->where('p.id= :person_id')
-		   ->andWhere('aa.id IS NOT NULL')
-		   ->andWhere('aa.id != :person_id')
-		   ->andWhere('t.is_completed = :is_completed ')
-		   ->andWhere('(t.date_due >= :d1 AND t.date_due <= :d2) OR t.date_due IS NULL')
-		   //->orWhere('t.date_due IS NULL')
-		   ->setParameter('person_id', $person['id'])
-		   ->setParameter('is_completed', false)
-		   ->setParameter('d1', $d1, \Doctrine\DBAL\Types\Type::DATETIME)
-		   ->setParameter('d2', $d2, \Doctrine\DBAL\Types\Type::DATETIME);
-
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterDelegatedTasksForPerson($person, '#today');
 	}
 
         /**
@@ -502,29 +217,10 @@ class Task extends AbstractEntityRepository
 	 */
 	public function countDueFutureDelegatedTasksForPerson(Entity\Person $person)
 	{
-		$today = $person->getDateTime();
-		$today->setTime(23, 59, 59);
-		$today = Dates::convertToUtcDateTime($today);
-
-		$qb = $this->getEntityManager()->createQueryBuilder();
-		$qb->select('COUNT(t.id)')
-		   ->from('DeskPRO:Task', 't')
-		   ->innerJoin('t.person', 'p')
-		   ->leftJoin('t.assigned_agent', 'aa')
-		   ->where('p.id= :person_id')
-		   ->andWhere('aa.id IS NOT NULL')
-		   ->andWhere('aa.id != :person_id')
-		   ->andWhere('t.is_completed = :is_completed ')
-		   ->andWhere('t.date_due > :today')
-		   ->setParameter('person_id', $person['id'])
-		   ->setParameter('is_completed', false)
-		   ->setParameter('today', $today);
-
-		$query = $qb->getQuery();
-		return $query->getSingleScalarResult();
+		return $this->filterDelegatedTasksForPerson($person, '#future');
 	}
 
-        /**
+    /**
 	 * All pending tasks assigned to the person.
 	 *
 	 * @param Person $person The person
@@ -545,6 +241,12 @@ class Task extends AbstractEntityRepository
 
 		$params = array();
 
+		$is_count = false;
+		if ($filter_type[0] == '#') {
+			$is_count = true;
+			$filter_type = substr($filter_type, 1);
+		}
+
 		if($filter_type == 'today') {
 			$where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
 			$params[] = $today->format('Y-m-d H:i:s');
@@ -562,12 +264,11 @@ class Task extends AbstractEntityRepository
 		$person->loadHelper('Agent');
 		if ($team_ids = $person->Agent->getTeamIds()) {
 			$team_ids = implode(',', $team_ids);
-			$where_part .= ' AND ( (person_id = ? OR assigned_agent_id = ? OR assigned_agent_team_id IN ('.$team_ids.')))';
+			$where_part .= ' AND ( (assigned_agent_id = ? OR assigned_agent_team_id IN ('.$team_ids.')) OR (assigned_agent_id IS NULL AND assigned_agent_team_id IS NULL AND person_id = ?) )';
 			$params[] = $person->id;
 			$params[] = $person->id;
 		} else {
-			$where_part .= ' AND ( (person_id = ? OR assigned_agent_id = ?))';
-			$params[] = $person->id;
+			$where_part .= ' AND ( (assigned_agent_id = ?) OR (assigned_agent_id IS NULL AND assigned_agent_team_id IS NULL AND person_id = ?) )';
 			$params[] = $person->id;
 		}
 
@@ -587,20 +288,28 @@ class Task extends AbstractEntityRepository
 			}
 		}
 
-		$result_ids = App::getDb()->fetchAllCol("
-			SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
-			FROM tasks
-			WHERE $where_part
-			ORDER BY sort_date_due ASC, id DESC
-			$limit_part
-		", $params);
+		if (!$is_count) {
+			$result_ids = App::getDb()->fetchAllCol("
+				SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
+				FROM tasks
+				WHERE $where_part
+				ORDER BY sort_date_due ASC, id DESC
+				$limit_part
+			", $params);
 
-		$results = array();
-		if ($result_ids) {
-			$results = $this->getByIds($result_ids, true);
+			$results = array();
+			if ($result_ids) {
+				$results = $this->getByIds($result_ids, true);
+			}
+
+			return $results;
+		} else {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM tasks
+				WHERE $where_part
+			", $params);
 		}
-
-		return $results;
 	}
 
         /**
@@ -623,6 +332,12 @@ class Task extends AbstractEntityRepository
 		$now = new \DateTime();
 
 		$params = array();
+
+		$is_count = false;
+		if ($filter_type[0] == '#') {
+			$is_count = true;
+			$filter_type = substr($filter_type, 1);
+		}
 
 		if($filter_type == 'today') {
 			$where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
@@ -663,23 +378,31 @@ class Task extends AbstractEntityRepository
 			}
 		}
 
-		$result_ids = App::getDb()->fetchAllCol("
-			SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
-			FROM tasks
-			WHERE $where_part
-			ORDER BY sort_date_due ASC, id DESC
-			$limit_part
-		", $params);
+		if (!$is_count) {
+			$result_ids = App::getDb()->fetchAllCol("
+				SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
+				FROM tasks
+				WHERE $where_part
+				ORDER BY sort_date_due ASC, id DESC
+				$limit_part
+			", $params);
 
-		$results = array();
-		if ($result_ids) {
-			$results = $this->getByIds($result_ids, true);
+			$results = array();
+			if ($result_ids) {
+				$results = $this->getByIds($result_ids, true);
+			}
+
+			return $results;
+		} else {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM tasks
+				WHERE $where_part
+			", $params);
 		}
-
-		return $results;
 	}
 
-        /**
+    /**
 	 * Count pending delegated tasks assigned to the person.
 	 *
 	 * @param Person $person The person
@@ -699,6 +422,12 @@ class Task extends AbstractEntityRepository
 
 		$params = array();
 
+		$is_count = false;
+		if ($filter_type[0] == '#') {
+			$is_count = true;
+			$filter_type = substr($filter_type, 1);
+		}
+
 		if($filter_type == 'today') {
 			$where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
 			$params[] = $today->format('Y-m-d H:i:s');
@@ -713,13 +442,16 @@ class Task extends AbstractEntityRepository
 			$where_part = '1';
 		}
 
+		$where_part .= " AND person_id = ? ";
+		$params[] = $person->id;
+
 		$person->loadHelper('Agent');
 		if ($team_ids = $person->Agent->getTeamIds()) {
 			$team_ids = implode(',', $team_ids);
-			$where_part .= ' AND (assigned_agent_id != ? AND assigned_agent_team_id NOT IN ('.$team_ids.'))';
+			$where_part .= ' AND ( (assigned_agent_id IS NOT NULL AND assigned_agent_id != ?) OR (assigned_agent_team_id IS NOT NULL AND assigned_agent_team_id NOT IN ('.$team_ids.')) )';
 			$params[] = $person->id;
 		} else {
-			$where_part .= ' AND (assigned_agent_id != ?)';
+			$where_part .= ' AND ( (assigned_agent_id IS NOT NULL AND assigned_agent_id != ?) OR (assigned_agent_team_id IS NOT NULL) )';
 			$params[] = $person->id;
 		}
 
@@ -731,28 +463,36 @@ class Task extends AbstractEntityRepository
 			}
 		}
 
-		if ($limit) {
-			if ($offset) {
-				$limit_part = "LIMIT $offset, $limit";
-			} else {
-				$limit_part = "LIMIT 0, $limit";
+		if (!$is_count) {
+			if ($limit) {
+				if ($offset) {
+					$limit_part = "LIMIT $offset, $limit";
+				} else {
+					$limit_part = "LIMIT 0, $limit";
+				}
 			}
+
+			$result_ids = App::getDb()->fetchAllCol("
+				SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
+				FROM tasks
+				WHERE $where_part
+				ORDER BY sort_date_due ASC, id DESC
+				$limit_part
+			", $params);
+
+			$results = array();
+			if ($result_ids) {
+				$results = $this->getByIds($result_ids, true);
+			}
+
+			return $results;
+		} else {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM tasks
+				WHERE $where_part
+			", $params);
 		}
-
-		$result_ids = App::getDb()->fetchAllCol("
-			SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
-			FROM tasks
-			WHERE $where_part
-			ORDER BY sort_date_due ASC, id DESC
-			$limit_part
-		", $params);
-
-		$results = array();
-		if ($result_ids) {
-			$results = $this->getByIds($result_ids, true);
-		}
-
-		return $results;
 	}
 
         /**
@@ -772,6 +512,12 @@ class Task extends AbstractEntityRepository
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();
+
+		$is_count = false;
+		if ($filter_type[0] == '#') {
+			$is_count = true;
+			$filter_type = substr($filter_type, 1);
+		}
 
 		$params = array();
 
@@ -817,20 +563,28 @@ class Task extends AbstractEntityRepository
 			}
 		}
 
-		$result_ids = App::getDb()->fetchAllCol("
-			SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
-			FROM tasks
-			WHERE $where_part
-			ORDER BY sort_date_due ASC, id DESC
-			$limit_part
-		", $params);
+		if (!$is_count) {
+			$result_ids = App::getDb()->fetchAllCol("
+				SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
+				FROM tasks
+				WHERE $where_part
+				ORDER BY sort_date_due ASC, id DESC
+				$limit_part
+			", $params);
 
-		$results = array();
-		if ($result_ids) {
-			$results = $this->getByIds($result_ids, true);
+			$results = array();
+			if ($result_ids) {
+				$results = $this->getByIds($result_ids, true);
+			}
+
+			return $results;
+		} else {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM tasks
+				WHERE $where_part
+			", $params);
 		}
-
-		return $results;
 	}
 
 	public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $person_context, $all = false)
