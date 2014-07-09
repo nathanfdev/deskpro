@@ -2,7 +2,7 @@
 	"package_name": "deskpro_salesforce",
 	"is_native": true,
 	"title": "Salesforce",
-	"description": "Adds widgets to tickets and user profiles that pulls data from Salesforce.",
+	"description": "Adds widgets to tickets and user profiles that pull data from Salesforce.",
 	"tags": ["profiles"],
 	"api_version": 1,
 	"version": 1,
