@@ -18,7 +18,7 @@
 			"name": "ga_property_id",
 			"type": "text",
 			"label": "Google Analytics Tracking ID",
-			"description": "Enter your Tracking ID here. This will look like: UA-000000-01.",
+			"description": "Enter your Tracking ID here. This will look like: UA-00000000-1.",
 			"native_only": true
 		}
 	]
