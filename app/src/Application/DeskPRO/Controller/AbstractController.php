@@ -89,20 +89,30 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 			return true;
 		}
 
-		if (empty($_REQUEST[$field_name])) {
+		$header_name = "HTTP_" . str_replace('-', '_', strtoupper('X-DeskPRO-' . trim($field_name, '_-')));
+
+		if (!empty($_REQUEST[$field_name])) {
+			$in_token = $_REQUEST[$field_name];
+		} else if (!empty($_SERVER[$header_name])) {
+			$in_token = $_SERVER[$header_name];
+		} else {
+			$in_token = '';
+		}
+
+		$in_token = trim($in_token);
+
+		if (!$in_token) {
 			return false;
 		}
 
-		$v = $_REQUEST[$field_name];
-
 		if (!$this->session->getEntity()->getPersonId()) {
-			if (substr($v, 0, 7) == 'STATIC_') {
-				$v = substr($v, 7);
-				return App::$container->checkStaticSecurityToken($name, $v);
+			if (substr($in_token, 0, 7) == 'STATIC_') {
+				$in_token = substr($in_token, 7);
+				return App::$container->checkStaticSecurityToken($name, $in_token);
 			}
 		}
 
-		return $this->session->getEntity()->checkSecurityToken($name, $v);
+		return $this->session->getEntity()->checkSecurityToken($name, $in_token);
 	}
 
 
