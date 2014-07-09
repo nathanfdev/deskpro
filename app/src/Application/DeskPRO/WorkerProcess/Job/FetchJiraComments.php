@@ -56,7 +56,7 @@ class FetchJiraComments extends AbstractJob
 		$service = new \Orb\Jira\Service($baseUrl, array(
 			'username'	=> $username,
 			'password'	=> $password,
-			'debug'		=> true
+			'debug'		=> DP_DEBUG
 		), App::getOrm());
 
 		try {

@@ -94,7 +94,7 @@ class JiraController extends AbstractController
 		$service = new \Orb\Jira\Service($baseUrl, array(
 			'username'	=> $username,
 			'password'	=> $password,
-			'debug'		=> true
+			'debug'		=> DP_DEBUG
 		), $this->em);
 		
 		return $service;
