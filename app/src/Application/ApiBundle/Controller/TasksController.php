@@ -34,6 +34,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
+use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 
@@ -102,8 +104,38 @@ class TasksController extends AbstractController implements ProtectedControllerI
 	 */
 	public function updateSettingsAction()
 	{
-		$this->settings->setSetting(self::KEY_ENABLED, $this->in->getUInt('enabled'));
+		$enabled = $this->in->getUInt('enabled');
+		$this->settings->setSetting(self::KEY_ENABLED, $enabled);
 		$this->settings->setSetting(self::KEY_REMINDER, $this->in->getString(self::KEY_REMINDER));
+
+		if (!$enabled) {
+			return $this->settingsAction();
+		}
+
+		$groups = $this->in->getArrayValue('groups');
+		foreach ($groups as $groupData) {
+			if (!$group = $this->em->find('DeskPRO:Usergroup', $groupData['id'])) {
+				continue;
+			}
+
+			$perms = new AgentPermissions();
+			$perms->fromArray($groupData['perms']);
+			$persister = new GroupDbPersister($this->em);
+			$persister->savePerms($group, $perms);
+		}
+
+		$agents = $this->in->getArrayValue('agents');
+		foreach ($agents as $agentData) {
+			if (!$agent = $this->container->getAgentData()->get($agentData['id'])) {
+				continue;
+			}
+
+			$perms = new AgentPermissions();
+			$perms->fromArray($agentData['perms']);
+			$persister = new GroupDbPersister($this->em);
+			$persister->saveOverridePerms($agent, $perms);
+		}
+
 		return $this->settingsAction();
 	}
 }

@@ -23,7 +23,6 @@ define [
 		initialLoad: ->
 			@service.load().then (settings) =>
 				@$scope.settings = settings
-				console.log settings
 				settings.groups.map (group) => @map[group.id] = group
 
 
@@ -45,7 +44,11 @@ define [
 
 		save: ->
 			@startSpinner('saving')
-			@data.save().then(
+
+			for agent in @$scope.settings.agents
+				if !agent._disabled then agent.perms.tasks.use = agent._checked
+
+			@service.save().then(
 				=>
 					@stopSpinner('saving')
 				=>
