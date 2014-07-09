@@ -270,6 +270,7 @@ class Task extends AbstractEntityRepository
 		} else {
 			$where_part .= ' AND ( (assigned_agent_id = ?) OR (assigned_agent_id IS NULL AND assigned_agent_team_id IS NULL AND person_id = ?) )';
 			$params[] = $person->id;
+			$params[] = $person->id;
 		}
 
 		if ($state !== null) {
@@ -359,7 +360,11 @@ class Task extends AbstractEntityRepository
 			$where_part .= ' AND (assigned_agent_team_id IN ('.$team_ids.'))';
 		} else {
 			// Doesnt belong to any teams, so nothing to show
-			return array();
+			if (!$is_count) {
+				return array();
+			} else {
+				return 0;
+			}
 		}
 
 		if ($state !== null) {
