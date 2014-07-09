@@ -80,7 +80,12 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	private function _doInstall(InstallerContext $context)
 	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled',        1);
+		$enabled = 1;
+		if (!$context->getApp()->getSetting('jira_url') || !$context->getApp()->getSetting('jira_username') || !$context->getApp()->getSetting('jira_password')) {
+			$enabled = 0;
+		}
+
+		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled',        $enabled);
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.baseUrl',        rtrim($context->getApp()->getSetting('jira_url'), '/') . '/');
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.username',       $context->getApp()->getSetting('jira_username'));
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.password',       $context->getApp()->getSetting('jira_password'));
