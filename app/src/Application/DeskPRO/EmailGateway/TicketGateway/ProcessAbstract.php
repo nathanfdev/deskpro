@@ -251,7 +251,6 @@ abstract class ProcessAbstract
 		if ($this->processed_blobs !== null) return $this->processed_blobs;
 		$this->processed_blobs = array();
 
-		// todo add additional rules for email context
 		$accept = App::$container->getAttachmentAccepter();
 
 		foreach ($this->reader->getAttachments() as $attach) {
@@ -263,7 +262,7 @@ abstract class ProcessAbstract
 			$path = tempnam(sys_get_temp_dir(), 'tmp_attachment_');
 			$file = new UploadedFile($path, $attach->getFileNameUtf8(), $attach->getMimeType());
 
-			if ($error = $accept->getError($file, $this->person->is_agent ? 'agent' : 'user')) {
+			if ($error = $accept->getError($file, $this->person->is_agent ? 'emails.agent' : 'emails.user')) {
 				// todo log error
 				continue;
 			}
