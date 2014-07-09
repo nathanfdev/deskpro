@@ -2841,15 +2841,10 @@ class TicketController extends AbstractController
 
 		$subject = $this->in->getString('subject');
 
-		$message_raw = $message->message_raw ?: '';
+		$message_raw = $message->getMessageFull();
 		if (!$message_raw) {
-			$message_raw = $message->message_full;
-			if (!$message_raw) {
-				$message_raw = $message->message;
-			}
+			$message_raw = $message->getMessageHtml();
 		}
-
-		$message_raw = $message->procInlineAttach($message_raw);
 
 		$date_created = clone $message->date_created;
 		$date_created->setTimezone($this->person->getDateTimezone());
@@ -2958,7 +2953,7 @@ class TicketController extends AbstractController
 		$size = 0;
 		$attachments = $ticketdisplay->getMessageAttachments($message, true);
 		if ($attachments) {
-			foreach ($ticketdisplay->getMessageAttachments($message, true) as $attach) {
+			foreach ($attachments as $attach) {
 				if ($attach->is_inline && $attach->blob->filesize > $max_embed) {
 					continue;
 				}
@@ -2971,11 +2966,7 @@ class TicketController extends AbstractController
 			}
 
 			foreach ($attach_attachments as $src => $attach) {
-				if ($attach instanceof \Application\DeskPRO\Entity\Blob) {
-					$email->attachBlob($attach, $src, true);
-				} else {
-					$email->attachBlob($attach->blob, $src, $attach->is_inline);
-				}
+				$email->attachBlob($attach->blob, $src, $attach->is_inline);
 			}
 		}
 
