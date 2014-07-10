@@ -107,6 +107,11 @@ class Build1400056713 extends AbstractBuild
 			$tr_account->is_enabled = true;
 			$tr_account->outgoing_account = $this->_getTransportConfig($default_tr);
 
+			// Cloud must mark the incoming settings as noop
+			if (!defined('DPC_IS_CLOUD')) {
+				$tr_account->incoming_account = new IncomingAccount\NoopConfig();
+			}
+
 			$addr_exists = Arrays::findValue($new_accounts, function($account) use ($tr_account) {
 				return $account->hasAddress($tr_account->address);
 			});
