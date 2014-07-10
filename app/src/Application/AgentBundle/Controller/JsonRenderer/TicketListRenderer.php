@@ -181,7 +181,7 @@ class TicketListRenderer
 		$data['worst_sla_status']        = $ticket->worst_sla_status;
 		$data['waiting_times']           = $ticket->waiting_times;
 
-		foreach (array('language', 'department', 'category', 'priority', 'workflow', 'product', 'person', 'agent', 'agent_team', 'organization') as $field) {
+		foreach (array('language', 'department', 'category', 'priority', 'workflow', 'product', 'person', 'agent', 'agent_team', 'organization', 'locked_by_agent') as $field) {
 			$data[$field] = null;
 
 			if (!$ticket->$field) {
@@ -218,6 +218,12 @@ class TicketListRenderer
 
 				case 'agent':
 					$data['agent'] = $this->container->getAgentData()->has($ticket->agent->getId()) ? $this->renderPerson($this->container->getAgentData()->get($ticket->agent->getId())) : null;
+					break;
+
+				case 'locked_by_agent':
+					$data[$field] = $this->container->getAgentData()->has($ticket->$field->getId())
+						? $this->renderPerson($this->container->getAgentData()->get($ticket->$field->getId()))
+						: null;
 					break;
 
 				default:
