@@ -152,6 +152,7 @@ class CsvImport extends AbstractJob
 		$this->_data['new_custom_map'] = array();
 
 		foreach ($this->_data['field_maps'] AS $column_id => $info) {
+			if (!isset($info['map'])) continue;
 			if ($info['map'] == 'new_custom') {
 				$field = new \Application\DeskPRO\Entity\CustomDefPerson();
 				$field->title = $info['title'];

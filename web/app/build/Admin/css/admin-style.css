@@ -7892,6 +7892,8 @@ div.info-message.well {
 .dp-appstrip ul {
   padding: 0;
   margin: 0;
+  background: #2b2f33;
+  box-shadow: 0 -4px 14px 0 #2b2f33;
 }
 
 .dp-appstrip ul li {
@@ -8337,12 +8339,6 @@ div.info-message.well {
   .dp-appstrip .state-on .app-icon-reports-satisfaction,
   .dp-appstrip .section-on .app-icon-reports-satisfaction {
     background-image: url('../../../../images/app-icons/2x_active/Ticket-Feedback.png');
-  }
-}
-
-@media all and (max-height: 800px) {
-  .dp-appstrip ul.btm {
-    display: none;
   }
 }
 
