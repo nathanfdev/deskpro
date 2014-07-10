@@ -108,7 +108,7 @@ class Build1400056713 extends AbstractBuild
 			$tr_account->outgoing_account = $this->_getTransportConfig($default_tr);
 
 			// Cloud must mark the incoming settings as noop
-			if (!defined('DPC_IS_CLOUD')) {
+			if (defined('DPC_IS_CLOUD')) {
 				$tr_account->incoming_account = new IncomingAccount\NoopConfig();
 			}
 
