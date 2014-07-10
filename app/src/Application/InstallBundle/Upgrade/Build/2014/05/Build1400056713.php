@@ -191,7 +191,7 @@ class Build1400056713 extends AbstractBuild
 
 			// directory was the type used by cloud accounts
 			case 'directory':
-				$null_config = new IncomingAccount\NullConfig();
+				$null_config = new IncomingAccount\NoopConfig();
 				$account->incoming_account = $null_config;
 				break;
 
