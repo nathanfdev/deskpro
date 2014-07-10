@@ -1,3 +1,12 @@
+<div ng-if="all_locked_perms" class="alert alert-danger" style="margin: 10px;">
+	<p>
+		Department permissions are fixed and uneditable for built-in permission groups like this one.
+	</p>
+	<p>
+		If you want to use custom permissions, you must create a new custom permission group instead.
+	</p>
+</div>
+
 <div class="panel panel-innertable">
 
 	<nav class="dp-tabletabs">
@@ -29,6 +38,7 @@
 								dp-slider-switch
 								ng-model="EditCtrl.deps_perms.tickets[dep.id].assign"
 								is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full"
+								is-locked="all_locked_perms"
 							/>
 						</div>
 					</td>

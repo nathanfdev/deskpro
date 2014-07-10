@@ -70,6 +70,18 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 				ORDER BY ug.title ASC
 			")->execute();
 
+		usort($ugs, function($a, $b) {
+			$ao = $a->sys_name ? 0 : 1;
+			$bo = $b->sys_name ? 0 : 1;
+
+			if ($ao == $bo) {
+				$ao = $a->id;
+				$bo = $b->id;
+			}
+
+			return $ao < $bo ? -1 : 1;
+		});
+
 		$data['groups'] = $this->getApiData($ugs);
 
 		return $this->createApiResponse($data);
@@ -249,7 +261,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 	{
 		$group = $this->em->find('DeskPRO:Usergroup', $id);
 
-		if (!$group || !$group->is_agent_group) {
+		if (!$group || !$group->is_agent_group || $group->sys_name) {
 			throw $this->createNotFoundException();
 		}
 

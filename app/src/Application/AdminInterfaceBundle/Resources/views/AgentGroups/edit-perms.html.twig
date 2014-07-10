@@ -1,3 +1,12 @@
+<div ng-if="all_locked_perms" class="alert alert-danger" style="margin: 10px;">
+	<p>
+		Permissions are fixed and uneditable for built-in permission groups like this one.
+	</p>
+	<p>
+		If you want to use custom permissions, you must create a new custom permission group instead.
+	</p>
+</div>
+
 {% macro perm_row(typename, permname, opts) %}
 	{% set row_id = 'perm_' ~ typename ~ '_' ~ permname %}
 
