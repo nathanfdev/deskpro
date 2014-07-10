@@ -45,4 +45,9 @@ class PublishPermissions implements PermissionValueInterface
 	{
 		return array('create', 'delete', 'edit', 'validate');
 	}
+
+	public function getDestructiveNames()
+	{
+		return array('delete');
+	}
 }

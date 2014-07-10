@@ -46,4 +46,9 @@ class ChatPermissions implements PermissionValueInterface
 	{
 		return array('use', 'view_transcripts', 'view_unassigned', 'view_others', 'delete');
 	}
+
+	public function getDestructiveNames()
+	{
+		return array('delete');
+	}
 }

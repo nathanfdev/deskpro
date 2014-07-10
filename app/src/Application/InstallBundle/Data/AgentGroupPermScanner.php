@@ -50,6 +50,11 @@ class AgentGroupPermScanner
 	 */
 	protected $perm_names = null;
 
+	/**
+	 * @var array
+	 */
+	protected $perm_safe_names = null;
+
 	protected function load()
 	{
 		if ($this->perm_names !== null) {
@@ -58,15 +63,21 @@ class AgentGroupPermScanner
 
 		$perms = new AgentPermissions();
 
+		$unsafe = array();
+
 		$set_perms = array();
 		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
 			$obj = $perms->$coll_name;
 			foreach ($obj->getNames() as $prop) {
 				$set_perms[] = $real_name . '.' . $prop;
 			}
+			foreach ($obj->getDestructiveNames() as $prop) {
+				$unsafe[] = $real_name . '.' . $prop;
+			}
 		}
 
 		$this->perm_names = $set_perms;
+		$this->perm_safe_names = array_diff($this->perm_names, $unsafe);
 	}
 
 
@@ -79,5 +90,15 @@ class AgentGroupPermScanner
 	{
 		$this->load();
 		return $this->perm_names;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getSafeNames()
+	{
+		$this->load();
+		return $this->perm_safe_names;
 	}
 }
