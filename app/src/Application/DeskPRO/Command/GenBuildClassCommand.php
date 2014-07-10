@@ -143,7 +143,21 @@ CODE;
 				'file' => DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/'. date('Y/m', $time) . '/Build' . $time . '.php',
 				'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $time
 			);
-			file_put_contents($manifest_file, "<?php return " . var_export($data, true) . ";");
+
+			$exp = '<?php return array(';
+
+			foreach ($data as $time => $arr) {
+				$sub = str_replace(DP_ROOT, '', $arr['file']);
+				$classname = var_export($arr['classname'], 1);
+				$exp .= "
+					{$time} => array(
+						'file' => DP_ROOT . '{$sub}',
+						'classname' => {$classname}
+					),
+				";
+			}
+			$exp .= ');';
+			file_put_contents($manifest_file, $exp);
 
 			echo "Wrote file: $path\n";
 			echo "Updated: $manifest_file\n";
