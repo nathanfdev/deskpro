@@ -40,4 +40,9 @@ interface PermissionValueInterface
 	 * @return array
 	 */
 	public function getNames();
+
+	/**
+	 * @return array
+	 */
+	public function getDestructiveNames();
 }

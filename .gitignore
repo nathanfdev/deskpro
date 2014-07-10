@@ -20,6 +20,7 @@
 /app/sys/config/template-map.php
 /app/sys/Resources/distro-checksums.php
 /app/sys/Resources/cloudflare-ips.php
+app/sys/Resources/agent-perm-names.php
 /app/src/Application/InstallBundle/Data/schema.php
 /auto-update-status.php
 /auto-update-is-running.trigger

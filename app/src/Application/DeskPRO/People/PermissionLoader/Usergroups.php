@@ -44,8 +44,19 @@ use Application\DeskPRO\Entity;
  */
 class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\PersonContextInterface
 {
+	/**
+	 * @var array
+	 */
 	protected $perms = null;
 
+	/**
+	 * @var array
+	 */
+	protected $dynamic_perms = null;
+
+	/**
+	 * @var Person
+	 */
 	protected $person;
 
 	/**
@@ -53,11 +64,16 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 	 */
 	protected $person_id = 0;
 
+
+	/**
+	 * @param Person $person
+	 */
 	public function setPersonContext(Person $person)
 	{
 		$this->person = $person;
 		$this->person_id = $person->id;
 	}
+
 
 	/**
 	 * Get a permission value
@@ -95,11 +111,14 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 				break;
 		}
 
-		if (!isset($this->perms[$name])) {
-			return null;
+		$val = false;
+		if (isset($this->dynamic_perms[$name]) && $this->dynamic_perms[$name]) {
+			$val = true;
+		} else if (isset($this->perms[$name]) && $this->perms[$name]) {
+			$val = true;
 		}
 
-		return $this->perms[$name];
+		return $val;
 	}
 
 
@@ -133,6 +152,27 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 					")->getResult();
 				}
 				$this->perms = Permission::getEffectivePermissions($perms);
+			}
+		}
+
+		if ($this->dynamic_perms === null) {
+			$this->dynamic_perms = array();
+			$agent_groups = App::$container->getAgentGroups();
+			foreach ($this->usergroup_ids as $ugid) {
+				if ($agent_groups->groupExists($ugid)) {
+					$g = $agent_groups->getGroup($ugid);
+					if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+						$loader = App::$container->getSystemService('AgentPermissionNamesLoader');
+						if ($g->sys_name == 'agent_all_perms') {
+							$set_perms = $loader->getNames();
+						} else {
+							$set_perms = $loader->getSafeNames();
+						}
+						foreach ($set_perms as $n) {
+							$this->dynamic_perms[$n] = true;
+						}
+					}
+				}
 			}
 		}
 

@@ -8,6 +8,7 @@
 			<ul class="dp-item-list" dp-list-autoload>
 				<li ng-repeat="group in ListCtrl.groups" dp-state-mark="agents.groups.edit.{{ ng_var('group.id') }}">
 					<a href="{{ ng_href('agents.groups.edit', '{id: group.id}') }}">
+						<div ng-if="group.sys_name" class="pull-right"><i class="fa fa-asterisk" style="position: relative; top: 3px;" tooltip="This is a built-in permission group." tooltip-placement="left"></i></div>
 						<h4>
 							<span class="title-id" title="ID">#{{ ng_var('group.id') }}</span>
 							<span class="title-text">{{ ng_var('group.title') }}</span>

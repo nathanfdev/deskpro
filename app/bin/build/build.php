@@ -179,6 +179,23 @@ echo "\n";
 #####################################################################
 
 $time = microtime(true);
+echo "build-agent-permset ... ";
+
+$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-agent-permset.php', DP_ROOT.'/bin/build');
+$proc->setTimeout(600);
+$proc->run($output_realtime);
+
+if (!$proc->isSuccessful()) {
+	echo ("\nDetected error. Quitting.\n");
+	exit($proc->getExitCode());
+}
+
+echo " DONE " . sprintf("%.f", microtime(true)-$time);
+echo "\n";
+
+#####################################################################
+
+$time = microtime(true);
 echo "build-data ... ";
 
 $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-data.php', DP_ROOT.'/bin/build');

@@ -29,25 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category People
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\People\AgentPermissions\Value;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-class OrgPermissions implements PermissionValueInterface
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\People\AgentPermissions\PermissionNamesLoader;
+
+class AgentPermissionNamesLoaderService
 {
-	public $create = false;
-	public $edit   = false;
-	public $notes  = false;
-	public $delete = false;
-
-	public function getNames()
+	public static function create(DeskproContainer $container)
 	{
-		return array('create', 'edit', 'notes', 'delete');
-	}
-
-	public function getDestructiveNames()
-	{
-		return array('delete');
+		$loader = new PermissionNamesLoader();
+		return $loader;
 	}
 }
