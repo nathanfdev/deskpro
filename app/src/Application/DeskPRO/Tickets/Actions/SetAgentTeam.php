@@ -72,7 +72,7 @@ class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterfa
 			}
 			$agent = $context->getPersonContext();
 			$agent->loadHelper('Agent');
-			$teams = $agent->getHelper('Agent')->getTeams();
+			$teams = array_values($agent->getHelper('Agent')->getTeams());
 
 			if (!count($teams)) {
 				return null;
