@@ -1023,7 +1023,7 @@ JS;
 					if ($native_baseurl) {
 						$asset_path = $native_baseurl . "/$asset_type/" . $asset->name;
 					} else {
-						$asset_path = $asset->blob->getDownloadUrl();
+						$asset_path = $asset->blob->getDownloadUrl(false, false);
 					}
 
 					$asset_files[$asset_id] = $asset_path;
