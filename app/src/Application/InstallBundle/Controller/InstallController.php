@@ -720,16 +720,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			// For the all agent group, fetch permissions from the template
 			if ($AGENTGROUP_ALL) {
-				$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
-				foreach ($scanner->getNames() as $p_name) {
-					$p = new \Application\DeskPRO\Entity\Permission();
-					$p->usergroup = $AGENTGROUP_ALL;
-					$p->name = $p_name;
-					$p->value = 1;
-					$this->getOrm()->persist($p);
-				}
-				$this->getOrm()->flush();
-
 				$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
 				$ch->setCollection(array($AGENTGROUP_ALL));
 				$this->getOrm()->persist($agent);

@@ -318,7 +318,15 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 			return $this->file_url;
 		}
 
-		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()), $absolute);
+		$url = App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()), $absolute);
+
+		// We are specifically requestinga local url,
+		// make sure serve_file doesn't redirect.
+		if ($this->file_url && !$use_file_url) {
+			$url = Strings::strReplaceOne('file.php/', 'file.php/local/', $url);
+		}
+
+		return $url;
 	}
 
 	public function getEmbedCode($for_ticket = false, $type = 'image')

@@ -52,4 +52,9 @@ class PeoplePermissions implements PermissionValueInterface
 	{
 		return array('use', 'create', 'edit', 'validate', 'manage_emails', 'reset_password', 'notes', 'delete', 'disable', 'login_as', 'merge');
 	}
+
+	public function getDestructiveNames()
+	{
+		return array('delete');
+	}
 }

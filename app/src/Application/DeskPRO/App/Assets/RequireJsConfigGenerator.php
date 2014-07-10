@@ -55,7 +55,7 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
 				if ($native_baseurl) {
 					$appjs_path = preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js');
 				} else {
-					$appjs_path = preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl());
+					$appjs_path = preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl(false, false));
 				}
 				$this->addPath($name, $appjs_path);
 			}
@@ -70,7 +70,7 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
 			} else {
 				foreach ($package->getTaggedAssets('js') as $asset) {
 					$name = $package->name . '/js/' . str_replace('.js', '', $asset->name);
-					$asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl());
+					$asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl(false, false));
 
 					$this->addPath($name, $asset_path);
 				}

@@ -359,6 +359,42 @@ JS;
 		if ($this->request->headers->get('X-DeskPRO-Proxy-Username') OR $this->request->headers->get('X-DeskPRO-Proxy-Password')) {
 			curl_setopt($ch, CURLOPT_USERPWD, $this->request->headers->get('X-DeskPRO-Proxy-Username','').':'.$this->request->headers->get('X-DeskPRO-Proxy-Password',''));
 			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		} else {
+			$in_auth_type = $this->request->headers->get('X-DeskPRO-Proxy-Http-Auth', '');
+
+			if ($in_auth_type) {
+
+				$in_auth_type = strtolower($in_auth_type);
+				$auth_type    = null;
+
+				switch ($in_auth_type) {
+					case 'basic':
+						$auth_type = CURLAUTH_BASIC;
+						break;
+					case 'digest':
+						$auth_type = CURLAUTH_DIGEST;
+						break;
+					case 'gssnegotiate':
+						$auth_type = CURLAUTH_GSSNEGOTIATE;
+						break;
+					case 'ntlm':
+						$auth_type = CURLAUTH_NTLM;
+						break;
+					case 'any':
+						$auth_type = CURLAUTH_ANY;
+						break;
+					case 'safe':
+						$auth_type = CURLAUTH_ANYSAFE;
+						break;
+					default:
+						throw $this->createNotFoundException();
+				}
+
+				if ($auth_type) {
+					curl_setopt($ch, CURLOPT_HTTPAUTH, $auth_type);
+					curl_setopt($ch, CURLOPT_USERPWD, $this->request->headers->get('X-DeskPRO-Proxy-Auth-Credentials', ''));
+				}
+			}
 		}
 
 		if (!empty($_SERVER['CONTENT_TYPE'])) {
@@ -669,10 +705,10 @@ JS;
             $file = $this->request->files->get('files');
 
             $content = file_get_contents($file[0]->getPathName());
-        }        
-        
+        }
+
         $fields = \Application\DeskPRO\Reader\VCard::parseVCard($content);
-        
+
         //var_dump($fields); die;
 
         $res = $this->createJsonResponse(array(array('fields' => $fields)));
@@ -987,7 +1023,7 @@ JS;
 					if ($native_baseurl) {
 						$asset_path = $native_baseurl . "/$asset_type/" . $asset->name;
 					} else {
-						$asset_path = $asset->blob->getDownloadUrl();
+						$asset_path = $asset->blob->getDownloadUrl(false, false);
 					}
 
 					$asset_files[$asset_id] = $asset_path;

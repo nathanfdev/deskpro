@@ -43,4 +43,9 @@ class GeneralPermissions implements PermissionValueInterface
 	{
 		return array('picture', 'signature');
 	}
+
+	public function getDestructiveNames()
+	{
+		return array();
+	}
 }

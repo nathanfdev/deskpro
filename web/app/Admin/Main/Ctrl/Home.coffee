@@ -132,6 +132,7 @@ define [
 			@$scope.created_agent = null
 
 			postData = {
+				quick_add: true
 				agent: {
 					name: Strings.trim(@$scope.new_agent.name || ''),
 					emails: [Strings.trim(@$scope.new_agent.email || '')]

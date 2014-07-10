@@ -304,6 +304,17 @@ class AgentsController extends AbstractController implements ProtectedController
 		}
 
 		#-------------------------
+		# Quick add: add 'all perms' group
+		#-------------------------
+
+		if ($this->in->getBool('quick_add')) {
+			$ug = $this->container->getAgentGroups()->getSysGroup('agent_all_perms');
+			$agent->usergroups->add($ug);
+			$this->em->persist($agent);
+			$this->em->flush();
+		}
+
+		#-------------------------
 		# Save permission overrides
 		#-------------------------
 

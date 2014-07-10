@@ -32,22 +32,79 @@
  * @category People
  */
 
-namespace Application\DeskPRO\People\AgentPermissions\Value;
+namespace Application\DeskPRO\People\AgentPermissions;
 
-class OrgPermissions implements PermissionValueInterface
+use Application\DeskPRO\Entity\Usergroup;
+use Application\InstallBundle\Data\AgentGroupPermScanner;
+
+class PermissionNamesLoader
 {
-	public $create = false;
-	public $edit   = false;
-	public $notes  = false;
-	public $delete = false;
+	/**
+	 * @var bool
+	 */
+	private $debug = false;
 
-	public function getNames()
+	/**
+	 * @var array
+	 */
+	private $all_names = null;
+
+	/**
+	 * @var array
+	 */
+	private $all_safe_names = null;
+
+
+	private function load()
 	{
-		return array('create', 'edit', 'notes', 'delete');
+		$cache_path = DP_ROOT . '/sys/Resources/agent-perm-names.php';
+		if ($this->debug || !file_exists($cache_path)) {
+			$scanner = new AgentGroupPermScanner();
+			$perm_names = array(
+				'all' => $scanner->getNames(),
+				'safe' => $scanner->getSafeNames()
+			);
+		} else {
+			$perm_names = require($cache_path);
+		}
+
+		$this->all_names = $perm_names['all'];
+		$this->all_safe_names = $perm_names['safe'];
 	}
 
-	public function getDestructiveNames()
+
+	/**
+	 * @return array
+	 */
+	public function getNames()
 	{
-		return array('delete');
+		if ($this->all_names === null) $this->load();
+		return $this->all_names;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getSafeNames()
+	{
+		if ($this->all_safe_names === null) $this->load();
+		return $this->all_safe_names;
+	}
+
+
+	/**
+	 * @param Usergroup $group
+	 * @return array
+	 */
+	public function getEnabledForGroup(Usergroup $group)
+	{
+		if ($group->sys_name == 'agent_all_perms') {
+			return $this->getNames();
+		} else if ($group->sys_name == 'agent_all_safe_perms') {
+			return $this->getNames();
+		} else {
+			return array();
+		}
 	}
 }

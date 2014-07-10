@@ -135,4 +135,9 @@ class TicketPermissions implements PermissionValueInterface
 			'modify_set_awaiting_user_others', 'modify_set_awaiting_agent_others', 'modify_set_resolved_others', 'modify_messages_others', 'delete_others',
 		);
 	}
+
+	public function getDestructiveNames()
+	{
+		return array('delete_own', 'delete_followed', 'delete_unassigned', 'delete_others');
+	}
 }
