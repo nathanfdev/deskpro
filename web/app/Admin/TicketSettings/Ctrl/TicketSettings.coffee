@@ -11,7 +11,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			data_promise = @Api.sendDataGet({
 				'settings': '/ticket_settings'
 			}).then( (res) =>
-				@$scope.settings = res.data.settings.ticket_settings
+				settings = res.data.settings.ticket_settings
+				for own k, v of settings.agent_defaults
+					if not v then settings.agent_defaults[k] = "0"
+
+				@$scope.settings = settings
 				@settings = angular.copy(@$scope.settings)
 			)
 
