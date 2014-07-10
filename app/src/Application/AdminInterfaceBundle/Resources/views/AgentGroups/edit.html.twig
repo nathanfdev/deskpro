@@ -14,6 +14,26 @@
 			</nav>
 
 			<article class="form-horizontal dp-form">
+
+				<div ng-if="EditCtrl.group.sys_name == 'agent_all_perms'" class="alert alert-info" style="margin: 10px;">
+					<p>
+						This is a special built-in agent group that grants <strong>all permissions</strong> to members.
+						This means agents that are in this group will have full access to the agent interface,
+						including access to ticket departments.
+					</p>
+				</div>
+				<div ng-if="EditCtrl.group.sys_name == 'agent_all_safe_perms'" class="alert alert-info" style="margin: 10px;">
+					<p>
+						This is a special built-in agent group that grants <strong>all non-destructive permissions</strong> to members.
+						This means agents that are in this group will have nearly full access to the agent interface,
+						including access to ticket departments.
+					</p>
+					<p>
+						The only permissions this agent group does not grant is access to certain destructive actions
+						such as irreversible delete operations.
+					</p>
+				</div>
+
 				<div dp-tab-body="main.props">
 					{% include 'AdminInterfaceBundle:AgentGroups:edit-props.html.twig' %}
 				</div>

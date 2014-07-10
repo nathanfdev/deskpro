@@ -70,7 +70,9 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		$ticket_deps = $this->container->getSystemService('ticket_departments');
 		$flat_array = $ticket_deps->getFlatArray();
 
+		$ag = $this->container->getAgentGroups();
 		$with_perms = $this->in->getBool('with_perms');
+
 		if ($with_perms) {
 			$perms = array();
 
@@ -121,6 +123,12 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 				} else {
 					$r['permissions'] = array();
 				}
+
+				if (!isset($r['permissions']['agentgroups'])) {
+					$r['permissions']['agentgroups'] = array();
+				}
+				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full');
+				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full');
 			}
 
 			if (isset($deps_with_layout[$r['id']])) {
@@ -181,6 +189,10 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 				);
 			}
 		}
+
+		$ag = $this->container->getAgentGroups();
+		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
+		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
 		return $this->createApiResponse($data);
 	}

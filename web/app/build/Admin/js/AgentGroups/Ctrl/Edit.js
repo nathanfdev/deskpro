@@ -42,6 +42,9 @@
             _this.agents = res.data.agents.agents;
             if (_this.groupId) {
               _this.group = res.data.group.group;
+              if (_this.group.sys_name === 'agent_all_perms' || _this.group.sys_name === 'agent_all_safe_perms') {
+                _this.$scope.all_locked_perms = true;
+              }
             } else {
               _this.group = {
                 id: 0,

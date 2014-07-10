@@ -92,7 +92,9 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 
 		$data = $group->toApiData();
 		$data['members'] = array();
-		$data['perms']   = $loader->getGroupPermissions($group->id);
+		$data['perms']   = $loader->getGroupPermissions($group->id)->toArray();
+
+		$this->enablePermsForGroupOnArray($group, $data['perms']);
 
 		$member_ids = $this->db->fetchAllCol("SELECT person_id FROM person2usergroups WHERE usergroup_id = ?", array($group->id));
 		if ($member_ids) {
@@ -275,13 +277,35 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		$loader = new GroupsDbLoader($ugs, $this->em);
 
 		$group_data = array();
+
 		foreach ($ugs as $ug) {
+			$perms = $loader->getGroupPermissions($ug->id)->toArray();
+			$this->enablePermsForGroupOnArray($ug, $perms);
 			$group_data[] = array(
 				'group' => array('id' => $ug->id, 'title' => $ug->title),
-				'perms' => $loader->getGroupPermissions($ug->id)->toArray(),
+				'perms' => $perms,
 			);
 		}
 		return $this->createApiResponse(array('groups' => $group_data));
+	}
+
+	/**
+	 * @param Usergroup $ug
+	 * @param array $perms
+	 */
+	private function enablePermsForGroupOnArray(Usergroup $ug, array &$perms)
+	{
+		if ($ug->sys_name != 'agent_all_perms' && $ug->sys_name != 'agent_all_safe_perms') {
+			return;
+		}
+
+		foreach ($perms as &$set) {
+			foreach ($set as $n => &$v) {
+				if ($ug->sys_name != 'agent_all_safe_perms' || strpos($n, 'delete') === false) {
+					$v = true;
+				}
+			}
+		}
 	}
 
 

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\AgentPermissions;
 
+use Application\DeskPRO\Entity\Usergroup;
 use Application\InstallBundle\Data\AgentGroupPermScanner;
 
 class PermissionNamesLoader
@@ -89,5 +90,21 @@ class PermissionNamesLoader
 	{
 		if ($this->all_safe_names === null) $this->load();
 		return $this->all_safe_names;
+	}
+
+
+	/**
+	 * @param Usergroup $group
+	 * @return array
+	 */
+	public function getEnabledForGroup(Usergroup $group)
+	{
+		if ($group->sys_name == 'agent_all_perms') {
+			return $this->getNames();
+		} else if ($group->sys_name == 'agent_all_safe_perms') {
+			return $this->getNames();
+		} else {
+			return array();
+		}
 	}
 }
