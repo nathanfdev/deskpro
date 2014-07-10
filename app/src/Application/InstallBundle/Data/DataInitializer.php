@@ -227,12 +227,6 @@ class DataInitializer
 		if ($this->is_import) {
 			return;
 		}
-
-		$this->container->getDb()->executeUpdate("
-			INSERT INTO `app_instances` (`id`, `package_name`, `title`, `secret_key`, `auth_key`, `settings`, `date_created`)
-			VALUES (NULL, 'deskpro_gravatar', 'Gravatar', 'QNNYXN43T59KXXCNU9EL0WNDTK1RUNUTEK937MO9', '4XJCNTAI9AYM8OB5EWZGCF3G0T4YKEMWEDJRW94E', NULL, '2014-07-10 17:19:58')
-		");
-		$this->container->getSettingsHandler()->setSetting('core.use_gravatar', 1);
 	}
 
 	public static function newDefaultTicket($for_agent)
