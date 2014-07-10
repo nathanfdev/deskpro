@@ -1,3 +1,6 @@
+<VirtualHost *:80>
+</VirtualHost>
+
 <VirtualHost *:8888>
 	ServerAdmin webmaster@localhost
 
