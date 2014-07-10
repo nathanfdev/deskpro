@@ -774,7 +774,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			data: formData,
 			noErrorOverride: true,
 			success: function(data) {
-				console.log(data);
 				def.resolve(data);
 			},
 			error: function() {
