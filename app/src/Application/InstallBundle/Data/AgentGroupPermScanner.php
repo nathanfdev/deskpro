@@ -77,7 +77,7 @@ class AgentGroupPermScanner
 		}
 
 		$this->perm_names = $set_perms;
-		$this->perm_safe_names = array_diff($this->perm_names, $unsafe);
+		$this->perm_safe_names = array_values(array_diff($this->perm_names, $unsafe));
 	}
 
 
