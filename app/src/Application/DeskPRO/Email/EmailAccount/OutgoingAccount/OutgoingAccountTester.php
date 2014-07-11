@@ -112,7 +112,7 @@ class OutgoingAccountTester
 				}
 			}
 		} catch (\Exception $e) {
-			$this->swift_arraylogger->add("[error] ({$e->getCode()}) Failed");
+			$this->swift_arraylogger->add("[error] ({$e->getCode()}) Failed: {$e->getMessage()}");
 		}
 
 		return $this->is_success;
