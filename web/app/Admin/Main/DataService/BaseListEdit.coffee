@@ -485,10 +485,55 @@ define [
 
 
 
-		_doSave: (data) ->
+		url: ->
 			throw new Exception("This method must be implemented by a sub-class")
+
+
+
+		resolveResponse: (response) ->
+			response
+
+
+
+		# overriden by child classes for back compatibiliy
+		_doLoadList: ->
+			deferred = @$q.defer()
+
+			@Api.sendGet(@url()).success (data) =>
+				deferred.resolve @resolveResponse(data)
+			.error (data, status, headers, config) ->
+					deferred.reject(data)
+
+			deferred.promise
+
+
+
+		_doSave: (model) ->
+			deferred = @$q.defer()
+			method = 'sendPostJson' # is new
+			method = 'sendPutJson' if model[@idProp]? and model[@idProp]
+
+			id = model[@idProp] || 0
+			@Api[method](@url() + "/#{id}", model).success (data) =>
+				deferred.resolve @resolveResponse(data)
+			.error (data, status, headers, config) =>
+					deferred.reject
+						info: data.error_message
+						status: status
+
+			deferred.promise
+
 
 
 		_doRemove: (model) ->
-			throw new Exception("This method must be implemented by a sub-class")
+			deferred = @$q.defer()
 
+			id = model[@idProp] || 0
+			@Api.sendDelete(@url() + "/#{id}").success =>
+				deferred.resolve()
+			.error (data, status, headers, config) =>
+					deferred.reject
+						info: data.error_message
+						status: status
+
+			deferred.promise
