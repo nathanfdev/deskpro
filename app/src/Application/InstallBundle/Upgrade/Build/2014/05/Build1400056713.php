@@ -227,6 +227,10 @@ class Build1400056713 extends AbstractBuild
 			$account->other_addresses = array_map(function($a) { return $a['match_pattern']; }, $addrs);
 		}
 
+		if (defined('DPC_IS_CLOUD') && $account->other_addresses && !empty($account->other_addresses[0])) {
+			$account->setOption('custom_email_address', $account->other_addresses[0]);
+		}
+
 		$account->is_enabled = (bool)$gateway['is_enabled'];
 
 		return $account;
