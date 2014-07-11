@@ -11,15 +11,28 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@agents = []
 			@service = @DataService.get 'RoundRobin'
 			@serviceAgents = @DataService.get 'Agents'
+			@serviceDeps = @DataService.get 'TicketDeps'
+			@serviceGroups = @DataService.get 'AgentGroups'
+			@serviceTeams = @DataService.get 'AgentTeams'
+
+			@groups = []
+			@teams = []
+			@deps = []
+
+			@$scope.batch = null
 
 
 
 		initialLoad: ->
-			promises = [@serviceAgents.all(), @service.get(parseInt(@$stateParams.id || 0))]
+			promises = [@serviceAgents.all(), @service.get(parseInt(@$stateParams.id || 0)),
+			            @serviceDeps.all(), @serviceGroups.all(), @serviceTeams.all(),]
 
 			@$q.all(promises).then (res) =>
 				@agents = res[0]
 				@mapFormModel res[1]
+				@deps = res[2]
+				@groups = res[3]
+				@teams = res[4]
 
 
 
@@ -42,6 +55,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 
 		sortAgents: ->
+			console.log @agents
 			@agents.sort (a, b) =>
 				indexA = @robin.agents.indexOf a
 				indexB = @robin.agents.indexOf b

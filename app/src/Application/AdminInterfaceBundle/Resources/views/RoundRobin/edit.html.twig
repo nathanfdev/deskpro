@@ -23,7 +23,7 @@
                                 <h3>{{phrase('adm.round_robins.agents')}} *</h3>
                             </div>
                             <div class="col-lg-9">
-                                <ul class="list-unstyled" style="overflow-y: scroll; max-height: {{ 20 * 24 }}px;">
+                                <ul  class="checkbox-list" style="overflow-y: scroll; max-height: {{ 20 * 24 }}px;min-width: 250px;">
                                     <li ng-repeat="agent in EditCtrl.agents">
                                         <label>
                                             <input type="checkbox" ng-checked="EditCtrl.robin.agents.indexOf(agent) > -1"
@@ -37,9 +37,22 @@
 
                         <div class="form-group">
                             <div class="col-lg-9 col-lg-offset-3">
-                                <select ui-select2 ng-model="test" style="width: 200px;">
-                                    <option value="1">test</option>
-                                    <option value="2">test2</option>
+                                <select ui-select2 ng-model="batch" style="width: 200px;">
+                                    <optgroup label="Departments">
+                                        <option ng-repeat="dep in EditCtrl.deps" value="d.{{ ng_var('dep.id') }}">
+                                            {{ ng_var('dep.title') }}
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Teams">
+                                        <option ng-repeat="team in EditCtrl.teams" value="t.{{ ng_var('team.id') }}">
+                                            {{ ng_var('team.name') }}
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="Permission Groups">
+                                        <option ng-repeat="group in EditCtrl.groups" value="g.{{ ng_var('group.id') }}">
+                                            {{ ng_var('group.title') }}
+                                        </option>
+                                    </optgroup>
                                 </select>
                                 &nbsp;<button class="btn btn-default" type="button">Add</button>
                             </div>

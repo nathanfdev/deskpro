@@ -438,7 +438,7 @@ define [
 
 
 		# simple proxy
-		all: (cb) ->
+		all: ->
 			@loadList()
 
 
