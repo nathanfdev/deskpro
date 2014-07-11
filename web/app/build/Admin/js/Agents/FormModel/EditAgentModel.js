@@ -56,6 +56,9 @@
               break;
             }
           }
+          if (!enabled && !agent.id && g.sys_name === 'agent_all_perms') {
+            enabled = true;
+          }
           this.form.agent_groups.push({
             id: g.id,
             title: g.title,
