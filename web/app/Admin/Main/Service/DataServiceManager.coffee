@@ -18,6 +18,8 @@ define [
 	'Admin/Banning/DataService/Bans',
 	'Admin/UserGroups/DataService/UserGroups',
 	'Admin/UserRules/DataService/UserRules',
+	'Admin/Agents/DataService/Agents',
+	'Admin/RoundRobin/DataService/RoundRobin',
 ], (
 	Strings,
 	DataService_TicketFields,
@@ -38,6 +40,8 @@ define [
 	DataService_Bans,
 	DataService_UserGroups,
 	DataService_UserRules,
+	DataService_Agents,
+	DataService_RoundRobin,
 ) ->
 	###
 	# A simple wrapper around the data services

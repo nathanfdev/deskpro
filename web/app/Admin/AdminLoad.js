@@ -183,6 +183,8 @@ define([
 	'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
 	'Admin/NewsSettings/Ctrl/NewsSettings',
 	'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
+	'Admin/RoundRobin/Ctrl/List',
+	'Admin/RoundRobin/Ctrl/Edit',
 
 	'CloudAdminLoad'
 
