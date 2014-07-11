@@ -25,6 +25,7 @@
 	'agent.chrome.hello-user'                                              => 'Bonjour, {{name}}',
 	'agent.chrome.help-contact-us'                                         => 'Contactez-nous',
 	'agent.chrome.help-contact-us-explain'                                 => 'Contactez notre service d\'assistance à <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> ou directement par email à <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
+	'agent.chrome.help-manuals'                                            => 'Manuels',
 	'agent.chrome.help-quickstart-guide-link'                              => 'Si vous débutez avec DeskPRO, <a href="{{link}}">cliquer ici pour télécharger le Guide de démarrage rapide</a>.',
 	'agent.chrome.kbd-change-status-agent'                                 => 'Mettre le statut : En attente de l\'Agent',
 	'agent.chrome.kbd-change-status-resolved'                              => 'Mettre le statut : Résolu',

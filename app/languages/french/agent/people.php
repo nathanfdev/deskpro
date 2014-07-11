@@ -63,6 +63,7 @@
 	'agent.people.since'                                                   => 'Depuis',
 	'agent.people.update_picture'                                          => 'Mettre à jour la photo',
 	'agent.people.upload_new_picture'                                      => 'Charger une nouvelle photo',
+	'agent.people.upload_vcard'                                            => 'Télécharger la vCard',
 	'agent.people.use_pic_gravatar'                                        => 'Utiliser photo de gravatar',
 	'agent.people.use_uploaded_pic'                                        => 'Utiliser la photo chargée',
 	'agent.people.user_awaiting_agent_validation'                          => 'L\'Utilisateur attend la validation de l\'Agent',
