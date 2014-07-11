@@ -32,8 +32,28 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@serviceAgents.get(model.next.id).then((agent) => @robin.next = agent) if model.next?
 			# remap agents to list models
+			promises = []
 			model.agents.map (agent) =>
-				@serviceAgents.get(agent.id).then (agent) => @robin.agents.push agent
+				promise = @serviceAgents.get(agent.id).then (agent) => @robin.agents.push agent
+				promises.push promise
+
+			@$q.all(promises).then => @sortAgents()
+
+
+
+		sortAgents: ->
+			@agents.sort (a, b) =>
+				indexA = @robin.agents.indexOf a
+				indexB = @robin.agents.indexOf b
+				return 0 if indexA == indexB
+				if indexA < indexB then return 1 else return -1
+
+
+
+		handleAgent: (agent) ->
+			index = @robin.agents.indexOf agent
+			if index == -1 then @robin.agents.push agent else @robin.agents.splice(index, 1)
+			@sortAgents()
 
 
 

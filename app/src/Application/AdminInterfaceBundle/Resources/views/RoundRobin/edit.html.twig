@@ -26,7 +26,8 @@
                                 <ul class="list-unstyled" style="overflow-y: scroll; max-height: {{ 20 * 24 }}px;">
                                     <li ng-repeat="agent in EditCtrl.agents">
                                         <label>
-                                            <input type="checkbox" ng-checked="EditCtrl.robin.agents.indexOf(agent) > -1" />
+                                            <input type="checkbox" ng-checked="EditCtrl.robin.agents.indexOf(agent) > -1"
+                                                    ng-click="EditCtrl.handleAgent(agent)" />
                                             {{ ng_var('agent.display_name') }}
                                         </label>
                                     </li>
