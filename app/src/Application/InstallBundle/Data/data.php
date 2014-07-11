@@ -303,7 +303,7 @@ $AGENTGROUP_ALL_ND = new \Application\DeskPRO\Entity\Usergroup();
 $AGENTGROUP_ALL_ND['title'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive');
 $AGENTGROUP_ALL_ND['note'] = $translate->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
 $AGENTGROUP_ALL_ND['is_agent_group'] = true;
-$AGENTGROUP_ALL['sys_name'] = 'agent_all_safe_perms';
+$AGENTGROUP_ALL_ND['sys_name'] = 'agent_all_safe_perms';
 $em->persist($AGENTGROUP_ALL_ND);
 $em->flush();
 
