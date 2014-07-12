@@ -132,4 +132,19 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
 		return $this->createApiResponse(array());
 	}
+
+	###################################################################################################################
+	# setup RR
+	####################################################################################################################
+
+	public function settingsAction()
+	{
+		if ($this->request->isMethod('PUT')) {
+			$this->settings->setSetting('core.round_robin.enabled', $this->in->getBool('enabled'));
+		}
+
+		return $this->createApiResponse(array(
+			'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false)
+		));
+	}
 }

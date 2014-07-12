@@ -2285,6 +2285,12 @@ $collection->create('api_roundrobins_list', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_roundrobins_settings', array(
+	'path'        => '/round_robin/settings',
+	'controller'  => 'ApiBundle:RoundRobin:settings',
+	'methods'     => array('GET', 'PUT'),
+));
+
 $collection->create('api_roundrobins_get', array(
 	'path'        => '/round_robin/{id}',
 	'controller'  => 'ApiBundle:RoundRobin:get',

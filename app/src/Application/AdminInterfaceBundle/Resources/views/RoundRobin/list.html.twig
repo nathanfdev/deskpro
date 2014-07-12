@@ -1,7 +1,7 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
     <section class="dp-paneblock dp-listpane" style="padding: 10px;">
-        <button dp-toggle-switch ng-model="rr"></button>
+        <button dp-toggle-switch ng-model="ListCtrl.settings.enabled" ng-change="ListCtrl.save()"></button>
         <h4 style="display: inline-block; margin: 0 10px;">{{ phrase('adm.round_robins.enable') }}</h4>
     </section>
 
