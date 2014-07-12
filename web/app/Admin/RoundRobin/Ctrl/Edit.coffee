@@ -9,6 +9,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		init: ->
 			@robin = {}
 			@agents = []
+			@bulk = null
 			@service = @DataService.get 'RoundRobin'
 			@serviceAgents = @DataService.get 'Agents'
 			@serviceDeps = @DataService.get 'TicketDeps'
@@ -18,8 +19,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@groups = []
 			@teams = []
 			@deps = []
-
-			@$scope.batch = null
 
 
 
@@ -33,6 +32,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@deps = res[2]
 				@groups = res[3]
 				@teams = res[4]
+
+				console.log @deps
 
 
 
@@ -55,7 +56,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 
 		sortAgents: ->
-			console.log @agents
 			@agents.sort (a, b) =>
 				indexA = @robin.agents.indexOf a
 				indexB = @robin.agents.indexOf b
@@ -65,9 +65,28 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 
 		handleAgent: (agent) ->
+			return if @agents.indexOf(agent) == -1
 			index = @robin.agents.indexOf agent
 			if index == -1 then @robin.agents.push agent else @robin.agents.splice(index, 1)
-			@sortAgents()
+
+
+
+		handleBulk: ->
+			return if !@bulk?
+			params = @bulk.split '.'
+			add = {}
+
+			switch params[0]
+				when 'd'
+					@serviceDeps.get(params[1]).then (dep) =>
+						for agent in @agents
+							for agentData in dep.permissions.users
+								if 'full' == agentData.name and agent.id == agentData.id and @robin.agents.indexOf(agent) == -1
+									add[agent.id] = agent
+
+						for id, agent of add
+							@handleAgent agent
+						@sortAgents()
 
 
 

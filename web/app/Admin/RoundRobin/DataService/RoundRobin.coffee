@@ -11,11 +11,13 @@ define [
 
 		getSettings: ->
 			def = @$q.defer()
-			return def.resolve settings if null != settings
 
-			@Api.sendGet(@url() + '/settings').then (data) =>
-				settings = data.data
+			if null != settings
 				def.resolve settings
+			else
+				@Api.sendGet(@url() + '/settings').then (data) =>
+					settings = data.data
+					def.resolve settings
 
 			def.promise
 

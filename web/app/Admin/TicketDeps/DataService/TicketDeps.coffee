@@ -19,7 +19,8 @@ define [
 		_doLoadList: ->
 			deferred = @$q.defer()
 
-			@Api.sendGet(@url()).success( (data, status, headers, config) =>
+			# maybe should init query params as method argument
+			@Api.sendGet(@url(), {with_perms: 1}).success( (data, status, headers, config) =>
 				@deps = data.departments
 
 				proc = (parent) ->
