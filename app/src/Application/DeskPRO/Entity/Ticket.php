@@ -532,9 +532,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	public $__dp_is_autogen_ref = false;
 
+	/**
+	 * @var bool
+	 */
+	public $_is_new = false;
+
 	public function __construct()
 	{
 		$this->_original_id  = null;
+		$this->_is_new       = true;
 		$this->participants  = new ArrayCollection();
 		$this->messages      = new ArrayCollection();
 		$this->custom_data   = new ArrayCollection();
@@ -1296,7 +1302,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 		$now = new \DateTime();
 		if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
-			if (!$message->is_agent_note) {
+			if (!$message->is_agent_note && !$this->_is_new) {
 				if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
 					$this['date_last_agent_reply'] = $now;
 				}
