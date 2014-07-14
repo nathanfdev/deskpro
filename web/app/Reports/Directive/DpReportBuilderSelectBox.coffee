@@ -144,7 +144,7 @@ define ->
 				scope.changeLinkParams = () ->
 					updateLink()
 					linkParams = scope.selected.join(',')
-					$state.go('builder.edit', {id: scope.reportId, params:linkParams})
+					$state.go('builder.edit', {id: scope.reportId, params:linkParams, type: scope.type})
 		}
 	]
 

@@ -56,12 +56,12 @@ define [
   # @param {Integer} id
   # @return {promise}
 		###
-		loadEditReportData: (id) ->
+		loadEditReportData: (id, params) ->
 
 			deferred = @$q.defer()
 			if id
 
-				@Api.sendGet('/reports/builder/' + id).then( (result) =>
+				@Api.sendGet('/reports/builder/' + id, {params: params}).then( (result) =>
 
 					if result.data.type != 'custom' then throw new Error('Report you are loading should be custom report')
 
