@@ -360,7 +360,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	 * @param string $multi_mode
 	 * @return bool
 	 */
-	protected function isEntityMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $id_prop, array $check_ids = null, $multi_mode = null)
+	protected function isEntityMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, $id_prop, $check_ids = null, $multi_mode = null)
 	{
 		$opts       = $this->getValueOpArray($ticket, $context, $prop_name);
 		$op         = $opts['op'];
