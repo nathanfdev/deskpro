@@ -310,7 +310,7 @@
 	'agent.general.height'                                  => 'Height',
 	'agent.general.help'                                    => 'Help',
 	'agent.general.hidden'                                  => 'Hidden',
-	'agent.general.hidden_awaiting_validating_spam'         => 'Hidden (awaiting validating, spam)',
+	'agent.general.hidden_awaiting_validating_spam'         => 'Hidden (awaiting validation, spam)',
 	'agent.general.hidden_deleted'                          => 'Hidden: Deleted',
 	'agent.general.hidden_unpublished'                      => 'Hidden: Unpublished',
 	'agent.general.hidden_validating'                       => 'Hidden: Validating',
