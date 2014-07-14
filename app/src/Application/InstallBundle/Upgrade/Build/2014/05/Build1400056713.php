@@ -71,6 +71,7 @@ class Build1400056713 extends AbstractBuild
 		foreach ($gateways as $gateway) {
 			if ($gateway['gateway_type'] != 'tickets') {
 				$this->out("Skipping {$gateway['id']}: Must be ticket type");
+				continue;
 			}
 
 			if (!empty($gateway['linked_transport_id']) && isset($transports[$gateway['linked_transport_id']])) {
