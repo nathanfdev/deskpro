@@ -83,8 +83,13 @@ class SetSlasComplete extends AbstractContainerAwareAction implements ActionInte
 
 			switch ($set_status) {
 				case 'auto':
-					$ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
-					$ticket_sla->fail_date = $calc->calculateFailDate($ticket);
+					if ($set_warn_date = $calc->calculateWarnDate($ticket)) {
+						$ticket_sla->warn_date = $set_warn_date;
+					}
+					if ($set_fail_date = $calc->calculateFailDate($ticket)) {
+						$ticket_sla->fail_date = $set_fail_date;
+					}
+
 					if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
 						if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
 							$ticket_sla->sla_status = TicketSla::STATUS_FAIL;
