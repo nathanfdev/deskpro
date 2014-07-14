@@ -48,6 +48,8 @@ class RoundRobin extends AbstractEntityRepository
 		$robin->agents->clear();
 		$this->_em->flush();
 		$sort = 0;
+
+		$nextIsPresented = false;
 		foreach ($agents as $agentData) {
 			$agentRef = new RoundRobinAgent();
 			$agentRef->robin = $robin;
@@ -55,6 +57,14 @@ class RoundRobin extends AbstractEntityRepository
 			$this->_em->persist($agentRef);
 			$agentRef['sort'] = ++$sort;
 			$robin->agents->add($agentRef);
+
+			if ((int) $agentData['id'] === $robin->next['id']) {
+				$nextIsPresented = true;
+			}
+		}
+
+		if (!$nextIsPresented) {
+			$robin->next = $robin->agents->first()->agent;
 		}
 
 		$this->_em->flush();

@@ -4,4 +4,6 @@
 
 	'adm.round_robins.title'                  => 'Title',
 	'adm.round_robins.agents'                 => 'Agents',
+
+	'adm.round_robins.next'                   => 'Next in queue',
 );

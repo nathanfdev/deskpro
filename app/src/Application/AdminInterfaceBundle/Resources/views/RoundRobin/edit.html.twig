@@ -29,6 +29,9 @@
                                             <input type="checkbox" ng-checked="EditCtrl.robin.agents.indexOf(agent) > -1"
                                                     ng-click="EditCtrl.handleAgent(agent); EditCtrl.sortAgents();" />
                                             {{ ng_var('agent.display_name') }}
+                                            <span ng-if="EditCtrl.robin.next === agent" class="label label-default">
+                                                {{ phrase('adm.round_robins.next') }}
+                                            </span>
                                         </label>
                                     </li>
                                 </ul>

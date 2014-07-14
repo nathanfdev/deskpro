@@ -64,17 +64,9 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $sort;
 
-	/**
-	 * Is this agent is next in queue
-	 *
-	 * @var bool
-	 */
-	protected $next;
-
 	public function __construct()
 	{
 		$this['sort'] = 0;
-		$this['next'] = false;
 	}
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
@@ -82,8 +74,6 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
 //		$data = parent::toApiData($primary, $deep, $visited);
 		$data = array(
 			'id' => $this->agent ? $this->agent['id'] : null,
-			'sort' => $this['sort'],
-			'next' => $this['next'],
 		);
 
 		return $data;
@@ -103,7 +93,6 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\RoundRobinAgent';
 
 		$metadata->mapField(array( 'fieldName' => 'sort', 'type' => 'integer', 'nullable' => false, 'columnName' => 'sort',));
-		$metadata->mapField(array( 'fieldName' => 'next', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'next',));
 
 		$metadata->mapOneToOne(array(
 			'id' => true,

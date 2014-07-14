@@ -131,6 +131,7 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
 			'targetEntity'  => 'Application\\DeskPRO\\Entity\\RoundRobinAgent',
 			'mappedBy'      => 'robin',
 			'orphanRemoval' => true,
+			'orderBy'       => array('sort' => 'ASC'),
 		));
 	}
 }
