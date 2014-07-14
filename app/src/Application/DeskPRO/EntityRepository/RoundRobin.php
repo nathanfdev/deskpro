@@ -39,6 +39,8 @@ use Application\DeskPRO\Entity\RoundRobinAgent;
 
 class RoundRobin extends AbstractEntityRepository
 {
+	protected $availableAgents = null;
+
 	/**
 	 * @param \Application\DeskPRO\Entity\RoundRobin $robin
 	 * @param array $agents
@@ -63,10 +65,72 @@ class RoundRobin extends AbstractEntityRepository
 			}
 		}
 
-		if (!$nextIsPresented) {
+		if (!$nextIsPresented && !$robin->agents->isEmpty()) {
 			$robin->next = $robin->agents->first()->agent;
 		}
 
 		$this->_em->flush();
+	}
+
+	/**
+	 * check current agents queue for availability and return them
+	 * @param \Application\DeskPRO\Entity\RoundRobin $robin
+	 * @return array|null
+	 */
+	protected function getAvailableAgents(\Application\DeskPRO\Entity\RoundRobin $robin)
+	{
+		if (null !== $this->availableAgents) {
+			return $this->availableAgents;
+		}
+
+		$availableAgents = array();
+
+		// check for active agents
+		foreach ($robin->agents as $agentRef) {
+			$a = $agentRef->agent;
+
+			if ($a['is_agent'] && !$a['is_disabled'] && !$a['is_deleted']) {
+				$availableAgents[] = $a;
+			}
+		}
+
+		return $this->availableAgents = $availableAgents;
+	}
+
+	/**
+	 * get next available agent from queue
+	 * @param \Application\DeskPRO\Entity\RoundRobin $robin
+	 * @return mixed|null
+	 */
+	public function getNextAgent(\Application\DeskPRO\Entity\RoundRobin $robin)
+	{
+		$next = null;
+		$availableAgents = $this->getAvailableAgents($robin);
+
+		if (count($availableAgents)) {
+			$idx = array_search($robin->next, $availableAgents, true);
+			$next = false === $idx ? reset($availableAgents) : $availableAgents[$idx];
+		}
+
+		return $next;
+	}
+
+	/**
+	 * set new agent as next
+	 * @param \Application\DeskPRO\Entity\RoundRobin $robin
+	 */
+	public function updateNextAgent(\Application\DeskPRO\Entity\RoundRobin $robin)
+	{
+		$next = $this->getNextAgent($robin);
+		$availableAgents = $this->getAvailableAgents($robin);
+
+		if ($next && count($availableAgents)) {
+			$current = array_search($next, $availableAgents, true);
+			$robin->next = $next === end($availableAgents)
+				? reset($availableAgents)
+				: $availableAgents[$current+1];
+
+			$this->_em->flush();
+		}
 	}
 }

@@ -87,7 +87,14 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
+		foreach ($this->agents as $agentRef) {
+			$a = $agentRef->agent;
+			if (!$a['is_agent'] || $a['is_disabled'] || $a['is_deleted']) {
+				$this->agents->removeElement($agentRef);
+			}
+		}
 		$data = parent::toApiData($primary, $deep, $visited);
+
 		return $data;
 	}
 

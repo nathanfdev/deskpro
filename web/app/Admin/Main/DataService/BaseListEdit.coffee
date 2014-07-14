@@ -429,11 +429,12 @@ define [
 		# remove model from list/map
 		_removeModel: (model) ->
 			return null if !model[@idProp]?
-			model = @map[model[@idProp]]?
-			return null if ! model
+			model = @map[model[@idProp]]
+			return null if !model?
 
 			delete @map[model[@idProp]]
-			@listModels.splice(@listModels.indexOf model, 1)
+			idx = @listModels.indexOf model
+			@listModels.splice(idx, 1) if idx > -1
 
 
 

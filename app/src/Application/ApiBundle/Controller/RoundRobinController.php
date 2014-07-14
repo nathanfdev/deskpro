@@ -67,6 +67,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 	public function listAction()
 	{
 		$data = array();
+		/** @var $rr RoundRobin */
 		foreach ($this->em->getRepository('DeskPRO:RoundRobin')->findAll() as $rr) {
 			$data[] = $rr->toApiData();
 		}
@@ -108,10 +109,11 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 		$data = $this->in->getAll('req');
 		unset($data['next']);
 
-		$rep->setAgents($rr, $data['agents']);
+		$agents = $data['agents'];
 		unset($data['agents']);
-
 		$rr->fromArray($data);
+		$rep->setAgents($rr, $agents);
+
 		$this->em->flush();
 
 		return $this->getAction($rr['id']);

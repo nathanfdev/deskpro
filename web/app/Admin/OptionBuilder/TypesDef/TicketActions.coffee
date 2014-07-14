@@ -20,6 +20,12 @@ define [
 				value: 'SetAgent'
 			})
 
+			if @options_data.round_robin? and @options_data.round_robin.enabled
+				options.push({
+					title: 'Set Round Robin Queue',
+					value: 'SetRoundRobin'
+				})
+
 			options.push({
 				title: 'Set Assigned Team',
 				value: 'SetAgentTeam'
@@ -327,7 +333,9 @@ define [
 						'email_accounts':  '/email_accounts',
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
-						'email_tpls':      '/email-templates-info'
+						'email_tpls':      '/email-templates-info',
+						round_robin:       '/round_robin/settings',
+						round_robins:      '/round_robin',
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -346,6 +354,8 @@ define [
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+						options_data['round_robin']      = data.round_robin
+						options_data['round_robins']     = data.round_robins
 
 						@options_data = options_data
 
@@ -366,6 +376,12 @@ define [
 				{title: 'Unassign', value: 0},
 				{title: 'Current Agent', value: -1}
 			]
+			def = @getStandardSelect(options)
+			return def
+
+		getSetRoundRobin: (options = {}) ->
+			options.propName = 'id'
+			options.dataName = 'round_robins'
 			def = @getStandardSelect(options)
 			return def
 
