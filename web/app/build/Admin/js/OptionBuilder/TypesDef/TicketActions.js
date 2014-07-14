@@ -160,11 +160,11 @@
         });
         options.push({
           title: 'Prevent Emails To User',
-          value: 'ModQuietUserEmails'
+          value: 'ModMuteUserEmails'
         });
         options.push({
           title: 'Prevent Emails To Agents',
-          value: 'ModQuietAgentEmails'
+          value: 'ModMuteAgentEmails'
         });
         options.push({
           title: 'Set Trigger Variable',
@@ -852,7 +852,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietUserEmails = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModMuteUserEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -861,7 +861,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietAgentEmails = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModMuteAgentEmails = function(options) {
         var def;
         if (options == null) {
           options = {};

@@ -207,12 +207,12 @@ define [
 
 			options.push({
 				title: 'Prevent Emails To User',
-				value: 'ModQuietUserEmails'
+				value: 'ModMuteUserEmails'
 			})
 
 			options.push({
 				title: 'Prevent Emails To Agents',
-				value: 'ModQuietAgentEmails'
+				value: 'ModMuteAgentEmails'
 			})
 
 			options.push({
@@ -652,11 +652,11 @@ define [
 					}
 			}
 
-		getModQuietUserEmails: (options = {}) ->
+		getModMuteUserEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
 
-		getModQuietAgentEmails: (options = {}) ->
+		getModMuteAgentEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
 
