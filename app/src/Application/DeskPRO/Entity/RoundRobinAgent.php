@@ -35,59 +35,57 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
  * Article
  */
-class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
+class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * @var int
+	 * @var \Application\DeskPRO\Entity\RoundRobin
 	 */
-	protected $id = null;
+	protected $robin;
 
 	/**
 	 * Next agent in queue
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $next = null;
+	protected $agent;
 
 	/**
-	 * Agents
+	 * Sort field
 	 *
-	 * @var ArrayCollection
+	 * @var int
 	 */
-	protected $agents;
+	protected $sort;
 
 	/**
-	 * @var string
+	 * Is this agent is next in queue
+	 *
+	 * @var bool
 	 */
-	protected $title;
-
+	protected $next;
 
 	public function __construct()
 	{
-		$this->agents = new ArrayCollection();
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
+		$this['sort'] = 0;
+		$this['next'] = false;
 	}
 
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
-		$data = parent::toApiData($primary, $deep, $visited);
+//		$data = parent::toApiData($primary, $deep, $visited);
+		$data = array(
+			'id' => $this->agent ? $this->agent['id'] : null,
+			'sort' => $this['sort'],
+			'next' => $this['next'],
+		);
+
 		return $data;
 	}
 
@@ -100,37 +98,45 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\RoundRobin';
-		$metadata->setPrimaryTable(array( 'name' => 'round_robin', ));
+		$metadata->setPrimaryTable(array( 'name' => 'round_robin_agents', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\RoundRobinAgent';
+
+		$metadata->mapField(array( 'fieldName' => 'sort', 'type' => 'integer', 'nullable' => false, 'columnName' => 'sort',));
+		$metadata->mapField(array( 'fieldName' => 'next', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'next',));
 
 		$metadata->mapOneToOne(array(
-			'fieldName' => 'next',
-			'dpApi'        => true,
+			'id' => true,
+			'fieldName' => 'agent',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
 			'mappedBy' => NULL,
 			'inversedBy' => NULL,
 			'joinColumns' => array(
 				0 => array(
-					'name' => 'next_agent_id',
+					'name' => 'agent_id',
 					'referencedColumnName' => 'id',
-					'nullable' => true,
-					'onDelete' => 'set null',
+					'nullable' => false,
+					'onDelete' => 'cascade',
 					'columnDefinition' => NULL,
 				),
 			),
 		));
 
-		$metadata->mapOneToMany(array(
-			'fieldName'     => 'agents',
-			'dpApi'         => true,
-			'dpApiDeep'     => true,
-			'targetEntity'  => 'Application\\DeskPRO\\Entity\\RoundRobinAgent',
-			'mappedBy'      => 'robin',
-			'orphanRemoval' => true,
+		$metadata->mapManyToOne(array(
+			'id' => true,
+			'fieldName' => 'robin',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\RoundRobin',
+			'mappedBy' => NULL,
+			'inversedBy' => 'agents',
+			'joinColumns' => array(
+				0 => array(
+					'name' => 'robin_id',
+					'referencedColumnName' => 'id',
+					'nullable' => false,
+					'onDelete' => 'cascade',
+					'columnDefinition' => NULL,
+				),
+			),
 		));
 	}
 }

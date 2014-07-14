@@ -41,6 +41,7 @@ use Application\DeskPRO\Banning\Form\Type\EmailBanType;
 use Application\DeskPRO\Banning\Form\Type\IpBanType;
 use Application\DeskPRO\Banning\IpBanEdit;
 use Application\DeskPRO\Entity\RoundRobin;
+use Application\DeskPRO\Entity\RoundRobinAgent;
 use Application\DeskPRO\EntityRepository\BanEmail;
 use Application\DeskPRO\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -93,21 +94,21 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
 	public function setAction($id)
 	{
+		/** @var \Application\DeskPRO\EntityRepository\RoundRobin $rep */
+		$rep = $this->em->getRepository('DeskPRO:RoundRobin');
+
 		/** @var $rr RoundRobin */
 		if (!$id) {
 			$rr = new RoundRobin();
 			$this->em->persist($rr);
-		} elseif (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
+		} elseif (!$rr = $rep->find($id)) {
 			throw $this->createNotFoundException();
 		}
 
 		$data = $this->in->getAll('req');
 		unset($data['next']);
 
-		$rr->agents->clear();
-		foreach ($data['agents'] as $agentData) {
-			$rr->agents->add($this->em->getReference('DeskPRO:Person', $agentData['id']));
-		}
+		$rep->setAgents($rr, $data['agents']);
 		unset($data['agents']);
 
 		$rr->fromArray($data);

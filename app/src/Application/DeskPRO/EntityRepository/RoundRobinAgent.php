@@ -35,28 +35,8 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\RoundRobinAgent;
 
-class RoundRobin extends AbstractEntityRepository
+class RoundRobinAgent extends AbstractEntityRepository
 {
-	/**
-	 * @param \Application\DeskPRO\Entity\RoundRobin $robin
-	 * @param array $agents
-	 */
-	public function setAgents(\Application\DeskPRO\Entity\RoundRobin $robin, array $agents = array())
-	{
-		$robin->agents->clear();
-		$this->_em->flush();
-		$sort = 0;
-		foreach ($agents as $agentData) {
-			$agentRef = new RoundRobinAgent();
-			$agentRef->robin = $robin;
-			$agentRef->agent  = $this->_em->getReference('DeskPRO:Person', $agentData['id']);
-			$this->_em->persist($agentRef);
-			$agentRef['sort'] = ++$sort;
-			$robin->agents->add($agentRef);
-		}
 
-		$this->_em->flush();
-	}
 }
