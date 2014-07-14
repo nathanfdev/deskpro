@@ -575,164 +575,31 @@ function dp_get_mysql_path($test = false)
 
 
 /**
- * Gets the users IP address. This will try to return the actual IP of the user.
- * If the client machine is a trusted proxy, we will try to get the forwarded IP address
- * of the real user.
+ * Gets the users IP address.
+ *
+ * This is a low-level wrapper around getting the IP. You should only
+ * use this directly if the normal Request object is not available.
+ *
+ * This will use the Request object if available, but fall-back on just
+ * reading the $_SERVER array. It does not do the same proxy detection stuff,
+ * so it's really only useful for low-level.
  *
  * @return string|false
  */
 function dp_get_user_ip_address()
 {
-	if (dp_trust_proxy_data() && $ip = dp_get_proxied_ip_address()) {
-		return $ip;
-	}
+	/** @var $DP_MAIN_REQUEST \Symfony\Component\HttpFoundation\Request */
+	global $DP_MAIN_REQUEST;
 
-	return dp_get_client_ip_address();
-}
-
-
-/**
- * Gets the users IP address from behind possible proxies.
- *
- * @return string|null
- */
-function dp_get_proxied_ip_address()
-{
-	$ip_address = null;
-	if ($ip_address !== null) return $ip_address ? $ip_address : null;
-
-	$validate_ip = function($ip) {
-		return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
-	};
-
-	if (!empty($_SERVER['HTTP_CLIENT_IP']) && $validate_ip($_SERVER['HTTP_CLIENT_IP'])) {
-		$ip_address = $_SERVER['HTTP_CLIENT_IP'];
-	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-		$iplist = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-		foreach ($iplist as $ip) {
-			if ($validate_ip($ip)) {
-				$ip_address = $ip;
-			}
-		}
-	} elseif (!empty($_SERVER['HTTP_X_FORWARDED']) && $validate_ip($_SERVER['HTTP_X_FORWARDED'])) {
-		$ip_address = $_SERVER['HTTP_X_FORWARDED'];
-	} elseif (!empty($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']) && $validate_ip($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])) {
-		$ip_address = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
-	} elseif (!empty($_SERVER['HTTP_FORWARDED_FOR']) && $validate_ip($_SERVER['HTTP_FORWARDED_FOR'])) {
-		$ip_address = $_SERVER['HTTP_FORWARDED_FOR'];
-	} elseif (!empty($_SERVER['HTTP_FORWARDED']) && $validate_ip($_SERVER['HTTP_FORWARDED'])) {
-		$ip_address = $_SERVER['HTTP_FORWARDED'];
+	if ($DP_MAIN_REQUEST) {
+		return $DP_MAIN_REQUEST->getClientIp();
 	} else {
-		$ip_address = false;
-	}
-
-	return $ip_address ? $ip_address : null;
-}
-
-
-/**
- * Gets the real client IP (e.g., the machine that actually made the request).
- * To get the users IP address, try dp_get_user_ip_address().
- *
- * @return string|null
- */
-function dp_get_client_ip_address()
-{
-	static $ip_address = null;
-	if ($ip_address !== null) return $ip_address ? $ip_address : null;
-
-	if (!empty($_SERVER['REMOTE_ADDR'])) {
-		$ip_address = $_SERVER['REMOTE_ADDR'];
-	} else if (!empty($_ENV['REMOVE_ADDR'])) {
-		$ip_address = $_ENV['REMOTE_ADDR'];
-	} else {
-		$ip_address = false;
-	}
-
-	return $ip_address ? $ip_address : null;
-}
-
-
-/**
- * Checks to see if we should trust proxy data, generally by checking the client IP based on a whitelist
- * of trusted networks.
- *
- * @return bool
- */
-function dp_trust_proxy_data()
-{
-	static $do_trust = null;
-
-	if ($do_trust !== null) {
-		return $do_trust;
-	}
-
-	// CLI, there is no IP
-	if (php_sapi_name() == 'cli') {
-		$do_trust = false;
-		return false;
-	}
-
-	$trust_option = isset($GLOBALS['DP_CONFIG']['trust_proxy_data']) && $GLOBALS['DP_CONFIG']['trust_proxy_data'] ? $GLOBALS['DP_CONFIG']['trust_proxy_data'] : null;
-	if (!$trust_option) {
-		$do_trust = false;
-		return false;
-	}
-
-	#------------------------------
-	# If we have an array, it means we have
-	# a set of IPs we trust
-	#------------------------------
-
-	if (is_array($trust_option)) {
-
-		try {
-			$client_ip = \Leth\IPAddress\IP\Address::factory(dp_get_client_ip_address());
-		} catch (\Exception $e) {
-			$do_trust = false;
-			return false;
+		if (!empty($_SERVER['REMOTE_ADDR'])) {
+			return $_SERVER['REMOTE_ADDR'];
+		} else if (!empty($_ENV['REMOVE_ADDR'])) {
+			return $_ENV['REMOTE_ADDR'];
+		} else {
+			return '127.0.0.1';
 		}
-
-		foreach ($trust_option as $ip_range) {
-			// $ip_range is a file reference: @/path/to/file
-			if (is_string($ip_range) && $ip_range[0] == '@') {
-				$ip_range = substr($ip_range, 1);
-
-				// A relative file starts with ~
-				if ($ip_range[0] == '~') {
-					$ip_range = DP_ROOT . substr($ip_range, 1);
-				}
-
-				$ip_range = include($ip_range);
-
-				foreach ($ip_range as $check_ip_range) {
-					try {
-						$ip_range = \Leth\IPAddress\IP\NetworkAddress::factory($check_ip_range);
-						if ($ip_range->encloses_address($client_ip)) {
-							$do_trust = true;
-							break 2;
-						}
-					} catch (\Exception $e) {}
-				}
-			} else {
-				try {
-					$ip_range = \Leth\IPAddress\IP\NetworkAddress::factory($ip_range);
-					if ($ip_range->encloses_address($client_ip)) {
-						$do_trust = true;
-						break;
-					}
-				} catch (\Exception $e) {}
-			}
-		}
-
-	#------------------------------
-	# A trust option of any other is just
-	# cast to a bool
-	#------------------------------
-
-	} else {
-		$do_trust = (bool)$trust_option;
 	}
-
-	return $do_trust;
 }
