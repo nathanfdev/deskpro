@@ -110,6 +110,7 @@ class Build1400056713 extends AbstractBuild
 
 			// Cloud must mark the incoming settings as noop
 			if (defined('DPC_IS_CLOUD')) {
+				$tr_account->setAccountType(EmailAccount::TYPE_TICKETS);
 				$tr_account->incoming_account = new IncomingAccount\NoopConfig();
 			}
 
