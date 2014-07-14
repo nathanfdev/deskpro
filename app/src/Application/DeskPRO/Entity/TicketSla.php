@@ -115,13 +115,6 @@ class TicketSla extends DomainObject
 
 		$this->setModelField('is_completed', $value);
 		if ($this->is_completed) {
-			if ($this->sla_status == self::STATUS_OK) {
-				$this->setModelField('warn_date', null);
-				$this->setModelField('fail_date', null);
-			} else if ($this->sla_status == self::STATUS_WARNING) {
-				$this->setModelField('fail_date', null);
-			}
-
 			if ($date === null) {
 				$date = new \DateTime();
 			}
