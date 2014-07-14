@@ -74,9 +74,14 @@ class AgentsController extends AbstractController implements ProtectedController
 		$online_agents_userchat = array_fill_keys($online_agents_userchat, true);
 
 		foreach ($this->container->getAgentData()->getAgents() as $agent) {
-			$agent_data = $agent->toApiData();
-			$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
-			$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
+
+			if ($this->in->getBool('full')) {
+				$agent_data = $this->getFullAgentData($agent['id']);
+			} else {
+				$agent_data = $agent->toApiData();
+				$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+				$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
+			}
 
 			$data['agents'][] = $agent_data;
 		}
@@ -107,7 +112,7 @@ class AgentsController extends AbstractController implements ProtectedController
 	# get-agent
 	####################################################################################################################
 
-	public function getAgentAction($id)
+	protected function getFullAgentData($id)
 	{
 		$agent = $this->container->getAgentData()->get($id);
 
@@ -137,6 +142,13 @@ class AgentsController extends AbstractController implements ProtectedController
 		if ($this->in->getBool('extended')) {
 			$data['signature_html'] = $agent->getSignatureHtml();
 		}
+
+		return $data;
+	}
+
+	public function getAgentAction($id)
+	{
+		$data = $this->getFullAgentData($id);
 
 		return $this->createApiResponse($data);
 	}

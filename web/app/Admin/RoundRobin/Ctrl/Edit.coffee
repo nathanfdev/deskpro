@@ -33,7 +33,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@groups = res[3]
 				@teams = res[4]
 
-				console.log @deps
+				console.log @teams
+				console.log @agents
 
 
 
@@ -79,10 +80,41 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			switch params[0]
 				when 'd'
 					@serviceDeps.get(params[1]).then (dep) =>
-						for agent in @agents
+						for agent in @agents when @robin.agents.indexOf(agent) == -1
+							# agents based on permission 'full' for agents
 							for agentData in dep.permissions.users
-								if 'full' == agentData.name and agent.id == agentData.id and @robin.agents.indexOf(agent) == -1
+								if 'full' == agentData.name and agent.id == agentData.id
 									add[agent.id] = agent
+
+							# agents based on permission 'full' for agentgroups
+							# maybe better to call handleBulk with g.X argument recursively
+							for agentgroup in dep.permissions.agentgroups when agentgroup.name is 'full'
+								for agentGroupId in agent.agentgroup_ids when agentGroupId == agentgroup.id
+									add[agent.id] = agent
+									break
+
+
+						for id, agent of add
+							@handleAgent agent
+						@sortAgents()
+
+				when 'g'
+					@serviceGroups.get(params[1]).then (group) =>
+						# agents based on agentgroups
+						for agent in @agents when @robin.agents.indexOf(agent) == -1
+							for agentGroupId in agent.agentgroup_ids when agentGroupId == group.id
+								add[agent.id] = agent
+
+						for id, agent of add
+							@handleAgent agent
+						@sortAgents()
+
+				when 't'
+					@serviceTeams.get(params[1]).then (team) =>
+						# agents based on agentteams
+						for agent in @agents when @robin.agents.indexOf(agent) == -1
+							for agentTeam in agent.teams when agentTeam.id == team.id
+								add[agent.id] = agent
 
 						for id, agent of add
 							@handleAgent agent
