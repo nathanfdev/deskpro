@@ -151,7 +151,8 @@
               linkParams = scope.selected.join(',');
               return $state.go('builder.edit', {
                 id: scope.reportId,
-                params: linkParams
+                params: linkParams,
+                type: scope.type
               });
             };
           }

@@ -1,18 +1,18 @@
 define ->
 	###
-   # Description
-   # -----------
- 		#
- 		#	Example View
- 		#	------------
- 		#	<dp-report-builder-title>
- 		#	</dp-report-builder-title>
- 		#
- 		#	Parameters
- 		#	------------
-   #
+	# Description
+	# -----------
+	#
+	#	Example View
+	#	------------
+	#	<dp-report-builder-title>
+	#	</dp-report-builder-title>
+	#
+	#	Parameters
+	#	------------
+	#
 	###
-	Reports_Directive_DpReportTitle = ['$state', ($state) ->
+	Reports_Directive_DpReportTitle = ['$state', '$location', ($state, $location) ->
 		return {
 			restrict: 'AE',
 			replace: true,
@@ -37,21 +37,22 @@ define ->
 
 				###
 
- 			Below variables will look like following
+				Below variables will look like following
 
- 			scope.texts = ['Number of tickets created','grouped by',' & ']
+				scope.texts = ['Number of tickets created','grouped by',' & ']
 				scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
 																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
 																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
 				]
 				scope.selected = ['today', 'agent', 'department']
 
- 			###
+				###
 
 				scope.texts = []
 				scope.options = []
 				scope.selected = []
 				scope.defaultLinkParams = ''
+				scope.type = attrs.type || 'builtIn'
 
 				scope.$watch('possibleValues', (newVal) =>
 
@@ -66,9 +67,8 @@ define ->
 
 				###
 				# This function builds directive by constructing it on 'the fly' using DOM operations
- 			# The reason for doing so - problems with inner directives that were compiled with $compile() functionality
+				# The reason for doing so - problems with inner directives that were compiled with $compile() functionality
 				###
-
 				buildDirectiveVariables = (value) ->
 
 					key = 0
@@ -95,8 +95,7 @@ define ->
 
 				###
 				# Returning select box options that was rendered according to 'input' parameter
- 			###
-
+				###
 				collectSelectOptions = (input) ->
 
 					possibleValues = scope.possibleValues
@@ -135,12 +134,12 @@ define ->
 					}
 
 				###
- 			# Going to correponding route after changing selected options inside select box
+				# Going to correponding route after changing selected options inside select box
 				###
-
 				scope.changeLinkParams = () ->
 					linkParams = scope.selected.join(',')
-					$state.go('builder.edit', {id: scope.reportId, params:linkParams})
+					href = $state.href('builder.edit', {id: scope.reportId, params: linkParams, type: scope.type})
+					window.location.hash = href
 		}
 	]
 
