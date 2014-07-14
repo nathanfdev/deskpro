@@ -253,6 +253,12 @@ class AgentsController extends AbstractController implements ProtectedController
 			if (!$agent) {
 				throw $this->createNotFoundException();
 			}
+
+			// Promoting an existing user to an agent needs to call the preNewAgent callback
+			if ($agent && !$agent->is_agent) {
+				$r = $this->preNewAgent(1);
+				if ($r) return $r;
+			}
 		} else {
 			$r = $this->preNewAgent(1);
 			if ($r) return $r;
