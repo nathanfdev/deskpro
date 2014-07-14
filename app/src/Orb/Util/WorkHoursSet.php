@@ -204,7 +204,7 @@ class WorkHoursSet implements WorkHoursInterface
 		$minutes = intval($minutes);
 		$seconds = intval($seconds);
 
-		if (!isset($this->work_days[$dow])) {
+		if (!isset($this->work_days[$dow]) || !$this->work_days[$dow]) {
 			return false;
 		}
 
@@ -250,7 +250,7 @@ class WorkHoursSet implements WorkHoursInterface
 			$minutes = intval($minutes);
 			$seconds = intval($seconds);
 
-			if (!isset($this->work_days[$dow])) {
+			if (!isset($this->work_days[$dow]) || !$this->work_days[$dow]) {
 				$work_date->modify($adjust);
 				$work_date->setTime(0, 0, 0);
 				$has_adjusted = true;
