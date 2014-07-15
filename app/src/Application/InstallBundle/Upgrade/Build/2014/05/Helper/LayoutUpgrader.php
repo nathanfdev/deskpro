@@ -153,14 +153,11 @@ class LayoutUpgrader
 	{
 		$layout = new TicketLayout\Layout();
 
-		$has_view = $this->form_view ? true : false;
-		$has_edit = $this->form_edit ? true : false;
-
 		foreach ($this->form_new as $old_field) {
 			$field = $this->convertField($old_field);
 			$field->enableOnNew();
-			if (!$has_view) $field->enableOnView();
-			if (!$has_edit) $field->enableOnEdit();
+			$field->enableOnView();
+			$field->enableOnEdit();
 			$layout->add($field);
 		}
 		foreach ($this->form_view as $old_field) {
@@ -171,7 +168,9 @@ class LayoutUpgrader
 				$layout->add($field);
 			}
 
+			$field->enableOnNew();
 			$field->enableOnView();
+			$field->enableOnEdit();
 		}
 		foreach ($this->form_edit as $old_field) {
 			$field = $this->convertField($old_field);
@@ -181,6 +180,8 @@ class LayoutUpgrader
 				$layout->add($field);
 			}
 
+			$field->enableOnNew();
+			$field->enableOnView();
 			$field->enableOnEdit();
 		}
 
