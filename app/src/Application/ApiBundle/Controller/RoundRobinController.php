@@ -36,6 +36,10 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\RoundRobin;
+use Application\DeskPRO\Tickets\Actions\ActionComposite;
+use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {
@@ -131,11 +135,62 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 	public function settingsAction()
 	{
 		if ($this->request->isMethod('PUT')) {
-			$this->settings->setSetting('core.round_robin.enabled', $this->in->getBool('enabled'));
+			$enabled = $this->in->getBool('enabled');
+			$this->settings->setSetting('core.round_robin.enabled', $enabled);
+
+			if (!$enabled) {
+				$this->countRoundRobinTriggers(true);
+			}
 		}
 
 		return $this->createApiResponse(array(
-			'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false)
+			'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false),
+			'active_triggers' => $this->countRoundRobinTriggers(),
 		));
+	}
+
+	protected function isTriggerActionClear($action)
+	{
+		if ($action instanceof SetRoundRobin) {
+			return false;
+		} elseif ($action instanceof ActionComposite) {
+			foreach ($action as $subAction) {
+				if (!$this->isTriggerActionClear($subAction)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	protected function countRoundRobinTriggers($disable = false)
+	{
+		$count = 0;
+		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers();
+		foreach ($triggers as $trigger) {
+			$newActions = new TriggerActions();
+			/** @var TriggerActions $actions */
+			$actions = $trigger->actions;
+			if (!$actions) continue;
+
+			foreach ($actions as $action) {
+				if ($this->isTriggerActionClear($action)) {
+					$newActions->addAction($action);
+				}
+			}
+
+			if ($newActions->count() !== $actions->count()) {
+				$count++;
+
+				if ($disable) {
+					$trigger->actions = $newActions;
+					$trigger['is_enabled'] = false;
+					$this->em->flush();
+				}
+			}
+		}
+
+		return $count;
 	}
 }

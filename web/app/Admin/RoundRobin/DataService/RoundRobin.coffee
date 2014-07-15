@@ -1,22 +1,24 @@
 define [
 	'Admin/Main/DataService/BaseListEdit',
+	'angular'
 ], (
 	Admin_Main_DataService_BaseListEdit,
+	angular
 )  ->
 	class Admin_RoundRobin_DataService_RoundRobin extends Admin_Main_DataService_BaseListEdit
 		@$inject = ['Api', '$q']
-		settings = null
+		settings = {}
 
 		url: -> '/round_robin'
 
-		getSettings: ->
+		getSettings: (reload) ->
 			def = @$q.defer()
 
-			if null != settings
+			if settings.enabled? and !reload?
 				def.resolve settings
 			else
 				@Api.sendGet(@url() + '/settings').then (data) =>
-					settings = data.data
+					angular.copy data.data, settings
 					def.resolve settings
 
 			def.promise
