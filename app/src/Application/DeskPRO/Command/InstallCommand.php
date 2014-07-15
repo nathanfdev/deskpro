@@ -49,9 +49,9 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     protected function configure()
     {
         $this->setName('dp:install');
-		$this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Inserts initial data with initial admin account");
-		$this->addOption('admin-email', null, InputOption::VALUE_REQUIRED, "(With insert-initial) The initial admin email");
-		$this->addOption('admin-password', null, InputOption::VALUE_REQUIRED, "(With insert-initial) The initial admin password");
+		$this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Unused (exists for legacy)");
+		$this->addOption('admin-email', null, InputOption::VALUE_REQUIRED, "The initial admin email");
+		$this->addOption('admin-password', null, InputOption::VALUE_REQUIRED, "The initial admin password");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -59,6 +59,11 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         if (!$this->ensureNotInstalled()) {
             exit;
         }
+
+		if (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
+			echo "Please specify --admin-email and --admin-password\n";
+			return 1;
+		}
 
         $this->createDatabase();
         $this->getLogger()->log('Install::createTables', 'debug');
@@ -112,104 +117,100 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $install_schema->run(false);
 
-
 		#------------------------------
 		# Install Data
 		#------------------------------
 
-		if ($input->getOption('insert-initial')) {
+		$initial_password = 'password';
+		$initial_email    = 'admin@example.com';
 
-			$initial_password = 'password';
-			$initial_email    = 'admin@example.com';
+		if ($input->getOption('admin-email')) {
+			$initial_email = $input->getOption('admin-email');
+		}
+		if ($input->getOption('admin-password')) {
+			$initial_password = $input->getOption('admin-password');
+		}
 
-			if ($input->getOption('admin-email')) {
-				$initial_email = $input->getOption('admin-email');
+		if ($initial_email == 'CONFIG') {
+			if (defined('DP_TECHNICAL_EMAIL')) {
+				$initial_email = DP_TECHNICAL_EMAIL;
+			} else {
+				$initial_email = 'admin@example.com';
 			}
-			if ($input->getOption('admin-password')) {
-				$initial_password = $input->getOption('admin-password');
-			}
+		}
 
-			if ($initial_email == 'CONFIG') {
-				if (defined('DP_TECHNICAL_EMAIL')) {
-					$initial_email = DP_TECHNICAL_EMAIL;
-				} else {
-					$initial_email = 'admin@example.com';
-				}
-			}
+		$agent = new \Application\DeskPRO\Entity\Person();
+		$agent->first_name = 'Admin';
+		$agent->last_name = 'Admin';
+		$agent->setEmail($initial_email, true);
+		$agent->setPassword($initial_password);
+		$agent->is_user = true;
+		$agent->is_confirmed = true;
+		$agent->is_agent_confirmed = true;
+		$agent->is_agent = true;
+		$agent->can_agent = true;
+		$agent->can_admin = true;
+		$agent->can_billing = true;
+		$agent->can_reports = true;
 
-			$agent = new \Application\DeskPRO\Entity\Person();
-			$agent->first_name = 'Admin';
-			$agent->last_name = 'Admin';
-			$agent->setEmail($initial_email, true);
-			$agent->setPassword($initial_password);
-			$agent->is_user = true;
-			$agent->is_confirmed = true;
-			$agent->is_agent_confirmed = true;
-			$agent->is_agent = true;
-			$agent->can_agent = true;
-			$agent->can_admin = true;
-			$agent->can_billing = true;
-			$agent->can_reports = true;
+		$this->getOrm()->persist($agent);
+		$this->getOrm()->flush();
 
+		$this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
+
+		// Install data stuff
+		$AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+		$USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
+		$AGENT = $agent; // can be used in data.php
+		$WEB_INSTALL = true;
+		$IMPORT_INSTALL = false;
+
+		$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
+		$em = $this->getOrm();
+		$translate = $this->getContainer()->get('deskpro.core.translate');
+
+		foreach ($install_data as $php) {
+			eval($php);
+		}
+
+		$data_proc = new DefaultDataProcessor($this->getContainer());
+		if ($logger) {
+			$orb_logger_adapter = new OrbLoggerAdapterHandler($logger);
+			$data_proc->setLogger(new Logger('data_proc', array($orb_logger_adapter)));
+		}
+		$data_proc->runInstall();
+
+		$this->getOrm()->flush();
+
+		\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+
+		// For the all agent group, fetch permissions from the template
+		if ($AGENTGROUP_ALL) {
+			$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
+			$ch->setCollection(array($AGENTGROUP_ALL));
 			$this->getOrm()->persist($agent);
 			$this->getOrm()->flush();
-
-			$this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
-
-			// Install data stuff
-			$AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
-			$USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-			$AGENT = $agent; // can be used in data.php
-			$WEB_INSTALL = true;
-			$IMPORT_INSTALL = false;
-
-			$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-			$em = $this->getOrm();
-			$translate = $this->getContainer()->get('deskpro.core.translate');
-
-			foreach ($install_data as $php) {
-				eval($php);
-			}
-
-			$data_proc = new DefaultDataProcessor($this->getContainer());
-			if ($logger) {
-				$orb_logger_adapter = new OrbLoggerAdapterHandler($logger);
-				$data_proc->setLogger(new Logger('data_proc', array($orb_logger_adapter)));
-			}
-			$data_proc->runInstall();
-
-			$this->getOrm()->flush();
-
-			\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
-
-			// For the all agent group, fetch permissions from the template
-			if ($AGENTGROUP_ALL) {
-				$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
-				$ch->setCollection(array($AGENTGROUP_ALL));
-				$this->getOrm()->persist($agent);
-				$this->getOrm()->flush();
-			}
-
-			if ($USERGROUP_EVERYONE) {
-				$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
-				foreach ($scanner->getNames() as $p_name) {
-					$p = new \Application\DeskPRO\Entity\Permission();
-					$p->usergroup = $USERGROUP_EVERYONE;
-					$p->name = $p_name;
-					$p->value = 1;
-					$this->getOrm()->persist($p);
-				}
-				$this->getOrm()->flush();
-			}
-
-			$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
-			$data_init->admin_user = $agent;
-			$data_init->run();
-			App::getDb()->replace('settings', array(
-				'name' => 'core.done_data_initializer',
-				'value' => 1,
-			));
 		}
+
+		if ($USERGROUP_EVERYONE) {
+			$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
+			foreach ($scanner->getNames() as $p_name) {
+				$p = new \Application\DeskPRO\Entity\Permission();
+				$p->usergroup = $USERGROUP_EVERYONE;
+				$p->name = $p_name;
+				$p->value = 1;
+				$this->getOrm()->persist($p);
+			}
+			$this->getOrm()->flush();
+		}
+
+		$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+		$data_init->admin_user = $agent;
+		$data_init->run();
+		App::getDb()->replace('settings', array(
+			'name' => 'core.done_data_initializer',
+			'value' => 1,
+		));
 
 		$app_syncer = new \Application\DeskPRO\App\Native\NativeAppsSync(
 			$this->getContainer(),
@@ -218,6 +219,14 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 			null
 		);
 		$app_syncer->runSync();
+
+		$this->getContainer()->resetSystemService('app_manager');
+		$instance_installer = new \Application\DeskPRO\App\InstanceInstaller(
+			$this->getContainer()->getAppManager(),
+			$this->getContainer()->getAppManager()->getPackage('deskpro_gravatar'),
+			$this->getContainer()->getEm()
+		);
+		$instance_installer->install('', array(), $this->getContainer());
 
 		App::getDb()->replace('install_data', array(
 			'build' => 'default',
