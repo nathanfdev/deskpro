@@ -29,6 +29,7 @@
         this.hasPermOverrides = false;
         this.$scope.$watch('EditCtrl.form.emails_list', (function(_this) {
           return function(emails_list) {
+            _this.email_sysaccount_error = false;
             if (!emails_list) {
               return;
             }
@@ -668,6 +669,7 @@
           return;
         }
         this.email_dupe_error = false;
+        this.email_sysaccount_error = false;
         this.startSpinner('saving');
         postData = this.getFormData();
         if (this.agentId) {
@@ -694,9 +696,12 @@
           };
         })(this), (function(_this) {
           return function(res) {
-            var _ref;
+            var _ref, _ref1;
             if ((res != null ? (_ref = res.data) != null ? _ref.error_code : void 0 : void 0) === 'dupe_email') {
               _this.email_dupe_error = res.data.error_info.existing;
+            }
+            if ((res != null ? (_ref1 = res.data) != null ? _ref1.error_code : void 0 : void 0) === 'system_email_addresses') {
+              _this.email_sysaccount_error = res.data.error_info.emails.join(', ');
             }
             _this.stopSpinner('saving', true);
             return _this.applyErrorResponseToView(res);

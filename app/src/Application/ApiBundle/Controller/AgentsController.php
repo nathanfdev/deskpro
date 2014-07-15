@@ -196,6 +196,19 @@ class AgentsController extends AbstractController implements ProtectedController
 		$set_emails = array_unique($set_emails);
 		$set_emails = Arrays::removeFalsey($set_emails);
 
+		$email_account_manager = $this->container->getEmailAccountManager();
+		$system_addresses = array_filter($set_emails, function($e) use ($email_account_manager) {
+			return $email_account_manager->findAccountForEmailAddress($e);
+		});
+
+		if ($system_addresses) {
+			return $this->createApiErrorInfoResponse(
+				'system_email_addresses',
+				'One or more email addresses you entered are already being used as email accounts.',
+				array('emails' => array_values($system_addresses))
+			);
+		}
+
 		$email_validator = $this->container->getSystemService('email_address_validator');
 		$set_emails = array_filter($set_emails, function($e) use ($email_validator) {
 			return $email_validator->isValidUserEmail($e);

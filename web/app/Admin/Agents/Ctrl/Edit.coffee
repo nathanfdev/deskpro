@@ -20,6 +20,7 @@ define [
 			@hasPermOverrides = false
 
 			@$scope.$watch('EditCtrl.form.emails_list', (emails_list) =>
+				@email_sysaccount_error = false
 				if not emails_list then return
 				if not @form.email_primary or @form.email_primary == '' or emails_list.indexOf(@form.email_primary) == -1
 					if emails_list.length
@@ -464,6 +465,7 @@ define [
 				return
 
 			@email_dupe_error = false
+			@email_sysaccount_error = false
 			@startSpinner('saving')
 
 			postData = @getFormData()
@@ -486,6 +488,8 @@ define [
 			, (res) =>
 				if res?.data?.error_code == 'dupe_email'
 					@email_dupe_error = res.data.error_info.existing
+				if res?.data?.error_code == 'system_email_addresses'
+					@email_sysaccount_error = res.data.error_info.emails.join(', ')
 
 				@stopSpinner('saving', true)
 				@applyErrorResponseToView(res)

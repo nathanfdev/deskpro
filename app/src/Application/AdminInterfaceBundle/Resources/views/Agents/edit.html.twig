@@ -45,11 +45,12 @@
 			</article>
 			<footer>
 				<div class="dp-content">
-					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+					<div class="text-danger ng-hide" ng-show="(form_props.$attempted && form_props.$invalid) || EditCtrl.email_sysaccount_error">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
 							<li ng-show="form_props.name.$error.required || form_props.name.$error.not_blank">Please enter a name</li>
 							<li ng-show="form_props.email.$error.required || form_props.email.$error.emails_count || form_props.email.$error.email">Please enter a valid email address</li>
+							<li ng-show="EditCtrl.email_sysaccount_error">The email address you entered ({{ ng_var('EditCtrl.email_sysaccount_error') }}) belongs to a ticket account. You cannot re-use the same email address for agents and ticket accounts.</li>
 						</ul>
 					</div>
 
