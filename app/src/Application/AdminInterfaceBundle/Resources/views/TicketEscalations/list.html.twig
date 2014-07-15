@@ -14,12 +14,8 @@
 				<li ng-repeat="esc in ListCtrl.list"
 					dp-state-mark="tickets.ticket_escalations.edit.{{ ng_var('esc.id') }}" data-id="{{ ng_var('esc.id') }}">
 					<a href="{{ ng_href('tickets.ticket_escalations.edit', '{id: esc.id}') }}">
-						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode"
-								  style="margin-top: -3px;"
-								  ng-click="ListCtrl.startDelete(esc); $event.preventDefault();">
-								<i class="fa fa-trash-o"></i>
-							</span>
+						<div class="pull-right toggle-wrapper">
+							<button dp-toggle-switch ng-model="esc.is_enabled" ng-change="ListCtrl.updateEscEnabledState(esc);"></button>
 						</div>
 						<h4>
 							<span class="title-id" title="ID">#{{ ng_var('esc.id') }}</span>

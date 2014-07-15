@@ -104,6 +104,15 @@
         })(this));
       };
 
+
+      /*
+      		 * Update the enabled state of a esc
+       */
+
+      Admin_TicketEscalations_Ctrl_List.prototype.updateEscEnabledState = function(esc) {
+        return this.escData.saveEnabledStateById(esc.id, esc.is_enabled);
+      };
+
       return Admin_TicketEscalations_Ctrl_List;
 
     })(Admin_Ctrl_Base);

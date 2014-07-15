@@ -77,4 +77,10 @@ define [
 				)
 			)
 
+		###
+		# Update the enabled state of a esc
+		###
+		updateEscEnabledState: (esc) ->
+			return @escData.saveEnabledStateById(esc.id, esc.is_enabled)
+
 	Admin_TicketEscalations_Ctrl_List.EXPORT_CTRL()

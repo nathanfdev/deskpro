@@ -22,6 +22,20 @@ define [
 
 
 		###
+    	# Save the enabled state of a esc
+    	#
+    	# @param {Integer} escId
+    	# @param {bool} isEnabled
+    	# @return {promise}
+		###
+		saveEnabledStateById: (escId, isEnabled) ->
+			if isEnabled
+				return @Api.sendPost("/ticket_escalations/#{escId}/enable")
+			else
+				return @Api.sendPost("/ticket_escalations/#{escId}/disable")
+
+
+		###
     	# Save order of escalations
     	#
     	# @param {Array} orders Array of IDs, in order
