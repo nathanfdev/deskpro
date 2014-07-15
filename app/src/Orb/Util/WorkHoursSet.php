@@ -55,8 +55,10 @@ class WorkHoursSet implements WorkHoursInterface
 	protected $work_end;
 
 	/**
-	 * Array of work days, stored with keys corresponding to day numbers. Values are true.
+	 * Array of work days, stored with keys corresponding to day numbers.
 	 * 0 = Sunday, 6 = Saturday (same as PHP, easy to convert to MySQL which is 1 = Sunday, 7 = Saturday)
+	 *
+	 * A true value means the day is on. E.g., m-f is: array(false, true, true, true, true, true, false)
 	 *
 	 * @var array
 	 */
@@ -86,6 +88,15 @@ class WorkHoursSet implements WorkHoursInterface
 	 */
 	public function __construct($work_start, $work_end, array $work_days, $work_timezone, array $work_holidays = array())
 	{
+		try {
+			$tz = new \DateTimeZone($work_timezone);
+			if (!$tz) {
+				$work_timezone = 'UTC';
+			}
+		} catch (\Exception $e) {
+			$work_timezone = 'UTC';
+		}
+
 		$this->work_start = $work_start;
 		$this->work_end = $work_end;
 		$this->work_days = $work_days;
