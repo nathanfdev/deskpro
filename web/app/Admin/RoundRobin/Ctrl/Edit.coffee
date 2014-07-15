@@ -21,6 +21,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@teams = []
 			@deps = []
 
+			@sortedListOptions = {
+				axis: 'y',
+				items: 'li.sortable'
+				handle: '.drag-handle'
+			}
+
 
 
 		initialLoad: ->
@@ -124,13 +130,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		save: ->
 			if @$scope.Form.$invalid then return
-#
-#			@robin.agents.sort (a, b) =>
-#				indexA = @agents.indexOf a
-#				indexB = @agents.indexOf b
-#				return 0 if indexA == indexB
-#				if indexA < indexB then return 1 else return -1
-
 
 			@startSpinner 'saving'
 			@service.set(@robin).then(
