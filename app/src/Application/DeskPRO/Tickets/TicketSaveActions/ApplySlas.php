@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
@@ -51,15 +52,22 @@ class ApplySlas implements TicketSaveActionInterface
 	 */
 	private $em;
 
+	/**
+	 * @var $cm_sender
+	 */
+	private $cm_sender;
+
 
 	/**
-	 * @param \Application\DeskPRO\Entity\Sla[] $slas
+	 * @param array $slas
 	 * @param EntityManager $em
+	 * @param SlaClientMessageSender $cm_sender
 	 */
-	public function __construct(array $slas, EntityManager $em)
+	public function __construct(array $slas, EntityManager $em, SlaClientMessageSender $cm_sender)
 	{
-		$this->slas = Arrays::keyFromData($slas, 'id');
-		$this->em = $em;
+		$this->slas      = Arrays::keyFromData($slas, 'id');
+		$this->em        = $em;
+		$this->cm_sender = $cm_sender;
 	}
 
 
@@ -93,9 +101,12 @@ class ApplySlas implements TicketSaveActionInterface
 				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- added", $sla->id, $sla->title));
 				$ticket_sla = $ticket->addSla($sla);
 				$this->em->persist($ticket_sla);
+				$this->cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
 			} else {
 				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- no match", $sla->id, $sla->title));
 			}
 		}
+
+		$this->cm_sender->sendQueue();
 	}
 }

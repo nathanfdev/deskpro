@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\TicketProcLog;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
+use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\TicketSaveActions;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\StreamHandler;
@@ -106,7 +107,7 @@ class TicketManager
 		$this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
 		$this->post_save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
 		$this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
-		$this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm());
+		$this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
 		$this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
 		$this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
 		$this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getEm(), $container->getTicketFilterChangeDetector());

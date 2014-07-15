@@ -57,6 +57,24 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 	},
 
+	updateSlaListForTicket: function(info) {
+		if (!info.ticket_id || !info.sla_id || !this.meta.sla_id || info.sla_id != this.meta.sla_id) {
+			return;
+		}
+
+		var self = this;
+
+		if (this.isRefreshing) {
+			return;
+		}
+		this.isRefreshing = true;
+
+		setTimeout(function() {
+			self.isRefreshing = false;
+			DeskPRO_Window.loadListPane(self.meta.refreshUrl);
+		}, 0);
+	},
+
 	initScope: function() {
 		var $scope = this.$scope,
 			$timeout = this.$timeout,
