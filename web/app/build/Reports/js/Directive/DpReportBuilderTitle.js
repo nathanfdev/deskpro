@@ -133,14 +133,16 @@
             				 * Going to correponding route after changing selected options inside select box
              */
             return scope.changeLinkParams = function() {
-              var href, linkParams;
-              linkParams = scope.selected.join(',');
-              href = $state.href('builder.edit', {
-                id: scope.reportId,
-                params: linkParams,
-                type: scope.type
-              });
-              return window.location.hash = href;
+              return window.setTimeout(function() {
+                var href, linkParams;
+                linkParams = scope.selected.join(',');
+                href = $state.href('builder.edit', {
+                  id: scope.reportId,
+                  params: linkParams,
+                  type: scope.type
+                });
+                return window.location.hash = href;
+              }, 100);
             };
           }
         };

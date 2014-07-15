@@ -137,9 +137,12 @@ define ->
 				# Going to correponding route after changing selected options inside select box
 				###
 				scope.changeLinkParams = () ->
-					linkParams = scope.selected.join(',')
-					href = $state.href('builder.edit', {id: scope.reportId, params: linkParams, type: scope.type})
-					window.location.hash = href
+					# this timeout prevents select2 errors (I dont know why)
+					window.setTimeout(->
+						linkParams = scope.selected.join(',')
+						href = $state.href('builder.edit', {id: scope.reportId, params: linkParams, type: scope.type})
+						window.location.hash = href
+					, 100)
 		}
 	]
 
