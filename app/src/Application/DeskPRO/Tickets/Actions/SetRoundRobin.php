@@ -34,8 +34,12 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Log\Entry\RoundRobinEntry;
+use Application\DeskPRO\Log\Handler\RoundRobinHandler;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -46,6 +50,19 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
+	protected $logHandler;
+
+	/**
+	 * @param DeskproContainer $container
+	 */
+	public function setContainer(DeskproContainer $container)
+	{
+		parent::setContainer($container);
+		/** @var Connection $conn */
+		$conn = $container->get('doctrine.dbal.default_connection');
+		$this->logHandler = new RoundRobinHandler($conn);
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -79,8 +96,9 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		try {
+		$context->getLogger()->pushHandler($this->logHandler);
 
+		try {
 			$id = $this->getActionOption('id');
 
 			if (!$rr = $this->getRoundRobin($id)) {
@@ -92,14 +110,18 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
 			}
 
 			$this->getRep()->updateNextAgent($rr);
+			$ticket->agent = $agent;
+
+			$entry = new RoundRobinEntry($rr['id'], $agent['id'], $ticket['id'], 0);
+			$context->getLogger()->info($entry, $entry->context());
 
 		} catch (\RuntimeException $e) {
-			return;
+			// todo log error
 		} catch (\InvalidArgumentException $e) {
-			return;
+			// todo log error
 		}
 
-		$ticket->agent = $agent;
+		$context->getLogger()->popHandler();
 	}
 
 
