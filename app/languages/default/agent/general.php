@@ -603,6 +603,7 @@
 	'agent.general.spam'                                    => 'Spam',
 	'agent.general.start'                                   => 'Start',
 	'agent.general.status'                                  => 'Status',
+	'agent.general.hidden_status'                           => 'Hidden Status',
 	'agent.general.status_is'                               => 'Status is {{status}}',
 	'agent.general.statuses'                                => 'Statuses',
 	'agent.general.stop_processing_other_triggers'          => 'Stop processing other triggers',
