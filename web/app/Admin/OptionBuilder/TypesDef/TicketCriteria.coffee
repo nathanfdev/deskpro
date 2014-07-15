@@ -209,17 +209,17 @@ define [
 			options = []
 
 			options.push({
-				title: 'Name',
+				title: 'User Name',
 				value: 'CheckUserName'
 			})
 
 			options.push({
-				title: 'Email Address',
+				title: 'User Email Address',
 				value: 'CheckUserEmail'
 			})
 
 			options.push({
-				title: 'Label',
+				title: 'User Label',
 				value: 'CheckUserLabels'
 			})
 
@@ -229,12 +229,12 @@ define [
 			})
 
 			options.push({
-				title: 'Language',
+				title: 'User Language',
 				value: 'CheckUserLanguage'
 			})
 
 			options.push({
-				title: 'Is manager of organization',
+				title: 'User is manager of organization',
 				value: 'CheckUserOrgManager'
 			})
 
@@ -254,7 +254,7 @@ define [
 			})
 
 			options.push({
-				title: 'Is disabled',
+				title: 'User is disabled',
 				value: 'CheckUserIsDisabled'
 			})
 
@@ -289,22 +289,22 @@ define [
 			options = []
 
 			options.push({
-				title: 'Name',
+				title: 'Organization Name',
 				value: 'CheckOrgName'
 			})
 
 			options.push({
-				title: 'Label',
+				title: 'Organization Label',
 				value: 'CheckOrgLabel'
 			})
 
 			options.push({
-				title: 'Email Domain',
+				title: 'Organization Email Domain',
 				value: 'CheckOrgEmailDomain'
 			})
 
 			options.push({
-				title: 'Linked Usergroup',
+				title: 'Organization Usergroup',
 				value: 'CheckOrgUsergroups'
 			})
 

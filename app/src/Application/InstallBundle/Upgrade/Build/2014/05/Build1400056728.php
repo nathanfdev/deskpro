@@ -95,7 +95,7 @@ class Build1400056728 extends AbstractBuild
 
 			$this->out("Upgrading layout for dep $dep_id ...");
 
-			$up = new LayoutUpgrader($form_new, $form_view, $form_edit);
+			$up = new LayoutUpgrader($form_new, $form_view, $form_edit, $this->container->getTicketFieldManager());
 			$layout = $up->getTicketLayout();
 
 			if ($dep_id) {

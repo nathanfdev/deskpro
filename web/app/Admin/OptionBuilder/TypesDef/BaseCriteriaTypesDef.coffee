@@ -237,6 +237,13 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						getViewValue: (value = {}, data) ->
 							val = value.options?[prop_name] || ''
 							if Util.isArray(val) then val = val.join(',')
+
+							if value.op
+								if value.op == 'is' and operators.indexOf('is') == -1
+									value.op = 'contains'
+								else if value.op == 'not' and operators.indexOf('not') == -1
+									value.op = 'notcontains'
+
 							return {
 								value: val,
 								op: value.op || _.first(data.operators)

@@ -337,6 +337,13 @@
                 if (Util.isArray(val)) {
                   val = val.join(',');
                 }
+                if (value.op) {
+                  if (value.op === 'is' && operators.indexOf('is') === -1) {
+                    value.op = 'contains';
+                  } else if (value.op === 'not' && operators.indexOf('not') === -1) {
+                    value.op = 'notcontains';
+                  }
+                }
                 return {
                   value: val,
                   op: value.op || _.first(data.operators)

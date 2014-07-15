@@ -34,6 +34,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
+use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
 use Application\DeskPRO\TicketLayout;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -55,17 +56,45 @@ class LayoutUpgrader
 	 */
 	private $form_edit;
 
+	/**
+	 * @var \Application\DeskPRO\CustomFields\TicketFieldManager
+	 */
+	private $ticket_fm;
+
 
 	/**
 	 * @param array $form_new
 	 * @param array $form_view
 	 * @param array $form_edit
+	 * @param TicketFieldManager $ticket_fm
 	 */
-	public function __construct(array $form_new, array $form_view, array $form_edit)
+	public function __construct(array $form_new, array $form_view, array $form_edit, TicketFieldManager $ticket_fm)
 	{
 		$this->form_new  = $form_new;
 		$this->form_view = $form_view;
 		$this->form_edit = $form_edit;
+		$this->ticket_fm = $ticket_fm;
+	}
+
+
+	/**
+	 * @param array $old_field
+	 * @return bool
+	 */
+	private function isAgentOnlyField(array $old_field)
+	{
+		if (isset($old_field['agent_only']) && $old_field['agent_only']) {
+			return true;
+		}
+
+		if ($old_field['field_type'] == 'ticket_field' && !empty($old_field['field_id'])) {
+			$f = $this->ticket_fm->getFieldFromId($old_field['field_id']);
+			if ($f && $f->is_agent_field) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
@@ -97,7 +126,7 @@ class LayoutUpgrader
 		$has_edit = $this->form_edit ? true : false;
 
 		foreach ($this->form_new as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
+			if ($this->isAgentOnlyField($old_field)) {
 				continue;
 			}
 
@@ -110,7 +139,7 @@ class LayoutUpgrader
 			$layout->add($field);
 		}
 		foreach ($this->form_view as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
+			if ($this->isAgentOnlyField($old_field)) {
 				continue;
 			}
 
@@ -126,7 +155,7 @@ class LayoutUpgrader
 			$field->enableOnView();
 		}
 		foreach ($this->form_edit as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
+			if ($this->isAgentOnlyField($old_field)) {
 				continue;
 			}
 
