@@ -99,12 +99,11 @@
                     </div>
                 </div>
             </footer>
+            {{ ng_var('EditCtrl.active_triggers') }}
         </section>
     </form>
 
     <div dp-register-message="saved">Label {{ng_var('EditCtrl.robin.title')}} was saved successfully</div>
     <div dp-register-message="modal_title">Delete {{ng_var('EditCtrl.robin.title')}}</div>
-    <div dp-register-message="modal_message">
-        Are you sure you want to delete {{ng_var('EditCtrl.robin.title')}}? This operation could not be undone.
-    </div>
+    <div dp-register-message="modal_message" ng-pluralize count="EditCtrl.active_triggers || 0" when="{{ ng_plural_phrase('adm.round_robins.delete_warn') }}"></div>
 {% endblock %}

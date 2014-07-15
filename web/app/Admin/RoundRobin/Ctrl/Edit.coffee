@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_RoundRobin_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_RoundRobin_Ctrl_Edit'
 		@CTRL_AS = 'EditCtrl'
-		@DEPS = ['$stateParams', 'Growl']
+		@DEPS = ['$stateParams', 'Growl', '$timeout']
 
 
 
@@ -146,29 +146,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 
 		delete: ->
-			title = @getRegisteredMessage 'modal_title'
-			msg = @getRegisteredMessage 'modal_message'
-			state = @$state
 
-			_del = (modal) =>
-				@service.remove(@robin).then ->
-					modal.dismiss()
-					state.go 'tickets.roundrobin'
+			@service.checkTriggers(@robin.id).then (data) =>
+				@active_triggers = data.active_triggers
 
-			@$modal.open({
-				templateUrl: @getTemplatePath('Index/modal-confirm.html'),
-				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+				@$timeout(
+					=>
+						title = @getRegisteredMessage 'modal_title'
+						msg = @getRegisteredMessage 'modal_message'
+						state = @$state
 
-					$scope.title = title
-					$scope.message = msg
+						_del = (modal) =>
+							@service.remove(@robin).then ->
+								modal.dismiss()
+								state.go 'tickets.roundrobin'
 
-					$scope.dismiss = ->
-						$modalInstance.dismiss()
+						@$modal.open({
+							templateUrl: @getTemplatePath('Index/modal-confirm.html'),
+							controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
 
-					$scope.confirm = ->
-						_del $modalInstance
-				]
-			})
+								$scope.title = title
+								$scope.message = msg
+
+								$scope.dismiss = ->
+									$modalInstance.dismiss()
+
+								$scope.confirm = ->
+									_del $modalInstance
+							]
+						})
+					1
+				)
+
 
 
 	Admin_RoundRobin_Ctrl_Edit.EXPORT_CTRL()

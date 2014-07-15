@@ -122,6 +122,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 			throw $this->createNotFoundException();
 		}
 
+		$this->countRoundRobinTriggers(true, $rr['id']);
 		$this->em->remove($rr);
 		$this->em->flush();
 
@@ -145,14 +146,27 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
 		return $this->createApiResponse(array(
 			'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false),
-			'active_triggers' => $this->countRoundRobinTriggers(),
 		));
 	}
 
-	protected function isTriggerActionClear($action)
+	/**
+	 * check triggers using round robin id, or all round robins if id is null
+	 * @param $id
+	 * @return Response
+	 */
+	public function checkTriggersAction($id)
+	{
+		return $this->createApiResponse(array('active_triggers' => $this->countRoundRobinTriggers(false, $id)));
+	}
+
+	protected function isTriggerActionClear($action, $roundRobinId = null)
 	{
 		if ($action instanceof SetRoundRobin) {
-			return false;
+
+			if (!$roundRobinId || $action->getActionOption('id') == $roundRobinId) {
+				return false;
+			}
+
 		} elseif ($action instanceof ActionComposite) {
 			foreach ($action as $subAction) {
 				if (!$this->isTriggerActionClear($subAction)) {
@@ -164,7 +178,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 		return true;
 	}
 
-	protected function countRoundRobinTriggers($disable = false)
+	protected function countRoundRobinTriggers($disable = false, $roundRobinId = null)
 	{
 		$count = 0;
 		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers();
@@ -175,7 +189,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 			if (!$actions) continue;
 
 			foreach ($actions as $action) {
-				if ($this->isTriggerActionClear($action)) {
+				if ($this->isTriggerActionClear($action, $roundRobinId)) {
 					$newActions->addAction($action);
 				}
 			}

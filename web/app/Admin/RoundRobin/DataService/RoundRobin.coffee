@@ -26,3 +26,15 @@ define [
 
 		saveSettings: ->
 			@Api.sendPutJson(@url() + '/settings', settings)
+
+
+
+		checkTriggers: (id) ->
+			url = @url() + '/triggers'
+			url += "/#{id}" if id?
+			def = @$q.defer()
+
+			@Api.sendGet(url).then (data) =>
+				def.resolve data.data
+
+			def.promise
