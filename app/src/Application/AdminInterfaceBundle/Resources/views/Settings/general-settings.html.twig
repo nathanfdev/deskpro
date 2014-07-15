@@ -230,20 +230,22 @@
 						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_user_not_exts" style="width: 350px;" placeholder="Example: exe, msi" />
 					</div>
 				</div>
-				<div class="inner-group">
-					<label>
-						<h4>
-							Max file size a user can upload.
-						</h4>
-						<span class="help-block">
-							<span class="label label-danger ng-hide" ng-show="settings.attach_user_maxsize > maxUploadSize">Warning</span>
-							The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
-						</span>
-					</label>
-					<div>
-						<dp-filesize-with-unit ng-model="settings.attach_user_maxsize"></dp-filesize-with-unit>
+				{% if not app.isCloud() %}
+					<div class="inner-group">
+						<label>
+							<h4>
+								Max file size a user can upload.
+							</h4>
+							<span class="help-block">
+								<span class="label label-danger ng-hide" ng-show="settings.attach_user_maxsize > maxUploadSize">Warning</span>
+								The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+							</span>
+						</label>
+						<div>
+							<dp-filesize-with-unit ng-model="settings.attach_user_maxsize"></dp-filesize-with-unit>
+						</div>
 					</div>
-				</div>
+				{% endif %}
 			</div>
 		</div>
 		<div style="width: 460px; float:left;">
@@ -280,20 +282,22 @@
 						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_agent_not_exts" style="width: 350px;" placeholder="Example: exe, msi" />
 					</div>
 				</div>
-				<div class="inner-group">
-					<label>
-						<h4>
-							Max file size an agent can upload.
-						</h4>
-						<span class="help-block">
-							<span class="label label-danger ng-hide" ng-show="settings.attach_agent_maxsize > maxUploadSize">Warning</span>
-							The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
-						</span>
-					</label>
-					<div>
-						<dp-filesize-with-unit ng-model="settings.attach_agent_maxsize"></dp-filesize-with-unit>
+				{% if not app.isCloud() %}
+					<div class="inner-group">
+						<label>
+							<h4>
+								Max file size an agent can upload.
+							</h4>
+							<span class="help-block">
+								<span class="label label-danger ng-hide" ng-show="settings.attach_agent_maxsize > maxUploadSize">Warning</span>
+								The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+							</span>
+						</label>
+						<div>
+							<dp-filesize-with-unit ng-model="settings.attach_agent_maxsize"></dp-filesize-with-unit>
+						</div>
 					</div>
-				</div>
+				{% endif %}
 			</div>
 		</div>
 		<br class="dp-clear"/>
