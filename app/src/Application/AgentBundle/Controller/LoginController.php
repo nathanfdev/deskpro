@@ -48,8 +48,14 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 	 */
 	public function indexAction()
 	{
+		$return = $this->in->getStringFromGet('return');
+		if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
+			$return = '';
+		}
+
 		if ($this->loginViaToken()) {
-			return $this->redirectRoute($this->route_prefix);
+			if ($return) return $this->redirect($return);
+			else return $this->redirectRoute('agent');
 		}
 
 		// Already logged in
@@ -98,11 +104,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			}
 		}
 
-		$url = $this->in->getString('return');
-		if (!$url) {
-			$url = $this->generateUrl('agent', array(), true);
-		}
-
 		$has_logged_out = $this->in->checkIsset('o');
 
 		$failed_login_name = false;
@@ -120,7 +121,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		$browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
 
 		return $this->render('AgentBundle:Login:index.html.twig', array(
-			'return'             => $url,
+			'return'             => $return,
 			'route_prefix'       => $this->route_prefix,
 			'logo_blob'          => $logo_blob,
 			'has_logged_out'     => $has_logged_out,
