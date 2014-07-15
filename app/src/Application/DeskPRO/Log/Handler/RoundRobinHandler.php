@@ -29,71 +29,15 @@ namespace Application\DeskPRO\Log\Handler;
 
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Log\Entry\RoundRobinEntry;
-use Monolog\Logger;
+use Application\DeskPRO\Entity\LogRoundRobin;
 
 class RoundRobinHandler extends DBHandler
 {
-	public function __construct(Connection $connection, $level = Logger::DEBUG, $bubble = true)
-	{
-		// todo maybe we should prevent log bubbling for this instance
-		parent::__construct($connection, $level, $bubble);
-	}
-
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
 	 */
 	public function isHandling(array $record)
 	{
-		return isset($record['context']['entry']) && $record['context']['entry'] instanceof RoundRobinEntry;
-	}
-
-	protected function getTableName()
-	{
-		return 'log__round_robin';
-	}
-
-	/**
-	 * @param array $record
-	 * @return array
-	 */
-	protected function mapRecord($record = array())
-	{
-		$map = array(
-			'timestamp' => null,
-			'round_robin_id' => null,
-			'agent_id' => null,
-			'ticket_id' => null,
-			'trigger_id' => null,
-		);
-
-		if ($record){
-			/** @var RoundRobinEntry $entry */
-			$entry = $record['context']['entry'];
-
-			$map['timestamp'] = $record['datetime']->getTimestamp();
-			$map['round_robin_id'] = $entry->round_robin_id;
-			$map['agent_id'] = $entry->agent_id;
-			$map['ticket_id'] = $entry->ticket_id;
-			$map['trigger_id'] = $entry->trigger_id;
-		}
-
-		return $map;
-	}
-
-	protected function initializeSchema()
-	{
-		// todo schema creation should be in upgrade script
-		$this->connection->exec(sprintf('
-			CREATE TABLE IF NOT EXISTS `%s` (
-			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-			  `timestamp` int(11) unsigned NOT NULL,
-			  `round_robin_id` int(11) unsigned NOT NULL,
-			  `agent_id` int(11) unsigned NOT NULL,
-			  `ticket_id` int(11) unsigned NOT NULL,
-			  `trigger_id` int(11) unsigned NOT NULL,
-			  PRIMARY KEY (`id`)
-			) ENGINE=InnoDB
-		', $this->getTableName()));
+		return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogRoundRobin;
 	}
 } 

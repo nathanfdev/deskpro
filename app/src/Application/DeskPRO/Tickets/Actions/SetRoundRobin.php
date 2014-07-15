@@ -36,9 +36,9 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\LogRoundRobin;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Log\Entry\RoundRobinEntry;
 use Application\DeskPRO\Log\Handler\RoundRobinHandler;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
@@ -58,9 +58,7 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
 	public function setContainer(DeskproContainer $container)
 	{
 		parent::setContainer($container);
-		/** @var Connection $conn */
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$this->logHandler = new RoundRobinHandler($conn);
+		$this->logHandler = new RoundRobinHandler($container->getEm());
 	}
 
 	/**
@@ -112,8 +110,9 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
 			$this->getRep()->updateNextAgent($rr);
 			$ticket->agent = $agent;
 
-			$entry = new RoundRobinEntry($rr['id'], $agent['id'], $ticket['id'], 0);
-			$context->getLogger()->info($entry, $entry->context());
+			// todo inject trigger id
+			$entry = new LogRoundRobin($rr['id'], $agent['id'], $ticket['id'], 0);
+			$context->getLogger()->info($entry);
 
 		} catch (\RuntimeException $e) {
 			// todo log error

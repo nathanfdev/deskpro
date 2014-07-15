@@ -35,19 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
-use Application\DeskPRO\Banning\EmailBanEdit;
-use Application\DeskPRO\Banning\EmailBans;
-use Application\DeskPRO\Banning\Form\Type\EmailBanType;
-use Application\DeskPRO\Banning\Form\Type\IpBanType;
-use Application\DeskPRO\Banning\IpBanEdit;
 use Application\DeskPRO\Entity\RoundRobin;
-use Application\DeskPRO\Entity\RoundRobinAgent;
-use Application\DeskPRO\EntityRepository\BanEmail;
-use Application\DeskPRO\Exception\ValidationException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {

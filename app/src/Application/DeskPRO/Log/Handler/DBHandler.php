@@ -30,49 +30,72 @@ namespace Application\DeskPRO\Log\Handler;
 
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
 
 abstract class DBHandler extends AbstractProcessingHandler
 {
-	private $initialized = false;
-	protected $connection;
-	protected $statement;
+	/** @var \Doctrine\ORM\EntityManager  */
+	protected $em;
+	protected $statements = array();
+	protected $meta = array();
 
-	public function __construct(Connection $connection, $level = Logger::DEBUG, $bubble = true)
+	public function __construct(EntityManager $em, $level = Logger::DEBUG, $bubble = true)
 	{
-		$this->connection = $connection;
+		$this->em = $em;
 		parent::__construct($level, $bubble);
 	}
 
 	/**
-	 * table name
-	 * @return string
+	 * @inheritdoc
 	 */
-	abstract protected function getTableName();
+	public function isHandling(array $record)
+	{
+		return isset($record['context']['_entity']);
+	}
 
 	/**
-	 * todo move to upgrade
-	 * @return mixed
+	 * create/return prepared insert statement
+	 * @param DomainObject $entity
+	 * @return \Doctrine\DBAL\Driver\Statement|\Doctrine\DBAL\Statement
 	 */
-	abstract protected function initializeSchema();
+	protected function getStatement(DomainObject $entity)
+	{
+		$class = get_class($entity);
+		if (isset($this->statements[$class])) {
+			return $this->statements[$class];
+		}
+
+		$meta = $this->getMeta($entity);
+
+		return $this->statements[$class] = $this->em->getConnection()->prepare(sprintf('
+				INSERT INTO %s (%s) VALUES (%s)
+			',
+			$meta['table'],
+			implode(', ', array_keys($meta['fields'])),
+			':' . implode(', :', array_values($meta['fields']))
+		));
+	}
 
 	/**
-	 * return fields map
-	 * @param $record
+	 * table/fields metadata
+	 * @param DomainObject $entity
 	 * @return array
 	 */
-	abstract protected function mapRecord($record = array());
-
-	protected function prepareStatement()
+	protected function getMeta(DomainObject $entity)
 	{
-		$keys = array_keys($this->mapRecord());
-		$this->statement = $this->connection->prepare(sprintf(
-			'INSERT INTO %s (%s) VALUES (%s)',
-			$this->getTableName(),
-			implode(', ', $keys),
-			':' . implode(', :', $keys)
-		));
+		$class = get_class($entity);
+		if (isset($this->meta[$class])) {
+			return $this->meta[$class];
+		}
+
+		$data = $this->em->getUnitOfWork()->getEntityPersister($class)->getClassMetadata();
+		return $this->meta[$class] = array(
+			'table' => $data->table['name'],
+			'fields' => $data->fieldNames,
+		);
 	}
 
 	/**
@@ -80,18 +103,13 @@ abstract class DBHandler extends AbstractProcessingHandler
 	 */
 	protected function write(array $record)
 	{
-		if (!$this->initialized) {
-			$this->initialize();
+		$entity = $record['context']['_entity'];
+		$meta = $this->getMeta($entity);
+		$stmt = $this->getStatement($entity);
+		$data = array();
+		foreach ($meta['fields'] as $fieldName) {
+			$data[$fieldName] = $entity[$fieldName];
 		}
-
-		$map = $this->mapRecord($record);
-		$this->statement->execute($map);
-	}
-
-	private function initialize()
-	{
-		$this->initializeSchema();
-		$this->prepareStatement();
-		$this->initialized = true;
+		$stmt->execute($data);
 	}
 }

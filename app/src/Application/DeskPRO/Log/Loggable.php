@@ -25,32 +25,18 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\DeskPRO\Log\Entry;
+namespace Application\DeskPRO\Log;
 
-class RoundRobinEntry
+
+interface Loggable
 {
-	public $round_robin_id;
-	public $agent_id;
-	public $ticket_id;
-	public $trigger_id;
+	/**
+	 * @return string log message
+	 */
+	public function __toString();
 
-
-	public function __construct($roundRobinId, $agentId, $ticketId, $triggerId)
-	{
-		$this->round_robin_id = $roundRobinId;
-		$this->agent_id = $agentId;
-		$this->ticket_id = $ticketId;
-		$this->trigger_id = $triggerId;
-	}
-
-	public function __toString()
-	{
-		// todo
-		return sprintf('Round Robin entry');
-	}
-
-	public function context()
-	{
-		return array('entry' => $this);
-	}
+	/**
+	 * @return array log record context
+	 */
+	public function context();
 } 

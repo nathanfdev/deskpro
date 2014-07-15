@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Monolog;
 
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Log\Loggable;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger as BaseLogger;
 
@@ -138,5 +140,25 @@ class Logger extends BaseLogger
 		}
 
 		return $this->test_handler->getRecords();
+	}
+
+	/**
+	 * @inheritdoc
+	 * @param int $level
+	 * @param string $message
+	 * @param array $context
+	 * @return bool|void
+	 */
+	public function addRecord($level, $message, array $context = array())
+	{
+		if ($message instanceof Loggable) {
+			$context = array_merge($context, $message->context());
+		}
+
+		if ($message instanceof DomainObject) {
+			$context['_entity'] = $message;
+		}
+
+		return parent::addRecord($level, $message, $context);
 	}
 }
