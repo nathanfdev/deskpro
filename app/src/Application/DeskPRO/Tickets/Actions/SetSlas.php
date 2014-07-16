@@ -97,12 +97,17 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 		#--------------------
 
 		if ($remove_sla_ids = $this->getActionOption('remove_sla_ids')) {
+
+			$removed_ids = $context->getVars()->get('removed_slas', array());
+
 			foreach ($remove_sla_ids as $sla_id) {
 				$sla = $ticket_slas->getById($sla_id);
 				if (!$sla) {
 					$context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, does not exist", $sla_id));
 					continue;
 				}
+
+				$removed_ids[] = $sla->id;
 
 				if (!$ticket->hasSla($sla)) {
 					$context->getLogger()->debug(sprintf("[SetSlas] Skip remove %d, not on ticket", $sla_id));
@@ -113,6 +118,9 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
 					$cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
 				}
 			}
+
+			// These are saved so it can be used in ApplySlas.php
+			$context->getVars()->set('removed_slas', $removed_ids);
 		}
 
 		$cm_sender->sendQueue();

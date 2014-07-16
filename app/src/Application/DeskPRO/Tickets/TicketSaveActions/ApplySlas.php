@@ -91,9 +91,25 @@ class ApplySlas implements TicketSaveActionInterface
 
 		$context->getLogger()->info(sprintf("[ApplySlas] Testing %d SLAs", count($this->slas)));
 
+		// See SetSlas.php
+		// - A trigger might run to remove an SLA, but SLAs are special and apply
+		// after normal triggers.
+		// - But if someone made a trigger specifically to remove an SLA, the expected
+		// behaviour would be that the SLA not be added (even though technically it wasnt added yet)
+		// - So before adding an SLA here, look it up to make sure it wasnt subject to a trigger attempting
+		// to remove it.
+
+		$ignore_slas = $context->getVars()->get('removed_slas', array());
+		$ignore_slas = array_fill_keys($ignore_slas, true);
+
 		foreach ($this->slas as $sla) {
 			if (isset($has_slas[$sla->id])) {
 				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- already exists", $sla->id, $sla->title));
+				continue;
+			}
+
+			if (isset($ignore_slas[$sla->id])) {
+				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- on ignore list", $sla->id, $sla->title));
 				continue;
 			}
 
