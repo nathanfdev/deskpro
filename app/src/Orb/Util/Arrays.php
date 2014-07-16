@@ -680,6 +680,28 @@ class Arrays
 	}
 
 
+	/**
+	 * Rekey an array using a callback function on each value.
+	 * Callback can return null and the item will not be included in the array.
+	 *
+	 * @param array    $array
+	 * @param callback $fn     Callback should take two params: $v, $k. Should return a new key or null to skip.
+	 * @return array
+	 */
+	public static function rekey($array, $fn)
+	{
+		$new_array = array();
+
+		foreach ($array as $k => $v) {
+			$new_k = call_user_func($fn, $v, $k);
+			if ($new_k !== null) {
+				$new_array[$new_k] = $v;
+			}
+		}
+
+		return $new_array;
+	}
+
 
 	/**
 	 * Push values into the array as long as they are not already in the array.
