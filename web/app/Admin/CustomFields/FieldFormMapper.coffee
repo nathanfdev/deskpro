@@ -53,6 +53,19 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					agent_validation:          '0',
 					agent_validation_resolve:  false
 				},
+				datetime: {
+					default_mode:              '0',
+					default_value:             '',
+					valid_weekdays:            [true, true, true, true, true, true, true],
+					valid_dates_mode:          '0',
+					valid_date_range_start:    '',
+					valid_date_range_end:      '',
+					valid_date_relrange_start: '',
+					valid_date_relrange_end:   '',
+					user_validation:           '0',
+					agent_validation:          '0',
+					agent_validation_resolve:  false
+				},
 				display: {
 					html: ''
 				},
