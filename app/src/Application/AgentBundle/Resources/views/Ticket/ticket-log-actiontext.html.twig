@@ -246,7 +246,7 @@
 		(<span class="old-val">{{ phrase('agent.general.id') }} {{log.details.message_id}}</span>
 		{% if log.details.message_person_name %} {{ log.details.message_person_name }}{% endif %}
 	{% endif %}
-{% elseif log.action_type == 'changed_status' %}
+{% elseif log.action_type == 'changed_hidden_status' %}
 	{% if log.details.old_status %}
 		<span class="type">{{ phrase('agent.general.hidden_status') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		{% set phrase_name = 'agent.tickets.hidden_' ~ log.details.old_status|replace({'.': '_'}) %}
@@ -259,9 +259,9 @@
 		{% set phrase_name = 'agent.tickets.hidden_' ~ log.details.new_status|replace({'.': '_'}) %}
 		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status|default("None") }}{% endif %}</span>
 	{% endif %}
-{% elseif log.action_type == 'changed_hidden_status' %}
+{% elseif log.action_type == 'changed_status' %}
 	{% if log.details.old_status %}
-		<span class="type">{{ phrase('agent.general.hidden_status') }}</span> {{ phrase('agent.tickets.changed_from') }}
+		<span class="type">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.old_status|replace({'.': '_'}) %}
 		<span class="old-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.old_status }}{% endif %}</span>
 
