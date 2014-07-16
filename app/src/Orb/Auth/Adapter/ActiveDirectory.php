@@ -34,6 +34,7 @@
 
 namespace Orb\Auth\Adapter;
 
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Util\Arrays;
@@ -221,7 +222,13 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 			/** @var $rec \Zend\Ldap\Node */
 			$rec = $ldap->getNode($dn);
 			if ($rec) {
-				$raw_info = array_merge($raw_info, $rec->getAttributes());
+				foreach ($rec->getData() as $name => $value) {
+					try {
+						$raw_info[$name] = $rec->getAttribute($name, null);
+					} catch (\Exception $e) {
+						$raw_info[$name] = $value;
+					}
+				}
 
 				$raw_info['domain'] = $this->options['accountDomainName'];
 
@@ -263,6 +270,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 			$raw_info['exception_type']    = get_class($e);
 			$raw_info['exception_message'] = $e->getMessage();
 			$raw_info['exception_code']    = $e->getCode();
+			$raw_info['exception_trace']   = KernelErrorHandler::formatBacktrace($e->getTrace());
 		}
 
 		$identity = new Identity($result->getIdentity(), $raw_info);
