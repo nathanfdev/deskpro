@@ -1121,6 +1121,55 @@ DeskPRO.Agent.Window = new Orb.Class({
 				$(this).trigger('mouseup');
 			}
 		});
+
+
+
+		/***************** scrolling handle on drag ******************/
+		var drag = function(){
+			var d = {
+				timer: null,
+				started: false,
+				wrap: $('#dp_content_wrap'),
+				offset: 50,
+				step: 20,
+				interval: 50
+			};
+
+			d.start = function($c, direction){
+				if (d.timer) return false;
+				direction = direction || 1;
+				direction = direction > 0 ? '+=' : '-=';
+				d.timer = setInterval(function(){ $c.scrollTo(direction + d.step + 'px'); }, d.interval);
+			};
+			d.stop = function(){
+				d.timer && clearInterval(d.timer);
+				d.timer = null;
+			};
+
+			return d;
+		}();
+
+		$(document).on('dragstart', '.dp-page-content', function(){
+			drag.started = true;
+		});
+		$(document).on('dragend', function(){
+			drag.stop();
+			drag.started = false;
+		});
+		$(document).on('dragover', function(e){
+			if (!drag.started) return;
+			var y = e.originalEvent.y,
+				$c = $('.dp-page-content').parent().parent();
+
+			if (y < drag.wrap.offset().top + drag.offset) {
+				drag.start($c, -1);
+			} else if ( y > drag.wrap.offset().top + drag.wrap.height() - drag.offset ) {
+				drag.start($c, 1);
+			} else {
+				drag.stop();
+			}
+		});
+		/***************** /scrolling handle on drag ******************/
 	},
 
 	initAppPlatform: function(AppPlatform) {
