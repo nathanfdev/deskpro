@@ -269,6 +269,14 @@ DeskPRO.Agent.RteEditor = {
 				} else {
 					var file = event.originalEvent.dataTransfer.files[0];
 					if (!file) {
+
+						// handle already uploaded blob
+						var blobData = event.originalEvent.dataTransfer.getData('blobData');
+						if (blobData) {
+							blobData = JSON.parse(blobData);
+							$.proxy(api.imageUploadCallback, api)(blobData);
+						}
+
 						return;
 					}
 					var fd = new FormData();

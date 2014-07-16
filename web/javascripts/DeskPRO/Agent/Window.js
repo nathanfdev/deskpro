@@ -265,7 +265,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			fileupload: function(el, options) {
 
-				var plainEl = $(el).get(0);
+				var $el = $(el),
+					plainEl = $el[0],
+					blobs = {};
 
 				var setel;
 				if (!options) options = {};
@@ -405,7 +407,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					);
 				},
 
-				$(el).on('click', '.remove-attach-trigger', function(ev) {
+				$el.on('click', '.remove-attach-trigger', function(ev) {
 					// Ignore .delete as they may be items rendered with the page,
 					// eg. the list handles delete of existing attachments on its own
 					if ($(this).hasClass('delete')) {
@@ -424,8 +426,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 					el.trigger('fileremoved', [li]);
 				}).on('fileuploadfailed', function(e, data) {
-					console.log(e);
-					console.log(data);
 					if (data.errorThrown == "Request Entity Too Large") {
 						$(el).find('.error').remove();
 						$(el).find('.files').append('<li class="error">The file you are trying to upload is too big.</li>');
@@ -433,7 +433,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 				})
 
 				// drop could have an auth, which we handle manually (ie not fileupload jquery plugin)
-				$(el).on('drop', function(event) {
+				$el.on('drop', function(event) {
+
+					// handle already uploaded blob
+					var blobData = event.originalEvent.dataTransfer.getData('blobData');
+					if (blobData) {
+						blobData = JSON.parse(blobData);
+						if (!blobs[blobData.blob_id]) {
+							blobs[blobData.blob_id] = blobData;
+							$(this).trigger('fileuploadstart');
+							return options.done.apply(plainEl, [event, {result: [blobData]}]);
+						}
+					}
+
 					var auth = event.originalEvent.dataTransfer.getData('DpAuthId');
 					if (!auth) return;
 
@@ -465,6 +477,29 @@ DeskPRO.Agent.Window = new Orb.Class({
 							}
 						});
 					}).call(this), 100);
+				});
+
+				$el.on('fileuploaddone', function(e, data){
+					if (!data.result || !data.result.length) return;
+
+					for (var i = 0; i < data.result.length; i++) {
+						var blob = data.result[i];
+						if (blob.blob_id) {
+							blob.filelink = blob.download_url; // used in RteEditor
+							blobs[blob.blob_id] = blob;
+						}
+					}
+				});
+
+				$el.on('dragstart', function(e){
+					var id = $(e.target).data('blob-id');
+					if (id && blobs[id]) {
+						e.originalEvent.dataTransfer.setData('blobData', JSON.stringify(blobs[id]));
+					}
+				});
+
+				$el.on('blobremove', function(e, id){
+					blobs[id] && delete blobs[id];
 				});
 
 				return $(el).fileupload(options);

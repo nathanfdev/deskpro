@@ -84,6 +84,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		this.wrapper.on('click', '.remove-attach-trigger', function() {
 
+			$(this).trigger('blobremove', [$(this).prev('input').val()]);
 			var row = $(this).closest('li');
 			row.fadeOut('fast', function() {
 				row.remove();
