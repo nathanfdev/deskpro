@@ -255,8 +255,15 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 				if ($rec->getAttribute('telephoneNumber')) {
 					$raw_info['phone'] = $rec->getAttribute('telephoneNumber', 0);
 				}
+			} else {
+				$raw_info['dp_error'] = "Empty record from node: $dn";
 			}
-		} catch (\Exception $e) {}
+		} catch (\Exception $e) {
+			$raw_info['dp_error']          = "Error when fetching node";
+			$raw_info['exception_type']    = get_class($e);
+			$raw_info['exception_message'] = $e->getMessage();
+			$raw_info['exception_code']    = $e->getCode();
+		}
 
 		$identity = new Identity($result->getIdentity(), $raw_info);
 
