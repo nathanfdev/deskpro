@@ -1080,6 +1080,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 			}
 		});
+
+		$(document).on('dragover', 'ul.dp-tab-list > li', function(e){
+			if (!$(this).hasClass('activeTabList')) {
+				$(this).trigger('mouseup');
+			}
+		});
 	},
 
 	initAppPlatform: function(AppPlatform) {
