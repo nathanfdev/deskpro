@@ -535,11 +535,20 @@ class FieldManager
 
 		try {
 
+			$fields = $this->getFields();
+
+			// When setting specific values, always operate on all enabled
+			// fields because we might be in user interface but specifically want to set some field in code
+			if ($only_set) {
+				$fields = $this->getDefinedFields();
+				$fields = array_filter($fields, function($f) { return $f->is_enabled; });
+			}
+
 			$this->_orig_display = $this->getDisplayArrayForObject($object);
 
 			// Remove whatever we have before
 			// We'll just re-insert if its still there
-			foreach ($this->getFields() as $field_def) {
+			foreach ($fields as $field_def) {
 				if ($only_set && !isset($form['field_' . $field_def->getId()])) {
 					continue;
 				}
@@ -549,7 +558,7 @@ class FieldManager
 				$this->em->flush();
 			}
 
-			foreach ($this->getFields() as $field_def) {
+			foreach ($fields as $field_def) {
 				if ($only_set && !isset($form['field_' . $field_def->getId()])) {
 					continue;
 				}

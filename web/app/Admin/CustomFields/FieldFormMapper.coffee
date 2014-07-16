@@ -59,6 +59,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					cookie_name:   '',
 					param_name:    '',
 					default_value: ''
+				},
+				data: {
+					usersource_id: '0',
+					field_name: ''
 				}
 			}
 
@@ -182,6 +186,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 						if fieldModel.default_value
 							formTypeOpts.default_value = fieldModel.default_value
 
+					when "data"
+						formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + ""
+						formTypeOpts.field_name    = fieldModel.options.field_name || ''
+
 			if fieldModel.options.agent_validation_resolve
 				formTypeOpts.agent_validation_resolve = true
 
@@ -300,6 +308,11 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					postData.cookie_name = formTypeOpts.cookie_name
 					postData.param_name = formTypeOpts.param_name
 					postData.default_value = formTypeOpts.default_value
+
+				when "data"
+					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Data'
+					postData.usersource_id = parseInt(formTypeOpts.usersource_id) || 0
+					postData.field_name    = formTypeOpts.field_name
 
 			if formTypeOpts.agent_validation_resolve
 				postData.agent_validation_resolve = true

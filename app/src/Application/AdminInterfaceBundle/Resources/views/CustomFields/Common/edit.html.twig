@@ -69,6 +69,8 @@
 								</p>
 							</div>
 						</div>
+
+						{% block extra_types_choose %}{% endblock %}
 					</div>
 					<div class="panel-body" ng-show="EditCtrl.field_type != 0">
 
@@ -86,6 +88,7 @@
 										<span ng-switch-when="date">Date</span>
 										<span ng-switch-when="display">Display</span>
 										<span ng-switch-when="hidden">Hidden</span>
+										{% block extra_types_titleswitch %}{% endblock %}
 									</p>
 								</div>
 							</div>

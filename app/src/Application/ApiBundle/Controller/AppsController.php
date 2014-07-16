@@ -89,6 +89,23 @@ class AppsController extends AbstractController
 			});
 		}
 
+		// Attach usersources to apps if they own them
+		$usersources = $this->em->createQuery("
+			SELECT u, a
+			FROM DeskPRO:Usersource u
+			LEFT JOIN u.app a
+			WHERE u.app IS NOT NULL
+		")->execute();
+		if ($usersources) {
+			$usersources = Arrays::rekey($usersources, function($u) { return $u->app->getId(); });
+			$apps = array_map(function($a) use ($usersources) {
+				if (isset($usersources[$a['id']])) {
+					$a['usersource'] = $usersources[$a['id']]->toApiData();
+				}
+				return $a;
+			}, $apps);
+		}
+
 		// Re-index in case we filtered by tag
 		$apps = array_values($apps);
 		$packages = array_values($packages);

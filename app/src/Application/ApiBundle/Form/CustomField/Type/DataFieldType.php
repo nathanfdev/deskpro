@@ -41,12 +41,7 @@ class DataFieldType extends CustomFieldTypeAbstract
 {
 	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
 	{
-		$choices = array();
-		foreach (App::getDataService('Usersource')->getAllUsersources() as $us) {
-			$choices[$us->getId()] = $us->getTitle();
-		}
-
-		$builder->add('usersource_id', 'choice', array('required' => false, 'choices' => $choices));
+		$builder->add('usersource_id', 'text', array('required' => false));
 		$builder->add('field_name', 'text', array('required' => false));
 	}
 

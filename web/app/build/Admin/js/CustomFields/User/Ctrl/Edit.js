@@ -17,6 +17,18 @@
 
       Admin_CustomFields_Chat_Ctrl_Edit.DEPS = [];
 
+      Admin_CustomFields_Chat_Ctrl_Edit.prototype.initialLoadExtra = function() {
+        var promise;
+        promise = this.Api.sendGet('/apps?tags=usersources').then((function(_this) {
+          return function(result) {
+            return _this.us_apps = result.data.apps.filter(function(x) {
+              return !x["package"].is_custom;
+            });
+          };
+        })(this));
+        return promise;
+      };
+
       Admin_CustomFields_Chat_Ctrl_Edit.prototype.getDataService = function() {
         return this.DataService.get('UserFields');
       };
