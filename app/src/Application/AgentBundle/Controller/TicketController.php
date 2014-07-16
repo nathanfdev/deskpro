@@ -1815,6 +1815,12 @@ class TicketController extends AbstractController
 	public function ajaxSaveActionsAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify');
+
+		$tm = $this->container->getTicketManager();
+		$tm->markAsManaged($ticket);
+
+		$context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
+
 		$old_department_id = $ticket->getDepartmentId();
 		$new_department_id = $ticket->getDepartmentId();
 
@@ -1832,16 +1838,7 @@ class TicketController extends AbstractController
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if ($macro) {
 				$macro->performOnTicket($ticket, $this->person);
-
-				try {
-					$this->em->persist($ticket);
-					$this->em->flush();
-					$ticket->getTicketLogger()->done();
-					$this->em->commit();
-				} catch (\Exception $e) {
-					$this->em->rollback();
-					throw $e;
-				}
+				$tm->saveTicket($ticket, $context);
 			}
 		} else {
 			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
@@ -1899,38 +1896,26 @@ class TicketController extends AbstractController
 			});
 			$ticket->addPropertyChangedListener($event_listener);
 
-			$this->em->beginTransaction();
-
 			if ($this->in->getBool('with_set_agent_parts')) {
 				$set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
 				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($set_parts);
 				$ticket->setAgentParticipants($agents);
 			}
 
-			try {
-				$ticket_edit->save();
-				$this->em->flush();
+			if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
 
-				if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-
-					if (!empty($_POST['custom_fields'])) {
-						$post_custom_fields = $this->request->request->get('custom_fields', array());
-						if (!empty($post_custom_fields)) {
-							$field_manager->saveFormToObject($post_custom_fields, $ticket);
-							$this->em->persist($ticket);
-						}
-
-						$this->em->flush();
+				if (!empty($_POST['custom_fields'])) {
+					$post_custom_fields = $this->request->request->get('custom_fields', array());
+					if (!empty($post_custom_fields)) {
+						$field_manager->saveFormToObject($post_custom_fields, $ticket);
+						$this->em->persist($ticket);
 					}
+
+					$this->em->flush();
 				}
-
-				$ticket->getTicketLogger()->done();
-
-				$this->em->commit();
-			} catch (\Exception $e) {
-				$this->em->rollback();
-				throw $e;
 			}
+
+			$tm->saveTicket($ticket, $context);
 		}
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
