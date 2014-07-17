@@ -1827,7 +1827,7 @@ class upgrade_v2 extends upgrade_base_v2 {
 		$db->query("
 			ALTER TABLE `ticket`
 			CHANGE `date_opened` `timestamp_opened` INT( 10 ) NOT NULL default '0',
-			CHANGE `date_closed` `timestamp_closed` INT( 10 ) NOT NULL default '0',
+			CHANGE `date_archived` `timestamp_closed` INT( 10 ) NOT NULL default '0',
 			CHANGE `date_lastreply` `timestamp_lastreply` INT( 10 ) NOT NULL default '0',
 			CHANGE `date_lastreply_tech` `timestamp_lastreply_tech` INT( 10 ) NOT NULL default '0',
 			CHANGE `date_locked` `timestamp_locked` INT( 10 ) NOT NULL default '0',

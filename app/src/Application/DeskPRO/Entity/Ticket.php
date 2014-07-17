@@ -85,7 +85,7 @@ use Orb\Util\Util;
  * @property \DateTime $date_feedback_rating
  * @property \DateTime $date_created
  * @property \DateTime $date_resolved
- * @property \DateTime $date_closed
+ * @property \DateTime $date_archived
  * @property \DateTime $date_first_agent_assign
  * @property \DateTime $date_first_agent_reply
  * @property \DateTime $date_last_agent_reply
@@ -355,7 +355,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var \DateTime
 	 */
-	protected $date_closed = null;
+	protected $date_archived = null;
 
 	/**
 	 * @var \DateTime
@@ -2108,13 +2108,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	public function getTimeUntilResolution()
 	{
-		if (!$this->date_resolved && !$this->date_closed) {
+		if (!$this->date_resolved && !$this->date_archived) {
 			return null;
 		}
 
 		$date = $this->date_resolved;
-		if (!$date || ($this->date_closed && $date > $this->date_closed)) {
-			$date = $this->date_closed;
+		if (!$date || ($this->date_archived && $date > $this->date_archived)) {
+			$date = $this->date_archived;
 		}
 
 		$secs = $date->getTimestamp() - $this->date_created->getTimestamp();
@@ -2124,13 +2124,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 	public function getWorkTimeUntilResolution()
 	{
-		if (!$this->date_resolved && !$this->date_closed) {
+		if (!$this->date_resolved && !$this->date_archived) {
 			return null;
 		}
 
 		$date = $this->date_resolved;
-		if (!$date || ($this->date_closed && $date > $this->date_closed)) {
-			$date = $this->date_closed;
+		if (!$date || ($this->date_archived && $date > $this->date_archived)) {
+			$date = $this->date_archived;
 		}
 
 		return $this->getWorkHoursSet()->getWorkTimeBetween($this->date_created, $date);
@@ -2192,11 +2192,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			$this->setModelField('date_agent_waiting', null);
 		}
 
-		if ($status == 'closed' && !$this->date_closed) {
-			$this['date_closed'] = new \DateTime();
+		if ($status == 'closed' && !$this->date_archived) {
+			$this['date_archived'] = new \DateTime();
 		}
-		if ($status != 'closed' && $this->date_closed) {
-			$this->setModelField('date_closed', null);
+		if ($status != 'closed' && $this->date_archived) {
+			$this->setModelField('date_archived', null);
 		}
 
 		if ($status == 'resolved' && !$this->date_resolved) {
@@ -3001,7 +3001,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'date_feedback_rating'         => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
 			'date_created'                 => $this->date_created->format('Y-m-d H:i:s'),
 			'date_resolved'                => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
-			'date_closed'                  => $this->date_closed ? $this->date_closed->format('Y-m-d H:i:s') : null,
+			'date_archived'                  => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
 			'date_first_agent_assign'      => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
 			'date_first_agent_reply'       => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
 			'date_last_agent_reply'        => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
@@ -3319,8 +3319,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'nullable'   => true,
 		));
 		$metadata->mapField(array(
-			'fieldName'  => 'date_closed',
-			'columnName' => 'date_closed',
+			'fieldName'  => 'date_archived',
+			'columnName' => 'date_archived',
 			'type'       => 'datetime',
 			'nullable'   => true,
 		));

@@ -333,7 +333,7 @@ class LegacyTermsTransformer
 
 			case 'FilterDateClosed':
 				return array(
-					'type'    => 'date_closed',
+					'type'    => 'date_archived',
 					'op'      => $term->getTermOperator(),
 					'options' => $options->all()
 				);
@@ -660,7 +660,7 @@ class LegacyTermsTransformer
 			case 'date_resolved':
 				return new Terms\FilterDateResolved($op, $options);
 
-			case 'date_closed':
+			case 'date_archived':
 				return new Terms\FilterDateClosed($op, $options);
 
 			case 'date_last_agent_reply':

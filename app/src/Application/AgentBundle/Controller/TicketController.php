@@ -178,7 +178,7 @@ class TicketController extends AbstractController
 		}
 
 		foreach (array(
-			'date_created', 'date_resolved', 'date_closed', 'date_first_agent_assign',
+			'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign',
 			'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply',
 			'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked'
 		) AS $date_key) {

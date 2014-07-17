@@ -320,7 +320,7 @@ class TicketSearchController extends AbstractController
 		$date_search_map = array(
 			'date_created'          => TicketSearch::TERM_DATE_CREATED,
 			'date_resolved'         => TicketSearch::TERM_DATE_RESOLVED,
-			'date_archived'         => TicketSearch::TERM_DATE_CLOSED,
+			'date_archived'         => TicketSearch::TERM_DATE_ARCHIVED,
 			'date_status'           => TicketSearch::TERM_DATE_STATUS,
 			'date_last_agent_reply' => TicketSearch::TERM_DATE_LAST_AGENT_REPLY,
 			'date_last_user_reply'  => TicketSearch::TERM_DATE_LAST_USER_REPLY,

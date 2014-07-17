@@ -26,120 +26,20 @@
 \**************************************************************************/
 
 /**
- * @package Importer
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\ImportBundle\Value;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class TicketValue
+class Build1405609549 extends AbstractBuild
 {
-	/**
-	 * @var int
-	 */
-	public $oid;
-	
-	/**
-	 * @var string
-	 */
-	public $ref;
-
-	/**
-	 * @var string
-	 */
-	public $language;
-
-	/**
-	 * @var string
-	 */
-	public $department;
-
-	/**
-	 * @var string
-	 */
-	public $category;
-
-	/**
-	 * @var string
-	 */
-	public $priority;
-
-	/**
-	 * @var string
-	 */
-	public $workflow;
-
-	/**
-	 * @var string
-	 */
-	public $product;
-
-	/**
-	 * @var string
-	 */
-	public $person;
-
-	/**
-	 * @var string
-	 */
-	public $agent;
-
-	/**
-	 * @var string
-	 */
-	public $agent_team;
-
-	/**
-	 * @var string
-	 */
-	public $organization;
-
-	/**
-	 * @var TicketMessageValue[]
-	 */
-	public $messages = array();
-
-	/**
-	 * @var string[]
-	 */
-	public $labels = array();
-
-	/**
-	 * @var string
-	 */
-	public $status;
-
-	/**
-	 * @var bool
-	 */
-	public $is_hold = false;
-
-	/**
-	 * @var int
-	 */
-	public $urgency = 1;
-
-	/**
-	 * @var \DateTime
-	 */
-	public $date_created;
-
-	/**
-	 * @var \DateTime
-	 */
-	public $date_resolved;
-
-	/**
-	 * @var \DateTime
-	 */
-	public $date_archived;
-
-	/**
-	 * @var string
-	 */
-	public $subject;
-
-	/**
-	 * @var string
-	 */
-	public $participants;
+	public function run()
+	{
+		$this->out("My Upgrade Class");
+		$this->execMutateSql("ALTER TABLE tickets CHANGE date_closed date_archived DATETIME DEFAULT NULL");
+		$this->execMutateSql("UPDATE report_builder set query = REPLACE(query, 'date_closed', 'date_archived'");
+	}
 }

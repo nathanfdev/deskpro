@@ -1398,7 +1398,7 @@
 						'file' => DP_ROOT . '/src/Application/InstallBundle/Upgrade/Build/2014/05/Build1400056735.php',
 						'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build1400056735'
 					),
-
+				
 					1400056736 => array(
 						'file' => DP_ROOT . '/src/Application/InstallBundle/Upgrade/Build/2014/05/Build1400056736.php',
 						'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build1400056736'
@@ -1432,5 +1432,10 @@
 					1405422026 => array(
 						'file' => DP_ROOT . '/src/Application/InstallBundle/Upgrade/Build/2014/07/Build1405422026.php',
 						'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build1405422026'
+					),
+				
+					1405609549 => array(
+						'file' => DP_ROOT . '/src/Application/InstallBundle/Upgrade/Build/2014/07/Build1405609549.php',
+						'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build1405609549'
 					),
 				);

@@ -186,7 +186,7 @@ class TicketValueImporter extends AbstractValueImporter
 		
 		//Date fields
 		$record['date_created']		= $tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-		$record['date_closed']		= $tval->date_closed ? $tval->date_closed->format('Y-m-d H:i:s') : null;
+		$record['date_archived']		= $tval->date_archived ? $tval->date_archived->format('Y-m-d H:i:s') : null;
 		$record['date_resolved']	= $tval->date_resolved ? $tval->date_resolved->format('Y-m-d H:i:s') : null;
 		
 		// Org

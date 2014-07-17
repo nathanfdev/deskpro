@@ -1369,7 +1369,7 @@ class TicketSearchController extends AbstractController
             'urgency',
             'date_created',
             'date_resolved',
-            'date_closed',
+            'date_archived',
             'date_first_agent_assign',
             'date_first_agent_reply',
             'date_last_agent_reply',

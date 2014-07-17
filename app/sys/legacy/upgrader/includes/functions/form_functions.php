@@ -287,7 +287,7 @@ function form_date_multi($variable, $start='', $end='') {
 			<td>From&nbsp;</td>
 			<td style=\"padding-right:4px\">" . form_date($variable . '_start', $start)  . "</td>
 			<td> ago until
-				<span id=\"" . $variable . "_date_closed\"><a onclick=\"showCalendar('$variable', 1, document.form);\">now</a>.</span></td>
+				<span id=\"" . $variable . "_date_archived\"><a onclick=\"showCalendar('$variable', 1, document.form);\">now</a>.</span></td>
 			<td>&nbsp;</td>
 			<td>
 				<span id=\"" . $variable . "_date_open\">" . form_date($variable . '_end', $end)  . "</span></td>

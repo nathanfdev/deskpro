@@ -67,7 +67,7 @@ class TicketArrayParser implements ArrayParserInterface
 			'urgency'       => 'int',
 			'date_created'  => 'date',
 			'date_resolved' => 'date',
-			'date_closed'   => 'date',
+			'date_archived'   => 'date',
 			'subject'       => 'string',
 			'participants'  => 'array',
 			'custom_fields' => 'array'

@@ -82,10 +82,10 @@ class ArchiveTickets extends AbstractJob
 				);
 			}
 
-			App::getDb()->executeUpdate("
+			App::getDb()->executeUpdate(sprintf("
 				UPDATE tickets
-				SET status = 'closed' WHERE id IN ($ids_str)
-			");
+				SET status = 'closed', date_archived = '%s' WHERE id IN ($ids_str)
+			", $datecut));
 
 			App::getDb()->batchInsert('tickets_logs', $batch);
 
