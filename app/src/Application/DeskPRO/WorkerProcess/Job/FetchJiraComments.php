@@ -62,8 +62,9 @@ class FetchJiraComments extends AbstractJob
 		$service = new \Orb\Jira\Service($baseUrl, array(
 			'username'	=> $username,
 			'password'	=> $password,
-			'debug'		=> true
-		), $em);
+			'debug'		=> DP_DEBUG,
+			'reg_enabled' => App::getSetting('core.reg_enabled'),
+		), App::getOrm());
 
 		$rep = $em->getRepository('DeskPRO:JiraIssue');
 		$start = time();

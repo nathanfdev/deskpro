@@ -2,6 +2,8 @@
 
 namespace Orb\Jira;
 
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Guzzle\Http\Client;
 use Guzzle\Http\Exception\BadResponseException;
 
@@ -40,6 +42,8 @@ class Service
 	
 	protected $_em;
 
+	protected $_regEnabled = false;
+
 	/**
 	 * The default constructor
 	 * 
@@ -62,6 +66,8 @@ class Service
 		if (isset($params['debug']) && $params['debug']) {
 			$this->_debug = true;
 		}
+
+		$this->_regEnabled = !empty($params['reg_enabled']);
 		
 		$this->_em = $em;
 	}
@@ -528,9 +534,21 @@ class Service
 				if ($matchedEmail) {
 					$commentAuthor = $matchedEmail->person;
 				} else {
-					$personRepository = $this->_em->getRepository('Application\DeskPRO\Entity\Person');
-					
-					$commentAuthor = $personRepository->find(1);
+
+					if (!$this->_regEnabled) {
+						// todo?
+						continue;
+					}
+
+					$person_processor = new PersonFromEmailProcessor();
+					$eml = new EmailAddress();
+					$eml->email = $jiraUserEmail;
+					$person = $person_processor->createPerson($eml, true);
+
+					if (!$person) {
+						// todo?
+						continue;
+					}
 				}
 				
 				$ticketNote['person']			= $commentAuthor;
