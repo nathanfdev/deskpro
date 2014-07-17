@@ -86,6 +86,7 @@ define([
 	'Admin/Labels/News/Ctrl/Edit',
 	'Admin/Labels/Downloads/Ctrl/List',
 	'Admin/Labels/Downloads/Ctrl/Edit',
+	'Admin/Labels/Ctrl/Settings',
 	'Admin/Languages/Ctrl/Edit',
 	'Admin/Languages/Ctrl/Install',
 	'Admin/Languages/Ctrl/List',

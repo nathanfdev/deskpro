@@ -83,6 +83,18 @@ $collection->create('api_docs_get', array(
 # General
 ########################################################################################################################
 
+$collection->create('api_labels_settings_get', array(
+	'path'          => '/labels/settings',
+	'controller'    => 'ApiBundle:Labels:getSettings',
+	'methods'       => array('GET'),
+));
+
+$collection->create('api_labels_settings_set', array(
+	'path'          => '/labels/settings',
+	'controller'    => 'ApiBundle:Labels:setSettings',
+	'methods'       => array('PUT'),
+));
+
 $collection->create('api_misc_upload', array(
 	'path'        => '/misc/upload',
 	'controller'  => 'ApiBundle:Misc:upload',
