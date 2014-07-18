@@ -256,6 +256,7 @@ class TicketManager
 		// sent to update agent filters, but we dont want the usual triggers etc to run.
 		// This is usually done when the ticket is being deleted.
 		$is_noop = $context->getEventType() == 'noop';
+		$is_trivial_change = $ticket->getStateChangeRecorder()->isTrivialChangeSet();
 
 		$time_start = microtime(true);
 		$context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
@@ -264,6 +265,11 @@ class TicketManager
 		$context->getLogger()->debug(sprintf("EventMethod: %s", $context->getEventMethod()));
 		$context->getLogger()->debug(sprintf("EventPerformer: %s", $context->getEventPerformer()));
 		$context->getLogger()->debug(sprintf("StateChanges: %s", implode(', ', $ticket->getStateChangeRecorder()->getChangedFields())));
+
+		if ($is_trivial_change) {
+			$context->getLogger()->debug("is_trivial_change = true");
+			$is_noop = true;
+		}
 
 		if ($context->getPersonContext()) {
 			$context->getLogger()->debug(sprintf(
@@ -330,16 +336,18 @@ class TicketManager
 			$agent_alert_action->applyAction($ticket, $context);
 		}
 
-		$this->db->insert('client_messages', array(
-			'channel' => 'agent.ticket-updated',
-			'auth' => Strings::random(15, Strings::CHARS_KEY),
-			'date_created' => date('Y-m-d H:i:s'),
-			'data' => serialize(array(
-				'ticket_id'      => $ticket->getId(),
-				'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
-				'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
-			))
-		));
+		if (!$is_trivial_change) {
+			$this->db->insert('client_messages', array(
+				'channel'      => 'agent.ticket-updated',
+				'auth'         => Strings::random(15, Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array(
+					'ticket_id'      => $ticket->getId(),
+					'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
+					'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
+				))
+			));
+		}
 
 		$search_updater = new TicketSearchUpdater($this->db, $ticket);
 		$search_updater->update();
