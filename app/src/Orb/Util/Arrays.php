@@ -2217,7 +2217,8 @@ class Arrays
 	 * Just like array_filter except you also get passed the current key as the second parameter.
 	 *
 	 * @param array $array
-	 * @param $fn
+	 * @param callback $fn
+	 * @return array
 	 */
 	public static function filter(array $array, $fn)
 	{
@@ -2226,6 +2227,29 @@ class Arrays
 		foreach ($array as $k => $v) {
 			if ($fn($v, $k) !== false) {
 				$new_array[$k] = $v;
+			}
+		}
+
+		return $new_array;
+	}
+
+
+	/**
+	 * Like array_map except will run recursively on sub-arrays.
+	 *
+	 * @param array $array
+	 * @param $fn
+	 * @return array
+	 */
+	public static function mapRecursive(array $array, $fn)
+	{
+		$new_array = array();
+
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				$new_array[$k] = self::mapRecursive($v, $fn);
+			} else {
+				$new_array[$k] = call_user_func($fn, $v);
 			}
 		}
 
