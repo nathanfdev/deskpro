@@ -293,14 +293,26 @@
               rowScope.model = dataFormatter.getViewValue(rowScope.value, data);
               rowScope.$watch('model', function() {
                 rowScope.value = dataFormatter.getValue(rowScope.model, data);
-                return _this.$scope.saveTarget[rowId] = rowScope.value;
+                _this.$scope.saveTarget[rowId] = rowScope.value;
+                if (rowScope.rowOpts.rowEnabled) {
+                  _this.$scope.saveTarget[rowId].DP_DISABLED = false;
+                  return delete _this.$scope.saveTarget[rowId].DP_DISABLED;
+                } else {
+                  return _this.$scope.saveTarget[rowId].DP_DISABLED = true;
+                }
               }, true);
             } else {
               rowScope.model = {};
               rowScope.value = rowScope.model;
               rowScope.$watch('model', function() {
                 rowScope.value = rowScope.model;
-                return _this.$scope.saveTarget[rowId] = rowScope.value;
+                _this.$scope.saveTarget[rowId] = rowScope.value;
+                if (rowScope.rowOpts.rowEnabled) {
+                  _this.$scope.saveTarget[rowId].DP_DISABLED = false;
+                  return delete _this.$scope.saveTarget[rowId].DP_DISABLED;
+                } else {
+                  return _this.$scope.saveTarget[rowId].DP_DISABLED = true;
+                }
               }, true);
             }
             if (data) {
