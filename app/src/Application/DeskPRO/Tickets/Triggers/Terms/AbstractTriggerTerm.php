@@ -675,6 +675,15 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	 */
 	public function getMultiMatchResult(array $all_values, $check_fn, $op, $multi_mode)
 	{
+		// No values to check
+		if (!$all_values) {
+			if ($op == 'not' || $op == 'notcontains' || $op == 'not_regex' || $op == 'not_isset') {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		$match_count = 0;
 		$check_count = 0;
 		foreach ($all_values as $v) {
