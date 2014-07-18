@@ -759,13 +759,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		);
 		$app_syncer->runSync();
 
-		$this->getContainer()->resetSystemService('app_manager');
+		$this->container->resetSystemService('app_manager');
 		$instance_installer = new \Application\DeskPRO\App\InstanceInstaller(
-			$this->getContainer()->getAppManager(),
-			$this->getContainer()->getAppManager()->getPackage('deskpro_gravatar'),
-			$this->getContainer()->getEm()
+			$this->container->getAppManager(),
+			$this->container->getAppManager()->getPackage('deskpro_gravatar'),
+			$this->container->getEm()
 		);
-		$instance_installer->install('', array(), $this->getContainer());
+		$instance_installer->install('', array(), $this->container);
 
 		$prev_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
 		if (!$prev_time) {
