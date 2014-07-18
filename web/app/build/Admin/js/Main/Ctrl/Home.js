@@ -30,30 +30,18 @@
         promise = this.Api.sendDataGet({
           agents: '/agents',
           lastLogin: '/me/last-login',
-          cronStatus: '/server/cron-status',
-          errorStatus: '/server/error-status',
-          apcStatus: '/server/apc-status',
-          versionInfo: '/dp_license/version-info',
-          quickStats: '/tickets/quick-stats'
+          versionInfo: '/dp_license/version-info'
         }).then((function(_this) {
           return function(result) {
-            var agent, data, problem_triggers, _i, _len, _ref, _results;
+            var agent, data, _i, _len, _ref, _results;
             data = result.data;
             _this.online_agents = [];
             _this.offline_agents = [];
-            _this.cron_status = result.data.cronStatus;
-            _this.error_status = result.data.errorStatus;
-            _this.apc_status = result.data.apcStatus;
             _this.version_info = result.data.versionInfo;
-            _this.quick_stats = result.data.quickStats;
             _this.last_login = result.data.lastLogin.last_login;
             if (_this.last_login) {
               _this.last_login.date_created_d = new Date(_this.last_login.date_created_ts * 1000);
             }
-            problem_triggers = [_this.cron_status.is_problem, _this.error_status.error_count > 0, _this.error_status.gateway_error_count > 0, _this.error_status.sendmail_error_count > 0, _this.apc_status.is_problem];
-            _this.is_server_problem = problem_triggers.filter(function(x) {
-              return !!x;
-            }).length > 0;
             _ref = data.agents.agents;
             _results = [];
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -65,6 +53,24 @@
               }
             }
             return _results;
+          };
+        })(this));
+        this.Api.sendDataGet({
+          cronStatus: '/server/cron-status',
+          errorStatus: '/server/error-status',
+          apcStatus: '/server/apc-status',
+          quickStats: '/tickets/quick-stats'
+        }).then((function(_this) {
+          return function(result) {
+            var problem_triggers;
+            _this.cron_status = result.data.cronStatus;
+            _this.error_status = result.data.errorStatus;
+            _this.apc_status = result.data.apcStatus;
+            _this.quick_stats = result.data.quickStats;
+            problem_triggers = [_this.cron_status.is_problem, _this.error_status.error_count > 0, _this.error_status.gateway_error_count > 0, _this.error_status.sendmail_error_count > 0, _this.apc_status.is_problem];
+            return _this.is_server_problem = problem_triggers.filter(function(x) {
+              return !!x;
+            }).length > 0;
           };
         })(this));
         this.Api.sendDataGet({
