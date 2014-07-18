@@ -37,6 +37,10 @@ use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 
 class LabelsController extends AbstractController implements ProtectedControllerInterface
 {
+	static public $allowed = array(
+		'chat', 'downloads', 'feedback', 'kb', 'news', 'organizations', 'people', 'tickets',
+	);
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -48,19 +52,22 @@ class LabelsController extends AbstractController implements ProtectedController
 	/**
 	 * get settings
 	 */
-	public function getSettingsAction()
+	public function getSettingsAction($type)
 	{
 		return $this->createApiResponse(array(
-			'agent_can_create' => (bool) $this->settings->get('labels.agent_can_create', false),
+			'agent_can_create' => (bool) $this->settings->get(sprintf('labels.%s.agent_can_create', $type), false),
 		));
 	}
 
 	/**
 	 * get settings
 	 */
-	public function setSettingsAction()
+	public function setSettingsAction($type)
 	{
-		$this->settings->setSetting('labels.agent_can_create', $this->in->getBool('agent_can_create'));
-		return $this->getSettingsAction();
+		$this->settings->setSetting(
+			sprintf('labels.%s.agent_can_create', $type),
+			$this->in->getBool('agent_can_create')
+		);
+		return $this->getSettingsAction($type);
 	}
 }

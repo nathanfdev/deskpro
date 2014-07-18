@@ -19,7 +19,6 @@ define [
 
 		constructor: ->
 			Util_Angular.setInjectedProperties(this, arguments)
-			@loaded            = false
 			@model             = {}
 			@init()
 
@@ -32,9 +31,9 @@ define [
 
 
 
-		# model resource endpoint
+		# model res endpoint
 		url: ->
-			throw new Exception("This method must be implemented by a sub-class")
+			throw "This method must be implemented by a sub-class"
 
 
 
@@ -54,6 +53,7 @@ define [
 
 			@_doGet().then(
 				(data) =>
+					@loaded = true
 					deferred.resolve(angular.copy data, @model)
 				(res) =>
 					deferred.reject res
@@ -77,6 +77,8 @@ define [
 
 		# update model
 		set: ->
+			@get(true) if !@loaded
+
 			deferred = @$q.defer()
 			@_doSet().then(
 				(data) =>
