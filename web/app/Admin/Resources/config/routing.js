@@ -1734,7 +1734,7 @@ define(function() {
 
 	routes.push({
 		id: 'apps.go_apps_install',
-		url: '/{name:go\-apps\-(.*?)}',
+		url: '/{name:go\\-apps\\-(.*?)}',
 		templateName: 'Index/blank.html',
 		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('apps.apps.install_package', { name: $stateParams.name.replace(/^go\-apps\-/, '') + '.install' }); }]
 	});
