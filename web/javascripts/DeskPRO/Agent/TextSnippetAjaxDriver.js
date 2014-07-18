@@ -7,6 +7,7 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 	initialize: function(typename) {
 		this.typename = typename;
 		this.driverName = 'ajax';
+		this.localCache = {};
 		this.loadData();
 	},
 
@@ -56,6 +57,7 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 	 * @param mutator
 	 */
 	loadSnippets: function(filter, callback, mutator) {
+
 		var snippets = [];
 
 		filter = filter || {};
@@ -63,6 +65,14 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 		var filterString = filter.filterString || '';
 		var languageId   = filter.languageId || 0;
 		var page         = filter.page || 1;
+		var self = this;
+
+		if (!filterString.length && !languageId && page == 1 && !mutator) {
+			if (this.localCache[categoryId]) {
+				callback(this.localCache[categoryId]);
+				return;
+			}
+		}
 
 		if (this.runningAjax) {
 			this.runningAjax.abort();
@@ -91,6 +101,10 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 						});
 					} else {
 						snippets = snippet_data.snippets;
+
+						if (!filterString.length && !languageId && page == 1) {
+							self.localCache[categoryId] = snippets;
+						}
 					}
 				}
 
@@ -125,6 +139,9 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 	 * @param error_callback
 	 */
 	saveSnippet: function(snippet, callback, error_callback) {
+
+		this.localCache = {};
+
 		// Encode for form
 		var postData = [];
 		postData.push({name: 'snippet_id', value: snippet.id || 0});
@@ -164,6 +181,9 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 	 * @param error_callback
 	 */
 	deleteSnippet: function(snippetId, callback, error_callback) {
+
+		this.localCache = {};
+
 		$.ajax({
 			url: BASE_URL+'agent/text-snippets/'+this.typename+'/'+(snippetId||0)+'/delete.json',
 			type: 'POST',
