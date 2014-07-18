@@ -220,7 +220,7 @@ define [
 
 			options.push({
 				title: 'User Label',
-				value: 'CheckUserLabels'
+				value: 'CheckUserLabel'
 			})
 
 			options.push({
@@ -721,7 +721,7 @@ define [
 			def = @getStandardInput(options)
 			return def
 
-		getCheckUserLabels: (options = {}) ->
+		getCheckUserLabel: (options = {}) ->
 			options.propName = 'labels'
 			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
