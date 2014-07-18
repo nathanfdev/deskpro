@@ -163,10 +163,7 @@ class Builder
 			$query = $report->query;
 		}
 
-		try {
-			return $this->getReportResponseForType($type, $query, $report->getTitle('printable', $params), $params);
-		} catch(DpqlException $e) {
-		}
+		return $this->getReportResponseForType($type, $query, $report->getTitle('printable', $params), $params);
 	}
 
 

@@ -176,7 +176,9 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadCsv = function() {
-        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/csv'));
+        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/csv', {
+          params: this.$stateParams.params
+        }));
       };
 
 
@@ -185,7 +187,9 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadPdf = function() {
-        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/pdf'));
+        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/pdf', {
+          params: this.$stateParams.params
+        }));
       };
 
 

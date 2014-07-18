@@ -75,6 +75,22 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 		Module.config(['$provide', ($provide) ->
 			$provide.decorator('$http', ($delegate) ->
+
+				formatUrlObject = (obj, baseName = false) ->
+					url = ''
+					for own k, v of obj
+						if v == null then continue
+						if baseName
+							k = baseName + '[' + encodeURIComponent(k) + ']'
+						else
+							k = encodeURIComponent(k)
+
+						if Util.isObject(v)
+							url += formatUrlObject(v, k)
+						else
+							v = encodeURIComponent(v)
+							url += "#{k}=#{v}&"
+
 				$delegate.formatApiUrl = (endpoint, params, signed = true) ->
 					endpoint = endpoint.replace(/^\//, '')
 					url = "#{window.DP_BASE_API_URL}/#{endpoint}"
@@ -87,7 +103,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 								v = encodeURIComponent(itm.value)
 								url += "#{k}=#{v}&"
 						else
-							url += @_formatUrlObject(params)
+							url += formatUrlObject(params)
 
 					url = url.replace(/&$/, '')
 

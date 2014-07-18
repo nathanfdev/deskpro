@@ -139,14 +139,14 @@ define [
 		# This method is called when user clicks on 'CSV' button
 		###
 		downloadCsv: ->
-			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id +  '/csv'))
+			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id +  '/csv', {params: @$stateParams.params}))
 
 
 		###
 		# This method is called when user clicks on 'PDF' button
 		###
 		downloadPdf: ->
-			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id + '/pdf'))
+			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id + '/pdf', {params: @$stateParams.params}))
 
 
 		###

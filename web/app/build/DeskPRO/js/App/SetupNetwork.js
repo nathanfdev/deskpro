@@ -1,4 +1,6 @@
 (function() {
+  var __hasProp = {}.hasOwnProperty;
+
   define(['DeskPRO/Util/Util'], function(Util) {
     return function(Module) {
       Module.factory('dpHttpInterceptor', [
@@ -80,6 +82,34 @@
       return Module.config([
         '$provide', function($provide) {
           return $provide.decorator('$http', function($delegate) {
+            var formatUrlObject;
+            formatUrlObject = function(obj, baseName) {
+              var k, url, v, _results;
+              if (baseName == null) {
+                baseName = false;
+              }
+              url = '';
+              _results = [];
+              for (k in obj) {
+                if (!__hasProp.call(obj, k)) continue;
+                v = obj[k];
+                if (v === null) {
+                  continue;
+                }
+                if (baseName) {
+                  k = baseName + '[' + encodeURIComponent(k) + ']';
+                } else {
+                  k = encodeURIComponent(k);
+                }
+                if (Util.isObject(v)) {
+                  _results.push(url += formatUrlObject(v, k));
+                } else {
+                  v = encodeURIComponent(v);
+                  _results.push(url += "" + k + "=" + v + "&");
+                }
+              }
+              return _results;
+            };
             $delegate.formatApiUrl = function(endpoint, params, signed) {
               var itm, k, url, v, _i, _len;
               if (signed == null) {
@@ -97,7 +127,7 @@
                     url += "" + k + "=" + v + "&";
                   }
                 } else {
-                  url += this._formatUrlObject(params);
+                  url += formatUrlObject(params);
                 }
               }
               url = url.replace(/&$/, '');
