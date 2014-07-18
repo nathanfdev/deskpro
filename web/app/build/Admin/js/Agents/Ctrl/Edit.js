@@ -336,13 +336,17 @@
                     return function() {
                       return $modalInstance.close();
                     };
-                  })(this));
+                  })(this), function() {
+                    return $scope.is_saving = false;
+                  });
                 } else {
                   return doReset(false).then((function(_this) {
                     return function() {
                       return $modalInstance.close();
                     };
-                  })(this));
+                  })(this), function() {
+                    return $scope.is_saving = false;
+                  });
                 }
               };
             }

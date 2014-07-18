@@ -224,9 +224,13 @@ define [
 					$scope.saveResetPassword = ->
 						$scope.is_saving = true
 						if $scope.password.mode == 'set'
-							doReset($scope.password.manual).then(=> $modalInstance.close())
+							doReset($scope.password.manual).then(=>
+								$modalInstance.close()
+							, -> $scope.is_saving = false)
 						else
-							doReset(false).then(=> $modalInstance.close())
+							doReset(false).then(=>
+								$modalInstance.close()
+							, -> $scope.is_saving = false)
 				]
 			});
 
