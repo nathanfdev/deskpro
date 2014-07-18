@@ -437,6 +437,10 @@ var DP = {
 			updateBoundEl();
 		}
 
+		if (!el.data('allow-new')) {
+			options.createSearchChoice = null;
+		}
+
 		el.addClass('with-select2');
 		el.select2(options);
 	}
