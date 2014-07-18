@@ -165,8 +165,6 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
 	{
 		$state = $ticket->getStateChangeRecorder();
 
-
-
 		$mode_var = null;
 		switch ($context->getEventPerformer()) {
 			case 'agent':
@@ -188,21 +186,26 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
 
 		$ts = microtime(true);
 
+		$context->getLogger()->debug(sprintf("[ExecTriggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
+
 		$match = $trigger->terms->isTriggerMatch($ticket, $context);
 
 		if ($match) {
 			$state->setCurrentChangeMetadata(array('trigger' => $trigger));
-			$context->getLogger()->info(sprintf("[ExecTriggers] ----- BEGIN TRIGGER #%s :: %s -----", $trigger->id, $trigger->title));
 
 			try {
 				$this->action_applicator->apply($trigger->actions, $ticket, $context);
 			} catch (\Exception $e) {
-				$context->getLogger()->error(sprintf("[ExecTriggers] Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
+				$context->getLogger()->error(sprintf("[ExecTriggers] Exception in trigger #%d: [%s] %s", $trigger->id, $e->getCode(), $e->getMessage()), array('exception' => $e));
 				KernelErrorHandler::logException($e);
 			}
 
-			$context->getLogger()->info(sprintf("[ExecTriggers] ----- FINISH TRIGGER #%s :: %.4fs -----", $trigger->id, microtime(true)-$ts));
+			$context->getLogger()->info(sprintf("[ExecTriggers] Applied trigger #%s ", $trigger->id));
 			$state->clearCurrentChangeMetaData();
+		} else {
+			$context->getLogger()->info(sprintf("[ExecTriggers] Skip trigger #%s due to failed criteria", $trigger->id));
 		}
+
+		$context->getLogger()->debug(sprintf("[ExecTriggers] ----- FINISH TRIGGER #%s :: %s :: %.4fs -----", $trigger->id, $match ? "applied" : "skipped", microtime(true)-$ts));
 	}
 }

@@ -89,7 +89,7 @@ class ApplySlas implements TicketSaveActionInterface
 			$has_slas = array();
 		}
 
-		$context->getLogger()->info(sprintf("[ApplySlas] Testing %d SLAs", count($this->slas)));
+		$context->getLogger()->debug(sprintf("[ApplySlas] Testing %d SLAs", count($this->slas)));
 
 		// See SetSlas.php
 		// - A trigger might run to remove an SLA, but SLAs are special and apply
@@ -104,22 +104,24 @@ class ApplySlas implements TicketSaveActionInterface
 
 		foreach ($this->slas as $sla) {
 			if (isset($has_slas[$sla->id])) {
-				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- already exists", $sla->id, $sla->title));
+				$context->getLogger()->info(sprintf("[ApplySlas] SLA %d %s -- already exists", $sla->id, $sla->title));
 				continue;
 			}
 
 			if (isset($ignore_slas[$sla->id])) {
-				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- on ignore list", $sla->id, $sla->title));
+				$context->getLogger()->info(sprintf("[ApplySlas] SLA %d %s -- on ignore list", $sla->id, $sla->title));
 				continue;
 			}
 
+			$context->getLogger()->info(sprintf("[ApplySlas] Testing SLA %d ...", $sla->id, $sla->title));
+
 			if ($sla->apply_type == 'all' || ($sla->apply_type == 'terms' && $sla->apply_terms->isTriggerMatch($ticket, $context))) {
-				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- added", $sla->id, $sla->title));
+				$context->getLogger()->info(sprintf("[ApplySlas] SLA %d %s -- added", $sla->id, $sla->title));
 				$ticket_sla = $ticket->addSla($sla);
 				$this->em->persist($ticket_sla);
 				$this->cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
 			} else {
-				$context->getLogger()->debug(sprintf("[ApplySlas] SLA %d %s -- no match", $sla->id, $sla->title));
+				$context->getLogger()->info(sprintf("[ApplySlas] SLA %d %s -- no match", $sla->id, $sla->title));
 			}
 		}
 

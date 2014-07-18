@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\Util;
 
 class TriggerTermComposite implements TriggerTermInterface, \Countable
 {
@@ -119,22 +120,34 @@ class TriggerTermComposite implements TriggerTermInterface, \Countable
 	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		$logger = $context->getLogger();
+
 		if (!$this->terms) {
+			if ($logger) $logger->debug('[Term:Composite] Empty term set => true');
 			return true;
 		}
 
 		if ($this->op == self::OP_AND) {
-			foreach ($this->terms as $t) {
+			if ($logger) $logger->debug('[Term:Composite] AND operator');
+			foreach ($this->terms as $k => $t) {
 				if (!$t->isTriggerMatch($ticket, $context)) {
+					if ($logger) $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
 					return false;
+				} else {
+					if ($logger) $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
 				}
 			}
 
 			return true;
 		} else {
-			foreach ($this->terms as $t) {
+			if ($logger) $logger->debug('[Term:Composite] OR operator');
+
+			foreach ($this->terms as $k => $t) {
 				if ($t->isTriggerMatch($ticket, $context)) {
+					if ($logger) $logger->debug(sprintf('[Term:%s:%d] => true', Util::getBaseClassname($t), $k));
 					return true;
+				} else {
+					if ($logger) $logger->debug(sprintf('[Term:%s:%d] => false', Util::getBaseClassname($t), $k));
 				}
 			}
 

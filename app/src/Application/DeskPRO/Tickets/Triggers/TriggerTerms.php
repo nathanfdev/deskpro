@@ -117,7 +117,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
 
 	/**
 	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $ticket_changelog
+	 * @param ExecutorContextInterface $context
 	 * @return bool
 	 */
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)

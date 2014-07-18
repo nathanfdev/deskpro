@@ -383,6 +383,10 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			$check_ids = array();
 		}
 
+		if (!is_array($check_ids)) {
+			$check_ids = array($check_ids);
+		}
+
 		if ($check_ids) {
 			$check_ids = array_fill_keys($check_ids, true);
 		}
