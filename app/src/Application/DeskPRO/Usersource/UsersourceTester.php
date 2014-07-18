@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class UsersourceTester
@@ -142,7 +143,14 @@ class UsersourceTester
 
 		if ($result && $result->isValid() && $result->getIdentity()) {
 			$result_raw = "DATA RECORD:\n=======================================================\n";
-			$result_raw .= print_r($result->getIdentity()->getRawData(), true);
+			$raw_data = Arrays::mapRecursive($result->getIdentity()->getRawData(), function($v) {
+				if (is_int($v) || is_float($v) || ctype_digit($v) || is_bool($v) || is_null($v) || ctype_print($v)) {
+					return $v;
+				} else {
+					return utf8_bad_replace($v);
+				}
+			});
+			$result_raw .= print_r($raw_data, true);
 		} else {
 			$result_raw = "No Identity";
 		}
