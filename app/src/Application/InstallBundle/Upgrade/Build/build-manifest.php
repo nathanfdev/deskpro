@@ -1408,6 +1408,11 @@
 						'file' => DP_ROOT . '/src/Application/InstallBundle/Upgrade/Build/2014/05/Build1401186433.php',
 						'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build1401186433'
 					),
+
+					1401186434 => array(
+						'file' => DP_ROOT . '/src/Application/InstallBundle/Upgrade/Build/2014/05/Build1401186434.php',
+						'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build1401186434'
+					),
 				
 					1401788733 => array(
 						'file' => DP_ROOT . '/src/Application/InstallBundle/Upgrade/Build/2014/06/Build1401788733.php',
