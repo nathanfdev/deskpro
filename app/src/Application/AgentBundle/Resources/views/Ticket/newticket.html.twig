@@ -257,7 +257,7 @@ pageMeta.baseId = '{{ baseId }}';
                                             data-placeholder="Add a label"
                                             name="labels"
                                             value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
-                                            {% if app.getSetting('labels.tickets.agent_can_create') %}data-allow-new="1"{% endif %}
+                                            data-allow-new="{{ app.getSetting('labels.tickets.agent_can_create') }}"
                                     />
                                 </div>
                             </td>

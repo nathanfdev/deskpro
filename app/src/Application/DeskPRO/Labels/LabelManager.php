@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\EntityRepository\LabelDef;
+use Application\DeskPRO\ORM\EntityManager;
 
 class LabelManager
 {
@@ -180,7 +182,12 @@ class LabelManager
 		return false;
 	}
 
-	public function setLabelsArray(array $labels, $em = null)
+	/**
+	 * @param array $labels
+	 * @param EntityManager $em
+	 * @param array|null $allowed
+	 */
+	public function setLabelsArray(array $labels, EntityManager $em = null)
 	{
 		$labels_raw = $labels;
 		$labels = array();
@@ -195,6 +202,14 @@ class LabelManager
 		$existing_labels = $this->getLabelsArray();
 		$added = array_diff($labels, $existing_labels);
 		$removed = array_diff($existing_labels, $labels);
+
+		/** @var LabelDef $rep */
+		$rep = App::getEntityRepository('DeskPRO:LabelDef');
+		$type = $rep->getTypeByEntityName($this->label_entity_name);
+		if (!App::getSetting(sprintf('labels.%s.agent_can_create', $type))) {
+			$allowed = $rep->findLabelsByType($type);
+			$added = array_intersect($added, $allowed);
+		}
 
 		foreach ($added as $added_label) {
 			$obj = $this->addLabel($added_label);
