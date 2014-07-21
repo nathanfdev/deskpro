@@ -1,0 +1,46 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_attributes %}ng-controller="Admin_Agents_Ctrl_Import"{% endblock %}
+{% block modal_controls %}<button type="button" class="close" ng-click="$dismiss()">&times;</button>{% endblock %}
+
+
+
+{% block modal_title %}
+    <h4 class="modal-title">Bulk Invite Agents</h4>
+{% endblock %}
+
+
+
+{% block modal_body %}
+    <h4>
+        Copy/Paste a list of Email Addresses
+    </h4>
+    <p>
+        Paste a list of addresses below separated by a comma, semicolon, space or line return
+    </p>
+    <textarea rows="4" class="form-control" ng-model="Ctrl.emails"></textarea>
+    <br />
+    <button class="btn btn-default">
+        <i class="fa fa-arrow-circle-right"></i>
+        Next step
+    </button>
+
+    <br /><br /><br />
+
+    <h4>
+        Upload a spreadsheet
+    </h4>
+    <p>
+        Download this excel spreadsheet and fill it with your own data. When you are ready, upload it and your agents will be created.
+    </p>
+    <p>
+        <i class="fa fa-file-excel-o"></i>
+        <a href="#">DeskPRO-BulkAgents-Template.xls</a>
+    </p>
+
+{% endblock %}
+
+
+
+{% block modal_footer %}
+    <i class="spinner-flat" ng-show="Ctrl.busy"></i>
+{% endblock %}

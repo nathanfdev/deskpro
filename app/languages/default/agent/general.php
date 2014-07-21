@@ -3,6 +3,7 @@
 	'agent.general.actions'                                 => 'Actions',
 	'agent.general.activity_stream'                         => 'Activity Stream',
 	'agent.general.add'                                     => 'Add',
+	'agent.general.add_bulk'                                => 'Bulk Add Agents',
 	'agent.general.add_a_label'                             => 'Add a label',
 	'agent.general.add_a_new_criteria'                      => 'Add a new criteria',
 	'agent.general.add_a_new_term'                          => 'Add a new term',

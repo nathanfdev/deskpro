@@ -45,6 +45,7 @@ define([
 	'Admin/Agents/Ctrl/DeletedRestore',
 	'Admin/Agents/Ctrl/List',
 	'Admin/Agents/Ctrl/Logs',
+	'Admin/Agents/Ctrl/Import',
 	'Admin/AgentGroups/Ctrl/Edit',
 	'Admin/AgentGroups/Ctrl/List',
 	'Admin/AgentTeams/Ctrl/Edit',

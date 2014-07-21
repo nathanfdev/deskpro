@@ -27,6 +27,10 @@
 					<i class="fa fa-plus"></i>
 					{{ phrase('agent.general.add') }}
 				</a>
+                <button class="btn btn-default" ng-click="ListCtrl.$modal.open({ templateUrl: ListCtrl.getTemplatePath('Agents/import.html') })">
+                    <i class="fa fa-plus"></i>
+                    {{ phrase('agent.general.add_bulk') }}
+                </button>
 			</div>
 		</article>
 	</section>
