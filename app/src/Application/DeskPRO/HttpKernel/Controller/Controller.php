@@ -206,7 +206,8 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	 */
 	public function createJsonResponse($content, $status_code = 200)
 	{
-		$response = $this->container->get('response');
+//		$response = $this->container->get('response');
+		$response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
 
 		// Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
 		if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
@@ -217,9 +218,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
 		$response->setStatusCode($status_code);
 
-		if (is_array($content)) {
-			$content = Util::jsonEncode($content);
-		}
+//		if (is_array($content)) {
+//			$content = Util::jsonEncode($content);
+//		}
 
 		$response->setContent($content);
 

@@ -11,31 +11,54 @@
 
 
 {% block modal_body %}
-    <h4>
-        Copy/Paste a list of Email Addresses
-    </h4>
-    <p>
-        Paste a list of addresses below separated by a comma, semicolon, space or line return
-    </p>
-    <textarea rows="4" class="form-control" ng-model="Ctrl.emails"></textarea>
-    <br />
-    <button class="btn btn-default">
-        <i class="fa fa-arrow-circle-right"></i>
-        Next step
-    </button>
 
-    <br /><br /><br />
+    <div ng-if="!Ctrl.page">
+        <h4>
+            Copy/Paste a list of Email Addresses
+        </h4>
+        <p>
+            Paste a list of addresses below separated by a comma, semicolon, space or line return
+        </p>
+        <textarea rows="4" class="form-control" ng-model="Ctrl.emails" ng-list="/[\,\;\n\s]/" required></textarea>
+        <br />
+        <button class="btn btn-default" ng-click="Ctrl.sendEmails()">
+            <i class="fa fa-arrow-circle-right"></i>
+            Next step
+        </button>
 
-    <h4>
-        Upload a spreadsheet
-    </h4>
-    <p>
-        Download this excel spreadsheet and fill it with your own data. When you are ready, upload it and your agents will be created.
-    </p>
-    <p>
-        <i class="fa fa-file-excel-o"></i>
-        <a href="#">DeskPRO-BulkAgents-Template.xls</a>
-    </p>
+        <br /><br /><br />
+
+        <h4>
+            Upload a spreadsheet
+        </h4>
+        <p>
+            Download this excel spreadsheet and fill it with your own data. When you are ready, upload it and your agents will be created.
+        </p>
+        <p>
+            <i class="fa fa-file-excel-o"></i>
+            <a href="#">DeskPRO-BulkAgents-Template.xls</a>
+        </p>
+        <br />
+        <div style="width: 200px;border-radius:5px;border:1px #ccc dashed;padding:10px;" class="text-center">
+            Drag & Drop Completed Spreadsheet here
+        </div>
+    </div>
+
+    <div ng-if="1 === Ctrl.page">
+        <p>
+            23 Agents have been invited to DeskPRO
+        </p>
+        <p ng-if="Ctrl.faled.length">
+
+        </p>
+        <ul>
+            <li ng-repeat="agent in Ctrl.invited">
+
+            </li>
+        </ul>
+
+
+    </div>
 
 {% endblock %}
 

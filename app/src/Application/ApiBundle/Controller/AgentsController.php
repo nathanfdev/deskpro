@@ -181,17 +181,39 @@ class AgentsController extends AbstractController implements ProtectedController
 
 	public function saveAgentAction($id = null)
 	{
+		$set_emails = $this->in->getArrayOfStrings('agent.emails');
+
+		if ($this->in->getString('agent.email')) {
+			array_unshift($set_emails, $this->in->getString('agent.email'));
+		}
+
+		$agent_postdata = $this->in->getArrayValue('agent');
+
+		$filter_subs = $this->in->getArrayValue('filter_subs');
+		$other_subs = $this->in->getArrayValue('other_subs');
+		$quick_add = $this->in->getBool('quick_add');
+		$perm_overrides = $this->in->getArrayValue('perm_overrides');
+		$dep_perm_overrides = $this->in->getArrayValue('dep_perm_overrides');
+		$profile = $this->in->getArrayValue('profile');
+
+		return $this->saveAgent($id, $set_emails, $agent_postdata, $filter_subs, $other_subs, $quick_add, $perm_overrides,
+								$dep_perm_overrides, $profile);
+	}
+
+	protected function saveAgent($id = null, $set_emails, $agent_postdata, $filter_subs, $other_subs, $quick_add,
+	                             $perm_overrides, $dep_perm_overrides, $profile)
+	{
 		#-------------------------
 		# Pre-validation
 		#-------------------------
 
 		$exist_person = null;
 
-		$set_emails = $this->in->getArrayOfStrings('agent.emails');
-
-		if ($this->in->getString('agent.email')) {
-			array_unshift($set_emails, $this->in->getString('agent.email'));
-		}
+//		$set_emails = $this->in->getArrayOfStrings('agent.emails');
+//
+//		if ($this->in->getString('agent.email')) {
+//			array_unshift($set_emails, $this->in->getString('agent.email'));
+//		}
 
 		$set_emails = array_unique($set_emails);
 		$set_emails = Arrays::removeFalsey($set_emails);
@@ -292,7 +314,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$edit_agent
 		);
 
-		$agent_postdata = $this->in->getArrayValue('agent');
+//		$agent_postdata = $this->in->getArrayValue('agent');
 
 		// We did a bit of pre-cleanup above to prepend
 		// primary address to emails list
@@ -311,11 +333,14 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save subscriptions
 		#-------------------------
 
-		if ($this->in->checkIsset('filter_subs') && $this->in->checkIsset('other_subs')) {
+//		if ($this->in->checkIsset('filter_subs') && $this->in->checkIsset('other_subs')) {
+		if ($filter_subs && $other_subs) {
 			$notif_pref_loader = new AgentNotifPrefsLoader($agent, $this->em);
 			$notif_prefs = $notif_pref_loader->getPrefsFromArray(
-				$this->in->getArrayValue('filter_subs'),
-				$this->in->getArrayValue('other_subs')
+//				$this->in->getArrayValue('filter_subs'),
+//				$this->in->getArrayValue('other_subs')
+				$filter_subs,
+				$other_subs
 			);
 
 			$notif_perist = new PrefsPersister($agent, $this->em);
@@ -326,7 +351,8 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Quick add: add 'all perms' group
 		#-------------------------
 
-		if ($this->in->getBool('quick_add')) {
+//		if ($this->in->getBool('quick_add')) {
+		if ($quick_add) {
 			$ug = $this->container->getAgentGroups()->getSysGroup('agent_all_perms');
 			$agent->usergroups->add($ug);
 			$this->em->persist($agent);
@@ -337,9 +363,11 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save permission overrides
 		#-------------------------
 
-		if ($this->in->checkIsset('perm_overrides')) {
+//		if ($this->in->checkIsset('perm_overrides')) {
+		if ($perm_overrides) {
 			$perms = new AgentPermissions();
-			$perms->fromArray($this->in->getArrayValue('perm_overrides'));
+//			$perms->fromArray($this->in->getArrayValue('perm_overrides'));
+			$perms->fromArray($perm_overrides);
 
 			$persister = new GroupDbPersister($this->em);
 			$persister->saveOverridePerms($agent, $perms);
@@ -349,12 +377,14 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save department permission overrides
 		#-------------------------
 
-		if ($this->in->checkIsset('dep_perm_overrides')) {
+//		if ($this->in->checkIsset('dep_perm_overrides')) {
+		if ($dep_perm_overrides) {
 			$ticket_deps = $this->container->getTicketDepartments();
 			$chat_deps   = $this->container->getChatDepartments();
 
 			$set_perms = array();
-			foreach ($this->in->getArrayValue('dep_perm_overrides.tickets') as $did => $p) {
+//			foreach ($this->in->getArrayValue('dep_perm_overrides.tickets') as $did => $p) {
+			foreach ($dep_perm_overrides['tickets'] as $did => $p) {
 				if (!($dep = $ticket_deps->getById($did))) continue;
 				if (count($dep->children)) {
 					continue;
@@ -366,7 +396,8 @@ class AgentsController extends AbstractController implements ProtectedController
 					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
 				}
 			}
-			foreach ($this->in->getArrayValue('dep_perm_overrides.chat') as $did => $p) {
+//			foreach ($this->in->getArrayValue('dep_perm_overrides.chat') as $did => $p) {
+			foreach ($dep_perm_overrides['chat'] as $did => $p) {
 				if (!($dep = $chat_deps->getById($did))) continue;
 				if (count($dep->children)) {
 					continue;
@@ -388,17 +419,29 @@ class AgentsController extends AbstractController implements ProtectedController
 		#-------------------------
 
 		$data = array();
-		if ($this->in->checkIsset('profile.signature_html')) {
-			$data['signature_html'] = $this->in->getString('profile.signature_html');
+//		if ($this->in->checkIsset('profile.signature_html')) {
+//			$data['signature_html'] = $this->in->getString('profile.signature_html');
+//		}
+//		if ($this->in->checkIsset('profile.timezone')) {
+//			$data['timezone'] = $this->in->getString('profile.timezone');
+//		}
+//		if ($this->in->checkIsset('profile.unset_picture')) {
+//			$data['unset_picture'] = $this->in->getBool('profile.unset_picture');
+//		}
+//		if ($this->in->checkIsset('profile.set_picture_blob')) {
+//			$data['set_picture_blob'] = $this->in->getString('profile.set_picture_blob');
+//		}
+		if (isset($profile['signature_html'])) {
+			$data['signature_html'] = $profile['signature_html'];
 		}
-		if ($this->in->checkIsset('profile.timezone')) {
-			$data['timezone'] = $this->in->getString('profile.timezone');
+		if (isset($profile['timezone'])) {
+			$data['timezone'] = $profile['timezone'];
 		}
-		if ($this->in->checkIsset('profile.unset_picture')) {
-			$data['unset_picture'] = $this->in->getBool('profile.unset_picture');
+		if (isset($profile['unset_picture'])) {
+			$data['unset_picture'] = $profile['unset_picture'];
 		}
-		if ($this->in->checkIsset('profile.set_picture_blob')) {
-			$data['set_picture_blob'] = $this->in->getString('profile.set_picture_blob');
+		if (isset($profile['set_picture_blob'])) {
+			$data['set_picture_blob'] = $profile['set_picture_blob'];
 		}
 		if ($data) {
 			$this->_saveProfileData($agent, $data);
@@ -761,5 +804,13 @@ class AgentsController extends AbstractController implements ProtectedController
 			),
 			'mention_mode' => $prefs->getEmailMentionMode(),
 		));
+	}
+
+	/**
+	 *
+	 */
+	public function bulkCreateAgentsAction()
+	{
+
 	}
 }
