@@ -34,6 +34,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\HttpFoundation\JsonResponse;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
@@ -200,8 +201,9 @@ class AgentsController extends AbstractController implements ProtectedController
 								$dep_perm_overrides, $profile);
 	}
 
-	protected function saveAgent($id = null, $set_emails, $agent_postdata, $filter_subs, $other_subs, $quick_add,
-	                             $perm_overrides, $dep_perm_overrides, $profile)
+	protected function saveAgent($id = null, $set_emails, $agent_postdata = array(), $filter_subs = array(),
+	                             $other_subs = array(), $quick_add = false, $perm_overrides = array(),
+	                             $dep_perm_overrides = array(), $profile = array())
 	{
 		#-------------------------
 		# Pre-validation
@@ -811,6 +813,14 @@ class AgentsController extends AbstractController implements ProtectedController
 	 */
 	public function bulkCreateAgentsAction()
 	{
+		$emails = $this->in->getArrayValue('emails');
+		$ret = array();
 
+		foreach ($emails as $email) {
+			$response = $this->saveAgent(null, array($email));
+			$ret[] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
+		}
+
+		return $this->createApiResponse($ret);
 	}
 }

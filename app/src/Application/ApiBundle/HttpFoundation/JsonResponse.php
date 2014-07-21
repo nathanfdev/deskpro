@@ -37,13 +37,19 @@ class JsonResponse extends Response
 
 	public function __toString()
 	{
-		return $this->getContent();
+		return Util::jsonEncode($this->data);
+	}
+
+	public function getData()
+	{
+		return $this->data;
 	}
 
 	public function setContent($content)
 	{
 		if (is_array($content)) {
-			$content = Util::jsonEncode($content);
+			$this->data = $content;
+			$content = $this->__toString();
 		}
 
 		parent::setContent($content);
