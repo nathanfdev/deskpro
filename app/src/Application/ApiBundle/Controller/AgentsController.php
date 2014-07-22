@@ -187,12 +187,6 @@ class AgentsController extends AbstractController implements ProtectedController
 
 	public function saveAgentAction($id = null)
 	{
-		$set_emails = $this->in->getArrayOfStrings('agent.emails');
-
-		if ($this->in->getString('agent.email')) {
-			array_unshift($set_emails, $this->in->getString('agent.email'));
-		}
-
 		$agent_postdata = $this->in->getArrayValue('agent');
 
 		$filter_subs = $this->in->getArrayValue('filter_subs');
@@ -203,13 +197,13 @@ class AgentsController extends AbstractController implements ProtectedController
 		$profile = $this->in->getArrayValue('profile');
 		$skip_email = $this->in->getBool('skip_email');
 
-		return $this->saveAgent($id, $set_emails, $agent_postdata, $filter_subs, $other_subs, $quick_add, $perm_overrides,
-								$dep_perm_overrides, $profile);
+		return $this->saveAgent($id, $agent_postdata, $profile, $filter_subs, $other_subs, $quick_add, $perm_overrides,
+								$dep_perm_overrides);
 	}
 
-	protected function saveAgent($id = null, $set_emails, $agent_postdata = array(), $filter_subs = array(),
+	protected function saveAgent($id = null, $agent_postdata = array(), $profile = array(), $filter_subs = array(),
 	                             $other_subs = array(), $quick_add = false, $perm_overrides = array(),
-	                             $dep_perm_overrides = array(), $profile = array(), $skip_email = false)
+	                             $dep_perm_overrides = array(), $skip_email = false)
 	{
 		#-------------------------
 		# Pre-validation
@@ -222,6 +216,13 @@ class AgentsController extends AbstractController implements ProtectedController
 //		if ($this->in->getString('agent.email')) {
 //			array_unshift($set_emails, $this->in->getString('agent.email'));
 //		}
+		if (!isset($agent_postdata['emails'])) {
+			$agent_postdata['emails'] = array();
+		}
+		$set_emails = $agent_postdata['emails'];
+		if (isset($agent_postdata['email'])) {
+			array_unshift($set_emails, $agent_postdata['email']);
+		}
 
 		$set_emails = array_unique($set_emails);
 		$set_emails = Arrays::removeFalsey($set_emails);
@@ -823,14 +824,99 @@ class AgentsController extends AbstractController implements ProtectedController
 	 */
 	public function bulkCreateAgentsAction()
 	{
-		$emails = $this->in->getArrayValue('emails');
-		$emails = array_unique($emails);
+		if ($filename = $this->in->getString('filename')) {
+			return $this->bulkCreateAgentsFromFile($filename);
+		}
+
+		$agents = $this->in->getArrayValue('agents');
 		$ret = array();
 
-		foreach ($emails as $email) {
-			$response = $this->saveAgent(null, array($email));
+		foreach ($agents as $email => $agent) {
+			$response = $this->saveAgent(null, $agent);
 			$ret[trim($email)] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
 		}
+
+		return $this->createApiResponse($ret);
+	}
+
+	/**
+	 * todo external mapper file-to-form
+	 * @param $blobId
+	 * @return Response
+	 */
+	protected function bulkCreateAgentsFromFile($blobId)
+	{
+		if (!$blob = $this->em->find('DeskPRO:Blob', $blobId)) {
+			return $this->createApiErrorResponse('file_not_found', 'File not found');
+		}
+
+		$csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+
+		if (!file_exists($csv_file) || !is_readable($csv_file)) {
+			file_put_contents($csv_file, App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob));
+		}
+
+		if (!file_exists($csv_file) || !is_readable($csv_file)) {
+			return $this->createApiErrorResponse('file_not_found', 'File not found');
+		}
+
+		if (!$fp = fopen($csv_file, 'r')) {
+			return $this->createApiErrorResponse('file_not_readable', 'Can\'t read file');
+		}
+		$row = fgetcsv($fp); // headers
+		if (0 !== strpos($row[0], 'Email Address')) {
+			fclose($fp);
+			return $this->createApiErrorResponse('file_wrong_format', 'Wrong format of CSV file');
+		}
+
+		$delimeter = 1 === count($row) ? substr($row[0], 13, 1) : ',';
+
+		$ret = array();
+		while ($row = fgetcsv($fp, null, $delimeter)) {
+
+			if (!$email = trim($row[0])) continue;
+
+			$data = array(
+				'email' => $email,
+				'name' => $row[1],
+				'agent_groups' => array(),
+				'teams' => array(),
+				'zones' => array(),
+			);
+
+			$profile = array(
+				'signature_html' => $row[7],
+			);
+
+			if ('yes' === strtolower($row[4])) {
+				$data['zones'][] = 'admin';
+			}
+			if ('yes' === strtolower($row[5])) {
+				$data['zones'][] = 'reports';
+			}
+			foreach (explode(',', $row[2]) as $group) {
+				if (!$group = (int) trim($group)) continue;
+				$data['agent_groups'][] = $group;
+			}
+			foreach (explode(',', $row[3]) as $team) {
+				if (!$team = (int) trim($team)) continue;
+				$data['teams'][] = $team;
+			}
+
+			if (!trim($data['name'])) {
+				$ret[$email] = array('error_code' => 'validation_error', 'error_message' => 'Name is required');
+				continue;
+			}
+			if (!$data['agent_groups']) {
+				$ret[$email] = array('error_code' => 'validation_error', 'error_message' => 'At least 1 agent group required');
+				continue;
+			}
+
+			$response = $this->saveAgent(null, $data, $profile);
+			$ret[$email] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
+		}
+
+		fclose($fp);
 
 		return $this->createApiResponse($ret);
 	}

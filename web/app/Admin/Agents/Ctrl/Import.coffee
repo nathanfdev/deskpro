@@ -2,15 +2,28 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 	class Admin_Agents_Ctrl_Import extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Agents_Ctrl_Import'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = []
+		@DEPS      = ['$http', '$upload']
 
 		init: ->
 			@busy = false
 			@restart()
+			@$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload') }
 
 
 
-		initialLoad: ->
+		uploadFiles: (files) ->
+			@busy = true
+			@page = 1
+
+			# expected only 1 file
+			for file in files
+				@$upload.upload({url: @$scope.fileUploadOptions.url, file: file}).then(
+					(data) =>
+						@sendEmails data.data.filename
+					() =>
+						@busy = false
+						console.log 'error'
+				)
 
 
 
@@ -22,28 +35,41 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 
-		sendEmails: ->
-			return if !@$scope.Form.$valid
+		submitEmails: ->
+	    return if !@$scope.Form.$valid
 
+
+
+		sendEmails: (filename) ->
 			@busy = true
+			@page = 1
+
+			agents = {}
+			@emails.map (email) =>
+				agents[email] = {email: email} # make unique
 
 			# todo redo with agents dataservice (provided in round robin branch)
-			@Api.sendPostJson('/agents_bulk', {emails: @emails}).then(
+			@Api.sendPostJson('/agents_bulk', {agents: agents, filename: filename}).then(
 				(data) =>
 					@busy = false
-					@page = 1
+
+					return if data.data.length? # catch array instead of object, possible if no results
 
 					for email, entry of data.data
 						@invited++ if entry.id?
-						if entry.error_code
-							if 'validation_error' == entry.error_code
-								entry = {error: entry.error_message}
+
+						if 'validation_error' == entry.error_code
+							message = entry.error_message
+							if entry.errors?.errors?
+								message = ''
+								entry.errors.errors.map (error) -> message += (error.message + ' ')
+							entry = {error: message}
 
 						entry._email = email
 						@results.push entry
 
 				() =>
-					@busy => false
+					@busy = false
 			)
 
 
