@@ -10,11 +10,6 @@
             mainList = element.closest('ul');
             element.addClass('group-section');
             contentEls = element.find('.group-section-content');
-            $timeout(function() {
-              return contentEls.each(function() {
-                return $(this).height($(this).height()).addClass('with-no-height');
-              });
-            }, 200);
             a = element.find('a.toggle').first();
             return a.on('click', function() {
               var mode;
