@@ -20,6 +20,10 @@ if (window.jQuery && ('ontouchstart' in window || 'msmaxtouchpoints' in window.n
 	jQuery.fn.on = function() {
 		var fnKey = 1, oldFn, hasClicked = false;
 
+		if (arguments[0] != 'click') {
+			return originalOnMethod.apply(this, arguments);
+		}
+
 		// on(eventName, fn)
 		// or on(eventName, selector, fn)
 		// So we need to detect those
@@ -61,6 +65,10 @@ if (window.jQuery && ('ontouchstart' in window || 'msmaxtouchpoints' in window.n
 	// Change event type and re-apply .on() method
 	jQuery.fn.one = function() {
 		var fnKey = 1, oldFn, hasClicked = false;
+
+		if (arguments[0] != 'click') {
+			return originalOnMethod.apply(this, arguments);
+		}
 
 		if (typeof arguments[2] == 'function') {
 			fnKey = 2;
