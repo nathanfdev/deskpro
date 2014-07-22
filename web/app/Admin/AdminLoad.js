@@ -189,6 +189,13 @@ define([
 ], function(angular) {
 	return {
 		start: function() {
+
+			// Set path for ace editor
+			ace.config.set("basePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
+			ace.config.set("modePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
+			ace.config.set("themePath",  DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
+			ace.config.set("workerPath", DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
+
 			var loadingEl = document.getElementById('dp_loading');
 			loadingEl.parentNode.removeChild(loadingEl);
 			loadingEl = null;
