@@ -171,8 +171,8 @@ class OutgoingAccountTester
 		$this->swift_arraylogger->add("[options] password: {$account_config->password}");
 
 		$transport = \Swift_SmtpTransport::newInstance(
-			$account_config->host,
-			$account_config->port,
+			$account_config->host ?: 'localhost',
+			$account_config->port ?: 25,
 			$account_config->secure_mode
 		);
 		if ($account_config->user) {
