@@ -168,7 +168,6 @@
 	'agent.general.date_of_last_agent_reply'                => 'Date of Last Agent Reply',
 	'agent.general.date_of_last_reply'                      => 'Date of Last Reply',
 	'agent.general.date_of_last_user_reply'                 => 'Date of Last User Reply',
-	'agent.general.date_opened'                             => 'Date Opened',
 	'agent.general.date_published'                          => 'Date Published',
 	'agent.general.date_resolved'                           => 'Date Resolved',
 	'agent.general.dates_and_times'                         => 'Dates & Times',

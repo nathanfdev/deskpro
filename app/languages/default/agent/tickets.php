@@ -77,8 +77,6 @@
 	'agent.tickets.date_last_agent_reply'               => 'Date of Last Agent Reply',
 	'agent.tickets.date_last_reply'                     => 'Date of Last Reply',
 	'agent.tickets.date_last_user_reply'                => 'Date of Last User Reply',
-	'agent.tickets.date_opened_newerolder'              => 'Date Opened (Newer-Older)',
-	'agent.tickets.date_opened_oldernewer'              => 'Date Opened (Older-Newer)',
 	'agent.tickets.debug_file'                          => 'Debug File',
 	'agent.tickets.debug_file_download'                 => 'Download Debug File',
 	'agent.tickets.debug_file_explain'                  => 'A DeskPRO support agent may ask you to provide this file to help diagnose issues.',

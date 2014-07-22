@@ -5,8 +5,8 @@
 		<div class="term">
 			{{ phrase('agent.general.order_by') }}
 			<select name="filter[order_by]">
-				<option value="ticket.date_created:desc">{{ phrase('agent.tickets.date_opened_newerolder') }}</option>
-				<option value="ticket.date_created:asc">{{ phrase('agent.tickets.date_opened_oldernewer') }}</option>
+				<option value="ticket.date_created:desc">{{ phrase('date_created') }}</option>
+				<option value="ticket.date_created:asc">{{ phrase('date_created') }}</option>
 				<option value="ticket.priority:desc">{{ phrase('agent.tickets.priority_highestlowest') }}</option>
 				<option value="ticket.priority:asc">{{ phrase('agent.tickets.priority_lowesthighest') }}</option>
 			</select>
