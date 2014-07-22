@@ -130,6 +130,20 @@ class PortalPageDisplay extends PageDisplayAbstract
 	}
 
 
+	/**
+	 * @param string|null $k Specific key to fetch
+	 * @return array|mixed|null
+	 */
+	public function getData($k = null)
+	{
+		if ($k !== null) {
+			if (!$this->data) return null;
+			return isset($this->data[$k]) ? $this->data[$k] : null;
+		}
+		return $this->data;
+	}
+
+
 
 	############################################################################
 	# Doctrine Metadata
