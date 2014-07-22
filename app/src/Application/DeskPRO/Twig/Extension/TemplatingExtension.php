@@ -1654,6 +1654,8 @@ class TemplatingExtension extends \Twig_Extension
 			$sid .= 'unknown';
 		}
 
+		$version = defined(DP_BUILD_TIME) ? DP_BUILD_TIME : '0';
+
 		/** @var \Application\DeskPRO\Templating\Asset\UrlPackage $helper */
 		$helper = $this->getContainer()->get('templating.helper.assets');
 
@@ -1661,16 +1663,17 @@ class TemplatingExtension extends \Twig_Extension
 
 		$html = <<<HTML
 <script type="text/javascript">
-window.onerror = null; delete window.onerror;
-var _trackJs = {
-	customer: '4eebe4aa1bc2404e89fc4250152d18a0',
+window.onerror = null;
+delete window.onerror;
+window._trackJs = {
 	sessionId: '$sid',
-	trackAjaxFail: false,
-	trackConsoleError: true,
-	trackGlobal: true
+	token: '4eebe4aa1bc2404e89fc4250152d18a0',
+	version: '$version',
+	console: { enabled: true, display: true, error: true },
+	network: { error: false }
 };
 </script>
-<script type="text/javascript" src="$src"></script>
+<script type="text/javascript" src="$src" data-token="4eebe4aa1bc2404e89fc4250152d18a0"></script>
 HTML;
 		return $html;
 	}
