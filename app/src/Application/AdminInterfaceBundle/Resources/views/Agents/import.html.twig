@@ -5,34 +5,35 @@
 
 
 {% block modal_title %}
-    <h4 class="modal-title">Bulk Invite Agents</h4>
+    <h4 class="modal-title">{{ phrase('adm.agents.import_title') }}</h4>
 {% endblock %}
 
 
 
 {% block modal_body %}
 
-    <form ng-if="!Ctrl.page"role=" form" name="Form" ng-submit="Ctrl.sendEmails()">
+    <form ng-show="!Ctrl.page" role="form" name="Form" ng-submit="Ctrl.sendEmails()">
         <h4>
-            Copy/Paste a list of Email Addresses
+            {{ phrase('adm.agents.import_textarea_title') }}
         </h4>
         <p>
-            Paste a list of addresses below separated by a comma, semicolon, space or line return
+            {{ phrase('adm.agents.import_textarea_description') }}
         </p>
-        <textarea rows="4" class="form-control" name="emails" ng-model="Ctrl.emails" ng-list="/[\,\;\n\s]/" required></textarea>
-        <br />
+        <div class="form-group" dp-error-class="Form.emails">
+            <textarea rows="4" class="form-control" name="emails" ng-model="Ctrl.emails" ng-list="/[\,\;\n\s]/" required></textarea>
+        </div>
         <button class="btn btn-default" dp-submit-form>
             <i class="fa fa-arrow-circle-right"></i>
-            Next step
+            {{ phrase('adm.agents.import_btn_next') }}
         </button>
 
         <br /><br /><br />
 
         <h4>
-            Upload a spreadsheet
+            {{ phrase('adm.agents.import_file_title') }}
         </h4>
         <p>
-            Download this excel spreadsheet and fill it with your own data. When you are ready, upload it and your agents will be created.
+            {{ phrase('adm.agents.import_file_description') }}
         </p>
         <p>
             <i class="fa fa-file-excel-o"></i>
@@ -40,24 +41,21 @@
         </p>
         <br />
         <div style="width: 200px;border-radius:5px;border:1px #ccc dashed;padding:10px;" class="text-center">
-            Drag & Drop Completed Spreadsheet here
+            {{ phrase('adm.agents.import_file_dd') }}
         </div>
     </form>
 
-    <div ng-if="1 === Ctrl.page">
-        <p>
-            23 Agents have been invited to DeskPRO
-        </p>
-        <p ng-if="Ctrl.faled.length">
+    <div ng-show="1 === Ctrl.page">
+        <p ng-pluralize count="Ctrl.invited" when="{{ ng_plural_phrase('adm.agents.import_results') }}"></p>
+        <p ng-if="Ctrl.results.length - Ctrl.invited" ng-pluralize count="Ctrl.results.length - Ctrl.invited" when="{{ ng_plural_phrase('adm.agents.import_results_failed') }}"></p>
 
-        </p>
-        <ul>
-            <li ng-repeat="agent in Ctrl.invited">
-
+        <ul class="dp-item-list">
+            <li ng-repeat="agent in Ctrl.results">
+                <h4>
+                    {% include 'AdminInterfaceBundle:Agents:agent.html.twig' %}
+                </h4>
             </li>
         </ul>
-
-
     </div>
 
 {% endblock %}
@@ -66,4 +64,7 @@
 
 {% block modal_footer %}
     <i class="spinner-flat" ng-show="Ctrl.busy"></i>
+    <button class="btn btn-default" ng-show="1 === Ctrl.page" ng-click="Ctrl.restart()">
+        {{ phrase('adm.agents.import_btn_more') }}
+    </button>
 {% endblock %}

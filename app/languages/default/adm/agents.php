@@ -62,4 +62,18 @@
 	'adm.agents.perm_ticket_modify_set_awaiting_user'             => 'Can set status to awaiting user',
 	'adm.agents.perm_ticket_modify_set_awaiting_agent'            => 'Can set status to awaiting agent',
 	'adm.agents.perm_ticket_modify_set_resolved'                  => 'Can set status to resolved',
+
+
+
+	'adm.agents.import_title'                                     => 'Bulk Invite Agents',
+	'adm.agents.import_textarea_title'                            => 'Copy/Paste a list of Email Addresses',
+	'adm.agents.import_textarea_description'                      => 'Paste a list of addresses below separated by a comma, semicolon, space or line return',
+	'adm.agents.import_file_title'                                => 'Upload a spreadsheet',
+	'adm.agents.import_file_description'                          => 'Download this excel spreadsheet and fill it with your own data. When you are ready, upload it and your agents will be created',
+	'adm.agents.import_file_dd'                                   => 'Drag & Drop Completed Spreadsheet here',
+	'adm.agents.import_btn_next'                                  => 'Next step',
+	'adm.agents.import_btn_more'                                  => 'Invite More Agents?',
+	'adm.agents.import_results'                                   => '{{count}} Agent have been invited to DeskPRO|{{count}} Agents have been invited to DeskPRO',
+	'adm.agents.import_results_failed'                            => '{{count}} Agent Invitation Failed|{{count}} Agent Invitations Failed',
+
 );

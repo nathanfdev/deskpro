@@ -201,6 +201,7 @@ class AgentsController extends AbstractController implements ProtectedController
 		$perm_overrides = $this->in->getArrayValue('perm_overrides');
 		$dep_perm_overrides = $this->in->getArrayValue('dep_perm_overrides');
 		$profile = $this->in->getArrayValue('profile');
+		$skip_email = $this->in->getBool('skip_email');
 
 		return $this->saveAgent($id, $set_emails, $agent_postdata, $filter_subs, $other_subs, $quick_add, $perm_overrides,
 								$dep_perm_overrides, $profile);
@@ -208,7 +209,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
 	protected function saveAgent($id = null, $set_emails, $agent_postdata = array(), $filter_subs = array(),
 	                             $other_subs = array(), $quick_add = false, $perm_overrides = array(),
-	                             $dep_perm_overrides = array(), $profile = array())
+	                             $dep_perm_overrides = array(), $profile = array(), $skip_email = false)
 	{
 		#-------------------------
 		# Pre-validation
@@ -460,7 +461,8 @@ class AgentsController extends AbstractController implements ProtectedController
 		#-------------------------
 
 		// Send welcome email for new users
-		if ($is_new && !$this->in->getBool('skip_email')) {
+//		if ($is_new && !$this->in->getBool('skip_email')) {
+		if ($is_new && !$skip_email) {
 			$message = $this->container->getMailer()->createMessage();
 			$message->setToPerson($agent);
 			$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
@@ -481,8 +483,8 @@ class AgentsController extends AbstractController implements ProtectedController
 //		} else {
 //			return $this->createSuccessResponse(array('person_id' => $agent->id));
 //		}
-		$data = $this->getAgent($agent->id);
-		$data['person_id'] = $agent->id;
+		$data = $agent->toApiData();
+		$data['person_id'] = $agent['id']; // back compatibility
 		return $this->createApiResponse($data);
 	}
 
@@ -826,7 +828,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		foreach ($emails as $email) {
 			$response = $this->saveAgent(null, array($email));
-			$ret[] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
+			$ret[trim($email)] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
 		}
 
 		return $this->createApiResponse($ret);
