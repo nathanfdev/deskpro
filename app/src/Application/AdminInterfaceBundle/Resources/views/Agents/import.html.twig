@@ -12,16 +12,16 @@
 
 {% block modal_body %}
 
-    <div ng-if="!Ctrl.page">
+    <form ng-if="!Ctrl.page"role=" form" name="Form" ng-submit="Ctrl.sendEmails()">
         <h4>
             Copy/Paste a list of Email Addresses
         </h4>
         <p>
             Paste a list of addresses below separated by a comma, semicolon, space or line return
         </p>
-        <textarea rows="4" class="form-control" ng-model="Ctrl.emails" ng-list="/[\,\;\n\s]/" required></textarea>
+        <textarea rows="4" class="form-control" name="emails" ng-model="Ctrl.emails" ng-list="/[\,\;\n\s]/" required></textarea>
         <br />
-        <button class="btn btn-default" ng-click="Ctrl.sendEmails()">
+        <button class="btn btn-default" dp-submit-form>
             <i class="fa fa-arrow-circle-right"></i>
             Next step
         </button>
@@ -42,7 +42,7 @@
         <div style="width: 200px;border-radius:5px;border:1px #ccc dashed;padding:10px;" class="text-center">
             Drag & Drop Completed Spreadsheet here
         </div>
-    </div>
+    </form>
 
     <div ng-if="1 === Ctrl.page">
         <p>

@@ -110,6 +110,11 @@ class AgentsController extends AbstractController implements ProtectedController
 
 	public function getAgentAction($id)
 	{
+		return $this->createApiResponse($this->getAgent($id));
+	}
+
+	protected function getAgent($id)
+	{
 		$agent = $this->container->getAgentData()->get($id);
 
 		if (!$agent) {
@@ -139,7 +144,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$data['signature_html'] = $agent->getSignatureHtml();
 		}
 
-		return $this->createApiResponse($data);
+		return $data;
 	}
 
 
@@ -469,13 +474,16 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Return
 		#-------------------------
 
-		if ($is_new) {
-			return $this->createApiCreateResponse(array(
-				'person_id' => $agent->id
-			), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
-		} else {
-			return $this->createSuccessResponse(array('person_id' => $agent->id));
-		}
+//		if ($is_new) {
+//			return $this->createApiCreateResponse(array(
+//				'person_id' => $agent->id
+//			), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
+//		} else {
+//			return $this->createSuccessResponse(array('person_id' => $agent->id));
+//		}
+		$data = $this->getAgent($agent->id);
+		$data['person_id'] = $agent->id;
+		return $this->createApiResponse($data);
 	}
 
 	/**

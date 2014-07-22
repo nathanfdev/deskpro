@@ -20,6 +20,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 		sendEmails: ->
+			return if !@$scope.Form.$valid
+
 			# todo redo with agents dataservice (provided in round robin branch)
 			@Api.sendPostJson('/agents_bulk', {emails: @emails}).then (data) =>
 				console.log data
