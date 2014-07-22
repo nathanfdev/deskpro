@@ -481,14 +481,18 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var viewValue;
                 if (value == null) {
                   value = {};
                 }
                 options = (value != null ? value.options : void 0) || {};
-                return {
+                viewValue = {
                   add_labels: (options.add_labels || []).join(', '),
                   remove_labels: (options.remove_labels || []).join(', ')
                 };
+                viewValue.with_add = !!viewValue.add_labels;
+                viewValue.with_remove = !!viewValue.remove_labels;
+                return viewValue;
               },
               getValue: function(model, data) {
                 var value;
@@ -498,8 +502,8 @@
                 value = {};
                 value.type = 'SetLabels';
                 value.options = {};
-                value.options.add_labels = (model.add_labels || '').split(',');
-                value.options.remove_labels = (model.remove_labels || '').split(',');
+                value.options.add_labels = model.with_add ? (model.add_labels || '').split(',') : '';
+                value.options.remove_labels = model.with_remove ? (model.remove_labels || '').split(',') : '';
                 return value;
               }
             };

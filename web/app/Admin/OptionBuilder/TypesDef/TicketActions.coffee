@@ -437,16 +437,22 @@ define [
 				return {
 					getViewValue: (value = {}, data) ->
 						options = value?.options || {}
-						return {
+						viewValue = {
 							add_labels:       (options.add_labels || []).join(', '),
 							remove_labels:    (options.remove_labels || []).join(', '),
 						}
+
+						viewValue.with_add    = !!viewValue.add_labels
+						viewValue.with_remove = !!viewValue.remove_labels
+
+						return viewValue
+
 					getValue: (model = {}, data) ->
 						value = {}
 						value.type = 'SetLabels'
 						value.options = {}
-						value.options.add_labels = (model.add_labels || '').split(',')
-						value.options.remove_labels = (model.remove_labels || '').split(',')
+						value.options.add_labels    = if model.with_add then     (model.add_labels || '').split(',')    else ''
+						value.options.remove_labels = if model.with_remove then  (model.remove_labels || '').split(',') else ''
 						return value
 				}
 			}
