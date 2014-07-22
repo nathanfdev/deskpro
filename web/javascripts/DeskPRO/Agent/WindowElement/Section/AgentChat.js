@@ -192,7 +192,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		this.close();
 
-		chatWin.open();
+		chatWin.open(true);
 	},
 
 	newIncomingMessage: function(info) {
