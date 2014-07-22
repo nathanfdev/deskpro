@@ -1962,14 +1962,27 @@ class TicketSearch extends SearcherAbstract
 										if ($choice == 'DP_NO_SELECTION') {
 											$wheres[] = "$field IS NOT NULL";
 										} else {
-											$wheres[] = "$field != " . $this->quoteDbValue($choice);
+											$w = "$field != " . $this->quoteDbValue($choice);
+
+											if ($choice != "") {
+												$w = "($w OR $field IS NULL)";
+											}
+
+											$where[] = $w;
 										}
 										break;
 									case self::OP_CONTAINS:
 									case self::OP_NOTCONTAINS:
 										$op = 'LIKE';
 										if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-										$wheres[] = "$field $op " . $this->quoteDbValue('%'.$choice.'%');
+										$w = "$field $op " . $this->quoteDbValue('%'.$choice.'%');
+
+										if ($op == self::OP_NOTCONTAINS) {
+											$w = "($w OR $field IS NULL)";
+										}
+
+										$where[] = $w;
+
 										break;
 								}
 
