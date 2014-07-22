@@ -903,10 +903,6 @@ class AgentsController extends AbstractController implements ProtectedController
 				$data['teams'][] = $team;
 			}
 
-			if (!trim($data['name'])) {
-				$ret[$email] = array('error_code' => 'validation_error', 'error_message' => 'Name is required');
-				continue;
-			}
 			if (!$data['agent_groups']) {
 				$ret[$email] = array('error_code' => 'validation_error', 'error_message' => 'At least 1 agent group required');
 				continue;
