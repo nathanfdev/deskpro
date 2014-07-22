@@ -355,11 +355,45 @@ class Connection extends \Doctrine\DBAL\Connection
 
 
 	/**
+	 * Just like insert() except uses INSERT IGNORE.
+	 *
+	 * @param string $tableName
+	 * @param array $data
+	 * @param array $types
+	 * @return int
+	 */
+	public function insertIgnore($tableName, array $data, array $types = array())
+	{
+		$this->connect();
+
+		try {
+			// column names are specified as array keys
+			$cols = array();
+			$placeholders = array();
+
+			foreach ($data as $columnName => $value) {
+				$cols[] = $columnName;
+				$placeholders[] = '?';
+			}
+
+			$query = 'INSERT IGNORE INTO ' . $tableName
+				. ' (' . implode(', ', $cols) . ')'
+				. ' VALUES (' . implode(', ', $placeholders) . ')';
+
+			return $this->executeUpdate($query, array_values($data), $types);
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+
+	/**
 	 * Just like insert() except executes a REPLACE INTO instead.
 	 *
 	 * @param $tableName
 	 * @param array $data
 	 * @param array $types
+	 * @return int
 	 */
 	public function replace($tableName, array $data, array $types = array())
 	{
