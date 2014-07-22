@@ -41,6 +41,7 @@
         </p>
         <br />
         <div style="width: 200px;border-radius:5px;border:1px #ccc dashed;padding:10px;" class="text-center">
+            <input type="file" style="opacity: 0;position:absolute;width: 100%;height:100%;left:0;right:0;top:0;bottom:0;"/>
             {{ phrase('adm.agents.import_file_dd') }}
         </div>
     </form>
@@ -48,14 +49,24 @@
     <div ng-show="1 === Ctrl.page">
         <p ng-pluralize count="Ctrl.invited" when="{{ ng_plural_phrase('adm.agents.import_results') }}"></p>
         <p ng-if="Ctrl.results.length - Ctrl.invited" ng-pluralize count="Ctrl.results.length - Ctrl.invited" when="{{ ng_plural_phrase('adm.agents.import_results_failed') }}"></p>
-
-        <ul class="dp-item-list">
-            <li ng-repeat="agent in Ctrl.results">
-                <h4>
-                    {% include 'AdminInterfaceBundle:Agents:agent.html.twig' %}
-                </h4>
-            </li>
-        </ul>
+        <br />
+        <div style="max-height: 400px;overflow-y: scroll;">
+            <ul class="dp-item-list">
+                <li ng-repeat="agent in Ctrl.results">
+                    <h4 ng-if="agent.id">
+                        <i class="fa fa-check text-success"></i>
+                        {% include 'AdminInterfaceBundle:Agents:agent.html.twig' %}
+                    </h4>
+                    <h4 ng-if="agent.error">
+                        <i class="fa fa-times text-danger"></i>
+                        {{ ng_var('agent._email') }}
+                        <br />
+                        <small class="muted">{{ ng_var('agent.error') }}</small>
+                    </h4>
+                    <p></p>
+                </li>
+            </ul>
+        </div>
     </div>
 
 {% endblock %}

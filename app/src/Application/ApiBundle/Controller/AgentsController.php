@@ -824,6 +824,7 @@ class AgentsController extends AbstractController implements ProtectedController
 	public function bulkCreateAgentsAction()
 	{
 		$emails = $this->in->getArrayValue('emails');
+		$emails = array_unique($emails);
 		$ret = array();
 
 		foreach ($emails as $email) {

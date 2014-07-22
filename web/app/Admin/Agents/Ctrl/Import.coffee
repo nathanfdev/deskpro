@@ -35,6 +35,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 					for email, entry of data.data
 						@invited++ if entry.id?
+						if entry.error_code
+							if 'validation_error' == entry.error_code
+								entry = {error: entry.error_message}
+
+						entry._email = email
 						@results.push entry
 
 				() =>
