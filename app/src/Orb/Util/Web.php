@@ -451,6 +451,98 @@ class Web
 
 
 	/**
+	 * Get the filesize of a file at a URL. Note: Requires remote file server to return
+	 * proper Content-Length header.
+	 *
+	 * @param string $url
+	 * @return bool|int   Filesize or false on failure
+	 */
+	public static function getUrlFileSize($url)
+	{
+		if (!function_exists('curl_init')) {
+			return false;
+		}
+
+		$ch = @curl_init($url);
+
+		@curl_setopt($ch, CURLOPT_NOBODY, true);
+		@curl_setopt($ch, CURLOPT_HEADER, true);
+		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+		$full_result = @curl_exec($ch);
+		@curl_close($ch);
+
+		if ($full_result) {
+			$full_result = Strings::standardEol($full_result);
+			$parts = explode("\n\n", $full_result);
+
+			foreach ($parts as $res) {
+				$matches = null;
+				if (preg_match("#^HTTP/1\\.\\d (\\d+)#", $res, $matches)) {
+					$status = (int)$matches[1];
+
+					if ($status == 200 || ($status > 300 && $status <= 308)) {
+						$matches = null;
+						if (preg_match("#Content-Length: (\\d+)#", $res, $matches)) {
+							$content_length = (int)$matches[1];
+							return $content_length;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	public static function getUrlFileName($url)
+	{
+		if (!function_exists('curl_init')) {
+			return false;
+		}
+
+		$ch = @curl_init($url);
+
+		@curl_setopt($ch, CURLOPT_NOBODY, true);
+		@curl_setopt($ch, CURLOPT_HEADER, true);
+		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		@curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+		$full_result = @curl_exec($ch);
+		@curl_close($ch);
+
+		if ($full_result) {
+			$full_result = Strings::standardEol($full_result);
+			$parts = explode("\n\n", $full_result);
+
+			foreach ($parts as $res) {
+				$matches = null;
+				if (preg_match("#^HTTP/1\\.\\d (\\d+)#", $res, $matches)) {
+					$status = (int)$matches[1];
+
+					if ($status == 200 || ($status > 300 && $status <= 308)) {
+						$matches = null;
+
+						if (preg_match("#filename\\s*=\\s*(.*?)$#", $res, $matches)) {
+							$file_name = trim($matches[1], '"\'');
+							$file_name = trim($file_name);
+
+							if ($file_name) {
+								return $file_name;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Check if a useragent is a known bot
 	 *
 	 * @param string $useragent The user agent to check or null to use the current request
