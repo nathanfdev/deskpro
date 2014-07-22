@@ -78,9 +78,9 @@
 			</tr>
 			<tr ng-repeat="agentObj in EditCtrl.form.agent_perms.agents" ng-class="{'first-of-type': $first}">
 				<td>
-					<i class="agent-icon agent-fa fa-22x text-middle" bg-img="agentObj.model.picture_url_22"></i>
+					<i class="agent-icon agent-fa text-middle" style="width: 22px; height: 22px; vertical-align: middle;" bg-img="agentObj.model.picture_url_22"></i>
 					&nbsp;
-					<span class="text-middle"><a href="#">{{ ng_var('agentObj.model.display_name') }}</a></span>
+					<span class="text-middle" style="position:relative; top: 1px;"><a href="{{ ng_href('agents.agents.edit', '{id: agentObj.model.id}') }}">{{ ng_var('agentObj.model.display_name') }}</a></span>
 				</td>
 				<td class="text-center">
 					<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(agentObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
