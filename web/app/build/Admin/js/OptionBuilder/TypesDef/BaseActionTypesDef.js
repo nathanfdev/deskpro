@@ -176,9 +176,10 @@
        */
 
       Admin_OptionBuilder_TypesDef_BaseActionTypesDef.prototype.getStandardIs = function(options) {
-        var me, prop_name, type;
+        var icon, me, prop_name, type;
         type = options.type;
         prop_name = options.propName;
+        icon = options.icon;
         me = this;
         return {
           getTemplate: function() {
@@ -195,7 +196,8 @@
                 }
                 return {
                   value: true,
-                  op: 'is'
+                  op: 'is',
+                  icon: icon || false
                 };
               },
               getValue: function(model, data) {

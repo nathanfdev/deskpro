@@ -621,6 +621,7 @@ define [
 
 		getModStopTriggers: (options = {}) ->
 			options.propName = 'stop_triggers'
+			options.icon = 'fa-chain-broken'
 			def = @getStandardIs(options)
 			return def
 

@@ -805,6 +805,7 @@
           options = {};
         }
         options.propName = 'stop_triggers';
+        options.icon = 'fa-chain-broken';
         def = this.getStandardIs(options);
         return def;
       };
