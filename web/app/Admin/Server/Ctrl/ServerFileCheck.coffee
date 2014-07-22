@@ -55,8 +55,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		doNextRequest: ->
 			@current_check++
 
-			if @current_check < @total_checks
-				@Api.sendGet('/server_file_check/' + @current_check).then( (res) =>
+			if @current_check <= @total_checks
+				@Api.sendGet('/server_file_check/' + (@current_check-1)).then( (res) =>
 					data = res.data.server_file_check
 
 					if data.okay
