@@ -69,7 +69,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		});
 
 		this.getEl('assign_me').on('click', function() {
-			self.getEl('agent_sel').val($(this).data('me')).trigger('change');
+			self.getEl('agent_sel').val($(this).data('agent')).trigger('change');
 		});
 
 		this.getEl('agent_team_sel').on('change', function() {
