@@ -825,7 +825,7 @@ HTML;
 		// Admins cant reset their password, but we dont want to reveal to this unknown user that we're an admin
 		// Send an email instead
 		if (!defined('DPC_IS_CLOUD')) {
-			if ($person->can_admin) {
+			if ($person->can_admin && $person->is_agent && !$person->is_deleted) {
 				$vars = array(
 					'person' => $person,
 					'email' => $email
