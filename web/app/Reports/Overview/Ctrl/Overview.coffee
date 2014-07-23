@@ -76,7 +76,7 @@ define [
 		###
 		# Used for hiding / showing AJAX loader
 		###
- 		toggleLoadingState: (data_key) ->
+		toggleLoadingState: (data_key) ->
 			@$scope[data_key].loading = !@$scope[data_key].loading
 
 
