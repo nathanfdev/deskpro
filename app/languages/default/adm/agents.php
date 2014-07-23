@@ -75,5 +75,6 @@
 	'adm.agents.import_btn_more'                                  => 'Invite More Agents?',
 	'adm.agents.import_results'                                   => '{{count}} Agent have been invited to DeskPRO|{{count}} Agents have been invited to DeskPRO',
 	'adm.agents.import_results_failed'                            => '{{count}} Agent Invitation Failed|{{count}} Agent Invitations Failed',
+	'adm.agents.import_kb'                                        => 'Read more about DeskPRO Bulk Add Agents Spreadsheet',
 
 );

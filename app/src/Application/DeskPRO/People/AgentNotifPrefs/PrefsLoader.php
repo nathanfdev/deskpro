@@ -165,15 +165,7 @@ class PrefsLoader
 		//     $prefs->setAppSubs('alert', 'crm', array('new_user' => true));
 		// Which is why we need this loopy loop to convert the structures a bit
 
-		foreach (array(
-			 'chat',
-			 'task',
-			 'twitter',
-			 'feedback',
-			 'publish',
-			 'crm',
-			 'account'
-		) as $app_name) {
+		foreach (Prefs::$apps as $app_name => $bool) {
 			foreach (array('email', 'alert') as $type) {
 				$subs = $prefs->getAppSubs($type, $app_name);
 				foreach (array_keys($subs) as $name) {
@@ -234,22 +226,13 @@ class PrefsLoader
 		#------------------------------
 
 		if ($other_subs) {
-			$valid_apps = array(
-				'chat' => true,
-				'task' => true,
-				'twitter' => true,
-				'feedback' => true,
-				'publish' => true,
-				'crm' => true,
-				'account' => true,
-			);
 
 			foreach ($other_subs as $info) {
 				$app_name    = !empty($info['type']) ? $info['type'] : null;
 				$email_types = !empty($info['email']) ? $info['email'] : array();
 				$alert_types = !empty($info['alert']) ? $info['alert'] : array();
 
-				if (!$app_name || !isset($valid_apps[$app_name])) {
+				if (!$app_name || !isset(Prefs::$apps[$app_name])) {
 					continue;
 				}
 

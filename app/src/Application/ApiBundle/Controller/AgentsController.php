@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
+use Application\DeskPRO\People\AgentNotifPrefs\Prefs;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsPersister;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
@@ -801,13 +802,13 @@ class AgentsController extends AbstractController implements ProtectedController
 			$tables['custom_filters_alert'] = $table_gen->buildCustomFiltersTable('alert', $custom_filters);
 		}
 
-		$tables['chat']     = $table_gen->buildChatTable();
-		$tables['task']     = $table_gen->buildTaskTable();
-		$tables['twitter']  = $table_gen->buildTwitterTable();
-		$tables['feedback'] = $table_gen->buildFeedbackTable();
-		$tables['publish']  = $table_gen->buildPublishTable();
-		$tables['crm']      = $table_gen->buildCrmTable();
-		$tables['account']  = $table_gen->buildAccountTable();
+		foreach (Prefs::$apps as $app => $bool) {
+			$method = 'build' . ucfirst($app) . 'Table';
+			if (!method_exists($table_gen, $method)) {
+				throw new \Exception('Wrong app name or table not exists');
+			}
+			$tables[$app]     = $table_gen->$method();
+		}
 
 		return $this->createApiResponse(array(
 			'subs'         => $tables,
@@ -863,6 +864,28 @@ class AgentsController extends AbstractController implements ProtectedController
 		if (!$fp = fopen($csv_file, 'r')) {
 			return $this->createApiErrorResponse('file_not_readable', 'Can\'t read file');
 		}
+
+		$prefs = new AgentNotifPrefs();
+		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+		$defaultFilterSubs = array();
+		$defaultOtherSubs = array();
+		foreach ($filters as $filter) {
+			$defaultFilterSubs[] = array(
+				'filter_id' => $filter['id'],
+				'email' => $prefs->getFilterNotifyTypes($filter, 'email'),
+				'alert' => $prefs->getFilterNotifyTypes($filter, 'alert'),
+			);
+		}
+
+		foreach (AgentNotifPrefs::$apps as $app => $bool) {
+			$defaultOtherSubs[] = array(
+				'type' => $app,
+				'email' => array(),
+				'alert' => array(),
+			);
+		}
+
+
 		$row = fgetcsv($fp); // headers
 		if (0 !== strpos($row[0], 'Email Address')) {
 			fclose($fp);
@@ -883,7 +906,7 @@ class AgentsController extends AbstractController implements ProtectedController
 				'teams' => array(),
 				'zones' => array(),
 			);
-
+			$filterSubs = $otherSubs = array();
 			$profile = array(
 				'signature_html' => $row[7],
 			);
@@ -908,7 +931,13 @@ class AgentsController extends AbstractController implements ProtectedController
 				continue;
 			}
 
-			$response = $this->saveAgent(null, $data, $profile);
+			// subscribe to default notifications
+			if ('yes' === strtolower($row[6])) {
+				$filterSubs = $defaultFilterSubs;
+				$otherSubs = $defaultOtherSubs;
+			}
+
+			$response = $this->saveAgent(null, $data, $profile, $filterSubs, $otherSubs);
 			$ret[$email] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
 		}
 
