@@ -45,7 +45,7 @@
         </p>
         <p>
             <i class="fa fa-file-excel-o"></i>
-            <a href="https://support.deskpro.com/kb/articles/242-todo-bulk-add-agents" target="_blank">
+            <a href="{{ path('serve_dp_asset', {filename: 'Admin-Bulk-Add-Agents-Spreadsheet.zip'}) }}" target="_blank">
                 {{ phrase('adm.agents.import_kb') }}
             </a>
         </p>
@@ -53,8 +53,6 @@
 
         <div style="width: 200px;border-radius:5px;border:1px #ccc dashed;padding:10px;position:relative;" class="text-center"
              class="text-center" ng-file-drop="Ctrl.uploadFiles($files)">
-            {#<input type="file" style="opacity: 0;position:absolute;width: 100%;height:100%;left:0;right:0;top:0;bottom:0;"#}
-                    {#accept=".csv" name="file" dp-change="submit();queue=[];" />#}
             {{ phrase('adm.agents.import_file_dd') }}
         </div>
     </div>
