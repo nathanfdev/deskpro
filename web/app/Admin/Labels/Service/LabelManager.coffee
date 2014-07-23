@@ -30,10 +30,16 @@ define ['toastr'], (toastr) ->
 
 		renameLabel: (api_endpoint, old_label, new_label) ->
 			@loadLabels(api_endpoint).then(=>
-				for l in @label_types[api_endpoint]
-					if l.label == old_label
-						l.label = new_label
-						break
+				dupe = false
+				oldIdx = null
+				for l, key in @label_types[api_endpoint]
+					dupe = true if l.label == new_label
+					oldIdx = key if l.label == old_label
+
+				if dupe
+					@label_types[api_endpoint].splice(oldIdx, 1)
+				else if oldIdx
+					@label_types[api_endpoint][oldIdx].label = new_label
 			)
 
 		removeLabel: (api_endpoint, label) ->
