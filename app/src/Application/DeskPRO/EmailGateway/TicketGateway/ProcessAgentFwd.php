@@ -139,6 +139,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			}
 
 			$message = App::getMailer()->createMessage();
+			$message->setSuppressAutoreplies(true);
 			$message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
 				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
 				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
@@ -377,6 +378,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			}
 
 			$message = App::getMailer()->createMessage();
+			$message->setSuppressAutoreplies(true);
 			$message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
 				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
 				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
