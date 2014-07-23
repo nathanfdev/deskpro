@@ -147,7 +147,7 @@ DeskPRO.Agent.RteEditor = {
 		});
 
 		editor.bind('dragover drop', function(ev) {
-			ev.stopPropagation();
+//			ev.stopPropagation();
 		});
 
 		// setup autosave
