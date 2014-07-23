@@ -12,7 +12,7 @@
 
 {% block modal_body %}
 
-    <form ng-show="!Ctrl.page" role="form" name="Form" ng-submit="Ctrl.sendEmails()">
+    <form ng-show="!Ctrl.page" role="form" name="Form" ng-submit="Ctrl.submitEmails()">
         <h4>
             {{ phrase('adm.agents.import_textarea_title') }}
         </h4>
@@ -87,7 +87,10 @@
 
 {% block modal_footer %}
     <i class="spinner-flat" ng-show="Ctrl.busy"></i>
-    <button class="btn btn-default" ng-show="1 === Ctrl.page" ng-click="Ctrl.restart()">
+    <button class="btn btn-default" ng-show="1 === Ctrl.page && !Ctrl.busy" ng-click="Ctrl.restart()">
         {{ phrase('adm.agents.import_btn_more') }}
+    </button>
+    <button class="btn btn-default" ng-show="!Ctrl.busy" ng-click="$dismiss()">
+        {{ phrase('agent.general.cancel') }}
     </button>
 {% endblock %}

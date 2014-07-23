@@ -35,11 +35,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 
-		submitEmails: ->
-	    return if !@$scope.Form.$valid
-
-
-
 		sendEmails: (filename) ->
 			@busy = true
 			@page = 1
@@ -71,6 +66,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				() =>
 					@busy = false
 			)
+
+
+
+		submitEmails: ->
+			if !@$scope.Form.$valid then return false
+			@sendEmails()
 
 
 	Admin_Agents_Ctrl_Import.EXPORT_CTRL()
