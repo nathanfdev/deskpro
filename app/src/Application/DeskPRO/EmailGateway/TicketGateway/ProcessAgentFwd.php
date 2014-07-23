@@ -353,11 +353,52 @@ class ProcessAgentFwd extends ProcessAbstract
 		}
 
 		#------------------------------
+		# Verify forward
+		#------------------------------
+
+		$person_email_item = $user_reader->getFromAddress();
+
+		$bad_email = false;
+		$bad_body  = false;
+
+		if (!$person_email_item || !$person_email_item->getEmail()) {
+			$bad_email = true;
+		}
+
+		if (!$user_reader->getBodyHtml()->getBodyUtf8() && !$user_reader->getBodyText()->getBodyUtf8()) {
+			$bad_body = true;
+		}
+
+		if ($bad_email || $bad_body) {
+			if ($bad_email) {
+				$this->setError(EmailSource::ERR_INVALID_FWD_EMAIL);
+			} else {
+				$this->setError(EmailSource::ERR_INVALID_FWD);
+			}
+
+			$message = App::getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
+				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+				'error'   => $this->error
+			));
+			$message->setTo($this->reader->getFromAddress()->getEmail());
+			$message->attach(\Swift_Attachment::newInstance(
+				$this->reader->getRawSource(),
+				'message.eml',
+				'message/rfc822'
+			));
+
+			App::getMailer()->send($message);
+
+			return null;
+		}
+
+		#------------------------------
 		# Find person
 		#------------------------------
 
 		$person_processor = new PersonFromEmailProcessor();
-		$person_email_item = $user_reader->getFromAddress();
 
 		$user = $person_processor->findPerson($person_email_item);
 		if ($user) {
