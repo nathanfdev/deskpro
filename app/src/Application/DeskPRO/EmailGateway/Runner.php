@@ -334,25 +334,31 @@ class Runner
 
 				try {
 					$proc = $this->account_manager->getEmailProcessor($account, $reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
-					$created_obj = $proc->run();
-
-					if ($proc->isValid()) {
-						$this->logger->log("Processor complete", 'info');
-						$source['status'] = 'complete';
-						$source['error_code'] = null;
+					if (!$proc) {
+						$this->logger->log("No email processor for account", 'warn');
+						$source['status'] = 'rejected';
+						$source['error_code'] = 'invalid_address';
 					} else {
-						$source['status'] = $proc->getErrorType() == 'rejected' ? 'rejected' : 'error';
-						$source['error_code'] = $proc->getErrorCode();
-						$this->logger->log(sprintf("Processor error: %s", $source['error_code']), 'info');
-					}
+						$created_obj = $proc->run();
 
-					$source_info = $proc->getSourceInfo();
-					if ($source_info) {
-						$source_info = implode("\n", $source_info);
-						try {
-							$blob = App::$container->getBlobStorage()->createBlobRecordFromString($source_info, 'email-process.log', 'plain/text');
-							$source['log_blob'] = $blob;
-						} catch (\Exception $e) {}
+						if ($proc->isValid()) {
+							$this->logger->log("Processor complete", 'info');
+							$source['status'] = 'complete';
+							$source['error_code'] = null;
+						} else {
+							$source['status'] = $proc->getErrorType() == 'rejected' ? 'rejected' : 'error';
+							$source['error_code'] = $proc->getErrorCode();
+							$this->logger->log(sprintf("Processor error: %s", $source['error_code']), 'info');
+						}
+
+						$source_info = $proc->getSourceInfo();
+						if ($source_info) {
+							$source_info = implode("\n", $source_info);
+							try {
+								$blob = App::$container->getBlobStorage()->createBlobRecordFromString($source_info, 'email-process.log', 'plain/text');
+								$source['log_blob'] = $blob;
+							} catch (\Exception $e) {}
+						}
 					}
 
 					$proc = null;
