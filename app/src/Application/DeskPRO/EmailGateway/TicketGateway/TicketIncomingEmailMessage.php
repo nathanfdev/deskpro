@@ -379,7 +379,7 @@ class TicketIncomingEmailMessage
 
 		if ($token_replace_callback) {
 			$this->body = call_user_func($token_replace_callback, $this->body, $inline_images);
-			$this->body_full = call_user_func($token_replace_callback, $this->body_full, $inline_images);
+			$this->body_full = call_user_func($token_replace_callback, $this->body_full, $inline_images2);
 		}
 
 		// If there was no cutting, then the body is the full body

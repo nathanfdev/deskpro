@@ -206,6 +206,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			placeholder = $('<div/>')
 			@els.optionList.append(placeholder)
 
+			rowIdx = @rowsCount+1
+			@rowsCount += 1
+
 			time = (new Date()).getTime()
 			@els.loadingOptionMessage.show().addClass('loading-on')
 			run = (tpl, data, isRetry) =>
@@ -295,7 +298,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 					rowScope.rowOpts.withCheck = true
 					rowScope.rowOpts.withCheckId = Util.uid('check')
 
-				rowScope.rowOpts.rowIdx = @rowsCount+1
+				rowScope.rowOpts.rowIdx = rowIdx
 				rowScope.rowOpts.tagString = @options.tagString || null
 				rowScope.rowOpts.tagClass = @options.tagClass || ''
 				element = @$compile(tpl)(rowScope)
@@ -313,7 +316,6 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				@els.loadingOptionMessage.hide().removeClass('loading-on')
 				@els.noOptionsMessage.hide()
 				placeholder.replaceWith(element)
-				@rowsCount++
 				@rows[rowId] = {
 					element: element,
 					scope: rowScope
@@ -369,8 +371,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			if @rowsCount == 0
 				@els.noOptionsMessage.show()
 			else
-				idx = 0
-				for own row of @rows
+				idx = 1
+				for own k, row of @rows
 					row.scope.rowOpts.rowIdx = idx
 					idx++
 

@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Orb\Util\Web;
 
 class DownloadsController extends AbstractController
 {
@@ -260,10 +261,27 @@ class DownloadsController extends AbstractController
 					$rev['title'] = $title;
 					$rev->blob = $download->blob;
 				} elseif ($this->in->getString('download.fileurl')) {
+					$fileurl  = $this->in->getString('download.fileurl');
+					$filesize = $this->in->getString('download.filesize');
+					$filename = $this->in->getString('download.filename');
+
+					if (!$filename) {
+						$filename = Web::getUrlFileName($fileurl);
+						if (!$filename) {
+							$filename = '';
+						}
+					}
+					if (!$filesize) {
+						$filesize = Web::getUrlFileSize($fileurl);
+						if (!$filesize) {
+							$filesize = 0;
+						}
+					}
+
 					$download->setFileUrl(
-						$this->in->getString('download.fileurl'),
-						$this->in->getString('download.filesize'),
-						$this->in->getString('download.filename')
+						$fileurl,
+						$filesize,
+						$filename
 					);
 				}
 

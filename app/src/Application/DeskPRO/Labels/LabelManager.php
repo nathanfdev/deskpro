@@ -78,12 +78,6 @@ class LabelManager
 					$type_name = 'chat_conversations';
 				}
 
-				App::getDb()->executeUpdate("
-					UPDATE label_defs
-					SET total = IF(total > 0, total - 1, 0)
-					WHERE label_type = ? AND label = ?
-				", array($type_name, $label));
-
 				return $labelobj;
 			}
 		}
@@ -120,12 +114,6 @@ class LabelManager
 		if ($type_name == 'persons') {
 			$type_name = 'people';
 		}
-
-		App::getDb()->executeUpdate("
-			INSERT INTO label_defs (label_type, label, total)
-			VALUES (?, ?, 1)
-			ON DUPLICATE KEY UPDATE total = total + 1
-		", array($type_name, $label));
 
 		if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
 			$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_added', null, $label);

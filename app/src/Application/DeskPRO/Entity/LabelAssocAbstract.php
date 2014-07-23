@@ -64,21 +64,6 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
 	}
 
 
-	/**
-	 * After a new association is made, we need to make sure the def table has this
-	 * record.
-	 *
-	 */
-	public function syncWithDef()
-	{
-		App::getDb()->executeUpdate("
-			INSERT INTO label_defs (label_type, label, total)
-			VALUES (?, ?, 1)
-			ON DUPLICATE KEY UPDATE total = total + 1
-		", array(static::LABEL_TYPENAME, $this->label));
-	}
-
-
 	public function __toString()
 	{
 		return $this->label;

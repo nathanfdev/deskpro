@@ -8,12 +8,6 @@ define ->
 
 				contentEls = element.find('.group-section-content')
 
-				$timeout(->
-					contentEls.each(->
-						$(this).height($(this).height()).addClass('with-no-height')
-					)
-				, 200)
-
 				a = element.find('a.toggle').first();
 				a.on('click', ->
 					mode = if element.hasClass('group-open') then 'close' else 'open'

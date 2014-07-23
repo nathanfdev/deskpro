@@ -134,6 +134,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 		getStandardIs: (options) ->
 			type      = options.type
 			prop_name = options.propName
+			icon      = options.icon
 
 			me = @
 			return {
@@ -148,7 +149,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						getViewValue: (value = {}, data) ->
 							return {
 								value: true,
-								op: 'is'
+								op: 'is',
+								icon: icon || false
 							}
 						getValue: (model = {}, data) ->
 							value = {}

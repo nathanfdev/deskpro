@@ -368,14 +368,21 @@ class TicketManager
 			if ($log_text) {
 				try {
 					$blob = $this->blob_storage->createBlobRecordFromString($log_text, 'ticket-manager.' . date('Y-m-d_H-i-s') . '.log', 'plain/text');
-					$proc_log = new TicketProcLog();
-					$proc_log->ticket = $ticket;
-					$proc_log->blob = $blob;
-
-					$this->em->persist($proc_log);
-					$this->em->flush();
 				} catch (\Exception $e) {
+					$blob = null;
 					KernelErrorHandler::logException($e);
+				}
+
+				if ($blob) {
+					try {
+						$this->db->insert('ticket_proc_log', array(
+							'ticket_id'    => $ticket->id,
+							'blob_id'      => $blob->id,
+							'date_created' => date('Y-m-d H:i:s')
+						));
+					} catch (\Exception $e) {
+						KernelErrorHandler::logException($e);
+					}
 				}
 			}
 		}

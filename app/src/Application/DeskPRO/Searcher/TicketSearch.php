@@ -890,7 +890,7 @@ class TicketSearch extends SearcherAbstract
 
 			case 'ticket.date_created':
 				$order_by = "ORDER BY id $dir";
-				$this->order_summary = $tr->phrase('agent.general.date_opened');
+				$this->order_summary = $tr->phrase('agent.general.date_created');
 				break;
 
 			case 'ticket.priority':
@@ -922,7 +922,7 @@ class TicketSearch extends SearcherAbstract
 
 			case 'ticket.date_closed':
 				$this->add_raw_selects[] = "tickets.date_closed AS status_order";
-				$this->order_summary = $tr->phrase('agent.general.date_opened');
+				$this->order_summary = $tr->phrase('agent.general.date_created');
 				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
@@ -1962,14 +1962,27 @@ class TicketSearch extends SearcherAbstract
 										if ($choice == 'DP_NO_SELECTION') {
 											$wheres[] = "$field IS NOT NULL";
 										} else {
-											$wheres[] = "$field != " . $this->quoteDbValue($choice);
+											$w = "$field != " . $this->quoteDbValue($choice);
+
+											if ($choice != "") {
+												$w = "($w OR $field IS NULL)";
+											}
+
+											$where[] = $w;
 										}
 										break;
 									case self::OP_CONTAINS:
 									case self::OP_NOTCONTAINS:
 										$op = 'LIKE';
 										if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-										$wheres[] = "$field $op " . $this->quoteDbValue('%'.$choice.'%');
+										$w = "$field $op " . $this->quoteDbValue('%'.$choice.'%');
+
+										if ($op == self::OP_NOTCONTAINS) {
+											$w = "($w OR $field IS NULL)";
+										}
+
+										$where[] = $w;
+
 										break;
 								}
 

@@ -133,6 +133,16 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
 	public function getTemplateAction($name)
 	{
+		if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
+			$block_id = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
+			$block = $this->em->find('DeskPRO:PortalPageDisplay', $block_id);
+			if (!$block || !$block->getData('tpl')) {
+				throw $this->createNotFoundException();
+			}
+
+			$name = $block->getData('tpl');
+		}
+
 		$set = $this->getTemplateSet();
 
 		try {

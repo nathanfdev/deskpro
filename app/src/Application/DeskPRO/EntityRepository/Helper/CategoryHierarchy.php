@@ -491,6 +491,10 @@ class CategoryHierarchy
 			throw new \BadMethodCallException('There is no permissions table set');
 		}
 
+		// For categories, everyone is always on, even if its disabled,
+		// because everyone still means everyone from agent ui perspective
+		$usergroup_ids[] = App::$container->getUserGroups()->getEveryoneGroup()->id;
+
 		if (!$usergroup_ids) {
 			return array();
 		}

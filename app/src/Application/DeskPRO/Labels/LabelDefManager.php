@@ -307,11 +307,6 @@ class LabelDefManager
 
 				$this->db->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $old_label));
 				$adjusted = $this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
-				$this->db->executeUpdate("
-					INSERT INTO label_defs (label_type, label, total)
-					VALUES (?, ?, ?)
-					ON DUPLICATE KEY UPDATE total = total + VALUES(total)
-				", array($t, $new_label, $adjusted));
 				$this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($old_label));
 			}
 

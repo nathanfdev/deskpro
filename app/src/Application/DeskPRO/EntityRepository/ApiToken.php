@@ -102,6 +102,6 @@ class ApiToken extends AbstractEntityRepository
 			VALUES
 				(?, 1, ?, ?)
 			ON DUPLICATE KEY UPDATE hits = hits + 1
-		", array($api_token->person->id, $time, $time + 3600));
+		", array($api_token->id, $time, $time + 3600));
 	}
 }

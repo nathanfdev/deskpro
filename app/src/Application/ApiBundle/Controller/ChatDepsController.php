@@ -67,7 +67,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 		$chat_deps   = $this->container->getSystemService('chat_departments');
 		$flat_array  = $chat_deps->getFlatArray();
 
+		$ag = $this->container->getAgentGroups();
 		$with_perms = $this->in->getBool('with_perms');
+
 		if ($with_perms) {
 			$perms = array();
 
@@ -109,6 +111,12 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 				} else {
 					$r['permissions'] = array();
 				}
+
+				if (!isset($r['permissions']['agentgroups'])) {
+					$r['permissions']['agentgroups'] = array();
+				}
+				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full');
+				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full');
 			}
 
 			$deps[] = $r;
@@ -140,6 +148,10 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 		$data                = array();
 		$data['department']  = $this->getApiData($dep);
 		$data['permissions'] = $chat_deps->getPermissionsInfo($dep);
+
+		$ag = $this->container->getAgentGroups();
+		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
+		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
 		return $this->createApiResponse($data);
 	}

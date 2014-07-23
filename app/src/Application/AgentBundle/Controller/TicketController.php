@@ -1869,10 +1869,13 @@ class TicketController extends AbstractController
 			$validator->setLayout($layout);
 
 			$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
+
 			if (count($actions) == 1 && isset($actions['department_id'])) {
 				// Validation not on dep changes,
 				// because changing dep could change validation options
 				$new_department_id = $actions['department_id'];
+			} else if ($ticket->status == 'hidden' && count($actions) == 2 && isset($actions['status']) && isset($actions['hidden_status'])) {
+				// skip validation just restoring a deleted ticket, validation will apply after
 			} else {
 				if (!$validator->isValid($newticket)) {
 					$free = array();

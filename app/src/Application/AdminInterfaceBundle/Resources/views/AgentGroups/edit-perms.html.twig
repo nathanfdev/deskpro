@@ -188,6 +188,21 @@
 			{{ _self.perm_row('chat', 'delete') }}
 			</tbody>
 		</table>
+	{% else %}
+		<table class="table table-hover" dp-tab-body="main.perms.chat">
+			<tbody>
+				<tr>
+					<td>
+						<div style="float:right">
+							<a href="{{ ng_var('chat.setup') }}" class="btn btn-default">Go to Chat Setup &rarr;</a>
+						</div>
+						<p style="line-height: 30px;">
+							Chat is currently disabled.
+						</p>
+					</td>
+				</tr>
+			</tbody>
+		</div>
 	{% endif %}
 	{# /CHAT PERMISSIONS #}
 

@@ -769,16 +769,23 @@ HTML;
 
 		$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
-		if (!$person) {
+		$is_invalid = false;
+		if ($person && $person->is_deleted) {
+			$is_invalid = true;
+		}
+
+		if (!$person || $is_invalid) {
 
 			// If no user was found in our database, then the account might not have
 			// been set up yet. For adapters that support it, we can still see if we
 			// can be helpful and redirect to another source they exist in
-			$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
-			foreach ($usersources as $us) {
-				$found = $us->findIdentityByInput($email);
-				if ($found && $us->lost_password_url) {
-					return $this->redirect($us->lost_password_url);
+			if (!$is_invalid) {
+				$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
+				foreach ($usersources as $us) {
+					$found = $us->findIdentityByInput($email);
+					if ($found && $us->lost_password_url) {
+						return $this->redirect($us->lost_password_url);
+					}
 				}
 			}
 
@@ -825,7 +832,7 @@ HTML;
 		// Admins cant reset their password, but we dont want to reveal to this unknown user that we're an admin
 		// Send an email instead
 		if (!defined('DPC_IS_CLOUD')) {
-			if ($person->can_admin) {
+			if ($person->can_admin && $person->is_agent && !$person->is_deleted) {
 				$vars = array(
 					'person' => $person,
 					'email' => $email

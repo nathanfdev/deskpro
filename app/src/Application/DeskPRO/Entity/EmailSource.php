@@ -78,6 +78,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	const ERR_MISSING_MARKER    = 'missing_marker';
 	const ERR_AGENT_BOUNCE      = 'agent_bounce';
 	const ERR_DATE_LIMIT        = 'date_limit';
+	const ERR_INVALID_ADDRESS   = 'invalid_address';
 
 	/**
 	 * @var int

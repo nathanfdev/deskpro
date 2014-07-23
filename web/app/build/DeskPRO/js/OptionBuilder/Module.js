@@ -27,14 +27,29 @@
           replace: true,
           transclude: true,
           link: function(scope, element, attrs) {
-            var tag, _ref, _ref1, _ref2;
-            if (((_ref = scope.rowOpts) != null ? _ref.rowIdx : void 0) > 1 && ((_ref1 = scope.rowOpts) != null ? _ref1.tagString : void 0)) {
-              tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.rowOpts.tagClass).text((_ref2 = scope.rowOpts) != null ? _ref2.tagString : void 0);
-              return tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'));
-            } else {
-              tag = $('<em class="dp-ob-row-tag"></em>').addClass('no-tag');
-              return tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('without-tag'));
-            }
+            var tagWrap, updateTag;
+            tagWrap = element.find('.dp-ob-row-tag-wrap');
+            updateTag = function() {
+              var tag, _ref, _ref1, _ref2;
+              tag = tagWrap.find('.dp-ob-row-tag');
+              if (((_ref = scope.rowOpts) != null ? _ref.rowIdx : void 0) > 1 && ((_ref1 = scope.rowOpts) != null ? _ref1.tagString : void 0)) {
+                if (!tag[0]) {
+                  tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.rowOpts.tagClass);
+                  tag.prependTo(tagWrap);
+                }
+                tag.text((_ref2 = scope.rowOpts) != null ? _ref2.tagString : void 0);
+                return tagWrap.addClass('with-tag');
+              } else {
+                if (tag[0]) {
+                  tag.remove();
+                }
+                return tagWrap.addClass('without-tag');
+              }
+            };
+            scope.$watch('rowOpts.rowIdx', function() {
+              return updateTag();
+            });
+            return updateTag();
           }
         };
       }
@@ -77,7 +92,12 @@
                 row = rows[i];
                 if (row.rowScope.setIndex !== i + 1) {
                   _results.push(row.rowScope.$apply(function() {
-                    return row.rowScope.setIndex = i + 1;
+                    row.rowScope.setIndex = i + 1;
+                    if (row.rowScope.setIndex === 1) {
+                      return row.element.find('.remove-btn-wrap').hide();
+                    } else {
+                      return row.element.find('.remove-btn-wrap').show();
+                    }
                   }));
                 } else {
                   _results.push(void 0);
@@ -123,6 +143,11 @@
               });
               if (scope.setCount >= 1) {
                 element.addClass('empty');
+              }
+              if (rowScope.setIndex === 1) {
+                element.find('.remove-btn-wrap').hide();
+              } else {
+                element.find('.remove-btn-wrap').show();
               }
               element.find('.removerow_btn').on('click', function(ev) {
                 var k, v, _ref;

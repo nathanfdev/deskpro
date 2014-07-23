@@ -12773,7 +12773,8 @@ input.invisible-copytext {
 */
 
 section.report-wrapper > header {
-  background: #F5F5F5;
+  padding: 5px;
+  background: #efefef;
   border: 1px solid #D9DBDB;
   border-bottom: none;
   -webkit-border-top-right-radius: 5px;
@@ -12814,6 +12815,7 @@ section.report-wrapper > header h3 {
 section.report-wrapper > article {
   position: relative;
   padding: 8px;
+  background: #fff;
   border: 1px solid #D9DBDB;
 }
 
@@ -12823,6 +12825,7 @@ section.report-wrapper > article tr.total-row td {
 }
 
 section.report-wrapper table.stat-table tr > td {
+  height: 22px;
   padding: 2px;
   vertical-align: middle;
 }

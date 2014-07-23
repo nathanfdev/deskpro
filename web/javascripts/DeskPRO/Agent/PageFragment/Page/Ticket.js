@@ -2877,6 +2877,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						$this.closest('tr').remove();
 
 						rowRemoved(slaId);
+
+						if (getVisibleOptions(idSelect.find('option')).length >= 1) {
+							form.show();
+						}
 					}
 				});
 			}
