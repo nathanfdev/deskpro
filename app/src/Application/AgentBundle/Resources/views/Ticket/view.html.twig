@@ -381,9 +381,11 @@ pageMeta.lang = {{ {
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
 					<label class="field-label-title">
                         {{ phrase('agent.general.agent') }}
-                        <a id="{{baseId}}_assign_me" class="pull-right" style="font-weight: 200" data-agent="{{ app.user.id }}">
-                            [Assign to Me]
+                        {% if ticket_perms.modify_assign_agent or not ticket.agent %}
+                        <a id="{{baseId}}_assign_me" class="pull-right" style="font-weight: 200" data-me="{{ app.user.id }}">
+                            [{{ phrase('agent.general.assign_to_me') }}]
                         </a>
+                        {% endif %}
                     </label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">{{ phrase('agent.general.unassigned') }}</option>{% endif %}
