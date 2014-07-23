@@ -1917,6 +1917,16 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			self._formUpdatedDebounce();
 		});
 
+		this.getElById('assign_me').on('click', function(){
+			$('select[name="actions[agent]"]', this.wrapper).val($(this).data('me')).trigger('change');
+		});
+		this.getElById('assign_team').on('click', function(){
+			$('select[name="actions[agent_team]"]', this.wrapper).val($(this).data('team')).trigger('change');
+		});
+		this.getElById('follower_me').on('click', function(){
+			$('select[name="actions[add_participants][add_participants][]"]', this.wrapper).val($(this).data('me')).trigger('change');
+		});
+
 		$('.apply-actions', this.wrapper).on('click', (function(ev) {
 			this.apply();
 		}).bind(this));
