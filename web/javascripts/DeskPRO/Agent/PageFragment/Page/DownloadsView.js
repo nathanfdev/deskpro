@@ -25,6 +25,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.download_id = this.getMetaData('download_id');
 
 		this._initBasic();
+
+		if (this.meta.canEdit) {
+			this._initMenus();
+
+		}
+
 		this._initLabels();
 		this._initCommentForm();
 		this._initActions();
@@ -240,79 +246,64 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			}).bind(this)
 		});
 		this.ownObject(this.bodyTabs);
+	},
 
-		if (this.meta.canEdit) {
-			// Name is editable
-			var name = $('h3.title.editable:first', this.wrapper);
-			if (!name.attr('id')) {
-				name.attr('id', Orb.getUniqueId());
+	//#################################################################
+	//# Menus
+	//#################################################################
+
+	_initMenus: function() {
+
+		var self = this;
+
+		var statusSel = this.getEl('status');
+		DP.select(statusSel);
+
+		statusSel.on('change', function() {
+			var status = $(this).val();
+
+			self.getEl('auto_unpub').hide();
+			self.getEl('auto_pub').hide();
+
+			if (status == 'published') {
+				self.getEl('auto_unpub').show();
+			} else if (status == 'hidden.unpublished') {
+				self.getEl('auto_pub').show();
 			}
 
-			var editable = new DeskPRO.Form.InlineEdit({
-				baseElement: this.wrapper,
-				ajax: {
-					url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/ajax-save',
-					success: function(data) {
-						self.handleUnloadRevisions(data.revision_id);
-					}
+			$.ajax({
+				url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+				type: 'POST',
+				data: {action: 'status', status: status},
+				context: self,
+				dataType: 'json',
+				success: function() {
+					DeskPRO_Window.sections.publish_section.reload();
 				}
 			});
 
-			// Change category menu
-			var catOb = new DeskPRO.UI.OptionBoxRevertable({
-				trigger: this.getEl('cat_trigger'),
-				element: this.getEl('cat_ob'),
-				onSave: function(ob) {
-					var catEl = ob.getSelectedElements('category');
-					var catId = catEl.data('item-id');
-					var title = catEl.data('full-title');
+		});
 
-					self.getEl('cat_label').text(title);
+		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
+			ajaxSaveUrl: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+			statusMenu: this.statusMenu
+		});
+		this.ownObject(this.deleteHelper);
 
-					$.ajax({
-						url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
-						type: 'POST',
-						data: { action: 'category', category_id: catId },
-						dataType: 'json',
-						success: function() {
-							DeskPRO_Window.sections.publish_section.reload();
-						}
-					});
+		var catSel = this.getEl('cat');
+		DP.select(catSel);
+
+		catSel.on('change', function() {
+			$.ajax({
+				url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+				type: 'POST',
+				data: { action: 'category', category_id: $(this).val() },
+				dataType: 'json',
+				success: function() {
+					DeskPRO_Window.sections.publish_section.reload();
 				}
 			});
-
-			// Status
-			var trigger = $('.the-status:first', this.wrapper);
-			this.statusMenu = new DeskPRO.UI.Menu({
-				triggerElement: trigger,
-				menuElement: $('.status-menu:first', this.wrapper),
-				onItemClicked: function(info) {
-					var status = $(info.itemEl).data('option-value');
-
-					$('.download-status', trigger).attr('title', status);
-					$('.download-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
-
-					$.ajax({
-						url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
-						type: 'POST',
-						data: {action: 'status', status: status},
-						context: self,
-						dataType: 'json',
-						success: function() {
-							DeskPRO_Window.sections.publish_section.reload();
-						}
-					});
-				}
-			});
-			this.ownObject(this.statusMenu);
-
-			this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-				ajaxSaveUrl: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
-				statusMenu: this.statusMenu,
-				reloadSelf: true
-			});
-			this.ownObject(this.deleteHelper);
-		}
+		});
 	},
 
 	//#################################################################

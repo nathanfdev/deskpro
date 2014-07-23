@@ -35,22 +35,52 @@ pageMeta.baseId = '{{ baseId }}';
 
 <header class="page-header">
 	<h4 class="id-number">#{{ download.id }}</h4>
-	<h1 class="editable hover-edit" data-editable-for=".inline-editable .title">{{ download.title }}</h1>
-	<div class="labels-line">
-		<input
-			type="hidden"
-			id="{{baseId}}_labels_input"
-			class="dpe_select dpe_select_noborder"
-			data-select-width="auto"
-			data-placeholder="Add a label"
-			value="{% for label in download.labels %}{{ label.label }},{% endfor %}"
-		/>
+	<div style="float:left; padding-left: 8px;">
+		<select id="{{ baseId }}_status">
+			<option {% if download.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
+			<option {% if download.getStatusCode == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
+			<option {% if download.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
+			{% if download.person.id == app.user.id %}
+				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
+			{% endif %}
+		</select>
 	</div>
+	<h1>
+		<span id="{{baseId}}_showname">{{ download.title }}</span>
+		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ download.title }}" /></span>
+		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
+		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
+	</h1>
 	<br class="clear" />
-	<div class="meta-line flat">
-		<div class="status the-status download-status"><span>{{ phrase('agent.publish.status_' ~ download.status_code|replace({'.':'_'})) }}</span></div>
-		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.general.category') }}: <span id="{{baseId}}_cat_label">{{ download.category.full_title }}</span></span></div>
-	</div>
+	<table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 2px;">
+		<tr>
+			<td valign="middle" style="vertical-align: middle;">
+				{% include 'AgentBundle:Common:select-standard.html.twig' with {
+					'name': 'category_id',
+					'add_classname': 'category_id',
+					'add_attr': '',
+					'with_blank': 0,
+					'blank_title': '',
+					'categories': download_categories,
+					'selected': download.category.id,
+					'allow_parent_sel': true,
+					'id': baseId ~ '_cat'
+				} %}
+			</td>
+			<td width="100%">
+				<div class="labels-line">
+					<input
+						type="hidden"
+						id="{{baseId}}_labels_input"
+						class="dpe_select dpe_select_noborder"
+						data-select-width="auto"
+						data-placeholder="Add a label"
+						value="{% for label in download.labels %}{{ label.label }},{% endfor %}"
+					/>
+				</div>
+			</td>
+		</tr>
+	</table>
 	<br class="clear" />
 </header>
 
@@ -282,16 +312,5 @@ pageMeta.baseId = '{{ baseId }}';
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>
-
-<ul class="status-menu" data-option-name="status" style="display:none">
-	<li data-option-value="published">{{ phrase('agent.publish.status_published') }}</li>
-	<li data-option-value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</li>
-	<li data-option-value="archived">{{ phrase('agent.publish.status_archived') }}</li>
-	{% if download.person.id == app.user.id %}
-		<li data-option-value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</li>
-	{% endif %}
-</ul>
-
-{{ optionbox.category_ob(download_categories, phrase('agent.publish.download_category'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 </div></div>{# main layout div #}
