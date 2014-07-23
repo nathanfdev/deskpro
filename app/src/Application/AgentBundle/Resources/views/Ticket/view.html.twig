@@ -379,7 +379,12 @@ pageMeta.lang = {{ {
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
-					<label class="field-label-title">{{ phrase('agent.general.agent') }}</label>
+					<label class="field-label-title">
+                        {{ phrase('agent.general.agent') }}
+                        <a id="{{baseId}}_assign_me" class="pull-right" style="font-weight: 200" data-agent="{{ app.user.id }}">
+                            [Assign to Me]
+                        </a>
+                    </label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">{{ phrase('agent.general.unassigned') }}</option>{% endif %}
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
