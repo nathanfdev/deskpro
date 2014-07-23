@@ -69,7 +69,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		});
 
 		this.getEl('assign_me').on('click', function() {
-			self.getEl('agent_sel').val($(this).data('agent')).trigger('change');
+			self.getEl('agent_sel').val($(this).data('me')).trigger('change');
 		});
 
 		this.getEl('agent_team_sel').on('change', function() {
@@ -94,6 +94,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			});
 		});
 
+		this.getEl('assign_team').on('click', function() {
+			self.getEl('agent_team_sel').val($(this).data('team')).trigger('change');
+		});
+
 		//------------------------------
 		// Followers
 		//------------------------------
@@ -105,6 +109,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			ev.preventDefault();
 			self.page.getEl('followers_sel_wrap').toggleClass('on');
 			followerSel.select2('val', '0');
+		});
+
+		this.page.getEl('follower_me').on('click', function() {
+			followerSel.val($(this).data('me')).trigger('change');
 		});
 
 		followerSel.on('change', function() {
