@@ -708,6 +708,12 @@ class Connection extends \Doctrine\DBAL\Connection
 
 	public function rollback($is_unexpected = true)
 	{
+		if ($is_unexpected) {
+			$e = new \Exception("Rollback called");
+			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+		}
+
 		try {
 			parent::rollback();
 		} catch (\Exception $e) {
