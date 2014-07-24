@@ -158,7 +158,9 @@ class EntityChangeTrackingListener implements EventSubscriber
 		/** @var RequestAuth $auth */
 		if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
 			if ($apiUser = $auth->getApiUser()) {
-				return $apiUser->person;
+				if ($apiUser->person) {
+					return $apiUser->person;
+				}
 			}
 		}
 
