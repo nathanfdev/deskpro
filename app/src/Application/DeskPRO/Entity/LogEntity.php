@@ -36,11 +36,12 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 //use Application\DeskPRO\Log\Loggable;
+use Application\DeskPRO\Log\Loggable;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class LogEntity extends DomainObject// implements Loggable
+class LogEntity extends DomainObject implements Loggable
 {
 	protected $id;
 
@@ -66,6 +67,7 @@ class LogEntity extends DomainObject// implements Loggable
 	{
 		$this['timestamp'] = time();
 		$this['entity'] = get_class($entity);
+		$this['property'] = $change->getField();
 		$this->person = $person;
 		$this->change = $change;
 	}

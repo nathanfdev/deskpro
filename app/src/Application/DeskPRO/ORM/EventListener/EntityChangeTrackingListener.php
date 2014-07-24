@@ -38,12 +38,13 @@ use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\LogEntity;
 use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\Log\Handler\LogEntityHandler;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
-use Application\DeskPRO\Monolog\Logger;
+use Application\DeskPRO\Monolog\Logger as DPLogger;
 
 /**
  * This listener logs entity changes
@@ -55,17 +56,21 @@ class EntityChangeTrackingListener implements EventSubscriber
 
 	protected $queuedChanges = array();
 
+	/** @var \Application\DeskPRO\Monolog\Logger  */
 	protected $logger;
 
+	// todo implement interface to detect required entity/fields
 	protected $track = array(
-		'Application\DeskPRO\Entity\Person' => true,
+		'Application\DeskPRO\Entity\Person' => array(
+			'name' => true,
+			'labels' => true,
+			'notes' => true,
+		),
 	);
 
 	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
-		// todo add db writer
-		$this->logger = new Logger('changelog');
 	}
 
 	public function getSubscribedEvents()
@@ -84,6 +89,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 	 */
 	public function prePersist(LifecycleEventArgs $args)
 	{
+//		do not handle new entities yet
 //		$this->preUpdate($args);
 	}
 
@@ -93,7 +99,8 @@ class EntityChangeTrackingListener implements EventSubscriber
 	 */
 	public function preUpdate(LifecycleEventArgs $args)
 	{
-		if (!isset($this->track[get_class($args->getEntity())])) {
+		$entityClass = get_class($args->getEntity());
+		if (!isset($this->track[$entityClass])) {
 			return;
 		}
 //		$uow = $args->getEntityManager()->getUnitOfWork();
@@ -103,11 +110,17 @@ class EntityChangeTrackingListener implements EventSubscriber
 		$stateChangeRecorder = $args->getEntity()->getStateChangeRecorder();
 		$changes = $stateChangeRecorder->getChanges();
 
+		$_changes = array();
+		foreach ($changes as $change) {
+			if (isset($this->track[$entityClass][$change->getField()])) {
+				$_changes[] = $change;
+			}
+		}
 
-		$oid = spl_object_hash($args->getEntity());
-		$this->queuedChanges[$oid] = ! isset($this->queuedChanges[$oid])
-			? $changes
-			: array_merge($this->queuedChanges[$oid], $changes);
+		if ($_changes) {
+			$oid = spl_object_hash($args->getEntity());
+			$this->queuedChanges[$oid] = $_changes;
+		}
 	}
 
 	/**
@@ -136,7 +149,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 
 			$entry = new LogEntity($args->getEntity(), $change, $this->getContextPerson());
 			// todo merge db logger from round robin branch
-			$this->logger->info($entry);
+			$this->getLogger()->info($entry);
 		}
 
 		unset($this->queuedChanges[$oid]);
@@ -166,5 +179,19 @@ class EntityChangeTrackingListener implements EventSubscriber
 		}
 
 		return null;
+	}
+
+	/**
+	 * @return DPLogger
+	 */
+	protected function getLogger()
+	{
+		if (!$this->logger) {
+			$this->logger = new DPLogger('changelog');
+			$handler = new LogEntityHandler($this->container->get('doctrine.orm.entity_manager'));
+			$this->logger->pushHandler($handler);
+		}
+
+		return $this->logger;
 	}
 }
