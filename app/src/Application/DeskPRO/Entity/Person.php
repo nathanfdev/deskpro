@@ -478,6 +478,8 @@ class Person extends DomainObject implements HighlightableModelInterface
      */
     protected $_search_highlights;
 
+	protected $notes;
+
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
@@ -539,6 +541,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->notes                  = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -1816,10 +1819,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 */
 	public function addLabel(LabelPerson $label)
 	{
-		$old = clone $this->labels;
 		$label['person'] = $this;
 		$this->labels->add($label);
-		$this->_onPropertyChanged('labels', $old, $this->labels);
+		$this->_onPropertyChanged('labels', $this->labels, $this->labels);
 	}
 
 	public function removeLabelByString($l)
@@ -1831,6 +1833,19 @@ class Person extends DomainObject implements HighlightableModelInterface
 			$this->_onPropertyChanged('labels', $this->labels, $this->labels);
 			break;
 		}
+	}
+
+	public function addNote(PersonNote $note)
+	{
+		$note->person = $this;
+		$this->notes->add($note);
+		$this->_onPropertyChanged('notes', $this->notes, $this->notes);
+	}
+
+	public function removeNote(PersonNote $note)
+	{
+		$this->notes->removeElement($note);
+		$this->_onPropertyChanged('notes', $this->notes, $this->notes);
 	}
 
 	public function getUsergroupSetKey()
@@ -2556,5 +2571,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser', 'mappedBy' => 'person',  ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons' ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'notes', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonNote', 'mappedBy' => 'person', 'cascade' => array('persist', 'remove') ));
 	}
 }

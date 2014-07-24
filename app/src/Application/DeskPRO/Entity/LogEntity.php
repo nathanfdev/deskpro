@@ -59,15 +59,15 @@ class LogEntity extends DomainObject// implements Loggable
 
 	protected $message;
 
+	/** @var \Application\DeskPRO\ORM\StateChange\ChangeInterface  */
+	protected $change;
+
 	public function __construct(DomainObject $entity, ChangeInterface $change, Person $person = null)
 	{
 		$this['timestamp'] = time();
 		$this['entity'] = get_class($entity);
-		$this['property'] = $change->getField();
-		$this['old'] = null; // todo map
-		$this['new'] = null; // todo map
-		$this['message'] = null; // todo stringify human message
 		$this->person = $person;
+		$this->change = $change;
 	}
 
 	/**

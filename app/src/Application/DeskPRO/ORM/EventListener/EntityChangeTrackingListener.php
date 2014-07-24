@@ -37,8 +37,6 @@ namespace Application\DeskPRO\ORM\EventListener;
 use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\LogEntity;
-use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
@@ -58,6 +56,10 @@ class EntityChangeTrackingListener implements EventSubscriber
 	protected $queuedChanges = array();
 
 	protected $logger;
+
+	protected $track = array(
+		'Application\DeskPRO\Entity\Person' => true,
+	);
 
 	public function __construct(DeskproContainer $container)
 	{
@@ -82,7 +84,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 	 */
 	public function prePersist(LifecycleEventArgs $args)
 	{
-		$this->preUpdate($args);
+//		$this->preUpdate($args);
 	}
 
 	/**
@@ -91,8 +93,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 	 */
 	public function preUpdate(LifecycleEventArgs $args)
 	{
-		// todo track list of subscribed entities
-		if (!$args->getEntity() instanceof Person) {
+		if (!isset($this->track[get_class($args->getEntity())])) {
 			return;
 		}
 //		$uow = $args->getEntityManager()->getUnitOfWork();
