@@ -47,6 +47,23 @@ class SmsInteractor
     }
 
     /**
+     * The phone number should be in E.164 format, but the provider is ultimately in charge of handling formats.
+     *
+     * @param string $fromPhoneNumber the phone number to send from.
+     * @param string $toPhoneNumber the phone number to send to.
+     * @param string $textMessage   the message to be sent to the given number
+     *
+     * @throws Exception\SmsProviderException on failure
+     * @return bool true on success, false on failure
+     */
+    public function sendMessage($fromPhoneNumber, $toPhoneNumber, $textMessage)
+    {
+        $this->provider->sendMessage($fromPhoneNumber, $toPhoneNumber, $textMessage);
+
+        return true;
+    }
+
+    /**
      * Get the SmsProviderInterface instance that this SmsInteractor is using.
      *
      * @return SmsProviderInterface
