@@ -46,6 +46,9 @@ class LogEntity extends DomainObject// implements Loggable
 
 	protected $timestamp;
 
+	/** @var Person context person */
+	protected $person;
+
 	protected $entity;
 
 	protected $property;
@@ -56,7 +59,7 @@ class LogEntity extends DomainObject// implements Loggable
 
 	protected $message;
 
-	public function __construct(DomainObject $entity, ChangeInterface $change)
+	public function __construct(DomainObject $entity, ChangeInterface $change, Person $person = null)
 	{
 		$this['timestamp'] = time();
 		$this['entity'] = get_class($entity);
@@ -64,6 +67,7 @@ class LogEntity extends DomainObject// implements Loggable
 		$this['old'] = null; // todo map
 		$this['new'] = null; // todo map
 		$this['message'] = null; // todo stringify human message
+		$this->person = $person;
 	}
 
 	/**
@@ -101,6 +105,19 @@ class LogEntity extends DomainObject// implements Loggable
 		$metadata->mapField(array( 'fieldName' => 'old', 'type' => 'integer', 'nullable' => false));
 		$metadata->mapField(array( 'fieldName' => 'new', 'type' => 'integer', 'nullable' => false));
 		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'nullable' => false));
+
+		$metadata->mapOneToOne(array(
+			'fieldName'            => 'person',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+			'joinColumns'          => array(array(
+				'name'                 => 'person_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+			)),
+			'dpApi'                => true,
+		));
+
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }

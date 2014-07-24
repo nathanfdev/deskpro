@@ -34,10 +34,12 @@
 
 namespace Application\DeskPRO\ORM\EventListener;
 
+use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\LogEntity;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
@@ -60,6 +62,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
+		// todo add db writer
 		$this->logger = new Logger('changelog');
 	}
 
@@ -126,15 +129,39 @@ class EntityChangeTrackingListener implements EventSubscriber
 			return;
 		}
 
-		foreach ($this->queuedChanges as $change) {
+		foreach ($this->queuedChanges[$oid] as $change) {
 			/** @var $change ChangeInterface */
 			if ($change->isSame()) continue;
 
-			$entry = new LogEntity($args->getEntity(), $change);
+			$entry = new LogEntity($args->getEntity(), $change, $this->getContextPerson());
 			// todo merge db logger from round robin branch
 			$this->logger->info($entry);
 		}
 
 		unset($this->queuedChanges[$oid]);
+	}
+
+	/**
+	 * todo backend context?
+	 */
+	protected function getContextPerson()
+	{
+		$c = $this->container;
+
+		if ($c->has('session') && ($sess = $c->get('session'))) {
+			/** @var $sess Session */
+			if ($person = $sess->getPerson()) {
+				return $person;
+			}
+		}
+
+		/** @var RequestAuth $auth */
+		if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
+			if ($apiUser = $auth->getApiUser()) {
+				return $apiUser->person;
+			}
+		}
+
+		return null;
 	}
 }
