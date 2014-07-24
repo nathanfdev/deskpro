@@ -63,7 +63,7 @@ class LogEntity extends DomainObject// implements Loggable
 		$this['property'] = $change->getField();
 		$this['old'] = null; // todo map
 		$this['new'] = null; // todo map
-		$this['message'] = null; // todo stringify humanable message
+		$this['message'] = null; // todo stringify human message
 	}
 
 	/**
@@ -91,7 +91,7 @@ class LogEntity extends DomainObject// implements Loggable
 		$metadata->setPrimaryTable(array(
 			'name' => 'log_entity',
 			'indexes' => array(
-				'entity' => array('columns' => array('entity', 'timestamp')), // where entity = '' order by timestamp
+				'entity' => array('columns' => array('entity', 'property')),
 			)
 		));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'id' => true, 'options' => array('unsigned' => true)));
