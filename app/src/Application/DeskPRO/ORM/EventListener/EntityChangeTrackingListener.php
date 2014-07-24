@@ -35,25 +35,32 @@
 namespace Application\DeskPRO\ORM\EventListener;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\LogEntity;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\ORM\StateChange\ChangeInterface;
+use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
+use Application\DeskPRO\Monolog\Logger;
 
 /**
  * This listener logs entity changes
  */
 class EntityChangeTrackingListener implements EventSubscriber
 {
-	/** @var \Doctrine\ORM\EntityManager  */
-	protected $em;
-
 	/** @var  DeskproContainer */
 	protected $container;
+
+	protected $queuedChanges = array();
+
+	protected $logger;
 
 	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
+		$this->logger = new Logger('changelog');
 	}
 
 	public function getSubscribedEvents()
@@ -61,24 +68,73 @@ class EntityChangeTrackingListener implements EventSubscriber
 	   return array(
 		   Events::prePersist,
 		   Events::preUpdate,
+		   Events::postPersist,
+		   Events::postUpdate,
 	   );
 	}
 
+	/**
+	 * proxy
+	 * @param LifecycleEventArgs $args
+	 */
 	public function prePersist(LifecycleEventArgs $args)
 	{
 		$this->preUpdate($args);
 	}
 
+	/**
+	 * store changes into queue to log them after successful flush
+	 * @param LifecycleEventArgs $args
+	 */
 	public function preUpdate(LifecycleEventArgs $args)
 	{
-		if (! ($entity = $args->getEntity()) instanceof Person) {
+		// todo track list of subscribed entities
+		if (!$args->getEntity() instanceof Person) {
+			return;
+		}
+//		$uow = $args->getEntityManager()->getUnitOfWork();
+//		$changes = $uow->getEntityChangeSet($args->getEntity());
+
+		/** @var StateChangeRecorder $stateChangeRecorder */
+		$stateChangeRecorder = $args->getEntity()->getStateChangeRecorder();
+		$changes = $stateChangeRecorder->getChanges();
+
+
+		$oid = spl_object_hash($args->getEntity());
+		$this->queuedChanges[$oid] = ! isset($this->queuedChanges[$oid])
+			? $changes
+			: array_merge($this->queuedChanges[$oid], $changes);
+	}
+
+	/**
+	 * proxy
+	 * @param LifecycleEventArgs $args
+	 */
+	public function postPersist(LifecycleEventArgs $args)
+	{
+		$this->postUpdate($args);
+	}
+
+	/**
+	 * log changes stored before persist/update
+	 * @param LifecycleEventArgs $args
+	 */
+	public function postUpdate(LifecycleEventArgs $args)
+	{
+		$oid = spl_object_hash($args->getEntity());
+		if (!isset($this->queuedChanges[$oid])) {
 			return;
 		}
 
-		$em = $args->getEntityManager();
-		$uow = $em->getUnitOfWork();
-		$changes = $uow->getEntityChangeSet($args->getEntity());
+		foreach ($this->queuedChanges as $change) {
+			/** @var $change ChangeInterface */
+			if ($change->isSame()) continue;
 
+			$entry = new LogEntity($args->getEntity(), $change);
+			// todo merge db logger from round robin branch
+			$this->logger->info($entry);
+		}
 
+		unset($this->queuedChanges[$oid]);
 	}
 }

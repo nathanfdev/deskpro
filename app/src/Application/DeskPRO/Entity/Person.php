@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -1815,9 +1816,21 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 */
 	public function addLabel(LabelPerson $label)
 	{
+		$old = clone $this->labels;
 		$label['person'] = $this;
 		$this->labels->add($label);
-		$this->_onPropertyChanged('labels', $this->labels, $this->labels);
+		$this->_onPropertyChanged('labels', $old, $this->labels);
+	}
+
+	public function removeLabelByString($l)
+	{
+		foreach ($this->labels as $label) {
+			if ($l !== $label->label) continue;
+
+			$this->labels->removeElement($label);
+			$this->_onPropertyChanged('labels', $this->labels, $this->labels);
+			break;
+		}
 	}
 
 	public function getUsergroupSetKey()
