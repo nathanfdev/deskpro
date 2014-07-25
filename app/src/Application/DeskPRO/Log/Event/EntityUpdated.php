@@ -74,9 +74,9 @@ class EntityUpdated extends Base
 		}
 
 		return array(
+			'property' => $change->getField(),
 			'old' => $old,
 			'new' => $new,
-			'property' => $change->getField(),
 		);
 	}
 } 

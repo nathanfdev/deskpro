@@ -106,11 +106,21 @@ class StateChangeRecorder
 	private function addChange(ChangeInterface $change)
 	{
 		$field_id = $change->getField();
-		$this->changes[] = $change;
 
 		if (!isset($this->changes_by_field[$field_id])) {
 			$this->changes_by_field[$field_id] = array();
 		}
+
+		// need to merge ChangeCollection so they will not multiply each add and del arrays
+		foreach ($this->changes_by_field[$field_id] as $k => $oldChange) {
+			if (!$oldChange instanceof ChangeCollection) continue;
+			if (false === $key = array_search($oldChange, $this->changes, 1)) continue;
+			$this->changes[$key] = $change;
+			$this->changes_by_field[$k] = $change;
+			return;
+		}
+
+		$this->changes[] = $change;
 		$this->changes_by_field[$field_id][] = $change;
 
 		if (!($change instanceof NonStateTrackingInterface)) {
