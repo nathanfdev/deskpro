@@ -180,7 +180,8 @@ class EntityChangeTrackingListener implements EventSubscriber
 	 */
 	public function postFlush()
 	{
-		$logger = $this->getLogger();
+		/** @var DPLogger $logger */
+		$logger = $this->container->get('deskpro.logger.changelog');
 
 		while (!$this->queue->isEmpty()) {
 
@@ -218,19 +219,5 @@ class EntityChangeTrackingListener implements EventSubscriber
 		}
 
 		return null;
-	}
-
-	/**
-	 * @return DPLogger
-	 */
-	protected function getLogger()
-	{
-		if (!$this->logger) {
-			$this->logger = new DPLogger('changelog');
-			$handler = new LogEventHandler($this->container->get('doctrine.orm.entity_manager'));
-			$this->logger->pushHandler($handler);
-		}
-
-		return $this->logger;
 	}
 }
