@@ -201,21 +201,21 @@ class EditAgent
 			$email->email        = $email_address;
 			$email->is_validated = true;
 
-			$agent->emails->add($email);
+			$agent->addEmailAddress($email);
 			$em->persist($email);
 		}
 
 		foreach ($del_emails as $email_address) {
 			$email = $agent->findEmailAddress($email_address);
 			if ($email) {
-				$agent->emails->removeElement($email);
+				$agent->removeEmailAddressId($email['id']);
 				$em->remove($email);
 			}
 		}
 
 		$primary_email_address = strtolower(Arrays::getFirstItem($this->emails));
 		foreach ($agent->emails as $email) {
-			if (strtolower($email->email) == $primary_email_address) {
+			if (strtolower($email->email) == $primary_email_address && !$agent->primary_email) {
 				$agent->primary_email = $email;
 				break;
 			}

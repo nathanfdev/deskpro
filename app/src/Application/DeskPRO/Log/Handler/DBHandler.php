@@ -32,6 +32,7 @@ namespace Application\DeskPRO\Log\Handler;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
 
@@ -92,10 +93,22 @@ abstract class DBHandler extends AbstractProcessingHandler
 		}
 
 		$data = $this->em->getUnitOfWork()->getEntityPersister($class)->getClassMetadata();
-		return $this->meta[$class] = array(
+		$this->meta[$class] = array(
 			'table' => $data->table['name'],
 			'fields' => $data->fieldNames,
 		);
+
+		// todo use BasicEntityPersister methods to create and bind statement
+		foreach ($data->associationMappings as $property => $mapping) {
+			if ($mapping['isOwningSide'] && $mapping['type'] & ClassMetadata::TO_ONE) {
+				foreach ($mapping['joinColumns'] as $joinColumn) {
+					$this->meta[$class]['fields'][$joinColumn['name']] = $property;
+				}
+
+			}
+		}
+
+		return $this->meta[$class];
 	}
 
 	/**
@@ -108,11 +121,17 @@ abstract class DBHandler extends AbstractProcessingHandler
 		$stmt = $this->getStatement($entity);
 		$data = array();
 		foreach ($meta['fields'] as $fieldName) {
-			$data[$fieldName] = $entity[$fieldName];
+			$data[$fieldName] = $entity[$fieldName] instanceof DomainObject
+				? $entity[$fieldName]['id']
+				: $entity[$fieldName];
 		}
 
 		// todo try/catch block?
 
 		$stmt->execute($data);
+		if ($id = $this->em->getConnection()->lastInsertId()) {
+			$entity['id'] = $id;
+		}
+		$stmt->closeCursor();
 	}
 }

@@ -38,6 +38,7 @@ use Application\DeskPRO\Domain\DomainObject;
 //use Application\DeskPRO\Log\Loggable;
 use Application\DeskPRO\Log\Loggable;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -46,6 +47,10 @@ class LogEntity extends DomainObject implements Loggable
 	protected $id;
 
 	protected $timestamp;
+
+	protected $parent;
+
+	protected $children;
 
 	/** @var Person context person */
 	protected $person;
@@ -58,18 +63,25 @@ class LogEntity extends DomainObject implements Loggable
 
 	protected $new;
 
-	protected $message;
-
 	/** @var \Application\DeskPRO\ORM\StateChange\ChangeInterface  */
 	protected $change;
+	/** @var DomainObject */
+	protected $subject;
 
-	public function __construct(DomainObject $entity, ChangeInterface $change, Person $person = null)
+	public function __construct(DomainObject $subject, Person $person = null, ChangeInterface $change = null)
 	{
 		$this['timestamp'] = time();
-		$this['entity'] = get_class($entity);
-		$this['property'] = $change->getField();
+		$parts = explode('\\', get_class($subject));
+		$this['entity'] = end($parts);
 		$this->person = $person;
-		$this->change = $change;
+		$this->subject = $subject;
+		$this->children = new ArrayCollection();
+
+		// $change is null when persisting new $subject
+		if ($change) {
+			$this->change = $change;
+			$this['property'] = $change->getField();
+		}
 	}
 
 	/**
@@ -103,21 +115,32 @@ class LogEntity extends DomainObject implements Loggable
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'id' => true, 'options' => array('unsigned' => true)));
 		$metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'options' => array('unsigned' => true)));
 		$metadata->mapField(array( 'fieldName' => 'entity', 'type' => 'string', 'nullable' => false));
-		$metadata->mapField(array( 'fieldName' => 'property', 'type' => 'string', 'nullable' => false));
-		$metadata->mapField(array( 'fieldName' => 'old', 'type' => 'integer', 'nullable' => false));
-		$metadata->mapField(array( 'fieldName' => 'new', 'type' => 'integer', 'nullable' => false));
-		$metadata->mapField(array( 'fieldName' => 'message', 'type' => 'text', 'nullable' => false));
+		$metadata->mapField(array( 'fieldName' => 'property', 'type' => 'string', 'nullable' => true));
+		$metadata->mapField(array( 'fieldName' => 'old', 'type' => 'string', 'nullable' => true));
+		$metadata->mapField(array( 'fieldName' => 'new', 'type' => 'string', 'nullable' => true));
 
-		$metadata->mapOneToOne(array(
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'parent',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEntity',
+			'joinColumns' => array(0 => array(
+				'nullable' => true,
+				'onDelete' => 'cascade',
+			),),
+		));
+
+		$metadata->mapOneToMany(array(
+			'fieldName' => 'children',
+			'mappedBy'  => 'parent',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEntity',
+		));
+
+		$metadata->mapManyToOne(array(
 			'fieldName'            => 'person',
 			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
-			'joinColumns'          => array(array(
-				'name'                 => 'person_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'set null',
-			)),
-			'dpApi'                => true,
+			'joinColumns' => array(0 => array(
+				'nullable' => true,
+				'onDelete' => 'cascade',
+			),),
 		));
 
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

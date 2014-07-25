@@ -36,13 +36,14 @@ namespace Application\DeskPRO\ORM\EventListener;
 
 use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\LogEntity;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Log\Handler\LogEntityHandler;
-use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
 use Application\DeskPRO\Monolog\Logger as DPLogger;
 
@@ -54,15 +55,23 @@ class EntityChangeTrackingListener implements EventSubscriber
 	/** @var  DeskproContainer */
 	protected $container;
 
-	protected $queuedChanges = array();
+	/** @var \SplQueue */
+	protected $queue;
+
+	/** @var array handled state versions */
+	protected $handled = array();
 
 	/** @var \Application\DeskPRO\Monolog\Logger  */
 	protected $logger;
 
-	// todo implement interface to detect required entity/fields
+	// todo better tracking policy
 	protected $track = array(
-		'Application\DeskPRO\Entity\Person' => array(
-			'name' => true,
+		'Person' => array(
+			'first_name' => true,
+			'last_name' => true,
+			'password' => true,
+			'primary_email' => true,
+			'emails' => true,
 			'labels' => true,
 			'notes' => true,
 		),
@@ -71,88 +80,114 @@ class EntityChangeTrackingListener implements EventSubscriber
 	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
+		$this->queue = new \SplQueue();
 	}
 
 	public function getSubscribedEvents()
 	{
 	   return array(
-		   Events::prePersist,
+		   Events::preFlush,
+		   Events::postFlush,
 		   Events::preUpdate,
-		   Events::postPersist,
 		   Events::postUpdate,
 	   );
 	}
 
-	/**
-	 * proxy
-	 * @param LifecycleEventArgs $args
-	 */
-	public function prePersist(LifecycleEventArgs $args)
+	public function preFlush(PreFlushEventArgs $args)
 	{
-//		do not handle new entities yet
-//		$this->preUpdate($args);
+		$uow = $args->getEntityManager()->getUnitOfWork();
+		foreach ($uow->getScheduledEntityInsertions() as $entity) {
+			$this->prepareEntityChangeset($entity);
+		}
+		foreach ($uow->getScheduledEntityUpdates() as $entity) {
+			$this->prepareEntityChangeset($entity);
+		}
 	}
 
 	/**
-	 * store changes into queue to log them after successful flush
 	 * @param LifecycleEventArgs $args
 	 */
 	public function preUpdate(LifecycleEventArgs $args)
 	{
-		$entityClass = get_class($args->getEntity());
-		if (!isset($this->track[$entityClass])) {
-			return;
-		}
-//		$uow = $args->getEntityManager()->getUnitOfWork();
-//		$changes = $uow->getEntityChangeSet($args->getEntity());
-
-		/** @var StateChangeRecorder $stateChangeRecorder */
-		$stateChangeRecorder = $args->getEntity()->getStateChangeRecorder();
-		$changes = $stateChangeRecorder->getChanges();
-
-		$_changes = array();
-		foreach ($changes as $change) {
-			if (isset($this->track[$entityClass][$change->getField()])) {
-				$_changes[] = $change;
-			}
-		}
-
-		if ($_changes) {
-			$oid = spl_object_hash($args->getEntity());
-			$this->queuedChanges[$oid] = $_changes;
-		}
+		$this->prepareEntityChangeset($args->getEntity());
 	}
 
 	/**
-	 * proxy
-	 * @param LifecycleEventArgs $args
-	 */
-	public function postPersist(LifecycleEventArgs $args)
-	{
-		$this->postUpdate($args);
-	}
-
-	/**
-	 * log changes stored before persist/update
 	 * @param LifecycleEventArgs $args
 	 */
 	public function postUpdate(LifecycleEventArgs $args)
 	{
-		$oid = spl_object_hash($args->getEntity());
-		if (!isset($this->queuedChanges[$oid])) {
+		$this->postFlush();
+	}
+
+	/**
+	 * fill queue with loggable entries
+	 * @param DomainObject $entity
+	 */
+	protected function prepareEntityChangeset(DomainObject $entity)
+	{
+		$parts = explode('\\', get_class($entity));
+		$entityName = end($parts);
+
+		// todo better tracking policy
+		if (!isset($this->track[$entityName])) {
 			return;
 		}
 
-		foreach ($this->queuedChanges[$oid] as $change) {
-			/** @var $change ChangeInterface */
-			if ($change->isSame()) continue;
-
-			$entry = new LogEntity($args->getEntity(), $change, $this->getContextPerson());
-			// todo merge db logger from round robin branch
-			$this->getLogger()->info($entry);
+		/** @var StateChangeRecorder $stateChangeRecorder */
+		$stateChangeRecorder = $entity->getStateChangeRecorder();
+		if (!$changes = $stateChangeRecorder->getChanges()) {
+			return;
 		}
 
-		unset($this->queuedChanges[$oid]);
+		if (isset($this->handled[spl_object_hash($entity)][$stateChangeRecorder->getStateVersion()])) {
+			return;
+		}
+		$this->handled[spl_object_hash($entity)][$stateChangeRecorder->getStateVersion()] = true;
+
+		$person = $this->getContextPerson();
+		$parentEntry = null;
+		// if new entity
+		if (!$entity['id']) {
+			$parentEntry = new LogEntity($entity, $person);
+			$this->queue->enqueue($parentEntry);
+		}
+
+		foreach ($changes as $change) {
+
+			$isTracked = isset($this->track[$entityName][$change->getField()]);
+			if ($change->isSame() || ! $isTracked) {
+				continue;
+			}
+
+			$entry = new LogEntity($entity, $person, $change);
+
+			if ($parentEntry) {
+				$parentEntry->children->add($entry);
+				$entry->parent = $parentEntry;
+			} else {
+				$this->queue->enqueue($entry);
+			}
+		}
+	}
+
+	/**
+	 * proceed queued log entries after tracked objects were inserted/updated
+	 */
+	public function postFlush()
+	{
+		$logger = $this->getLogger();
+
+		while (!$this->queue->isEmpty()) {
+
+			/** @var LogEntity $entry */
+			$entry = $this->queue->dequeue();
+			$logger->info($entry);
+
+			foreach ($entry->children as $child) {
+				$logger->info($child);
+			}
+		}
 	}
 
 	/**
@@ -162,19 +197,19 @@ class EntityChangeTrackingListener implements EventSubscriber
 	{
 		$c = $this->container;
 
-		if ($c->has('session') && ($sess = $c->get('session'))) {
-			/** @var $sess Session */
-			if ($person = $sess->getPerson()) {
-				return $person;
-			}
-		}
-
 		/** @var RequestAuth $auth */
 		if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
 			if ($apiUser = $auth->getApiUser()) {
 				if ($apiUser->person) {
 					return $apiUser->person;
 				}
+			}
+		}
+
+		if ($c->has('session') && ($sess = $c->get('session'))) {
+			/** @var $sess Session */
+			if ($person = $sess->getPerson()) {
+				return $person;
 			}
 		}
 
