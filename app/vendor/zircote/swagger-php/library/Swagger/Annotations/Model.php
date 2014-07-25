@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,18 +53,6 @@ class Model extends AbstractAnnotation
      */
     public $required;
 
-    /**
-     * The PHP class connected to this model
-     * @var null|string
-     */
-    public $phpClass;
-
-    /**
-     * The superclass connected to this model.
-     * @var null|string
-     */
-    public $phpExtends;
-
     protected static $mapAnnotations = array(
         '\Swagger\Annotations\Property' => 'properties[]'
     );
@@ -99,25 +87,20 @@ class Model extends AbstractAnnotation
     {
         $properties = array();
         $required = $this->required ?: array();
-        foreach ($required as $name) {
-            foreach ($this->properties as $property) {
-                if ($property->name === $name) {
-                    $property->required = true;
-                }
-            }
-        }
         foreach ($this->properties as $property) {
             if ($property->validate()) {
                 $properties[] = $property;
-                if ($property->required) {
+                if ($property->required && in_array($property->name, $required) === false) {
                     $required[] = $property->name;
                 }
+                $property->required = null;
             }
         }
         $this->properties = $properties;
-        if (count($required) > 0) {
-            $this->required = array_unique($required);
-            sort($this->required);
+        sort($required);
+        $this->required = $required;
+        if (count($required) === 0) {
+            $this->required = null;
         }
         return true;
     }
@@ -128,10 +111,6 @@ class Model extends AbstractAnnotation
     public function jsonSerialize()
     {
         $data = parent::jsonSerialize($this);
-        unset($data['phpClass'], $data['phpExtends']);
-        if (empty($data['required'])) {
-            unset($data['required']);
-        }
         $data['properties'] = array();
         foreach ($this->properties as $property) {
             $data['properties'][$property->name] = $property->jsonSerialize();

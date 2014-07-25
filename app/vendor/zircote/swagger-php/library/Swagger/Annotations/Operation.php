@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,9 +143,9 @@ class Operation extends AbstractAnnotation
     public function validate()
     {
         if (empty($this->nickname)) {
-            Logger::notice('Required field "nickname" is missing for "'.$this->identity().'" in '.AbstractAnnotation::$context);
+            Logger::notice('Required field "nickname" is missing for "'.$this->identity().'" in '.$this->_context);
         }
-        Swagger::checkDataType($this->type);
+        Swagger::checkDataType($this->type, $this->_context);
         foreach ($this->parameters as $parameter) {
             if ($parameter->validate() == false) {
                 return false;
