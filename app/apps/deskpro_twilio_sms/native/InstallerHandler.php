@@ -82,6 +82,7 @@ class InstallerHandler extends AbstractInstallerHandler
 	private function refreshTriggerAction(InstallerContext $context)
 	{
 		$action_name = $this->getActionName($context);
+
 		$rec = array(
 			'app_id' => $context->getApp()->id,
 			'action_name' => $action_name,
@@ -106,6 +107,6 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	private function getActionName(InstallerContext $context)
 	{
-		return "deskpro_twilio_sms_" . $context->getApp()->id;
+		return "TwilioSmsAction" . $context->getApp()->id;
 	}
 }
