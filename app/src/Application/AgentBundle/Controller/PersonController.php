@@ -919,6 +919,7 @@ class PersonController extends AbstractController
 					$contact_data->person = $person;
 
 					$this->em->persist($contact_data);
+					$person->addContactData($contact_data);
 
 					$added[] = $contact_data;
 				}
@@ -936,10 +937,10 @@ class PersonController extends AbstractController
 
 			// Removing values
 			foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
-				if (isset($person->contact_data[$id])) {
-					$cd = $person->contact_data[$id];
-					$this->em->remove($person->contact_data[$id]);
-					$person->contact_data->remove($id);
+				if ($cd = $person->contact_data->get($id)) {
+					$person->removeContactData($cd);
+					$this->em->remove($cd); // ?
+//					$person->contact_data->remove($id);
 
 					if (isset($contact_data_array[$cd->contact_type][$cd->id])) {
 						unset($contact_data_array[$cd->contact_type][$cd->id]);

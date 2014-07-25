@@ -1304,18 +1304,21 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 
 	/**
-	 * Add contact data
-	 *
-	 * @param PersonEmail $email
+	 * @param PersonContactData $contact_data
 	 */
 	public function addContactData(PersonContactData $contact_data)
 	{
-		$em = App::getOrm();
-
 		$this['contact_data']->add($contact_data);
-
 		$contact_data['person'] = $this;
-		$em->persist($contact_data);
+		$this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
+	}
+
+	/**
+	 * @param PersonContactData $contact_data
+	 */
+	public function removeContactData(PersonContactData $contact_data)
+	{
+		$this->contact_data->removeElement($contact_data);
 		$this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
 	}
 
