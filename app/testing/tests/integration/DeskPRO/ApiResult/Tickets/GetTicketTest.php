@@ -37,11 +37,14 @@ class GetTicketTest extends AbstractApiResultTest
 		}
 
 		foreach ($this->getTimestampFields('ticket') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketArray[$field]);
+			// 0 check because some times can be null
+			if ($retrievedTicketArray[$field] !== 0) {
+				$this->assertIsValidTimestamp($retrievedTicketArray[$field], "ticket.$field");
+			}
 		}
 
 		foreach ($this->getTimestampFields('person') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketArray['person'][$field]);
+			$this->assertIsValidTimestamp($retrievedTicketArray['person'][$field], "person.$field");
 		}
 
 		foreach ($this->getTimestampFields('person_email') as $field) {
