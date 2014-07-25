@@ -1,0 +1,43 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap">
+					<label class="row-label">Send SMS<br/>
+						<small>via Twilio</small>
+					</label>
+				</td>
+				<td ng-show="rowOpts.rowEnabled">
+					<table class="display-table spaced">
+						<tr>
+							<td>Message:</td>
+							<td>
+								<div style="padding-top: 3px; width: 250px;">
+									<input type="text" class="form-control" ng-model="model.message"/>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>From Phone Number:</td>
+							<td>
+								<div style="padding-top: 3px; width: 250px;">
+									<input type="text" class="form-control" ng-model="model.from_number"/>
+								</div>
+								<span class="help-inline dp-help-content">This phone number must be registered with Twilio</span>
+							</td>
+						</tr>
+						<!-- Keeping it simple for now -->
+						<tr>
+							<td>Send To:</td>
+							<td>
+								<div style="padding-top: 3px; width: 250px;">
+									<input type="text"  class="form-control" ng-model="model.to_number"/>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

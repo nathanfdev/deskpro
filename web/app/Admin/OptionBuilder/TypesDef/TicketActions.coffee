@@ -278,15 +278,19 @@ define [
 					})
 
 					typeFunc = "get#{opt.action_name}"
-					@[typeFunc] = (options = {}) ->
-						me = @
-						return {
-							getTemplate: ->
-								return me.dpTemplateManager.get(opt.builder_template)
-							getData: ->
-								return {}
-							getDataFormatter: ->
-								return {
+
+					# TODO: this is temporarily doing nothing different
+					#       changing when I add the different ways to send an SMS
+					if opt.action_name.indexOf('TwilioSmsAction') == 0
+						@[typeFunc] = (options = {}) ->
+							me = @
+							return {
+								getTemplate: ->
+									return me.dpTemplateManager.get(opt.builder_template)
+								getData: ->
+									return me.loadDataOptions()
+								getDataFormatter: ->
+									return {
 									getViewValue: (value = {}, data) ->
 										return value.options || {}
 									getValue: (model = {}, data) ->
@@ -294,8 +298,27 @@ define [
 										value.type = opt.action_name
 										value.options = model || {}
 										return value
-								}
-						}
+									}
+							}
+					else
+						@[typeFunc] = (options = {}) ->
+							me = @
+							return {
+								getTemplate: ->
+									return me.dpTemplateManager.get(opt.builder_template)
+								getData: ->
+									return {}
+								getDataFormatter: ->
+									return {
+										getViewValue: (value = {}, data) ->
+											return value.options || {}
+										getValue: (model = {}, data) ->
+											value = {}
+											value.type = opt.action_name
+											value.options = model || {}
+											return value
+									}
+							}
 
 				if options.length
 					set_options.push({

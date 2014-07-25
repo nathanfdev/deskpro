@@ -218,41 +218,79 @@
               value: opt.action_name
             });
             typeFunc = "get" + opt.action_name;
-            this[typeFunc] = function(options) {
-              var me;
-              if (options == null) {
-                options = {};
-              }
-              me = this;
-              return {
-                getTemplate: function() {
-                  return me.dpTemplateManager.get(opt.builder_template);
-                },
-                getData: function() {
-                  return {};
-                },
-                getDataFormatter: function() {
-                  return {
-                    getViewValue: function(value, data) {
-                      if (value == null) {
-                        value = {};
-                      }
-                      return value.options || {};
-                    },
-                    getValue: function(model, data) {
-                      var value;
-                      if (model == null) {
-                        model = {};
-                      }
-                      value = {};
-                      value.type = opt.action_name;
-                      value.options = model || {};
-                      return value;
-                    }
-                  };
+            if (opt.action_name.indexOf('TwilioSmsAction') === 0) {
+              this[typeFunc] = function(options) {
+                var me;
+                if (options == null) {
+                  options = {};
                 }
+                me = this;
+                return {
+                  getTemplate: function() {
+                    return me.dpTemplateManager.get(opt.builder_template);
+                  },
+                  getData: function() {
+                    return me.loadDataOptions();
+                  },
+                  getDataFormatter: function() {
+                    return {
+                      getViewValue: function(value, data) {
+                        if (value == null) {
+                          value = {};
+                        }
+                        return value.options || {};
+                      },
+                      getValue: function(model, data) {
+                        var value;
+                        if (model == null) {
+                          model = {};
+                        }
+                        value = {};
+                        value.type = opt.action_name;
+                        value.options = model || {};
+                        return value;
+                      }
+                    };
+                  }
+                };
               };
-            };
+            } else {
+              this[typeFunc] = function(options) {
+                var me;
+                if (options == null) {
+                  options = {};
+                }
+                me = this;
+                return {
+                  getTemplate: function() {
+                    return me.dpTemplateManager.get(opt.builder_template);
+                  },
+                  getData: function() {
+                    return {};
+                  },
+                  getDataFormatter: function() {
+                    return {
+                      getViewValue: function(value, data) {
+                        if (value == null) {
+                          value = {};
+                        }
+                        return value.options || {};
+                      },
+                      getValue: function(model, data) {
+                        var value;
+                        if (model == null) {
+                          model = {};
+                        }
+                        value = {};
+                        value.type = opt.action_name;
+                        value.options = model || {};
+                        return value;
+                      }
+                    };
+                  }
+                };
+              };
+            }
           }
           if (options.length) {
             set_options.push({
