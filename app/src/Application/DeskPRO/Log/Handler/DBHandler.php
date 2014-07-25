@@ -122,8 +122,13 @@ abstract class DBHandler extends AbstractProcessingHandler
 		$data = array();
 		foreach ($meta['fields'] as $fieldName) {
 			$data[$fieldName] = $entity[$fieldName] instanceof DomainObject
-				? $entity[$fieldName]['id']
+				? $entity[$fieldName]['id'] // todo
 				: $entity[$fieldName];
+
+			// todo
+			if (is_array($data[$fieldName])) {
+				$data[$fieldName] = serialize($data[$fieldName]);
+			}
 		}
 
 		// todo try/catch block?

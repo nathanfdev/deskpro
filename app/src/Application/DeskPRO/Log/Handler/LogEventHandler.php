@@ -29,18 +29,16 @@ namespace Application\DeskPRO\Log\Handler;
 
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\LogEntity;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\StateChange\ChangeInterface;
+use Application\DeskPRO\Entity\LogEvent;
 
-class LogEntityHandler extends DBHandler
+class LogEventHandler extends DBHandler
 {
 	/**
 	 * @inheritdoc
 	 */
 	public function isHandling(array $record)
 	{
-		return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogEntity;
+		return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogEvent;
 	}
 
 	/**
@@ -48,30 +46,9 @@ class LogEntityHandler extends DBHandler
 	 */
 	protected function write(array $record)
 	{
-		/** @var LogEntity $entity */
+		/** @var LogEvent $entity */
 		$entity = $record['context']['_entity'];
-		/** @var ChangeInterface $change */
-		$change = $entity->change;
-		/** @var Person $person */
-		$person = $entity->person;
-		/** @var Person $subject */
-		$subject = $entity->subject;
-
-		// this is new $subject
-		if (!$change) {
-			$entity['new'] = $subject['id'];
-		} else {
-
-			// todo handle changes/formatting in Monolog Processor/Formatter
-			switch (get_class($change)){
-
-				case 'Application\DeskPRO\ORM\StateChange\ChangeSimple':
-
-					$entity['old'] = $change->getOld();
-					$entity['new'] = $change->getNew();
-					break;
-			}
-		}
+		$entity->prepare();
 
 		parent::write($record);
 	}

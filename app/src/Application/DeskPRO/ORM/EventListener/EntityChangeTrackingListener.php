@@ -37,9 +37,11 @@ namespace Application\DeskPRO\ORM\EventListener;
 use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity\LogEntity;
+use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\HttpFoundation\Session;
-use Application\DeskPRO\Log\Handler\LogEntityHandler;
+use Application\DeskPRO\Log\Event\EntityCreated;
+use Application\DeskPRO\Log\Event\EntityUpdated;
+use Application\DeskPRO\Log\Handler\LogEventHandler;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -149,7 +151,8 @@ class EntityChangeTrackingListener implements EventSubscriber
 		$parentEntry = null;
 		// if new entity
 		if (!$entity['id']) {
-			$parentEntry = new LogEntity($entity, $person);
+			$event = new EntityCreated($entity);
+			$parentEntry = new LogEvent($event, $person);
 			$this->queue->enqueue($parentEntry);
 		}
 
@@ -160,7 +163,8 @@ class EntityChangeTrackingListener implements EventSubscriber
 				continue;
 			}
 
-			$entry = new LogEntity($entity, $person, $change);
+			$event = new EntityUpdated($entity, $change);
+			$entry = new LogEvent($event, $person);
 
 			if ($parentEntry) {
 				$parentEntry->children->add($entry);
@@ -180,7 +184,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 
 		while (!$this->queue->isEmpty()) {
 
-			/** @var LogEntity $entry */
+			/** @var LogEvent $entry */
 			$entry = $this->queue->dequeue();
 			$logger->info($entry);
 
@@ -223,7 +227,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 	{
 		if (!$this->logger) {
 			$this->logger = new DPLogger('changelog');
-			$handler = new LogEntityHandler($this->container->get('doctrine.orm.entity_manager'));
+			$handler = new LogEventHandler($this->container->get('doctrine.orm.entity_manager'));
 			$this->logger->pushHandler($handler);
 		}
 

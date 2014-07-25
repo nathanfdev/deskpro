@@ -35,52 +35,54 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-//use Application\DeskPRO\Log\Loggable;
 use Application\DeskPRO\Log\Loggable;
-use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Application\DeskPRO\Log\Event\Base as BaseLogEvent;
 
-class LogEntity extends DomainObject implements Loggable
+class LogEvent extends DomainObject implements Loggable
 {
 	protected $id;
 
 	protected $timestamp;
 
+	/** @var Person context person */
+	protected $person;
+
 	protected $parent;
 
 	protected $children;
 
-	/** @var Person context person */
-	protected $person;
+	protected $event;
 
-	protected $entity;
-
-	protected $property;
-
-	protected $old;
-
-	protected $new;
-
-	/** @var \Application\DeskPRO\ORM\StateChange\ChangeInterface  */
-	protected $change;
-	/** @var DomainObject */
 	protected $subject;
 
-	public function __construct(DomainObject $subject, Person $person = null, ChangeInterface $change = null)
+	protected $subject_id;
+
+	protected $details;
+
+	/** @var BaseLogEvent */
+	protected $_event;
+
+	public function __construct(BaseLogEvent $event, Person $person = null)
 	{
 		$this['timestamp'] = time();
-		$parts = explode('\\', get_class($subject));
-		$this['entity'] = end($parts);
 		$this->person = $person;
-		$this->subject = $subject;
 		$this->children = new ArrayCollection();
 
-		// $change is null when persisting new $subject
-		if ($change) {
-			$this->change = $change;
-			$this['property'] = $change->getField();
+		$this->_event = $event;
+	}
+
+	public function prepare()
+	{
+		$this['event'] = $this->_event->getName();
+		$this['details'] = $this->_event->getDetails();
+
+		if ($subject = $this->_event->getSubject()) {
+			$class = explode('\\', get_class($subject));
+			$this['subject'] = end($class);
+			$this['subject_id'] = $subject['id'];
 		}
 	}
 
@@ -107,21 +109,21 @@ class LogEntity extends DomainObject implements Loggable
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->setPrimaryTable(array(
-			'name' => 'log_entity',
+			'name' => 'log_event',
 			'indexes' => array(
-				'entity' => array('columns' => array('entity', 'property')),
+				'subject' => array('columns' => array('subject', 'subject_id')),
 			)
 		));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'id' => true, 'options' => array('unsigned' => true)));
 		$metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'options' => array('unsigned' => true)));
-		$metadata->mapField(array( 'fieldName' => 'entity', 'type' => 'string', 'nullable' => false));
-		$metadata->mapField(array( 'fieldName' => 'property', 'type' => 'string', 'nullable' => true));
-		$metadata->mapField(array( 'fieldName' => 'old', 'type' => 'string', 'nullable' => true));
-		$metadata->mapField(array( 'fieldName' => 'new', 'type' => 'string', 'nullable' => true));
+		$metadata->mapField(array( 'fieldName' => 'event', 'type' => 'string', 'nullable' => false));
+		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'nullable' => true));
+		$metadata->mapField(array( 'fieldName' => 'subject_id', 'type' => 'integer', 'nullable' => true, 'options' => array('unsigned' => true)));
+		$metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'nullable' => false));
 
 		$metadata->mapManyToOne(array(
 			'fieldName' => 'parent',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEntity',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
 			'joinColumns' => array(0 => array(
 				'nullable' => true,
 				'onDelete' => 'cascade',
@@ -131,12 +133,12 @@ class LogEntity extends DomainObject implements Loggable
 		$metadata->mapOneToMany(array(
 			'fieldName' => 'children',
 			'mappedBy'  => 'parent',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEntity',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
 		));
 
 		$metadata->mapManyToOne(array(
-			'fieldName'            => 'person',
-			'targetEntity'         => 'Application\\DeskPRO\\Entity\\Person',
+			'fieldName' => 'person',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
 			'joinColumns' => array(0 => array(
 				'nullable' => true,
 				'onDelete' => 'cascade',
