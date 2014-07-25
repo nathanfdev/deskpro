@@ -425,7 +425,7 @@
 {% elseif log.action_type == 'ticket_email' %}
 	{% if log.details.user_mode == 'user' %}
 		<span class="new-val expand" data-set=".set-detail">User emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
-		{% if log.details.cc_emails %}(+{{ log.details.cc_emails.length }} cc'ed){% endif %}
+		{% if log.details.cc_emails %}(+{{ log.details.cc_emails|length }} cc'ed){% endif %}
 	{% else %}
 		<span class="new-val expand" data-set=".set-detail">Agent emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
 	{% endif %}
@@ -434,6 +434,7 @@
 		From: {{ log.details.from_name }} &lt;{{ log.details.from_email }}&gt;<br/>
 		Template: {{ log.details.template }}<br/>
 		{% if log.details.cc_emails %}
+			CC'd:
 			<ul>
 				{% for eml in log.details.cc_emails %}
 					<li>{{ eml }}</li>
