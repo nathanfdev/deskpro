@@ -110,10 +110,41 @@ class LabelDefManager
 	 */
 	public function getLabels($types = null)
 	{
-		if ($types) {
-			$labels = $this->db->fetchAllCol("SELECT DISTINCT label FROM label_defs WHERE label_type IN ('" . implode("','", (array)$types) . "') ORDER BY label ASC");
+		static $valid = array('articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations');
+
+		if ($types === null) {
+			$types = $valid;
+		}
+		if (is_string($types)) {
+			$types = explode(',', $types);
+			$types = array_map('trim', $types);
+		}
+
+		if (!$types) {
+			return array();
+		}
+
+		$types = array_map(function($t) {
+			if ($t == 'chat') $t = 'chat_conversations';
+			return $t;
+		}, $types);
+
+		// invalid type(s)
+		if (array_diff($types, $valid)) {
+			throw new \InvalidArgumentException();
+		}
+
+		$parts = array();
+		foreach ($types as $t) {
+			$parts[] = "SELECT DISTINCT(label) FROM labels_$t";
+		}
+
+		if (count($parts) === 1) {
+			$labels = $this->db->fetchAllCol(array_pop($parts));
 		} else {
-			$labels = $this->db->fetchAllCol("SELECT DISTINCT label FROM label_defs ORDER BY label ASC");
+			$q = '(' . implode(') UNION (', $parts) . ')';
+			$labels = $this->db->fetchAllCol($q);
+
 		}
 
 		return $labels;

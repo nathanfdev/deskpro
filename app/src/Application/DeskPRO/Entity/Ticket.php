@@ -291,7 +291,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $creation_system;
+	protected $creation_system = 'unknown';
 
 	/**
 	 * Optional information about the creation system. For example, source URL the ticket came from.
@@ -308,7 +308,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $status;
+	protected $status = 'awaiting_agent';
 
 	/**
 	 * @var string
