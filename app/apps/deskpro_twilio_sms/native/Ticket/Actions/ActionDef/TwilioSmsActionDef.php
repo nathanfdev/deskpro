@@ -71,15 +71,15 @@ class TwilioSmsActionDef extends AbstractActionDef
 	public function processActionBuilderOptions(array $options)
 	{
 		if (!isset($options['from_number'])) {
-			return null;
+			$options['from_number'] = '';
 		}
 
 		if (!isset($options['to_number'])) {
-			return null;
+			$options['to_number'] = '';
 		}
 
-		if (!isset($options['message']) || empty($options['message'])) {
-			return null;
+		if (!isset($options['message'])) {
+			$options['message'] = '';
 		}
 
 		$options['app_id'] = $this->getActionDef()->app->id;

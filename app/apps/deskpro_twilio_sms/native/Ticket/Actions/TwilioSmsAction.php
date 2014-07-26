@@ -34,90 +34,11 @@
 
 namespace deskpro_twilio_sms\Ticket\Actions;
 
-use Application\DeskPRO\Entity\AppInstance;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\Actions\AbstractContainerAwareAction;
-use Application\DeskPRO\Tickets\Actions\ActionInterface;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\Actions\AppActionInterface;
-use Orb\Sms\SmsInteractor;
-use Orb\Util\Util;
+use Application\DeskPRO\Tickets\TicketActions\AbstractSmsAction;
+use Orb\Sms\Provider\TwilioSmsProvider;
 
-class TwilioSmsAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
+class TwilioSmsAction extends AbstractSmsAction
 {
-	/**
-	 * @var
-	 */
-	private $app;
-
-	/**
-	 * @return AppInstance
-	 */
-	private function getApp()
-	{
-		if ($this->app !== null) {
-			return $this->app;
-		}
-
-
-		$this->app = false;
-		$app_manager = $this->getContainer()->getAppManager();
-		$app_id = $this->getMetaData()->get('app_id', 0);
-
-		if ($app_manager->hasApp($app_id)) {
-			$this->app = $app_manager->getApp($app_id);
-		}
-
-		return $this->app === false ? null : $this->app;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$app = $this->getApp();
-		if (!$app) {
-			$context->getLogger()->debug(sprintf('[TwilioSmsAction] No app (app id: %d)', $this->getMetaData()->get('app_id')));
-			return;
-		}
-
-		$action_message_template = $this->getActionOption('message');
-		$from_number = $this->getActionOption('from_number');
-		$to_number = $this->getActionOption('to_number');
-		$message = $this->renderMessageFromTemplate($action_message_template, $ticket, $context);
-
-		$context->getLogger()->debug(
-			sprintf('[TwilioSmsAction] Sending SMS message from "%s" to "%s"', $from_number, $to_number)
-		);
-
-		try {
-			// keeping it simple for now, we only record the state change
-			//$sms = new SmsInteractor($this->getSmsProvider());
-			//$sms->sendMessage($from_number, $to_number, $message);
-
-			$ticket->getStateChangeRecorder()->recordData('app_message', array(
-				'app_id'        => $app->id,
-				'app_title'     => $app->title,
-				'package_name'  => $app->package->name,
-				'package_title' => $app->package->title,
-				'message'       => "Send SMS message from \"$from_number\" to \"$to_number\""
-			));
-		} catch (\Exception $e) {
-			$context->getLogger()->notice("[TwilioSmsAction] Error sending Twilio SMS message: {$e->getMessage()}");
-		}
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getActionType()
-	{
-		return Util::getBaseClassname($this) . $this->getMetaData()->get('app_id', 0);
-	}
-
 	/**
 	 * All children of this class need to construct their own provider from their config
 	 *
@@ -127,10 +48,7 @@ class TwilioSmsAction extends AbstractContainerAwareAction implements ActionInte
 	{
 		$sid = $this->getApp()->getSetting('account_sid');
 		$token = $this->getApp()->getSetting('auth_token');
-	}
 
-	public function renderMessageFromTemplate($action_message_template, $ticket, $context)
-	{
-		return $action_message_template;
+		return new TwilioSmsProvider($sid, $token);
 	}
 }
