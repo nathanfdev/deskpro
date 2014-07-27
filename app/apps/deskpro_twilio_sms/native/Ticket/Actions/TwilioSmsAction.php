@@ -34,7 +34,7 @@
 
 namespace deskpro_twilio_sms\Ticket\Actions;
 
-use Application\DeskPRO\Tickets\Action\AbstractSmsAction;
+use Application\DeskPRO\Tickets\Actions\AbstractSmsAction;
 use Orb\Sms\Provider\TwilioSmsProvider;
 
 class TwilioSmsAction extends AbstractSmsAction

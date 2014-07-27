@@ -32,14 +32,11 @@
  * @category Twilio
  */
 
-namespace Application\DeskPRO\Tickets\Action;
+namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\Actions\AbstractContainerAwareAction;
-use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\Actions\AppActionInterface;
 use Orb\Util\Util;
 
 abstract class AbstractSmsAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
@@ -111,7 +108,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 			$sms_sender->setDefaultProvider($this->getSmsProvider());
 			$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
 
-			$sms_sender->send($from_number, $to_number, $action_message_template);
+			$sms_sender->send($from_number, $to_number, $message);
 			//$sms_sender->sendToAgent($from_number, $agent, $action_message_template);
 			//$sms_sender->sendToAgents($from_number, $agents, $action_message_template);
 			//$sms_sender->sendToAgentIds($from_number, $agentIds, $action_message_template);
