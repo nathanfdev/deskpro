@@ -59,6 +59,6 @@ class TwilioSmsAction extends AbstractSmsAction
 	 */
 	public function getFromPhoneNumber()
 	{
-		$this->getActionOption('from_number');
+		return $this->getActionOption('from_number');
 	}
 }

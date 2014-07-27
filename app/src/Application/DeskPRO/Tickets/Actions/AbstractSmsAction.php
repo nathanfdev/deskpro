@@ -69,7 +69,6 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 			return $this->app;
 		}
 
-
 		$this->app = false;
 		$app_manager = $this->getContainer()->getAppManager();
 		$app_id = $this->getMetaData()->get('app_id', 0);
@@ -87,59 +86,99 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$app = $this->getApp();
-		if (!$app) {
-			$context->getLogger()->debug(sprintf('[%s] No app (app id: %d)', $this->getActionType(), $this->getMetaData()->get('app_id')));
-			return;
+		if (!$this->getApp()) {
+			$context->getLogger()->debug(
+				sprintf('[%s] No app (app id: %d)', $this->getActionType(), $this->getMetaData()->get('app_id'))
+			);
 		}
 
+		$sms_sender = $this->getContainer()->get('deskpro.sms_sender');
+		$sms_sender->setDefaultProvider($this->getSmsProvider());
+		$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
+
 		$action_message_template = $this->getActionOption('message');
-		$from_number = $this->getActionOption('from_number');
-		$to_number = $this->getActionOption('to_number');
 		$message = $this->renderMessageFromTemplate($action_message_template, $ticket, $context);
 
+		$plain_to_numbers = array();
+		$plain_to_numbers[] = $this->getActionOption('to_number');
+
+		foreach ($plain_to_numbers as $number) {
+			$extra_info = 'phone number';
+			$this->logSendingTo($number, $context);
+			try {
+				$result = $sms_sender->send($number, $message);
+				// plan is to add these types of methods on DeskPROSmsSender...
+				//$sms_sender->sendToAgent($agent, $message);
+				//$sms_sender->sendToAgents($agents, $message);
+				//$sms_sender->sendToAgentIds($agentIds, $message);
+
+				if ($result->isSent()) {
+					$this->recordTicketStateChange($ticket, $number, $extra_info);
+				}
+			} catch (\Exception $e) {
+				$this->logErrorSendingTo($e, $context);
+			}
+		}
+	}
+
+	public function renderMessageFromTemplate($action_message_template, $ticket, $context)
+	{
+		return $action_message_template;
+	}
+
+	/**
+	 * @param                          $to_number
+	 * @param ExecutorContextInterface $context
+	 */
+	protected function logSendingTo($to_number, ExecutorContextInterface $context)
+	{
 		$context->getLogger()->debug(
-			sprintf('[%s] Sending SMS message from "%s" to "%s"', $this->getActionType(), $from_number, $to_number)
+			sprintf(
+				'[%s] Sending SMS message from "%s" to "%s"',
+				$this->getActionType(),
+				$this->getFromPhoneNumber(),
+				$to_number
+			)
 		);
+	}
 
-		try {
+	/**
+	 * @param                          $e
+	 * @param ExecutorContextInterface $context
+	 */
+	protected function logErrorSendingTo(\Exception $e, ExecutorContextInterface $context)
+	{
+		$context->getLogger()->notice("[{$this->getActionType()}] Error sending SMS message: {$e->getMessage()}");
+	}
 
-			$sms_sender = $this->getContainer()->get('deskpro.sms_sender');
-			$sms_sender->setDefaultProvider($this->getSmsProvider());
-			$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
+	/**
+	 * @param Ticket $ticket
+	 * @param string $to_number
+	 * @param string $to_extra_info - an info other than the to number that should be present in the record
+	 */
+	protected function recordTicketStateChange(Ticket $ticket, $to_number, $to_extra_info)
+	{
+		$app = $this->getApp();
 
-			$sms_sender->send($from_number, $to_number, $message);
-			//$sms_sender->sendToAgent($from_number, $agent, $action_message_template);
-			//$sms_sender->sendToAgents($from_number, $agents, $action_message_template);
-			//$sms_sender->sendToAgentIds($from_number, $agentIds, $action_message_template);
+		$recordMsg = sprintf('Sent SMS message to %s (%s)', $to_extra_info, $to_number);
 
-			// keeping it simple for now, we only record the state change
-			//$sms = new SmsInteractor($this->getSmsProvider());
-			//$sms->sendMessage($from_number, $to_number, $message);
-
-			$ticket->getStateChangeRecorder()->recordData('app_message', array(
+		$ticket->getStateChangeRecorder()->recordData(
+			'app_message',
+			array(
 				'app_id'        => $app->id,
 				'app_title'     => $app->title,
 				'package_name'  => $app->package->name,
 				'package_title' => $app->package->title,
-				'message'       => "Send SMS message from to \"$to_number\""
-			));
-		} catch (\Exception $e) {
-			$context->getLogger()->notice("[{$this->getActionType()}] Error sending SMS message: {$e->getMessage()}");
-		}
+				'message'       => $recordMsg
+			)
+		);
 	}
-
 
 	/**
 	 * @return string
 	 */
 	public function getActionType()
 	{
-		return Util::getBaseClassname($this) . $this->getMetaData()->get('app_id', 0);
-	}
-
-	public function renderMessageFromTemplate($action_message_template, $ticket, $context)
-	{
-		return $action_message_template;
+		return Util::getBaseClassname($this).$this->getMetaData()->get('app_id', 0);
 	}
 }

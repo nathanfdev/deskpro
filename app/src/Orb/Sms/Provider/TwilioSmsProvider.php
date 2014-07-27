@@ -15,14 +15,14 @@ class TwilioSmsProvider implements SmsProviderInterface
 	}
 
 	/**
-	 * @param string $fromPhoneNumber phone number to send to, provider should be able to handle any format
 	 * @param string $toPhoneNumber   phone number, provider should be able to handle any format
 	 * @param string $textMessage     the message to be sent to the given number
+	 * @param string $fromPhoneNumber phone number to send to, provider should be able to handle any format
 	 *
 	 * @throws \Orb\Sms\SmsException
 	 * @return \Orb\Sms\SmsResult
 	 */
-	public function sendMessage($fromPhoneNumber, $toPhoneNumber, $textMessage)
+	public function sendMessage($toPhoneNumber, $textMessage, $fromPhoneNumber)
 	{
 		try {
 			$message = $this->twilio->account->messages->sendMessage(
