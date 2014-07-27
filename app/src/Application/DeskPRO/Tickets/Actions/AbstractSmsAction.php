@@ -32,7 +32,7 @@
  * @category Twilio
  */
 
-namespace Application\DeskPRO\Tickets\TicketActions;
+namespace Application\DeskPRO\Tickets\Action;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Ticket;
@@ -40,7 +40,6 @@ use Application\DeskPRO\Tickets\Actions\AbstractContainerAwareAction;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Actions\AppActionInterface;
-use Orb\Sms\SmsInteractor;
 use Orb\Util\Util;
 
 abstract class AbstractSmsAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
@@ -100,6 +99,16 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 		);
 
 		try {
+
+			$sms_sender = new $this->get('deskpro.sms_sender');
+			$sms_sender->setDefaultProvider($this->getSmsProvider());
+			$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
+
+			$sms_sender->send($from_number, $to_number, $action_message_template);
+			//$sms_sender->sendToAgent($from_number, $agent, $action_message_template);
+			//$sms_sender->sendToAgents($from_number, $agents, $action_message_template);
+			//$sms_sender->sendToAgentIds($from_number, $agentIds, $action_message_template);
+
 			// keeping it simple for now, we only record the state change
 			//$sms = new SmsInteractor($this->getSmsProvider());
 			//$sms->sendMessage($from_number, $to_number, $message);
@@ -109,7 +118,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 				'app_title'     => $app->title,
 				'package_name'  => $app->package->name,
 				'package_title' => $app->package->title,
-				'message'       => "Send SMS message from \"$from_number\" to \"$to_number\""
+				'message'       => "Send SMS message from to \"$to_number\""
 			));
 		} catch (\Exception $e) {
 			$context->getLogger()->notice("[{$this->getActionType()}] Error sending SMS message: {$e->getMessage()}");
