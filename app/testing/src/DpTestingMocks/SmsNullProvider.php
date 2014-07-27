@@ -26,14 +26,26 @@
  * \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package    Orb
+ * @package DeskPRO
  * @subpackage Sms
  */
 
-namespace Orb\Sms\Exception;
+namespace DpTestingMocks;
 
-class SmsProviderException extends \RuntimeException
+use Orb\Sms\SmsProviderInterface;
+use Orb\Sms\SmsResult;
+
+class SmsNullProvider implements SmsProviderInterface
 {
+	public function sendMessage($fromPhoneNumber, $toPhoneNumber, $textMessage)
+	{
+		return new SmsResult(SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this);
+	}
+
+	public function getName()
+	{
+		return 'null';
+	}
 }

@@ -49,8 +49,8 @@ interface SmsProviderInterface
      * @param string $toPhoneNumber phone number, provider should be able to handle any format
      * @param string $textMessage the message to be sent to the given number
      *
-     * @throws Exception\SmsProviderException on failure
-     * @return bool true on success, false on failure
+     * @throws \Orb\Sms\SmsException
+     * @return \Orb\Sms\SmsResult
      */
     public function sendMessage($fromPhoneNumber, $toPhoneNumber, $textMessage);
 

@@ -25,35 +25,15 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-namespace DpUnitTests\Orb\Sms;
+/**
+ * Orb
+ *
+ * @package    Orb
+ * @subpackage Sms
+ */
 
-use Orb\Sms\SmsInteractor;
-use Orb\Sms\PhoneNumber;
+namespace Orb\Sms;
 
-class SmsInteractorTest extends \DpUnitTestCase
+class SmsException extends \RuntimeException
 {
-    public function testProviderIsAlwaysKnown()
-    {
-        $sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-        $sms_provider->shouldReceive('getName')->once()->andReturn('twillio');
-
-        $sms = new SmsInteractor($sms_provider);
-
-        $this->assertSame($sms_provider, $sms->getProvider(), 'SmsInteractor always knows its provider');
-        $this->assertEquals('twillio', $sms->getProvider()->getName(), 'SmsInteractor always knows its provider');
-    }
-
-    function testSendsSmsMessageWithUnderlyingProvider()
-    {
-        $text = 'hello!';
-        $from_phone = '+1234567890';
-        $to_phone = '+1234567890';
-
-        $sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-        $sms_provider->shouldReceive('sendMessage')->with($from_phone, $to_phone, $text);
-
-        $sms = new SmsInteractor($sms_provider);
-
-        $this->assertTrue($sms->sendMessage($from_phone, $to_phone, $text), 'SmsInteractor sends messages through its provider');
-    }
 }
