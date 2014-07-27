@@ -42,11 +42,14 @@ use Orb\Sms\SmsException;
  * If the same SmsProvider and/or From Number are used to send many messages, you
  * can set the default SmsProvider and From Number and omit them from the send methods
  * for your convenience.
+ *
+ * This default implementation sends the messages immediately and it does not depend on loggers, etc.
+ * It is presumed that eventually we will subclass this to add functionality (ie. QueuingSmsSender).
  */
 class SmsSender
 {
 	/**
-	 * @var SmsProviderInterface the default provider, used in the cases where the send method gets a null for Provider
+	 * @var SmsProviderInterface the default provider, used in the cases where the send methods get a null for Provider
 	 */
 	protected $default_provider;
 
@@ -73,12 +76,14 @@ class SmsSender
 	 * A $provider is needed (here or as a default) to send a message, but a From Number can be
 	 * null when sending a message if the provider does not need it.
 	 *
-	 * This method is meant to be overwritten by subclasses (different types of SmsSenders).
+	 * This method is meant to be overwritten by subclasses (different types of SmsSenders) to wrap their differences
+	 * around the doSend() method, which handles some common logic around interacting with the provider.
 	 *
 	 * @param string               $to_number
 	 * @param string               $message
 	 * @param string|null          $from_number
 	 * @param SmsProviderInterface $provider
+	 *
 	 * @return SmsResult
 	 * @throws SmsException
 	 */

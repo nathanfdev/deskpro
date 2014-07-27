@@ -35,6 +35,12 @@ namespace Application\DeskPRO\Sms;
 
 use Orb\Sms\SmsSender;
 
+/**
+ * This is our app-specific version of the Orb package's SmsSender. Here we can do app-specific things like
+ * $sms_sender->sendToAgentTeam($team, 'hello!'), etc.
+ *
+ * This is a compiled service in our container.
+ */
 class DeskPROSmsSender extends SmsSender
 {
 }

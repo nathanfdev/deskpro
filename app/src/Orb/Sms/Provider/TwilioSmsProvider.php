@@ -7,6 +7,9 @@ use Orb\Sms\SmsResult;
 
 class TwilioSmsProvider implements SmsProviderInterface
 {
+	/**
+	 * @var \Services_Twilio the twilio service, provided by twilio-php sdk
+	 */
 	protected $twilio;
 
 	public function __construct($sid, $auth_token)
@@ -32,7 +35,7 @@ class TwilioSmsProvider implements SmsProviderInterface
 			);
 		} catch (\Services_Twilio_RestException $e) {
 			$result = new SmsResult(
-				SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this, array(
+				SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
 					'status'        => $e->getCode(),
 					'message'       => $e->getMessage(),
 					'twilio_status' => $e->getStatus(),
@@ -43,7 +46,7 @@ class TwilioSmsProvider implements SmsProviderInterface
 			return $result;
 		} catch (\Exception $e) {
 			$result = new SmsResult(
-				SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this, array(
+				SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
 					'status'  => $e->getCode(),
 					'message' => $e->getMessage()
 				)
@@ -54,7 +57,7 @@ class TwilioSmsProvider implements SmsProviderInterface
 
 		// we successfully sent a valid SMS to Twilio
 		$result = new SmsResult(
-			SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this, array(
+			SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
 				'sid'             => $message->sid, // this can later be used to find the status of the sms
 				'num_segments'    => $message->num_segments,
 				'provider_status' => $message->status
