@@ -52,7 +52,7 @@ interface SmsProviderInterface
      * @throws \Orb\Sms\SmsException
      * @return \Orb\Sms\SmsResult
      */
-    public function sendMessage($fromPhoneNumber, $toPhoneNumber, $textMessage);
+    public function sendMessage($toPhoneNumber, $textMessage, $fromPhoneNumber);
 
     /**
      * A string identifier of the provider. This should be unique across the system.

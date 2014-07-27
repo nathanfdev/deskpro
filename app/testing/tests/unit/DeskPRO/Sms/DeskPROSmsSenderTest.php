@@ -46,7 +46,7 @@ class DeskPROSmsSenderTest extends \DpUnitTestCase
 		$text = 'Some text message!';
 
 		$sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-		$sms_provider->shouldReceive('sendMessage')->with($from, $to, $text)->once();
+		$sms_provider->shouldReceive('sendMessage')->with($to, $text, $from)->once();
 
 		$sms->setDefaultProvider($sms_provider);
 

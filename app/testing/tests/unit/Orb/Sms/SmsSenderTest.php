@@ -58,7 +58,7 @@ class SmsSenderTest extends \DpUnitTestCase
 		$text = 'Some text message!';
 
 		$sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-		$sms_provider->shouldReceive('sendMessage')->with($from, $to, $text)->once();
+		$sms_provider->shouldReceive('sendMessage')->with($to, $text, $from)->once();
 
 		$sms->setDefaultProvider($sms_provider);
 		$sms->send($to, $text);
@@ -73,7 +73,7 @@ class SmsSenderTest extends \DpUnitTestCase
 
 		$passed_from = '+11223344556';
 		$sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-		$sms_provider->shouldReceive('sendMessage')->with($passed_from, $to, $text)->once();
+		$sms_provider->shouldReceive('sendMessage')->with($to, $text, $passed_from)->once();
 		$sms->setDefaultProvider($sms_provider);
 
 		$sms->send($to, $text, $passed_from);
@@ -90,7 +90,7 @@ class SmsSenderTest extends \DpUnitTestCase
 		$sms->setDefaultProvider($sms_provider);
 
 		$passed_sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-		$passed_sms_provider->shouldReceive('sendMessage')->with($from, $to, $text)->once();
+		$passed_sms_provider->shouldReceive('sendMessage')->with($to, $text, $from)->once();
 
 		$sms->send($to, $text, null, $passed_sms_provider);
 	}

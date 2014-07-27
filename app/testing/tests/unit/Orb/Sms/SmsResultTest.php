@@ -83,6 +83,6 @@ class SmsResultTest extends \DpUnitTestCase
 	 */
 	protected function createSmsRssult()
 	{
-		return new SmsResult(SmsResult::SMS_SENT, '9988998899', '1234567890', 'test message', new SmsNullProvider());
+		return new SmsResult(SmsResult::SMS_SENT, '9988998899', '1234567890', 'test message', 'null', array());
 	}
 }

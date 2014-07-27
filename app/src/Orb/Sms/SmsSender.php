@@ -159,6 +159,6 @@ class SmsSender
 
 		$from = $this->getFromNumber($from_number);
 
-		return $provider->sendMessage($from, $to_number, $message);
+		return $provider->sendMessage($to_number, $message, $from);
 	}
 }

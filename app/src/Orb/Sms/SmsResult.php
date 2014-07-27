@@ -34,9 +34,23 @@
 
 namespace Orb\Sms;
 
+/**
+ * Tries to capture various information about a SMS send request (API request responses) in
+ * a semi-abstract way. An array of provider specific details might be provided as well (metadata).
+ *
+ * This is meant to be serialized and stored for logging or historical purposes.
+ */
 class SmsResult
 {
+	/**
+	 * SMS_SEND means WE successfully handed off the SMS to the provider, the provider may queue the message to be
+	 * sent at a later time, or it may send it immediately, this status simply means we did our part to tell them to send.
+	 */
 	const SMS_SENT = 'sent';
+
+	/**
+	 * The provider told us there was a problem with the message and refused to send it.
+	 */
 	const SMS_FAIL = 'fail';
 
 	private $status;
@@ -46,12 +60,26 @@ class SmsResult
 	private $provider;
 	private $provider_metadata;
 
-	public function __construct($status, $from_number, $to_number, $message, SmsProviderInterface $provider, array $provider_metadata = null)
-	{
+	/**
+	 * @param string $status            the status of the sms send request (a const value of this class)
+	 * @param string $from_number       the number from
+	 * @param string $to_number         the number to
+	 * @param string $message           the sent message
+	 * @param string $providerId        the value of the provider's getName() method
+	 * @param array  $provider_metadata an array of provider-specific metadata about a SMS sent api request
+	 */
+	public function __construct(
+		$status,
+		$from_number,
+		$to_number,
+		$message,
+		$providerId,
+		array $provider_metadata
+	) {
 		$this->setStatus($status);
 		$this->to_number = $to_number;
 		$this->message = $message;
-		$this->provider = $provider;
+		$this->provider = $providerId;
 		$this->provider_metadata = $provider_metadata;
 		$this->from_number = $from_number;
 	}
@@ -151,7 +179,7 @@ class SmsResult
 	/**
 	 * @param mixed $provider_metadata
 	 */
-	public function setProviderMetadata(array $provider_metadata = null)
+	public function setProviderMetadata(array $provider_metadata)
 	{
 		$this->provider_metadata = $provider_metadata;
 	}
