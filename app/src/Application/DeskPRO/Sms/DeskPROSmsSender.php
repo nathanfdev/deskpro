@@ -29,36 +29,12 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Twilio
  */
 
-namespace deskpro_twilio_sms\Ticket\Actions;
+namespace Application\DeskPRO\Sms;
 
-use Application\DeskPRO\Tickets\Action\AbstractSmsAction;
-use Orb\Sms\Provider\TwilioSmsProvider;
+use Orb\Sms\SmsSender;
 
-class TwilioSmsAction extends AbstractSmsAction
+class DeskPROSmsSender extends SmsSender
 {
-	/**
-	 * All children of this class need to construct their own provider from their config
-	 *
-	 * @return \Orb\Sms\SmsProviderInterface
-	 */
-	public function getSmsProvider()
-	{
-		$sid = $this->getApp()->getSetting('account_sid');
-		$token = $this->getApp()->getSetting('auth_token');
-
-		return new TwilioSmsProvider($sid, $token);
-	}
-
-	/**
-	 * If your provider needs a "from" address to work, return a string. Otherwise, it's ok to return null.
-	 *
-	 * @return string|null
-	 */
-	public function getFromPhoneNumber()
-	{
-		$this->getActionOption('from_number');
-	}
 }

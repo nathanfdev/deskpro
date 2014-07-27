@@ -52,6 +52,13 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 	public abstract function getSmsProvider();
 
 	/**
+	 * If your provider needs a "from" address to work, return a string. Otherwise, it's ok to return null.
+	 *
+	 * @return string|null
+	 */
+	public abstract function getFromPhoneNumber();
+
+	/**
 	 * @var
 	 */
 	protected $app;
@@ -100,7 +107,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 
 		try {
 
-			$sms_sender = new $this->get('deskpro.sms_sender');
+			$sms_sender = $this->getContainer()->get('deskpro.sms_sender');
 			$sms_sender->setDefaultProvider($this->getSmsProvider());
 			$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
 
