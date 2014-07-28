@@ -84,7 +84,6 @@ class WebHelper extends \Codeception\Module
 		$this->getModule('WebDriver')->setCookie('dptest-has-agent-sid', '1');
 		$this->getModule('WebDriver')->amOnPage('/admin');
 		$this->waitForAdminLoad();
-throw new \Exception();
 	}
 
 
