@@ -96,18 +96,18 @@ if [ -e /var/log/selenium-node.log ] ; then
 	cat /var/log/selenium-node.log
 fi
 
-#if [ -e /var/log/apache2/access.log ] ; then
+if [ -e /var/log/apache2/access.log ] ; then
 	echo ""
 	echo "[System] /var/log/apache2/access.log"
 	echo "======================================================="
 	echo ""
 	sudo cat /var/log/apache2/access.log
-#fi
+fi
 
-#if [ -e /var/log/apache2/error.log ] ; then
+if [ -e /var/log/apache2/error.log ] ; then
 	echo ""
 	echo "[System] /var/log/apache2/error.log"
 	echo "======================================================="
 	echo ""
 	sudo cat /var/log/apache2/error.log
-#fi
+fi
