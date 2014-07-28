@@ -1335,6 +1335,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this->attachments->add($attach);
 
 		$this->_onPropertyChanged('attachments', null, $this->attachments);
+		$this->getStateChangeRecorder()->record('attachments', null, $attach);
 	}
 
 
