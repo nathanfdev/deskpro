@@ -28,21 +28,28 @@ done
 
 echo ""
 
-for f in $TEST_LOGS ; do
-	if [[ $f =~ \.png$ ]] || [[ $f =~ coverage\.serialized$ ]] ; then
-		true
-	else
-		echo ""
-		echo "[Test Log] $f"
-		echo "======================================================="
-		echo ""
-		if [ -d $f ] ; then
-			cat $f/*
-		else
-			cat $f
-		fi
-	fi
-done
+#for f in $TEST_LOGS ; do
+#	if [[ $f =~ \.png$ ]] || [[ $f =~ coverage\.serialized$ ]] ; then
+#		true
+#	else
+#		echo ""
+#		echo "[Test Log] $f"
+#		echo "======================================================="
+#		echo ""
+#		if [ -d $f ] ; then
+#			cat $f/*
+#		else
+#			cat $f
+#		fi
+#	fi
+#done
+
+echo ""
+echo "tmp output"
+echo "======================================================="
+echo ""
+cat /tmp/output
+
 
 if [ -e $SCRIPT_DIR/../../../data/logs/error.log ] ; then
 	echo ""
