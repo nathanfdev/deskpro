@@ -279,9 +279,7 @@ define [
 
 					typeFunc = "get#{opt.action_name}"
 
-					# TODO: this is temporarily doing nothing different
-					#       changing when I add the different ways to send an SMS
-					if opt.action_name.indexOf('TwilioSmsAction') == 0
+					if opt.action_name.indexOf('Sms') == 0
 						@[typeFunc] = (options = {}) ->
 							me = @
 							return {

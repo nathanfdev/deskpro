@@ -218,7 +218,7 @@
               value: opt.action_name
             });
             typeFunc = "get" + opt.action_name;
-            if (opt.action_name.indexOf('TwilioSmsAction') === 0) {
+            if (opt.action_name.indexOf('Sms') === 0) {
               this[typeFunc] = function(options) {
                 var me;
                 if (options == null) {

@@ -86,7 +86,7 @@ class InstallerHandler extends AbstractInstallerHandler
 		$rec = array(
 			'app_id' => $context->getApp()->id,
 			'action_name' => $action_name,
-			'def_class' => 'deskpro_twilio_sms\\Ticket\\Actions\\ActionDef\\TwilioSmsActionDef',
+			'def_class' => 'deskpro_twilio_sms\\Ticket\\Actions\\ActionDef\\SmsTwilioActionDef',
 			'settings' => null
 		);
 
@@ -107,6 +107,6 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	private function getActionName(InstallerContext $context)
 	{
-		return "TwilioSmsAction" . $context->getApp()->id;
+		return "SmsTwilioAction" . $context->getApp()->id;
 	}
 }

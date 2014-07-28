@@ -32,58 +32,33 @@
  * @category Twilio
  */
 
-namespace deskpro_twilio_sms\Ticket\Actions\ActionDef;
+namespace deskpro_twilio_sms\Ticket\Actions;
 
-use Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef;
+use Application\DeskPRO\Tickets\Actions\AbstractSmsAction;
+use Orb\Sms\Provider\TwilioSmsProvider;
 
-class TwilioSmsActionDef extends AbstractActionDef
+class SmsTwilioAction extends AbstractSmsAction
 {
 	/**
-	 * {@inheritDoc}
+	 * All children of this class need to construct their own provider from their config
+	 *
+	 * @return \Orb\Sms\SmsProviderInterface
 	 */
-	public function getTitle()
+	public function getSmsProvider()
 	{
-		return 'Send a Twilio SMS message';
+		$sid = $this->getApp()->getSetting('account_sid');
+		$token = $this->getApp()->getSetting('auth_token');
+
+		return new TwilioSmsProvider($sid, $token);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * If your provider needs a "from" address to work, return a string. Otherwise, it's ok to return null.
+	 *
+	 * @return string|null
 	 */
-	public function getTriggerActionClass()
+	public function getFromPhoneNumber()
 	{
-		return 'deskpro_twilio_sms\\Ticket\\Actions\\TwilioSmsAction';
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getActionBuilderTemplate()
-	{
-		return 'Apps:deskpro_twilio_sms:sms-action-settings.html';
-	}
-
-
-	/**
-	 * @param array $options
-	 * @return array
-	 */
-	public function processActionBuilderOptions(array $options)
-	{
-		if (!isset($options['from_number'])) {
-			$options['from_number'] = '';
-		}
-
-		if (!isset($options['to_number'])) {
-			$options['to_number'] = '';
-		}
-
-		if (!isset($options['message'])) {
-			$options['message'] = '';
-		}
-
-		$options['app_id'] = $this->getActionDef()->app->id;
-
-		return $options;
+		return $this->getActionOption('from_number');
 	}
 }
