@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\Util;
 
 abstract class AbstractSmsAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
@@ -92,12 +93,15 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 			);
 		}
 
+		// configure our SMS sender
 		$sms_sender = $this->getContainer()->get('deskpro.sms_sender');
 		$sms_sender->setDefaultProvider($this->getSmsProvider());
 		$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
 
+		// get the message (replace the twig vars)
 		$action_message_template = $this->getActionOption('message');
-		$message = $this->renderMessageFromTemplate($action_message_template, $ticket, $context);
+		$formatter = new SnippetFormatter($this->getContainer()->getTwig());
+		$message = $formatter->formatText($action_message_template, $ticket);
 
 		$plain_to_numbers = array();
 		$plain_to_numbers[] = $this->getActionOption('to_number');
@@ -119,11 +123,6 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 				$this->logErrorSendingTo($e, $context);
 			}
 		}
-	}
-
-	public function renderMessageFromTemplate($action_message_template, $ticket, $context)
-	{
-		return $action_message_template;
 	}
 
 	/**
