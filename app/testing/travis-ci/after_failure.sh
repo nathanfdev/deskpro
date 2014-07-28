@@ -40,6 +40,7 @@ for f in $TEST_LOGS ; do
 			cat $f/*
 		else
 			cat $f
+		fi
 	fi
 done
 
