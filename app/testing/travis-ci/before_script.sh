@@ -40,9 +40,11 @@ echo "--> Done"
 
 echo "Installing Apache"
 sudo apt-get update
-sudo apt-get install -y apache2
+sudo apt-get install -y apache2 libapache2-mod-fastcgi
 sudo a2enmod actions
 sudo a2enmod rewrite
+sudo a2enmod fastcgi
+sudo a2enmod alias
 echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
 cat app/testing/travis-ci/apache-php-config.txt | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
 cat app/testing/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
