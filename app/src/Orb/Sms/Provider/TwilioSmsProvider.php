@@ -2,19 +2,20 @@
 
 namespace Orb\Sms\Provider;
 
+use Orb\Service\Twilio\Twilio;
 use Orb\Sms\SmsProviderInterface;
 use Orb\Sms\SmsResult;
 
 class TwilioSmsProvider implements SmsProviderInterface
 {
 	/**
-	 * @var \Services_Twilio the twilio service, provided by twilio-php sdk
+	 * @var Twilio our Twilio service
 	 */
 	protected $twilio;
 
 	public function __construct($sid, $auth_token)
 	{
-		$this->twilio = new \Services_Twilio($sid, $auth_token);
+		$this->twilio = new Twilio($sid, $auth_token);
 	}
 
 	/**
@@ -28,11 +29,7 @@ class TwilioSmsProvider implements SmsProviderInterface
 	public function sendMessage($toPhoneNumber, $textMessage, $fromPhoneNumber)
 	{
 		try {
-			$message = $this->twilio->account->messages->sendMessage(
-				$fromPhoneNumber,
-				$toPhoneNumber,
-				$textMessage
-			);
+			$message = $this->twilio->sendSms($toPhoneNumber, $textMessage, $fromPhoneNumber);
 		} catch (\Services_Twilio_RestException $e) {
 			$result = new SmsResult(
 				SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), array(
@@ -65,6 +62,11 @@ class TwilioSmsProvider implements SmsProviderInterface
 		);
 
 		return $result;
+	}
+
+	public function getIncomingNumbers()
+	{
+		return $this->twilio->getIncomingNumbers();
 	}
 
 	/**
