@@ -12,8 +12,11 @@
 						<tr>
 							<td>Message:</td>
 							<td>
-								<div style="padding-top: 3px; width: 250px;">
-									<input type="text" class="form-control" ng-model="model.message"/>
+								<div style="padding-top: 3px; width: 80%;">
+									<textarea class="form-control" ng-model="model.message"></textarea>
+								</div>
+								<div style="padding-bottom: 3px; width: 80%;">
+									<span class="help-inline dp-help-content">{{ model.message.length }} characters</span>
 								</div>
 							</td>
 						</tr>
