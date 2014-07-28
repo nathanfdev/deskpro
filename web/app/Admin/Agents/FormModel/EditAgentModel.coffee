@@ -8,6 +8,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			#--------------------
 
 			@form.name = agent.name
+			@form.phone_number = agent.phone_number
 
 			if agent.override_display_name
 				@form.enable_display_name = true
@@ -73,6 +74,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 		getFormData: ->
 			formData = {}
 			formData.name = @form.name
+			formData.phone_number = @form.phone_number
 
 			if @form.enable_display_name and Strings.trim(@form.override_name)
 				formData.override_name = Strings.trim(@form.override_name)

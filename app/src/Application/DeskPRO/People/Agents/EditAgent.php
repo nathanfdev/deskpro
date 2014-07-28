@@ -72,6 +72,11 @@ class EditAgent
 	public $emails;
 
 	/**
+	 * @var string
+	 */
+	public $phone_number;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam[]
 	 */
 	public $teams;
@@ -90,6 +95,7 @@ class EditAgent
 		$this->agent         = $person;
 		$this->name          = $person->name;
 		$this->override_name = $person->override_display_name;
+		$this->phone_number  = $person->phone_number;
 
 		$this->zones = array();
 		if ($person->can_admin) {
@@ -141,6 +147,7 @@ class EditAgent
 		$agent->can_agent             = true;
 
 		$agent->name                  = $this->name;
+		$agent->phone_number          = $this->phone_number;
 		$agent->override_display_name = $this->override_name ?: '';
 
 		$agent->can_admin             = in_array('admin', $this->zones);

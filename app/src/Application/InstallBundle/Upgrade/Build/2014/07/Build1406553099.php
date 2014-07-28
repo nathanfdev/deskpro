@@ -29,74 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\People\Agents\Type;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class EditAgentType extends AbstractType
+class Build1406553099 extends AbstractBuild
 {
-	/**
-	 * @param FormBuilderInterface $builder
-	 * @param array $options
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
+	public function run()
 	{
-		$builder->add('name', 'text', array('required' => true));
-		$builder->add('override_name', 'text', array('required' => false));
-
-		$builder->add('phone_number', 'text', array('required' => false));
-
-		$builder->add('emails', 'collection', array(
-			'type'         => 'email',
-			'allow_add'    => true,
-			'allow_delete' => true,
-		));
-
-		$builder->add('zones', 'choice', array(
-			'choices'  => array('admin' => 'admin', 'reports' => 'reports'),
-			'multiple' => true,
-			'required' => false,
-		));
-
-		$builder->add('teams', 'entity', array(
-			'class'    => 'DeskPRO:AgentTeam',
-			'required' => false,
-			'multiple' => true,
-		));
-
-		$builder->add('agent_groups', 'entity', array(
-			'class'         => 'DeskPRO:Usergroup',
-			'required'      => false,
-			'multiple'      => true,
-			'query_builder' => function(EntityRepository $er) {
-				return $er->createQueryBuilder('ug')->where('ug.is_agent_group = true');
-			}
-		));
-	}
-
-
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(array(
-			'data_class'         => 'Application\\DeskPRO\\People\\Agents\\EditAgent',
-			'cascade_validation' => true,
-		));
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'agent';
+		$this->out("Phone number support on agents (for SMS)");
+		$this->execMutateSql("ALTER TABLE people ADD phone_number LONGTEXT DEFAULT NULL");
 	}
 }

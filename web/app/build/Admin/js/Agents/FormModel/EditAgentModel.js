@@ -6,6 +6,7 @@
         var check, email, enabled, g, t, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3;
         this.form = {};
         this.form.name = agent.name;
+        this.form.phone_number = agent.phone_number;
         if (agent.override_display_name) {
           this.form.enable_display_name = true;
           this.form.override_name = agent.override_display_name;
@@ -71,6 +72,7 @@
         var formData, g, primary_email, t, _i, _j, _len, _len1, _ref, _ref1;
         formData = {};
         formData.name = this.form.name;
+        formData.phone_number = this.form.phone_number;
         if (this.form.enable_display_name && Strings.trim(this.form.override_name)) {
           formData.override_name = Strings.trim(this.form.override_name);
         } else {

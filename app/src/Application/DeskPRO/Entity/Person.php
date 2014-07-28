@@ -88,6 +88,7 @@ use Orb\Util\Util;
  * @property string $salt
  * @property PersonEmail $primary_email
  * @property PersonEmail[] $emails
+ * @property string $phone_number
  * @property LabelPerson[] $labels
  * @property CustomDataPerson[] $custom_data
  * @property PersonContactData[] $contact_data
@@ -356,6 +357,11 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $emails;
+
+	/**
+	 * @var string
+	 */
+	protected $phone_number;
 
 	/**
 	 */
@@ -1771,7 +1777,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 	}
 
 
-
 	/**
 	 * Add a new usergroup
 	 *
@@ -2402,6 +2407,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 			$data['emails'][] = array('id' => $eml->id, 'email' => $eml->email);
 		}
 
+
+		$data['phone_number'] = $this->phone_number;
+
 		$data['usergroup_ids']  = array();
 		$data['agentgroup_ids'] = array();
 		foreach ($this->usergroups as $ug) {
@@ -2513,6 +2521,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
+		$metadata->mapField(array( 'fieldName'  => 'phone_number', 'type' => 'text', 'nullable' => true, 'columnName' => 'phone_number' ));
 		$metadata->mapField(array( 'fieldName' => 'first_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'first_name', ));
 		$metadata->mapField(array( 'fieldName' => 'last_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_name', ));
 		$metadata->mapField(array( 'fieldName' => 'title_prefix', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title_prefix', ));
