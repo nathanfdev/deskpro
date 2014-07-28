@@ -59,6 +59,6 @@ class SmsTwilioAction extends AbstractSmsAction
 	 */
 	public function getFromPhoneNumber()
 	{
-		return $this->getActionOption('from_number');
+		return $this->getApp()->getSetting('from_number');
 	}
 }

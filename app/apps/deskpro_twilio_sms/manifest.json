@@ -27,6 +27,13 @@
 			"label": "Twilio Auth Token",
 			"description": "This is the \"AuthToken\" for your Twilio account. You can find this value here: https://www.twilio.com/user/account/settings",
 			"native_only": true
+		},
+		{
+			"name": "from_number",
+			"type": "text",
+			"label": "From Number",
+			"description": "This phone number must be registered with Twilio. Your numbers can be found here: https://www.twilio.com/user/account/phone-numbers/incoming",
+			"native_only": true
 		}
 	]
 }
