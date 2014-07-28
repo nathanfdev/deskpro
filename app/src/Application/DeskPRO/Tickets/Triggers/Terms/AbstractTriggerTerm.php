@@ -655,7 +655,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 						}
 
 						if (preg_match($regex, $value)) {
-file_put_contents('/tmp/output', print_r(array($op, get_class($this), $regex, $value), 1));
 							if ($op == 'is_regex') return true;
 							if ($op == 'not_regex') return false;
 						}
