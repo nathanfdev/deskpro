@@ -8,7 +8,7 @@ before_script: app/testing/travis-ci/before_script.sh
 after_failure: app/testing/travis-ci/after_failure.sh
 after_success:
   - app/testing/travis-ci/after_success.sh
-#script: app/testing/bin/run-tests
+script: app/testing/bin/run-tests
 addons:
   firefox: '25.0'
 notifications:
@@ -18,4 +18,4 @@ notifications:
 cache:
   apt: true
 services:
-    - elasticsearch
+  - elasticsearch
