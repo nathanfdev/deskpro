@@ -48,7 +48,7 @@ cat app/testing/travis-ci/apache-php-config.txt | sudo tee /etc/apache2/conf.d/p
 cat app/testing/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
 echo "Listen 8888" | sudo tee -a /etc/apache2/ports.conf
 sudo service apache2 restart
-sudo cat /etc/apache2/ports.conf
+sudo cat /etc/php5/fpm/pool.d/www.conf
 
 echo "Starting xvfb"
 export DISPLAY=:99
