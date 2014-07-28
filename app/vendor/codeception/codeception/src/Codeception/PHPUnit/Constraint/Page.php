@@ -16,16 +16,15 @@ class Page extends \PHPUnit_Framework_Constraint_StringContains
 
     protected function failureDescription($other)
     {
-//        $page = substr($other,0,300);
-	    $page = $other;
+        $page = substr($other,0,300);
         $message = new Message($page);
         $message->style('info');
         $message->prepend($this->uriMessage());
-//        if (strlen($other) > 300) {
-//            $debugMessage = new Message("[Content too long to display. See complete response in '_log' directory]");
-//            $debugMessage->style('debug')->prepend("\n");
-//            $message->append($debugMessage);
-//        }
+        if (strlen($other) > 300) {
+            $debugMessage = new Message("[Content too long to display. See complete response in '_log' directory]");
+            $debugMessage->style('debug')->prepend("\n");
+            $message->append($debugMessage);
+        }
         $message->prepend("\n-->")->append("\n--> ");
         return $message->getMessage() . $this->toString();
     }
