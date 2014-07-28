@@ -46,7 +46,7 @@ class WebHelper extends \Codeception\Module
 				LIMIT 1
 			", array($as_agent_email));
 		}
-throw new \Exception(print_r(array('agent_id', $agent_id), 1));
+
 		@session_start();
 		$_SESSION = array(
 			'_sf2_attributes' => array(
@@ -84,6 +84,7 @@ throw new \Exception(print_r(array('agent_id', $agent_id), 1));
 		$this->getModule('WebDriver')->setCookie('dptest-has-agent-sid', '1');
 		$this->getModule('WebDriver')->amOnPage('/admin');
 		$this->waitForAdminLoad();
+throw new \Exception();
 	}
 
 
