@@ -66,13 +66,8 @@ class EntityUpdated extends Base
 
 			case ($change instanceof ChangeObject):
 
-				if ($old instanceof PersonEmail) {
-					$ret['old'] = $old['email'];
-				}
-
-				if ($new instanceof PersonEmail) {
-					$ret['new'] = $new['email'];
-				}
+				$ret['old'] = $this->mapObject($old);
+				$ret['new'] = $this->mapObject($new);
 
 				break;
 
@@ -97,11 +92,18 @@ class EntityUpdated extends Base
 	{
 		switch (true) {
 			case ($obj instanceof PersonContactData):
-				return $obj['contact_type'] . ' ' . $obj['field_10'];
+				foreach ($obj->getHandler()->getApiVars($obj) as $k => $v) {
+					$parts[] = str_replace('_', ' ', $k) . ': ' . $v;
+				}
+				return $obj['contact_type'] . ' ' . implode(', ', $parts);
 				break;
 
 			case ($obj instanceof LabelPerson):
 				return 'label ' . $obj['label'];
+				break;
+
+			case ($obj instanceof PersonEmail):
+				return $obj['email'];
 				break;
 		}
 	}

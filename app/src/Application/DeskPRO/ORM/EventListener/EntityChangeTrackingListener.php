@@ -35,13 +35,17 @@
 namespace Application\DeskPRO\ORM\EventListener;
 
 use Application\ApiBundle\Request\RequestAuth;
+use Application\DeskPRO\ContactData\ContactData;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\LogEvent;
+use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Log\Event\EntityCreated;
 use Application\DeskPRO\Log\Event\EntityUpdated;
 use Application\DeskPRO\Log\Handler\LogEventHandler;
+use Application\DeskPRO\ORM\StateChange\ChangeObject;
+use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -78,6 +82,18 @@ class EntityChangeTrackingListener implements EventSubscriber
 			'notes' => true,
 			'is_disabled' => true,
 			'contact_data' => true,
+		),
+		'PersonContactData' => array(
+			'field_1' => true,
+			'field_2' => true,
+			'field_3' => true,
+			'field_4' => true,
+			'field_5' => true,
+			'field_6' => true,
+			'field_7' => true,
+			'field_8' => true,
+			'field_9' => true,
+			'field_10' => true,
 		),
 	);
 
@@ -153,6 +169,9 @@ class EntityChangeTrackingListener implements EventSubscriber
 		$parentEntry = null;
 		// if new entity
 		if (!$entity['id']) {
+
+			if ('PersonContactData' === $entityName) return; // todo
+
 			$event = new EntityCreated($entity);
 			$parentEntry = new LogEvent($event, $person);
 			$this->queue->enqueue($parentEntry);
@@ -164,8 +183,19 @@ class EntityChangeTrackingListener implements EventSubscriber
 			if ($change->isSame() || ! $isTracked) {
 				continue;
 			}
+			$trackedEntity = $entity;
 
-			$event = new EntityUpdated($entity, $change);
+			// todo hardcoded person data handle
+			// should be mapped external
+			if ('PersonContactData' === $entityName) {
+				// new records handled by Person's contact_data collection
+				if (isset($contactDataHandled[$entity['id']])) return; // skip changes for different fields
+				$contactDataHandled[$entity['id']] = 1;
+				$change = new ChangeObject('contact_data', null, $entity);
+				$trackedEntity = $entity->person;
+			}
+
+			$event = new EntityUpdated($trackedEntity, $change);
 			$entry = new LogEvent($event, $person);
 
 			if ($parentEntry) {
