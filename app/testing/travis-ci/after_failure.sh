@@ -7,24 +7,24 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "Error Detected - Here are some interesting log files"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
-TEST_LOGS=$SCRIPT_DIR/../logs/*
-for f in $TEST_LOGS ; do
-	if [[ $f =~ \.png$ ]] ; then
-		echo ""
-		echo "[Test Screenshot] $f"
-
-		response=$(curl -F "key=b3625162d3418ac51a9ee805b1840452" -H "Expect: " -F "image=@$f" http://imgur.com/api/upload.xml 2>/dev/null)
-		if [ $? -ne 0 ]; then
-			echo "Upload failed"
-		elif [ $(echo $response | grep -c "<error_msg>") -gt 0 ]; then
-			echo "Error message from imgur:"
-			echo $response | sed -r 's/.*<error_msg>(.*)<\/error_msg>.*/\1/'
-		else
-			url=$(echo $response | sed -r 's/.*<original_image>(.*)<\/original_image>.*/\1/')
-        	echo $url
-		fi
-	fi
-done
+#TEST_LOGS=$SCRIPT_DIR/../logs/*
+#for f in $TEST_LOGS ; do
+#	if [[ $f =~ \.png$ ]] ; then
+#		echo ""
+#		echo "[Test Screenshot] $f"
+#
+#		response=$(curl -F "key=b3625162d3418ac51a9ee805b1840452" -H "Expect: " -F "image=@$f" http://imgur.com/api/upload.xml 2>/dev/null)
+#		if [ $? -ne 0 ]; then
+#			echo "Upload failed"
+#		elif [ $(echo $response | grep -c "<error_msg>") -gt 0 ]; then
+#			echo "Error message from imgur:"
+#			echo $response | sed -r 's/.*<error_msg>(.*)<\/error_msg>.*/\1/'
+#		else
+#			url=$(echo $response | sed -r 's/.*<original_image>(.*)<\/original_image>.*/\1/')
+#        	echo $url
+#		fi
+#	fi
+#done
 
 echo ""
 
