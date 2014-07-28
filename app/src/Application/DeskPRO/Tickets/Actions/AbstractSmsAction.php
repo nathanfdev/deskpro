@@ -114,13 +114,14 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 				// plan is to add these types of methods on DeskPROSmsSender...
 				//$sms_sender->sendToAgent($agent, $message);
 				//$sms_sender->sendToAgents($agents, $message);
-				//$sms_sender->sendToAgentIds($agentIds, $message);
 
-				if ($result->isSent()) {
-					$this->recordTicketStateChange($ticket, $number, $extra_info);
+				$this->recordTicketStateChange($ticket, $number, $extra_info);
+
+				if ($result->isFail()) {
+					$this->logErrorSendingTo($result->getProviderMessage(), $context);
 				}
 			} catch (\Exception $e) {
-				$this->logErrorSendingTo($e, $context);
+				$this->logErrorSendingTo($e->getMessage(), $context);
 			}
 		}
 	}
@@ -145,9 +146,9 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 	 * @param                          $e
 	 * @param ExecutorContextInterface $context
 	 */
-	protected function logErrorSendingTo(\Exception $e, ExecutorContextInterface $context)
+	protected function logErrorSendingTo($message, ExecutorContextInterface $context)
 	{
-		$context->getLogger()->notice("[{$this->getActionType()}] Error sending SMS message: {$e->getMessage()}");
+		$context->getLogger()->notice("[{$this->getActionType()}] Error sending SMS message: {$message}");
 	}
 
 	/**

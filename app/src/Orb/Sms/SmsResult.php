@@ -61,12 +61,18 @@ class SmsResult
 	private $provider_metadata;
 
 	/**
+	 * @var string optional - usually just used for error logging/debug purposes
+	 */
+	private $provider_message;
+
+	/**
 	 * @param string $status            the status of the sms send request (a const value of this class)
 	 * @param string $from_number       the number from
 	 * @param string $to_number         the number to
 	 * @param string $message           the sent message
 	 * @param string $providerId        the value of the provider's getName() method
 	 * @param array  $provider_metadata an array of provider-specific metadata about a SMS sent api request
+	 *                                  the $provider_metadata array will be serialized
 	 */
 	public function __construct(
 		$status,
@@ -198,5 +204,21 @@ class SmsResult
 	public function setFromNumber($from_number)
 	{
 		$this->from_number = $from_number;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getProviderMessage()
+	{
+		return $this->provider_message;
+	}
+
+	/**
+	 * @param mixed $provider_message
+	 */
+	public function setProviderMessage($provider_message)
+	{
+		$this->provider_message = $provider_message;
 	}
 }

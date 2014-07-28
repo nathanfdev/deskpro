@@ -39,6 +39,7 @@ class TwilioSmsProvider implements SmsProviderInterface
 					'twilio_info'   => $e->getInfo()
 				)
 			);
+			$result->setProviderMessage($e->getStatus().' - '.$e->getMessage().' ('.$e->getCode().')');
 
 			return $result;
 		} catch (\Exception $e) {
@@ -48,6 +49,7 @@ class TwilioSmsProvider implements SmsProviderInterface
 					'message' => $e->getMessage()
 				)
 			);
+			$result->setProviderMessage($e->getCode().' - '.$e->getMessage());
 
 			return $result;
 		}
