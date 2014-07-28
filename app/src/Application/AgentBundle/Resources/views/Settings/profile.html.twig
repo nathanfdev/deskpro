@@ -49,6 +49,13 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>{{ phrase('agent.general.phone_number') }}</label></div>
+			<div class="dp-form-input">
+				{{ form_widget(form.phone_number, {'attr': {'id': 'settings_profile_phone_number'}}) }}
+			</div>
+		</div>
+
 		{% if app.user.getPasswordHash() %}
 			{% if password_expired %}
 				<div style="padding: 10px; margin: 10px; background-color: #ffe3e4; border: 2px solid #f0544d;">

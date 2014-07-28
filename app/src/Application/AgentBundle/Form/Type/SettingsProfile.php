@@ -43,6 +43,7 @@ class SettingsProfile extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
     {
 		$builder->add('name', 'text', array('required' => false));
+		$builder->add('phone_number', 'text', array('required' => false));
 	    $builder->add('override_display_name', 'text', array('required' => false));
 		$builder->add('email', 'text', array('required' => false));
 		$builder->add('timezone', 'choice', array(

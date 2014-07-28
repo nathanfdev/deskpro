@@ -222,6 +222,7 @@
 	'agent.general.edit_properties'                         => 'Edit Properties',
 	'agent.general.edit_search_terms'                       => 'Edit search terms',
 	'agent.general.email'                                   => 'Email',
+	'agent.general.phone_number'                            => 'Phone Number',
 	'agent.general.email_address'                           => 'Email Address',
 	'agent.general.email_agent_new_agent_reply'             => 'Email: Agent notification of new agent reply',
 	'agent.general.email_agent_new_reply'                   => 'Email: Agent notification about new reply',

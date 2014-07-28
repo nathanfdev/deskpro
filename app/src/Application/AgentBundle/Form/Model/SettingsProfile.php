@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\Person;
 class SettingsProfile
 {
 	public $name;
+	public $phone_number;
 	public $override_display_name;
 	public $email;
 	public $timezone = 'UTC';
@@ -79,6 +80,7 @@ class SettingsProfile
 		$this->person = $person;
 
 		$this->name = $person->name;
+		$this->phone_number = $person->phone_number;
 		$this->override_display_name = $person->override_display_name;
 		$this->email = $person->getPrimaryEmailAddress();
 		$this->timezone = $person->timezone;
@@ -117,6 +119,7 @@ class SettingsProfile
 		$person = $this->person;
 
 		$person->name = $this->name;
+		$person->phone_number = $this->phone_number;
 		$person->override_display_name = $this->override_display_name;
 		$person->timezone = $this->timezone;
 
