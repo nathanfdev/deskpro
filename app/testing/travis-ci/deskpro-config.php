@@ -10,7 +10,7 @@ define('DP_DATABASE_NAME', 'deskpro');
 define('DP_TECHNICAL_EMAIL', 'chris.nadeau@deskpro.com');
 
 // TODO get elastic tests working on travis
-//$GLOBALS['DP_TEST_ELASTIC'] = true;
+$GLOBALS['DP_TEST_ELASTIC'] = true;
 
 $DP_CONFIG = array('debug' => array(), 'cache' => array());
 $DP_CONFIG['php_path'] = '';
