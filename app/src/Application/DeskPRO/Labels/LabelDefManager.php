@@ -135,41 +135,15 @@ class LabelDefManager
 		}
 
 		$parts = array();
+		$parts[] = "SELECT DISTINCT(label) FROM label_defs " . (count($types) < 8 ? "WHERE label_type IN ('" . implode("','", $types) . "')" : '');
 		foreach ($types as $t) {
 			$parts[] = "SELECT DISTINCT(label) FROM labels_$t";
 		}
 
-		if (count($parts) === 1) {
-			$labels = $this->db->fetchAllCol(array_pop($parts));
-		} else {
-			$q = '(' . implode(') UNION (', $parts) . ')';
-			$labels = $this->db->fetchAllCol($q);
-
-		}
+		$q = '(' . implode(') UNION (', $parts) . ')';
+		$labels = $this->db->fetchAllCol($q);
 
 		return $labels;
-	}
-
-
-	/**
-	 * Count all label definitions
-	 *
-	 * @return array
-	 */
-	public function countDefs()
-	{
-		$counts = $this->db->fetchAllKeyValue("
-			SELECT label_type, COUNT(*) as count
-			FROM label_defs
-			GROUP BY label_type
-		");
-
-		$counts['TOTAL'] = $this->db->fetchColumn("
-			SELECT COUNT(DISTINCT label) as count
-			FROM label_defs
-		");
-
-		return $counts;
 	}
 
 
