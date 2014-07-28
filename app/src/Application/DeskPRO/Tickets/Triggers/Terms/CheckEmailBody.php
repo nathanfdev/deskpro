@@ -90,10 +90,6 @@ class CheckEmailBody extends AbstractTriggerTerm
 
 		$value = TermValue::createWithValue($strings);
 
-file_put_contents('/tmp/output', "started \n", FILE_APPEND);
-		$ret = $this->isStringMatch($ticket, $context, $value, $options['body']);
-
-		file_put_contents('/tmp/output', print_r(array($ret), 1), FILE_APPEND);
 		return $this->isStringMatch($ticket, $context, $value, $options['body']);
 	}
 }
