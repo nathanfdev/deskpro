@@ -36,7 +36,10 @@ for f in $TEST_LOGS ; do
 		echo "[Test Log] $f"
 		echo "======================================================="
 		echo ""
-		cat $f
+		if [ -d $f ] ; then
+			cat $f/*
+		else
+			cat $f
 	fi
 done
 
