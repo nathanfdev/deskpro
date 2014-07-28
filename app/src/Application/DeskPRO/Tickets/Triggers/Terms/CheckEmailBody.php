@@ -89,7 +89,7 @@ class CheckEmailBody extends AbstractTriggerTerm
 		$strings = array_unique($strings);
 
 		$value = TermValue::createWithValue($strings);
-		throw new \Exception('bp');
+
 		return $this->isStringMatch($ticket, $context, $value, $options['body']);
 	}
 }

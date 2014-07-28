@@ -652,7 +652,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 						if (!$regex) {
 							return false;
 						}
-
+throw new \Exception(print_r(array($regex, $value), 1));
 						if (preg_match($regex, $value)) {
 							if ($op == 'is_regex') return true;
 							if ($op == 'not_regex') return false;
