@@ -9,6 +9,8 @@ define('DP_DATABASE_PASSWORD', 'deskpro');
 define('DP_DATABASE_NAME', 'deskpro');
 define('DP_TECHNICAL_EMAIL', 'chris.nadeau@deskpro.com');
 
+$GLOBALS['DP_TEST_ELASTIC'] = true;
+
 $DP_CONFIG = array('debug' => array(), 'cache' => array());
 $DP_CONFIG['php_path'] = '';
 $DP_CONFIG['mysqldump_path'] = '';
