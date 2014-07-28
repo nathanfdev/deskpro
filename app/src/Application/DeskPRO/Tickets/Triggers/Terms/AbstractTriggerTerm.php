@@ -649,12 +649,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 				case 'not_regex':
 					foreach ($check_value as $v) {
 						$regex = Strings::getInputRegexPattern($v);
-file_put_contents('/tmp/output', print_r(array($regex, $value), 1));
+
 						if (!$regex) {
 							return false;
 						}
 
 						if (preg_match($regex, $value)) {
+file_put_contents('/tmp/output', print_r(array($op, $regex, $value), 1));
 							if ($op == 'is_regex') return true;
 							if ($op == 'not_regex') return false;
 						}
