@@ -56,7 +56,7 @@ class HelpdeskOfflineMessage
 			'type'        => $type,
 			'base_url'    => $base_url,
 			'asset_url'   => str_replace('/index.php', '', $base_url) . '/web',
-			'billing_url' => $base_url . '/billing/',
+			'billing_url' => $base_url . '/admin/#/license',
 			'license_id'  => License::getLicense()->getLicenseId(),
 			'title'       => 'License Error',
 			'message'     => ''
