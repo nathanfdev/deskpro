@@ -47,8 +47,13 @@ echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/en
 cat app/testing/travis-ci/apache-php-config.txt | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
 cat app/testing/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
 echo "Listen 8888" | sudo tee -a /etc/apache2/ports.conf
+
+sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+
 sudo service apache2 restart
-sudo cat /etc/php5/fpm/pool.d/www.conf
+
 
 echo "Starting xvfb"
 export DISPLAY=:99
