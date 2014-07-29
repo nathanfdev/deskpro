@@ -223,6 +223,7 @@
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
 				{% if notes|length or perms.notes %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
+                {% if changelog|length %}<li data-tab-for="#{{baseId}}_changelog_tab">{{ phrase('agent.general.changelog') }}</li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
 				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('agent.general.detail') }}</li>
 			</ul>
@@ -261,6 +262,22 @@
 			</article>
 		{% endif %}
 		{# /Notes Tab #}
+
+        {# Changelog Tab #}
+        {% if changelog|length %}
+            <article id="{{baseId}}_changelog_tab">
+                <table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    {% for entry in changelog %}
+                        <tr>
+                            <td>
+                                {{ include('AgentBundle:Person:changelog-row.html.twig', {entry: entry}) }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </article>
+        {% endif %}
+        {# /Changelog Tab #}
 
 		{# Activity Tab #}
 		{% if activity_stream|length %}

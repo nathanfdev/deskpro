@@ -88,7 +88,7 @@ class EntityUpdated extends Base
 	 * @param DomainObject $obj
 	 * @return string
 	 */
-	public function mapObject(DomainObject $obj)
+	public function mapObject(DomainObject $obj = null)
 	{
 		switch (true) {
 			case ($obj instanceof PersonContactData):

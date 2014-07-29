@@ -276,6 +276,11 @@ class PersonController extends AbstractController
 			}
 		}
 
+		$changelog = $this->em->getRepository('DeskPRO:LogEvent')->findBy(
+			array('subject' => 'Person', 'subject_id' => $person['id'], 'parent' => null),
+			array('id' => 'DESC')
+		);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'with_warn_for_email'       => $with_warn_for_email,
 			'person'                    => $person,
@@ -305,7 +310,8 @@ class PersonController extends AbstractController
 			'perms'                     => $perms,
 			'is_person_editable'        => $is_editable,
 			'reg_group'                 => $reg_group,
-			'person_object_counts'      => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person)
+			'person_object_counts'      => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person),
+			'changelog'                 => $changelog,
 		));
 	}
 

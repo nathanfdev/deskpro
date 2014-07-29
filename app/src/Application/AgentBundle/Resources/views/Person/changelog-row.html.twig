@@ -1,0 +1,58 @@
+<div class="log-batch">
+    <div
+            class="log-row log-{{entry.id}} type-{{ entry.event }}"
+            data-log-id="{{ entry.id }}"
+            >
+        <div class="info">
+            {% if entry.person %}
+                by <a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': entry.person.id}) }}">{{ entry.person.display_name }}</a>,
+            {% endif %}
+            <time class="timeago" title="{{ entry.timestamp|date('c', 'UTC') }}">{{ entry.timestamp|date('fulltime') }}</time>
+        </div>
+
+        <div class="{{ entry.event }}">
+            {% if 'entity_updated' == entry.event %}
+                Updated
+            {% elseif 'entity_created' == entry.event %}
+                Created
+            {% endif %}
+        </div>
+    </div>
+
+    {% if entry.details.new %}
+
+        <div class="log-row log-{{entry.id}} data-log-id="{{ sublog.id }}">
+            <div class="info">
+            </div>
+
+            <div class="{{ entry.event }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+                Set {{ entry.details.new }}
+            </div>
+        </div>
+
+    {% elseif entry.details.add is defined %}
+
+        {% for added in entry.details.add %}
+        <div class="log-row">
+            <div class="info">
+            </div>
+
+            <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+                Added {{ added }}
+            </div>
+        </div>
+        {% endfor %}
+
+        {% for removed in entry.details.del %}
+        <div class="log-row">
+            <div class="info">
+            </div>
+
+            <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+                Removed {{ removed }}
+            </div>
+        </div>
+        {% endfor %}
+
+    {% endif %}
+</div>
