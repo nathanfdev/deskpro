@@ -350,7 +350,13 @@ class TicketManager
 		}
 
 		$search_updater = new TicketSearchUpdater($this->db, $ticket);
-		$search_updater->update();
+		\DpShutdown::add(function() use ($search_updater) {
+			try {
+				$search_updater->update();
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e);
+			}
+		}, null, 'db_done_trans_commit');
 
 		$this->em->flush();
 
@@ -359,9 +365,6 @@ class TicketManager
 		#----------------------------------------
 
 		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
-
-		$ticket->resetStateChangeRecorder();
-		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
 
 		if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
 			$log_text = $context->getLogger()->getSavedMessages();
@@ -386,6 +389,9 @@ class TicketManager
 				}
 			}
 		}
+
+		$ticket->resetStateChangeRecorder();
+		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
 	}
 
 
