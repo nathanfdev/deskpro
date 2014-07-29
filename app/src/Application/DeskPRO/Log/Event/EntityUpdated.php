@@ -4,9 +4,12 @@ namespace Application\DeskPRO\Log\Event;
 
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\LabelPerson;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\ChangeObject;
@@ -109,6 +112,18 @@ class EntityUpdated extends Base
 
 			case ($obj instanceof PersonEmail):
 				return $obj['email'];
+				break;
+
+			case ($obj instanceof Blob):
+				return $obj['id'];
+				break;
+
+			case ($obj instanceof Organization):
+				return $obj['name'];
+				break;
+
+			case ($obj instanceof Usergroup):
+				return $obj['title'];
 				break;
 		}
 	}

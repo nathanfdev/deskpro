@@ -33,15 +33,17 @@
     {%- if 'primary_email' == property -%}primary email
     {%- elseif 'emails' == property -%}email
     {%- elseif 'labels' == property -%}label
+    {%- elseif 'usergroups' == property -%}usergroup
     {%- elseif 'first_name' == property -%}first name
     {%- elseif 'last_name' == property -%}last name
+    {%- else -%}{{ property }}
     {%- endif -%}
 {%- endmacro -%}
 
 
 
 
-{% if entry.details.new %}
+{% if 0 == entry.details.add|length and 0 == entry.details.del|length %}
 
     <div class="log-row log-{{entry.id}} data-log-id="{{ sublog.id }}">
         <div class="info">
@@ -50,8 +52,12 @@
         <div class="{{ entry.event }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
             {% if 'password' == entry.details.property %}
                 Changed Password
+            {% elseif 'picture_blob' == entry.details.property %}
+                Changed Picture
             {% elseif 'contact_data' == entry.details.property %}
                 Set {{ _self.contact_prop(entry.details.new) }} to {{ _self.contact_val(entry.details.new) }}
+            {% elseif 'is_disabled' == entry.details.property %}
+                User {% if entry.details.new %}disabled{% else %}enabled{% endif %}
             {% else %}
                 Set {{ _self.prop(entry.details.property) }} to {{ entry.details.new }}
             {% endif %}

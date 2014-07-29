@@ -82,6 +82,9 @@ class EntityChangeTrackingListener implements EventSubscriber
 			'notes' => true,
 			'is_disabled' => true,
 			'contact_data' => true,
+			'picture_blob' => true,
+			'organization' => true,
+			'usergroups' => true,
 		),
 		'PersonContactData' => array(
 			'field_1' => true,

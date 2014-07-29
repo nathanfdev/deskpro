@@ -107,7 +107,7 @@
 	'agent.general.changed_to_include'                      => 'Changed to include',
 	'agent.general.changed_to_lte'                          => 'Changed to <=',
 	'agent.general.changed_to_remove'                       => 'Changed to remove',
-	'agent.general.changelog'                               => 'Changelog',
+	'agent.general.changelog'                               => 'Change Log',
 	'agent.general.chat'                                    => 'Chat',
 	'agent.general.chat_ended'                              => 'Chat ended',
 	'agent.general.chats'                                   => 'Chats',

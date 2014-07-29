@@ -580,33 +580,49 @@ class PersonController extends AbstractController
 				$usergroup_ids = $this->in->getCleanValueArray('usergroup_ids', 'uint', 'discard');
 				$usergroup_ids = Arrays::removeFalsey($usergroup_ids);
 
-				if ($usergroup_ids) {
-					$usergroup_ids = array_unique($usergroup_ids);
+				$usergroups = $usergroup_ids
+					? $this->em->getRepository('DeskPRO:Usergroup')->findBy(array('id' => $usergroup_ids))
+					: array();
 
-					// Make sure only valid ones are set
-					$usergroup_ids = $this->db->fetchAllCol("
-						SELECT id
-						FROM usergroups
-						WHERE id IN (" . implode(',', $usergroup_ids).")
-							AND sys_name IS NULL
-					");
-				}
-
-				$this->container->getDb()->executeUpdate("
-					DELETE person2usergroups
-					FROM person2usergroups
-					LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
-					WHERE usergroups.is_agent_group = 0 AND person2usergroups.person_id = ?
-				", array($person->getId()));
-
-				if ($usergroup_ids) {
-					$inserts = array();
-					foreach ($usergroup_ids as $uid) {
-						$inserts[] = array('person_id' => $person->getId(), 'usergroup_id' => $uid);
+				foreach ($person->usergroups as $personGroup) {
+					if (false === in_array($personGroup, $usergroups, true)) {
+						$person->removeUsergroup($personGroup);
 					}
-
-					$this->db->batchInsert('person2usergroups', $inserts);
 				}
+
+				foreach ($usergroups as $personGroup) {
+					$person->addUsergroup($personGroup);
+				}
+
+				$this->em->flush();
+
+//				if ($usergroup_ids) {
+//					$usergroup_ids = array_unique($usergroup_ids);
+//
+//					// Make sure only valid ones are set
+//					$usergroup_ids = $this->db->fetchAllCol("
+//						SELECT id
+//						FROM usergroups
+//						WHERE id IN (" . implode(',', $usergroup_ids).")
+//							AND sys_name IS NULL
+//					");
+//				}
+
+//				$this->container->getDb()->executeUpdate("
+//					DELETE person2usergroups
+//					FROM person2usergroups
+//					LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
+//					WHERE usergroups.is_agent_group = 0 AND person2usergroups.person_id = ?
+//				", array($person->getId()));
+//
+//				if ($usergroup_ids) {
+//					$inserts = array();
+//					foreach ($usergroup_ids as $uid) {
+//						$inserts[] = array('person_id' => $person->getId(), 'usergroup_id' => $uid);
+//					}
+//
+//					$this->db->batchInsert('person2usergroups', $inserts);
+//				}
 				break;
 
 			case 'remove-usersource':

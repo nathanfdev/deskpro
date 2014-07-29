@@ -1786,12 +1786,23 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 */
 	public function addUsergroup(Usergroup $usergroup)
 	{
-		foreach ($this->usergroups as $ug) {
-			if ($ug->id == $usergroup->id) {
-				return false;
-			}
+		if ($this->hasUsergroup($usergroup)) {
+			return false;
 		}
-		$this['usergroups']->add($usergroup);
+
+		$this->usergroups->add($usergroup);
+		$this->_onPropertyChanged('usergroups', $this->usergroups, $this->usergroups);
+		return true;
+	}
+
+	/**
+	 * remove usergroup
+	 * @param Usergroup $usergroup
+	 * @return bool
+	 */
+	public function removeUsergroup(Usergroup $usergroup)
+	{
+		$this->usergroups->removeElement($usergroup);
 		$this->_onPropertyChanged('usergroups', $this->usergroups, $this->usergroups);
 		return true;
 	}
@@ -1803,15 +1814,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 * @param $usergroup
 	 * @return bool
 	 */
-	public function hasUsergroup($usergroup)
+	public function hasUsergroup(Usergroup $usergroup)
 	{
-		foreach ($this->usergroups as $ug) {
-			if ($ug->id == $usergroup->id) {
-				return true;
-			}
-		}
-
-		return false;
+		return $this->usergroups->contains($usergroup);
 	}
 
 
