@@ -33,6 +33,7 @@
 
 namespace DeskPRO\Kernel;
 
+use Doctrine\DBAL\DBALException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -316,7 +317,7 @@ class KernelErrorHandler
 			return;
 		}
 
-		if (isset($errinfo['exception']) && $errinfo['exception'] instanceof \PDOException) {
+		if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
 			$errinfo['email'] = true;
 		}
 
@@ -457,7 +458,7 @@ class KernelErrorHandler
 			&& !dp_should_throttle_action($throttle_id, 300)
 		) {
 
-			if (isset($errinfo['exception']) && $errinfo['exception'] instanceof \PDOException) {
+			if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
 				$line = "There has been a MySQL error: " . $errinfo['exception']->getMessage();
 			}
 
@@ -694,7 +695,7 @@ class KernelErrorHandler
 			return true;
 		}
 
-		if ($exception instanceof \PDOException) {
+		if ($exception instanceof \PDOException || $exception instanceof DBALException) {
 			if (strpos($exception->getFile(), 'DbTablePhpPasswordCheck.php') !== false) {
 				return true;
 			}
