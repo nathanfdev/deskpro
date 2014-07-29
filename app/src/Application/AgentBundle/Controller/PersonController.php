@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Log\Event\UserMerged;
 use Orb\Util\Arrays;
 
 /**
@@ -1181,8 +1182,10 @@ class PersonController extends AbstractController
 
 		$old_person_id = $other_person['id'];
 
+		$logEvent = new Entity\LogEvent(new UserMerged($person, $other_person), $this->person);
 		$merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
 		$merge->merge();
+		$this->container->get('deskpro.logger.changelog')->info($logEvent);
 
 		return $this->createJsonResponse(array(
 			'success' => true,

@@ -41,59 +41,76 @@
 {%- endmacro -%}
 
 
-
-
-{% if 0 == entry.details.add|length and 0 == entry.details.del|length %}
+{% if 'user_merged' == entry.event %}
 
     <div class="log-row log-{{entry.id}} data-log-id="{{ sublog.id }}">
         <div class="info">
         </div>
 
         <div class="{{ entry.event }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
-            {% if 'password' == entry.details.property %}
-                Changed Password
-            {% elseif 'picture_blob' == entry.details.property %}
-                Changed Picture
-            {% elseif 'contact_data' == entry.details.property %}
-                Set {{ _self.contact_prop(entry.details.new) }} to {{ _self.contact_val(entry.details.new) }}
-            {% elseif 'is_disabled' == entry.details.property %}
-                User {% if entry.details.new %}disabled{% else %}enabled{% endif %}
-            {% else %}
-                Set {{ _self.prop(entry.details.property) }} to {{ entry.details.new }}
-            {% endif %}
+            <address>
+                {% for key, val in entry.details %}
+                    <strong><abbr title="{{ key }}">{{ key }}</abbr></strong>: {{ val }}<br/>
+                {% endfor %}
+            </address>
         </div>
     </div>
+
+{% else %}
+
+    {% if 0 == entry.details.add|length and 0 == entry.details.del|length %}
+
+        <div class="log-row log-{{entry.id}} data-log-id="{{ sublog.id }}">
+            <div class="info">
+            </div>
+
+            <div class="{{ entry.event }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+                {% if 'password' == entry.details.property %}
+                    Changed Password
+                {% elseif 'picture_blob' == entry.details.property %}
+                    Changed Picture
+                {% elseif 'contact_data' == entry.details.property %}
+                    Set {{ _self.contact_prop(entry.details.new) }} to {{ _self.contact_val(entry.details.new) }}
+                {% elseif 'is_disabled' == entry.details.property %}
+                    User {% if entry.details.new %}disabled{% else %}enabled{% endif %}
+                {% else %}
+                    Set {{ _self.prop(entry.details.property) }} to {{ entry.details.new }}
+                {% endif %}
+            </div>
+        </div>
+
+    {% endif %}
+
+    {% for item in entry.details.add %}
+        <div class="log-row">
+            <div class="info">
+            </div>
+
+            <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+                Added
+                {% if 'contact_data' == entry.details.property %}
+                    {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
+                {% else %}
+                    {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+    {% for item in entry.details.del %}
+        <div class="log-row">
+            <div class="info">
+            </div>
+
+            <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+                Removed
+                {% if 'contact_data' == entry.details.property %}
+                    {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
+                {% else %}
+                    {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
 
 {% endif %}
-
-{% for item in entry.details.add %}
-    <div class="log-row">
-        <div class="info">
-        </div>
-
-        <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
-            Added
-            {% if 'contact_data' == entry.details.property %}
-                {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
-            {% else %}
-                {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
-            {% endif %}
-        </div>
-    </div>
-{% endfor %}
-
-{% for item in entry.details.del %}
-    <div class="log-row">
-        <div class="info">
-        </div>
-
-        <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
-            Removed
-            {% if 'contact_data' == entry.details.property %}
-                {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
-            {% else %}
-                {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
-            {% endif %}
-        </div>
-    </div>
-{% endfor %}

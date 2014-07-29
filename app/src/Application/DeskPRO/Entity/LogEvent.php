@@ -92,7 +92,7 @@ class LogEvent extends DomainObject implements Loggable
 	 */
 	public function __toString()
 	{
-		return sprintf('Round Robin entry');
+		return sprintf('Changelog event: ', $this['event']);
 	}
 
 	public function context()
