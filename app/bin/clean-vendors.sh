@@ -259,6 +259,10 @@ echo "Cleaning $(pwd)"
 rm -rf Tests/
 rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md
 
+cd $DIR_VENDOR/symfony/monolog-bundle
+echo "Cleaning $(pwd)"
+rm -rf Tests/
+
 cd $DIR_VENDOR/symfony/swiftmailer-bundle/Symfony/Bundle/SwiftmailerBundle
 echo "Cleaning $(pwd)"
 rm -rf Tests/
@@ -347,9 +351,9 @@ echo "Cleaning $(pwd)"
 rm -rf tests/
 rm -rf CHANGELOG.md composer.json CONTRIBUTING.md INSTALL.md README.md README-GIT.md
 
-cd $DIR_VENDOR/friendsofsymfony/elastica-bundle/FOS/ElasticaBundle
+cd $DIR_VENDOR/friendsofsymfony/elastica-bundle
 echo "Cleaning $(pwd)"
-rm -rf */Tests
+rm -rf Tests/ Resources/doc
 rm -rf .travis.yml CHANGELOG-2.0.md CHANGELOG-2.1.md CHANGELOG-3.0.md composer.json LICENSE.txt phpunit.xml.dist README.md UPGRADE-3.0.md
 
 cd $DIR_VENDOR/ruflin/elastica

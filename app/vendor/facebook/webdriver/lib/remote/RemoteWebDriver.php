@@ -41,18 +41,11 @@ class RemoteWebDriver implements WebDriver {
       'name' => 'newSession',
       'parameters' => array('desiredCapabilities' => $desired_capabilities),
     );
-    $response = HttpCommandExecutor::remoteExecute(
-      $command,
-      array(
-        CURLOPT_CONNECTTIMEOUT_MS => $timeout_in_ms,
-      )
-    );
 
+    $response = static::remoteExecuteHttpCommand($timeout_in_ms, $command);
     $driver = new static();
-    $executor = new HttpCommandExecutor(
-      $url,
-      $response['sessionId']
-    );
+    $executor = static::createHttpCommandExecutor($url, $response);
+
     return $driver->setCommandExecutor($executor);
   }
 
@@ -77,6 +70,34 @@ class RemoteWebDriver implements WebDriver {
   }
 
   /**
+   * @param string $url
+   * @param array  $response
+   * @return HttpCommandExecutor
+   */
+  public static function createHttpCommandExecutor($url, $response) {
+    $executor = new HttpCommandExecutor(
+      $url,
+      $response['sessionId']
+    );
+    return $executor;
+  }
+
+  /**
+   * @param int   $timeout_in_ms
+   * @param array $command
+   * @return array
+   */
+  public static function remoteExecuteHttpCommand($timeout_in_ms, $command) {
+    $response = HttpCommandExecutor::remoteExecute(
+      $command,
+      array(
+        CURLOPT_CONNECTTIMEOUT_MS => $timeout_in_ms,
+      )
+    );
+    return $response;
+  }
+
+  /**
    * Close the current window.
    *
    * @return WebDriver The current instance.
@@ -91,7 +112,7 @@ class RemoteWebDriver implements WebDriver {
    * Find the first WebDriverElement using the given mechanism.
    *
    * @param WebDriverBy $by
-   * @return WebDriverElement NoSuchElementWebDriverError is thrown in
+   * @return WebDriverElement NoSuchElementException is thrown in
    *    HttpCommandExecutor if no element is found.
    * @see WebDriverBy
    */
@@ -200,12 +221,12 @@ class RemoteWebDriver implements WebDriver {
     $args = array();
     foreach ($arguments as $arg) {
       if ($arg instanceof WebDriverElement) {
-        array_push($args, array('ELEMENT' => $arg->getID()));
+        $args[] = array('ELEMENT'=>$arg->getID());
       } else {
         if (is_array($arg)) {
           $arg = $this->prepareScriptArguments($arg);
         }
-        array_push($args, $arg);
+        $args[] = $arg;
       }
     }
     return $args;
@@ -232,7 +253,7 @@ class RemoteWebDriver implements WebDriver {
   /**
    * Take a screenshot of the current page.
    *
-   * @param $save_as The path of the screenshot to be saved.
+   * @param string $save_as The path of the screenshot to be saved.
    * @return string The screenshot in PNG format.
    */
   public function takeScreenshot($save_as = null) {
@@ -372,6 +393,7 @@ class RemoteWebDriver implements WebDriver {
   public function getCommandExecutor() {
     return $this->executor;
   }
+
   /**
    * Get current selenium sessionID
    * @return sessionID

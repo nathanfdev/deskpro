@@ -34,20 +34,6 @@ class LabelsDataTest extends \DpIntegrationTestCase
 		$this->assertArrayHasKey('tickets_label1', $tickets_labels);
 	}
 
-	public function testCreateLabelDef()
-	{
-		$this->label_def_manager->createLabelDef('test label', 'chat');
-
-		$chat_labels = $this->label_def_manager->getLabelsAndCounts('chat');
-		$this->assertEquals(2, sizeof($chat_labels));
-		$this->assertArrayHasKey('test label', $chat_labels);
-
-		$this->label_def_manager->createLabelDef('test label', 'chat');
-
-		$chat_labels = $this->label_def_manager->getLabelsAndCounts('chat');
-		$this->assertEquals(2, sizeof($chat_labels));
-	}
-
 	public function testRenameLabelDef()
 	{
 		$this->label_def_manager->renameLabelDef('tickets_label1', 'new ticket label', 'tickets');

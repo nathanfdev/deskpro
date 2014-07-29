@@ -241,7 +241,7 @@
 {% elseif log.action_type == 'attach_added' %}
 	<span class="type">{{ phrase('agent.tickets.new_attachment') }}</span> <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.attach_id}} {{ log.details.filename }}</span>
 {% elseif log.action_type == 'attach_removed' %}
-	<span class="type">{{ phrase('agent.tickets.attachment_deleted') }}</span> <span class="old-val">{{ phrase('agent.general.id') }} {{log.details.old_attach_id}} {{ log.details.filename }}</span>
+	<span class="type">{{ phrase('agent.tickets.attachment_deleted') }}</span> <span class="old-val">[#{{log.details.old_attach_id|default(log.id_before)}}] {{ log.details.filename }}</span>
 	{% if log.details.message_id %}
 		(<span class="old-val">{{ phrase('agent.general.id') }} {{log.details.message_id}}</span>
 		{% if log.details.message_person_name %} {{ log.details.message_person_name }}{% endif %}
@@ -425,7 +425,7 @@
 {% elseif log.action_type == 'ticket_email' %}
 	{% if log.details.user_mode == 'user' %}
 		<span class="new-val expand" data-set=".set-detail">User emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
-		{% if log.details.cc_emails %}(+{{ log.details.cc_emails.length }} cc'ed){% endif %}
+		{% if log.details.cc_emails %}(+{{ log.details.cc_emails|length }} cc'ed){% endif %}
 	{% else %}
 		<span class="new-val expand" data-set=".set-detail">Agent emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
 	{% endif %}
@@ -434,6 +434,7 @@
 		From: {{ log.details.from_name }} &lt;{{ log.details.from_email }}&gt;<br/>
 		Template: {{ log.details.template }}<br/>
 		{% if log.details.cc_emails %}
+			CC'd:
 			<ul>
 				{% for eml in log.details.cc_emails %}
 					<li>{{ eml }}</li>

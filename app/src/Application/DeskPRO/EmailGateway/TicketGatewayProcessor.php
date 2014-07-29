@@ -260,6 +260,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($check_person && $check_person->is_agent) {
 			if ($email_body_html) {
 				$rc = new AgentReplyCodes($email_body_html, true);
+				$rc->setCleaner($this->container->getInputCleaner());
 				$rc->setLogger($this->logger);
 
 				$reply_actions = $rc->getProperties();

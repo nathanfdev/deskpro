@@ -209,6 +209,8 @@ window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
 {% if inhelp_states %}
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
 {% endif %}
+
+window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% endif %};
 </script>
 {{ js_error_tracking('admin_interface') }}
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>

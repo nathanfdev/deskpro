@@ -28,13 +28,19 @@
     SetupDirectives(AdminModule);
     SetupRouting(AdminModule);
     SetupTemplates(AdminModule);
+    if (window.DP_REDIRECT_TO_LICENSE) {
+      console.log("Redirect to license");
+      window.location.hash = '/license';
+    }
     if ((_ref = window.parent) != null ? (_ref1 = _ref.DP_FRAME_OVERLAYS) != null ? _ref1.admin : void 0 : void 0) {
       window.parent.DP_FRAME_OVERLAYS.admin.callLoaded();
       AdminModule.run([
         '$rootScope', function($rootScope) {
-          return $rootScope.$on('$stateChangeSuccess', function() {
-            return window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash);
-          });
+          if (!window.DP_REDIRECT_TO_LICENSE) {
+            return $rootScope.$on('$stateChangeSuccess', function() {
+              return window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash);
+            });
+          }
         }
       ]);
     }

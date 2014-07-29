@@ -226,11 +226,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			}
 
 			try {
-				$last_error = error_get_last();
-				if (!$last_error && isset($GLOBALS['DP_LAST_ERROR'])) {
+				$last_error = null;
+				if (isset($GLOBALS['DP_LAST_ERROR'])) {
 					$last_error = $GLOBALS['DP_LAST_ERROR'];
-				} elseif (!$last_error && isset($php_errormsg) && $php_errormsg) {
-					$last_error = array($php_errormsg);
 				}
 
 				if ($last_error) {

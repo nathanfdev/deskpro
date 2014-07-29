@@ -1751,6 +1751,8 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
+		$this->container->getTicketManager()->markAsManaged($ticket);
+
 		$attachment = false;
 		foreach ($message->attachments AS $test_attachment) {
 			if ($test_attachment->id == $attachment_id) {
@@ -1768,12 +1770,19 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_log = new TicketLog();
-		$log_action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\AttachRemoved($attachment);
 		$ticket_log->ticket      = $ticket;
 		$ticket_log->person      = $this->person;
-		$ticket_log->action_type = $log_action->getLogName();
+		$ticket_log->action_type = 'attach_removed';
 		$ticket_log->id_object   = $message->getId();
-		$ticket_log->details     = $log_action->getLogDetails();
+		$ticket_log->id_before   = $attachment->id;
+
+		$blob = $attachment->blob;
+		$log_data['attach_id']       = $attachment->id;
+		$log_data['blob_id']         = $blob->id;
+		$log_data['filename']        = $blob->filename;
+		$log_data['filesize']        = $blob->filesize;
+		$log_data['content_type']    = $blob->content_type;
+		$ticket_log->details = $log_data;
 
 		$this->em->persist($ticket_log);
 		$this->em->remove($attachment);
@@ -1796,6 +1805,9 @@ class TicketController extends AbstractController
 		}
 
 		$this->em->flush();
+
+		// Delete the blob itself
+		$this->container->getBlobStorage()->deleteBlobRecord($blob);
 
 		return $this->createJsonResponse(array(
 			'success' => true,

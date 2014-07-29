@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ abstract class DataType extends AbstractAnnotation
     public function __construct(array $values = array())
     {
         parent::__construct($values);
-        Swagger::checkDataType($this->type);
+        Swagger::checkDataType($this->type, $this->_context);
         if (is_string($this->enum)) {
             $values = $this->decode($this->enum);
             if (is_object($values)) {
@@ -124,9 +124,9 @@ abstract class DataType extends AbstractAnnotation
         if (is_string($this->required)) {
             $required = filter_var($this->required, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($required === null) {
-                Logger::notice('Invalid `required="'.$this->required.'"` for '.$this->identity().' expecting `required=true` or `required=false` in '.AbstractAnnotation::$context);
+                Logger::notice('Invalid `required="'.$this->required.'"` for '.$this->identity().' expecting `required=true` or `required=false` in '.$this->_context);
             } else {
-                Logger::notice('Expecting a boolean, got a string `required="'.$this->required.'"` instead of `required='.($required ? 'true': 'false').'` for '.$this->identity().' in '.AbstractAnnotation::$context);
+                Logger::notice('Expecting a boolean, got a string `required="'.$this->required.'"` instead of `required='.($required ? 'true': 'false').'` for '.$this->identity().' in '.$this->_context);
                 $this->required = $required;
             }
         }

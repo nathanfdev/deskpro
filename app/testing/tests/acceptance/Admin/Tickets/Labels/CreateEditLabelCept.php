@@ -11,6 +11,6 @@ $I->openAdminInterface();
 $I->amOnAdminPage('/tickets/labels/create');
 $I->fillField('label', $label_id1);
 $I->click('Save');
-$I->reloadPage();
+//$I->reloadPage();
 $I->waitForAdminLoad();
 $I->see($label_id1);

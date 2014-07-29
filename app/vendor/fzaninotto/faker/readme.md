@@ -58,6 +58,8 @@ for ($i=0; $i < 10; $i++) {
   // Ms. Karley Kiehn V
 ```
 
+**Tip**: For a quick generation of fake data, you can also use Faker as a command line tool thanks to [faker-cli](https://github.com/bit3/faker-cli).
+
 ## Formatters
 
 Each of the generator properties (like `name`, `address`, and `lorem`) are called "formatters". A faker generator has many of them, packaged in "providers". Here is a list of the bundled formatters in the default locale.
@@ -67,8 +69,8 @@ Each of the generator properties (like `name`, `address`, and `lorem`) are calle
     randomDigit             // 7
     randomDigitNotNull      // 5
     randomNumber($nbDigits = NULL) // 79907610
-    randomNumber($from, $to) // 39049
     randomFloat($nbMaxDecimals = NULL, $min = 0, $max = NULL) // 48.8932
+    numberBetween($min = 1000, $max = 9000) // 8567
     randomLetter            // 'b'
     randomElements($array = array ('a','b','c'), $count = 1) // array('c')
     randomElement($array = array ('a','b','c')) // 'b'
@@ -92,8 +94,8 @@ Each of the generator properties (like `name`, `address`, and `lorem`) are calle
     titleMale                                 // 'Mr.'
     titleFemale                               // 'Ms.'
     suffix                                    // 'Jr.'
-    name($gender = null|'male'|'female')      // 'Dr. Zane Stroman' 
-    firstName($gender = null|'male'|'female') // 'Maynard' 
+    name($gender = null|'male'|'female')      // 'Dr. Zane Stroman'
+    firstName($gender = null|'male'|'female') // 'Maynard'
     firstNameMale                             // 'Maynard'
     firstNameFemale                           // 'Rachel'
     lastName                                  // 'Zulauf'
@@ -165,9 +167,12 @@ Each of the generator properties (like `name`, `address`, and `lorem`) are calle
     domainName              // 'wolffdeckow.net'
     domainWord              // 'feeney'
     tld                     // 'biz'
-    url                     // 'http://www.strackeframi.com/'
+    url                     // 'http://www.skilesdonnelly.biz/aut-accusantium-ut-architecto-sit-et.html'
+    slug                    // 'aut-repellat-commodi-vel-itaque-nihil-id-saepe-nostrum'
     ipv4                    // '109.133.32.252'
+    localIpv4               // '10.242.58.8'
     ipv6                    // '8e65:933d:22ee:a232:f1c1:2741:1f10:117c'
+    macAddress              // '43:85:B7:08:10:CA'
 
 ### `Faker\Provider\UserAgent`
 
@@ -232,7 +237,7 @@ Each of the generator properties (like `name`, `address`, and `lorem`) are calle
 
 ## Unique and Optional modifiers
 
-Faker provides two special providers, `unique()` and `optional()`, to be called before any provider. `optional()` can be useful for seeding non-required fields, like a mobile telephone number ; `unique()` is required to populate fields that cannot accept twice the same value, like primary identifiers.
+Faker provides two special providers, `unique()` and `optional()`, to be called before any provider. `optional()` can be useful for seeding non-required fields, like a mobile telephone number; `unique()` is required to populate fields that cannot accept twice the same value, like primary identifiers.
 
 ```php
 // unique() forces providers to return unique values
@@ -257,7 +262,7 @@ try {
 $faker->unique($reset = true)->randomDigitNotNull; // will not throw OverflowException since unique() was reset
 // tip: unique() keeps one array of values per provider
 
-// optional() sometimes bypasses the provider to return null instead
+// optional() sometimes bypasses the provider to return a default value instead (which defaults to NULL)
 $values = array();
 for ($i=0; $i < 10; $i++) {
   // get a random digit, but also null sometimes
@@ -265,10 +270,15 @@ for ($i=0; $i < 10; $i++) {
 }
 print_r($values); // [1, 4, null, 9, 5, null, null, 4, 6, null]
 
-// optional() accepts a weight argument to specify the probability of receiving a NULL value.
-// 0 will always return NULL; 1 will always return the provider. Default weight is 0.5.
+// optional() accepts a weight argument to specify the probability of receiving the default value.
+// 0 will always return the default value; 1 will always return the provider. Default weight is 0.5.
 $faker->optional($weight = 0.1)->randomDigit; // 90% chance of NULL
 $faker->optional($weight = 0.9)->randomDigit; // 10% chance of NULL
+
+// optional() accepts a default argument to specify the default value to return.
+// Defaults to NULL.
+$faker->optional($weight = 0.5, $default = false)->randomDigit; // 50% chance of FALSE
+$faker->optional($weight = 0.9, $default = 'abc')->word; // 10% chance of 'abc'
 ```
 
 ## Localization
@@ -636,39 +646,29 @@ Fugiat non in itaque sunt nobis totam. Sed nesciunt est deleniti cumque alias. R
 
 ## Language specific formatters
 
-
-### `Faker\Provider\fr_FR\Company`
-
+### `Faker\Provider\cs_CZ\Address`
 ```php
 <?php
 
-// Generates a random SIREN number
-echo $faker->siren; // 082 250 104
-
-// Generates a random SIRET number
-echo $faker->siret; // 347 355 708 00224
-
-// Generates a random SIRET number (controlling the number of sequential digits)
-echo $faker->siret(3); // 438 472 611 01513
+echo $faker->region; // "Liberecký kraj"
 
 ```
 
-### `Faker\Provider\fr_FR\Address`
-
+### `Faker\Provider\cs_CZ\Company`
 ```php
 <?php
 
-// Generates a random department name
-echo $faker->departmentName; // "Haut-Rhin"
+// Generates a valid IČO
+echo $faker->ico; // "69663963"
 
-// Generates a random department number
-echo $faker->departmentNumber; // "2B"
+```
 
-// Generates a random department info (department number => department name)
-$faker->department; // array('18' => 'Cher');
+### `Faker\Provider\cs_CZ\DateTime`
+```php
+<?php
 
-// Generates a random region
-echo $faker->region; // "Saint-Pierre-et-Miquelon"
+echo $faker->monthNameGenitive; // "prosince"
+echo $faker->formattedDate; // "12. listopadu 2015"
 
 ```
 
@@ -706,6 +706,56 @@ echo $faker->cvr; // "32458723"
 // Generates a random P number
 echo $faker->p; // "5398237590"
 
+```
+
+### `Faker\Provider\fr_FR\Company`
+
+```php
+<?php
+
+// Generates a random SIREN number
+echo $faker->siren; // 082 250 104
+
+// Generates a random SIRET number
+echo $faker->siret; // 347 355 708 00224
+
+// Generates a random SIRET number (controlling the number of sequential digits)
+echo $faker->siret(3); // 438 472 611 01513
+
+```
+
+### `Faker\Provider\fr_FR\Address`
+
+```php
+<?php
+
+// Generates a random department name
+echo $faker->departmentName; // "Haut-Rhin"
+
+// Generates a random department number
+echo $faker->departmentNumber; // "2B"
+
+// Generates a random department info (department number => department name)
+$faker->department; // array('18' => 'Cher');
+
+// Generates a random region
+echo $faker->region; // "Saint-Pierre-et-Miquelon"
+
+```
+
+### `Faker\Provider\ja_JP\Person`
+
+```php
+<?php
+
+// Generates a 'kana' name
+echo $faker->kanaName; // "アオタ ナオコ"
+
+// Generates a 'kana' first name
+echo $faker->firstKanaName; // "トモミ"
+
+// Generates a 'kana' last name
+echo $faker->lastKanaName; // "ナギサ"
 ```
 
 ### `Faker\Provider\pl_PL\Person`
@@ -746,19 +796,14 @@ echo $faker->bankAccountNumber; // "PL14968907563953822118075816"
 
 ```
 
-### `Faker\Provider\ja_JP\Person`
+### `Faker\Provider\pt_PT\Person`
 
 ```php
 <?php
 
-// Generates a 'kana' name
-echo $faker->kanaName; // "アオタ ナオコ"
+// Generates a random taxpayer identification number (in portuguese - Número de Identificação Fiscal NIF)
+echo $faker->taxpayerIdentificationNumber; // '165249277'
 
-// Generates a 'kana' first name
-echo $faker->firstKanaName; // "トモミ"
-
-// Generates a 'kana' last name
-echo $faker->lastKanaName; // "ナギサ"
 ```
 
 ### `Faker\Provider\ro_RO\Person`
@@ -796,15 +841,6 @@ echo $faker->tollFreePhoneNumber; // "0800123456"
 echo $faker->premiumRatePhoneNumber; // "0900123456"
 ```
 
-### `Faker\Provider\pt_PT\Person`
-
-```php
-<?php
-
-// Generates a random taxpayer identification number (in portuguese - Número de Identificação Fiscal NIF)
-echo $faker->taxpayerIdentificationNumber; // '165249277'
-
-```
 ## License
 
 Faker is released under the MIT Licence. See the bundled LICENSE file for details.

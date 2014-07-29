@@ -540,6 +540,37 @@ class TicketLogGenerator
 					'message'        => $new['message']
 				);
 
+			case 'attachments':
+				$log_set = array();
+
+				if ($new && $new->blob && !$new->is_inline) {
+					$blob = $new->blob;
+					$log_data = array();
+					$log_data['action_type']     = 'attach_added';
+					$log_data['id_after']        = $new->id;
+					$log_data['attach_id']       = $new->id;
+					$log_data['blob_id']         = $blob->id;
+					$log_data['filename']        = $blob->filename;
+					$log_data['filesize']        = $blob->filesize;
+					$log_data['content_type']    = $blob->content_type;
+					$log_set[] = $log_data;
+				}
+
+				if ($old && $old->blob && !$old->is_inline) {
+					$blob = $old->blob;
+					$log_data = array();
+					$log_data['action_type']     = 'attach_removed';
+					$log_data['id_before']       = $old->id;
+					$log_data['attach_id']       = $old->id;
+					$log_data['blob_id']         = $blob->id;
+					$log_data['filename']        = $blob->filename;
+					$log_data['filesize']        = $blob->filesize;
+					$log_data['content_type']    = $blob->content_type;
+					$log_set[] = $log_data;
+				}
+
+				return $log_set;
+
 			default:
 				return array();
 		}
