@@ -128,23 +128,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($ticket AND !$person AND $can_add_new_person) {
 			$this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user on ticket, adding user with email %s', $this->reader->getFromAddress()->getEmail()));
 
+			$person_processor = new PersonFromEmailProcessor();
+
 			// If the detector didnt find a person, doesnt mean they dont exist
-			$person = $this->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
+			$person = $person_processor->findPerson($this->reader->getFromAddress());
 
 			// But we'll create them now if they dont
 			if (!$person) {
 				$this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
-				$person = Person::newContactPerson(array('email' => $this->reader->getFromAddress()->getEmail()));
-
-				$this->getDb()->beginTransaction();
-				try {
-					$this->getEm()->persist($person);
-					$this->getEm()->flush();
-					$this->getDb()->commit();
-				} catch (\Exception $e) {
-					$this->getDb()->rollback();
-					throw $e;
-				}
+				$person = $person_processor->createPerson($this->reader->getFromAddress());
 			}
 
 			if ($person && !$person->is_agent) {
@@ -410,32 +402,44 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$person_processor = new PersonFromEmailProcessor();
 		$person = $person_processor->findPerson($this->reader->getFromAddress());
+
+		if ($person) {
+			$this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
+			$person_processor->passPerson($this->reader->getFromAddress(), $person);
+		} else {
+			if ($this->container->getSetting('core.reg_enabled')) {
+				$person = $person_processor->createPerson($this->reader->getFromAddress());
+				$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
+			}
+		}
+
+		// Still no person means reg is closed
+		if (!$person) {
+			$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
+			$this->error = EmailSource::ERR_PERM_INSUFFICIENT;
+			$this->error_type = 'rejected';
+
+			$account_manager = App::$container->getEmailAccountManager();
+			$user_email = $this->reader->getFromAddress()->getEmail();
+
+			if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
+				$message = $this->container->getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
+					'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+					'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+				));
+				$message->setTo($this->reader->getFromAddress()->getEmail());
+				$this->container->getMailer()->send($message);
+				return null;
+			}
+		}
+
 		if ($person) {
 			$this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] Creating new contact');
-			if (!$this->container->getSetting('core.reg_enabled')) {
-				$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
-				$this->error = EmailSource::ERR_PERM_INSUFFICIENT;
-				$this->error_type = 'rejected';
 
-				$account_manager = App::$container->getEmailAccountManager();
-				$user_email = $this->reader->getFromAddress()->getEmail();
-
-				if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
-					$message = $this->container->getMailer()->createMessage();
-					$message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
-						'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-						'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-					));
-					$message->setTo($this->reader->getFromAddress()->getEmail());
-					$this->container->getMailer()->send($message);
-					return null;
-				}
-			}
-			$person = $person_processor->createPerson($this->reader->getFromAddress());
-			$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
 		}
 
 		if ($person && $person->is_agent && $ticket_email->is_bounce) {

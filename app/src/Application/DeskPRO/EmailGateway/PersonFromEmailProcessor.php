@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Doctrine\DBAL\DBALException;
 
 /**
  * This finds a user based on the email sent, or creates a new user
@@ -68,8 +69,11 @@ class PersonFromEmailProcessor
 	 */
 	public function findPerson(EmailAddress $from)
 	{
+		App::getDb()->beginTransaction();
 		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail());
 		if ($person) {
+			App::getDb()->commit();
+
 			$this->passPerson($from, $person);
 			return $person;
 		} else {
@@ -91,12 +95,17 @@ class PersonFromEmailProcessor
 					$person = $login_processor->getPerson();
 
 					$this->passPerson($from, $person);
+
+					App::getDb()->commit();
+
 					return $person;
 				} catch (\Exception $e) {
 					KernelErrorHandler::logException($e, false, 'gateway_usersource_error');
 				}
 			}
 		}
+
+		App::getDb()->commit();
 
 		return null;
 	}
@@ -127,13 +136,45 @@ class PersonFromEmailProcessor
 	 */
 	public function createPerson(EmailAddress $from, $do_validated = false)
 	{
+		$person = $this->findPerson($from);
+		if ($person) {
+			return $person;
+		}
+
+		App::getDb()->beginTransaction();
+
+		try {
+			list (, $email_domain) = explode('@', $from->getEmail(), 2);
+			App::getDb()->insert('people_emails', array(
+				'email' => $from->getEmail(),
+				'email_domain' => $email_domain,
+				'date_created' => date('Y-m-d H:i:s'),
+				'date_validated' => date('Y-m-d H:i:s'),
+				'is_validated' => 1
+			));
+			$email_id = App::getDb()->lastInsertId();
+		} catch (DBALException $e) {
+			if (strpos($e->getMessage(), 'Duplicate')) {
+				$person = $this->findPerson($from);
+				if ($person) {
+					return $person;
+				} else {
+					throw $e;
+				}
+			} else {
+				throw $e;
+			}
+		}
+
+		$email = App::getOrm()->find('DeskPRO:PersonEmail', $email_id);
+		$email->setEmail($from->getEmail());
+
 		$person = Entity\Person::newContactPerson();
 		$person->creation_system = 'gateway.person';
 		$person->name = $from->getNameUtf8();
 
-		$email = new \Application\DeskPRO\Entity\PersonEmail();
-		$email->setEmail($from->getEmail());
 		$email->person = $person;
+		$person->addEmailAddress($email);
 
 		$email->is_validated = true;
 		$person->is_confirmed = true;
@@ -143,14 +184,10 @@ class PersonFromEmailProcessor
 		}
 
 		App::getOrm()->persist($person);
-		App::getOrm()->flush($person);
-
-		$person->addEmailAddress($email);
-		App::getOrm()->persist($person);
 		App::getOrm()->persist($email);
+		App::getOrm()->flush();
 
-		App::getOrm()->flush($person);
-		App::getOrm()->flush($email);
+		App::getDb()->commit();
 
 		return $person;
 	}

@@ -319,8 +319,6 @@ class Runner
 			$this->logger->logDebug(sprintf("[Message] Using From: %s", $from));
 		}
 
-		App::getOrm()->beginTransaction();
-
 		try {
 
 			$pre_processor = new PreProcessor($account, $reader, array('logger' => $this->logger));
@@ -362,8 +360,6 @@ class Runner
 					}
 
 					$proc = null;
-
-					App::getOrm()->commit();
 
 				} catch (\Exception $e) {
 
@@ -408,8 +404,6 @@ class Runner
 				$pre_processor = null;
 
 				$this->logger->log(sprintf("Preprocessor error: %s", $source['error_code']), 'info');
-
-				App::getOrm()->commit();
 			}
 
 			if ($created_obj) {
@@ -648,12 +642,21 @@ class Runner
 	{
 		$this->logger->log(sprintf("Updating source (status: %s %s)", $source['status'], $source['error_code']), 'info');
 
-		App::getDb()->update('email_sources', array(
-			'status'      => $source['status'],
-			'error_code'  => $source['error_code'],
-			'source_info' => serialize($source['source_info'] ?: array()),
-			'log_blob_id' => $source['log_blob'] ? $source['log_blob']->getId() : null
-		), array('id' => $source->getId()));
+		$db = App::getDb();
+
+		\DpShutdown::add(function() use ($db, $source) {
+			try {
+				$db->update('email_sources', array(
+					'status'      => $source['status'],
+					'error_code'  => $source['error_code'],
+					'source_info' => serialize($source['source_info'] ?: array()),
+					'log_blob_id' => $source['log_blob'] ? $source['log_blob']->getId() : null
+				), array('id' => $source->getId()));
+			} catch (\Exception $e) {
+				echo $e->getMessage();
+				KernelErrorHandler::logException($e);
+			}
+		});
 	}
 
 	/**
