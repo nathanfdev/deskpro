@@ -879,6 +879,12 @@ $collection->create('api_agents_create', array(
 	'methods'     => array('PUT'),
 ));
 
+$collection->create('api_agents_create_bulk', array(
+	'path'        => '/agents_bulk',
+	'controller'  => 'ApiBundle:Agents:bulkCreateAgents',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_agents_notifyprefs_gettables', array(
 	'path'        => '/agents/{id}/notify-prefs/get-tables',
 	'controller'  => 'ApiBundle:Agents:getNotifyPrefs',

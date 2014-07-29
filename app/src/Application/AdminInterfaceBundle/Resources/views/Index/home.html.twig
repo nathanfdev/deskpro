@@ -1,7 +1,14 @@
 {% extends 'AdminInterfaceBundle:Layout:fill-page-alt.html.twig' %}
 {% block alt_content %}
 	<div class="dp-appalt-section">
-		<header><h2>Agents</h2></header>
+		<header>
+            <h2 style="width: 100%;">
+                Agents
+                <button class="btn btn-default btn-xs pull-right" ng-click="Home.$modal.open({ templateUrl: Home.getTemplatePath('Agents/import.html') })">
+                    {{ phrase('agent.general.add_bulk') }}
+                </button>
+            </h2>
+        </header>
 		<section ng-if="Home.online_agents.length">
 			<header><h3>Online</h3></header>
 			<article>
@@ -28,7 +35,14 @@
 	</div>
 
 	<div class="dp-appalt-section">
-		<header><h2>Invite Agent</h2></header>
+		<header>
+            <h2 style="width: 100%;">
+                Invite Agent
+                <button class="btn btn-default btn-xs pull-right" ng-click="Home.$modal.open({ templateUrl: Home.getTemplatePath('Agents/import.html') })">
+                    {{ phrase('agent.general.add_bulk') }}
+                </button>
+            </h2>
+        </header>
 		<section>
 			<article>
 				<form>

@@ -15,7 +15,7 @@
 	"angular-slider": "latest",
 	"angular-grid": "latest",
 	"ng-file-upload": "latest",
-    "font-awesome": "~4.0",
+    "font-awesome": "~4.1",
     "jquery": "2.0",
     "jquery-ui": "latest",
     "bootstrap": "latest",

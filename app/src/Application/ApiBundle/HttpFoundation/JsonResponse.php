@@ -25,79 +25,33 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- */
+namespace Application\ApiBundle\HttpFoundation;
 
-namespace Application\DeskPRO\People\Agents\Type;
 
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Application\DeskPRO\Util;
+use Symfony\Component\HttpFoundation\Response;
 
-class EditAgentType extends AbstractType
+class JsonResponse extends Response
 {
-	/**
-	 * @param FormBuilderInterface $builder
-	 * @param array $options
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
+	protected $data;
+
+	public function __toString()
 	{
-		$builder->add('name', 'text', array('required' => true));
-		$builder->add('override_name', 'text', array('required' => false));
-
-		$builder->add('emails', 'collection', array(
-			'type'         => 'email',
-			'allow_add'    => true,
-			'allow_delete' => true,
-			'invalid_message' => 'Invalid Email.',
-		));
-
-		$builder->add('zones', 'choice', array(
-			'choices'  => array('admin' => 'admin', 'reports' => 'reports'),
-			'multiple' => true,
-			'required' => false,
-		));
-
-		$builder->add('teams', 'entity', array(
-			'class'    => 'DeskPRO:AgentTeam',
-			'required' => false,
-			'multiple' => true,
-			'invalid_message' => 'Invalid Team.',
-		));
-
-		$builder->add('agent_groups', 'entity', array(
-			'class'         => 'DeskPRO:Usergroup',
-			'required'      => false,
-			'multiple'      => true,
-			'query_builder' => function(EntityRepository $er) {
-				return $er->createQueryBuilder('ug')->where('ug.is_agent_group = true');
-			},
-			'invalid_message' => 'Invalid Agent Group.',
-		));
+		return Util::jsonEncode($this->data);
 	}
 
-
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	public function getData()
 	{
-		$resolver->setDefaults(array(
-			'data_class'         => 'Application\\DeskPRO\\People\\Agents\\EditAgent',
-			'cascade_validation' => true,
-		));
+		return $this->data;
 	}
 
-
-	/**
-	 * @return string
-	 */
-	public function getName()
+	public function setContent($content)
 	{
-		return 'agent';
+		if (is_array($content)) {
+			$this->data = $content;
+			$content = $this->__toString();
+		}
+
+		parent::setContent($content);
 	}
-}
+} 

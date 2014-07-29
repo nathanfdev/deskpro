@@ -190,7 +190,7 @@
         });
         options.push({
           title: 'User Label',
-          value: 'CheckUserLabels'
+          value: 'CheckUserLabel'
         });
         options.push({
           title: 'Usergroup',
@@ -872,7 +872,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabels = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabel = function(options) {
         var def;
         if (options == null) {
           options = {};
