@@ -39,6 +39,7 @@
 		"toastr":                          "bower_components/toastr/toastr",
 		"ColorPicker":                     "../vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "../vendor/detect_timezone",
+		"intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
 
 		"AdminLoad":                       "Admin/AdminLoad",
 		"CloudAdminLoad":                  "Admin/Cloud/CloudAdminLoad",
@@ -77,7 +78,8 @@
 		"ColorPicker":                     ["jquery"],
 		"underscore":                      { "exports": "_" },
 		"stacktrace":                      { "exports": "printStackTrace"},
-		"trackjs":                         { "exports": "trackJs"}
+		"trackjs":                         { "exports": "trackJs"},
+		"intl-tel-input":                  ["jquery"]
 	},
 	"priority": [
 		"angular"
