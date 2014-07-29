@@ -22,10 +22,63 @@
 						</tr>
 						<!-- Keeping it simple for now -->
 						<tr>
-							<td>Send To:</td>
+							<td>To Agent(s):</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
+									<li style="border-bottom: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_owner"/>
+											Ticket owner
+										</label>
+									</li>
+									<li style="border-bottom: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.notify_list"/>
+											Subscribed agents <i style="color: #aaa;"
+																 class="fa fa-question-circle"
+																 tooltip="All agents have notification subscription preferences. This option will send the email to any agent who is subscribed to whatever action initiated this event. For example, if this action was fired via a new ticket, then this option will send an email to any agent subscribed to 'new tickets'."></i>
+										</label>
+									</li>
+									<li ng-repeat="agent in agents">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids[agent.id]"/>
+											{{ agent.display_name }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>To Team(s):</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
+									<li ng-repeat="team in agent_teams">
+										<label>
+											<input type="checkbox" ng-model="model.agent_teams[team.id]"/>
+											{{ team.name }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>To Department(s):</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
+									<li ng-repeat="department in departments">
+										<label>
+											<input type="checkbox" ng-model="model.departments[department.id]"/>
+											{{ department.title }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>To Number:</td>
 							<td>
 								<div style="padding-top: 3px; width: 250px;">
-									<input type="text"  class="form-control" ng-model="model.to_number"/>
+									<input type="text" class="form-control" ng-model="model.to_number"/>
 								</div>
 							</td>
 						</tr>

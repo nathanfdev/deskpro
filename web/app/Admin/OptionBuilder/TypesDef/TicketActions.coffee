@@ -279,6 +279,11 @@ define [
 
 					typeFunc = "get#{opt.action_name}"
 
+
+					#------------------------------
+					# Abstract SMS Options - if your action beings with "SendSms"
+					#------------------------------
+
 					if opt.action_name.indexOf('Sms') == 0
 						@[typeFunc] = (options = {}) ->
 							me = @
@@ -290,14 +295,58 @@ define [
 								getDataFormatter: ->
 									return {
 									getViewValue: (value = {}, data) ->
-										return value.options || {}
+										options = value.options || {}
+
+										agent_ids = {}
+										if options.agent_ids
+											for aid in options.agent_ids
+												if aid != 'notify_list' and aid != 'ticket_owner' then aid = parseInt(aid)
+												agent_ids[aid] = true
+										else
+											agent_ids['notify_list'] = false
+											agent_ids['ticket_owner'] = false
+
+										return {
+											agents: options.agents || [],
+											agent_ids: agent_ids,
+											agent_teams: options.agent_teams || []
+											departments: options.departments || []
+											to_number: options.to_number || ''
+											message: options.message || ''
+										}
 									getValue: (model = {}, data) ->
+										options = {
+											agents: model.agents || [],
+											agent_teams: model.agent_teams || []
+											departments: model.departments || []
+											to_number: model.to_number || ''
+											message: model.message || ''
+											agent_ids: [],
+										}
+
+										if model.agent_ids
+											for own k, v of model.agent_ids
+												if v
+													if k == 'notify_list'
+														options.agent_ids.push('notify_list')
+													else if k == 'ticket_owner'
+														options.agent_ids.push('ticket_owner')
+													else
+														options.agent_ids.push(parseInt(k))
+
 										value = {}
 										value.type = opt.action_name
-										value.options = model || {}
+										value.options = options
 										return value
 									}
 							}
+
+
+
+					#------------------------------
+					# Dynamic Options - All except for "SendSms" actions above
+					#------------------------------
+
 					else
 						@[typeFunc] = (options = {}) ->
 							me = @
@@ -336,6 +385,7 @@ define [
 					@loadDataPromise = @Api.sendDataGet({
 						'agents':          '/agents'
 						'agent_teams':     '/agent_teams',
+						'departments':     '/tickets/departments',
 						'ticket_deps':     '/ticket_deps',
 						'ticket_cats':     '/ticket_cats',
 						'ticket_prods':    '/ticket_prods',
@@ -354,6 +404,7 @@ define [
 						options_data = {}
 						options_data['agents']           = data.agents.agents
 						options_data['agent_teams']      = data.agent_teams.agent_teams
+						options_data['departments']      = data.departments.departments
 						options_data['ticket_deps']      = data.ticket_deps.departments
 						options_data['ticket_cats']      = data.ticket_cats.categories
 						options_data['ticket_pris']      = data.ticket_pris.priorities

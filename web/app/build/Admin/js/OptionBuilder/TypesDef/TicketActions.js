@@ -235,19 +235,66 @@
                   getDataFormatter: function() {
                     return {
                       getViewValue: function(value, data) {
+                        var agent_ids, aid, _l, _len3, _ref5;
                         if (value == null) {
                           value = {};
                         }
-                        return value.options || {};
+                        options = value.options || {};
+                        agent_ids = {};
+                        if (options.agent_ids) {
+                          _ref5 = options.agent_ids;
+                          for (_l = 0, _len3 = _ref5.length; _l < _len3; _l++) {
+                            aid = _ref5[_l];
+                            if (aid !== 'notify_list' && aid !== 'ticket_owner') {
+                              aid = parseInt(aid);
+                            }
+                            agent_ids[aid] = true;
+                          }
+                        } else {
+                          agent_ids['notify_list'] = false;
+                          agent_ids['ticket_owner'] = false;
+                        }
+                        return {
+                          agents: options.agents || [],
+                          agent_ids: agent_ids,
+                          agent_teams: options.agent_teams || [],
+                          departments: options.departments || [],
+                          to_number: options.to_number || '',
+                          message: options.message || ''
+                        };
                       },
                       getValue: function(model, data) {
-                        var value;
+                        var k, v, value, _ref5;
                         if (model == null) {
                           model = {};
                         }
+                        options = {
+                          agents: model.agents || [],
+                          agent_teams: model.agent_teams || [],
+                          departments: model.departments || [],
+                          to_number: model.to_number || '',
+                          message: model.message || '',
+                          agent_ids: []
+                        };
+                        if (model.agent_ids) {
+                          _ref5 = model.agent_ids;
+                          for (k in _ref5) {
+                            if (!__hasProp.call(_ref5, k)) continue;
+                            v = _ref5[k];
+                            if (v) {
+                              if (k === 'notify_list') {
+                                options.agent_ids.push('notify_list');
+                              } else if (k === 'ticket_owner') {
+                                options.agent_ids.push('ticket_owner');
+                              } else {
+                                options.agent_ids.push(parseInt(k));
+                              }
+                            }
+                          }
+                        }
                         value = {};
                         value.type = opt.action_name;
-                        value.options = model || {};
+                        value.options = options;
                         return value;
                       }
                     };
@@ -313,6 +360,7 @@
             this.loadDataPromise = this.Api.sendDataGet({
               'agents': '/agents',
               'agent_teams': '/agent_teams',
+              'departments': '/tickets/departments',
               'ticket_deps': '/ticket_deps',
               'ticket_cats': '/ticket_cats',
               'ticket_prods': '/ticket_prods',
@@ -333,6 +381,7 @@
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
                 options_data['agent_teams'] = data.agent_teams.agent_teams;
+                options_data['departments'] = data.departments.departments;
                 options_data['ticket_deps'] = data.ticket_deps.departments;
                 options_data['ticket_cats'] = data.ticket_cats.categories;
                 options_data['ticket_pris'] = data.ticket_pris.priorities;
