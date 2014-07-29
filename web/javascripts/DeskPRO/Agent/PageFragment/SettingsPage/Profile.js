@@ -22,6 +22,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			});
 		}
 
+		this.el.find('#settings_profile_phone_number').intlTelInput();
+
 		var startEmail = $('#settings_profile_email').val();
 
 		var changePass = false;

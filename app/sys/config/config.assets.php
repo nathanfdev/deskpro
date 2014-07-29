@@ -109,7 +109,8 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/angular/modules/bindonce.min.js',
 		'vendor/momentjs/moment.min.js',
 
-		'app/bower_components/notify.js/notify.js'
+		'app/bower_components/notify.js/notify.js',
+		'app/bower_components/intl-tel-input/build/js/intlTelInput.min.js'
 	)
 );
 
