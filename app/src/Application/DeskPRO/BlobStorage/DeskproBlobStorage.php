@@ -305,7 +305,7 @@ class DeskproBlobStorage implements Loggable
 				break;
 			} catch (\Exception $e) {
 				$this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
-				KernelErrorHandler::logException($e);
+				if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) KernelErrorHandler::logException($e);
 				$prev_e = $e;
 			}
 		}
@@ -447,7 +447,7 @@ class DeskproBlobStorage implements Loggable
 				break;
 			} catch (\Exception $e) {
 				$this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromString) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
-				KernelErrorHandler::logException($e);
+				if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) KernelErrorHandler::logException($e);
 				$prev_e = $e;
 			}
 		}
