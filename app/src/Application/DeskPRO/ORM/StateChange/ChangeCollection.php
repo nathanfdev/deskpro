@@ -76,13 +76,13 @@ class ChangeCollection implements ChangeInterface
 	 * @param Collection $coll
 	 * @return ChangeCollection
 	 */
-	public static function newFromPersistedCollection($field_id, Collection $coll)
+	public static function newFromPersistedCollection($field_id, Collection $coll, $old = array())
 	{
 		if ($coll instanceof PersistentCollection) {
-			$old = $coll->getSnapshot();
+//			$old = $coll->getSnapshot();
 			$new = $coll->toArray();
 		} else {
-			$old = array();
+//			$old = array();
 			$new = $coll->toArray();
 		}
 
@@ -190,5 +190,15 @@ class ChangeCollection implements ChangeInterface
 	public function getRemovedElements()
 	{
 		return $this->del_elements;
+	}
+
+	public function setAddedElements(array $added)
+	{
+		$this->add_elements = $added;
+	}
+
+	public function setRemovedElements(array $removed)
+	{
+		$this->del_elements = $removed;
 	}
 }
