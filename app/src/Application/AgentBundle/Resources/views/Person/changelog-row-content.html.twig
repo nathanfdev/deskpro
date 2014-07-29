@@ -1,0 +1,93 @@
+{%- macro contact_prop(item) -%}
+    {%- if item is empty or item.contact_type is not defined -%}
+    {%- elseif 'twitter' == item.contact_type -%}Twitter username
+    {%- elseif 'phone' == item.contact_type or 'fax' == item.contact_type or 'mobile' == contact_type -%}
+        {{ item.type }}
+    {%- elseif 'address' == item.contact_type -%}address
+    {%- elseif 'facebook' == item.contact_type -%}Facebook account
+    {%- elseif 'instant_message' == item.contact_type -%}{{ item.service }} account
+    {%- elseif 'linked_in' == item.contact_type -%}LinkedIn account
+    {%- elseif 'skype' == item.contact_type -%}Skype account
+    {%- elseif 'website' == item.contact_type -%}website url
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro contact_val(item) -%}
+    {%- if item is empty or item.contact_type is not defined -%}
+    {%- elseif 'twitter' == item.contact_type or 'instant_message' == item.contact_type or 'skype' == item.contact_type -%}
+        {{ item.username }}
+    {%- elseif 'phone' == item.contact_type or 'fax' == item.contact_type or 'mobile' == contact_type  -%}
+        {{ item.country_calling_code }}{{ item.number }}
+    {%- elseif 'address' == item.contact_type -%}
+        <address style="margin-left: 10px;">
+        {% for key, val in item if key != 'contact_type' %}
+            <strong><abbr title="{{ key }}">{{ key }}</abbr></strong>: {{ val }}<br/>
+        {% endfor %}
+        </address>
+    {%- elseif 'facebook' == item.contact_type or 'linked_in' == item.contact_type -%}{{ item.display }}
+    {%- elseif 'website' == item.contact_type -%}{{ item.url }}
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro prop(property) -%}
+    {%- if 'primary_email' == property -%}primary email
+    {%- elseif 'emails' == property -%}email
+    {%- elseif 'labels' == property -%}label
+    {%- elseif 'first_name' == property -%}first name
+    {%- elseif 'last_name' == property -%}last name
+    {%- endif -%}
+{%- endmacro -%}
+
+
+
+
+{% if entry.details.new %}
+
+    <div class="log-row log-{{entry.id}} data-log-id="{{ sublog.id }}">
+        <div class="info">
+        </div>
+
+        <div class="{{ entry.event }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+            {% if 'password' == entry.details.property %}
+                Changed Password
+            {% elseif 'contact_data' == entry.details.property %}
+                Set {{ _self.contact_prop(entry.details.new) }} to {{ _self.contact_val(entry.details.new) }}
+            {% else %}
+                Set {{ _self.prop(entry.details.property) }} to {{ entry.details.new }}
+            {% endif %}
+        </div>
+    </div>
+
+{% endif %}
+
+{% for item in entry.details.add %}
+    <div class="log-row">
+        <div class="info">
+        </div>
+
+        <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+            Added
+            {% if 'contact_data' == entry.details.property %}
+                {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
+            {% else %}
+                {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+{% for item in entry.details.del %}
+    <div class="log-row">
+        <div class="info">
+        </div>
+
+        <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
+            Removed
+            {% if 'contact_data' == entry.details.property %}
+                {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
+            {% else %}
+                {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

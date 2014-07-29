@@ -19,40 +19,12 @@
         </div>
     </div>
 
-    {% if entry.details.new %}
-
-        <div class="log-row log-{{entry.id}} data-log-id="{{ sublog.id }}">
-            <div class="info">
-            </div>
-
-            <div class="{{ entry.event }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
-                Set {{ entry.details.new }}
-            </div>
-        </div>
-
-    {% elseif entry.details.add is defined %}
-
-        {% for added in entry.details.add %}
-        <div class="log-row">
-            <div class="info">
-            </div>
-
-            <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
-                Added {{ added }}
-            </div>
-        </div>
+    {% if entry.children|length %}
+        {% for subentry in entry.getChildren() %}
+            {{ include('AgentBundle:Person:changelog-row-content.html.twig', {entry: subentry}) }}
         {% endfor %}
-
-        {% for removed in entry.details.del %}
-        <div class="log-row">
-            <div class="info">
-            </div>
-
-            <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
-                Removed {{ removed }}
-            </div>
-        </div>
-        {% endfor %}
-
+    {% else %}
+        {{ include('AgentBundle:Person:changelog-row-content.html.twig', {entry: entry}) }}
     {% endif %}
+
 </div>

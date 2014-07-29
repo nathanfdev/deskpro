@@ -173,7 +173,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 			if ('PersonContactData' === $entityName) return; // todo
 
 			$event = new EntityCreated($entity);
-			$parentEntry = new LogEvent($event, $person);
+			$parentEntry = new LogEvent($event, $person); // group changes for new Entity
 			$this->queue->enqueue($parentEntry);
 		}
 

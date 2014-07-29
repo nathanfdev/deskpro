@@ -6,7 +6,7 @@ namespace Application\DeskPRO\Log\Event;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\PersonContactData;
-use Application\DeskPRO\EntityRepository\PersonEmail;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\ChangeObject;
@@ -20,7 +20,7 @@ class EntityUpdated extends Base
 	/** @var \Application\DeskPRO\ORM\StateChange\ChangeInterface  */
 	protected $change;
 
-	public function __construct(DomainObject $entity, ChangeInterface $change)
+	public function __construct(DomainObject $entity, ChangeInterface $change = null)
 	{
 		$this->entity = $entity;
 		$this->change = $change;
@@ -47,13 +47,18 @@ class EntityUpdated extends Base
 	 */
 	public function getDetails()
 	{
-		$change = $this->change;
+		if (!$change = $this->change) {
+			return array();
+		}
+
 		$old = $this->change->getOld();
 		$new = $this->change->getNew();
 		$ret = array(
 			'property' => $change->getField(),
 			'old' => null,
 			'new' => null,
+			'add' => array(),
+			'del' => array(),
 		);
 
 		switch (true) {
@@ -84,7 +89,7 @@ class EntityUpdated extends Base
 	}
 
 	/**
-	 * todo stringify handler
+	 * todo should be processed in separate handler for each sort of subject
 	 * @param DomainObject $obj
 	 * @return string
 	 */
@@ -92,14 +97,14 @@ class EntityUpdated extends Base
 	{
 		switch (true) {
 			case ($obj instanceof PersonContactData):
-				foreach ($obj->getHandler()->getApiVars($obj) as $k => $v) {
-					$parts[] = str_replace('_', ' ', $k) . ': ' . $v;
-				}
-				return $obj['contact_type'] . ' ' . implode(', ', $parts);
+				return array_merge(
+					array('contact_type' => $obj['contact_type']),
+					$obj->getHandler()->getApiVars($obj)
+				);
 				break;
 
 			case ($obj instanceof LabelPerson):
-				return 'label ' . $obj['label'];
+				return $obj['label'];
 				break;
 
 			case ($obj instanceof PersonEmail):
