@@ -492,7 +492,7 @@ class Connection extends \Doctrine\DBAL\Connection
 			return parent::executeUpdate($query, $params, $types);
 		} catch (\Doctrine\DBAL\DBALException $e) {
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false) && !$this->isTransactionActive()) {
 				usleep(500000);
 				return $this->executeUpdate($query, $params, $types, $is_retry+1);
 			}
