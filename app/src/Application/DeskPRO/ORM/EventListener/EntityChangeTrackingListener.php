@@ -35,17 +35,18 @@
 namespace Application\DeskPRO\ORM\EventListener;
 
 use Application\ApiBundle\Request\RequestAuth;
-use Application\DeskPRO\ContactData\ContactData;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\DependencyInjection\SystemServices\PersonFieldsManagerService;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\LogEvent;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Log\Event\EntityCreated;
 use Application\DeskPRO\Log\Event\EntityUpdated;
-use Application\DeskPRO\Log\Handler\LogEventHandler;
+use Application\DeskPRO\ORM\StateChange\ChangeArray;
 use Application\DeskPRO\ORM\StateChange\ChangeObject;
-use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -89,19 +90,10 @@ class EntityChangeTrackingListener implements EventSubscriber
 			'usergroups' => true,
 
 			'contact_data' => true,
-			'custom_data' => true,
 		),
 		'PersonContactData' => array(
-			'field_1' => true,
-			'field_2' => true,
-			'field_3' => true,
-			'field_4' => true,
-			'field_5' => true,
-			'field_6' => true,
-			'field_7' => true,
-			'field_8' => true,
-			'field_9' => true,
-			'field_10' => true,
+		),
+		'CustomDataPerson' => array(
 		),
 	);
 
@@ -177,12 +169,29 @@ class EntityChangeTrackingListener implements EventSubscriber
 		$parentEntry = null;
 		// if new entity
 		if (!$entity['id']) {
+			if ($entity instanceof Person) {
+				$event = new EntityCreated($entity);
+				$parentEntry = new LogEvent($event, $person); // group changes for new Person
+				$this->queue->enqueue($parentEntry);
+			}
+		}
 
-			if ('PersonContactData' === $entityName) return; // todo
+		if ($entity instanceof PersonContactData) {
+			$change = new ChangeObject('contact_data', null, $entity);
+			return $this->enqueueUpdateEvent($entity->person, $change, $parentEntry);
+		}
 
-			$event = new EntityCreated($entity);
-			$parentEntry = new LogEvent($event, $person); // group changes for new Entity
-			$this->queue->enqueue($parentEntry);
+		if ($entity instanceof CustomDataPerson) {
+			$manager = $this->container->getPersonFieldManager();
+			$f_def = $entity->field;
+			$id = $f_def->parent ? $f_def->parent['id'] : $f_def['id'];
+			$rendered = $manager->getRenderedToTextForObject($entity->person);
+			$change = new ChangeArray('custom_data', array(), array(
+				'title' => $rendered[$id]['title'],
+				'value' => $rendered[$id]['rendered'],
+			));
+
+			return $this->enqueueUpdateEvent($entity->person, $change, $parentEntry);
 		}
 
 		foreach ($changes as $change) {
@@ -191,27 +200,21 @@ class EntityChangeTrackingListener implements EventSubscriber
 			if ($change->isSame() || ! $isTracked) {
 				continue;
 			}
-			$trackedEntity = $entity;
 
-			// todo hardcoded person data handle
-			// should be mapped external
-			if ('PersonContactData' === $entityName) {
-				// new records handled by Person's contact_data collection
-				if (isset($contactDataHandled[$entity['id']])) return; // skip changes for different fields
-				$contactDataHandled[$entity['id']] = 1;
-				$change = new ChangeObject('contact_data', null, $entity);
-				$trackedEntity = $entity->person;
-			}
+			$this->enqueueUpdateEvent($entity, $change, $parentEntry);
+		}
+	}
 
-			$event = new EntityUpdated($trackedEntity, $change);
-			$entry = new LogEvent($event, $person);
+	protected function enqueueUpdateEvent($entity, $change, $parentLogEntry = null)
+	{
+		$event = new EntityUpdated($entity, $change);
+		$entry = new LogEvent($event, $this->getContextPerson());
 
-			if ($parentEntry) {
-				$parentEntry->children->add($entry);
-				$entry->parent = $parentEntry;
-			} else {
-				$this->queue->enqueue($entry);
-			}
+		if ($parentLogEntry) {
+			$parentLogEntry->children->add($entry);
+			$entry->parent = $parentLogEntry;
+		} else {
+			$this->queue->enqueue($entry);
 		}
 	}
 

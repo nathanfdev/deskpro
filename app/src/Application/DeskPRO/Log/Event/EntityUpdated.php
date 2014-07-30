@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\ORM\StateChange\ChangeArray;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\ChangeObject;
@@ -72,7 +73,7 @@ class EntityUpdated extends Base
 
 		switch (true) {
 
-			case ($change instanceof ChangeSimple):
+			case ($change instanceof ChangeSimple || $change instanceof ChangeArray):
 				$ret['old'] = $old;
 				$ret['new'] = $new;
 				break;
@@ -137,25 +138,6 @@ class EntityUpdated extends Base
 
 			case ($obj instanceof Usergroup):
 				return $obj['title'];
-				break;
-
-
-			case ($obj instanceof CustomDataPerson):
-
-				// todo hardcoded render
-				if (!$this->renderedCustomFields) {
-					/** @var PersonFieldManager $manager */
-					$manager = App::getContainer()->getSystemService('person_fields_manager');
-					$this->renderedCustomFields = $manager->getRenderedToTextForObject($this->getSubject());
-				}
-
-				$f_def = $obj->field;
-				$id = $f_def->parent ? $f_def->parent['id'] : $f_def['id'];
-				return array(
-					'title' => $this->renderedCustomFields[$id]['title'],
-					'value' => $this->renderedCustomFields[$id]['rendered'],
-					'hasValue' => $this->renderedCustomFields[$id]['hasValue'],
-				);
 				break;
 		}
 	}
