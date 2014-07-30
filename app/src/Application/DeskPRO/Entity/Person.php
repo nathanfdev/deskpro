@@ -1440,7 +1440,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	/**
 	 * Render a custom field
 	 *
-	 * !depreciated
+	 * @depreciated
 	 */
 	public function renderCustomField($field_id, $context = 'html')
 	{

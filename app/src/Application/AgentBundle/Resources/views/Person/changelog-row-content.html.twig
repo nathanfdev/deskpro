@@ -90,6 +90,8 @@
                 Added
                 {% if 'contact_data' == entry.details.property %}
                     {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
+                {% elseif 'custom_data' == entry.details.property %}
+                    <strong>{{ item.title }}</strong>: {{ item.value }}
                 {% else %}
                     {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
                 {% endif %}
@@ -106,6 +108,8 @@
                 Removed
                 {% if 'contact_data' == entry.details.property %}
                     {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
+                {% elseif 'custom_data' == entry.details.property %}
+                    <strong>{{ item.title }}</strong>: {{ item.value }}
                 {% else %}
                     {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
                 {% endif %}

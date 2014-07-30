@@ -73,18 +73,23 @@ class EntityChangeTrackingListener implements EventSubscriber
 	// todo better tracking policy
 	protected $track = array(
 		'Person' => array(
+
 			'first_name' => true,
 			'last_name' => true,
 			'password' => true,
+			'is_disabled' => true,
+
+			'picture_blob' => true,
+			'organization' => true,
 			'primary_email' => true,
+
 			'emails' => true,
 			'labels' => true,
 			'notes' => true,
-			'is_disabled' => true,
-			'contact_data' => true,
-			'picture_blob' => true,
-			'organization' => true,
 			'usergroups' => true,
+
+			'contact_data' => true,
+			'custom_data' => true,
 		),
 		'PersonContactData' => array(
 			'field_1' => true,

@@ -736,6 +736,7 @@ class PersonController extends AbstractController
 			$language = null;
 		}
 
+		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
 		$field_manager = $this->container->getSystemService('person_fields_manager');
 		$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
 		$invalid_custom_fields = array();
