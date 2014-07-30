@@ -40,22 +40,30 @@ use Orb\Sms\Provider\TwilioSmsProvider;
 class SmsTwilioAction extends AbstractSmsAction
 {
 	/**
-	 * All children of this class need to construct their own provider from their config
-	 *
-	 * @return \Orb\Sms\SmsProviderInterface
+	 * @var TwilioSmsProvider
+	 */
+	private $twilio_provider;
+
+	/**
+	 * {@inheritDoc}
 	 */
 	public function getSmsProvider()
 	{
+		if ($this->twilio_provider) {
+			return $this->twilio_provider;
+		}
+
 		$sid = $this->getApp()->getSetting('account_sid');
 		$token = $this->getApp()->getSetting('auth_token');
 
-		return new TwilioSmsProvider($sid, $token);
+		$this->twilio_provider = new TwilioSmsProvider($sid, $token);
+
+		return $this->twilio_provider;
 	}
 
+
 	/**
-	 * If your provider needs a "from" address to work, return a string. Otherwise, it's ok to return null.
-	 *
-	 * @return string|null
+	 * {@inheritDoc}
 	 */
 	public function getFromPhoneNumber()
 	{

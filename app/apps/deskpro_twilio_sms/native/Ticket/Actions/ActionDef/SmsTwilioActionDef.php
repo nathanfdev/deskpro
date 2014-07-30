@@ -53,9 +53,9 @@ class SmsTwilioActionDef extends AbstractActionDef
 		return 'deskpro_twilio_sms\\Ticket\\Actions\\SmsTwilioAction';
 	}
 
+
 	/**
-	 * @param array $options
-	 * @return array
+	 * {@inheritDoc}
 	 */
 	public function processActionBuilderOptions(array $options)
 	{
