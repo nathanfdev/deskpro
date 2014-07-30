@@ -219,135 +219,7 @@
             });
             typeFunc = "get" + opt.action_name;
             if (opt.action_name.indexOf('Sms') === 0) {
-              this[typeFunc] = function(options) {
-                var me;
-                if (options == null) {
-                  options = {};
-                }
-                me = this;
-                return {
-                  scopeInit: [
-                    '$scope', function($scope) {
-                      $scope.sms_num_characters = 0;
-                      $scope.sms_vars = [];
-                      return $scope.calculateCharacterLength = function() {
-                        var countable_string, matches, proposed_length, tmp_string;
-                        tmp_string = $scope.model.message;
-                        matches = tmp_string.match(/(\{\{.*?\}\})/gi);
-                        countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
-                        if (matches) {
-                          proposed_length = countable_string.length - matches.length;
-                        } else {
-                          proposed_length = countable_string.length;
-                        }
-                        if (proposed_length < 0) {
-                          proposed_length = 0;
-                        }
-                        $scope.sms_num_characters = proposed_length;
-                        return $scope.sms_vars = matches || [];
-                      };
-                    }
-                  ],
-                  getTemplate: function() {
-                    return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html');
-                  },
-                  getData: function() {
-                    return me.loadDataOptions();
-                  },
-                  getDataFormatter: function() {
-                    return {
-                      getViewValue: function(value, data) {
-                        var agent_ids, aid, team_ids, tid, _l, _len3, _len4, _m, _ref5, _ref6;
-                        if (value == null) {
-                          value = {};
-                        }
-                        options = value.options || {};
-                        agent_ids = {};
-                        if (options.agent_ids) {
-                          _ref5 = options.agent_ids;
-                          for (_l = 0, _len3 = _ref5.length; _l < _len3; _l++) {
-                            aid = _ref5[_l];
-                            if (aid !== 'followers' && aid !== 'assigned') {
-                              aid = parseInt(aid);
-                            }
-                            agent_ids[aid] = true;
-                          }
-                        } else {
-                          agent_ids['followers'] = false;
-                          agent_ids['assigned'] = false;
-                        }
-                        team_ids = {};
-                        if (options.agent_teams) {
-                          _ref6 = options.agent_teams;
-                          for (_m = 0, _len4 = _ref6.length; _m < _len4; _m++) {
-                            tid = _ref6[_m];
-                            if (tid !== 'assigned') {
-                              tid = parseInt(tid);
-                            }
-                            team_ids[tid] = true;
-                          }
-                        } else {
-                          team_ids['assigned'] = false;
-                        }
-                        return {
-                          agents: options.agents || [],
-                          agent_ids: agent_ids,
-                          agent_teams: team_ids,
-                          to_number: options.to_number || '',
-                          message: options.message || ''
-                        };
-                      },
-                      getValue: function(model, data) {
-                        var k, v, value, _ref5, _ref6;
-                        if (model == null) {
-                          model = {};
-                        }
-                        options = {
-                          agents: model.agents || [],
-                          agent_teams: [],
-                          to_number: model.to_number || '',
-                          message: model.message || '',
-                          agent_ids: []
-                        };
-                        if (model.agent_ids) {
-                          _ref5 = model.agent_ids;
-                          for (k in _ref5) {
-                            if (!__hasProp.call(_ref5, k)) continue;
-                            v = _ref5[k];
-                            if (v) {
-                              if (k === 'assigned') {
-                                options.agent_ids.push('assigned');
-                              } else if (k === 'followers') {
-                                options.agent_ids.push('followers');
-                              } else {
-                                options.agent_ids.push(parseInt(k));
-                              }
-                            }
-                          }
-                        }
-                        if (model.agent_teams) {
-                          _ref6 = model.agent_teams;
-                          for (k in _ref6) {
-                            if (!__hasProp.call(_ref6, k)) continue;
-                            v = _ref6[k];
-                            if (v) {
-                              if (k === 'assigned') {
-                                options.agent_teams.push('assigned');
-                              } else {
-                                options.agent_teams.push(parseInt(k));
-                              }
-                            }
-                          }
-                        }
-                        value = {};
-                        value.type = opt.action_name;
-                        value.options = options;
-                        return value;
-                      }
-                    };
-                  }
-                };
-              };
+              this[typeFunc] = this.generateSmsAction(opt.app.title, opt);
             } else {
               this[typeFunc] = function(options) {
                 var me;
@@ -394,6 +266,140 @@
           }
         }
         return set_options;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.generateSmsAction = function(app_title, opt) {
+        return function(options) {
+          var me;
+          if (options == null) {
+            options = {};
+          }
+          me = this;
+          return {
+            scopeInit: [
+              '$scope', function($scope) {
+                $scope.sms_num_characters = 0;
+                $scope.sms_vars = [];
+                $scope.sms_app_name = app_title;
+                me = this;
+                return $scope.calculateCharacterLength = function() {
+                  var countable_string, matches, proposed_length, tmp_string;
+                  tmp_string = $scope.model.message;
+                  matches = tmp_string.match(/(\{\{.*?\}\})/gi);
+                  countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+                  if (matches) {
+                    proposed_length = countable_string.length - matches.length;
+                  } else {
+                    proposed_length = countable_string.length;
+                  }
+                  if (proposed_length < 0) {
+                    proposed_length = 0;
+                  }
+                  $scope.sms_num_characters = proposed_length;
+                  return $scope.sms_vars = matches || [];
+                };
+              }
+            ],
+            getTemplate: function() {
+              return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html');
+            },
+            getData: function() {
+              return me.loadDataOptions();
+            },
+            getDataFormatter: function() {
+              return {
+                getViewValue: function(value, data) {
+                  var agent_ids, aid, team_ids, tid, _i, _j, _len, _len1, _ref, _ref1;
+                  if (value == null) {
+                    value = {};
+                  }
+                  options = value.options || {};
+                  agent_ids = {};
+                  if (options.agent_ids) {
+                    _ref = options.agent_ids;
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                      aid = _ref[_i];
+                      if (aid !== 'followers' && aid !== 'assigned') {
+                        aid = parseInt(aid);
+                      }
+                      agent_ids[aid] = true;
+                    }
+                  } else {
+                    agent_ids['followers'] = false;
+                    agent_ids['assigned'] = false;
+                  }
+                  team_ids = {};
+                  if (options.agent_teams) {
+                    _ref1 = options.agent_teams;
+                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                      tid = _ref1[_j];
+                      if (tid !== 'assigned') {
+                        tid = parseInt(tid);
+                      }
+                      team_ids[tid] = true;
+                    }
+                  } else {
+                    team_ids['assigned'] = false;
+                  }
+                  return {
+                    agents: options.agents || [],
+                    agent_ids: agent_ids,
+                    agent_teams: team_ids,
+                    to_number: options.to_number || '',
+                    message: options.message || ''
+                  };
+                },
+                getValue: function(model, data) {
+                  var k, v, value, _ref, _ref1;
+                  if (model == null) {
+                    model = {};
+                  }
+                  options = {
+                    agents: model.agents || [],
+                    agent_teams: [],
+                    to_number: model.to_number || '',
+                    message: model.message || '',
+                    agent_ids: []
+                  };
+                  if (model.agent_ids) {
+                    _ref = model.agent_ids;
+                    for (k in _ref) {
+                      if (!__hasProp.call(_ref, k)) continue;
+                      v = _ref[k];
+                      if (v) {
+                        if (k === 'assigned') {
+                          options.agent_ids.push('assigned');
+                        } else if (k === 'followers') {
+                          options.agent_ids.push('followers');
+                        } else {
+                          options.agent_ids.push(parseInt(k));
+                        }
+                      }
+                    }
+                  }
+                  if (model.agent_teams) {
+                    _ref1 = model.agent_teams;
+                    for (k in _ref1) {
+                      if (!__hasProp.call(_ref1, k)) continue;
+                      v = _ref1[k];
+                      if (v) {
+                        if (k === 'assigned') {
+                          options.agent_teams.push('assigned');
+                        } else {
+                          options.agent_teams.push(parseInt(k));
+                        }
+                      }
+                    }
+                  }
+                  value = {};
+                  value.type = opt.action_name;
+                  value.options = options;
+                  return value;
+                }
+              };
+            }
+          };
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {

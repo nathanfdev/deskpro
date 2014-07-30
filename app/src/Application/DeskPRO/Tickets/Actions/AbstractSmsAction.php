@@ -148,6 +148,9 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 		// we store numbers the same way all the time - assuming the user uses our dp-phone-number directive
 		// TODO: normalize all phone numbers as they enter the system, stored in E.164
 		$numbers = array_unique($numbers);
+		$numbers = array_filter($numbers, function($val){
+			return $val !== null && strlen($val) > 0;
+		});
 
 		foreach ($numbers as $number) {
 			$this->logSendingTo($number, $context);

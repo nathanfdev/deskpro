@@ -4,7 +4,7 @@
 			<tr>
 				<td class="nowrap">
 					<label class="row-label">Send SMS<br/>
-						<small>via Twilio</small>
+						<small ng-if="sms_app_name.length > 0">via {{ ng_var('sms_app_name') }} App</small>
 					</label>
 				</td>
 				<td ng-show="rowOpts.rowEnabled">
