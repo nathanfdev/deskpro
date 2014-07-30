@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\Util;
 
@@ -62,27 +63,6 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 	protected $app;
 
 	/**
-	 * @return AppInstance
-	 */
-	protected function getApp()
-	{
-		if ($this->app !== null) {
-			return $this->app;
-		}
-
-		$this->app = false;
-		$app_manager = $this->getContainer()->getAppManager();
-		$app_id = $this->getMetaData()->get('app_id', 0);
-
-		if ($app_manager->hasApp($app_id)) {
-			$this->app = $app_manager->getApp($app_id);
-		}
-
-		return $this->app === false ? null : $this->app;
-	}
-
-
-	/**
 	 * {@inheritDoc}
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
@@ -93,21 +73,83 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 			);
 		}
 
-		// configure our SMS sender
+		###########################################################################
+		# Prepare the DeskproSmsSender
+		###########################################################################
 		$sms_sender = $this->getContainer()->get('deskpro.sms_sender');
 		$sms_sender->setDefaultProvider($this->getSmsProvider());
 		$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
 
-		// get the message (replace the twig vars)
+		###########################################################################
+		# Format and prepare text message
+		###########################################################################
 		$action_message_template = $this->getActionOption('message');
 		$formatter = new SnippetFormatter($this->getContainer()->getTwig());
 		$message = $formatter->formatText($action_message_template, $ticket);
 
-		$plain_to_numbers = array();
-		$plain_to_numbers[] = $this->getActionOption('to_number');
+		###########################################################################
+		# Gather Raw Numbers
+		###########################################################################
+		$numbers = array();
+		$numbers[] = $this->getActionOption('to_number');
 
-		foreach ($plain_to_numbers as $number) {
-			$extra_info = 'phone number';
+		###########################################################################
+		# Gather Agent IDs - from agent and team selections
+		# TODO: This stuff should almost certainly be more DRY and abstract for other actions to use.
+		###########################################################################
+		$agents = array();
+		$agent_ids = $this->getActionOption('agent_ids', array());
+		foreach ($agent_ids as $aid) {
+			if ($aid == 'assigned') {
+				if ($ticket->agent) {
+					$agents[] = $ticket->agent->getId();
+				}
+			} else if ($aid == 'followers') {
+				if ($agent_followers = $ticket->getAgentParticipants()) {
+					foreach ($agent_followers as $agent) {
+						$agents[] = $agent->getId();
+					}
+				}
+			} elseif ($aid > 0) {
+				$agents[] = $aid;
+			}
+		}
+		$team_member_agents = array();
+		$team_ids = $this->getActionOption('agent_teams', array());
+		foreach ($team_ids as $tid) {
+			if ($tid == 'assigned') {
+				if ($ticket->agent_team) {
+					foreach ($ticket->agent_team->members as $agent) {
+						$team_member_agents[] = $agent->getId();
+					}
+				}
+			} elseif ($tid > 0) {
+				$team = $this->getContainer()->getEm()->getRepository('DeskPRO:AgentTeam')->find($tid);
+				if ($team) {
+					foreach ($team->members as $agent) {
+						$team_member_agents[] = $agent->getId();
+					}
+				}
+			}
+		}
+
+		#############################################################################
+		# Convert Agent IDs into phone numbers - ensure agent is only selected once
+		#############################################################################
+		$agents = array_merge($agents, $team_member_agents);
+		$agents = array_unique($agents);
+		$repo = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
+		$agents = $repo->getPeopleResultsFromIds($agents);
+		foreach ($agents as $agent) {
+			if ($agent->phone_number) {
+				$numbers[] = $agent->phone_number;
+			}
+		}
+		// we store numbers the same way all the time - assuming the user uses our dp-phone-number directive
+		// TODO: normalize all phone numbers as they enter the system, stored in E.164
+		$numbers = array_unique($numbers);
+
+		foreach ($numbers as $number) {
 			$this->logSendingTo($number, $context);
 			try {
 				$result = $sms_sender->send($number, $message);
@@ -115,7 +157,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 				//$sms_sender->sendToAgent($agent, $message);
 				//$sms_sender->sendToAgents($agents, $message);
 
-				$this->recordTicketStateChange($ticket, $number, $extra_info);
+				$this->recordTicketStateChange($ticket, $number, '');
 
 				if ($result->isFail()) {
 					$this->logErrorSendingTo($result->getProviderMessage(), $context);
@@ -180,5 +222,25 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 	public function getActionType()
 	{
 		return Util::getBaseClassname($this).$this->getMetaData()->get('app_id', 0);
+	}
+
+	/**
+	 * @return AppInstance
+	 */
+	protected function getApp()
+	{
+		if ($this->app !== null) {
+			return $this->app;
+		}
+
+		$this->app = false;
+		$app_manager = $this->getContainer()->getAppManager();
+		$app_id = $this->getMetaData()->get('app_id', 0);
+
+		if ($app_manager->hasApp($app_id)) {
+			$this->app = $app_manager->getApp($app_id);
+		}
+
+		return $this->app === false ? null : $this->app;
 	}
 }

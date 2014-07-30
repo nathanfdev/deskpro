@@ -235,7 +235,7 @@
                   getDataFormatter: function() {
                     return {
                       getViewValue: function(value, data) {
-                        var agent_ids, aid, _l, _len3, _ref5;
+                        var agent_ids, aid, team_ids, tid, _l, _len3, _len4, _m, _ref5, _ref6;
                         if (value == null) {
                           value = {};
                         }
@@ -245,33 +245,44 @@
                           _ref5 = options.agent_ids;
                           for (_l = 0, _len3 = _ref5.length; _l < _len3; _l++) {
                             aid = _ref5[_l];
-                            if (aid !== 'notify_list' && aid !== 'ticket_owner') {
+                            if (aid !== 'followers' && aid !== 'assigned') {
                               aid = parseInt(aid);
                             }
                             agent_ids[aid] = true;
                           }
                         } else {
-                          agent_ids['notify_list'] = false;
-                          agent_ids['ticket_owner'] = false;
+                          agent_ids['followers'] = false;
+                          agent_ids['assigned'] = false;
+                        }
+                        team_ids = {};
+                        if (options.agent_teams) {
+                          _ref6 = options.agent_teams;
+                          for (_m = 0, _len4 = _ref6.length; _m < _len4; _m++) {
+                            tid = _ref6[_m];
+                            if (tid !== 'assigned') {
+                              tid = parseInt(tid);
+                            }
+                            team_ids[tid] = true;
+                          }
+                        } else {
+                          team_ids['assigned'] = false;
                         }
                         return {
                           agents: options.agents || [],
                           agent_ids: agent_ids,
-                          agent_teams: options.agent_teams || [],
-                          departments: options.departments || [],
+                          agent_teams: team_ids,
                           to_number: options.to_number || '',
                           message: options.message || ''
                         };
                       },
                       getValue: function(model, data) {
-                        var k, v, value, _ref5;
+                        var k, v, value, _ref5, _ref6;
                         if (model == null) {
                           model = {};
                         }
                         options = {
                           agents: model.agents || [],
-                          agent_teams: model.agent_teams || [],
-                          departments: model.departments || [],
+                          agent_teams: [],
                           to_number: model.to_number || '',
                           message: model.message || '',
                           agent_ids: []
@@ -282,12 +293,26 @@
                             if (!__hasProp.call(_ref5, k)) continue;
                             v = _ref5[k];
                             if (v) {
-                              if (k === 'notify_list') {
-                                options.agent_ids.push('notify_list');
-                              } else if (k === 'ticket_owner') {
-                                options.agent_ids.push('ticket_owner');
+                              if (k === 'assigned') {
+                                options.agent_ids.push('assigned');
+                              } else if (k === 'followers') {
+                                options.agent_ids.push('followers');
                               } else {
                                 options.agent_ids.push(parseInt(k));
+                              }
+                            }
+                          }
+                        }
+                        if (model.agent_teams) {
+                          _ref6 = model.agent_teams;
+                          for (k in _ref6) {
+                            if (!__hasProp.call(_ref6, k)) continue;
+                            v = _ref6[k];
+                            if (v) {
+                              if (k === 'assigned') {
+                                options.agent_teams.push('assigned');
+                              } else {
+                                options.agent_teams.push(parseInt(k));
                               }
                             }
                           }

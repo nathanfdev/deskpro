@@ -300,25 +300,31 @@ define [
 										agent_ids = {}
 										if options.agent_ids
 											for aid in options.agent_ids
-												if aid != 'notify_list' and aid != 'ticket_owner' then aid = parseInt(aid)
+												if aid != 'followers' and aid != 'assigned' then aid = parseInt(aid)
 												agent_ids[aid] = true
 										else
-											agent_ids['notify_list'] = false
-											agent_ids['ticket_owner'] = false
+											agent_ids['followers'] = false
+											agent_ids['assigned'] = false
+
+										team_ids = {}
+										if options.agent_teams
+											for tid in options.agent_teams
+												if tid != 'assigned' then tid = parseInt(tid)
+												team_ids[tid] = true
+										else
+											team_ids['assigned'] = false
 
 										return {
 											agents: options.agents || [],
 											agent_ids: agent_ids,
-											agent_teams: options.agent_teams || []
-											departments: options.departments || []
+											agent_teams: team_ids,
 											to_number: options.to_number || ''
 											message: options.message || ''
 										}
 									getValue: (model = {}, data) ->
 										options = {
 											agents: model.agents || [],
-											agent_teams: model.agent_teams || []
-											departments: model.departments || []
+											agent_teams: []
 											to_number: model.to_number || ''
 											message: model.message || ''
 											agent_ids: [],
@@ -327,12 +333,19 @@ define [
 										if model.agent_ids
 											for own k, v of model.agent_ids
 												if v
-													if k == 'notify_list'
-														options.agent_ids.push('notify_list')
-													else if k == 'ticket_owner'
-														options.agent_ids.push('ticket_owner')
+													if k == 'assigned'
+														options.agent_ids.push('assigned')
+													else if k == 'followers'
+														options.agent_ids.push('followers')
 													else
 														options.agent_ids.push(parseInt(k))
+										if model.agent_teams
+											for own k, v of model.agent_teams
+												if v
+													if k == 'assigned'
+														options.agent_teams.push('assigned')
+													else
+														options.agent_teams.push(parseInt(k))
 
 										value = {}
 										value.type = opt.action_name
