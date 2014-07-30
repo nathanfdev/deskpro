@@ -24,12 +24,12 @@
 			<tbody>
 				<tr>
 					<th width="140">Date</th>
-					<td><span am-time-ago="ViewSource.source.date_created" title="{{ ng_var('ViewSource.source.date_created') }}"></span></td>
+					<td>{{ ng_var('ViewSource.source.date_created | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
 				</tr>
 				<tr>
 					<th>Status</th>
 					<td>
-						{{ ng_var('ViewSource.source.status') }} (<span title="{{ ng_var('ViewSource.source.date_status') }}" am-time-ago="ViewSource.source.date_status"></span>)
+						{{ ng_var('ViewSource.source.status') }} ({{ ng_var('ViewSource.source.date_status | amDateFormat:"MMM D, YYYY @ HH:mm"') }})
 						<div ng-if="ViewSource.source.status == 'error'">
 							{{ ng_var('ViewSource.source.error_code') }} &mdash;
 							<button class="btn btn-primary btn-xs" ng-click="ViewSource.startReprocess()">Reprocess Email</button>

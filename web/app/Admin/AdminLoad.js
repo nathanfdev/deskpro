@@ -14,6 +14,7 @@ define([
 	'ngFileUpload',
 
 	'moment',
+	'momentTimezone',
 	'aceEditor',
 
 	'jquery',

@@ -41,6 +41,9 @@ define [
 	AdminModule.config(['$httpProvider', ($httpProvider) ->
 		$httpProvider.interceptors.push('dpHttpSessionInterceptor');
 	])
+	AdminModule.constant('angularMomentConfig', {
+		timezone: window.DP_PERSON_TZ
+	})
 
 	SetupNetwork(AdminModule)
 	SetupDirectives(AdminModule)
