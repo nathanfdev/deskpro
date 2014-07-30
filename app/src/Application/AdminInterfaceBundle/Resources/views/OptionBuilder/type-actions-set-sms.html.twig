@@ -16,8 +16,11 @@
 									<textarea class="form-control" ng-model="model.message" ng-change="calculateCharacterLength()"></textarea>
 								</div>
 								<div style="padding-bottom: 3px; width: 80%;" ng-if="model.message.length > 0" ng-init="calculateCharacterLength()">
-									<span class="help-inline dp-help-content">{{ ng_var('sms_num_characters') }} characters</span>
-									<span ng-repeat="sms_var in sms_vars">+ {{ ng_var('sms_var') }}</span>
+									<span class="help-inline dp-help-content">
+										{{ ng_var('sms_num_characters') }}
+										characters
+										<span ng-repeat="sms_var in sms_vars"> + {{ ng_var('sms_var') }}</span>
+									</span>
 								</div>
 							</td>
 						</tr>
