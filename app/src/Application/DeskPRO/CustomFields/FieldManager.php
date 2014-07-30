@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Doctrine\ORM\EntityManager;
 
@@ -386,6 +387,28 @@ class FieldManager
 		return $custom_fields;
 	}
 
+	/**
+	 * return field title and value for CustomData
+	 * @param CustomDataAbstract $data
+	 * @return array
+	 */
+	public function renderTextForData(CustomDataAbstract $data)
+	{
+		$field = $data->root_field ?: $data->field;
+		$value = !$data->root_field || $data->root_field === $data->field
+			? array('value' => $data->getData())
+			: array('value' => null, 'children' => array(
+				$data->field['id'] => array('value' => $data->getData(), 'children' => null)
+			));
+
+		$val = trim($field->getHandler()->renderText($value));
+
+		return array(
+			'id' => $field['id'],
+			'title' => $field['title'],
+			'value' => $val,
+		);
+	}
 
 	/**
 	 * Render field data form an object to their text values.

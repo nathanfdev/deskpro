@@ -47,6 +47,7 @@ use Application\DeskPRO\Log\Event\EntityCreated;
 use Application\DeskPRO\Log\Event\EntityUpdated;
 use Application\DeskPRO\ORM\StateChange\ChangeArray;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
+use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\ChangeObject;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
@@ -93,8 +94,8 @@ class EntityChangeTrackingListener implements EventSubscriber
 			'contact_data' => true,
 			'custom_data' => true,
 		),
-		'PersonContactData' => array(
-		),
+		'PersonContactData' => array(),
+		'CustomDataPerson' => array(),
 	);
 
 	public function __construct(DeskproContainer $container)
@@ -160,6 +161,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 			return;
 		}
 
+		// prevent dupes
 		if (isset($this->handled[spl_object_hash($entity)][$stateChangeRecorder->getStateVersion()])) {
 			return;
 		}
@@ -184,9 +186,14 @@ class EntityChangeTrackingListener implements EventSubscriber
 				if ('custom_data' === $change->getField() && $change instanceof ChangeCollection) {
 
 					$manager = $this->container->getPersonFieldManager();
-					$rendered = $manager->getRenderedToTextForObject($entity);
 
-					$a = 1;
+					foreach ($change->getAddedElements() as $data) {
+						$val = $manager->renderTextForData($data);
+						$change = new ChangeArray('custom_data', null, $val);
+						$this->enqueueUpdateEvent($entity, $change, $parentEntry);
+					}
+
+					continue;
 				}
 
 				$this->enqueueUpdateEvent($entity, $change, $parentEntry);
@@ -198,21 +205,16 @@ class EntityChangeTrackingListener implements EventSubscriber
 			return $this->enqueueUpdateEvent($entity->person, $change);
 		}
 
-//		if ($entity instanceof CustomDataPerson) {
-//			$manager = $this->container->getPersonFieldManager();
-//			$f_def = $entity->field;
-//			$id = $f_def->parent ? $f_def->parent['id'] : $f_def['id'];
-//			$rendered = $manager->getRenderedToTextForObject($entity->person);
-//			$change = new ChangeArray('custom_data', array(), array(
-//				'title' => $rendered[$id]['title'],
-//				'value' => $rendered[$id]['rendered'],
-//			));
-//
-//			return $this->enqueueUpdateEvent($entity->person, $change);
-//		}
+		if ($entity instanceof CustomDataPerson) {
+			if (!$entity['id']) return; // ignore as will be handled by Person's custom_data Collection
+			$manager = $this->container->getPersonFieldManager();
+			$val = $manager->renderTextForData($entity);
+			$change = new ChangeArray('custom_data', null, $val);
+			$this->enqueueUpdateEvent($entity->person, $change);
+		}
 	}
 
-	protected function enqueueUpdateEvent($entity, $change, $parentLogEntry = null)
+	protected function enqueueUpdateEvent(DomainObject $entity, ChangeInterface $change, LogEvent $parentLogEntry = null)
 	{
 		$event = new EntityUpdated($entity, $change);
 		$entry = new LogEvent($event, $this->getContextPerson());
