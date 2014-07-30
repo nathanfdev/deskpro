@@ -300,6 +300,7 @@ class Runner
 	{
 		if (!$this->log_messages) {
 			$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
+			$this->log_messages->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
 			$this->logger->addWriter($this->log_messages);
 		}
 
@@ -374,6 +375,10 @@ class Runner
 			}
 		}
 
+		if ($reader && $subj = $reader->getSubject()->getSubjectUtf8()) {
+			$source->header_subject = $subj;
+		}
+
 		switch ($result->status) {
 			case 'okay':
 				$source->status      = 'complete';
@@ -396,6 +401,9 @@ class Runner
 
 			default:
 				$this->logger->logWarn("Unknown status type: {$result->status}");
+				$source->status      = 'error';
+				$source->error_code  = $result->error_code ?: 'server_error';
+				$source->source_info = $result->source_info ?: array();
 				break;
 		}
 

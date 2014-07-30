@@ -107,7 +107,7 @@ class Finder
 			$q->setParameter('statuses', $opt);
 		}
 
-		if ($opt = $this->filter->getEmailAccount()) {
+		if ($opt = $this->filter->getAccount()) {
 			$q->andWhere('s.email_account = :email_account');
 			$q->setParameter('email_account', $opt);
 		}

@@ -42,6 +42,14 @@
 								</select>
 							</td>
 
+							<td width="50" style="padding-left: 15px;">Account</td>
+							<td width="150">
+								<select ui-select2 ng-model="ListCtrl.filter.account">
+									<option value="0">Any</option>
+									<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.address') }}</option>
+								</select>
+							</td>
+
 							<td width="50" style="padding-left: 15px;">Date</td>
 							<td colspan="2">
 								<select
@@ -89,9 +97,11 @@
 				<colgroup>
 					<col width="1%" />
 					<col width="1%" />
-					<col width="28%" />
-					<col width="28%" />
+					<col width="25%" />
+					<col width="25%" />
+					<col width="25%" />
 					<col width="100%" />
+					<col width="5%" />
 					<col width="1%" />
 				</colgroup>
 				<thead>
@@ -100,7 +110,9 @@
 						<th>Date</th>
 						<th>From</th>
 						<th>To</th>
+						<th>Account</th>
 						<th>Subject</th>
+						<th>Object</th>
 						<th>Status</th>
 					</tr>
 				</thead>
@@ -110,7 +122,12 @@
 						<td style="white-space: nowrap" nowrap><span am-time-ago="result.date_created"></span></td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_from') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.email_account.address') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_subject') }}</td>
+						<td nowrap>
+							<span ng-if="result.object_type == 'ticket'" title="New Ticket"><i class="fa fa-envelope"></i> {{ ng_var('result.object_id') }}</span>
+							<span ng-if="result.object_type == 'ticket_message'" title="Reply to a ticket"><i class="fa fa-envelope-o"></i> {{ ng_var('result.object_id') }}</span>
+						</td>
 						<td nowrap>
 							{{ ng_var('result.status') }}
 							<span ng-if="result.error_code">({{ ng_var('result.error_code') }})</span>

@@ -85,6 +85,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 			->add('subject', 'text', array(
 				'required' => false
 			))
+			->add('account', 'text', array(
+				'required' => false
+			))
 			->add('to', 'text', array(
 				'required' => false
 			))
@@ -146,6 +149,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 			->add('subject', 'text', array(
 				'required' => false
 			))
+			->add('account', 'text', array(
+				'required' => false
+			))
 			->add('to', 'text', array(
 				'required' => false
 			))
@@ -203,6 +209,28 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
 		if ($this->in->getBool('with_raw') && $source->blob) {
 			$info['source_raw'] = $this->container->getBlobStorage()->copyBlobRecordToString($source->blob);
+		}
+
+		$info['source_info'] = null;
+		if ($source->source_info) {
+			$info['source_info'] = $source->getSourceInfoAsString();
+		}
+
+		switch ($source->object_type) {
+			case 'ticket':
+				$t = $this->em->find('DeskPRO:Ticket', $source->object_id);
+				if ($t) {
+					$info['ticket'] = $t->toApiData();
+				}
+				break;
+
+			case 'ticket_message':
+				$m = $this->em->find('DeskPRO:TicketMessage', $source->object_id);
+				if ($m) {
+					$info['ticket_message'] = $m->toApiData();
+					$info['ticket']         = $m->ticket ? $m->ticket->toApiData() : null;
+				}
+				break;
 		}
 
 		return $this->createApiResponse($info);

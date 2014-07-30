@@ -10,9 +10,8 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
 		initialLoad: ->
 			@Api.sendGet("/email_status/sources/#{@sourceId}?with_raw=1").then( (res) =>
-				@source     = res.data.source
-				@source_raw = res.data.source_raw
-				@log        = res.data.source_log
+        for own k,v of res.data
+          @[k] = v
 			)
 
 		delete: ->
