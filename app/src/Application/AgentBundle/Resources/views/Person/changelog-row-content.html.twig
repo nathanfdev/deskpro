@@ -74,6 +74,8 @@
                     Set {{ _self.contact_prop(entry.details.new) }} to {{ _self.contact_val(entry.details.new) }}
                 {% elseif 'is_disabled' == entry.details.property %}
                     User {% if entry.details.new %}disabled{% else %}enabled{% endif %}
+                {% elseif 'custom_data' == entry.details.property %}
+                    Set <strong>{{ entry.details.new.title }}</strong> to {{ entry.details.new.value }}
                 {% else %}
                     Set {{ _self.prop(entry.details.property) }} to {{ entry.details.new }}
                 {% endif %}
