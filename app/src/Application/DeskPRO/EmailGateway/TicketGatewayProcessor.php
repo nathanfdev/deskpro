@@ -67,6 +67,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	protected $source_info;
 
+	/**
+	 * @var string
+	 */
+	protected $created_object_type;
+
+	/**
+	 * @var int
+	 */
+	protected $created_object_id;
+
 
 	/**
 	 * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
@@ -384,6 +394,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
+		$this->created_object_type = 'ticket_message';
+		$this->created_object_id   = $obj->id;
+
 		return $obj;
 	}
 
@@ -485,6 +498,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				return null;
 			}
 
+			$this->created_object_type = 'ticket';
+			$this->created_object_id   = $obj->id;
+
 			return $obj;
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] runNewTicket');
@@ -501,6 +517,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->error_type = $new_proc->getErrorType();
 				return null;
 			}
+
+			$this->created_object_type = 'ticket';
+			$this->created_object_id   = $obj->id;
 
 			return $obj;
 		}
@@ -561,10 +580,23 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$messages = array();
 		}
 
-		if (isset($this->options['logger_messages'])) {
-			$messages = array_merge($messages, $this->options['logger_messages']->getMessages());
-		}
-
 		return $messages;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getCreatedObjectId()
+	{
+		return $this->created_object_id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCreatedObjectType()
+	{
+		return $this->created_object_type;
 	}
 }
