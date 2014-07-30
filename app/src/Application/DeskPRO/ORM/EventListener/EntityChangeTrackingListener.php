@@ -46,6 +46,7 @@ use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Log\Event\EntityCreated;
 use Application\DeskPRO\Log\Event\EntityUpdated;
 use Application\DeskPRO\ORM\StateChange\ChangeArray;
+use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeObject;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Doctrine\Common\EventSubscriber;
@@ -90,10 +91,9 @@ class EntityChangeTrackingListener implements EventSubscriber
 			'usergroups' => true,
 
 			'contact_data' => true,
+			'custom_data' => true,
 		),
 		'PersonContactData' => array(
-		),
-		'CustomDataPerson' => array(
 		),
 	);
 
@@ -165,44 +165,51 @@ class EntityChangeTrackingListener implements EventSubscriber
 		}
 		$this->handled[spl_object_hash($entity)][$stateChangeRecorder->getStateVersion()] = true;
 
-		$person = $this->getContextPerson();
-		$parentEntry = null;
-		// if new entity
-		if (!$entity['id']) {
-			if ($entity instanceof Person) {
+
+		if ($entity instanceof Person) {
+			$parentEntry = null;
+			if (!$entity['id']) {
 				$event = new EntityCreated($entity);
-				$parentEntry = new LogEvent($event, $person); // group changes for new Person
+				$parentEntry = new LogEvent($event, $this->getContextPerson()); // group changes for new Person
 				$this->queue->enqueue($parentEntry);
+			}
+
+			foreach ($changes as $change) {
+
+				$isTracked = isset($this->track[$entityName][$change->getField()]);
+				if ($change->isSame() || ! $isTracked) {
+					continue;
+				}
+
+				if ('custom_data' === $change->getField() && $change instanceof ChangeCollection) {
+
+					$manager = $this->container->getPersonFieldManager();
+					$rendered = $manager->getRenderedToTextForObject($entity);
+
+					$a = 1;
+				}
+
+				$this->enqueueUpdateEvent($entity, $change, $parentEntry);
 			}
 		}
 
 		if ($entity instanceof PersonContactData) {
 			$change = new ChangeObject('contact_data', null, $entity);
-			return $this->enqueueUpdateEvent($entity->person, $change, $parentEntry);
+			return $this->enqueueUpdateEvent($entity->person, $change);
 		}
 
-		if ($entity instanceof CustomDataPerson) {
-			$manager = $this->container->getPersonFieldManager();
-			$f_def = $entity->field;
-			$id = $f_def->parent ? $f_def->parent['id'] : $f_def['id'];
-			$rendered = $manager->getRenderedToTextForObject($entity->person);
-			$change = new ChangeArray('custom_data', array(), array(
-				'title' => $rendered[$id]['title'],
-				'value' => $rendered[$id]['rendered'],
-			));
-
-			return $this->enqueueUpdateEvent($entity->person, $change, $parentEntry);
-		}
-
-		foreach ($changes as $change) {
-
-			$isTracked = isset($this->track[$entityName][$change->getField()]);
-			if ($change->isSame() || ! $isTracked) {
-				continue;
-			}
-
-			$this->enqueueUpdateEvent($entity, $change, $parentEntry);
-		}
+//		if ($entity instanceof CustomDataPerson) {
+//			$manager = $this->container->getPersonFieldManager();
+//			$f_def = $entity->field;
+//			$id = $f_def->parent ? $f_def->parent['id'] : $f_def['id'];
+//			$rendered = $manager->getRenderedToTextForObject($entity->person);
+//			$change = new ChangeArray('custom_data', array(), array(
+//				'title' => $rendered[$id]['title'],
+//				'value' => $rendered[$id]['rendered'],
+//			));
+//
+//			return $this->enqueueUpdateEvent($entity->person, $change);
+//		}
 	}
 
 	protected function enqueueUpdateEvent($entity, $change, $parentLogEntry = null)

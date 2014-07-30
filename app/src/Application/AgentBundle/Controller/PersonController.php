@@ -755,26 +755,17 @@ class PersonController extends AbstractController
 			));
 		}
 
-		$this->em->beginTransaction();
-
-		try {
-			if (!empty($custom_fields)) {
-				$field_manager->saveFormToObject($custom_fields, $person);
-			}
-
-			if ($timezone) {
-				$person->timezone = $timezone;
-				$this->em->persist($person);
-			}
-
-			$person->language = $language;
-
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
+		if (!empty($custom_fields)) {
+			$field_manager->saveFormToObject($custom_fields, $person);
 		}
+
+		if ($timezone) {
+			$person->timezone = $timezone;
+		}
+
+		$person->language = $language;
+
+		$this->em->flush();
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($person);
 

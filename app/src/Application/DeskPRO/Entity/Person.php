@@ -1378,6 +1378,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		foreach ($this->custom_data as $data) {
 			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
 				$this->custom_data->removeElement($data);
+				$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 			}
 		}
 	}
@@ -1410,7 +1411,8 @@ class Person extends DomainObject implements HighlightableModelInterface
 		}
 
 		if ($value === null) {
-			$this['custom_data']->removeElement($custom_data);
+			$this->custom_data->removeElement($custom_data);
+			$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 			return null;
 		}
 
@@ -1431,7 +1433,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	public function addCustomData(CustomDataPerson $data)
 	{
 		$this->custom_data->add($data);
-		$data['person'] = $this;
+		$data->person = $this;
 		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 	}
 

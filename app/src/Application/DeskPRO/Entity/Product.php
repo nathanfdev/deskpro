@@ -178,7 +178,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 				throw new \Exception("Invalid field_id `$field_id`");
 			}
 			$custom_data = new CustomDataProduct();
-			$custom_data['field'] = $field;
+			$custom_data->field = $field;
 		}
 
 		$field = $custom_data->field;
@@ -186,6 +186,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 			foreach ($this->custom_data as $d) {
 				if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
 					$this->custom_data->removeElement($d);
+					$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 				}
 			}
 		}
@@ -194,6 +195,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 
 		if ($value === null) {
 			$this->custom_data->removeElement($custom_data);
+			$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 			return null;
 		}
 
@@ -225,6 +227,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 		foreach ($this->custom_data as $data) {
 			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
 				$this->custom_data->removeElement($data);
+				$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 			}
 		}
 	}
