@@ -43,6 +43,7 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -819,6 +820,16 @@ class Person extends DomainObject implements HighlightableModelInterface
 		}
 
 		return $display;
+	}
+
+
+	public function setPhoneNumber($phone_number)
+	{
+		$formatted_phone_number = PhoneNumbers::toE164Format($phone_number);
+
+		$old_number = $this->phone_number;
+		$this->phone_number = $formatted_phone_number;
+		$this->_onPropertyChanged('phone_number', $old_number, $formatted_phone_number);
 	}
 
 
