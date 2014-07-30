@@ -281,10 +281,20 @@ class Runner
 		);
 
 		\DpShutdown::add(function() use ($db, $id, $set) {
+
+			// These must not be in an active trans
+			try {
+				while ($db->isTransactionActive()) {
+					$db->commit();
+				}
+			} catch (\Exception $e) {}
+
 			try {
 				$db->update('email_sources', $set, array('id' => $id));
-			} catch (\Exception $e) {}
-		}, null, 'db_done_trans');
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e);
+			}
+		});
 	}
 
 
@@ -339,8 +349,11 @@ class Runner
 		);
 		$runner_exec->setFromHeaders($this->getFromHeaders());
 
+		$did_rollback = false;
+		$do_retry = false;
 		try {
 			$result = $runner_exec->run();
+			App::$container->getEm()->flush();
 			$this->logger->logDebug("--> Processors complete");
 		} catch (\Exception $e) {
 			$this->logger->logDebug("--> Processor exception: {$e->getCode()} {$e->getMessage()}");
@@ -354,7 +367,15 @@ class Runner
 					'trace'     => KernelErrorHandler::formatBacktrace($e->getTrace())
 				)
 			);
+
+			if (strpos(strtolower($e->getMessage()), 'deadlock') !== false) {
+				$do_retry = true;
+			}
+
 			KernelErrorHandler::logException($e, true);
+
+			App::getDb()->rollback();
+			$did_rollback = true;
 		}
 
 		$result = new OptionsArray($result);
@@ -385,41 +406,60 @@ class Runner
 				$source->source_info = $result->source_info ?: array();
 				$source->object_type = $result->created_object_type;
 				$source->object_id   = $result->created_object_id;
+				$this->logger->logError("Status: COMPLETE {$source->error_code}");
 				break;
 
 			case 'rejected':
 				$source->status      = 'rejected';
 				$source->error_code  = $result->error_code ?: 'server_error';
 				$source->source_info = $result->source_info ?: array();
+				$this->logger->logError("Status: REJECTED {$source->error_code}");
 				break;
 
 			case 'error':
 				$source->status      = 'error';
 				$source->error_code  = $result->error_code ?: 'server_error';
 				$source->source_info = $result->source_info ?: array();
+				$this->logger->logError("Status: ERROR {$source->error_code}");
+
+				if ($do_retry) {
+					$source->status = 'inserted';
+				}
 				break;
 
 			default:
-				$this->logger->logWarn("Unknown status type: {$result->status}");
 				$source->status      = 'error';
 				$source->error_code  = $result->error_code ?: 'server_error';
 				$source->source_info = $result->source_info ?: array();
+				$this->logger->logWarn("Unknown status type: {$result->status}");
 				break;
 		}
 
 		$this->ensureSourceStatus($source);
 
-		try {
-			$messages = $this->log_messages->getMessagesAsString();
-			$blob = App::$container->getBlobStorage()->createBlobRecordFromString($messages, 'email-process.log', 'plain/text');
-			$source->log_blob = $blob;
-		} catch (\Exception $e) {}
+		$log_messages = $this->log_messages->getMessagesAsString();
 
-		App::getOrm()->persist($source);
-		App::getOrm()->flush();
+		$saved_log = false;
+		if (!$did_rollback) {
+			try {
+				$this->logger->logDebug("Saving log blob...");
+				$blob = App::$container->getBlobStorage()->createBlobRecordFromString($log_messages, 'email-process.log', 'plain/text');
+				$source->log_blob = $blob;
+				$this->logger->logInfo("Log blob {$blob->id}");
+
+				App::getOrm()->persist($source);
+				App::getOrm()->flush();
+				$saved_log = true;
+			} catch (\Exception $e) {
+				$saved_log = false;
+			}
+		}
+
+		if (!$saved_log) {
+			$source->source_info = array_merge($source->source_info, array('log' => $log_messages));
+		}
 
 		$source->clearRawSource();
-		$this->log_messages->clear();
 
 		App::getOrm()->detach($source);
 		$source = null;
@@ -428,6 +468,10 @@ class Runner
 			$reader->_kill();
 			$reader = null;
 		}
+
+		$this->logger->logDebug("ALL DONE");
+
+		$this->log_messages->clear();
 
 		gc_collect_cycles();
 
