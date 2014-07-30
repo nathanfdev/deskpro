@@ -16,8 +16,8 @@
 									<textarea class="form-control" ng-model="model.message" ng-change="calculateCharacterLength()"></textarea>
 								</div>
 								<div style="padding-bottom: 3px; width: 80%;" ng-if="model.message.length > 0" ng-init="calculateCharacterLength()">
-									<span class="help-inline dp-help-content">{{ sms_num_characters }} characters</span>
-									<span ng-repeat="sms_var in sms_vars">+ {{ sms_var }}</span>
+									<span class="help-inline dp-help-content">{{ ng_var('sms_num_characters') }} characters</span>
+									<span ng-repeat="sms_var in sms_vars">+ {{ ng_var('sms_var') }}</span>
 								</div>
 							</td>
 						</tr>
@@ -41,7 +41,7 @@
 									<li ng-repeat="agent in agents">
 										<label>
 											<input type="checkbox" ng-model="model.agent_ids[agent.id]"/>
-											{{ agent.display_name }}
+											{{ ng_var('agent.display_name') }}
 										</label>
 									</li>
 								</ul>
@@ -50,8 +50,7 @@
 						<tr>
 							<td>To Team(s):</td>
 							<td>
-								<ul class="checkbox-list"
-									style="min-width: 200px; max-height: 175px; overflow: auto;">
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
 									<li style="border-bottom: 1px solid #ccc;">
 										<label>
 											<input type="checkbox" ng-model="model.agent_teams.assigned"/>
@@ -61,7 +60,7 @@
 									<li ng-repeat="team in agent_teams">
 										<label>
 											<input type="checkbox" ng-model="model.agent_teams[team.id]"/>
-											{{ team.name }}
+											{{ ng_var('team.name') }}
 										</label>
 									</li>
 								</ul>
@@ -71,7 +70,11 @@
 							<td>To Number:</td>
 							<td>
 								<div style="min-width: 200px;">
-									<input style="min-width:200px;" type="tel" class="form-control" ng-model="model.to_number" dp-phone-number/>
+									<input style="min-width:200px;"
+										   type="tel"
+										   class="form-control"
+										   ng-model="model.to_number"
+										   dp-phone-number/>
 								</div>
 							</td>
 						</tr>

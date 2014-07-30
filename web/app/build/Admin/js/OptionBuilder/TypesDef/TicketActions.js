@@ -249,7 +249,7 @@
                     }
                   ],
                   getTemplate: function() {
-                    return me.dpTemplateManager.get(opt.builder_template);
+                    return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html');
                   },
                   getData: function() {
                     return me.loadDataOptions();

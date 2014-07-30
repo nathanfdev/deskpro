@@ -53,36 +53,12 @@ class SmsTwilioActionDef extends AbstractActionDef
 		return 'deskpro_twilio_sms\\Ticket\\Actions\\SmsTwilioAction';
 	}
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getActionBuilderTemplate()
-	{
-		return 'Apps:deskpro_twilio_sms:sms-action-settings.html';
-	}
-
-
 	/**
 	 * @param array $options
 	 * @return array
 	 */
 	public function processActionBuilderOptions(array $options)
 	{
-		if (!isset($options['from_number'])) {
-			$options['from_number'] = '';
-		}
-
-		if (!isset($options['to_number'])) {
-			$options['to_number'] = '';
-		}
-
-		if (!isset($options['message'])) {
-			$options['message'] = '';
-		}
-
-		$options['app_id'] = $this->getActionDef()->app->id;
-
 		return $options;
 	}
 }

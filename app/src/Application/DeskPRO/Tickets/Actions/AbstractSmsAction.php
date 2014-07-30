@@ -29,7 +29,7 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Twilio
+ * @category Sms
  */
 
 namespace Application\DeskPRO\Tickets\Actions;

@@ -308,7 +308,7 @@ define [
 										$scope.sms_vars = matches || []
 								]
 								getTemplate: ->
-									return me.dpTemplateManager.get(opt.builder_template)
+									return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html')
 								getData: ->
 									return me.loadDataOptions()
 								getDataFormatter: ->
