@@ -156,17 +156,16 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 			$this->logSendingTo($number, $context);
 			try {
 				$result = $sms_sender->send($number, $message);
-				// plan is to add these types of methods on DeskPROSmsSender...
-				//$sms_sender->sendToAgent($agent, $message);
-				//$sms_sender->sendToAgents($agents, $message);
 
-				$this->recordTicketStateChange($ticket, $number, '');
-
-				if ($result->isFail()) {
+				if ($result->isSent()) {
+					$this->recordSuccessfulTicketChange($ticket, $number);
+				} else {
 					$this->logErrorSendingTo($result->getProviderMessage(), $context);
+					$this->recordFailedTicketChange($ticket, $number);
 				}
 			} catch (\Exception $e) {
 				$this->logErrorSendingTo($e->getMessage(), $context);
+				$this->recordFailedTicketChange($ticket, $number);
 			}
 		}
 	}
@@ -199,13 +198,32 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 	/**
 	 * @param Ticket $ticket
 	 * @param string $to_number
-	 * @param string $to_extra_info - an info other than the to number that should be present in the record
 	 */
-	protected function recordTicketStateChange(Ticket $ticket, $to_number, $to_extra_info)
+	protected function recordSuccessfulTicketChange(Ticket $ticket, $to_number)
+	{
+		$recordMsg = sprintf('Sent to %s', $to_number);
+		$this->recordTicketChange($ticket, $recordMsg);
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 * @param string $to_number
+	 */
+	protected function recordFailedTicketChange(Ticket $ticket, $to_number)
+	{
+		$recordMsg = sprintf('Failed sending to %s', $to_number);
+		$this->recordTicketChange($ticket, $recordMsg);
+	}
+
+
+	/**
+	 * @param Ticket $ticket
+	 * @param        $recordMsg
+	 */
+	protected function recordTicketChange(Ticket $ticket, $recordMsg)
 	{
 		$app = $this->getApp();
-
-		$recordMsg = sprintf('Sent SMS message to %s (%s)', $to_extra_info, $to_number);
 
 		$ticket->getStateChangeRecorder()->recordData(
 			'app_message',
