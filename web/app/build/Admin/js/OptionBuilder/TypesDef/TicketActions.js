@@ -226,6 +226,28 @@
                 }
                 me = this;
                 return {
+                  scopeInit: [
+                    '$scope', function($scope) {
+                      $scope.sms_num_characters = 0;
+                      $scope.sms_vars = [];
+                      return $scope.calculateCharacterLength = function() {
+                        var countable_string, matches, proposed_length, tmp_string;
+                        tmp_string = $scope.model.message;
+                        matches = tmp_string.match(/(\{\{.*?\}\})/gi);
+                        countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+                        if (matches) {
+                          proposed_length = countable_string.length - matches.length;
+                        } else {
+                          proposed_length = countable_string.length;
+                        }
+                        if (proposed_length < 0) {
+                          proposed_length = 0;
+                        }
+                        $scope.sms_num_characters = proposed_length;
+                        return $scope.sms_vars = matches || [];
+                      };
+                    }
+                  ],
                   getTemplate: function() {
                     return me.dpTemplateManager.get(opt.builder_template);
                   },

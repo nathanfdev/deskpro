@@ -281,13 +281,32 @@ define [
 
 
 					#------------------------------
-					# Abstract SMS Options - if your action beings with "SendSms"
+					# Abstract SMS Options - if your action begins with "Sms"
 					#------------------------------
 
 					if opt.action_name.indexOf('Sms') == 0
 						@[typeFunc] = (options = {}) ->
 							me = @
 							return {
+								scopeInit: [ '$scope', ($scope) ->
+									$scope.sms_num_characters = 0
+									$scope.sms_vars = []
+									# TODO: Make this reusable in other areas of the admin area
+									$scope.calculateCharacterLength = ->
+										tmp_string = $scope.model.message
+
+										matches = tmp_string.match(/(\{\{.*?\}\})/gi);
+										countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+
+										if (matches)
+											proposed_length = countable_string.length - matches.length
+										else
+											proposed_length = countable_string.length
+										if proposed_length < 0 then proposed_length = 0
+
+										$scope.sms_num_characters = proposed_length
+										$scope.sms_vars = matches || []
+								]
 								getTemplate: ->
 									return me.dpTemplateManager.get(opt.builder_template)
 								getData: ->
