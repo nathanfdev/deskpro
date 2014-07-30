@@ -27,7 +27,8 @@ $loader->registerNamespaces(array(
 
 	'Metadata'           => DP_ROOT.'/vendor-src/metadata/src',
     'Leth'               => DP_ROOT.'/vendor-src/php-ipaddress/classes',
-	'libphonenumber'     => DP_ROOT.'/vendor-src/libphonenumber/src'
+	'libphonenumber'     => DP_ROOT.'/vendor-src/libphonenumber/src',
+	'Bdt\\Clickatell'    => DP_ROOT.'/vendor-src/guzzle-clickatell/src'
 ));
 
 $loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
