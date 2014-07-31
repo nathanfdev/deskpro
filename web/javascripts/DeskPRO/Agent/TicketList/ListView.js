@@ -88,8 +88,8 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 
 		var page = this.page;
 		window.setTimeout(function() {
-			if (page && page.switchViewType) {
-				page.switchViewType('list');
+			if (page && page.openTableView) {
+				page.openTableView();
 			}
 		}, 50);
 	},
