@@ -298,17 +298,16 @@ class ServerFileUploads
 	{
 		$transfer = $this->getMovingFiles();
 
+		$to_method = App::$container->getSettingsHandler()->get('core.filestorage_method');
+
 		if(!empty($transfer['id'])) {
 
 			$status  = 'progress';
 
-			if ($this->isUsingFileSystem()) {
-
-				$message = 'Currently transferring files from the database to the filesystem. ';
-
-			} else {
-
-				$message = 'Currently transferring files from the filesystem to the database. ';
+			switch ($to_method) {
+				case 'db': $message = 'Currently transferring files to the database'; break;
+				case 'fs': $message = 'Currently transferring files to the filesystem'; break;
+				case 's3': $message = 'Currently transferring files AmazonS3'; break;
 			}
 
 			$message .= $transfer['count_done'] . ' of ' .  $transfer['count_todo'];
