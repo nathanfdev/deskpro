@@ -885,7 +885,7 @@ class TicketSearch extends SearcherAbstract
 					END AS status_order
 				";
 
-				$order_by = "ORDER BY status_order $dir, id DESC";
+				$order_by = "ORDER BY status_order $dir, tickets.urgency DESC";
 				break;
 
 			case 'ticket.date_created':
