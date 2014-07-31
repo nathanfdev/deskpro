@@ -406,7 +406,7 @@ class Runner
 				$source->source_info = $result->source_info ?: array();
 				$source->object_type = $result->created_object_type;
 				$source->object_id   = $result->created_object_id;
-				$this->logger->logError("Status: COMPLETE {$source->error_code}");
+				$this->logger->logInfo("Status: COMPLETE {$source->error_code}");
 				break;
 
 			case 'rejected':
