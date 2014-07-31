@@ -85,7 +85,7 @@ class Sla extends DomainObject
 	/**
 	 * @var string
 	 */
-	protected $title;
+	protected $title = '';
 
 	/**
 	 * Type of SLA - first_response, resolution, waiting_time
