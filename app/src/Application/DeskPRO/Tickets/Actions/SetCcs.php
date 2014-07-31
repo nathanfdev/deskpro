@@ -89,7 +89,9 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
 		if ($this->getActionOption('add_emails')) {
 			foreach ($this->getActionOption('add_emails') as $email) {
-				if (!trim($email)) continue;
+				$email = trim($email);
+
+				if (!$email) continue;
 				if ($ticket->hasParticipantEmailAddress($email)) {
 					continue;
 				}
@@ -131,6 +133,8 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 
 		if ($this->getActionOption('remove_emails')) {
 			foreach ($this->getActionOption('remove_emails') as $email) {
+				$email = trim($email);
+
 				foreach ($ticket->participants as $k => $p) {
 					if ($p->person->findEmailAddress($email)) {
 						$context->getLogger()->debug(sprintf("[SetCcs] Removing user %d %s %s", $p->person->id, $p->person->getDisplayName(), $p->person->primary_email->email));
