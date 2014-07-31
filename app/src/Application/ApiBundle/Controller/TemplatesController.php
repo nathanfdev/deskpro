@@ -226,6 +226,10 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
 		$set->deleteTemplate($template);
 
+		if (strpos($name, ':Css:') !== false) {
+			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+		}
+
 		return $this->createSuccessResponse(array(
 			'old_name' => $name,
 		));
