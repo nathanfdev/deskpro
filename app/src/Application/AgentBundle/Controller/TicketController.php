@@ -1659,10 +1659,6 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
-
 		if (count($ticket->messages) == 1) {
 			$this->db->replace('tickets_deleted', array(
 				'ticket_id' => $ticket->id,
