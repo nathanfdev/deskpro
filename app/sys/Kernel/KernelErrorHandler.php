@@ -425,6 +425,9 @@ class KernelErrorHandler
 		}
 
 		// Always write error line to standard error log
+		if (defined('DPC_IS_CLOUD') && defined('DPC_SITE_DOMAIN')) {
+			$line = "[" . DPC_SITE_DOMAIN . "] " . $line;
+		}
 		@error_log($line, 0);
 
 		if (function_exists('dp_get_log_dir') && dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir() . '/error.log', 'a')) !== false) {
