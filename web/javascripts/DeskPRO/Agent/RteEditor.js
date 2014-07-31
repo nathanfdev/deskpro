@@ -118,7 +118,7 @@ DeskPRO.Agent.RteEditor = {
 			// letter keyboard shortcuts (e.g., 't' for new ticket)
 			// - But allow other key combos to propagate so other combos,
 			// like close tab, still work
-			if (!(ev.metaKey || ev.ctrlKey)) {
+			if (!(ev.metaKey || ev.ctrlKey || ev.altKey)) {
 				ev.stopPropagation();
 			}
 
