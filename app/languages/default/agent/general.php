@@ -332,6 +332,7 @@
 	'agent.general.insert_image'                            => 'Insert Image',
 	'agent.general.insert_into_article'                     => 'Insert Into Article',
 	'agent.general.insert_link'                             => 'Insert Link',
+	'agent.general.insert_attach'                           => 'Insert Attachment',
 	'agent.general.insert_thumbnail'                        => 'Insert Thumbnail',
 	'agent.general.insert_title'                            => 'Insert {{title}}',
 	'agent.general.inserts_file_link'                       => 'This will insert a link to the file with the label as the clickable link text.',

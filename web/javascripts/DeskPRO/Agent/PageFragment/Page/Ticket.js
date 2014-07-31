@@ -1628,9 +1628,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	addAttachToList: function(attachInfo) {
-		var row = $('.template-download', this.getEl('replybox')).tmpl(attachInfo);
-		$('.file-list', this.getEl('replybox')).append(row);
-		this.updateUi();
+		var $form = this.getEl('replybox_wrap').children('.ticket-reply-form:first'),
+			fileupload = $form.data('fileupload');
+
+		if (!$form.length || !fileupload) return;
+		$form.trigger('fileuploaddone');
+		fileupload.options.done.apply($form[0], [null, { result: [attachInfo]}]);
 	},
 
 	//#################################################################
