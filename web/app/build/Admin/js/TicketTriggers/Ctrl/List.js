@@ -145,14 +145,18 @@
         this.dep_triggers = [];
         this.email_triggers = [];
         this.triggers = [];
+        this.$scope.email_trigger_ids = {};
+        this.$scope.department_trigger_ids = {};
         _ref = this.all_triggers;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           tr = _ref[_i];
           if (tr.department) {
-            _results.push(this.dep_triggers.push(tr));
+            this.dep_triggers.push(tr);
+            _results.push(this.$scope.department_trigger_ids[tr.department.id] = tr.id);
           } else if (tr.email_account) {
-            _results.push(this.email_triggers.push(tr));
+            this.email_triggers.push(tr);
+            _results.push(this.$scope.email_trigger_ids[tr.email_account.id] = tr.id);
           } else {
             _results.push(this.triggers.push(tr));
           }
