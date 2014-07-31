@@ -236,16 +236,16 @@ class Person extends AbstractEntityRepository
 	 * @param string $email
 	 * @return Person
 	 */
-	public function findOneByEmail($email)
+	public function findOneByEmail($email, $for_write = false)
 	{
-		if (App::getDb()->isTransactionActive()) {
+		if (App::getDb()->isTransactionActive() && $for_write) {
 			$person = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:Person p
 				LEFT JOIN p.emails e
 				WHERE e.email = ?1
 				ORDER BY p.id ASC
-			")->setLockMode(LockMode::PESSIMISTIC_READ)->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+			")->setLockMode(LockMode::PESSIMISTIC_WRITE)->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
 		} else {
 			$person = $this->getEntityManager()->createQuery("
 				SELECT p

@@ -423,7 +423,7 @@ class Runner
 				$this->logger->logError("Status: ERROR {$source->error_code}");
 
 				if ($do_retry) {
-					$source->status = 'inserted';
+					//TODO handling of retry status
 				}
 				break;
 

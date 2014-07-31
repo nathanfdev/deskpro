@@ -69,11 +69,8 @@ class PersonFromEmailProcessor
 	 */
 	public function findPerson(EmailAddress $from)
 	{
-		App::getDb()->beginTransaction();
 		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail());
 		if ($person) {
-			App::getDb()->commit();
-
 			$this->passPerson($from, $person);
 			return $person;
 		} else {
@@ -96,16 +93,12 @@ class PersonFromEmailProcessor
 
 					$this->passPerson($from, $person);
 
-					App::getDb()->commit();
-
 					return $person;
 				} catch (\Exception $e) {
 					KernelErrorHandler::logException($e, false, 'gateway_usersource_error');
 				}
 			}
 		}
-
-		App::getDb()->commit();
 
 		return null;
 	}
@@ -136,37 +129,16 @@ class PersonFromEmailProcessor
 	 */
 	public function createPerson(EmailAddress $from, $do_validated = false)
 	{
-		$person = $this->findPerson($from);
+		App::getDb()->beginTransaction();
+
+		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
+
 		if ($person) {
+			App::getDb()->commit();
 			return $person;
 		}
 
-		App::getDb()->beginTransaction();
-
-		try {
-			list (, $email_domain) = explode('@', $from->getEmail(), 2);
-			App::getDb()->insert('people_emails', array(
-				'email' => $from->getEmail(),
-				'email_domain' => $email_domain,
-				'date_created' => date('Y-m-d H:i:s'),
-				'date_validated' => date('Y-m-d H:i:s'),
-				'is_validated' => 1
-			));
-			$email_id = App::getDb()->lastInsertId();
-		} catch (DBALException $e) {
-			if (strpos($e->getMessage(), 'Duplicate')) {
-				$person = $this->findPerson($from);
-				if ($person) {
-					return $person;
-				} else {
-					throw $e;
-				}
-			} else {
-				throw $e;
-			}
-		}
-
-		$email = App::getOrm()->find('DeskPRO:PersonEmail', $email_id);
+		$email = new Entity\PersonEmail();
 		$email->setEmail($from->getEmail());
 
 		$person = Entity\Person::newContactPerson();
