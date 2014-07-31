@@ -36,6 +36,7 @@ namespace Application\DeskPRO\CsvUpload;
 use Application\DeskPRO\App;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Application\DeskPRO\TaskQueueJob\CsvImport;
 
 class CsvUpload
 {
@@ -60,7 +61,7 @@ class CsvUpload
 	 * @return array
 	 */
 
-	public function upload(UploadedFile $file)
+	public function upload(UploadedFile $file, array $options = array())
 	{
 		if (!$file instanceof UploadedFile || !$file->getSize()) {
 
@@ -88,7 +89,7 @@ class CsvUpload
 		$csv_path = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
 		copy($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path);
 
-		return $this->_returnUploadFileResponse($blob->getId(), $file->getClientOriginalName());
+		return $this->_returnUploadFileResponse($blob->getId(), $file->getClientOriginalName(), $options);
 	}
 
 	/**
@@ -172,7 +173,7 @@ class CsvUpload
 	 * @return array
 	 */
 
-	protected function _returnUploadFileResponse($filename, $user_filename)
+	protected function _returnUploadFileResponse($filename, $user_filename, array $options = array())
 	{
 		$csv_path = dp_get_tmp_dir() . '/blob-' . $filename . '.csv';
 		$blob     = App::getOrm()->find('DeskPRO:Blob', $filename);
@@ -187,8 +188,9 @@ class CsvUpload
 			App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
 		}
 
+		$options = CsvImport::getOptions($options);
 		$fp           = fopen($csv_path, 'r');
-		$columns      = fgetcsv($fp);
+		$columns      = fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 		$column_count = count($columns);
 
 		$examples      = array();
@@ -196,7 +198,7 @@ class CsvUpload
 
 		for ($i = 0; $i < 100; $i++) {
 
-			$row = fgetcsv($fp);
+			$row = fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 
 			if (!$row) {
 				// eof or can't read properly

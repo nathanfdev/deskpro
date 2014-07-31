@@ -44,6 +44,37 @@ class CsvImport extends AbstractJob
 	 */
 	protected $_custom_fields;
 
+	static protected $options = array(
+		'delimeter' => array(
+			'comma' => ',',
+			'semicolon' => ';',
+		),
+		'enclosure' => array(
+			'none' => null,
+			'semicolon' => '"',
+		),
+	);
+
+	static protected $defaults = array(
+		'delimeter' => 'comma',
+		'enclosure' => 'semicolon',
+	);
+
+	static public function getOptions(array $options = array())
+	{
+		foreach ($options as $k => $v) {
+			if (!isset(self::$options[$k]) || !isset(self::$options[$k][$v])) {
+				unset($options[$k]);
+			}
+		}
+
+		$options = array_merge(self::$defaults, $options);
+		foreach ($options as $k => &$v) {
+			$v = self::$options[$k][$v];
+		}
+		return $options;
+	}
+
 	public function getTitle()
 	{
 		if ($this->_data['user_filename']) {

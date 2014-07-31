@@ -14,6 +14,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@$scope.importErrors = {}
 			@$scope.importStarted = false
 
+			@$scope.delimeter = 'comma'
+			@$scope.enclosure = 'none'
+
 			@$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, welcomeEmail: false, showExtraMappings: {}}
 			@showExtraMappingsCases = [
 				'organization', 'phone', 'website', 'im', 'twitter', 'linkedin', 'facebook', 'address1', 'address2', 'city',
