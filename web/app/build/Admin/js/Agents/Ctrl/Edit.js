@@ -674,6 +674,7 @@
         }
         this.email_dupe_error = false;
         this.email_sysaccount_error = false;
+        this.invalid_phone_error = false;
         this.startSpinner('saving');
         postData = this.getFormData();
         if (this.agentId) {
@@ -700,12 +701,15 @@
           };
         })(this), (function(_this) {
           return function(res) {
-            var _ref, _ref1;
+            var _ref, _ref1, _ref2;
             if ((res != null ? (_ref = res.data) != null ? _ref.error_code : void 0 : void 0) === 'dupe_email') {
               _this.email_dupe_error = res.data.error_info.existing;
             }
             if ((res != null ? (_ref1 = res.data) != null ? _ref1.error_code : void 0 : void 0) === 'system_email_addresses') {
               _this.email_sysaccount_error = res.data.error_info.emails.join(', ');
+            }
+            if ((res != null ? (_ref2 = res.data) != null ? _ref2.error_code : void 0 : void 0) === 'invalid_phone_number') {
+              _this.invalid_phone_error = res.data.error_info.phone_number;
             }
             _this.stopSpinner('saving', true);
             return _this.applyErrorResponseToView(res);

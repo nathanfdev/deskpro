@@ -53,8 +53,12 @@ class PhoneNumbers
 	 */
 	public static function isValid($phone_number)
 	{
-		$phone_util = PhoneNumberUtil::getInstance();
-		$number = $phone_util->parse($phone_number, null);
+		try {
+			$phone_util = PhoneNumberUtil::getInstance();
+			$number = $phone_util->parse($phone_number, null);
+		} catch (\Exception $e) {
+			return false;
+		}
 
 		return $phone_util->isValidNumber($number);
 	}
@@ -63,7 +67,7 @@ class PhoneNumbers
 	/**
 	 * @param string $phone_number
 	 *
-	 * @return string The phone number is E.164 format
+	 * @return string The phone number in E.164 format
 	 */
 	public static function toE164Format($phone_number)
 	{
@@ -71,5 +75,19 @@ class PhoneNumbers
 		$number = $phone_util->parse($phone_number, null);
 
 		return $phone_util->format($number, PhoneNumberFormat::E164);
+	}
+
+
+	/**
+	 * @param string $phone_number
+	 *
+	 * @return string The phone number in International format
+	 */
+	public static function toInternationalFormat($phone_number)
+	{
+		$phone_util = PhoneNumberUtil::getInstance();
+		$number = $phone_util->parse($phone_number, null);
+
+		return $phone_util->format($number, PhoneNumberFormat::NATIONAL);
 	}
 }

@@ -50,6 +50,7 @@ use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
 use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 
 class AgentsController extends AbstractController implements ProtectedControllerInterface
@@ -188,6 +189,14 @@ class AgentsController extends AbstractController implements ProtectedController
 		$exist_person = null;
 
 		$set_emails = $this->in->getArrayOfStrings('agent.emails');
+
+		if ($phone_number = $this->in->getString('agent.phone_number')) {
+			if (!PhoneNumbers::isValid($phone_number)) {
+				return $this->createApiErrorInfoResponse('invalid_phone_number',
+					'Invalid phone number format.',
+					array( 'phone_number' => $phone_number ));
+			}
+		}
 
 		if ($this->in->getString('agent.email')) {
 			array_unshift($set_emails, $this->in->getString('agent.email'));

@@ -470,6 +470,7 @@ define [
 
 			@email_dupe_error = false
 			@email_sysaccount_error = false
+			@invalid_phone_error = false
 			@startSpinner('saving')
 
 			postData = @getFormData()
@@ -494,6 +495,8 @@ define [
 					@email_dupe_error = res.data.error_info.existing
 				if res?.data?.error_code == 'system_email_addresses'
 					@email_sysaccount_error = res.data.error_info.emails.join(', ')
+				if res?.data?.error_code == 'invalid_phone_number'
+					@invalid_phone_error = res.data.error_info.phone_number
 
 				@stopSpinner('saving', true)
 				@applyErrorResponseToView(res)
