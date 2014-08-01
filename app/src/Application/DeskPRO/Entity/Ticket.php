@@ -1592,8 +1592,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$x = new LabelTicket();
 		$x->label = $l;
 
-		if (($idx = $this->labels->indexOf($x->label)) !== false) {
-			return $this->labels->get($idx);
+		foreach ($this->labels as $l) {
+			if ($l->label == $x->label) {
+				return $l;
+			}
 		}
 
 		return null;
@@ -2171,6 +2173,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this['date_status'] = new \DateTime();
 
 		$old_status  = $this->status;
+		$old_hstatus = $this->hidden_status;
+		$old_status_code = $this->getStatusCode();
 
 		if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
 			$this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
@@ -2210,10 +2214,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		if ($status != 'awaiting_agent' && $this->is_hold) {
 			$this['is_hold'] = false;
 		}
-
-		$old_hstatus = $this->hidden_status;
-		$old_status_code = "$old_status.$old_hstatus";
-
 		$status_code = $status;
 		$hstatus = null;
 		if (strpos($status, '.')) {
@@ -2245,6 +2245,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 		$this->setModelField('status', $status);
 		$this->setModelField('hidden_status', $hstatus);
+
+		$this->getStateChangeRecorder()->record('status_code', $old_status_code, $this->getStatusCode());
 
 		if ($old_status_code == 'hidden.deleted' && $status_code != 'hidden.deleted') {
 			$this->undeleteTicket();
