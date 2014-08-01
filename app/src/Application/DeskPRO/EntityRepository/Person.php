@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
@@ -88,6 +89,36 @@ class Person extends AbstractEntityRepository
 		")->execute();
 
 		return $deleted_agents;
+	}
+
+
+	/**
+	 * Give a department and get back the agents that are in that department.
+	 *
+	 * Currently this is defined as anyone with a "FULL" permission to the
+	 * ticket system.
+	 *
+	 * @param Department|int $department the actual department or the id of it
+	 *
+	 * @return Person[]
+	 */
+	public function getAgentsInDepartment($department)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			JOIN p.department_permissions dep_per
+			WHERE (p.is_agent = true AND p.is_deleted = false)
+			AND dep_per.department = :department
+			AND dep_per.name = :permission
+			AND dep_per.app = :app
+			AND dep_per.value = 1
+			ORDER BY p.last_name ASC, p.first_name ASC
+		")
+			->setParameter('department', $department)
+			->setParameter('permission', DepartmentPermission::FULL)
+			->setParameter('app', DepartmentPermission::APP_TICKETS)
+			->execute();
 	}
 
 	public function findAgentByName($name)

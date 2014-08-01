@@ -99,6 +99,7 @@ use Orb\Util\Util;
  * @property TwitterUser[] $twitter_users
  * @property PersonPref[] $preferences
  * @property PersonUsersourceAssoc[] $usersource_assoc
+ * @property DepartmentPermission $department_permissions
  * @property \DateTime $date_created
  * @property \DateTime $date_last_login
  * @property \DateTime $date_password_set
@@ -411,6 +412,11 @@ class Person extends DomainObject implements HighlightableModelInterface
 	protected $usersource_assoc;
 
 	/**
+	 * @var DepartmentPermission[]
+	 */
+	protected $department_permissions;
+
+	/**
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
@@ -547,6 +553,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->department_permissions = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -2632,6 +2639,10 @@ class Person extends DomainObject implements HighlightableModelInterface
 		                               'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
 		                               'mappedBy'     => 'person', 'cascade' => array('persist'),
 		                               'orphanRemoval' => true
+		));
+		$metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
+		                               'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
+		                               'mappedBy' => 'person'
 		));
 	}
 }
