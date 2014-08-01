@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -89,7 +90,7 @@ use Orb\Util\Util;
  * @property string $salt
  * @property PersonEmail $primary_email
  * @property PersonEmail[] $emails
- * @property string $phone_number
+ * @property PhoneNumber[] $phone_numbers
  * @property LabelPerson[] $labels
  * @property CustomDataPerson[] $custom_data
  * @property PersonContactData[] $contact_data
@@ -545,6 +546,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -820,16 +822,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 		}
 
 		return $display;
-	}
-
-
-	public function setPhoneNumber($phone_number)
-	{
-		$formatted_phone_number = PhoneNumbers::toE164Format($phone_number);
-
-		$old_number = $this->phone_number;
-		$this->phone_number = $formatted_phone_number;
-		$this->_onPropertyChanged('phone_number', $old_number, $formatted_phone_number);
 	}
 
 
@@ -1512,6 +1504,42 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$custom_fields = array_pop($custom_fields);
 
 		return $custom_fields;
+	}
+
+
+	public function getPrimaryPhoneNumber()
+	{
+		return $this->phone_numbers->first();
+	}
+
+
+	public function setPrimaryPhoneNumber(PhoneNumber $number = null)
+	{
+		// note that while this is a 1-many relationship, we ensure in this method that we only have 1
+		// or 0 PhoneNumber objects in the collection.
+		// if there is a null, we just remove any number that might have been in our collection
+		if (!$number) {
+			$this->phone_numbers->clear();
+			$this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
+
+			return;
+		}
+
+		// we have a number, make sure its the only one in our collection here
+		$number->person = $this;
+		if ($current_number = $this->getPrimaryPhoneNumber()) {
+			if ($current_number->getId() == $number->getId()) {
+				$this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
+				return;
+			} else {
+				$old = new ArrayCollection(array( $current_number ));
+				$this->phone_numbers->clear();
+				$this->phone_numbers->add($number);
+				$this->_onPropertyChanged('phone_numbers', $old, $this->phone_numbers);
+			}
+		}
+		$this->phone_numbers->add($number);
+		$this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
 	}
 
 
@@ -2418,9 +2446,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 			$data['emails'][] = array('id' => $eml->id, 'email' => $eml->email);
 		}
 
-
-		$data['phone_number'] = $this->phone_number;
-
 		$data['usergroup_ids']  = array();
 		$data['agentgroup_ids'] = array();
 		foreach ($this->usergroups as $ug) {
@@ -2532,7 +2557,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance', ));
 		$metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-		$metadata->mapField(array( 'fieldName'  => 'phone_number', 'type' => 'text', 'nullable' => true, 'columnName' => 'phone_number' ));
 		$metadata->mapField(array( 'fieldName' => 'first_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'first_name', ));
 		$metadata->mapField(array( 'fieldName' => 'last_name', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_name', ));
 		$metadata->mapField(array( 'fieldName' => 'title_prefix', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title_prefix', ));
@@ -2563,5 +2587,10 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser', 'mappedBy' => 'person',  ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons' ));
+		$metadata->mapOneToMany(array( 'fieldName'    => 'phone_numbers',
+		                               'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+		                               'mappedBy'     => 'person', 'cascade' => array('persist'),
+		                               'orphanRemoval' => true
+		));
 	}
 }

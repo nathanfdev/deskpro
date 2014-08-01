@@ -7,6 +7,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		{{ phrase('agent.general.error_form_correct') }}
 		<ul>
 			<li class="name_short">{{ phrase('agent.general.error_your_name') }}</li>
+			<li class="phone_number_invalid">{{ phrase('agent.general.error_invalid_phone_number') }}</li>
 			<li class="email_invalid">{{ phrase('agent.general.error_email_address') }}</li>
 			<li class="email_in_use">{{ phrase('agent.general.error_email_dupe_agent') }}</li>
 			<li class="password_invalid">Invalid password</li>
@@ -52,7 +53,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.phone_number') }}</label></div>
 			<div class="dp-form-input">
-				{{ form_widget(form.phone_number, {'attr': {'id': 'settings_profile_phone_number', 'style': 'padding-left:44px;'}}) }}
+				{{ form_widget(form.primary_phone_number_text, {'attr': {'style': 'padding-left:44px;'}}) }}
 			</div>
 		</div>
 

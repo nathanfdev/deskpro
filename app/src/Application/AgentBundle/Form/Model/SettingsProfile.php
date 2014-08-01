@@ -37,11 +37,14 @@ namespace Application\AgentBundle\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PhoneNumber;
+use Orb\Util\PhoneNumbers;
 
 class SettingsProfile
 {
 	public $name;
-	public $phone_number;
+	public $primary_phone_number;
+	public $primary_phone_number_text;
 	public $override_display_name;
 	public $email;
 	public $timezone = 'UTC';
@@ -80,7 +83,13 @@ class SettingsProfile
 		$this->person = $person;
 
 		$this->name = $person->name;
-		$this->phone_number = $person->phone_number;
+
+		// store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
+		// this is acting like a DataTransformer.
+		$this->primary_phone_number_text = $person->primary_phone_number ? $person->primary_phone_number->number : '';
+		$this->primary_phone_number = $person->primary_phone_number ?: new PhoneNumber();
+		//
+
 		$this->override_display_name = $person->override_display_name;
 		$this->email = $person->getPrimaryEmailAddress();
 		$this->timezone = $person->timezone;
@@ -119,7 +128,15 @@ class SettingsProfile
 		$person = $this->person;
 
 		$person->name = $this->name;
-		$person->phone_number = $this->phone_number;
+
+		if (PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
+			$person->setPrimaryPhoneNumber(null);
+		} else {
+			// just update the $primary->number text of the existing primary PhoneNumber object
+			$this->primary_phone_number->number = $this->primary_phone_number_text;
+			$person->setPrimaryPhoneNumber($this->primary_phone_number);
+		}
+
 		$person->override_display_name = $this->override_display_name;
 		$person->timezone = $this->timezone;
 

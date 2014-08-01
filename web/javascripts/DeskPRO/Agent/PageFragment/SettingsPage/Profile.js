@@ -22,7 +22,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			});
 		}
 
-		this.el.find('#settings_profile_phone_number').intlTelInput();
+		this.el.find('#settings_profile_primary_phone_number_text').intlTelInput();
 
 		var startEmail = $('#settings_profile_email').val();
 

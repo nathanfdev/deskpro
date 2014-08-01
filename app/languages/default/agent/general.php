@@ -243,6 +243,7 @@
 	'agent.general.enter_organization_name'                 => 'Enter an organization name...',
 	'agent.general.enter_search_terms'                      => 'Enter search terms',
 	'agent.general.error'                                   => 'Error',
+	'agent.general.error_invalid_phone_number'              => 'The phone number you entered is not in a valid format',
 	'agent.general.error_email_address'                     => 'Please enter a valid email address',
 	'agent.general.error_email_dupe_agent'                  => 'The email address you entered is already in use by another agent',
 	'agent.general.error_form_correct'                      => 'Please correct the following errors with your form',
