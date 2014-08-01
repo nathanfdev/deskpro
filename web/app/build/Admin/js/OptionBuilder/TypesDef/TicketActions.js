@@ -114,7 +114,7 @@
         options = [];
         options.push({
           title: 'Set Ticket User',
-          value: 'ChangeUser'
+          value: 'SetUserOwner'
         });
         options.push({
           title: 'Delete Ticket',
@@ -786,6 +786,17 @@
             };
           }
         };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetUserOwner = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'email_address';
+        options.placeholder = 'Enter an email address';
+        def = this.getStandardInput(options);
+        return def;
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetDeleted = function(options) {

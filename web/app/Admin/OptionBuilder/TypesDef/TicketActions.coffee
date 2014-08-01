@@ -142,7 +142,7 @@ define [
 
 			options.push({
 				title: 'Set Ticket User',
-				value: 'ChangeUser'
+				value: 'SetUserOwner'
 			})
 
 			options.push({
@@ -622,6 +622,12 @@ define [
 							return value
 					}
 			}
+
+		getSetUserOwner: (options = {}) ->
+			options.propName = 'email_address'
+			options.placeholder = 'Enter an email address'
+			def = @getStandardInput(options)
+			return def
 
 		getSetDeleted: (options = {}) ->
 			def = @getStandardIs(options)
