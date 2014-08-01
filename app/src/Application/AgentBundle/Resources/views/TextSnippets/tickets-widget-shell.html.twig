@@ -15,7 +15,7 @@
 			<option value="ticket.workflow.title">{{ phrase('agent.general.workflow') }}</option>
 			<option value="ticket.priority.title">{{ phrase('agent.general.priority') }}</option>
 			<option value="ticket.agent.display_name">{{ phrase('agent.general.agent') }}</option>
-			<option value="ticket.agent.primary_email.email">{{ phrase('agent.general.agent_email_address.email') }}</option>
+			<option value="ticket.agent.primary_email.email">{{ phrase('agent.general.agent_email_address') }}</option>
 			<option value="ticket.agent_team.name">{{ phrase('agent.general.agent_team') }}</option>
 			{% for field in app.getCustomFieldManager('tickets').getFields() %}
 				<option value="ticket.field{{ field.id }}">{{ field.title }}</option>
@@ -23,7 +23,7 @@
 		</optgroup>
 		<optgroup label="User">
 			<option value="ticket.person.display_name">{{ phrase('agent.general.name') }}</option>
-			<option value="ticket.person.primary_email.email">{{ phrase('agent.general.email_address.email') }}</option>
+			<option value="ticket.person.primary_email.email">{{ phrase('agent.general.email_address') }}</option>
 			<option value="ticket.person.organization.name">{{ phrase('agent.general.organization') }}</option>
 			<option value="ticket.person.organization_position">{{ phrase('agent.general.org_position') }}</option>
 			{% for field in app.getCustomFieldManager('people').getFields() %}
