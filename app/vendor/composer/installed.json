@@ -122,7 +122,7 @@
         },
         "time": "2014-02-12 03:11:21",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "notification-url": "https://packagist.org/downloads/",
         "license": [
             "LGPL-2.1+"
@@ -373,6 +373,55 @@
         ]
     },
     {
+        "name": "zendframework/zendoauth",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/ZendOAuth.git",
+            "reference": "36defad317aa80ac9366f5e5171dc0316f009f13"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/ZendOAuth/zipball/36defad317aa80ac9366f5e5171dc0316f009f13",
+            "reference": "36defad317aa80ac9366f5e5171dc0316f009f13",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3",
+            "zendframework/zend-config": ">=2.0.0",
+            "zendframework/zend-crypt": ">=2.0.0",
+            "zendframework/zend-http": ">=2.0.0",
+            "zendframework/zend-i18n": ">=2.0.0",
+            "zendframework/zend-loader": ">=2.0.0",
+            "zendframework/zend-math": ">=2.0.0",
+            "zendframework/zend-stdlib": ">=2.0.0",
+            "zendframework/zend-uri": ">=2.0.0"
+        },
+        "time": "2014-04-09 01:02:18",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "ZendOAuth": "library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "homepage": "http://packages.zendframework.com/",
+        "keywords": [
+            "oauth",
+            "zf2"
+        ]
+    },
+    {
         "name": "zendframework/zend-queue",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
@@ -401,7 +450,7 @@
         },
         "time": "2013-07-17 22:15:58",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-0": {
                 "ZendQueue": "library/"
@@ -707,7 +756,7 @@
             {
                 "name": "Johannes Schmitt",
                 "email": "schmittjoh@gmail.com",
-                "homepage": "http://jmsyst.com",
+                "homepage": "https://github.com/schmittjoh",
                 "role": "Developer of wrapped JMSSerializerBundle"
             }
         ],
@@ -852,9 +901,9 @@
                 "email": "kontakt@beberlei.de"
             },
             {
-                "name": "Johannes M. Schmitt",
+                "name": "Johannes Schmitt",
                 "email": "schmittjoh@gmail.com",
-                "homepage": "http://jmsyst.com",
+                "homepage": "https://github.com/schmittjoh",
                 "role": "Developer of wrapped JMSSerializerBundle"
             }
         ],
@@ -995,9 +1044,9 @@
                 "email": "kontakt@beberlei.de"
             },
             {
-                "name": "Johannes M. Schmitt",
+                "name": "Johannes Schmitt",
                 "email": "schmittjoh@gmail.com",
-                "homepage": "http://jmsyst.com",
+                "homepage": "https://github.com/schmittjoh",
                 "role": "Developer of wrapped JMSSerializerBundle"
             }
         ],
@@ -1313,7 +1362,7 @@
         },
         "time": "2014-07-22 08:31:30",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "DeskPRO\\": "src/"
@@ -1801,17 +1850,17 @@
     },
     {
         "name": "aws/aws-sdk-php",
-        "version": "2.6.12",
-        "version_normalized": "2.6.12.0",
+        "version": "2.6.13",
+        "version_normalized": "2.6.13.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aws/aws-sdk-php.git",
-            "reference": "88d075461e95111a5e42ead60c68e847c1856cc3"
+            "reference": "d1f345a65b490bd83fff735d8a9e49b224ce24b5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/88d075461e95111a5e42ead60c68e847c1856cc3",
-            "reference": "88d075461e95111a5e42ead60c68e847c1856cc3",
+            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d1f345a65b490bd83fff735d8a9e49b224ce24b5",
+            "reference": "d1f345a65b490bd83fff735d8a9e49b224ce24b5",
             "shasum": ""
         },
         "require": {
@@ -1833,7 +1882,7 @@
             "monolog/monolog": "Adds support for logging HTTP requests and responses",
             "symfony/yaml": "Eases the ability to write manifests for creating jobs in AWS Import/Export"
         },
-        "time": "2014-07-16 21:01:13",
+        "time": "2014-07-31 20:34:29",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1902,7 +1951,7 @@
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-0": {
                 "Doctrine\\DBAL\\Migrations": "lib"
@@ -2144,7 +2193,7 @@
                 "dev-master": "2.2.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-0": {
                 "Doctrine\\Bundle\\FixturesBundle": ""
@@ -2232,12 +2281,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/padraic/mockery.git",
-            "reference": "33b01619721a925db8b61e8623fa8acf2c2be496"
+            "reference": "5c8d5eee9ca58a618d3f7200012b4921fa887729"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/padraic/mockery/zipball/33b01619721a925db8b61e8623fa8acf2c2be496",
-            "reference": "33b01619721a925db8b61e8623fa8acf2c2be496",
+            "url": "https://api.github.com/repos/padraic/mockery/zipball/5c8d5eee9ca58a618d3f7200012b4921fa887729",
+            "reference": "5c8d5eee9ca58a618d3f7200012b4921fa887729",
             "shasum": ""
         },
         "require": {
@@ -2249,14 +2298,14 @@
             "phpunit/phpunit": "~4.0",
             "satooshi/php-coveralls": "~0.7@dev"
         },
-        "time": "2014-06-27 12:23:08",
+        "time": "2014-07-28 12:51:16",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "0.9.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-0": {
                 "Mockery": "library/"
@@ -3473,7 +3522,7 @@
             "bin/swagger"
         ],
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-0": {
                 "Swagger": "library"
@@ -3566,12 +3615,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/FriendsOfSymfony/FOSElasticaBundle.git",
-            "reference": "c748ec64e9b2f4635b3655018678824112f18254"
+            "reference": "64c5c19831577cbb2dbc35a94b7562b2db93c832"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/c748ec64e9b2f4635b3655018678824112f18254",
-            "reference": "c748ec64e9b2f4635b3655018678824112f18254",
+            "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/64c5c19831577cbb2dbc35a94b7562b2db93c832",
+            "reference": "64c5c19831577cbb2dbc35a94b7562b2db93c832",
             "shasum": ""
         },
         "require": {
@@ -3605,14 +3654,14 @@
             "propel/propel1": "1.6.*",
             "symfony/expression-language": "~2.4"
         },
-        "time": "2014-07-23 13:10:24",
+        "time": "2014-07-31 05:54:53",
         "type": "symfony-bundle",
         "extra": {
             "branch-alias": {
                 "dev-master": "3.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "FOS\\ElasticaBundle\\": ""

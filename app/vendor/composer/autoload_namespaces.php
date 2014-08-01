@@ -9,6 +9,7 @@ return array(
     'Zend\\' => array($vendorDir . '/zendframework/zendframework/library'),
     'ZendXml' => array($vendorDir . '/zendframework/zendxml/library'),
     'ZendQueue' => array($vendorDir . '/zendframework/zend-queue/library'),
+    'ZendOAuth' => array($vendorDir . '/zendframework/zendoauth/library'),
     'WebDriver' => array($vendorDir . '/instaclick/php-webdriver/lib'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Symfony\\Component\\Icu\\' => array($vendorDir . '/symfony/icu'),

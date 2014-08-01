@@ -351,6 +351,10 @@ echo "Cleaning $(pwd)"
 rm -rf tests/
 rm -rf CHANGELOG.md composer.json CONTRIBUTING.md INSTALL.md README.md README-GIT.md
 
+cd $DIR_VENDOR/zendframework/zendoauth
+echo "Cleaning $(pwd)"
+rm -rf tests/
+
 cd $DIR_VENDOR/friendsofsymfony/elastica-bundle
 echo "Cleaning $(pwd)"
 rm -rf Tests/ Resources/doc
@@ -435,9 +439,6 @@ cd $DIR_WEB_BOWER/jquery-ui/themes
 rm -rf black-tie/ blitzer/ cupertino/ dark-hive/ dot-luv/ eggplant/ excite-bike/ flick/ hot-sneaks/ humanity/ le-frog/ mint-choc/ overcast/ pepper-grinder/ redmond/ smoothness/ south-street/ start/ sunny/ swanky-purse/ trontastic/ ui-darkness/ vader/
 
 cd $DIR_WEB_BOWER/moment
-rm -rf readme.md
-
-cd $DIR_WEB_BOWER/momentjs
 rm -rf readme.md
 
 cd $DIR_WEB_BOWER/requirejs
