@@ -1,5 +1,13 @@
-define ['DeskPRO/Util/Util'], (Util) ->
-	class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef
+define [
+	'DeskPRO/Util/Util',
+	'DeskPRO/Util/Arrays',
+	'Admin/OptionBuilder/TypesDef/BaseTypesDef'
+], (
+	Util,
+	Arrays,
+	BaseTypesDef
+) ->
+	class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef
 		constructor: (@$q, @Api, @dpTemplateManager) ->
 			@options_data        = null
 			@inputTemplate       = 'OptionBuilder/type-criteria-input.html'
@@ -93,35 +101,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			extraOptions = options.extraOptions || null
 
 			if not options_formatter
-				options_formatter = (options) ->
-					opts = []
-
-					if extraOptions
-						for opt in extraOptions
-							opts.push(opt)
-
-					for opt in options
-						if opt.title
-							title = opt.title
-						else if opt.name
-							title = opt.name
-						else
-							title = null
-
-						if opt.id
-							val = opt.id
-						else if opt.value
-							val = opt.value
-						else
-							val = null
-
-						if title != null and val != null
-							opts.push({
-								title: title,
-								value: val
-							})
-
-					return opts
+				options_formatter = (options) =>
+					return @standardOptionsFormatter(options, extraOptions)
 
 			me = @
 
