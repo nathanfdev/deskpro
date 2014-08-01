@@ -22,7 +22,10 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			});
 		}
 
-		this.el.find('#settings_profile_primary_phone_number_text').intlTelInput();
+		var default_country = this.el.find('#settings_profile_primary_phone_number_text').attr('default-country');
+		if (default_country) {
+			this.el.find('#settings_profile_primary_phone_number_text').intlTelInput({"defaultCountry": default_country.toLowerCase()});
+		}
 
 		var startEmail = $('#settings_profile_email').val();
 

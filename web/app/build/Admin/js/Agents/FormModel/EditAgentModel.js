@@ -7,6 +7,7 @@
         this.form = {};
         this.form.name = agent.name;
         this.form.primary_phone_number_text = agent.primary_phone_number_text;
+        this.form.primary_phone_number_region = agent.primary_phone_number_region;
         if (agent.override_display_name) {
           this.form.enable_display_name = true;
           this.form.override_name = agent.override_display_name;

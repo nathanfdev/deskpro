@@ -1507,16 +1507,46 @@ class Person extends DomainObject implements HighlightableModelInterface
 	}
 
 
+	/**
+	 * returns the number that this person marked as his/her primary number
+	 *
+	 * @return string
+	 */
 	public function getPrimaryPhoneNumber()
 	{
 		return $this->phone_numbers->first();
 	}
 
+
+	/**
+	 * get the number of primary number
+	 *
+	 * @return string
+	 */
 	public function getPrimaryPhoneNumberText()
 	{
 		$phone_number = $this->getPrimaryPhoneNumber();
 
 		return $phone_number ? $phone_number->number : '';
+	}
+
+
+	/**
+	 * get the 2 character country code of primary number
+	 *
+	 * @return string
+	 */
+	public function getPrimaryPhoneNumberRegion()
+	{
+		$phone_number = $this->getPrimaryPhoneNumber();
+
+		$region = $phone_number ? $phone_number->region : null;
+
+		if (!$region) {
+			$region = '';
+		}
+
+		return $region;
 	}
 
 
@@ -2449,6 +2479,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		}
 
 		$data['primary_phone_number_text'] = $this->getPrimaryPhoneNumberText();
+		$data['primary_phone_number_region'] = $this->getPrimaryPhoneNumberRegion();
 
 
 		$data['emails'] = array();

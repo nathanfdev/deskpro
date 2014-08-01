@@ -88,6 +88,7 @@ class SettingsProfile
 		// this is acting like a DataTransformer.
 		$this->primary_phone_number_text = $person->primary_phone_number ? $person->primary_phone_number->number : '';
 		$this->primary_phone_number = $person->primary_phone_number ?: new PhoneNumber();
+		$this->primary_phone_number_region = $person->primary_phone_number_region;
 		//
 
 		$this->override_display_name = $person->override_display_name;

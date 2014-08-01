@@ -9,6 +9,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 
 			@form.name = agent.name
 			@form.primary_phone_number_text = agent.primary_phone_number_text
+			@form.primary_phone_number_region = agent.primary_phone_number_region
 
 			if agent.override_display_name
 				@form.enable_display_name = true

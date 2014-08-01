@@ -125,7 +125,7 @@ class PhoneNumbers
 		$phone_util = PhoneNumberUtil::getInstance();
 		$number = $phone_util->parse($phone_number, null);
 
-		return $phone_util->getNumberType($number);
+		return $phone_util->getNumberType($number) ?: self::UNKNOWN;
 	}
 
 	/**
