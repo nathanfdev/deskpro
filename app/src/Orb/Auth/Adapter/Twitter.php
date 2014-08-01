@@ -39,6 +39,7 @@ use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
+use ZendOAuth\OAuth;
 
 class Twitter extends AbstractCallbackAdatper implements Loggable
 {
@@ -82,7 +83,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 	/**
 	 * Initialize the auth process by setting state, and returning a redirect result.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
@@ -90,7 +91,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 
 		try {
 			$token = $oauth->getRequestToken();
-		} catch (\Zend\OAuth\Exception $e) {
+		} catch (\Exception $e) {
 			if ($this->logger) {
 				$this->logger->log("[Twitter] authenticateInitialize exception: {$e->getCode()} {$e->getMessage()}", 'ERR');
 			}
@@ -116,7 +117,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 	/**
 	 * Process the callback and return a final result.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
@@ -139,6 +140,7 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 		$client = $access_token->getHttpClient($this->getOauthConfig());
 		$client->setUri('https://api.twitter.com/1.1/account/verify_credentials.json');
 		$client->setMethod(\Zend\Http\Request::METHOD_GET);
+		$client->setOptions(array('sslverifypeer' => false));
 		$response = $client->send();
 
 		if ($this->logger) {
@@ -178,20 +180,30 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 	}
 
 	/**
-	 * @return \Zend\OAuth\Consumer
+	 * @return \ZendOAuth\Consumer
 	 */
 	public function getOauthConsumer()
 	{
-		return new \Zend\OAuth\Consumer($this->getOauthConfig());
+		static $has_set_http_client = false;
+		if (!$has_set_http_client) {
+			$has_set_http_client = true;
+			$httpClient = new \Zend\Http\Client(null, array(
+				'adapter' => 'Zend\Http\Client\Adapter\Socket',
+				'sslverifypeer' => false
+			));
+			OAuth::setHttpClient($httpClient);
+		}
+
+		return new \ZendOAuth\Consumer($this->getOauthConfig());
 	}
 
 	public function getOauthConfig()
 	{
 		return array(
-			'callbackUrl' => $this->getCallbackUrl(),
-			'siteUrl' => 'https://api.twitter.com/oauth',
-			'consumerKey' => $this->consumer_key,
-			'consumerSecret' => $this->consumer_secret,
+			'callbackUrl'    => $this->getCallbackUrl(),
+			'siteUrl'        => 'https://api.twitter.com/oauth',
+			'consumerKey'    => $this->consumer_key,
+			'consumerSecret' => $this->consumer_secret
 		);
 	}
 
