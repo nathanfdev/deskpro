@@ -73,38 +73,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	{
 		$agents = array();
 
+		$person_context = $context->getPersonContext();
+
 		foreach ($agent_ids as $aid) {
-			// -1 = current user
-			if ($aid == -1) {
-				if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
-					$agents[] = $context->getPersonContext();
-				}
-
-			// assigned agent
-			} else if ($aid == 'agent') {
-				if ($ticket->agent) {
-					$agents[] = $ticket->agent;
-				}
-
-			// agents of assigned team
-			} else if ($aid == 'team') {
-				if ($ticket->agent_team) {
-					foreach ($ticket->agent_team->members as $agent) {
-						$agents[] = $agent;
-					}
-				}
-
-			// followers
-			} else if ($aid == 'followers') {
-				if ($agent_followers = $ticket->getAgentParticipants()) {
-					foreach ($agent_followers as $agent) {
-						$agents[] = $agent;
-					}
-				}
-
-			// based on notify list
-			} else if ($aid == 'notify_list') {
-
+			if ($aid == 'notify_list') {
 				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
 				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
 				$list_builder  = new AgentNotifyListBuilder(
@@ -116,7 +88,6 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
 				$notify = $list_builder->genNotifyList();
 
-				$person_context = $context->getPersonContext();
 				foreach ($notify as $n) {
 					// dont send to self
 					if ($person_context && $person_context === $n['agent']) {
@@ -128,11 +99,15 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 					}
 				}
 
-			// specific agents
-			} else {
-				if ($agent = $this->getContainer()->getAgentData()->get($aid)) {
-					$agents[] = $agent;
+				$force_list = $context->getVars()->get('agent_force_subscription_list', array());
+				if ($force_list) {
+					$context->getLogger()->debug("[SendAgentEmail] Appending force list");
+					$agents = array_merge($agents, $force_list);
 				}
+
+			} else {
+				$agent_data = $this->getContainer()->getAgentData();
+				$agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
 			}
 		}
 

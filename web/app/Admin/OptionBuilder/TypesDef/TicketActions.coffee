@@ -1,7 +1,9 @@
 define [
 	'Admin/OptionBuilder/TypesDef/BaseActionTypesDef',
+	'DeskPRO/Util/Numbers'
 ], (
-	BaseActionTypesDef
+	BaseActionTypesDef,
+	Numbers
 ) ->
 	class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef
 		init: ->
@@ -213,6 +215,11 @@ define [
 			options.push({
 				title: 'Prevent Emails To Agents',
 				value: 'ModMuteAgentEmails'
+			})
+
+			options.push({
+				title: 'Force Agent Email Subscriptions',
+				value: 'ModForceAgentEmails'
 			})
 
 			options.push({
@@ -667,6 +674,48 @@ define [
 			def = @getStandardIs(options)
 			return def
 
+		getModForceAgentEmails: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-force-agent-emails.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+
+							agent_ids = {}
+							if options.agent_ids
+								for aid in options.agent_ids
+									agent_ids[aid+""] = true
+
+							return {
+								agent_ids: agent_ids
+							}
+						getValue: (model = {}, data) ->
+							options = {
+								agent_ids: []
+							}
+
+							if model.agent_ids
+								for own k, v of model.agent_ids
+									if v
+										if Numbers.isNumeric(k)
+											options.agent_ids.push(parseInt(k))
+										else
+											options.agent_ids.push(k)
+
+							value = {}
+							value.type = 'ModForceAgentEmails'
+							value.options = options
+							return value
+					}
+			}
+
 		getSendUserEmail: (options = {}) ->
 			me = @
 			return {
@@ -807,8 +856,7 @@ define [
 							agent_ids = {}
 							if options.agent_ids
 								for aid in options.agent_ids
-									if aid != 'notify_list' then aid = parseInt(aid)
-									agent_ids[aid] = true
+									agent_ids[aid+""] = true
 							else
 								agent_ids['notify_list'] = true
 
@@ -835,10 +883,10 @@ define [
 							if model.agent_ids
 								for own k, v of model.agent_ids
 									if v
-										if k == 'notify_list'
-											options.agent_ids.push('notify_list')
-										else
+										if Numbers.isNumeric(k)
 											options.agent_ids.push(parseInt(k))
+										else
+											options.agent_ids.push(k)
 
 							value = {}
 							value.type = 'SendAgentEmail'

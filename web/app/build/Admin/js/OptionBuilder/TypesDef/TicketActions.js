@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/OptionBuilder/TypesDef/BaseActionTypesDef'], function(BaseActionTypesDef) {
+  define(['Admin/OptionBuilder/TypesDef/BaseActionTypesDef', 'DeskPRO/Util/Numbers'], function(BaseActionTypesDef, Numbers) {
     var Admin_OptionBuilder_TypesDef_TicketFilter;
     return Admin_OptionBuilder_TypesDef_TicketFilter = (function(_super) {
       __extends(Admin_OptionBuilder_TypesDef_TicketFilter, _super);
@@ -165,6 +165,10 @@
         options.push({
           title: 'Prevent Emails To Agents',
           value: 'ModMuteAgentEmails'
+        });
+        options.push({
+          title: 'Force Agent Email Subscriptions',
+          value: 'ModForceAgentEmails'
         });
         options.push({
           title: 'Set Trigger Variable',
@@ -875,6 +879,71 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModForceAgentEmails = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-force-agent-emails.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var agent_ids, aid, _i, _len, _ref;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                agent_ids = {};
+                if (options.agent_ids) {
+                  _ref = options.agent_ids;
+                  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    aid = _ref[_i];
+                    agent_ids[aid + ""] = true;
+                  }
+                }
+                return {
+                  agent_ids: agent_ids
+                };
+              },
+              getValue: function(model, data) {
+                var k, v, value, _ref;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  agent_ids: []
+                };
+                if (model.agent_ids) {
+                  _ref = model.agent_ids;
+                  for (k in _ref) {
+                    if (!__hasProp.call(_ref, k)) continue;
+                    v = _ref[k];
+                    if (v) {
+                      if (Numbers.isNumeric(k)) {
+                        options.agent_ids.push(parseInt(k));
+                      } else {
+                        options.agent_ids.push(k);
+                      }
+                    }
+                  }
+                }
+                value = {};
+                value.type = 'ModForceAgentEmails';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendUserEmail = function(options) {
         var me;
         if (options == null) {
@@ -1052,10 +1121,7 @@
                   _ref = options.agent_ids;
                   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                     aid = _ref[_i];
-                    if (aid !== 'notify_list') {
-                      aid = parseInt(aid);
-                    }
-                    agent_ids[aid] = true;
+                    agent_ids[aid + ""] = true;
                   }
                 } else {
                   agent_ids['notify_list'] = true;
@@ -1090,10 +1156,10 @@
                     if (!__hasProp.call(_ref, k)) continue;
                     v = _ref[k];
                     if (v) {
-                      if (k === 'notify_list') {
-                        options.agent_ids.push('notify_list');
-                      } else {
+                      if (Numbers.isNumeric(k)) {
                         options.agent_ids.push(parseInt(k));
+                      } else {
+                        options.agent_ids.push(k);
                       }
                     }
                   }
