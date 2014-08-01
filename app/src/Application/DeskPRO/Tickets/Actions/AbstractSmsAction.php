@@ -141,8 +141,8 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 		$repo = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
 		$agents = $repo->getPeopleResultsFromIds($agents);
 		foreach ($agents as $agent) {
-			if ($agent->phone_number) {
-				$numbers[] = $agent->phone_number;
+			if ($agent->primary_phone_number) {
+				$numbers[] = $agent->primary_phone_number_text;
 			}
 		}
 		$numbers = array_unique($numbers);
