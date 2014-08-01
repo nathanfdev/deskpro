@@ -37,7 +37,7 @@ DeskPRO.Agent.TicketList.ListView = new Orb.Class({
 			this.close();
 		}).bind(this));
 
-		this.wrapper.html('<section class="dp-overlay"><div class="overlay-title"><span class="close-overlay"></span></div><div class="loading"></div></section>');
+		this.wrapper.html('<section class="dp-overlay"><header><span class="close close-trigger"></span></header><article><div class="loading"></div></article></section>');
 		this.wrapper.find('.close-overlay').on('click', function(ev) {
 			ev.stopPropagation();
 			self.close();
