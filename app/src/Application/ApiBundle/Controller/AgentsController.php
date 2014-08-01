@@ -190,11 +190,12 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		$set_emails = $this->in->getArrayOfStrings('agent.emails');
 
-		if ($phone_number = $this->in->getString('agent.phone_number')) {
+		$phone_number = $this->in->getString('agent.primary_phone_number_text');
+		if (!PhoneNumbers::looksEmpty($phone_number)) {
 			if (!PhoneNumbers::isValid($phone_number)) {
 				return $this->createApiErrorInfoResponse('invalid_phone_number',
 					'Invalid phone number format.',
-					array( 'phone_number' => $phone_number ));
+					array( 'primary_phone_number_text' => $phone_number ));
 			}
 		}
 

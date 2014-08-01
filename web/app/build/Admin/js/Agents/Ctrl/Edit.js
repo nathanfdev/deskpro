@@ -709,7 +709,7 @@
               _this.email_sysaccount_error = res.data.error_info.emails.join(', ');
             }
             if ((res != null ? (_ref2 = res.data) != null ? _ref2.error_code : void 0 : void 0) === 'invalid_phone_number') {
-              _this.invalid_phone_error = res.data.error_info.phone_number;
+              _this.invalid_phone_error = res.data.error_message + ': ' + res.data.error_info.primary_phone_number_text;
             }
             _this.stopSpinner('saving', true);
             return _this.applyErrorResponseToView(res);

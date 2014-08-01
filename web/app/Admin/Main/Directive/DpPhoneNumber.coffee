@@ -16,15 +16,14 @@ define ["jquery", "intl-tel-input"] , ($, intlTelInput) ->
 			restrict: 'A',
 			# we need to apply the intlTelInput after the scope loads, and also do some manual model binding
 			link: (scope, element, attrs, ngModel) ->
-				scope.$watch 'loaded', ->
-					setTimeout ->
-						read = ->
-							ngModel.$setViewValue(element.val())
-						element.on 'focus blur keyup change', ->
-							scope.$apply read
-						element.intlTelInput()
-						read()
-					, 0
+				setTimeout ->
+					element.intlTelInput()
+					read = ->
+						ngModel.$setViewValue(element.val())
+					element.on 'focus blur keyup change', ->
+						scope.$apply read
+					read()
+				, 1250 # really should find a better way. this is to queue this func to run after new scope dom is ready
 
 		}
 	]

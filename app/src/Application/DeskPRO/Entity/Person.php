@@ -361,9 +361,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 	protected $emails;
 
 	/**
-	 * @var string
+	 * @var PhoneNumber[]
 	 */
-	protected $phone_number;
+	protected $phone_numbers;
 
 	/**
 	 */
@@ -1512,6 +1512,13 @@ class Person extends DomainObject implements HighlightableModelInterface
 		return $this->phone_numbers->first();
 	}
 
+	public function getPrimaryPhoneNumberText()
+	{
+		$phone_number = $this->getPrimaryPhoneNumber();
+
+		return $phone_number ? $phone_number->number : '';
+	}
+
 
 	public function setPrimaryPhoneNumber(PhoneNumber $number = null)
 	{
@@ -2440,6 +2447,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 				'email' => $this->primary_email->email
 			);
 		}
+
+		$data['primary_phone_number_text'] = $this->getPrimaryPhoneNumberText();
+
 
 		$data['emails'] = array();
 		foreach ($this->emails as $eml) {

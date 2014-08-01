@@ -36,11 +36,13 @@ namespace Application\DeskPRO\People\Agents;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\ORM\CollectionHelper;
 use Application\DeskPRO\Validator\Constraints as DeskproConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
+use Orb\Util\PhoneNumbers;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
@@ -74,7 +76,7 @@ class EditAgent
 	/**
 	 * @var string
 	 */
-	public $phone_number;
+	public $primary_phone_number_text;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam[]
@@ -92,10 +94,11 @@ class EditAgent
 	 */
 	public function __construct(Person $person)
 	{
-		$this->agent         = $person;
-		$this->name          = $person->name;
+		$this->agent = $person;
+		$this->name = $person->name;
 		$this->override_name = $person->override_display_name;
-		$this->phone_number  = $person->phone_number;
+		$this->primary_phone_number = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+		$this->primary_phone_number_text = $person->getPrimaryPhoneNumberText();
 
 		$this->zones = array();
 		if ($person->can_admin) {
@@ -147,8 +150,14 @@ class EditAgent
 		$agent->can_agent             = true;
 
 		$agent->name                  = $this->name;
-		$agent->phone_number          = $this->phone_number;
 		$agent->override_display_name = $this->override_name ?: '';
+
+		if (!PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
+			$this->primary_phone_number->number = $this->primary_phone_number_text;
+			$agent->setPrimaryPhoneNumber($this->primary_phone_number);
+		} else {
+			$agent->setPrimaryPhoneNumber(null);
+		}
 
 		$agent->can_admin             = in_array('admin', $this->zones);
 		$agent->can_reports           = in_array('reports', $this->zones);

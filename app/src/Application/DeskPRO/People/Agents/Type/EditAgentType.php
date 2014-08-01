@@ -49,7 +49,7 @@ class EditAgentType extends AbstractType
 		$builder->add('name', 'text', array('required' => true));
 		$builder->add('override_name', 'text', array('required' => false));
 
-		$builder->add('phone_number', 'text', array('required' => false));
+		$builder->add('primary_phone_number_text', 'text', array('required' => false));
 
 		$builder->add('emails', 'collection', array(
 			'type'         => 'email',
