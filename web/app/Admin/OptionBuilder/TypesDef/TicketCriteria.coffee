@@ -401,6 +401,10 @@ define [
 
 			return set_options
 
+		resetData: ->
+			@options_data = null
+			@loadDataPromise = null
+
 		loadDataOptions: ->
 			if @options_data
 				defer = @.$q.defer()
