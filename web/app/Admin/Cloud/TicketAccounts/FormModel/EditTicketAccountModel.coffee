@@ -31,7 +31,7 @@ define [
 			return form
 
 		apply: ->
-			@account.address = @form.address || (@form.address_name + '@' + window.DPC_SITE_DOMAIN)
+			@account.address = @form.address_name + '@' + window.DPC_SITE_DOMAIN
 			if not @account.options?
 				@account.options = {}
 

@@ -37,7 +37,7 @@
       };
 
       Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel.prototype.apply = function() {
-        this.account.address = this.form.address || (this.form.address_name + '@' + window.DPC_SITE_DOMAIN);
+        this.account.address = this.form.address_name + '@' + window.DPC_SITE_DOMAIN;
         if (this.account.options == null) {
           this.account.options = {};
         }
