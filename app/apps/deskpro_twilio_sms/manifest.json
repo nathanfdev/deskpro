@@ -30,7 +30,7 @@
 		},
 		{
 			"name": "from_number",
-			"type": "text",
+			"type": "phone_number",
 			"label": "From Number",
 			"description": "This phone number must be registered with Twilio. Your numbers can be found here: https://www.twilio.com/user/account/phone-numbers/incoming",
 			"native_only": true
