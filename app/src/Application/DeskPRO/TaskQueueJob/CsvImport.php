@@ -125,12 +125,13 @@ class CsvImport extends AbstractJob
 
 		$start_time = microtime(true);
 
+		$options = self::getOptions($this->_data['options']);
 		$fp = fopen($csv_file, 'r');
 		fseek($fp, $this->_data['fseek']);
 
 		if ($this->_data['fseek'] == 0 && $this->_data['skip_first']) {
 			// skip the first row - it's labels
-			fgetcsv($fp, null, $this->_data['options']['delimeter'], $this->_data['options']['enclosure']);
+			fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 		}
 
 		$complete = false;

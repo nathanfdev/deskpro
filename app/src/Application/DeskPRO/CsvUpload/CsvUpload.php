@@ -128,7 +128,7 @@ class CsvUpload
 			'skip_first'    => $skip_first,
 			'welcome_email' => $welcome_email,
 			'user_filename' => $user_filename,
-			'options'       => CsvImport::getOptions($options),
+			'options'       => $options,
 		);
 
 		$task = $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
