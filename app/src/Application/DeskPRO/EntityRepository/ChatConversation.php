@@ -197,7 +197,7 @@ class ChatConversation extends AbstractEntityRepository
 			SELECT c
 			FROM DeskPRO:ChatConversation c INDEX BY c.id
 			WHERE c.id IN(" . implode(',', $conversation_ids) . ")
-			ORDER BY c.id ASC
+			ORDER BY c.id DESC
 		")->execute();
 
 		return $conversations;
@@ -211,7 +211,7 @@ class ChatConversation extends AbstractEntityRepository
 				FROM chat_conversation_to_person convo
 				LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
 				WHERE convo.person_id = {$agent['id']} AND c.agent_team_id IS NOT NULL
-				ORDER BY convo.conversation_id
+				ORDER BY convo.conversation_id DESC
 			");
 		} else {
 			$convo_ids = App::getDb()->fetchAllCol("
@@ -219,7 +219,7 @@ class ChatConversation extends AbstractEntityRepository
 				FROM chat_conversation_to_person convo
 				LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
 				WHERE convo.person_id = {$agent['id']} AND c.agent_team_id = {$agent_team['id']}
-				ORDER BY convo.conversation_id
+				ORDER BY convo.conversation_id DESC
 			");
 		}
 
