@@ -149,9 +149,6 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 			->add('subject', 'text', array(
 				'required' => false
 			))
-			->add('account', 'text', array(
-				'required' => false
-			))
 			->add('to', 'text', array(
 				'required' => false
 			))
