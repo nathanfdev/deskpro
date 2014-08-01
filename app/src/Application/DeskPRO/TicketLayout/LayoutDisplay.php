@@ -84,9 +84,10 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
 
 	/**
 	 * @param LayoutField $field
-	 * @return bool
+	 * @param null        $before_field
+	 * @return bool|void
 	 */
-	public function add(LayoutField $field)
+	public function add(LayoutField $field, $before_field = null)
 	{
 		switch ($field->getFieldType()) {
 			case 'department':
@@ -116,7 +117,7 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
 				}
 		}
 
-		parent::add($field);
+		parent::add($field, $before_field);
 		return true;
 	}
 
