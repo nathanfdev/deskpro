@@ -9,7 +9,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 		this.options = {
 			loadUrl: '',
 			saveUrl: '',
-                        ticket_id: null
+			ticket_id: null
 		};
 
 		this.setOptions(options);

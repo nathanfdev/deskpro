@@ -3939,4 +3939,29 @@ class TicketController extends AbstractController
 		return $this->render('AgentBundle:Ticket:link.html.twig');
 	}
 
+	public function unlinkTicketAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		switch ($this->in->getString('link_type')) {
+			case 'parent':
+				$linked_ticket = $ticket;
+				break;
+
+			case 'child':
+			case 'sibling':
+				$linked_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('link_ticket_id'));
+				break;
+		}
+
+		if (!$linked_ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		$linked_ticket->parent_ticket = null;
+		$this->em->persist($linked_ticket);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }
