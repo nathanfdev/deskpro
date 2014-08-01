@@ -70,6 +70,19 @@
 							</td>
 						</tr>
 						<tr>
+							<td>To Department(s):</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
+									<li ng-repeat="department in departments">
+										<label>
+											<input type="checkbox" ng-model="model.department_ids[department.id]"/>
+											{{ ng_var('department.title') }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
 							<td>To Number:</td>
 							<td>
 								<div style="min-width: 200px;">

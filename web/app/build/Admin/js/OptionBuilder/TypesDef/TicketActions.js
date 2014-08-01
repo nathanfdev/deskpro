@@ -309,16 +309,25 @@
             getDataFormatter: function() {
               return {
                 getViewValue: function(value, data) {
-                  var agent_ids, aid, team_ids, tid, _i, _j, _len, _len1, _ref, _ref1;
+                  var agent_ids, aid, department_ids, did, team_ids, tid, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
                   if (value == null) {
                     value = {};
                   }
                   options = value.options || {};
+                  department_ids = {};
+                  if (options.department_ids) {
+                    _ref = options.department_ids;
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                      did = _ref[_i];
+                      did = parseInt(did);
+                      department_ids[did] = true;
+                    }
+                  }
                   agent_ids = {};
                   if (options.agent_ids) {
-                    _ref = options.agent_ids;
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                      aid = _ref[_i];
+                    _ref1 = options.agent_ids;
+                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                      aid = _ref1[_j];
                       if (aid !== 'followers' && aid !== 'assigned') {
                         aid = parseInt(aid);
                       }
@@ -330,9 +339,9 @@
                   }
                   team_ids = {};
                   if (options.agent_teams) {
-                    _ref1 = options.agent_teams;
-                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                      tid = _ref1[_j];
+                    _ref2 = options.agent_teams;
+                    for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                      tid = _ref2[_k];
                       if (tid !== 'assigned') {
                         tid = parseInt(tid);
                       }
@@ -345,27 +354,39 @@
                     agents: options.agents || [],
                     agent_ids: agent_ids,
                     agent_teams: team_ids,
+                    department_ids: department_ids,
                     to_number: options.to_number || '',
                     message: options.message || ''
                   };
                 },
                 getValue: function(model, data) {
-                  var k, v, value, _ref, _ref1;
+                  var k, v, value, _ref, _ref1, _ref2;
                   if (model == null) {
                     model = {};
                   }
                   options = {
                     agents: model.agents || [],
                     agent_teams: [],
+                    department_ids: [],
                     to_number: model.to_number || '',
                     message: model.message || '',
                     agent_ids: []
                   };
-                  if (model.agent_ids) {
-                    _ref = model.agent_ids;
+                  if (model.department_ids) {
+                    _ref = model.department_ids;
                     for (k in _ref) {
                       if (!__hasProp.call(_ref, k)) continue;
                       v = _ref[k];
+                      if (v) {
+                        options.department_ids.push(parseInt(k));
+                      }
+                    }
+                  }
+                  if (model.agent_ids) {
+                    _ref1 = model.agent_ids;
+                    for (k in _ref1) {
+                      if (!__hasProp.call(_ref1, k)) continue;
+                      v = _ref1[k];
                       if (v) {
                         if (k === 'assigned') {
                           options.agent_ids.push('assigned');
@@ -378,10 +399,10 @@
                     }
                   }
                   if (model.agent_teams) {
-                    _ref1 = model.agent_teams;
-                    for (k in _ref1) {
-                      if (!__hasProp.call(_ref1, k)) continue;
-                      v = _ref1[k];
+                    _ref2 = model.agent_teams;
+                    for (k in _ref2) {
+                      if (!__hasProp.call(_ref2, k)) continue;
+                      v = _ref2[k];
                       if (v) {
                         if (k === 'assigned') {
                           options.agent_teams.push('assigned');

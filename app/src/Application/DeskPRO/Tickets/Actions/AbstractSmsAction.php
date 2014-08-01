@@ -132,11 +132,20 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 				}
 			}
 		}
+		$department_agent_ids = array();
+		$department_ids = $this->getActionOption('department_ids', array());
+		$personRepo = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
+		foreach ($department_ids as $did) {
+			$department_agents = $personRepo->getAgentsInDepartment($did);
+			foreach ($department_agents as $a) {
+				$department_agent_ids[] = $a->id;
+			}
+		}
 
 		#############################################################################
 		# Convert Agent IDs into phone numbers - ensure agent is only selected once
 		#############################################################################
-		$agents = array_merge($agents, $team_member_agents);
+		$agents = array_merge($agents, $team_member_agents, $department_agent_ids);
 		$agents = array_unique($agents);
 		$repo = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
 		$agents = $repo->getPeopleResultsFromIds($agents);
@@ -147,7 +156,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 		}
 		$numbers = array_unique($numbers);
 		$numbers = array_filter($numbers, function($val){
-			return $val !== null && strlen($val) > 0;
+			return $val !== null && strlen($val) > 5; // attempt to filter out any impossible numbers
 		});
 
 		foreach ($numbers as $number) {

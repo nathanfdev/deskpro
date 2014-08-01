@@ -355,6 +355,12 @@ define [
 					getViewValue: (value = {}, data) ->
 						options = value.options || {}
 
+						department_ids = {}
+						if options.department_ids
+							for did in options.department_ids
+								did = parseInt(did)
+								department_ids[did] = true
+
 						agent_ids = {}
 						if options.agent_ids
 							for aid in options.agent_ids
@@ -376,18 +382,24 @@ define [
 						agents: options.agents || [],
 						agent_ids: agent_ids,
 						agent_teams: team_ids,
+						department_ids: department_ids
 						to_number: options.to_number || ''
 						message: options.message || ''
 						}
 					getValue: (model = {}, data) ->
 						options = {
-							agents: model.agents || [],
+							agents: model.agents || []
 							agent_teams: []
+							department_ids: []
 							to_number: model.to_number || ''
 							message: model.message || ''
-							agent_ids: [],
+							agent_ids: []
 						}
 
+						if model.department_ids
+							for own k, v of model.department_ids
+								if v
+									options.department_ids.push(parseInt(k))
 						if model.agent_ids
 							for own k, v of model.agent_ids
 								if v
@@ -404,10 +416,10 @@ define [
 										options.agent_teams.push('assigned')
 									else
 										options.agent_teams.push(parseInt(k))
-
 						value = {}
 						value.type = opt.action_name
 						value.options = options
+
 						return value
 					}
 				}
