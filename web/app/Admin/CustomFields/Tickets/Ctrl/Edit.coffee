@@ -12,6 +12,12 @@ define [
 			return @Api.sendGet('/ticket_layouts/fields/ticket_field_' + (@field_id || '__undefined__')).success( (data) =>
 				@user_layouts  = data.user_layouts
 				@agent_layouts = data.agent_layouts
+
+				if not @field_id
+					for l in @user_layouts
+						l.enabled = true
+					for l in @agent_layouts
+						l.enabled = true
 			)
 
 		postSave: ->
