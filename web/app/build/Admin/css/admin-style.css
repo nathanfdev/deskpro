@@ -8956,14 +8956,18 @@ nav.dp-tabletabs ul li {
 }
 
 nav.dp-tabletabs ul li a {
+  position: relative;
+  bottom: -1px;
+  z-index: 1;
   display: block;
   padding: 4px 10px 3px 10px;
   font-size: 120%;
   font-weight: normal;
   color: #000;
   text-decoration: none;
-  border: 1px solid transparent;
-  border-bottom: none;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-bottom-color: #bbb;
   -webkit-border-top-right-radius: 3px;
           border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 0;
@@ -8988,8 +8992,9 @@ nav.dp-tabletabs ul li a i.fa {
 
 nav.dp-tabletabs ul li.active a,
 nav.dp-tabletabs ul li:hover a {
+  background: #fff;
   border: 1px solid #bbb;
-  border-bottom: none;
+  border-bottom-color: #fff;
 }
 
 .dp-tabletabs-contentwrap {
