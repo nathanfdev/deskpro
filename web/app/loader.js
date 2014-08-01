@@ -67,7 +67,7 @@ requirejs.config({
 		"angularUiAce":                    ["angular"],
 		"angularUiRouter":                 ["angular"],
 		"angularUiSortable":               ["angular"],
-		"angularMoment":                   ["angular"],
+		"angularMoment":                   ["angular", "moment"],
 		"angularFileUpload":               ["jquery"],
 		"angularSlider":                   ["angular"],
 		"angularGrid":                     ["angular"],
