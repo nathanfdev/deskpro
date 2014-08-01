@@ -774,8 +774,11 @@ class AgentsController extends AbstractController implements ProtectedController
 		}
 
 		$tables = array();
-		$tables['sys_filters_email'] = $table_gen->buildSystemFiltersTable('email', $sys_filters);
-		$tables['sys_filters_alert'] = $table_gen->buildSystemFiltersTable('alert', $sys_filters);
+
+		$table_context = $this->person === $agent ? null : $agent;
+
+		$tables['sys_filters_email'] = $table_gen->buildSystemFiltersTable('email', $sys_filters, $table_context);
+		$tables['sys_filters_alert'] = $table_gen->buildSystemFiltersTable('alert', $sys_filters, $table_context);
 
 		if (!$id) {
 			foreach ($tables['sys_filters_email']['rows'] as &$row) {
