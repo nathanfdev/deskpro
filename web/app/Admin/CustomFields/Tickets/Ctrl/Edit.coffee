@@ -20,9 +20,10 @@ define [
 				enable_agent_layouts: []
 			}
 
-			for own k,l of @user_layouts
-				if l.enabled
-					postData.enable_user_layouts.push(if l.department then l.department.id else 0)
+			if not @form.is_agent_field
+				for own k,l of @user_layouts
+					if l.enabled
+						postData.enable_user_layouts.push(if l.department then l.department.id else 0)
 			for own k,l of @agent_layouts
 				if l.enabled
 					postData.enable_agent_layouts.push(if l.department then l.department.id else 0)

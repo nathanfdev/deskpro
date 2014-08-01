@@ -32,12 +32,14 @@
           enable_user_layouts: [],
           enable_agent_layouts: []
         };
-        _ref = this.user_layouts;
-        for (k in _ref) {
-          if (!__hasProp.call(_ref, k)) continue;
-          l = _ref[k];
-          if (l.enabled) {
-            postData.enable_user_layouts.push(l.department ? l.department.id : 0);
+        if (!this.form.is_agent_field) {
+          _ref = this.user_layouts;
+          for (k in _ref) {
+            if (!__hasProp.call(_ref, k)) continue;
+            l = _ref[k];
+            if (l.enabled) {
+              postData.enable_user_layouts.push(l.department ? l.department.id : 0);
+            }
           }
         }
         _ref1 = this.agent_layouts;
