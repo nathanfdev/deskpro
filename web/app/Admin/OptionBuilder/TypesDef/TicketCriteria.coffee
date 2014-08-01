@@ -154,6 +154,11 @@ define [
 			})
 
 			options.push({
+				title: 'SLAs',
+				value: 'CheckSlaStatus'
+			})
+
+			options.push({
 				title: 'Creation System',
 				value: 'CheckCreationSystem'
 			})
@@ -414,6 +419,7 @@ define [
 						'ticket_fields':   '/ticket_fields',
 						'user_fields':     '/user_fields',
 						'org_fields':      '/org_fields',
+						'ticket_slas':     '/ticket_slas',
 						'ticket_accounts': '/email_accounts',
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
@@ -431,6 +437,7 @@ define [
 						options_data['ticket_fields']    = data.ticket_fields?.custom_fields
 						options_data['org_fields']       = data.org_fields?.custom_fields
 						options_data['user_fields']      = data.user_fields?.custom_fields
+						options_data['ticket_slas']      = data.ticket_slas?.slas
 						options_data['email_accounts']   = data.ticket_accounts.email_accounts
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
@@ -639,6 +646,55 @@ define [
 			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
 			return def
+
+		getCheckSlaStatus: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-slas.html')
+
+				getData: ->
+					defer = me.$q.defer()
+					me.loadDataOptions().then(=>
+						options = []
+						for sla in me.options_data['ticket_slas']
+							options.push({
+								title: sla.title,
+								value: sla.id
+							})
+
+						defer.resolve({
+							options: options
+						})
+					)
+
+					return defer.promise
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value.options || {}
+							return {
+								op:          value.op || 'contains',
+								sla_ids:     options.sla_ids || [],
+								is_complete: !!options.is_complete,
+								sla_status:  options.sla_status || 'passing',
+								show_status: !!options.sla_status
+							}
+
+						getValue: (model = {}, data) ->
+							value = {
+								type: 'CheckSlaStatus',
+								op: model.op || 'contains',
+								options: {
+									sla_ids: model.sla_ids || []
+									is_complete: if model.op == 'contains' then !!model.is_complete else null,
+									sla_status: if model.show_status and model.sla_status and model.op == 'contains' then model.sla_status else null
+								}
+							}
+							return value
+						}
+			}
 
 		getCheckStatus: (options = {}) ->
 			options.propName = 'status'

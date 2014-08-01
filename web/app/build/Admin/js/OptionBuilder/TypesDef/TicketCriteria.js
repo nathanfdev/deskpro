@@ -139,6 +139,10 @@
           value: 'CheckLabel'
         });
         options.push({
+          title: 'SLAs',
+          value: 'CheckSlaStatus'
+        });
+        options.push({
           title: 'Creation System',
           value: 'CheckCreationSystem'
         });
@@ -339,13 +343,14 @@
               'ticket_fields': '/ticket_fields',
               'user_fields': '/user_fields',
               'org_fields': '/org_fields',
+              'ticket_slas': '/ticket_slas',
               'ticket_accounts': '/email_accounts',
               'usergroups': '/user_groups',
               'langs': '/langs',
               'email_tpls': '/email-templates-info'
             }).then((function(_this) {
               return function(result) {
-                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
                 data = result.data;
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
@@ -358,30 +363,31 @@
                 options_data['ticket_fields'] = (_ref1 = data.ticket_fields) != null ? _ref1.custom_fields : void 0;
                 options_data['org_fields'] = (_ref2 = data.org_fields) != null ? _ref2.custom_fields : void 0;
                 options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
+                options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
                 options_data['email_accounts'] = data.ticket_accounts.email_accounts;
                 options_data['usergroups'] = data.usergroups.groups;
-                options_data['langs'] = (_ref4 = data.langs) != null ? _ref4.languages : void 0;
+                options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
                 _this.options_data = options_data;
-                if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
-                  _ref6 = _this.options_data.ticket_fields;
-                  for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
-                    f = _ref6[_i];
+                if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
+                  _ref7 = _this.options_data.ticket_fields;
+                  for (_i = 0, _len = _ref7.length; _i < _len; _i++) {
+                    f = _ref7[_i];
                     _this.initFieldGetter('CheckTicketField', f);
                   }
                 }
-                if ((_ref7 = _this.options_data) != null ? _ref7.user_fields : void 0) {
-                  _ref8 = _this.options_data.user_fields;
-                  for (_j = 0, _len1 = _ref8.length; _j < _len1; _j++) {
-                    f = _ref8[_j];
+                if ((_ref8 = _this.options_data) != null ? _ref8.user_fields : void 0) {
+                  _ref9 = _this.options_data.user_fields;
+                  for (_j = 0, _len1 = _ref9.length; _j < _len1; _j++) {
+                    f = _ref9[_j];
                     _this.initFieldGetter('CheckUserField', f);
                   }
                 }
-                if ((_ref9 = _this.options_data) != null ? _ref9.org_fields : void 0) {
-                  _ref10 = _this.options_data.org_fields;
+                if ((_ref10 = _this.options_data) != null ? _ref10.org_fields : void 0) {
+                  _ref11 = _this.options_data.org_fields;
                   _results = [];
-                  for (_k = 0, _len2 = _ref10.length; _k < _len2; _k++) {
-                    f = _ref10[_k];
+                  for (_k = 0, _len2 = _ref11.length; _k < _len2; _k++) {
+                    f = _ref11[_k];
                     _results.push(_this.initFieldGetter('CheckOrgField', f));
                   }
                   return _results;
@@ -712,6 +718,74 @@
         options.operators = ['contains', 'notcontains'];
         def = this.getStandardInput(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckSlaStatus = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-slas.html');
+          },
+          getData: function() {
+            var defer;
+            defer = me.$q.defer();
+            me.loadDataOptions().then((function(_this) {
+              return function() {
+                var sla, _i, _len, _ref;
+                options = [];
+                _ref = me.options_data['ticket_slas'];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  sla = _ref[_i];
+                  options.push({
+                    title: sla.title,
+                    value: sla.id
+                  });
+                }
+                return defer.resolve({
+                  options: options
+                });
+              };
+            })(this));
+            return defer.promise;
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = value.options || {};
+                return {
+                  op: value.op || 'contains',
+                  sla_ids: options.sla_ids || [],
+                  is_complete: !!options.is_complete,
+                  sla_status: options.sla_status || 'passing',
+                  show_status: !!options.sla_status
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {
+                  type: 'CheckSlaStatus',
+                  op: model.op || 'contains',
+                  options: {
+                    sla_ids: model.sla_ids || [],
+                    is_complete: model.op === 'contains' ? !!model.is_complete : null,
+                    sla_status: model.show_status && model.sla_status && model.op === 'contains' ? model.sla_status : null
+                  }
+                };
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckStatus = function(options) {
