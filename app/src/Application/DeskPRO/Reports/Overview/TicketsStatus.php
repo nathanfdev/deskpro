@@ -49,13 +49,21 @@ class TicketsStatus extends AbstractTableOverviewStat
 	 */
 	public function getTitles()
 	{
-		return array(
+		$s = array(
 			'awaiting_agent' => 'Awaiting Agent',
 			'awaiting_user'  => 'Awaiting User',
 			'resolved'       => 'Resolved',
 			'closed'         => 'Archived',
 			'hidden'         => 'Hidden'
 		);
+
+		$return = array();
+		foreach ($s as $k => $v) {
+			$return[$k] = $v;
+			$return[$k . '_hold'] = $v . ' (On Hold)';
+		}
+
+		return $return;
 	}
 
 
@@ -70,7 +78,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 
 		$sql = "
 			SELECT tickets.status, COUNT(*)
-			FROM tickets AS tickets
+			FROM tickets AS tickets WHERE is_hold = 0
 			GROUP BY tickets.status
 		";
 
@@ -78,6 +86,17 @@ class TicketsStatus extends AbstractTableOverviewStat
 		$this->logger->startTimer('TicketsStatus');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
 		$this->logger->logTotalTime('TicketsStatus');
+
+		$sql = "
+			SELECT CONCAT(tickets.status, '_hold'), COUNT(*)
+			FROM tickets AS tickets WHERE is_hold = 1
+			GROUP BY tickets.status
+		";
+
+		$this->logger->logDebug("[TicketsStatus w hold] $sql");
+		$this->logger->startTimer('TicketsStatus_w_hold');
+		$this->values = array_merge($this->values, App::getDb()->fetchAllKeyValue($sql));
+		$this->logger->logTotalTime('TicketsStatus_w_hold');
 
 		return $this->values;
 	}
