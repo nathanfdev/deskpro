@@ -16,6 +16,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			@$scope.delimeter = 'comma'
 			@$scope.enclosure = 'none'
+			@options = {}
 
 			@$scope.importSettings = {fieldMappings: [], additionalMappings: [], skipFirst: 1, welcomeEmail: false, showExtraMappings: {}}
 			@showExtraMappingsCases = [
@@ -81,6 +82,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			skip_first = @$scope.importSettings.skipFirst
 			welcome_email = @$scope.importSettings.welcomeEmail
 			filename = @$scope.fileUploadResults.filename
+			options = @$scope.fileUploadResults.options
 
 			# sending the request and doing other actions like showing / hiding indicators etc.
 
@@ -93,6 +95,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				skip_first: skip_first
 				welcome_email: if welcome_email then 1 else 0,
 				filename: filename
+				options: options
 
 			}).then( (result) =>
 

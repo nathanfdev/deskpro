@@ -76,6 +76,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 		$skip_first    = $this->in->getBool('skip_first');
 		$welcome_email = $this->in->getBool('welcome_email');
 		$filename      = $this->in->getUint('filename');
+		$options       = $this->in->getArrayValue('options');
 
 		/**
 		 * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
@@ -83,7 +84,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
 		$csv_upload = $this->container->getSystemService('csv_upload');
 
-		$result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email);
+		$result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $options);
 
 		return $this->createApiResponse($result);
 	}

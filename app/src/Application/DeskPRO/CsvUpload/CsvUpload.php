@@ -101,7 +101,7 @@ class CsvUpload
 	 * @return array
 	 */
 
-	public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email)
+	public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, array $options = array())
 	{
 		$has_email = false;
 
@@ -127,7 +127,8 @@ class CsvUpload
 			'field_maps'    => $field_maps,
 			'skip_first'    => $skip_first,
 			'welcome_email' => $welcome_email,
-			'user_filename' => $user_filename
+			'user_filename' => $user_filename,
+			'options'       => CsvImport::getOptions($options),
 		);
 
 		$task = $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
@@ -188,6 +189,7 @@ class CsvUpload
 			App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
 		}
 
+		$originalOptions = $options;
 		$options = CsvImport::getOptions($options);
 		$fp           = fopen($csv_path, 'r');
 		$columns      = fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
@@ -236,7 +238,8 @@ class CsvUpload
 			'columns'            => $columns,
 			'examples'           => $examples,
 			'custom_fields'      => $custom_fields,
-			'show_welcome_email' => $show_welcome_email
+			'show_welcome_email' => $show_welcome_email,
+			'options'            => $originalOptions,
 		);
 
 	}

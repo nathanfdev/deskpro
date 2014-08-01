@@ -130,7 +130,7 @@ class CsvImport extends AbstractJob
 
 		if ($this->_data['fseek'] == 0 && $this->_data['skip_first']) {
 			// skip the first row - it's labels
-			fgetcsv($fp);
+			fgetcsv($fp, null, $this->_data['options']['delimeter'], $this->_data['options']['enclosure']);
 		}
 
 		$complete = false;
@@ -142,7 +142,7 @@ class CsvImport extends AbstractJob
 				break;
 			}
 
-			$row = fgetcsv($fp);
+			$row = fgetcsv($fp, null, $this->_data['options']['delimeter'], $this->_data['options']['enclosure']);
 			if (!$row) {
 				$complete = true;
 				break;
