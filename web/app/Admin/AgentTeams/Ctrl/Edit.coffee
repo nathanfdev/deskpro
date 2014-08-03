@@ -6,6 +6,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@teamId = parseInt(@$stateParams.id)
+
+			@setDefaultIcon()
+			@$scope.$on 'icon.selected', (e, path) => @$scope.icon_image = path
 			return
 
 		initialLoad: ->
@@ -32,6 +35,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				@agents.map((x) -> if x.id in memberIds then x.value = true)
 			)
 			return promise
+
+
+		setDefaultIcon: =>
+			@$scope.icon_image = "/web/app/vendor-src/icons/business-people/png/businessman166.png"
+
 
 		saveForm: ->
 			postData = {

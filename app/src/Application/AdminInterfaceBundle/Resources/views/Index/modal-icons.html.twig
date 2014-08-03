@@ -12,7 +12,19 @@
 
 {% block modal_body %}
 
-    <div class="glyph-icon flaticon-business-two217"></div>
+    <div style="max-height: 400px;overflow-y: scroll;" class="iconpicker">
+        <div ng-repeat="(category, icons) in Ctrl.categories">
+            <h4>
+                {{ ng_var('category') }}
+            </h4>
+
+            <div class="glyph-icon icon" ng-repeat="icon in icons" ng-class="icon.class"
+                 style="display: inline-block"
+                 ng-click="Ctrl.selectIcon(icon.image);"
+                 ></div>
+            <br /><br />
+        </div>
+    </div>
 
 {% endblock %}
 
