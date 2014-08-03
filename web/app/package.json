@@ -9,6 +9,7 @@
     "grunt-contrib-coffee": "*",
     "grunt-contrib-watch": "*",
     "grunt-recess": "*",
-    "grunt-contrib-requirejs": "~0.4.3"
+    "grunt-contrib-requirejs": "~0.4.3",
+	"grunt-contrib-less": "*"
   }
 }

@@ -1,0 +1,26 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_attributes %}ng-controller="Admin_Icons_Ctrl_List"{% endblock %}
+{% block modal_controls %}<button type="button" class="close" ng-click="$dismiss()">&times;</button>{% endblock %}
+
+
+
+{% block modal_title %}
+    <h4 class="modal-title">Select icon</h4>
+{% endblock %}
+
+
+
+{% block modal_body %}
+
+    <div class="glyph-icon flaticon-business-two217"></div>
+
+{% endblock %}
+
+
+
+{% block modal_footer %}
+    <i class="spinner-flat" ng-show="Ctrl.busy"></i>
+    <button class="btn btn-default" ng-show="!Ctrl.busy" ng-click="$dismiss()">
+        {{ phrase('agent.general.cancel') }}
+    </button>
+{% endblock %}

@@ -185,6 +185,7 @@ define([
 	'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
 	'Admin/NewsSettings/Ctrl/NewsSettings',
 	'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
+	'Admin/Icons/Ctrl/List',
 
 	'CloudAdminLoad'
 
