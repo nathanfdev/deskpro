@@ -755,6 +755,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$prefs     = $loader->getPrefs();
 			$filters   = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($agent);
 		} else {
+			$agent = null;
 			$prefs = new AgentNotifPrefs();
 			$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
 		}
@@ -775,7 +776,11 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		$tables = array();
 
-		$table_context = $this->person === $agent ? null : $agent;
+		if ($agent) {
+			$table_context = $this->person === $agent ? null : $agent;
+		} else {
+			$table_context = null;
+		}
 
 		$tables['sys_filters_email'] = $table_gen->buildSystemFiltersTable('email', $sys_filters, $table_context);
 		$tables['sys_filters_alert'] = $table_gen->buildSystemFiltersTable('alert', $sys_filters, $table_context);
