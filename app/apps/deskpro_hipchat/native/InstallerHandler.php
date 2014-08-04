@@ -53,7 +53,7 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	public function uninstall(InstallerContext $context)
 	{
-		$action_name = "deskpro_hipchat_" . $context->getApp()->id;
+		$action_name = $this->getActionName($context);
 		$context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", array($action_name));
 	}
 
@@ -81,7 +81,7 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	private function refreshTriggerAction(InstallerContext $context)
 	{
-		$action_name = 'HipChatAction' . $context->getApp()->id;
+		$action_name = $this->getActionName($context);
 		$rec = array(
 			'app_id'      => $context->getApp()->id,
 			'action_name' => $action_name,
@@ -95,5 +95,18 @@ class InstallerHandler extends AbstractInstallerHandler
 		} else {
 			$context->getDb()->insert('ticket_actions_def', $rec);
 		}
+	}
+
+
+	/**
+	 * @param InstallerContext $context
+	 *
+	 * @return string
+	 */
+	private function getActionName(InstallerContext $context)
+	{
+		$action_name = 'HipChatAction'.$context->getApp()->id;
+
+		return $action_name;
 	}
 }
