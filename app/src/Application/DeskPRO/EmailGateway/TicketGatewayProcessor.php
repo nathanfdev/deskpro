@@ -261,6 +261,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($check_person && $check_person->is_agent) {
 			if ($email_body_html) {
+				$this->logMessage("Checking for agent reply codes in HTML body");
 				$rc = new AgentReplyCodes($email_body_html, true);
 				$rc->setCleaner($this->container->getInputCleaner());
 				$rc->setLogger($this->logger);
@@ -270,6 +271,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$email_body_html = $rc->getNewBody();
 				}
 			} else {
+				$this->logMessage("Checking for agent reply codes in TEXT body");
 				$rc = new AgentReplyCodes($email_body_text, false);
 				$rc->setLogger($this->logger);
 
