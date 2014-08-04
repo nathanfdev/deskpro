@@ -483,6 +483,21 @@ class Department extends DomainObject implements HasPhraseName
 		return $data;
 	}
 
+	public function getAvatarUrl($size = 50)
+	{
+		if ($this->avatar && $this->avatar->isImage()) {
+			$url = $this->avatar->getThumbnailUrl($size);
+		} else {
+			$url = App::get('router')->generate('serve_default_picture', array(
+				's' => $size,
+				'size-fit' => 1,
+				'is_dep' => 1,
+			), true);
+		}
+
+		return $url;
+	}
+
 
 	############################################################################
 	# Doctrine Metadata

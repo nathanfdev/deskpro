@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -90,6 +91,21 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->members->removeElement($person);
 		$this->_onPropertyChanged('members', $this->members, $this->members);
+	}
+
+	public function getAvatarUrl($size = 50)
+	{
+		if ($this->avatar && $this->avatar->isImage()) {
+			$url = $this->avatar->getThumbnailUrl($size);
+		} else {
+			$url = App::get('router')->generate('serve_default_picture', array(
+				's' => $size,
+				'size-fit' => 1,
+				'is_team' => 1,
+			), true);
+		}
+
+		return $url;
 	}
 
 
