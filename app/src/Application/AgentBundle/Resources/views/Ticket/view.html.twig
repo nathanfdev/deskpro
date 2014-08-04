@@ -255,7 +255,7 @@ pageMeta.lang = {{ {
 				'blank_title': phrase('agent.general.none'),
 				'selected': ticket.department.id|default(0),
 				'id': baseId ~ '_department_id',
-				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header"',
+				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header" data-style-type="icons" data-select-icon-size="22"',
 				'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
 			} %}
 

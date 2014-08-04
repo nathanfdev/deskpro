@@ -159,6 +159,7 @@ pageMeta.baseId = '{{ baseId }}';
 							'id': baseId ~ '_dep',
 							'departments': app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign'),
 							'selected': ticket.department_id,
+                            'add_attr': 'data-style-type="icons" data-select-icon-size="22"',
 							with_blank: true
 						} %}
 					</td>

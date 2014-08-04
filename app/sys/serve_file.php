@@ -608,7 +608,7 @@ class FilestorageLoader extends LoaderAbstract
 		} elseif (isset($_GET['is_team'])) {
 			$name = 'picture-default-team';
 		} elseif (isset($_GET['is_dep'])) {
-			$name = 'picture-default-department';
+			$name = 'picture-default-dep';
 		}
 
 		$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");

@@ -19,6 +19,10 @@
 			{% set title = '(Untitled)' %}
 		{% endif %}
 	{% endif %}
+    {% set icon = cat.getAvatarUrl(20) %}
+    {% if icon %}
+        {% set icon = 'data-icon="' ~ icon ~ '"' %}
+    {% endif %}
 	{% if parent_title %}
 		{% set full_title = parent_title ~ ' > ' ~ title %}
 	{% else %}
@@ -26,7 +30,7 @@
 	{% endif %}
 	{% if not child_prop %}{% set child_prop = 'children' %}{% endif %}
 	{% if allow_parent_sel %}
-		<option data-full-title="{{ full_title }}" value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{% if depth > 0 %}{{ '--'|repeat(depth) }} {% endif %}{{ title }}</option>
+		<option data-full-title="{{ full_title }}" {{ icon|raw }} value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{% if depth > 0 %}{{ '--'|repeat(depth) }} {% endif %}{{ title }}</option>
 		{% for subk,subcat in cat[child_prop] %}
 			{{ _self.render_options(subk, subcat, selected, depth+1, full_title, title_prop, child_prop) }}
 		{% endfor %}
@@ -38,7 +42,7 @@
 				{% endfor %}
 			</optgroup>
 		{% else %}
-			<option data-full-title="{{ full_title }}" value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{% if depth > min_depth_indent %}{{ '--'|repeat(depth) }} {% endif %}{{ title }}</option>
+			<option data-full-title="{{ full_title }}" value="{{ id }}" {{ icon|raw }} {% if id == selected %}selected="selected"{% endif %}>{% if depth > min_depth_indent %}{{ '--'|repeat(depth) }} {% endif %}{{ title }}</option>
 
 			{% if child_prop != 'NONE' %}
 				{% if cat[child_prop] %}
@@ -50,7 +54,7 @@
 		{% endif %}
 	{% endif %}
 {% endmacro %}
-<select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="{{add_classname}}" {{ add_attr|raw }}>
+<select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="{{add_classname}}" {{ add_attr|raw }} {% if categories|length and categories[0].avatar is defined %}{% endif %}>
 	{% if with_blank %}<option value="{{ with_blank_value|default('0') }}">{{ blank_title|default('') }}</option>{% endif %}
 	{% for k,cat in categories %}
 		{{ _self.render_options(k, cat, selected, 0, '', title_prop, child_prop, allow_parent_sel) }}
