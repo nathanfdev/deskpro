@@ -18,6 +18,7 @@ define [
 			@agentId = parseInt(@$stateParams.id)
 			@form = {email_primary: '', emails_list: []}
 			@hasPermOverrides = false
+			@primary_phone_number_region = 'US'
 
 			@$scope.$watch('EditCtrl.form.emails_list', (emails_list) =>
 				@email_sysaccount_error = false
@@ -38,8 +39,9 @@ define [
 					groups: "/agent_groups",
 					groupPerms: "/agent_groups/all/permissions",
 					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables",
-					ticketDeps: "/ticket_deps?with_perms=1"
-					chatDeps: "/chat_deps?with_perms=1"
+					ticketDeps: "/ticket_deps?with_perms=1",
+					chatDeps: "/chat_deps?with_perms=1",
+					default_country: "/settings/values/core.default_country_code"
 				})
 			else
 				promise = @Api.sendDataGet({
@@ -48,7 +50,8 @@ define [
 					groupPerms: "/agent_groups/all/permissions",
 					notif_prefs_table: "/agents/0/notify-prefs/get-tables",
 					ticketDeps: "/ticket_deps?with_perms=1",
-					chatDeps: "/chat_deps?with_perms=1"
+					chatDeps: "/chat_deps?with_perms=1",
+					default_country: "/settings/values/core.default_country_code"
 				})
 
 			promise.then( (result) =>
@@ -56,6 +59,7 @@ define [
 					@agent = result.data.agent.agent
 					@agent.signature_html = result.data.agent.signature_html
 					@perm_form = result.data.agent.perms
+					@primary_phone_number_region = result.data.default_country.value
 				else
 					@agent = {
 						id: 0,
@@ -65,6 +69,8 @@ define [
 						usergroups: []
 					}
 					@perm_form = null
+
+				@primary_phone_number_region = result.data.default_country.value
 
 				@teams  = result.data.teams.agent_teams
 				@groups = result.data.groups.groups
@@ -76,7 +82,7 @@ define [
 				@agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table)
 				@notif_prefs = @agentNotifPrefsModel.prefsTable
 
-				@agentFormModel = new EditAgentModel(@agent, @groups, @teams)
+				@agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
 				@form = @agentFormModel.form
 
 				@$scope.$watch('EditCtrl.form.agent_groups', =>

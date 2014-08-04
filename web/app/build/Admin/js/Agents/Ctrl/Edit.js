@@ -27,6 +27,7 @@
           emails_list: []
         };
         this.hasPermOverrides = false;
+        this.primary_phone_number_region = 'US';
         this.$scope.$watch('EditCtrl.form.emails_list', (function(_this) {
           return function(emails_list) {
             _this.email_sysaccount_error = false;
@@ -54,7 +55,8 @@
             groupPerms: "/agent_groups/all/permissions",
             notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables",
             ticketDeps: "/ticket_deps?with_perms=1",
-            chatDeps: "/chat_deps?with_perms=1"
+            chatDeps: "/chat_deps?with_perms=1",
+            default_country: "/settings/values/core.default_country_code"
           });
         } else {
           promise = this.Api.sendDataGet({
@@ -63,7 +65,8 @@
             groupPerms: "/agent_groups/all/permissions",
             notif_prefs_table: "/agents/0/notify-prefs/get-tables",
             ticketDeps: "/ticket_deps?with_perms=1",
-            chatDeps: "/chat_deps?with_perms=1"
+            chatDeps: "/chat_deps?with_perms=1",
+            default_country: "/settings/values/core.default_country_code"
           });
         }
         promise.then((function(_this) {
@@ -73,6 +76,7 @@
               _this.agent = result.data.agent.agent;
               _this.agent.signature_html = result.data.agent.signature_html;
               _this.perm_form = result.data.agent.perms;
+              _this.primary_phone_number_region = result.data.default_country.value;
             } else {
               _this.agent = {
                 id: 0,
@@ -83,6 +87,7 @@
               };
               _this.perm_form = null;
             }
+            _this.primary_phone_number_region = result.data.default_country.value;
             _this.teams = result.data.teams.agent_teams;
             _this.groups = result.data.groups.groups;
             _this.groupPerms = result.data.groupPerms.groups;
@@ -90,7 +95,7 @@
             _this.chatDeps = result.data.chatDeps.departments;
             _this.agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table);
             _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;
-            _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams);
+            _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams, _this.primary_phone_number_region);
             _this.form = _this.agentFormModel.form;
             _this.$scope.$watch('EditCtrl.form.agent_groups', function() {
               return _this.updateEffectiveUgPerms();
