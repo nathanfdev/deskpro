@@ -543,7 +543,7 @@ class TicketLogGenerator
 			case 'attachments':
 				$log_set = array();
 
-				if ($new && $new->blob && !$new->is_inline) {
+				if ($new && isset($new->blob) && !$new->is_inline) {
 					$blob = $new->blob;
 					$log_data = array();
 					$log_data['action_type']     = 'attach_added';
@@ -556,7 +556,7 @@ class TicketLogGenerator
 					$log_set[] = $log_data;
 				}
 
-				if ($old && $old->blob && !$old->is_inline) {
+				if ($old && isset($old->blob) && !$old->is_inline) {
 					$blob = $old->blob;
 					$log_data = array();
 					$log_data['action_type']     = 'attach_removed';
