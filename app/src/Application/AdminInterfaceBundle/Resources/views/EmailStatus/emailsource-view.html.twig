@@ -54,10 +54,10 @@
 							<div ng-if="!ViewSource.ticket_message">
 								New Reply #{{ ng_var('ViewSource.source.object_id') }} <em>(no longer exists)</em>
 							</div>
-							<div ng-if="ViewSource.ticket.ticket">
+							<div ng-if="ViewSource.ticket">
 								On Ticket #{{ ng_var('ViewSource.ticket.id') }}: <a ng-href="../agent/#t:{{ ng_var('ViewSource.ticket.id') }}" target="_blank">{{ ng_var('ViewSource.ticket.subject') }}</a>
 							</div>
-							<div ng-if="!ViewSource.ticket.ticket">
+							<div ng-if="!ViewSource.ticket">
 								<em>(Ticket no longer exists)</em>
 							</div>
 						</div>
