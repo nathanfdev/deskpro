@@ -8,7 +8,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@teamId = parseInt(@$stateParams.id)
 
 			@$scope.icon_image = null
-			@$scope.$on 'icon.selected', (e, path) => @setAvatar path
+			@$scope.$on 'icon.selected', (e, path) => @selectIcon path
 
 			return
 
@@ -31,7 +31,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				else
 					@team = {members: []}
 
-				@setIcon @team.avatar
+				@setAvatar @team.avatar
 
 				# value=true on agents that are members
 				memberIds = @team.members.map((x) -> x.id)
@@ -41,18 +41,26 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 
 
-		setIcon: (image) =>
-			if !image?
+		setAvatar: (blob) =>
+			@team.avatar = blob
+			if !blob?
 				@$scope.icon_image = "/web/app/vendor-src/icons/business-people/png/businessmen27.png"
 			else
-				@$scope.icon_image = image
+				@$scope.icon_image = blob.thumbnail_url_50
 
 
 
-		setAvatar: (image) =>
-			@Api.sendPostJson('/misc/upload', {path: image, is_image: true}).success () =>
-				console.log arguments
-				@setIcon image
+		selectIcon: (image) =>
+			setAvatar null if !image?
+
+			@$scope.uploading = true
+			@Api.sendPostJson('/misc/upload', {path: image, is_image: true}).then(
+				(data) =>
+					@$scope.uploading = false
+					@setAvatar data.data.blob
+				() =>
+					@$scope.uploading = false
+			)
 
 
 
