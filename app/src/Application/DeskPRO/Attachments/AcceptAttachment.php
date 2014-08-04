@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Attachments;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
 use Orb\Data\ContentTypes;
 use Orb\Util\Numbers;
@@ -100,7 +101,7 @@ class AcceptAttachment
 	 * @param $restriction_set_id
 	 * @return array|null
 	 */
-	public function getError(UploadedFile $file = null, $restriction_set_id = null)
+	public function getError(UploadedFile $file = null, $restriction_set_id = null, $skipValidation = false)
 	{
 		$restriction = null;
 		if ($restriction_set_id) {
@@ -124,7 +125,7 @@ class AcceptAttachment
 			'error_detail' => null
 		);
 
-		if (!$file->isValid()) {
+		if (!$skipValidation && !$file->isValid()) {
 			switch ($file->getError()) {
 				case \UPLOAD_ERR_INI_SIZE:
 					$error['error_code'] = self::ERR_SIZE;
@@ -168,7 +169,7 @@ class AcceptAttachment
 		}
 
 		if (!$error['error_code']) {
-			if (!is_uploaded_file($file->getRealPath()) || !file_exists($file->getRealPath())) {
+			if (!file_exists($file->getRealPath())) {
 				$error['error_code'] = self::ERR_NO_FILE;
 				$error['error_detail'] = '';
 			}
@@ -187,14 +188,24 @@ class AcceptAttachment
 		}
 
 		if ($log_error) {
-			App::logErrorMessage('failed_upload', 'INFO', "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}", array(
+			// todo handle error params
+//			App::logErrorMessage('failed_upload', 'INFO', "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}", array(
+//				'error_code' => $error['error_code'],
+//				'error_detail' => $error['error_detail'],
+//				'filename' => $file->getClientOriginalName(),
+//				'type' => $file->getClientMimeType(),
+//				'size' => $file->getClientSize(),
+//				'file_err_code' => $file->getError()
+//			));
+			$params = array(
 				'error_code' => $error['error_code'],
 				'error_detail' => $error['error_detail'],
 				'filename' => $file->getClientOriginalName(),
 				'type' => $file->getClientMimeType(),
 				'size' => $file->getClientSize(),
-				'file_err_code' => $file->getError()
-			));
+				'file_err_code' => $file->getError(),
+			);
+			KernelErrorHandler::logException(new \Exception("Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}" . implode(', ', $params)));
 		}
 
 		return $error;
