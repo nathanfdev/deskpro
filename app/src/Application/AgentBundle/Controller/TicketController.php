@@ -2667,16 +2667,20 @@ class TicketController extends AbstractController
 
 		$old_ticket_id = $other_ticket['id'];
 
+		$merge = new TicketMerge($this->person, $ticket, $other_ticket);
+
+		if (!$merge->checkPersonPermission()) {
+			throw $this->createNotFoundException("User does not have permission to merge these tickets");
+		}
+
 		try {
 			$this->em->beginTransaction();
-			$merge = new TicketMerge($this->person, $ticket, $other_ticket);
 			$merge->merge();
 			$this->em->commit();
 		} catch (\InvalidArgumentException $e) {
 			throw $this->createNotFoundException("You cannot merge a ticket with itself");
 		} catch (\Exception $e) {
-			$this->em->rollback();
-
+			$this->em->rollback(false);
 			throw $e;
 		}
 
