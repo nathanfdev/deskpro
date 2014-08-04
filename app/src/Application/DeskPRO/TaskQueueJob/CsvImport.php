@@ -241,7 +241,7 @@ class CsvImport extends AbstractJob
 		}
 
 		foreach ($field_maps AS $column_id => $info) {
-			if (!$info['map']) {
+			if (empty($info['map'])) {
 				continue;
 			}
 
@@ -252,6 +252,7 @@ class CsvImport extends AbstractJob
 
 			$map_field = $info['map'];
 			$label = isset($info['label']) ? $info['label'] : '';
+			$info['label'] = $label;
 
 			switch ($map_field) {
 				case 'first_name':
@@ -297,10 +298,12 @@ class CsvImport extends AbstractJob
 					break;
 
 				case 'phone':
+					if (empty($info['type'])) $info['type'] = 'phone';
 					$this->_addContactData($person, 'phone', array('type' => $info['type'], 'number' => $column_value), $label);
 					break;
 
 				case 'im':
+					if (empty($info['type'])) $info['type'] = 'aim';
 					$this->_addContactData($person, 'instant_message', array('service' => $info['type'], 'username' => $column_value), $label);
 					break;
 
