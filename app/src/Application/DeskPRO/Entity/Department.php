@@ -593,10 +593,10 @@ class Department extends DomainObject implements HasPhraseName
 			'inversedBy' => NULL,
 			'joinColumns' => array(
 				0 => array(
-					'name' => 'blob_id',
+					'name' => 'avatar_blob_id',
 					'referencedColumnName' => 'id',
 					'nullable' => true,
-					'onDelete' => 'set null',
+					'onDelete' => 'cascade',
 					'columnDefinition' => NULL,
 				),
 			),

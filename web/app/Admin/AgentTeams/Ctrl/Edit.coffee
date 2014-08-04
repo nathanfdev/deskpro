@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_AgentTeams_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_AgentTeams_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = []
+		@DEPS      = ['$upload', '$http']
 
 		init: ->
 			@teamId = parseInt(@$stateParams.id)
@@ -44,9 +44,27 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		setAvatar: (blob) =>
 			@team.avatar = blob
 			if !blob?
-				@$scope.icon_image = "/web/app/vendor-src/icons/business-people/png/businessmen27.png"
+				@$scope.icon_image = "/web/app/vendor-src/icons/webdev-seo/png/career.png"
 			else
 				@$scope.icon_image = blob.thumbnail_url_50
+
+
+
+		onFileSelect: (files) ->
+			@$scope.uploading = false
+			file = files[0]
+
+			@$upload.upload({
+				url: @$http.formatApiUrl('/misc/upload'),
+				data: { is_image: true },
+				file: file
+			}).success( (data) =>
+				@$scope.uploading = false
+				@setAvatar data.blob
+			).error( (data) =>
+				@$scope.uploading = false
+				@Growl.error data?.error_message || 'Error'
+			)
 
 
 
@@ -69,6 +87,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				team: {
 					name: @team.name
 					person_ids: []
+					avatar: @team.avatar?.id || null
 				}
 			}
 
