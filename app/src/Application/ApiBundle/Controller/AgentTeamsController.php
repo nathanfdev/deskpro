@@ -140,6 +140,8 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 			return $this->createApiValidationErrorResponse($errors);
 		}
 
+		// todo handle image
+
 		#------------------------------
 		# Save team
 		#------------------------------
@@ -189,5 +191,20 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 		} else {
 			return $this->createApiSuccessResponse(array('team_id' => $team->id));
 		}
+	}
+
+	/**
+	 * @param $id
+	 * @return Response
+	 */
+	public function saveAvatarAction($id)
+	{
+		if (!$team = $this->getContainer()->getAgentData()->getTeam($id)) {
+			throw $this->createNotFoundException();
+		}
+
+
+
+		return $this->createApiSuccessResponse(array());
 	}
 }

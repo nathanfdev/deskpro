@@ -7,8 +7,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		init: ->
 			@teamId = parseInt(@$stateParams.id)
 
-			@setDefaultIcon()
-			@$scope.$on 'icon.selected', (e, path) => @$scope.icon_image = path
+			@$scope.icon_image = null
+			@$scope.$on 'icon.selected', (e, path) => @setAvatar path
+
 			return
 
 		initialLoad: ->
@@ -30,6 +31,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				else
 					@team = {members: []}
 
+				@setIcon @team.avatar
+
 				# value=true on agents that are members
 				memberIds = @team.members.map((x) -> x.id)
 				@agents.map((x) -> if x.id in memberIds then x.value = true)
@@ -37,8 +40,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			return promise
 
 
-		setDefaultIcon: =>
-			@$scope.icon_image = "/web/app/vendor-src/icons/business-people/png/businessman166.png"
+
+		setIcon: (image) =>
+			if !image?
+				@$scope.icon_image = "/web/app/vendor-src/icons/business-people/png/businessmen27.png"
+			else
+				@$scope.icon_image = image
+
+
+
+		setAvatar: (image) =>
+			@Api.sendPostJson('/misc/upload', {path: image, is_image: true}).success () =>
+				console.log arguments
+				@setIcon image
+
 
 
 		saveForm: ->

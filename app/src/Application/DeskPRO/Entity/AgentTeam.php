@@ -66,6 +66,11 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	protected $members = null;
 
 	/**
+	 * @var Blob
+	 */
+	protected $avatar;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
@@ -112,5 +117,22 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToMany(array( 'fieldName' => 'members', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'agent_team_members', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'orderBy' => array( 'name' => 'ASC', ), ));
+
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'avatar',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'mappedBy' => NULL,
+			'inversedBy' => NULL,
+			'joinColumns' => array(
+				0 => array(
+					'name' => 'blob_id',
+					'referencedColumnName' => 'id',
+					'nullable' => true,
+					'onDelete' => 'set null',
+					'columnDefinition' => NULL,
+				),
+			),
+			'dpApi' => true
+		));
 	}
 }

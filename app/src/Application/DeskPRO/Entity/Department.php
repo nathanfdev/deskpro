@@ -110,6 +110,11 @@ class Department extends DomainObject implements HasPhraseName
 	protected $display_order = 0;
 
 	/**
+	 * @var Blob
+	 */
+	protected $avatar;
+
+	/**
 	 * @return Department
 	 */
 
@@ -580,5 +585,22 @@ class Department extends DomainObject implements HasPhraseName
 				 'indexBy'      => 'id'
 			)
 		);
+
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'avatar',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'mappedBy' => NULL,
+			'inversedBy' => NULL,
+			'joinColumns' => array(
+				0 => array(
+					'name' => 'blob_id',
+					'referencedColumnName' => 'id',
+					'nullable' => true,
+					'onDelete' => 'set null',
+					'columnDefinition' => NULL,
+				),
+			),
+			'dpApi' => true
+		));
 	}
 }
