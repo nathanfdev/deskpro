@@ -349,14 +349,18 @@ class TicketManager
 			));
 		}
 
-		$search_updater = new TicketSearchUpdater($this->db, $ticket);
-		\DpShutdown::add(function() use ($search_updater) {
-			try {
-				$search_updater->update();
-			} catch (\Exception $e) {
-				KernelErrorHandler::logException($e);
-			}
-		}, null, 'db_done_trans_commit');
+		if (!$is_noop) {
+			$search_updater = new TicketSearchUpdater($this->db, $ticket);
+			\DpShutdown::add(
+				function () use ($search_updater) {
+					try {
+						$search_updater->update();
+					} catch (\Exception $e) {
+						KernelErrorHandler::logException($e);
+					}
+				}, null, 'db_done_trans_commit'
+			);
+		}
 
 		$this->em->flush();
 
