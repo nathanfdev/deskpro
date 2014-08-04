@@ -116,7 +116,8 @@ class AgentsController extends AbstractController implements ProtectedController
 			throw $this->createNotFoundException();
 		}
 
-		$agent_data = $agent->toApiData();
+		$apiDataFactory = $this->getContainer()->getSystemService('person_api_data_factory');
+		$agent_data = $apiDataFactory->agentToApiData($agent);
 		$agent_data['teams'] = array();
 
 		$agent->loadHelper('Agent');

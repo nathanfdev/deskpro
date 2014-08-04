@@ -2453,6 +2453,18 @@ class Person extends DomainObject implements HighlightableModelInterface
 		return $data;
 	}
 
+
+	/**
+	 * @param bool  $primary
+	 * @param bool  $deep
+	 * @param array $visited
+	 *
+	 * @return array
+	 *
+	 * @deprecated see \Application\DeskPRO\DependencyInjection\SystemServices\PersonApiDataFactoryService
+	 *             The factory service is better suited. This method is still widely used, but its encourages
+	 *             to use the factory service going forward.
+	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
