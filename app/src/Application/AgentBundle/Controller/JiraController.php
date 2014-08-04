@@ -42,7 +42,12 @@ class JiraController extends AbstractController
 		
 		$repo = $em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 				
-		$meta = $service->getCreateMeta(); 
+		$meta = $service->getCreateMeta();
+
+		// Invalid jira service, give a 404
+		if (empty($message) || !is_array($meta)) {
+			throw $this->createNotFoundException();
+		}
 		
 		$projects = array();
 		
