@@ -76,7 +76,7 @@ class SettingsProfile
 	 */
 	protected $em;
 
-	public function __construct(Person $person)
+	public function __construct(Person $person, $defaultCountryCode = 'US')
 	{
 		$this->em = App::getOrm();
 
@@ -88,7 +88,7 @@ class SettingsProfile
 		// this is acting like a DataTransformer.
 		$this->primary_phone_number_text = $person->primary_phone_number ? $person->primary_phone_number->number : '';
 		$this->primary_phone_number = $person->primary_phone_number ?: new PhoneNumber();
-		$this->primary_phone_number_region = $person->primary_phone_number_region;
+		$this->primary_phone_number_region = $person->primary_phone_number_region ?: $defaultCountryCode;
 		//
 
 		$this->override_display_name = $person->override_display_name;
