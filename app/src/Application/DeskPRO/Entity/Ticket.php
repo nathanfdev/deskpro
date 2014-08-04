@@ -43,8 +43,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Orb\Util\WorkHoursSet;
+use Orb\Util\WorkHoursSetAll;
 
 /**
  * Class Ticket
@@ -2914,7 +2918,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	public function getWorkHoursSet()
 	{
 		if (!$this->_work_hours_set) {
-			$this->_work_hours_set = new \Orb\Util\WorkHoursSetAll();
+			try {
+				$work_hours = App::getSetting('core_tickets.work_hours');
+				if ($work_hours && !is_array($work_hours)) {
+					$work_hours = @unserialize($work_hours);
+				}
+				if ($work_hours) {
+					$work_hours = Arrays::removeEmptyArray($work_hours);
+					$work_hours = Arrays::removeNull($work_hours);
+					$work_hours = Arrays::removeEmptyString($work_hours);
+
+					$work_hours = new OptionsArray($work_hours);
+					return new WorkHoursSet(
+						$work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
+						$work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+						$work_hours->get('work_days', array(false, true, true, true, true, true, false)),
+						$work_hours->get('timezone', 'UTC'),
+						$work_hours->get('holidays', array())
+					);
+				} else {
+					return new WorkHoursSetAll();
+				}
+			} catch (\Exception $e) {
+				$this->_work_hours_set = new \Orb\Util\WorkHoursSetAll();
+			}
 		}
 
 		return $this->_work_hours_set;
