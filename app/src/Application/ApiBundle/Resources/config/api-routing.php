@@ -2282,6 +2282,48 @@ foreach ($label_types as $info) {
 }
 
 ########################################################################################################################
+# Round Robin
+########################################################################################################################
+
+$collection->create('api_roundrobins_list', array(
+	'path'        => '/round_robin',
+	'controller'  => 'ApiBundle:RoundRobin:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_settings', array(
+	'path'        => '/round_robin/settings',
+	'controller'  => 'ApiBundle:RoundRobin:settings',
+	'methods'     => array('GET', 'PUT'),
+));
+
+$collection->create('api_roundrobins_triggers', array(
+	'path'        => '/round_robin/triggers/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:checkTriggers',
+	'defaults'    => array('id' => null),
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_get', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_set', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:set',
+	'methods'     => array('POST', 'PUT'),
+	'defaults'    => array('id' => 0),
+));
+
+$collection->create('api_roundrobins_delete', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:delete',
+	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
 # Start Settings
 ########################################################################################################################
 

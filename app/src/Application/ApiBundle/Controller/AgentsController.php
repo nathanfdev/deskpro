@@ -76,9 +76,14 @@ class AgentsController extends AbstractController implements ProtectedController
 		$online_agents_userchat = array_fill_keys($online_agents_userchat, true);
 
 		foreach ($this->container->getAgentData()->getAgents() as $agent) {
-			$agent_data = $agent->toApiData();
-			$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
-			$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
+
+			if ($this->in->getBool('full')) {
+				$agent_data = $this->getFullAgentData($agent['id']);
+			} else {
+				$agent_data = $agent->toApiData();
+				$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+				$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
+			}
 
 			$data['agents'][] = $agent_data;
 		}
@@ -109,12 +114,7 @@ class AgentsController extends AbstractController implements ProtectedController
 	# get-agent
 	####################################################################################################################
 
-	public function getAgentAction($id)
-	{
-		return $this->createApiResponse($this->getAgent($id));
-	}
-
-	protected function getAgent($id)
+	protected function getFullAgentData($id)
 	{
 		$agent = $this->container->getAgentData()->get($id);
 
@@ -148,6 +148,12 @@ class AgentsController extends AbstractController implements ProtectedController
 		return $data;
 	}
 
+	public function getAgentAction($id)
+	{
+		$data = $this->getFullAgentData($id);
+
+		return $this->createApiResponse($data);
+	}
 
 	####################################################################################################################
 	# get-deleted-agent
@@ -212,11 +218,6 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		$exist_person = null;
 
-//		$set_emails = $this->in->getArrayOfStrings('agent.emails');
-//
-//		if ($this->in->getString('agent.email')) {
-//			array_unshift($set_emails, $this->in->getString('agent.email'));
-//		}
 		if (!isset($agent_postdata['emails'])) {
 			$agent_postdata['emails'] = array();
 		}
@@ -324,8 +325,6 @@ class AgentsController extends AbstractController implements ProtectedController
 			$edit_agent
 		);
 
-//		$agent_postdata = $this->in->getArrayValue('agent');
-
 		// We did a bit of pre-cleanup above to prepend
 		// primary address to emails list
 		unset($agent_postdata['email']);
@@ -343,12 +342,9 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save subscriptions
 		#-------------------------
 
-//		if ($this->in->checkIsset('filter_subs') && $this->in->checkIsset('other_subs')) {
 		if ($filter_subs && $other_subs) {
 			$notif_pref_loader = new AgentNotifPrefsLoader($agent, $this->em);
 			$notif_prefs = $notif_pref_loader->getPrefsFromArray(
-//				$this->in->getArrayValue('filter_subs'),
-//				$this->in->getArrayValue('other_subs')
 				$filter_subs,
 				$other_subs
 			);
@@ -361,7 +357,6 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Quick add: add 'all perms' group
 		#-------------------------
 
-//		if ($this->in->getBool('quick_add')) {
 		if ($quick_add) {
 			$ug = $this->container->getAgentGroups()->getSysGroup('agent_all_perms');
 			$agent->usergroups->add($ug);
@@ -373,10 +368,8 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save permission overrides
 		#-------------------------
 
-//		if ($this->in->checkIsset('perm_overrides')) {
 		if ($perm_overrides) {
 			$perms = new AgentPermissions();
-//			$perms->fromArray($this->in->getArrayValue('perm_overrides'));
 			$perms->fromArray($perm_overrides);
 
 			$persister = new GroupDbPersister($this->em);
@@ -387,13 +380,11 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save department permission overrides
 		#-------------------------
 
-//		if ($this->in->checkIsset('dep_perm_overrides')) {
 		if ($dep_perm_overrides) {
 			$ticket_deps = $this->container->getTicketDepartments();
 			$chat_deps   = $this->container->getChatDepartments();
 
 			$set_perms = array();
-//			foreach ($this->in->getArrayValue('dep_perm_overrides.tickets') as $did => $p) {
 			foreach ($dep_perm_overrides['tickets'] as $did => $p) {
 				if (!($dep = $ticket_deps->getById($did))) continue;
 				if (count($dep->children)) {
@@ -406,7 +397,7 @@ class AgentsController extends AbstractController implements ProtectedController
 					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
 				}
 			}
-//			foreach ($this->in->getArrayValue('dep_perm_overrides.chat') as $did => $p) {
+
 			foreach ($dep_perm_overrides['chat'] as $did => $p) {
 				if (!($dep = $chat_deps->getById($did))) continue;
 				if (count($dep->children)) {
@@ -429,18 +420,6 @@ class AgentsController extends AbstractController implements ProtectedController
 		#-------------------------
 
 		$data = array();
-//		if ($this->in->checkIsset('profile.signature_html')) {
-//			$data['signature_html'] = $this->in->getString('profile.signature_html');
-//		}
-//		if ($this->in->checkIsset('profile.timezone')) {
-//			$data['timezone'] = $this->in->getString('profile.timezone');
-//		}
-//		if ($this->in->checkIsset('profile.unset_picture')) {
-//			$data['unset_picture'] = $this->in->getBool('profile.unset_picture');
-//		}
-//		if ($this->in->checkIsset('profile.set_picture_blob')) {
-//			$data['set_picture_blob'] = $this->in->getString('profile.set_picture_blob');
-//		}
 		if (isset($profile['signature_html'])) {
 			$data['signature_html'] = $profile['signature_html'];
 		}
@@ -463,7 +442,6 @@ class AgentsController extends AbstractController implements ProtectedController
 		#-------------------------
 
 		// Send welcome email for new users
-//		if ($is_new && !$this->in->getBool('skip_email')) {
 		if ($is_new && !$skip_email) {
 			$message = $this->container->getMailer()->createMessage();
 			$message->setToPerson($agent);
@@ -478,13 +456,6 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Return
 		#-------------------------
 
-//		if ($is_new) {
-//			return $this->createApiCreateResponse(array(
-//				'person_id' => $agent->id
-//			), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
-//		} else {
-//			return $this->createSuccessResponse(array('person_id' => $agent->id));
-//		}
 		$data = $agent->toApiData();
 		$data['person_id'] = $agent['id']; // back compatibility
 		return $this->createApiResponse($data);
@@ -828,9 +799,6 @@ class AgentsController extends AbstractController implements ProtectedController
 		));
 	}
 
-	/**
-	 *
-	 */
 	public function bulkCreateAgentsAction()
 	{
 		if ($filename = $this->in->getString('filename')) {

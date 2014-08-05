@@ -29,6 +29,12 @@
           title: 'Set Assigned Agent',
           value: 'SetAgent'
         });
+        if ((this.options_data.round_robin != null) && this.options_data.round_robin.enabled) {
+          options.push({
+            title: 'Set Assigned Agent from Round Robin',
+            value: 'SetRoundRobin'
+          });
+        }
         options.push({
           title: 'Set Assigned Team',
           value: 'SetAgentTeam'
@@ -296,7 +302,9 @@
               'email_accounts': '/email_accounts',
               'usergroups': '/user_groups',
               'langs': '/langs',
-              'email_tpls': '/email-templates-info'
+              'email_tpls': '/email-templates-info',
+              round_robin: '/round_robin/settings',
+              round_robins: '/round_robin'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -317,6 +325,8 @@
                 options_data['usergroups'] = data.usergroups.groups;
                 options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
+                options_data['round_robin'] = data.round_robin;
+                options_data['round_robins'] = data.round_robins;
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
                   _ref7 = _this.options_data.ticket_fields;
@@ -357,6 +367,17 @@
             value: -1
           }
         ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetRoundRobin = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'id';
+        options.dataName = 'round_robins';
         def = this.getStandardSelect(options);
         return def;
       };
