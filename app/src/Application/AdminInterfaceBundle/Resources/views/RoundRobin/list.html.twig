@@ -5,7 +5,7 @@
         <h4 style="display: inline-block; margin: 0 10px;">{{ phrase('adm.round_robins.enable') }}</h4>
     </section>
 
-	<section class="dp-paneblock dp-listpane">
+	<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.settings.enabled">
         <header>
 			<h3 ng-pluralize count="ListCtrl.robins.length || 0" when="{{ ng_plural_phrase('adm.round_robins.count') }}"></h3>
 		</header>
