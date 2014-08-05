@@ -83,6 +83,14 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		});
 
 		$data['groups'] = $this->getApiData($ugs);
+		$ids = array_map(function($g){ return $g['id']; }, $data['groups']);
+
+		if ($this->in->getBool('with_perms')) {
+			$loader = new GroupsDbLoader($ids, $this->em);
+			foreach ($data['groups'] as &$group) {
+				$group['perms'] = $loader->getGroupPermissions($group['id']);
+			}
+		}
 
 		return $this->createApiResponse($data);
 	}

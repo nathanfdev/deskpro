@@ -1,4 +1,12 @@
 <?php return array(
+
+	'adm.agents.perm_title_tickets'                               => 'Tickets',
+	'adm.agents.perm_title_people'                                => 'People',
+	'adm.agents.perm_title_chat'                                  => 'Chat',
+	'adm.agents.perm_title_publish'                               => 'Publish',
+	'adm.agents.perm_title_profile'                               => 'Profile',
+	'adm.agents.perm_title_tasks'                                 => 'Tasks',
+
 	'adm.agents.perm_ticket_use'                                  => 'Can use the ticket system',
 	'adm.agents.perm_ticket_create'                               => 'Can create new tickets',
 	'adm.agents.perm_ticket_reply_mass'                           => 'Can mass-reply to tickets',
@@ -47,6 +55,7 @@
 	'adm.agents.perm_publish_validate'                            => 'Can validate content and comments (including own)',
 	'adm.agents.perm_general_picture'                             => 'Can set their own picture',
 	'adm.agents.perm_general_signature'                           => 'Can set their own signature',
+	'adm.agents.perm_tasks_use'                                   => 'Can use tasks',
 
 	'adm.agents.perm_ticket_modify_department'                    => 'Modify department',
 	'adm.agents.perm_ticket_modify_fields'                        => 'Modify fields',

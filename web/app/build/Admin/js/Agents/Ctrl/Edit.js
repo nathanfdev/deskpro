@@ -163,7 +163,8 @@
           org: {},
           chat: {},
           publish: {},
-          general: {}
+          general: {},
+          tasks: {}
         };
         this.ugEffectiveDepPerms = {
           tickets: {},

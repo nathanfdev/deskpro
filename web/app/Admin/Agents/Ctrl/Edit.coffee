@@ -127,13 +127,16 @@ define [
 		# When usergroups are changed, we need to update the effective list of permissions
 		###
 		updateEffectiveUgPerms: ->
+
+			# todo this map should be loaded from server
 			@ugEffectivePerms = {
 				ticket: {},
 				people: {},
 				org: {},
 				chat: {},
 				publish: {},
-				general: {}
+				general: {},
+				tasks: {}
 			}
 
 			@ugEffectiveDepPerms = {

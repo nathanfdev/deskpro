@@ -1,0 +1,8 @@
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="tasks.settings"><a href="#/tasks/settings"><i class="fa fa-cog"></i> {{ phrase('adm.tasks.settings') }}</a></li>
+		</ul>
+	</nav>
+{% endblock %}

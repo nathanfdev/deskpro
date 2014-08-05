@@ -86,6 +86,11 @@ class AgentsController extends AbstractController implements ProtectedController
 				$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
 			}
 
+			if ($this->in->getBool('with_perms')) {
+				$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
+				$agent_data['perms'] = $perm_loader->getEffectivePermissions()->toArray();
+			}
+
 			$data['agents'][] = $agent_data;
 		}
 

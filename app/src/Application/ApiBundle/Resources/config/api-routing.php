@@ -3832,6 +3832,22 @@ $collection->create('api_api_keys_regenerate', array(
 ));
 
 ########################################################################################################################
+# Tasks
+########################################################################################################################
+
+$collection->create('api_tasks_settings_get', array(
+	'path'       => '/tasks/settings',
+	'controller' => 'ApiBundle:Tasks:settings',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_tasks_settings_set', array(
+	'path'       => '/tasks/settings',
+	'controller' => 'ApiBundle:Tasks:updateSettings',
+	'methods'    => array('PUT'),
+));
+
+########################################################################################################################
 # CRM User Fields
 ########################################################################################################################
 
