@@ -37,12 +37,14 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -88,6 +90,7 @@ use Orb\Util\Util;
  * @property string $salt
  * @property PersonEmail $primary_email
  * @property PersonEmail[] $emails
+ * @property PhoneNumber[] $phone_numbers
  * @property LabelPerson[] $labels
  * @property CustomDataPerson[] $custom_data
  * @property PersonContactData[] $contact_data
@@ -96,6 +99,7 @@ use Orb\Util\Util;
  * @property TwitterUser[] $twitter_users
  * @property PersonPref[] $preferences
  * @property PersonUsersourceAssoc[] $usersource_assoc
+ * @property DepartmentPermission $department_permissions
  * @property \DateTime $date_created
  * @property \DateTime $date_last_login
  * @property \DateTime $date_password_set
@@ -358,6 +362,11 @@ class Person extends DomainObject implements HighlightableModelInterface
 	protected $emails;
 
 	/**
+	 * @var PhoneNumber[]
+	 */
+	protected $phone_numbers;
+
+	/**
 	 */
 	protected $labels;
 
@@ -401,6 +410,11 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $usersource_assoc;
+
+	/**
+	 * @var DepartmentPermission[]
+	 */
+	protected $department_permissions;
 
 	/**
 	 * The date the user was inserted into the system
@@ -538,6 +552,8 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->department_permissions = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -1497,6 +1513,79 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 
 	/**
+	 * returns the number that this person marked as his/her primary number
+	 *
+	 * @return string
+	 */
+	public function getPrimaryPhoneNumber()
+	{
+		return $this->phone_numbers->first();
+	}
+
+
+	/**
+	 * get the number of primary number
+	 *
+	 * @return string
+	 */
+	public function getPrimaryPhoneNumberText()
+	{
+		$phone_number = $this->getPrimaryPhoneNumber();
+
+		return $phone_number ? $phone_number->number : '';
+	}
+
+
+	/**
+	 * get the 2 character country code of primary number
+	 *
+	 * @return string
+	 */
+	public function getPrimaryPhoneNumberRegion()
+	{
+		$phone_number = $this->getPrimaryPhoneNumber();
+
+		$region = $phone_number ? $phone_number->region : null;
+
+		if (!$region) {
+			$region = '';
+		}
+
+		return $region;
+	}
+
+
+	public function setPrimaryPhoneNumber(PhoneNumber $number = null)
+	{
+		// note that while this is a 1-many relationship, we ensure in this method that we only have 1
+		// or 0 PhoneNumber objects in the collection.
+		// if there is a null, we just remove any number that might have been in our collection
+		if (!$number) {
+			$this->phone_numbers->clear();
+			$this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
+
+			return;
+		}
+
+		// we have a number, make sure its the only one in our collection here
+		$number->person = $this;
+		if ($current_number = $this->getPrimaryPhoneNumber()) {
+			if ($current_number->getId() == $number->getId()) {
+				$this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
+				return;
+			} else {
+				$old = new ArrayCollection(array( $current_number ));
+				$this->phone_numbers->clear();
+				$this->phone_numbers->add($number);
+				$this->_onPropertyChanged('phone_numbers', $old, $this->phone_numbers);
+			}
+		}
+		$this->phone_numbers->add($number);
+		$this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
+	}
+
+
+	/**
 	 * Get the primary email address, or null if this person has none.
 	 *
 	 * @return string
@@ -1767,7 +1856,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 		return null;
 	}
-
 
 
 	/**
@@ -2363,6 +2451,18 @@ class Person extends DomainObject implements HighlightableModelInterface
 		return $data;
 	}
 
+
+	/**
+	 * @param bool  $primary
+	 * @param bool  $deep
+	 * @param array $visited
+	 *
+	 * @return array
+	 *
+	 * @deprecated see \Application\DeskPRO\DependencyInjection\SystemServices\PersonApiDataFactoryService
+	 *             The factory service is better suited. This method is still widely used, but its encourages
+	 *             to use the factory service going forward.
+	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
@@ -2394,6 +2494,10 @@ class Person extends DomainObject implements HighlightableModelInterface
 				'email' => $this->primary_email->email
 			);
 		}
+
+		$data['primary_phone_number_text'] = $this->getPrimaryPhoneNumberText();
+		$data['primary_phone_number_region'] = $this->getPrimaryPhoneNumberRegion();
+
 
 		$data['emails'] = array();
 		foreach ($this->emails as $eml) {
@@ -2541,5 +2645,14 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapOneToMany(array( 'fieldName' => 'usersource_assoc', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonUsersourceAssoc', 'mappedBy' => 'person',  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonTwitterUser', 'mappedBy' => 'person',  ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'twitter_accounts', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'persons' ));
+		$metadata->mapOneToMany(array( 'fieldName'    => 'phone_numbers',
+		                               'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+		                               'mappedBy'     => 'person', 'cascade' => array('persist'),
+		                               'orphanRemoval' => true
+		));
+		$metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
+		                               'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
+		                               'mappedBy' => 'person'
+		));
 	}
 }

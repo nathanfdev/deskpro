@@ -27,6 +27,7 @@
           emails_list: []
         };
         this.hasPermOverrides = false;
+        this.primary_phone_number_region = 'US';
         this.$scope.$watch('EditCtrl.form.emails_list', (function(_this) {
           return function(emails_list) {
             _this.email_sysaccount_error = false;
@@ -54,7 +55,8 @@
             groupPerms: "/agent_groups/all/permissions",
             notif_prefs_table: "/agents/" + this.agentId + "/notify-prefs/get-tables",
             ticketDeps: "/ticket_deps?with_perms=1",
-            chatDeps: "/chat_deps?with_perms=1"
+            chatDeps: "/chat_deps?with_perms=1",
+            default_country: "/settings/values/core.default_country_code"
           });
         } else {
           promise = this.Api.sendDataGet({
@@ -63,7 +65,8 @@
             groupPerms: "/agent_groups/all/permissions",
             notif_prefs_table: "/agents/0/notify-prefs/get-tables",
             ticketDeps: "/ticket_deps?with_perms=1",
-            chatDeps: "/chat_deps?with_perms=1"
+            chatDeps: "/chat_deps?with_perms=1",
+            default_country: "/settings/values/core.default_country_code"
           });
         }
         promise.then((function(_this) {
@@ -73,6 +76,7 @@
               _this.agent = result.data.agent.agent;
               _this.agent.signature_html = result.data.agent.signature_html;
               _this.perm_form = result.data.agent.perms;
+              _this.primary_phone_number_region = result.data.default_country.value;
             } else {
               _this.agent = {
                 id: 0,
@@ -83,6 +87,7 @@
               };
               _this.perm_form = null;
             }
+            _this.primary_phone_number_region = result.data.default_country.value;
             _this.teams = result.data.teams.agent_teams;
             _this.groups = result.data.groups.groups;
             _this.groupPerms = result.data.groupPerms.groups;
@@ -90,7 +95,7 @@
             _this.chatDeps = result.data.chatDeps.departments;
             _this.agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table);
             _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;
-            _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams);
+            _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams, _this.primary_phone_number_region);
             _this.form = _this.agentFormModel.form;
             _this.$scope.$watch('EditCtrl.form.agent_groups', function() {
               return _this.updateEffectiveUgPerms();
@@ -674,6 +679,7 @@
         }
         this.email_dupe_error = false;
         this.email_sysaccount_error = false;
+        this.invalid_phone_error = false;
         this.startSpinner('saving');
         postData = this.getFormData();
         if (this.agentId) {
@@ -700,12 +706,15 @@
           };
         })(this), (function(_this) {
           return function(res) {
-            var _ref, _ref1;
+            var _ref, _ref1, _ref2;
             if ((res != null ? (_ref = res.data) != null ? _ref.error_code : void 0 : void 0) === 'dupe_email') {
               _this.email_dupe_error = res.data.error_info.existing;
             }
             if ((res != null ? (_ref1 = res.data) != null ? _ref1.error_code : void 0 : void 0) === 'system_email_addresses') {
               _this.email_sysaccount_error = res.data.error_info.emails.join(', ');
+            }
+            if ((res != null ? (_ref2 = res.data) != null ? _ref2.error_code : void 0 : void 0) === 'invalid_phone_number') {
+              _this.invalid_phone_error = res.data.error_message + ': ' + res.data.error_info.primary_phone_number_text;
             }
             _this.stopSpinner('saving', true);
             return _this.applyErrorResponseToView(res);

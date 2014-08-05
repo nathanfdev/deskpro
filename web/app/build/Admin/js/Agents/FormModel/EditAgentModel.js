@@ -2,10 +2,15 @@
   define(['DeskPRO/Util/Strings'], function(Strings) {
     var EditAgentModel;
     return EditAgentModel = (function() {
-      function EditAgentModel(agent, groups, teams) {
+      function EditAgentModel(agent, groups, teams, primary_phone_number_region) {
         var check, email, enabled, g, t, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3;
         this.form = {};
         this.form.name = agent.name;
+        this.form.primary_phone_number_text = agent.primary_phone_number_text;
+        this.form.primary_phone_number_region = agent.primary_phone_number_region;
+        if (!this.form.primary_phone_number_region) {
+          this.form.primary_phone_number_region = primary_phone_number_region;
+        }
         if (agent.override_display_name) {
           this.form.enable_display_name = true;
           this.form.override_name = agent.override_display_name;
@@ -71,6 +76,7 @@
         var formData, g, primary_email, t, _i, _j, _len, _len1, _ref, _ref1;
         formData = {};
         formData.name = this.form.name;
+        formData.primary_phone_number_text = this.form.primary_phone_number_text;
         if (this.form.enable_display_name && Strings.trim(this.form.override_name)) {
           formData.override_name = Strings.trim(this.form.override_name);
         } else {

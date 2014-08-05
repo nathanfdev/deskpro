@@ -42,6 +42,7 @@ requirejs.config({
 		"toastr":                          "app/bower_components/toastr/toastr",
 		"ColorPicker":                     "vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "vendor/detect_timezone",
+		"intl-tel-input":                  "app/bower_components/intl-tel-input/build/js/intlTelInput.min",
 
 		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/AdminLoad"),
 		"CloudAdminLoad":                  (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/Cloud/CloudAdminLoad"),
@@ -82,7 +83,8 @@ requirejs.config({
 		"jstz":                            { "exports": "jstz" },
 		"underscore":                      { "exports": "_" },
 		"stacktrace":                      { "exports": "printStackTrace"},
-		"trackjs":                         { "exports": "trackJs"}
+		"trackjs":                         { "exports": "trackJs"},
+		"intl-tel-input":                  ["jquery"]
 	},
 	"priority": [
 		"jquery",

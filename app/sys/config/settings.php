@@ -189,6 +189,11 @@
 	'core.default_timezone' => 'UTC',
 
 	/**
+	 * The default 2-letter country code (ISO 3166-1 alpha-2 format)
+	 */
+	'core.default_country_code' => 'US',
+
+	/**
 	 * Use gravatar for default avatars?
 	 */
 	'core.use_gravatar' => 0,

@@ -291,24 +291,39 @@ define [
 					})
 
 					typeFunc = "get#{opt.action_name}"
-					@[typeFunc] = (options = {}) ->
-						me = @
-						return {
-							getTemplate: ->
-								return me.dpTemplateManager.get(opt.builder_template)
-							getData: ->
-								return {}
-							getDataFormatter: ->
-								return {
-									getViewValue: (value = {}, data) ->
-										return value.options || {}
-									getValue: (model = {}, data) ->
-										value = {}
-										value.type = opt.action_name
-										value.options = model || {}
-										return value
-								}
-						}
+
+					#------------------------------
+					# Abstract SMS Options - if your action begins with "Sms"
+					#------------------------------
+
+					if opt.action_name.indexOf('Sms') == 0
+						@[typeFunc] = @generateSmsAction(opt.app.title, opt)
+
+
+
+					#------------------------------
+					# Dynamic Options - All except for "SendSms" actions above
+					#------------------------------
+
+					else
+						@[typeFunc] = (options = {}) ->
+							me = @
+							return {
+								getTemplate: ->
+									return me.dpTemplateManager.get(opt.builder_template)
+								getData: ->
+									return {}
+								getDataFormatter: ->
+									return {
+										getViewValue: (value = {}, data) ->
+											return value.options || {}
+										getValue: (model = {}, data) ->
+											value = {}
+											value.type = opt.action_name
+											value.options = model || {}
+											return value
+									}
+							}
 
 				if options.length
 					set_options.push({
@@ -317,6 +332,110 @@ define [
 					})
 
 			return set_options
+
+		generateSmsAction: (app_title, opt) ->
+			(options = {}) ->
+				me = @
+				return {
+				scopeInit: [ '$scope', ($scope) ->
+					$scope.sms_num_characters = 0
+					$scope.sms_vars = []
+					$scope.sms_app_name = app_title
+
+					me = @
+					# TODO: Make this reusable in other areas of the admin area
+					$scope.calculateCharacterLength = ->
+						tmp_string = $scope.model.message
+
+						matches = tmp_string.match(/(\{\{.*?\}\})/gi);
+						countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+
+						if (matches)
+							proposed_length = countable_string.length - matches.length
+						else
+							proposed_length = countable_string.length
+						if proposed_length < 0 then proposed_length = 0
+
+						$scope.sms_num_characters = proposed_length
+						$scope.sms_vars = matches || []
+				]
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html')
+				getData: ->
+					return me.loadDataOptions()
+				getDataFormatter: ->
+					return {
+					getViewValue: (value = {}, data) ->
+						options = value.options || {}
+
+						department_ids = {}
+						if options.department_ids
+							for did in options.department_ids
+								did = parseInt(did)
+								department_ids[did] = true
+
+						agent_ids = {}
+						if options.agent_ids
+							for aid in options.agent_ids
+								if aid != 'followers' and aid != 'assigned' then aid = parseInt(aid)
+								agent_ids[aid] = true
+						else
+							agent_ids['followers'] = false
+							agent_ids['assigned'] = false
+
+						team_ids = {}
+						if options.agent_teams
+							for tid in options.agent_teams
+								if tid != 'assigned' then tid = parseInt(tid)
+								team_ids[tid] = true
+						else
+							team_ids['assigned'] = false
+
+						return {
+						agents: options.agents || [],
+						agent_ids: agent_ids,
+						agent_teams: team_ids,
+						department_ids: department_ids
+						to_number: options.to_number || ''
+						message: options.message || ''
+						}
+					getValue: (model = {}, data) ->
+						options = {
+							agents: model.agents || []
+							agent_teams: []
+							department_ids: []
+							to_number: model.to_number || ''
+							message: model.message || ''
+							agent_ids: []
+						}
+
+						if model.department_ids
+							for own k, v of model.department_ids
+								if v
+									options.department_ids.push(parseInt(k))
+						if model.agent_ids
+							for own k, v of model.agent_ids
+								if v
+									if k == 'assigned'
+										options.agent_ids.push('assigned')
+									else if k == 'followers'
+										options.agent_ids.push('followers')
+									else
+										options.agent_ids.push(parseInt(k))
+						if model.agent_teams
+							for own k, v of model.agent_teams
+								if v
+									if k == 'assigned'
+										options.agent_teams.push('assigned')
+									else
+										options.agent_teams.push(parseInt(k))
+						value = {}
+						value.type = opt.action_name
+						value.options = options
+
+						return value
+					}
+				}
 
 		resetData: ->
 			@options_data = null
@@ -367,6 +486,8 @@ define [
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
 						options_data['round_robin']      = data.round_robin
 						options_data['round_robins']     = data.round_robins
+
+						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
 						@options_data = options_data
 

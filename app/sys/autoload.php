@@ -26,16 +26,19 @@ $loader->registerNamespaces(array(
 	'DpTestingMocks'     => DP_ROOT.'/testing/src',
 
 	'Metadata'           => DP_ROOT.'/vendor-src/metadata/src',
-    'Leth'               => DP_ROOT.'/vendor-src/php-ipaddress/classes'
+    'Leth'               => DP_ROOT.'/vendor-src/php-ipaddress/classes',
+	'libphonenumber'     => DP_ROOT.'/vendor-src/libphonenumber/src',
+	'Bdt\\Clickatell'    => DP_ROOT.'/vendor-src/guzzle-clickatell/src'
 ));
 
 $loader->registerNamespaceFallbacks(array(DP_WEB_ROOT . '/plugins'));
 
 $loader->registerPrefixes(array(
-    'mPDF_'       => DP_ROOT.'/vendor-src/mpdf/lib',
-    'File_'       => DP_ROOT.'/vendor-src/pear/lib',
-    'PEAR_'       => DP_ROOT.'/vendor-src/pear/lib',
-	'EWSType_'    => DP_ROOT.'/vendor-src/php-ews',
+	'mPDF_'           => DP_ROOT.'/vendor-src/mpdf/lib',
+	'File_'           => DP_ROOT.'/vendor-src/pear/lib',
+	'PEAR_'           => DP_ROOT.'/vendor-src/pear/lib',
+	'EWSType_'        => DP_ROOT.'/vendor-src/php-ews',
+	'Services_Twilio' => DP_ROOT.'/vendor-src/twilio-php'
 ));
 
 $loader->registerClassNames(array(

@@ -228,41 +228,45 @@
               value: opt.action_name
             });
             typeFunc = "get" + opt.action_name;
-            this[typeFunc] = function(options) {
-              var me;
-              if (options == null) {
-                options = {};
-              }
-              me = this;
-              return {
-                getTemplate: function() {
-                  return me.dpTemplateManager.get(opt.builder_template);
-                },
-                getData: function() {
-                  return {};
-                },
-                getDataFormatter: function() {
-                  return {
-                    getViewValue: function(value, data) {
-                      if (value == null) {
-                        value = {};
-                      }
-                      return value.options || {};
-                    },
-                    getValue: function(model, data) {
-                      var value;
-                      if (model == null) {
-                        model = {};
-                      }
-                      value = {};
-                      value.type = opt.action_name;
-                      value.options = model || {};
-                      return value;
-                    }
-                  };
+            if (opt.action_name.indexOf('Sms') === 0) {
+              this[typeFunc] = this.generateSmsAction(opt.app.title, opt);
+            } else {
+              this[typeFunc] = function(options) {
+                var me;
+                if (options == null) {
+                  options = {};
                 }
+                me = this;
+                return {
+                  getTemplate: function() {
+                    return me.dpTemplateManager.get(opt.builder_template);
+                  },
+                  getData: function() {
+                    return {};
+                  },
+                  getDataFormatter: function() {
+                    return {
+                      getViewValue: function(value, data) {
+                        if (value == null) {
+                          value = {};
+                        }
+                        return value.options || {};
+                      },
+                      getValue: function(model, data) {
+                        var value;
+                        if (model == null) {
+                          model = {};
+                        }
+                        value = {};
+                        value.type = opt.action_name;
+                        value.options = model || {};
+                        return value;
+                      }
+                    };
+                  }
+                };
               };
-            };
+            }
           }
           if (options.length) {
             set_options.push({
@@ -272,6 +276,161 @@
           }
         }
         return set_options;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.generateSmsAction = function(app_title, opt) {
+        return function(options) {
+          var me;
+          if (options == null) {
+            options = {};
+          }
+          me = this;
+          return {
+            scopeInit: [
+              '$scope', function($scope) {
+                $scope.sms_num_characters = 0;
+                $scope.sms_vars = [];
+                $scope.sms_app_name = app_title;
+                me = this;
+                return $scope.calculateCharacterLength = function() {
+                  var countable_string, matches, proposed_length, tmp_string;
+                  tmp_string = $scope.model.message;
+                  matches = tmp_string.match(/(\{\{.*?\}\})/gi);
+                  countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+                  if (matches) {
+                    proposed_length = countable_string.length - matches.length;
+                  } else {
+                    proposed_length = countable_string.length;
+                  }
+                  if (proposed_length < 0) {
+                    proposed_length = 0;
+                  }
+                  $scope.sms_num_characters = proposed_length;
+                  return $scope.sms_vars = matches || [];
+                };
+              }
+            ],
+            getTemplate: function() {
+              return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html');
+            },
+            getData: function() {
+              return me.loadDataOptions();
+            },
+            getDataFormatter: function() {
+              return {
+                getViewValue: function(value, data) {
+                  var agent_ids, aid, department_ids, did, team_ids, tid, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+                  if (value == null) {
+                    value = {};
+                  }
+                  options = value.options || {};
+                  department_ids = {};
+                  if (options.department_ids) {
+                    _ref = options.department_ids;
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                      did = _ref[_i];
+                      did = parseInt(did);
+                      department_ids[did] = true;
+                    }
+                  }
+                  agent_ids = {};
+                  if (options.agent_ids) {
+                    _ref1 = options.agent_ids;
+                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                      aid = _ref1[_j];
+                      if (aid !== 'followers' && aid !== 'assigned') {
+                        aid = parseInt(aid);
+                      }
+                      agent_ids[aid] = true;
+                    }
+                  } else {
+                    agent_ids['followers'] = false;
+                    agent_ids['assigned'] = false;
+                  }
+                  team_ids = {};
+                  if (options.agent_teams) {
+                    _ref2 = options.agent_teams;
+                    for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                      tid = _ref2[_k];
+                      if (tid !== 'assigned') {
+                        tid = parseInt(tid);
+                      }
+                      team_ids[tid] = true;
+                    }
+                  } else {
+                    team_ids['assigned'] = false;
+                  }
+                  return {
+                    agents: options.agents || [],
+                    agent_ids: agent_ids,
+                    agent_teams: team_ids,
+                    department_ids: department_ids,
+                    to_number: options.to_number || '',
+                    message: options.message || ''
+                  };
+                },
+                getValue: function(model, data) {
+                  var k, v, value, _ref, _ref1, _ref2;
+                  if (model == null) {
+                    model = {};
+                  }
+                  options = {
+                    agents: model.agents || [],
+                    agent_teams: [],
+                    department_ids: [],
+                    to_number: model.to_number || '',
+                    message: model.message || '',
+                    agent_ids: []
+                  };
+                  if (model.department_ids) {
+                    _ref = model.department_ids;
+                    for (k in _ref) {
+                      if (!__hasProp.call(_ref, k)) continue;
+                      v = _ref[k];
+                      if (v) {
+                        options.department_ids.push(parseInt(k));
+                      }
+                    }
+                  }
+                  if (model.agent_ids) {
+                    _ref1 = model.agent_ids;
+                    for (k in _ref1) {
+                      if (!__hasProp.call(_ref1, k)) continue;
+                      v = _ref1[k];
+                      if (v) {
+                        if (k === 'assigned') {
+                          options.agent_ids.push('assigned');
+                        } else if (k === 'followers') {
+                          options.agent_ids.push('followers');
+                        } else {
+                          options.agent_ids.push(parseInt(k));
+                        }
+                      }
+                    }
+                  }
+                  if (model.agent_teams) {
+                    _ref2 = model.agent_teams;
+                    for (k in _ref2) {
+                      if (!__hasProp.call(_ref2, k)) continue;
+                      v = _ref2[k];
+                      if (v) {
+                        if (k === 'assigned') {
+                          options.agent_teams.push('assigned');
+                        } else {
+                          options.agent_teams.push(parseInt(k));
+                        }
+                      }
+                    }
+                  }
+                  value = {};
+                  value.type = opt.action_name;
+                  value.options = options;
+                  return value;
+                }
+              };
+            }
+          };
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.resetData = function() {
@@ -327,6 +486,7 @@
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
                 options_data['round_robin'] = data.round_robin;
                 options_data['round_robins'] = data.round_robins;
+                options_data['ticket_dep_options'] = _this.standardOptionsFormatter(options_data['ticket_deps']);
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
                   _ref7 = _this.options_data.ticket_fields;

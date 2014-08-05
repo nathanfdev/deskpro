@@ -52,6 +52,7 @@ use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
 use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 
 class AgentsController extends AbstractController implements ProtectedControllerInterface
@@ -122,7 +123,8 @@ class AgentsController extends AbstractController implements ProtectedController
 			throw $this->createNotFoundException();
 		}
 
-		$agent_data = $agent->toApiData();
+		$apiDataFactory = $this->getContainer()->getSystemService('person_api_data_factory');
+		$agent_data = $apiDataFactory->agentToApiData($agent);
 		$agent_data['teams'] = array();
 
 		$agent->loadHelper('Agent');
@@ -240,6 +242,15 @@ class AgentsController extends AbstractController implements ProtectedController
 				'One or more email addresses you entered are already being used as email accounts.',
 				array('emails' => array_values($system_addresses))
 			);
+		}
+
+		$phone_number = $agent_postdata['primary_phone_number_text'];
+		if (!PhoneNumbers::looksEmpty($phone_number)) {
+			if (!PhoneNumbers::isValid($phone_number)) {
+				return $this->createApiErrorInfoResponse('invalid_phone_number',
+					'Invalid phone number format.',
+					array( 'primary_phone_number_text' => $phone_number ));
+			}
 		}
 
 		$email_validator = $this->container->getSystemService('email_address_validator');
