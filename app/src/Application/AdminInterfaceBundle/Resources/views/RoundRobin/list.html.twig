@@ -36,23 +36,33 @@
 
 {% block listpane_help %}
 	<header>
-		<h1>Labeling tickets helps agents filter and search for them.</h1>
-		<p>Labels are text tags that agents can use to help organize your helpdesk content.</p>
+		<h1>Round robins enable you to assign tickets evenly to a queue of agents</h1>
+		<p>Specify a queue of agents, and whenever the round robin's action runs, the next agent in the queue is assigned the relevant ticket.</p>
 	</header>
 	<article>
 		<section>
 		
-			<p>Labels are used to find matching items when searching from the Quick Search bar. They are also displayed in the agent filter pane.</p>
-            <p>You can rename misspelled or unhelpful labels using this screen.</p>
-
+			<p>Use a round robin if you want to assign tickets individually to a list of agents, and have each agent receive an equal number of tickets.</p>
+            <p>Once you create a round robin, you must add the corresponding <strong>Set Assigned Agent from Round Robin</strong> action to a trigger, escalation or SLA. </p>
+            <p>
+            <ul>
+            	<li>The first time this action runs, the relevant ticket is assigned to the first agent in the queue.</li>
+            	<li>The next time the action runs, the ticket that caused it to run is assigned to the next agent in the queue.</li>
+            	<li> When the end of the queue is reached, assignment loops back to the first agent.</li>
+			</ul>
+			</p>
             </section>
 
             <section>
             <h2><span>FAQ</span></h2>
             <dl>
-                <dt><em>Q:</em>How do I merge two labels?</dt>
+                <dt><em>Q:</em>What if I call the action for the same round robin from multiple triggers/escalations/SLAs? Is there one queue or more than one?</dt>
                 <dd><em>A:</em>
-                    Edit one label to have the same name as another, and the labels will be merged.
+                    All the actions share the same queue.
+                </dd>
+                <dt><em>Q:</em>I've created a round robin but none of the agents is being assigned any tickets.</dt>
+                <dd><em>A:</em>
+                    Making a round robin just creates a queue. It does not automatically assign any tickets. You must hand out tickets to the agents in the queue using a trigger, escalation or SLA.
                 </dd>
             </dl>
         </section>
@@ -60,7 +70,7 @@
         <section class="related-content">
                 <h2><span>Related Content</span></h2>
                 <ul>
-                    <li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#managing-labels" target="_blank">Managing labels</a></li>
+                    <li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#round-robins" target="_blank">Round robins</a></li>
 
                 </ul>
         </section>
