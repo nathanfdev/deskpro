@@ -480,7 +480,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				});
 
 				$el.on('fileuploaddone', function(e, data){
-					if (!data.result || !data.result.length) return;
+					if (!data || !data.result || !data.result.length) return;
 
 					for (var i = 0; i < data.result.length; i++) {
 						var blob = data.result[i];
