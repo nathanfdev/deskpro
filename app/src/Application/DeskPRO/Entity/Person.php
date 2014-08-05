@@ -1090,7 +1090,8 @@ class Person extends DomainObject implements HighlightableModelInterface
 	public function addPreference(PersonPref $pref)
 	{
 		$this->preferences->add($pref);
-		$pref['person'] = $this;
+		$pref->person = $this;
+		$this->_onPropertyChanged('preferences', $this->preferences, $this->preferences);
 	}
 
 
