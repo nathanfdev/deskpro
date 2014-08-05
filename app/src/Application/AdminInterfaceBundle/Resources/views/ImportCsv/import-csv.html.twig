@@ -26,7 +26,29 @@
 
 					<!-- 'queue=[];' is workaround due to strange behavior of uploader in case of single file instead of multiple-->
 
-					<div class="pull-left" ng-show="!active() && fileSelected">
+                    <br />
+
+                    <div class="form-group" ng-show="!active() && fileSelected">
+                        <label>
+                            Field Delimeter
+                            <select ui-select2 ng-model="delimeter" name="options[delimeter]" style="min-width: 100px;">
+                                <option value="comma" selected>Comma</option>
+                                <option value="semicolon">Semicolon</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="form-group" ng-show="!active() && fileSelected">
+                        <label>
+                            Field Enclosure
+                            <select ui-select2 ng-model="enclosure" name="options[enclosure]" style="min-width: 100px;">
+                                <option value="none" selected>None</option>
+                                <option value="quotes">Quotes</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="pull-left" ng-show="!active() && fileSelected">
 						<button type="button" class="btn btn-success btn-lg" ng-click="submit();queue=[];">
 							<span>Prepare File &rarr;</span>
 						</button>
