@@ -346,7 +346,7 @@ pageMeta.lang = {{ {
 			<ul>
 				<li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
 				{% if linked_tickets.count %}<li data-tab-for="#{{ baseId }}_linked_wrap"><i class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span id="{{ baseId }}_linked_count" data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)</li>{% endif %}
-				<li data-tab-for="#{{ baseId }}_tasks_wrap">{{ phrase('agent.general.tasks') }} (<span id="{{ baseId }}_task_count">{{ tasks|length }}</span>)</li>
+				{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}<li data-tab-for="#{{ baseId }}_tasks_wrap">{{ phrase('agent.general.tasks') }} (<span id="{{ baseId }}_task_count">{{ tasks|length }}</span>)</li>{% endif %}
 				{% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
 					<li data-tab-for="#{{ baseId }}_sla_wrap">{{ phrase('agent.general.slas') }} {{ sla_pips|raw }}</li>
 				{% endif %}
@@ -478,9 +478,11 @@ pageMeta.lang = {{ {
 		<article id="{{baseId}}_linked_wrap">
 			{% include 'AgentBundle:Ticket:linked-tickets.html.twig' %}
 		</article>
-		<article id="{{baseId}}_tasks_wrap">
-			{% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
-		</article>
+		{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}
+			<article id="{{baseId}}_tasks_wrap">
+				{% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
+			</article>
+		{% endif %}
 		{% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
 			<article id="{{baseId}}_sla_wrap">
 				{% include 'AgentBundle:Ticket:view-slas.html.twig' %}
