@@ -24,7 +24,7 @@
                             </div>
                             <div class="col-lg-9">
                                 <ul class="dp-item-list checkbox-list" ui-sortable="EditCtrl.sortedListOptions"  ng-model="EditCtrl.robin.agents"
-                                    style="overflow-y: scroll; max-height: {{ 20 * 24 }}px;min-width: 250px;">
+                                    style="overflow-y: auto; max-height: {{ 20 * 24 }}px;min-width: 250px;">
 
                                     <li ng-repeat="agent in EditCtrl.agents" ui-sortable="EditCtrl.sortedListOptions" class="with-drag-handle"
                                             ng-class="EditCtrl.robin.agents.indexOf(agent) > -1 ? 'sortable' : ''">
