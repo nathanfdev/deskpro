@@ -96,4 +96,4 @@ Done!
 
 If you encounter a bug or an error, please email us with as much detail as you can to support@deskpro.com
 
-To receive technical support, email support@deskpro.com or visit our helpdesk at http://helpdesk.deskpro.com/
+To receive technical support, email support@deskpro.com or visit our helpdesk at http://support.deskpro.com/
