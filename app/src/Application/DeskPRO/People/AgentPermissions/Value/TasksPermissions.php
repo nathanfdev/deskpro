@@ -39,8 +39,11 @@ class TasksPermissions implements PermissionValueInterface
 
 	public function getNames()
 	{
-		return array(
-			'use',
-		);
+		return array('use');
+	}
+
+	public function getDestructiveNames()
+	{
+		return array();
 	}
 }

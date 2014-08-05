@@ -72,13 +72,13 @@
 
 	<nav class="dp-tabletabs">
 		<ul>
-			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i class="fa fa-envelope"></i> Tickets</a></li>
-			<li dp-tab-btn="main.perms.people"><a href="#"><i class="fa fa-user"></i> People</a></li>
-			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
-			<li dp-tab-btn="main.perms.publish"><a href="#"><i class="fa fa-book"></i> Publish</a></li>
-			<li dp-tab-btn="main.perms.profile"><a href="#"><i class="fa fa-pencil"></i> Profile</a></li>
+			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i class="fa fa-envelope"></i> {{ phrase('adm.agents.perm_title_tickets') }}</a></li>
+			<li dp-tab-btn="main.perms.people"><a href="#"><i class="fa fa-user"></i> {{ phrase('adm.agents.perm_title_people') }}</a></li>
+			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fa fa-comment"></i> {{ phrase('adm.agents.perm_title_chat') }}</a></li>
+			<li dp-tab-btn="main.perms.publish"><a href="#"><i class="fa fa-book"></i> {{ phrase('adm.agents.perm_title_publish') }}</a></li>
+			<li dp-tab-btn="main.perms.profile"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('adm.agents.perm_title_profile') }}</a></li>
 			{% if app.getSetting('core.apps_tasks') %}
-                <li dp-tab-btn="main.perms.tasks"><a href="#"><i class="fa fa-calendar-o"></i> { phrase('adm.agents.perm_title_tasks') }}</a></li>
+                <li dp-tab-btn="main.perms.tasks"><a href="#"><i class="fa fa-calendar-o"></i> {{ phrase('adm.agents.perm_title_tasks') }}</a></li>
             {% endif %}
 		</ul>
 	</nav>
