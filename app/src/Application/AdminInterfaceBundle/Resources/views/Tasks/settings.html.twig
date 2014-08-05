@@ -27,7 +27,7 @@
                     <div class="col-lg-12" style="margin-top: 20px;">
                         <h4>{{ phrase('adm.tasks.allow_groups') }}:</h4>
                         <label ng-repeat="group in settings.groups" style="width: 100%;">
-                            <input type="checkbox" ng-model="group.perms.tasks.use" ng-change="updateAgents()" />
+                            <input type="checkbox" ng-model="group.perms.tasks.use" ng-change="updateAgents()" ng-disabled="group.sys_name == 'agent_all_perms' || group.sys_name == 'agent_all_safe_perms'" />
                             {{ ng_var('group.title') }}
                         </label>
                     </div>
