@@ -39,6 +39,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
 use Application\DeskPRO\PageLog\PageLogger;
+use Doctrine\DBAL\DBALException;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -387,7 +388,7 @@ class KernelBooter
 			dp_pagelog_set('response_type', $response->headers->get('Content-Type'));
 			dp_pagelog_set('response_code', $response->getStatusCode());
 			dp_pagelog_set('response_size', strlen($response->getContent()));
-		} catch (\PDOException $e) {
+		} catch (DBALException $e) {
 			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
 				// This will show an error page if already installed, so the redirect to install wont happen
 				deskpro_handle_boot_db_exception($e);

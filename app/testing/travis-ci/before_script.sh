@@ -40,14 +40,21 @@ echo "--> Done"
 
 echo "Installing Apache"
 sudo apt-get update
-sudo apt-get install -y apache2
+sudo apt-get install -y apache2 libapache2-mod-fastcgi
 sudo a2enmod actions
 sudo a2enmod rewrite
 echo "export PATH=/home/vagrant/.phpenv/bin:$PATH" | sudo tee -a /etc/apache2/envvars > /dev/null
 cat app/testing/travis-ci/apache-php-config.txt | sudo tee /etc/apache2/conf.d/phpconfig > /dev/null
 cat app/testing/travis-ci/apache-vhost-config.txt | sed -e "s,PATH,`pwd`,g" | sudo tee /etc/apache2/sites-available/default > /dev/null
 echo "Listen 8888" | sudo tee -a /etc/apache2/ports.conf
+
+sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+echo "memory_limit = 1024M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+
 sudo service apache2 restart
+
 
 echo "Starting xvfb"
 export DISPLAY=:99

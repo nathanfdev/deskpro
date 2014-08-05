@@ -195,6 +195,11 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
 		$set->saveTemplate($template);
 
+		// CSS templates must regenerate CSS blob file
+		if (strpos($name, ':Css:') !== false) {
+			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+		}
+
 		return $this->createSuccessResponse(array(
 			'name' => $template->getName(),
 		));
@@ -220,6 +225,10 @@ class TemplatesController extends AbstractController implements ProtectedControl
 		}
 
 		$set->deleteTemplate($template);
+
+		if (strpos($name, ':Css:') !== false) {
+			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+		}
 
 		return $this->createSuccessResponse(array(
 			'old_name' => $name,

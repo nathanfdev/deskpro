@@ -666,6 +666,12 @@ class FilestorageLoader extends LoaderAbstract
 				$mimetype = 'application/pdf';
 				break;
 
+			case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
+				$path = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
+				$filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';
+				$mimetype = 'application/zip';
+				break;
+
 			default:
 				if ($this->error_mode == 'exception') {
 					throw new \Exception("File not found. (300)", 400);

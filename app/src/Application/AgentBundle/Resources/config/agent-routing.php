@@ -1051,6 +1051,12 @@ $collection->create('agent_ticket_link_existing', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('agent_ticket_unlink', array(
+		'path' => '/tickets/{ticket_id}/unlink-ticket',
+		'controller' => 'AgentBundle:Ticket:unlinkTicket',
+		'methods'     => array('POST'),
+	));
+
 $collection->create('agent_twitter_new', array(
 	'path'        => '/twitter/new',
 	'controller'  => 'AgentBundle:Twitter:newTweet',

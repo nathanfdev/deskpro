@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ class Items extends AbstractAnnotation
                 Logger::warning('Unexcepted items for type "'.$annotation->type.'" in '.$annotation->identity().', expecting "array"');
                 $annotation->items = null;
             } else {
-                Swagger::checkDataType($annotation->items->type);
+                Swagger::checkDataType($annotation->items->type, $annotation->items->_context);
             }
         }
         return true;

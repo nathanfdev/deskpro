@@ -68,11 +68,12 @@ class IndexController extends AbstractController
 		$rjs_apps_config = $rjs_apps->generateRequireJsConfigCode();
 
 		return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
-			'api_token'     => $token,
-			'session'       => $this->session->getEntity(),
+			'api_token'             => $token,
+			'session'               => $this->session->getEntity(),
 			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
-			'inhelp_states' => $inhelp_states,
-			'rjs_apps_config' => $rjs_apps_config,
+			'inhelp_states'         => $inhelp_states,
+			'rjs_apps_config'       => $rjs_apps_config,
+			'redirect_license'      => defined('DP_BILLING_ERROR')
 		));
 	}
 }

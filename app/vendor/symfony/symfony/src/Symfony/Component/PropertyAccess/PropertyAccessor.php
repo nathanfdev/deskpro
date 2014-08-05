@@ -231,7 +231,22 @@ class PropertyAccessor implements PropertyAccessorInterface
             // Create missing nested arrays on demand
             if ($isIndex && $isArrayAccess && !isset($objectOrArray[$property])) {
                 if (!$ignoreInvalidIndices) {
-                    throw new NoSuchIndexException(sprintf('Cannot read property "%s". Available properties are "%s"', $property, print_r(array_keys($objectOrArray), true)));
+                    if (!is_array($objectOrArray)) {
+                        if (!$objectOrArray instanceof \Traversable) {
+                            throw new NoSuchIndexException(sprintf(
+                                'Cannot read property "%s".',
+                                $property
+                            ));
+                        }
+
+                        $objectOrArray = iterator_to_array($objectOrArray);
+                    }
+
+                    throw new NoSuchIndexException(sprintf(
+                        'Cannot read property "%s". Available properties are "%s"',
+                        $property,
+                        print_r(array_keys($objectOrArray), true)
+                    ));
                 }
 
                 $objectOrArray[$property] = $i + 1 < $propertyPath->getLength() ? array() : null;
@@ -314,12 +329,15 @@ class PropertyAccessor implements PropertyAccessorInterface
         $camelProp = $this->camelize($property);
         $reflClass = new \ReflectionClass($object);
         $getter = 'get'.$camelProp;
+        $getter2 = lcfirst($camelProp);
         $isser = 'is'.$camelProp;
         $hasser = 'has'.$camelProp;
         $classHasProperty = $reflClass->hasProperty($property);
 
         if ($reflClass->hasMethod($getter) && $reflClass->getMethod($getter)->isPublic()) {
             $result[self::VALUE] = $object->$getter();
+        } elseif ($this->isMethodAccessible($reflClass, $getter2, 0)) {
+            $result[self::VALUE] = $object->$getter2();
         } elseif ($reflClass->hasMethod($isser) && $reflClass->getMethod($isser)->isPublic()) {
             $result[self::VALUE] = $object->$isser();
         } elseif ($reflClass->hasMethod($hasser) && $reflClass->getMethod($hasser)->isPublic()) {
@@ -341,7 +359,7 @@ class PropertyAccessor implements PropertyAccessorInterface
             // we call the getter and hope the __call do the job
             $result[self::VALUE] = $object->$getter();
         } else {
-            $methods = array($getter, $isser, $hasser, '__get');
+            $methods = array($getter, $getter2, $isser, $hasser, '__get');
             if ($this->magicCall) {
                 $methods[] = '__call';
             }
@@ -413,10 +431,13 @@ class PropertyAccessor implements PropertyAccessorInterface
         }
 
         $setter = 'set'.$this->camelize($property);
+        $setter2 = lcfirst($plural);
         $classHasProperty = $reflClass->hasProperty($property);
 
         if ($this->isMethodAccessible($reflClass, $setter, 1)) {
             $object->$setter($value);
+        } elseif ($this->isMethodAccessible($reflClass, $setter2, 1)) {
+            $object->$setter2($value);
         } elseif ($this->isMethodAccessible($reflClass, '__set', 2)) {
             $object->$property = $value;
         } elseif ($classHasProperty && $reflClass->getProperty($property)->isPublic()) {
@@ -433,13 +454,14 @@ class PropertyAccessor implements PropertyAccessorInterface
             $object->$setter($value);
         } else {
             throw new NoSuchPropertyException(sprintf(
-                'Neither the property "%s" nor one of the methods %s"%s()", '.
+                'Neither the property "%s" nor one of the methods %s"%s()", "%s()", '.
                 '"__set()" or "__call()" exist and have public access in class "%s".',
                 $property,
                 implode('', array_map(function ($singular) {
                     return '"add'.$singular.'()"/"remove'.$singular.'()", ';
                 }, $singulars)),
                 $setter,
+                $setter2,
                 $reflClass->name
             ));
         }
@@ -508,9 +530,11 @@ class PropertyAccessor implements PropertyAccessorInterface
         $reflClass = new \ReflectionClass($object);
 
         $setter = 'set'.$this->camelize($property);
+        $setter2 = lcfirst($this->camelize($property));
         $classHasProperty = $reflClass->hasProperty($property);
 
         if ($this->isMethodAccessible($reflClass, $setter, 1)
+            || $this->isMethodAccessible($reflClass, $setter2, 1)
             || $this->isMethodAccessible($reflClass, '__set', 2)
             || ($classHasProperty && $reflClass->getProperty($property)->isPublic())
             || (!$classHasProperty && property_exists($object, $property))

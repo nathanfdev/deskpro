@@ -1659,10 +1659,6 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
-
 		if (count($ticket->messages) == 1) {
 			$this->db->replace('tickets_deleted', array(
 				'ticket_id' => $ticket->id,
@@ -1751,6 +1747,8 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
+		$this->container->getTicketManager()->markAsManaged($ticket);
+
 		$attachment = false;
 		foreach ($message->attachments AS $test_attachment) {
 			if ($test_attachment->id == $attachment_id) {
@@ -1768,12 +1766,19 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_log = new TicketLog();
-		$log_action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\AttachRemoved($attachment);
 		$ticket_log->ticket      = $ticket;
 		$ticket_log->person      = $this->person;
-		$ticket_log->action_type = $log_action->getLogName();
+		$ticket_log->action_type = 'attach_removed';
 		$ticket_log->id_object   = $message->getId();
-		$ticket_log->details     = $log_action->getLogDetails();
+		$ticket_log->id_before   = $attachment->id;
+
+		$blob = $attachment->blob;
+		$log_data['attach_id']       = $attachment->id;
+		$log_data['blob_id']         = $blob->id;
+		$log_data['filename']        = $blob->filename;
+		$log_data['filesize']        = $blob->filesize;
+		$log_data['content_type']    = $blob->content_type;
+		$ticket_log->details = $log_data;
 
 		$this->em->persist($ticket_log);
 		$this->em->remove($attachment);
@@ -1796,6 +1801,9 @@ class TicketController extends AbstractController
 		}
 
 		$this->em->flush();
+
+		// Delete the blob itself
+		$this->container->getBlobStorage()->deleteBlobRecord($blob);
 
 		return $this->createJsonResponse(array(
 			'success' => true,
@@ -2659,16 +2667,20 @@ class TicketController extends AbstractController
 
 		$old_ticket_id = $other_ticket['id'];
 
+		$merge = new TicketMerge($this->person, $ticket, $other_ticket);
+
+		if (!$merge->checkPersonPermission()) {
+			throw $this->createNotFoundException("User does not have permission to merge these tickets");
+		}
+
 		try {
 			$this->em->beginTransaction();
-			$merge = new TicketMerge($this->person, $ticket, $other_ticket);
 			$merge->merge();
 			$this->em->commit();
 		} catch (\InvalidArgumentException $e) {
 			throw $this->createNotFoundException("You cannot merge a ticket with itself");
 		} catch (\Exception $e) {
-			$this->em->rollback();
-
+			$this->em->rollback(false);
 			throw $e;
 		}
 
@@ -3931,4 +3943,29 @@ class TicketController extends AbstractController
 		return $this->render('AgentBundle:Ticket:link.html.twig');
 	}
 
+	public function unlinkTicketAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		switch ($this->in->getString('link_type')) {
+			case 'parent':
+				$linked_ticket = $ticket;
+				break;
+
+			case 'child':
+			case 'sibling':
+				$linked_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('link_ticket_id'));
+				break;
+		}
+
+		if (!$linked_ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		$linked_ticket->parent_ticket = null;
+		$this->em->persist($linked_ticket);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }

@@ -221,6 +221,11 @@
         return set_options;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.resetData = function() {
+        this.options_data = null;
+        return this.loadDataPromise = null;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
         var p;
         if (this.options_data) {

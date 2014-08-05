@@ -147,7 +147,7 @@ class UsersourceTester
 				if (is_int($v) || is_float($v) || ctype_digit($v) || is_bool($v) || is_null($v) || ctype_print($v)) {
 					return $v;
 				} else {
-					return utf8_bad_replace($v);
+					return Strings::utf8_bad_strip($v);
 				}
 			});
 			$result_raw .= print_r($raw_data, true);

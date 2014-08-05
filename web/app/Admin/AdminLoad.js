@@ -14,6 +14,7 @@ define([
 	'ngFileUpload',
 
 	'moment',
+	'momentTimezone',
 	'aceEditor',
 
 	'jquery',
@@ -45,6 +46,7 @@ define([
 	'Admin/Agents/Ctrl/DeletedRestore',
 	'Admin/Agents/Ctrl/List',
 	'Admin/Agents/Ctrl/Logs',
+	'Admin/Agents/Ctrl/Import',
 	'Admin/AgentGroups/Ctrl/Edit',
 	'Admin/AgentGroups/Ctrl/List',
 	'Admin/AgentTeams/Ctrl/Edit',
@@ -183,6 +185,8 @@ define([
 	'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
 	'Admin/NewsSettings/Ctrl/NewsSettings',
 	'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
+	'Admin/RoundRobin/Ctrl/List',
+	'Admin/RoundRobin/Ctrl/Edit',
 
 	'CloudAdminLoad'
 

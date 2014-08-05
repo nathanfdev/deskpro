@@ -51,7 +51,7 @@ abstract class Helper implements HelperInterface
      */
     public static function strlen($string)
     {
-        if (!function_exists('mb_strlen')) {
+        if (!function_exists('mb_strwidth')) {
             return strlen($string);
         }
 
@@ -59,7 +59,7 @@ abstract class Helper implements HelperInterface
             return strlen($string);
         }
 
-        return mb_strlen($string, $encoding);
+        return mb_strwidth($string, $encoding);
     }
 
     public static function formatTime($secs)
@@ -92,15 +92,15 @@ abstract class Helper implements HelperInterface
     public static function formatMemory($memory)
     {
         if ($memory >= 1024 * 1024 * 1024) {
-            return sprintf('%.1f GB', $memory / 1024 / 1024 / 1024);
+            return sprintf('%.1f GiB', $memory / 1024 / 1024 / 1024);
         }
 
         if ($memory >= 1024 * 1024) {
-            return sprintf('%.1f MB', $memory / 1024 / 1024);
+            return sprintf('%.1f MiB', $memory / 1024 / 1024);
         }
 
         if ($memory >= 1024) {
-            return sprintf('%d kB', $memory / 1024);
+            return sprintf('%d KiB', $memory / 1024);
         }
 
         return sprintf('%d B', $memory);

@@ -3,7 +3,7 @@ namespace Swagger\Processors;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,9 @@ namespace Swagger\Processors;
  * @package    Swagger
  */
 
-use Swagger\Annotations\AbstractAnnotation;
 use Swagger\Annotations\Items;
 use Swagger\Annotations\Property;
-use Swagger\Contexts\PropertyContext;
 use Swagger\Logger;
-use Swagger\Parser;
 
 /**
  * PropertyProcessor
@@ -35,34 +32,25 @@ class PropertyProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports($annotation, $context)
+    public function process($annotation, $context)
     {
-        return $annotation instanceof Property;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function process(Parser $parser, $annotation, $context)
-    {
+        if (($annotation instanceof Property) === false) {
+            return;
+        }
         if (!$annotation->hasPartialId()) {
-            if ($model = $parser->getCurrentModel()) {
-                $model->properties[] = $annotation;
+            if ($context->model) {
+                $context->model->properties[] = $annotation;
             } else {
-                if (count($parser->getModels())) {
-                    Logger::notice('Unexpected "' . $annotation->identity() . '", make sure the "@SWG\Model()" declaration is directly above the class definition in ' . AbstractAnnotation::$context);
-                } else {
-                    Logger::notice('Unexpected "' . $annotation->identity() . '", should be inside or after a "Model" declaration in ' . AbstractAnnotation::$context);
-                }
+                Logger::notice('Unexpected "' . $annotation->identity() . '", should be inside or after @SWG\Model() in ' . $context);
             }
         }
 
-        if ($context instanceof PropertyContext) {
+        if ($context->is('property')) {
             if ($annotation->name === null) {
-                $annotation->name = $context->getProperty();
+                $annotation->name = $context->property;
             }
             if ($annotation->type === null) {
-                if (preg_match('/@var\s+(\w+)(\[\])?/i', $context->getDocComment(), $matches)) {
+                if (preg_match('/@var\s+(\w+)(\[\])?/i', $context->comment, $matches)) {
                     $type = $matches[1];
                     $isArray = isset($matches[2]);
 

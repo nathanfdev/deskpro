@@ -356,7 +356,17 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 				'onDelete'             => 'cascade',
 			)),
 		));
-		$metadata->mapManyToOne(array( 'fieldName' => 'email_account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'email_account',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount',
+			'dpApi'        => true,
+			'joinColumns'  => array(array(
+				'name'                 => 'email_account_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			))
+		));
 		$metadata->mapManyToOne(array(
 			'fieldName'    => 'log_blob',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',

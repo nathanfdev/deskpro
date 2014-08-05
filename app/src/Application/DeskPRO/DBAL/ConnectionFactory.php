@@ -37,6 +37,7 @@ namespace Application\DeskPRO\DBAL;
 use Application\DeskPRO\App;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DBALException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -123,7 +124,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 		if ($recreate_retry) {
 			try {
 				$conn->connect();
-			} catch (\PDOException $err) {
+			} catch (DBALException $err) {
 				if (strpos($err->getMessage(), 'Unknown database') !== false) {
 					$params_2 = $params;
 					unset($params_2['dbname']);

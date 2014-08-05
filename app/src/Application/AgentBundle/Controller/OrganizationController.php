@@ -70,7 +70,7 @@ class OrganizationController extends AbstractController
 
 		$search = new TicketSearch();
 		$search->addTerm(TicketSearch::TERM_ORGANIZATION, 'is', $org->getId());
-		$search->setOrderBy('ticket.status', 'DESC');
+		$search->setOrderBy('ticket.status', 'ASC');
 
 		$org_tickets = $search->getMatches(array('offset' => 0, 'limit' => 30));
 		$org_tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($org_tickets, true);

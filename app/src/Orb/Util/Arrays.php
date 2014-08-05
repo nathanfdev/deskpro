@@ -558,7 +558,7 @@ class Arrays
 	 * @param string $recursive_key  A string to recurse down only speciifc keys (eg, only reindex 'children').
 	 * @return array
 	 */
-	public static function assocToNumericArary(array $array, $recursive_key = false)
+	public static function assocToNumericArary(array $array, $recursive_key = null)
 	{
 		$new = array();
 
@@ -568,6 +568,55 @@ class Arrays
 			}
 
 			$new[] = $v;
+		}
+
+		return $new;
+	}
+
+
+	/**
+	 * Takes a lookup array and
+	 * reverses it so the value is the new key, and the key is the new value.
+	 *
+	 * E.g.:
+	 * <code>
+	 * $map = array(1 => array('x', 'y', 'z'), 2 => array('x'));
+	 * $rmap = reverseLookupArray($map, true);
+	 * // $rmap = array('x' => array(1, 2), 'y' => array(1), 'z' => array(1));
+	 * </code>
+	 *
+	 * @param array $array
+	 * @param bool  $map_to_array  True if the inner array (the thing being mapped to) should itself be an array
+	 * @return array
+	 */
+	public static function reverseLookupArray($array, $map_to_array = false)
+	{
+		$new = array();
+
+		foreach ($array as $outer_id => $inner) {
+			if (is_array($inner) || $inner instanceof \Traversable) {
+				foreach ($inner as $inner_id) {
+					if ($map_to_array) {
+						if (!isset($new[$inner_id])) {
+							$new[$inner_id] = array();
+						}
+
+						$new[$inner_id][] = $outer_id;
+					} else {
+						$new[$inner_id] = $outer_id;
+					}
+				}
+			} else {
+				if ($map_to_array) {
+					if (!isset($new[$inner])) {
+						$new[$inner] = array();
+					}
+
+					$new[$inner][] = $outer_id;
+				} else {
+					$new[$inner] = $outer_id;
+				}
+			}
 		}
 
 		return $new;

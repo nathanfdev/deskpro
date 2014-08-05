@@ -42,6 +42,7 @@ use Application\DeskPRO\EmailGateway\Fetcher;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\OptionsArray;
 use Orb\Util\Util;
 
 /**
@@ -217,6 +218,87 @@ class Runner
 
 
 	/**
+	 * @param OptionsArray $result
+	 * @return bool
+	 */
+	private function verifyCreatedObject(OptionsArray $result)
+	{
+		$this->logger->logDebug("Verifying created object...");
+
+		$id = $result->created_object_id;
+		if (!$id) {
+			$this->logger->logWarn("--> No object ID");
+			return false;
+		}
+
+		switch ($result->created_object_type) {
+			case 'ticket':
+				$this->logger->logDebug("--> Verifying ticket {$id}");
+				$t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($id));
+				if ($t) {
+					$this->logger->logInfo("--> Ticket OKAY");
+					return true;
+				} else {
+					$this->logger->logWarn("--> Ticket DOES NOT exist");
+					return false;
+				}
+				break;
+
+			case 'ticket_message':
+				$this->logger->logDebug("--> Verifying ticket message {$id}");
+				$t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets_messages WHERE id = ?", array($id));
+				if ($t) {
+					$this->logger->logInfo("--> Ticket message OKAY");
+					return true;
+				} else {
+					$this->logger->logWarn("--> Ticket message DOES NOT exist");
+					return false;
+				}
+				break;
+
+			default:
+				$this->logger->logWarn("--> Unknown object type: {$result->created_object_type}");
+				return false;
+		}
+	}
+
+
+	/**
+	 * Called after all transactions are closed. This is a double-check
+	 * to make sure a source has the proper status applied to it, even in cases
+	 * where the doctrine entity manager is closed due to some critical error.
+	 *
+	 * @param EmailSource $source
+	 */
+	private function ensureSourceStatus(EmailSource $source)
+	{
+		$db = App::$container->getDb();
+		$id = $source->id;
+		$set = array(
+			'status'      => $source->status,
+			'error_code'  => $source->error_code,
+			'source_info' => serialize($source->source_info ?: array())
+		);
+
+		\DpShutdown::add(function() use ($db, $id, $set) {
+
+			// These must not be in an active trans
+			try {
+				while ($db->isTransactionActive()) {
+					$db->commit();
+				}
+			} catch (\Exception $e) {}
+
+			try {
+				$db->update('email_sources', $set, array('id' => $id));
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e);
+			}
+		});
+	}
+
+
+	/**
 	 * Executes a single source. Good for re-processing.
 	 *
 	 * @param \Application\DeskPRO\Entity\EmailSource $source
@@ -228,12 +310,13 @@ class Runner
 	{
 		if (!$this->log_messages) {
 			$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
+			$this->log_messages->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
 			$this->logger->addWriter($this->log_messages);
 		}
 
-		$this->logger->logDebug('Executing Source ' . $source->getId());
+		$this->log_messages->clear();
 
-		$account = $source->email_account;
+		$this->logger->logDebug('Executing Source ' . $source->getId());
 
 		// Attempt to detect if we should break due to memory
 		$mem = memory_get_usage();
@@ -243,15 +326,10 @@ class Runner
 			$min = max(10485760, $source->blob->filesize * 4);
 			$room = $remain - $min;
 
-			$str = sprintf("Memory Used: %d    Memory Max: %d    Est Memory Required: %d    Est Memory After: %d", $mem, $avail, $min, $room);
-			$this->logger->log($str, 'debug');
+			$this->logger->logDebug(sprintf("Memory Used: %d    Memory Max: %d    Est Memory Required: %d    Est Memory After: %d", $mem, $avail, $min, $room));
 
 			if ($remain < $min) {
 				$this->logger->log(sprintf("Detected that we are at the memory limit, quitting run"), 'debug');
-
-				$e = new \Exception("Detected at memory limit: $str");
-				KernelErrorHandler::logException($e, true);
-
 				return 'memory_limit';
 			}
 		}
@@ -262,182 +340,126 @@ class Runner
 		App::getOrm()->persist($source);
 		App::getOrm()->flush();
 
-		if (!$reader) {
-			try {
-				$reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
-				$reader->setRawSource($source['raw_source']);
-			} catch (\Exception $e) {
-				$this->logger->log(sprintf("Could not set source: %s", $e->getMessage()), 'info');
+		$this->logger->logDebug("Running processors");
+		$runner_exec = new RunnerExecSource(
+			$source,
+			$reader,
+			$this->account_manager,
+			$this->logger
+		);
+		$runner_exec->setFromHeaders($this->getFromHeaders());
 
-				$e->_dp_sn = KernelErrorHandler::genSessionName();
-				$errinfo = KernelErrorHandler::getExceptionInfo($e);
-				KernelErrorHandler::logErrorInfo($errinfo);
-
-				$source['status'] = 'error';
-				$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
-				$source['source_info'] = $errinfo;
-
-				$this->_updateSource($source);
-				if ($this->log_messages) {
-					$this->log_messages->clear();
-				}
-				$source->clearRawSource();
-				App::getOrm()->detach($source);
-				$source = null;
-
-				if ($reader) {
-					$reader->_kill();
-					$reader = null;
-				}
-
-				gc_collect_cycles();
-
-				return 'decode_error';
-			}
-		}
-
-		if (!$reader->hasProperty('email_source')) {
-			$reader->setProperty('email_source', $source);
-		}
-
-		$to = array();
-		foreach ($reader->getToAddresses() as $x) {
-			$to[] = $x->getEmail();
-		}
-		$to = implode(', ', $to);
-
-		$from = $reader->getFromAddress()->getEmail();
-
-		$subj = substr($reader->getSubject()->getSubject(), 0, 40);
-		$this->logger->log("[Message] To: $to :: From: $from :: Subject: $subj", 'debug');
-
-		$from_headers = $this->getFromHeaders();
-		if ($from_headers) {
-			$this->logger->logDebug(sprintf("From header priority: %s", implode(', ', $from_headers)));
-			$reader->setFromHeaderPriority($from_headers);
-			$from = $reader->getFromAddress()->getEmail();
-			$this->logger->logDebug(sprintf("[Message] Using From: %s", $from));
-		}
-
-		App::getOrm()->beginTransaction();
-
+		$did_rollback = false;
+		$do_retry = false;
 		try {
-
-			$pre_processor = new PreProcessor($account, $reader, array('logger' => $this->logger));
-			$pre_processor->run();
-
-			$created_obj = null;
-			if ($pre_processor->isValid()) {
-				$pre_processor = null;
-
-				$this->logger->log("Preprocessor complete", 'info');
-
-				try {
-					$proc = $this->account_manager->getEmailProcessor($account, $reader, array('logger' => $this->logger, 'logger_messages' => $this->log_messages));
-					if (!$proc) {
-						$this->logger->log("No email processor for account", 'warn');
-						$source['status'] = 'rejected';
-						$source['error_code'] = 'invalid_address';
-					} else {
-						$created_obj = $proc->run();
-
-						if ($proc->isValid()) {
-							$this->logger->log("Processor complete", 'info');
-							$source['status'] = 'complete';
-							$source['error_code'] = null;
-						} else {
-							$source['status'] = $proc->getErrorType() == 'rejected' ? 'rejected' : 'error';
-							$source['error_code'] = $proc->getErrorCode();
-							$this->logger->log(sprintf("Processor error: %s", $source['error_code']), 'info');
-						}
-
-						$source_info = $proc->getSourceInfo();
-						if ($source_info) {
-							$source_info = implode("\n", $source_info);
-							try {
-								$blob = App::$container->getBlobStorage()->createBlobRecordFromString($source_info, 'email-process.log', 'plain/text');
-								$source['log_blob'] = $blob;
-							} catch (\Exception $e) {}
-						}
-					}
-
-					$proc = null;
-
-					App::getOrm()->commit();
-
-				} catch (\Exception $e) {
-
-					$this->logger->log(sprintf("Processor exception: %s", $e->getMessage()), 'info');
-
-					KernelErrorHandler::logException($e);
-
-					if (App::getDb()->isTransactionActive()) {
-						App::getDb()->rollback();
-					}
-
-					$e->_dp_sn = KernelErrorHandler::genSessionName();
-
-					$errinfo = KernelErrorHandler::getExceptionInfo($e);
-					KernelErrorHandler::logErrorInfo($errinfo);
-
-					$source['status'] = 'error';
-					$source['error_code'] = EmailSource::ERR_SERVER_ERROR;
-
-					foreach ($errinfo as &$_v) {
-						if (is_object($_v)) {
-							$_v = get_class($_v);
-						} elseif (is_array($_v)) {
-							$_v = KernelErrorHandler::varToString($_v);
-						}
-					}
-					$source['source_info'] = $errinfo;
-				}
-			} else {
-				$source['status'] = $pre_processor->getErrorType() ?: 'error';
-				$source['error_code'] = $pre_processor->getErrorCode();
-
-				$source_info = $pre_processor->getSourceInfo();
-				if ($source_info) {
-					$source_info = implode("\n", $source_info);
-					try {
-						$blob = App::$container->getBlobStorage()->createBlobRecordFromString($source_info, 'email-process.log', 'plain/text');
-						$source['log_blob'] = $blob;
-					} catch (\Exception $e) {}
-				}
-
-				$pre_processor = null;
-
-				$this->logger->log(sprintf("Preprocessor error: %s", $source['error_code']), 'info');
-
-				App::getOrm()->commit();
-			}
-
-			if ($created_obj) {
-				$source['object_type'] = strtolower(\Orb\Util\Util::getBaseClassname($created_obj));
-				$source['object_id'] = $created_obj->id;
-
-				$this->logger->log("Created " . get_class($created_obj) . ": " . $created_obj->getId(), 'debug');
-			}
+			$result = $runner_exec->run();
+			App::$container->getEm()->flush();
+			$this->logger->logDebug("--> Processors complete");
 		} catch (\Exception $e) {
+			$this->logger->logDebug("--> Processor exception: {$e->getCode()} {$e->getMessage()}");
+			$result = array(
+				'status' => 'error',
+				'error_code' => 'server_error',
+				'source_info' => array(
+					'exception' => get_class($e),
+					'message'   => $e->getMessage(),
+					'code'      => $e->getCode(),
+					'trace'     => KernelErrorHandler::formatBacktrace($e->getTrace())
+				)
+			);
 
-			$this->logger->log(sprintf("Preprocessor exception: %s", $e->getMessage()), 'info');
-
-			if (App::getDb()->isTransactionActive()) {
-				App::getDb()->rollback();
+			if (strpos(strtolower($e->getMessage()), 'deadlock') !== false) {
+				$do_retry = true;
 			}
 
-			$this->_updateSource($source);
+			KernelErrorHandler::logException($e, true);
 
-			throw $e;
+			App::getDb()->rollback();
+			$did_rollback = true;
 		}
 
-		$this->_updateSource($source);
-		if ($this->log_messages) {
-			$this->log_messages->clear();
+		$result = new OptionsArray($result);
+
+		// Verify object
+		if ($result->status == 'okay') {
+			if (!$this->verifyCreatedObject($result)) {
+				$new_result = new OptionsArray(array(
+					'status'      => 'error',
+					'error_code'  => 'server_error',
+					'source_info' => array(
+						'Failed to verify created object',
+						'Expected: ' . $result->created_object_type . ' ' . $result->created_object_id,
+					)
+				));
+
+				$result = $new_result;
+			}
 		}
+
+		if ($reader && $subj = $reader->getSubject()->getSubjectUtf8()) {
+			$source->header_subject = $subj;
+		}
+
+		switch ($result->status) {
+			case 'okay':
+				$source->status      = 'complete';
+				$source->source_info = $result->source_info ?: array();
+				$source->object_type = $result->created_object_type;
+				$source->object_id   = $result->created_object_id;
+				$this->logger->logInfo("Status: COMPLETE {$source->error_code}");
+				break;
+
+			case 'rejected':
+				$source->status      = 'rejected';
+				$source->error_code  = $result->error_code ?: 'server_error';
+				$source->source_info = $result->source_info ?: array();
+				$this->logger->logError("Status: REJECTED {$source->error_code}");
+				break;
+
+			case 'error':
+				$source->status      = 'error';
+				$source->error_code  = $result->error_code ?: 'server_error';
+				$source->source_info = $result->source_info ?: array();
+				$this->logger->logError("Status: ERROR {$source->error_code}");
+
+				if ($do_retry) {
+					//TODO handling of retry status
+				}
+				break;
+
+			default:
+				$source->status      = 'error';
+				$source->error_code  = $result->error_code ?: 'server_error';
+				$source->source_info = $result->source_info ?: array();
+				$this->logger->logWarn("Unknown status type: {$result->status}");
+				break;
+		}
+
+		$this->ensureSourceStatus($source);
+
+		$log_messages = $this->log_messages->getMessagesAsString();
+
+		$saved_log = false;
+		if (!$did_rollback) {
+			try {
+				$this->logger->logDebug("Saving log blob...");
+				$blob = App::$container->getBlobStorage()->createBlobRecordFromString($log_messages, 'email-process.log', 'plain/text');
+				$source->log_blob = $blob;
+				$this->logger->logInfo("Log blob {$blob->id}");
+
+				App::getOrm()->persist($source);
+				App::getOrm()->flush();
+				$saved_log = true;
+			} catch (\Exception $e) {
+				$saved_log = false;
+			}
+		}
+
+		if (!$saved_log) {
+			$source->source_info = array_merge($source->source_info, array('log' => $log_messages));
+		}
+
 		$source->clearRawSource();
-
-		$created_obj = null;
 
 		App::getOrm()->detach($source);
 		$source = null;
@@ -447,10 +469,15 @@ class Runner
 			$reader = null;
 		}
 
+		$this->logger->logDebug("ALL DONE");
+
+		$this->log_messages->clear();
+
 		gc_collect_cycles();
 
-		return 'okay';
+		return $result->status;
 	}
+
 
 	/**
 	 * Execute an account
@@ -632,29 +659,6 @@ class Runner
 		), 'info');
 	}
 
-	/**
-	 * Updating the source without Doctrine to ensure the record is still updated
-	 * when there is a critical error during a commit in the UoW. Since Doctrine
-	 * cannot recover from a critical error during commit-time, if we'd try to persist
-	 * the entity through the EM we'd get an error about the entity manager being closed.
-	 *
-	 * Examples of when this might happen would be invalid forign keys, database connection
-	 * error that happened precisely within the time it took to do the commit, or any other
-	 * error in that time.
-	 *
-	 * @param $source
-	 */
-	protected function _updateSource($source)
-	{
-		$this->logger->log(sprintf("Updating source (status: %s %s)", $source['status'], $source['error_code']), 'info');
-
-		App::getDb()->update('email_sources', array(
-			'status'      => $source['status'],
-			'error_code'  => $source['error_code'],
-			'source_info' => serialize($source['source_info'] ?: array()),
-			'log_blob_id' => $source['log_blob'] ? $source['log_blob']->getId() : null
-		), array('id' => $source->getId()));
-	}
 
 	/**
 	 * @return array
@@ -677,6 +681,12 @@ class Runner
 		return $from_headers;
 	}
 
+
+	/**
+	 * @param EmailAccount $account
+	 * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3
+	 * @throws \InvalidArgumentException
+	 */
 	private function createFetcher(EmailAccount $account)
 	{
 		if (!$account->incoming_account) {

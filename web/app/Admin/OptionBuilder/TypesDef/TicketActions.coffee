@@ -1,7 +1,9 @@
 define [
 	'Admin/OptionBuilder/TypesDef/BaseActionTypesDef',
+	'DeskPRO/Util/Numbers'
 ], (
-	BaseActionTypesDef
+	BaseActionTypesDef,
+	Numbers
 ) ->
 	class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef
 		init: ->
@@ -19,6 +21,12 @@ define [
 				title: 'Set Assigned Agent',
 				value: 'SetAgent'
 			})
+
+			if @options_data.round_robin? and @options_data.round_robin.enabled
+				options.push({
+					title: 'Set Assigned Agent from Round Robin',
+					value: 'SetRoundRobin'
+				})
 
 			options.push({
 				title: 'Set Assigned Team',
@@ -140,7 +148,7 @@ define [
 
 			options.push({
 				title: 'Set Ticket User',
-				value: 'ChangeUser'
+				value: 'SetUserOwner'
 			})
 
 			options.push({
@@ -213,6 +221,11 @@ define [
 			options.push({
 				title: 'Prevent Emails To Agents',
 				value: 'ModMuteAgentEmails'
+			})
+
+			options.push({
+				title: 'Force Agent Email Subscriptions',
+				value: 'ModForceAgentEmails'
 			})
 
 			options.push({
@@ -424,6 +437,10 @@ define [
 					}
 				}
 
+		resetData: ->
+			@options_data = null
+			@loadDataPromise = null
+
 		loadDataOptions: ->
 			if @options_data
 				defer = @.$q.defer()
@@ -434,7 +451,6 @@ define [
 					@loadDataPromise = @Api.sendDataGet({
 						'agents':          '/agents'
 						'agent_teams':     '/agent_teams',
-						'departments':     '/tickets/departments',
 						'ticket_deps':     '/ticket_deps',
 						'ticket_cats':     '/ticket_cats',
 						'ticket_prods':    '/ticket_prods',
@@ -447,7 +463,9 @@ define [
 						'email_accounts':  '/email_accounts',
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
-						'email_tpls':      '/email-templates-info'
+						'email_tpls':      '/email-templates-info',
+						round_robin:       '/round_robin/settings',
+						round_robins:      '/round_robin',
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -467,6 +485,8 @@ define [
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+						options_data['round_robin']      = data.round_robin
+						options_data['round_robins']     = data.round_robins
 
 						@options_data = options_data
 
@@ -487,6 +507,12 @@ define [
 				{title: 'Unassign', value: 0},
 				{title: 'Current Agent', value: -1}
 			]
+			def = @getStandardSelect(options)
+			return def
+
+		getSetRoundRobin: (options = {}) ->
+			options.propName = 'id'
+			options.dataName = 'round_robins'
 			def = @getStandardSelect(options)
 			return def
 
@@ -737,6 +763,12 @@ define [
 					}
 			}
 
+		getSetUserOwner: (options = {}) ->
+			options.propName = 'email_address'
+			options.placeholder = 'Enter an email address'
+			def = @getStandardInput(options)
+			return def
+
 		getSetDeleted: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
@@ -787,6 +819,48 @@ define [
 		getModMuteAgentEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
+
+		getModForceAgentEmails: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-force-agent-emails.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+
+							agent_ids = {}
+							if options.agent_ids
+								for aid in options.agent_ids
+									agent_ids[aid+""] = true
+
+							return {
+								agent_ids: agent_ids
+							}
+						getValue: (model = {}, data) ->
+							options = {
+								agent_ids: []
+							}
+
+							if model.agent_ids
+								for own k, v of model.agent_ids
+									if v
+										if Numbers.isNumeric(k)
+											options.agent_ids.push(parseInt(k))
+										else
+											options.agent_ids.push(k)
+
+							value = {}
+							value.type = 'ModForceAgentEmails'
+							value.options = options
+							return value
+					}
+			}
 
 		getSendUserEmail: (options = {}) ->
 			me = @
@@ -928,8 +1002,7 @@ define [
 							agent_ids = {}
 							if options.agent_ids
 								for aid in options.agent_ids
-									if aid != 'notify_list' then aid = parseInt(aid)
-									agent_ids[aid] = true
+									agent_ids[aid+""] = true
 							else
 								agent_ids['notify_list'] = true
 
@@ -956,10 +1029,10 @@ define [
 							if model.agent_ids
 								for own k, v of model.agent_ids
 									if v
-										if k == 'notify_list'
-											options.agent_ids.push('notify_list')
-										else
+										if Numbers.isNumeric(k)
 											options.agent_ids.push(parseInt(k))
+										else
+											options.agent_ids.push(k)
 
 							value = {}
 							value.type = 'SendAgentEmail'

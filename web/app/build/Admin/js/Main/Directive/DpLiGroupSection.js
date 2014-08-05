@@ -18,6 +18,9 @@
                 mainList.find('li.group-section.group-open').each(function() {
                   return $(this).removeClass('group-open').find('.group-section-content').addClass('with-no-height');
                 });
+                $timeout(function() {
+                  return element.find('.dp-item-list').find('a').first().click();
+                });
                 element.addClass('group-open');
                 return contentEls.removeClass('with-no-height');
               } else {

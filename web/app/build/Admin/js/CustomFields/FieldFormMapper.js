@@ -19,6 +19,7 @@
         form = {
           title: '',
           description: '',
+          is_enabled: true,
           text: {
             user_validation: '0',
             user_min_length: '1',
@@ -80,8 +81,10 @@
           if (fieldModel.is_agent_field) {
             form.is_agent_field = true;
           }
-          if (fieldModel.is_enabled) {
+          if (fieldModel.is_enabled || !fieldModel.id) {
             form.is_enabled = true;
+          } else {
+            form.is_enabled = false;
           }
           switch (fieldModel.type_name) {
             case "text":

@@ -671,6 +671,23 @@ define(function() {
 	});
 
 	//###
+	//# Round Robin
+	//###
+	routes.push({
+		id: 'tickets.roundrobin',
+		url: '/roundrobin',
+		templateName: 'RoundRobin/list.html',
+		controller: 'Admin_RoundRobin_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'tickets.roundrobin.edit',
+		url: '/{id:.*}',
+		templateName: 'RoundRobin/edit.html',
+		controller: 'Admin_RoundRobin_Ctrl_Edit'
+	});
+
+	//###
 	//# Billing
 	//###
 	routes.push({

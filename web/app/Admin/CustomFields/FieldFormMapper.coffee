@@ -15,6 +15,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 			form = {
 				title: '',
 				description: '',
+				is_enabled: true,
 				text: {
 					user_validation:          '0',
 					user_min_length:          '1',
@@ -77,8 +78,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
 				if fieldModel.is_agent_field
 					form.is_agent_field = true
-				if fieldModel.is_enabled
+				if fieldModel.is_enabled || not fieldModel.id
 					form.is_enabled = true
+				else
+					form.is_enabled = false
 
 				switch fieldModel.type_name
 					when "text", "textarea"

@@ -107,6 +107,9 @@
                 value: 'CheckWorkflow'
               });
               $scope.criteriaTypesDef = typeDef;
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
               return $scope.done = function() {
                 if (!$scope.with_criteria) {
                   $scope.options.criteria.terms.length = 0;

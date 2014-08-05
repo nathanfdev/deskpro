@@ -130,7 +130,13 @@ class ActiveDirectory extends AbstractAdapter
 		}
 
 		if ($rec) {
-			$raw_info = array_merge($raw_info, $rec->getAttributes());
+			foreach ($rec->getData() as $name => $value) {
+				try {
+					$raw_info[$name] = $rec->getAttribute($name, null);
+				} catch (\Exception $e) {
+					$raw_info[$name] = $value;
+				}
+			}
 
 			if ($rec->getAttribute('givenName')) {
 				$raw_info['first_name'] = $rec->getAttribute('givenName', 0);

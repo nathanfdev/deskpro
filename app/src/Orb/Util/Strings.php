@@ -1730,7 +1730,7 @@ class Strings
 	 * @param string $from_charset
 	 * @return string
 	 */
-	public static function convertToUtf8($string, $from_charset)
+	public static function convertToUtf8($string, $from_charset, $_mode = null)
 	{
 		// Some missing aliases in iconv
 		static $charset_map = array(
@@ -1762,10 +1762,30 @@ class Strings
 		}
 
 		$new = '';
-		if (function_exists('iconv')) {
+		if (function_exists('iconv') && (!$_mode || !in_array('skip_iconv', $_mode))) {
 			$new = @iconv($from_charset, 'UTF-8//IGNORE//TRANSLIT', $string);
-		} elseif (function_exists('mb_convert_encoding')) {
-			$new = mb_convert_encoding($string, 'UTF-8', $from_charset);
+			if ($new === false) {
+				// Try us-ascii as iso-8859-1, some clients give us the wrong charset
+				if ($from_charset_u == 'US-ASCII') {
+					return self::convertToUtf8($string, 'ISO-8859-1', $_mode);
+				} else {
+					$_mode = $_mode ? : array();
+					$_mode[] = 'skip_iconv';
+					return self::convertToUtf8($string, $from_charset, $_mode);
+				}
+			}
+		} elseif (function_exists('mb_convert_encoding') && (!$_mode || !in_array('skip_iconv', $_mode))) {
+			$new = @mb_convert_encoding($string, 'UTF-8', $from_charset);
+			if ($new === false) {
+				if ($from_charset_u == 'US-ASCII') {
+					return self::convertToUtf8($string, 'ISO-8859-1', $_mode);
+				} else {
+					$_mode = $_mode ?: array();
+					$_mode[] = 'skip_mbstring';
+
+					return self::convertToUtf8($string, $from_charset, $_mode);
+				}
+			}
 		} else if (strtoupper($from_charset) == 'ISO-8859-1') {
 			$new = utf8_encode($string);
 		}

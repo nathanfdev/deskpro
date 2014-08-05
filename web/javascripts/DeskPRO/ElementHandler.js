@@ -79,6 +79,12 @@ DeskPRO.ElementHandler = new Orb.Class({
 		if (initNow) {
 			this.initPage();
 		}
+
+		if (this.destroy) {
+			this.el.addClass('with-destroy-handler').data('destroy-handler', (function() {
+				this.destroy();
+			}).bind(this));
+		}
 	},
 
 	/**

@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/OptionBuilder/TypesDef/BaseActionTypesDef'], function(BaseActionTypesDef) {
+  define(['Admin/OptionBuilder/TypesDef/BaseActionTypesDef', 'DeskPRO/Util/Numbers'], function(BaseActionTypesDef, Numbers) {
     var Admin_OptionBuilder_TypesDef_TicketFilter;
     return Admin_OptionBuilder_TypesDef_TicketFilter = (function(_super) {
       __extends(Admin_OptionBuilder_TypesDef_TicketFilter, _super);
@@ -29,6 +29,12 @@
           title: 'Set Assigned Agent',
           value: 'SetAgent'
         });
+        if ((this.options_data.round_robin != null) && this.options_data.round_robin.enabled) {
+          options.push({
+            title: 'Set Assigned Agent from Round Robin',
+            value: 'SetRoundRobin'
+          });
+        }
         options.push({
           title: 'Set Assigned Team',
           value: 'SetAgentTeam'
@@ -114,7 +120,7 @@
         options = [];
         options.push({
           title: 'Set Ticket User',
-          value: 'ChangeUser'
+          value: 'SetUserOwner'
         });
         options.push({
           title: 'Delete Ticket',
@@ -165,6 +171,10 @@
         options.push({
           title: 'Prevent Emails To Agents',
           value: 'ModMuteAgentEmails'
+        });
+        options.push({
+          title: 'Force Agent Email Subscriptions',
+          value: 'ModForceAgentEmails'
         });
         options.push({
           title: 'Set Trigger Variable',
@@ -423,6 +433,11 @@
         };
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.resetData = function() {
+        this.options_data = null;
+        return this.loadDataPromise = null;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
         var defer;
         if (this.options_data) {
@@ -434,7 +449,6 @@
             this.loadDataPromise = this.Api.sendDataGet({
               'agents': '/agents',
               'agent_teams': '/agent_teams',
-              'departments': '/tickets/departments',
               'ticket_deps': '/ticket_deps',
               'ticket_cats': '/ticket_cats',
               'ticket_prods': '/ticket_prods',
@@ -447,7 +461,9 @@
               'email_accounts': '/email_accounts',
               'usergroups': '/user_groups',
               'langs': '/langs',
-              'email_tpls': '/email-templates-info'
+              'email_tpls': '/email-templates-info',
+              round_robin: '/round_robin/settings',
+              round_robins: '/round_robin'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -469,6 +485,8 @@
                 options_data['usergroups'] = data.usergroups.groups;
                 options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
+                options_data['round_robin'] = data.round_robin;
+                options_data['round_robins'] = data.round_robins;
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
                   _ref7 = _this.options_data.ticket_fields;
@@ -509,6 +527,17 @@
             value: -1
           }
         ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetRoundRobin = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'id';
+        options.dataName = 'round_robins';
         def = this.getStandardSelect(options);
         return def;
       };
@@ -945,6 +974,17 @@
         };
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetUserOwner = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'email_address';
+        options.placeholder = 'Enter an email address';
+        def = this.getStandardInput(options);
+        return def;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetDeleted = function(options) {
         var def;
         if (options == null) {
@@ -1034,6 +1074,71 @@
         }
         def = this.getStandardIs(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModForceAgentEmails = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-force-agent-emails.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var agent_ids, aid, _i, _len, _ref;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                agent_ids = {};
+                if (options.agent_ids) {
+                  _ref = options.agent_ids;
+                  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    aid = _ref[_i];
+                    agent_ids[aid + ""] = true;
+                  }
+                }
+                return {
+                  agent_ids: agent_ids
+                };
+              },
+              getValue: function(model, data) {
+                var k, v, value, _ref;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  agent_ids: []
+                };
+                if (model.agent_ids) {
+                  _ref = model.agent_ids;
+                  for (k in _ref) {
+                    if (!__hasProp.call(_ref, k)) continue;
+                    v = _ref[k];
+                    if (v) {
+                      if (Numbers.isNumeric(k)) {
+                        options.agent_ids.push(parseInt(k));
+                      } else {
+                        options.agent_ids.push(k);
+                      }
+                    }
+                  }
+                }
+                value = {};
+                value.type = 'ModForceAgentEmails';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendUserEmail = function(options) {
@@ -1213,10 +1318,7 @@
                   _ref = options.agent_ids;
                   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                     aid = _ref[_i];
-                    if (aid !== 'notify_list') {
-                      aid = parseInt(aid);
-                    }
-                    agent_ids[aid] = true;
+                    agent_ids[aid + ""] = true;
                   }
                 } else {
                   agent_ids['notify_list'] = true;
@@ -1251,10 +1353,10 @@
                     if (!__hasProp.call(_ref, k)) continue;
                     v = _ref[k];
                     if (v) {
-                      if (k === 'notify_list') {
-                        options.agent_ids.push('notify_list');
-                      } else {
+                      if (Numbers.isNumeric(k)) {
                         options.agent_ids.push(parseInt(k));
+                      } else {
+                        options.agent_ids.push(k);
                       }
                     }
                   }

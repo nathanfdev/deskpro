@@ -110,9 +110,19 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
 			$this->transaction_logger = new Logger();
-			$this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/db-transactions.log'));
+			if ($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log'] == 'separate_files') {
+				$fn = 'db-transactions.'. uniqid('') .'.log';
+			} else {
+				$fn = 'db-transactions.log';
+			}
+			$this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/' . $fn));
 			$this->transaction_logger->logDebug("--- BEGIN PAGE ---");
-			$this->transaction_logger->logDebug("URL: " . $_SERVER['PHP_SELF']);
+
+			if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
+				$this->transaction_logger->logDebug("Command: " . implode(' ', $_SERVER['argv']));
+			} else {
+				$this->transaction_logger->logDebug("URL: " . $_SERVER['PHP_SELF']);
+			}
 		}
 	}
 
@@ -492,7 +502,7 @@ class Connection extends \Doctrine\DBAL\Connection
 			return parent::executeUpdate($query, $params, $types);
 		} catch (\Doctrine\DBAL\DBALException $e) {
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false) && !$this->isTransactionActive()) {
 				usleep(500000);
 				return $this->executeUpdate($query, $params, $types, $is_retry+1);
 			}
@@ -709,9 +719,11 @@ class Connection extends \Doctrine\DBAL\Connection
 	public function rollback($is_unexpected = true)
 	{
 		if ($is_unexpected) {
-			$e = new \Exception("Rollback called");
-			$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-			\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+			if (!(defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing')) {
+				$e = new \Exception("Rollback called");
+				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+			}
 		}
 
 		try {

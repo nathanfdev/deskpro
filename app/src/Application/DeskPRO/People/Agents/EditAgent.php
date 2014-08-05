@@ -251,7 +251,9 @@ class EditAgent
 
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
-		$metadata->addPropertyConstraint('name', new Constraints\NotBlank());
+		$metadata->addPropertyConstraint('name', new Constraints\NotBlank(array(
+			'message' => 'Name should not be blank.',
+		)));
 		$metadata->addPropertyConstraint('emails', new Constraints\All(array(
 			'constraints' => array(
 				new Constraints\NotBlank(),

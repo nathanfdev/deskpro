@@ -260,7 +260,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		// We need the ID first to generate a proper unique filename/auth
 		$batch = (int)(($blob_entity->id-1) / 1000) + 1;
@@ -305,7 +305,7 @@ class DeskproBlobStorage implements Loggable
 				break;
 			} catch (\Exception $e) {
 				$this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
-				KernelErrorHandler::logException($e);
+				if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) KernelErrorHandler::logException($e);
 				$prev_e = $e;
 			}
 		}
@@ -331,7 +331,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Save success");
 
@@ -402,7 +402,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		// We need the ID first to generate a proper unique filename/auth
 		$batch = (int)(($blob_entity->id-1) / 1000) + 1;
@@ -447,7 +447,7 @@ class DeskproBlobStorage implements Loggable
 				break;
 			} catch (\Exception $e) {
 				$this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromString) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
-				KernelErrorHandler::logException($e);
+				if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) KernelErrorHandler::logException($e);
 				$prev_e = $e;
 			}
 		}
@@ -473,7 +473,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Save success");
 
@@ -764,7 +764,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		// Delete the old one
 		$this->deleteBlob($old_blob, $old_adapter_id);

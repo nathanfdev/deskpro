@@ -120,11 +120,16 @@ define [
 			@email_triggers = []
 			@triggers       = []
 
+			@$scope.email_trigger_ids = {}
+			@$scope.department_trigger_ids = {}
+
 			for tr in @all_triggers
 				if tr.department
 					@dep_triggers.push(tr)
+					@$scope.department_trigger_ids[tr.department.id] = tr.id
 				else if tr.email_account
 					@email_triggers.push(tr)
+					@$scope.email_trigger_ids[tr.email_account.id] = tr.id
 				else
 					@triggers.push(tr)
 

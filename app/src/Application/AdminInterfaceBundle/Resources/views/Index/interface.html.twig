@@ -197,6 +197,7 @@ window.DP_REQUEST_TOKEN  = '{{ initial_request_token }}';
 window.DP_PERSON_ID      = {{ app.user.id }};
 window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
 window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
+window.DP_PERSON_TZ      = '{{ app.user.timezone|default('UTC') }}';
 window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
 window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
 window.DP_IS_CLOUD       = {% if app.isCloud() %}true{% else %}false{% endif %};
@@ -209,6 +210,8 @@ window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
 {% if inhelp_states %}
 window.DP_INHELP_STATES = {{ inhelp_states|json_encode|raw }};
 {% endif %}
+
+window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% endif %};
 </script>
 {{ js_error_tracking('admin_interface') }}
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
