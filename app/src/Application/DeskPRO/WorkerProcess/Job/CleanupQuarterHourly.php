@@ -88,6 +88,12 @@ class CleanupQuarterHourly extends AbstractJob
 		}
 
 		#------------------------------
+		# Old API logs
+		#------------------------------
+
+		App::$container->getEm()->getRepository('DeskPRO:ApiKeyLog')->cleanup();
+
+		#------------------------------
 		# Update table counts
 		#------------------------------
 

@@ -43,19 +43,37 @@ class ApiKeyLog extends AbstractEntityRepository
 
 	/**
 	 * clean old records
-	 * @param \Application\DeskPRO\Entity\ApiKey $key
 	 */
-	public function cleanup(\Application\DeskPRO\Entity\ApiKey $key)
+	public function cleanup()
 	{
-		// double included select to allow deleting from same table
-		$this->_em->getConnection()->executeQuery(sprintf('
-				DELETE FROM %1$s WHERE id < (
-					SELECT * FROM (
-						SELECT id FROM %1$s ORDER BY id DESC limit %2$d, 1
-					) as log
-				)
-			', $this->getTableName(), self::LIMIT),
-			array('key' => $key->getKeyString())
-		);
+		$limit = self::LIMIT;
+
+		$key_ids = App::$container->getDb()->fetchAllCol("
+			SELECT key_id
+			FROM api_key_log
+			GROUP BY key_id
+			HAVING COUNT(*) > $limit
+		");
+
+		if (!$key_ids) {
+			return 0;
+		}
+
+		foreach ($key_ids as $key_id) {
+			$lid = App::$container->getDb()->fetchColumn("
+				SELECT id
+				FROM api_key_log
+				WHERE key_id = ?
+				ORDER BY id DESC
+				LIMIT $limit, 1
+			", array($key_id));
+
+			if ($lid) {
+				App::$container->getDb()->executeUpdate("
+					DELETE FROM api_key_log
+					WHERE key_id = ? AND id <= ?
+				", array($key_id, $lid));
+			}
+		}
 	}
 }

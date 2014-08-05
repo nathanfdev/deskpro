@@ -54,6 +54,11 @@ class LogApiCallListener
 			return;
 		}
 
+		// Dont log rate limit
+		if ($response->getStatusCode() == 429) {
+			return;
+		}
+
 		/** @var Request $request */
 		$request = $event->get('request');
 
@@ -72,7 +77,5 @@ class LogApiCallListener
 		);
 		$em->persist($log);
 		$em->flush();
-		// not sure if this would be good decision to remove outdated log entries on each api request
-		$em->getRepository('DeskPRO:ApiKeyLog')->cleanup($key);
 	}
 } 
