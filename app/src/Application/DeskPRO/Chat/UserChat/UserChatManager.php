@@ -85,11 +85,17 @@ class UserChatManager
 	 */
 	protected $auto_assigner;
 
-	public function __construct(Session $session = null, EntityManager $em, Translate $translate)
+	/**
+	 * @var \Application\DeskPRO\People\ActivityLogger\ActivityLogger
+	 */
+	protected $activityLogger;
+
+	public function __construct(Session $session = null, EntityManager $em, Translate $translate, ActivityLogger $logger)
 	{
 		$this->em = $em;
 		$this->db = $em->getConnection();
 		$this->tr = $translate;
+		$this->activityLogger = $logger;
 
 		if ($session) {
 			$this->session     = $session;
@@ -272,7 +278,7 @@ class UserChatManager
 
 			if ($convo->person) {
 				$action = new \Application\DeskPRO\People\ActivityLogger\ActionType\NewChat($convo->person, $convo);
-				App::getPersonActivityLogger()->saveAction($action);
+				$this->activityLogger->saveAction($action);
 			}
 
 			$this->em->flush();
