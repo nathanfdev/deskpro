@@ -396,7 +396,7 @@ define ['angular'], (angular) ->
     	# @return {String}
     	###
 		getRegisteredMessage: (id) ->
-			content = @$scope?._element_messages[id] || ''
+			content = @$scope?._element_messages?[id] || ''
 
 			if _.isFunction(content)
 				content = content() || ''

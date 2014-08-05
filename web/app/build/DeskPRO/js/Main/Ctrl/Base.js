@@ -515,8 +515,8 @@
        */
 
       DeskPRO_Main_Ctrl_Base.prototype.getRegisteredMessage = function(id) {
-        var content, _ref;
-        content = ((_ref = this.$scope) != null ? _ref._element_messages[id] : void 0) || '';
+        var content, _ref, _ref1;
+        content = ((_ref = this.$scope) != null ? (_ref1 = _ref._element_messages) != null ? _ref1[id] : void 0 : void 0) || '';
         if (_.isFunction(content)) {
           content = content() || '';
         }

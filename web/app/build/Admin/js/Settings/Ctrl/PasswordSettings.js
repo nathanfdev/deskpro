@@ -69,7 +69,11 @@
         }).success((function(_this) {
           return function() {
             return _this.stopSpinner('saving').then(function() {
-              return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
+              var message;
+              message = _this.getRegisteredMessage('saved_settings');
+              if (message && message.length) {
+                return _this.Growl.success(message);
+              }
             });
           };
         })(this)).error((function(_this) {
