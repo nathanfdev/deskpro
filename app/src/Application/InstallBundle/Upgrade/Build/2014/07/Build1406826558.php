@@ -34,11 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1404749955 extends AbstractBuild
+class Build1406826558 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("My Upgrade Class");
+		$this->out("Add jira_issues.last_synced");
 		$this->execMutateSql("ALTER TABLE jira_issues ADD last_synced INT NOT NULL DEFAULT 0");
 	}
 }
