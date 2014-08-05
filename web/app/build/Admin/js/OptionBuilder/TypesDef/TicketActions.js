@@ -16,7 +16,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4;
+        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
         if (types == null) {
           types = [];
         }
@@ -29,7 +29,7 @@
           title: 'Set Assigned Agent',
           value: 'SetAgent'
         });
-        if ((this.options_data.round_robin != null) && this.options_data.round_robin.enabled) {
+        if ((((_ref = this.options_data) != null ? _ref.round_robin : void 0) != null) && ((_ref1 = this.options_data) != null ? _ref1.round_robin.enabled : void 0)) {
           options.push({
             title: 'Set Assigned Agent from Round Robin',
             value: 'SetRoundRobin'
@@ -184,11 +184,11 @@
           title: 'Trigger Control',
           subOptions: options
         });
-        if ((_ref = this.options_data) != null ? _ref.ticket_fields : void 0) {
+        if ((_ref2 = this.options_data) != null ? _ref2.ticket_fields : void 0) {
           options = [];
-          _ref1 = this.options_data.ticket_fields;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            f = _ref1[_i];
+          _ref3 = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+            f = _ref3[_i];
             options.push({
               title: f.title,
               value: this.initFieldGetter('SetTicketField', f)
@@ -201,11 +201,11 @@
             });
           }
         }
-        if ((_ref2 = this.options_data) != null ? _ref2.user_fields : void 0) {
+        if ((_ref4 = this.options_data) != null ? _ref4.user_fields : void 0) {
           options = [];
-          _ref3 = this.options_data.user_fields;
-          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
-            f = _ref3[_j];
+          _ref5 = this.options_data.user_fields;
+          for (_j = 0, _len1 = _ref5.length; _j < _len1; _j++) {
+            f = _ref5[_j];
             options.push({
               title: f.title,
               value: this.initFieldGetter('SetUserField', f)
@@ -220,9 +220,9 @@
         }
         if ((typesData != null ? typesData.dynamicOptions : void 0) != null) {
           options = [];
-          _ref4 = typesData.dynamicOptions;
-          for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
-            opt = _ref4[_k];
+          _ref6 = typesData.dynamicOptions;
+          for (_k = 0, _len2 = _ref6.length; _k < _len2; _k++) {
+            opt = _ref6[_k];
             options.push({
               title: opt.action_title,
               value: opt.action_name

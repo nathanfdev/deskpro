@@ -22,7 +22,7 @@ define [
 				value: 'SetAgent'
 			})
 
-			if @options_data.round_robin? and @options_data.round_robin.enabled
+			if @options_data?.round_robin? and @options_data?.round_robin.enabled
 				options.push({
 					title: 'Set Assigned Agent from Round Robin',
 					value: 'SetRoundRobin'
