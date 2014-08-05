@@ -37,14 +37,13 @@ class EmailAccountsSettings
 	 */
 	protected $settings;
 
-	// todo default values should be defined in cfg
 	protected $values = array(
-		'attach_agent_maxsize' => 5242880,
+		'attach_agent_maxsize'   => 26214400,
 		'attach_agent_must_exts' => array(),
-		'attach_agent_not_exts' => array(),
-		'attach_user_maxsize' => 5242880,
-		'attach_user_must_exts' => array(),
-		'attach_user_not_exts' => array(),
+		'attach_agent_not_exts'  => array(),
+		'attach_user_maxsize'    => 26214400,
+		'attach_user_must_exts'  => array(),
+		'attach_user_not_exts'   => array(),
 	);
 
 	public function __construct(Settings $settings)
@@ -61,13 +60,10 @@ class EmailAccountsSettings
 			if (is_int($v)) {
 				$storedValue = (int) $storedValue;
 			} elseif (is_array($v)) {
-				$storedValue = $storedValue
-					? explode(',', $storedValue)
-					: $v;
+				$storedValue = $storedValue ? explode(',', $storedValue) : $v;
 			}
 
-			$data[$k] = $this->values[$k] = $storedValue
-				?: $v; // todo remove after merge with branch where Settings class can return default value
+			$data[$k] = $this->values[$k] = $storedValue ?: $v;
 		}
 
 		return $data;

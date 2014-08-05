@@ -285,6 +285,13 @@
 	 */
 	'core.attach_user_not_exts' => null,
 
+	'core.emails.attach_agent_maxsize' => '26214400',
+	'core.emails.attach_agent_must_exts' => null,
+	'core.emails.attach_agent_not_exts' => null,
+	'core.emails.attach_user_maxsize' => '26214400',
+	'core.emails.attach_user_must_exts' => null,
+	'core.emails.attach_user_not_exts' => null,
+
 	/**
 	 * True to have the DeskPRO local user source enabled
 	 */

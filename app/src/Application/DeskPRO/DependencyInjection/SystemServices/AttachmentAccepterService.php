@@ -55,7 +55,10 @@ class AttachmentAccepterService
 				$res = new \Application\DeskPRO\Attachments\RestrictionSet();
 
 				$max_size  = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_maxsize');
-				$max_size  = min($effective_max_size, $max_size);
+
+				if ($prefix != 'emails.') {
+					$max_size = min($effective_max_size, $max_size);
+				}
 
 				$must_exts = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_must_exts');
 				$not_exts  = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_not_exts');

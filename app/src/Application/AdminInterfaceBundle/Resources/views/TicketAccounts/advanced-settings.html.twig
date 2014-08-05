@@ -54,10 +54,6 @@
                                 <h4>
                                     {{ phrase('adm.ticket_accounts.max_file_size') }}
                                 </h4>
-						<span class="help-block">
-							<span class="label label-danger ng-hide" ng-show="settings.attach_user_maxsize > maxUploadSize">Warning</span>
-                            {{ phrase('adm.ticket_accounts.max_file_size_supported') }}  {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
-						</span>
                             </label>
                             <div>
                                 <dp-filesize-with-unit ng-model="settings.attach_user_maxsize"></dp-filesize-with-unit>
@@ -106,10 +102,6 @@
                                 <h4>
                                     {{ phrase('adm.ticket_accounts.max_file_size') }}
                                 </h4>
-						<span class="help-block">
-							<span class="label label-danger ng-hide" ng-show="settings.attach_agent_maxsize > maxUploadSize">Warning</span>
-                            {{ phrase('adm.ticket_accounts.max_file_size_supported') }} {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
-						</span>
                             </label>
                             <div>
                                 <dp-filesize-with-unit ng-model="settings.attach_agent_maxsize"></dp-filesize-with-unit>
