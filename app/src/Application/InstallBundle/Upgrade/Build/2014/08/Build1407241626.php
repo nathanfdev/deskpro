@@ -34,11 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1404406819 extends AbstractBuild
+class Build1407241626 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("My Upgrade Class");
+		$this->out("Add api_key_log table");
 		$this->execMutateSql("CREATE TABLE api_key_log (id INT AUTO_INCREMENT NOT NULL, key_id INT NOT NULL, time int(11) unsigned not null, request LONGBLOB NOT NULL COMMENT '(DC2Type:array)', response LONGBLOB NOT NULL COMMENT '(DC2Type:array)', INDEX IDX_B6080172D145533 (key_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$this->execMutateSql("ALTER TABLE api_key_log ADD CONSTRAINT FK_B6080172D145533 FOREIGN KEY (key_id) REFERENCES api_keys (id) ON DELETE CASCADE");
 	}
