@@ -418,6 +418,8 @@ define [
 			return null if !model[@idProp]?
 			if @map[model[@idProp]]?
 				angular.copy model, @map[model[@idProp]] # update exist model
+				if @listModels.indexOf(model) == -1
+					@listModels.push(model)
 			else
 				@map[model[@idProp]] = model
 				@listModels.push model
