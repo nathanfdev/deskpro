@@ -241,6 +241,15 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self.queueChangeEvent('removeTicketResults', ticket_ids);
 		}, null, [this.OBJ_ID]);
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', (function(info) {
+			var ticketId = parseInt(info.ticket_id);
+			self.listTicketIds.indexOf(ticketId) !== -1 && self.queueChangeEvent('refreshTicketResults', [ticketId]);
+		}).bind(this), null, [this.OBJ_ID]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked', (function(info) {
+			var ticketId = parseInt(info.ticket_id);
+			self.listTicketIds.indexOf(ticketId) !== -1 && self.queueChangeEvent('refreshTicketResults', [ticketId]);
+		}).bind(this));
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
 			var ticketId = parseInt(info.ticket_id),
 				currentlyInView,

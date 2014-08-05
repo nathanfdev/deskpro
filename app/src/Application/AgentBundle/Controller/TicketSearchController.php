@@ -1770,7 +1770,7 @@ class TicketSearchController extends AbstractController
 					'ticket_id' => $ticket['id'],
 					'agent_id' => $ticket['id'],
 				),
-				'created_by_client' => $this->session->getEntity()->getId(),
+				'created_by_client' => 0,
 			));
 
 			$this->em->persist($ticket);
