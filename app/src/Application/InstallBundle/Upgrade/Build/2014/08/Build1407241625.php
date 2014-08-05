@@ -34,12 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1406826557 extends AbstractBuild
+class Build1407241625 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Adds phone numbers");
-		$this->execMutateSql("CREATE TABLE phone_numbers (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, number VARCHAR(30) NOT NULL, region VARCHAR(2) NOT NULL, guessed_type INT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_E7DC46CB217BBB47 (person_id), INDEX phone_number_idx (number), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE phone_numbers ADD CONSTRAINT FK_E7DC46CB217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+		$this->out("Add jira_issues.last_synced");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD last_synced INT NOT NULL DEFAULT 0");
 	}
 }
