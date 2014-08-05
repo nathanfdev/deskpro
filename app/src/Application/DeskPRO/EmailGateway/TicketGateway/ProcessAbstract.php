@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
+use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -257,6 +258,7 @@ abstract class ProcessAbstract
 		$this->processed_blobs = array();
 
 		$accept = App::$container->getAttachmentAccepter();
+		$r_set = $accept->getRestrictionSet($this->person->is_agent ? 'emails.agent' : 'emails.user');
 
 		foreach ($this->reader->getAttachments() as $attach) {
 
@@ -264,19 +266,22 @@ abstract class ProcessAbstract
 				continue;
 			}
 
-			$path = tempnam(sys_get_temp_dir(), 'tmp_attachment_');
-			$file = new UploadedFile($path, $attach->getFileNameUtf8(), $attach->getMimeType());
+			$props = array(
+				'size' => strlen($attach->getFileContents()),
+				'ext'  => Strings::getExtension($attach->getFileName())
+			);
 
-			if ($error = $accept->getError($file, $this->person->is_agent ? 'emails.agent' : 'emails.user')) {
-				$errorMessage = $this->translator
-					->phrase('agent.general.attach_error_' . $error['error_code'], $error);
-				$this->logMessage($errorMessage);
-
+			$error = $r_set->getErrorForProperties($props);
+			if ($error) {
+				$this->logMessage(sprintf("[processBlobs] %s rejected: %s %s", $attach->getFileName(), $error['error_code'], $error['error_detail']));
 				continue;
 			}
 
-			$blob = $accept->accept($file);
-			unlink($file->getRealPath());
+			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+				$attach->getFileContents(),
+				$attach->getFileName(),
+				$attach->getMimeType()
+			);
 
 			$this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
 			$this->processed_blobs[$blob->id] = $blob;
