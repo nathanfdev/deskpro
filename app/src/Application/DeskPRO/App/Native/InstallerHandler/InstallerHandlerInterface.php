@@ -38,6 +38,20 @@ interface InstallerHandlerInterface
 {
 	/**
 	 * @param InstallerContext $context
+	 * @param array $settings
+	 * @return array
+	 */
+	public function processSettings(InstallerContext $context, array $settings);
+
+	/**
+	 * @param InstallerContext $context
+	 * @param array $settings
+	 * @return array
+	 */
+	public function validateSettings(InstallerContext $context, array $settings);
+
+	/**
+	 * @param InstallerContext $context
 	 * @return void
 	 */
 	public function install(InstallerContext $context);

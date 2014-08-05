@@ -71,6 +71,5 @@ class FetchJiraComments extends AbstractJob
 			$service->_fetchCommentsByIssueId($issue->issue);
 			if (time() - $start > self::TIMELIMIT) break;
 		}
-//		$service->fetchAllComment(self::LIMIT);
 	}
 }

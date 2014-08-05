@@ -194,7 +194,7 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 		var content_id = el.data('content-id');
 
 		if (!typename || !content_id) {
-			DP.console.error("No content linked on element: %o", el);
+			DP.console.warn("No content linked on element: %o", el);
 			return false;
 		}
 

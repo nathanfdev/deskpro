@@ -58,6 +58,7 @@ use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\TicketSplit;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
@@ -1020,13 +1021,12 @@ class TicketController extends AbstractController
 	public function ajaxSaveReplyAction($ticket_id)
 	{
 		if ($this->in->getBool('reply_is_trans')) {
-			$request_message_orig  = $this->in->getHtmlCore('message_original');
-			$request_message_trans = $this->in->getHtmlCore('message');
+			$request_message_orig  = $this->in->getHtml('message_original');
+			$request_message_trans = $this->in->getHtml('message');
 		} else {
-			$request_message_orig  = $this->in->getHtmlCore('message');
+			$request_message_orig  = $this->in->getHtml('message');
 			$request_message_trans = '';
 		}
-
 
 		if (!$request_message_orig || $request_message_orig == trim($this->person->getPref('agent.ticket_signature'))) {
 			return $this->createJsonResponse(array('error' => 'no_message'));
@@ -1659,10 +1659,6 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
-
 		if (count($ticket->messages) == 1) {
 			$this->db->replace('tickets_deleted', array(
 				'ticket_id' => $ticket->id,
@@ -1688,15 +1684,23 @@ class TicketController extends AbstractController
 				))
 			));
 		} else {
-			$ticket_log = new TicketLog();
-			$log_action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\MessageRemoved($message);
-			$ticket_log->ticket      = $ticket;
-			$ticket_log->person      = $this->person;
-			$ticket_log->action_type = $log_action->getLogName();
-			$ticket_log->id_object   = $message->getId();
-			$ticket_log->details     = $log_action->getLogDetails();
+			$m = $message;
+			$log_data = array();
+			$log_data['message_id']       = $m->id;
+			$log_data['person_id']        = $m->person->id;
+			$log_data['person_name']      = $m->person->display_name;
+			$log_data['is_agent_note']    = $m->is_agent_note;
+			$log_data['is_agent_message'] = $m->person->is_agent;
+			$log_data['old_message']      = $m->getMessageHtml();
 
-			$this->em->persist($ticket_log);
+			$log = new TicketLog();
+			$log->ticket      = $ticket;
+			$log->person      = $this->person;
+			$log->action_type = 'message_removed';
+			$log->id_before   = $m->id;
+			$log->details = $log_data;
+
+			$this->em->persist($log);
 			$this->em->remove($message);
 			$this->em->flush();
 
@@ -1743,6 +1747,8 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
+		$this->container->getTicketManager()->markAsManaged($ticket);
+
 		$attachment = false;
 		foreach ($message->attachments AS $test_attachment) {
 			if ($test_attachment->id == $attachment_id) {
@@ -1760,12 +1766,19 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_log = new TicketLog();
-		$log_action = new \Application\DeskPRO\Tickets\TicketChangeInspector\LogActions\AttachRemoved($attachment);
 		$ticket_log->ticket      = $ticket;
 		$ticket_log->person      = $this->person;
-		$ticket_log->action_type = $log_action->getLogName();
+		$ticket_log->action_type = 'attach_removed';
 		$ticket_log->id_object   = $message->getId();
-		$ticket_log->details     = $log_action->getLogDetails();
+		$ticket_log->id_before   = $attachment->id;
+
+		$blob = $attachment->blob;
+		$log_data['attach_id']       = $attachment->id;
+		$log_data['blob_id']         = $blob->id;
+		$log_data['filename']        = $blob->filename;
+		$log_data['filesize']        = $blob->filesize;
+		$log_data['content_type']    = $blob->content_type;
+		$ticket_log->details = $log_data;
 
 		$this->em->persist($ticket_log);
 		$this->em->remove($attachment);
@@ -1789,6 +1802,9 @@ class TicketController extends AbstractController
 
 		$this->em->flush();
 
+		// Delete the blob itself
+		$this->container->getBlobStorage()->deleteBlobRecord($blob);
+
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
@@ -1807,6 +1823,12 @@ class TicketController extends AbstractController
 	public function ajaxSaveActionsAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify');
+
+		$tm = $this->container->getTicketManager();
+		$tm->markAsManaged($ticket);
+
+		$context = $tm->createAgentExecutorContext($this->person, 'update', 'web');
+
 		$old_department_id = $ticket->getDepartmentId();
 		$new_department_id = $ticket->getDepartmentId();
 
@@ -1824,16 +1846,7 @@ class TicketController extends AbstractController
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if ($macro) {
 				$macro->performOnTicket($ticket, $this->person);
-
-				try {
-					$this->em->persist($ticket);
-					$this->em->flush();
-					$ticket->getTicketLogger()->done();
-					$this->em->commit();
-				} catch (\Exception $e) {
-					$this->em->rollback();
-					throw $e;
-				}
+				$tm->saveTicket($ticket, $context);
 			}
 		} else {
 			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
@@ -1864,10 +1877,13 @@ class TicketController extends AbstractController
 			$validator->setLayout($layout);
 
 			$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
+
 			if (count($actions) == 1 && isset($actions['department_id'])) {
 				// Validation not on dep changes,
 				// because changing dep could change validation options
 				$new_department_id = $actions['department_id'];
+			} else if ($ticket->status == 'hidden' && count($actions) == 2 && isset($actions['status']) && isset($actions['hidden_status'])) {
+				// skip validation just restoring a deleted ticket, validation will apply after
 			} else {
 				if (!$validator->isValid($newticket)) {
 					$free = array();
@@ -1891,38 +1907,26 @@ class TicketController extends AbstractController
 			});
 			$ticket->addPropertyChangedListener($event_listener);
 
-			$this->em->beginTransaction();
-
 			if ($this->in->getBool('with_set_agent_parts')) {
 				$set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
 				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($set_parts);
 				$ticket->setAgentParticipants($agents);
 			}
 
-			try {
-				$ticket_edit->save();
-				$this->em->flush();
+			if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
 
-				if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-
-					if (!empty($_POST['custom_fields'])) {
-						$post_custom_fields = $this->request->request->get('custom_fields', array());
-						if (!empty($post_custom_fields)) {
-							$field_manager->saveFormToObject($post_custom_fields, $ticket);
-							$this->em->persist($ticket);
-						}
-
-						$this->em->flush();
+				if (!empty($_POST['custom_fields'])) {
+					$post_custom_fields = $this->request->request->get('custom_fields', array());
+					if (!empty($post_custom_fields)) {
+						$field_manager->saveFormToObject($post_custom_fields, $ticket);
+						$this->em->persist($ticket);
 					}
+
+					$this->em->flush();
 				}
-
-				$ticket->getTicketLogger()->done();
-
-				$this->em->commit();
-			} catch (\Exception $e) {
-				$this->em->rollback();
-				throw $e;
 			}
+
+			$tm->saveTicket($ticket, $context);
 		}
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
@@ -2663,16 +2667,20 @@ class TicketController extends AbstractController
 
 		$old_ticket_id = $other_ticket['id'];
 
+		$merge = new TicketMerge($this->person, $ticket, $other_ticket);
+
+		if (!$merge->checkPersonPermission()) {
+			throw $this->createNotFoundException("User does not have permission to merge these tickets");
+		}
+
 		try {
 			$this->em->beginTransaction();
-			$merge = new TicketMerge($this->person, $ticket, $other_ticket);
 			$merge->merge();
 			$this->em->commit();
 		} catch (\InvalidArgumentException $e) {
 			throw $this->createNotFoundException("You cannot merge a ticket with itself");
 		} catch (\Exception $e) {
-			$this->em->rollback();
-
+			$this->em->rollback(false);
 			throw $e;
 		}
 
@@ -2748,13 +2756,20 @@ class TicketController extends AbstractController
 			throw $this->createNotFoundException();
 		}
 
-		$date_created = clone $ticket->date_created;
+		$date_created = clone $message->date_created;
 		$date_created->setTimezone($this->person->getDateTimezone());
+
+		$top = trim($this->renderView('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', array(
+			'agent'   => $this->person,
+			'ticket'  => $ticket,
+			'message' => $message,
+		)));
 
 		return $this->render('AgentBundle:Ticket:forward-overlay.html.twig', array(
 			'ticket'  => $ticket,
 			'message' => $message,
 			'date_created' => $date_created,
+			'top' => $top,
 		));
 	}
 
@@ -2769,43 +2784,77 @@ class TicketController extends AbstractController
 
 		$custom_message = $this->in->getString('custom_message');
 
-		$raw_to = \ezcMailTools::parseEmailAddresses($this->in->getString('to'));
-		$to = array();
-		foreach ($raw_to as $addr) {
-			if ($addr->email && StringEmail::isValueValid($addr->email)) {
-				$to[$addr->email] = $addr->name;
+		$all_raw_to   = $this->in->getCleanValueArray('to', 'str', 'str');
+		$all_to_types = $this->in->getCleanValueArray('to_type', 'str', 'str');
+
+		$tos  = array();
+		$ccs  = array();
+		$bccs = array();
+
+		$helpdesk_addresses = array();
+
+		foreach ($all_raw_to as $rowid => $to) {
+			$to = trim($to);
+			if (!$to) continue;
+
+			$raw_to = \ezcMailTools::parseEmailAddresses($to);
+			if (!$raw_to) continue;
+
+			$type = isset($all_to_types[$rowid]) ? $all_to_types[$rowid] : 'to';
+			switch ($type) {
+				case 'to':
+					$var = &$tos;
+					break;
+				case 'cc':
+					$var = &$ccs;
+					break;
+				case 'bcc':
+					$var = &$bccs;
+					break;
+				default:
+					$var = &$tos;
+					break;
 			}
+
+			foreach ($raw_to as $addr) {
+				if ($addr->email && StringEmail::isValueValid($addr->email)) {
+					if ($this->container->getEmailAccountManager()->findAccountForEmailAddress($addr->email)) {
+						$helpdesk_addresses[] = $addr->email;
+					} else {
+						$var[$addr->email] = $addr->name;
+					}
+				}
+			}
+			unset($var);
 		}
 
-		if (!$to) {
+		if ($helpdesk_addresses) {
+			return $this->createJsonResponse(array(
+				'error'     => 'to_helpdesk_address',
+				'addresses' => $helpdesk_addresses
+			));
+		}
+
+		if (!$tos) {
 			return $this->createJsonResponse(array('error' => 'invalid_to'));
 		}
 
 		$subject = $this->in->getString('subject');
 
-		$message_raw = $message->message_raw ?: '';
+		$message_raw = $message->getMessageFull();
 		if (!$message_raw) {
-			$message_raw = $message->message_full;
-			if (!$message_raw) {
-				$message_raw = $message->message;
-			}
+			$message_raw = $message->getMessageHtml();
 		}
 
-		$message_raw = $message->procInlineAttach($message_raw);
-
-		$date_created = clone $ticket->date_created;
+		$date_created = clone $message->date_created;
 		$date_created->setTimezone($this->person->getDateTimezone());
 		$date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
 
-		$top = '';
-
-		if (!$this->container->getSetting('core_tickets.fwd_use_agent_address')) {
-			$top = '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 11px; color: #888888; padding: 0; margin: 0;">';
-			$top .= 'This message has been forwarded to you from <a href="' . $this->container->getSetting('core.deskpro_url') . '">' . $this->container->getSetting('core.deskpro_name') . '</a> ';
-			$top .= 'by ' . $this->person->getDisplayName() . ' &lt;<a href="mailto:' . $this->person->getPrimaryEmailAddress() . '">' . $this->person->getPrimaryEmailAddress() . '</a>&gt;<br/>';
-			$top .= 'Please do NOT reply to this message. If you need to reply, consider replying directly to ' . $ticket->person->getDisplayName() . ' &lt;<a href="mailto:' . $ticket->person->getPrimaryEmailAddress() . '">' . $ticket->person->getPrimaryEmailAddress() . '</a>&gt;';
-			$top .= '</div>';
-		}
+		$top = trim($this->renderView('DeskPRO:emails_common:ticket-fwd-out-header.html.twig', array(
+			'agent'   => $this->person,
+			'ticket'  => $ticket,
+			'message' => $message,
+		)));
 
 		if ($custom_message) {
 			if ($top) {
@@ -2846,7 +2895,15 @@ class TicketController extends AbstractController
 		$message_raw = $message->procInlineAttach($message_raw);
 
 		$email = $this->container->getMailer()->createMessage();
-		$email->setTo($to);
+		foreach ($tos as $k => $x) {
+			$email->addTo($k, $x);
+		}
+		foreach ($ccs as $k => $x) {
+			$email->addCc($k, $x);
+		}
+		foreach ($bccs as $k => $x) {
+			$email->addBcc($k, $x);
+		}
 		$email->setBody($message_raw, 'text/html');
 		$email->setSubject($subject);
 
@@ -2861,8 +2918,11 @@ class TicketController extends AbstractController
 				$account = null;
 			}
 		}
-		if (!$account) {
-			$account = $this->container->getEmailAccountManager()->getPrimaryEmailAccount();
+		if (!$account || !$account->is_enabled || !$account->outgoing_account) {
+			$account = $ticket->email_account;
+		}
+		if (!$account || !$account->is_enabled || !$account->outgoing_account) {
+			$account = $this->container->getEmailAccountManager()->getPrimaryTicketAccount();
 		}
 
 		if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
@@ -2872,7 +2932,13 @@ class TicketController extends AbstractController
 		}
 
 		$from_name = $this->person->getDisplayName();
-		$email->setFrom($from_email, $from_name);
+
+		try {
+			$email->setFrom($from_email, $from_name);
+		} catch (\Swift_RfcComplianceException $e) {
+			KernelErrorHandler::logException($e, false);
+			throw $this->createNotFoundException();
+		}
 
 		$tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
 		if ($tr) {
@@ -2887,7 +2953,7 @@ class TicketController extends AbstractController
 		$size = 0;
 		$attachments = $ticketdisplay->getMessageAttachments($message, true);
 		if ($attachments) {
-			foreach ($ticketdisplay->getMessageAttachments($message, true) as $attach) {
+			foreach ($attachments as $attach) {
 				if ($attach->is_inline && $attach->blob->filesize > $max_embed) {
 					continue;
 				}
@@ -2900,11 +2966,7 @@ class TicketController extends AbstractController
 			}
 
 			foreach ($attach_attachments as $src => $attach) {
-				if ($attach instanceof \Application\DeskPRO\Entity\Blob) {
-					$email->attachBlob($attach, $src, true);
-				} else {
-					$email->attachBlob($attach->blob, $src, $attach->is_inline);
-				}
+				$email->attachBlob($attach->blob, $src, $attach->is_inline);
 			}
 		}
 
@@ -2916,13 +2978,19 @@ class TicketController extends AbstractController
 			'person_id'    => $this->person->id,
 			'action_type'  => 'message_forwarded',
 			'details'      => serialize(array(
-				'message_id' => $message_id,
-				'agent_id'   => $this->person->id,
-				'agent_name' => $this->person->getDisplayName(),
-				'to'         => array_keys($to),
-				'to_string'  => implode(', ', array_keys($to)),
-				'from_email' => $from_email,
-				'from_name'  => $from_name
+				'message_id'     => $message_id,
+				'agent_id'       => $this->person->id,
+				'agent_name'     => $this->person->getDisplayName(),
+				'to'             => array_keys($tos),
+				'cc'             => array_keys($ccs),
+				'bcc'            => array_keys($bccs),
+				'all_rec_string' => implode(', ', array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))),
+				'to_string'      => implode(', ', array_keys($tos)),
+				'cc_string'      => implode(', ', array_keys($ccs)),
+				'bcc_string'     => implode(', ', array_keys($bccs)),
+				'from_email'     => $from_email,
+				'from_name'      => $from_name,
+				'custom_message' => $custom_message ?: null
 			)),
 			'date_created' => date('Y-m-d H:i:s')
 		));
@@ -3875,4 +3943,29 @@ class TicketController extends AbstractController
 		return $this->render('AgentBundle:Ticket:link.html.twig');
 	}
 
+	public function unlinkTicketAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		switch ($this->in->getString('link_type')) {
+			case 'parent':
+				$linked_ticket = $ticket;
+				break;
+
+			case 'child':
+			case 'sibling':
+				$linked_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('link_ticket_id'));
+				break;
+		}
+
+		if (!$linked_ticket) {
+			throw $this->createNotFoundException();
+		}
+
+		$linked_ticket->parent_ticket = null;
+		$this->em->persist($linked_ticket);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }

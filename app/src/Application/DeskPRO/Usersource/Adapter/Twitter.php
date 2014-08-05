@@ -71,8 +71,8 @@ class Twitter extends AbstractAdapter
 	protected function _createAuthAdapterObject()
 	{
 		return new \Orb\Auth\Adapter\Twitter(
-			$this->usersource->getOption('consumer_key'),
-			$this->usersource->getOption('consumer_secret')
+			$this->usersource->getOption('consumer_key') ?: $this->usersource->getOption('app_key'),
+			$this->usersource->getOption('consumer_secret') ?: $this->usersource->getOption('app_secret')
 		);
 	}
 

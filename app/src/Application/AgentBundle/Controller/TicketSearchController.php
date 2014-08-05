@@ -230,7 +230,8 @@ class TicketSearchController extends AbstractController
 				$q = $this->in->getString('term');
 			}
 
-			$searcher->addTerm('text', 'is', array('query' => $q));
+			$searcher->addTerm('ticket_message', 'is', array('query' => $q));
+			$searcher->addTerm('date_created', 'gte', array('date1' => strtotime("-60 days")));
 			$results = $searcher->getMatches();
 			$results = Arrays::castToType($results, 'integer');
 
@@ -888,7 +889,7 @@ class TicketSearchController extends AbstractController
         $view_type = $this->in->getString('view_type');
 
 		/** @var $filter \Application\DeskPRO\Entity\TicketFilter */
-		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id);
+		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($filter_id ?: 0);
 
 		if (!$filter) {
 			throw $this->createNotFoundException();
@@ -996,6 +997,10 @@ class TicketSearchController extends AbstractController
 	public function runNamedFilterAction($filter_name)
 	{
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
+		if (!$filter) {
+			throw $this->createNotFoundException();
+		}
+
 		return $this->runFilterAction($filter['id']);
 	}
 
@@ -1356,7 +1361,6 @@ class TicketSearchController extends AbstractController
             'ref',
             'auth',
             'creation_system',
-            'notify_email',
             'ticket_hash',
             'status',
             'hidden_status',
@@ -1458,16 +1462,24 @@ class TicketSearchController extends AbstractController
                     case 'category_id':
                     case 'workflow_id':
                     case 'product_id':
-                    case 'email_account_id':
+					case 'email_account_id':
                         preg_match('/^(.*)_id$/', $display_field, $matches);
                         list(, $name) = $matches;
-                        $entity = $ticket->{$name};
+						$entity = null;
 
-                        if($entity) {
-                            $row[] = $entity->id;
-                            $row[] = $entity->title;
-                        }
-                        else {
+						if (isset($ticket[$name])) {
+							$entity = $ticket->{$name};
+						}
+
+						if ($entity) {
+							if ($display_field == 'email_account_id') {
+								$row[] = $entity->id;
+								$row[] = $entity->address;
+							} elseif ($entity) {
+								$row[] = $entity->id;
+								$row[] = $entity->title;
+							}
+						} else {
                             $row[] = $row[] = '';
                         }
                         break;
@@ -1533,7 +1545,11 @@ class TicketSearchController extends AbstractController
 							}
                         }
                         else {
-                            $value = $ticket->{$display_field};
+							if (isset($ticket[$display_field])) {
+								$value = $ticket[$display_field];
+							} else {
+								$value = null;
+							}
 
                             if(is_scalar($value)) {
                                 $row[] = $value;

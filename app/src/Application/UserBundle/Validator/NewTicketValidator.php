@@ -93,7 +93,7 @@ class NewTicketValidator extends AbstractValidator
 	public function setLayout(Layout $layout)
 	{
 		foreach ($layout as $field) {
-			$this->display_fields[$field->getId()] = $field->getId();
+			$this->display_fields[$field->getId()] = $field;
 		}
 	}
 
@@ -164,7 +164,7 @@ class NewTicketValidator extends AbstractValidator
 				}
 
 				if ($layout) {
-					$this->_traverseItems($layout);
+					$this->setLayout($layout);
 				}
 			}
 		}
@@ -235,6 +235,18 @@ class NewTicketValidator extends AbstractValidator
 			}
 		}
 
+		#------------------------------
+		# All other fields
+		#------------------------------
+
+		if ($this->display_fields) {
+			$this->_traverseItems($this->display_fields);
+		}
+
+		#------------------------------
+		# Return results
+		#------------------------------
+
 		if ($this->errors) {
 			return false;
 		}
@@ -242,7 +254,7 @@ class NewTicketValidator extends AbstractValidator
 		return true;
 	}
 
-	protected function _traverseItems(Layout $layout)
+	protected function _traverseItems($layout)
 	{
 		foreach ($layout as $item) {
 			$this->_validateItem($item);
@@ -326,7 +338,7 @@ class NewTicketValidator extends AbstractValidator
 			case 'user_field':
 				$field = App::getSystemService('PersonFieldsManager')->getFieldFromId($item->getFieldId());
 				if ($field && $field->is_enabled) {
-					$errors = $field->getHandler()->validateFormData($this->newticket->custom_ticket_fields);
+					$errors = $field->getHandler()->validateFormData($this->newticket->custom_user_fields);
 					foreach ($errors as $code) {
 						$this->addError('person.' . $code);
 					}

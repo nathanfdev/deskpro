@@ -68,7 +68,7 @@ class ServerErrorLogs
 		$log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
 
 		return array(
-			'logs'                  => $log_reader->getAll(),
+			'logs'                  => array_values($log_reader->getAll()),
 			'deskpro_error_log_url' => $this->_generateUrl('_sys=errorlog'),
 			'web_error_log_url'     => $this->_generateUrl('_sys=errorlog&web'),
 			'cli_error_log_url'     => $this->_generateUrl('_sys=errorlog&cli')

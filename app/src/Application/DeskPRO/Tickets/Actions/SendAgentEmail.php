@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
@@ -72,38 +73,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	{
 		$agents = array();
 
+		$person_context = $context->getPersonContext();
+
 		foreach ($agent_ids as $aid) {
-			// -1 = current user
-			if ($aid == -1) {
-				if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
-					$agents[] = $context->getPersonContext();
-				}
-
-			// assigned agent
-			} else if ($aid == 'agent') {
-				if ($ticket->agent) {
-					$agents[] = $ticket->agent;
-				}
-
-			// agents of assigned team
-			} else if ($aid == 'team') {
-				if ($ticket->agent_team) {
-					foreach ($ticket->agent_team->members as $agent) {
-						$agents[] = $agent;
-					}
-				}
-
-			// followers
-			} else if ($aid == 'followers') {
-				if ($agent_followers = $ticket->getAgentParticipants()) {
-					foreach ($agent_followers as $agent) {
-						$agents[] = $agent;
-					}
-				}
-
-			// based on notify list
-			} else if ($aid == 'notify_list') {
-
+			if ($aid == 'notify_list') {
 				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
 				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
 				$list_builder  = new AgentNotifyListBuilder(
@@ -115,7 +88,6 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
 				$notify = $list_builder->genNotifyList();
 
-				$person_context = $context->getPersonContext();
 				foreach ($notify as $n) {
 					// dont send to self
 					if ($person_context && $person_context === $n['agent']) {
@@ -127,11 +99,15 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 					}
 				}
 
-			// specific agents
-			} else {
-				if ($agent = $this->getContainer()->getAgentData()->get($aid)) {
-					$agents[] = $agent;
+				$force_list = $context->getVars()->get('agent_force_subscription_list', array());
+				if ($force_list) {
+					$context->getLogger()->debug("[SendAgentEmail] Appending force list");
+					$agents = array_merge($agents, $force_list);
 				}
+
+			} else {
+				$agent_data = $this->getContainer()->getAgentData();
+				$agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
 			}
 		}
 
@@ -186,12 +162,51 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
 		$sent_count = 0;
 
+		$state = $ticket->getStateChangeRecorder();
+		$fn_check_new_part = function($agent) use ($state, $ticket) {
+			$has = false;
+			foreach ($ticket->participants as $p) {
+				if ($p->person === $agent) {
+					$has = true;
+					break;
+				}
+			}
+			if (!$has) {
+				return false;
+			}
+
+			foreach ($state->getChangesForField('participants') as $change) {
+				if ($change instanceof ChangeCollection) {
+					foreach ($change->getAddedElements() as $p) {
+						if ($p->person === $agent) {
+							return true;
+						}
+					}
+				}
+			}
+
+			return false;
+		};
+
 		foreach ($agents as $agent) {
 			$sent_count++;
 
 			$context->getLogger()->debug(sprintf("[SendAgentEmail] Sending to <Person:%d> %s", $agent->id, $agent->getDisplayName()));
 
 			$vars = $default_vars;
+
+			$type_flag = null;
+			if ($state->hasChangedField('agent') && $ticket->agent && $ticket->agent === $agent) {
+				$type_flag = 'assigned';
+			} else if ($state->hasChangedField('agent_team') && $ticket->agent_team && $agent->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+				$type_flag = 'assigned_team';
+			} else if ($state->hasChangedField('participants') && $fn_check_new_part($agent)) {
+				$type_flag = 'added_part';
+			} else if ($state->hasChangedField('status')) {
+				$type_flag = 'status_changed';
+			}
+
+			$vars['type_flag'] = $type_flag;
 
 			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
 				->setTicket($ticket)

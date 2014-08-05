@@ -660,7 +660,11 @@ class PublishController extends AbstractController
 		$reason = $this->in->getString('decline_reason');
 
 		foreach ($data as $type => $ids) {
-			$entity =  $this->publish_helper->getEntityNameFor($type);
+			try {
+				$entity = $this->publish_helper->getEntityNameFor($type);
+			} catch (\InvalidArgumentException $e) {
+				$entity = null;
+			}
 			if (!$entity) continue;
 
 			$results = $this->em->getRepository($entity)->getByIds($ids);
@@ -673,7 +677,7 @@ class PublishController extends AbstractController
 					}
 				} else {
 					if ($reason) {
-						$this_reason = $reason . ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
+						$this_reason = $reason . ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($r, array(), 'agent') .'">' . htmlentities($r->title) . '</a>)';
 						$agent_chat->sendAgentMessage($this_reason, array($r->person['id']));
 					}
 					$r->status_code = 'hidden.draft';

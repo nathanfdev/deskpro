@@ -33,7 +33,7 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 
 class ApiCombinerController extends AbstractController implements ProtectedControllerInterface
 {
@@ -42,16 +42,11 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 	 */
 	public function getPermissionStrategy()
 	{
-		return new AdminManagePermission();
+		return new PassPermission();
 	}
 
 	function getAction()
 	{
-		// Currently can only be used by admins
-		if (!$this->person->can_admin) {
-			return $this->createApiErrorResponse("admin_required", "api-combine can only be used by admins");
-		}
-
 		$data = array();
 
 		$returned_data = array();
@@ -77,8 +72,11 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 			$ctrl_name = null;
 			$ctrl_path = $route_info['_controller'];
 			$m = null;
-			if (preg_match('#^Application\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
-				$ctrl_name = $m[1] . ':' . $m[2] . ':' . $m[3];
+			if (preg_match('#^(Application|Cloud)\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
+				$ctrl_name = $m[2] . ':' . $m[3] . ':' . $m[4];
+				if ($m[1] == 'Cloud') {
+					$ctrl_name = 'Cloud' . $ctrl_name;
+				}
 			}
 
 			$route_id = $route_info['_route'];

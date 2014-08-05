@@ -1,5 +1,13 @@
-define ['DeskPRO/Util/Util'], (Util) ->
-	class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef
+define [
+	'DeskPRO/Util/Util',
+	'DeskPRO/Util/Arrays',
+	'Admin/OptionBuilder/TypesDef/BaseTypesDef'
+], (
+	Util,
+	Arrays,
+	BaseTypesDef
+) ->
+	class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef
 		constructor: (@$q, @Api, @dpTemplateManager) ->
 			@options_data        = null
 			@inputTemplate       = 'OptionBuilder/type-criteria-input.html'
@@ -55,8 +63,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			if field.type_name == 'choice'
 				options.options = field.choices.map( (o) -> {title: o.title, value: o.id})
 				return @getStandardSelect(options)
+			else if field.type_name == 'toggle'
+				options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
+				options.single = true
+				return @getStandardSelect(options)
 			else
-				if not options.operators then options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+				if not options.operators then options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 				return @getStandardInput(options)
 
 		###
@@ -89,35 +101,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			extraOptions = options.extraOptions || null
 
 			if not options_formatter
-				options_formatter = (options) ->
-					opts = []
-
-					if extraOptions
-						for opt in extraOptions
-							opts.push(opt)
-
-					for opt in options
-						if opt.title
-							title = opt.title
-						else if opt.name
-							title = opt.name
-						else
-							title = null
-
-						if opt.id
-							val = opt.id
-						else if opt.value
-							val = opt.value
-						else
-							val = null
-
-						if title != null and val != null
-							opts.push({
-								title: title,
-								value: val
-							})
-
-					return opts
+				options_formatter = (options) =>
+					return @standardOptionsFormatter(options, extraOptions)
 
 			me = @
 
@@ -136,7 +121,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						return {
 							operators: operators,
 							options: if options_formatter then options_formatter(options.options) else options.options,
-							multiselect: true
+							multiselect: !options.single
 						}
 					else if data_name
 						defer = me.$q.defer()
@@ -144,7 +129,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 							defer.resolve({
 								operators: operators,
 								options: if options_formatter then options_formatter(me.options_data[data_name]) else me.options_data[data_name],
-								multiselect: true
+								multiselect: !options.single
 							})
 						)
 
@@ -233,6 +218,13 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						getViewValue: (value = {}, data) ->
 							val = value.options?[prop_name] || ''
 							if Util.isArray(val) then val = val.join(',')
+
+							if value.op
+								if value.op == 'is' and operators.indexOf('is') == -1
+									value.op = 'contains'
+								else if value.op == 'not' and operators.indexOf('not') == -1
+									value.op = 'notcontains'
+
 							return {
 								value: val,
 								op: value.op || _.first(data.operators)
@@ -345,10 +337,10 @@ define ['DeskPRO/Util/Util'], (Util) ->
 							if not model.use_relative
 								if (model.op == 'lte' || model.op == 'between')
 									if not model.date1 then model.date1 = new Date()
-									value.options.date1 = model.date1.getTime() / 1000
+									value.options.date1 = parseInt(model.date1.getTime() / 1000)
 								if (model.op == 'gte' || model.op == 'between') and model.date2
 									if not model.date2 then model.date2 = new Date()
-									value.options.date2 = model.date2.getTime() / 1000
+									value.options.date2 = parseInt(model.date2.getTime() / 1000)
 							else
 								if (model.op == 'lte' || model.op == 'between') and model.date1_relative
 									d1 = model.date1_relative || [1, 'days']
@@ -359,8 +351,6 @@ define ['DeskPRO/Util/Util'], (Util) ->
 									value.options.date2_relative = d2[0]
 									value.options.date2_relative_type = d2[1]
 
-							console.log(model)
-							console.log(value)
 							return value
 					}
 			}

@@ -8,7 +8,9 @@
 			<ul class="dp-item-list" dp-list-autoload>
 				<li ng-repeat="group in ListCtrl.groups" dp-state-mark="agents.groups.edit.{{ ng_var('group.id') }}">
 					<a href="{{ ng_href('agents.groups.edit', '{id: group.id}') }}">
+						<div ng-if="group.sys_name" class="pull-right"><i class="fa fa-asterisk" style="position: relative; top: 3px;" tooltip="This is a built-in permission group." tooltip-placement="left"></i></div>
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('group.id') }}</span>
 							<span class="title-text">{{ ng_var('group.title') }}</span>
 						</h4>
 					</a>
@@ -36,20 +38,34 @@
 			<p>Use the <strong>Departments</strong> tab to control access to tickets in each department:</p>
 			<ul>
 				<li><strong>Full</strong> means the agent can view and work on tickets in that department</li>
-				<li><strong>Assign</strong> means the agent can assign tickets to the department, but nothing more (they can&#39;t view them afterwards)</li>
+				<li><strong>Assign</strong> means the agent can assign tickets to the department, but nothing more (they can't view them afterwards)</li>
 			</ul>
 			<p>You can separately set <strong>chat</strong> access for each department.</p>
 			
 			<p>When you add an agent to multiple permission groups, they get every permission that is granted by any of the groups.</p>
-			<p>You can also grant an agent extra individual permissions beyond those they get from their permission groups from the <strong>Agents</strong> screen: these are called <strong>permission overrides</strong>. Overrides always add permissions; you can&#39;t use an override to take away a permission granted by one of an agent's groups.</p>
+			
+			
+			<p>You can also grant an agent extra individual permissions beyond those they get from their permission groups from the <strong>Agents</strong> screen: these are called <strong>permission overrides</strong>.</p>
 		</section>
-			<section>
+		
+		
+		<section>
+		<h2><span>FAQ</span></h2>
+		<dl>
+			<dt><em>Q:</em>How do I remove permissions from an agent?</dt>
+			<dd><em>A:</em>
+				Groups and overrides always <em>add</em> permissions; you can't use an override to take away a permission granted by one of an agent's groups. To limit an agent's permissions, make sure that none of their groups (including Everyone and Registered) grant the permission you want to remove.
+			</dd>
+		</dl>
+</section>
+
+			<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
 				
-				<li>[MANUAL]<a href="#agent-permissions" target="_blank">Agent permissions</a></li>
-				<li>[MANUAL]<a href="#permission-overrides" target="_blank">Permission overrides</a></li>
-				<li>[MANUAL]<a href="#ticket-department-permissions:agents" target="_blank">Ticket department permissions: agents</a>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-permissions" target="_blank">Agent permissions</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#permission-overrides" target="_blank">Permission overrides</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-department-permissions" target="_blank">Agent department permissions</a></li>
 			</ul>
 	</section>
 	</article>

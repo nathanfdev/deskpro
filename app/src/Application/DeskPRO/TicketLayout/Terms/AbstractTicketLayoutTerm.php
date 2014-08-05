@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Exception\NotImplementedException;
 use Orb\Util\Util;
 
 abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
@@ -102,7 +103,11 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
 	 * @param Ticket $ticket
 	 * @return bool
 	 */
-	abstract public function isTicketMatch(Ticket $ticket);
+	public function isTicketMatch(Ticket $ticket)
+	{
+		// Cant be abstract in older versions of php see https://bugs.php.net/bug.php?id=43200
+		throw new NotImplementedException;
+	}
 
 	/**
 	 * Should return a JS function that accepts a ticket object and returns true/false
@@ -110,5 +115,9 @@ abstract class AbstractTicketLayoutTerm implements TicketLayoutTermInterface
 	 *
 	 * @return string
 	 */
-	abstract public function compileJsCheck();
+	public function compileJsCheck()
+	{
+		// Cant be abstract in older versions of php see https://bugs.php.net/bug.php?id=43200
+		throw new NotImplementedException;
+	}
 }

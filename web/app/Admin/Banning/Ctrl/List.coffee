@@ -2,9 +2,22 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_Banning_Ctrl_List extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_Banning_Ctrl_List'
 		@CTRL_AS = 'ListCtrl'
+		@DEPS      = ['Api', '$http', 'Growl']
 
 		init: ->
 			@banData = @DataService.get('Bans')
+			@$scope.fileUploadOptions = {url: @$http.formatApiUrl('/banning/import_emails') }
+			@$scope.exportUrl = @$http.formatApiUrl('/banning/export_emails')
+
+			@$scope.$on('fileuploaddone', (e, data) =>
+				@Growl.success 'Import finished successfully'
+				@goFirstEmailBanPage()
+			)
+
+			@$scope.$on('fileuploadfail', (e, data) =>
+				@Growl.error 'Import failed'
+				@goFirstEmailBanPage()
+			)
 
 		###
 		# Loads the list
@@ -25,7 +38,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		###
 		#	Here we watching scope 'page' variable in order to load new page of results
- 	# Reason - 'ng-change' is not working for ui-select2
+ 	  # Reason - 'ng-change' is not working for ui-select2
 		###
 
 		initializeScopeWatching: ->
@@ -84,8 +97,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@pagination.ip_bans.page--
 
 		###
- 	#
- 	###
+		#
+		###
+
+		goFirstIpBanPage: ->
+
+			@pagination.ip_bans.page = 0
+
+		###
+ 	  #
+ 	  ###
 
 		goNextEmailBanPage: ->
 
@@ -98,6 +119,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		goPrevEmailBanPage: ->
 
 			@pagination.email_bans.page--
+
+		###
+		#
+		###
+
+		goFirstEmailBanPage: ->
+
+			@pagination.email_bans.page = 0
 
 		###
 		# Show the delete dlg
@@ -138,6 +167,37 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 			).error((info, code) =>
 				@applyErrorResponseToView(info)
+			)
+
+		###
+		# Show the delete dlg
+		###
+
+		deleteList: (list) ->
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Banning/delete-modal.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.multiple = true
+					$scope.confirm = ->
+						$modalInstance.close()
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss()
+				]
+			});
+
+			inst.result.then(=>
+				if list == @list.email_bans
+					@banData.deleteBanByType('email').then( =>
+						@reloadList(false, true)
+						@$state.go('crm.banning')
+					)
+				else
+					@banData.deleteBanByType('ip').then( =>
+						@reloadList(true)
+						@$state.go('crm.banning')
+					)
 			)
 
 	Admin_Banning_Ctrl_List.EXPORT_CTRL()

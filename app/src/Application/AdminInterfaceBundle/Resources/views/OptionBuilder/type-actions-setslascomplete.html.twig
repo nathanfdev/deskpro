@@ -1,0 +1,39 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table" width="100%">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;">
+					<label class="row-label">Complete SLAs</label>
+				</td>
+				<td style="padding-right: 3px;">
+					<table class="display-table" width="100%">
+						<tr>
+							<td width="80" class="nowrap" style="padding-right: 8px;">
+								<label class="row-label">Apply to SLAs</label>
+							</td>
+							<td style="padding-right: 3px;">
+								<select multiple ui-select2 ng-model="model.sla_ids" style="width: 60%">
+									<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td width="80" class="nowrap" style="padding-right: 8px;">
+								<label class="row-label">State to set</label>
+							</td>
+							<td style="padding-right: 3px;">
+								<select ui-select2 ng-model="model.sla_status" style="width: 60%">
+									<option value="ok">Set 'Passing'</option>
+									<option value="warning">Set 'Warning'</option>
+									<option value="fail">Set 'Failed'</option>
+									<option value="nochange">No Change &mdash; Use whatever status is currently set</option>
+									<option value="auto">Automatic &mdash; Calculate based on SLA criteria</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

@@ -47,31 +47,26 @@ class ServerReportFile
 	/**
 	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
-
 	protected $em;
 
 	/**
 	 * @var string
 	 */
-
 	protected $tmpdir = '';
 
 	/**
 	 * @var string
 	 */
-
 	protected $file_name = 'deskpro-report.zip';
 
 	/**
 	 * @var string
 	 */
-
 	protected $archive_file = '';
 
 	/**
 	 * @var array - this is mapping array between file name and method of this class that creates file content
 	 */
-
 	protected $files_added_to_archive = array(
 		'phpinfo-web.html'      => '_createPhpInfoFile',
 		'phpinfo-cli.txt'       => '_createCliInfoFile',
@@ -86,12 +81,12 @@ class ServerReportFile
 		'cron-status.txt'       => '_createCronStatus',
 		'license.txt'           => '_createLicense',
 		'file-integrity.txt'    => '_createFileIntegrity',
+		'templates.txt'         => '_createTemplates',
 	);
 
 	/**
 	 * @param EntityManager $em
 	 */
-
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
@@ -112,7 +107,6 @@ class ServerReportFile
 	 *
 	 * @param string $file_check_results - string with results of integrity file checks
 	 */
-
 	public function saveFileCheckResults($file_check_results)
 	{
 		try {
@@ -127,7 +121,6 @@ class ServerReportFile
 	/**
 	 * Actually outputs the archive as downloadable attachment
 	 */
-
 	public function outputArchive()
 	{
 		header('Content-Type: application/zip; filename=' . $this->file_name);
@@ -154,7 +147,6 @@ class ServerReportFile
 	/**
 	 * Creates archive with all needed files inside it
 	 */
-
 	public function createArchive()
 	{
 		$this->_addFilesToArchive();
@@ -177,7 +169,6 @@ class ServerReportFile
 	/**
 	 * This methods iterates over all of the $this->files_added_to_archive and creates all the needed files
 	 */
-
 	protected function _addFilesToArchive()
 	{
 		foreach($this->files_added_to_archive as $file_name => $func) {
@@ -189,7 +180,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createPhpInfoFile($file_name)
 	{
 		/**
@@ -212,7 +202,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createCliInfoFile($file_name)
 	{
 		/**
@@ -235,7 +224,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createDeskPROErrorLog($file_name)
 	{
 		$file = str_repeat('#', 72) . "\n# error.log\n" . str_repeat('#', 72) . "\n\n";
@@ -262,7 +250,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createWebErrorLog($file_name)
 	{
 		$file = str_repeat('#', 72) . "# server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
@@ -296,7 +283,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createCliErrorLog($file_name)
 	{
 		$file = str_repeat('#', 72) . "# cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
@@ -323,7 +309,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMysqlSchema($file_name)
 	{
 		$sql = array();
@@ -356,7 +341,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMysqlStatus($file_name)
 	{
 		$sections = array();
@@ -395,7 +379,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMysqlVariables($file_name)
 	{
 		$sections = array();
@@ -434,7 +417,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMisc($file_name)
 	{
 		/**
@@ -498,10 +480,29 @@ class ServerReportFile
 		}
 	}
 
+	protected function _createTemplates()
+	{
+		$templates = App::getDb()->fetchAll("SELECT name, template_code, date_created, date_updated FROM templates");
+		$out = array();
+
+		foreach ($templates as $t) {
+			$out[] = ">>>>>>>>>>>>>>>>>>>> Template: {$t['name']} -- Created: {$t['date_created']} -- Updated: {$t['date_updated']} <<<<<<<<<<<<<<<<<<<<\n\n";
+			$out[] = $t['template_code'];
+			$out[] = "\n\n\n\n\n";
+		}
+
+		$out = trim(implode('', $out));
+
+		try {
+			$this->_createFile($this->tmpdir . '/' . 'templates.txt', $out);
+		} catch(IOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMysqlSchemaDiff($file_name)
 	{
 		try {
@@ -531,7 +532,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createCronStatus($file_name)
 	{
 		/**
@@ -578,7 +578,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createLicense($file_name)
 	{
 		$license = License::getLicense();
@@ -626,7 +625,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createFileIntegrity($file_name)
 	{
 		$fs = new Filesystem();
@@ -659,7 +657,6 @@ class ServerReportFile
 	 *
 	 * @throws \Symfony\Component\Filesystem\Exception\IOException
 	 */
-
 	protected function _createFile($file_name, $content)
 	{
 		if (@file_put_contents($file_name, $content) === false) {
@@ -677,7 +674,6 @@ class ServerReportFile
 	 *
 	 * @throws \Symfony\Component\Filesystem\Exception\IOException
 	 */
-
 	protected function _readFile($file_name)
 	{
 		if(($content = @file_get_contents($file_name)) === false) {

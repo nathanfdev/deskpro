@@ -7,7 +7,7 @@
       function TicketDepFormMapper() {}
 
       TicketDepFormMapper.prototype.getFormFromModel = function(dep, trigger, layouts, depPerms, agents, agentgroups, usergroups, email_accounts) {
-        var act, agent, form, group, matrix, p, u, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3;
+        var act, agent, depAgentGroupPerms, form, group, matrix, p, u, _i, _j, _k, _l, _len, _len1, _len2, _len3, _len4, _m, _ref, _ref1, _ref2, _ref3;
         form = {
           title: '',
           user_title: '',
@@ -76,23 +76,39 @@
         } else {
           form.custom_layout = Util.clone(form.default_layout, true);
         }
+        depAgentGroupPerms = depPerms.agentgroups;
+        if (!dep.id) {
+          depAgentGroupPerms = [];
+        }
         matrix = new DepAgentPermMatrix();
         for (_j = 0, _len1 = agentgroups.length; _j < _len1; _j++) {
           group = agentgroups[_j];
           matrix.addGroup(group, []);
+          if (!dep.id) {
+            depAgentGroupPerms.push({
+              usergroup_id: group.id,
+              perm_name: 'full'
+            });
+          }
         }
         for (_k = 0, _len2 = agents.length; _k < _len2; _k++) {
           agent = agents[_k];
           matrix.addAgent(agent, []);
         }
-        matrix.initPerms(depPerms.agentgroups, depPerms.agents);
+        matrix.initPerms(depAgentGroupPerms, depPerms.agents);
         form.agent_perms = matrix;
         form.usergroup_perms = {};
         for (_l = 0, _len3 = usergroups.length; _l < _len3; _l++) {
           u = usergroups[_l];
-          form.usergroup_perms[u.id] = {
-            full: false
-          };
+          if (dep.id) {
+            form.usergroup_perms[u.id] = {
+              full: false
+            };
+          } else {
+            form.usergroup_perms[u.id] = {
+              full: true
+            };
+          }
         }
         if (depPerms.usergroups) {
           _ref3 = depPerms.usergroups;
@@ -172,9 +188,14 @@
           dep.display_order = 0;
         }
         if (Util.isBlank(formModel.parent_id)) {
-          return dep.parent_id = null;
+          dep.parent_id = null;
         } else {
-          return dep.parent_id = parseInt(formModel.parent_id);
+          dep.parent_id = parseInt(formModel.parent_id);
+        }
+        if (formModel.use_custom_layout) {
+          return dep.has_layout = true;
+        } else {
+          return dep.has_layout = false;
         }
       };
 

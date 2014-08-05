@@ -5,22 +5,26 @@
 	array(
 		'typeId'         => 'layout',
 		'groupId'        => 'top',
-		'name'           => 'DeskPRO:emails_common:email-header.html.twig'
+		'name'           => 'DeskPRO:emails_common:email-header.html.twig',
+		'type'           => 'template',
 	),
 	array(
 		'typeId'         => 'layout',
 		'groupId'        => 'top',
-		'name'           => 'DeskPRO:emails_common:email-footer.html.twig'
+		'name'           => 'DeskPRO:emails_common:email-footer.html.twig',
+		'type'           => 'template',
 	),
 	array(
 		'typeId'         => 'layout',
 		'groupId'        => 'top',
-		'name'           => 'DeskPRO:emails_common:email-custom-css.css.twig'
+		'name'           => 'DeskPRO:emails_common:email-custom-css.css.twig',
+		'type'           => 'template',
 	),
 	array(
 		'typeId'         => 'layout',
 		'groupId'        => 'top',
-		'name'           => 'DeskPRO:emails_common:email-css.css.twig'
+		'name'           => 'DeskPRO:emails_common:email-css.css.twig',
+		'type'           => 'template',
 	),
 
 	####################################################################################################################
@@ -44,6 +48,18 @@
 		'typeId'         => 'agent',
 		'groupId'        => 'tickets',
 		'name'           => 'DeskPRO:emails_agent:ticket-reply.html.twig'
+	),
+	array(
+		'typeId'         => 'agent',
+		'groupId'        => 'tickets',
+		'name'           => 'DeskPRO:emails_common:ticket-props-table.html.twig',
+		'type'           => 'template',
+	),
+	array(
+		'typeId'         => 'agent',
+		'groupId'        => 'tickets',
+		'name'           => 'DeskPRO:emails_common:ticket-fwd-out-header.html.twig',
+		'type'           => 'template',
 	),
 
 	//--------------------

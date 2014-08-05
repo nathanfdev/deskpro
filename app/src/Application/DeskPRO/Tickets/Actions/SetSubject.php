@@ -37,14 +37,16 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
+use Orb\Util\Strings;
 
 /**
  * Set the subject.
  *
  * @option string subject
  */
-class SetSubject extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetSubject extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -53,6 +55,7 @@ class SetSubject extends AbstractAction implements ActionInterface, MacroActionI
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('subject');
+		$options->addValidNames('with_formatter');
 		return $options;
 	}
 
@@ -66,7 +69,24 @@ class SetSubject extends AbstractAction implements ActionInterface, MacroActionI
 			return;
 		}
 
-		$ticket->subject = $this->getActionOption('subject');
+		$subject = $this->getActionOption('subject');
+
+		if ($this->getActionOption('with_formatter')) {
+			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
+			$subject = $formatter->formatText($subject, $ticket);
+			$subject = preg_replace("#[\r\n]#", ' ', $subject);
+			$subject = preg_replace("#\\s{2,}#", ' ', $subject);
+			$subject = trim($subject);
+
+			if (!$subject) {
+				$context->getLogger()->notice("[SetSubject] Subject pattern evaluates to an empty string");
+				return;
+			}
+		}
+
+		if ($subject != $ticket->subject) {
+			$ticket->subject = $subject;
+		}
 	}
 
 

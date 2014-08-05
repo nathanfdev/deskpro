@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Doctrine\ORM\EntityManager;
 
-class RunFilterUpdates implements TicketSaveActionInterface
+class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterface
 {
 	/**
 	 * @var FilterChangeDetector

@@ -11,8 +11,11 @@
         form = {};
         form.title = macroModel.title || '';
         form.is_global = macroModel.is_global;
-        form.person_id = macroModel.person_id;
+        form.person_id = "0";
         form.actions = ((_ref = macroModel.actions) != null ? _ref.actions : void 0) || {};
+        if (macroModel.person) {
+          form.person_id = macroModel.person.id + "";
+        }
         return form;
       };
 

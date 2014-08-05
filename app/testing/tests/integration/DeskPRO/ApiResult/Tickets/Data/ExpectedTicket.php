@@ -53,6 +53,7 @@ return array(
 	'date_locked' => NULL,
 	'date_locked_ts' => 0,
 	'date_locked_ts_ms' => 0,
+	'attachments' => array(),
 	'has_attachments' => false,
 	'subject' => 'Test',
 	'original_subject' => 'Test',

@@ -10,29 +10,30 @@
 		<article class="padd">
 
 			<div ng-show="!processStarted">
-				<h4>Choose CSV File</h4>
-
+				<p>
+					The exact format of the CSV file does not matter. You will map CSV columns to DeskPRO fields in the next step.
+				</p>
 				<form id="fileupload"
 					  method="POST"
 					  enctype="multipart/form-data"
 					  file-upload="fileUploadOptions"
 					  action="{{ ng_var('fileUploadOptions.url') }}">
 
-					<div class="fileinput-button btn btn-success" ng-show="!active() && !fileSelected">
-						<span>Select CSV File</span>
+					<div class="fileinput-button btn btn-success btn-lg" ng-show="!active() && !fileSelected">
+						<span><i class="fa fa-upload"></i> Select CSV File</span>
 						<input type="file" name="file">
 					</div>
 
 					<!-- 'queue=[];' is workaround due to strange behavior of uploader in case of single file instead of multiple-->
 
 					<div class="pull-left" ng-show="!active() && fileSelected">
-						<button type="button" class="btn btn-warning" ng-click="submit();queue=[];">
-							<span>Click here to upload file</span>
+						<button type="button" class="btn btn-success btn-lg" ng-click="submit();queue=[];">
+							<span>Prepare File &rarr;</span>
 						</button>
 					</div>
 
 					<div class="pull-left file-upload-cancel" ng-show="!active() && fileSelected">
-						<a href="#" class="file-upload-cancel" ng-click="$event.preventDefault();">cancel</a>
+						or <a href="#" class="file-upload-cancel" ng-click="$event.preventDefault();">cancel</a>
 					</div>
 
 					<div class="clearfix"></div>
@@ -79,13 +80,11 @@
 			</div>
 
 			<div ng-if="fileUploadResults && !fileUploadResults.upload_failed && !importStarted" dp-hide-spinning="saving">
-				<h4>Configure Importing:</h4>
-
 				<table class="table">
 					<thead>
 						<tr>
 							<th>
-								Column Name
+								Column
 							</th>
 							<th>
 								Example Data
@@ -265,6 +264,9 @@
 						Import the first row <br>
 						This should be selected if the "column name" values above contain actual data.
 					</label>
+				</div>
+				<div class="inner-group">
+					<label><input type="checkbox" ng-model="importSettings.welcomeEmail" /> Send welcome email to every new user</label>
 				</div>
 				<div class="clearfix"></div>
 				<button type="button" class="btn btn-success" ng-click="Ctrl.startImport()">

@@ -355,7 +355,7 @@ class TicketLogGenerator
 					$log_data['id_before']        = $m->id;
 					$log_data['message_id']       = $m->id;
 					$log_data['person_id']        = $m->person->id;
-					$log_data['person_name']      = $m->person->dislpay_name;
+					$log_data['person_name']      = $m->person->display_name;
 					$log_data['is_agent_note']    = $m->is_agent_note;
 					$log_data['is_agent_message'] = $m->person->is_agent;
 					$log_data['old_message']      = $m->getMessageHtml();
@@ -529,6 +529,47 @@ class TicketLogGenerator
 					'id_before'   => $new['old_ticket_id'],
 					'lost_data'   => $new['lost_data']
 				);
+
+			case 'app_message':
+				return array(
+					'action_type'    => 'app_message',
+					'app_id'         => $new['app_id'],
+					'app_title'      => $new['app_title'],
+					'package_name'   => $new['package_name'],
+					'package_title'  => $new['package_title'],
+					'message'        => $new['message']
+				);
+
+			case 'attachments':
+				$log_set = array();
+
+				if ($new && isset($new->blob) && !$new->is_inline) {
+					$blob = $new->blob;
+					$log_data = array();
+					$log_data['action_type']     = 'attach_added';
+					$log_data['id_after']        = $new->id;
+					$log_data['attach_id']       = $new->id;
+					$log_data['blob_id']         = $blob->id;
+					$log_data['filename']        = $blob->filename;
+					$log_data['filesize']        = $blob->filesize;
+					$log_data['content_type']    = $blob->content_type;
+					$log_set[] = $log_data;
+				}
+
+				if ($old && isset($old->blob) && !$old->is_inline) {
+					$blob = $old->blob;
+					$log_data = array();
+					$log_data['action_type']     = 'attach_removed';
+					$log_data['id_before']       = $old->id;
+					$log_data['attach_id']       = $old->id;
+					$log_data['blob_id']         = $blob->id;
+					$log_data['filename']        = $blob->filename;
+					$log_data['filesize']        = $blob->filesize;
+					$log_data['content_type']    = $blob->content_type;
+					$log_set[] = $log_data;
+				}
+
+				return $log_set;
 
 			default:
 				return array();

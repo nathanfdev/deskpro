@@ -88,18 +88,31 @@ class OutgoingAccountTester
 			->setTo($to_address);
 
 		try {
-			if ($this->account_config instanceof SmtpConfig) {
-				$this->_testSmtp($this->account_config);
-			} else if ($this->account_config instanceof GmailConfig) {
-				$this->_testGmail($this->account_config);
-			} else if ($this->account_config instanceof PhpMailConfig) {
-				$this->_testMail($this->account_config);
+			if (defined('DP_EMAIL_TRANSPORT_FACTORY') && DP_EMAIL_TRANSPORT_FACTORY) {
+				$tr = call_user_func(DP_EMAIL_TRANSPORT_FACTORY, 'test', $this->account_config, $this->account_config->getType(), $this->account_config);
+				if ($tr) {
+					$this->sendWithTransport($tr);
+					if (defined('DPC_IS_CLOUD')) {
+						$this->swift_arraylogger->clear();
+						$this->swift_arraylogger->add("Mail was accepted to DeskPRO queue server");
+					}
+				} else {
+					throw new \RuntimeException("Custom transport factory did not return a transport");
+				}
 			} else {
-				$this->is_success = false;
-				$this->swift_arraylogger->add("Unknown account type: " . get_class($this->account_config));
+				if ($this->account_config instanceof SmtpConfig) {
+					$this->_testSmtp($this->account_config);
+				} else if ($this->account_config instanceof GmailConfig) {
+					$this->_testGmail($this->account_config);
+				} else if ($this->account_config instanceof PhpMailConfig) {
+					$this->_testMail($this->account_config);
+				} else {
+					$this->is_success = false;
+					$this->swift_arraylogger->add("Unknown account type: " . get_class($this->account_config));
+				}
 			}
 		} catch (\Exception $e) {
-			$this->swift_arraylogger->add("[error] ({$e->getCode()}) Failed");
+			$this->swift_arraylogger->add("[error] ({$e->getCode()}) Failed: {$e->getMessage()}");
 		}
 
 		return $this->is_success;
@@ -145,10 +158,9 @@ class OutgoingAccountTester
 	/**
 	 * Test with SMTP
 	 */
-	private function _testSmtp()
+	private function _testSmtp($account_config)
 	{
-		/** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig $account_config */
-		$account_config = $this->account_config;
+		/** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig $account_config */;
 
 		$this->swift_arraylogger->add("Testing SmtpAccount");
 
@@ -156,11 +168,11 @@ class OutgoingAccountTester
 		$this->swift_arraylogger->add("[options] port: {$account_config->port}");
 		$this->swift_arraylogger->add("[options] secure: {$account_config->secure_mode}");
 		$this->swift_arraylogger->add("[options] username: {$account_config->user}");
-		$this->swift_arraylogger->add("[options] password: xxxxxxxx");
+		$this->swift_arraylogger->add("[options] password: {$account_config->password}");
 
 		$transport = \Swift_SmtpTransport::newInstance(
-			$account_config->host,
-			$account_config->port,
+			$account_config->host ?: 'localhost',
+			$account_config->port ?: 25,
 			$account_config->secure_mode
 		);
 		if ($account_config->user) {
@@ -175,15 +187,14 @@ class OutgoingAccountTester
 	/**
 	 * Test with gmail
 	 */
-	private function _testGmail()
+	private function _testGmail($account_config)
 	{
 		/** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\GmailConfig $account_config */
-		$account_config = $this->account_config;
 
 		$this->swift_arraylogger->add("Testing GmailAccount");
 		$smtp = new SmtpConfig();
 		$data = array(
-			'username'    => $account_config->user,
+			'user'        => $account_config->user,
 			'password'    => $account_config->password,
 			'host'        => 'smtp.gmail.com',
 			'port'        => 465,
@@ -199,7 +210,7 @@ class OutgoingAccountTester
 	/**
 	 * Test with mail
 	 */
-	public function _testMail()
+	public function _testMail($account_config)
 	{
 		$this->swift_arraylogger->add("Testing PhpMailAccount");
 		$this->swift_arraylogger->add("(No detailed logging is available using the PHP mail() transport.)");

@@ -7,7 +7,7 @@ define ->
 		pause: -> @paused = true
 		resume: -> @paused = false
 
-		startInterval: (timeout = 240000) ->
+		startInterval: (timeout = 180000) ->
 			if @interval then window.clearInterval(@interval)
 			@interval = window.setInterval(=>
 				@_autoPing()
@@ -27,7 +27,7 @@ define ->
     	# @return {promise}
 		###
 		ping: ->
-			p = @Api.sendGet('/my/session/renew-request-token')
+			p = @Api.sendGet('/my/session/renew-request-token?session_id=' + window.DP_SESSION_ID)
 			p.success( (data) ->
 				if data.request_token
 					window.DP_REQUEST_TOKEN = data.request_token

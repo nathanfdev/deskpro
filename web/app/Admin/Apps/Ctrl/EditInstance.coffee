@@ -44,11 +44,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
 				getResourcePath = (tag, name) =>
 					asset = @pack.assets.filter((x) -> x.tag == tag && x.name == name)[0]
-					return if asset then asset.blob.relative_url else null
+					if asset
+						cachebust = window.DP_BUILD_TIME
+						asset.blob.relative_url + '?' + cachebust
+					else
+						null
 
 				if path = getResourcePath('html', 'AdminInterface/Install/settings.html')
 					loadingAssets.push(@$http.get(path, { responseType: "text"}).success((data) =>
-						console.log(form_template)
 						@dpTemplateManager.setTemplate(form_template, data)
 					))
 				if path = getResourcePath('js', 'AdminInterface/Install/settings.js')

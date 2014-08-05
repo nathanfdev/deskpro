@@ -9,7 +9,7 @@
 						<div class="form-group">
 							<h3>"{{ ng_var('TicketTriggersEdit.account.address') }}" Email Account Trigger</h3>
 							<p style="margin-top: 15px;">
-								This is a email account trigger. It will apply when a user submits a new ticket by sending an email to this email address.
+								This is a email account trigger. It will apply when a new ticket is created by emailing this email address.
 							</p>
 						</div>
 					</div>
@@ -43,7 +43,7 @@
 															<tr>
 																<td style="vertical-align: middle; padding: 0; margin: 0;" width="10"><div class="dp-ob-row-tag-wrap"><em class="dp-ob-row-tag if">if</em></div></td>
 																<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
-																	The user created a new ticket by emailing "{{ ng_var('TicketTriggersEdit.account.address') }}"
+																	Ticket is created by an email sent to "{{ ng_var('TicketTriggersEdit.account.address') }}"
 																</td>
 															</tr>
 														</tbody>
@@ -68,7 +68,7 @@
 							<div class="dp-ob-setrow">
 								<header>
 									<em class="dp-ob-row-tag then">then</em>
-									The followings actions will run:
+									The following actions will run:
 								</header>
 								<article>
 									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetDepartment', 'SendUserEmail'], fixOn: ['SetDepartment'] }" option-types="actionOptionTypes">

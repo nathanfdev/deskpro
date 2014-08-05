@@ -158,10 +158,13 @@ class EmailValidator
 				), array('id' => $this->person->getId()));
 			}
 
+			$ticket_manager = App::$container->getTicketManager();
+
 			// Find tickets with this email awaiting validation
 			if ($this->ticket_ids) {
 				foreach ($this->ticket_ids as $ticket_id) {
-					$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+					$ticket = $ticket_manager->getTicket($ticket_id);
+					$context = $ticket_manager->createUserExecutorContext($this->person, 'update', 'portal');
 
 					$ticket->person_email_validating = null;
 					$ticket->person_email = $email;
@@ -170,8 +173,7 @@ class EmailValidator
 						$ticket->setStatus('awaiting_agent');
 					}
 
-					$ticket->_applySlas();
-
+					$ticket_manager->saveTicket($ticket, $context);
 					$this->em->persist($ticket);
 					$this->em->flush();
 				}
@@ -194,8 +196,10 @@ class EmailValidator
 
 						$feedback->validating = null;
 						if ($feedback->status_code == 'hidden.user_validating') {
-							if ($this->person->is_agent_confirmed) {
-								$feedback->setStatus('new');
+							if (!$this->person->hasPerm('feedback.no_submit_validate')) {
+								$feedback->setStatusCode('hidden.validating');
+							} else {
+								$feedback->setStatusCode('new');
 							}
 						}
 

@@ -98,7 +98,7 @@ class PortalController extends AbstractController
 				return $this->redirectRoute('user_tickets_new_thanks_simple', array('ticket_ref' => $this->session->getFlash('new_ticket')));
 			}
 
-			if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.user_mode') == 'require_reg' || $this->container->getSetting('core.user_mode') == 'require_reg_agent_validation')) {
+			if ($this->person->isGuest() && (!$this->person->hasPerm('tickets.use') || $this->container->getSetting('core.reg_required'))) {
 				return $this->redirectRoute('user_login');
 			} elseif ($this->person->hasPerm('tickets.use')) {
 				return $this->redirectRoute('user_tickets_new');

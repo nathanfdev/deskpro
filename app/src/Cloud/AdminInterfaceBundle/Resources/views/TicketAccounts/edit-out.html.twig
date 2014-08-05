@@ -1,0 +1,126 @@
+{##################################################################################################}
+{# Outgoing Account Details #}
+{##################################################################################################}
+
+<div class="form-group" ng-if="form.use_custom_email_address">
+	<div class="col-lg-3">
+		<h3>Outgoing Email</h3>
+	</div>
+	<div class="col-lg-9">
+
+		{############}
+		{# Selector #}
+		{############}
+
+		<div class="inner-group" style="padding-top: 3px;">
+			<select
+				ui-select2
+				ng-model="form.outgoing_type"
+				style="min-width: 240px"
+			>
+				<option value="">Select type</option>
+				<option value="php_mail">Send mail through DeskPRO</option>
+				<option value="smtp">SMTP</option>
+				<option value="gmail">GMail or Google Apps</option>
+			</select>
+		</div>
+
+		{############}
+		{# PHP Mail #}
+		{############}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'php_mail'">
+			<div class="inner-group">
+				<p style="margin-top: 5px;">
+					<strong>Important:</strong> You will need to make DNS changes to configure SPF and DKIM. These changes are required to tell ISP's that DeskPRO servers
+					are allowed to send email using your email addresses.
+				</p>
+				<p>
+					If you fail to implement these DNS records, email deliverability may suffer considerably as ISP's
+					may think messages are spam.
+				</p>
+				<p>
+					<a href="https://support.deskpro.com/kb/articles/180" target="_blank">Click here to read more about configuring SPF and DKIM</a>.
+				</p>
+				<p>
+					<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Outgoing Email</button>
+				</p>
+			</div>
+		</div>
+
+		{############}
+		{# SMTP     #}
+		{############}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'smtp'">
+			<div class="inner-group">
+				<table width="100%" class="inner-form-table">
+					<tr>
+						<th width="75">Host</th>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_smtp_account.host" style="width: 50%;" placeholder="localhost" /></td>
+					</tr>
+					<tr>
+						<th>Port</th>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_smtp_account.port" style="width: 80px;" placeholder="25" /></td>
+					</tr>
+					<tr>
+						<th>Secure</th>
+						<td>
+							<label style="display: inline-block">
+								<input type="checkbox" ng-model="form.out_smtp_account.secure" /> Enable secure network connection (SSL)
+							</label>
+							<div style="display: inline-block;" ng-show="form.out_smtp_account.secure">
+								<select ui-select2 ng-model="form.out_smtp_account.secure_mode" style="width: 80px;">
+									<option value="ssl">SSL</option>
+									<option value="tls">TLS</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Username</th>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_smtp_account.user" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_smtp_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		{############}
+		{# Gmail    #}
+		{############}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'gmail'">
+			<div class="inner-group">
+				<table width="100%" class="inner-form-table">
+					<tr>
+						<th width="100">Email Address</th>
+						<td>
+							<span ng-show="form.custom_email_address">{{ ng_var('form.custom_email_address') }}</span>
+							<span ng-hide="form.custom_email_address">Enter your email address above</span>
+						</td>
+					</tr>
+					<tr>
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_gmail_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

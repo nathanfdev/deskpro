@@ -235,7 +235,7 @@ class TextSnippetsController extends AbstractController
 		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
 
 		if (!$cat || $cat->typename != $typename) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$data = array('snippet_cat' => $cat->toApiData());

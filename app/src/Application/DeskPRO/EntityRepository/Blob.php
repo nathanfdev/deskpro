@@ -46,7 +46,7 @@ class Blob extends AbstractEntityRepository
 	public function getByAuthId($auth_id)
 	{
 		if (strpos($auth_id, '-') === false) {
-			return null;
+			return $this->getByAuthCode($auth_id);
 		}
 
 		list($blob_id, $authcode) = explode('-', $auth_id, 2);

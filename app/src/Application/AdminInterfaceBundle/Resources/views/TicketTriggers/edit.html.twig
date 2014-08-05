@@ -131,7 +131,7 @@
 											The following conditions are met:
 										</header>
 										<article>
-											<dp-option-builder types-def="criteria_typedef" save-target="criteria_set_row" option-types="option_types">
+											<dp-option-builder types-def="criteria_typedef" save-target="criteria_set_row" option-types="option_types" options="{tagString: 'and', tagClass: 'and'}" option-types="actionOptionTypes">
 												<add-btn-label>Criteria</add-btn-label>
 											</dp-option-builder>
 										</article>
@@ -158,10 +158,10 @@
 							<div class="dp-ob-setrow">
 								<header>
 									<em class="dp-ob-row-tag then">then</em>
-									The followings actions will run:
+									The following actions will run:
 								</header>
 								<article>
-									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
+									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" option-types="actionOptionTypes">
 										<add-btn-label>Action</add-btn-label>
 									</dp-option-builder>
 								</article>

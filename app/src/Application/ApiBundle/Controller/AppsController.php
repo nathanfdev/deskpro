@@ -27,6 +27,7 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\App\InstanceInstaller;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
@@ -86,6 +87,23 @@ class AppsController extends AbstractController
 			$apps = array_filter($apps, function($a) use ($package_ids) {
 				return isset($package_ids[$a['package_name']]);
 			});
+		}
+
+		// Attach usersources to apps if they own them
+		$usersources = $this->em->createQuery("
+			SELECT u, a
+			FROM DeskPRO:Usersource u
+			LEFT JOIN u.app a
+			WHERE u.app IS NOT NULL
+		")->execute();
+		if ($usersources) {
+			$usersources = Arrays::rekey($usersources, function($u) { return $u->app->getId(); });
+			$apps = array_map(function($a) use ($usersources) {
+				if (isset($usersources[$a['id']])) {
+					$a['usersource'] = $usersources[$a['id']]->toApiData();
+				}
+				return $a;
+			}, $apps);
 		}
 
 		// Re-index in case we filtered by tag
@@ -213,86 +231,17 @@ class AppsController extends AbstractController
 			return $this->createApiErrorResponse('already_installed', "$name is already installed and the app has is_single=true");
 		}
 
-		$app = new AppInstance();
-		$app->package = $package;
-		$app->title = $this->in->getString('settings.dp_app.title') ?: $package->title;
-
-		$settings = $this->_readAppSettings($package, $this->in->getCleanValueArray('settings'));
-		if ($settings) {
-			$app->setSettings($settings);
-		}
-
-		$this->em->persist($app);
-		$this->em->flush();
-
-		if ($package->native_name) {
-			$native_app = $manager->getNativeApp($app);
-			$class = $native_app->getConfig()->getInstallerHandlerClass();
-			if ($class) {
-				$context = new InstallerContext($this->container, $native_app, $this->in->getCleanValueArray('settings'));
-				$handler = new $class();
-				$handler->install($context);
-			}
-		}
+		$instance_installer = new InstanceInstaller($manager, $package, $this->em);
+		$app = $instance_installer->install(
+			$this->in->getString('settings.dp_app.title'),
+			$this->in->getCleanValueArray('settings'),
+			$this->container
+		);
 
 		return $this->createApiCreateResponse(
 			array('id' => $app->id),
 			$this->generateUrl('api_apps_instance', array('id' => $app->id))
 		);
-	}
-
-
-	/**
-	 * @param AppPackage $package
-	 * @param array $settings_form
-	 * @return array
-	 */
-	private function _readAppSettings(AppPackage $package, array $settings_form)
-	{
-		$settings = array();
-		foreach ($package->settings_def as $setting_def) {
-			$value = isset($settings_form[$setting_def['name']]) ? $settings_form[$setting_def['name']] : null;
-			if (!is_scalar($value)) {
-				$value = null;
-			}
-
-			if ($value !== null) {
-				switch ($setting_def) {
-					case 'choice':
-						$found = false;
-						if (isset($setting_def['options'])) {
-							foreach ($setting_def['options'] as $opt) {
-								if ($opt['value'] == $value) {
-									$found = true;
-									break;
-								}
-							}
-						}
-						if (!$found) {
-							$value = null;
-						}
-						break;
-
-					case 'checkbox':
-						if ($value === true || $value === 1 || $value === "1" || $value === "true") {
-							$value = true;
-						} else {
-							$value = false;
-						}
-						break;
-				}
-			}
-
-			if ($value === null && isset($setting_def['default_value'])) {
-				$value = $setting_def['default_value'];
-			}
-
-			if ($value !== null) {
-				$settings[$setting_def['name']] = $value;
-			}
-		}
-
-		return $settings;
 	}
 
 
@@ -331,13 +280,12 @@ class AppsController extends AbstractController
 		$app = $manager->getApp($id);
 		$package = $app->package;
 
-		$settings = $this->_readAppSettings($app->package, $this->in->getCleanValueArray('settings'));
+		$settings = InstanceInstaller::readAppSettings($app->package, $this->in->getCleanValueArray('settings'));
 
 		$app->title = $this->in->getString('settings.dp_app.title') ?: $app->package->title;
-		$app->setSettings($settings);
 
-		$this->em->persist($app);
-		$this->em->flush();
+		$context = null;
+		$handler = null;
 
 		if ($app->package->native_name) {
 			$native_app = $manager->getNativeApp($app);
@@ -345,8 +293,19 @@ class AppsController extends AbstractController
 			if ($class) {
 				$context = new InstallerContext($this->container, $native_app, $this->in->getCleanValueArray('settings'));
 				$handler = new $class();
-				$handler->updateSettings($context);
 			}
+		}
+
+		if ($handler) {
+			$settings = $handler->processSettings($context, $settings);
+		}
+		$app->setSettings($settings ?: array());
+
+		$this->em->persist($app);
+		$this->em->flush();
+
+		if ($handler) {
+			$handler->updateSettings($context);
 		}
 
 		// If this is a custom app, we can update assets from here as well
@@ -716,7 +675,7 @@ class AppsController extends AbstractController
 
 		$handler_class = $native_config->getApiPackageRequestHandlerClass();
 		if (!$handler_class) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$context = new ApiPackageRequestContext(
@@ -757,7 +716,7 @@ class AppsController extends AbstractController
 
 		$handler_class = $native_config->getApiAppRequestHandlerClass();
 		if (!$handler_class) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$context = new ApiPackageRequestContext(

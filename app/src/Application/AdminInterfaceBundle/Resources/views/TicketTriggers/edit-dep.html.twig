@@ -9,7 +9,7 @@
 						<div class="form-group">
 							<h3>"{{ ng_var('TicketTriggersEdit.dep.title') }}" Department Trigger</h3>
 							<p style="margin-top: 15px;" ng-if="TicketTriggersEdit.eventType == 'newticket'">
-								This is a department trigger. It will apply when a user submits a new ticket from the web interface and selects this department.
+								This is a department trigger. It will apply when a new ticket is created with this department.
 							</p>
 							<p style="margin-top: 15px;" ng-if="TicketTriggersEdit.eventType == 'update'">
 								This is a department trigger. It will apply when a ticket is moved into this department.
@@ -60,7 +60,7 @@
 															<tr>
 																<td style="vertical-align: middle; padding: 0; margin: 0;" width="10"><div class="dp-ob-row-tag-wrap"><em class="dp-ob-row-tag and">and</em></div></td>
 																<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
-																	Ticket is created by a user from the web interface
+																	Ticket is created with this department (does not apply to tickets created by email).
 																</td>
 															</tr>
 														</tbody>
@@ -101,7 +101,7 @@
 							<div class="dp-ob-setrow">
 								<header>
 									<em class="dp-ob-row-tag then">then</em>
-									The followings actions will run:
+									The following actions will run:
 								</header>
 								<article ng-if="TicketTriggersEdit.eventType == 'newticket'">
 									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetEmailAccount', 'SendUserEmail'], fixOn: ['SetEmailAccount'] }" option-types="actionOptionTypes">

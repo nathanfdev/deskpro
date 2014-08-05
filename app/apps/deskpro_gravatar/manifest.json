@@ -2,7 +2,7 @@
 	"package_name": "deskpro_gravatar",
 	"is_native": true,
 	"title": "Gravatar",
-	"description": "When this app is intalled, default profile pictures for both users and agents are loaded from Gravatar.",
+	"description": "When this app is installed, default profile pictures for both users and agents are loaded from Gravatar.",
 	"tags": ["profiles"],
 	"api_version": 1,
 	"version": 1,

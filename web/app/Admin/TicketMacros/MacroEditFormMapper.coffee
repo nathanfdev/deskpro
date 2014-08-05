@@ -4,8 +4,11 @@ define ->
 			form = {}
 			form.title = macroModel.title || ''
 			form.is_global = macroModel.is_global
-			form.person_id = macroModel.person_id
+			form.person_id = "0"
 			form.actions   = macroModel.actions?.actions || {}
+
+			if macroModel.person
+				form.person_id = macroModel.person.id + ""
 
 			return form
 

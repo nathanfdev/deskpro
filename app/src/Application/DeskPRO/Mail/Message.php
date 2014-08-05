@@ -265,6 +265,12 @@ class Message extends \Orb\Mail\Message
 					$this->addPart($plaintext, 'text/plain');
 				}
 			}
+		} else {
+			if ($this->getContentType() == 'text/html') {
+				$body = $this->getBody();
+				$body = $this->replaceEmbeds($body);
+				$this->setBody($body, 'text/html');
+			}
 		}
 
 		// These need to be unset so the message can be properly serialized

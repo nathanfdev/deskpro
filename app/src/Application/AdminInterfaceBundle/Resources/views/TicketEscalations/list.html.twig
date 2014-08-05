@@ -14,14 +14,11 @@
 				<li ng-repeat="esc in ListCtrl.list"
 					dp-state-mark="tickets.ticket_escalations.edit.{{ ng_var('esc.id') }}" data-id="{{ ng_var('esc.id') }}">
 					<a href="{{ ng_href('tickets.ticket_escalations.edit', '{id: esc.id}') }}">
-						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode"
-								  style="margin-top: -3px;"
-								  ng-click="ListCtrl.startDelete(esc); $event.preventDefault();">
-								<i class="fa fa-trash-o"></i>
-							</span>
+						<div class="pull-right toggle-wrapper">
+							<button dp-toggle-switch ng-model="esc.is_enabled" ng-change="ListCtrl.updateEscEnabledState(esc);"></button>
 						</div>
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('esc.id') }}</span>
 							<span class="title-text">{{ ng_var('esc.title') }}</span>
 						</h4>
 					</a>
@@ -42,11 +39,11 @@
 		<section>
 			<p>When you create an escalation, you can choose if it counts:</p>
 			<ul>
-				<li><strong>time the ticket has been open for</strong>: total time the ticket has existed without being resolved</li>
-				<li><strong>time the user has been waiting</strong>: how long the ticket has been <strong>awaiting agent</strong>; this only counts time from the most recent status change, i.e. changing status to something else then back to <strong>awaiting agent</strong> resets the clock</li>
-				<li><strong>total time the user has been waiting</strong>: cumulative time the ticket has been <strong>awaiting agent</strong> over its whole life</li>
-				<li><strong>time the agent has been waiting</strong>: how long ticket has been in <strong>awaiting user</strong> status since its last status</li>
-				<li>how long <strong>the ticket has been resolved for</strong></li>
+				<li>time the ticket has been open for: total time the ticket has existed without being resolved</li>
+				<li>time the user has been waiting: how long the ticket has been <strong>awaiting agent</strong>; this only counts time from the most recent status change, i.e. changing status to something else then back to <strong>awaiting agent</strong> resets the clock</li>
+				<li>total time the user has been waiting: cumulative time the ticket has been <strong>awaiting agent</strong> over its whole life</li>
+				<li>time the agent has been waiting: how long ticket has been in <strong>awaiting user</strong> status since its last status change</li>
+				<li>how long the ticket has been resolved for</li>
 			</ul>
 			<p>You can also set extra <strong>criteria</strong> that the ticket must meet for the escalation to run.</p>
 		</section>
@@ -59,19 +56,20 @@
 			<dd><em>A:</em>
 				Working hours do not affect escalations. Use SLAs if you need to take working hours into account.
 			</dd>
-		</dl>
+		
 			<dt><em>Q:</em>If an escalation with a "stop processing other triggers" action runs, does that stop future escalations from doing anything?</dt>
-		<dd><em>A:</em>
-			No, "stop processing other triggers" only applies when two triggers/escalations/SLAs run their actions at the same time.
-		</dd>
+			<dd><em>A:</em>
+			No, "stop processing other triggers" only applies when two triggers/escalations/SLAs run in response to the same event.
+			</dd>
+		</dl>
 		</section>
 
-	<section>
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL]<a href="#ticket-escalations" target="_blank">Ticket escalations</a></li>
-				<li>[MANUAL]<a href="#actions-guide" target="_blank">Actions guide</a></li>
-				<li>[MANUAL]<a href="#automating-the-helpdesk" target="_blank">Automating the Helpdesk</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#ticket-escalations" target="_blank">Ticket escalations</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#actions-guide" target="_blank">Actions guide</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#automating-the-helpdesk" target="_blank">Automating the Helpdesk</a></li>
 
 			</ul>
 	</section>

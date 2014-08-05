@@ -132,6 +132,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 				if ($person && $person->validateRememberMeCookieCode($cookie_code)) {
 					$this->_setCurrentPerson($person);
 
+					if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
+						$this->set('active_status', 'available');
+						$this->set('is_chat_available', '1');
+					}
+
 					// Set last login date
 					App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
 

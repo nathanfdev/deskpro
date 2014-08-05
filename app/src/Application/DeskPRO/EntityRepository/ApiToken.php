@@ -71,18 +71,18 @@ class ApiToken extends AbstractEntityRepository
 		$rate_limit = App::getDb()->fetchAssoc("
 			SELECT *
 			FROM api_token_rate_limit
-			WHERE person_id = ?
-		", array($api_token->person->id));
+			WHERE api_token_id = ?
+		", array($api_token->id));
 
 		if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
 			App::getDb()->delete('api_token_rate_limit', array(
-				'person_id' => $api_token->person->id
+				'api_token_id' => $api_token->id
 			));
 		}
 
 		if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
 			$rate_limit = array(
-				'person_id' => $api_token->person->id,
+				'api_token_id' => $api_token->id,
 				'hits' => 0,
 				'created_stamp' => time(),
 				'reset_stamp' => time() + 3600
@@ -98,10 +98,10 @@ class ApiToken extends AbstractEntityRepository
 
 		App::getDb()->executeUpdate("
 			INSERT INTO api_token_rate_limit
-				(person_id, hits, created_stamp, reset_stamp)
+				(api_token_id, hits, created_stamp, reset_stamp)
 			VALUES
 				(?, 1, ?, ?)
 			ON DUPLICATE KEY UPDATE hits = hits + 1
-		", array($api_token->person->id, $time, $time + 3600));
+		", array($api_token->id, $time, $time + 3600));
 	}
 }

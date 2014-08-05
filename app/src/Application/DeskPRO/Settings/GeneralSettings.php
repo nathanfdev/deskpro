@@ -46,6 +46,8 @@ class GeneralSettings
 	public $site_name;
 	public $site_url;
 
+	public $default_from_email;
+
 	public $default_timezone;
 	public $task_reminder_time;
 
@@ -82,6 +84,8 @@ class GeneralSettings
 		$this->deskpro_url  = $this->settings->get('core.deskpro_url');
 		$this->site_name    = $this->settings->get('core.site_name');
 		$this->site_url     = $this->settings->get('core.site_url');
+
+		$this->default_from_email = $this->settings->get('core.default_from_email');
 
 		$this->default_timezone   = $this->settings->get('core.default_timezone');
 		$this->task_reminder_time = $this->settings->get('core.task_reminder_time');
@@ -154,6 +158,7 @@ class GeneralSettings
 			'task_reminder_time'     => $this->task_reminder_time,
 			'site_name'              => $this->site_name,
 			'site_url'               => $this->site_url,
+			'default_from_email'     => $this->default_from_email,
 			'date_fulltime'          => $this->date_fulltime,
 			'date_full'              => $this->date_full,
 			'date_day'               => $this->date_day,
@@ -189,10 +194,14 @@ class GeneralSettings
 	 */
 	public function saveSettings()
 	{
-		$this->settings->setSetting('core.deskpro_url',  $this->deskpro_url);
+		if ($this->deskpro_url) {
+			$this->settings->setSetting('core.deskpro_url', $this->deskpro_url);
+		}
+
 		$this->settings->setSetting('core.deskpro_name', $this->deskpro_name);
 		$this->settings->setSetting('core.site_url',  $this->site_url);
 		$this->settings->setSetting('core.site_name', $this->site_name);
+		$this->settings->setSetting('core.default_from_email', $this->default_from_email);
 
 		$this->settings->setSetting('core.default_timezone',  $this->default_timezone ?: 'UTC');
 		$this->settings->setSetting('core.task_reminder_time', $this->task_reminder_time ?: '09:30');

@@ -8,7 +8,7 @@ define [
 	class Reports_Builder_Ctrl_List extends ReportsBaseCtrl
 		@CTRL_ID = 'Reports_Builder_Ctrl_List'
 		@CTRL_AS = 'ListCtrl'
-		@DEPS    = ['Api']
+		@DEPS    = ['Api', '$timeout']
 
 		init: ->
 			@customData = @DataService.get('ReportBuilderCustom')
@@ -20,6 +20,8 @@ define [
 		###
 		initialLoad: ->
 
+			d = @$q.defer()
+
 			custom_promise = @customData.loadList().then( (list) =>
 				@custom_data_list = list
 			)
@@ -30,7 +32,14 @@ define [
 				@group_params = data.data
 			)
 
-			return @$q.all([custom_promise, built_in_promise, group_params_promise])
+			@$q.all([custom_promise, built_in_promise, group_params_promise]).then(=>
+				# small delay gives chance for select2 boxes to set up, reduces visual jitter
+				@$timeout(=>
+					d.resolve()
+				, 350)
+			)
+
+			return d.promise
 
 
 		###

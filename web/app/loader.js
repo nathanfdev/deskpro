@@ -12,7 +12,7 @@ requirejs.config({
 		"angularUiAce":                    "app/bower_components/angular-ui-ace/ui-ace",
 		"angularUiRouter":                 "app/bower_components/angular-ui-router/release/angular-ui-router.min",
 		"angularUiSortable":               "app/bower_components/angular-ui-sortable/src/sortable",
-		"angularMoment":                   "app/bower_components/angular-moment/angular-moment.min",
+		"angularMoment":                   "app/bower_components/angular-moment/angular-moment",
 		"angularFileUpload":               "app/bower_components/blueimp-file-upload/js/jquery.fileupload-angular",
 		"angularSlider":                   "app/bower_components/angular-slider/angular-slider.min",
 		"angularGrid":                     "app/bower_components/angular-grid/build/ng-grid.min",
@@ -32,7 +32,8 @@ requirejs.config({
 		"load-image-exif":                 "app/bower_components/blueimp-load-image/js/load-image-exif",
 		"canvas-to-blob":                  "app/bower_components/blueimp-canvas-to-blob/js/canvas-to-blob.min",
 		"underscore":                      "app/bower_components/underscore/underscore-min",
-		"moment":                          "app/bower_components/momentjs/min/moment-with-langs.min",
+		"momentTimezone":                  "app/vendor-src/moment-timezone",
+		"moment":                          "app/bower_components/moment/min/moment-with-langs.min",
 		"aceEditor":                       "app/bower_components/ace-builds/src-min-noconflict/ace",
 		"stacktrace":                      "app/bower_components/stacktrace/stacktrace",
 		"bootstrapModal":                  "app/bower_components/bootstrap/js/modal",
@@ -41,8 +42,10 @@ requirejs.config({
 		"toastr":                          "app/bower_components/toastr/toastr",
 		"ColorPicker":                     "vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "vendor/detect_timezone",
+		"intl-tel-input":                  "app/bower_components/intl-tel-input/build/js/intlTelInput.min",
 
 		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/AdminLoad"),
+		"CloudAdminLoad":                  (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/Cloud/CloudAdminLoad"),
 		"AdminUpgradeLoad":                (DP_USE_RJS_BUILD ? "app/build/AdminUpgrade/js/build" : "app/AdminUpgrade/AdminUpgradeLoad"),
 		"AdminStartLoad":                  (DP_USE_RJS_BUILD ? "app/build/AdminStart/js/build" : "app/AdminStart/AdminStartLoad"),
 		"ReportsLoad":                     (DP_USE_RJS_BUILD ? "app/build/Reports/js/build" : "app/Reports/ReportsLoad"),
@@ -65,7 +68,7 @@ requirejs.config({
 		"angularUiAce":                    ["angular"],
 		"angularUiRouter":                 ["angular"],
 		"angularUiSortable":               ["angular"],
-		"angularMoment":                   ["angular"],
+		"angularMoment":                   ["angular", "moment"],
 		"angularFileUpload":               ["jquery"],
 		"angularSlider":                   ["angular"],
 		"angularGrid":                     ["angular"],
@@ -80,7 +83,8 @@ requirejs.config({
 		"jstz":                            { "exports": "jstz" },
 		"underscore":                      { "exports": "_" },
 		"stacktrace":                      { "exports": "printStackTrace"},
-		"trackjs":                         { "exports": "trackJs"}
+		"trackjs":                         { "exports": "trackJs"},
+		"intl-tel-input":                  ["jquery"]
 	},
 	"priority": [
 		"jquery",

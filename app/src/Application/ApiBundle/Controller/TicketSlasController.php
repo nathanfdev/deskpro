@@ -83,7 +83,7 @@ class TicketSlasController extends AbstractController implements ProtectedContro
 	{
 		$sla = $this->em->find('DeskPRO:Sla', $id);
 		if (!$sla) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$data = $this->getApiData($sla);
@@ -102,7 +102,7 @@ class TicketSlasController extends AbstractController implements ProtectedContro
 		if ($id) {
 			$sla = $this->em->find('DeskPRO:Sla', $id);
 			if (!$sla) {
-				return $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		} else {
 			$sla = new Sla();
@@ -174,7 +174,7 @@ class TicketSlasController extends AbstractController implements ProtectedContro
 	{
 		$sla = $this->em->find('DeskPRO:Sla', $id);
 		if (!$sla) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$old_id = $sla->id;

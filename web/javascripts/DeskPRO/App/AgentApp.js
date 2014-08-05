@@ -21,6 +21,7 @@ define(['angular'], function(angular) {
 					config.dpIsAppAsset = true;
 				} else {
 					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/')
+					config.headers['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 				}
 
 				return config;
@@ -30,6 +31,10 @@ define(['angular'], function(angular) {
 
 	AgentApp.config(['$httpProvider', function($httpProvider) {
 		$httpProvider.interceptors.push('dpAppAssetInterceptor');
+	}]);
+
+	AgentApp.run(['$rootScope', function($rootScope) {
+		$rootScope.DP_ASSET_URL = window.ASSETS_BASE_URL;
 	}]);
 
 	AgentApp.filter('formatTimestampAgo', function() {
@@ -442,6 +447,15 @@ define(['angular'], function(angular) {
 				element.on('$destroy', function() {
 					scope.$eval(attr.dpRemoved);
 				});
+			}
+		}
+	}]);
+
+	AgentApp.directive('dragToDownload', [function() {
+		return {
+			link: function(scope, element, attr) {
+				element.addClass('dragout');
+				DeskPRO_Window.util.filedownload(element);
 			}
 		}
 	}]);

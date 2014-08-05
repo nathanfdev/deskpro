@@ -51,10 +51,7 @@ class CheckCategory extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('category_ids');
-		$options->addCallbackCheckedOption('category_ids', function($v) {
-			return is_array($v) && !empty($v);
-		});
+		$options->addValidNames('category_ids');
 		return $options;
 	}
 

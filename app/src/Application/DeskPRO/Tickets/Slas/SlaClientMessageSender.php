@@ -95,7 +95,7 @@ class SlaClientMessageSender implements PersonContextInterface
 				'ticket_id'             => $ticket->id,
 				'ticket_agent_id'       => $ticket->agent ? $ticket->agent->id : null,
 				'ticket_Agent_team_id'  => $ticket->agent_team ? $ticket->agent_team->id : null,
-				'sla_id'                => $ticket_sla->id,
+				'sla_id'                => $ticket_sla->sla->id,
 				'sla_status'            => $ticket_sla->sla_status,
 				'original_status'       => $orig_status,
 				'warn_date'             => $ticket_sla->warn_date ? $ticket_sla->warn_date->format('c') : null,

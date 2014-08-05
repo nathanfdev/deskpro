@@ -35,11 +35,30 @@
 namespace deskpro_us_db;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 use deskpro_us_db\Usersource\AppOptionsMapper;
 
-class InstallerHandler implements InstallerHandlerInterface
+class InstallerHandler extends AbstractInstallerHandler
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function processSettings(InstallerContext $context, array $settings)
+	{
+		// PHP code on cloud must be set manually, so the web form
+		// never changes it.
+
+		if (defined('DPC_IS_CLOUD')) {
+			$settings['php_code'] = '';
+
+			if ($context->getApp()) {
+				$settings['php_code'] = $context->getApp()->getSetting('php_code');
+			}
+		}
+
+		return $settings;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

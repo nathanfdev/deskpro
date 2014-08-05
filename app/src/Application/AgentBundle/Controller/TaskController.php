@@ -245,44 +245,55 @@ class TaskController extends AbstractController
      * render the task list
      *
      * @param string $search_type
-     * @param string $search_categoty
-     * @return html view of the task list
+     * @param string $search_category
+     * @return string view of the task list
      */
-    public function taskListAction($search_type = null, $search_categoty = null)
+    public function taskListAction($search_type = null, $search_category = null)
     {
-        $person = $this->person;
         $task_type = false;
 
-        if ($search_type == 'own') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterTasksForPerson($person, $search_categoty);
-        } else if ($search_type == 'team') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterTaksForPersonTeams($person, $search_categoty);
-        } else if ($search_type == 'delegate') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterDelegatedTasksForPerson($person, $search_categoty);
-        } else if ($search_type == 'all') {
-            $all_tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person, $search_categoty);
-        }
+		$per_page         = 100;
+		$page             = $this->in->getUInt('page') ?: 1;
+		$completed_page   = $this->in->getUInt('completed_page') ?: 1;
+		$offset           = ($page - 1) * $per_page;
+		$completed_offset = ($completed_page - 1) * $per_page;
 
-		usort($all_tasks, function($a, $b) {
-			$a_time = $a->date_due ? $a->date_due->getTimestamp() : 0;
-			$b_time = $b->date_due ? $b->date_due->getTimestamp() : 0;
+		$has_next           = false;
+		$has_next_completed = false;
+		$has_prev           = $offset != 0;
+		$has_prev_completed = $completed_offset != 0;
 
-			if ($a_time == $b_time) {
-				return 0;
-			}
+		/** @var \Application\DeskPRO\EntityRepository\Task $task_repos */
+		$task_repos = $this->em->getRepository('DeskPRO:Task');
 
-			return ($a_time < $b_time) ? -1 : 1;
-		});
+		switch ($search_type) {
+			case 'own':
+				$filter_method = 'filterTasksForPerson';
+				break;
 
-		$tasks = array();
-		$completed_tasks = array();
+			case 'team':
+				$filter_method = 'filterTaksForPersonTeams';
+				break;
 
-		foreach ($all_tasks as $t) {
-			if ($t->is_completed) {
-				$completed_tasks[$t->id] = $t;
-			} else {
-				$tasks[$t->id] = $t;
-			}
+			case 'delegate':
+				$filter_method = 'filterDelegatedTasksForPerson';
+				break;
+
+			case 'all':
+				$filter_method = 'filterAllPendingTasks';
+				break;
+		}
+
+		$tasks           = $task_repos->$filter_method($this->person, $search_category, $per_page+1, $offset, 'incomplete');
+		$completed_tasks = $task_repos->$filter_method($this->person, $search_category, $per_page+1, $completed_offset, 'complete');
+
+		if (count($tasks) == $per_page+1) {
+			array_pop($tasks);
+			$has_next = true;
+		}
+		if (count($completed_tasks) == $per_page+1) {
+			array_pop($completed_tasks);
+			$has_next_completed = true;
 		}
 
 		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -311,10 +322,6 @@ class TaskController extends AbstractController
 				$tasks_grouped[$key]['tasks'][] = $t;
 			}
 
-			uasort($tasks_grouped, function($a, $b) {
-				return strcmp($a['title'], $b['title']);
-			});
-
 			$key = 'agent:' . $this->person->id;
 			if (isset($tasks_grouped[$key])) {
 				$tmp = $tasks_grouped[$key];
@@ -335,10 +342,6 @@ class TaskController extends AbstractController
 				$tasks_grouped[$key]['tasks'][] = $t;
 			}
 
-			uasort($tasks_grouped, function($a, $b) {
-				return strcmp($a['title'], $b['title']);
-			});
-
 			if (isset($tasks_grouped[$this->person->id])) {
 				$tmp = $tasks_grouped[$this->person->id];
 				$tmp['title'] = 'Me';
@@ -348,25 +351,39 @@ class TaskController extends AbstractController
 		} else {
 			$group_by = 'date';
 
-			$now = new \DateTime();
+			$now = $this->person->getDateTime();
+
+			$today_start = clone $now;
+			$today_start->setTime(0,0,0);
+			$today_start = Dates::convertToUtcDateTime($today_start);
+
 			$today = clone $now;
 			$today->setTime(23, 59, 59);
+			$today = Dates::convertToUtcDateTime($today);
 
-			$yesterday = clone $today;
-			$yesterday->modify('-1 day');
+			$overdue = clone $now;
+			$overdue = Dates::convertToUtcDateTime($overdue);
 
 			$week = clone $now;
 			$week->modify("-" . $now->format('w') . ' days');
 			$week->modify('+7 days');
+			$week->setTime(23, 59, 59);
+			$week = Dates::convertToUtcDateTime($week);
 
 			$month = clone $now;
 			$month->setDate($now->format('Y'), $now->format('n'), 1);
 			$month->modify('+1 month');
 			$month->modify('-1 day');
+			$month->setTime(23, 59, 59);
+			$month = Dates::convertToUtcDateTime($month);
 
 			$tasks_grouped = array(
 				'overdue' => array(
 					'title' => 'Overdue',
+					'tasks' => array()
+				),
+				'overdue_today' => array(
+					'title' => 'Today (Overdue)',
 					'tasks' => array()
 				),
 				'today' => array(
@@ -390,13 +407,15 @@ class TaskController extends AbstractController
 			foreach ($tasks as $t) {
 				if (!$t->date_due) {
 					$key = 'today';
-				} else if ($t->date_due < $yesterday) {
+				} else if ($t->date_due >= $today_start && $t->date_due < $overdue) {
+					$key = 'overdue_today';
+				} else if ($t->date_due <= $overdue) {
 					$key = 'overdue';
-				} else if ($t->date_due < $today) {
+				} else if ($t->date_due <= $today) {
 					$key = 'today';
-				} else if ($t->date_due < $week) {
+				} else if ($t->date_due <= $week) {
 					$key = 'week';
-				} else if ($t->date_due < $month) {
+				} else if ($t->date_due <= $month) {
 					$key = 'month';
 				} else {
 					$key = 'future';
@@ -408,15 +427,22 @@ class TaskController extends AbstractController
 
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
-			'agents' => $agents,
-			'agent_teams' => $agent_teams,
-            'tasks' => $tasks,
+			'agents'          => $agents,
+			'agent_teams'     => $agent_teams,
+            'tasks'           => $tasks,
             'completed_tasks' => $completed_tasks,
-			'tasks_grouped' => $tasks_grouped,
-        	'task_type' => $task_type,
-			'search_type' => $search_type,
-			'search_category' => $search_categoty,
-			'group_by' => $group_by,
+			'tasks_grouped'   => $tasks_grouped,
+        	'task_type'       => $task_type,
+			'search_type'     => $search_type,
+			'search_category' => $search_category,
+			'group_by'        => $group_by,
+
+			'page'               => $page,
+			'has_next'           => $has_next,
+			'has_prev'           => $has_prev,
+			'completed_page'     => $completed_page,
+			'has_next_completed' => $has_next_completed,
+			'has_prev_completed' => $has_prev_completed
         ));
     }
 
@@ -451,7 +477,7 @@ class TaskController extends AbstractController
 
         $comment_txt = $this->in->getString('comment');
 
-		if (!$comment_txt) {
+		if (!$comment_txt || !$task) {
 			return $this->createJsonResponse(array(
 				'error' => true,
 				'error_code' => 'no_message'
@@ -586,7 +612,7 @@ class TaskController extends AbstractController
 		$task = $this->getTaskOr404($task_id);
 
 		if ($task->person->getId() != $this->person->getId()) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$this->db->beginTransaction();

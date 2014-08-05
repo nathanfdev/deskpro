@@ -1,7 +1,7 @@
 {###############
  # Name
  ###############}
-<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %}" {% if hide_email_field and not error_fields['person.name'] %}style="display:none;"{% endif %}>
+<div class="dp-control-group {% if error_fields['person.name'] %}dp-error{% endif %}" {% if hide_name_field and not error_fields['person.name'] %}style="display:none;"{% endif %}>
 	<div class="dp-control-label">
 		<label>
 			<strong>{{ phrase('user.general.your_name') }} *</strong>

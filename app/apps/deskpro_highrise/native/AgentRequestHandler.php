@@ -36,7 +36,6 @@ namespace deskpro_highrise;
 
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestHandlerInterface;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Service\Highrise\Highrise;
 use Orb\Service\Highrise\Resource\Person as HighrisePerson;
 
@@ -60,8 +59,8 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 	 */
 	private function callApiAction(AgentRequestContext $context)
 	{
-		$url   = $context->getApp()->getSetting('api_url');
-		$token = $context->getApp()->getSetting('api_token');
+		$url   = $context->getAppSetting('api_url');
+		$token = $context->getAppSetting('api_token');
 
 		if (!$url || !$token) {
 			return $context->createJsonResponse(array('error' => 'API token or URL missing. Please configure the plugin.'));

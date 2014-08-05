@@ -39,6 +39,15 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
 
 	/**
+	 * @return ExecutorContext
+	 */
+	protected function getExecContext()
+	{
+		return $this->exec_context;
+	}
+
+
+	/**
 	 * Called exactly twice with $id being 1 and 2.
 	 *
 	 * IMPORTANT:
@@ -145,8 +154,12 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
 	public function testNotEmptyOption()
 	{
-		$check = $this->createChecker('not', array('%OPT%' => array()));
-		$this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
+		try {
+			$check = $this->createChecker('not', array('%OPT%' => array()));
+			$this->assertTrue($check->isTriggerMatch($this->ticket, $this->exec_context));
+		} catch (\Orb\Util\CheckedOptionsException $e) {
+			// Some optiosn dont allow empty, so dont test those checks
+		}
 	}
 
 	public function testNotInvalidOption()

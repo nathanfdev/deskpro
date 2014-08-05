@@ -63,15 +63,13 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
             return;
         }
 
-        if (!isset($params->user)) {
-            throw new Exception\InvalidArgumentException('need at least user in params');
-        }
-
         $host     = isset($params->host)     ? $params->host     : 'localhost';
         $password = isset($params->password) ? $params->password : '';
+        $user     = isset($params->user)     ? $params->user     : '';
         $port     = isset($params->port)     ? $params->port     : null;
         $ssl      = isset($params->ssl)      ? strtoupper($params->ssl) : false;
 		$logger   = isset($params->logger)   ? $params->logger   : null;
+		$test_mode = isset($params->test_mode) && $params->test_mode;
 
         $this->protocol = new Pop3Protocol();
 		if ($logger) {
@@ -79,8 +77,8 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 
 			$logger->logDebug(Arrays::implodeTemplate(array(
 				'host'     => $host,
-				'user'     => $params->user,
-				'password' => 'xxxxxx',
+				'user'     => $user,
+				'password' => $test_mode ? $password : 'xxxxxx',
 				'port'     => $port,
 				'ssl'      => $ssl
 			), "[options] {KEY}: {VAL}\n"));
@@ -100,7 +98,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
 		}
 
 		try {
-			$this->protocol->login($params->user, $password);
+			$this->protocol->login($user, $password);
 			if ($logger) {
 				$logger->logDebug("[protocol] login okay");
 			}

@@ -51,7 +51,7 @@ class CheckPriority extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('priority_ids');
+		$options->addValidNames('priority_ids');
 		return $options;
 	}
 

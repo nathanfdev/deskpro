@@ -272,12 +272,12 @@ class ServerController extends AbstractController implements ProtectedController
 
 		$server_cron = $this->container->getSystemService('server_cron');
 
-		$returnedData         = $server_cron->getTimes();
-		$returnedData['jobs'] = $server_cron->getAllForApi();
+		$returned_data         = $server_cron->getTimes();
+		$returned_data['jobs'] = $server_cron->getAllForApi();
 
 		return $this->createApiResponse(
 			array(
-				 'server_cron' => $returnedData
+				 'server_cron' => $returned_data
 			)
 		);
 	}
@@ -305,17 +305,17 @@ class ServerController extends AbstractController implements ProtectedController
 			$page = 1;
 		}
 
-		$returnedData['page']      = $page;
-		$returnedData['num_pages'] = $server_cron->getPagesCount($job_id, $priority);
-		$returnedData['priority']  = $priority;
-		$returnedData['job_id']    = $job_id;
+		$returned_data['page']      = $page;
+		$returned_data['num_pages'] = $server_cron->getPagesCount($job_id, $priority);
+		$returned_data['priority']  = $priority;
+		$returned_data['job_id']    = $job_id;
 
-		$returnedData['logs'] = $server_cron->getLogs($job_id, $priority, $page);
-		$returnedData['jobs'] = $server_cron->getAllForApi();
+		$returned_data['logs'] = $server_cron->getLogs($job_id, $priority, $page);
+		$returned_data['jobs'] = $server_cron->getAllForApi();
 
 		return $this->createApiResponse(
 			array(
-				 'server_cron_logs' => $returnedData
+				 'server_cron_logs' => $returned_data
 			)
 		);
 	}
@@ -348,19 +348,22 @@ class ServerController extends AbstractController implements ProtectedController
 
 		$server_file_uploads = $this->container->getSystemService('server_file_uploads');
 
-		$returnedData['php_vars']                  = $server_file_uploads->getPhpVars();
-		$returnedData['effective_max_upload_size'] = $server_file_uploads->getEffectiveMaxUploadSize();
-		$returnedData['url_to_learn_php_ini']      = $server_file_uploads->getUrlToLearnPhpIni();
-		$returnedData['php_ini_path']              = $server_file_uploads->getPhpIniPath();
-		$returnedData['restrictions']              = $server_file_uploads->getRestrictions();
-		$returnedData['file_uploader_url']         = $server_file_uploads->getFileUploaderUrl();
-		$returnedData['using_file_system']         = $server_file_uploads->isUsingFileSystem();
-		$returnedData['file_storage_path']         = $server_file_uploads->getFileStoragePath();
-		$returnedData['moving_files']              = $server_file_uploads->getMovingFiles();
+		$returned_data['php_vars']                  = $server_file_uploads->getPhpVars();
+		$returned_data['effective_max_upload_size'] = $server_file_uploads->getEffectiveMaxUploadSize();
+		$returned_data['url_to_learn_php_ini']      = $server_file_uploads->getUrlToLearnPhpIni();
+		$returned_data['php_ini_path']              = $server_file_uploads->getPhpIniPath();
+		$returned_data['restrictions']              = $server_file_uploads->getRestrictions();
+		$returned_data['file_uploader_url']         = $server_file_uploads->getFileUploaderUrl();
+		$returned_data['filestorage_method']        = $server_file_uploads->getStorageMethod();
+		$returned_data['file_storage_path']         = $server_file_uploads->getFileStoragePath();
+		$returned_data['s3_bucket']                 = $this->container->getSetting('core.filestorage_s3_bucket');
+		$returned_data['s3_key']                    = $this->container->getSetting('core.filestorage_s3_key');
+		$returned_data['s3_secret']                 = $this->container->getSetting('core.filestorage_s3_secret');
+		$returned_data['moving_files']              = $server_file_uploads->getMovingFiles();
 
 		return $this->createApiResponse(
 			array(
-				 'server_file_uploads' => $returnedData
+				 'server_file_uploads' => $returned_data
 			)
 		);
 	}
@@ -393,11 +396,8 @@ class ServerController extends AbstractController implements ProtectedController
 		/**
 		 * @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $server_file_uploads
 		 */
-
 		$server_file_uploads = $this->container->getSystemService('server_file_uploads');
-
-		$server_file_uploads->switchStorage();
-
+		$server_file_uploads->switchStorage($this->in->getArrayValue('options'));
 		return $this->createSuccessResponse();
 	}
 

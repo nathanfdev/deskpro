@@ -1,5 +1,13 @@
-define ['DeskPRO/Util/Util'], (Util) ->
-	class Admin_OptionBuilder_TypesDef_BaseActionTypesDef
+define [
+	'DeskPRO/Util/Util',
+	'DeskPRO/Util/Arrays',
+	'Admin/OptionBuilder/TypesDef/BaseTypesDef'
+], (
+	Util,
+	Arrays,
+	BaseTypesDef
+) ->
+	class Admin_OptionBuilder_TypesDef_BaseActionTypesDef extends BaseTypesDef
 		constructor: (@$q, @Api, @dpTemplateManager) ->
 			@options_data   = null
 			@inputTemplate  = 'OptionBuilder/type-actions-input.html'
@@ -51,37 +59,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			extraOptions = options.extraOptions || null
 
 			if not options_formatter
-				options_formatter = (options) ->
-					opts = []
-
-					if extraOptions
-						for opt in extraOptions
-							opts.push(opt)
-
-					for opt in options
-						if opt.title
-							title = opt.title
-						else if opt.display_name
-							title = opt.display_name
-						else if opt.name
-							title = opt.name
-						else
-							title = null
-
-						if opt.id
-							val = opt.id
-						else if opt.value
-							val = opt.value
-						else
-							val = null
-
-						if title != null and val != null
-							opts.push({
-								title: title,
-								value: val
-							})
-
-					return opts
+				options_formatter = (options) =>
+					return @standardOptionsFormatter(options, extraOptions)
 
 			me = @
 
@@ -134,6 +113,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 		getStandardIs: (options) ->
 			type      = options.type
 			prop_name = options.propName
+			icon      = options.icon
 
 			me = @
 			return {
@@ -148,7 +128,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						getViewValue: (value = {}, data) ->
 							return {
 								value: true,
-								op: 'is'
+								op: 'is',
+								icon: icon || false
 							}
 						getValue: (model = {}, data) ->
 							value = {}
@@ -209,6 +190,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 			if field.type_name == 'choice'
 				options.options = field.choices.map( (o) -> {title: o.title, value: o.id + ""})
+				return @getStandardSelect(options)
+			else if field.type_name == 'toggle'
+				options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}]
 				return @getStandardSelect(options)
 			else
 				return @getStandardInput(options)

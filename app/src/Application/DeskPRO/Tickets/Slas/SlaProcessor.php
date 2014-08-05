@@ -111,9 +111,14 @@ class SlaProcessor
 			$current_status   = $ticket_sla->sla_status;
 			$do_triggers      = false;
 
-			$calc                  = $ticket_sla->sla->getCalculator();
-			$ticket_sla->warn_date = $calc->calculateWarnDate($ticket);
-			$ticket_sla->fail_date = $calc->calculateFailDate($ticket);
+			$calc = $ticket_sla->sla->getCalculator();
+
+			if ($set_warn_date = $calc->calculateWarnDate($ticket)) {
+				$ticket_sla->warn_date = $set_warn_date;
+			}
+			if ($set_fail_date = $calc->calculateFailDate($ticket)) {
+				$ticket_sla->fail_date = $set_fail_date;
+			}
 
 			if (!$ticket_sla->is_completed) {
 				if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {

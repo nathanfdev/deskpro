@@ -64,7 +64,13 @@ class TriggerActionConverter
 			return null;
 		}
 
-		return $this->$func($info['type'], new OptionsArray($info['options']));
+		try {
+			return $this->$func($info['type'], new OptionsArray($info['options']));
+		} catch (\Exception $e) {
+			$e = new \Exception("Invalid trigger option: " . $e->getMessage());
+			KernelErrorHandler::logException($e);
+			return null;
+		}
 	}
 
 	private function upgradeAction_add_agent_notify($type, OptionsArray $options)
@@ -251,7 +257,7 @@ class TriggerActionConverter
 			'reply_text'        => $options->get('reply_text'),
 			'by_assigned_agent' => true,
 			'by_agent_id'       => 1,
-			'with_formatter'    => true
+			'no_formatter'      => false
 		));
 	}
 
@@ -346,7 +352,7 @@ class TriggerActionConverter
 	private function upgradeAction_set_sla_complete($type, OptionsArray $options)
 	{
 		if ($options->get('sla_complete')) {
-			return new Actions\SetSlaComplete(array(
+			return new Actions\SetSlasComplete(array(
 				'sla_ids' => array($options->get('sla_id')),
 				'sla_status' => 'nochange'
 			));
@@ -357,7 +363,7 @@ class TriggerActionConverter
 
 	private function upgradeAction_set_sla_status($type, OptionsArray $options)
 	{
-		return new Actions\SetSlaComplete(array(
+		return new Actions\SetSlasComplete(array(
 			'sla_ids' => array($options->get('sla_id')),
 			'sla_status' => $options->get('sla_status')
 		));

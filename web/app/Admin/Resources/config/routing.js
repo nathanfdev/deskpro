@@ -671,6 +671,23 @@ define(function() {
 	});
 
 	//###
+	//# Round Robin
+	//###
+	routes.push({
+		id: 'tickets.roundrobin',
+		url: '/roundrobin',
+		templateName: 'RoundRobin/list.html',
+		controller: 'Admin_RoundRobin_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'tickets.roundrobin.edit',
+		url: '/{id:.*}',
+		templateName: 'RoundRobin/edit.html',
+		controller: 'Admin_RoundRobin_Ctrl_Edit'
+	});
+
+	//###
 	//# Billing
 	//###
 	routes.push({
@@ -1734,7 +1751,7 @@ define(function() {
 
 	routes.push({
 		id: 'apps.go_apps_install',
-		url: '/{name:go\-apps\-(.*?)}',
+		url: '/{name:go\\-apps\\-(.*?)}',
 		templateName: 'Index/blank.html',
 		controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('apps.apps.install_package', { name: $stateParams.name.replace(/^go\-apps\-/, '') + '.install' }); }]
 	});

@@ -35,9 +35,9 @@
 namespace deskpro_jira;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
-class InstallerHandler implements InstallerHandlerInterface
+class InstallerHandler extends AbstractInstallerHandler
 {
 	/**
 	 * {@inheritDoc}
@@ -80,8 +80,13 @@ class InstallerHandler implements InstallerHandlerInterface
 	 */
 	private function _doInstall(InstallerContext $context)
 	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled',        1);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.baseUrl',        $context->getApp()->getSetting('jira_url'));
+		$enabled = 1;
+		if (!$context->getApp()->getSetting('jira_url') || !$context->getApp()->getSetting('jira_username') || !$context->getApp()->getSetting('jira_password')) {
+			$enabled = 0;
+		}
+
+		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled',        $enabled);
+		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.baseUrl',        rtrim($context->getApp()->getSetting('jira_url'), '/') . '/');
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.username',       $context->getApp()->getSetting('jira_username'));
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.password',       $context->getApp()->getSetting('jira_password'));
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultProject', $context->getApp()->getSetting('jira_default_project'));

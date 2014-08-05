@@ -705,14 +705,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var filterEl = $('li.filter-' + filterId, this.sectionEl);
 			els.push(filterEl.get(0));
 
-			var boundFilterEl = null;
-			var boundFilterId = null;
-			if (filterEl.data('filter-name')) {
-				boundFilterEl = $('.filter-' + filterEl.data('filter-name') + '_w_hold', this.sectionEl);
-				boundFilterId = parseInt(boundFilterEl.data('filter-id'));
-			}
-
-			if (!this.filterTicketIds[filterId] && (!boundFilterId || !this.filterTicketIds[boundFilterId])) {
+			if (!this.filterTicketIds[filterId]) {
 				return;
 			}
 
@@ -721,10 +714,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			if (!grouping || !grouping.length) {
 				if (!doSave) {
 					this.setFilterGroupingContent(filterId, '', grouping);
-
-					if (boundFilterId) {
-						this.setFilterGroupingContent(boundFilterId, '', grouping);
-					}
 					return;
 				}
 			}
@@ -739,24 +728,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					name: 'batches['+filterId+'][ticket_ids]',
 					value: this.filterTicketIds[filterId].join(',')
 				});
-			}
-
-			if (boundFilterId) {
-				if (this.filterTicketIds[boundFilterId]) {
-					postData.push({
-						name: 'batches['+boundFilterId+'][grouping]',
-						value: grouping
-					});
-
-					if (grouping) {
-						postData.push({
-							name: 'batches['+boundFilterId+'][ticket_ids]',
-							value: this.filterTicketIds[boundFilterId].join(',')
-						});
-					}
-				} else {
-					this.setFilterGroupingContent(boundFilterId, '', grouping);
-				}
 			}
 		}, this);
 
@@ -792,24 +763,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 					var filterEl = $('.filter-' + filterId, this.sectionEl);
 					var name = filterEl.data('filter-name');
-					if (name.indexOf('_w_hold') !== -1) {
-						name = name.replace(/_w_hold$/, '');
-						parentFilterEl = $('.filter-' + name, this.sectionEl);
-						parentFilterId = parseInt(parentFilterEl.data('filter-id'));
-						var grouping = this.getGroupingVar(parentFilterId);
-					} else {
-						var grouping = this.getGroupingVar(filterId);
-					}
+					var grouping = this.getGroupingVar(filterId);
 
 					var selectedGrouping = filterEl.find('ul.nav-list-small').first().find('li.nav-selected').data('grouping-option');
 					var li = filterEl.find('li.grouping-' + selectedGrouping);
-					var currentRoute = null;
-
-					if (li.data('route')) {
-						currentRoute = li.data('route');
-					} else {
-						currentRoute = li.find('[data-route]').data('route');
-					}
 
 					var count = parseInt(li.find('span.list-counter').text());
 

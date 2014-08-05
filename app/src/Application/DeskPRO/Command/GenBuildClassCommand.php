@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
+use Application\InstallBundle\Util\GenBuildManifest;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -137,16 +138,14 @@ CODE;
 			$build_file = DP_ROOT.'/sys/config/build-time.php';
 			file_put_contents($build_file, '<?php define("DP_BUILD_TIME", '.$time.'); ');
 
-			$manifest_file = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
-			$data = require($manifest_file);
-			$data[$time] = array(
-				'file' => DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/'. date('Y/m', $time) . '/Build' . $time . '.php',
-				'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $time
-			);
-			file_put_contents($manifest_file, "<?php return " . var_export($data, true) . ";");
+			$manifest_path = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+			$builds_path   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
+
+			$gen = new GenBuildManifest($builds_path, array($path));
+			file_put_contents($manifest_path, $gen->getContents());
 
 			echo "Wrote file: $path\n";
-			echo "Updated: $manifest_file\n";
+			echo "Updated: $manifest_path\n";
 			echo "Updated: $build_file\n";
 		}
 

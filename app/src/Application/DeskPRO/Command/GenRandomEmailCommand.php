@@ -46,6 +46,8 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 	{
 		$this->setName('dp:gen-rand-email');
 		$this->addOption('from-email', null, InputOption::VALUE_REQUIRED);
+		$this->addOption('reply-to-email', null, InputOption::VALUE_REQUIRED);
+		$this->addOption('original-from-email', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('to-email', null, InputOption::VALUE_REQUIRED);
 		$this->addOption('with-owl', null, InputOption::VALUE_NONE);
 		$this->addOption('owl-size', null, InputOption::VALUE_REQUIRED);
@@ -59,12 +61,29 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		$fwd_for = $input->getOption('fwd-for') ? $input->getOption('fwd-for') : false;
 		$subject = $input->getOption('subject') ?: 'Test Email - %TIME%';
 
+		if ($subject == "EMPTY") {
+			$subject = "";
+		}
+
 		$email_pre = "";
 
 		$email_pre_html = "";
 		if ($email_pre) {
 			$email_pre_html = "<div>" . nl2br($email_pre) . "</div>";
 		}
+
+		$from_lines = array();
+		if ($input->hasOption('from-email')) {
+			$from_lines[] = "From: " . $input->getOption('from-email');
+		}
+		if ($input->hasOption('reply-to-email')) {
+			$from_lines[] = "Reply-To: " . $input->getOption('reply-to-email');
+		}
+		if ($input->hasOption('original-from-email')) {
+			$from_lines[] = "X-Original-From: " . $input->getOption('original-from-email');
+		}
+
+		$from_lines = implode("\n", $from_lines);
 
 		$fwd_footer = '';
 		$fwd_footer_html = '';
@@ -77,7 +96,7 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 		if (!$input->getOption('with-owl')) {
 			$source = <<<SRC
 Date: Mon, 10 Dec 2012 19:15:33 +0000
-From: %FROM_EMAIL%
+$from_lines
 To: %TO_EMAIL%
 Message-ID: <144FD598151749D98C378FCF8B2E03C2@gmail.com>
 Subject: $subject
@@ -658,7 +677,7 @@ Received: from [172.18.24.247] (iw-01.clients.vorboss.net. [194.8.255.114])
         (version=TLSv1/SSLv3 cipher=OTHER);
         Tue, 11 Dec 2012 10:40:54 -0800 (PST)
 Date: Tue, 11 Dec 2012 18:40:52 +0000
-From: %FROM_EMAIL%
+$from_lines
 To: %TO_EMAIL%
 Message-ID: <B5522AAC086547DFB50EDB640A75AE8E@deskpro.com>
 Subject: Test Email - %TIME%

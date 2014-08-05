@@ -72,6 +72,9 @@
 
       Admin_TicketFields_Ctrl_EditProducts.prototype.save = function() {
         var postData, promise;
+        if (!this.products || !this.products.length) {
+          this.enabled = false;
+        }
         postData = {
           products: this.products,
           default_id: this.default_id,

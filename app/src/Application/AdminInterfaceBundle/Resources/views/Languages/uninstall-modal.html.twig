@@ -8,11 +8,22 @@
 		<p>
 			Are you sure you want to uninstall this language?
 		</p>
-		<ul>
-			<li>Users will no longer be able to select this language from the portal</li>
-			<li>Existing users using this language will be reverted back to using the default language.</li>
-			<li>Tickets using this lanugage will be reverted back to using the default language</li>
-		</ul>
+		<div style="background: #f2dede; padding: 9px; margin-top: 15px;">
+			<p>
+				<span class="text-danger">Please note that there may be data loss as a result of removing this language:</span>
+			</p>
+			<ul>
+				<li>Snippets written in this language will be removed.</li>
+				<li>Tickets using this lanugage will be reverted back to using the default language.</li>
+				<li>Users will no longer be able to select this language from the portal.</li>
+				<li>Existing users using this language will be reverted back to using the default language.</li>
+				<li>Translations (including department translations, translated field titles, and custom phrases).</li>
+			</ul>
+			<p>
+				If you later re-install this language, the records mentioned above will <strong>not</strong> be restored.
+				You will need to manually re-save those records (e.g., manually re-create snippets, manually re-set ticket language etc.).
+			</p>
+		</div>
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-success" ng-click="dismiss()"><i class="fa fa-undo"></i> {{ phrase('agent.general.cancel') }}</button>

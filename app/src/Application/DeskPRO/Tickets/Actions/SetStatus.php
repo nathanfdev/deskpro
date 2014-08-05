@@ -88,6 +88,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
 		}
 
 		$ticket->setStatus($set_status);
+		$context->getLogger()->debug("[SetStatus] Setting status $set_status");
 	}
 
 

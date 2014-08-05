@@ -15,8 +15,26 @@
 
       Admin_Banning_Ctrl_List.CTRL_AS = 'ListCtrl';
 
+      Admin_Banning_Ctrl_List.DEPS = ['Api', '$http', 'Growl'];
+
       Admin_Banning_Ctrl_List.prototype.init = function() {
-        return this.banData = this.DataService.get('Bans');
+        this.banData = this.DataService.get('Bans');
+        this.$scope.fileUploadOptions = {
+          url: this.$http.formatApiUrl('/banning/import_emails')
+        };
+        this.$scope.exportUrl = this.$http.formatApiUrl('/banning/export_emails');
+        this.$scope.$on('fileuploaddone', (function(_this) {
+          return function(e, data) {
+            _this.Growl.success('Import finished successfully');
+            return _this.goFirstEmailBanPage();
+          };
+        })(this));
+        return this.$scope.$on('fileuploadfail', (function(_this) {
+          return function(e, data) {
+            _this.Growl.error('Import failed');
+            return _this.goFirstEmailBanPage();
+          };
+        })(this));
       };
 
 
@@ -40,7 +58,7 @@
 
       /*
       		 *	Here we watching scope 'page' variable in order to load new page of results
-       	 * Reason - 'ng-change' is not working for ui-select2
+       	   * Reason - 'ng-change' is not working for ui-select2
        */
 
       Admin_Banning_Ctrl_List.prototype.initializeScopeWatching = function() {
@@ -111,7 +129,16 @@
 
 
       /*
-       	 *
+      		 *
+       */
+
+      Admin_Banning_Ctrl_List.prototype.goFirstIpBanPage = function() {
+        return this.pagination.ip_bans.page = 0;
+      };
+
+
+      /*
+       	   *
        */
 
       Admin_Banning_Ctrl_List.prototype.goNextEmailBanPage = function() {
@@ -125,6 +152,15 @@
 
       Admin_Banning_Ctrl_List.prototype.goPrevEmailBanPage = function() {
         return this.pagination.email_bans.page--;
+      };
+
+
+      /*
+      		 *
+       */
+
+      Admin_Banning_Ctrl_List.prototype.goFirstEmailBanPage = function() {
+        return this.pagination.email_bans.page = 0;
       };
 
 
@@ -177,6 +213,44 @@
         })(this)).error((function(_this) {
           return function(info, code) {
             return _this.applyErrorResponseToView(info);
+          };
+        })(this));
+      };
+
+
+      /*
+      		 * Show the delete dlg
+       */
+
+      Admin_Banning_Ctrl_List.prototype.deleteList = function(list) {
+        var inst;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('Banning/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.multiple = true;
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then((function(_this) {
+          return function() {
+            if (list === _this.list.email_bans) {
+              return _this.banData.deleteBanByType('email').then(function() {
+                _this.reloadList(false, true);
+                return _this.$state.go('crm.banning');
+              });
+            } else {
+              return _this.banData.deleteBanByType('ip').then(function() {
+                _this.reloadList(true);
+                return _this.$state.go('crm.banning');
+              });
+            }
           };
         })(this));
       };

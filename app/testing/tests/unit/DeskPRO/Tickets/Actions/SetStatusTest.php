@@ -33,7 +33,10 @@ class SetStatusTest extends \DpUnitTestCase
 		$this->assertEquals('hidden.deleted', $ticket->getStatusCode());
 	}
 
-	public function testNoop()
+	/**
+	 * @expectedException \Orb\Util\CheckedOptionsException
+	 */
+	public function testInvalid()
 	{
 		$ticket = new Ticket();
 		$ticket->status = 'awaiting_agent';
@@ -55,17 +58,5 @@ class SetStatusTest extends \DpUnitTestCase
 		$action = new SetStatus(array('status' => 'awaiting_agent'));
 
 		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
-
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$ticket->status = 'awaiting_agent';
-		$exec = new ExecutorContext();
-
-		$action = new SetStatus(array('status' => null));
-		$action->applyAction($ticket, $exec);
-
-		$this->assertEquals("awaiting_agent", $ticket->getStatusCode());
 	}
 }

@@ -91,7 +91,7 @@ class QueueTransport implements \Swift_Transport
 		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(serialize($message), 'sendmail.obj', 'plain/text');
 		$sendmail = new \Application\DeskPRO\Entity\SendmailQueue();
 		$sendmail->blob = $blob;
-		$sendmail->subject = $message->getSubject() ?: '';
+		$sendmail->subject = $message->getSubject() ?: '(No Subject)';
 		$sendmail->date_next_attempt = new \DateTime();
 		$sendmail->priority = 10;
 

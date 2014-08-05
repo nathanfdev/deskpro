@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Strings'], (Strings) ->
 	class EditAgentModel
-		constructor: (agent, groups, teams) ->
+		constructor: (agent, groups, teams, primary_phone_number_region) ->
 			@form = {}
 
 			#--------------------
@@ -8,6 +8,10 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			#--------------------
 
 			@form.name = agent.name
+			@form.primary_phone_number_text = agent.primary_phone_number_text
+			@form.primary_phone_number_region = agent.primary_phone_number_region
+			if !@form.primary_phone_number_region
+				@form.primary_phone_number_region = primary_phone_number_region
 
 			if agent.override_display_name
 				@form.enable_display_name = true
@@ -58,9 +62,11 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			for g in groups
 				enabled = false
 				for check in agent.usergroups
-					if check.id = g.id
+					if check.id == g.id
 						enabled = true
 						break
+				if not enabled and not agent.id and g.sys_name == 'agent_all_perms'
+					enabled = true
 
 				@form.agent_groups.push({
 					id:    g.id,
@@ -71,6 +77,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 		getFormData: ->
 			formData = {}
 			formData.name = @form.name
+			formData.primary_phone_number_text = @form.primary_phone_number_text
 
 			if @form.enable_display_name and Strings.trim(@form.override_name)
 				formData.override_name = Strings.trim(@form.override_name)

@@ -40,11 +40,7 @@ define [
 				postData.actions.push(row)
 
 			postData.terms = []
-			for own _, crit_set of formModel.terms_set
-				for own _, crit of crit_set
-					if crit.type
-						postData.terms.push(crit)
-				if postData.terms.length
-					break
+			for own id, row of formModel.terms
+				postData.terms.push(row)
 
 			return postData

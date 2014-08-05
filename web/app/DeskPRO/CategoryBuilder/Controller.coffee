@@ -165,6 +165,8 @@ define [
 							<i class="fa fa-times-circle remove-trigger"></i>
 						</div>
 						<div class="dp-cb-row-indent"></div>
+						<span class="title-id" title="ID" ng-if="cat.id && !cat['@is_new']">#<span ng-bind="cat.id"></span></span>
+						<span class="title-id" title="ID will be generated after you save" ng-if="cat['@is_new']">?</span>
 						<input type="text" class="form-control dp-cb-input" ng-model="cat.title" placeholder="Enter title..." />
 					</div>
 					<ul ui-sortable="sortedListOptions"></ul>

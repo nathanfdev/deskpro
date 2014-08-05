@@ -34,11 +34,13 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\HttpFoundation\JsonResponse;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\AgentNotifPrefs\Prefs as AgentNotifPrefs;
+use Application\DeskPRO\People\AgentNotifPrefs\Prefs;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsPersister;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsTable as AgentNotifPrefsTable;
@@ -48,7 +50,9 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
+use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 
 class AgentsController extends AbstractController implements ProtectedControllerInterface
@@ -73,9 +77,14 @@ class AgentsController extends AbstractController implements ProtectedController
 		$online_agents_userchat = array_fill_keys($online_agents_userchat, true);
 
 		foreach ($this->container->getAgentData()->getAgents() as $agent) {
-			$agent_data = $agent->toApiData();
-			$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
-			$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
+
+			if ($this->in->getBool('full')) {
+				$agent_data = $this->getFullAgentData($agent['id']);
+			} else {
+				$agent_data = $agent->toApiData();
+				$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+				$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
+			}
 
 			$data['agents'][] = $agent_data;
 		}
@@ -106,7 +115,7 @@ class AgentsController extends AbstractController implements ProtectedController
 	# get-agent
 	####################################################################################################################
 
-	public function getAgentAction($id)
+	protected function getFullAgentData($id)
 	{
 		$agent = $this->container->getAgentData()->get($id);
 
@@ -114,7 +123,8 @@ class AgentsController extends AbstractController implements ProtectedController
 			throw $this->createNotFoundException();
 		}
 
-		$agent_data = $agent->toApiData();
+		$apiDataFactory = $this->getContainer()->getSystemService('person_api_data_factory');
+		$agent_data = $apiDataFactory->agentToApiData($agent);
 		$agent_data['teams'] = array();
 
 		$agent->loadHelper('Agent');
@@ -126,7 +136,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$agent_data['teams'][] = $t->toApiData();
 		}
 
-		$perm_loader = new AgentPermsPersonDbLoader($this->person, $this->em);
+		$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
 		$data = array(
 			'agent' => $agent_data,
@@ -137,9 +147,15 @@ class AgentsController extends AbstractController implements ProtectedController
 			$data['signature_html'] = $agent->getSignatureHtml();
 		}
 
-		return $this->createApiResponse($data);
+		return $data;
 	}
 
+	public function getAgentAction($id)
+	{
+		$data = $this->getFullAgentData($id);
+
+		return $this->createApiResponse($data);
+	}
 
 	####################################################################################################################
 	# get-deleted-agent
@@ -165,7 +181,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$agent_data['teams'][] = $t->toApiData();
 		}
 
-		$perm_loader = new AgentPermsPersonDbLoader($this->person, $this->em);
+		$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
 		return $this->createApiResponse(array(
 			'agent'           => $agent_data,
@@ -180,18 +196,67 @@ class AgentsController extends AbstractController implements ProtectedController
 
 	public function saveAgentAction($id = null)
 	{
+		$agent_postdata = $this->in->getArrayValue('agent');
+
+		$filter_subs = $this->in->getArrayValue('filter_subs');
+		$other_subs = $this->in->getArrayValue('other_subs');
+		$quick_add = $this->in->getBool('quick_add');
+		$perm_overrides = $this->in->getArrayValue('perm_overrides');
+		$dep_perm_overrides = $this->in->getArrayValue('dep_perm_overrides');
+		$profile = $this->in->getArrayValue('profile');
+		$skip_email = $this->in->getBool('skip_email');
+
+		return $this->saveAgent($id, $agent_postdata, $profile, $filter_subs, $other_subs, $quick_add, $perm_overrides,
+								$dep_perm_overrides);
+	}
+
+	protected function saveAgent($id = null, $agent_postdata = array(), $profile = array(), $filter_subs = array(),
+	                             $other_subs = array(), $quick_add = false, $perm_overrides = array(),
+	                             $dep_perm_overrides = array(), $skip_email = false)
+	{
 		#-------------------------
 		# Pre-validation
 		#-------------------------
 
-		$set_emails = $this->in->getArrayOfStrings('agent.emails');
+		$exist_person = null;
 
-		if ($this->in->getString('agent.email')) {
-			array_unshift($set_emails, $this->in->getString('agent.email'));
+		if (!isset($agent_postdata['emails'])) {
+			$agent_postdata['emails'] = array();
+		}
+		$set_emails = $agent_postdata['emails'];
+		if (isset($agent_postdata['email'])) {
+			array_unshift($set_emails, $agent_postdata['email']);
 		}
 
 		$set_emails = array_unique($set_emails);
 		$set_emails = Arrays::removeFalsey($set_emails);
+
+		$email_account_manager = $this->container->getEmailAccountManager();
+		$system_addresses = array_filter($set_emails, function($e) use ($email_account_manager) {
+			return $email_account_manager->findAccountForEmailAddress($e);
+		});
+
+		if ($system_addresses) {
+			return $this->createApiErrorInfoResponse(
+				'system_email_addresses',
+				'One or more email addresses you entered are already being used as email accounts.',
+				array('emails' => array_values($system_addresses))
+			);
+		}
+
+		$phone_number = $agent_postdata['primary_phone_number_text'];
+		if (!PhoneNumbers::looksEmpty($phone_number)) {
+			if (!PhoneNumbers::isValid($phone_number)) {
+				return $this->createApiErrorInfoResponse('invalid_phone_number',
+					'Invalid phone number format.',
+					array( 'primary_phone_number_text' => $phone_number ));
+			}
+		}
+
+		$email_validator = $this->container->getSystemService('email_address_validator');
+		$set_emails = array_filter($set_emails, function($e) use ($email_validator) {
+			return $email_validator->isValidUserEmail($e);
+		});
 
 		$find_existing = array();
 		foreach ($set_emails as $email_addr) {
@@ -213,6 +278,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			if (count($find_existing) == 1 && !$id) {
 				$exist = array_pop($find_existing);
 				$id = $exist['person']->id;
+				$exist_person = $exist['person'];
 
 			// In all other cases, we have a dupe email error
 			} else {
@@ -234,12 +300,26 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		if ($id) {
 			$is_new = false;
-			$agent = $this->container->getAgentData()->get($id);
+
+			if ($exist_person) {
+				$agent = $exist_person;
+			} else {
+				$agent = $this->container->getAgentData()->get($id);
+			}
 
 			if (!$agent) {
 				throw $this->createNotFoundException();
 			}
+
+			// Promoting an existing user to an agent needs to call the preNewAgent callback
+			if ($agent && !$agent->is_agent) {
+				$r = $this->preNewAgent(1);
+				if ($r) return $r;
+			}
 		} else {
+			$r = $this->preNewAgent(1);
+			if ($r) return $r;
+
 			$is_new = true;
 			$agent = new Person();
 			$agent->setPassword(Strings::random(20));
@@ -255,8 +335,6 @@ class AgentsController extends AbstractController implements ProtectedController
 			new EditAgentType(),
 			$edit_agent
 		);
-
-		$agent_postdata = $this->in->getArrayValue('agent');
 
 		// We did a bit of pre-cleanup above to prepend
 		// primary address to emails list
@@ -275,11 +353,11 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save subscriptions
 		#-------------------------
 
-		if ($this->in->checkIsset('filter_subs') && $this->in->checkIsset('other_subs')) {
+		if ($filter_subs && $other_subs) {
 			$notif_pref_loader = new AgentNotifPrefsLoader($agent, $this->em);
 			$notif_prefs = $notif_pref_loader->getPrefsFromArray(
-				$this->in->getArrayValue('filter_subs'),
-				$this->in->getArrayValue('other_subs')
+				$filter_subs,
+				$other_subs
 			);
 
 			$notif_perist = new PrefsPersister($agent, $this->em);
@@ -287,12 +365,23 @@ class AgentsController extends AbstractController implements ProtectedController
 		}
 
 		#-------------------------
+		# Quick add: add 'all perms' group
+		#-------------------------
+
+		if ($quick_add) {
+			$ug = $this->container->getAgentGroups()->getSysGroup('agent_all_perms');
+			$agent->usergroups->add($ug);
+			$this->em->persist($agent);
+			$this->em->flush();
+		}
+
+		#-------------------------
 		# Save permission overrides
 		#-------------------------
 
-		if ($this->in->checkIsset('perm_overrides')) {
+		if ($perm_overrides) {
 			$perms = new AgentPermissions();
-			$perms->fromArray($this->in->getArrayValue('perm_overrides'));
+			$perms->fromArray($perm_overrides);
 
 			$persister = new GroupDbPersister($this->em);
 			$persister->saveOverridePerms($agent, $perms);
@@ -302,21 +391,30 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Save department permission overrides
 		#-------------------------
 
-		if ($this->in->checkIsset('dep_perm_overrides')) {
+		if ($dep_perm_overrides) {
 			$ticket_deps = $this->container->getTicketDepartments();
 			$chat_deps   = $this->container->getChatDepartments();
 
 			$set_perms = array();
-			foreach ($this->in->getArrayValue('dep_perm_overrides.tickets') as $did => $p) {
-				if (!$ticket_deps->getById($did)) continue;
+			foreach ($dep_perm_overrides['tickets'] as $did => $p) {
+				if (!($dep = $ticket_deps->getById($did))) continue;
+				if (count($dep->children)) {
+					continue;
+				}
+
 				if ($p['full']) {
 					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1);
 				} else if ($p['assign']) {
 					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'tickets', 'name' => 'assign', 'value' => 1);
 				}
 			}
-			foreach ($this->in->getArrayValue('dep_perm_overrides.chat') as $did => $p) {
-				if (!$chat_deps->getById($did)) continue;
+
+			foreach ($dep_perm_overrides['chat'] as $did => $p) {
+				if (!($dep = $chat_deps->getById($did))) continue;
+				if (count($dep->children)) {
+					continue;
+				}
+
 				if ($p['full']) {
 					$set_perms[] = array('department_id' => $did, 'person_id' => $agent->id, 'app' => 'chat', 'name' => 'full', 'value' => 1);
 				}
@@ -333,17 +431,17 @@ class AgentsController extends AbstractController implements ProtectedController
 		#-------------------------
 
 		$data = array();
-		if ($this->in->checkIsset('profile.signature_html')) {
-			$data['signature_html'] = $this->in->getString('profile.signature_html');
+		if (isset($profile['signature_html'])) {
+			$data['signature_html'] = $profile['signature_html'];
 		}
-		if ($this->in->checkIsset('profile.timezone')) {
-			$data['timezone'] = $this->in->getString('profile.timezone');
+		if (isset($profile['timezone'])) {
+			$data['timezone'] = $profile['timezone'];
 		}
-		if ($this->in->checkIsset('profile.unset_picture')) {
-			$data['unset_picture'] = $this->in->getBool('profile.unset_picture');
+		if (isset($profile['unset_picture'])) {
+			$data['unset_picture'] = $profile['unset_picture'];
 		}
-		if ($this->in->checkIsset('profile.set_picture_blob')) {
-			$data['set_picture_blob'] = $this->in->getString('profile.set_picture_blob');
+		if (isset($profile['set_picture_blob'])) {
+			$data['set_picture_blob'] = $profile['set_picture_blob'];
 		}
 		if ($data) {
 			$this->_saveProfileData($agent, $data);
@@ -355,7 +453,7 @@ class AgentsController extends AbstractController implements ProtectedController
 		#-------------------------
 
 		// Send welcome email for new users
-		if ($is_new && !$this->in->getBool('skip_email')) {
+		if ($is_new && !$skip_email) {
 			$message = $this->container->getMailer()->createMessage();
 			$message->setToPerson($agent);
 			$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
@@ -369,13 +467,29 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Return
 		#-------------------------
 
-		if ($is_new) {
-			return $this->createApiCreateResponse(array(
-				'person_id' => $agent->id
-			), $this->generateUrl('api_agents_get', array('id' => $agent->id), true));
-		} else {
-			return $this->createSuccessResponse();
+		$data = $agent->toApiData();
+		$data['person_id'] = $agent['id']; // back compatibility
+		return $this->createApiResponse($data);
+	}
+
+	/**
+	 * @param int $num
+	 * @return Response|null
+	 */
+	protected function preNewAgent($num)
+	{
+		$current_agents = $this->db->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent = 1 AND is_deleted = 0
+		");
+
+		$max_agents = License::getLicense()->getMaxAgents();
+		if ($max_agents && $current_agents+$num > $max_agents) {
+			return $this->createApiErrorResponse('license_agents_reached', "Your license allows $max_agents. You cannot create $num more agents until you upgrade your license.");
 		}
+
+		return null;
 	}
 
 	####################################################################################################################
@@ -623,6 +737,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$prefs     = $loader->getPrefs();
 			$filters   = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($agent);
 		} else {
+			$agent = null;
 			$prefs = new AgentNotifPrefs();
 			$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
 		}
@@ -642,21 +757,48 @@ class AgentsController extends AbstractController implements ProtectedController
 		}
 
 		$tables = array();
-		$tables['sys_filters_email'] = $table_gen->buildSystemFiltersTable('email', $sys_filters);
-		$tables['sys_filters_alert'] = $table_gen->buildSystemFiltersTable('alert', $sys_filters);
 
-		if ($custom_filters) {
-			$tables['custom_filters_email'] = $table_gen->buildCustomFiltersTable('email', $sys_filters);
-			$tables['custom_filters_alert'] = $table_gen->buildCustomFiltersTable('alert', $sys_filters);
+		if ($agent) {
+			$table_context = $this->person === $agent ? null : $agent;
+		} else {
+			$table_context = null;
 		}
 
-		$tables['chat']     = $table_gen->buildChatTable();
-		$tables['task']     = $table_gen->buildTaskTable();
-		$tables['twitter']  = $table_gen->buildTwitterTable();
-		$tables['feedback'] = $table_gen->buildFeedbackTable();
-		$tables['publish']  = $table_gen->buildPublishTable();
-		$tables['crm']      = $table_gen->buildCrmTable();
-		$tables['account']  = $table_gen->buildAccountTable();
+		$tables['sys_filters_email'] = $table_gen->buildSystemFiltersTable('email', $sys_filters, $table_context);
+		$tables['sys_filters_alert'] = $table_gen->buildSystemFiltersTable('alert', $sys_filters, $table_context);
+
+		if (!$id) {
+			foreach ($tables['sys_filters_email']['rows'] as &$row) {
+				foreach ($row['cols'] as &$col) {
+					foreach ($col as &$p) {
+						$p['value'] = true;
+					}
+				}
+			}
+			unset($row, $col, $p);
+
+			foreach ($tables['sys_filters_alert']['rows'] as &$row) {
+				foreach ($row['cols'] as &$col) {
+					foreach ($col as &$p) {
+						$p['value'] = true;
+					}
+				}
+			}
+			unset($row, $col, $p);
+		}
+
+		if ($custom_filters) {
+			$tables['custom_filters_email'] = $table_gen->buildCustomFiltersTable('email', $custom_filters);
+			$tables['custom_filters_alert'] = $table_gen->buildCustomFiltersTable('alert', $custom_filters);
+		}
+
+		foreach (Prefs::$apps as $app => $bool) {
+			$method = 'build' . ucfirst($app) . 'Table';
+			if (!method_exists($table_gen, $method)) {
+				throw new \Exception('Wrong app name or table not exists');
+			}
+			$tables[$app]     = $table_gen->$method();
+		}
 
 		return $this->createApiResponse(array(
 			'subs'         => $tables,
@@ -666,5 +808,128 @@ class AgentsController extends AbstractController implements ProtectedController
 			),
 			'mention_mode' => $prefs->getEmailMentionMode(),
 		));
+	}
+
+	public function bulkCreateAgentsAction()
+	{
+		if ($filename = $this->in->getString('filename')) {
+			return $this->bulkCreateAgentsFromFile($filename);
+		}
+
+		$agents = $this->in->getArrayValue('agents');
+		$ret = array();
+
+		foreach ($agents as $email => $agent) {
+			$response = $this->saveAgent(null, $agent);
+			$ret[trim($email)] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
+		}
+
+		return $this->createApiResponse($ret);
+	}
+
+	/**
+	 * todo external mapper file-to-form
+	 * @param $blobId
+	 * @return Response
+	 */
+	protected function bulkCreateAgentsFromFile($blobId)
+	{
+		if (!$blob = $this->em->find('DeskPRO:Blob', $blobId)) {
+			return $this->createApiErrorResponse('file_not_found', 'File not found');
+		}
+
+		$csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+
+		if (!file_exists($csv_file) || !is_readable($csv_file)) {
+			file_put_contents($csv_file, App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob));
+		}
+
+		if (!file_exists($csv_file) || !is_readable($csv_file)) {
+			return $this->createApiErrorResponse('file_not_found', 'File not found');
+		}
+
+		if (!$fp = fopen($csv_file, 'r')) {
+			return $this->createApiErrorResponse('file_not_readable', 'Can\'t read file');
+		}
+
+		$prefs = new AgentNotifPrefs();
+		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getFiltersForPerson($this->person);
+		$defaultFilterSubs = array();
+		$defaultOtherSubs = array();
+		foreach ($filters as $filter) {
+			$defaultFilterSubs[] = array(
+				'filter_id' => $filter['id'],
+				'email' => $prefs->getFilterNotifyTypes($filter, 'email'),
+				'alert' => $prefs->getFilterNotifyTypes($filter, 'alert'),
+			);
+		}
+
+		foreach (AgentNotifPrefs::$apps as $app => $bool) {
+			$defaultOtherSubs[] = array(
+				'type' => $app,
+				'email' => array(),
+				'alert' => array(),
+			);
+		}
+
+
+		$row = fgetcsv($fp); // headers
+		if (0 !== strpos($row[0], 'Email Address')) {
+			fclose($fp);
+			return $this->createApiErrorResponse('file_wrong_format', 'Wrong format of CSV file');
+		}
+
+		$delimeter = 1 === count($row) ? substr($row[0], 13, 1) : ',';
+
+		$ret = array();
+		while ($row = fgetcsv($fp, null, $delimeter)) {
+
+			if (!$email = trim($row[0])) continue;
+
+			$data = array(
+				'email' => $email,
+				'name' => $row[1],
+				'agent_groups' => array(),
+				'teams' => array(),
+				'zones' => array(),
+			);
+			$filterSubs = $otherSubs = array();
+			$profile = array(
+				'signature_html' => $row[7],
+			);
+
+			if ('yes' === strtolower($row[4])) {
+				$data['zones'][] = 'admin';
+			}
+			if ('yes' === strtolower($row[5])) {
+				$data['zones'][] = 'reports';
+			}
+			foreach (explode(',', $row[2]) as $group) {
+				if (!$group = (int) trim($group)) continue;
+				$data['agent_groups'][] = $group;
+			}
+			foreach (explode(',', $row[3]) as $team) {
+				if (!$team = (int) trim($team)) continue;
+				$data['teams'][] = $team;
+			}
+
+			if (!$data['agent_groups']) {
+				$ret[$email] = array('error_code' => 'validation_error', 'error_message' => 'At least 1 agent group required');
+				continue;
+			}
+
+			// subscribe to default notifications
+			if ('yes' === strtolower($row[6])) {
+				$filterSubs = $defaultFilterSubs;
+				$otherSubs = $defaultOtherSubs;
+			}
+
+			$response = $this->saveAgent(null, $data, $profile, $filterSubs, $otherSubs);
+			$ret[$email] = $response instanceof JsonResponse ? $response->getData() : $response->getContent();
+		}
+
+		fclose($fp);
+
+		return $this->createApiResponse($ret);
 	}
 }

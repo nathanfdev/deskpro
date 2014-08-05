@@ -324,7 +324,7 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	protected function _onNotCallable($name, $arguments)
 	{
 		if (isset($GLOBALS['DP_IS_RENDERING_TPL']) && $GLOBALS['DP_IS_RENDERING_TPL']) {
-			return '[$name is not defined]';
+			return "[$name is not defined]";
 		}
 		throw new \BadMethodCallException("Method `$name` is undefined");
 	}

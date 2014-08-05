@@ -31,11 +31,11 @@
 					</div>
 					<div ng-show="model.use_relative">
 						<span ng-if="model.op == 'lte' || model.op == 'between'">
-							<dp-time-with-unit model-type="array" ng-model="model.date1_relative" /> ago
+							<dp-time-with-unit model-type="array" ng-model="model.date1_relative"></dp-time-with-unit> ago
 						</span>
 						<span ng-if="model.op == 'between'">&nbsp;&nbsp;and&nbsp;&nbsp;</span>
 						<span ng-if="model.op == 'gte' || model.op == 'between'">
-							<dp-time-with-unit model-type="array" ng-model="model.date2_relative" /> ago
+							<dp-time-with-unit model-type="array" ng-model="model.date2_relative"></dp-time-with-unit> ago
 						</span>
 						<div style="margin-top: 2px; font-size: 11px;">
 							<a href="#" ng-click="model.use_relative = false; $event.preventDefault();">&larr; Use specifc dates instead</a>

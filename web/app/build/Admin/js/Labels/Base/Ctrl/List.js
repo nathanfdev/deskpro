@@ -54,7 +54,6 @@
 
       Admin_Labels_Base_Ctrl_List.prototype.startDelete = function(label) {
         var inst;
-        label.delete_mode = true;
         inst = this.$modal.open({
           templateUrl: this.getTemplatePath('Labels/delete-modal.html'),
           controller: [
@@ -63,8 +62,7 @@
                 return $modalInstance.close();
               };
               return $scope.dismiss = function() {
-                $modalInstance.dismiss();
-                return label.delete_mode = false;
+                return $modalInstance.dismiss();
               };
             }
           ]
@@ -75,26 +73,22 @@
           };
         })(this));
         return inst.result["catch"]((function(_this) {
-          return function() {
-            return label.delete_mode = false;
-          };
+          return function() {};
         })(this));
       };
 
       Admin_Labels_Base_Ctrl_List.prototype.deleteLabel = function(label) {
-        this.LabelManager.removeLabel(this.api_endpoint, label.label);
+        this.LabelManager.removeLabel(this.api_endpoint, label);
         return this.Api.sendDelete(this.api_endpoint, {
-          label: label.label
+          label: label
         }).success((function(_this) {
           return function() {
-            if (_this.$state.current.name === ("" + _this.ng_route + ".edit") && _this.$state.params.label === label.label) {
+            if (_this.$state.current.name === ("" + _this.ng_route + ".edit") && _this.$state.params.label === label) {
               return _this.$state.go(_this.ng_route);
             }
           };
         })(this))["finally"]((function(_this) {
-          return function() {
-            return label.delete_mode = false;
-          };
+          return function() {};
         })(this));
       };
 

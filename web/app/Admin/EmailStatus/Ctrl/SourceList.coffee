@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
 		init: ->
 			@filter = {
+				account: "0",
 				page: 1
 			}
 			@results = []
@@ -25,7 +26,12 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 			)
 
 		initialLoad: ->
-			return @loadResults()
+			p1 = @loadResults()
+			p2 = @Api.sendGet('/email_accounts').success( (data) =>
+				@$scope.email_accounts = data.email_accounts
+			)
+
+			return @$q.all([p1, p2])
 
 		changePage: ->
 			if @filter.page == @page

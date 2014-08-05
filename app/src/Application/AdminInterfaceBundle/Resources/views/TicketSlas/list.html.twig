@@ -9,6 +9,7 @@
 				<li ng-repeat="sla in ListCtrl.list" dp-state-mark="tickets.slas.edit.{{ ng_var('sla.id') }}" data-id="{{ ng_var('sla.id') }}">
 					<a href="{{ ng_href('tickets.slas.edit', '{id: sla.id}') }}">
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('sla.id') }}</span>
 							<span class="title-text">{{ ng_var('sla.title') }}</span>
 						</h4>
 					</a>
@@ -51,31 +52,26 @@
 			<dd><em>A:</em>
 				Yes, use the SLA's <strong>Hours</strong> setting to to choose if time is counted 24x7 (constantly), during default working hours (as you have defined in <strong>Tickets > Settings</strong>), or during custom working hours which apply only to that SLA.
 			</dd>
-		</dl>
+	
 		<dt><em>Q:</em>What does the SLA Application setting mean?</dt>
 		<dd><em>A:</em>Use <strong>SLA Application</strong> to set which tickets are affected by the SLA:</p>
 			<ul>
-				<li><strong>Apply to all tickets</strong>: applies the SLA to all tickets created from now on, but <em>not</em> existing tickets</li>
-				<li><strong>Agents manually apply the SLA</strong> using a ticket's <strong>SLAs</strong> tab</li>
-				<li><strong>Apply to new tickets that match certain criteria</strong>: the SLA will apply to tickets that meet <em>any</em> of the conditions you set</li>
+				<li>Apply to all tickets: applies the SLA to all tickets created from now on, but <em>not</em> existing tickets</li>
+				<li>Agents manually apply the SLA using a ticket's <strong>SLAs</strong> tab</li>
+				<li>Apply to new tickets that match certain criteria: the SLA will apply to tickets that meet <em>any</em> of the conditions you set</li>
 			</ul>
 		</dd>
+	
+		</dl>
 		
-		{#
-		<dt><em>Q:</em>We have to reply to every user message within a fixed time, so I want an SLA that counts time to respond to a user message, regardless of whether it is the first message on a ticket or a later one. Can I do this?</dt>
-		<dd><em>A:</em>
-			This is not possible with SLAS alone. You can measure this by setting an escalation based on time the user has been waiting, and have it perform a <strong>Set SLA Condition Status</strong> action after the response time is exceeded.
-		</dd>
-		#}
-		
-	</dl>
+
 		
 
 </section>
-		<section>
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li><a href="https://support.deskpro.com/kb/articles/110-using-ticket-slas" target="_blank">Using Ticket SLAs</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#slas" target="_blank">SLAs</a></li>
 			</ul>
 		</section>
 	</article>

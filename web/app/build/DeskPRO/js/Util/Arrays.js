@@ -239,6 +239,26 @@
         return -1;
       };
 
+
+      /*
+       		 * Sets the values of an array. This is different from simply assigning
+        	 * a variable because this will modify `array` "in place".
+        	 *
+        	 * @param {Array} array
+        	 * @param {Array} values
+        	 * @return array
+       */
+
+      Arrays.prototype.setTo = function(array, values) {
+        var v, _i, _len;
+        array.length = 0;
+        for (_i = 0, _len = values.length; _i < _len; _i++) {
+          v = values[_i];
+          array.push(v);
+        }
+        return array;
+      };
+
       return Arrays;
 
     })();

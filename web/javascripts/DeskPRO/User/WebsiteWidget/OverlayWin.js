@@ -127,7 +127,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			var classObj = Orb.getNamespacedObject(className);
 
 			if (!classObj) {
-				DP.console.error("Unknown portal handler `%s` on element %o", className, this);
+				DP.console.warn("Unknown portal handler `%s` on element %o", className, this);
 				return;
 			}
 

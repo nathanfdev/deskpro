@@ -116,6 +116,24 @@ class AgentDelete
 				WHERE agent_id = ?
 			", array($this->agent->id));
 
+			// Filters
+			$this->db->executeUpdate("
+				DELETE FROM ticket_filters
+				WHERE person_id = ?
+			", array($this->agent->id));
+
+			// Subscriptions
+			$this->db->executeUpdate("
+				DELETE FROM ticket_filter_subscriptions
+				WHERE person_id = ?
+			", array($this->agent->id));
+
+			// Agent team
+			$this->db->delete('agent_team_members', array('person_id' => $this->agent->getId()));
+
+			// Permission overrides
+			$this->db->delete('permissions', array('person_id' => $this->agent->getId()));
+
 			$this->db->commit();
 		} catch (\Exception $e) {
 			$this->db->rollback();
@@ -132,6 +150,7 @@ class AgentDelete
 	public function softDelete()
 	{
 		$this->agent->is_deleted = true;
+		$this->agent->can_admin  = false; // to be safe
 
 		// Remove their permissions
 		$this->db->delete('department_permissions'     , array('person_id' => $this->agent->getId()));

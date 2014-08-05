@@ -170,6 +170,51 @@ class EzcReader extends AbstractReader
 		return $email;
 	}
 
+	protected function _getReplyToAddress()
+	{
+		$val = $this->mail->getHeader('Reply-To', false);
+		if (!$val) {
+			return false;
+		}
+
+		$addrs = \ezcMailTools::parseEmailAddresses($val);
+		if (!$addrs) {
+			return false;
+		}
+
+		$addr = array_shift($addrs);
+
+		$email = new Item\EmailAddress();
+		$email->name = $addr->name ?: '';
+		$email->name = $email->name;
+		$email->email = $addr->email;
+
+		return $email;
+	}
+
+	protected function _getOriginalFromAddress()
+	{
+		$val = $this->mail->getHeader('X-Original-From', false);
+		if (!$val) {
+			return false;
+		}
+
+		$addrs = \ezcMailTools::parseEmailAddresses($val);
+		if (!$addrs) {
+			return false;
+		}
+
+		$addr = array_shift($addrs);
+
+		$email = new Item\EmailAddress();
+		$email->name = $addr->name ?: '';
+		$email->name = $email->name;
+		$email->email = $addr->email;
+
+		return $email;
+	}
+
+
 	protected function _getSubject()
 	{
 		if (!$this->mail->subject) {
@@ -341,6 +386,8 @@ class EzcReader extends AbstractReader
 
 	protected function _getBodyHtml()
 	{
+		$raw_parts = array();
+
 		foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
 			if ($part->subType == 'html') {
 				$originalCharset = $part->originalCharset;
@@ -355,20 +402,68 @@ class EzcReader extends AbstractReader
 				$body->body_utf8 = Strings::convertToUtf8(Strings::standardEol($part->text), $originalCharset);
 				$body->original_charset = $part->originalCharset;
 
-				return $body;
+				$raw_parts[] = $body;
 			}
 		}
 
-		// Default to a blank body
-		$body = new Item\BodyHtml();
-		$body->body = '';
-		$body->body_utf8 = '';
-		$body->original_charset = 'UTF-8';
-		return $body;
+		if ($raw_parts) {
+
+			$all_same = true;
+			$charset = null;
+
+			$all_utf = '';
+			$all_raw = '';
+
+			foreach ($raw_parts as $p) {
+
+				$all_utf .= $p->body_utf8;
+				$all_raw .= $p->body;
+
+				if (!$charset) {
+					$charset = $p->original_charset;
+				} else if ($charset != $p->original_charset) {
+					$all_same = false;
+				}
+			}
+
+			// All charsets were the same,
+			// so we can have an accurate computed body with
+			// accurate original_charset
+			if ($all_same) {
+				$body = new Item\BodyHtml();
+				$body->body = $all_raw;
+				$body->body_utf8 = $all_utf;
+				$body->original_charset = $charset;
+
+			// Charsets differ, so we need
+			// to construct based on the utf8-only body
+			} else {
+				$body = new Item\BodyHtml();
+				$body->body = $all_utf;
+				$body->body_utf8 = $all_utf;
+				$body->original_charset = 'UTF-8';
+			}
+
+			$body->raw_parts = $raw_parts;
+
+			return $body;
+
+		} else {
+			// Default to a blank body
+			$body = new Item\BodyHtml();
+			$body->body = '';
+			$body->body_utf8 = '';
+			$body->original_charset = 'UTF-8';
+			$body->raw_parts = array(clone $body);
+
+			return $body;
+		}
 	}
 
 	protected function _getBodyText()
 	{
+		$raw_parts = array();
+
 		foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
 			if ($part->subType == 'plain') {
 				$originalCharset = $part->originalCharset;
@@ -383,15 +478,60 @@ class EzcReader extends AbstractReader
 				$body->body_utf8 = Strings::convertToUtf8($part->text, $originalCharset);
 				$body->original_charset = $originalCharset;
 
-				return $body;
+				$raw_parts[] = $body;
 			}
 		}
 
-		// Default to a blank body
-		$body = new Item\BodyText();
-		$body->body = '';
-		$body->body_utf8 = '';
-		$body->original_charset = 'UTF-8';
-		return $body;
+		if ($raw_parts) {
+
+			$all_same = true;
+			$charset = null;
+
+			$all_utf = '';
+			$all_raw = '';
+
+			foreach ($raw_parts as $p) {
+
+				$all_utf .= $p->body_utf8;
+				$all_raw .= $p->body;
+
+				if (!$charset) {
+					$charset = $p->original_charset;
+				} else if ($charset != $p->original_charset) {
+					$all_same = false;
+				}
+			}
+
+			// All charsets were the same,
+			// so we can have an accurate computed body with
+			// accurate original_charset
+			if ($all_same) {
+				$body = new Item\BodyText();
+				$body->body = $all_raw;
+				$body->body_utf8 = $all_utf;
+				$body->original_charset = $charset;
+
+				// Charsets differ, so we need
+				// to construct based on the utf8-only body
+			} else {
+				$body = new Item\BodyText();
+				$body->body = $all_utf;
+				$body->body_utf8 = $all_utf;
+				$body->original_charset = 'UTF-8';
+			}
+
+			$body->raw_parts = $raw_parts;
+
+			return $body;
+
+		} else {
+			// Default to a blank body
+			$body = new Item\BodyText();
+			$body->body = '';
+			$body->body_utf8 = '';
+			$body->original_charset = 'UTF-8';
+			$body->raw_parts = array(clone $body);
+			return $body;
+		}
 	}
 }

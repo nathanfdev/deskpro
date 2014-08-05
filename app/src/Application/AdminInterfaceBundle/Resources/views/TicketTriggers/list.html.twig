@@ -11,13 +11,13 @@
 			<p ng-if="!List.triggers.length" style="padding: 15px;">
 				{{ phrase('adm.ticket_triggers.no_triggers') }}
 			</p>
-			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length">
+			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length" dp-move-list-to-pos>
 
 				{#######################}
 				{# Department Triggers #}
 				{#######################}
 
-				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length" data-trigger-id="departments" dp-move-to-pos="{{ ng_var('dep_order') }}">
+				<li class="with-drag-handle" data-id="departmentGroup" dp-li-group-section ng-if="List.depList.length" data-trigger-id="departments" data-move-to-pos="{{ ng_var('dep_order') }}">
 					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
@@ -36,8 +36,7 @@
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
 							<div class="help-box" ng-if="List.eventType == 'newticket'">
-								Use these triggers if you want to perform actions based on the department a user selects when
-								submitting a ticket from the web interface.
+								Use these triggers if you want to perform actions based on the department a ticket is created in. Does not apply to tickets created by email.
 							</div>
 							<div class="help-box" ng-if="List.eventType == 'update'">
 								Use these triggers if you want to perform actions based on when the department is changed
@@ -46,7 +45,10 @@
 							<ul class="dp-item-list" ng-if="List.eventType == 'newticket'">
 								<li ng-repeat="dep in List.depList" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('dep.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-' + dep.id}") }}">
-										<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+										<h4>
+											<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[dep.id]') }}</span>
+											<span class="title-text">{{ ng_var('dep.title') }}</span>
+										</h4>
 									</a>
 									<ul class="dp-item-list sublist" ng-show="dep.children.length">
 										<li ng-repeat="subdep in dep.children" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('subdep.id') }}">
@@ -54,6 +56,7 @@
 												<h4>
 													<span class="tree-char middle" ng-if="!$last"></span>
 													<span class="tree-char last" ng-if="$last"></span>
+													<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[subdep.id]') }}</span>
 													<span class="title-text">{{ ng_var('subdep.title') }}</span>
 												</h4>
 											</a>
@@ -72,6 +75,7 @@
 												<h4>
 													<span class="tree-char middle" ng-if="!$last"></span>
 													<span class="tree-char last" ng-if="$last"></span>
+													<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[subdep.id]') }}</span>
 													<span class="title-text">{{ ng_var('subdep.title') }}</span>
 												</h4>
 											</a>
@@ -87,7 +91,7 @@
 				{# Email Acc Triggers  #}
 				{#######################}
 
-				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length" dp-move-to-pos="{{ ng_var('emailaccount_order') }}" data-trigger-id="emailaccounts">
+				<li class="with-drag-handle" data-id="emailGroup" dp-li-group-section ng-if="List.accounts.length" data-move-to-pos="{{ ng_var('emailaccount_order') }}" data-trigger-id="emailaccounts">
 					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
 						<i class="fa fa-bars drag-handle"></i>
 						<div class="pull-right toggle-wrapper">
@@ -106,14 +110,16 @@
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
 							<div class="help-box">
-								Use these triggers if you want to perform actions based on the email address a user sends
-								a new ticket to.
+								Tickets are created when an email is processed by DeskPRO. These triggers perform actions based on the email address used.
 							</div>
 
 							<ul class="dp-item-list">
 								<li ng-repeat="acc in List.accounts" dp-state-mark="id:tickets.triggers.editemailacc.emailaccount-{{ ng_var('acc.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editemailacc', "{type: List.eventType, id: 'emailaccount-' + acc.id}") }}">
-										<h4><span class="title-text">{{ ng_var('acc.address') }}</span></h4>
+										<h4>
+											<span class="title-id" title="ID">#{{ ng_var('email_trigger_ids[acc.id]') }}</span>
+											<span class="title-text">{{ ng_var('acc.address') }}</span>
+										</h4>
 									</a>
 								</li>
 							</ul>
@@ -131,32 +137,11 @@
 						<div class="pull-right toggle-wrapper">
 							<button dp-toggle-switch ng-model="trigger.is_enabled" ng-change="List.updateTriggerEnabledState(trigger);"></button>
 						</div>
-						<div class="pull-right">
-							<em class="tag" ng-if="trigger.by_agent">
-								agent
-								<span ng-if="trigger.event_trigger_options.by_agent.length == 3"><span>&rsaquo; all</span></span>
-									<span ng-if="trigger.event_trigger_options.by_agent.length != 3">
-										&rsaquo; <span dp-comma-separated>
-											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('web') !== -1">web</span>
-											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('email') !== -1">email</span>
-											<span ng-if="trigger.event_trigger_options.by_agent.indexOf('api') !== -1">api</span>
-										</span>
-									</span>
-							</em>
-							<em class="tag" ng-if="trigger.by_user" style="margin-left: 6px;">
-								user
-								<span ng-if="trigger.event_trigger_options.by_user.length == 5"><span>&rsaquo; all</span></span>
-									<span ng-if="trigger.event_trigger_options.by_user.length != 5">
-										&rsaquo; <span dp-comma-separated>
-											<span ng-if="trigger.event_trigger_options.by_user.indexOf('portal') !== -1 || trigger.event_trigger_options.by_user.indexOf('form') !== -1 || trigger.event_trigger_options.by_user.indexOf('widget') !== -1">web</span>
-											<span ng-if="trigger.event_trigger_options.by_user.indexOf('email') !== -1">email</span>
-											<span ng-if="trigger.event_trigger_options.by_user.indexOf('api') !== -1">api</span>
-										</span>
-									</span>
-							</em>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="List.startTriggerDelete(trigger); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+						<div ng-if="trigger.has_stop_triggers_action" class="pull-right" title="This trigger has a 'stop processing triggers' action. When this trigger matches, any trigger after it will NOT be run.">
+							<i class="fa fa-chain-broken"></i>
 						</div>
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('trigger.id') }}</span>
 							<span class="title-text">{{ ng_var('trigger.title') }}</span>
 						</h4>
 					</a>
@@ -187,6 +172,7 @@
 			
 		
 <h2>Simple triggers</h2>		
+
 				<p>DeskPRO automatically creates <strong>Department Triggers</strong> for each of your departments. They run when a user creates a ticket in the matching department via the web.</p>
 			
 				
@@ -197,7 +183,7 @@
 				
 					<ul>
 						<li>assigning all tickets from an email account to a particular agent</li>
-						<li>sending different acknowledgement emails based on department<li>
+						<li>sending different acknowledgement emails based on department</li>
 										
 					</ul>
 								
@@ -213,11 +199,10 @@
 			<p>If you are using an advanced trigger to send a response email, don't forget to disable the corresponding simple triggers to avoid sending the same email twice.</p>
 	
 		
-			<p><strong>Actions</strong>, it can automatically do most of the things you would do to a ticket in the agent interface.</p>
+			<p><strong>Actions</strong> can automatically do most of the things you would do to a ticket in the agent interface.</p>
 			
 			
-			<p>
-				Special <strong>Trigger Control</strong> actions can affect any following triggers lower in the list. The Stop Processing Triggers action prevents following triggers running. You can also use Prevent Emails to User or Prevent Emails to Agents to stop any email notifications that lower triggers try to send. These only prevent triggers that are running immediately afterwards - i.e. that are being checked due to the same user/agent action.
+			<p>Special <strong>Trigger Control</strong> actions can affect any following triggers lower in the list. The <em>Stop Processing Triggers</em> action prevents following triggers running. You can also use <em>Prevent Emails to User</em> or <em>Prevent Emails to Agents</em> to stop any email notifications that lower triggers try to send. These only prevent triggers that are running immediately afterwards - i.e. that are being checked due to the same event.
 				
 			</p>
 		
@@ -242,15 +227,15 @@
 
 		
 		</section>
-		
-		<section>
+
+		<section class="related-content">
 		<h2><span>Related Content</span></h2>
 		<ul>
-			<li>[MANUAL]<a href="#ticket-triggers" target="_blank">Ticket triggers</a>
-			<li>[MANUAL]<a href="#actions-guide" target="_blank">Actions guide</a>
-			<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/192" target="_blank">Send an email to the user when their ticket is assigned</a></li>
-			<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>
-			<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/194">Automatically assign agents to tickets they reply to by email</a></li>
+			<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#ticket-triggers" target="_blank">Ticket triggers</a>
+			<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#actions-guide" target="_blank">Actions guide</a>
+			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/192" target="_blank">Send an email to the user when their ticket is assigned</a></li>
+			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>
+			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/194"target="_blank">Automatically assign agents to tickets they reply to by email</a></li>
 		</ul>
 	</section>
 </article>

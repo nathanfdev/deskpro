@@ -164,6 +164,7 @@ class AppPackage extends DomainObject
 
 	/**
 	 * @param Blob $blob
+	 * @param string $filename
 	 * @return AppAsset
 	 */
 	public function addAssetFromBlob(Blob $blob, $filename = null)
@@ -226,7 +227,7 @@ class AppPackage extends DomainObject
 	{
 		foreach ($this->assets as $asset) {
 			if ($asset->name == $name) {
-				return $name;
+				return $asset;
 			}
 		}
 
@@ -259,7 +260,9 @@ class AppPackage extends DomainObject
 		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
 		foreach ($sizes as $size) {
 			$icon = $this->getTaggedAsset("icons.app.$size");
-			$data["icon_$size"] = $icon->blob->getDownloadUrl();
+			if ($icon) {
+				$data["icon_$size"] = $icon->blob->getDownloadUrl();
+			}
 		}
 
 		return $data;

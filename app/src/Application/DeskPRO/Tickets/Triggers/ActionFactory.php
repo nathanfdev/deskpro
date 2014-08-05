@@ -33,18 +33,25 @@
 
 namespace Application\DeskPRO\Tickets\Triggers;
 
+use Application\DeskPRO\Tickets\Actions\AppActionInterface;
+use Application\DeskPRO\Tickets\Actions\AbstractAction;
+use Orb\Util\Strings;
+
 class ActionFactory
 {
 	public function createFromArray(array $action_info)
 	{
 		if (isset($action_info['type_class'])) {
-			return $this->create("@{$action_info['type_class']}", $action_info['options']);
+			$construct_options = array(
+				'type' => $action_info['type'],
+			);
+			return $this->create("@{$action_info['type_class']}", $action_info['options'], $construct_options);
 		} else {
 			return $this->create($action_info['type'], $action_info['options']);
 		}
 	}
 
-	public function create($type, array $options)
+	public function create($type, array $options, array $construct_options = null)
 	{
 		if ($type[0] == '@') {
 			$class_name = substr($type, 1);
@@ -63,6 +70,15 @@ class ActionFactory
 		}
 
 		$term = new $class_name($options);
+
+		// Set app ID on app actions
+		if ($term instanceof AppActionInterface && $term instanceof AbstractAction && $construct_options) {
+			$id = Strings::extractRegexMatch('#(\d+)$#', $construct_options['type']);
+			if ($id) {
+				$term->getMetaData()->set('app_id', (int)$id);
+			}
+		}
+
 		return $term;
 	}
 }

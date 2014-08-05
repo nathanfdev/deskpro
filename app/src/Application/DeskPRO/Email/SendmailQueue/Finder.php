@@ -128,17 +128,17 @@ class Finder
 		}
 
 		if ($opt = $this->filter->getFrom()) {
-			$q->andWhere('s.header_from LIKE :from');
+			$q->andWhere('s.from_address LIKE :from');
 			$q->setParameter('from', "%$opt%");
 		}
 
 		if ($opt = $this->filter->getTo()) {
-			$q->andWhere('s.header_to LIKE :to');
+			$q->andWhere('s.to_address LIKE :to');
 			$q->setParameter('to', "%$opt%");
 		}
 
 		if ($opt = $this->filter->getSubject()) {
-			$q->andWhere('s.header_subject LIKE :subject');
+			$q->andWhere('s.subject LIKE :subject');
 			$q->setParameter('subject', "%$opt%");
 		}
 

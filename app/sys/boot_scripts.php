@@ -92,6 +92,11 @@ switch ($_GET['_sys']) {
 		require DP_ROOT . '/sys/scripts/checkurlpath.php';
 		break;
 
+	case 'check_http_method':
+		if (defined('DPC_IS_CLOUD')) exit;
+		require DP_ROOT . '/sys/scripts/check_http_method.php';
+		break;
+
 	case 'dev_run_migrations':
 		if (defined('DPC_IS_CLOUD')) exit;
 		if (!$is_authed) die('Invalid auth code.');

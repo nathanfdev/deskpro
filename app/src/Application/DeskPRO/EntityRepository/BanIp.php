@@ -38,6 +38,8 @@ use Application\DeskPRO\App;
 
 class BanIp extends AbstractEntityRepository
 {
+	protected $counts = array();
+
 	/**
 	 * Get a list of IPs suitable for display
 	 * @param int    $from
@@ -50,19 +52,21 @@ class BanIp extends AbstractEntityRepository
 	public function getList($from = 0, $limit = 20, $search_phrase = '')
 	{
 		$where = '';
+		$params = array();
 
 		if (!empty($search_phrase)) {
-
-			$where = " WHERE banned_ip LIKE '%" . $search_phrase . "%'";
+			$where = " WHERE banned_ip LIKE :search";
+			$params['search'] = '%' . $search_phrase . '%';
 		}
 
-		$list = App::getDb()->fetchAllCol("
+		$list = App::getDb()->fetchAllCol(sprintf("
 			SELECT banned_ip
 			FROM ban_ips
-			$where
+			%s
 			ORDER BY ip_start ASC
-			LIMIT " . $from . ", " . $limit . "
-		");
+			LIMIT %d, %d
+		", $where, $from, $limit), $params);
+		$this->counts[$search_phrase] = count($list);
 
 		return $list;
 	}
@@ -76,16 +80,26 @@ class BanIp extends AbstractEntityRepository
 
 	public function getPageCount($per_page = 20, $search_phrase = '')
 	{
-		$where = '';
+		return ceil($this->getCount($search_phrase) / $per_page);
+	}
 
-		if (!empty($search_phrase)) {
-
-			$where = "banned_ip LIKE '%" . $search_phrase . "%'";
+	public function getCount($search_phrase = '')
+	{
+		if (is_string($search_phrase) && isset($this->counts[$search_phrase])) {
+			return $this->counts[$search_phrase];
 		}
 
-		$count = App::getDb()->count('ban_ips', $where);
+		$where = '';
+		$params = array();
 
-		return ceil($count / $per_page);
+		if (!empty($search_phrase)) {
+			$where = "banned_ip LIKE :search";
+			$params['search'] = '%' . $search_phrase . '%';
+		}
+
+		$count = App::getDb()->countWithPlaceholders('ban_ips', $where, $params);
+
+		return $this->counts[$search_phrase] = (int) $count;
 	}
 
 	/**
@@ -104,5 +118,10 @@ class BanIp extends AbstractEntityRepository
 		", array($ip, $ip_long, $ip_long));
 
 		return $banned ? true : false;
+	}
+
+	public function removeAll()
+	{
+		App::getDb()->executeQuery(sprintf('DELETE FROM %s', $this->getTableName()));
 	}
 }

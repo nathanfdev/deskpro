@@ -113,11 +113,7 @@ $container->setDefinition('swiftmailer.mailer', $definition);
 
 // swiftmailer.transport.dp_delegating
 $definition = new Definition();
-if (defined('DPC_IS_CLOUD')) {
-	$definition->setClass('Cloud\\Mail\\Transport\\DelegatingTransport');
-} else {
-	$definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
-}
+$definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
 $definition->setArguments(array(
 	new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
 ));
@@ -213,6 +209,11 @@ $definition->setArguments(array(
 ));
 $definition->setAbstract(true);
 $container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
+
+// deskpro.sms_sender
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Sms\\DeskPROSmsSender');
+$container->setDefinition('deskpro.sms_sender', $definition);
 
 ############################################################################
 # Validators and Constraints

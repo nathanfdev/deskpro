@@ -21,13 +21,15 @@
 			{% endif %}
 		</span>
 		<div class="position-edit" style="display: none">
-			<input
-				type="text"
-				class="integrated inner"
-				value="{{ person.organization_position }}"
-				data-save-url="{{ path('agent_org_save_member_pos', {'organization_id': org.id, 'person_id': person.id }) }}"
-				style="text-align: right;"
-			/>
+			{% if person.id %}
+				<input
+					type="text"
+					class="integrated inner"
+					value="{{ person.organization_position }}"
+					data-save-url="{{ path('agent_org_save_member_pos', {'organization_id': org.id, 'person_id': person.id }) }}"
+					style="text-align: right;"
+				/>
+			{% endif %}
 		</div>
 	</td>
 	<td width="11" style="text-align: center; width: 11px;">

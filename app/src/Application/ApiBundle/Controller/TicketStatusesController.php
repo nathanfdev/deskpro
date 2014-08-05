@@ -104,6 +104,12 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
 		return $this->createSuccessResponse();
 	}
 
+	public function resetSearchTablesAction()
+	{
+		$this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
+		return $this->createSuccessResponse();
+	}
+
 	####################################################################################################################
 	# get-deleted-info
 	####################################################################################################################

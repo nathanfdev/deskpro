@@ -392,8 +392,6 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	 */
 	public function getMacros()
 	{
-		//TODO
-		return array();
 		if ($this->_macros !== null) {
 			return $this->_macros;
 		}

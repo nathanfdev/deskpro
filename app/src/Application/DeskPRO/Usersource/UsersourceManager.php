@@ -156,6 +156,10 @@ class UsersourceManager
 		$name = $usersource->getAdapter()->getTypename();
 		$tpl = "DeskPRO:Auth:" . $name . "-" . $type . ".html.twig";
 
+		if (!isset($params['type'])) {
+			$params['type'] = 'user';
+		}
+
 		$html = App::getTemplating()->render($tpl, $params);
 		return $html;
 	}

@@ -198,6 +198,7 @@ class Package
 	{
 		$assets = array();
 		$path = $this->path . '/' . $path_name;
+		$path_std = str_replace('\\', '/', $path);
 
 		if (!is_dir($path)) {
 			return array();
@@ -214,7 +215,7 @@ class Package
 			/** @var $file \SplFileInfo */
 
 			$full_path  = $file->getRealPath();
-			$asset_path = str_replace($path . '/', '', $full_path);
+			$asset_path = str_replace($path_std . '/', '', str_replace('\\', '/', $full_path));
 			$file_name  = $file->getFilename();
 
 			if ($path_name == 'res') {

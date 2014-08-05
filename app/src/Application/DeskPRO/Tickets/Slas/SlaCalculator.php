@@ -187,7 +187,7 @@ class SlaCalculator
 		if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
 			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
 				// don't auto resolve sla on ticket creation, even if created by an agent
-				$dates[] = $ticket->date_first_agent_reply->getTimestamp();
+				if ($ticket->date_first_agent_reply) $dates[] = $ticket->date_first_agent_reply->getTimestamp();
 				$dates[] = $ticket->date_last_agent_reply->getTimestamp();
 			}
 		}
@@ -243,7 +243,7 @@ class SlaCalculator
 		if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
 			if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
 				// don't auto resolve sla on ticket creation, even if created by an agent
-				$times[] = $ticket->date_first_agent_reply->getTimestamp();
+				if ($ticket->date_first_agent_reply) $times[] = $ticket->date_first_agent_reply->getTimestamp();
 			}
 		}
 

@@ -2,7 +2,7 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3 ng-pluralize count="ListCtrl.list.ip_bans.length || 0"
+			<h3 ng-pluralize count="ListCtrl.pagination.email_bans.total || ListCtrl.list.ip_bans.length || 0"
 				when="{{ ng_plural_phrase('adm.general.x_ip_bans') }}">
 
 			</h3>
@@ -12,7 +12,7 @@
 			<div class="alert">
 				<input type="text" ng-model="ListCtrl.search_phrase.ip_ban" style="width: 200px; display: inline-block;"
 					   class="form-control">
-				<button class="btn btn-primary" ng-click="ListCtrl.reloadList(true, false)">Search</button>
+				<button class="btn btn-primary" ng-click="ListCtrl.goFirstIpBanPage()">Search</button>
 			</div>
 
 			<ul class="dp-item-list">
@@ -55,22 +55,49 @@
 				   href="{{ ng_href('crm.banning.gocreate_ip') }}">
 					<i class="fa fa-plus"></i> New IP Ban
 				</a>
+
+                <button class="btn btn-danger" ng-click="$event.preventDefault();ListCtrl.deleteList(ListCtrl.list.ip_bans);" ng-if="ListCtrl.list.ip_bans.length">
+                    Delete all
+                </button>
 			</div>
 		</article>
 	</section>
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3 ng-pluralize count="ListCtrl.list.email_bans.length || 0"
+			<h3 ng-pluralize count="ListCtrl.pagination.email_bans.total || ListCtrl.list.email_bans.length || 0"
 				when="{{ ng_plural_phrase('adm.general.x_email_bans') }}">
-
 			</h3>
+            <h3 class="pull-right" style="border: none;">
+
+                <div tooltip="Export" style="display: inline-block">
+                    <button class="btn btn-default">
+                        <a ng-href="{{ ng_var('exportUrl') }}" style="color: black;">
+                            <i class="fa fa-download"></i>
+                        </a>
+                    </button>
+                </div>
+
+                <button class="fileinput-button btn btn-default" tooltip="Import">
+                    <form method="POST" enctype="multipart/form-data" file-upload="fileUploadOptions"
+                          action="{{ ng_var('fileUploadOptions.url') }}">
+                        <i class="fa fa-upload"></i>
+                        <input type="file" name="file" dp-change="submit();queue=[];">
+                    </form>
+                </button>
+
+            </h3>
 		</header>
 		<article>
 
 			<div class="alert">
 				<input type="text" ng-model="ListCtrl.search_phrase.email_ban" style="width: 200px; display: inline-block;"
 					   class="form-control">
-				<button class="btn btn-primary" ng-click="ListCtrl.reloadList(false, true)">Search</button>
+				<button class="btn btn-primary" ng-click="ListCtrl.goFirstEmailBanPage()">Search</button>
+                <br /><br />
+                <label>
+                    <input type="checkbox" ng-model="ListCtrl.search_phrase.email_wildcard" ng-click="ListCtrl.goFirstEmailBanPage()" />
+                    Only Wildcards
+                </label>
 			</div>
 
 			<ul class="dp-item-list">
@@ -84,7 +111,7 @@
 				</li>
 			</ul>
 
-			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.list.email_bans">
+			<div class="dp-btn-pagination pull-left" style="margin: 10px;" ng-show="ListCtrl.pagination.email_bans.num_pages > 1">
 				<span dp-show-spinning="paginating_email_bans">
 					<i class="spinner-flat"></i>
 				</span>
@@ -114,7 +141,12 @@
 				   href="{{ ng_href('crm.banning.gocreate_email') }}">
 					<i class="fa fa-plus"></i> New Email Ban
 				</a>
+
+                <button class="btn btn-danger" ng-click="$event.preventDefault();ListCtrl.deleteList(ListCtrl.list.email_bans);" ng-if="ListCtrl.list.email_bans.length">
+                    Delete all
+                </button>
 			</div>
+
 		</article>
 	</section>
 {% endblock %}
@@ -128,9 +160,9 @@
 			<p>You can use wildcard patterns in bans. For example:</p>
 			<ul>
 				<li><code>63.239.67.*</code> bans all IPs from 63.239.67.1 to 63.239.67.255</li>
-				<li><code>*@spam.example.com</code> bans all email addresses from the domain.</li>
+				<li><code>*@example.com</code> bans all email addresses from the domain.</li>
 			</ul>
-			<p>Keep in mind that banning an IP for a shared network (such as a business, university or wi-fi hotspot) might affect other users, and that users accessing the internet from home or mobile broadband do not usually have a fixed IP address.</p>
+			<p>Keep in mind that banning an IP range for a shared network (such as a business, university or wi-fi hotspot) will block other users, and that users accessing the internet from home or mobile broadband do not usually have a fixed IP address.</p>
 		</section>
 	</article>
 {% endblock %}

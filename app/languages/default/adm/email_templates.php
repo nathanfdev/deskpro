@@ -105,4 +105,8 @@
 	'adm.email_templates.emails_user_email-too-big_desc'              => 'Email sent to a user when they sent an email that is larger than is allowed.',
 	'adm.email_templates.emails_agent_ticket-reply_title'             => 'New Reply',
 	'adm.email_templates.emails_agent_ticket-reply_desc'              => 'Email sent when a new message is added to a ticket.',
+	'adm.email_templates.emails_common_ticket-props-table_title'      => 'Ticket Properties Table',
+	'adm.email_templates.emails_common_ticket-props-table_desc'       => 'This is the properties table sent to agents in email notifications.',
+	'adm.email_templates.emails_common_ticket-fwd-out-header_title'   => 'Forward-out Header',
+	'adm.email_templates.emails_common_ticket-fwd-out-header_desc'    => 'This is the content added to the top of a message being forwarded out of the helpdesk.',
 );

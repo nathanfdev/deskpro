@@ -207,6 +207,19 @@
 		'is_managed' => true
 	),
 
+	'slovak' => array(
+		'id'         => 'slovak',
+		'lang_code'  => 'slk',
+		'title'      => 'Slovak',
+		'locale'     => 'sk',
+		'flag_image' => 'sk.png',
+		'is_rtl'     => false,
+		'has_user'   => true,
+		'has_agent'  => true,
+		'has_admin'  => false,
+		'is_managed' => true
+	),
+
 	'spanish' => array(
 		'id'         => 'spanish',
 		'lang_code'  => 'spa',

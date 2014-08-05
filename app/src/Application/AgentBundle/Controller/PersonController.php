@@ -537,13 +537,8 @@ class PersonController extends AbstractController
 
 					$person->setOrganization(null);
 
-					// Regenerate the HTML block
-					$html = $this->renderView('AgentBundle:Person:view-org-info.html.twig', array(
-						'person' => $person,
-					));
-
 					$data['organization_id'] = 0;
-					$data['html'] = $html;
+					$data['html'] = '';
 				}
 
 				if ($person->organization) {
@@ -618,22 +613,6 @@ class PersonController extends AbstractController
 				}
 
 				$this->em->flush();
-
-				break;
-
-			case 'set-slas':
-				$sla_ids = $this->in->getCleanValueArray('sla_ids', 'uint', 'discard');
-				$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
-
-
-				foreach ($slas AS $sla) {
-					if (in_array($sla->id, $sla_ids)) {
-						$sla->addPerson($person);
-					} else {
-						$sla->removePerson($person);
-					}
-					$this->em->persist($sla);
-				}
 
 				break;
 
@@ -1239,7 +1218,7 @@ class PersonController extends AbstractController
 		$person = $this->getPersonOr404($person_id);
 
 		if (!$this->person->hasPerm('agent_people.login_as') || !$person || $person->is_agent) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		foreach (array('dpsid') as $cookie_name) {
@@ -1309,40 +1288,37 @@ class PersonController extends AbstractController
 
 		$newperson = new \Application\AgentBundle\Form\Model\NewPerson($this->person);
                 
-                $isVCard = $this->in->getBoolean('isVCard');
-            
-                if ($isVCard) {
-                    $blobId = $this->in->getBoolean('blobId');
+		$isVCard = $this->in->getBoolean('isVCard');
 
-                    if (!$blobId) {
-                        throw new \Exception("Invalid Blob ID");
-                    }
+		if ($isVCard) {
+			$blobId = $this->in->getBoolean('blobId');
+			if (!$blobId) {
+				throw new \Exception("Invalid Blob ID");
+			}
 
-                    $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+			$blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+			$content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
-                    $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+			$vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
 
-                    $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+			$fields = $vCardReader->parseVCard($content);
 
-                    $fields = $vCardReader->parseVCard($content);
+			if (!isset($fields['emails']) || !count($fields['emails'])) {
+				return $this->createJsonResponse(array(
+					'success' => false,
+					'error_messages' => array('No valid email was found in the vCard'),
+				));
+			}
 
-                    if (!isset($fields['emails']) || !count($fields['emails'])) {
-                        return $this->createJsonResponse(array(
-				'success' => false,
-				'error_messages' => array('No valid email was found in the vCard'),
-			));
-                    }
-                    
-                    $new_email = $fields['emails'][0];
-                } else {
-                    $new_email = $this->in->getString('newperson.email');
-                }
+			$new_email = $fields['emails'][0];
+		} else {
+			$new_email = $this->in->getString('newperson.email');
+		}
 
 		$account_manager = App::$container->getEmailAccountManager();
 
 		// Check for dupe email address
 		if (!$new_email || !\Orb\Validator\StringEmail::isValueValid($new_email)) {
-                    var_dump($fields); die;
 			return $this->createJsonResponse(array(
 				'success' => false,
 				'error_messages' => array('Please enter a valid email address'),

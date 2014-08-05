@@ -69,7 +69,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
 	{
 		$user_email = $this->getActionOption('email_address');
 
-		$reg_closed = $this->getContainer()->getSetting('core.user_mode') == 'closed';
+		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
 		$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($user_email);
 
 		if (!$person) {

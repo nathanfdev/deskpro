@@ -35,9 +35,9 @@
 namespace deskpro_hipchat;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
-class InstallerHandler implements InstallerHandlerInterface
+class InstallerHandler extends AbstractInstallerHandler
 {
 	/**
 	 * {@inheritDoc}
@@ -53,8 +53,8 @@ class InstallerHandler implements InstallerHandlerInterface
 	 */
 	public function uninstall(InstallerContext $context)
 	{
-		$action_name = "deskpro_hipchat_" . $context->getApp()->id;
-		$context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", $action_name);
+		$action_name = $this->getActionName($context);
+		$context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", array($action_name));
 	}
 
 
@@ -81,8 +81,7 @@ class InstallerHandler implements InstallerHandlerInterface
 	 */
 	private function refreshTriggerAction(InstallerContext $context)
 	{
-		$action_name = "com_deskpro_apps_hipchat_" . $context->getApp()->id;
-
+		$action_name = $this->getActionName($context);
 		$rec = array(
 			'app_id'      => $context->getApp()->id,
 			'action_name' => $action_name,
@@ -96,5 +95,18 @@ class InstallerHandler implements InstallerHandlerInterface
 		} else {
 			$context->getDb()->insert('ticket_actions_def', $rec);
 		}
+	}
+
+
+	/**
+	 * @param InstallerContext $context
+	 *
+	 * @return string
+	 */
+	private function getActionName(InstallerContext $context)
+	{
+		$action_name = 'HipChatAction'.$context->getApp()->id;
+
+		return $action_name;
 	}
 }

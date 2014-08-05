@@ -6,11 +6,12 @@ define [
 	class Reports_Builder_Ctrl_Edit extends ReportsBaseCtrl
 		@CTRL_ID   = 'Reports_Builder_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['$stateParams', '$sce', 'Api', '$window']
+		@DEPS      = ['$stateParams', '$sce', 'Api', '$window', '$http']
 
 		init: ->
 			if @$stateParams.type == 'builtIn'
 				@reportData = @DataService.get('ReportBuilderBuiltIn')
+				@customList = @DataService.get('ReportBuilderCustom')
 				@reportType = 'builtIn'
 			if @$stateParams.type == 'custom'
 				@reportData = @DataService.get('ReportBuilderCustom')
@@ -21,15 +22,17 @@ define [
 			@rendered_result = null
 			@query_error = null
 			@show_query_editor = false
+			@editor_mode = 'builder'
+			@query_parts_synced = true
 
 		initialLoad: ->
 			promise = @reportData.loadEditReportData(@$stateParams.id || null, @$stateParams.params || null).then( (data) =>
-
 				@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
 				@group_params = @$scope.$parent.ListCtrl.group_params
 				@query_parts = data.query_parts
 				@report  = data.report
 				@form = data.form
+				@query_parts_synced = true
 			)
 			return promise
 
@@ -48,20 +51,26 @@ define [
 			@startSpinner('builder_loading')
 			@startSpinner('query_loading')
 
-			promise = @Api.sendPostJson('/reports/builder/test/' + @report.id, {
-				parts: @query_parts
-			})
+			run = =>
+				promise = @Api.sendPostJson('/reports/builder/test/' + @report.id, {
+					parts: @query_parts
+				})
 
-			promise.success((data) =>
-				if data.error then @query_error = data.error
+				promise.success((data) =>
+					if data.error then @query_error = data.error
 
-				if data.rendered_result
-					@query_error = null
-					@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
+					if data.rendered_result
+						@query_error = null
+						@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
 
-				@stopSpinner('builder_loading', true)
-				@stopSpinner('query_loading', true)
-			)
+					@stopSpinner('builder_loading', true)
+					@stopSpinner('query_loading', true)
+				)
+
+			if @query_parts_synced
+				run()
+			else
+				@syncQueryParts().then(run)
 
 
 		###
@@ -70,6 +79,8 @@ define [
 		switchToQuery: ->
 			@startSpinner('query_loading')
 
+			@editor_mode = 'query'
+			@query_parts_synced = false
 			promise = @Api.sendPostJson('/reports/builder/parse', {
 				currentType: 'builder'
 				inputType: 'builder'
@@ -95,6 +106,15 @@ define [
 		switchToBuilder: ->
 			@startSpinner('builder_loading')
 
+			@editor_mode = 'builder'
+			@syncQueryParts().then(=>
+				@stopSpinner('builder_loading', true)
+			)
+
+		###
+    	# Syncs the report query with the query parts form
+    	###
+		syncQueryParts: ->
 			promise = @Api.sendPostJson('/reports/builder/parse', {
 				currentType: 'query'
 				inputType: 'query'
@@ -110,22 +130,23 @@ define [
 					@query_error = null
 					@query_parts = data.parts
 
-				@stopSpinner('builder_loading', true)
+				@query_parts_synced = true
 			)
 
+			return promise
 
 		###
 		# This method is called when user clicks on 'CSV' button
 		###
 		downloadCsv: ->
-			@$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + @report.id +  '/csv?API-TOKEN=' + window.DP_API_TOKEN
+			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id +  '/csv', {params: @$stateParams.params}))
 
 
 		###
 		# This method is called when user clicks on 'PDF' button
 		###
 		downloadPdf: ->
-			@$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + @report.id + '/pdf?API-TOKEN=' + window.DP_API_TOKEN
+			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id + '/pdf', {params: @$stateParams.params}))
 
 
 		###
@@ -147,38 +168,44 @@ define [
 
 			is_new = !@report.id
 
-			promise = @reportData.saveFormModel(@report, @form, @query_parts)
+			run = =>
+				promise = @reportData.saveFormModel(@report, @form, @query_parts)
 
-			@startSpinner('builder_loading')
-			@startSpinner('query_loading')
-			@startSpinner('saving')
+				@startSpinner('builder_loading')
+				@startSpinner('query_loading')
+				@startSpinner('saving')
 
-			promise.then( (res) =>
+				promise.then( (res) =>
 
-				data = res.data
+					data = res.data
 
-				if data.error
+					if data.error
+						@stopSpinner('builder_loading', true)
+						@stopSpinner('query_loading', true)
+						@stopSpinner('saving', true)
+						@query_error = data.error
+						if !@show_query_editor then @show_query_editor = true
+						return
+
+					if data.rendered_result
+						@query_error = null
+						@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
+
+					@skipDirtyState()
+					if is_new
+						@$state.go('builder')
+
 					@stopSpinner('builder_loading', true)
 					@stopSpinner('query_loading', true)
-					@stopSpinner('saving', true)
-					@query_error = data.error
-					if !@show_query_editor then @show_query_editor = true
-					return
-
-				if data.rendered_result
-					@query_error = null
-					@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
-
-				@skipDirtyState()
-				if is_new
-					@$state.go('builder')
-
-				@stopSpinner('builder_loading', true)
-				@stopSpinner('query_loading', true)
-				@stopSpinner('saving', true).then( =>
-					@Growl.success("Saved")
+					@stopSpinner('saving', true).then( =>
+						@Growl.success("Saved")
+					)
 				)
-			)
+
+			if @query_parts_synced
+				run()
+			else
+				@syncQueryParts().then(run)
 
 
 		###
@@ -189,18 +216,33 @@ define [
 			@startSpinner('query_loading')
 			@startSpinner('saving')
 
-			promise = @Api.sendPost('/reports/builder/clone/' + @report.id)
+			run = =>
+				promise = @Api.sendPostJson('/reports/builder/clone/' + @report.id, {
+					parts: @query_parts,
+					title: @form.title,
+					description: @form.description
+				})
 
-			promise.success((data) =>
+				promise.success((data) =>
 
-				@reportData.loadList(true).then(=>
-					@stopSpinner('builder_loading', true)
-					@stopSpinner('query_loading', true)
-					@stopSpinner('saving', true).then(=>
-						@Growl.success("Cloning Done")
-						@$state.go('builder.edit', {type: 'custom', id: data.id, params: ''})
+					proms = [@reportData.loadList(true)]
+
+					if @customList
+						proms.push(@customList.loadList(true))
+
+					@$q.all(proms).then(=>
+						@stopSpinner('builder_loading', true)
+						@stopSpinner('query_loading', true)
+						@stopSpinner('saving', true).then(=>
+							@Growl.success("Cloning Done")
+							@$state.go('builder.edit', {type: 'custom', id: data.id, params: ''})
+						)
 					)
 				)
-			)
+
+			if @query_parts_synced
+				run()
+			else
+				@syncQueryParts().then(run)
 
 	Reports_Builder_Ctrl_Edit.EXPORT_CTRL()

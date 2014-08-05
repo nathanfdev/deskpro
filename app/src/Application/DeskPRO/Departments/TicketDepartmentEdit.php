@@ -106,6 +106,18 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 	 */
 	public function save(EntityManager $em)
 	{
+		// New, we should set a proper display order
+		if (!$this->department->id) {
+			$do = $em->getConnection()->fetchColumn("
+				SELECT display_order
+				FROM departments
+				WHERE is_tickets_enabled = 1
+				ORDER BY display_order DESC
+			");
+			$do += 10;
+			$this->department->display_order = $do;
+		}
+
 		$em->persist($this->department);
 		$em->flush();
 

@@ -49,10 +49,13 @@ class EditAgentType extends AbstractType
 		$builder->add('name', 'text', array('required' => true));
 		$builder->add('override_name', 'text', array('required' => false));
 
+		$builder->add('primary_phone_number_text', 'text', array('required' => false));
+
 		$builder->add('emails', 'collection', array(
 			'type'         => 'email',
 			'allow_add'    => true,
 			'allow_delete' => true,
+			'invalid_message' => 'Invalid Email.',
 		));
 
 		$builder->add('zones', 'choice', array(
@@ -65,6 +68,7 @@ class EditAgentType extends AbstractType
 			'class'    => 'DeskPRO:AgentTeam',
 			'required' => false,
 			'multiple' => true,
+			'invalid_message' => 'Invalid Team.',
 		));
 
 		$builder->add('agent_groups', 'entity', array(
@@ -73,7 +77,8 @@ class EditAgentType extends AbstractType
 			'multiple'      => true,
 			'query_builder' => function(EntityRepository $er) {
 				return $er->createQueryBuilder('ug')->where('ug.is_agent_group = true');
-			}
+			},
+			'invalid_message' => 'Invalid Agent Group.',
 		));
 	}
 

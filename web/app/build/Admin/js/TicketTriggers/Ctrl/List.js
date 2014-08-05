@@ -76,7 +76,7 @@
        */
 
       Admin_TicketTriggers_Ctrl_List.prototype.initialLoad = function() {
-        var promises;
+        var d, promises;
         promises = [];
         promises.push(this.dpTriggers.loadList(true).then((function(_this) {
           return function(list) {
@@ -114,17 +114,25 @@
         if (this.eventType === 'newticket') {
           promises.push(this.TicketAccountsData.loadList(true).then((function(_this) {
             return function(recs) {
-              return _this.accounts = recs.values();
+              _this.accounts = recs.values();
+              return _this.accounts = _this.accounts.filter(function(x) {
+                return x.account_type !== 'outgoing';
+              });
             };
           })(this)));
         }
-        return this.$q.all(promises).then((function(_this) {
+        d = this.$q.defer();
+        this.$q.all(promises).then((function(_this) {
           return function() {
             return _this.$timeout(function() {
-              return _this.$scope.$broadcast('resetDisplayOrders');
-            }, 100);
+              _this.$scope.$broadcast('resetDisplayOrders');
+              return _this.$timeout(function() {
+                return d.resolve();
+              }, 1);
+            }, 1);
           };
         })(this));
+        return d.promise;
       };
 
 
@@ -137,14 +145,18 @@
         this.dep_triggers = [];
         this.email_triggers = [];
         this.triggers = [];
+        this.$scope.email_trigger_ids = {};
+        this.$scope.department_trigger_ids = {};
         _ref = this.all_triggers;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           tr = _ref[_i];
           if (tr.department) {
-            _results.push(this.dep_triggers.push(tr));
+            this.dep_triggers.push(tr);
+            _results.push(this.$scope.department_trigger_ids[tr.department.id] = tr.id);
           } else if (tr.email_account) {
-            _results.push(this.email_triggers.push(tr));
+            this.email_triggers.push(tr);
+            _results.push(this.$scope.email_trigger_ids[tr.email_account.id] = tr.id);
           } else {
             _results.push(this.triggers.push(tr));
           }

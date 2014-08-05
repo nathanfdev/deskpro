@@ -13,10 +13,7 @@
 							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to reports interface" ng-show="agent.can_reports"><i class="fa fa-bar-chart-o"></i></span>
 						</div>
 						<h4>
-							<span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
-							<span class="title-text">{{ ng_var('agent.display_name') }}</span>
-							<span style="display: inline-block; color: #00d800; margin-left: 5px;" tooltip-placement="right" tooltip="Agent is online" ng-show="agent.is_online_now && !agent.is_available_chat"><i class="fa fa-circle"></i></span>
-							<span style="display: inline-block; color: #00d800; margin-left: 5px;" tooltip-placement="right" tooltip="Agent is online and signed in to chat" ng-show="agent.is_available_chat"><i class="fa fa-comment"></i></span>
+                            {% include 'AdminInterfaceBundle:Agents:agent.html.twig' %}
 						</h4>
 					</a>
 				</li>
@@ -26,6 +23,10 @@
 					<i class="fa fa-plus"></i>
 					{{ phrase('agent.general.add') }}
 				</a>
+                <button class="btn btn-default" ng-click="ListCtrl.$modal.open({ templateUrl: ListCtrl.getTemplatePath('Agents/import.html') })">
+                    <i class="fa fa-plus"></i>
+                    {{ phrase('agent.general.add_bulk') }}
+                </button>
 			</div>
 		</article>
 	</section>
@@ -67,14 +68,14 @@
 			<p>Logging in as an agent can be useful for troubleshooting purposes. Do this from the gear icon.</p>
 		</section>
 
-		<section>
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL]<a href="#creating-agents" target="_blank">Creating agents</a>
-				<li>[MANUAL]<a href="#agent-permissions" target="_blank">Agent permissions</a>
-				<li>[MANUAL]<a href="#managing-agents" target="_blank">Managing agents</a>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/94" target="_blank">What is an agent?</a></li>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/194" target="_blank">Automatically assign agents to tickets they reply to by email</a>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#creating-agents" target="_blank">Creating agents</a>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-permissions" target="_blank">Agent permissions</a>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#managing-agents" target="_blank">Managing agents</a>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/94" target="_blank">What is an agent?</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/194" target="_blank">Automatically assign agents to tickets they reply to by email</a>
 			</ul>
 		</section>
 	</article>

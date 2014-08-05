@@ -69,6 +69,12 @@ class EmailBans
 	protected $search_phrase;
 
 	/**
+	 * filter wildcards only if true
+	 * @var bool
+	 */
+	protected $wildcard = false;
+
+	/**
 	 * @param EntityManager $em
 	 */
 
@@ -108,13 +114,20 @@ class EmailBans
 		return $this;
 	}
 
-	/**
-	 * @param string $search_phrase
-	 */
+	public function setWildcard($wildcard)
+	{
+		$this->wildcard = (bool) $wildcard;
+		return $this;
+	}
 
+	/**
+	 * @param $search_phrase
+	 * @return $this
+	 */
 	public function setSearchPhrase($search_phrase)
 	{
 		$this->search_phrase = $search_phrase;
+		return $this;
 	}
 
 	/**
@@ -131,7 +144,8 @@ class EmailBans
 		$this->email_bans = $this->em->getRepository('DeskPRO:BanEmail')->getList(
 			$this->from,
 			$this->per_page,
-			$this->search_phrase
+			$this->search_phrase,
+			$this->wildcard
 		);
 	}
 
@@ -191,7 +205,15 @@ class EmailBans
 
 	public function getPageCount()
 	{
-		return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page, $this->search_phrase);
+		return $this->em->getRepository('DeskPRO:BanEmail')->getPageCount($this->per_page, $this->search_phrase, $this->wildcard);
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCount()
+	{
+		return $this->em->getRepository('DeskPRO:BanEmail')->getCount($this->search_phrase, $this->wildcard);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 define [
 	'DeskPRO/Util/Util'
 ], (Util) ->
-	class Admin_TicketAccounts_Form_EditTicketAccountModel
+	class Admin_TicketAccounts_FormModel_EditTicketAccountModel
 		constructor: (@account, deps, trigger) ->
 			@form = {}
 			@form.account_type        = @account.account_type || 'tickets';
@@ -13,7 +13,7 @@ define [
 			@form.in_imap_account     = {}
 			@form.in_exchange_account = {}
 
-			@form.outgoing_type     = 'mail'
+			@form.outgoing_type     = 'php_mail'
 			@form.out_gmail_account = {}
 			@form.out_smtp_account  = {}
 

@@ -418,7 +418,7 @@
 					</tr>
 				{% endif %}
 				<tr>
-					<td class="label">Auto-responder?</td>
+					<td class="label">Auto-responder <span class="small-light-icon tipped" title="If the system detects a user automatically responds to messages (e.g., a robot or script), then DeskPRO will disable outgoing auto-emails to the user. The user will still get normal email notifications (like agent replies), only automatic auto-confirmations are disabled."></span></td>
 					<td class="value">
 						<select id="{{baseId}}_disable_autoresponses">
 							<option value="0" {% if not person.disable_autoresponses %}selected="selected"{% endif %}>{{ phrase('agent.people.user_not_autoresponder') }}</option>

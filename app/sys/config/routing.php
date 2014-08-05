@@ -1,6 +1,9 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 
-use Symfony\Component\Routing\RouteCollection;
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
+require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+
+use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/DeskPRO/Resources/config/dp-routing.php'));
@@ -21,5 +24,11 @@ $collection->addCollection($col);
 $col = $loader->import(DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php');
 $col->addPrefix('/reports');
 $collection->addCollection($col);
+
+if (defined('DPC_IS_CLOUD')) {
+	$col = $loader->import(DP_ROOT.'/src/Cloud/ApiBundle/Resources/config/api-routing.php');
+	$col->addPrefix('/api');
+	$collection->addCollection($col);
+}
 
 return $collection;

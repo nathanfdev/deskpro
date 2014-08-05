@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/OptionBuilder/TypesDef/BaseActionTypesDef'], function(BaseActionTypesDef) {
+  define(['Admin/OptionBuilder/TypesDef/BaseActionTypesDef', 'DeskPRO/Util/Numbers'], function(BaseActionTypesDef, Numbers) {
     var Admin_OptionBuilder_TypesDef_TicketFilter;
     return Admin_OptionBuilder_TypesDef_TicketFilter = (function(_super) {
       __extends(Admin_OptionBuilder_TypesDef_TicketFilter, _super);
@@ -29,6 +29,12 @@
           title: 'Set Assigned Agent',
           value: 'SetAgent'
         });
+        if ((this.options_data.round_robin != null) && this.options_data.round_robin.enabled) {
+          options.push({
+            title: 'Set Assigned Agent from Round Robin',
+            value: 'SetRoundRobin'
+          });
+        }
         options.push({
           title: 'Set Assigned Team',
           value: 'SetAgentTeam'
@@ -104,12 +110,8 @@
           value: 'SetSlas'
         });
         options.push({
-          title: 'Set SLA Condition Status (Passing/Failing)',
-          value: 'SetSlaStatus'
-        });
-        options.push({
-          title: 'Set SLA State (Waiting/Finished)',
-          value: 'SetSlaRequirements'
+          title: 'Complete SLAs',
+          value: 'SetSlasComplete'
         });
         set_options.push({
           title: 'Ticket SLAs',
@@ -118,11 +120,11 @@
         options = [];
         options.push({
           title: 'Set Ticket User',
-          value: 'ChangeUser'
+          value: 'SetUserOwner'
         });
         options.push({
           title: 'Delete Ticket',
-          value: 'DeleteTicket'
+          value: 'SetDeleted'
         });
         options.push({
           title: 'Add Agent Reply',
@@ -154,7 +156,7 @@
           value: 'SendAgentEmail'
         });
         set_options.push({
-          title: 'Send Eamil',
+          title: 'Send Email',
           subOptions: options
         });
         options = [];
@@ -164,11 +166,15 @@
         });
         options.push({
           title: 'Prevent Emails To User',
-          value: 'ModQuietUserEmails'
+          value: 'ModMuteUserEmails'
         });
         options.push({
           title: 'Prevent Emails To Agents',
-          value: 'ModQuietAgentEmails'
+          value: 'ModMuteAgentEmails'
+        });
+        options.push({
+          title: 'Force Agent Email Subscriptions',
+          value: 'ModForceAgentEmails'
         });
         options.push({
           title: 'Set Trigger Variable',
@@ -222,50 +228,214 @@
               value: opt.action_name
             });
             typeFunc = "get" + opt.action_name;
-            this[typeFunc] = function(options) {
-              var me;
-              if (options == null) {
-                options = {};
-              }
-              me = this;
-              return {
-                getTemplate: function() {
-                  return me.dpTemplateManager.get(opt.builder_template);
-                },
-                getData: function() {
-                  return {};
-                },
-                getDataFormatter: function() {
-                  return {
-                    getViewValue: function(value, data) {
-                      if (value == null) {
-                        value = {};
-                      }
-                      return data || {};
-                    },
-                    getValue: function(model, data) {
-                      var value;
-                      if (model == null) {
-                        model = {};
-                      }
-                      value = {};
-                      value.type = opt.action_name;
-                      value.options = model || {};
-                      return value;
-                    }
-                  };
+            if (opt.action_name.indexOf('Sms') === 0) {
+              this[typeFunc] = this.generateSmsAction(opt.app.title, opt);
+            } else {
+              this[typeFunc] = function(options) {
+                var me;
+                if (options == null) {
+                  options = {};
                 }
+                me = this;
+                return {
+                  getTemplate: function() {
+                    return me.dpTemplateManager.get(opt.builder_template);
+                  },
+                  getData: function() {
+                    return {};
+                  },
+                  getDataFormatter: function() {
+                    return {
+                      getViewValue: function(value, data) {
+                        if (value == null) {
+                          value = {};
+                        }
+                        return value.options || {};
+                      },
+                      getValue: function(model, data) {
+                        var value;
+                        if (model == null) {
+                          model = {};
+                        }
+                        value = {};
+                        value.type = opt.action_name;
+                        value.options = model || {};
+                        return value;
+                      }
+                    };
+                  }
+                };
               };
-            };
+            }
           }
           if (options.length) {
             set_options.push({
-              title: 'Ticket Options',
+              title: 'Other Actions',
               subOptions: options
             });
           }
         }
         return set_options;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.generateSmsAction = function(app_title, opt) {
+        return function(options) {
+          var me;
+          if (options == null) {
+            options = {};
+          }
+          me = this;
+          return {
+            scopeInit: [
+              '$scope', function($scope) {
+                $scope.sms_num_characters = 0;
+                $scope.sms_vars = [];
+                $scope.sms_app_name = app_title;
+                me = this;
+                return $scope.calculateCharacterLength = function() {
+                  var countable_string, matches, proposed_length, tmp_string;
+                  tmp_string = $scope.model.message;
+                  matches = tmp_string.match(/(\{\{.*?\}\})/gi);
+                  countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+                  if (matches) {
+                    proposed_length = countable_string.length - matches.length;
+                  } else {
+                    proposed_length = countable_string.length;
+                  }
+                  if (proposed_length < 0) {
+                    proposed_length = 0;
+                  }
+                  $scope.sms_num_characters = proposed_length;
+                  return $scope.sms_vars = matches || [];
+                };
+              }
+            ],
+            getTemplate: function() {
+              return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html');
+            },
+            getData: function() {
+              return me.loadDataOptions();
+            },
+            getDataFormatter: function() {
+              return {
+                getViewValue: function(value, data) {
+                  var agent_ids, aid, department_ids, did, team_ids, tid, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+                  if (value == null) {
+                    value = {};
+                  }
+                  options = value.options || {};
+                  department_ids = {};
+                  if (options.department_ids) {
+                    _ref = options.department_ids;
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                      did = _ref[_i];
+                      did = parseInt(did);
+                      department_ids[did] = true;
+                    }
+                  }
+                  agent_ids = {};
+                  if (options.agent_ids) {
+                    _ref1 = options.agent_ids;
+                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                      aid = _ref1[_j];
+                      if (aid !== 'followers' && aid !== 'assigned') {
+                        aid = parseInt(aid);
+                      }
+                      agent_ids[aid] = true;
+                    }
+                  } else {
+                    agent_ids['followers'] = false;
+                    agent_ids['assigned'] = false;
+                  }
+                  team_ids = {};
+                  if (options.agent_teams) {
+                    _ref2 = options.agent_teams;
+                    for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                      tid = _ref2[_k];
+                      if (tid !== 'assigned') {
+                        tid = parseInt(tid);
+                      }
+                      team_ids[tid] = true;
+                    }
+                  } else {
+                    team_ids['assigned'] = false;
+                  }
+                  return {
+                    agents: options.agents || [],
+                    agent_ids: agent_ids,
+                    agent_teams: team_ids,
+                    department_ids: department_ids,
+                    to_number: options.to_number || '',
+                    message: options.message || ''
+                  };
+                },
+                getValue: function(model, data) {
+                  var k, v, value, _ref, _ref1, _ref2;
+                  if (model == null) {
+                    model = {};
+                  }
+                  options = {
+                    agents: model.agents || [],
+                    agent_teams: [],
+                    department_ids: [],
+                    to_number: model.to_number || '',
+                    message: model.message || '',
+                    agent_ids: []
+                  };
+                  if (model.department_ids) {
+                    _ref = model.department_ids;
+                    for (k in _ref) {
+                      if (!__hasProp.call(_ref, k)) continue;
+                      v = _ref[k];
+                      if (v) {
+                        options.department_ids.push(parseInt(k));
+                      }
+                    }
+                  }
+                  if (model.agent_ids) {
+                    _ref1 = model.agent_ids;
+                    for (k in _ref1) {
+                      if (!__hasProp.call(_ref1, k)) continue;
+                      v = _ref1[k];
+                      if (v) {
+                        if (k === 'assigned') {
+                          options.agent_ids.push('assigned');
+                        } else if (k === 'followers') {
+                          options.agent_ids.push('followers');
+                        } else {
+                          options.agent_ids.push(parseInt(k));
+                        }
+                      }
+                    }
+                  }
+                  if (model.agent_teams) {
+                    _ref2 = model.agent_teams;
+                    for (k in _ref2) {
+                      if (!__hasProp.call(_ref2, k)) continue;
+                      v = _ref2[k];
+                      if (v) {
+                        if (k === 'assigned') {
+                          options.agent_teams.push('assigned');
+                        } else {
+                          options.agent_teams.push(parseInt(k));
+                        }
+                      }
+                    }
+                  }
+                  value = {};
+                  value.type = opt.action_name;
+                  value.options = options;
+                  return value;
+                }
+              };
+            }
+          };
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.resetData = function() {
+        this.options_data = null;
+        return this.loadDataPromise = null;
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
@@ -291,7 +461,9 @@
               'email_accounts': '/email_accounts',
               'usergroups': '/user_groups',
               'langs': '/langs',
-              'email_tpls': '/email-templates-info'
+              'email_tpls': '/email-templates-info',
+              round_robin: '/round_robin/settings',
+              round_robins: '/round_robin'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -312,6 +484,9 @@
                 options_data['usergroups'] = data.usergroups.groups;
                 options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
+                options_data['round_robin'] = data.round_robin;
+                options_data['round_robins'] = data.round_robins;
+                options_data['ticket_dep_options'] = _this.standardOptionsFormatter(options_data['ticket_deps']);
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
                   _ref7 = _this.options_data.ticket_fields;
@@ -352,6 +527,17 @@
             value: -1
           }
         ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetRoundRobin = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'id';
+        options.dataName = 'round_robins';
         def = this.getStandardSelect(options);
         return def;
       };
@@ -485,15 +671,18 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var viewValue;
                 if (value == null) {
                   value = {};
                 }
                 options = (value != null ? value.options : void 0) || {};
-                console.log(options);
-                return {
+                viewValue = {
                   add_labels: (options.add_labels || []).join(', '),
                   remove_labels: (options.remove_labels || []).join(', ')
                 };
+                viewValue.with_add = !!viewValue.add_labels;
+                viewValue.with_remove = !!viewValue.remove_labels;
+                return viewValue;
               },
               getValue: function(model, data) {
                 var value;
@@ -503,8 +692,50 @@
                 value = {};
                 value.type = 'SetLabels';
                 value.options = {};
-                value.options.add_labels = (model.add_labels || '').split(',');
-                value.options.remove_labels = (model.remove_labels || '').split(',');
+                value.options.add_labels = model.with_add ? (model.add_labels || '').split(',') : '';
+                value.options.remove_labels = model.with_remove ? (model.remove_labels || '').split(',') : '';
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetSubject = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-set-subject.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                return {
+                  subject: options.subject || '',
+                  with_formatter: options.with_formatter || false
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetSubject';
+                value.options = {};
+                value.options.subject = model.subject || '';
+                value.options.with_formatter = !!model.with_formatter;
                 return value;
               }
             };
@@ -743,12 +974,22 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getDeleteTicket = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetUserOwner = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
-        options.propName = 'delete_ticket';
+        options.propName = 'email_address';
+        options.placeholder = 'Enter an email address';
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetDeleted = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
         def = this.getStandardIs(options);
         return def;
       };
@@ -769,6 +1010,7 @@
           options = {};
         }
         options.propName = 'stop_triggers';
+        options.icon = 'fa-chain-broken';
         def = this.getStandardIs(options);
         return def;
       };
@@ -816,7 +1058,7 @@
         };
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietUserEmails = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModMuteUserEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -825,13 +1067,78 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModQuietAgentEmails = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModMuteAgentEmails = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
         def = this.getStandardIs(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getModForceAgentEmails = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-force-agent-emails.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var agent_ids, aid, _i, _len, _ref;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                agent_ids = {};
+                if (options.agent_ids) {
+                  _ref = options.agent_ids;
+                  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    aid = _ref[_i];
+                    agent_ids[aid + ""] = true;
+                  }
+                }
+                return {
+                  agent_ids: agent_ids
+                };
+              },
+              getValue: function(model, data) {
+                var k, v, value, _ref;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  agent_ids: []
+                };
+                if (model.agent_ids) {
+                  _ref = model.agent_ids;
+                  for (k in _ref) {
+                    if (!__hasProp.call(_ref, k)) continue;
+                    v = _ref[k];
+                    if (v) {
+                      if (Numbers.isNumeric(k)) {
+                        options.agent_ids.push(parseInt(k));
+                      } else {
+                        options.agent_ids.push(k);
+                      }
+                    }
+                  }
+                }
+                value = {};
+                value.type = 'ModForceAgentEmails';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendUserEmail = function(options) {
@@ -1011,10 +1318,7 @@
                   _ref = options.agent_ids;
                   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                     aid = _ref[_i];
-                    if (aid !== 'notify_list') {
-                      aid = parseInt(aid);
-                    }
-                    agent_ids[aid] = true;
+                    agent_ids[aid + ""] = true;
                   }
                 } else {
                   agent_ids['notify_list'] = true;
@@ -1045,14 +1349,14 @@
                 }
                 if (model.agent_ids) {
                   _ref = model.agent_ids;
-                  for (v in _ref) {
-                    if (!__hasProp.call(_ref, v)) continue;
-                    k = _ref[v];
+                  for (k in _ref) {
+                    if (!__hasProp.call(_ref, k)) continue;
+                    v = _ref[k];
                     if (v) {
-                      if (k === 'notify_list') {
-                        options.agent_ids.push('notify_list');
-                      } else {
+                      if (Numbers.isNumeric(k)) {
                         options.agent_ids.push(parseInt(k));
+                      } else {
+                        options.agent_ids.push(k);
                       }
                     }
                   }
@@ -1086,7 +1390,7 @@
                 if (value == null) {
                   value = {};
                 }
-                return value;
+                return value.options || {};
               },
               getValue: function(model, data) {
                 var value;
@@ -1207,6 +1511,68 @@
                 value.options.reply_text = model.reply_text;
                 value.options.by_assigned_agent = model.by_assigned_agent || false;
                 value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSetSlasComplete = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-setslascomplete.html');
+          },
+          getData: function() {
+            var defer;
+            defer = me.$q.defer();
+            me.loadDataOptions().then((function(_this) {
+              return function() {
+                var sla, _i, _len, _ref;
+                options = [];
+                _ref = me.options_data['ticket_slas'];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  sla = _ref[_i];
+                  options.push({
+                    title: sla.title,
+                    value: sla.id
+                  });
+                }
+                return defer.resolve({
+                  options: options
+                });
+              };
+            })(this));
+            return defer.promise;
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = value.options || {};
+                return {
+                  sla_ids: options.sla_ids || [],
+                  sla_status: options.sla_status || 'ok'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'SetSlasComplete';
+                value.options = {
+                  sla_ids: model.sla_ids,
+                  sla_status: model.sla_status || 'ok'
+                };
                 return value;
               }
             };

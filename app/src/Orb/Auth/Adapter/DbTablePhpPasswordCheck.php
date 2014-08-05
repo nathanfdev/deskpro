@@ -59,14 +59,9 @@ class DbTablePhpPasswordCheck extends DbTable
 		}
 		$db = $this->getDb();
 
-		$pass = false; // $pass is the legacy name, we now use $is_valid which is a bit clearer
 		$is_valid = false;
 		eval($this->options->get('password_php'));
-
 		$is_valid = (bool)$is_valid;
-		if (!$is_valid) {
-			$is_valid = (bool)$pass;
-		}
 
 		if ($is_valid) {
 			if ($this->logger) $this->logger->logDebug("Passed password check");

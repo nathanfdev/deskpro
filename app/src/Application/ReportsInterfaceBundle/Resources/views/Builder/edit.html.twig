@@ -1,22 +1,15 @@
 {% extends 'ReportsInterfaceBundle:Layout:list-editpane.html.twig' %}
 
 {% block editpane_content %}
-
 	<section class="dp-paneblock dp-editpane">
 		<article class="form-horizontal dp-form">
 			<div class="panel panel-innertable">
-				<dp-report-builder-title
-						ng-if="EditCtrl.reportType == 'builtIn'"
-						report-id="EditCtrl.report.id"
-						value-to-decorate="EditCtrl.report.title"
-						possible-values="EditCtrl.group_params">
-
-				</dp-report-builder-title>
+				<dp-report-builder-title report-id="EditCtrl.report.id" value-to-decorate="EditCtrl.report.title" possible-values="EditCtrl.group_params" type="{{ ng_var('EditCtrl.reportType') }}"></dp-report-builder-title>
 			</div>
 
 			<div class="panel panel-innertable">
 				<button class="btn btn-default" ng-click="EditCtrl.downloadCsv()">CSV</button>
-				<button class="btn btn-default" ng-click="EditCtrl.downloadCsv()">PDF</button>
+				<button class="btn btn-default" ng-click="EditCtrl.downloadPdf()">PDF</button>
 				<button class="btn btn-default" ng-click="EditCtrl.print()">Print</button>
 				<button class="btn btn-success" ng-click="EditCtrl.toggleQueryEditor()"
 						ng-if="!EditCtrl.show_query_editor">
@@ -128,7 +121,5 @@
 				</div>
 			</div>
 		</article>
-
 	</section>
-
 {% endblock %}

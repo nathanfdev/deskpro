@@ -18,7 +18,7 @@
 
 					<a href="{{ ng_href('chat.chat_deps.edit', '{id: dep.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
-						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+						<h4><span class="title-id" title="ID">#{{ ng_var('dep.id') }}</span> <span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
 
 					<ul class="dp-item-list sublist" ng-show="dep.children.length"
@@ -31,6 +31,7 @@
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
 									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-id" title="ID">#{{ ng_var('subdep.id') }}</span>
 									<span class="title-text">{{ ng_var('subdep.title') }}</span>
 								</h4>
 							</a>
@@ -59,16 +60,19 @@
 {% block listpane_help %}
 	<header>
 		<h1>Departments are a way to divide up the helpdesk and control access.</h1>
-		<p>The Department field is powerful and has many functions. You can use departments to limit agent and user access. Chat departments are separate from ticket departments.</p>
+		<p>You can use departments to limit agent and user access. Chat departments are separate from ticket departments.</p>
 	</header>
 
 	<article>
 		<section>
+			<p>
+				Here are some important features of chat departments:
+			</p>
 			<ul>
 				<li>Agent chat permissions are based upon departments; you can create agents that can view some chats but not others.</li>
 				<li>User chat permissions are based upon departments; you can set a usergroup so that members can open chats in some departments but not others.</li>
 				<li>You can set a user-facing department name to be displayed only to users e.g. agents see "Terms of Service Violations", while users see "Support".</li>
-				<li>Each chat will always have a department - it is the only required field in DeskPRO.</li>
+				<li>Each chat will always have a department.</li>
 			</ul>
 		</section>
 
@@ -98,7 +102,18 @@
 					Like chat departments, ticket departments are the key field for grouping chats.
 					The two types of departments are not linked together - you can have different departments for tickets and chats.
 				</dd>
+								
+				<dt><em>Q:</em>My helpdesk uses multiple languages and some of the department names are not being translated; how do I fix this?</dt>
+				<dd><em>A:</em>
+					You need to enter a translation for the department names. Go to <strong>Setup > Languages</strong>; click on each language you have installed beyond the default, click <strong>Edit Phrases</strong>, and enter a custom translation.
+				</dd>
 			</dl>
 		</section>
+		<section class="related-content">
+			<h2><span>Related Content</span></h2>
+			<ul>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#chat" target="_blank">Chat</a></li>
+			</ul>
+	</section>
 	</article>
 {% endblock %}

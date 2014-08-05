@@ -72,7 +72,7 @@
         var form;
         form = {};
         form.title = filterModel.title || '';
-        if (filterModel.is_gloabl) {
+        if (filterModel.is_global) {
           form.perm_type = 'global';
         } else if (filterModel.agent_team && this.teams[0]) {
           form.perm_type = 'team';

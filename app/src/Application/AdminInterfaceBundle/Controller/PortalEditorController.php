@@ -318,6 +318,7 @@ class PortalEditorController extends AbstractController
 			}
 
 			$name = $page_display->data['tpl'];
+			$block = null;
 		}
 
 		$template_code = $this->in->getRaw('template.code');

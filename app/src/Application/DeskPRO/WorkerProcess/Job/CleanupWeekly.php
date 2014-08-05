@@ -42,7 +42,7 @@ class CleanupWeekly extends AbstractJob
 
 	public function run()
 	{
-		$date = date('Y-m-d H:i:s', strtotime('-30 days'));
+		$date = date('Y-m-d H:i:s', strtotime('-1 year'));
 
 		$num = App::getDb()->executeUpdate("
 			DELETE FROM login_log

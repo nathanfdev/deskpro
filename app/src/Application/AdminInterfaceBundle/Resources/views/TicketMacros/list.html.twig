@@ -34,6 +34,10 @@
 			<p class="dp-empty-list-notice" ng-if="!ListCtrl.list.length">
 				{{ phrase('adm.ticket_macros.no_macros') }}
 			</p>
+			<div class="dp-pane-help-box">
+				You can view and manage permissions on macros here. To create and edit macros, you need to
+				go to the Agent Interface.
+			</div>
 			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
 				<li ng-repeat="macro in filterList" dp-state-mark="tickets.macros.edit.{{ ng_var('macro.id') }}" data-id="{{ ng_var('macro.id') }}">
 					<a href="{{ ng_href('tickets.macros.edit', '{id: macro.id}') }}">
@@ -45,14 +49,17 @@
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('macro.id') }}</span>
 							<span class="title-text">{{ ng_var('macro.title') }}</span>
 						</h4>
 					</a>
 				</li>
 			</ul>
+			{#
 			<div class="dp-add-control">
 				<a class="btn btn-default" href="{{ ng_href('tickets.macros.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
+			#}
 		</article>
 	</section>
 	{{ ng_tpl('AdminInterfaceBundle:TicketMacros:delete-modal.html.twig') }}
@@ -73,36 +80,40 @@
 	
 		<section>
 		<h2><span>FAQ</span></h2>
+		
 		<dl>
-			<dt><em>Q:</em>Why do some of my agents get an error message when they try to run a global macro?</dt>
-			<dd><em>A:</em>
-				A macro can only run if the agent running it has permissions to do all of the actions in the macro. To fix this, you need to grant the agent running the macro the appropriate extra permissions; bear in mind that this will enable them to do the corresponding actions manually too.
-			</dd>
-		</dl>
-		
-		<dt><em>Q:</em>How can agents use macros to quickly enter commonly-repeated text, standard greetings, canned answers etc?</dt>
-		<dd><em>A:</em>
-			In DeskPRO, the system for automatically entering text is called <strong>snippets</strong>. It is accessible from the agent interface only.
-		</dd>
-		
-			<dt><em>Q:</em>How do I add a signature to a macro reply?</dt>
-			<dd><em>A:</em>
-			Replies created by a macro do not include the agent signatures. However, you can use the following variable to insert the signature of the agent who ran the macro: <code>{{agent_signature|raw}}</code>.
-		</dd>
-		
-		<dt><em>Q:</em>Applying macros from the agent interface Reply button doesn't seem to work.</dt>
-		<dd><em>A:</em>
-			When you select a macro from the Macros drop down, the actions are applied instantly.
-When you select a macro from the reply button; the actions are only applied when the reply button itself is clicked.
-		</dd>
+				<dt><em>Q:</em>Why do some of my agents get an error message when they try to run a global macro?</dt>
+				<dd><em>A:</em>
+					A macro can only run if the agent running it has permissions to do all of the actions in the macro. To fix this, you need to grant the agent running the macro the appropriate extra permissions; bear in mind that this will enable them to do the corresponding actions manually too.
+				</dd>
+			
+				
+				<dt><em>Q:</em>How can agents use macros to quickly enter commonly-repeated text, standard greetings, canned answers etc?</dt>
+				<dd><em>A:</em>
+					In DeskPRO, the system for automatically entering text is called <strong>snippets</strong>. It is accessible from the agent interface only.
+				</dd>
+				
+					<dt><em>Q:</em>How do I add a signature to a macro reply?</dt>
+					<dd><em>A:</em>
+					Replies created by a macro do not include the agent signatures. However, you can use the following variable to insert the signature of the agent who ran the macro: <code>{{agent_signature|raw}}</code>.
+				</dd>
+				
+				<dt><em>Q:</em>Applying macros from the agent interface Reply button doesn't seem to work.</dt>
+				<dd><em>A:</em>
+					When you select a macro from the Macros drop down, the actions are applied instantly.
+		When you select a macro from the reply button; the actions are only applied when the reply button itself is clicked.
+				</dd>
+	</dl>
 
 		</section>
-		
-			<section>
+
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li>[MANUAL]<a href="#macros" target="_blank">Macros</a></li>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/181" target="_blank">Ticket assignment workflows in DeskPRO</a></li>
+
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#macros" target="_blank">Macros</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
+
 			</ul>
 	</section>
 	</article>

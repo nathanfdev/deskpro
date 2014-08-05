@@ -189,9 +189,14 @@
 	'core.default_timezone' => 'UTC',
 
 	/**
+	 * The default 2-letter country code (ISO 3166-1 alpha-2 format)
+	 */
+	'core.default_country_code' => 'US',
+
+	/**
 	 * Use gravatar for default avatars?
 	 */
-	'core.use_gravatar' => 1,
+	'core.use_gravatar' => 0,
 
 	/**
 	 * How long, in seconds, are sessions valid for?
@@ -523,6 +528,11 @@
 	####################################################################################################################
 	# core_email
 	####################################################################################################################
+
+	/**
+	 * The headers to use when detecting who sent an email (and the order in which to check)
+	 */
+	'core_email.from_email_headers' => 'from,reply-to,x-original-from',
 
 	'core_email.max_email_size' => 31457280, // 30 MB
 

@@ -42,8 +42,5 @@ class Build1400056719 extends AbstractBuild
 
 		$this->out("Update ticket_filters table");
 		$db->exec("ALTER TABLE ticket_filters ADD display_order INT NOT NULL, CHANGE terms terms LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)';");
-
-		$this->out("Delete old default ticket filters");
-		$db->exec("DELETE FROM ticket_filters WHERE sys_name IS NOT NULL");
 	}
 }

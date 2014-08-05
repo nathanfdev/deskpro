@@ -62,7 +62,7 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $subject;
+	protected $subject = '';
 
 	/**
 	 * @var string
@@ -119,6 +119,13 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
+	/**
+	 * @param string $subject
+	 */
+	public function setSubject($subject)
+	{
+		$this->subject = $subject ?: '';
+	}
 
 	/**
 	 * @param string $addr

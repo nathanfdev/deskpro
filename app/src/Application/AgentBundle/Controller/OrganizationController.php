@@ -70,7 +70,7 @@ class OrganizationController extends AbstractController
 
 		$search = new TicketSearch();
 		$search->addTerm(TicketSearch::TERM_ORGANIZATION, 'is', $org->getId());
-		$search->setOrderBy('ticket.status', 'DESC');
+		$search->setOrderBy('ticket.status', 'ASC');
 
 		$org_tickets = $search->getMatches(array('offset' => 0, 'limit' => 30));
 		$org_tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($org_tickets, true);
@@ -245,22 +245,6 @@ class OrganizationController extends AbstractController
 
 					$this->container->getDb()->batchInsert('organization2usergroups', $inserts);
 				}
-				break;
-
-			case 'set-slas':
-				$sla_ids = $this->in->getCleanValueArray('sla_ids', 'uint', 'discard');
-				$slas = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
-
-
-				foreach ($slas AS $sla) {
-					if (in_array($sla->id, $sla_ids)) {
-						$sla->addOrganization($org);
-					} else {
-						$sla->removeOrganization($org);
-					}
-					$this->em->persist($sla);
-				}
-
 				break;
 
 			default:
@@ -647,14 +631,14 @@ class OrganizationController extends AbstractController
 
 		$org = $this->getOrgOr404($organization_id);
                 
-                $organizationDeleted = new Entity\OrganizationDeleted();
-                
-                $organizationDeleted['organization_id'] = $organization_id;
-                $organizationDeleted['by_person']       = $this->getPerson();
-                $organizationDeleted['reason']          = $this->in->getString('reason');
-                
-                $this->em->persist($organizationDeleted);
-                $this->em->flush();
+		$organizationDeleted = new Entity\OrganizationDeleted();
+
+		$organizationDeleted['organization_id'] = $organization_id;
+		$organizationDeleted['by_person']       = $this->getPerson();
+		$organizationDeleted['reason']          = $this->in->getString('reason');
+
+		$this->em->persist($organizationDeleted);
+		$this->em->flush();
 
 		$edit_manager = $this->container->getSystemService('org_edit_manager');
 		$edit_manager->deleteOrganization($org);

@@ -10,7 +10,7 @@
 		"angularUiAce":                    "bower_components/angular-ui-ace/ui-ace",
 		"angularUiRouter":                 "bower_components/angular-ui-router/release/angular-ui-router.min",
 		"angularUiSortable":               "bower_components/angular-ui-sortable/src/sortable",
-		"angularMoment":                   "bower_components/angular-moment/angular-moment.min",
+		"angularMoment":                   "bower_components/angular-moment/angular-moment",
 		"angularFileUpload":               "bower_components/blueimp-file-upload/js/jquery.fileupload-angular",
 		"angularSlider":                   "bower_components/angular-slider/angular-slider.min",
 		"angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
@@ -30,7 +30,8 @@
 		"load-image-exif":                 "bower_components/blueimp-load-image/js/load-image-exif",
 		"canvas-to-blob":                  "bower_components/blueimp-canvas-to-blob/js/canvas-to-blob.min",
 		"underscore":                      "bower_components/underscore/underscore-min",
-		"moment":                          "bower_components/momentjs/min/moment-with-langs.min",
+		"moment":                          "bower_components/moment/min/moment-with-langs.min",
+		"momentTimezone":                  "vendor-src/moment-timezone",
 		"aceEditor":                       "bower_components/ace-builds/src-min-noconflict/ace",
 		"stacktrace":                      "bower_components/stacktrace/stacktrace",
 		"bootstrapModal":                  "bower_components/bootstrap/js/modal",
@@ -39,8 +40,10 @@
 		"toastr":                          "bower_components/toastr/toastr",
 		"ColorPicker":                     "../vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "../vendor/detect_timezone",
+		"intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
 
 		"AdminLoad":                       "Admin/AdminLoad",
+		"CloudAdminLoad":                  "Admin/Cloud/CloudAdminLoad",
 		"AdminUpgradeLoad":                "AdminUpgrade/AdminUpgradeLoad",
 		"AdminStartLoad":                  "AdminStart/AdminStartLoad",
 		"ReportsLoad":                     "Reports/ReportsLoad",
@@ -62,7 +65,7 @@
 		"angularUiAce":                    ["angular"],
 		"angularUiRouter":                 ["angular"],
 		"angularUiSortable":               ["angular"],
-		"angularMoment":                   ["angular"],
+		"angularMoment":                   ["angular", "moment"],
 		"angularFileUpload":               ["jquery"],
 		"angularSlider":                   ["angular"],
 		"angularGrid":                     ["angular"],
@@ -76,7 +79,8 @@
 		"ColorPicker":                     ["jquery"],
 		"underscore":                      { "exports": "_" },
 		"stacktrace":                      { "exports": "printStackTrace"},
-		"trackjs":                         { "exports": "trackJs"}
+		"trackjs":                         { "exports": "trackJs"},
+		"intl-tel-input":                  ["jquery"]
 	},
 	"priority": [
 		"angular"

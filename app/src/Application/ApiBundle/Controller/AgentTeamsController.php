@@ -171,7 +171,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 		$new_members = array_diff($new_members, $current_members);
 
 		if (!$is_new && $del_members) {
-			$this->db->deleteIn('agent_team_members', $del_members, 'person_id', "team_id = {$team->id}");
+			$this->db->deleteIn('agent_team_members', $del_members, 'person_id', false, "team_id = {$team->id}");
 		}
 		if ($new_members) {
 			$ins = array();

@@ -34,8 +34,10 @@
 
 namespace Application\InstallBundle\Upgrade\Build\Helper201405;
 
+use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\Entity\TicketLayout as TicketLayoutEntity;
 use Application\DeskPRO\TicketLayout;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 class LayoutUpgrader
 {
@@ -54,17 +56,45 @@ class LayoutUpgrader
 	 */
 	private $form_edit;
 
+	/**
+	 * @var \Application\DeskPRO\CustomFields\TicketFieldManager
+	 */
+	private $ticket_fm;
+
 
 	/**
 	 * @param array $form_new
 	 * @param array $form_view
 	 * @param array $form_edit
+	 * @param TicketFieldManager $ticket_fm
 	 */
-	public function __construct(array $form_new, array $form_view, array $form_edit)
+	public function __construct(array $form_new, array $form_view, array $form_edit, TicketFieldManager $ticket_fm)
 	{
 		$this->form_new  = $form_new;
 		$this->form_view = $form_view;
 		$this->form_edit = $form_edit;
+		$this->ticket_fm = $ticket_fm;
+	}
+
+
+	/**
+	 * @param array $old_field
+	 * @return bool
+	 */
+	private function isAgentOnlyField(array $old_field)
+	{
+		if (isset($old_field['agent_only']) && $old_field['agent_only']) {
+			return true;
+		}
+
+		if ($old_field['field_type'] == 'ticket_field' && !empty($old_field['field_id'])) {
+			$f = $this->ticket_fm->getFieldFromId($old_field['field_id']);
+			if ($f && $f->is_agent_field) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
@@ -96,22 +126,26 @@ class LayoutUpgrader
 		$has_edit = $this->form_edit ? true : false;
 
 		foreach ($this->form_new as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
+			if ($this->isAgentOnlyField($old_field)) {
 				continue;
 			}
 
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			$field->enableOnNew();
 			if (!$has_view) $field->enableOnView();
 			if (!$has_edit) $field->enableOnEdit();
 			$layout->add($field);
 		}
 		foreach ($this->form_view as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
+			if ($this->isAgentOnlyField($old_field)) {
 				continue;
 			}
 
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			if ($layout->has($field->getId())) {
 				$field = $layout->get($field->getId());
 			} else {
@@ -121,11 +155,13 @@ class LayoutUpgrader
 			$field->enableOnView();
 		}
 		foreach ($this->form_edit as $old_field) {
-			if (isset($old_field['agent_only']) && $old_field['agent_only']) {
+			if ($this->isAgentOnlyField($old_field)) {
 				continue;
 			}
 
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			if ($layout->has($field->getId())) {
 				$field = $layout->get($field->getId());
 			} else {
@@ -146,14 +182,11 @@ class LayoutUpgrader
 	{
 		$layout = new TicketLayout\Layout();
 
-		$has_view = $this->form_view ? true : false;
-		$has_edit = $this->form_edit ? true : false;
-
 		foreach ($this->form_new as $old_field) {
 			$field = $this->convertField($old_field);
 			$field->enableOnNew();
-			if (!$has_view) $field->enableOnView();
-			if (!$has_edit) $field->enableOnEdit();
+			$field->enableOnView();
+			$field->enableOnEdit();
 			$layout->add($field);
 		}
 		foreach ($this->form_view as $old_field) {
@@ -164,7 +197,9 @@ class LayoutUpgrader
 				$layout->add($field);
 			}
 
+			$field->enableOnNew();
 			$field->enableOnView();
+			$field->enableOnEdit();
 		}
 		foreach ($this->form_edit as $old_field) {
 			$field = $this->convertField($old_field);
@@ -174,6 +209,8 @@ class LayoutUpgrader
 				$layout->add($field);
 			}
 
+			$field->enableOnNew();
+			$field->enableOnView();
 			$field->enableOnEdit();
 		}
 
@@ -187,10 +224,15 @@ class LayoutUpgrader
 	 */
 	private function convertField(array $info)
 	{
-		$field = $this->getFieldFromLegacyField($info);
-		$crit = $this->getCriteriaFromLegacyField($info);
-		if ($crit) {
-			$field->setCriteria($crit);
+		try {
+			$field = $this->getFieldFromLegacyField($info);
+			$crit = $this->getCriteriaFromLegacyField($info);
+			if ($crit) {
+				$field->setCriteria($crit);
+			}
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e);
+			return null;
 		}
 
 		// Default to all off

@@ -48,7 +48,7 @@ class UsersourceUpgrader
 	/**
 	 * @var array
 	 */
-	private $info;
+	private $us_info;
 
 	/**
 	 * @var string
@@ -63,15 +63,15 @@ class UsersourceUpgrader
 
 	/**
 	 * @param DeskproContainer $container
-	 * @param array            $info
+	 * @param array            $us_info
 	 */
-	public function __construct(DeskproContainer $container, array $info)
+	public function __construct(DeskproContainer $container, array $us_info)
 	{
 		$this->container = $container;
 
-		$this->info = $info;
-		$this->type = $info['source_type'];
-		$this->options = unserialize($info['options']);
+		$this->us_info = $us_info;
+		$this->type    = $us_info['source_type'];
+		$this->options = unserialize($us_info['options']);
 	}
 
 
@@ -80,7 +80,7 @@ class UsersourceUpgrader
 	 */
 	public function upgrade()
 	{
-		switch ($this->info['source_type']) {
+		switch ($this->us_info['source_type']) {
 			case 'active_directory':
 				$this->upgradeActiveDirectory();
 				break;
@@ -137,9 +137,13 @@ class UsersourceUpgrader
 		$manager = $this->container->getAppManager();
 		$package = $manager->getPackage($package_name);
 
+		if ($this->us_info['is_enabled']) {
+			$app_settings['enable_usersource'] = true;
+		}
+
 		$app = new AppInstance();
 		$app->package = $package;
-		$app->title = $package->title;
+		$app->title = $this->us_info['title'] ?: $package->title;
 		$app->setSettings($app_settings);
 		$this->container->getEm()->persist($app);
 		$this->container->getEm()->flush();
@@ -159,7 +163,7 @@ class UsersourceUpgrader
 			'source_type' => $adapter_class,
 			'options'     => json_encode($adapter_settings),
 			'app_id'      => $app ? $app->id : null
-		), array('id' => $this->info['id']));
+		), array('id' => $this->us_info['id']));
 	}
 
 
@@ -180,7 +184,7 @@ class UsersourceUpgrader
 			'service_username'  => $o->get('username', ''),
 			'service_password'  => $o->get('password', ''),
 			'domain_name'       => $o->get('accountDomainName'),
-			'domain_name_short' => $o->get('accountDomainNameShort'),
+			'short_domain_name' => $o->get('accountDomainNameShort'),
 			'filter'            => $o->get('accountFilterFormat'),
 		);
 
@@ -196,6 +200,10 @@ class UsersourceUpgrader
 	{
 		$o = new OptionsArray($this->options);
 		$adapter_class = 'Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck';
+
+		$php = $o->get('password_php', '');
+		$php .= "\n\n\$is_valid = \$pass;\n";
+
 		$adapter_settings = array(
 			'connection_options' => array(
 				'driver'   => 'pdo_mysql',
@@ -212,7 +220,7 @@ class UsersourceUpgrader
 			'field_password'   => $o->get('field_password', ''),
 			'field_first_name' => $o->get('field_first_name', ''),
 			'field_last_name'  => $o->get('field_last_name', ''),
-			'password_php'     => $o->get('password_php', ''),
+			'password_php'     => $php,
 		);
 
 		$params = $this->parseDsn($o->get('db_dsn'));

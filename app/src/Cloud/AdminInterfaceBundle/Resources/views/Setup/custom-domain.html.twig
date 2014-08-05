@@ -1,0 +1,146 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Ctrl.save()">
+	<section class="dp-paneblock dp-listpane">
+	<header>
+		<h3>Domain / URL Setup</h3>
+	</header>
+
+	<article>
+		<div class="panel panel-innertable">
+			<p>
+				Every DeskPRO account comes with a free domain name (yours is {{ constant('DPC_SITE_DOMAIN') }}). But if you want to use your own domain name,
+				you can configure that here.
+			</p>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<label>
+					<input type="radio" ng-model="form.domain_choice" value="default" style="display: inline-block; margin-right: 5px;" />
+					<h3 style="display: inline-block">
+						<span>Use the default URL <em>(http://{{ constant('DPC_SITE_DOMAIN') }}/)</em></span>
+					</h3>
+				</label>
+			</div>
+			<div class="form-group" style="margin-left: 45px;">
+				<p>
+					Use the default DeskPRO domain that comes free with your account. Using the default domain name requires no set up and always works.
+				</p>
+			</div>
+		</div>
+
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<label>
+					<input type="radio" ng-model="form.domain_choice" value="custom" style="display: inline-block; margin-right: 5px;" />
+					<h3 style="display: inline-block">
+						<span>
+							Use a custom URL <em ng-show="form.cloud_custom_domain.length">(http://{{ ng_var('form.cloud_custom_domain') }}/)</em>
+						</span>
+					</h3>
+				</label>
+			</div>
+			<div class="form-group" style="margin-left: 45px;">
+				<p>
+					If you have your own domain name, you can use it with DeskPRO. Top-level domains (such as example.com) and sub-domains (such as support.example.com) are both supported.
+				</p>
+				<div ng-show="form.domain_choice == 'custom'" style="margin-top: 5px;">
+					<p>
+						Even when you use a custom domain name, your default domain still works. If your domain expires or something else happens that renders your custom domain inactive&mdash;you can always come back to this page by entering the
+						admin interface directly through <code>http://{{ constant('DPC_SITE_DOMAIN') }}/admin/</code> (it's a good idea to write that down, just in case).
+					</p>
+					<p>
+						Enter your domain name here: <input type="text" ng-model="form.cloud_custom_domain" class="form-control input-sm" style="width: 180px;" />
+					</p>
+					<div style="margin-top: 5px; background: #d8edf6; padding: 8px; width: 500px;">
+						<p>
+							<strong>Important</strong>: You must edit your DNS to create a <code>CNAME</code> record to <code>{{ constant('DPC_SITE_DOMAIN') }}</code>
+						</p>
+						<p>
+							For more information, refer to <a href="http://support.deskpro.com/kb/articles/79-using-a-custom-domain-name" target="_blank">this DeskPRO knowledgebase article</a>.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<label>
+					<input type="checkbox" ng-model="form.cloud_url_ssl" style="display: inline-block; margin-right: 5px;" />
+					<h3 style="display: inline-block">
+						<span>
+							Enable HTTPS
+						</span>
+					</h3>
+				</label>
+			</div>
+			<div class="form-group" style="margin-left: 45px;">
+				<p>
+					Optionally enable HTTPS on your helpdesk for secure connections between DeskPRO and your users.
+				</p>
+				<div ng-show="form.cloud_url_ssl && form.cloud_custom_domain.length && form.domain_choice == 'custom' && (!form.cloud_custom_domain_ssl || form.cloud_custom_domain_ssl != form.domain_choice)" style="margin-top: 5px; background: #f2dede; padding: 8px;">
+					<p>
+						Using HTTPS requires an SSL certificate. You get a free certificate with the default DeskPRO domain ({{ constant('DPC_SITE_DOMAIN') }}), but since you
+						have chosen to enable a custom domain, a new SSL certificate must be configured on your account.
+					</p>
+					<p>
+						This must be done manually by one of our agents. Please contact <a href="mailto:support@deskpro.com">support@deskpro.com</a> to begin the process.
+					</p>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<footer>
+		<div class="dp-content">
+			<div class="text-danger" ng-show="form_error" ng-switch="form_error">
+				<p>
+					There was a problem saving your settings:
+				</p>
+				<ul>
+					<li ng-switch-when="invalid_custom_domain">
+						The custom domain you entered appears to be invalid.
+					</li>
+					<li ng-switch-when="error_activating_domain">
+						There was a problem while trying to activate your custom domain. This is most likely a
+						temporary issue; try again in a few minutes.
+					</li>
+					<li ng-switch-default>
+						There was a server error (code: {{ ng_var('form_error') }}) while trying to save
+						your custom domain. If you continue to have this problem, please contact <a href="mailto:support@deskpro.com">support@deskpro.com</a>.
+					</li>
+				</ul>
+			</div>
+			<div class="dp-btn-controls">
+				<div dp-hide-spinning="saving">
+					<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+				</div>
+				<div dp-show-spinning="saving">
+					<i class="spinner-flat"></i>
+				</div>
+			</div>
+		</div>
+	</footer>
+	</section>
+	</form>
+
+	{% if not app.isCloud() %}
+		<div style="text-align: right; font-size: 11px; margin: 10px;">
+			<a href="{{ ng_href('setup.settings_advanced') }}">View advanced settings editor &rarr;</a>
+		</div>
+	{% endif %}
+
+	<div dp-register-message="saved_settings">Settings saved successfully.</div>
+{% endblock %}

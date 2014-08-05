@@ -154,7 +154,8 @@ class IncomingAccountTester
 				'password' => $account_config->password,
 				'port'     => $account_config->port,
 				'ssl'      => $account_config->secure_mode,
-				'logger'   => $this->logger
+				'logger'   => $this->logger,
+				'test_mode' => true,
 			));
 
 			$this->message_count = $storage->countMessages();
@@ -182,7 +183,8 @@ class IncomingAccountTester
 				'password' => $account_config->password,
 				'port'     => $account_config->port,
 				'ssl'      => $account_config->secure_mode,
-				'logger'   => $this->logger
+				'logger'   => $this->logger,
+				'test_mode' => true,
 			));
 			if ($account_config->read_mailbox) {
 				$storage->ensureMailboxExists($account_config->read_mailbox);
@@ -220,7 +222,8 @@ class IncomingAccountTester
 				'user'     => $account_config->user,
 				'password' => $account_config->password,
 				'port'     => $account_config->port,
-				'logger'   => $this->logger
+				'logger'   => $this->logger,
+				'test_mode' => true,
 			));
 			if ($account_config->read_mailbox) {
 				$storage->ensureFolderExists($account_config->read_mailbox);
@@ -267,7 +270,8 @@ class IncomingAccountTester
 				'password' => $account_config->password,
 				'port'     => 995,
 				'ssl'      => 'ssl',
-				'logger'   => $this->logger
+				'logger'   => $this->logger,
+				'test_mode' => true,
 			));
 
 			$this->message_count = $storage->countMessages();

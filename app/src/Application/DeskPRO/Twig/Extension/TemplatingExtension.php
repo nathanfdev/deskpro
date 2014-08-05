@@ -193,6 +193,8 @@ class TemplatingExtension extends \Twig_Extension
 			'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
 			'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
 
+			'regex_replace'          => new \Twig_Filter_Method($this, 'regexReplace'),
+
 			'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
 
 			'trans'                  => new \Twig_Filter_Function('\\Application\\DeskPRO\\Twig\\Extension\\deskpro_twig_filter_dummy'),
@@ -997,12 +999,16 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function isHelpdeskPath($path)
 	{
-		$pathinfo = @parse_url($path);
-		if (!$pathinfo || !empty($pathinfo['host'])) {
-			return false;
+		if (!preg_match('#^/[^/]#', $path)) {
+			$pathinfo = @parse_url($path);
+			if (!$pathinfo || !empty($pathinfo['host'])) {
+				return false;
+			}
+
+			$path = $pathinfo['path'];
 		}
 
-		$path = Strings::canonicalPath($pathinfo['path']);
+		$path = Strings::canonicalPath($path);
 		$root_path = '/' . trim($this->container->get('router')->getGenerator()->generate('user', array(), false), '/');
 
 		if (strpos($path, $root_path) !== 0) {
@@ -1608,6 +1614,23 @@ class TemplatingExtension extends \Twig_Extension
 		return \Application\DeskPRO\Util::jsonEncode($data);
 	}
 
+	public function regexReplace($string, $regex, $replace, $limit = -1)
+	{
+		$regex = Strings::getInputRegexPattern($regex);
+
+		if (!$regex) {
+			return $string;
+		}
+
+		$result = preg_replace($regex, $replace, $string, $limit);
+
+		if ($result === null) {
+			return $string;
+		}
+
+		return $result;
+	}
+
 	public function js_error_tracking($loc, array $options = array())
 	{
 		if ($this->getContainer()->isDebug()) {
@@ -1631,6 +1654,8 @@ class TemplatingExtension extends \Twig_Extension
 			$sid .= 'unknown';
 		}
 
+		$version = defined(DP_BUILD_TIME) ? DP_BUILD_TIME : '0';
+
 		/** @var \Application\DeskPRO\Templating\Asset\UrlPackage $helper */
 		$helper = $this->getContainer()->get('templating.helper.assets');
 
@@ -1638,16 +1663,17 @@ class TemplatingExtension extends \Twig_Extension
 
 		$html = <<<HTML
 <script type="text/javascript">
-window.onerror = null; delete window.onerror;
-var _trackJs = {
-	customer: '4eebe4aa1bc2404e89fc4250152d18a0',
+window.onerror = null;
+delete window.onerror;
+window._trackJs = {
 	sessionId: '$sid',
-	trackAjaxFail: false,
-	trackConsoleError: true,
-	trackGlobal: true
+	token: '4eebe4aa1bc2404e89fc4250152d18a0',
+	version: '$version',
+	console: { enabled: true, display: true, error: true },
+	network: { error: false }
 };
 </script>
-<script type="text/javascript" src="$src"></script>
+<script type="text/javascript" src="$src" data-token="4eebe4aa1bc2404e89fc4250152d18a0"></script>
 HTML;
 		return $html;
 	}

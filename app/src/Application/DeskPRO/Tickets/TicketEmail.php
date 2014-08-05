@@ -47,6 +47,11 @@ class TicketEmail
 	const MODE_AGENT = 'agent';
 
 	/**
+	 * @var \Application\DeskPRO\Settings\Settings
+	 */
+	private $settings;
+
+	/**
 	 * @var \Application\DeskPRO\Mail\Mailer
 	 */
 	private $mailer;
@@ -151,6 +156,7 @@ class TicketEmail
 	{
 		$opt = new CheckedOptionsArray();
 		$opt->addRequiredNames(
+			'settings',
 			'mailer',
 			'translate',
 			'em',
@@ -178,6 +184,7 @@ class TicketEmail
 		$this->template_name           = $opt->get('template_name');
 		$this->from_name               = $opt->get('from_name', '');
 
+		$this->settings                = $opt->get('settings');
 		$this->mailer                  = $opt->get('mailer');
 		$this->translate               = $opt->get('translate');
 		$this->em                      = $opt->get('em');
@@ -333,19 +340,31 @@ class TicketEmail
 		$ticket_attachments = array();
 		if ($state->hasNewReply()) {
 			$last_message = Arrays::getFirstItem($vars['messages']);
-			$this->logger->info(sprintf("[TicketEmail] New reply on #%d checking for attachments <= %d", $last_message->id, $this->max_attach_size));
-			if (count($last_message->attachments)) {
-				$this->logger->info(sprintf("[TicketEmail] Message has %d attachments", count($last_message->attachments)));
-				foreach ($last_message->attachments as $a) {
-					if ($a->blob->filesize <= $this->max_attach_size) {
-						$this->logger->info(sprintf("[TicketEmail] Adding attachment %s", $a->blob->filename));
-						$ticket_attachments[$a->id] = $a;
-					} else {
-						$this->logger->info(sprintf("[TicketEmail] Skipping attachment %s", $a->blob->filename));
+
+			// This check is because theoretically, the entire thread
+			// could be agent notes (e.g., first message was turned into a note).
+			// So if this is an email to a user, messages array will be empty
+			// and this check will prevent warnings about trying to use a null $last_message.
+
+			if ($last_message) {
+				$this->logger->info(sprintf("[TicketEmail] New reply on #%d checking for attachments <= %d", $last_message->id, $this->max_attach_size));
+				if (count($last_message->attachments)) {
+					$this->logger->info(sprintf("[TicketEmail] Message has %d attachments", count($last_message->attachments)));
+					foreach ($last_message->attachments as $a) {
+						if ($a->blob->filesize <= $this->max_attach_size) {
+							$this->logger->info(sprintf("[TicketEmail] Adding attachment %s", $a->blob->filename));
+							$ticket_attachments[$a->id] = $a;
+						} else {
+							$this->logger->info(sprintf("[TicketEmail] Skipping attachment %s", $a->blob->filename));
+						}
 					}
+				} else {
+					$this->logger->info(sprintf("[TicketEmail] Message has no attachments"));
 				}
-			} else {
-				$this->logger->info(sprintf("[TicketEmail] Message has no attachments"));
+			}
+
+			if ($this->settings->get('core.tickets.enable_feedback') && $this->user_mode == 'user' && $last_message && $last_message->person->is_agent && !$last_message->is_agent_note) {
+				$vars['show_rating_link'] = true;
 			}
 		}
 

@@ -70,9 +70,9 @@ class Build1400056726 extends AbstractBuild
 				break;
 
 			case 'closed':
-				$settings['core.reg_enabled']      = 1;
-				$settings['core.reg_required']     = 1;
-				$settings['core.agent_validation'] = 1;
+				$settings['core.reg_enabled']      = 0;
+				$settings['core.reg_required']     = 0;
+				$settings['core.agent_validation'] = 0;
 				break;
 
 			default:

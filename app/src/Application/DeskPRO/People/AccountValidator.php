@@ -116,10 +116,13 @@ class AccountValidator
 				'date_validated' => $this->email->date_validated->format('Y-m-d H:i:s')
 			), array('id' => $this->email->getId()));
 
+			$ticket_manager = App::$container->getTicketManager();
+
 			// Find tickets with this email awaiting validation
 			if ($this->ticket_ids) {
 				foreach ($this->ticket_ids as $ticket_id) {
-					$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+					$ticket = $ticket_manager->getTicket($ticket_id);
+					$context = $ticket_manager->createUserExecutorContext($this->person, 'update', 'portal');
 
 					$ticket->person_email_validating = null;
 					$ticket->person_email = $this->email;
@@ -128,8 +131,7 @@ class AccountValidator
 						$ticket->setStatus('awaiting_agent');
 					}
 
-					$ticket->_applySlas();
-
+					$ticket_manager->saveTicket($ticket, $context);
 					$this->em->persist($ticket);
 					$this->em->flush();
 				}

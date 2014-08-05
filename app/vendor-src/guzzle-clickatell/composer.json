@@ -1,0 +1,30 @@
+{
+    "name": "bluedogtraining/guzzle-clickatell",
+    "description": "A Guzzle client for interacting with the Clickatell API",
+    "type": "library",
+    "keywords": [
+        "clickatell", "sms", "guzzle"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johnson Page",
+            "email": "tech@bluedogtraining.com.au",
+            "homepage": "http://bluedogtraining.com.au"
+        }
+    ],
+    "require": {
+        "guzzle/guzzle": ">=3.0,<3.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-0": { "Bdt\\Clickatell": "src/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}

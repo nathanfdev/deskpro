@@ -27,10 +27,35 @@
           'settings': '/ticket_settings'
         }).then((function(_this) {
           return function(res) {
-            _this.$scope.settings = res.data.settings.ticket_settings;
+            var k, settings, v, _ref;
+            settings = res.data.settings.ticket_settings;
+            _ref = settings.agent_defaults;
+            for (k in _ref) {
+              if (!__hasProp.call(_ref, k)) continue;
+              v = _ref[k];
+              if (!v) {
+                settings.agent_defaults[k] = "0";
+              }
+            }
+            _this.$scope.settings = settings;
             return _this.settings = angular.copy(_this.$scope.settings);
           };
         })(this));
+        this.headerSortList = {
+          axis: 'y',
+          handle: '.drag-handle',
+          update: (function(_this) {
+            return function(ev, data) {
+              var $list, newOrder;
+              $list = data.item.closest('ul');
+              newOrder = [];
+              $list.find('li').each(function() {
+                return newOrder.push($(this).data('value'));
+              });
+              return _this.$scope.settings.from_email_headers = newOrder;
+            };
+          })(this)
+        };
         return this.$q.all([data_promise]);
       };
 

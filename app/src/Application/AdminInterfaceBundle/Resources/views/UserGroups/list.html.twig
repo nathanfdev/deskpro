@@ -2,13 +2,13 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3>User Permission Groups</h3>
+			<h3>User Groups</h3>
 		</header>
 		<article>
 			<ul class="dp-item-list">
 				<li ng-repeat="group in ListCtrl.list" dp-state-mark="crm.groups.edit.{{ ng_var('group.id') }}" data-id="{{ ng_var('group.id') }}">
 					<a href="{{ ng_href('crm.groups.edit', '{id: group.id}') }}">
-						<h4><span class="title-text">{{ ng_var('group.title') }}</span></h4>
+						<h4><span class="title-id" title="ID">#{{ ng_var('group.id') }}</span> <span class="title-text">{{ ng_var('group.title') }}</span></h4>
 					</a>
 				</li>
 			</ul>
@@ -24,14 +24,36 @@
 {% endblock %}
 {% block listpane_help %}
 	<header>
-		<h1>Usergroup membership determines what permissions users have.</h1>
-		<p>Agents can assign users to the usergroups you define here. Each usergroup grants a different level of permissions for the user to interact with the helpdesk.</p>
+		<h1>Usergroup membership determines what users can do on your helpdesk.</h1>
+		<p>You define which <strong>permissions</strong> to use helpdesk features are granted by each usergroup. Agents manage usergroup membership using the agent interface CRM app.</p>
 	</header>
 	<article>
 		<section>
-			<p>Click on the name of a usergroup to edit its permissions.</p>
-			<p>The <strong>Everyone</strong> usergroup controls what can be done by users who aren't logged in. All the permissions you grant to <strong>Everyone</strong> will  be available to every other usergroup.</p>
+			<p>Add custom usergroups if you want to grant extra permissions to some of your users.</p>
+			<p>A user can belong to more than one usergroup. A user only needs to be granted a permission by one of their usergroups to be able to use it.</p>
+			
+			<p>The <strong>Everyone</strong> usergroup controls what can be done by users who aren't logged in. All the permissions you grant to <strong>Everyone</strong> will be available to every other usergroup.</p>
 			<p>The <strong>Registered</strong> usergroup controls what all registered users can do. All other groups (apart from <strong>Everyone</strong>) will have the permissions you grant to <strong>Registered</strong>.</p>
+			
+			<p>Note that if a user doesn't have permission to use a section of the portal like Feedback or News, they won't see it at all.</p>
+		
 		</section>
+		
+		<section>
+		<h2><span>FAQ</span></h2>
+		<dl>
+			<dt><em>Q:</em>I want to put some 'bad' users into a usergroup with restricted access. How do I implement this?</dt>
+			<dd><em>A:</em>Usergroups can only ever add permissions: you can't have a usergroup that takes permissions away. This means if you want a certain set of 'bad' users to be denied some permissions, you have to remove the permissions from Everyone and Registered, then ensure your 'good' users are granted them through their other usergroup memberships.
+			</dd>
+		</dl>
+</section>
+
+		<section class="related-content">
+			<h2><span>Related Content</span></h2>
+			<ul>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#user-permissions" target="_blank">User permissions</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/188" target="_blank">Some of our portal is missing!</a></li>
+			</ul>
+	</section>
 	</article>
 {% endblock %}

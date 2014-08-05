@@ -334,16 +334,16 @@ class Upgrade
 
 		if (!$has_opened) {
 			// Reset log
-			@file_put_contents($this->getLogDir() . '/upgrade.log', '');
+			@file_put_contents($this->getLogDir() . '/upgrade-util.log', '');
 		}
 		$has_opened = true;
 
 		if (!$this->log_fh) {
-			$this->log_fh = fopen($this->getLogDir() . '/upgrade.log', 'a');
+			$this->log_fh = fopen($this->getLogDir() . '/upgrade-util.log', 'a');
 			if (!$this->log_fh) {
-				throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade.log');
+				throw new \Exception("Could not open log file: " . $this->getLogDir() . '/upgrade-util.log');
 			}
-			@chmod($this->getLogDir() . '/upgrade.log', 0777);
+			@chmod($this->getLogDir() . '/upgrade-util.log', 0777);
 
 			$this->registerCleanupParam('close_log_fh', $this->log_fh);
 
@@ -1029,17 +1029,32 @@ class Upgrade
 		}
 
 		// Copy all files over
+		$failures = array();
 		if ($exclude) {
 			$fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
 				'override'        => true,
 				'copy_on_windows' => true,
 				'exclude'         => $exclude
-			));
+			), $failures);
 		} else {
 			$fileutil->mirror($tmp_dir, DP_WEB_ROOT, null, array(
 				'override'        => true,
 				'copy_on_windows' => true,
-			));
+			), $failures);
+		}
+		if ($failures) {
+			$this->out("Failed to install these files:\n" . implode("\n", $failures));
+		}
+
+		$failures = array();
+		$fileutil->removeUnknownFiles(
+			$tmp_dir    . str_replace('/', DIRECTORY_SEPARATOR, '/app/src/Application/DeskPRO/Entity'),
+			DP_WEB_ROOT . str_replace('/', DIRECTORY_SEPARATOR, '/app/src/Application/DeskPRO/Entity'),
+			array(),
+			$failures
+		);
+		if ($failures) {
+			$this->out("Failed to delete these old files:\n" . implode("\n", $failures));
 		}
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
@@ -1232,7 +1247,8 @@ class Upgrade
 		foreach (array('error.log', 'cli-phperr.log', 'server-phperr-cli.log', 'server-phperr-web.log') as $f) {
 			$path = dp_get_log_dir() . DIRECTORY_SEPARATOR . $f;
 			if (file_exists($path)) {
-				@file_put_contents('', $path);
+				@copy($path, "$path.old");
+				@file_put_contents($path, '');
 			}
 		}
 
@@ -1689,6 +1705,7 @@ class Upgrade
 
 		} catch (\Exception $e) {}
 
+		$info['util_log'] = @file_get_contents(dp_get_log_dir() . '/upgrade-util.log');
 		$info['log'] = @file_get_contents(dp_get_log_dir() . '/upgrade.log');
 		$info['old_build'] = defined('DP_ORIG_BUILD_TIME') ? DP_ORIG_BUILD_TIME : '0';
 		$info['new_build'] = defined('DP_NEW_BUILD_TIME') ? DP_NEW_BUILD_TIME : '0';
@@ -2152,6 +2169,46 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
 				$this->copy($file, $target, isset($options['override']) ? $options['override'] : false, $failures);
 			} else {
 				throw new \RuntimeException(sprintf('Unable to guess "%s" file type.', $file));
+			}
+		}
+	}
+
+	public function removeUnknownFiles($originDir, $targetDir, $options = array(), array &$failures = null)
+	{
+		if ($failures === null) {
+			$failures = array();
+		}
+
+		if ('/' === substr($targetDir, -1) || '\\' === substr($targetDir, -1)) {
+			$targetDir = substr($targetDir, 0, -1);
+		}
+
+		if ('/' === substr($originDir, -1) || '\\' === substr($originDir, -1)) {
+			$originDir = substr($originDir, 0, -1);
+		}
+
+		$origin_filelist = array();
+
+		$origin_iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($originDir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
+		foreach ($origin_iterator as $file) {
+			$file_rel_path = DIRECTORY_SEPARATOR . str_replace($originDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+			if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
+				continue;
+			}
+			$origin_filelist[$file_rel_path] = true;
+		}
+
+		$target_iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($targetDir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST);
+		foreach ($target_iterator as $file) {
+			$file_rel_path = DIRECTORY_SEPARATOR . str_replace($targetDir.DIRECTORY_SEPARATOR, '', $file->getPathname());
+			if (!empty($options['exclude']) && in_array($file_rel_path, $options['exclude'])) {
+				continue;
+			}
+
+			if (!isset($origin_filelist[$file_rel_path])) {
+				if (!@unlink($file->getRealPath())) {
+					$failures[] = $file->getRealPath();
+				}
 			}
 		}
 	}

@@ -398,6 +398,7 @@ class ContentTypes
 			case 'text/javascript':
 			case 'text/plain':
 			case 'text/x-markdown':
+			case 'application/pdf':
 				return true;
 
 			case 'text/html':

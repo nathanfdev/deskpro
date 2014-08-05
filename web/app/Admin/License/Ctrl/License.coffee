@@ -13,7 +13,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			@$scope.$watch('lic_code', (lic_code) =>
 				lic_code = lic_code || ''
 				lic_code = lic_code.replace(/\s/g, '')
-				lic_code = lic_code.match(/(.{1,50})/g).join("\n")
+				lic_code = (lic_code.match(/(.{1,50})/g) || [lic_code]).join("\n")
 				@$scope.lic_code = lic_code
 			)
 			old_title = window.document.title

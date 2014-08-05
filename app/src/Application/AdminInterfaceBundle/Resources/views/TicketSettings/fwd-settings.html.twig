@@ -62,6 +62,7 @@
 							</label>
 							<div class="inner-group">
 								<select ng-model="settings.use_account" ui-select2="{dropdownAutoWidth:true}">
+									<option value="0">Account used by the ticket</option>
 									<option ng-repeat="acc in Fwd.email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.address') }}</option>
 								</select>
 								<span class="help-block">
@@ -80,11 +81,11 @@
 							<div class="inner-group">
 								<p>
 									When enabled, DeskPRO will attempt to send the email "From" the same email address as the logged-in agent.
-									For example, if you forwarded a message out, it would appear to be from <code>{{ app.user.primary_email_address }}</code> instead of the account address <code>{{ ng_var('use_account_address') }}</code>.
+									For example, if you forwarded a message out, it would appear to be from <code>{{ app.user.primary_email_address }}</code> instead of the email account address.
 								</p>
 								<div class="alert alert-info ng-hide" ng-show="settings.use_agent_address">
 									<p>
-										Important: To use this feature, the outgoing email account you selected above (<code>{{ ng_var('use_account_address') }}</code>) must be able to send from arbitrary email addresses.
+										Important: To use this feature, the outgoing email account you selected above must be able to send from arbitrary email addresses.
 										This may require special configuration on your email server.
 									</p>
 								</div>

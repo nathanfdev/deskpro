@@ -255,6 +255,9 @@ class EmailAccount extends DomainObject
 	 */
 	public function getUseEmailAddress()
 	{
+		if ($this->options && !empty($this->options['custom_email_address'])) {
+			return $this->options['custom_email_address'];
+		}
 		return $this->address;
 	}
 

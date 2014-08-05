@@ -113,6 +113,17 @@ class TicketFilterCollection
 			return $f->sys_name === null;
 		});
 
+		usort($this->cached['getCustomFilters'], function($a, $b) {
+			$o1 = $a->display_order;
+			$o2 = $b->display_order;
+
+			if ($o1 == $o2) {
+				return 0;
+			}
+
+			return $o1 < $o2 ? -1 : 1;
+		});
+
 		return $this->cached['getCustomFilters'];
 	}
 }

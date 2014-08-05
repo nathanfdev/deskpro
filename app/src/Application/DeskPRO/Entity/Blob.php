@@ -120,7 +120,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 */
-	protected $filesize;
+	protected $filesize = 0;
 
 	/**
 	 * The files mimetype
@@ -295,6 +295,13 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getAuthId()
 	{
+		// Note: The ID is part of the authcode
+		// The format of the authcode is handled by the blobstorage system
+		// See DeskproBlobStorage
+		// (So this is why this isn't specifically including $this->id here)
+
+		// Typically you just look up on the authcode which is unique in the table.
+
 		return $this->authcode;
 	}
 
@@ -311,7 +318,15 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 			return $this->file_url;
 		}
 
-		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()), $absolute);
+		$url = App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()), $absolute);
+
+		// We are specifically requestinga local url,
+		// make sure serve_file doesn't redirect.
+		if ($this->file_url && !$use_file_url) {
+			$url = Strings::strReplaceOne('file.php/', 'file.php/local/', $url);
+		}
+
+		return $url;
 	}
 
 	public function getEmbedCode($for_ticket = false, $type = 'image')
@@ -417,24 +432,27 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$is_image = $this->isImage();
 		return array(
-			'id'               => $this->id,
-			'authcode'         => $this->authcode,
-			'filename'         => $this->filename,
-			'file_ext'         => $this->getExtension(),
-			'filesize'         => $this->filesize,
-			'filesize_display' => $this->getReadableFilesize(),
-			'content_type'     => $this->content_type,
-			'is_image'         => $is_image,
-			'name_hash'        => $this->getNameHash(),
-			'blob_hash'        => $this->blob_hash,
-			'download_url'     => $this->getDownloadUrl(true),
-			'relative_url'     => $this->getDownloadUrl(false),
-			'thumbnail_url_80' => $is_image ? $this->getThumbnailUrl(80, true) : null,
-			'thumbnail_url_75' => $is_image ? $this->getThumbnailUrl(75, true) : null,
-			'thumbnail_url_50' => $is_image ? $this->getThumbnailUrl(50, true) : null,
-			'thumbnail_url_30' => $is_image ? $this->getThumbnailUrl(30, true) : null,
-			'thumbnail_url_20' => $is_image ? $this->getThumbnailUrl(20, true) : null,
-			'thumbnail_url_16' => $is_image ? $this->getThumbnailUrl(16, true) : null,
+			'id'                 => $this->id,
+			'authcode'           => $this->authcode,
+			'filename'           => $this->filename,
+			'file_ext'           => $this->getExtension(),
+			'filesize'           => $this->filesize,
+			'filesize_display'   => $this->getReadableFilesize(),
+			'date_created'       => $this->date_created->format('Y-m-d H:i:s'),
+			'date_created_ts'    => $this->date_created->getTimestamp(),
+			'date_created_ts_ms' => $this->date_created->getTimestamp() * 1000,
+			'content_type'       => $this->content_type,
+			'is_image'           => $is_image,
+			'name_hash'          => $this->getNameHash(),
+			'blob_hash'          => $this->blob_hash,
+			'download_url'       => $this->getDownloadUrl(true),
+			'relative_url'       => $this->getDownloadUrl(false),
+			'thumbnail_url_80'   => $is_image ? $this->getThumbnailUrl(80, true) : null,
+			'thumbnail_url_75'   => $is_image ? $this->getThumbnailUrl(75, true) : null,
+			'thumbnail_url_50'   => $is_image ? $this->getThumbnailUrl(50, true) : null,
+			'thumbnail_url_30'   => $is_image ? $this->getThumbnailUrl(30, true) : null,
+			'thumbnail_url_20'   => $is_image ? $this->getThumbnailUrl(20, true) : null,
+			'thumbnail_url_16'   => $is_image ? $this->getThumbnailUrl(16, true) : null,
 		);
 	}
 

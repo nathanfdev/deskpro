@@ -32,12 +32,24 @@
       Admin_Settings_Ctrl_GeneralSettings.prototype.initialLoad = function() {
         var data_promise;
         data_promise = this.Api.sendDataGet({
-          'settings': '/general_settings'
+          'settings': '/general_settings',
+          'email_accounts': '/email_accounts'
         }).then((function(_this) {
           return function(res) {
             _this.$scope.settings = res.data.settings.general_settings;
             _this.$scope.maxUploadSize = res.data.settings.max_filesize;
             _this.settings = angular.copy(_this.$scope.settings);
+            _this.$scope.email_accounts = res.data.email_accounts.email_accounts;
+            _this.$scope.email_accounts = _this.$scope.email_accounts.filter(function(x) {
+              return x.outgoing_account_type !== null;
+            });
+            if (_this.$scope.email_accounts.length) {
+              if (!_this.$scope.settings.default_from_email || !_this.$scope.email_accounts.filter(function(x) {
+                return x.address === _this.$scope.settings.default_from_email;
+              }).length) {
+                _this.$scope.settings.default_from_email = _this.$scope.email_accounts[0].address;
+              }
+            }
             if (_this.settings.attach_user_must_exts.length) {
               _this.$scope.attach_user_exts_limitmode = 'allow';
             } else if (_this.settings.attach_user_not_exts.length) {

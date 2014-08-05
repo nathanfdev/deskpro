@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Input\Parser\CcListParser;
 
 /**
  * New ticket acts as the processor and domain object for a newticket form
@@ -49,7 +50,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 {
 	protected static $prop_names = array(
 		'person' => 1, 'ticket' => 1, 'language' => 1,
-		'custom_ticket_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
+		'custom_ticket_fields' => 1, 'custom_user_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
 		'require_login' => 1, 'attach_blobs' => 1, 'blobs_inline_ids' => 1, 'gateway' => 1, 'gateway_address' => 1,
 		'sent_to' => 1, 'logger' => 1, 'do_dupe_check' => 1
 	);
@@ -71,6 +72,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 	public $language;
 
 	public $custom_ticket_fields = array();
+	public $custom_user_fields = array();
 
 	public $new_message;
 
@@ -283,8 +285,14 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 				$ticket['language'] = $person->getRealLanguage();
 
 			// Or if this is the web interface, then set the current lang the user is viewing
-			} elseif (!strpos($this->creation_system, 'gateway')) {
-				$ticket['language'] = App::getSession()->getLanguage();
+			} elseif (strpos($this->creation_system, 'gateway') === false) {
+				$l = App::getSession()->getLanguage();
+
+				// Make sure its a real language and not
+				// the SystemLanguage object
+				if ($l && $l->id) {
+					$ticket['language'] = $l;
+				}
 			}
 
 			if ($this->sent_to) {
@@ -446,7 +454,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			App::getOrm()->persist($ticket);
 
 			$field_manager = App::getSystemService('ticket_fields_manager');
-			$post_custom_fields = isset($_POST['newticket']['custom_ticket_fields']) ? $_POST['newticket']['custom_ticket_fields'] : array();
+			$post_custom_fields = $this->custom_ticket_fields;
 			if (!empty($post_custom_fields)) {
 				$field_manager->saveFormToObject($post_custom_fields, $ticket);
 			}
@@ -454,7 +462,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			App::getOrm()->persist($ticket);
 
 			if ($this->ticket->cc_emails) {
-				$ccs = explode(',', $this->ticket->cc_emails);
+				$cc_parser = new CcListParser(App::$container->getSystemService('EmailAddressValidator'));
+				$ccs = $cc_parser->parse($this->ticket->cc_emails);
 
 				foreach ($ccs as &$_) {
 					$_ = trim(strtolower($_));
@@ -475,6 +484,12 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
 			$ticket_manager = App::$container->getTicketManager();
 			$context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
+
+			$user_field_manager = App::getSystemService('PersonFieldsManager');
+			$post_custom_fields = $this->custom_user_fields;
+			if (!empty($post_custom_fields)) {
+				$user_field_manager->saveFormToObject($post_custom_fields, $person);
+			}
 
 			$ticket_manager->saveTicket($ticket, $context);
 			App::getOrm()->flush();
@@ -513,7 +528,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 		$cc_person = $person_processor->findPerson($cc);
 		if (!$cc_person) {
 			// Closed helpdesk and an unknown CC means we drop it
-			if (App::getContainer()->getSetting('core.user_mode') == 'closed') {
+			if (!App::getContainer()->getSetting('core.reg_enabled')) {
 				return null;
 			}
 

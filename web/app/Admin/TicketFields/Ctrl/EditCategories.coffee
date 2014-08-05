@@ -52,6 +52,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 			return data_promise
 
 		save: ->
+			if not @cats or not @cats.length
+				@enabled = false
+
 			postData = {
 				categories:     @cats,
 				default_id:     @default_id,

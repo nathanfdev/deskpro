@@ -881,8 +881,9 @@ class TicketTerms
 				}
 				break;
 			case TicketSearch::TERM_URGENCY:
-				$choice = (array)$choice;
-				$choice = array_pop($choice);
+				if (!is_array($choice)) {
+					$choice = array('num' => $choice);
+				}
 
 				switch ($op) {
 					case self::OP_BETWEEN:

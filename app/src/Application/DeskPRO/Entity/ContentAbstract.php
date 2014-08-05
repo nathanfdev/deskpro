@@ -86,7 +86,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
-	protected $content;
+	protected $content = '';
 
 	/**
 	 * View counts
@@ -243,6 +243,15 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$content = preg_replace_callback('#!\[attach:([0-9A-Z]+):(.*?)\]#', $fn, $content);
 
 		return $content;
+	}
+
+	public function setContent($content)
+	{
+		if (!$content) {
+			$content = '';
+		}
+
+		$this->setModelField('content', $content);
 	}
 
 	public function getContentHtml()

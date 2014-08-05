@@ -38,10 +38,11 @@ use Codeception\PHPUnit\Constraint\Page as PageConstraint;
  *
  * * url *required* - start url for your app
  * * browser *required* - browser that would be launched
- * * host  - Selenium server host (localhost by default)
+ * * host  - Selenium server host (127.0.0.1 by default)
  * * port - Selenium server port (4444 by default)
- * * restart - set to false to share browser sesssion between tests (by default), or set to true to create a session per test
- * * wait - set the implicit wait (5 secs) by default.
+ * * restart - set to false (default) to share selenium sesssion between tests, or set to true to create a new selenium session per test
+ * * clear_cookies - set to false to keep cookies, or set to true (default) to delete all cookies between cases.
+ * * wait - set the implicit wait (0 secs) by default.
  * * capabilities - sets Selenium2 [desired capabilities](http://code.google.com/p/selenium/wiki/DesiredCapabilities). Should be a key-value array.
  *
  * ### Example (`acceptance.suite.yml`)
@@ -67,6 +68,7 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
         'host' => '127.0.0.1',
         'port' => '4444',
         'restart' => false,
+        'clear_cookies' => true,
         'wait' => 0,
         'capabilities' => array()
     );
@@ -105,7 +107,8 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
             // but \RemoteWebDriver doesn't provide public access to check on executor
             // so we need to unset $this->webDriver here to shut it down completely
             $this->webDriver = null;
-        } else {
+        }
+        if ($this->config['clear_cookies'] && isset($this->webDriver)) {
             $this->webDriver->manage()->deleteAllCookies();
         }
     }
@@ -481,14 +484,14 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
             try {
                 $wdSelect->selectByVisibleText($opt);
                 $matched = true;
-            } catch (\NoSuchElementWebDriverError $e) {}
+            } catch (\NoSuchElementException $e) {}
         }
         if ($matched) return;
         foreach ($option as $opt) {
             try {
                 $wdSelect->selectByValue($opt);
                 $matched = true;
-            } catch (\NoSuchElementWebDriverError $e) {}
+            } catch (\NoSuchElementException $e) {}
         }
         if ($matched) return;
 
@@ -500,7 +503,7 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
                 if (!$optElement->isSelected()) {
                     $optElement->click();
                 }
-            } catch (\NoSuchElementWebDriverError $e) {}
+            } catch (\NoSuchElementException $e) {}
         }
         if ($matched) return;
         throw new ElementNotFound(json_encode($option), "Option inside $select matched by name or value");
@@ -525,12 +528,12 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
             try {
                 $wdSelect->deselectByVisibleText($opt);
                 $matched = true;
-            } catch (\NoSuchElementWebDriverError $e) {}
+            } catch (\NoSuchElementException $e) {}
 
             try {
                 $wdSelect->deselectByValue($opt);
                 $matched = true;
-            } catch (\NoSuchElementWebDriverError $e) {}
+            } catch (\NoSuchElementException $e) {}
 
         }
 
@@ -604,6 +607,8 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
         $el = $this->findField($field);
         // in order to be compatible on different OS
         $filePath = realpath(\Codeception\Configuration::dataDir().$filename);
+        // in order for remote upload to be enabled
+        $el->setFileDetector(new \LocalFileDetector);
         $el->sendKeys($filePath);
     }
 
@@ -1005,7 +1010,8 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
     /**
      * Explicit wait.
      *
-     * @param $timeout secs
+     * @param $timeout int secs
+     * @throws \Codeception\Exception\TestRuntime
      */
     public function wait($timeout)
     {
@@ -1352,12 +1358,12 @@ class WebDriver extends \Codeception\Module implements WebInterface, RemoteInter
                 try {
                     $wdSelect->selectByVisibleText($value);
                     $matched = true;
-                } catch (\NoSuchElementWebDriverError $e) {}
+                } catch (\NoSuchElementException $e) {}
 
                  try {
                     $wdSelect->selectByValue($value);
                     $matched = true;
-                } catch (\NoSuchElementWebDriverError $e) {}
+                } catch (\NoSuchElementException $e) {}
                 if ($matched) return;
 
                 throw new ElementNotFound(json_encode($value), "Option inside $field matched by name or value");

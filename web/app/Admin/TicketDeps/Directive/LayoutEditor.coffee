@@ -6,7 +6,7 @@ define [
 	Arrays
 ) ->
 	class InterfaceHandler
-		constructor: (scope, element, attr, ngModel, $compile, logger) ->
+		constructor: (scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger) ->
 			@scope    = scope
 			@element  = element
 			@ngModel  = ngModel
@@ -25,9 +25,6 @@ define [
 				user: [],
 				agent: []
 			}
-
-			@_initTab('user', @els.user_tab)
-			@_initTab('agent', @els.agent_tab)
 
 			@ngModel.$formatters.push( (modelValue) =>
 				# Make sure the basic data structure exists
@@ -75,12 +72,44 @@ define [
 				return modelValue
 			)
 
+			@_initTab('user', @els.user_tab)
+			@_initTab('agent', @els.agent_tab)
+
 			@ngModel.$parsers.push( (viewModel) =>
 				return viewModel
 			)
 
 			@ngModel.$render = =>
 				@render()
+
+			$q.all([TicketFields.loadList(), UserFields.loadList()]).then( (results) =>
+				tFields = results[0]
+				uFields = results[1]
+
+				@scope.field_status         = TicketFields.field_enabled;
+				@scope.custom_ticket_fields = tFields;
+				@scope.custom_user_fields   = uFields;
+
+				$timeout(=>
+					@_reInitTab('user', @els.user_tab)
+					@_reInitTab('agent', @els.agent_tab)
+
+					@render()
+				, 1)
+			)
+
+		_reInitTab: (tabType, tab) ->
+			# moves disabled items to end of the list
+			tab.find('.form-elements').find('li.disabled').not('.done-init').each(->
+				el = $(this)
+				parent = el.closest('ul')
+				el.detach().appendTo(parent)
+			)
+			tab.find('.form-elements').find('li').not('.disabled').not('.done-init').draggable({
+				appendTo: 'body',
+				helper: 'clone',
+				connectToSortable: tab.find('.form-worksheet').find('ul')
+			})
 
 		_initTab: (tabType, tab) ->
 			me = @
@@ -96,17 +125,19 @@ define [
 				el = $(this)
 				parent = el.closest('ul')
 				el.detach().appendTo(parent)
-			)
+			).addClass('done-init')
+
 			tab.find('.form-elements').find('li').not('.disabled').draggable({
 				appendTo: 'body',
 				helper: 'clone',
 				connectToSortable: tab.find('.form-worksheet').find('ul')
-			})
+			}).addClass('done-init')
+
 			tab.find('.form-worksheet').find('ul').sortable({
 				items: "> li",
 				axis: 'y',
 				handle: '.drag_handle',
-				stop: (event, ui) ->
+				stop: (event, ui) =>
 					if ui.item?.hasClass('dp-layout-editor-layout-field')
 						fieldType = ui.item.data('field-type')
 						fieldId   = ui.item.data('field-id') || null
@@ -122,18 +153,23 @@ define [
 						if fieldRow
 							fid = fieldRow.data('field-id')
 							tab.find("[data-fid=\"#{fid}\"]").hide()
+							@updateOrder(tabType, tab)
 
-				update: ->
-					orderMap = {}
-					tab.find('.form-worksheet').find('ul').find('li').each( (i) ->
-						fid = $(this).data('field-id')
-						if fid then orderMap[fid] = i
-					)
-					if ngModel.$modelValue[tabType] and ngModel.$modelValue[tabType].length
-						for f in ngModel.$modelValue[tabType]
-							f.display_order = orderMap[f.id] || 0
+				update: =>
+					@updateOrder(tabType, tab)
 			})
 
+
+		updateOrder: (tabType, tab) ->
+			ngModel = @ngModel
+			orderMap = {}
+			tab.find('.form-worksheet').find('ul').find('li').each( (i) ->
+				fid = $(this).data('field-id')
+				if fid then orderMap[fid] = i
+			)
+			if ngModel.$modelValue[tabType] and ngModel.$modelValue[tabType].length
+				for f in ngModel.$modelValue[tabType]
+					f.display_order = orderMap[f.id] || 0
 
 		###
     	# Create a new field, add it to the model and also add it to the UI
@@ -223,6 +259,8 @@ define [
 			fieldScope.field = field
 			fieldScope.type  = tabType
 
+			fid = @getFieldId(field)
+
 			fieldScope.removeRow = =>
 				viewValue = @ngModel.$viewValue[tabType]
 				for f, idx in viewValue
@@ -234,9 +272,9 @@ define [
 				fieldScope.$destroy()
 
 				tab = @els["#{tabType}_tab"].find('.form-elements')
-				tab.find("[data-fid=\"#{field.id}\"]").show()
+				tab.find("[data-fid=\"#{fid}\"]").show()
 
-			if field.id in @required_fields[tabType]
+			if fid in @required_fields[tabType]
 				fieldScope.removeRow = ->
 					return
 				fieldScope.isSticky = true
@@ -244,7 +282,7 @@ define [
 			fieldRow = @$compile("""
 				<li class="layout-field"><dp-ticket-layout-editor-field type="#{tabType}" ng-model="field" /></li>
 			""")(fieldScope)
-			fieldRow.data('field-id', field.id).addClass("field-#{field.id}")
+			fieldRow.data('field-id', fid).addClass("field-#{fid}")
 
 			return fieldRow
 
@@ -259,85 +297,123 @@ define [
 			]
 
 			for form in forms
-				typeName    = form.typeName
-				form_model  = @ngModel.$viewValue[form.typeName]
-				worksheetEl = @els[form.worksheetName]
-				listEl      = worksheetEl.find('ul').first()
+				@renderForm(form)
 
-				layoutFieldEls = worksheetEl.find('.layout-field');
+		renderForm: (form) ->
+			prevField   = null
+			prevFieldEl = null
+			typeName    = form.typeName
+			form_model  = @ngModel.$viewValue[form.typeName]
+			worksheetEl = @els[form.worksheetName]
+			tabEl       = @els[form.typeName + '_tab']
+			listEl      = worksheetEl.find('ul').first()
 
-				draggableEls = @els["#{typeName}_tab"].find('.form-elements')
-				draggableEls.show()
-				draggableEls.find('li').each( ->
-					$el = $(this)
-					field_id = $el.data('field-id') || null
-					if field_id
-						fid = $el.data('field-type') + '_' + field_id
+			layoutFieldEls = worksheetEl.find('.layout-field');
+
+			validNames = []
+			tabEl.find('.form-elements').find('.layout-field').each(->
+				validNames.push($(this).data('field-type') + '_' + ($(this).data('field-id') || '0'));
+			)
+
+			use_form_model = []
+			for field in form_model
+				nameCheck = field.field_type + '_' + (field.field_id || '0')
+				if validNames.indexOf(nameCheck) != -1
+					use_form_model.push(field)
+
+			draggableEls = tabEl.find('.form-elements')
+			draggableEls.show()
+			draggableEls.find('li').each( ->
+				$el = $(this)
+				field_id = $el.data('field-id') || null
+				if field_id
+					fid = $el.data('field-type') + '_' + field_id
+				else
+					fid = $el.data('field-type')
+
+				$el.data('fid', fid).attr('data-fid', fid)
+			)
+
+			orderMap = {}
+			elementMap = {}
+
+			# Check for new elements
+			newFields = []
+			for field, order in use_form_model
+				field.id = @getFieldId(field)
+				fieldEl = layoutFieldEls.filter('.field-' + field.id)
+				if not fieldEl[0]
+					newFields.push(field)
+				else
+					elementMap[field.id] = fieldEl
+
+				orderMap[field.id] = order
+
+			# Remove elements
+			layoutFieldEls.each( ->
+				fieldId = $(this).data('field-id')
+				if not elementMap[fieldId]
+					$(this).remove()
+			)
+
+			# Add new elements
+			for field in newFields
+				field.id = @getFieldId(field)
+
+				nameCheck = field.field_type + '_' + (field.field_id || '0')
+				if validNames.indexOf(nameCheck) == -1
+					continue
+
+				fieldRow = @createFieldRow(typeName, field)
+				elementMap[field.id] = fieldRow
+				order = orderMap[field.id]
+
+				if order == 0
+					listEl.prepend(fieldRow)
+				else
+					prevField = use_form_model[order-1]
+					if prevField and elementMap[prevField.id]
+						prevFieldEl = elementMap[prevField.id]
+						fieldRow.insertAfter(prevFieldEl)
 					else
-						fid = $el.data('field-type')
+						listEl.append(fieldRow)
 
-					$el.data('fid', fid).attr('data-fid', fid)
-				)
+			# Verify order
+			doReorder = false
+			layoutFieldEls = worksheetEl.find('.layout-field')
+			layoutFieldEls.each( (currentOrder) ->
+				fieldId = $(this).data('field-id')
+				expectedOrder = orderMap[fieldId] || 0
 
-				orderMap = {}
-				elementMap = {}
+				if currentOrder != expectedOrder
+					doReorder = true
+					return false
+			)
 
-				# Check for new elements
-				newFields = []
-				for field, order in form_model
+			if doReorder
+				layoutFieldEls.detach()
+				for field in use_form_model
 					fieldEl = layoutFieldEls.filter('.field-' + field.id)
-					if not fieldEl[0]
-						newFields.push(field)
-					else
-						elementMap[field.id] = fieldEl
+					fieldEl.appendTo(listEl)
 
-					orderMap[field.id] = order
+			for f in use_form_model
+				fid = @getFieldId(f)
+				draggableEls.find("[data-fid=\"#{fid}\"]").hide();
 
-				# Remove elements
-				layoutFieldEls.each( ->
-					fieldId = $(this).data('field-id')
-					if not elementMap[fieldId]
-						$(this).remove()
-				)
+		getFieldId: (field) ->
+			return field.id if field.id
 
-				# Add new elements
-				for field in newFields
-					fieldRow = @createFieldRow(typeName, field)
-					elementMap[field.id] = fieldRow
-					order = orderMap[field.id]
+			field_id = field.field_id || null
+			if field_id
+				fid = field.field_type + '_' + field_id
+			else
+				fid = field.field_type
 
-					if order == 0
-						listEl.prepend(fieldRow)
-					else
-						prevField = form_model[order-1]
-						if prevField
-							prevFieldEl = elementMap[prevField.id]
-							fieldRow.insertAfter(prevFieldEl)
-						else
-							listEl.append(fieldRow)
+			field.id = fid
+			return fid
 
-				# Verify order
-				doReorder = false
-				layoutFieldEls = worksheetEl.find('.layout-field')
-				layoutFieldEls.each( (currentOrder) ->
-					fieldId = $(this).data('field-id')
-					expectedOrder = orderMap[fieldId] || 0
+	return ['$compile', 'LoggerManager', 'DataService', '$q', '$timeout', ($compile, LoggerManager, DataService, $q, $timeout) ->
 
-					if currentOrder != expectedOrder
-						doReorder = true
-						return false
-				)
-
-				if doReorder
-					layoutFieldEls.detach()
-					for field, order in form_model
-						fieldEl = layoutFieldEls.filter('.field-' + field.id)
-						fieldEl.appendTo(listEl)
-
-				for f in form_model
-					draggableEls.find("[data-fid=\"#{f.id}\"]").hide();
-
-	return ['$compile', 'LoggerManager', ($compile, LoggerManager) ->
 		directive = {}
 		directive.restrict    = 'E'
 		directive.require     = 'ngModel'
@@ -347,7 +423,11 @@ define [
 
 		directive.link = (scope, element, attrs, ngModel) ->
 			logger = LoggerManager.get('directive.dpLayoutEditor')
-			interfaceHandler = new InterfaceHandler(scope, element, attrs, ngModel, $compile, logger)
+
+			TicketFields = DataService.get('TicketFields')
+			UserFields   = DataService.get('UserFields')
+
+			interfaceHandler = new InterfaceHandler(scope, element, attrs,  ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger)
 
 		return directive
 	]

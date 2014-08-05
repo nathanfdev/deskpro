@@ -205,6 +205,21 @@ class ObjectLangRepository
 	public function setRec($lang, $object, $prop_name, $text)
 	{
 		$rec = $this->getRec($lang, $object, $prop_name);
+
+		if (!$rec) {
+			// Need to do manual lookup because getRec wont return
+			// empty values, so the record itself might still exist
+
+			$lang_id = is_object($lang) ? $lang->getId() : $lang;
+			$obj_ref = is_object($object) ? $object->getObjectRef() : $object;
+
+			$rec = $this->em->createQuery("
+				SELECT o
+				FROM DeskPRO:ObjectLang o
+				WHERE o.ref = ?0 AND o.prop_name = ?1 AND o.language = ?2
+			")->setParameters(array($obj_ref, $prop_name, $lang_id))->getOneOrNullResult();
+		}
+
 		if (!$rec) {
 			$rec = ObjectLang::createObjectLang($lang, $object, $prop_name, $text);
 			$this->registerRec($rec);
@@ -365,6 +380,11 @@ class ObjectLangRepository
 		}
 
 		foreach ($recs as $rec) {
+
+			if (!trim($rec->value)) {
+				continue;
+			}
+
 			$obj_ref = $rec->ref;
 			$lang_id = $rec->language->getId();
 

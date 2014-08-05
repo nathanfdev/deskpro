@@ -14,6 +14,7 @@ define [
 			@actionsTypeDef = @dpObTypesDefTicketActions
 			@$scope.actionOptionTypes = []
 			@$scope.actions_form = {}
+			@$scope.message_count = null
 
 			@accountId = parseInt(@$stateParams.id || 0)
 			@didPassTest = false
@@ -23,7 +24,7 @@ define [
 				to: window.DP_PERSON_EMAIL,
 				from: '',
 				subject: 'Test email',
-				message: 'This is a test. If you see this email in your inbox, your outgoing email account are correct.'
+				message: 'This is a test. If you see this email in your inbox, your outgoing email account settings are correct.'
 			}
 
 		updateCriteriaOptionTypes: ->
@@ -32,6 +33,9 @@ define [
 			@$scope.actionOptionTypes.length = 0
 			for opt in setActionOptions
 				@$scope.actionOptionTypes.push(opt)
+
+		getFormModel: ->
+			return new EditTicketAccountModel(@account || {}, @deps || [], @trigger || {})
 
 		initialLoad: ->
 			dep_promise = @DataService.get('TicketDeps').loadList().then( (list) =>
@@ -74,8 +78,6 @@ define [
 				}).then( (result) =>
 					@account = result.data.email_account.email_account
 					@trigger = result.data.email_account.trigger
-					@form_model = new EditTicketAccountModel(@account)
-					@$scope.form = @form_model.form
 				)
 
 				proms.push(data_promise)
@@ -83,13 +85,17 @@ define [
 			final_promise = @$q.all(proms)
 
 			final_promise.then(=>
-				@form_model = new EditTicketAccountModel(@account, @deps, @trigger)
-
-				if not @accountId
-					@form_model.form.incoming_account_type = ''
-					@form_model.form.outgoing_account_type = 'smtp'
+				@form_model = @getFormModel()
 
 				@$scope.form = @form_model.form
+
+				if not @accountId
+					@$scope.form.incoming_type = ''
+					@$scope.form.outgoing_type = 'smtp'
+
+				if not @$scope.form.outgoing_type
+					@$scope.form.outgoing_type = 'php_mail'
+
 				@updateCriteriaOptionTypes()
 			)
 			return final_promise
@@ -101,6 +107,10 @@ define [
     	# @return {promise}
 		###
 		saveAccount: ->
+			if not @account.id and not @new_is_confirmed
+				@showNewAccountConfirm()
+				return
+
 			postData = @form_model.getFormData()
 
 			triggerSaver = =>
@@ -174,6 +184,7 @@ define [
     	# Show the test account modal
 		###
 		testAccountModal: ->
+			me = @
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('TicketAccounts/test-account-modal.html'),
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
@@ -191,12 +202,14 @@ define [
 							$scope.is_success    = result.is_success
 							$scope.log           = result.log
 							$scope.message_count = result.message_count
+							me.$scope.message_count = result.message_count
 						).error(=>
 							$scope.showing_log   = true
 							$scope.is_testing    = false
 							$scope.is_success    = false
 							$scope.log           = "Server Error"
 							$scope.message_count = 0
+							me.$scope.message_count = null
 						)
 
 					testNow();
@@ -206,6 +219,27 @@ define [
 				]
 			});
 
+		showNewAccountConfirm: ->
+			me = @
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('TicketAccounts/new-account-confirm.html'),
+				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+
+					$scope.message_count = me.$scope.message_count
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+
+					$scope.confirm = ->
+						$modalInstance.close(true);
+				]
+			})
+
+			inst.result.then( (r) =>
+				if r
+					@new_is_confirmed = true
+					@saveAccount()
+			)
 
 		###
     	# Show the test account modal

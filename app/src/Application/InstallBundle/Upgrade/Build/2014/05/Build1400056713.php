@@ -48,10 +48,14 @@ class Build1400056713 extends AbstractBuild
 		$db = $this->container->getDb();
 		$em = $this->container->getEm();
 
+		// Reset table
+		$db->exec("DELETE FROM email_accounts");
+		$db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = 1");
+
 		$this->out("Upgrading email accounts...");
 
 		$gateways      = $db->fetchAllKeyed("SELECT * FROM email_gateways");
-		$gateway_addrs = $db->fetchAllGrouped("SELECT * FROM email_gateway_addresses ORDER BY run_order ASC", array(), 'email_gateway_id');
+		$gateway_addrs = $db->fetchAllGrouped("SELECT * FROM email_gateway_addresses ORDER BY run_order ASC, id ASC", array(), 'email_gateway_id');
 		$transports    = $db->fetchAllKeyed("SELECT * FROM email_transports");
 
 		// Save gateway address mapping needed when importing triggers
@@ -67,6 +71,7 @@ class Build1400056713 extends AbstractBuild
 		foreach ($gateways as $gateway) {
 			if ($gateway['gateway_type'] != 'tickets') {
 				$this->out("Skipping {$gateway['id']}: Must be ticket type");
+				continue;
 			}
 
 			if (!empty($gateway['linked_transport_id']) && isset($transports[$gateway['linked_transport_id']])) {
@@ -94,6 +99,7 @@ class Build1400056713 extends AbstractBuild
 		$default_tr = Arrays::findValue($transports, function($tr) {
 			return $tr['match_type'] == 'all';
 		});
+		$default_account = null;
 		if ($default_tr) {
 			$default_tr_address = $this->container->getSetting('core.default_from_email');
 
@@ -102,28 +108,48 @@ class Build1400056713 extends AbstractBuild
 			$tr_account->is_enabled = true;
 			$tr_account->outgoing_account = $this->_getTransportConfig($default_tr);
 
+			// Cloud must mark the incoming settings as noop
+			if (defined('DPC_IS_CLOUD')) {
+				$tr_account->setAccountType(EmailAccount::TYPE_TICKETS);
+				$tr_account->incoming_account = new IncomingAccount\NoopConfig();
+			}
+
 			$addr_exists = Arrays::findValue($new_accounts, function($account) use ($tr_account) {
 				return $account->hasAddress($tr_account->address);
 			});
 
 			if (!$addr_exists) {
-				$new_accounts[-1] = $tr_account;
+				$default_account = $tr_account;
 			}
 		}
 
+		$id_map = array();
+		$tmp_id = time();
 		foreach ($new_accounts as $want_id => $account) {
 			$em->persist($account);
 			$em->flush();
 
-			if ($want_id != -1) {
-				$this->container->getDb()->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($want_id, $account->id));
-			}
+			// Update to a high ID that wont collide when we update again below
+			$db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($tmp_id, $account->id));
+			$id_map[$tmp_id] = $want_id;
+			$tmp_id++;
 		}
 
-		$max_id = $this->container->getDb()->fetchColumn("SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1");
+		foreach ($id_map as $tmp_id => $want_id) {
+			$db->executeUpdate('UPDATE email_accounts SET id = ? WHERE id = ?', array($want_id, $tmp_id));
+		}
+
+		$max_id = $db->fetchColumn("SELECT id FROM email_accounts ORDER BY id DESC LIMIT 1");
 		if (!$max_id) $max_id = 0;
 		$max_id++;
-		$this->container->getDb()->exec("ALTER TABLE email_accounts AUTO_INCREMENT = $max_id");
+		$db->exec("ALTER TABLE email_accounts AUTO_INCREMENT = $max_id");
+
+		// Then insert default account with whatever autoinc id is next,
+		// we dont care about the id
+		if ($default_account) {
+			$em->persist($default_account);
+			$em->flush();
+		}
 	}
 
 
@@ -172,7 +198,7 @@ class Build1400056713 extends AbstractBuild
 
 			// directory was the type used by cloud accounts
 			case 'directory':
-				$null_config = new IncomingAccount\NullConfig();
+				$null_config = new IncomingAccount\NoopConfig();
 				$account->incoming_account = $null_config;
 				break;
 
@@ -201,6 +227,10 @@ class Build1400056713 extends AbstractBuild
 		if (isset($addrs[1])) {
 			array_shift($addrs);
 			$account->other_addresses = array_map(function($a) { return $a['match_pattern']; }, $addrs);
+		}
+
+		if (defined('DPC_IS_CLOUD') && $account->other_addresses && !empty($account->other_addresses[0])) {
+			$account->setOption('custom_email_address', $account->other_addresses[0]);
 		}
 
 		$account->is_enabled = (bool)$gateway['is_enabled'];

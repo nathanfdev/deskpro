@@ -39,6 +39,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
 use Application\DeskPRO\PageLog\PageLogger;
+use Doctrine\DBAL\DBALException;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -328,10 +329,38 @@ class KernelBooter
 		dp_pagelog_set('request_id', defined('DP_REQUEST_ID') ? DP_REQUEST_ID : null);
 		dp_pagelog_set('page_url', $request->getRequestUri());
 
-		if (dp_trust_proxy_data()) {
-			\Application\DeskPRO\HttpFoundation\Request::trustProxyData();
-			\Symfony\Component\HttpFoundation\Request::trustProxyData();
+		$trust_option = isset($GLOBALS['DP_CONFIG']['trust_proxy_data']) && $GLOBALS['DP_CONFIG']['trust_proxy_data'] ? $GLOBALS['DP_CONFIG']['trust_proxy_data'] : null;
+		$trust_list = array();
+		if ($trust_option) {
+			if (!is_array($trust_option)) {
+				$trust_option = array($trust_option);
+			}
+			foreach ($trust_option as $opt) {
+				if (is_string($opt) && $opt[0] == '@') {
+					$file = substr($opt, 1);
+					// A relative file starts with ~
+					if ($file[0] == '~') {
+						$file = DP_ROOT . substr($file, 1);
+					}
+
+					if (file_exists($file)) {
+						$inc_opts = @include($file);
+						if ($inc_opts) {
+							$trust_list = array_merge($trust_list, $inc_opts);
+						}
+					}
+				} else {
+					$trust_list[] = $opt;
+				}
+			}
 		}
+
+		if ($trust_list) {
+			\Application\DeskPRO\HttpFoundation\Request::setTrustedProxies($trust_list);
+			\Symfony\Component\HttpFoundation\Request::setTrustedProxies($trust_list);
+		}
+
+		$GLOBALS['DP_MAIN_REQUEST'] = $request;
 
 		define('DP_REQUEST_URL', $request->getUri());
 
@@ -359,7 +388,7 @@ class KernelBooter
 			dp_pagelog_set('response_type', $response->headers->get('Content-Type'));
 			dp_pagelog_set('response_code', $response->getStatusCode());
 			dp_pagelog_set('response_size', strlen($response->getContent()));
-		} catch (\PDOException $e) {
+		} catch (DBALException $e) {
 			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
 				// This will show an error page if already installed, so the redirect to install wont happen
 				deskpro_handle_boot_db_exception($e);

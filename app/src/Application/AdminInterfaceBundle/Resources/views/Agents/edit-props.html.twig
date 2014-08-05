@@ -42,6 +42,17 @@
 		</div>
 		<div class="form-group">
 			<div class="col-lg-3">
+				<h3>Phone Number</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="EditCtrl.invalid_phone_error" class="alert alert-danger">
+					{{ ng_var('EditCtrl.invalid_phone_error') }}
+				</div>
+				<input type="tel" style="min-width: 250px" dp-phone-number="{{ ng_var('EditCtrl.form.primary_phone_number_region') }}" class="form-control" name="primary_phone_number_text" ng-model="EditCtrl.form.primary_phone_number_text" style="width:80%"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
 				<h3>Zones</h3>
 			</div>
 			<div class="col-lg-9">

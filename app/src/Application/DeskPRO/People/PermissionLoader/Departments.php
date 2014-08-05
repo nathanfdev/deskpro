@@ -59,27 +59,55 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 		$in = implode(',', $this->getUsergroupIds());
 
 		if (DP_INTERFACE == 'agent' || ($this->person->is_agent && DP_INTERFACE != 'user')) {
-			$agent_ugs = App::getDataService('Usergroup')->getAgentUsergroups();
-			$has_agent_ugs = array();
 
+			$agent_groups = App::$container->getAgentGroups();
+			$allow_all = false;
 			foreach ($this->usergroup_ids as $ugid) {
-				if (isset($agent_ugs[$ugid])) {
-					$has_agent_ugs[] = $ugid;
+				if ($agent_groups->groupExists($ugid)) {
+					$g = $agent_groups->getGroup($ugid);
+					if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+						$allow_all = true;
+						break;
+					}
 				}
 			}
 
-			if ($has_agent_ugs) {
-				$res = App::getDb()->fetchAll("
-					SELECT department_id, app, name, value
-					FROM department_permissions
-					WHERE person_id = {$this->person->getId()} OR usergroup_id IN (" . implode(',', $has_agent_ugs) . ")
-				");
+			if ($allow_all) {
+				$res = array();
+				foreach (array(App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()) as $coll) {
+					foreach ($coll as $d) {
+						$res[] = array(
+							'department_id' => $d->id,
+							'app'           => $d->is_tickets_enabled ? 'tickets' : 'chat',
+							'name'          => 'full',
+							'value'         => 1
+						);
+					}
+				}
+
 			} else {
-				$res = App::getDb()->fetchAll("
-					SELECT department_id, app, name, value
-					FROM department_permissions
-					WHERE person_id = {$this->person->getId()}
-				");
+				$agent_ugs = App::getDataService('Usergroup')->getAgentUsergroups();
+				$has_agent_ugs = array();
+
+				foreach ($this->usergroup_ids as $ugid) {
+					if (isset($agent_ugs[$ugid])) {
+						$has_agent_ugs[] = $ugid;
+					}
+				}
+
+				if ($has_agent_ugs) {
+					$res = App::getDb()->fetchAll("
+						SELECT department_id, app, name, value
+						FROM department_permissions
+						WHERE person_id = {$this->person->getId()} OR usergroup_id IN (" . implode(',', $has_agent_ugs) . ")
+					");
+				} else {
+					$res = App::getDb()->fetchAll("
+						SELECT department_id, app, name, value
+						FROM department_permissions
+						WHERE person_id = {$this->person->getId()}
+					");
+				}
 			}
 		} else {
 			$res = App::getDb()->fetchAll("

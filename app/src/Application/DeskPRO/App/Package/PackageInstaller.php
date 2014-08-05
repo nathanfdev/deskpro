@@ -81,6 +81,7 @@ class PackageInstaller
 		$def = $package->createAppPackage($def);
 
 		$this->em->persist($def);
+		$this->em->flush();
 		$old_blobs = array();
 
 		#------------------------------
@@ -91,20 +92,31 @@ class PackageInstaller
 		$have_sizes = array();
 		$largest = null;
 
+		$has_icon_filechange = false;
+
 		foreach ($sizes as $size) {
 			$path = $package->getIconFilePath($size);
 			if (!$path) {
 				continue;
 			}
 
-			$blob = $this->blob_storage->createBlobRecordFromFile(
-				$path,
-				"app_$size.png",
-				'image/png'
-			);
+			$tag = "icons.app.$size";
+			$name = "app_$size.png";
 
-			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size", null, $old_blobs);
-			$this->em->persist($asset);
+			if ($this->isAssetBlobChanged($def, $name, $path)) {
+				$blob = $this->blob_storage->createBlobRecordFromFile(
+					$path,
+					$name,
+					'image/png'
+				);
+
+				$asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
+				$this->em->persist($asset);
+				$has_icon_filechange = true;
+			} else {
+				$asset = $def->getAsset($name);
+				$blob = $asset->blob;
+			}
 
 			$largest = array($path, $size, $blob);
 			$have_sizes[$size] = $blob;
@@ -114,14 +126,24 @@ class PackageInstaller
 		if (!$largest) {
 			$path = DP_ROOT.'/src/Application/DeskPRO/App/Package/Resources/no-icon.png';
 			$size = 256;
-			$blob = $this->blob_storage->createBlobRecordFromFile(
-				$path,
-				"app_$size.png",
-				'image/png'
-			);
 
-			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size", null, $old_blobs);
-			$this->em->persist($asset);
+			$tag = "icons.app.$size";
+			$name = "app_$size.png";
+
+			if ($this->isAssetBlobChanged($def, $name, $path)) {
+				$blob = $this->blob_storage->createBlobRecordFromFile(
+					$path,
+					$name,
+					'image/png'
+				);
+
+				$asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
+				$this->em->persist($asset);
+				$has_icon_filechange = true;
+			} else {
+				$asset = $def->getAsset($name);
+				$blob = $asset->blob;
+			}
 
 			$largest = array($path, $size, $blob);
 			$have_sizes[$size] = $blob;
@@ -134,19 +156,34 @@ class PackageInstaller
 				continue;
 			}
 
+			$tag = "icons.app.$size";
+			$name = "app_$size.png";
+
+			// If no main icon has changed, we only need to do the image
+			// resize if the image size doesnt exist yet, any other will
+			// not have changed
+			if (!$has_icon_filechange) {
+				$exist_asset = $def->getAsset($name);
+				if ($exist_asset) {
+					continue;
+				}
+			}
+
 			$image = $this->imagine->open($largest[0]);
 			$image->resize(new ImageBox($size, $size));
 
+			$img_raw = $image->get('png');
+
 			$blob = $this->blob_storage->createBlobRecordFromString(
-				$image->get('png'),
-				"app_$size.png",
+				$img_raw,
+				$name,
 				'image/png'
 			);
 
-			unset($image);
-
-			$asset = $this->_addAssetBlob($def, $blob, "icons.app.$size", null, $old_blobs);
+			$asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
 			$this->em->persist($asset);
+
+			unset($img_raw);
 
 			$have_sizes[$size] = $blob;
 		}
@@ -159,22 +196,26 @@ class PackageInstaller
 		if ($path) {
 			$readme = file_get_contents($path);
 
-			$blob = $this->blob_storage->createBlobRecordFromString(
-				$readme,
-				'README',
-				'text/plain'
-			);
-			$asset = $this->_addAssetBlob($def, $blob, 'readme.text', null, $old_blobs);
-			$this->em->persist($asset);
+			if ($this->isAssetBlobChanged($def, 'README', md5($readme), true)) {
+				$blob = $this->blob_storage->createBlobRecordFromString(
+					$readme,
+					'README',
+					'text/plain'
+				);
+				$asset = $this->_addAssetBlob($def, $blob, 'readme.text', null, $old_blobs);
+				$this->em->persist($asset);
+			}
 
 			$readme_html = \Parsedown::instance()->parse($readme);
-			$blob = $this->blob_storage->createBlobRecordFromString(
-				$readme_html,
-				'README.html',
-				'text/html'
-			);
-			$asset = $this->_addAssetBlob($def, $blob, 'readme.html', null, $old_blobs);
-			$this->em->persist($asset);
+			if ($this->isAssetBlobChanged($def, 'README.html', md5($readme_html), true)) {
+				$blob = $this->blob_storage->createBlobRecordFromString(
+					$readme_html,
+					'README.html',
+					'text/html'
+				);
+				$asset = $this->_addAssetBlob($def, $blob, 'readme.html', null, $old_blobs);
+				$this->em->persist($asset);
+			}
 		}
 
 		#------------------------------
@@ -182,7 +223,7 @@ class PackageInstaller
 		#------------------------------
 
 		$appjs_path = $package->getAppJsFilePath();
-		if ($appjs_path) {
+		if ($appjs_path && $this->isAssetBlobChanged($def, 'app.js', $appjs_path)) {
 			$blob = $this->blob_storage->createBlobRecordFromFile(
 				$appjs_path,
 				'app.js',
@@ -198,35 +239,74 @@ class PackageInstaller
 		#------------------------------
 
 		foreach ($package->getJsAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'js', $old_blobs);
-			$this->em->persist($asset);
+			if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+				$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'js', $old_blobs);
+				$this->em->persist($asset);
+			}
 		}
 		foreach ($package->getHtmlAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'html', $old_blobs);
-			$this->em->persist($asset);
+			if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+				$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'html', $old_blobs);
+				$this->em->persist($asset);
+			}
 		}
 		foreach ($package->getCssAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'css', $old_blobs);
-			$this->em->persist($asset);
+			if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+				$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'css', $old_blobs);
+				$this->em->persist($asset);
+			}
 		}
 		foreach ($package->getResAssets() as $asset_info) {
-			$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'res', $old_blobs);
-			$this->em->persist($asset);
+			if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+				$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'res', $old_blobs);
+				$this->em->persist($asset);
+			}
 		}
 
-		#------------------------------
-		# Save
-		#------------------------------
-
 		$this->em->flush();
+
+		#------------------------------
+		# Remove old assets and blobs
+		#------------------------------
 
 		// Need to delete old blobs at the end after AppAsset.blob has been overwritten
 		// because AppAsset.blob has a delete cascade relation.
 		foreach ($old_blobs as $b) {
-			//$this->blob_storage->deleteBlobRecord($b);
+			$this->blob_storage->deleteBlobRecord($b);
 		}
 
 		return $def;
+	}
+
+
+	/**
+	 * @param AppPackage $def
+	 * @param string     $name
+	 * @param string     $file     File path, or a string hash if $as_hash is used
+	 * @param bool       $as_hash
+	 * @return bool
+	 */
+	private function isAssetBlobChanged(AppPackage $def, $name, $file, $as_hash = false)
+	{
+		$asset = $def->getAsset($name);
+
+		// doesnt exist yet, so yes its "changed"
+		if (!$asset) {
+			return true;
+		}
+
+		if ($as_hash) {
+			$hash = $file;
+		} else {
+			$hash = @md5_file($file);
+		}
+
+		// Different file hash, so its changed
+		if ($hash != $asset->blob->blob_hash) {
+			return true;
+		}
+
+		return false;
 	}
 
 
@@ -246,7 +326,9 @@ class PackageInstaller
 			$content = file_get_contents($asset_info['real_path']);
 			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($package) {
 				$path = @realpath($package->getPath() . '/html/' . $m[1]);
-				if (!$path || !is_file($path) || strpos($path, $package->getPath()) !== 0) {
+				$path_std = str_replace('\\', '/', $path);
+
+				if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
 					return '<!-- Invalid include file: ' . $m[1] . ' -->';
 				}
 
@@ -282,33 +364,26 @@ class PackageInstaller
 	 */
 	private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
 	{
-		if ($tag) {
-			if ($filename) {
-				$asset = null;
-				foreach ($def->getTaggedAssets($tag) as $a) {
-					if ($a->name == $filename) {
-						$asset = $a;
-						break;
-					}
-				}
-			} else {
-				$asset = $def->getTaggedAsset($tag);
-			}
+		if (!$filename) {
+			$filename = $blob->filename;
+		}
 
-			if ($asset) {
-				if ($asset->blob && $asset->blob->id != $blob->id) {
-					$old_blobs[] = $asset->blob;
-				}
+		$asset = $def->getAsset($filename);
+
+		if ($asset) {
+			if ($asset->blob && $asset->blob->id != $blob->id) {
+				$old_blobs[] = $asset->blob;
+				$asset->blob = null;
 			}
 		}
 
 		if (!$asset) {
-			$asset = $def->addAssetFromBlob($blob);
+			$asset = $def->addAssetFromBlob($blob, $filename);
 		} else {
 			$asset->blob = $blob;
 		}
 
-		$asset->name = $filename ? $filename : $blob->filename;
+		$asset->name = $filename;
 		$asset->tag = $tag;
 
 		return $asset;

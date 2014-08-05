@@ -19,7 +19,7 @@
 				style="min-width: 240px"
 			>
 				<option value="">Select type</option>
-				<option value="mail">Send mail using PHP mail()</option>
+				<option value="php_mail">Send mail using PHP mail()</option>
 				<option value="smtp">SMTP</option>
 				<option value="gmail">GMail or Google Apps</option>
 			</select>
@@ -29,7 +29,7 @@
 		{# PHP Mail #}
 		{############}
 
-		<div class="ng-hide" ng-show="form.outgoing_type == 'mail'">
+		<div class="ng-hide" ng-show="form.outgoing_type == 'php_mail'">
 			<div class="inner-group">
 				<table width="100%" class="inner-form-table">
 					<tr>

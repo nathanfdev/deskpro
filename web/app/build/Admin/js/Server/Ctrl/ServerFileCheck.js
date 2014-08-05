@@ -69,8 +69,8 @@
 
       Admin_ServerFileCheck_Ctrl_ServerFileCheck.prototype.doNextRequest = function() {
         this.current_check++;
-        if (this.current_check < this.total_checks) {
-          return this.Api.sendGet('/server_file_check/' + this.current_check).then((function(_this) {
+        if (this.current_check <= this.total_checks) {
+          return this.Api.sendGet('/server_file_check/' + (this.current_check - 1)).then((function(_this) {
             return function(res) {
               var data, file, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
               data = res.data.server_file_check;

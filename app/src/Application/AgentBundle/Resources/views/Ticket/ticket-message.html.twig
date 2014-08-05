@@ -8,7 +8,7 @@
 			width="40"
 			height="40"
 			{% if message.person.is_agent %}class="agent-link" data-agent-id="{{ message.person.id }}"
-			{% else %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
+			{% elseif message.person.id %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
 			{% endif %}
 		/>{% if message.person.is_disabled %}<span class="person-disabled"></span>{% endif %}</div>
 	<div class="content">
@@ -176,24 +176,47 @@
 					{% set ticket_attach = ticket_attachments[attach_id] %}
 					<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
 						{% if ticket_attach.blob.isImage() %}
-							<a href="{{ ticket_attach.blob.download_url }}" data-deskpro-url="{{ ticket_attach.blob.getDownloadUrl(false, false) }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+							<a class="dragout" draggable="true" data-downloadurl="{{ticket_attach.blob.content_type}}:{{ticket_attach.blob.filename}}:{{ ticket_attach.blob.getDownloadUrl(true) }}" data-blob-authid="{{ ticket_attach.blob.getAuthId() }}" href="{{ ticket_attach.blob.download_url }}" data-deskpro-url="{{ ticket_attach.blob.getDownloadUrl(false, false) }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
 						{% endif %}
-						<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
+						<a class="dragout" draggable="true" data-downloadurl="{{ticket_attach.blob.content_type}}:{{ticket_attach.blob.filename}}:{{ ticket_attach.blob.getDownloadUrl(true) }}" data-blob-authid="{{ ticket_attach.blob.getAuthId() }}" href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
 						<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
 					</li>
 				{% endfor %}
 			</ul>
 		{%endif%}
 		{% if ticket_fwd_logs[message.id] %}
-			<ul class="attachment-list">
+			<ul class="attachment-list fwd-list">
 				{% for log in ticket_fwd_logs[message.id] %}
-					<li style="background: none; padding-left: 0;">
+					<li style="background: none; padding: 0; font-size: 11px; line-height: 18px;">
 						{% if log.person %}
-							<span class="agent-icon" style="background-image: url({{ log.person.getPictureUrl(16) }});">{{ log.person.display_name }}</span>
+							<span class="agent-icon" style="background-image: url({{ log.person.getPictureUrl(16) }}); line-height: 16px; display: inline-block;">{{ log.person.display_name }}</span>
 						{% else %}
 							{{ log.details.from_name }}
 						{% endif %}
-						forwarded this message to {{ log.details.to_string }} (sent from {{ log.details.from_email }}).
+						forwarded this message to {{ log.details.to_string }}
+						{% if log.details.cc_string or log.details.bcc_string %}
+							with
+							{% if log.details.cc_string %}{{ log.details.cc_string }} CC'd{% endif %}
+							{% if log.details.cc_string and log.details.bcc_string %}and{% endif %}
+							{% if log.details.bcc_string %}{{ log.details.bcc_string }} BCC'd{% endif %}
+						{% endif %}
+						(sent from {{ log.details.from_email }}).
+						{% if log.details.custom_message %}
+							{% set tmpId = el_uid() %}
+							<span class="open-el-overlay" style="background: #fff; border: 1px solid #aaa; border-radius: 2px; font-size: 11px; cursor: pointer; padding: 1px 1px;" data-content-el="{{ tmpId }}">View Agent Message</span>
+							<div style="display: none" id="{{ tmpId }}">
+								<div>
+									<div class="overlay-title">
+										<h4>Message</h4>
+									</div>
+
+									<div class="overlay-content">
+										<div style="margin-bottom: 10px; font-size: 11px; color: #888">This custom message was sent along with the forwarded message:</div>
+										{{ log.details.custom_message|nl2br }}
+									</div>
+								</div>
+							</div>
+						{% endif %}
 					</li>
 				{% endfor %}
 			</ul>

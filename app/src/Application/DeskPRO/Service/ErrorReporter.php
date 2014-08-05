@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Service;
 use Application\DeskPRO\App;
 use DeskPRO\Kernel\License;
+use Doctrine\DBAL\DBALException;
 
 class ErrorReporter
 {
@@ -214,7 +215,7 @@ class ErrorReporter
 				return;
 			}
 
-			if (isset($errinfo['exception']) && $errinfo['exception'] instanceof \PDOException) {
+			if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
 				$ignore_codes = array(
 					'HY000', // MySQL server has gone away
 					'1203',  // more than 'max_user_connections' active connections
@@ -399,6 +400,14 @@ class ErrorReporter
 		if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
 			return '';
 		}
+
+		$last = App::getSetting('core.last_heartbeat');
+		if (!$last || $last > (time() - 86040)) {
+			// already sent it today
+			return;
+		}
+
+		App::$container->getSettingsHandler()->setSetting('core.last_heartbeat', time());
 
 		$data = self::getBasicData();
 

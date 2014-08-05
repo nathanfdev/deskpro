@@ -74,11 +74,13 @@
        * @return {promise}
        */
 
-      ReportBuilderCustom.prototype.loadEditReportData = function(id) {
+      ReportBuilderCustom.prototype.loadEditReportData = function(id, params) {
         var data, deferred;
         deferred = this.$q.defer();
         if (id) {
-          this.Api.sendGet('/reports/builder/' + id).then((function(_this) {
+          this.Api.sendGet('/reports/builder/' + id, {
+            params: params
+          }).then((function(_this) {
             return function(result) {
               var data;
               if (result.data.type !== 'custom') {

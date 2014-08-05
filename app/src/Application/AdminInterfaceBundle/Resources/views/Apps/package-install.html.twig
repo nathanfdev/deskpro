@@ -6,7 +6,7 @@
 				<div class="panel-body">
 					<div class="form-group">
 						<div style="float: left;">
-							<img src="{{ ng_var('Ctrl.pack.icon_48') }}" alt="Icon" />
+							<img ng-src="{{ ng_var('Ctrl.pack.icon_48') }}" alt="Icon" />
 						</div>
 						<div style="margin-left: 52px;">
 							<input type="text" class="form-control camo-input" ng-model="setting_values.dp_app.title" style="font-size: 22px; width: 80%; max-width: 500px; height: auto;" />
@@ -36,6 +36,14 @@
 							</div>
 							<div ng-switch-when="password">
 								<input type="password" class="form-control" ng-model="setting_values[setting.name]" placeholder="{{ ng_var('setting.placeholder') }}" />
+							</div>
+							<div ng-switch-when="phone_number">
+								<input type="tel"
+								       dp-phone-number
+								       style="min-width:250px;"
+								       class="form-control"
+								       ng-model="setting_values[setting.name]"
+								       placeholder="{{ ng_var('setting.placeholder') }}"/>
 							</div>
 							<div ng-switch-when="checkbox">
 								<label>

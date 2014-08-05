@@ -206,6 +206,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			placeholder = $('<div/>')
 			@els.optionList.append(placeholder)
 
+			rowIdx = @rowsCount+1
+			@rowsCount += 1
+
 			time = (new Date()).getTime()
 			@els.loadingOptionMessage.show().addClass('loading-on')
 			run = (tpl, data, isRetry) =>
@@ -250,6 +253,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
 					rowScope.$watch('model', =>
 						rowScope.value = dataFormatter.getValue(rowScope.model, data)
 						@$scope.saveTarget[rowId] = rowScope.value
+
+						if rowScope.rowOpts.rowEnabled
+							@$scope.saveTarget[rowId].DP_DISABLED = false
+							delete @$scope.saveTarget[rowId].DP_DISABLED
+						else
+							@$scope.saveTarget[rowId].DP_DISABLED = true
 					, true)
 
 				else
@@ -259,6 +268,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
 					rowScope.$watch('model', =>
 						rowScope.value = rowScope.model
 						@$scope.saveTarget[rowId] = rowScope.value
+
+						if rowScope.rowOpts.rowEnabled
+							@$scope.saveTarget[rowId].DP_DISABLED = false
+							delete @$scope.saveTarget[rowId].DP_DISABLED
+						else
+							@$scope.saveTarget[rowId].DP_DISABLED = true
 					, true)
 
 				if data
@@ -283,6 +298,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
 					rowScope.rowOpts.withCheck = true
 					rowScope.rowOpts.withCheckId = Util.uid('check')
 
+				rowScope.rowOpts.rowIdx = rowIdx
+				rowScope.rowOpts.tagString = @options.tagString || null
+				rowScope.rowOpts.tagClass = @options.tagClass || ''
 				element = @$compile(tpl)(rowScope)
 
 				rowScope.rowFn = {}
@@ -298,7 +316,6 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				@els.loadingOptionMessage.hide().removeClass('loading-on')
 				@els.noOptionsMessage.hide()
 				placeholder.replaceWith(element)
-				@rowsCount++
 				@rows[rowId] = {
 					element: element,
 					scope: rowScope
@@ -353,6 +370,11 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			@rowsCount--
 			if @rowsCount == 0
 				@els.noOptionsMessage.show()
+			else
+				idx = 1
+				for own k, row of @rows
+					row.scope.rowOpts.rowIdx = idx
+					idx++
 
 			return true
 

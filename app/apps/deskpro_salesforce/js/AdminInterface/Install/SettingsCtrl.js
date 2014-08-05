@@ -7,6 +7,13 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 		$scope.has_errors = false;
 		$scope.errors = {};
 
+		// do a bg check for soap support
+		Api.sendGet('/apps/packages/deskpro_salesforce/check-requirements').then(function(res) {
+			if (!res.data.soap_support) {
+				$scope.no_soap_support = true;
+			}
+		});
+
 		//##############################################################################################################
 		//# Form validation / errors
 		//##############################################################################################################

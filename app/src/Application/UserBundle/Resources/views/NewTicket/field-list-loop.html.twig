@@ -91,7 +91,7 @@
 {% if item.field_type == 'user_field' and custom_user_fields[item.field_id] %}
 	{% set f = custom_user_fields[item.field_id] %}
 	<div data-field-id="user_field_{{f.id}}" class="dp-control-group custom-field {{ item.id }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
-		{% include 'UserBundle:NewTicket:field-custom-field.html.twig' %}
+		{% include 'UserBundle:NewTicket:field-custom-user-field.html.twig' %}
 	</div>
 {% endif %}
 

@@ -879,6 +879,12 @@ $collection->create('api_agents_create', array(
 	'methods'     => array('PUT'),
 ));
 
+$collection->create('api_agents_create_bulk', array(
+	'path'        => '/agents_bulk',
+	'controller'  => 'ApiBundle:Agents:bulkCreateAgents',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_agents_notifyprefs_gettables', array(
 	'path'        => '/agents/{id}/notify-prefs/get-tables',
 	'controller'  => 'ApiBundle:Agents:getNotifyPrefs',
@@ -2276,6 +2282,48 @@ foreach ($label_types as $info) {
 }
 
 ########################################################################################################################
+# Round Robin
+########################################################################################################################
+
+$collection->create('api_roundrobins_list', array(
+	'path'        => '/round_robin',
+	'controller'  => 'ApiBundle:RoundRobin:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_settings', array(
+	'path'        => '/round_robin/settings',
+	'controller'  => 'ApiBundle:RoundRobin:settings',
+	'methods'     => array('GET', 'PUT'),
+));
+
+$collection->create('api_roundrobins_triggers', array(
+	'path'        => '/round_robin/triggers/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:checkTriggers',
+	'defaults'    => array('id' => null),
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_get', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_set', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:set',
+	'methods'     => array('POST', 'PUT'),
+	'defaults'    => array('id' => 0),
+));
+
+$collection->create('api_roundrobins_delete', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:delete',
+	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
 # Start Settings
 ########################################################################################################################
 
@@ -2739,6 +2787,12 @@ $collection->create('api_ticket_statuses_closed', array(
 $collection->create('api_ticket_statuses_closed_savesettings', array(
 	'path'        => '/ticket_statuses/closed/settings',
 	'controller'  => 'ApiBundle:TicketStatuses:saveClosedSettings',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_ticket_statuses_closed_resetsearch', array(
+	'path'        => '/ticket_statuses/closed/reset-search-tables',
+	'controller'  => 'ApiBundle:TicketStatuses:resetSearchTables',
 	'methods'     => array('POST'),
 ));
 
@@ -3875,6 +3929,18 @@ $collection->create('api_banning', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_banning_email_export', array(
+	'path'        => '/banning/export_emails',
+	'controller'  => 'ApiBundle:Banning:exportEmails',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_banning_email_import', array(
+	'path'        => '/banning/import_emails',
+	'controller'  => 'ApiBundle:Banning:importEmails',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_banning_ip_create', array(
 	'path'        => '/banning_ip',
 	'controller'  => 'ApiBundle:Banning:saveIp',
@@ -3913,6 +3979,21 @@ $collection->create('api_banning_email_save', array(
 	'methods'     => array('POST'),
 ));
 
+
+$collection->create('api_banning_ip_remove_all', array(
+	'path'        => '/banning_ip',
+	'controller'  => 'ApiBundle:Banning:removeIp',
+	'methods'     => array('DELETE'),
+	'defaults'    => array('id' => null),
+));
+
+$collection->create('api_banning_email_remove_all', array(
+	'path'        => '/banning_email',
+	'controller'  => 'ApiBundle:Banning:removeEmail',
+	'methods'     => array('DELETE'),
+	'defaults'    => array('id' => null),
+));
+
 $collection->create('api_banning_ip_remove', array(
 	'path'        => '/banning_ip/{id}',
 	'controller'  => 'ApiBundle:Banning:removeIp',
@@ -3924,7 +4005,6 @@ $collection->create('api_banning_email_remove', array(
 	'controller'  => 'ApiBundle:Banning:removeEmail',
 	'methods'     => array('DELETE'),
 ));
-
 
 ########################################################################################################################
 # CRM User Groups

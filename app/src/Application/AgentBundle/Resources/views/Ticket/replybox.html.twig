@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as tools %}
 {% set replyBaseId = el_uid() %}
 <form
-	class="ticket-reply-form {% if not ticket_perms.reply %}dp-note-on{% endif %}"
+	class="ticket-reply-form {% if not ticket_perms.reply or (draft and draft.extras.is_note) %}dp-note-on{% endif %}"
 	id="{{replyBaseId}}_reply_form"
 	method="post"
 	action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}"
@@ -14,7 +14,7 @@
 	{% if app.user.getPref('agent.ticket_reverse_order') %}data-is-top-order="1"{% endif %}
 	{% if app.getSetting('core_tickets.resolve_auto_close_tab') %}data-resolve-auto-close="1"{% endif %}
 	{% if draft and draft.extras.is_note %}
-		data-default-is-note="1"
+		data-draft-is-note="1"
 	{% endif %}
 	data-dp-lang="{{ {
 		'attach_btn': phrase('agent.general.attach'),

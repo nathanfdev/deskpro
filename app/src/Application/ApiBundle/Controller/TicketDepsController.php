@@ -70,7 +70,9 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		$ticket_deps = $this->container->getSystemService('ticket_departments');
 		$flat_array = $ticket_deps->getFlatArray();
 
+		$ag = $this->container->getAgentGroups();
 		$with_perms = $this->in->getBool('with_perms');
+
 		if ($with_perms) {
 			$perms = array();
 
@@ -100,6 +102,16 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 			}
 		}
 
+		$deps_with_layout = $this->db->fetchAllCol("
+			SELECT department_id
+			FROM ticket_layouts
+			WHERE department_id IS NOT NULL
+		");
+
+		if ($deps_with_layout) {
+			$deps_with_layout = array_fill_keys($deps_with_layout, true);
+		}
+
 		$deps = array();
 		foreach ($flat_array as $row) {
 			$r = $row['object']->toApiData(true, false);
@@ -111,6 +123,18 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 				} else {
 					$r['permissions'] = array();
 				}
+
+				if (!isset($r['permissions']['agentgroups'])) {
+					$r['permissions']['agentgroups'] = array();
+				}
+				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full');
+				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full');
+			}
+
+			if (isset($deps_with_layout[$r['id']])) {
+				$r['has_layout'] = true;
+			} else {
+				$r['has_layout'] = false;
 			}
 
 			$deps[] = $r;
@@ -165,6 +189,10 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 				);
 			}
 		}
+
+		$ag = $this->container->getAgentGroups();
+		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
+		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
 		return $this->createApiResponse($data);
 	}

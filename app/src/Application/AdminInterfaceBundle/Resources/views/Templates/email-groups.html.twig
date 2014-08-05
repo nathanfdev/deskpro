@@ -24,7 +24,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'layout:top'|murmurhash") }}">
+				<li dp-state-mark="groupName:tickets.email_templates.list.custom">
 					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'custom'}") }}">
 						<h4>
 							<i class="fa fa-folder"></i>
@@ -75,15 +75,15 @@
 {% block listpane_help %}
 	<header>
 		<h1>Customize the content of emails sent out to agents and users by editing these templates.</h1>
-		
+			<p>These templates control the content of all emails sent by DeskPRO (except for the text written by agents or users), including both automatic notifications and agent/user replies.
+			</p>
 	</header>
 	<article>
 	
 		<section>
-			<p>These templates control the content of all emails sent by DeskPRO (except for the text written by agents or users), including both automatic notifications and agent/user replies.
-			</p>
-			<p>Templates reference <strong>phrases</strong> (as defined in language packs - see <strong>Setup > Languages</strong>): short re-usable pieces of text which specify something like the user greeting at the beginning of an email. To actually change the text of an email, you should edit the relevant phrase, or define a new phrase and include it in a template. For example, <code>{{ phrase('user.emails.greeting') }}</code></p> is used to insert a standard greeting phrase into a user email.</p>
-			<p>Templates include <strong>variables</strong> to insert information from DeskPRO into the email. For example, <code>{{ to_name }}</code> inserts the email recipient's name.</p>
+		
+			<p>Templates reference <strong>phrases</strong> (as defined in language packs - see <strong>Setup > Languages</strong>): short re-usable pieces of text which specify something like the user greeting at the beginning of an email. To actually change the text of an email, you should edit the relevant phrase, or define a new phrase and include it in a template. For example, <code>{{ '{{' }} phrase('user.emails.greeting') {{ '}}' }}</code> is used to insert a standard greeting phrase into a user email.</p>
+			<p>Templates use <strong>variables</strong> to insert information from DeskPRO into the email. For example, <code>{{ '{{' }} to_name {{ '}}' }}</code> inserts the email recipient's name.</p>
 			
 		
 			<p>Changes to the header, footer and CSS templates will affect all emails.</p>
@@ -94,7 +94,7 @@
 		<dl>
 			<dt><em>Q:</em>I don't understand the template code. Help!</dt>
 			<dd><em>A:</em>
-				The template syntax is a mixture of HTML, phrases, variables and special template commands. See the <a href="#introducing-templates" target="_blank">Introducing Templates</a> section in the manual for an explanation.
+				The template syntax is a mixture of HTML, phrases, variables and special template commands. See the <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#introducing-templates" target="_blank">Introducing Templates</a> section in the manual for an explanation.
 			</dd>
 			
 			<dt><em>Q:</em>How can I learn all the details of the template syntax?</dt>
@@ -117,17 +117,18 @@
 			</dd>
 		</dl>
 </section>
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			
 			<ul>
-				<li>[MANUAL]<a href="#introducing-templates" target="_blank">Introducing Templates</a></li>
-				<li>[MANUAL]<a href="#twig-syntax-basics" target="_blank">Twig syntax basics</a></li>
-				<li>[MANUAL]<a href="#worked-example:-custom-email-auto-response-by-department" target="_blank">Worked example: custom email auto-response by department</a></li>
-				<li>[MANUAL]<a href="#useful-template-variables" target="_blank">Useful template variables</a></li>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/162-removing-links-to-the-deskpro-portal-from-email-notifications" target="_blank">Removing links to the DeskPRO Portal from email notifications</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#introducing-templates" target="_blank">Introducing Templates</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#twig-syntax-basics" target="_blank">Twig syntax basics</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#templates-example--custom-email-auto-response-by-department" target="_blank">Templates example: custom email auto-response by department</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#useful-template-variables" target="_blank">Useful template variables</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/162-removing-links-to-the-deskpro-portal-from-email-notifications" target="_blank">Removing links to the DeskPRO Portal from email notifications</a></li>
 				
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>
-				<li>[ARTICLE]<a href="https://support.deskpro.com/kb/articles/192" target="_blank">Send an email to the user when their ticket is assigned</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/192" target="_blank">Send an email to the user when their ticket is assigned</a></li>
 			
 		</section>
 	</article>

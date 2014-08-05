@@ -175,8 +175,7 @@ class Build1400056735 extends AbstractBuild
 						$set->add(new CheckUserEmail('is', array('email' => $email_addresses)));
 						$sla->apply_terms->addTerm($set);
 					}
-				}
-				if ($old_sla['@orgs']) {
+				} else if ($old_sla['@orgs']) {
 					$ids = Arrays::castToType($old_sla['@orgs'], 'int');
 					$names = $this->container->getDb()->fetchAllCol("
 						SELECT name
@@ -188,14 +187,20 @@ class Build1400056735 extends AbstractBuild
 						$set->add(new CheckOrgName('is', array('name' => $names)));
 						$sla->apply_terms->addTerm($set);
 					}
+				} else {
+					$sla->apply_type = 'manual';
 				}
 				break;
 
 			case 'priority':
-				$sla->apply_type = 'auto';
-				$set = new TriggerTermComposite();
-				$set->add(new CheckPriority('is', array('priority_ids' => $old_sla['apply_priority_id'])));
-				$sla->apply_terms->addTerm($set);
+				if ($old_sla['apply_priority_id']) {
+					$sla->apply_type = 'auto';
+					$set = new TriggerTermComposite();
+					$set->add(new CheckPriority('is', array('priority_ids' => $old_sla['apply_priority_id'])));
+					$sla->apply_terms->addTerm($set);
+				} else {
+					$sla->apply_type = 'manual';
+				}
 				break;
 
 			case 'criteria':

@@ -499,8 +499,6 @@ class Service
 			
 			$savedComments = $jiraIssue->comments;
 			
-			//var_dump($savedComments); die;
-			
 			foreach ($comments as $comment) {
 				foreach ($savedComments as $savedComment) {
 					if ($savedComment->jiraId === (int) $comment['id']) {

@@ -199,6 +199,15 @@ class IpBans
 	 * @return int
 	 */
 
+	public function getCount()
+	{
+		return $this->em->getRepository('DeskPRO:BanIp')->getCount($this->search_phrase);
+	}
+
+	/**
+	 * @return int
+	 */
+
 	public function count()
 	{
 		$this->preload();

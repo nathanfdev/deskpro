@@ -132,6 +132,11 @@ define [
 				value: 'CheckPriority'
 			})
 
+			options.push({
+				title: 'Urgency',
+				value: 'CheckUrgency'
+			})
+
 			if types.indexOf('web.agent') != -1
 				options.push({
 					title: 'Workflow',
@@ -146,6 +151,11 @@ define [
 			options.push({
 				title: 'Labels',
 				value: 'CheckLabel'
+			})
+
+			options.push({
+				title: 'SLAs',
+				value: 'CheckSlaStatus'
 			})
 
 			options.push({
@@ -204,18 +214,18 @@ define [
 			options = []
 
 			options.push({
-				title: 'Name',
+				title: 'User Name',
 				value: 'CheckUserName'
 			})
 
 			options.push({
-				title: 'Email Address',
+				title: 'User Email Address',
 				value: 'CheckUserEmail'
 			})
 
 			options.push({
-				title: 'Label',
-				value: 'CheckUserLabels'
+				title: 'User Label',
+				value: 'CheckUserLabel'
 			})
 
 			options.push({
@@ -224,12 +234,12 @@ define [
 			})
 
 			options.push({
-				title: 'Language',
+				title: 'User Language',
 				value: 'CheckUserLanguage'
 			})
 
 			options.push({
-				title: 'Is manager of organization',
+				title: 'User is manager of organization',
 				value: 'CheckUserOrgManager'
 			})
 
@@ -239,17 +249,17 @@ define [
 			})
 
 			options.push({
-				title: 'User is awaiting agent validation',
+				title: 'Check agent validation status',
 				value: 'CheckUserValidAgent'
 			})
 
 			options.push({
-				title: 'User is awaiting email validation',
+				title: 'Check email validation status',
 				value: 'CheckUserValidEmail'
 			})
 
 			options.push({
-				title: 'Is disabled',
+				title: 'User is disabled',
 				value: 'CheckUserIsDisabled'
 			})
 
@@ -284,22 +294,22 @@ define [
 			options = []
 
 			options.push({
-				title: 'Name',
+				title: 'Organization Name',
 				value: 'CheckOrgName'
 			})
 
 			options.push({
-				title: 'Label',
+				title: 'Organization Label',
 				value: 'CheckOrgLabel'
 			})
 
 			options.push({
-				title: 'Email Domain',
+				title: 'Organization Email Domain',
 				value: 'CheckOrgEmailDomain'
 			})
 
 			options.push({
-				title: 'Linked Usergroup',
+				title: 'Organization Usergroup',
 				value: 'CheckOrgUsergroups'
 			})
 
@@ -334,19 +344,24 @@ define [
 			options = []
 
 			options.push({
-				title: 'Day of week',
+				title: 'Current day of week',
 				value: 'CheckDayOfWeek'
 			})
 
 			options.push({
-				title: 'Time of day',
+				title: 'Current time of day',
 				value: 'CheckTimeOfDay'
 			})
 
 			options.push({
-				title: 'Within working hours',
-				value: 'CheckWorkingHours'
+				title: 'Ticket Created Date',
+				value: 'CheckDateCreated'
 			})
+
+			#options.push({
+			#	title: 'Within working hours',
+			#	value: 'CheckWorkingHours'
+			#})
 
 			set_options.push({
 				title: 'Dates',
@@ -374,12 +389,21 @@ define [
 				value: 'CheckUserVar'
 			})
 
+			options.push({
+				title: 'Check Current Agent',
+				value: 'CheckPerformer'
+			})
+
 			set_options.push({
 				title: 'Trigger Control',
 				subOptions: options
 			})
 
 			return set_options
+
+		resetData: ->
+			@options_data = null
+			@loadDataPromise = null
 
 		loadDataOptions: ->
 			if @options_data
@@ -399,6 +423,7 @@ define [
 						'ticket_fields':   '/ticket_fields',
 						'user_fields':     '/user_fields',
 						'org_fields':      '/org_fields',
+						'ticket_slas':     '/ticket_slas',
 						'ticket_accounts': '/email_accounts',
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
@@ -416,6 +441,7 @@ define [
 						options_data['ticket_fields']    = data.ticket_fields?.custom_fields
 						options_data['org_fields']       = data.org_fields?.custom_fields
 						options_data['user_fields']      = data.user_fields?.custom_fields
+						options_data['ticket_slas']      = data.ticket_slas?.slas
 						options_data['email_accounts']   = data.ticket_accounts.email_accounts
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
@@ -455,6 +481,12 @@ define [
 			def = @getStandardSelect(options)
 			return def
 
+		getCheckUrgency: (options = {}) ->
+			options.propName = 'urgency1'
+			options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+			def = @getStandardInput(options)
+			return def
+
 		getCheckCategory: (options = {}) ->
 			options.propName = 'category_ids'
 			options.dataName = 'ticket_cats'
@@ -480,6 +512,14 @@ define [
 				{title: 'Unassigned', value: 0},
 				{title: 'Current Agent', value: -1}
 			]
+			def = @getStandardSelect(options)
+			return def
+
+		getCheckPerformer: (options = {}) ->
+			options.propName = 'person_ids'
+			options.dataName = 'agents'
+			options.operators = ['contains', 'notcontains']
+			options.template = 'OptionBuilder/type-criteria-performer.html';
 			def = @getStandardSelect(options)
 			return def
 
@@ -524,49 +564,49 @@ define [
 
 		getCheckEmailSubject: (options = {}) ->
 			options.propName = 'subject'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailBody: (options = {}) ->
 			options.propName = 'body'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailToName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailToAddress: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailFromName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailFromAddress: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailCcAddress: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckEmailCcName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
@@ -607,9 +647,58 @@ define [
 			options.propName = 'labels'
 			options.type_title = 'Labels'
 			options.tags = true
-			options.operators = ['contains', 'not_contains']
+			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
 			return def
+
+		getCheckSlaStatus: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-slas.html')
+
+				getData: ->
+					defer = me.$q.defer()
+					me.loadDataOptions().then(=>
+						options = []
+						for sla in me.options_data['ticket_slas']
+							options.push({
+								title: sla.title,
+								value: sla.id
+							})
+
+						defer.resolve({
+							options: options
+						})
+					)
+
+					return defer.promise
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value.options || {}
+							return {
+								op:          value.op || 'contains',
+								sla_ids:     options.sla_ids || [],
+								is_complete: !!options.is_complete,
+								sla_status:  options.sla_status || 'passing',
+								show_status: !!options.sla_status
+							}
+
+						getValue: (model = {}, data) ->
+							value = {
+								type: 'CheckSlaStatus',
+								op: model.op || 'contains',
+								options: {
+									sla_ids: model.sla_ids || []
+									is_complete: if model.op == 'contains' then !!model.is_complete else null,
+									sla_status: if model.show_status and model.sla_status and model.op == 'contains' then model.sla_status else null
+								}
+							}
+							return value
+						}
+			}
 
 		getCheckStatus: (options = {}) ->
 			options.propName = 'status'
@@ -619,13 +708,13 @@ define [
 
 		getCheckSubject: (options = {}) ->
 			options.propName = 'subject'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckAgentMessage: (options = {}) ->
 			options.propName = 'message'
-			options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
@@ -647,19 +736,19 @@ define [
 
 		getCheckCreationSystemOption: (options = {}) ->
 			options.propName = 'creation_system_option'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckAgentNote: (options = {}) ->
 			options.propName = 'message'
-			options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckUserMessage: (options = {}) ->
 			options.propName = 'message'
-			options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
@@ -676,25 +765,25 @@ define [
 
 		getCheckHasAttachName: (options = {}) ->
 			options.propName = 'attach_name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckUserName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckUserEmail: (options = {}) ->
 			options.propName = 'email'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
-		getCheckUserLabels: (options = {}) ->
+		getCheckUserLabel: (options = {}) ->
 			options.propName = 'labels'
-			options.operators = ['contains', 'not_contains']
+			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
 			return def
 
@@ -728,30 +817,78 @@ define [
 			return def
 
 		getCheckUserValidAgent: (options = {}) ->
-			options.propName = 'is_valid_agent'
-			def = @getStandardIs(options)
-			return def
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html')
+
+				getData: ->
+					return {}
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+								op: value.op || 'is',
+								options: [
+									{ value: 'is', title: 'User has been validated by an agent' },
+									{ value: 'not', title: 'User is waiting to be validated by an agent' }
+								]
+							}
+
+						getValue: (model = {}, data) ->
+							return {
+								type: 'CheckUserValidEmail',
+								op: model.op || 'is'
+								options: { run:true }
+							}
+					}
+			}
 
 		getCheckUserValidEmail: (options = {}) ->
-			options.propName = 'is_valid_email'
-			def = @getStandardIs(options)
-			return def
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html')
+
+				getData: ->
+					return {}
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							return {
+							op: value.op || 'is',
+							options: [
+								{ value: 'is', title: 'User has validated their email address' },
+								{ value: 'not', title: 'User has not yet validated their email address' }
+							]
+							}
+
+						getValue: (model = {}, data) ->
+							return {
+							type: 'CheckUserValidEmail',
+							op: model.op || 'is'
+							options: { run:true }
+							}
+					}
+			}
 
 		getCheckOrgName: (options = {}) ->
 			options.propName = 'name'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckOrgLabel: (options = {}) ->
 			options.propName = 'labels'
-			options.operators = ['contains', 'not_contains']
+			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
 			return def
 
 		getCheckOrgEmailDomain: (options = {}) ->
 			options.propName = 'email_domain'
-			options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex']
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
 
@@ -769,22 +906,45 @@ define [
 				return me.dpTemplateManager.get('OptionBuilder/type-criteria-dayofweek.html')
 
 			getData: ->
-				return {
-
-				}
+				return {}
 
 			getDataFormatter: ->
 				return {
-				getViewValue: (value = {}, data) ->
-					return {
-						op: value.op || 'is'
-					}
+					getViewValue: (value = {}, data) ->
+						options = value.options || {}
+						days = [null, false, false, false, false, false, false, false]
+						if options.days
+							for d in options.days
+								days[d] = true
 
-				getValue: (model = {}, data) ->
-					value = {}
-					return value
-				}
+						return {
+							op: value.op || 'is',
+							tz: options.tz || 'UTC',
+							days: days
+						}
+
+					getValue: (model = {}, data) ->
+						days = []
+						for v, k in model.days
+							if v
+								days.push(k)
+
+						value = {
+							type: 'CheckDayOfWeek',
+							op: 'is',
+							options:{
+								tz: model.tz || 'UTC',
+								days: days,
+								var: 'now'
+							}
+						}
+						return value
+					}
 			}
+
+		getCheckDateCreated: (options = {}) ->
+			def = @getDateInput(options)
+			return def
 
 		getCheckTimeOfDay: (options = {}) ->
 			me = @
@@ -793,21 +953,40 @@ define [
 				return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html')
 
 			getData: ->
-				return {
-
-				}
+				return {}
 
 			getDataFormatter: ->
 				return {
-				getViewValue: (value = {}, data) ->
-					return {
-					op: value.op || 'is'
-					}
+					getViewValue: (value = {}, data) ->
+						options = value.options || {}
 
-				getValue: (model = {}, data) ->
-					value = {}
-					return value
-				}
+						time1 = (options.time1 || '8:0').split(':')
+						time2 = (options.time2 || '18:0').split(':')
+
+						return {
+							tz:          options.tz || 'UTC',
+							start_hour:  time1[0],
+							start_min:   time1[1],
+							end_hour:    time2[0],
+							end_min:     time2[1]
+						}
+
+					getValue: (model = {}, data) ->
+						time1 = (model.start_hour || '8') + ':' + (model.start_min || '0')
+						time2 = (model.end_hour || '18') + ':' + (model.end_min || '0')
+
+						value = {
+							type: 'CheckTimeOfDay',
+							op: 'between',
+							options: {
+								var:   'now',
+								tz:    model.tz || 'UTC',
+								time1: time1,
+								time2: time2
+							}
+						}
+						return value
+					}
 			}
 
 		getCheckWorkingHours: (options = {}) ->

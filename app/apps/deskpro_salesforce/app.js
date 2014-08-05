@@ -13,10 +13,10 @@ define(function() {
 				});
 			}
 			if (this.getSetting('widget_profile')) {
-				this.registerWidgetTab('user', '@properties.tab', "Salesforce ({{content.matches.length}})", 'tab.html', function($scope, $app, $ticket) {
+				this.registerWidgetTab('user', '@summary.tab', "Salesforce ({{content.matches.length}})", 'tab.html', function($scope, $app, $person) {
 					$scope.matches = [];
 
-					$app.findEmail($ticket.person.primary_email.email).then(function(data) {
+					$app.findEmail($person.primary_email.email).then(function(data) {
 						$scope.isError      = data.isError;
 						$scope.errorMessage = data.errorMessage;
 						$scope.matches      = data.matches;

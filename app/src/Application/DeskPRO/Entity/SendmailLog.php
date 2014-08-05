@@ -84,7 +84,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 */
-	protected $subject;
+	protected $subject = '';
 
 	/**
 	 * @var string

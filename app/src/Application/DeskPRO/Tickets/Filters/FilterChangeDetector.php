@@ -231,6 +231,17 @@ class FilterChangeDetector
 			}
 
 			foreach ($agent_scopes as $agent) {
+
+				// A filter could belong to an agent that isn't an agent anymore
+				if (!$agent->is_agent) {
+					continue;
+				}
+
+				// Or the agent might be soft deleted, in which case we sholudnt waste time
+				if ($agent->is_deleted || $agent->is_disabled) {
+					continue;
+				}
+
 				$reset_status = false;
 				if ($filter->sys_name) {
 					// System filters are special in that we ignore status/hold
@@ -251,8 +262,12 @@ class FilterChangeDetector
 				$orig_match_failterm = null;
 				$new_match_failterm = null;
 
-				if ($is_new_ticket && !$agent->PermissionsManager->TicketChecker->canView($ticket)) {
-					continue;
+				// testing check
+				// there is no mock for the PermissionsManager yet
+				if (!defined('DP_BOOT_MODE') || DP_BOOT_MODE != 'testing') {
+					if ($is_new_ticket && !$agent->PermissionsManager->TicketChecker->canView($ticket)) {
+						continue;
+					}
 				}
 
 				if ($is_dep_change) {

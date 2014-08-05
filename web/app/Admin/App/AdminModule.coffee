@@ -26,4 +26,8 @@ define [
 		datepickerPopupConfig.dateFormat = 'dd MMMM yyyy'
 	])
 
+	AdminModule.run(['uiSelect2Config', (uiSelect2Config) ->
+		uiSelect2Config.dropdownAutoWidth = true
+	])
+
 	return AdminModule

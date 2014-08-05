@@ -21,7 +21,7 @@
           to: '',
           from: '',
           subject: 'Test email',
-          message: 'This is a test. If you see this email in your inbox, your outgoing email account are correct.'
+          message: 'This is a test. If you see this email in your inbox, your outgoing email account settings are correct.'
         };
         this.account = {
           email_address: '',
@@ -52,6 +52,7 @@
         var postData, promise;
         this.$scope.email_is_error = null;
         postData = this.form_model.getFormData();
+        postData.is_enabled = true;
         if (!postData.address || postData.address.length < 3 || postData.address.indexOf('@') === -1) {
           this.$scope.email_is_error = 'invalid_email';
           return;

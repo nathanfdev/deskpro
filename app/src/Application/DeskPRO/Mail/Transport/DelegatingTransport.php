@@ -192,6 +192,20 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Preparing message took %.4f seconds", microtime(true)-$time));
 		}
 
+		$do_send = true;
+		if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
+			try {
+				$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+			} catch (\Exception $e) {
+				$this->getLogger()->logError(sprintf("[DelegatingTransport] ERROR executing beforeSendPerformed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
+				throw $e;
+			}
+			if ($evt->bubbleCancelled()) {
+				$this->getLogger()->logInfo("[DelegatingTransport] beforeSendPerformed cancelled message (will continue but wont send message)");
+				$do_send = false;
+			}
+		}
+
 		if ($message->isQueueHinted()) {
 			$this->getLogger()->logInfo(sprintf("[DelegatingTransport] Message is queue hinted"));
 		}
@@ -240,18 +254,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 				$message->preSend();
 			}
 
-			if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
-				try {
-					$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
-				} catch (\Exception $e) {
-					$this->getLogger()->logError(sprintf("[DelegatingTransport] ERROR executing beforeSendPerformed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
-					throw $e;
-				}
-				if ($evt->bubbleCancelled()) {
-					$this->getLogger()->logInfo("[DelegatingTransport] beforeSendPerformed cancelled message");
-					return 0;
-				}
-			}
+			// was cancelled
+			if (!$do_send) return 0;
 
 			$success = $tr->send($message, $failedRecipients);
 		} elseif ($use_queue) {
@@ -266,18 +270,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 				$message->preSend();
 			}
 
-			if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
-				try {
-					$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
-				} catch (\Exception $e) {
-					$this->getLogger()->logError(sprintf("[DelegatingTransport] ERROR executing beforeSendPerformed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
-					throw $e;
-				}
-				if ($evt->bubbleCancelled()) {
-					$this->getLogger()->logInfo("[DelegatingTransport] beforeSendPerformed cancelled message");
-					return 0;
-				}
-			}
+			// was cancelled
+			if (!$do_send) return 0;
 
 			$success = $tr->send($message);
 		} else {
@@ -293,18 +287,8 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 					$message->preSend();
 				}
 
-				if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
-					try {
-						$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
-					} catch (\Exception $e) {
-						$this->getLogger()->logError(sprintf("[DelegatingTransport] ERROR executing beforeSendPerformed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
-						throw $e;
-					}
-					if ($evt->bubbleCancelled()) {
-						$this->getLogger()->logInfo("[DelegatingTransport] beforeSendPerformed cancelled message");
-						return 0;
-					}
-				}
+				// was cancelled
+				if (!$do_send) return 0;
 
 				$success = $tr->send($message, $failedRecipients);
 			} catch (\Swift_TransportException $e) {
@@ -321,32 +305,12 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 						$message->preSend();
 					}
 
-					if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
-						try {
-							$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
-						} catch (\Exception $e) {
-							$this->getLogger()->logError(sprintf("[DelegatingTransport] ERROR executing beforeSendPerformed: %s %s %s", $e->getCode(), get_class($e), $e->getMessage()));
-							throw $e;
-						}
-						if ($evt->bubbleCancelled()) {
-							$this->getLogger()->logInfo("[DelegatingTransport] beforeSendPerformed cancelled message");
-							return 0;
-						}
-					}
-
 					$success = $this->getQueueTransport()->send($message);
 				} else {
 					$success = false;
 				}
 			} else {
 				$this->getLogger()->logInfo("[DelegatingTransport] Send success");
-
-				// Save a logged copy too
-				$queue_proc = $this->getQueueTransport()->getQueueProcessor();
-				if (!$is_retrying && $queue_proc instanceof DatabaseQueueProcessor) {
-					$this->getLogger()->logInfo("[DelegatingTransport] Saving logged message");
-					$queue_proc->addLoggedMessage($message);
-				}
 			}
 		}
 
@@ -391,7 +355,7 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			$this->getLogger()->logDebug("[DelegatingTransport] Matched email account {$email_account->id}");
 		} else {
 			$this->getLogger()->logDebug(sprintf("[DelegatingTransport] Gateway address invalid. Choosing default."));
-			$email_account = $this->getEmailAccountManager()->getPrimaryEmailAccount();
+			$email_account = $this->getEmailAccountManager()->getPrimaryTicketAccountWithFallback();
 		}
 
 		if ($email_account) {

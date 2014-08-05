@@ -41,7 +41,7 @@
             _this.email_accounts = res.data.accounts.email_accounts;
             _this.$scope.settings = res.data.settings.ticket_fwd_settings;
             _this.settings = Util.clone(_this.$scope.settings);
-            return _this.$scope.settings.use_account = _this.$scope.settings.use_account + "";
+            return _this.$scope.settings.use_account = (_this.$scope.settings.use_account || 0) + "";
           };
         })(this));
         return this.$q.all([data_promise]);

@@ -325,6 +325,10 @@ class FeedbackController extends AbstractController
 	{
 		$feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
 
+		if (!$feedback || !$this->in->getString('content')) {
+			throw $this->createNotFoundException();
+		}
+
 		$comment = new FeedbackComment();
 		$comment->feedback = $feedback;
 		$comment->is_reviewed = true;

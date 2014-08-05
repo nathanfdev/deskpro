@@ -51,7 +51,7 @@ class CheckEmailAccount extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('email_account_ids');
+		$options->addValidNames('email_account_ids');
 		return $options;
 	}
 
@@ -64,6 +64,11 @@ class CheckEmailAccount extends AbstractTriggerTerm
 		$options = $this->getTermOptions();
 
 		$account_ids = $options['email_account_ids'];
+
+		// Legacy handling where may be a single integer instead of array
+		if (!is_array($account_ids)) {
+			$account_ids = array($account_ids);
+		}
 
 		return $this->isEntityMatch($ticket, $context, 'email_account', 'id', $account_ids);
 	}

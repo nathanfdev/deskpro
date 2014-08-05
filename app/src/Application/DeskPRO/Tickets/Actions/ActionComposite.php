@@ -39,7 +39,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
-class ActionComposite implements ActionInterface, DeskproContainerAwareInterface, \Countable
+class ActionComposite implements ActionInterface, DeskproContainerAwareInterface, \Countable, \IteratorAggregate
 {
 	/**
 	 * @var ActionInterface[]
@@ -140,5 +140,14 @@ class ActionComposite implements ActionInterface, DeskproContainerAwareInterface
 	public function count()
 	{
 		return count($this->actions);
+	}
+
+
+	/**
+	 * @return \ArrayIterator
+	 */
+	public function getIterator()
+	{
+		return new \ArrayIterator($this->actions);
 	}
 }

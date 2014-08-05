@@ -66,9 +66,10 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 
 			Api.sendPostJson('/apps/packages/deskpro_us_phpbb/test-settings', postData).then(function(res) {
 				deferred.resolve({
-					log: res.data.log || '',
-					error: res.data.error || false,
-					error_code: res.data.error_code || false
+					log:        res.data.log || '',
+					error:     !res.data.is_valid,
+					error_code: res.data.error_code || false,
+					raw_data:   res.data.raw_data || null
 				});
 			}, function(res) {
 				deferred.resolve({
@@ -96,7 +97,7 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 						$scope.loading     = false;
 						$scope.has_results = true;
 						$scope.log         = results.log;
-						$scope.error       = !results.is_valid;
+						$scope.error       = results.error;
 						$scope.raw_data    = results.raw_data || null;
 					};
 

@@ -91,7 +91,6 @@ class ProcessReply extends ProcessAbstract
 	{
 		$this->logMessage("doNewRelpy context $context");
 		
-		//TODO
 		$this->processBlobs();
 
 		if ($context == 'user') {
@@ -107,6 +106,8 @@ class ProcessReply extends ProcessAbstract
 				'email'
 			);
 		}
+
+		$executor_context->setEmailContext($this->reader);
 
 		if ($this->logger) {
 			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
@@ -141,7 +142,8 @@ class ProcessReply extends ProcessAbstract
 				$this->ticket,
 				$this->ticket_email,
 				$this->cleaner,
-				array($this, 'replaceInlineAttachTokens')
+				array($this, 'replaceInlineAttachTokens'),
+				$this->getLogger()
 			);
 		}
 
@@ -235,10 +237,6 @@ class ProcessReply extends ProcessAbstract
 		$message->message_hash = null;
 		$message->initHashCode();
 
-		//TODO
-		//$this->ticket->getTicketLogger()->recordExtra('by_agent', $this->person);
-		//$this->ticket->getTicketLogger()->recordExtra('action_performer', $this->person->id);
-
 		// - Only add the message if we have an actual message
 		// This allows email replies with action codes but no reply,
 		// so the "empty reply" isnt processed as a reply
@@ -279,7 +277,25 @@ class ProcessReply extends ProcessAbstract
 			$this->handleCc($this->ticket, $this->reader->getDeliveredAddresses());
 		}
 
-		if (!$this->ticket_email->is_bounce && !$message->is_agent_note) {
+		#------------------------------
+		# Reply actions
+		#------------------------------
+
+		if ($this->ticket_email->reply_actions) {
+			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+			$reply_actions_context = new ReplyActionsContext();
+			$reply_actions_context->ticket = $this->ticket;
+			if ($did_add_message) {
+				$reply_actions_context->message = $message;
+			}
+			$reply_actions_apply->apply($reply_actions_context);
+		}
+
+		#------------------------------
+		# Default switch status
+		#------------------------------
+
+		if (!$this->ticket_email->is_bounce && !$message->is_agent_note && $did_add_message && !isset($this->ticket_email->reply_actions['status'])) {
 			if ($this->person['is_agent'] && $context == 'agent') {
 				$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
 				$this->ticket['status'] = Ticket::STATUS_AWAITING_USER;
@@ -287,17 +303,6 @@ class ProcessReply extends ProcessAbstract
 				$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_agent');
 				$this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
 			}
-		}
-
-		//TODO
-		//$this->applyChangesArray($this->ticket);
-
-		// If we didnt add a message, then it was an actions-only message
-		// So we should reply with the standard 'updated' email which lists actions
-		if (!$did_add_message) {
-			//TODO
-			$this->ticket->email_reader_action = 'agent_actions';
-			$this->ticket->getTicketLogger()->recordExtra('force_notify_email', $this->person->id);
 		}
 
 		App::getDb()->beginTransaction();

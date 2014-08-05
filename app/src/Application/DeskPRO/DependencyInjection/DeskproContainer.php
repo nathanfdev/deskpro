@@ -157,6 +157,19 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * Unsets a system service so next time it's requested, it will be re-created.
+	 *
+	 * @param string $id
+	 */
+	public function resetSystemService($id)
+	{
+		if (isset($this->system_services[$id])) {
+			unset($this->system_services[$id]);
+		}
+	}
+
+
+	/**
 	 * @param string $id
 	 * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
 	 */

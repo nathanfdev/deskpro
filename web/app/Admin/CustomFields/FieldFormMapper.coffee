@@ -15,6 +15,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 			form = {
 				title: '',
 				description: '',
+				is_enabled: true,
 				text: {
 					user_validation:          '0',
 					user_min_length:          '1',
@@ -59,6 +60,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					cookie_name:   '',
 					param_name:    '',
 					default_value: ''
+				},
+				data: {
+					usersource_id: '0',
+					field_name: ''
 				}
 			}
 
@@ -73,29 +78,31 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
 				if fieldModel.is_agent_field
 					form.is_agent_field = true
-				if fieldModel.is_enabled
+				if fieldModel.is_enabled || not fieldModel.id
 					form.is_enabled = true
+				else
+					form.is_enabled = false
 
 				switch fieldModel.type_name
 					when "text", "textarea"
 						if fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex
 							if fieldModel.options.min_length
 								formTypeOpts.user_validation = 'required'
-								formTypeOpts.agent_min_lengthgth = fieldModel.options.min_length
+								formTypeOpts.min_length = fieldModel.options.min_length
 							if fieldModel.options.max_length
 								formTypeOpts.user_validation = 'required'
-								formTypeOpts.agent_max_lengthgth = fieldModel.options.max_length
+								formTypeOpts.max_length = fieldModel.options.max_length
 							if fieldModel.options.regex
 								formTypeOpts.user_validation = 'regex'
-								formTypeOpts.agent_regex = fieldModel.options.regex
+								formTypeOpts.regex = fieldModel.options.regex
 
 						if fieldModel.options.agent_required || fieldModel.options.agent_min_length || fieldModel.options.agent_max_length || fieldModel.options.agent_regex
 							if fieldModel.options.agent_min_length
 								formTypeOpts.agent_validation = 'required'
-								formTypeOpts.agent_min_lengthgth = fieldModel.options.agent_min_length
+								formTypeOpts.agent_min_length = fieldModel.options.agent_min_length
 							if fieldModel.options.agent_max_length
 								formTypeOpts.agent_validation = 'required'
-								formTypeOpts.agent_max_lengthgth = fieldModel.options.agent_max_length
+								formTypeOpts.agent_max_length = fieldModel.options.agent_max_length
 							if fieldModel.options.agent_regex
 								formTypeOpts.agent_validation = 'regex'
 								formTypeOpts.agent_regex = fieldModel.options.agent_regex
@@ -182,6 +189,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 						if fieldModel.default_value
 							formTypeOpts.default_value = fieldModel.default_value
 
+					when "data"
+						formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + ""
+						formTypeOpts.field_name    = fieldModel.options.field_name || ''
+
 			if fieldModel.options.agent_validation_resolve
 				formTypeOpts.agent_validation_resolve = true
 
@@ -220,18 +231,18 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
 					if formTypeOpts.user_validation == 'required'
 						postData.validation_type = 'required'
-						postData.min_length = formTypeOpts.agent_min_lengthgth
-						postData.max_length = formTypeOpts.agent_max_lengthgth
+						postData.min_length = formTypeOpts.agent_min_length
+						postData.max_length = formTypeOpts.agent_max_length
 					else if formTypeOpts.user_validation == 'regex'
 						postData.validation_type = 'regex'
 						postData.regex = formTypeOpts.validation_regex
 
 					if formTypeOpts.agent_validation == 'required'
-						postData.agentvalidation_type = 'required'
-						postData.agent_min_length = formTypeOpts.agent_min_lengthgth
-						postData.agent_max_length = formTypeOpts.agent_max_lengthgth
+						postData.agent_validation_type = 'required'
+						postData.agent_min_length = formTypeOpts.agent_min_length
+						postData.agent_max_length = formTypeOpts.agent_max_length
 					else if formTypeOpts.agent_validation == 'regex'
-						postData.agent_type = 'regex'
+						postData.agent_validation_type = 'regex'
 						postData.agent_regex = formTypeOpts.agent_regex
 
 				when "choice"
@@ -242,8 +253,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
 					if formTypeOpts.user_validation == 'required'
 						postData.validation_type = 'required'
+						postData.min_length = 1
 					if formTypeOpts.agent_validation == 'required'
-						postData.agent_type = 'required'
+						postData.agent_validation_type = 'required'
+						postData.agent_min_length = 1
 
 				when "toggle"
 					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle'
@@ -253,7 +266,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					if formTypeOpts.user_validation == 'required'
 						postData.validation_type = 'required'
 					if formTypeOpts.agent_validation == 'required'
-						postData.agent_type = 'required'
+						postData.agent_validation_type = 'required'
 
 				when "date"
 					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date'
@@ -268,7 +281,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					if formTypeOpts.user_validation == 'required'
 						postData.validation_type = 'required'
 					if formTypeOpts.agent_validation == 'required'
-						postData.agent_type = 'required'
+						postData.agent_validation_type = 'required'
 
 					if formTypeOpts.valid_dates_mode == 'date'
 						postData.date_valid_type = 'date'
@@ -298,6 +311,11 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					postData.cookie_name = formTypeOpts.cookie_name
 					postData.param_name = formTypeOpts.param_name
 					postData.default_value = formTypeOpts.default_value
+
+				when "data"
+					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Data'
+					postData.usersource_id = parseInt(formTypeOpts.usersource_id) || 0
+					postData.field_name    = formTypeOpts.field_name
 
 			if formTypeOpts.agent_validation_resolve
 				postData.agent_validation_resolve = true

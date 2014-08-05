@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Orb\Doctrine\Common\Cache\ArrayFileCache;
+
 class ArrayFileCacheFactory
 {
 	public static function create($cache_name)
@@ -54,7 +56,8 @@ class ArrayFileCacheFactory
 			$path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache';
 		}
 
-		$cache = new \Orb\Doctrine\Common\Cache\ArrayFileCache($path);
+		$version_id = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : null;
+		$cache = new ArrayFileCache($path, $version_id);
 
 		if ($cache_name == 'dql') {
 			// Filters out queries with 'IN' components that can pollute the cache
@@ -87,7 +90,7 @@ class ArrayFileCacheFactory
 		static $null_cache;
 
 		if (!$null_cache) {
-			$null_cache = new \Orb\Doctrine\Common\Cache\ArrayFileCache('/dev/null');
+			$null_cache = new ArrayFileCache('/dev/null');
 			$null_cache->disable();
 		}
 

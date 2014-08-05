@@ -61,11 +61,14 @@ class CheckUserValidEmail extends AbstractTriggerTerm
 		$person = $ticket->person;
 		$email  = $ticket->person_email ?: $person->primary_email;
 
-		if (!$email || !$email->is_validated) {
+		if (!$email) {
+			$context->getLogger()->debug('[CheckUserValidEmail] No email to check');
 			return false;
 		}
 
-		$is_valid = $email && $email->is_validated;
+		$is_valid = $email->is_validated;
+
+		$context->getLogger()->debug(sprintf('[CheckUserValidEmail] Email %s is %s', $email->email, $email->is_validated ? 'validated' : 'not valiadated'));
 
 		if ($is_valid) {
 			if ($this->getTermOperator() == 'is') return true;

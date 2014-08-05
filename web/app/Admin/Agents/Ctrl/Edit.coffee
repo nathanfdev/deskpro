@@ -18,8 +18,11 @@ define [
 			@agentId = parseInt(@$stateParams.id)
 			@form = {email_primary: '', emails_list: []}
 			@hasPermOverrides = false
+			@primary_phone_number_region = 'US'
 
 			@$scope.$watch('EditCtrl.form.emails_list', (emails_list) =>
+				@email_sysaccount_error = false
+				if not emails_list then return
 				if not @form.email_primary or @form.email_primary == '' or emails_list.indexOf(@form.email_primary) == -1
 					if emails_list.length
 						@form.email_primary = emails_list[0]
@@ -36,8 +39,9 @@ define [
 					groups: "/agent_groups",
 					groupPerms: "/agent_groups/all/permissions",
 					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables",
-					ticketDeps: "/ticket_deps?with_perms=1"
-					chatDeps: "/chat_deps?with_perms=1"
+					ticketDeps: "/ticket_deps?with_perms=1",
+					chatDeps: "/chat_deps?with_perms=1",
+					default_country: "/settings/values/core.default_country_code"
 				})
 			else
 				promise = @Api.sendDataGet({
@@ -46,7 +50,8 @@ define [
 					groupPerms: "/agent_groups/all/permissions",
 					notif_prefs_table: "/agents/0/notify-prefs/get-tables",
 					ticketDeps: "/ticket_deps?with_perms=1",
-					chatDeps: "/chat_deps?with_perms=1"
+					chatDeps: "/chat_deps?with_perms=1",
+					default_country: "/settings/values/core.default_country_code"
 				})
 
 			promise.then( (result) =>
@@ -54,6 +59,7 @@ define [
 					@agent = result.data.agent.agent
 					@agent.signature_html = result.data.agent.signature_html
 					@perm_form = result.data.agent.perms
+					@primary_phone_number_region = result.data.default_country.value
 				else
 					@agent = {
 						id: 0,
@@ -63,6 +69,8 @@ define [
 						usergroups: []
 					}
 					@perm_form = null
+
+				@primary_phone_number_region = result.data.default_country.value
 
 				@teams  = result.data.teams.agent_teams
 				@groups = result.data.groups.groups
@@ -74,7 +82,7 @@ define [
 				@agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table)
 				@notif_prefs = @agentNotifPrefsModel.prefsTable
 
-				@agentFormModel = new EditAgentModel(@agent, @groups, @teams)
+				@agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
 				@form = @agentFormModel.form
 
 				@$scope.$watch('EditCtrl.form.agent_groups', =>
@@ -96,8 +104,8 @@ define [
 					assign = false
 					full = false
 
-					if dep.permissions?.users
-						u = dep.permissions.users.filter((x) -> x.id == DP_PERSON_ID)[0]
+					if @agentId and dep.permissions?.users
+						u = dep.permissions.users.filter((x) => x.id == @agentId)[0]
 						if u
 							if u.name == 'full' then full = true else assign = true
 
@@ -105,8 +113,8 @@ define [
 
 				for dep in @chatDeps
 					full = false
-					if dep.permissions?.users
-						u = dep.permissions.users.filter((x) -> x.id == DP_PERSON_ID)[0]
+					if @agentId and dep.permissions?.users
+						u = dep.permissions.users.filter((x) => x.id == @agentId)[0]
 						if u
 							full = true
 
@@ -222,9 +230,13 @@ define [
 					$scope.saveResetPassword = ->
 						$scope.is_saving = true
 						if $scope.password.mode == 'set'
-							doReset($scope.password.manual).then(=> $modalInstance.close())
+							doReset($scope.password.manual).then(=>
+								$modalInstance.close()
+							, -> $scope.is_saving = false)
 						else
-							doReset(false).then(=> $modalInstance.close())
+							doReset(false).then(=>
+								$modalInstance.close()
+							, -> $scope.is_saving = false)
 				]
 			});
 
@@ -463,6 +475,8 @@ define [
 				return
 
 			@email_dupe_error = false
+			@email_sysaccount_error = false
+			@invalid_phone_error = false
 			@startSpinner('saving')
 
 			postData = @getFormData()
@@ -485,6 +499,10 @@ define [
 			, (res) =>
 				if res?.data?.error_code == 'dupe_email'
 					@email_dupe_error = res.data.error_info.existing
+				if res?.data?.error_code == 'system_email_addresses'
+					@email_sysaccount_error = res.data.error_info.emails.join(', ')
+				if res?.data?.error_code == 'invalid_phone_number'
+					@invalid_phone_error = res.data.error_message + ': ' + res.data.error_info.primary_phone_number_text
 
 				@stopSpinner('saving', true)
 				@applyErrorResponseToView(res)

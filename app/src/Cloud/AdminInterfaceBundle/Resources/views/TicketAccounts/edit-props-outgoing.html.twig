@@ -1,0 +1,31 @@
+<div class="form-group" ng-show="form.account_type == 'outgoing'">
+	<div class="col-lg-3">
+		<h3>{{ phrase('agent.general.email_address') }} *</h3>
+	</div>
+	<div class="col-lg-9">
+		<div class="inner-group" ng-init="form.use_custom_email_address = !!form.use_custom_email_address">
+			<label>
+				<input type="radio" ng-model="form.use_custom_email_address" ng-value="false" />
+				<h4>Use a DeskPRO email address</h4>
+			</label>
+			<div ng-show="!form.use_custom_email_address">
+				<input type="text" class="form-control" name="title" ng-model="form.address_name" style="width: 200px;" required autofocus /><span style="font-size: 130%; margin-left: 3px;">@{{ constant('DPC_SITE_DOMAIN') }}</span>
+				<span class="help-block">
+					Enter an email address here.
+				</span>
+			</div>
+		</div>
+		<div class="inner-group">
+			<label>
+				<input type="radio" ng-model="form.use_custom_email_address" ng-value="true" />
+				<h4>Use a custom email address</h4>
+			</label>
+			<div ng-show="form.use_custom_email_address">
+				<input type="text" class="form-control" ng-model="form.custom_email_address" placeholder="Example: support@your-site.com" style="width: 50%;" />
+				<span class="help-block">
+					Enter your custom outgoing email address here.
+				</span>
+			</div>
+		</div>
+	</div>
+</div>

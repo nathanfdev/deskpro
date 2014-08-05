@@ -63,7 +63,7 @@ class CheckSatisfactionTest extends \DpUnitTestCase
 		$ticket = new Ticket();
 		$exec = new ExecutorContext();
 
-		$check = new CheckSatisfaction('notisset');
+		$check = new CheckSatisfaction('not_isset');
 		$this->assertTrue($check->isTriggerMatch($ticket, $exec));
 	}
 }

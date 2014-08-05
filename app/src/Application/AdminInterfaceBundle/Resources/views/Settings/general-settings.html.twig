@@ -27,19 +27,21 @@
 						</span>
 						<input type="text" class="form-control" ng-model="settings.deskpro_name" style="width: 40%" />
 					</div>
-					<div class="inner-group">
-						<label>
-							<h4>
-								Helpdesk URL
-							</h4>
-						</label>
-						<span class="help-block">
-							The primary URL for your helpdesk. This URL is used whenever the system needs
-							to link to your helpdesk. For example, in email notifications.
-						</span>
+					{% if not app.isCloud() %}
+						<div class="inner-group">
+							<label>
+								<h4>
+									Helpdesk URL
+								</h4>
+							</label>
+							<span class="help-block">
+								The primary URL for your helpdesk. This URL is used whenever the system needs
+								to link to your helpdesk. For example, in email notifications.
+							</span>
 
-						<input type="text" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
-					</div>
+							<input type="text" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
+						</div>
+					{% endif %}
 				</div>
 			</div>
 		</div>
@@ -75,6 +77,41 @@
 							Enter the URL to your company website.
 						</span>
 						<input type="text" class="form-control" ng-model="settings.site_url" style="width: 40%" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+
+	{##################################################################################################}
+
+	<article class="form-horizontal dp-form" ng-if="email_accounts.length > 0">
+		<div class="panel panel-innertable">
+			<div class="panel-heading">
+				<h3>
+					<span>Default Email Account</span>
+				</h3>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-12">
+					<div class="inner-group">
+						<p>
+							DeskPRO sends a number of non-ticket related email such as password reset links, welcome emails,
+							or login alerts. This option defines which email account to use for these types of emails.
+						</p>
+						<p>
+							You can edit accounts or add new accounts from the <a href="{{ ng_href('tickets.ticket_accounts') }}">Email Accounts</a> section.
+						</p>
+						<p>
+							Since these emails are not directly related to communication between users and agents,
+							some helpdesks may wish to <a href="https://support.deskpro.com/kb/articles/208" target="_blank">configure a noreply address</a>
+							instead.
+						</p>
+						<div style="padding-top: 10px;">
+							Default account: <select ui-select2 ng-model="settings.default_from_email">
+								<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.address') }}">{{ ng_var('acc.address') }}</option>
+							</select>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -193,20 +230,22 @@
 						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_user_not_exts" style="width: 350px;" placeholder="Example: exe, msi" />
 					</div>
 				</div>
-				<div class="inner-group">
-					<label>
-						<h4>
-							Max file size a user can upload.
-						</h4>
-						<span class="help-block">
-							<span class="label label-danger ng-hide" ng-show="settings.attach_user_maxsize > maxUploadSize">Warning</span>
-							The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
-						</span>
-					</label>
-					<div>
-						<dp-filesize-with-unit ng-model="settings.attach_user_maxsize"></dp-filesize-with-unit>
+				{% if not app.isCloud() %}
+					<div class="inner-group">
+						<label>
+							<h4>
+								Max file size a user can upload.
+							</h4>
+							<span class="help-block">
+								<span class="label label-danger ng-hide" ng-show="settings.attach_user_maxsize > maxUploadSize">Warning</span>
+								The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+							</span>
+						</label>
+						<div>
+							<dp-filesize-with-unit ng-model="settings.attach_user_maxsize"></dp-filesize-with-unit>
+						</div>
 					</div>
-				</div>
+				{% endif %}
 			</div>
 		</div>
 		<div style="width: 460px; float:left;">
@@ -243,20 +282,22 @@
 						<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_agent_not_exts" style="width: 350px;" placeholder="Example: exe, msi" />
 					</div>
 				</div>
-				<div class="inner-group">
-					<label>
-						<h4>
-							Max file size a agent can upload.
-						</h4>
-						<span class="help-block">
-							<span class="label label-danger ng-hide" ng-show="settings.attach_agent_maxsize > maxUploadSize">Warning</span>
-							The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
-						</span>
-					</label>
-					<div>
-						<dp-filesize-with-unit ng-model="settings.attach_agent_maxsize"></dp-filesize-with-unit>
+				{% if not app.isCloud() %}
+					<div class="inner-group">
+						<label>
+							<h4>
+								Max file size an agent can upload.
+							</h4>
+							<span class="help-block">
+								<span class="label label-danger ng-hide" ng-show="settings.attach_agent_maxsize > maxUploadSize">Warning</span>
+								The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+							</span>
+						</label>
+						<div>
+							<dp-filesize-with-unit ng-model="settings.attach_agent_maxsize"></dp-filesize-with-unit>
+						</div>
 					</div>
-				</div>
+				{% endif %}
 			</div>
 		</div>
 		<br class="dp-clear"/>
@@ -280,9 +321,11 @@
 	</section>
 	</form>
 
-	<div style="text-align: right; font-size: 11px; margin: 10px;">
-		<a href="{{ ng_href('setup.settings_advanced') }}">View advanced settings editor &rarr;</a>
-	</div>
+	{% if not app.isCloud() %}
+		<div style="text-align: right; font-size: 11px; margin: 10px;">
+			<a href="{{ ng_href('setup.settings_advanced') }}">View advanced settings editor &rarr;</a>
+		</div>
+	{% endif %}
 
 	<div dp-register-message="saved_settings">Settings saved successfully.</div>
 {% endblock %}

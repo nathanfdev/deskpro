@@ -37,24 +37,28 @@ use Application\DeskPRO\App;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Env;
 use Orb\Util\Numbers;
+use Orb\Util\OptionsArray;
 
 class ServerFileUploads
 {
 	/**
 	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
-
 	protected $em;
 
+
+	/**
+	 * @param EntityManager $em
+	 */
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
 	}
 
+
 	/**
 	 * @return array
 	 */
-
 	public function getPhpVars()
 	{
 		$php_vars = array();
@@ -71,10 +75,10 @@ class ServerFileUploads
 		return $php_vars;
 	}
 
+
 	/**
 	 * @return string
 	 */
-
 	public function getEffectiveMaxUploadSize()
 	{
 		$effective_max = Env::getEffectiveMaxUploadSize();
@@ -88,28 +92,28 @@ class ServerFileUploads
 		return $result;
 	}
 
+
 	/**
 	 * @return string
 	 */
-
 	public function getUrlToLearnPhpIni()
 	{
 		return App::get('deskpro.service_urls')->get('dp.kb.editing_php_ini');
 	}
 
+
 	/**
 	 * @return string
 	 */
-
 	public function getPhpIniPath()
 	{
 		return Env::getPhpIniPath();
 	}
 
+
 	/**
 	 * @return array
 	 */
-
 	public function getRestrictions()
 	{
 		return array(
@@ -122,10 +126,10 @@ class ServerFileUploads
 		);
 	}
 
+
 	/**
 	 * @return array
 	 */
-
 	public function getMovingFiles()
 	{
 		$moving_id = App::getContainer()->getSetting('core.filesystem_move_from_id');
@@ -173,39 +177,38 @@ class ServerFileUploads
 		);
 	}
 
+
 	/**
 	 * @return bool
 	 */
-
-	public function isUsingFileSystem()
+	public function getStorageMethod()
 	{
-		return App::getContainer()->getSetting('core.filestorage_method') == 'fs';
+		return App::getContainer()->getSetting('core.filestorage_method');
 	}
+
 
 	/**
 	 * @return string
 	 */
-
 	public function getFileStoragePath()
 	{
 		return   App::getContainer()->getBlobDir();
 	}
 
+
 	/**
 	 * @return string
 	 */
-
 	public function getFileUploaderUrl()
 	{
 		return App::getRouter()->generate('api_server_file_uploads');
 	}
 
+
 	/**
 	 * @param $file
-	 *
 	 * @return array
 	 */
-
 	public function getUploadResults($file)
 	{
 		$upload_failed   = false;
@@ -239,70 +242,72 @@ class ServerFileUploads
 		);
 	}
 
+
 	/**
-	 *
+	 * @param array $options
+	 * @throws \Doctrine\DBAL\DBALException
+	 * @throws \Exception
 	 */
-
-	public function switchStorage()
+	public function switchStorage(array $options)
 	{
-		$use_fs = (App::getContainer()->getSetting('core.filestorage_method') == 'fs');
+		$options = new OptionsArray($options);
 
-		if ($use_fs) {
+		$settings = App::$container->getSettingsHandler();
+		$db = App::$container->getDb();
 
-			App::getContainer()->getEm()->getRepository('DeskPRO:Setting')->updateSetting(
-				'core.filestorage_method',
-				'db'
-			);
+		$method = $options->get('method', 'db');
 
-			App::getDb()->executeUpdate(
-				"
-				UPDATE blobs
-				SET storage_loc_pref = 'db'
-				WHERE storage_loc != 'db'
-				"
-			);
+		switch ($options->get('method', 'db')) {
+			case 'db':
+				$settings->setSetting('core.filestorage_method', 'db');
+				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 'db' WHERE storage_loc != 'db'");
+				break;
 
-		} else {
+			case 'fs':
+				$settings->setSetting('core.filestorage_method', 'fs');
+				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 'fs' WHERE storage_loc != 'fs'");
+				break;
 
-			App::getContainer()->getEm()->getRepository('DeskPRO:Setting')->updateSetting(
-				'core.filestorage_method',
-				'fs'
-			);
+			case 's3':
+				$settings->setSetting('core.filestorage_method', 's3');
+				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 's3' WHERE storage_loc != 's3'");
+				$settings->setSetting('core.filestorage_s3_key',    $options->get('s3_key', null));
+				$settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
+				$settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
 
-			App::getDb()->executeUpdate(
-				"
-				UPDATE blobs
-				SET storage_loc_pref = 'fs'
-				WHERE storage_loc != 'fs'
-				"
-			);
+				// Need to clear CSS blobs too, since the URLs will change
+				\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+
+				break;
 		}
 
-		App::getContainer()->getEm()->getRepository('DeskPRO:Setting')->updateSetting(
-			'core.filesystem_move_from_id',
-			'-1'
-		);
+		if ($method != 's3') {
+			$settings->setSetting('core.filestorage_s3_key',    null);
+			$settings->setSetting('core.filestorage_s3_secret', null);
+			$settings->setSetting('core.filestorage_s3_bucket', null);
+		}
+
+		$settings->setSetting('core.filesystem_move_from_id', '-1');
 	}
 
-	/**
-	 *
-	 */
 
+	/**
+	 * @return array
+	 */
 	public function switchStorageStatus()
 	{
 		$transfer = $this->getMovingFiles();
+
+		$to_method = App::$container->getSettingsHandler()->get('core.filestorage_method');
 
 		if(!empty($transfer['id'])) {
 
 			$status  = 'progress';
 
-			if ($this->isUsingFileSystem()) {
-
-				$message = 'Currently transferring files from the database to the filesystem. ';
-
-			} else {
-
-				$message = 'Currently transferring files from the filesystem to the database. ';
+			switch ($to_method) {
+				case 'db': $message = 'Currently transferring files to the database'; break;
+				case 'fs': $message = 'Currently transferring files to the filesystem'; break;
+				case 's3': $message = 'Currently transferring files AmazonS3'; break;
 			}
 
 			$message .= $transfer['count_done'] . ' of ' .  $transfer['count_todo'];

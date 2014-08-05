@@ -51,10 +51,7 @@ class CheckLanguage extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('language_ids');
-		$options->addCallbackCheckedOption('language_ids', function($v) {
-			return is_array($v) && !empty($v);
-		});
+		$options->addValidNames('language_ids');
 		return $options;
 	}
 

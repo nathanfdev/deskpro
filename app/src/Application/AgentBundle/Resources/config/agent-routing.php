@@ -179,6 +179,19 @@ $collection->create('agent_login_authenticate_local', array(
 	'defaults'    => array('usersource_id' => 0),
 ));
 
+$collection->create('agent_login_authenticate', array(
+	'path'          => '/login/authenticate/{usersource_id}',
+	'controller'    => 'AgentBundle:Login:authenticate',
+	'defaults'      => array('usersource_id' => 0),
+	'requirements'  => array('usersource_id' => '\\d+'),
+));
+
+$collection->create('agent_login_callback', array(
+	'path'          => '/login/authenticate-callback/{usersource_id}',
+	'controller'    => 'AgentBundle:Login:authenticateCallback',
+	'requirements'  => array('usersource_id' => '\\d+'),
+));
+
 $collection->create('agent_login_adminlogin', array(
 	'path'        => '/login/admin-login/{code}',
 	'controller'  => 'AgentBundle:Login:authAdminLogin',
@@ -1038,6 +1051,12 @@ $collection->create('agent_ticket_link_existing', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('agent_ticket_unlink', array(
+		'path' => '/tickets/{ticket_id}/unlink-ticket',
+		'controller' => 'AgentBundle:Ticket:unlinkTicket',
+		'methods'     => array('POST'),
+	));
+
 $collection->create('agent_twitter_new', array(
 	'path'        => '/twitter/new',
 	'controller'  => 'AgentBundle:Twitter:newTweet',
@@ -1310,9 +1329,9 @@ $collection->create('agent_tasksearch_getsectiondata', array(
 ));
 
 $collection->create('agent_task_list', array(
-	'path'        => '/tasks/list/{search_type}/{search_categoty}',
+	'path'        => '/tasks/list/{search_type}/{search_category}',
 	'controller'  => 'AgentBundle:Task:taskList',
-	'defaults'    => array('search_type' => NULL, 		'search_categoty' => NULL),
+	'defaults'    => array('search_type' => NULL, 'search_category' => NULL),
 	'options'     => array('fragment_name' => 'tasks', 'fragment_type' => 'list'),
 ));
 

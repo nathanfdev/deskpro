@@ -61,12 +61,12 @@ class LayoutGenerator
 	{
 		$ticket_layout = new TicketLayoutEntity();
 		$ticket_layout->is_enabled = true;
-		$ticket_layout->user_layout = $this->getLayout();
-		$ticket_layout->agent_layout = $this->getLayout();
+		$ticket_layout->user_layout = $this->getLayout('user');
+		$ticket_layout->agent_layout = $this->getLayout('agent');
 		return $ticket_layout;
 	}
 
-	private function getLayout()
+	private function getLayout($type)
 	{
 		$layout = new TicketLayout\Layout();
 		$layout->add(new TicketLayout\LayoutField('user_name'));
@@ -87,7 +87,9 @@ class LayoutGenerator
 		}
 
 		foreach ($this->container->getTicketFieldManager()->getFields() as $f) {
-			$layout->add(new TicketLayout\LayoutField('ticket_field', $f->id));
+			if ($type == 'agent' || !$f->is_agent_field) {
+				$layout->add(new TicketLayout\LayoutField('ticket_field', $f->id));
+			}
 		}
 
 		$layout->add(new TicketLayout\LayoutField('subject'));

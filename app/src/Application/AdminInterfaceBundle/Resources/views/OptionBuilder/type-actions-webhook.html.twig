@@ -1,32 +1,44 @@
 <dp-optionbuilder-row>
 	<div class="dp-ob-standard-row">
-		<table class="display-table">
+		<table class="display-table spaced">
 			<tr>
-				<td width="80" class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
-				<td ng-show="rowOpts.rowEnabled">
-					<div>
-						URL: <input type="text" ng-model="model.url" />
-					</div>
-					<div>
-						Username and Password: <input type="text" ng-model="model.username" /> <input type="text" ng-model="model.password" />
-					</div>
-					<div>
-						Method: <select ng-model="model.method">
-							<option value="POST">POST</option>
-							<option value="GET">GET</option>
-							<option value="PUT">PUT</option>
-							<option value="DELETE">DELETE</option>
-						</select>
-					</div>
-					<div>
-						Custom Headers: <textarea ng-mode="model.headers"></textarea>
-					</div>
-					<div>
-						Custom Data: <textarea ng-mode="model.custom_data"></textarea>
-					</div>
-					<div>
-						Timeout: <input type="text" ng-model="model.timeout" />
-					</div>
+				<td width="145">Web Hook URL:</td>
+				<td><input type="text" class="form-control" ng-model="model.url" /></td>
+			</tr>
+			<tr>
+				<td>Username/Password:</td>
+				<td>
+					<input type="text" class="form-control" ng-model="model.username" style="margin-bottom: 2px;" /><br/>
+					<input type="text" class="form-control" ng-model="model.password" />
+				</td>
+			</tr>
+			<tr>
+				<td>Method:</td>
+				<td>
+					<select ng-model="model.method">
+						<option value="POST">POST</option>
+						<option value="GET">GET</option>
+						<option value="PUT">PUT</option>
+						<option value="DELETE">DELETE</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Custom headers:</td>
+				<td>
+					<textarea ng-model="model.headers" class="form-control" style="height: 70px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>Custom data:</td>
+				<td>
+					<textarea ng-model="model.custom_data" class="form-control" style="height: 70px;"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>Timeout:</td>
+				<td>
+					<input type="text" ng-model="model.timeout" class="form-control" style="width: 80px;" /> seconds
 				</td>
 			</tr>
 		</table>

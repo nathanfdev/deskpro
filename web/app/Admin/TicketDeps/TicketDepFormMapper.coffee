@@ -74,18 +74,32 @@ define [
 			else
 				form.custom_layout = Util.clone(form.default_layout, true)
 
+			depAgentGroupPerms = depPerms.agentgroups
+			if not dep.id
+				depAgentGroupPerms = []
+
 			matrix = new DepAgentPermMatrix()
 			for group in agentgroups
 				matrix.addGroup(group, [])
+
+				# initialize new deps with all perms
+				if not dep.id
+					depAgentGroupPerms.push({ usergroup_id: group.id, perm_name: 'full'})
 			for agent in agents
 				matrix.addAgent(agent, [])
 
-			matrix.initPerms(depPerms.agentgroups, depPerms.agents)
+			matrix.initPerms(depAgentGroupPerms, depPerms.agents)
 			form.agent_perms = matrix
 
 			form.usergroup_perms = {}
 			for u in usergroups
-				form.usergroup_perms[u.id] = { full: false }
+				# if the dep exists, initialize default to false because real perms are applied below
+				if dep.id
+					form.usergroup_perms[u.id] = { full: false }
+
+				# new deps, default perms to on
+				else
+					form.usergroup_perms[u.id] = { full: true }
 
 			if depPerms.usergroups
 				for p in depPerms.usergroups
@@ -163,3 +177,8 @@ define [
 				dep.parent_id = null
 			else
 				dep.parent_id = parseInt(formModel.parent_id)
+
+			if formModel.use_custom_layout
+				dep.has_layout = true
+			else
+				dep.has_layout = false

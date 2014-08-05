@@ -51,10 +51,7 @@ class CheckWorkflow extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('workflow_ids');
-		$options->addCallbackCheckedOption('workflow_ids', function($v) {
-			return is_array($v) && !empty($v);
-		});
+		$options->addValidNames('workflow_ids');
 		return $options;
 	}
 

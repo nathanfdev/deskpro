@@ -256,14 +256,14 @@ div.info-message {
 			text-overflow: ellipsis;
 		}
 
-		ul {
+		ul.nav-list {
 			margin: 1px 0 0 0;
 			padding: 0;
 			line-height: 15px;
 			width: 200px;
 		}
 
-		ul li {
+		ul.nav-list > li {
 			display: inline-block;
 			margin: 0;
 			margin-right: 7px;
@@ -272,22 +272,22 @@ div.info-message {
 			color: lighten(@agent_header_userprofile_text_color, 25%);
 		}
 
-		ul li:last-child {
+		ul.nav-list > li:last-child {
 			margin-right: 0;
 		}
 
-		ul li:hover {
+		ul.nav-list > li:hover {
 			cursor: pointer;
 			color: darken(@agent_header_userprofile_text_color, 8%);
 		}
 
-		ul li a {
+		ul.nav-list > li > a {
 			font-size: 11px;
 			color: lighten(@agent_header_userprofile_text_color, 25%);
 			border-bottom: 1px solid #165d94;
 		}
 
-		ul li a:hover, ul li:hover a {
+		ul.nav-list > li > a:hover, ul.nav-list > li:hover > a {
 			color: darken(@agent_header_userprofile_text_color, 8%);
 		}
 	}
@@ -312,8 +312,10 @@ div.info-message {
 .dp-appstrip {
 	overflow: hidden;
 	ul {
+		background: #2b2f33;
 		margin: 0;
 		padding: 0;
+		box-shadow: 0 -4px 14px 0 #2b2f33;
 		li {
 			padding: 0;
 			margin: 0;
@@ -484,10 +486,6 @@ div.info-message {
 			.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x_active/Ticket-Feedback.png'); }
 		}
 	}
-}
-
-@media all and (max-height: 800px) {
-	.dp-appstrip ul.btm { display: none; }
 }
 
 .agent-interface-hover, .reports-interface-hover, .lic-interface-hover {
@@ -1110,7 +1108,7 @@ nav.dp-blocktabs {
 }
 
 @media all and (max-width: 1575px) {
-	nav.dp-blocktabs {
+	nav.dp-blocktabs.responsive {
 		> ul {
 			li {
 				a {
@@ -1122,7 +1120,7 @@ nav.dp-blocktabs {
 }
 
 @media all and (max-width: 1515px) {
-	nav.dp-blocktabs {
+	nav.dp-blocktabs.responsive {
 		> ul {
 			li {
 				a {
@@ -1152,21 +1150,26 @@ nav.dp-tabletabs {
 					color: #777;
 				}
 
+				background: #eee;
+				position: relative;
+				bottom: -1px;
+				z-index: 1;
 				display: block;
 				color: #000;
 				text-decoration: none;
 				padding: 4px 10px 3px 10px;
 				font-size: 120%;
 				font-weight: normal;
-				border: 1px solid transparent;
-				border-bottom: none;
+				border: 1px solid #ccc;
+				border-bottom-color: #bbb;
 				.border-radius(3px, 3px, 0, 0);
 			}
 
 			&.active, &:hover {
 				a {
+					background: #fff;
 					border: 1px solid #bbb;
-					border-bottom: none;
+					border-bottom-color: #fff;
 				}
 			}
 		}
@@ -1356,6 +1359,27 @@ section.dp-help-content-wrapper {
 				}
 			}
 		}
+
+		section.related-content {
+			ul {
+				list-style-type: none;
+				margin-left: 0;
+				padding-left: 16px;
+				li {
+					margin-left: 0;
+					padding-left: 0;
+					line-height: 18px;
+
+					i {
+						font-size: 14px;
+						vertical-align: baseline;
+						width: 14px;
+						text-align: center;
+						margin-right: 1px;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -1534,6 +1558,26 @@ section.dp-help-content-wrapper.open {
 	}
 }
 
+.show-title-ids .title-id {
+	display: inline-block;
+}
+.title-id {
+	display: none;
+	vertical-align: top;
+	font-size: 9px;
+	font-family: Monaco, Consolas, monospace;
+	background: #fff;
+	border: 1px solid #ccc;
+	color: #bbb;
+	padding: 0 1px;
+	line-height: 13px;
+	border-radius: 3px;
+	margin-right: 3px;
+	&:hover {
+		color: #000;
+	}
+}
+
 .dp-empty-list-notice {
 	margin: 10px 0 10px 16px;
 }
@@ -1621,6 +1665,18 @@ section.dp-help-content-wrapper.open {
 	}
 }
 
+.dp-pane-help-box, .dp-item-list .help-box {
+	background-color: #fff;
+	margin: 9px;
+	margin-bottom: 3px;
+	border: 1px dotted #888;
+	padding: 5px;
+	border-radius: 2px;
+}
+.dp-pane-help-box{
+	margin: 9px;
+}
+
 .dp-item-list li.group-section {
 
 	.as-open { display: none !important; }
@@ -1638,15 +1694,6 @@ section.dp-help-content-wrapper.open {
 
 	> a {
 		cursor: pointer;
-	}
-
-	.help-box {
-		background-color: #fff;
-		margin: 9px;
-		margin-bottom: 3px;
-		border: 1px dotted #888;
-		padding: 5px;
-		border-radius: 2px;
 	}
 
 	.group-section-wrapper {
@@ -2178,7 +2225,6 @@ section.dp-help-content-wrapper.open {
 	label h4 {
 		display: inline-block;
 		margin-bottom: 0;
-		margin-left: 3px;
 	}
 }
 
@@ -2289,6 +2335,10 @@ ul.big-option-list {
 			margin-bottom: 0;
 		}
 
+		.content-form {
+			display: none;
+		}
+
 		h3 {
 			margin: 0 0 8px 0;
 			font-size: 15px;
@@ -2319,6 +2369,10 @@ ul.big-option-list {
 		&.active {
 			background: #ededed;
 			border: 1px solid #ccc;
+
+			.content-form {
+				display: block;
+			}
 		}
 	}
 }
@@ -2975,15 +3029,8 @@ button.toast-close-button {
 }
 
 .dp-ob-select2 {
-	margin-top: -35px;
-
 	&.select2-drop-above {
-		margin-top: 30px;
-		margin-left: 11px;
-	}
-
-	.select2-results > li:first-child {
-		display: none;
+		margin-top: -5px !important;
 	}
 
 	li.select2-result-with-children > .select2-result-label {
@@ -3305,11 +3352,25 @@ table.display-table.spaced {
 	input.dp-cb-input {
 		background: transparent;
 		font-size: 100%;
-		padding: 0 10px;
+		padding: 0px 1px;
 		margin: 0;
-		border: none;
+		border: 1px solid transparent;
 		height: auto;
-		border-radius: 0;
+		border-radius: 1px;
+		cursor: pointer;
+		width: 95%;
+		z-index: 1;
+		position: relative;
+
+		&:focus {
+			background: #fff;
+			border-color: #66afe9;
+			text-decoration: none !important;
+		}
+	}
+
+	.dp-cb-titlewrap:hover input.dp-cb-input {
+		text-decoration: underline;
 	}
 
 	.dp-cb-titlewrap {
@@ -4377,6 +4438,47 @@ table.agent-perms-table {
 			top: 1px;
 			font-size: 11px;
 			vertical-align: baseline;
+		}
+	}
+}
+
+//######################################################################################################################
+//# Cloud Specific
+//######################################################################################################################
+
+.dpc-license-page {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: #fff;
+
+	.iframe-loading {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+	}
+
+	.iframe-holder {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background: #fff;
+
+		iframe {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+			padding: 0;
+			margin: 0;
 		}
 	}
 }

@@ -39,6 +39,8 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -66,9 +68,27 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	protected function loginViaToken()
 	{
 		if (($token = $this->in->getString('tok')) && strpos($token, '-')) {
+
 			list($person_id, $login_token) = explode('-', $token, 2);
 			$person = $this->em->find('DeskPRO:Person', $person_id);
-			if ($person && $person->checkPassword($login_token)) {
+			if (!$person || !$person->checkPassword($login_token)) {
+				$person = null;
+			}
+
+			// If this is a brand new install, we could have an automatic login token to check
+			if (!$person) {
+				$first = Arrays::getFirstItem($this->container->getAgentData()->getAgents());
+				$install_time = $this->settings->get('core.install_timestamp');
+
+				if ($first && $install_time && $install_time > (time() - 3600)) {
+					$secret = sha1($first->secret_string . $first->salt);
+					if (Util::checkStaticSecurityToken($token, $secret)) {
+						$person = $first;
+					}
+				}
+			}
+
+			if ($person) {
 				$set_active = false;
 				if (!$person->date_last_login) {
 					$set_active = true;
@@ -107,10 +127,6 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	 */
 	public function indexAction()
 	{
-		if ($this->loginViaToken()) {
-			return $this->redirectRoute($this->route_prefix);
-		}
-
 		$return = $this->in->getStringFromGet('return');
 		if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
 			// Always be a path on the current domain,
@@ -118,7 +134,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
-		if ($this->session->getPerson()->getId()) {
+		if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute('user');
 		}
@@ -524,6 +540,11 @@ HTML;
 		# Callback types require us to redirect
 		#------------------------------
 
+		$route_type = 'user';
+		if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
+			$route_type = 'agent';
+		}
+
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$result = $adapter->authenticate();
 
@@ -540,7 +561,7 @@ HTML;
 				$this->_setupUsersourceSession($usersource, $person, $result);
 
 				if ($this->in->getString('js_tell')) {
-					$return = $this->generateUrl('user_jstell_login', array(
+					$return = $this->generateUrl($route_type . '_jstell_login', array(
 						'jstell' => $this->in->getString('js_tell'),
 						'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
 						'usersource_id' => $usersource_id
@@ -564,7 +585,7 @@ HTML;
 				$this->session->set('auth_return', $return);
 
 				if ($this->in->getString('js_tell')) {
-					$return = $this->generateUrl('user_jstell_login', array(
+					$return = $this->generateUrl($route_type . '_jstell_login', array(
 						'jstell' => $this->in->getString('js_tell'),
 						'security_token' => $this->session->getEntity()->generateSecurityToken('jstell'),
 						'usersource_id' => $usersource_id
@@ -699,9 +720,14 @@ HTML;
 		}
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
+			$route_type = 'user';
+			if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
+				$route_type = 'agent';
+			}
+
 			$adapter->setCallbackUrl(
 				rtrim($this->container->getSetting('core.deskpro_url'), '/') .
-				$this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), false)
+				$this->generateUrl($route_type . '_login_callback', array('usersource_id' => $usersource['id']), false)
 			);
 		}
 
@@ -743,16 +769,23 @@ HTML;
 
 		$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
-		if (!$person) {
+		$is_invalid = false;
+		if ($person && $person->is_deleted) {
+			$is_invalid = true;
+		}
+
+		if (!$person || $is_invalid) {
 
 			// If no user was found in our database, then the account might not have
 			// been set up yet. For adapters that support it, we can still see if we
 			// can be helpful and redirect to another source they exist in
-			$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
-			foreach ($usersources as $us) {
-				$found = $us->findIdentityByInput($email);
-				if ($found && $us->lost_password_url) {
-					return $this->redirect($us->lost_password_url);
+			if (!$is_invalid) {
+				$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
+				foreach ($usersources as $us) {
+					$found = $us->findIdentityByInput($email);
+					if ($found && $us->lost_password_url) {
+						return $this->redirect($us->lost_password_url);
+					}
 				}
 			}
 
@@ -789,9 +822,9 @@ HTML;
 				}
 
 				// No other user sources for the user
-				// Default is to just show standard message to not reveal if account exists
 				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
 					'route_prefix' => $this->route_prefix,
+					'did_send' => false
 				));
 			}
 		}
@@ -799,7 +832,7 @@ HTML;
 		// Admins cant reset their password, but we dont want to reveal to this unknown user that we're an admin
 		// Send an email instead
 		if (!defined('DPC_IS_CLOUD')) {
-			if ($person->can_admin) {
+			if ($person->can_admin && $person->is_agent && !$person->is_deleted) {
 				$vars = array(
 					'person' => $person,
 					'email' => $email
@@ -817,6 +850,7 @@ HTML;
 
 				return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
 					'route_prefix' => $this->route_prefix,
+					'did_send' => true
 				));
 			}
 		}
@@ -850,6 +884,7 @@ HTML;
 
 		return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
 			'route_prefix' => $this->route_prefix,
+			'did_send' => true
 		));
 	}
 
@@ -987,14 +1022,14 @@ HTML;
 	{
 		$tmp = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
 		if (!$tmp) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$agent  = $this->container->getAgentData()->get($tmp->getData('agent_id'));
 		$person = $this->em->getRepository('DeskPRO:Person')->find($tmp->getData('person_id'));
 
 		if (!$agent || !$agent->is_agent || !$agent->hasPerm('agent_people.login_as') || !$person || $person->is_agent) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$this->session->set('auth_person_id', $person->id);

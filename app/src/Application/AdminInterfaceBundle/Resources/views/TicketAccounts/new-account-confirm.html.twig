@@ -1,0 +1,29 @@
+<div class="modal-dialog">
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">Test Account</h4>
+	</div>
+	<div class="modal-body">
+		<p>
+			You are about to create a new email account. DeskPRO will immediately connect and begin to download
+			and process messages in the acccount.
+		</p>
+		<p ng-if="message_count !== null">
+			When you performed the account "Test" a moment ago, the system detected {{ ng_var('message_count') }}
+			messages exist in this account. These {{ ng_var('message_count') }} messages will be processed into tickets.
+		</p>
+		<p ng-if="message_count === null">
+			Any messages that exist in this account will be processed into messages. For example, if the account has 1000
+			messags you have not deleted, DeskPRO will begin processing all 1000 messages. You should use the "Test" feature
+			on this page to verify how many messages exist in the account before proceeding.
+		</p>
+	</div>
+	<div class="modal-footer">
+		<div ng-hide="is_testing">
+			<button class="btn btn-default" ng-click="dismiss()">Cancel</button>
+			<button class="btn btn-success" ng-click="confirm()">Save Account &amp; Begin Processing &rarr;</button>
+		</div>
+	</div>
+</div>
+</div>

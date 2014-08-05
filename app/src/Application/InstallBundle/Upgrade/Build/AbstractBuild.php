@@ -35,6 +35,8 @@
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Monolog\NullLogger;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractBuild
 {
@@ -48,8 +50,24 @@ abstract class AbstractBuild
 	 */
 	protected $rerun = false;
 
-	public function __construct(DeskproContainer $container)
+	/**
+	 * @var \Psr\Log\LoggerInterface
+	 */
+	protected $logger;
+
+
+	/**
+	 * @param DeskproContainer $container
+	 * @param LoggerInterface  $logger
+	 */
+	public function __construct(DeskproContainer $container, LoggerInterface $logger = null)
 	{
+		if ($logger === null) {
+			$logger = new NullLogger();
+		}
+
+		$this->logger = $logger;
+
 		$this->container = $container;
 		$this->init();
 	}
@@ -159,14 +177,10 @@ abstract class AbstractBuild
 	 * Write to output
 	 *
 	 * @param string $string
-	 * @param bool   $nl
 	 */
-	public function out($string, $nl = true)
+	public function out($string)
 	{
-		echo $string;
-		if ($nl) {
-			echo "\n";
-		}
+		$this->logger->info($string);
 	}
 
 
@@ -176,15 +190,11 @@ abstract class AbstractBuild
 	public function execMutateSql($sql, $ignore_err = false)
 	{
 		$sql = preg_replace('#^\s*#m', '', $sql);
-
-		echo "\t-> " . $sql;
-		echo "\n";
-
 		try {
 			$this->container->getDb()->exec($sql);
 		} catch (\Exception $e) {
-			echo "\t-> " . $e->getMessage();
-			echo "\n";
+			$this->logger->info("SQL: " . $sql);
+			$this->logger->error($e->getMessage());
 			if (!$ignore_err) {
 				throw $e;
 			}
@@ -208,7 +218,9 @@ abstract class AbstractBuild
 
 
 	/**
-	 * @param $key
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
 	 */
 	public function getStatus($key, $default = null)
 	{

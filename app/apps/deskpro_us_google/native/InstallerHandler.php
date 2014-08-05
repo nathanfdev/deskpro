@@ -35,9 +35,9 @@
 namespace deskpro_us_google;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
-class InstallerHandler implements InstallerHandlerInterface
+class InstallerHandler extends AbstractInstallerHandler
 {
 	/**
 	 * {@inheritDoc}
@@ -49,8 +49,10 @@ class InstallerHandler implements InstallerHandlerInterface
 			'title'             => $context->getApp()->title,
 			'source_type'       => 'app',
 			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array()),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
+			'options'           => json_encode(array(
+				'apps_domain' => $context->getApp()->getSetting('google_apps_domain') ?: null
+			)),
+			'is_enabled'        => '1',
 			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Google',
 		));
 	}
@@ -74,8 +76,10 @@ class InstallerHandler implements InstallerHandlerInterface
 			'title'             => $context->getApp()->title,
 			'source_type'       => 'app',
 			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array()),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0',
+			'options'           => json_encode(array(
+				'apps_domain' => $context->getApp()->getSetting('google_apps_domain') ?: null
+			)),
+			'is_enabled'        => '1',
 			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Google',
 		), array('app_id' => $context->getApp()->id));
 	}

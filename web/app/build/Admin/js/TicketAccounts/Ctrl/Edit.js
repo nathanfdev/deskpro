@@ -21,6 +21,7 @@
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.actionOptionTypes = [];
         this.$scope.actions_form = {};
+        this.$scope.message_count = null;
         this.accountId = parseInt(this.$stateParams.id || 0);
         this.didPassTest = false;
         this.testMessageCount = 0;
@@ -29,7 +30,7 @@
           to: window.DP_PERSON_EMAIL,
           from: '',
           subject: 'Test email',
-          message: 'This is a test. If you see this email in your inbox, your outgoing email account are correct.'
+          message: 'This is a test. If you see this email in your inbox, your outgoing email account settings are correct.'
         };
       };
 
@@ -46,6 +47,10 @@
           _results.push(this.$scope.actionOptionTypes.push(opt));
         }
         return _results;
+      };
+
+      Admin_TicketAccounts_Ctrl_Edit.prototype.getFormModel = function() {
+        return new EditTicketAccountModel(this.account || {}, this.deps || [], this.trigger || {});
       };
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.initialLoad = function() {
@@ -98,9 +103,7 @@
           }).then((function(_this) {
             return function(result) {
               _this.account = result.data.email_account.email_account;
-              _this.trigger = result.data.email_account.trigger;
-              _this.form_model = new EditTicketAccountModel(_this.account);
-              return _this.$scope.form = _this.form_model.form;
+              return _this.trigger = result.data.email_account.trigger;
             };
           })(this));
           proms.push(data_promise);
@@ -108,12 +111,15 @@
         final_promise = this.$q.all(proms);
         final_promise.then((function(_this) {
           return function() {
-            _this.form_model = new EditTicketAccountModel(_this.account, _this.deps, _this.trigger);
-            if (!_this.accountId) {
-              _this.form_model.form.incoming_account_type = '';
-              _this.form_model.form.outgoing_account_type = 'smtp';
-            }
+            _this.form_model = _this.getFormModel();
             _this.$scope.form = _this.form_model.form;
+            if (!_this.accountId) {
+              _this.$scope.form.incoming_type = '';
+              _this.$scope.form.outgoing_type = 'smtp';
+            }
+            if (!_this.$scope.form.outgoing_type) {
+              _this.$scope.form.outgoing_type = 'php_mail';
+            }
             return _this.updateCriteriaOptionTypes();
           };
         })(this));
@@ -129,6 +135,10 @@
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.saveAccount = function() {
         var is_new, postData, promise, triggerSaver;
+        if (!this.account.id && !this.new_is_confirmed) {
+          this.showNewAccountConfirm();
+          return;
+        }
         postData = this.form_model.getFormData();
         triggerSaver = (function(_this) {
           return function() {
@@ -220,7 +230,8 @@
        */
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.testAccountModal = function() {
-        var inst;
+        var inst, me;
+        me = this;
         return inst = this.$modal.open({
           templateUrl: this.getTemplatePath('TicketAccounts/test-account-modal.html'),
           controller: [
@@ -240,13 +251,15 @@
                     $scope.is_testing = false;
                     $scope.is_success = result.is_success;
                     $scope.log = result.log;
-                    return $scope.message_count = result.message_count;
+                    $scope.message_count = result.message_count;
+                    return me.$scope.message_count = result.message_count;
                   }).error(function() {
                     $scope.showing_log = true;
                     $scope.is_testing = false;
                     $scope.is_success = false;
                     $scope.log = "Server Error";
-                    return $scope.message_count = 0;
+                    $scope.message_count = 0;
+                    return me.$scope.message_count = null;
                   });
                 };
                 testNow();
@@ -257,6 +270,35 @@
             })(this)
           ]
         });
+      };
+
+      Admin_TicketAccounts_Ctrl_Edit.prototype.showNewAccountConfirm = function() {
+        var inst, me;
+        me = this;
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('TicketAccounts/new-account-confirm.html'),
+          controller: [
+            '$scope', '$modalInstance', (function(_this) {
+              return function($scope, $modalInstance) {
+                $scope.message_count = me.$scope.message_count;
+                $scope.dismiss = function() {
+                  return $modalInstance.dismiss();
+                };
+                return $scope.confirm = function() {
+                  return $modalInstance.close(true);
+                };
+              };
+            })(this)
+          ]
+        });
+        return inst.result.then((function(_this) {
+          return function(r) {
+            if (r) {
+              _this.new_is_confirmed = true;
+              return _this.saveAccount();
+            }
+          };
+        })(this));
       };
 
 

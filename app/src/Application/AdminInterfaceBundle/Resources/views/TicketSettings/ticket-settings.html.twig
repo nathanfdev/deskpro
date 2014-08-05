@@ -65,12 +65,31 @@
 								<label>
 									<h4>Maximum email size</h4>
 								</label>
-								<br/>
-								<dp-filesize-with-unit ng-model="settings.gateway_max_email" />
 								<span class="help-block">
 									Enter the max size for an email before it is rejected. This refers to the total size of a raw
 									email source. A raw email is roughly 35% larger than the sum of all attachments and text content.
 								</span>
+								<div><dp-filesize-with-unit ng-model="settings.gateway_max_email" /></div>
+							</div>
+							<div class="inner-group">
+								<label>
+									<h4>Priority of "From Email Address" headers</h4>
+								</label>
+								<span class="help-block">
+									DeskPRO reads these headers in all email messages to determine who the end-user is.
+									Drag and drop the headers to prioritize them. The first valid header in an email will be used.
+								</span>
+								<ul class="checkbox-list" style="min-width: 200px;" ui-sortable="TicketSettings.headerSortList">
+									<li data-value="{{ ng_var('header') }}" ng-repeat="header in settings.from_email_headers">
+										<label ng-switch="header">
+											<i class="drag-handle fa fa-bars" style="margin-right: 4px; color: #ccc; cursor: move;"></i>
+											<span ng-switch-when="from">From</span>
+											<span ng-switch-when="reply-to">Reply-To</span>
+											<span ng-switch-when="x-original-from">X-Original-From</span>
+											<span ng-switch-default>{{ ng_var('header') }}</span>
+										</label>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -499,22 +518,22 @@
 										</p>
 										<table>
 											<tr>
-												<td><span class="badge">&lt;YEAR&gt;-&lt;MONTH&gt;-(with 3 digits)</span></td>
+												<td><span class="badge">&lt;YEAR&gt;-&lt;MONTH&gt;-(append 3 digits)</span></td>
 												<td width="10">&rarr;</td>
 												<td><em class="badge">2013-10-001</em>, <em class="badge">2013-10-002</em> (counting upwards)</td>
 											</tr>
 											<tr>
 												<td><span class="badge">&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;</span></td>
 												<td width="10">&rarr;</td>
-												<td><span class="badge">1045885</span>, <span class="badge">6947325</span></td>
+												<td><span class="badge">10BQ8A</span>, <span class="badge">6SI73T</span></td>
 											</tr>
 											<tr>
 												<td><span class="badge">&lt;YEAR&gt;-&lt;A&gt;&lt;A&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;</span></td>
 												<td width="10">&rarr;</td>
-												<td><span class="badge">2013-AB34</span>, <span class="badge">2013-HXR8</span></td>
+												<td><span class="badge">2013-AB34Q</span>, <span class="badge">2013-HX1R8</span></td>
 											</tr>
 											<tr>
-												<td><span class="badge">TICKET-&lt;A&gt;&lt;A&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;&lt;?&gt;</span></td>
+												<td><span class="badge">TICKET-&lt;A&gt;&lt;A&gt;&lt;#&gt;&lt;#&gt;&lt;#&gt;&lt;#&gt;</span></td>
 												<td width="10">&rarr;</td>
 												<td><span class="badge">TICKET-AB2952</span>, <span class="badge">TICKET-FV4541</span></td>
 											</tr>

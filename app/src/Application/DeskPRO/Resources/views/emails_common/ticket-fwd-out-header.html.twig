@@ -1,0 +1,7 @@
+{% if not using_agent_address %}
+	<div style="font-family: 'Helvetica Neue',​Helvetica,​Arial,​sans-serif; font-size: 11px; color: #888888; padding: 0; margin: 0;">
+		This message has been forwarded to you from <a href="{{ app.getSetting('core.deskpro_url') }}">{{ app.getSetting('core.deskpro_url') }}</a>
+		by {{ agent.display_name }} &lt;<a href="mailto:{{ agent.primary_email.email }}">{{ agent.primary_email.email }}</a>&gt;<br/>
+		Please do NOT reply to this message. If you need to reply, consider replying directly to {{ ticket.person.display_name }} &lt;<a href="mailto:{{ ticket.person.primary_email.email }}">{{ ticket.person.primary_email.email }}</a>&gt;
+	</div>
+{% endif %}

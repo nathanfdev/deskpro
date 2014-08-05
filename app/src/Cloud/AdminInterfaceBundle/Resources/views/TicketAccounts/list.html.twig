@@ -1,0 +1,49 @@
+{% extends 'AdminInterfaceBundle:TicketAccounts:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+			</nav>
+			<h3 ng-pluralize count="TicketAccountsList.accounts.length || 0" when="{{ ng_plural_phrase('adm.tickets.x_email_accounts') }}"></h3>
+		</header>
+		<article>
+			<p class="dp-empty-list-notice" ng-if="!TicketAccountsList.accounts.length">
+				{{ phrase('adm.tickets.no_email_accounts') }}
+			</p>
+			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length">
+				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
+					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!acc.is_enabled">Disabled</em>
+						</div>
+
+						<span class="title-id" title="ID">#{{ ng_var('acc.id') }}</span>
+						<span class="title-text" ng-if="!acc.options.custom_email_address">{{ ng_var('acc.address') }}</span></h4>
+						<span class="title-text" ng-if="acc.options.custom_email_address">{{ ng_var('acc.options.custom_email_address') }} <em style="font-size: 90%">({{ ng_var('acc.address') }})</em></span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_accounts.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> New Email Account</a>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Incoming Email Log</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Outgoing Email Log</h3>
+		</a>
+	</section>
+
+	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+	{{ ng_tpl('AdminInterface:TicketAccounts:delete-modal.html.twig') }}
+{% endblock %}

@@ -88,13 +88,13 @@ Orb.Util.Events = {
 				try {
 					fn_info[0].delay(delay, fn_info[1] || defaultContext, args);
 				} catch (e) {
-					console.error("Error: %o %s", e, e.stack || '');
+					console.error("Event Error %s: %o %s", type, e, e.stack || '');
 				}
 			} else {
 				try {
 					fn_info[0].apply(fn_info[1] || defaultContext, args);
 				} catch (e) {
-					console.error("Error: %o %s", e, e.stack || '');
+					console.error("Event Error %s: %o %s", type, e, e.stack || '');
 				}
 			}
 		}

@@ -695,9 +695,10 @@ class Strings
 	 *
 	 * @param  string  $str        The string to parse, or an array of lines
 	 * @param  int     $dupe_mode  What to do when dupe keys are found
+	 * @param  string  $sep_str    The character to separate keys from values (usually '=' or ':', but can be anthing, e.g. '=>')
 	 * @return array
 	 */
-	public static function parseEqualsLines($str, $dupe_mode = self::EQUALSLINES_DUPE_OVERWRITE)
+	public static function parseEqualsLines($str, $dupe_mode = self::EQUALSLINES_DUPE_OVERWRITE, $sep_str = '=')
 	{
 		if (!is_array($str)) {
 			$str = self::standardEol($str);
@@ -714,7 +715,7 @@ class Strings
 			// Ignore 'comments'
 			if ($line[0] == '#') continue;
 
-			$vals = explode('=', $line, 2);
+			$vals = explode($sep_str, $line, 2);
 			if (!isset($vals[1])) continue; // wrong array size, should be two items
 
 			$key = trim($vals[0]);
@@ -1582,6 +1583,25 @@ class Strings
 	}
 
 	/**
+	 * A better strip_tags().
+	 *
+	 * PHP's strip_tags() doesn't strip style or script tags (amongst others) very well, so this attempts to strip them out completely.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function stripTags($string)
+	{
+		$tag_names = array('head', 'style', 'script', 'object', 'embed', 'applet');
+
+		foreach ($tag_names as $t) {
+			$string = preg_replace("#<{$t}[^>]*?>.*?</$t>#isu", "\n", $string);
+		}
+
+		return strip_tags($string);
+	}
+
+	/**
 	 * Parses out data URLs in <img> tags and replaces them with unique tokens you can later
 	 * str_replace with real paths.
 	 *
@@ -1710,7 +1730,7 @@ class Strings
 	 * @param string $from_charset
 	 * @return string
 	 */
-	public static function convertToUtf8($string, $from_charset)
+	public static function convertToUtf8($string, $from_charset, $_mode = null)
 	{
 		// Some missing aliases in iconv
 		static $charset_map = array(
@@ -1742,10 +1762,30 @@ class Strings
 		}
 
 		$new = '';
-		if (function_exists('iconv')) {
+		if (function_exists('iconv') && (!$_mode || !in_array('skip_iconv', $_mode))) {
 			$new = @iconv($from_charset, 'UTF-8//IGNORE//TRANSLIT', $string);
-		} elseif (function_exists('mb_convert_encoding')) {
-			$new = mb_convert_encoding($string, 'UTF-8', $from_charset);
+			if ($new === false) {
+				// Try us-ascii as iso-8859-1, some clients give us the wrong charset
+				if ($from_charset_u == 'US-ASCII') {
+					return self::convertToUtf8($string, 'ISO-8859-1', $_mode);
+				} else {
+					$_mode = $_mode ? : array();
+					$_mode[] = 'skip_iconv';
+					return self::convertToUtf8($string, $from_charset, $_mode);
+				}
+			}
+		} elseif (function_exists('mb_convert_encoding') && (!$_mode || !in_array('skip_iconv', $_mode))) {
+			$new = @mb_convert_encoding($string, 'UTF-8', $from_charset);
+			if ($new === false) {
+				if ($from_charset_u == 'US-ASCII') {
+					return self::convertToUtf8($string, 'ISO-8859-1', $_mode);
+				} else {
+					$_mode = $_mode ?: array();
+					$_mode[] = 'skip_mbstring';
+
+					return self::convertToUtf8($string, $from_charset, $_mode);
+				}
+			}
 		} else if (strtoupper($from_charset) == 'ISO-8859-1') {
 			$new = utf8_encode($string);
 		}

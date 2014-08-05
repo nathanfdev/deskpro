@@ -15,11 +15,12 @@
 
       Reports_Builder_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Reports_Builder_Ctrl_Edit.DEPS = ['$stateParams', '$sce', 'Api', '$window'];
+      Reports_Builder_Ctrl_Edit.DEPS = ['$stateParams', '$sce', 'Api', '$window', '$http'];
 
       Reports_Builder_Ctrl_Edit.prototype.init = function() {
         if (this.$stateParams.type === 'builtIn') {
           this.reportData = this.DataService.get('ReportBuilderBuiltIn');
+          this.customList = this.DataService.get('ReportBuilderCustom');
           this.reportType = 'builtIn';
         }
         if (this.$stateParams.type === 'custom') {
@@ -30,7 +31,9 @@
         this.query_parts = null;
         this.rendered_result = null;
         this.query_error = null;
-        return this.show_query_editor = false;
+        this.show_query_editor = false;
+        this.editor_mode = 'builder';
+        return this.query_parts_synced = true;
       };
 
       Reports_Builder_Ctrl_Edit.prototype.initialLoad = function() {
@@ -41,7 +44,8 @@
             _this.group_params = _this.$scope.$parent.ListCtrl.group_params;
             _this.query_parts = data.query_parts;
             _this.report = data.report;
-            return _this.form = data.form;
+            _this.form = data.form;
+            return _this.query_parts_synced = true;
           };
         })(this));
         return promise;
@@ -62,25 +66,33 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.testReport = function() {
-        var promise;
+        var run;
         this.startSpinner('builder_loading');
         this.startSpinner('query_loading');
-        promise = this.Api.sendPostJson('/reports/builder/test/' + this.report.id, {
-          parts: this.query_parts
-        });
-        return promise.success((function(_this) {
-          return function(data) {
-            if (data.error) {
-              _this.query_error = data.error;
-            }
-            if (data.rendered_result) {
-              _this.query_error = null;
-              _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
-            }
-            _this.stopSpinner('builder_loading', true);
-            return _this.stopSpinner('query_loading', true);
+        run = (function(_this) {
+          return function() {
+            var promise;
+            promise = _this.Api.sendPostJson('/reports/builder/test/' + _this.report.id, {
+              parts: _this.query_parts
+            });
+            return promise.success(function(data) {
+              if (data.error) {
+                _this.query_error = data.error;
+              }
+              if (data.rendered_result) {
+                _this.query_error = null;
+                _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
+              }
+              _this.stopSpinner('builder_loading', true);
+              return _this.stopSpinner('query_loading', true);
+            });
           };
-        })(this));
+        })(this);
+        if (this.query_parts_synced) {
+          return run();
+        } else {
+          return this.syncQueryParts().then(run);
+        }
       };
 
 
@@ -91,6 +103,8 @@
       Reports_Builder_Ctrl_Edit.prototype.switchToQuery = function() {
         var promise;
         this.startSpinner('query_loading');
+        this.editor_mode = 'query';
+        this.query_parts_synced = false;
         promise = this.Api.sendPostJson('/reports/builder/parse', {
           currentType: 'builder',
           inputType: 'builder',
@@ -118,8 +132,22 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.switchToBuilder = function() {
-        var promise;
         this.startSpinner('builder_loading');
+        this.editor_mode = 'builder';
+        return this.syncQueryParts().then((function(_this) {
+          return function() {
+            return _this.stopSpinner('builder_loading', true);
+          };
+        })(this));
+      };
+
+
+      /*
+        	 * Syncs the report query with the query parts form
+       */
+
+      Reports_Builder_Ctrl_Edit.prototype.syncQueryParts = function() {
+        var promise;
         promise = this.Api.sendPostJson('/reports/builder/parse', {
           currentType: 'query',
           inputType: 'query',
@@ -127,7 +155,7 @@
           query: this.report.query,
           parts: this.query_parts
         });
-        return promise.success((function(_this) {
+        promise.success((function(_this) {
           return function(data) {
             if (data.error) {
               _this.query_error = data.error;
@@ -136,9 +164,10 @@
               _this.query_error = null;
               _this.query_parts = data.parts;
             }
-            return _this.stopSpinner('builder_loading', true);
+            return _this.query_parts_synced = true;
           };
         })(this));
+        return promise;
       };
 
 
@@ -147,7 +176,9 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadCsv = function() {
-        return this.$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + this.report.id + '/csv?API-TOKEN=' + window.DP_API_TOKEN;
+        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/csv', {
+          params: this.$stateParams.params
+        }));
       };
 
 
@@ -156,7 +187,9 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadPdf = function() {
-        return this.$window.location.href = window.DP_BASE_API_URL + '/reports/builder/download/' + this.report.id + '/pdf?API-TOKEN=' + window.DP_API_TOKEN;
+        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/pdf', {
+          params: this.$stateParams.params
+        }));
       };
 
 
@@ -174,7 +207,7 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.saveReport = function() {
-        var is_new, promise;
+        var is_new, run;
         if (!this.report.is_custom) {
           throw new Error('Only custom reports could be saved');
         }
@@ -182,39 +215,47 @@
           return;
         }
         is_new = !this.report.id;
-        promise = this.reportData.saveFormModel(this.report, this.form, this.query_parts);
-        this.startSpinner('builder_loading');
-        this.startSpinner('query_loading');
-        this.startSpinner('saving');
-        return promise.then((function(_this) {
-          return function(res) {
-            var data;
-            data = res.data;
-            if (data.error) {
+        run = (function(_this) {
+          return function() {
+            var promise;
+            promise = _this.reportData.saveFormModel(_this.report, _this.form, _this.query_parts);
+            _this.startSpinner('builder_loading');
+            _this.startSpinner('query_loading');
+            _this.startSpinner('saving');
+            return promise.then(function(res) {
+              var data;
+              data = res.data;
+              if (data.error) {
+                _this.stopSpinner('builder_loading', true);
+                _this.stopSpinner('query_loading', true);
+                _this.stopSpinner('saving', true);
+                _this.query_error = data.error;
+                if (!_this.show_query_editor) {
+                  _this.show_query_editor = true;
+                }
+                return;
+              }
+              if (data.rendered_result) {
+                _this.query_error = null;
+                _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
+              }
+              _this.skipDirtyState();
+              if (is_new) {
+                _this.$state.go('builder');
+              }
               _this.stopSpinner('builder_loading', true);
               _this.stopSpinner('query_loading', true);
-              _this.stopSpinner('saving', true);
-              _this.query_error = data.error;
-              if (!_this.show_query_editor) {
-                _this.show_query_editor = true;
-              }
-              return;
-            }
-            if (data.rendered_result) {
-              _this.query_error = null;
-              _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
-            }
-            _this.skipDirtyState();
-            if (is_new) {
-              _this.$state.go('builder');
-            }
-            _this.stopSpinner('builder_loading', true);
-            _this.stopSpinner('query_loading', true);
-            return _this.stopSpinner('saving', true).then(function() {
-              return _this.Growl.success("Saved");
+              return _this.stopSpinner('saving', true).then(function() {
+                return _this.Growl.success("Saved");
+              });
             });
           };
-        })(this));
+        })(this);
+        if (this.query_parts_synced) {
+          return run();
+        } else {
+          return this.syncQueryParts().then(run);
+        }
       };
 
 
@@ -223,27 +264,44 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.saveToClone = function() {
-        var promise;
+        var run;
         this.startSpinner('builder_loading');
         this.startSpinner('query_loading');
         this.startSpinner('saving');
-        promise = this.Api.sendPost('/reports/builder/clone/' + this.report.id);
-        return promise.success((function(_this) {
-          return function(data) {
-            return _this.reportData.loadList(true).then(function() {
-              _this.stopSpinner('builder_loading', true);
-              _this.stopSpinner('query_loading', true);
-              return _this.stopSpinner('saving', true).then(function() {
-                _this.Growl.success("Cloning Done");
-                return _this.$state.go('builder.edit', {
-                  type: 'custom',
-                  id: data.id,
-                  params: ''
+        run = (function(_this) {
+          return function() {
+            var promise;
+            promise = _this.Api.sendPostJson('/reports/builder/clone/' + _this.report.id, {
+              parts: _this.query_parts,
+              title: _this.form.title,
+              description: _this.form.description
+            });
+            return promise.success(function(data) {
+              var proms;
+              proms = [_this.reportData.loadList(true)];
+              if (_this.customList) {
+                proms.push(_this.customList.loadList(true));
+              }
+              return _this.$q.all(proms).then(function() {
+                _this.stopSpinner('builder_loading', true);
+                _this.stopSpinner('query_loading', true);
+                return _this.stopSpinner('saving', true).then(function() {
+                  _this.Growl.success("Cloning Done");
+                  return _this.$state.go('builder.edit', {
+                    type: 'custom',
+                    id: data.id,
+                    params: ''
+                  });
                 });
               });
             });
           };
-        })(this));
+        })(this);
+        if (this.query_parts_synced) {
+          return run();
+        } else {
+          return this.syncQueryParts().then(run);
+        }
       };
 
       return Reports_Builder_Ctrl_Edit;

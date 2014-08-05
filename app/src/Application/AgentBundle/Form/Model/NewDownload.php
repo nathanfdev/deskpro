@@ -37,6 +37,7 @@ namespace Application\AgentBundle\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Person;
+use Orb\Util\Web;
 
 class NewDownload
 {
@@ -96,7 +97,29 @@ class NewDownload
 			$blob->filename = $download->title;
 			$this->_em->persist($blob);
 		} else {
-			$download->setFileUrl($this->fileurl, $this->filesize, $this->filename);
+			$fileurl  = $this->fileurl;
+			$filesize = $this->filesize;
+			$filename = $this->filename;
+
+			if (!$filename) {
+				$filename = Web::getUrlFileName($fileurl);
+				if (!$filename) {
+					$filename = '';
+				}
+			}
+			if (!$filesize) {
+				$filesize = Web::getUrlFileSize($fileurl);
+				if (!$filesize) {
+					$filesize = 0;
+				}
+			}
+
+			$download->setFileUrl(
+				$fileurl,
+				$filesize,
+				$filename
+			);
+
 			if (!$download->title) {
 				$download->title = $download->getFileName();
 			}

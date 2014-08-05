@@ -131,7 +131,7 @@ class SpecialTriggerEdit
 			$terms_set->add(new CheckDepartment('changed_to', array('department_ids' => array($this->obj->id))));
 		} else {
 			$trigger->event_trigger = 'newticket';
-			$trigger->by_agent_mode = array();
+			$trigger->by_agent_mode = array('api', 'web');
 			$trigger->by_user_mode  = array('form', 'portal', 'widget');
 
 			$terms_set->add(new CheckDepartment('is', array('department_ids' => array($this->obj->id))));
@@ -159,7 +159,7 @@ class SpecialTriggerEdit
 		$trigger->terms = $terms;
 
 		$trigger->event_trigger = 'newticket';
-		$trigger->by_agent_mode = array();
+		$trigger->by_agent_mode = array('email');
 		$trigger->by_user_mode  = array('email');
 	}
 }

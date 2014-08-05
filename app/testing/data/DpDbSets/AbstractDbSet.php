@@ -193,7 +193,7 @@ abstract class AbstractDbSet
 		if ($ret) {
 			echo "Command Failed: $cmd\n";
 			echo implode("\n",$out);
-			throw new \RuntimeException();
+			throw new \RuntimeException(print_r(array($cmd, $out), 1));
 		}
 	}
 
@@ -222,7 +222,7 @@ abstract class AbstractDbSet
 		if ($ret) {
 			echo "Command Failed: $cmd\n";
 			echo implode("\n",$out);
-			throw new \RuntimeException();
+			throw new \RuntimeException(print_r(array($cmd, $out), 1));
 		}
 	}
 

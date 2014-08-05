@@ -45,6 +45,9 @@
 
       Admin_TicketFields_Ctrl_EditPriorities.prototype.save = function() {
         var postData, promise;
+        if (!this.pris || !this.pris.length) {
+          this.enabled = false;
+        }
         postData = {
           priorities: this.pris,
           default_id: this.default_id,

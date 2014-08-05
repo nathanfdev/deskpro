@@ -37,9 +37,15 @@ use Application\DeskPRO\App;
 
 class BodyHtml
 {
+	public $raw_parts = array();
 	public $body;
 	public $body_utf8;
 	public $original_charset;
+
+	public function getRawParts()
+	{
+		return $this->raw_parts;
+	}
 
 	public function getBody()
 	{

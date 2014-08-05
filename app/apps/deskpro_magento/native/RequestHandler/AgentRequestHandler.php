@@ -57,9 +57,9 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 	 */
 	private function callApiAction(AgentRequestContext $context)
 	{
-		$url  = $context->getApp()->getSetting('url');
-		$user = $context->getApp()->getSetting('api_user');
-		$key  = $context->getApp()->getSetting('api_key');
+		$url  = $context->getAppSetting('url');
+		$user = $context->getAppSetting('api_user');
+		$key  = $context->getAppSetting('api_key');
 
 		if (!$url || !$user || !$key) {
 			return $context->createJsonResponse(array('error' => 'API URL, user or key missing. Please configure the plugin.'));

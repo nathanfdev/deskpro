@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Orb\Util\Strings;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -50,13 +51,16 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 	protected function configure()
 	{
 		$this->setName('dp:agents');
-		$this->addOption('reset-password', null, InputOption::VALUE_OPTIONAL, 'Reset the password of an admin');
+		$this->addOption('reset-password', null, InputOption::VALUE_NONE, 'Reset the password of an admin');
 		$this->addOption('make-admin', null, InputOption::VALUE_NONE, 'Turn an agent into an admin');
 		$this->addOption('make-billing', null, InputOption::VALUE_NONE, 'Turn an agent into a user with billing permission');
+		$this->addArgument('email', InputArgument::OPTIONAL, 'Agent email address or ID', null);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$input_email = $input->getArgument('email');
+
 		$helper = $this->getHelper('dialog');
 		$em     = $this->getContainer()->getEm();
 
@@ -70,6 +74,21 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			}
 
 			return $agent;
+		};
+
+		$get_agent = function($caption) use ($find_agent, $input_email, $em, $output) {
+			if ($input_email) {
+				$agent = $em->getRepository('DeskPRO:Person')->findOneByEmail($input_email);
+
+				if (!$agent || !$agent->can_agent) {
+					$output->writeln("<error>There is no agent with that email address.</error>");
+					return null;
+				}
+
+				return $agent;
+			} else {
+				return $find_agent($caption);
+			}
 		};
 
 		if (!$input->getOption('reset-password') && !$input->getOption('make-admin') && !$input->getOption('make-billing')) {
@@ -91,20 +110,9 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 
 			return 0;
 
-		} elseif ($input->getOption('reset-password') !== false) {
+		} elseif ($input->getOption('reset-password')) {
 
-			$agent = null;
-			if ($input->getOption('reset-password') !== null) {
-				$agent = $em->getRepository('DeskPRO:Person')->find($input->getOption('reset-password'));
-				if (!$agent || !$agent->can_agent) {
-					$agent = null;
-				}
-			}
-
-			if (!$agent) {
-				$agent = $find_agent("Enter the email address of the agent to reset the password for");
-			}
-
+			$agent = $get_agent("Enter the email address of the agent to reset the password for");
 			if (!$agent) {
 				return 1;
 			}
@@ -120,7 +128,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 0;
 
 		} elseif ($input->getOption('make-admin')) {
-			$agent = $find_agent("Enter the email address of the agent to promote to admin");
+			$agent = $get_agent("Enter the email address of the agent you want to promote to admin");
 			if (!$agent) {
 				return 1;
 			}
@@ -138,7 +146,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			return 0;
 
 		} elseif ($input->getOption('make-billing')) {
-			$agent = $find_agent("Enter the email address of the agent to give billing permission to");
+			$agent = $get_agent("Enter the email address of the agent you want to give billing permission to");
 			if (!$agent) {
 				return 1;
 			}

@@ -1,0 +1,243 @@
+{% extends 'AdminInterfaceBundle:Layout:fill-page-alt.html.twig' %}
+{% block alt_content %}
+	<div class="dp-appalt-section">
+		<header><h2>Agents</h2></header>
+		<section ng-if="Home.online_agents.length">
+			<header><h3>Online</h3></header>
+			<article>
+				<ul class="dp-icon-list with-icons x22">
+					<li class="media" ng-repeat="agent in Home.online_agents">
+						<i class="icon-img" bg-img="agent.picture_url_22"></i>
+						<a href="{{ ng_href('agents.agents.edit', '{id:agent.id}') }}"><span class="title">{{ ng_var('agent.display_name') }}</span></a>
+					</li>
+				</ul>
+			</article>
+		</section>
+
+		<section ng-if="Home.offline_agents.length">
+			<header><h3>Offline</h3></header>
+			<article>
+				<ul class="dp-icon-list with-icons x22">
+					<li class="media" ng-repeat="agent in Home.offline_agents">
+						<i class="icon-img" bg-img="agent.picture_url_22"></i>
+						<a href="{{ ng_href('agents.agents.edit', '{id:agent.id}') }}"><span class="title">{{ ng_var('agent.display_name') }}</span></a>
+					</li>
+				</ul>
+			</article>
+		</section>
+	</div>
+
+	<div class="dp-appalt-section">
+		<header><h2>Invite Agent</h2></header>
+		<section>
+			<article>
+				<form>
+					<div class="form-group">
+						<input type="text" class="form-control" ng-model="new_agent.name" placeholder="Name" ng-change="new_agent.errors.name = false" />
+						<span ng-show="new_agent.errors.name" class="text-danger">Please enter a name.</span>
+					</div>
+					<div class="form-group">
+						<input type="email" class="form-control" ng-model="new_agent.email" placeholder="Email" ng-change="new_agent.errors.email = false" />
+						<span ng-show="new_agent.errors.email" class="text-danger">Please enter a valid email address.</span>
+					</div>
+					<div dp-hide-spinning="saving_new_agent">
+						<button class="btn btn-default" ng-click="$event.preventDefault(); Home.addNewAgent();">Add Agent</button>
+					</div>
+					<div dp-show-spinning="saving_new_agent">
+						<i class="spinner-flat"></i>
+					</div>
+					<div class="alert alert-success" style="margin-top: 8px;" ng-show="created_agent">
+						<p>
+							An agent account for {{ ng_var('created_agent.name') }} was created successfully.
+						</p>
+						<p>
+							An email with login instructions has been sent to {{ ng_var('created_agent.email') }}.
+						</p>
+					</div>
+				</form>
+			</article>
+		</section>
+	</div>
+{% endblock %}
+{% block fillpage_content %}
+
+	<div ng-if="Home.last_login" class="alert alert-info" style="border-radius: 0; margin-bottom: 0;">
+		Welcome back, {{ app.user.display_name }}.
+		You last logged in <span title="{{ ng_var('Home.last_login.date_created') }}" am-time-ago="Home.last_login.date_created_d"></span>
+		from {{ ng_var('Home.last_login.ip_address') }}<span ng-if="Home.last_login.hostname != Home.last_login.ip_address"> ({{ ng_var('Home.last_login.hostname') }})</span>.
+		<a href="{{ ng_href('agents.login_log') }}">View login logs &rarr;</a>
+	</div>
+
+	<div ng-if="Home.license.isDemo" class="alert" ng-class="{'alert-success': Home.license.expireDays >= 29, 'alert-info': Home.license.expireDays < 29 && Home.license.expireDays >= 7, 'alert-danger': Home.license.expireDays < 7}" style="margin: 15px 15px 0 15px;">
+		<div ng-if="Home.license.expireDays >= 14">
+			<h3 style="margin-top: 8px;">Welcome to your DeskPRO Demo</h3>
+			<p>
+				Welcome to your fully-functional DeskPRO demo.
+			</p>
+			<p>
+				You have {{ ng_var('Home.license.expireDays') }} days to try DeskPRO. When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
+			</p>
+			<p>
+				Feel free to enter your billing information now&mdash;you will get to keep your {{ ng_var('Home.license.expireDays') }} free days, even if you subscribe now.
+			</p>
+		</div>
+		<div ng-if="Home.license.expireDays < 14 && Home.license.expireDays >= 7">
+			<h3 style="margin-top: 8px;">DeskPRO Demo</h3>
+			<p>
+				Your DeskPRO demo will expire in {{ ng_var('Home.license.expireDays') }} days.
+			</p>
+			<p>
+				When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
+			</p>
+			<p>
+				Feel free to enter your billing information now&mdash;you will get to keep your {{ ng_var('Home.license.expireDays') }} free days, even if you subscribe now.
+			</p>
+		</div>
+		<div ng-if="Home.license.expireDays < 7 && Home.license.expireDays >= 1">
+			<h3 style="margin-top: 8px;">Demo Expiring Soon</h3>
+			<p>
+				Your DeskPRO demo will expire in <span ng-if="Home.license.expireDays == 1">1 day</span><span ng-if="Home.license.expireDays > 1">{{ ng_var('Home.license.expireDays') }} days</span>.
+			</p>
+			<p>
+				When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
+			</p>
+			<p>
+				We recommend entering your billing information now to ensure your helpdesk remains active.
+			</p>
+		</div>
+		<div ng-if="Home.license.expireDays <= 0">
+			<h3 style="margin-top: 8px;">Demo Expiring Today</h3>
+			<p>
+				Your DeskPRO demo is expiring <strong>today</strong>.
+			</p>
+			<p>
+				Head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
+			</p>
+		</div>
+	</div>
+
+	<div class="dp-interface-buttons">
+		<table cellspacing="35" width="100%">
+			<tbody>
+			<tr>
+				<td class="dp-item" width="33%">
+					<article><a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');">
+							<div class="title-wrap"><h3>Agent Interface</h3></div>
+							<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
+							<strong>
+								Reply to tickets and manage helpdesk content.
+							</strong>
+						</a></article>
+				</td>
+				<td class="dp-item" width="33%">
+					<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">
+							<div class="title-wrap"><h3>Reports Interface</h3></div>
+							<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
+							<strong>
+								View and create reports.
+							</strong>
+						</a></article>
+				</td>
+				<td class="dp-item" width="33%">
+					<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
+							<div class="title-wrap"><h3>Billing</h3></div>
+							<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
+							<strong>
+								Manage your DeskPRO account.
+							</strong>
+						</a></article>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+
+
+	<div class="dp-dashboard">
+		<table cellspacing="15" width="100%">
+			<tr>
+				{# HELP #}
+				<td width="50%" class="dp-item">
+					<header>
+						<h3>Getting Help</h3>
+					</header>
+					<article>
+						<div class="dp-mpadded">
+							&bull; Visit the <a href="http://support.deskpro.com/">DeskPRO Knowledgebase</a> for how-to articles, troubleshooting guides and other help articles.
+						</div>
+						<div class="dp-mpadded">
+							&bull; Download our manuals for in-depth information:
+							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Admin-Manual.pdf' }) }}" target="_blank">Admin Manual</a></span>
+							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Agent-Manual.pdf' }) }}" target="_blank">Agent Manual</a></span>
+							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }}" target="_blank">Agent Quick Start Guide</a></span>
+						</div>
+					</article>
+
+					<header>
+						<h3>Contact Us</h3>
+					</header>
+					<article>
+						<div class="dp-mpadded">
+							<div class="form-group">
+								<input type="text" class="form-control" ng-model="submit_ticket.subject" required placeholder="Enter a subject for your message" />
+							</div>
+							<div class="form-group">
+								<textarea class="form-control" style="height: 80px;" ng-model="submit_ticket.message" placeholder="Enter your question here" ng-change="submit_ticket_message_error = false"></textarea>
+								<span ng-show="submit_ticket_message_error" class="text-danger">Please enter a message</span>
+							</div>
+						</div>
+						<div class="dp-mpadded">
+							<div ng-hide="support_sent">
+								<div dp-hide-spinning="sending_support_request">
+									<button class="btn btn-default" ng-click="$event.preventDefault(); Home.sendSupportRequest();"><i class="fa fa-envelope-o"></i> Send Message</button>
+									&nbsp;&nbsp;&nbsp;
+									<div style="display: inline-block" ng-show="submit_ticket_defaultemail" ng-init="submit_ticket_defaultemail = true">
+										We will reply to <strong>{{ app.user.primary_email_address }}</strong>.
+										<a href="#" ng-click="submit_ticket_defaultemail = false">Change?</a>
+									</div>
+									<div style="display: inline-block" ng-hide="submit_ticket_defaultemail">
+										Reply To:
+										<input type="email" class="form-control" style="padding: 2px 4px; margin: 0; height: auto; width: 175px; display: inline-block;" ng-model="submit_ticket.email" ng-init="submit_ticket.email = '{{ app.user.primary_email_address }}'" required />
+									</div>
+								</div>
+								<div dp-show-spinning="sending_support_request">
+									<i class="spinner-flat"></i>
+								</div>
+							</div>
+							<p ng-show="support_sent" class="text-success">
+								Your support request has been submitted successfully. One of our agents will respond
+								to you as soon as possible. <button type="button" class="btn btn-default" ng-click="support_sent = false; submit_ticket.subject = ''; submit_ticket.message = '';">Click here to send another</button>
+							</p>
+						</div>
+					</article>
+				</td>
+
+				{# QUICK STATS #}
+				<td width="50%" class="dp-item">
+					<header>
+						<h3>Quick Stats</h3>
+					</header>
+					<article>
+						<ul class="dp-display-list">
+							<li>
+								<i class="fa fa-envelope"></i>
+								Tickets created today: {{ ng_var('Home.quick_stats.created_today') }}
+							</li>
+							<li>
+								<i class="fa fa-check-square"></i>
+								Tickets resolved today: {{ ng_var('Home.quick_stats.resolved_today') }}
+							</li>
+							<li>
+								<i class="fa fa-clock-o"></i>
+								Tickets awaiting agent: {{ ng_var('Home.quick_stats.awaiting_agent') }}
+							</li>
+						</ul>
+						<div class="dp-mpadded">
+							<a class="btn btn-default" href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">View more reports <i class="fa fa-long-arrow-right"></i></a>
+						</div>
+					</article>
+				</td>
+			</tr>
+		</table>
+	</div>
+{% endblock %}

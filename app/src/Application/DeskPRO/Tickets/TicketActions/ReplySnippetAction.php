@@ -130,7 +130,7 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
 	public function checkPermission(Ticket $ticket, Person $person)
 	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'reply')) {
+		if (!$person->PermissionsManager->TicketChecker->canReply($ticket)) {
 			return false;
 		}
 

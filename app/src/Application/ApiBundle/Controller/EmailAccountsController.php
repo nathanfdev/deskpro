@@ -43,6 +43,7 @@ use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\OutgoingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Orb\Validator\StringEmail;
 
 class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -132,7 +133,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 			$edit_account
 		);
 
-		$data = $this->in->getAll('post');
+		$data = $this->getSaveFormData($account);
 
 		// Copy gmail config into the transport
 		if ($data['incoming_type'] == 'gmail') {
@@ -155,6 +156,16 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 				'email_account_id' => $account->id,
 			), $this->generateUrl('api_emailaccounts_get', array('id' => $account->id)));
 		}
+	}
+
+
+	/**
+	 * @param EmailAccount $account
+	 * @return array
+	 */
+	protected function getSaveFormData(EmailAccount $account = null)
+	{
+		return $this->in->getAll('post');
 	}
 
 
@@ -218,10 +229,31 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 			$edit_account
 		);
 
-		$data = $this->in->getAll('post');
+		$data = $this->getTestOutgoingFormData();
 		$form->submit($data);
 
-		$tester = new OutgoingAccountTester($edit_account->getOutgoingAccountConfig());
+		if (!StringEmail::isValueValid($this->in->getString('test_email.to'))) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'Invalid TO email address',
+			));
+		}
+		if (!StringEmail::isValueValid($this->in->getString('test_email.from'))) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'Invalid FROM email address',
+			));
+		}
+
+		$out_account = $edit_account->getOutgoingAccountConfig();
+		if (!$out_account) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'No outgoing account configuration was specified.',
+			));
+		}
+
+		$tester = new OutgoingAccountTester($out_account);
 		$tester->test(
 			$this->in->getString('test_email.to'),
 			$this->in->getString('test_email.from'),
@@ -233,5 +265,13 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 			'is_success'    => $tester->isSuccess(),
 			'log'           => $tester->getLog(),
 		));
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getTestOutgoingFormData()
+	{
+		return $this->in->getAll('post');
 	}
 }

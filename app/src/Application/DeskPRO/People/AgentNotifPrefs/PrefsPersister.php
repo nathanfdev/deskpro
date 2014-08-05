@@ -150,7 +150,7 @@ class PrefsPersister
 				AND person_id = ?
 			", array($this->person->id));
 
-			if ($pref_records) {
+			if ($pref_records || $filter_subs) {
 				if ($filter_subs) {
 					foreach ($filter_subs as $s) {
 						$this->em->persist($s);

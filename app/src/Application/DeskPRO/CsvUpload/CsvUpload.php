@@ -100,7 +100,7 @@ class CsvUpload
 	 * @return array
 	 */
 
-	public function startImportTask($field_maps, $filename, $user_filename, $skip_first)
+	public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email)
 	{
 		$has_email = false;
 
@@ -125,7 +125,7 @@ class CsvUpload
 			'blob_id'       => $blob->getId(),
 			'field_maps'    => $field_maps,
 			'skip_first'    => $skip_first,
-			'welcome_email' => false,
+			'welcome_email' => $welcome_email,
 			'user_filename' => $user_filename
 		);
 

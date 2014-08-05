@@ -53,7 +53,8 @@ class Google extends AbstractAdapter
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new \Orb\Auth\Adapter\Google();
+		$hd = $this->usersource->getOption('apps_domain', null);
+		return new \Orb\Auth\Adapter\Google($hd ?: null);
 	}
 
 

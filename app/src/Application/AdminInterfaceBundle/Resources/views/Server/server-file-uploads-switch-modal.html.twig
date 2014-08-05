@@ -1,27 +1,91 @@
-<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" ng-click="dismiss()">&times;</button>
-			<h4 class="modal-title">{{ phrase('admin.server.change_storage_mechanism') }}</h4>
-		</div>
-		<div class="modal-body">
-			<p>
-				Are you sure you want to switch storage mechanism?
-			</p>
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Change Storage Mechanism</h4>
+{% endblock %}
+{% block modal_body %}
+	<ul class="big-option-list">
+		<li ng-class="{'active': options.method == 'db'}">
+			<div class="inner-group" dp-error-class="form_props.title">
+				<h3>
+					<label>
+						<input type="radio" ng-model="options.method" value="db" /> <span class="title">Database</span>
+					</label>
+				</h3>
+				<div class="content-form">
+					<p>
+						This option stores files in your database. This is the default behaviour because it requires no setup
+						and is portable. However, it is inefficient and not recommended for anything but very small helpdesks.
+					</p>
+				</div>
+			</div>
+		</li>
+		<li ng-class="{'active': options.method == 'fs'}">
+			<h3>
+				<label>
+					<input type="radio" ng-model="options.method" value="fs" /> <span class="title">Filesystem</span>
+				</label>
+			</h3>
+			<div class="content-form">
+				<p>
+					This option stores files as regular files on your server filesystem. It is very efficient and is
+					the recommended option.
+				</p>
+				<table class="inner-form-table" width="100%">
+					<tr>
+						<th width="125">Server Path:</th>
+						<td>
+							<var>{{ ng_var('data.file_storage_path') }}</var>
+							<div style="font-size:11px; padding-top:3px;">
+								You can change this by editing the <var>dir_data</var> variable in your <var>config.php</var> file.
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</li>
+		<li ng-class="{'active': options.method == 's3'}">
+			<h3>
+				<label>
+					<input type="radio" ng-model="options.method" value="s3" /> <span class="title">Amazon S3</span>
+				</label>
+			</h3>
+			<div class="content-form">
+				<p>
+					This option stores file in AmazonS3 and also serves files directly off of Amazon's servers.
+				</p>
+				<p>
+					Refer to the DeskPRO knowledgebase article on <a href="http://support.deskpro.com/kb/articles/178" target="_blank">Using Amazon S3</a>
+					for configuration details.
+				</p>
+				<table class="inner-form-table" width="100%">
+					<tr>
+						<th width="145">Amazon Access Key:</th>
+						<td><input type="text" class="form-control" ng-model="options.s3_key" style="width: 95%;" required /></td>
+					</tr>
+					<tr>
+						<th>Amazon Secret Key:</th>
+						<td><input type="text" class="form-control" ng-model="options.s3_secret" style="width: 95%;" required /></td>
+					</tr>
+					<tr>
+						<th>S3 Bucket Name:</th>
+						<td>
+							<input type="text" class="form-control" ng-model="options.s3_bucket" ng-change="bucketNameTrans(); invalid_bucket_name = false;" style="width: 95%;" required />
+							<div style="margin-top: 4px; font-size: 11px;" ng-show="invalid_bucket_name">
+								Your bucket name must be:
+								<ul>
+									<li>3-63 characters in length</li>
+									<li>Only lowercase letters, numbers, '.' and '-'. It must start with a letter, and end with a letter or number.</li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</li>
+	</ul>
+{% endblock %}
+{% block modal_footer %}
+	<button class="btn btn-danger" ng-hide="is_loading" ng-click="confirm()">Save new storage mechanism</button>
 
-			<p>
-				{{ phrase('admin.server.notice_transfer_is_gradually_done') }}
-			</p>
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-success" ng-click="dismiss()">
-				<i class="fa fa-undo"></i>
-				{{ phrase('agent.general.cancel') }}
-			</button>
-			<button class="btn btn-danger" ng-click="confirm()">
-				<i class="fa fa-trash-o"></i>
-				I am sure, let's switch
-			</button>
-		</div>
-	</div>
-</div>
+	<i class="spinner-flat" ng-show="is_loading"></i>
+{% endblock %}

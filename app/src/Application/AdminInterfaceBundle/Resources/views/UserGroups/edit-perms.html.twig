@@ -12,14 +12,14 @@
 <div class="panel panel-innertable">
 	<nav class="dp-tabletabs">
 		<ul>
-			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#">Tickets</a></li>
+			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i class="fa fa-envelope"></i> Tickets</a></li>
 			{% if app.getSetting('core.apps_chat') %}
-				<li dp-tab-btn="main.perms.chat"><a href="#">Chat</a></li>
+				<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
 			{% endif %}
-			<li dp-tab-btn="main.perms.feedback"><a href="#">Feedback</a></li>
-			<li dp-tab-btn="main.perms.articles"><a href="#">Articles</a></li>
-			<li dp-tab-btn="main.perms.downloads"><a href="#">Downloads</a></li>
-			<li dp-tab-btn="main.perms.news"><a href="#">News</a></li>
+			<li dp-tab-btn="main.perms.feedback"><a href="#"><i class="fa fa-inbox"></i> Feedback</a></li>
+			<li dp-tab-btn="main.perms.articles"><a href="#"><i class="fa fa-file-text"></i> Articles</a></li>
+			<li dp-tab-btn="main.perms.downloads"><a href="#"><i class="fa fa-download"></i> Downloads</a></li>
+			<li dp-tab-btn="main.perms.news"><a href="#"><i class="fa fa-list-alt"></i> News</a></li>
 		</ul>
 	</nav>
 
@@ -103,7 +103,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New feedback is visible immediately (no agent validation)</td>
 				<td>
 					{{ _self.perm_toggle('feedback', 'no_submit_validate') }}
 				</td>
@@ -129,7 +129,7 @@
 			{% if app.getSetting('user.publish_comments') %}
 
 				<tr>
-					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New comments are visible immediately (no agent validation)</td>
 					<td>
 						{{ _self.perm_toggle('feedback', 'no_comment_validate') }}
 					</td>
@@ -173,7 +173,7 @@
 			{% if app.getSetting('user.publish_comments') %}
 
 				<tr>
-					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New comments are visible immediately (no agent validation)</td>
 					<td>
 						{{ _self.perm_toggle('article', 'no_comment_validate') }}
 					</td>
@@ -217,7 +217,7 @@
 			{% if app.getSetting('user.publish_comments') %}
 
 				<tr>
-					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+					<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New comments are visible immediately (no agent validation)</td>
 					<td>
 						{{ _self.perm_toggle('download', 'no_comment_validate') }}
 					</td>
@@ -253,7 +253,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; Do not require agent validation</td>
+				<td width="100%">&nbsp;&nbsp;&nbsp;&nbsp; New comments are visible immediately (no agent validation)</td>
 				<td>
 					{{ _self.perm_toggle('news', 'no_comment_validate') }}
 				</td>

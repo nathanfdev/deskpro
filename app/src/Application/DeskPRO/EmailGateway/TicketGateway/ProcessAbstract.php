@@ -162,6 +162,7 @@ abstract class ProcessAbstract
 	public function handleCc($ticket, array $ccs)
 	{
 		$account_manager = App::$container->getEmailAccountManager();
+		$db = App::$container->getDb();
 
 		$count = 0;
 		foreach ($ccs as $cc) {
@@ -191,6 +192,8 @@ abstract class ProcessAbstract
 				continue;
 			}
 
+			$db->beginTransaction();
+
 			$person_processor = new PersonFromEmailProcessor();
 
 			$cc_person = $person_processor->findPerson($cc);
@@ -204,24 +207,24 @@ abstract class ProcessAbstract
 				$this->logMessage("Added cc: $cc_email (Person {$cc_person->id})");
 			}
 
-			if (!$cc_person) {
-				continue;
-			}
+			$db->commit();
 
-			if ($cc_person->is_agent && !$this->person->is_agent) {
-				if (!$this->person || !$this->person->getId() || !$this->person->is_agent) {
-					if (!App::getSetting('core_tickets.add_agent_ccs')) {
-						$this->logMessage("Skipping agent CC because core_tickets.add_agent_ccs is off");
-						continue;
+			if ($cc_person) {
+				if ($cc_person->is_agent && !$this->person->is_agent) {
+					if (!$this->person || !$this->person->getId() || !$this->person->is_agent) {
+						if (!App::getSetting('core_tickets.add_agent_ccs')) {
+							$this->logMessage("Skipping agent CC because core_tickets.add_agent_ccs is off");
+							continue;
+						}
 					}
 				}
-			}
 
-			$this->logMessage("Add CC person: {$cc_person->getId()}");
+				$this->logMessage("Add CC person: {$cc_person->getId()}");
 
-			if (!$ticket->hasParticipantPerson($cc_person)) {
-				$ticket->addParticipantPerson($cc_person);
-				$count++;
+				if (!$ticket->hasParticipantPerson($cc_person)) {
+					$ticket->addParticipantPerson($cc_person);
+					$count++;
+				}
 			}
 		}
 	}
@@ -232,12 +235,16 @@ abstract class ProcessAbstract
 	 *
 	 * @return \Application\DeskPRO\Entity\Blob[]
 	 */
-	protected function processBlobs()
+	protected function processBlobs($skip_attach = null)
 	{
 		if ($this->processed_blobs !== null) return $this->processed_blobs;
 		$this->processed_blobs = array();
 
 		foreach ($this->reader->getAttachments() as $attach) {
+
+			if ($skip_attach && $skip_attach === $attach) {
+				continue;
+			}
 
 			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
 				$attach->getFileContents(),

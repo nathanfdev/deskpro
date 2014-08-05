@@ -31,6 +31,36 @@ class CheckUserLabelTest extends AbstractEntityCheckTest
 		return $ticket;
 	}
 
+	public function testNoLabelIs()
+	{
+		$person = new Person();
+
+		$ticket = new Ticket();
+		$ticket->id = 5000;
+		$ticket->person = $person;
+
+		$checker = $this->createChecker('is', array('labels' => array('test')));
+		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+
+		$checker = $this->createChecker('is', array('labels' => array('test', 'test2')));
+		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+	}
+
+	public function testNoLabelNot()
+	{
+		$person = new Person();
+
+		$ticket = new Ticket();
+		$ticket->id = 5000;
+		$ticket->person = $person;
+
+		$checker = $this->createChecker('not', array('labels' => array('test')));
+		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+
+		$checker = $this->createChecker('not', array('labels' => array('test', 'test2')));
+		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

@@ -62,6 +62,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('url');
+		$options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout');
 		return $options;
 	}
 
@@ -78,7 +79,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 
 		$headers = $this->getActionOption('headers');
 		if ($headers) {
-			$headers = Strings::parseEqualsLines($headers);
+			$headers = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
 		} else {
 			$headers = array();
 		}

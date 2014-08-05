@@ -1,7 +1,9 @@
 define [
 	'Admin/OptionBuilder/TypesDef/BaseActionTypesDef',
+	'DeskPRO/Util/Numbers'
 ], (
-	BaseActionTypesDef
+	BaseActionTypesDef,
+	Numbers
 ) ->
 	class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef
 		init: ->
@@ -19,6 +21,12 @@ define [
 				title: 'Set Assigned Agent',
 				value: 'SetAgent'
 			})
+
+			if @options_data.round_robin? and @options_data.round_robin.enabled
+				options.push({
+					title: 'Set Assigned Agent from Round Robin',
+					value: 'SetRoundRobin'
+				})
 
 			options.push({
 				title: 'Set Assigned Team',
@@ -123,13 +131,8 @@ define [
 			})
 
 			options.push({
-				title: 'Set SLA Condition Status (Passing/Failing)',
-				value: 'SetSlaStatus'
-			})
-
-			options.push({
-				title: 'Set SLA State (Waiting/Finished)',
-				value: 'SetSlaRequirements'
+				title: 'Complete SLAs',
+				value: 'SetSlasComplete'
 			})
 
 			set_options.push({
@@ -145,12 +148,12 @@ define [
 
 			options.push({
 				title: 'Set Ticket User',
-				value: 'ChangeUser'
+				value: 'SetUserOwner'
 			})
 
 			options.push({
 				title: 'Delete Ticket',
-				value: 'DeleteTicket'
+				value: 'SetDeleted'
 			})
 
 			options.push({
@@ -195,7 +198,7 @@ define [
 			})
 
 			set_options.push({
-				title: 'Send Eamil',
+				title: 'Send Email',
 				subOptions: options
 			})
 
@@ -212,12 +215,17 @@ define [
 
 			options.push({
 				title: 'Prevent Emails To User',
-				value: 'ModQuietUserEmails'
+				value: 'ModMuteUserEmails'
 			})
 
 			options.push({
 				title: 'Prevent Emails To Agents',
-				value: 'ModQuietAgentEmails'
+				value: 'ModMuteAgentEmails'
+			})
+
+			options.push({
+				title: 'Force Agent Email Subscriptions',
+				value: 'ModForceAgentEmails'
 			})
 
 			options.push({
@@ -283,32 +291,155 @@ define [
 					})
 
 					typeFunc = "get#{opt.action_name}"
-					@[typeFunc] = (options = {}) ->
-						me = @
-						return {
-							getTemplate: ->
-								return me.dpTemplateManager.get(opt.builder_template)
-							getData: ->
-								return {}
-							getDataFormatter: ->
-								return {
-									getViewValue: (value = {}, data) ->
-										return data || {}
-									getValue: (model = {}, data) ->
-										value = {}
-										value.type = opt.action_name
-										value.options = model || {}
-										return value
-								}
-						}
+
+					#------------------------------
+					# Abstract SMS Options - if your action begins with "Sms"
+					#------------------------------
+
+					if opt.action_name.indexOf('Sms') == 0
+						@[typeFunc] = @generateSmsAction(opt.app.title, opt)
+
+
+
+					#------------------------------
+					# Dynamic Options - All except for "SendSms" actions above
+					#------------------------------
+
+					else
+						@[typeFunc] = (options = {}) ->
+							me = @
+							return {
+								getTemplate: ->
+									return me.dpTemplateManager.get(opt.builder_template)
+								getData: ->
+									return {}
+								getDataFormatter: ->
+									return {
+										getViewValue: (value = {}, data) ->
+											return value.options || {}
+										getValue: (model = {}, data) ->
+											value = {}
+											value.type = opt.action_name
+											value.options = model || {}
+											return value
+									}
+							}
 
 				if options.length
 					set_options.push({
-						title: 'Ticket Options',
+						title: 'Other Actions',
 						subOptions: options
 					})
 
 			return set_options
+
+		generateSmsAction: (app_title, opt) ->
+			(options = {}) ->
+				me = @
+				return {
+				scopeInit: [ '$scope', ($scope) ->
+					$scope.sms_num_characters = 0
+					$scope.sms_vars = []
+					$scope.sms_app_name = app_title
+
+					me = @
+					# TODO: Make this reusable in other areas of the admin area
+					$scope.calculateCharacterLength = ->
+						tmp_string = $scope.model.message
+
+						matches = tmp_string.match(/(\{\{.*?\}\})/gi);
+						countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+
+						if (matches)
+							proposed_length = countable_string.length - matches.length
+						else
+							proposed_length = countable_string.length
+						if proposed_length < 0 then proposed_length = 0
+
+						$scope.sms_num_characters = proposed_length
+						$scope.sms_vars = matches || []
+				]
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html')
+				getData: ->
+					return me.loadDataOptions()
+				getDataFormatter: ->
+					return {
+					getViewValue: (value = {}, data) ->
+						options = value.options || {}
+
+						department_ids = {}
+						if options.department_ids
+							for did in options.department_ids
+								did = parseInt(did)
+								department_ids[did] = true
+
+						agent_ids = {}
+						if options.agent_ids
+							for aid in options.agent_ids
+								if aid != 'followers' and aid != 'assigned' then aid = parseInt(aid)
+								agent_ids[aid] = true
+						else
+							agent_ids['followers'] = false
+							agent_ids['assigned'] = false
+
+						team_ids = {}
+						if options.agent_teams
+							for tid in options.agent_teams
+								if tid != 'assigned' then tid = parseInt(tid)
+								team_ids[tid] = true
+						else
+							team_ids['assigned'] = false
+
+						return {
+						agents: options.agents || [],
+						agent_ids: agent_ids,
+						agent_teams: team_ids,
+						department_ids: department_ids
+						to_number: options.to_number || ''
+						message: options.message || ''
+						}
+					getValue: (model = {}, data) ->
+						options = {
+							agents: model.agents || []
+							agent_teams: []
+							department_ids: []
+							to_number: model.to_number || ''
+							message: model.message || ''
+							agent_ids: []
+						}
+
+						if model.department_ids
+							for own k, v of model.department_ids
+								if v
+									options.department_ids.push(parseInt(k))
+						if model.agent_ids
+							for own k, v of model.agent_ids
+								if v
+									if k == 'assigned'
+										options.agent_ids.push('assigned')
+									else if k == 'followers'
+										options.agent_ids.push('followers')
+									else
+										options.agent_ids.push(parseInt(k))
+						if model.agent_teams
+							for own k, v of model.agent_teams
+								if v
+									if k == 'assigned'
+										options.agent_teams.push('assigned')
+									else
+										options.agent_teams.push(parseInt(k))
+						value = {}
+						value.type = opt.action_name
+						value.options = options
+
+						return value
+					}
+				}
+
+		resetData: ->
+			@options_data = null
+			@loadDataPromise = null
 
 		loadDataOptions: ->
 			if @options_data
@@ -332,7 +463,9 @@ define [
 						'email_accounts':  '/email_accounts',
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
-						'email_tpls':      '/email-templates-info'
+						'email_tpls':      '/email-templates-info',
+						round_robin:       '/round_robin/settings',
+						round_robins:      '/round_robin',
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -351,6 +484,10 @@ define [
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+						options_data['round_robin']      = data.round_robin
+						options_data['round_robins']     = data.round_robins
+
+						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
 						@options_data = options_data
 
@@ -371,6 +508,12 @@ define [
 				{title: 'Unassign', value: 0},
 				{title: 'Current Agent', value: -1}
 			]
+			def = @getStandardSelect(options)
+			return def
+
+		getSetRoundRobin: (options = {}) ->
+			options.propName = 'id'
+			options.dataName = 'round_robins'
 			def = @getStandardSelect(options)
 			return def
 
@@ -442,19 +585,47 @@ define [
 				return {
 					getViewValue: (value = {}, data) ->
 						options = value?.options || {}
-						console.log(options)
-						return {
+						viewValue = {
 							add_labels:       (options.add_labels || []).join(', '),
 							remove_labels:    (options.remove_labels || []).join(', '),
 						}
+
+						viewValue.with_add    = !!viewValue.add_labels
+						viewValue.with_remove = !!viewValue.remove_labels
+
+						return viewValue
+
 					getValue: (model = {}, data) ->
 						value = {}
 						value.type = 'SetLabels'
 						value.options = {}
-						value.options.add_labels = (model.add_labels || '').split(',')
-						value.options.remove_labels = (model.remove_labels || '').split(',')
+						value.options.add_labels    = if model.with_add then     (model.add_labels || '').split(',')    else ''
+						value.options.remove_labels = if model.with_remove then  (model.remove_labels || '').split(',') else ''
 						return value
 				}
+			}
+
+		getSetSubject: (options = {}) ->
+			me = @
+			return {
+				getTemplate: -> return me.dpTemplateManager.get('OptionBuilder/type-actions-set-subject.html')
+				getData: -> return {}
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+							return {
+								subject: options.subject || '',
+								with_formatter: options.with_formatter || false
+							}
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'SetSubject'
+							value.options = {}
+							value.options.subject = model.subject || ''
+							value.options.with_formatter = !!model.with_formatter
+							return value
+					}
 			}
 
 		getSetStatus: (options = {}) ->
@@ -593,8 +764,13 @@ define [
 					}
 			}
 
-		getDeleteTicket: (options = {}) ->
-			options.propName = 'delete_ticket'
+		getSetUserOwner: (options = {}) ->
+			options.propName = 'email_address'
+			options.placeholder = 'Enter an email address'
+			def = @getStandardInput(options)
+			return def
+
+		getSetDeleted: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
 
@@ -605,6 +781,7 @@ define [
 
 		getModStopTriggers: (options = {}) ->
 			options.propName = 'stop_triggers'
+			options.icon = 'fa-chain-broken'
 			def = @getStandardIs(options)
 			return def
 
@@ -636,13 +813,55 @@ define [
 					}
 			}
 
-		getModQuietUserEmails: (options = {}) ->
+		getModMuteUserEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
 
-		getModQuietAgentEmails: (options = {}) ->
+		getModMuteAgentEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
+
+		getModForceAgentEmails: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-force-agent-emails.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+
+							agent_ids = {}
+							if options.agent_ids
+								for aid in options.agent_ids
+									agent_ids[aid+""] = true
+
+							return {
+								agent_ids: agent_ids
+							}
+						getValue: (model = {}, data) ->
+							options = {
+								agent_ids: []
+							}
+
+							if model.agent_ids
+								for own k, v of model.agent_ids
+									if v
+										if Numbers.isNumeric(k)
+											options.agent_ids.push(parseInt(k))
+										else
+											options.agent_ids.push(k)
+
+							value = {}
+							value.type = 'ModForceAgentEmails'
+							value.options = options
+							return value
+					}
+			}
 
 		getSendUserEmail: (options = {}) ->
 			me = @
@@ -784,8 +1003,7 @@ define [
 							agent_ids = {}
 							if options.agent_ids
 								for aid in options.agent_ids
-									if aid != 'notify_list' then aid = parseInt(aid)
-									agent_ids[aid] = true
+									agent_ids[aid+""] = true
 							else
 								agent_ids['notify_list'] = true
 
@@ -810,12 +1028,12 @@ define [
 								options.from_name = model.from_name || ''
 
 							if model.agent_ids
-								for own v, k of model.agent_ids
+								for own k, v of model.agent_ids
 									if v
-										if k == 'notify_list'
-											options.agent_ids.push('notify_list')
-										else
+										if Numbers.isNumeric(k)
 											options.agent_ids.push(parseInt(k))
+										else
+											options.agent_ids.push(k)
 
 							value = {}
 							value.type = 'SendAgentEmail'
@@ -836,7 +1054,7 @@ define [
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
-							return value
+							return value.options || {}
 						getValue: (model = {}, data) ->
 							value = {}
 							value.type = 'WebHook'
@@ -919,6 +1137,50 @@ define [
 							value.options.reply_text = model.reply_text
 							value.options.by_assigned_agent = model.by_assigned_agent || false
 							value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0
+							return value
+					}
+			}
+
+		getSetSlasComplete: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-setslascomplete.html')
+
+				getData: ->
+					defer = me.$q.defer()
+					me.loadDataOptions().then(=>
+						options = []
+						for sla in me.options_data['ticket_slas']
+							options.push({
+								title: sla.title,
+								value: sla.id
+							})
+
+						defer.resolve({
+							options: options
+						})
+					)
+
+					return defer.promise
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value.options || {}
+
+							return {
+								sla_ids: options.sla_ids || [],
+								sla_status: options.sla_status || 'ok'
+							}
+
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = 'SetSlasComplete'
+							value.options = {
+								sla_ids: model.sla_ids,
+								sla_status: model.sla_status || 'ok'
+							}
 							return value
 					}
 			}

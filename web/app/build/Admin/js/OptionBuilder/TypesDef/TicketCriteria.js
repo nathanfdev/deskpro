@@ -120,6 +120,10 @@
           title: 'Priority',
           value: 'CheckPriority'
         });
+        options.push({
+          title: 'Urgency',
+          value: 'CheckUrgency'
+        });
         if (types.indexOf('web.agent') !== -1) {
           options.push({
             title: 'Workflow',
@@ -133,6 +137,10 @@
         options.push({
           title: 'Labels',
           value: 'CheckLabel'
+        });
+        options.push({
+          title: 'SLAs',
+          value: 'CheckSlaStatus'
         });
         options.push({
           title: 'Creation System',
@@ -177,27 +185,27 @@
         }
         options = [];
         options.push({
-          title: 'Name',
+          title: 'User Name',
           value: 'CheckUserName'
         });
         options.push({
-          title: 'Email Address',
+          title: 'User Email Address',
           value: 'CheckUserEmail'
         });
         options.push({
-          title: 'Label',
-          value: 'CheckUserLabels'
+          title: 'User Label',
+          value: 'CheckUserLabel'
         });
         options.push({
           title: 'Usergroup',
           value: 'CheckUserUsergroups'
         });
         options.push({
-          title: 'Language',
+          title: 'User Language',
           value: 'CheckUserLanguage'
         });
         options.push({
-          title: 'Is manager of organization',
+          title: 'User is manager of organization',
           value: 'CheckUserOrgManager'
         });
         options.push({
@@ -205,15 +213,15 @@
           value: 'CheckUserIsNew'
         });
         options.push({
-          title: 'User is awaiting agent validation',
+          title: 'Check agent validation status',
           value: 'CheckUserValidAgent'
         });
         options.push({
-          title: 'User is awaiting email validation',
+          title: 'Check email validation status',
           value: 'CheckUserValidEmail'
         });
         options.push({
-          title: 'Is disabled',
+          title: 'User is disabled',
           value: 'CheckUserIsDisabled'
         });
         set_options.push({
@@ -239,19 +247,19 @@
         }
         options = [];
         options.push({
-          title: 'Name',
+          title: 'Organization Name',
           value: 'CheckOrgName'
         });
         options.push({
-          title: 'Label',
+          title: 'Organization Label',
           value: 'CheckOrgLabel'
         });
         options.push({
-          title: 'Email Domain',
+          title: 'Organization Email Domain',
           value: 'CheckOrgEmailDomain'
         });
         options.push({
-          title: 'Linked Usergroup',
+          title: 'Organization Usergroup',
           value: 'CheckOrgUsergroups'
         });
         set_options.push({
@@ -277,16 +285,16 @@
         }
         options = [];
         options.push({
-          title: 'Day of week',
+          title: 'Current day of week',
           value: 'CheckDayOfWeek'
         });
         options.push({
-          title: 'Time of day',
+          title: 'Current time of day',
           value: 'CheckTimeOfDay'
         });
         options.push({
-          title: 'Within working hours',
-          value: 'CheckWorkingHours'
+          title: 'Ticket Created Date',
+          value: 'CheckDateCreated'
         });
         set_options.push({
           title: 'Dates',
@@ -305,11 +313,20 @@
           title: 'Check Trigger Variable',
           value: 'CheckUserVar'
         });
+        options.push({
+          title: 'Check Current Agent',
+          value: 'CheckPerformer'
+        });
         set_options.push({
           title: 'Trigger Control',
           subOptions: options
         });
         return set_options;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.resetData = function() {
+        this.options_data = null;
+        return this.loadDataPromise = null;
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.loadDataOptions = function() {
@@ -331,13 +348,14 @@
               'ticket_fields': '/ticket_fields',
               'user_fields': '/user_fields',
               'org_fields': '/org_fields',
+              'ticket_slas': '/ticket_slas',
               'ticket_accounts': '/email_accounts',
               'usergroups': '/user_groups',
               'langs': '/langs',
               'email_tpls': '/email-templates-info'
             }).then((function(_this) {
               return function(result) {
-                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
                 data = result.data;
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
@@ -350,30 +368,31 @@
                 options_data['ticket_fields'] = (_ref1 = data.ticket_fields) != null ? _ref1.custom_fields : void 0;
                 options_data['org_fields'] = (_ref2 = data.org_fields) != null ? _ref2.custom_fields : void 0;
                 options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
+                options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
                 options_data['email_accounts'] = data.ticket_accounts.email_accounts;
                 options_data['usergroups'] = data.usergroups.groups;
-                options_data['langs'] = (_ref4 = data.langs) != null ? _ref4.languages : void 0;
+                options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
                 _this.options_data = options_data;
-                if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
-                  _ref6 = _this.options_data.ticket_fields;
-                  for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
-                    f = _ref6[_i];
+                if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
+                  _ref7 = _this.options_data.ticket_fields;
+                  for (_i = 0, _len = _ref7.length; _i < _len; _i++) {
+                    f = _ref7[_i];
                     _this.initFieldGetter('CheckTicketField', f);
                   }
                 }
-                if ((_ref7 = _this.options_data) != null ? _ref7.user_fields : void 0) {
-                  _ref8 = _this.options_data.user_fields;
-                  for (_j = 0, _len1 = _ref8.length; _j < _len1; _j++) {
-                    f = _ref8[_j];
+                if ((_ref8 = _this.options_data) != null ? _ref8.user_fields : void 0) {
+                  _ref9 = _this.options_data.user_fields;
+                  for (_j = 0, _len1 = _ref9.length; _j < _len1; _j++) {
+                    f = _ref9[_j];
                     _this.initFieldGetter('CheckUserField', f);
                   }
                 }
-                if ((_ref9 = _this.options_data) != null ? _ref9.org_fields : void 0) {
-                  _ref10 = _this.options_data.org_fields;
+                if ((_ref10 = _this.options_data) != null ? _ref10.org_fields : void 0) {
+                  _ref11 = _this.options_data.org_fields;
                   _results = [];
-                  for (_k = 0, _len2 = _ref10.length; _k < _len2; _k++) {
-                    f = _ref10[_k];
+                  for (_k = 0, _len2 = _ref11.length; _k < _len2; _k++) {
+                    f = _ref11[_k];
                     _results.push(_this.initFieldGetter('CheckOrgField', f));
                   }
                   return _results;
@@ -418,6 +437,17 @@
           }
         ];
         def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUrgency = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'urgency1';
+        options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte'];
+        def = this.getStandardInput(options);
         return def;
       };
 
@@ -468,6 +498,19 @@
             value: -1
           }
         ];
+        def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckPerformer = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'person_ids';
+        options.dataName = 'agents';
+        options.operators = ['contains', 'notcontains'];
+        options.template = 'OptionBuilder/type-criteria-performer.html';
         def = this.getStandardSelect(options);
         return def;
       };
@@ -541,7 +584,7 @@
           options = {};
         }
         options.propName = 'subject';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -552,7 +595,7 @@
           options = {};
         }
         options.propName = 'body';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -563,7 +606,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -574,7 +617,7 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -585,7 +628,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -596,7 +639,7 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -607,7 +650,7 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -618,7 +661,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -677,9 +720,77 @@
         options.propName = 'labels';
         options.type_title = 'Labels';
         options.tags = true;
-        options.operators = ['contains', 'not_contains'];
+        options.operators = ['contains', 'notcontains'];
         def = this.getStandardInput(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckSlaStatus = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-slas.html');
+          },
+          getData: function() {
+            var defer;
+            defer = me.$q.defer();
+            me.loadDataOptions().then((function(_this) {
+              return function() {
+                var sla, _i, _len, _ref;
+                options = [];
+                _ref = me.options_data['ticket_slas'];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  sla = _ref[_i];
+                  options.push({
+                    title: sla.title,
+                    value: sla.id
+                  });
+                }
+                return defer.resolve({
+                  options: options
+                });
+              };
+            })(this));
+            return defer.promise;
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = value.options || {};
+                return {
+                  op: value.op || 'contains',
+                  sla_ids: options.sla_ids || [],
+                  is_complete: !!options.is_complete,
+                  sla_status: options.sla_status || 'passing',
+                  show_status: !!options.sla_status
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {
+                  type: 'CheckSlaStatus',
+                  op: model.op || 'contains',
+                  options: {
+                    sla_ids: model.sla_ids || [],
+                    is_complete: model.op === 'contains' ? !!model.is_complete : null,
+                    sla_status: model.show_status && model.sla_status && model.op === 'contains' ? model.sla_status : null
+                  }
+                };
+                return value;
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckStatus = function(options) {
@@ -699,7 +810,7 @@
           options = {};
         }
         options.propName = 'subject';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -710,7 +821,7 @@
           options = {};
         }
         options.propName = 'message';
-        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -759,7 +870,7 @@
           options = {};
         }
         options.propName = 'creation_system_option';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -770,7 +881,7 @@
           options = {};
         }
         options.propName = 'message';
-        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -781,7 +892,7 @@
           options = {};
         }
         options.propName = 'message';
-        options.operators = ['isset', 'not_isset', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -813,7 +924,7 @@
           options = {};
         }
         options.propName = 'attach_name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -824,7 +935,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -835,18 +946,18 @@
           options = {};
         }
         options.propName = 'email';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabels = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabel = function(options) {
         var def;
         if (options == null) {
           options = {};
         }
         options.propName = 'labels';
-        options.operators = ['contains', 'not_contains'];
+        options.operators = ['contains', 'notcontains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -906,23 +1017,101 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserValidAgent = function(options) {
-        var def;
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'is_valid_agent';
-        def = this.getStandardIs(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is',
+                  options: [
+                    {
+                      value: 'is',
+                      title: 'User has been validated by an agent'
+                    }, {
+                      value: 'not',
+                      title: 'User is waiting to be validated by an agent'
+                    }
+                  ]
+                };
+              },
+              getValue: function(model, data) {
+                if (model == null) {
+                  model = {};
+                }
+                return {
+                  type: 'CheckUserValidEmail',
+                  op: model.op || 'is',
+                  options: {
+                    run: true
+                  }
+                };
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserValidEmail = function(options) {
-        var def;
+        var me;
         if (options == null) {
           options = {};
         }
-        options.propName = 'is_valid_email';
-        def = this.getStandardIs(options);
-        return def;
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-opselect.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'is',
+                  options: [
+                    {
+                      value: 'is',
+                      title: 'User has validated their email address'
+                    }, {
+                      value: 'not',
+                      title: 'User has not yet validated their email address'
+                    }
+                  ]
+                };
+              },
+              getValue: function(model, data) {
+                if (model == null) {
+                  model = {};
+                }
+                return {
+                  type: 'CheckUserValidEmail',
+                  op: model.op || 'is',
+                  options: {
+                    run: true
+                  }
+                };
+              }
+            };
+          }
+        };
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgName = function(options) {
@@ -931,7 +1120,7 @@
           options = {};
         }
         options.propName = 'name';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -942,7 +1131,7 @@
           options = {};
         }
         options.propName = 'labels';
-        options.operators = ['contains', 'not_contains'];
+        options.operators = ['contains', 'notcontains'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -953,7 +1142,7 @@
           options = {};
         }
         options.propName = 'email_domain';
-        options.operators = ['is', 'not', 'contains', 'not_contains', 'is_regex', 'not_regex'];
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
       };
@@ -986,24 +1175,61 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var d, days, _i, _len, _ref;
                 if (value == null) {
                   value = {};
                 }
+                options = value.options || {};
+                days = [null, false, false, false, false, false, false, false];
+                if (options.days) {
+                  _ref = options.days;
+                  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    d = _ref[_i];
+                    days[d] = true;
+                  }
+                }
                 return {
-                  op: value.op || 'is'
+                  op: value.op || 'is',
+                  tz: options.tz || 'UTC',
+                  days: days
                 };
               },
               getValue: function(model, data) {
-                var value;
+                var days, k, v, value, _i, _len, _ref;
                 if (model == null) {
                   model = {};
                 }
-                value = {};
+                days = [];
+                _ref = model.days;
+                for (k = _i = 0, _len = _ref.length; _i < _len; k = ++_i) {
+                  v = _ref[k];
+                  if (v) {
+                    days.push(k);
+                  }
+                }
+                value = {
+                  type: 'CheckDayOfWeek',
+                  op: 'is',
+                  options: {
+                    tz: model.tz || 'UTC',
+                    days: days,
+                    "var": 'now'
+                  }
+                };
                 return value;
               }
             };
           }
         };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckDateCreated = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        def = this.getDateInput(options);
+        return def;
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckTimeOfDay = function(options) {
@@ -1022,19 +1248,38 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var time1, time2;
                 if (value == null) {
                   value = {};
                 }
+                options = value.options || {};
+                time1 = (options.time1 || '8:0').split(':');
+                time2 = (options.time2 || '18:0').split(':');
                 return {
-                  op: value.op || 'is'
+                  tz: options.tz || 'UTC',
+                  start_hour: time1[0],
+                  start_min: time1[1],
+                  end_hour: time2[0],
+                  end_min: time2[1]
                 };
               },
               getValue: function(model, data) {
-                var value;
+                var time1, time2, value;
                 if (model == null) {
                   model = {};
                 }
-                value = {};
+                time1 = (model.start_hour || '8') + ':' + (model.start_min || '0');
+                time2 = (model.end_hour || '18') + ':' + (model.end_min || '0');
+                value = {
+                  type: 'CheckTimeOfDay',
+                  op: 'between',
+                  options: {
+                    "var": 'now',
+                    tz: model.tz || 'UTC',
+                    time1: time1,
+                    time2: time2
+                  }
+                };
                 return value;
               }
             };

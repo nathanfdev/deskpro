@@ -152,7 +152,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 
 	/**
 	 * Get children
-	 * @return Doctrine\Common\Collections\ArrayCollection
+	 * @return \Doctrine\Common\Collections\ArrayCollection
 	 */
 	public function getChildren()
 	{

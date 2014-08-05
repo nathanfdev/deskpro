@@ -453,7 +453,16 @@ class TicketsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		// Smart load last agent reply when message_id is 0
+		if (!$message_id) {
+			$message = $this->em->getRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
+			if ($message) {
+				$message_id = $message->id;
+			}
+		} else {
+			$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
+		}
+
 		$person  = $this->person->getId() ? $this->person : $ticket->person;
 
 		// Verify ticket and message

@@ -8,7 +8,7 @@ define [
 	class Reports_Billing_Ctrl_List extends ReportsBaseCtrl
 		@CTRL_ID = 'Reports_Billing_Ctrl_List'
 		@CTRL_AS = 'ListCtrl'
-		@DEPS    = ['Api']
+		@DEPS    = ['Api', '$timeout']
 
 		init: ->
 			@reports_list = [
@@ -35,10 +35,15 @@ define [
 		# Loads 2 lists - first with custom reports, second with built-in reports
 		###
 		initialLoad: ->
+			d = @$q.defer()
+
 			group_params_promise = @Api.sendGet('/reports/builder/group-params').then( (data) =>
 				@group_params = data.data
+				@$timeout(=>
+					d.resolve()
+				, 150)
 			)
 
-			return @$q.all([group_params_promise])
+			return d.promise
 
 	Reports_Billing_Ctrl_List.EXPORT_CTRL()

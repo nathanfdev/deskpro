@@ -265,6 +265,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			fileupload: function(el, options) {
 
+				var plainEl = $(el).get(0);
+
 				var setel;
 				if (!options) options = {};
 
@@ -430,7 +432,63 @@ DeskPRO.Agent.Window = new Orb.Class({
 					}
 				})
 
+				// drop could have an auth, which we handle manually (ie not fileupload jquery plugin)
+				$(el).on('drop', function(event) {
+					var auth = event.originalEvent.dataTransfer.getData('DpAuthId');
+					if (!auth) return;
+
+					// Need slight delay to make sure an attached redactor editor isnt handling this
+					window.setTimeout((function() {
+						if (event.originalEvent.__DpIsRteHandling) {
+							return;
+						}
+
+						$(this).trigger('fileuploadstart');
+						options.start.apply(plainEl, [event]);
+
+						$.ajax({
+							url: options.url,
+							dataType: 'html',
+							data: { copy_blob: auth },
+							cache: false,
+							type: 'POST',
+							success: function (data) {
+								var json = $.parseJSON(data);
+
+								$(this).trigger('fileuploaddone');
+								if (typeof json.error == 'undefined') {
+									options.done.apply(plainEl, [event, { result: json}])
+								} else {
+									options.stop.apply(plainEl, [event]);
+								}
+
+							}
+						});
+					}).call(this), 100);
+				});
+
 				return $(el).fileupload(options);
+			},
+			
+			filedownload: function(el) {
+				if (!el.is('.dragout')) {
+					el = el.find('.dragout');
+				}
+				el.on("dragstart", function(evt) {
+					var blobAuthId = $(this).data('blob-authid');
+					var fileDetails = $(this).data('downloadurl');
+					if (!fileDetails) {
+						fileDetails = $(this).attr('drag-to-download');
+					}
+					
+					if (evt.dataTransfer) {
+						evt.dataTransfer.setData("DownloadURL",fileDetails);
+						if (blobAuthId) evt.dataTransfer.setData("DpAuthId", blobAuthId);
+					} else {
+						evt.originalEvent.dataTransfer.setData("DownloadURL",fileDetails);
+						if (blobAuthId) evt.originalEvent.dataTransfer.setData("DpAuthId", blobAuthId);
+					}
+				});
 			},
 
 			updateUserEmailAddressDisplay: function(person_id, email) {
@@ -1325,7 +1383,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	getDisplayName: function(type, id) {
 		if (!window.DESKPRO_NAME_REGISTRY[type] || !window.DESKPRO_NAME_REGISTRY[type][id]) {
 			if (!window.DESKPRO_NAME_REGISTRY[type]) {
-				DP.console.error('Unknown name type %s', type);
+				DP.console.warn('Unknown name type %s', type);
 			}
 
 			return null;
@@ -1346,7 +1404,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var agentEl = $('#agent_offline_list .agent-' + agent_id);
 
 		if (!agentEl.length) {
-			DP.console.error('Unknown agent %i', agent_id);
+			DP.console.warn('Unknown agent %i', agent_id);
 			return null;
 		}
 
@@ -1375,7 +1433,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var teamEl = $('#agent_team_list .team-' + team_id);
 
 		if (!teamEl.length) {
-			DP.console.error('Unknown team %i', team_id);
+			DP.console.warn('Unknown team %i', team_id);
 			return null;
 		}
 
@@ -1629,7 +1687,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//#################################################################
 
 	addListPage: function(page) {
-		DP.console.error('Invalid call to addListPage for %o', page);
+		DP.console.warn('Invalid call to addListPage for %o', page);
 		this.setListPage(page);
 	},
 
@@ -1668,7 +1726,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!handler) {
-			DP.console.error('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
+			DP.console.warn('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
 			return;
 		}
 
@@ -1814,7 +1872,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!el.data('route')) {
-			DP.console.error('Element has no route: %o', el);
+			DP.console.warn('Element has no route: %o', el);
 			DP.console.trace();
 			return;
 		}
@@ -2048,7 +2106,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		routeData = routeData || {};
 		if (!url) {
-			DP.console.error('No URL provided! routeData: %o', routeData);
+			DP.console.warn('No URL provided! routeData: %o', routeData);
 			return;
 		}
 
@@ -2479,7 +2537,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		};
 
-		if (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeoutec') {
+		if (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeout') {
 			this.showAlert($('<div><strong>Network Error</strong><br />The request timed out. The server may be too busy to handle your request, or you may have been disconnected from the internet. Try again.</div>'), 'network_error');
 			this.incNetworkError();
 			return;
@@ -2632,7 +2690,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var m = routeData.url.match(/tickets\/([0-9]+)/);
 			if (!m || !m[1]) {
-				console.error('Bad page loader call: ' + routeData.url + ' %o', routeData);
+				console.warn('Bad page loader call: ' + routeData.url + ' %o', routeData);
 				return;
 			}
 			var ticketId = m[1];
@@ -3115,7 +3173,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var handler = this.sections[section_id];
 		if (!handler) {
 			if (section_id != 'test_section') {
-				DP.console.error('Invalid section: %s', section_id);
+				DP.console.warn('Invalid section: %s', section_id);
 			}
 			return;
 		}
@@ -3324,7 +3382,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				if (!DeskPRO_Window.sections.agent_chat_section) {
-					DP.console.error('The agent chat section is not enabled');
+					DP.console.warn('The agent chat section is not enabled');
 					return;
 				}
 
@@ -3555,7 +3613,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!url) {
-			DP.console.error('getSectionData: Unknown section %s', section_id);
+			DP.console.warn('getSectionData: Unknown section %s', section_id);
 			return;
 		}
 

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\TicketLayout;
 
 use Orb\Types\JsonObjectSerializable;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializable
@@ -59,15 +60,51 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
 	/**
 	 * @param LayoutField $field
+	 * @param string $before_field Field ID of a field to insert the field before. If not specified, the field is added to the end.
 	 */
-	public function add(LayoutField $field)
+	public function add(LayoutField $field, $before_field = null)
 	{
 		$id = $field->getId();
 		if (isset($this->fields[$id])) {
 			unset($this->fields[$id]);
 		}
 
-		$this->fields[$id] = $field;
+		$did_add = false;
+		if ($before_field) {
+			$pos = Arrays::findKey($this->fields, function($v) use ($before_field) {
+				return $v->getId() == $before_field;
+			});
+			if ($pos !== null) {
+				$all_fields = $this->fields;
+				$this->fields = array();
+				foreach ($all_fields as $k => $v) {
+					if ($k == $before_field) {
+						$did_add = true;
+						$this->fields[$id] = $field;
+					}
+
+					$this->fields[$k] = $v;
+				}
+			}
+		}
+
+		if (!$did_add) {
+			$this->fields[$id] = $field;
+		}
+	}
+
+
+	/**
+	 * @param LayoutField $field
+	 */
+	public function prepend(LayoutField $field)
+	{
+		$id = $field->getId();
+		if (isset($this->fields[$id])) {
+			unset($this->fields[$id]);
+		}
+
+		Arrays::unshiftAssoc($this->fields, $id, $field);
 	}
 
 

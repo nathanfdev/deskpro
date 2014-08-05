@@ -2,7 +2,7 @@
 {% block editpane_content %}
 	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveAgent()">
 		<section class="dp-paneblock dp-editpane">
-			<nav class="dp-blocktabs">
+			<nav class="dp-blocktabs responsive">
 				<menu>
 					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
 					<ul class="dropdown-menu pull-right">
@@ -45,11 +45,13 @@
 			</article>
 			<footer>
 				<div class="dp-content">
-					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+					<div class="text-danger ng-hide" ng-show="(form_props.$attempted && form_props.$invalid) || EditCtrl.email_sysaccount_error || EditCtrl.invalid_phone_error">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
 							<li ng-show="form_props.name.$error.required || form_props.name.$error.not_blank">Please enter a name</li>
 							<li ng-show="form_props.email.$error.required || form_props.email.$error.emails_count || form_props.email.$error.email">Please enter a valid email address</li>
+							<li ng-show="EditCtrl.email_sysaccount_error">The email address you entered ({{ ng_var('EditCtrl.email_sysaccount_error') }}) belongs to a ticket account. You cannot re-use the same email address for agents and ticket accounts.</li>
+							<li ng-show="EditCtrl.invalid_phone_error">Invalid phone number: {{ ng_var('EditCtrl.invalid_phone_error') }}</li>
 						</ul>
 					</div>
 

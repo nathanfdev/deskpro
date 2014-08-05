@@ -1,0 +1,69 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+    <section class="dp-paneblock dp-listpane" style="padding: 10px;">
+        <button dp-toggle-switch ng-model="ListCtrl.settings.enabled" ng-click="ListCtrl.save($event)"></button>
+        <h4 style="display: inline-block; margin: 0 10px;">{{ phrase('adm.round_robins.enable') }}</h4>
+    </section>
+
+	<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.settings.enabled">
+        <header>
+			<h3 ng-pluralize count="ListCtrl.robins.length || 0" when="{{ ng_plural_phrase('adm.round_robins.count') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="robin in ListCtrl.robins" dp-state-mark="tickets.roundrobin.edit.{{ ng_var('robin.id') }}">
+					<a href="{{ ng_href('tickets.roundrobin.edit', '{id: robin.id}') }}">
+						<h4>
+							<span class="title-text">{{ng_var('robin.title')}}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.roundrobin.edit', '{id: \'create\'}') }}" ng-class="{'active': isStateActive('.edit', {id: 'create'}) }">
+                    <i class="fa fa-plus"></i>
+                    {{phrase('agent.general.add')}}
+                </a>
+			</div>
+		</article>
+	</section>
+
+    <div dp-register-message="modal_title">{{ phrase('adm.round_robins.disable_title') }}</div>
+    <div dp-register-message="modal_message" ng-pluralize count="ListCtrl.settings.active_triggers || 0" when="{{ ng_plural_phrase('adm.round_robins.disable_warn') }}"></div>
+{% endblock %}
+
+
+
+{% block listpane_help %}
+	<header>
+		<h1>Labeling tickets helps agents filter and search for them.</h1>
+		<p>Labels are text tags that agents can use to help organize your helpdesk content.</p>
+	</header>
+	<article>
+		<section>
+		
+			<p>Labels are used to find matching items when searching from the Quick Search bar. They are also displayed in the agent filter pane.</p>
+            <p>You can rename misspelled or unhelpful labels using this screen.</p>
+
+            </section>
+
+            <section>
+            <h2><span>FAQ</span></h2>
+            <dl>
+                <dt><em>Q:</em>How do I merge two labels?</dt>
+                <dd><em>A:</em>
+                    Edit one label to have the same name as another, and the labels will be merged.
+                </dd>
+            </dl>
+        </section>
+
+        <section class="related-content">
+                <h2><span>Related Content</span></h2>
+                <ul>
+                    <li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#managing-labels" target="_blank">Managing labels</a></li>
+
+                </ul>
+        </section>
+    
+	</article>
+{% endblock %}

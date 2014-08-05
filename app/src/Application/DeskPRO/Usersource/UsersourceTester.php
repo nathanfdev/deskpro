@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class UsersourceTester
@@ -142,16 +143,19 @@ class UsersourceTester
 
 		if ($result && $result->isValid() && $result->getIdentity()) {
 			$result_raw = "DATA RECORD:\n=======================================================\n";
-			$result_raw .= var_export($result->getIdentity()->getRawData(), true);
-			$result_raw .= "\n\n\n\n";
-			$result_raw .= "RAW RESULT:\n=======================================================\n";
-			$result_raw .= print_r($result, true);
+			$raw_data = Arrays::mapRecursive($result->getIdentity()->getRawData(), function($v) {
+				if (is_int($v) || is_float($v) || ctype_digit($v) || is_bool($v) || is_null($v) || ctype_print($v)) {
+					return $v;
+				} else {
+					return Strings::utf8_bad_strip($v);
+				}
+			});
+			$result_raw .= print_r($raw_data, true);
 		} else {
-			$result_raw = "No Identity\n\n\n";
-			$result_raw .= print_r($result, true);
+			$result_raw = "No Identity";
 		}
 
-		$clean = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');
+		$clean = $result_raw;
 		if (!$clean) {
 			$result_raw = Strings::utf8_bad_strip($result_raw);
 			$clean = @htmlspecialchars($result_raw, \ENT_QUOTES, 'ISO-8895-1');

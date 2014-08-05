@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;

@@ -35,9 +35,9 @@
 namespace deskpro_googleanalytics;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
-class InstallerHandler implements InstallerHandlerInterface
+class InstallerHandler extends AbstractInstallerHandler
 {
 	/**
 	 * {@inheritDoc}

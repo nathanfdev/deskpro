@@ -8,36 +8,49 @@ define [
 	class Admin_Main_Ctrl_Home extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Main_Ctrl_Home'
 		@CTRL_AS   = 'Home'
+		@DEPS      = ['$http']
 
 		init: ->
 			@online_agents = []
 			@offline_agents = []
 			@$scope.new_agent = {}
 			@$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false
+			@loadMethodTests()
 			return
 
 		initialLoad: ->
 			promise = @Api.sendDataGet({
 				agents:      '/agents',
 				lastLogin:   '/me/last-login',
-				cronStatus:  '/server/cron-status',
-				errorStatus: '/server/error-status',
-				apcStatus:   '/server/apc-status',
-				versionInfo: '/dp_license/version-info',
-				quickStats:  '/tickets/quick-stats'
+				versionInfo: '/dp_license/version-info'
 			}).then( (result) =>
 				data = result.data
 				@online_agents  = []
 				@offline_agents = []
-				@cron_status    = result.data.cronStatus
-				@error_status   = result.data.errorStatus
-				@apc_status     = result.data.apcStatus
+
 				@version_info   = result.data.versionInfo
-				@quick_stats    = result.data.quickStats
 				@last_login     = result.data.lastLogin.last_login
 
 				if @last_login
 					@last_login.date_created_d = new Date(@last_login.date_created_ts * 1000)
+
+				for agent in data.agents.agents
+					if agent.is_online_now or agent.id == DP_PERSON_ID
+						@online_agents.push(agent)
+					else
+						@offline_agents.push(agent)
+			)
+
+			@Api.sendDataGet({
+				cronStatus:  '/server/cron-status',
+				errorStatus: '/server/error-status',
+				apcStatus:   '/server/apc-status',
+				quickStats:  '/tickets/quick-stats'
+			}).then( (result) =>
+				@cron_status    = result.data.cronStatus
+				@error_status   = result.data.errorStatus
+				@apc_status     = result.data.apcStatus
+				@quick_stats    = result.data.quickStats
 
 				problem_triggers = [
 					@cron_status.is_problem,
@@ -47,13 +60,6 @@ define [
 					@apc_status.is_problem
 				]
 				@is_server_problem = problem_triggers.filter((x) -> return !!x).length > 0
-
-
-				for agent in data.agents.agents
-					if agent.is_online_now or agent.id == DP_PERSON_ID
-						@online_agents.push(agent)
-					else
-						@offline_agents.push(agent)
 			)
 
 			# Get news and version info in parallel
@@ -77,6 +83,51 @@ define [
 
 			return promise
 
+		loadMethodTests: ->
+			promises = []
+			http_method = {}
+			$http = @$http
+
+			checkUrl = DP_BASE_URL + 'index.php?_sys=check_http_method&x=' + ((new Date()).getTime())
+
+			makeCheck = (type) ->
+				typeU = type.toUpperCase()
+				p = $http({
+					method: typeU,
+					url: checkUrl,
+					responseType: "text",
+					cache: false
+				})
+
+				p.success( (res) ->
+					if not res then res = ''
+					if res.indexOf("HTTP_METHOD_#{typeU}") != -1
+						http_method[type] = true
+					else
+						http_method[type] = false
+				)
+				p.error(-> http_method[type] = false)
+
+				return p
+
+			promises.push makeCheck('get')
+			promises.push makeCheck('post')
+			promises.push makeCheck('put')
+			promises.push makeCheck('delete')
+
+			masterP = @$q.all(promises)
+			checkRes = =>
+				@$scope.http_method_checks = http_method
+
+				any = false
+				for own k, v of http_method
+					if not v
+						any = true
+						break
+
+				@$scope.http_method_errors = any
+
+			masterP.then(checkRes, checkRes)
 
 		###
 		# Saves new agent form
@@ -85,6 +136,7 @@ define [
 			@$scope.created_agent = null
 
 			postData = {
+				quick_add: true
 				agent: {
 					name: Strings.trim(@$scope.new_agent.name || ''),
 					emails: [Strings.trim(@$scope.new_agent.email || '')]

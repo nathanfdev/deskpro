@@ -340,15 +340,15 @@ class OsTicket implements GeneratorInterface
 
 				$transformedArray = array();
 
-				$transformedArray['ref']		= $ticket['number'];
-				$transformedArray['department']		= $this->findDepartmentFromId($ticket['dept_id']);
-				$transformedArray['person']		= $this->findUserEmailFromId($ticket['user_id']);
-				$transformedArray['agent']		= $this->findUserEmailFromId($ticket['staff_id']) ?: null;
-				$transformedArray['agent_team']		= $this->findUserEmailFromId($ticket['team_id']) ?: null;
-				$transformedArray['status']		= $ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent';
-				$transformedArray['date_created']	= $ticket['created'];
-				$transformedArray['subject']		= $ticket['subject'];
-				$transformedArray['priority']		= $ticket['priority'];
+				$transformedArray['ref']            = !empty($ticket['number']) ? $ticket['number'] : null;
+				$transformedArray['department']     = $this->findDepartmentFromId($ticket['dept_id']);
+				$transformedArray['person']         = $this->findUserEmailFromId($ticket['user_id']);
+				$transformedArray['agent']          = $this->findUserEmailFromId($ticket['staff_id']) ?: null;
+				$transformedArray['agent_team']     = $this->findUserEmailFromId($ticket['team_id']) ?: null;
+				$transformedArray['status']         = $ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent';
+				$transformedArray['date_created']   = $ticket['created'];
+				$transformedArray['subject']        = $ticket['subject'];
+				$transformedArray['priority']       = $ticket['priority'];
 
 				foreach ($this->findMessageThreadFromId($ticket['ticket_id']) as $message_thread) {
 					if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {

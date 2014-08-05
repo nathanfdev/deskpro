@@ -14,6 +14,7 @@ define([
 	'ngFileUpload',
 
 	'moment',
+	'momentTimezone',
 	'aceEditor',
 
 	'jquery',
@@ -45,6 +46,7 @@ define([
 	'Admin/Agents/Ctrl/DeletedRestore',
 	'Admin/Agents/Ctrl/List',
 	'Admin/Agents/Ctrl/Logs',
+	'Admin/Agents/Ctrl/Import',
 	'Admin/AgentGroups/Ctrl/Edit',
 	'Admin/AgentGroups/Ctrl/List',
 	'Admin/AgentTeams/Ctrl/Edit',
@@ -55,6 +57,7 @@ define([
 	'Admin/EmailStatus/Ctrl/ViewSource',
 	'Admin/Main/Ctrl/Bare',
 	'Admin/Main/Ctrl/BareList',
+	'Admin/Main/Ctrl/MainBody',
 	'Admin/Main/Ctrl/MainPage',
 	'Admin/Main/Ctrl/Home',
 	'Admin/Main/Ctrl/BackToAgent',
@@ -155,7 +158,6 @@ define([
 	'Admin/Server/Ctrl/ServerFileCheck',
 	'Admin/Server/Ctrl/ServerReportFile',
 	'Admin/Settings/Ctrl/AdvancedSettings',
-	'Admin/Settings/Ctrl/EmailSettings',
 	'Admin/Settings/Ctrl/ElasticSearch',
 	'Admin/Settings/Ctrl/GeneralSettings',
 	'Admin/Settings/Ctrl/PortalSettings',
@@ -182,10 +184,22 @@ define([
 	'Admin/KbSettings/Ctrl/KbSettings',
 	'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
 	'Admin/NewsSettings/Ctrl/NewsSettings',
-	'Admin/FeedbackSettings/Ctrl/FeedbackSettings'
+	'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
+	'Admin/RoundRobin/Ctrl/List',
+	'Admin/RoundRobin/Ctrl/Edit',
+
+	'CloudAdminLoad'
+
 ], function(angular) {
 	return {
 		start: function() {
+
+			// Set path for ace editor
+			ace.config.set("basePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
+			ace.config.set("modePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
+			ace.config.set("themePath",  DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
+			ace.config.set("workerPath", DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
+
 			var loadingEl = document.getElementById('dp_loading');
 			loadingEl.parentNode.removeChild(loadingEl);
 			loadingEl = null;

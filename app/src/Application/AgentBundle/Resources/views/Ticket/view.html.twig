@@ -218,7 +218,12 @@ pageMeta.lang = {{ {
 						</section>
 					</div>
 					<span class="is-not-loading">
-						<button class="clean-white small cc-saverow-trigger">{{ phrase('agent.general.add') }}</button>
+						<button
+							class="clean-white small cc-saverow-trigger"
+							data-msg-invalid-email="{{ phrase('agent.general.error_email_address') }}"
+							data-msg-invalid-email-isaccount="{{ phrase('agent.tickets.email_is_ticket_account') }}"
+							data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers') }}"
+						>{{ phrase('agent.general.add') }}</button>
 					</span>
 					<span class="is-loading">{{ phrase('agent.general.saving') }}</span>
 				</div>
@@ -357,7 +362,7 @@ pageMeta.lang = {{ {
 					</li>
 				{% endif %}
 				{% if app.getsetting('core.apps_jira.enabled') %}
-					<li data-tab-for="#{{ baseId }}_jira_wrap">JIRA (<span id="{{ baseId }}_jira_count" class="jira_issue_count">0</span>)</li>
+					<li data-tab-for="#{{ baseId }}_jira_wrap" id="{{ baseId }}_jira_wrap_tab">JIRA (<span id="{{ baseId }}_jira_count" class="jira_issue_count">0</span>)</li>
 				{% endif %}
 			</ul>
 		</nav>
@@ -591,9 +596,8 @@ pageMeta.lang = {{ {
 {% endif %}
 {{ dp_app_loc(baseId, 'messages.before') }}
 
-<div class="profile-box-container ticket-messages">
+<div class="profile-box-container ticket-messages dp-simpletab-container">
 	<header>
-		{% set messageTabs = dp_widgets_raw('ticket', 'messages', 'tab') %}
 		<nav id="{{ baseId }}_messagebox_tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
 				<li data-list-type="messages" class="on" data-tab-for="#{{baseId}}_messages_wrap">{{ phrase('agent.tickets.messages') }}</li>
@@ -604,9 +608,6 @@ pageMeta.lang = {{ {
 					</li>
 				{% endif %}
 				<li data-tab-for="#{{ baseId }}_times">{{ phrase('agent.general.dates_and_times') }}</li>
-			{% for widget in messageTabs %}
-				<li data-tab-for="#{{ dp_widget_id(baseId, widget) }}">{{widget.title|raw}}</li>
-			{% endfor %}
 			</ul>
 		</nav>
 	</header>
@@ -706,7 +707,7 @@ pageMeta.lang = {{ {
 				</td>
 			</tr></tbody>
 			<tbody><tr>
-				<th>{{ phrase('agent.tickets.time_til_resolve') }}</th>:</th>
+				<th>{{ phrase('agent.tickets.time_til_resolve') }}:</th>
 				<td>
 					{% if times_work_hours %}
 						{{ ticket.work_time_until_resolution|time_length('hours') }}
@@ -764,7 +765,7 @@ pageMeta.lang = {{ {
 			{% endif %}
 		</table>
 	</section>
-	{{ dp_widget_tabs(baseId, 'ticket', 'messages', 'section', 'article', ticket_api) }}
+	{{ dp_app_loc(baseId, 'messages.tab') }}
 </div>
 
 {{ dp_app_loc(baseId, 'messages.after') }}

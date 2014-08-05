@@ -90,6 +90,11 @@ class FilestorageLoader extends LoaderAbstract
 	 */
 	protected $error_mode = 'error';
 
+	/**
+	 * @var bool
+	 */
+	protected $local_mode = false;
+
 	public function runAction()
 	{
 		if (isset($_GET['debug'])) {
@@ -100,6 +105,14 @@ class FilestorageLoader extends LoaderAbstract
 			$pathinfo = $this->getPathInfo();
 
 			$this->addLogMessage("pathinfo: %s", $pathinfo);
+
+			// local URLs just disable redirection action on remote URLs (e.g., S3)
+			// Used to serve app assets where serving from a remote domain
+			// could cause same-origin policy errors
+			if (preg_match('#^/local/#', $pathinfo)) {
+				$this->local_mode = true;
+				$pathinfo = preg_replace('#^/local/#', '/', $pathinfo);
+			}
 
 			if (preg_match('#^/size/([0-9]+)/#', $pathinfo, $m)) {
 				$_GET['s'] = $m[1];
@@ -641,10 +654,22 @@ class FilestorageLoader extends LoaderAbstract
 				$mimetype = 'application/pdf';
 				break;
 
+			case 'Reports-Manual.pdf':
+				$path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/reports-manual/en_US.pdf';
+				$filename = 'Reports Manual.pdf';
+				$mimetype = 'application/pdf';
+				break;
+
 			case 'Agent-Manual.pdf':
 				$path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
 				$filename = 'Agent Manual.pdf';
 				$mimetype = 'application/pdf';
+				break;
+
+			case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
+				$path = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
+				$filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';
+				$mimetype = 'application/zip';
 				break;
 
 			default:
@@ -952,7 +977,7 @@ class FilestorageLoader extends LoaderAbstract
 		if (!empty($blob['file_url']) && $blob['file_url']) {
 			// Need to send through this controller if its a download
 			// request and the file is usually stored with an inline disposition
-			if (!empty($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
+			if ($this->local_mode || (!empty($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type']))) {
 				$this->sendHeaders($blob);
 				$fp = @fopen($blob['file_url'], 'r');
 				while (!@feof($fp)) {
@@ -1269,6 +1294,7 @@ class FilestorageLoader extends LoaderAbstract
 
 		$filepath = $path_info['filepath'];
 		$basepath = $path_info['basepath'];
+		$basepath_std = str_replace('\\', '/', $basepath);
 
 		$mimetype = ContentTypes::getContentTypeFromFilename($filename);
 		if (!$mimetype) {
@@ -1278,9 +1304,11 @@ class FilestorageLoader extends LoaderAbstract
 		$content = null;
 		if ($type == 'html') {
 			$content = file_get_contents($filepath);
-			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($basepath) {
+			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($basepath, $basepath_std) {
 				$path = @realpath($basepath . $m[1]);
-				if (!$path || !is_file($path) || strpos($path, $basepath) !== 0) {
+				$path_std = str_replace('\\', '/', $path);
+
+				if (!$path || !is_file($path) || strpos($path_std, $basepath_std) !== 0) {
 					return '<!-- Invalid include file: ' . $m[1] . ' -->';
 				}
 
@@ -1296,18 +1324,14 @@ class FilestorageLoader extends LoaderAbstract
 
 		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
 		header('Content-Length: ' . $filesize);
-		header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
-		header('Expires: ' . date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
+		header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
 		header('Cache-Control: max-age=31556926,private');
 
 		if ($content !== null) {
 			echo $content;
 		} else {
-			if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
-				header("X-Sendfile: $filepath");
-			} else {
-				readfile($filepath);
-			}
+			readfile($filepath);
 		}
 	}
 

@@ -177,7 +177,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
 	{
 		$trigger = $this->em->find('DeskPRO:TicketEscalation', $id);
 		if (!$trigger) {
-			return $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$trigger->is_enabled = $is_enabled;

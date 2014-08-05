@@ -1,5 +1,6 @@
 <div class="dp-layout-app with-layout-appnav as-appnav-extrawide">
-	<div class="dp-layout-appnav as-altstyle">
+	<div class="dp-layout-appnav" ng-show="state_loading || $parent.state_loading"><div class="dp-layout-loading"><i></i></div></div>
+	<div class="dp-layout-appnav as-altstyle" ng-hide="state_loading || $parent.state_loading">
 		<nav class="dp-appnav">
 			<header>
 				<a class="btn btn-default btn-xs" ng-class="{'active': isStateActive('.create') }" href="{{ ng_href('builder.create', '{type: \'custom\'}') }}" style="float: right;">
@@ -9,9 +10,7 @@
 			</header>
 			<ul>
 				<li ng-repeat="report in ListCtrl.custom_data_list" dp-state-mark="builder.edit.{{ ng_var('report.id') }}" data-id="{{ ng_var('report.id') }}">
-					<a href="{{ ng_href('builder.edit', '{id: report.id, type: \'custom\'}') }}">
-						{{ ng_var('report.title') }}
-					</a>
+					<dp-report-builder-select-box report-id="report.id" value-to-decorate="report.title" possible-values="ListCtrl.group_params" type="custom"></dp-report-builder-select-box>
 				</li>
 			</ul>
 		</nav>

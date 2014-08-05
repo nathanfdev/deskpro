@@ -165,6 +165,10 @@ cd $DIR_VENDOR/leth/ip-address
 echo "Cleaning $(pwd)"
 rm -rf tests/
 
+cd $DIR_VENDOR/lightopenid/lightopenid
+echo "Cleaning $(pwd)"
+rm -rf provider/example-mysql.php provider/example.php example-google.php example.php
+
 cd $DIR_VENDOR/mockery/mockery
 echo "Cleaning $(pwd)"
 rm -rf docs/ examples/ tests/
@@ -255,6 +259,10 @@ echo "Cleaning $(pwd)"
 rm -rf Tests/
 rm -rf .gitignore .travis.yml composer.json phpunit.xml.dist README.md
 
+cd $DIR_VENDOR/symfony/monolog-bundle
+echo "Cleaning $(pwd)"
+rm -rf Tests/
+
 cd $DIR_VENDOR/symfony/swiftmailer-bundle/Symfony/Bundle/SwiftmailerBundle
 echo "Cleaning $(pwd)"
 rm -rf Tests/
@@ -343,9 +351,13 @@ echo "Cleaning $(pwd)"
 rm -rf tests/
 rm -rf CHANGELOG.md composer.json CONTRIBUTING.md INSTALL.md README.md README-GIT.md
 
-cd $DIR_VENDOR/friendsofsymfony/elastica-bundle/FOS/ElasticaBundle
+cd $DIR_VENDOR/zendframework/zendoauth
 echo "Cleaning $(pwd)"
-rm -rf */Tests
+rm -rf tests/
+
+cd $DIR_VENDOR/friendsofsymfony/elastica-bundle
+echo "Cleaning $(pwd)"
+rm -rf Tests/ Resources/doc
 rm -rf .travis.yml CHANGELOG-2.0.md CHANGELOG-2.1.md CHANGELOG-3.0.md composer.json LICENSE.txt phpunit.xml.dist README.md UPGRADE-3.0.md
 
 cd $DIR_VENDOR/ruflin/elastica
@@ -427,9 +439,6 @@ cd $DIR_WEB_BOWER/jquery-ui/themes
 rm -rf black-tie/ blitzer/ cupertino/ dark-hive/ dot-luv/ eggplant/ excite-bike/ flick/ hot-sneaks/ humanity/ le-frog/ mint-choc/ overcast/ pepper-grinder/ redmond/ smoothness/ south-street/ start/ sunny/ swanky-purse/ trontastic/ ui-darkness/ vader/
 
 cd $DIR_WEB_BOWER/moment
-rm -rf readme.md
-
-cd $DIR_WEB_BOWER/momentjs
 rm -rf readme.md
 
 cd $DIR_WEB_BOWER/requirejs

@@ -216,6 +216,7 @@
                 <section id="dp_content">
 					{% if breadcrumb and not app.getVariable('is_homepage') %}
 						<nav id="dp_breadcrumb_wrap">
+							{% block breadcrumb_pre %}{% endblock %}
 							<div class="dp-breadcrumb-fade"></div>
 							<ul class="dp-breadcrumb">
 								<li>
@@ -223,6 +224,7 @@
 								</li>
 								{{ breadcrumb }}
 							</ul>
+							{% block breadcrumb_post %}{% endblock %}
 						</nav>
 					{% endif %}
 

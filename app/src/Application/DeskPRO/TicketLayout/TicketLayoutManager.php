@@ -60,11 +60,13 @@ class TicketLayoutManager
 
 		foreach ($ticket_layouts as $l) {
 			$key = $l->department ? $l->department->getId() : null;
-			if ($l->user_layout) {
-				$user_layouts->addLayout($l->user_layout, $key);
+			if ($user_layout = $l->user_layout) {
+				LayoutUtil::ensureMinimumUserLayout($user_layout);
+				$user_layouts->addLayout($user_layout, $key);
 			}
-			if ($l->agent_layout) {
-				$agent_layouts->addLayout($l->user_layout, $key);
+			if ($agent_layout = $l->agent_layout) {
+				LayoutUtil::ensureMinimumAgentLayout($agent_layout);
+				$agent_layouts->addLayout($agent_layout, $key);
 			}
 		}
 
@@ -84,10 +86,14 @@ class TicketLayoutManager
 		foreach ($ticket_layouts as $l) {
 			$key = $l['department_id'] ? $l['department_id'] : null;
 			if (!empty($l['user_layout'])) {
-				$user_layouts->addLayout($l['user_layout'], $key);
+				$user_layout = $l['user_layout'];
+				LayoutUtil::ensureMinimumUserLayout($user_layout);
+				$user_layouts->addLayout($user_layout, $key);
 			}
 			if (!empty($l['agent_layout'])) {
-				$agent_layouts->addLayout($l['agent_layout'], $key);
+				$agent_layout = $l['agent_layout'];
+				LayoutUtil::ensureMinimumAgentLayout($agent_layout);
+				$agent_layouts->addLayout($agent_layout, $key);
 			}
 		}
 

@@ -537,13 +537,41 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			})();
 		}
         
-        this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
-		loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
-		saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
-		ticket_id: this.meta.ticket_id
-	});
-	
-	this.ownObject(this.linkExistingTicket);
+		this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
+			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
+			saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
+			ticket_id: this.meta.ticket_id
+		});
+
+		this.ownObject(this.linkExistingTicket);
+
+		this.wrapper.find('.unlink-ticket').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unlink the selected ticket?")) {
+				return;
+			}
+
+			var linkType     = $(this).data('from-type');
+			var linkTicketId = $(this).data('from-id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: BASE_URL + "agent/tickets/" + self.meta.ticket_id + "/unlink-ticket",
+				type: 'POST',
+				data: {
+					ticket_id: self.meta.ticket_id,
+					link_type: linkType,
+					link_ticket_id: linkTicketId
+				},
+				error: function() {
+					$(this).closest('tr').show();
+				},
+				success: function() {
+					$(this).closest('tr').remove();
+				}
+			});
+		});
 
 		this.addEvent('deactivate', function() {
 			if (self.ticketReplyBox && self.ticketReplyBox.textarea) {
@@ -1124,6 +1152,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 
+	updateTicketApiData: function(data) {
+		if (!data) {
+			return;
+		}
+		this.meta.api_data = data;
+
+		if (this.meta.api_data.subject) {
+			var namef       = this.getEl('showname');
+			var editName    = this.getEl('editname');
+
+			namef.text(this.meta.api_data.subject);
+			editName.find('input').first().val(this.meta.api_data.subject);
+		}
+	},
+
 	handleTicketUpdate: function(data) {
 		var self = this;
 		if (data.client_messages) {
@@ -1150,7 +1193,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		if (data.api_data) {
-			this.meta.api_data = data.api_data;
+			this.updateTicketApiData(data.api_data);
 		}
 
 		var new_messages = null;
@@ -1300,6 +1343,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var imageEls = $('ul.attachment-list li.is-image a, a.dp-is-image', messageEl);
 
 		DeskPRO_Window.initStickyTips(messageEl);
+		
+		DeskPRO_Window.util.filedownload(messageEl);
 
 		$('.timeago', messageEl).timeago();
 
@@ -1460,6 +1505,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$(this).attr('title', $(this).text()).text(counterText).removeClass('message-id-txt');
 			}
 		});
+
+		messageEl.find('.open-el-overlay').on('click', function() {
+			var contentEl = $('#' + $(this).data('content-el'));
+			if (!contentEl[0]) {
+				return;
+			}
+
+			contentEl = contentEl.clone()
+
+			var o = new DeskPRO.UI.Overlay({
+				contentMethod: 'element',
+				contentElement: contentEl,
+				destroyOnClose: true,
+				fullScreen: true,
+				fullScreenMargin: '100px'
+			});
+			o.open();
+		});
 	},
 
 	refreshMessageTranslation: function(messageEl) {
@@ -1510,7 +1573,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (h >= 600) {
 			if (!article.hasClass('with-clipped-body')) {
 				article.addClass('with-clipped-body');
-				article.find('.fade-bar-longmsg').one('click', function(ev) {
+				article.find('.fade-bar-longmsg').on('click', function(ev) {
 					ev.stopPropagation();
 					article.addClass('clipped-show');
 				});
@@ -2248,16 +2311,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					sendBtn = wrapper.find('.save-trigger'),
 					footer = wrapper.find('.overlay-footer'),
 					msgInput = wrapper.find('textarea.note'),
-					emailInput = wrapper.find('.email-address-input'),
-					sigPreview = wrapper.find('.agent-sig-view'),
-					emailInputWrap = wrapper.find('.email-address-wrap');
+					sigPreview = wrapper.find('.agent-sig-view');
 
 				DeskPRO.ElementHandler_Exec(wrapper);
 
-				emailInputWrap.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
-					emailInput.val(email);
-					sb.close();
+				msgInput.TextAreaExpander();
+				$('iframe.forward_overlay_iframe').load(function() {
+					$(this).height(this.contentWindow.document.body.scrollHeight);
 				});
+
+				wrapper.find('.to_line').each(function() {
+					var line = $(this);
+					var emailInput = line.find('.email-address-input');
+					var emailInputWrap = line.find('.email-address-wrap');
+					emailInputWrap.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+						emailInput.val(email);
+						sb.close();
+					});
+				});
+
+				wrapper.find('.add-to-btn').on('click', function(ev) {
+					ev.preventDefault();
+					wrapper.find('.to_line').not('.is_visible').first().addClass('is_visible').show();
+				})
 
 				msgInput.on('change keyup keydown', function() {
 					var txt = $.trim($(this).val());
@@ -2288,6 +2364,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						success: function(data) {
 							if (data.error && data.error == 'invalid_to') {
 								DeskPRO_Window.showAlert('Please enter a valid To address');
+								footer.removeClass('loading');
+							} else if (data.error && data.error == 'to_helpdesk_address') {
+								DeskPRO_Window.showAlert($('<div>You have entered an email address that is handled by DeskPRO: ' + data.addresses.join(', ') + '<br/><br/>If you want another helpdesk agent to view this message, try one of these alternatives:<br/>&bull; Assign the agent or add them as a follower<br/>&bull; Change the department<br/>&bull; Split the ticket</div>'));
 								footer.removeClass('loading');
 							} else {
 								DeskPRO_Window.showAlert('Your message has been sent.');
@@ -2826,6 +2905,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						$this.closest('tr').remove();
 
 						rowRemoved(slaId);
+
+						if (getVisibleOptions(idSelect.find('option')).length >= 1) {
+							form.show();
+						}
 					}
 				});
 			}

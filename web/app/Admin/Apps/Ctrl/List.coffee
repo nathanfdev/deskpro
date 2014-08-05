@@ -104,10 +104,13 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
 
 					uploadDone = (data) ->
-						$modalInstance.dismiss()
-						me.$timeout(->
-							me.$state.go('apps.go_apps_install', {name: data.package_name})
-						, 250)
+						me.initialLoad().then(->
+							$modalInstance.dismiss()
+							me.$timeout(->
+								console.log(data)
+								me.$state.go('apps.go_apps_install', {name: 'go-apps-' + data.package_name})
+							, 250)
+						)
 
 					uploadError = (data) ->
 						$scope.form.error = data?.error_code || 'general'
@@ -131,12 +134,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 					$scope.$on('fileuploaddone', (e, data) ->
 						$scope.form.is_active = false
-						uploadDone(data.result, $modalInstance)
-
+						uploadDone(data.result)
 					)
 					$scope.$on('fileuploadfail', (e, data) ->
 						$scope.form.is_active = false
-						uploadError(data.result || {}, $modalInstance)
+						uploadError(data.result || {})
 					)
 
 					$scope.startUpload = ->
@@ -148,10 +150,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 							$scope.form.is_active = true
 							me.Api.sendPost('/apps/upload-package', { file_url: $scope.form.upload_url }).then( (result) ->
 								$scope.form.is_active = false
-								uploadDone(result.data, $modalInstance)
+								uploadDone(result.data)
 							, (result) ->
 								$scope.form.is_active = false
-								uploadError(result.data || {}, $modalInstance)
+								uploadError(result.data || {})
 							)
 				]
 			});

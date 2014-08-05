@@ -2,7 +2,7 @@
 	<div class="panel-body">
 		<div class="form-group">
 			<div style="float: left;">
-				<img src="{{ ng_var('Ctrl.pack.icon_64') }}" alt="Icon" />
+				<img ng-src="{{ ng_var('Ctrl.pack.icon_64') }}" alt="Icon" />
 			</div>
 			<div style="margin-left: 69px;">
 				<h2>{{ ng_var('Ctrl.pack.title') }}</h2>
@@ -30,7 +30,7 @@
 						This application is already installed.
 					</p>
 					<a class="btn btn-default" href="{{ ng_href('apps.apps.instance', '{id: Ctrl.pack.apps[0].id}') }}">
-						View Installed Application &rarr;
+						View "{{ ng_var('Ctrl.pack.apps[0].title') }}" &rarr;
 					</a>
 				</div>
 				<div ng-show="Ctrl.pack.apps.length > 1">
@@ -50,9 +50,9 @@
 				<p>
 					This application can be installed multiple times. Do you want to install it again?
 				</p>
-				<button class="btn btn-primary" ng-click="Ctrl.startInstall()">
+				<a class="btn btn-primary" href="{{ ng_href('apps.apps.install_package', "{name: Ctrl.pack.name+'.install'}") }}">
 					<i class="fa fa-dropbox"></i> Install App Again
-				</button>
+				</a>
 			</div>
 		</div>
 

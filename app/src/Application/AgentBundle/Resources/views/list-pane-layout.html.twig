@@ -1,14 +1,19 @@
 {% set _nothing %}{% block dp_declare %}{% endblock %}{% endset %}
 {% block top %}{% endblock %}
+{% set pane_content_header %}{% block pane_content_header %}{% endblock %}{% endset %}
+{% set pane_content_subheader %}{% block pane_content_subheader %}{% endblock %}{% endset %}
+{% set pane_content_footer %}{% block pane_content_footer %}{% endblock %}{% endset %}
 <div class="list-pane-instance {{ add_classname }}">
 	<div class="list-pane-header">
 		{% block pane_header %}{% endblock %}
 	</div>
-	<div class="list-pane-content">
+	<div class="list-pane-content list-pane-view {% if pane_content_header %}with-header{% endif %} {% if pane_content_subheader %}with-subheader{% endif %} {% if pane_content_footer %}with-footer{% endif %}">
 		{% block pane_content_outscroll %}{% endblock %}
-
-		<div class="layout-content">
-			<div class="dp-page-content">{% block pane_content %}{% endblock %}</div>
-		</div>
+		{% if pane_content_header %}<header class="view-header">{{ pane_content_header }}</header>{% endif %}
+		{% if pane_content_subheader %}<header class="view-subheader">{{ pane_content_subheader }}</header>{% endif %}
+		<article class="view-body">
+			{% block pane_content %}{% endblock %}
+		</article>
+		{% if pane_content_footer %}<footer class="view-footer results-nav">{{ pane_content_footer }}</footer>{% endif %}
 	</div>
 </div>

@@ -260,7 +260,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		// We need the ID first to generate a proper unique filename/auth
 		$batch = (int)(($blob_entity->id-1) / 1000) + 1;
@@ -305,7 +305,7 @@ class DeskproBlobStorage implements Loggable
 				break;
 			} catch (\Exception $e) {
 				$this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromFile) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
-				KernelErrorHandler::logException($e);
+				if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) KernelErrorHandler::logException($e);
 				$prev_e = $e;
 			}
 		}
@@ -331,7 +331,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Save success");
 
@@ -402,7 +402,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		// We need the ID first to generate a proper unique filename/auth
 		$batch = (int)(($blob_entity->id-1) / 1000) + 1;
@@ -447,7 +447,7 @@ class DeskproBlobStorage implements Loggable
 				break;
 			} catch (\Exception $e) {
 				$this->logger->logWarn("[DeskproBlobStorage] (saveBlobRecordFromString) $adapter_id failed: {$e->getCode()} {$e->getMessage()}");
-				KernelErrorHandler::logException($e);
+				if (isset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'])) KernelErrorHandler::logException($e);
 				$prev_e = $e;
 			}
 		}
@@ -473,7 +473,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Save success");
 
@@ -631,6 +631,7 @@ class DeskproBlobStorage implements Loggable
 				$data = null;
 			} else {
 				$this->logger->logDebug("[DeskproBlobStorage] (saveBlobStringToFile) Successfully saved {$blob_entity->filesize} bytes");
+				$data = $blob_entity->filesize;
 			}
 		}
 
@@ -644,12 +645,14 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @param Blob $blob
+	 * @param Blob   $blob
 	 * @param string $adapter_id
-	 * @return void
+	 * @param bool   $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
+	 *                            Otherwise, you can still check error state based on the return value.
+	 * @return bool
 	 * @throws \Exception
 	 */
-	public function deleteBlob(Blob $blob, $adapter_id)
+	public function deleteBlob(Blob $blob, $adapter_id, $ex_on_error = false)
 	{
 		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Deleting {$blob->getPath()} from $adapter_id");
 
@@ -659,18 +662,26 @@ class DeskproBlobStorage implements Loggable
 			$data = $adapter->deleteBlob($blob);
 		} catch (\Exception $e) {
 			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete failed: {$e->getCode()} {$e->getMessage()}");
-			throw $e;
+			if ($ex_on_error) {
+				throw $e;
+			}
+			return false;
 		}
 
 		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete success");
+
+		return true;
 	}
 
 
 	/**
 	 * @param BlobEntity $blob_entity
-	 * @return void
+	 * @param bool       $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
+	 *                                Otherwise, you can still check error state based on the return value.
+	 * @return bool
+	 * @throws \Exception
 	 */
-	public function deleteBlobRecord(BlobEntity $blob_entity)
+	public function deleteBlobRecord(BlobEntity $blob_entity, $ex_on_error = false)
 	{
 		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Deleting {$blob_entity->getId()} from {$blob_entity->storage_loc}");
 
@@ -682,10 +693,15 @@ class DeskproBlobStorage implements Loggable
 			$this->em->flush();
 		} catch (\Exception $e) {
 			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Delete failed: {$e->getCode()} {$e->getMessage()}");
-			throw $e;
+			if ($ex_on_error) {
+				throw $e;
+			}
+			return false;
 		}
 
 		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Delete success");
+
+		return true;
 	}
 
 
@@ -748,7 +764,7 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		$this->em->persist($blob_entity);
-		$this->em->flush($blob_entity);
+		$this->em->flush();
 
 		// Delete the old one
 		$this->deleteBlob($old_blob, $old_adapter_id);

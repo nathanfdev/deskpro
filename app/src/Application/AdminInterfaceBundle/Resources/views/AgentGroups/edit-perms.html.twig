@@ -1,3 +1,12 @@
+<div ng-if="all_locked_perms" class="alert alert-danger" style="margin: 10px;">
+	<p>
+		Permissions are fixed and uneditable for built-in permission groups like this one.
+	</p>
+	<p>
+		If you want to use custom permissions, you must <a href="{{ ng_href('agents.groups.create') }}">create a custom permission group</a> instead.
+	</p>
+</div>
+
 {% macro perm_row(typename, permname, opts) %}
 	{% set row_id = 'perm_' ~ typename ~ '_' ~ permname %}
 
@@ -30,8 +39,10 @@
 				ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
 				{% if opts.toggleName %}
 					is-on="EditCtrl.perm_form.{{ opts.toggleName }}"
-					is-locked="EditCtrl.perm_form.{{ opts.toggleName }}"
+					is-locked="all_locked_perms || EditCtrl.perm_form.{{ opts.toggleName }}"
 					locked-tip="This permission is locked because the parent permission is enabled"
+				{% else %}
+					is-locked="all_locked_perms"
 				{% endif %}
 				/>
 		</td>
@@ -41,11 +52,11 @@
 <div class="panel panel-innertable">
 	<nav class="dp-tabletabs">
 		<ul>
-			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#">Tickets</a></li>
-			<li dp-tab-btn="main.perms.people"><a href="#">People</a></li>
-			<li dp-tab-btn="main.perms.chat"><a href="#">Chat</a></li>
-			<li dp-tab-btn="main.perms.publish"><a href="#">Publish</a></li>
-			<li dp-tab-btn="main.perms.profile"><a href="#">Profile</a></li>
+			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i class="fa fa-envelope"></i> Tickets</a></li>
+			<li dp-tab-btn="main.perms.people"><a href="#"><i class="fa fa-user"></i> People</a></li>
+			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
+			<li dp-tab-btn="main.perms.publish"><a href="#"><i class="fa fa-book"></i> Publish</a></li>
+			<li dp-tab-btn="main.perms.profile"><a href="#"><i class="fa fa-pencil"></i> Profile</a></li>
 		</ul>
 	</nav>
 
@@ -177,6 +188,21 @@
 			{{ _self.perm_row('chat', 'delete') }}
 			</tbody>
 		</table>
+	{% else %}
+		<table class="table table-hover" dp-tab-body="main.perms.chat">
+			<tbody>
+				<tr>
+					<td>
+						<div style="float:right">
+							<a href="{{ ng_var('chat.setup') }}" class="btn btn-default">Go to Chat Setup &rarr;</a>
+						</div>
+						<p style="line-height: 30px;">
+							Chat is currently disabled.
+						</p>
+					</td>
+				</tr>
+			</tbody>
+		</div>
 	{% endif %}
 	{# /CHAT PERMISSIONS #}
 

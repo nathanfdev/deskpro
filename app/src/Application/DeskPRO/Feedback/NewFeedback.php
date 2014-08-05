@@ -166,7 +166,7 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 
 				// Email doesnt exist,
 				// Might already be validating, or we might require validation based on the setting
-				} elseif (!$this->person_context->hasPerm('feedback.no_submit_validate') || $email_validating) {
+				} elseif ($email_validating || App::$container->getSetting('core.email_validation')) {
 					$validating = 'new';
 					if (!$email_validating) {
 						$person = Person::newContactPerson();

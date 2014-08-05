@@ -180,6 +180,9 @@
         triggerSaver = (function(_this) {
           return function() {
             var act, p1, p2, postData, _, _ref, _ref1;
+            if (_this.dep.has_children) {
+              return;
+            }
             postData = {
               actions: []
             };
@@ -215,6 +218,9 @@
         promise.then((function(_this) {
           return function() {
             triggerSaver();
+            if (_this.dep.has_children) {
+              return;
+            }
             if (_this.form.use_custom_layout) {
               _this.Api.sendPostJson("/ticket_layouts/" + _this.dep.id, {
                 layout: _this.form.custom_layout

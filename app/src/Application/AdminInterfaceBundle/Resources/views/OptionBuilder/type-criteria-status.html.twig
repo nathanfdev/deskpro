@@ -2,9 +2,16 @@
 	<div class="dp-ob-standard-row">
 		<table class="display-table">
 			<tr>
-				<td width="80" class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
-				<td ng-show="rowOpts.rowEnabled">
-					<select ui-select2 ng-model="model.value" style="min-width: 140px" multiple>
+				<td class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
+				<td ng-show="rowOpts.rowEnabled" width="100%">
+					<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;">
+						<option value="is">is</option>
+						<option value="not">is not</option>
+						<option value="changed">changed</option>
+						<option value="changed_to">changed to</option>
+						<option value="changed_from">changed from</option>
+					</select>
+					<select ng-if="model.op != 'changed'" ui-select2 ng-model="model.value" style="min-width: 260px" multiple>
 						<option value="awaiting_agent">Awaiting Agent</option>
 						<option value="awaiting_user">Awaiting User</option>
 						<option value="resolved">Resolved</option>

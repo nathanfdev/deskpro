@@ -12,21 +12,22 @@
 				<li class="with-drag-handle" ng-repeat="dep in ListCtrl.depList" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
-						<div class="pull-right">
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="$event.preventDefault(); ListCtrl.startDelete(dep);"><i class="fa fa-trash-o"></i></span>
+						<div style="float:right">
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="!dep.children.length && dep.has_layout"><i class="fa fa-columns"></i></span>
 						</div>
-						<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+						<h4><span class="title-id" title="ID">#{{ ng_var('dep.id') }}</span> <span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
 					<ul class="dp-item-list sublist" ng-show="dep.children.length" ui-sortable="ListCtrl.sortedListOptions">
 						<li class="with-drag-handle" ng-repeat="subdep in dep.children" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('subdep.id') }}" data-id="{{ ng_var('subdep.id') }}">
 							<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}">
 								<i class="fa fa-bars drag-handle"></i>
-								<div class="pull-right">
-									<span class="btn btn-danger btn-xs only-icon " ng-show="delete_mode" style="margin-top: -3px;" ng-click="$event.preventDefault(); ListCtrl.startDelete(subdep);"><i class="fa fa-trash-o"></i></span>
+								<div style="float:right">
+									<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="subdep.has_layout"><i class="fa fa-columns"></i></span>
 								</div>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
 									<span class="tree-char last" ng-if="$last"></span>
+									<span class="title-id" title="ID">#{{ ng_var('subdep.id') }}</span>
 									<span class="title-text">{{ ng_var('subdep.title') }}</span>
 								</h4>
 							</a>
@@ -61,7 +62,6 @@
 			</p>
 			<ul>
 				<li>You can link a department (e.g. Sales) to a ticket email account (e.g. <code>sales@yourdomain.com</code>) using a new ticket trigger. Agent ticket replies will be sent from the linked account.</li>
-				<li>Departments are a way to divide up the helpdesk and control access.</li>
 				<li>Agent ticket <strong>permissions</strong> are based upon departments; you can create agents that can view some tickets but not others.</li>
 				<li>User ticket <strong>permissions</strong> are based upon departments; you can set a usergroup so that it can create tickets in some departments but not others.</li>
 				<li>Departments control the fields shown in the form that a user or agent uses to create a ticket. Different departments can have different ticket form layouts - change them in the <strong>Layout</strong> tab.</li>
@@ -81,10 +81,10 @@
 				<dt><em>Q:</em>Can I use sub-departments/child departments?</dt>
 				<dd><em>A:</em>
 					Yes. A department can have sub-departments, e.g. the "Support" department can contain "Support Tier 1" and "Support Tier 2".<br/>
-					Note that you can&#39;t assign tickets to a department if it contains sub-departments;  you must assign to the sub-departments. In the example above, you could assign tickets to "Support Tier 1" and "Support Tier 2", but not to the parent-level "Support".
+					Note that you can't assign tickets to a department if it contains sub-departments;  you must assign to the sub-departments. In the example above, you could assign tickets to "Support Tier 1" and "Support Tier 2", but not to "Support".
 				</dd>
 
-				<dt><em>Q:</em>I don&#39;t need departments - can I disable the field?</dt>
+				<dt><em>Q:</em>I don't need departments - can I disable the field?</dt>
 				<dd><em>A:</em>
 					Tickets always have a department, but if you only have one department defined, it will not be shown to users, effectively disabling the field.
 				</dd>
@@ -108,16 +108,16 @@
 				</dd>
 			</dl>
 		</section>
-		
-		<section>
-		
+
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 
 				<ul>
 				
-				<li>[MANUAL]</li> <a href="#departments" target="_blank">Departments</a>
-				<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/191-adding-custom-user-fields-to-ticket-forms" target="_blank">Adding custom user fields to ticket forms</a>
-    					<li>[ARTICLE] <a href="https://support.deskpro.com/kb/articles/181" target="_blank">Ticket assignment workflows in DeskPRO</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#departments" target="_blank">Departments</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/191-adding-custom-user-fields-to-ticket-forms" target="_blank">Adding custom user fields to ticket forms</a></li>
+    					<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
+
     
 				</ul>
         	</section>

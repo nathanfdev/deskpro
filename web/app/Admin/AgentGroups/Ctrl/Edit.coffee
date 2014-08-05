@@ -27,6 +27,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 				if @groupId
 					@group  = res.data.group.group
+					if @group.sys_name == 'agent_all_perms' or @group.sys_name == 'agent_all_safe_perms'
+						@$scope.all_locked_perms = true
 				else
 					@group = { id: 0, title: '', members: [] }
 

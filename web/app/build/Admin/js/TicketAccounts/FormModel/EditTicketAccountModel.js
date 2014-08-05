@@ -1,8 +1,8 @@
 (function() {
   define(['DeskPRO/Util/Util'], function(Util) {
-    var Admin_TicketAccounts_Form_EditTicketAccountModel;
-    return Admin_TicketAccounts_Form_EditTicketAccountModel = (function() {
-      function Admin_TicketAccounts_Form_EditTicketAccountModel(account, deps, trigger) {
+    var Admin_TicketAccounts_FormModel_EditTicketAccountModel;
+    return Admin_TicketAccounts_FormModel_EditTicketAccountModel = (function() {
+      function Admin_TicketAccounts_FormModel_EditTicketAccountModel(account, deps, trigger) {
         var act, _i, _len, _ref, _ref1, _ref2;
         this.account = account;
         this.form = {};
@@ -14,7 +14,7 @@
         this.form.in_pop3_account = {};
         this.form.in_imap_account = {};
         this.form.in_exchange_account = {};
-        this.form.outgoing_type = 'mail';
+        this.form.outgoing_type = 'php_mail';
         this.form.out_gmail_account = {};
         this.form.out_smtp_account = {};
         this.form.in_pop3_account.secure_mode = "ssl";
@@ -130,7 +130,7 @@
         }
       }
 
-      Admin_TicketAccounts_Form_EditTicketAccountModel.prototype.getFormData = function() {
+      Admin_TicketAccounts_FormModel_EditTicketAccountModel.prototype.getFormData = function() {
         var department_id, form, options, trigger_actions, _ref, _ref1, _ref2;
         form = Util.clone(this.form, true);
         if (form.incoming_type === 'gmail') {
@@ -208,11 +208,11 @@
         return form;
       };
 
-      Admin_TicketAccounts_Form_EditTicketAccountModel.prototype.apply = function() {
+      Admin_TicketAccounts_FormModel_EditTicketAccountModel.prototype.apply = function() {
         return this.account.address = this.form.address;
       };
 
-      return Admin_TicketAccounts_Form_EditTicketAccountModel;
+      return Admin_TicketAccounts_FormModel_EditTicketAccountModel;
 
     })();
   });

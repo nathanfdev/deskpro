@@ -3,7 +3,7 @@ namespace Swagger;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,18 +93,37 @@ class Swagger
         self::parseOptions($options, array(
             'prefix' => '/',
             'suffix' => '',
+            'template' => null, // array or path to a json file to use as starting point for the listing.
             'basePath' => null,
             'apiVersion' => null,
             'swaggerVersion' => '1.2',
             'output' => 'array',
             'json_pretty_print' => true, // for outputtype 'json'
-            'template' => array(),
         ));
 
-        $result = $options['template'];
-        $result['basePath'] = $options['basePath'];
-        $result['apiVersion'] = $options['apiVersion'];
-        $result['swaggerVersion'] = $options['swaggerVersion'];
+        if (is_array($options['template'])) {
+            $result = $options['template'];
+        } elseif (is_string($options['template'])) {
+            if (substr($options['template'], 0, 1) === '{') {
+                $json = $options['template'];
+            } else {
+                $json = file_get_contents($options['template']);
+                if ($json === false) {
+                    throw new \Exception('Failed to open template "'.$options['template'].'"');
+                }
+            }
+            $result = json_decode($json, true);
+            if (is_array($result) === false) {
+                throw new \Exception('Failed to decode template: "'.$options['template'].'", json_error: '.json_last_error());
+            }
+        } else {
+            $result = array();
+        }
+        foreach (array('basePath', 'apiVersion', 'swaggerVersion') as $key) {
+            if (array_key_exists($key, $result) === false) {
+                $result[$key] = $options[$key];
+            }
+        }
         $result['apis'] = array();
 
         foreach ($this->registry as $resource) {
@@ -215,15 +234,23 @@ class Swagger
 
     /**
      * Process a single code snippet.
+     *
      * @param string $contents PHP code.
      * @param string $context The original location of the contents.
      * @return Swagger
      */
-    public function examine($contents, $context = 'unknown')
+    public function examine($contents, $context = null)
     {
-        if (strpos($contents, '<?php') === false) {
-            throw new \Exception('No PHP code detected, T_OPEN_TAG("<?php") not found');
+        if ($context === null) {
+            $context = Context::detect(1);
+            if ($context->filename) {
+                $context->filename .= '(examined at line '.$context->line.')';
+            }
         }
+        if (strpos($contents, '<?php') === false) {
+            throw new \Exception('No PHP code detected, T_OPEN_TAG("<?php") not found in '.$context);
+        }
+
         $parser = new Parser($this->getProcessors());
         $parser->parseContents($contents, $context);
         $this->processParser($parser);
@@ -300,8 +327,8 @@ class Swagger
                         }
                     }
                 }
-                $models = $this->resolveModels($models);
-                foreach (array_unique($models) as $model) {
+                $models = array_unique($this->resolveModels($models));
+                foreach ($models as $model) {
                     $resource->models[$model] = $this->models[$model];
                 }
             }
@@ -474,9 +501,10 @@ class Swagger
      * @link https://github.com/wordnik/swagger-core/wiki/Datatypes
      *
      * @param string $type
+     * @param Context $context
      * @return void
      */
-    public static function checkDataType($type)
+    public static function checkDataType($type, $context)
     {
         $map = array(
             // primitive types
@@ -503,10 +531,10 @@ class Swagger
         );
         if (array_key_exists(strtolower($type), $map) && array_search($type, $map) === false) { // Invalid notation for a primitive?
             if (array_key_exists(strtolower($type), $mapFormats)) { //
-                Logger::notice('Invalid `type="'.$type.'"` use `type="'.$map[strtolower($type)].'",format="'.$mapFormats[strtolower($type)].'"` in '.Annotations\AbstractAnnotation::$context);
+                Logger::notice('Invalid `type="'.$type.'"` use `type="'.$map[strtolower($type)].'",format="'.$mapFormats[strtolower($type)].'"` in '.$context);
             } else {
                 // Don't automaticly correct the type, this creates the incentive to use consistent naming in the doc comments.
-                Logger::notice('Invalid `type="'.$type.'"` use `type="'.$map[strtolower($type)].'"` in '.Annotations\AbstractAnnotation::$context);
+                Logger::notice('Invalid `type="'.$type.'"` use `type="'.$map[strtolower($type)].'"` in '.$context);
             }
         }
     }
@@ -617,14 +645,18 @@ class Swagger
         return $this;
     }
 
+    /**
+     * @param Model $model
+     */
     protected function inheritProperties($model)
     {
-        if ($model->phpExtends === null) {
-            return; // model doesn't have a superclass (or is already resolved)
+        $context = $model->_context;
+        if ($context->is('class') && $context->extends === null && $context->propertiesInherited !== null) {
+            return; // model doesn't have a superclass or is already resolved
         }
         $parent = false;
         foreach ($this->models as $super) {
-            if ($model->phpExtends === $super->phpClass) {
+            if ($context->extends === $super->_context->class) {
                 $parent = $super;
                 break;
             }
@@ -632,7 +664,7 @@ class Swagger
         if ($parent === false) {
             return; // Superclass not discoved or doesn't have annotations
         }
-        $model->phpExtends = null;
+        $context->propertiesInherited = true;
         $this->inheritProperties($parent);
         foreach ($parent->properties as $parentProperty) {
             $exists = false;
@@ -646,7 +678,11 @@ class Swagger
                 $model->properties[] = $parentProperty; // Inherit property
             }
         }
-        $model->validate(); // update Model->required
+        if (is_array($parent->required)) {
+             // Merge required properties
+            $model->required = array_unique(array_merge($parent->required, (is_array($model->required) ? $model->required : array())));
+            sort($model->required);
+        }
     }
 
     /**
@@ -677,14 +713,11 @@ class Swagger
     public static function getDefaultProcessors()
     {
         return array(
-            // has to be the first one
-            new Processors\PartialIdProcessor(),
-            // other processors
+            new Processors\ResourceProcessor(),
             new Processors\ApiProcessor(),
             new Processors\ModelProcessor(),
-            new Processors\PartialProcessor(),
             new Processors\PropertyProcessor(),
-            new Processors\ResourceProcessor(),
+            new Processors\NestingProcessor(),
         );
     }
 

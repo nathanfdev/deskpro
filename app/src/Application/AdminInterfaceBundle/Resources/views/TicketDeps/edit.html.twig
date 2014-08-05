@@ -5,12 +5,12 @@
 			<nav class="dp-blocktabs">
 				<ul>
 					<li class="active" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
-					<li class="pipe">|</li>
-					<li dp-tab-btn="main.perms"><a href="#"><i class="fa fa-users"></i> {{ phrase('agent.general.permissions') }}</a></li>
-					<li class="pipe">|</li>
-					<li dp-tab-btn="main.layout"><a href="#"><i class="fa fa-columns"></i> {{ phrase('adm.general.layout') }}</a></li>
-					<li class="pipe">|</li>
-					<li dp-tab-btn="main.website_embeds"><a href="#"><i class="fa fa-code"></i> {{ phrase('adm.general.website_embed') }}</a></li>
+					<li ng-if="!EditCtrl.dep.has_children" class="pipe">|</li>
+					<li ng-if="!EditCtrl.dep.has_children" dp-tab-btn="main.perms"><a href="#"><i class="fa fa-users"></i> {{ phrase('agent.general.permissions') }}</a></li>
+					<li ng-if="!EditCtrl.dep.has_children" class="pipe">|</li>
+					<li ng-if="!EditCtrl.dep.has_children" dp-tab-btn="main.layout"><a href="#"><i class="fa fa-columns"></i> {{ phrase('adm.general.layout') }}</a></li>
+					<li ng-if="!EditCtrl.dep.has_children" class="pipe">|</li>
+					<li ng-if="!EditCtrl.dep.has_children" dp-tab-btn="main.website_embeds"><a href="#"><i class="fa fa-code"></i> {{ phrase('adm.general.website_embed') }}</a></li>
 				</ul>
 			</nav>
 			<article class="form-horizontal dp-form">
@@ -18,15 +18,15 @@
 					{% include 'AdminInterfaceBundle:TicketDeps:edit-props.html.twig' %}
 				</div>
 
-				<div dp-tab-body="main.perms">
+				<div dp-tab-body="main.perms" ng-if="!EditCtrl.dep.has_children">
 					{% include 'AdminInterfaceBundle:TicketDeps:edit-perms.html.twig' %}
 				</div>
 
-				<div dp-tab-body="main.layout">
+				<div dp-tab-body="main.layout" ng-if="!EditCtrl.dep.has_children">
 					{% include 'AdminInterfaceBundle:TicketDeps:edit-layout.html.twig' %}
 				</div>
 
-				<div dp-tab-body="main.website_embeds">
+				<div dp-tab-body="main.website_embeds" ng-if="!EditCtrl.dep.has_children">
 					{% include 'AdminInterfaceBundle:TicketDeps:edit-website_embeds.html.twig' %}
 				</div>
 			</article>

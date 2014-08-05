@@ -47,7 +47,8 @@ class SettingsController extends AbstractController
 
 	public function profileAction()
 	{
-		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
+		$defaultCountryCode = $this->getContainer()->get('deskpro.core.settings')->get('core.default_country_code');
+		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person, $defaultCountryCode);
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 

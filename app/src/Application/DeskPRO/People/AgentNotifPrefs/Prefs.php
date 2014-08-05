@@ -48,6 +48,16 @@ class Prefs
 	private $app_subs            = array();
 	private $email_mention_mode  = self::ALWAYS_SEND;
 
+	static public $apps = array(
+		'chat' => 1,
+		'task' => 1,
+		'twitter' => 1,
+		'feedback' => 1,
+		'publish' => 1,
+		'crm' => 1,
+		'account' => 1,
+	);
+
 	public function __construct()
 	{
 		// Init all prefs to off
@@ -59,15 +69,7 @@ class Prefs
 			self::TYPE_ALERT => array_fill_keys($this->getFilterNotifyPrefNames(self::TYPE_ALERT), false),
 		);
 
-		foreach (array(
-			'chat',
-			'task',
-			'twitter',
-			'feedback',
-			'publish',
-			'crm',
-			'account'
-		) as $app_name) {
+		foreach (self::$apps as $app_name => $bool) {
 			$method = 'get' . ucfirst($app_name) . 'NotifyTypes';
 
 			$this->app_subs[$app_name] = array(

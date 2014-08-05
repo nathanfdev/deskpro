@@ -101,7 +101,7 @@ if [ -e /var/log/apache2/access.log ] ; then
 	echo "[System] /var/log/apache2/access.log"
 	echo "======================================================="
 	echo ""
-	cat /var/log/apache2/access.log
+	sudo cat /var/log/apache2/access.log
 fi
 
 if [ -e /var/log/apache2/error.log ] ; then
@@ -109,5 +109,5 @@ if [ -e /var/log/apache2/error.log ] ; then
 	echo "[System] /var/log/apache2/error.log"
 	echo "======================================================="
 	echo ""
-	cat /var/log/apache2/error.log
+	sudo cat /var/log/apache2/error.log
 fi

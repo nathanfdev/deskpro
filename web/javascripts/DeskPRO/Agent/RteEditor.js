@@ -112,7 +112,15 @@ DeskPRO.Agent.RteEditor = {
 		api.$editor.addClass('unreset');
 
 		editor.bind('keydown', function(ev) {
-			ev.stopPropagation();
+
+			// - If no control keys are being pressed, prevent
+			// propagation of key events so they dont cause
+			// letter keyboard shortcuts (e.g., 't' for new ticket)
+			// - But allow other key combos to propagate so other combos,
+			// like close tab, still work
+			if (!(ev.metaKey || ev.ctrlKey || ev.altKey)) {
+				ev.stopPropagation();
+			}
 
 			if (ev.metaKey && !ev.ctrlKey) { // pressing "cmd" on a mac
 				var sel;
@@ -120,7 +128,7 @@ DeskPRO.Agent.RteEditor = {
 					var adjustmentType = ev.shiftKey ? "extend" : "move";
 
 					switch (ev.keyCode) {
-					case 39: // right - act like "end" in windows
+						case 39: // right - act like "end" in windows
 							sel.modify(adjustmentType, "right", "lineboundary");
 							ev.preventDefault();
 							break;
@@ -237,35 +245,58 @@ DeskPRO.Agent.RteEditor = {
 			dropTarget.bind('drop', function(event) {
 				event.preventDefault();
 
-				var file = event.originalEvent.dataTransfer.files[0];
-				if (!file) {
-					return;
+				var auth = event.originalEvent.dataTransfer.getData('DpAuthId');
+				if (auth) {
+					event.originalEvent.__DpIsRteHandling = true;
+					$.ajax({
+						url: api.opts.imageUpload,
+						dataType: 'html',
+						data: { copy_blob: auth },
+						cache: false,
+						type: 'POST',
+						success: $.proxy(function (data) {
+							var json = $.parseJSON(data);
+
+							if (typeof json.error == 'undefined') {
+								$.proxy(api.imageUploadCallback, api)(json);
+							} else {
+								$.proxy(api.opts.imageUploadErrorCallback, api)(api, json);
+								$.proxy(api.imageUploadCallback, api)(false);
+							}
+
+						}, api)
+					});
+				} else {
+					var file = event.originalEvent.dataTransfer.files[0];
+					if (!file) {
+						return;
+					}
+					var fd = new FormData();
+
+					// append file data
+					fd.append('file', file);
+
+					$.ajax({
+						url: api.opts.imageUpload,
+						dataType: 'html',
+						data: fd,
+						cache: false,
+						contentType: false,
+						processData: false,
+						type: 'POST',
+						success: $.proxy(function (data) {
+							var json = $.parseJSON(data);
+
+							if (typeof json.error == 'undefined') {
+								$.proxy(api.imageUploadCallback, api)(json);
+							} else {
+								$.proxy(api.opts.imageUploadErrorCallback, api)(api, json);
+								$.proxy(api.imageUploadCallback, api)(false);
+							}
+
+						}, api)
+					});
 				}
-				var fd = new FormData();
-
-				// append file data
-				fd.append('file', file);
-
-				$.ajax({
-					url: api.opts.imageUpload,
-					dataType: 'html',
-					data: fd,
-					cache: false,
-					contentType: false,
-					processData: false,
-					type: 'POST',
-					success: $.proxy(function(data) {
-						var json = $.parseJSON(data);
-
-						if (typeof json.error == 'undefined') {
-							$.proxy(api.imageUploadCallback, api)(json);
-						} else {
-							$.proxy(api.opts.imageUploadErrorCallback, api)(api, json);
-							$.proxy(api.imageUploadCallback, api)(false);
-						}
-
-					}, api)
-				});
 			});
 
 			if (dropZone.length) {

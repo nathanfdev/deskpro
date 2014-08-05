@@ -50,6 +50,12 @@ class EmailAccountManagerService
 
 		$manager = new EmailAccountManager($repos, $tr_factory, $fetcher_factory);
 
+		$default_addr = $container->getSetting('core.default_from_email');
+		$account = $manager->findAccountForEmailAddress($default_addr, 'is_enabled | with_transport');
+		if ($account) {
+			$manager->setDefaultOutAccount($account);
+		}
+
 		return $manager;
 	}
 }

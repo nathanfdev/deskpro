@@ -136,14 +136,14 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 			$filename = 'file';
 		}
 
-		if ($filesize && !ctype_digit($filesize)) {
+		if ($filesize && !is_numeric($filesize)) {
 			$filesize = strtolower($filesize);
 			$filesize = str_replace(array('bytes', 'kilobytes', 'megabytes', 'gigabytes'), array('b', 'kb', 'mb', 'gb'), $filesize);
 			foreach (array('k', 'm', 'g') as $l) {
 				$filesize = preg_replace("#\b$l\b#", "{$l}b", $filesize);
 			}
 
-			$num = preg_replace('#[^0-9]#', '', $filesize);
+			$num = preg_replace('#[^0-9\.]#', '', $filesize);
 			if (strpos($filesize, 'tb') !== false) {
 				$filesize = $num * 1099511627776;
 			} elseif (strpos($filesize, 'gb') !== false) {

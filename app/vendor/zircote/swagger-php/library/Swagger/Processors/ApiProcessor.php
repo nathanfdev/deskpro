@@ -3,7 +3,7 @@ namespace Swagger\Processors;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ namespace Swagger\Processors;
  * @category   Swagger
  * @package    Swagger
  */
+
+use Swagger\Annotations\Api;
 use Swagger\Logger;
-use Swagger\Parser;
-use Swagger\Annotations;
-use Swagger\Contexts\MethodContext;
 
 /**
  * ApiProcessor
@@ -32,37 +31,34 @@ class ApiProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports($annotation, $context)
+    public function process($annotation, $context)
     {
-        return $annotation instanceof \Swagger\Annotations\Api;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function process(Parser $parser, $annotation, $context)
-    {
-        if (!$annotation->hasPartialId()) {
-            if ($resource = $parser->getCurrentResource()) {
+        if (($annotation instanceof Api) === false) {
+            return;
+        }
+        if ($annotation->hasPartialId() === false) {
+            $resource = $context->resource;
+            if ($resource) {
                 $resource->apis[] = $annotation;
             } else {
-                Logger::notice('Unexpected "' . $annotation->identity() . '", should be inside or after a "Resource" declaration in ' . Annotations\AbstractAnnotation::$context);
+                Logger::notice('Unexpected "' . $annotation->identity() . '", should be inside or after @SWG\Resource() in ' . $context);
             }
         }
 
-        if ($context instanceof MethodContext) {
-            $resource = $parser->getCurrentResource();
+
+        if ($context->is('method')) {
+            $resource = $context->resource;
 
             if ($annotation->path === null && $resource && $resource->resourcePath) { // No path given?
                 // Assume method (without Action suffix) on top the resourcePath
-                $annotation->path = $resource->resourcePath . '/' . preg_replace('/Action$/i', '', $context->getMethod());
+                $annotation->path = $resource->resourcePath . '/' . preg_replace('/Action$/i', '', $context->method);
             }
             if ($annotation->description === null) {
                 $annotation->description = $context->extractDescription();
             }
             foreach ($annotation->operations as $i => $operation) {
                 if ($operation->nickname === null) {
-                    $operation->nickname = $context->getMethod();
+                    $operation->nickname = $context->method;
                     if (count($annotation->operations) > 1) {
                         $operation->nickname .= '_' . $i;
                     }

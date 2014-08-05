@@ -34,7 +34,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			return promise;
 
 		startDelete: (label) ->
-			label.delete_mode = true
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('Labels/delete-modal.html'),
 				controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
@@ -43,7 +42,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 					$scope.dismiss = ->
 						$modalInstance.dismiss();
-						label.delete_mode = false
 				]
 			});
 
@@ -52,14 +50,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			)
 
 			inst.result.catch(=>
-				label.delete_mode = false
+
 			)
 
 		deleteLabel: (label) ->
-			@LabelManager.removeLabel(@api_endpoint, label.label)
-			@Api.sendDelete(@api_endpoint, {label: label.label}).success(=>
-				if @$state.current.name== "#{@ng_route}.edit" and @$state.params.label==label.label
+			@LabelManager.removeLabel(@api_endpoint, label)
+			@Api.sendDelete(@api_endpoint, {label: label}).success(=>
+				if @$state.current.name== "#{@ng_route}.edit" and @$state.params.label==label
 					@$state.go(@ng_route)
 			).finally(=>
-				label.delete_mode = false
+
 			)

@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\ORM\StateChange\ChangeEmailLog;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
+use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -59,7 +60,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 				$from_account_id = $from_account;
 				try {
 					$from_account = $this->getContainer()->getEmailAccountManager()->getAccount($from_account_id);
-				} catch (\InvalidArgumentException $e) {
+				} catch (\OutOfBoundsException $e) {
 					$context->getLogger()->debug("[AbstractEmailAction] Invalid account: $from_account_id");
 					throw new \InvalidArgumentException('invalid_account');
 				}
@@ -158,6 +159,12 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 		// In user mode, never show notes
 		if ($mode == 'user') {
 			$new_replies = array_filter($new_replies, function($r) { return !$r->is_agent_note; });
+			$ticket_logs = null;
+
+		// Agent mode - include ticket logs
+		} else {
+			$ticketlog_generator = new TicketLogGenerator($ticket, $context);
+			$ticket_logs = $ticketlog_generator->getLogEntries();
 		}
 
 		#------------------------------
@@ -174,7 +181,8 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 			'is_status_change'   => $state->hasChangedField('status'),
 			'action_performer'   => $context->getPersonContext(),
 			'new_message'        => Arrays::getLastItem($new_replies),
-			'new_messages'       => $new_replies
+			'new_messages'       => $new_replies,
+			'ticket_logs'        => $ticket_logs,
 		);
 
 		return $vars;
@@ -197,7 +205,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 			$ticket_email->getSentToEmail(),
 			$ticket_email->getSentWithCcs(),
 			$ticket_email->getFromName(),
-			$ticket_email->getFromEmailAccount()->address,
+			$ticket_email->getFromEmailAccount()->getUseEmailAddress(),
 			$ticket_email->getTemplateName()
 		);
 

@@ -107,7 +107,8 @@ class ProcessNew extends ProcessAbstract
 			null,
 			$this->ticket_email,
 			$this->cleaner,
-			array($this, 'replaceInlineAttachTokens')
+			array($this, 'replaceInlineAttachTokens'),
+			$this->getLogger()
 		);
 
 		$run_reply_cutter = $this->ticket_email->force_reply_cutter;
@@ -236,6 +237,8 @@ class ProcessNew extends ProcessAbstract
 			'email'
 		);
 
+		$executor_context->setEmailContext($this->reader);
+
 		if ($this->logger) {
 			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
 			$executor_context->getLogger()->pushHandler($orb_logger_adapter);
@@ -245,11 +248,23 @@ class ProcessNew extends ProcessAbstract
 		# Create the ticket
 		#------------------------------
 
+		if ($email_info->is_no_subject) {
+			$subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', array(), $use_lang);
+		} else {
+			$subject = $email_info->subject;
+		}
+
+		$subject = trim($subject);
+		if (!$subject) {
+			$subject = '(No Subject)';
+		}
+
 		$ticket = $this->getTicketManager()->createTicket();
-		$ticket->subject       = $email_info->subject;
-		$ticket->person        = $this->person;
-		$ticket->status        = 'awaiting_agent';
-		$ticket->email_account = $this->account;
+		$ticket->subject         = $subject;
+		$ticket->person          = $this->person;
+		$ticket->status          = 'awaiting_agent';
+		$ticket->email_account   = $this->account;
+		$ticket->creation_system = 'gatway.person';
 
 		// Set the proper email address on the ticket from the users account
 		if ($this->reader->getFromAddress()->email != $this->person->getPrimaryEmailAddress()) {
@@ -263,7 +278,8 @@ class ProcessNew extends ProcessAbstract
 		$ticket_message->person = $this->person;
 		$ticket_message->message_raw = $email_info->body_raw;
 		$ticket_message->setMessageHtml($email_info->body);
-		$ticket_message->withNewSubject = $email_info->subject;
+		$ticket_message->withNewSubject = $subject;
+		$ticket_message->creation_system = 'gatway.person';
 
 		if ($this->reader->getProperty('email_source')) {
 			$ticket_message->email_source = $this->reader->getProperty('email_source');
@@ -296,6 +312,18 @@ class ProcessNew extends ProcessAbstract
 				$this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
 				return $dupe_message;
 			}
+		}
+
+		#------------------------------
+		# Reply actions
+		#------------------------------
+
+		if ($this->ticket_email->reply_actions) {
+			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+			$reply_actions_context = new ReplyActionsContext();
+			$reply_actions_context->ticket = $ticket;
+			$reply_actions_context->message = $ticket_message;
+			$reply_actions_apply->apply($reply_actions_context);
 		}
 
 		#------------------------------

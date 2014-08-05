@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\TicketProcLog;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
+use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\TicketSaveActions;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog\Handler\StreamHandler;
@@ -100,13 +101,13 @@ class TicketManager
 		$this->post_save_actions = array();
 
 		$this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
-		$this->save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
 		$this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
 		$this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization'));
 
 		$this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
+		$this->post_save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
 		$this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
-		$this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm());
+		$this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
 		$this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
 		$this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
 		$this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getEm(), $container->getTicketFilterChangeDetector());
@@ -255,6 +256,7 @@ class TicketManager
 		// sent to update agent filters, but we dont want the usual triggers etc to run.
 		// This is usually done when the ticket is being deleted.
 		$is_noop = $context->getEventType() == 'noop';
+		$is_trivial_change = $ticket->getStateChangeRecorder()->isTrivialChangeSet();
 
 		$time_start = microtime(true);
 		$context->getLogger()->info(sprintf("########## START SAVE TICKET -- %s ##########", $ticket->id ? $ticket->id : 'newticket'));
@@ -263,6 +265,11 @@ class TicketManager
 		$context->getLogger()->debug(sprintf("EventMethod: %s", $context->getEventMethod()));
 		$context->getLogger()->debug(sprintf("EventPerformer: %s", $context->getEventPerformer()));
 		$context->getLogger()->debug(sprintf("StateChanges: %s", implode(', ', $ticket->getStateChangeRecorder()->getChangedFields())));
+
+		if ($is_trivial_change) {
+			$context->getLogger()->debug("is_trivial_change = true");
+			$is_noop = true;
+		}
 
 		if ($context->getPersonContext()) {
 			$context->getLogger()->debug(sprintf(
@@ -283,7 +290,16 @@ class TicketManager
 
 		foreach ($this->save_actions as $action) {
 			$context->getLogger()->info(sprintf("[TicketManager:saveaction] %s", Util::getBaseClassname($action)));
-			$action->processTicket($ticket, $context);
+			if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
+				try{
+					$action->processTicket($ticket, $context);
+				} catch (\Exception $e) {
+					KernelErrorHandler::logException($e);
+					$context->getLogger()->error(sprintf("[%s] Exception: %s", Util::getBaseClassname($action), $e->getMessage()));
+				}
+			} else {
+				$action->processTicket($ticket, $context);
+			}
 		}
 
 		if (!$is_noop && !$ticket->ticket_hash) {
@@ -295,7 +311,16 @@ class TicketManager
 
 		foreach ($this->post_save_actions as $action) {
 			$context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
-			$action->processTicket($ticket, $context);
+			if ($action instanceof TicketSaveActions\ErrorCheckedInterface) {
+				try{
+					$action->processTicket($ticket, $context);
+				} catch (\Exception $e) {
+					KernelErrorHandler::logException($e);
+					$context->getLogger()->error(sprintf("[%s] Exception: %s", Util::getBaseClassname($action), $e->getMessage()));
+				}
+			} else {
+				$action->processTicket($ticket, $context);
+			}
 			$this->em->persist($ticket);
 			$this->em->flush();
 		}
@@ -311,19 +336,31 @@ class TicketManager
 			$agent_alert_action->applyAction($ticket, $context);
 		}
 
-		$this->db->insert('client_messages', array(
-			'channel' => 'agent.ticket-updated',
-			'auth' => Strings::random(15, Strings::CHARS_KEY),
-			'date_created' => date('Y-m-d H:i:s'),
-			'data' => serialize(array(
-				'ticket_id'      => $ticket->getId(),
-				'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
-				'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
-			))
-		));
+		if (!$is_trivial_change) {
+			$this->db->insert('client_messages', array(
+				'channel'      => 'agent.ticket-updated',
+				'auth'         => Strings::random(15, Strings::CHARS_KEY),
+				'date_created' => date('Y-m-d H:i:s'),
+				'data' => serialize(array(
+					'ticket_id'      => $ticket->getId(),
+					'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
+					'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
+				))
+			));
+		}
 
-		$search_updater = new TicketSearchUpdater($this->db, $ticket);
-		$search_updater->update();
+		if (!$is_noop) {
+			$search_updater = new TicketSearchUpdater($this->db, $ticket);
+			\DpShutdown::add(
+				function () use ($search_updater) {
+					try {
+						$search_updater->update();
+					} catch (\Exception $e) {
+						KernelErrorHandler::logException($e);
+					}
+				}, null, 'db_done_trans_commit'
+			);
+		}
 
 		$this->em->flush();
 
@@ -333,25 +370,32 @@ class TicketManager
 
 		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
 
-		$ticket->resetStateChangeRecorder();
-		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
-
 		if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
 			$log_text = $context->getLogger()->getSavedMessages();
 			if ($log_text) {
 				try {
 					$blob = $this->blob_storage->createBlobRecordFromString($log_text, 'ticket-manager.' . date('Y-m-d_H-i-s') . '.log', 'plain/text');
-					$proc_log = new TicketProcLog();
-					$proc_log->ticket = $ticket;
-					$proc_log->blob = $blob;
-
-					$this->em->persist($proc_log);
-					$this->em->flush();
 				} catch (\Exception $e) {
+					$blob = null;
 					KernelErrorHandler::logException($e);
+				}
+
+				if ($blob) {
+					try {
+						$this->db->insert('ticket_proc_log', array(
+							'ticket_id'    => $ticket->id,
+							'blob_id'      => $blob->id,
+							'date_created' => date('Y-m-d H:i:s')
+						));
+					} catch (\Exception $e) {
+						KernelErrorHandler::logException($e);
+					}
 				}
 			}
 		}
+
+		$ticket->resetStateChangeRecorder();
+		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
 	}
 
 

@@ -35,10 +35,10 @@
 namespace deskpro_us_active_directory;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 use deskpro_us_active_directory\Usersource\AppOptionsMapper;
 
-class InstallerHandler implements InstallerHandlerInterface
+class InstallerHandler extends AbstractInstallerHandler
 {
 	/**
 	 * {@inheritDoc}

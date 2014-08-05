@@ -25,18 +25,22 @@
 	</li>
 {% endmacro %}
 {% block breadcrumb %}
-	You are here: <li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.title') }}</a></li>
+	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news') }}">{{ phrase('user.news.title') }}</a></li>
 	{% if category %}
 		{% for cat in category.getTreeParents() %}
 			<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></li>
 		{% endfor %}
 		<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_news', {'slug': category.url_slug}) }}">{{ category.title }}</a></li>
 	{% endif %}
-        {% if category %}
-                <li style="float: right; margin: -16px 0px 0px;"><a title="{{ app.getSetting('core.deskpro_name') }}: {{ category.full_title }}" href="{{ url('user_news', {slug: category.url_slug, _format: 'rss'}) }}" target="_blank"><i class="icon-rss"></i></a></li>
-        {% else %}
-                <li style="float: right; margin: -16px 0px 0px;"><a title="{{ app.getSetting('core.deskpro_name') }}" href="{{ url('user_news_home', {_format: 'rss'}) }}" target="_blank"><i class="icon-rss"></i></a></li>
-        {% endif %}
+{% endblock %}
+{% block breadcrumb_pre %}
+	<div style="position:absolute; top: 6px; right: 8px; z-index: 10;">
+		{% if category %}
+			<a title="{{ app.getSetting('core.deskpro_name') }}: {{ category.full_title }}" href="{{ url('user_news', {slug: category.url_slug, _format: 'rss'}) }}" target="_blank"><img src="{{ asset('images/feed.png') }}" alt="RSS Feed" /></a>
+		{% else %}
+			<a title="{{ app.getSetting('core.deskpro_name') }}" href="{{ url('user_news_home', {_format: 'rss'}) }}" target="_blank"><img src="{{ asset('images/feed.png') }}" alt="RSS Feed" /></a>
+		{% endif %}
+	</div>
 {% endblock %}
 {% block page_title %}
 	{{ phrase('user.news.title') }}

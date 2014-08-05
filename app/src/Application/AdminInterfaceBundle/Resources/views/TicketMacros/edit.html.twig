@@ -45,6 +45,23 @@
 						<div class="panel-heading">
 							<h3>
 								<span>Actions</span>
+							</h3>
+						</div>
+						<div class="alert alert-info">
+							<p ng-if="EditCtrl.form.person_id == me_id || EditCtrl.form.is_global">
+								You need to go to the Agent Interface to edit the actions of this macro.
+							</p>
+							<p ng-if="!(EditCtrl.form.person_id == me_id || EditCtrl.form.is_global)">
+								This macro belongs to {{ ng_var('for_agent_name') }}. They can edit macro actions from the Agent Interface.
+							</p>
+						</div>
+					</div>
+
+					{#
+					<div class="panel panel-innertable">
+						<div class="panel-heading">
+							<h3>
+								<span>Actions</span>
 								<button dp-inhelp-btn="admin.ticket_macros.edit.actions"></button>
 							</h3>
 						</div>
@@ -57,7 +74,7 @@
 						<div class="dp-ob-set">
 							<div class="dp-ob-setrow">
 								<header>
-									The followings actions will run:
+									The following actions will run:
 								</header>
 								<article>
 									<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="EditCtrl.form.actions" options="{tag_first: '', tag_after: 'then'}" option-types="EditCtrl.actionOptionTypes">
@@ -67,6 +84,7 @@
 							</div>
 						</div>
 					</div>
+					#}
 				</div>
 			</article>
 
