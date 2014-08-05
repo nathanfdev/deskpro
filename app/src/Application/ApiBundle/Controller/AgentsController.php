@@ -116,11 +116,6 @@ class AgentsController extends AbstractController implements ProtectedController
 
 	protected function getFullAgentData($id)
 	{
-		return $this->createApiResponse($this->getAgent($id));
-	}
-
-	protected function getAgent($id)
-	{
 		$agent = $this->container->getAgentData()->get($id);
 
 		if (!$agent) {
@@ -159,7 +154,6 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		return $this->createApiResponse($data);
 	}
-
 
 	####################################################################################################################
 	# get-deleted-agent
