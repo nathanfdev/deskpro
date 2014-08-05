@@ -249,12 +249,14 @@ class AgentsController extends AbstractController implements ProtectedController
 			);
 		}
 
-		$phone_number = $agent_postdata['primary_phone_number_text'];
-		if (!PhoneNumbers::looksEmpty($phone_number)) {
-			if (!PhoneNumbers::isValid($phone_number)) {
-				return $this->createApiErrorInfoResponse('invalid_phone_number',
-					'Invalid phone number format.',
-					array( 'primary_phone_number_text' => $phone_number ));
+		if (isset($agent_postdata['primary_phone_number_text'])) {
+			$phone_number = $agent_postdata['primary_phone_number_text'];
+			if (!PhoneNumbers::looksEmpty($phone_number)) {
+				if (!PhoneNumbers::isValid($phone_number)) {
+					return $this->createApiErrorInfoResponse('invalid_phone_number',
+						'Invalid phone number format.',
+						array( 'primary_phone_number_text' => $phone_number ));
+				}
 			}
 		}
 
