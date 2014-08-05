@@ -29,64 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class Cache extends AbstractEntityRepository
+class Build1406826558 extends AbstractBuild
 {
-	public function load($id)
+	public function run()
 	{
-//		return false; ???
-		$data = App::getDb()->fetchColumn("SELECT data FROM cache WHERE id = ?", array($id));
-
-		if (!$data) {
-			return false;
-		}
-
-		$data = @unserialize($data);
-
-		if (isset($data['VALUE'])) {
-			return $data['VALUE'];
-		}
-
-		return $data;
-	}
-
-	public function save($id, $data, $lifetime = null)
-	{
-		if (!is_array($data)) {
-			$data = array('VALUE' => $data);
-		}
-
-		$data = serialize($data);
-
-		$expire = null;
-		if ($lifetime) {
-			$expire = date('Y-m-d H:i:s', time()+$lifetime);
-		}
-
-		App::getDb()->executeUpdate(
-			"REPLACE INTO cache SET id = ?, data = ?, date_expire = ?", array(
-			$id, $data, $expire
-		));
-
-		return true;
-	}
-
-	public function delete($id)
-	{
-		return App::getDb()->executeUpdate("DELETE FROM cache WHERE id LIKE ?", array($id . '%'));
-	}
-
-	/**
-	 * Clean up all expired cache entries
-	 */
-	public function cleanExpired()
-	{
-		return App::getDb()->executeUpdate("DELETE FROM cache WHERE date_expire < ?", array(date('Y-m-d H:i:s')));
+		$this->out("Add jira_issues.last_synced");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD last_synced INT NOT NULL DEFAULT 0");
 	}
 }

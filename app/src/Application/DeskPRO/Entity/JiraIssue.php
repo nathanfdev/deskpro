@@ -56,13 +56,13 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->created = time();
+		$this->lastSynced = $this->created = time();
 	}
 	
 	public function addComment(JiraIssueComment $comment)
 	{
 		$this->comments->add($comment);
-		
+
 		$comment->issue	= $this;
 	}
 
@@ -89,6 +89,7 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'issue', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'issue_id', ));
 		$metadata->mapField(array( 'fieldName' => 'created', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created', ));
+		$metadata->mapField(array( 'fieldName' => 'lastSynced', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'last_synced', ));
 		
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		

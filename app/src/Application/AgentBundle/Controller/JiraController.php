@@ -9,6 +9,8 @@ namespace Application\AgentBundle\Controller;
  */
 class JiraController extends AbstractController
 {
+	protected $meta;
+
 	public function preAction($action, $arguments = null)
 	{
 		if (!$this->settings->get('core.apps_jira.enabled')) {
@@ -35,20 +37,13 @@ class JiraController extends AbstractController
 		if ('POST' === $this->request->getMethod()) {
 			return $this->_processPost($ticket);
 		}
-		
-		$service = $this->_getService();
-		
-		$em = $this->em;
-		
-		$repo = $em->getRepository('Application\DeskPRO\Entity\JiraIssue');
-				
-		$meta = $service->getCreateMeta();
 
-		// Invalid jira service, give a 404
-		if (empty($message) || !is_array($meta)) {
-			throw $this->createNotFoundException();
-		}
-		
+		$em = $this->em;
+
+		$repo = $em->getRepository('Application\DeskPRO\Entity\JiraIssue');
+
+		$meta = $this->getMeta();
+
 		$projects = array();
 		
 		foreach ($meta[$meta['expand']] as $projectParams) {
@@ -99,7 +94,7 @@ class JiraController extends AbstractController
 		$service = new \Orb\Jira\Service($baseUrl, array(
 			'username'	=> $username,
 			'password'	=> $password,
-			'debug'		=> DP_DEBUG
+			'debug'		=> true
 		), $this->em);
 		
 		return $service;
@@ -129,32 +124,119 @@ class JiraController extends AbstractController
 	
 	protected function _lookupAssignee($projectKey)
 	{
-		$service = $this->_getService();
-		
-		$response = $service->lookupAssignees($projectKey);
-		
-		foreach ($response as &$assignee) {
-			$assignee['avatarUrls']['xsmall']	= $assignee['avatarUrls']['16x16'];
-			$assignee['avatarUrls']['small']	= $assignee['avatarUrls']['24x24'];
-			$assignee['avatarUrls']['medium']	= $assignee['avatarUrls']['32x32'];
+		// init memory
+		$meta = $this->getMeta($projectKey);
+
+		if( ! isset($meta['assignee']) )
+		{
+			$service = $this->_getService();
+			$meta['assignee'] = array();
+
+			foreach($service->lookupAssignees($projectKey) as $assignee)
+			{
+				$assignee['avatarUrls']['xsmall']	= $assignee['avatarUrls']['16x16'];
+				$assignee['avatarUrls']['small']	= $assignee['avatarUrls']['24x24'];
+				$assignee['avatarUrls']['medium']	= $assignee['avatarUrls']['32x32'];
+				$meta['assignee'][$assignee['key']] = $assignee;
+			}
+
+			$this->meta['projects'][$projectKey] = $meta;
+			$this->saveMeta();
 		}
-		
-		return $response;
+
+
+		return $meta['assignee'];
 	}
-	
-	
+
+	/**
+	 * todo join with meta build (do not iterate issuetypes twice)
+	 * @param $projectKey
+	 * @return array
+	 */
 	protected function _lookupIssueType($projectKey)
 	{
-		$service = $this->_getService();
-		
-		return $service->lookupIssueType($projectKey);
+		// init memory
+		$meta = $this->getMeta($projectKey);
+
+		if( ! isset($meta['issuetypes']) )
+		{
+			$service = $this->_getService();
+			$meta['issuetypes'] = array();
+
+			foreach( $service->lookupIssueType($projectKey) as $issueType )
+			{
+				if( $issueType['subtask'] ) continue;
+				$meta['issuetypes'][$issueType['id']] = $issueType;
+			}
+
+			$this->meta['projects'][$projectKey] = $meta;
+			$this->saveMeta();
+		}
+
+		return $meta['issuetypes'];
 	}
 	
 	protected function _lookupPriorities($projectKey)
 	{
-		$service = $this->_getService();
-		
-		return $service->lookupPriorities($projectKey);
+		// init memory
+		$meta = $this->getMeta($projectKey);
+
+		if( ! isset($meta['priorities']) )
+		{
+			$meta['priorities'] = array();
+			$service = $this->_getService();
+			foreach( $service->lookupPriorities($projectKey) as $priority )
+				$meta['priorities'][$priority['id']] = $priority;
+
+			$this->meta['projects'][$projectKey] = $meta;
+			$this->saveMeta();
+		}
+
+		return $meta['priorities'];
+	}
+
+	protected function getMeta($projectKey = null)
+	{
+		/** @var \Application\DeskPRO\EntityRepository\Cache $cache */
+		$cache = $this->em->getRepository('DeskPRO:Cache');
+		$key = 'jira.meta';
+
+		// memory
+		if( $this->meta ) {
+			$meta = $this->meta;
+		// file
+		} else if( ! $meta = $cache->load($key) ) {
+			$meta = $this->_getService()->getCreateMeta();
+			$projects = array();
+			foreach( $meta['projects'] as $project )
+			{
+				$issues = array();
+				foreach( $project['issuetypes'] as $issueType )
+					$issues[$issueType['id']] = $issueType;
+
+				$project['issuetypes'] = $issues;
+				$projects[$project['key']] = $project;
+			}
+
+			$meta['projects'] = $projects;
+			$this->saveMeta($meta);
+		}
+
+		$this->meta = $meta;
+
+		if( null === $projectKey )
+			return $this->meta;
+
+		return isset($this->meta['projects'][$projectKey]) ? $this->meta['projects'][$projectKey] : null;
+	}
+
+	protected function saveMeta($meta = null)
+	{
+		$this->meta = $meta ?: $this->meta;
+		/** @var \Doctrine\Common\Cache\FilesystemCache $cache */
+		$cache = $this->em->getRepository('DeskPRO:Cache');
+		$key = 'jira.meta';
+		$cache->save($key, $this->meta, 86400);
 	}
 	
 	protected function _processPost(\Application\DeskPRO\Entity\Ticket $ticket)
@@ -225,6 +307,7 @@ class JiraController extends AbstractController
 	 */
 	protected function getTicketOr404($ticket_id, $check_perm = null)
 	{
+		// todo clean
 		$q = $this->em->createQuery("
 			SELECT t, person, person_primary_email, agent,
 				agent_team, language, department, product, category, workflow, priority,
@@ -297,22 +380,9 @@ class JiraController extends AbstractController
 		}
 		
 		$transformedIssues = array();
-
-		$remove = array();
-
+		
 		foreach ($jiraIssues as $issue) {
-			try {
-				$transformedIssues[] = $service->findIssue($issue->issue);
-			} catch (\Exception $e) {
-				// Removed from jira, delete from deskpro
-				$remove[] = $issue;
-			}
-		}
-
-		if ($remove) {
-			$jiraIssues = array_filter($jiraIssues, function($i) use ($remove) { return in_array($i, $remove); });
-			foreach ($remove as $i) $this->em->remove($i);
-			$this->em->flush();
+			$transformedIssues[] = $service->findIssue($issue->issue);
 		}
 		
 		return $this->render('AgentBundle:Jira:issues-table.html.twig', array(

@@ -48,6 +48,13 @@
 			"label": "Default Tags",
 			"description": "Enter tags to add by default when creating new JIRA tickets (optional).",
 			"native_only": true
+		},
+		{
+			"name": "jira_default_priority",
+			"type": "text",
+			"label": "Default Priority",
+			"description": "Enter priority to add by default when creating new JIRA tickets (optional).",
+			"native_only": true
 		}
 	]
 }
