@@ -55,7 +55,7 @@ class Build1400056713 extends AbstractBuild
 		$this->out("Upgrading email accounts...");
 
 		$gateways      = $db->fetchAllKeyed("SELECT * FROM email_gateways");
-		$gateway_addrs = $db->fetchAllGrouped("SELECT * FROM email_gateway_addresses ORDER BY run_order ASC", array(), 'email_gateway_id');
+		$gateway_addrs = $db->fetchAllGrouped("SELECT * FROM email_gateway_addresses ORDER BY run_order ASC, id ASC", array(), 'email_gateway_id');
 		$transports    = $db->fetchAllKeyed("SELECT * FROM email_transports");
 
 		// Save gateway address mapping needed when importing triggers
@@ -71,6 +71,7 @@ class Build1400056713 extends AbstractBuild
 		foreach ($gateways as $gateway) {
 			if ($gateway['gateway_type'] != 'tickets') {
 				$this->out("Skipping {$gateway['id']}: Must be ticket type");
+				continue;
 			}
 
 			if (!empty($gateway['linked_transport_id']) && isset($transports[$gateway['linked_transport_id']])) {
@@ -106,6 +107,12 @@ class Build1400056713 extends AbstractBuild
 			$tr_account->address = $default_tr_address;
 			$tr_account->is_enabled = true;
 			$tr_account->outgoing_account = $this->_getTransportConfig($default_tr);
+
+			// Cloud must mark the incoming settings as noop
+			if (defined('DPC_IS_CLOUD')) {
+				$tr_account->setAccountType(EmailAccount::TYPE_TICKETS);
+				$tr_account->incoming_account = new IncomingAccount\NoopConfig();
+			}
 
 			$addr_exists = Arrays::findValue($new_accounts, function($account) use ($tr_account) {
 				return $account->hasAddress($tr_account->address);
@@ -191,7 +198,7 @@ class Build1400056713 extends AbstractBuild
 
 			// directory was the type used by cloud accounts
 			case 'directory':
-				$null_config = new IncomingAccount\NullConfig();
+				$null_config = new IncomingAccount\NoopConfig();
 				$account->incoming_account = $null_config;
 				break;
 
@@ -220,6 +227,10 @@ class Build1400056713 extends AbstractBuild
 		if (isset($addrs[1])) {
 			array_shift($addrs);
 			$account->other_addresses = array_map(function($a) { return $a['match_pattern']; }, $addrs);
+		}
+
+		if (defined('DPC_IS_CLOUD') && $account->other_addresses && !empty($account->other_addresses[0])) {
+			$account->setOption('custom_email_address', $account->other_addresses[0]);
 		}
 
 		$account->is_enabled = (bool)$gateway['is_enabled'];

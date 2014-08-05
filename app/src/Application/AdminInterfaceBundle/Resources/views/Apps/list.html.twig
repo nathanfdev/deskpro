@@ -24,7 +24,7 @@
 		<ul class="dp-item-list dp-icon-list compact">
 			<li ng-repeat="app in ListCtrl.apps" dp-state-mark="apps.apps.instance.{{ ng_var('app.id') }}">
 				<aside>
-					<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}"><img src="{{ ng_var('app.package.icon_32') }}" alt="Icon" /></a>
+					<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}"><img ng-src="{{ ng_var('app.package.icon_32') }}" alt="Icon" /></a>
 				</aside>
 				<div class="content">
 					<h4>
@@ -44,7 +44,7 @@
 
 {% macro package_row() %}
 	<aside>
-		<a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><img src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
+		<a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><img ng-src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
 	</aside>
 	<div class="content">
 		<h4><a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><span class="title-text">{{ ng_var('package.title') }}</span></a></h4>

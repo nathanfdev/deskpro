@@ -566,7 +566,7 @@ class DpKernel extends AbstractKernel
 		}
 
 		// Offline setting applies to all but admin
-		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin' && DP_INTERFACE != 'billing') {
+		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin') {
 			return true;
 		}
 

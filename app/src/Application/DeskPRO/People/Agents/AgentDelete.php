@@ -150,6 +150,7 @@ class AgentDelete
 	public function softDelete()
 	{
 		$this->agent->is_deleted = true;
+		$this->agent->can_admin  = false; // to be safe
 
 		// Remove their permissions
 		$this->db->delete('department_permissions'     , array('person_id' => $this->agent->getId()));

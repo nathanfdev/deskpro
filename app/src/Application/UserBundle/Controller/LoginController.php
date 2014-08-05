@@ -39,6 +39,8 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -66,9 +68,27 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	protected function loginViaToken()
 	{
 		if (($token = $this->in->getString('tok')) && strpos($token, '-')) {
+
 			list($person_id, $login_token) = explode('-', $token, 2);
 			$person = $this->em->find('DeskPRO:Person', $person_id);
-			if ($person && $person->checkPassword($login_token)) {
+			if (!$person || !$person->checkPassword($login_token)) {
+				$person = null;
+			}
+
+			// If this is a brand new install, we could have an automatic login token to check
+			if (!$person) {
+				$first = Arrays::getFirstItem($this->container->getAgentData()->getAgents());
+				$install_time = $this->settings->get('core.install_timestamp');
+
+				if ($first && $install_time && $install_time > (time() - 3600)) {
+					$secret = sha1($first->secret_string . $first->salt);
+					if (Util::checkStaticSecurityToken($token, $secret)) {
+						$person = $first;
+					}
+				}
+			}
+
+			if ($person) {
 				$set_active = false;
 				if (!$person->date_last_login) {
 					$set_active = true;
@@ -107,10 +127,6 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	 */
 	public function indexAction()
 	{
-		if ($this->loginViaToken()) {
-			return $this->redirectRoute($this->route_prefix);
-		}
-
 		$return = $this->in->getStringFromGet('return');
 		if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
 			// Always be a path on the current domain,
@@ -118,7 +134,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
-		if ($this->session->getPerson()->getId()) {
+		if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute('user');
 		}
@@ -753,16 +769,23 @@ HTML;
 
 		$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
-		if (!$person) {
+		$is_invalid = false;
+		if ($person && $person->is_deleted) {
+			$is_invalid = true;
+		}
+
+		if (!$person || $is_invalid) {
 
 			// If no user was found in our database, then the account might not have
 			// been set up yet. For adapters that support it, we can still see if we
 			// can be helpful and redirect to another source they exist in
-			$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
-			foreach ($usersources as $us) {
-				$found = $us->findIdentityByInput($email);
-				if ($found && $us->lost_password_url) {
-					return $this->redirect($us->lost_password_url);
+			if (!$is_invalid) {
+				$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
+				foreach ($usersources as $us) {
+					$found = $us->findIdentityByInput($email);
+					if ($found && $us->lost_password_url) {
+						return $this->redirect($us->lost_password_url);
+					}
 				}
 			}
 
@@ -809,7 +832,7 @@ HTML;
 		// Admins cant reset their password, but we dont want to reveal to this unknown user that we're an admin
 		// Send an email instead
 		if (!defined('DPC_IS_CLOUD')) {
-			if ($person->can_admin) {
+			if ($person->can_admin && $person->is_agent && !$person->is_deleted) {
 				$vars = array(
 					'person' => $person,
 					'email' => $email

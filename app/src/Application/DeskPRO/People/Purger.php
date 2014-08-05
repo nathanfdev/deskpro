@@ -93,6 +93,27 @@ class Purger implements PersonContextInterface
 	 */
 	public function purgeTickets()
 	{
+		#------------------------------
+		# Clean up their messages
+		#------------------------------
+
+		// This fixes ticket messages becoming written by a null author
+		// when the original account is deleted but the ticket remains
+		// (e.g., the ticket would stay if it was reset to a new user)
+
+		$orig_author_line = "Originally written by: " . htmlspecialchars($this->person->getDisplayContact()) . "<br/><br/><br/>\n\n\n";
+
+		$this->db->executeUpdate("
+			UPDATE tickets_messages
+				JOIN tickets ON (tickets.id = tickets_messages.ticket_id)
+			SET tickets_messages.person_id = tickets.person_id, tickets_messages.message = CONCAT(?, tickets_messages.message)
+			WHERE tickets.person_id != ? AND tickets_messages.person_id = ?
+		", array($orig_author_line, $this->person->id, $this->person->id));
+
+		#------------------------------
+		# Fetch ticket IDs
+		#------------------------------
+
 		$ticket_ids = $this->db->fetchAllCol("
 			SELECT id FROM tickets WHERE person_id = ?
 		", array($this->person->getId()));

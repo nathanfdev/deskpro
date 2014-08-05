@@ -12,6 +12,4 @@ abstract class AbstractFilter implements FilterInterface
     {
         $this->person = $person;
     }
-
-    abstract public function getFilter();
 } 

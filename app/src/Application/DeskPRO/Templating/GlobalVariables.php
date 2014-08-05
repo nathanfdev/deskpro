@@ -88,8 +88,9 @@ class GlobalVariables extends BaseGlobalVariables
 
 		if ($group == 'user_style') {
 			if (defined('DPC_IS_CLOUD')) {
-				// Always use https URLs on cloud
-				$group_vars['static_path'] = 'https://' . DPC_SITE_DOMAIN . '/web';
+				// Always use https cloud.deskpro.com for css,
+				// it'll always work regardless of how you mess with URLs and ssl certs
+				$group_vars['static_path'] = 'https://cloud.deskpro.com/web' . DPC_SITE_BUILD_NUM;
 			} else {
 				// External blob storage means we need ot use a full URL for assets
 				if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {

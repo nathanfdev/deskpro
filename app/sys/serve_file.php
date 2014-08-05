@@ -90,6 +90,11 @@ class FilestorageLoader extends LoaderAbstract
 	 */
 	protected $error_mode = 'error';
 
+	/**
+	 * @var bool
+	 */
+	protected $local_mode = false;
+
 	public function runAction()
 	{
 		if (isset($_GET['debug'])) {
@@ -100,6 +105,14 @@ class FilestorageLoader extends LoaderAbstract
 			$pathinfo = $this->getPathInfo();
 
 			$this->addLogMessage("pathinfo: %s", $pathinfo);
+
+			// local URLs just disable redirection action on remote URLs (e.g., S3)
+			// Used to serve app assets where serving from a remote domain
+			// could cause same-origin policy errors
+			if (preg_match('#^/local/#', $pathinfo)) {
+				$this->local_mode = true;
+				$pathinfo = preg_replace('#^/local/#', '/', $pathinfo);
+			}
 
 			if (preg_match('#^/size/([0-9]+)/#', $pathinfo, $m)) {
 				$_GET['s'] = $m[1];
@@ -653,6 +666,12 @@ class FilestorageLoader extends LoaderAbstract
 				$mimetype = 'application/pdf';
 				break;
 
+			case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
+				$path = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
+				$filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';
+				$mimetype = 'application/zip';
+				break;
+
 			default:
 				if ($this->error_mode == 'exception') {
 					throw new \Exception("File not found. (300)", 400);
@@ -958,7 +977,7 @@ class FilestorageLoader extends LoaderAbstract
 		if (!empty($blob['file_url']) && $blob['file_url']) {
 			// Need to send through this controller if its a download
 			// request and the file is usually stored with an inline disposition
-			if (!empty($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'])) {
+			if ($this->local_mode || (!empty($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type']))) {
 				$this->sendHeaders($blob);
 				$fp = @fopen($blob['file_url'], 'r');
 				while (!@feof($fp)) {

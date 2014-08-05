@@ -51,9 +51,13 @@ class DataField extends CustomFieldAbstract
 
 		if ($this->usersource_id) {
 			$field->setOption('usersource_id', $this->usersource_id);
+		} else {
+			$field->setOption('usersource_id', null);
 		}
 		if ($this->field_name) {
 			$field->setOption('field_name', $this->field_name);
+		} else {
+			$field->setOption('field_name', null);
 		}
 	}
 }

@@ -3,7 +3,7 @@ namespace Swagger\Processors;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,30 +30,22 @@ class ModelProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports($annotation, $context)
+    public function process($annotation, $context)
     {
-        return $annotation instanceof \Swagger\Annotations\Model;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function process(Parser $parser, $annotation, $context)
-    {
-        if (!$annotation->hasPartialId()) {
-            $parser->appendModel($annotation);
+        if (($annotation instanceof \Swagger\Annotations\Model) === false) {
+            return;
         }
-
-        if ($context instanceof ClassContext) {
-            $annotation->phpClass = $context->getClass();
+        if ($annotation->hasPartialId() === false) {
+            $context->model = $annotation;
+        }
+        if ($context->is('class')) {
             if ($annotation->id === null) {
-                $annotation->id = basename(str_replace('\\', '/', $context->getClass()));
+                $annotation->id = basename(str_replace('\\', '/', $context->class));
             }
 
             if ($annotation->description === null) {
                 $annotation->description = $context->extractDescription();
             }
-            $annotation->phpExtends = $context->getExtends();
         }
     }
 }

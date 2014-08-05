@@ -129,28 +129,58 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 		if (!$uids) {
 			$uids[] = '0';
 		}
-		$uids = implode(',', $uids);
 
-		$raw = App::getDb()->fetchAll("
-			SELECT dp.app, dp.department_id
-			FROM department_permissions dp
-			LEFT JOIN usergroups AS ug ON (ug.id = dp.usergroup_id)
-			WHERE
-				(dp.person_id = ? OR (dp.usergroup_id IN ($uids) AND ug.is_agent_group = 1))
-				AND name = 'full'
-				AND value = 1
-		", array($this->person->id));
-
-		$this->_allowed_ids = array();
-		foreach ($raw as $r) {
-			if (!isset($this->_allowed_ids[$r['app']])) {
-				$this->_allowed_ids[$r['app']] = array();
+		$agent_groups = App::$container->getAgentGroups();
+		$allow_all = false;
+		foreach ($uids as $ugid) {
+			if ($agent_groups->groupExists($ugid)) {
+				$g = $agent_groups->getGroup($ugid);
+				if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+					$allow_all = true;
+					break;
+				}
 			}
-			$this->_allowed_ids[$r['app']][] = $r['department_id'];
+		}
 
-			$dep = App::getContainer()->getDataService('Department')->get($r['department_id']);
-			if ($dep && $dep->parent) {
-				$this->_allowed_ids[$r['app']][] = $dep->parent->getId();
+		if ($allow_all) {
+			$this->_allowed_ids = array();
+			foreach (array(App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()) as $coll) {
+				foreach ($coll as $d) {
+					$app = $d->is_tickets_enabled ? 'tickets' : 'chat';
+					if (!isset($this->_allowed_ids[$app])) {
+						$this->_allowed_ids[$app] = array();
+					}
+
+					$this->_allowed_ids[$app][] = $d->id;
+					if ($d && $d->parent) {
+						$this->_allowed_ids[$app][] = $d->parent->id;
+					}
+				}
+			}
+		} else {
+			$uids = implode(',', $uids);
+
+			$raw = App::getDb()->fetchAll("
+				SELECT dp.app, dp.department_id
+				FROM department_permissions dp
+				LEFT JOIN usergroups AS ug ON (ug.id = dp.usergroup_id)
+				WHERE
+					(dp.person_id = ? OR (dp.usergroup_id IN ($uids) AND ug.is_agent_group = 1))
+					AND name = 'full'
+					AND value = 1
+			", array($this->person->id));
+
+			$this->_allowed_ids = array();
+			foreach ($raw as $r) {
+				if (!isset($this->_allowed_ids[$r['app']])) {
+					$this->_allowed_ids[$r['app']] = array();
+				}
+				$this->_allowed_ids[$r['app']][] = $r['department_id'];
+
+				$dep = App::getContainer()->getDataService('Department')->get($r['department_id']);
+				if ($dep && $dep->parent) {
+					$this->_allowed_ids[$r['app']][] = $dep->parent->getId();
+				}
 			}
 		}
 

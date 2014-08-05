@@ -9,7 +9,7 @@ define ['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
 				to: '',
 				from: '',
 				subject: 'Test email',
-				message: 'This is a test. If you see this email in your inbox, your outgoing email account are correct.'
+				message: 'This is a test. If you see this email in your inbox, your outgoing email account settings are correct.'
 			}
 
 			@account = {

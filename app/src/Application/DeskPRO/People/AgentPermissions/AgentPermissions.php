@@ -85,6 +85,22 @@ class AgentPermissions
 
 
 	/**
+	 * @return Value\PermissionValueInterface[]
+	 */
+	public function getCollections()
+	{
+		return array(
+			$this->chat,
+			$this->general,
+			$this->org,
+			$this->people,
+			$this->publish,
+			$this->ticket,
+		);
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function toArray()

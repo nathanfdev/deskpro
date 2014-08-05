@@ -260,10 +260,11 @@ class ProcessNew extends ProcessAbstract
 		}
 
 		$ticket = $this->getTicketManager()->createTicket();
-		$ticket->subject       = $subject;
-		$ticket->person        = $this->person;
-		$ticket->status        = 'awaiting_agent';
-		$ticket->email_account = $this->account;
+		$ticket->subject         = $subject;
+		$ticket->person          = $this->person;
+		$ticket->status          = 'awaiting_agent';
+		$ticket->email_account   = $this->account;
+		$ticket->creation_system = 'gatway.person';
 
 		// Set the proper email address on the ticket from the users account
 		if ($this->reader->getFromAddress()->email != $this->person->getPrimaryEmailAddress()) {
@@ -278,6 +279,7 @@ class ProcessNew extends ProcessAbstract
 		$ticket_message->message_raw = $email_info->body_raw;
 		$ticket_message->setMessageHtml($email_info->body);
 		$ticket_message->withNewSubject = $subject;
+		$ticket_message->creation_system = 'gatway.person';
 
 		if ($this->reader->getProperty('email_source')) {
 			$ticket_message->email_source = $this->reader->getProperty('email_source');

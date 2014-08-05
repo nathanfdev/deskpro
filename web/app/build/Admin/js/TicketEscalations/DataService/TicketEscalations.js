@@ -30,6 +30,23 @@
 
 
       /*
+        	 * Save the enabled state of a esc
+        	 *
+        	 * @param {Integer} escId
+        	 * @param {bool} isEnabled
+        	 * @return {promise}
+       */
+
+      Admin_TicketFilters_DataService_TicketEscalations.prototype.saveEnabledStateById = function(escId, isEnabled) {
+        if (isEnabled) {
+          return this.Api.sendPost("/ticket_escalations/" + escId + "/enable");
+        } else {
+          return this.Api.sendPost("/ticket_escalations/" + escId + "/disable");
+        }
+      };
+
+
+      /*
         	 * Save order of escalations
         	 *
         	 * @param {Array} orders Array of IDs, in order

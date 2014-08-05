@@ -384,7 +384,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			this.startChat();
 		}
 
-		$('body').fileupload({
+		$('#dp_chat_message_upload').fileupload({
 			url: this.options.uploadTo,
 			dropZone: $(document),
 			autoUpload: true,
@@ -419,6 +419,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 			$('#uploading_list').hide().find('> ul').empty();
 		});
+
 		$('body').bind('fileuploadstart', function() {
 			$('#uploading_list').detach().appendTo($('#dp_chat_messages_pane')).show();
 			$('#dp_chat_messages_pane').scrollTop(10000);
@@ -426,6 +427,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		// Prevents default browser action of navigating to a dropped file
 		// if a drop target isnt configured yet (ie no tab open to accept a file)
+
 		$(document).bind('drop dragover', function (e) {
 			e.preventDefault();
 		});

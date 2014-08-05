@@ -168,8 +168,8 @@ class Build1400056733 extends AbstractBuild
 			$trigger = new TicketTrigger();
 			$trigger->email_account = $acc;
 			$trigger->event_trigger = 'newticket';
-			$trigger->by_agent_mode = array('api', 'web');
-			$trigger->by_user_mode  = array('api', 'form', 'portal', 'widget');
+			$trigger->by_agent_mode = array('email');
+			$trigger->by_user_mode  = array('email');
 			$trigger->title         = 'New Ticket';
 			$trigger->is_enabled    = true;
 			$trigger->run_order     = -100;

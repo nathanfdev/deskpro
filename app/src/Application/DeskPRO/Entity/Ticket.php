@@ -43,8 +43,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Orb\Util\WorkHoursSet;
+use Orb\Util\WorkHoursSetAll;
 
 /**
  * Class Ticket
@@ -291,7 +295,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $creation_system;
+	protected $creation_system = 'unknown';
 
 	/**
 	 * Optional information about the creation system. For example, source URL the ticket came from.
@@ -308,7 +312,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $status;
+	protected $status = 'awaiting_agent';
 
 	/**
 	 * @var string
@@ -532,9 +536,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	public $__dp_is_autogen_ref = false;
 
+	/**
+	 * @var bool
+	 */
+	public $_is_new = false;
+
 	public function __construct()
 	{
 		$this->_original_id  = null;
+		$this->_is_new       = true;
 		$this->participants  = new ArrayCollection();
 		$this->messages      = new ArrayCollection();
 		$this->custom_data   = new ArrayCollection();
@@ -1296,7 +1306,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 		$now = new \DateTime();
 		if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
-			if (!$message->is_agent_note) {
+			if (!$message->is_agent_note && !$this->_is_new) {
 				if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
 					$this['date_last_agent_reply'] = $now;
 				}
@@ -1329,6 +1339,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this->attachments->add($attach);
 
 		$this->_onPropertyChanged('attachments', null, $this->attachments);
+		$this->getStateChangeRecorder()->record('attachments', null, $attach);
 	}
 
 
@@ -1585,8 +1596,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$x = new LabelTicket();
 		$x->label = $l;
 
-		if (($idx = $this->labels->indexOf($x->label)) !== false) {
-			return $this->labels->get($idx);
+		foreach ($this->labels as $l) {
+			if ($l->label == $x->label) {
+				return $l;
+			}
 		}
 
 		return null;
@@ -2164,6 +2177,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this['date_status'] = new \DateTime();
 
 		$old_status  = $this->status;
+		$old_hstatus = $this->hidden_status;
+		$old_status_code = $this->getStatusCode();
 
 		if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
 			$this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
@@ -2203,10 +2218,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		if ($status != 'awaiting_agent' && $this->is_hold) {
 			$this['is_hold'] = false;
 		}
-
-		$old_hstatus = $this->hidden_status;
-		$old_status_code = "$old_status.$old_hstatus";
-
 		$status_code = $status;
 		$hstatus = null;
 		if (strpos($status, '.')) {
@@ -2238,6 +2249,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 		$this->setModelField('status', $status);
 		$this->setModelField('hidden_status', $hstatus);
+
+		$this->getStateChangeRecorder()->record('status_code', $old_status_code, $this->getStatusCode());
 
 		if ($old_status_code == 'hidden.deleted' && $status_code != 'hidden.deleted') {
 			$this->undeleteTicket();
@@ -2905,7 +2918,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	public function getWorkHoursSet()
 	{
 		if (!$this->_work_hours_set) {
-			$this->_work_hours_set = new \Orb\Util\WorkHoursSetAll();
+			try {
+				$work_hours = App::getSetting('core_tickets.work_hours');
+				if ($work_hours && !is_array($work_hours)) {
+					$work_hours = @unserialize($work_hours);
+				}
+				if ($work_hours) {
+					$work_hours = Arrays::removeEmptyArray($work_hours);
+					$work_hours = Arrays::removeNull($work_hours);
+					$work_hours = Arrays::removeEmptyString($work_hours);
+
+					$work_hours = new OptionsArray($work_hours);
+					return new WorkHoursSet(
+						$work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
+						$work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+						$work_hours->get('work_days', array(false, true, true, true, true, true, false)),
+						$work_hours->get('timezone', 'UTC'),
+						$work_hours->get('holidays', array())
+					);
+				} else {
+					return new WorkHoursSetAll();
+				}
+			} catch (\Exception $e) {
+				$this->_work_hours_set = new \Orb\Util\WorkHoursSetAll();
+			}
 		}
 
 		return $this->_work_hours_set;

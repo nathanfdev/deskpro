@@ -1,0 +1,70 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap"><label class="row-label">Force Agent Email Subscriptions</label></td>
+				<td ng-show="rowOpts.rowEnabled">
+					<table class="display-table spaced">
+						<tr>
+							<td>
+								Normally, each agent has their own email notification preferences. Selecting agents here
+								will override those preferences and force them on to the subscription list used with a
+								"send agent email" action.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<ul class="checkbox-list" style="min-width: 260px; max-height: 175px; overflow: auto;">
+									<li ng-repeat="agent in agents">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids[agent.id]" />
+											{{ ng_var('agent.display_name') }}
+										</label>
+									</li>
+									<li style="border-top: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_agent" />
+											Assigned Agent
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_team" />
+											Agents of Assigned Team
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_followers" />
+											Ticket Followers
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_follower_teams" />
+											Teams of Ticket Followers
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.person" />
+											Agent Performer
+											<i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the agent that caused this trigger to run."></i>
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.person_team" />
+											Teams of Agent Performer
+											<i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the teams of the agent that caused this trigger to run."></i>
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

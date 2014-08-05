@@ -312,8 +312,10 @@ div.info-message {
 .dp-appstrip {
 	overflow: hidden;
 	ul {
+		background: #2b2f33;
 		margin: 0;
 		padding: 0;
+		box-shadow: 0 -4px 14px 0 #2b2f33;
 		li {
 			padding: 0;
 			margin: 0;
@@ -484,10 +486,6 @@ div.info-message {
 			.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x_active/Ticket-Feedback.png'); }
 		}
 	}
-}
-
-@media all and (max-height: 800px) {
-	.dp-appstrip ul.btm { display: none; }
 }
 
 .agent-interface-hover, .reports-interface-hover, .lic-interface-hover {
@@ -1152,21 +1150,26 @@ nav.dp-tabletabs {
 					color: #777;
 				}
 
+				background: #eee;
+				position: relative;
+				bottom: -1px;
+				z-index: 1;
 				display: block;
 				color: #000;
 				text-decoration: none;
 				padding: 4px 10px 3px 10px;
 				font-size: 120%;
 				font-weight: normal;
-				border: 1px solid transparent;
-				border-bottom: none;
+				border: 1px solid #ccc;
+				border-bottom-color: #bbb;
 				.border-radius(3px, 3px, 0, 0);
 			}
 
 			&.active, &:hover {
 				a {
+					background: #fff;
 					border: 1px solid #bbb;
-					border-bottom: none;
+					border-bottom-color: #fff;
 				}
 			}
 		}

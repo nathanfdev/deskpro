@@ -67,7 +67,7 @@ class AgentsController extends BaseAgentsController
 			$url = DP_MA_SERVER . '/cloud/call/'.DPC_SITE_ID.'/'. $tmpdata->getCode();
 
 			try {
-				$client = new \Zend\Http\Client(null, array('timeout' => 15));
+				$client = new \Zend\Http\Client(null, array('timeout' => 15, 'sslverifypeer' => false));
 				$client->setMethod(\Zend\Http\Request::METHOD_GET);
 				$client->setUri($url);
 				$client->send();

@@ -51,6 +51,7 @@
 	'user.profile.register_or_login_below'                                 => '<a href="{{url}}">Zarejestruj się</a> albo zaloguj się poniżej.',
 	'user.profile.register_password_min_length'                            => 'Wpisz hasło, składające się z co najmniej 5 znaków.',
 	'user.profile.register_password_mismatch'                              => 'Wpisane hasła różnią się.',
+	'user.profile.register_password_unused'                                => 'Nie możesz użyć hasła którego wcześniej wykorzystywaleś',
 	'user.profile.remove_email_address'                                    => 'Usuń adres email',
 	'user.profile.remove_your_current_picture'                             => 'Usuń aktualny awatar',
 	'user.profile.repeat_password'                                         => 'Powtórz hasło',

@@ -43,19 +43,27 @@ define [
 				@$scope.criteriaOptionTypes.push(opt)
 
 		initialLoad: ->
+			proms = []
+
 			if @$stateParams.id
-				promise = @slaData.loadEditSlaData(@$stateParams.id).then( (data) =>
+				proms.push @slaData.loadEditSlaData(@$stateParams.id).then( (data) =>
 					@sla = data.sla
 					@form = @getFormFromModel(@sla)
 					@origForm = Util.clone(@form, true)
 				)
-				return promise
 			else
 				@macro = {}
 				@sla = {}
 				@form = @getFormFromModel({})
 				@origForm = Util.clone(@form, true)
 				return null
+
+			proms.push @actionsTypeDef.loadDataOptions()
+			proms.push @criteraTypeDef.loadDataOptions()
+
+			return @$q.all(proms).then(=>
+				@updateCriteriaOptionTypes()
+			)
 
 		getFormFromModel: (slaModel) ->
 			return @formMapper.getFormFromModel(slaModel)

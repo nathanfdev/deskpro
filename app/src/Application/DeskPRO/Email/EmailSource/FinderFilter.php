@@ -187,7 +187,7 @@ class FinderFilter
 	 * @param EmailAccount $account
 	 * @return $this
 	 */
-	public function setEmailAccount(EmailAccount $account = null)
+	public function setAccount($account = null)
 	{
 		$this->account = $account;
 		return $this;
@@ -268,7 +268,7 @@ class FinderFilter
 	/**
 	 * @return \Application\DeskPRO\Entity\EmailAccount|null
 	 */
-	public function getEmailAccount()
+	public function getAccount()
 	{
 		return $this->account;
 	}

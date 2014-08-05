@@ -24,16 +24,54 @@
 			<tbody>
 				<tr>
 					<th width="140">Date</th>
-					<td><span am-time-ago="ViewSource.source.date_created" title="{{ ng_var('ViewSource.source.date_created') }}"></span></td>
+					<td>{{ ng_var('ViewSource.source.date_created | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
 				</tr>
 				<tr>
 					<th>Status</th>
 					<td>
-						{{ ng_var('ViewSource.source.status') }} (<span title="{{ ng_var('ViewSource.source.date_status') }}" am-time-ago="ViewSource.source.date_status"></span>)
+						{{ ng_var('ViewSource.source.status') }} ({{ ng_var('ViewSource.source.date_status | amDateFormat:"MMM D, YYYY @ HH:mm"') }})
 						<div ng-if="ViewSource.source.status == 'error'">
 							{{ ng_var('ViewSource.source.error_code') }} &mdash;
 							<button class="btn btn-primary btn-xs" ng-click="ViewSource.startReprocess()">Reprocess Email</button>
 						</div>
+					</td>
+				</tr>
+				<tr ng-if="ViewSource.source.object_type">
+					<th>Created Object</th>
+					<td ng-switch="ViewSource.source.object_type">
+						<div ng-switch-when="ticket">
+							<div ng-if="ViewSource.ticket">
+								New Ticket #{{ ng_var('ViewSource.ticket.id') }}: <a ng-href="../agent/#t:{{ ng_var('ViewSource.ticket.id') }}" target="_blank">{{ ng_var('ViewSource.ticket.subject') }}</a>
+							</div>
+							<div ng-if="!ViewSource.ticket">
+								New Ticket #{{ ng_var('ViewSource.source.object_id') }} <em>(no longer exists)</em>
+							</div>
+						</div>
+						<div ng-switch-when="ticket_message">
+							<div ng-if="ViewSource.ticket_message">
+								New Reply #{{ ng_var('ViewSource.ticket_message.id') }}
+							</div>
+							<div ng-if="!ViewSource.ticket_message">
+								New Reply #{{ ng_var('ViewSource.source.object_id') }} <em>(no longer exists)</em>
+							</div>
+							<div ng-if="ViewSource.ticket">
+								On Ticket #{{ ng_var('ViewSource.ticket.id') }}: <a ng-href="../agent/#t:{{ ng_var('ViewSource.ticket.id') }}" target="_blank">{{ ng_var('ViewSource.ticket.subject') }}</a>
+							</div>
+							<div ng-if="!ViewSource.ticket">
+								<em>(Ticket no longer exists)</em>
+							</div>
+						</div>
+						<div ng-switch-default>
+							Unknown object: {{ ng_var('ViewSource.source.object_type') }} #{{ ng_var('ViewSource.source.object_id') }}
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>Account</th>
+					<td>
+						<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: ViewSource.source.email_account.id}') }}">
+							{{ ng_var('ViewSource.source.email_account.address') }}
+						</a>
 					</td>
 				</tr>
 				<tr>
@@ -56,6 +94,24 @@
 					</th>
 					<td>
 						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.source_raw') }}</textarea>
+					</td>
+				</tr>
+				<tr ng-if="ViewSource.source.log_blob">
+					<th>
+						Process Log
+						<br/>
+						<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.log_blob.download_url') }}" target="_blank">Download</a>
+					</th>
+					<td>
+						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.source_log') }}</textarea>
+					</td>
+				</tr>
+				<tr ng-if="ViewSource.source_info">
+					<th>
+						Status Context
+					</th>
+					<td>
+						<textarea class="form-control" style="width: 95%; height: 180px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.source_info') }}</textarea>
 					</td>
 				</tr>
 			</tbody>

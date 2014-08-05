@@ -61,8 +61,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<ul style="display: none" class="order-by-menu">
             <li data-order-by="urgency_asc" class="order-by-asc">{{ phrase('agent.general.urgency') }}</li>
             <li data-order-by="urgency_desc" class="order-by-desc">{{ phrase('agent.general.urgency') }}</li>
-			<li data-order-by="date_created_asc" class="order-by-asc">{{ phrase('agent.general.date_opened') }}</li>
-			<li data-order-by="date_created_desc" class="order-by-desc">{{ phrase('agent.general.date_opened') }}</li>
+			<li data-order-by="date_created_asc" class="order-by-asc">{{ phrase('agent.general.date_created') }}</li>
+			<li data-order-by="date_created_desc" class="order-by-desc">{{ phrase('agent.general.date_created') }}</li>
             {% if app.getSetting('core.use_ticket_priority') %}
 			<li data-order-by="priority_asc" class="order-by-asc">{{ phrase('agent.general.priority') }}</li>
 			<li data-order-by="priority_desc" class="order-by-desc">{{ phrase('agent.general.priority') }}</li>

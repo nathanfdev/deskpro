@@ -7892,6 +7892,8 @@ div.info-message.well {
 .dp-appstrip ul {
   padding: 0;
   margin: 0;
+  background: #2b2f33;
+  box-shadow: 0 -4px 14px 0 #2b2f33;
 }
 
 .dp-appstrip ul li {
@@ -8337,12 +8339,6 @@ div.info-message.well {
   .dp-appstrip .state-on .app-icon-reports-satisfaction,
   .dp-appstrip .section-on .app-icon-reports-satisfaction {
     background-image: url('../../../../images/app-icons/2x_active/Ticket-Feedback.png');
-  }
-}
-
-@media all and (max-height: 800px) {
-  .dp-appstrip ul.btm {
-    display: none;
   }
 }
 
@@ -8960,14 +8956,18 @@ nav.dp-tabletabs ul li {
 }
 
 nav.dp-tabletabs ul li a {
+  position: relative;
+  bottom: -1px;
+  z-index: 1;
   display: block;
   padding: 4px 10px 3px 10px;
   font-size: 120%;
   font-weight: normal;
   color: #000;
   text-decoration: none;
-  border: 1px solid transparent;
-  border-bottom: none;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-bottom-color: #bbb;
   -webkit-border-top-right-radius: 3px;
           border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 0;
@@ -8992,8 +8992,9 @@ nav.dp-tabletabs ul li a i.fa {
 
 nav.dp-tabletabs ul li.active a,
 nav.dp-tabletabs ul li:hover a {
+  background: #fff;
   border: 1px solid #bbb;
-  border-bottom: none;
+  border-bottom-color: #fff;
 }
 
 .dp-tabletabs-contentwrap {

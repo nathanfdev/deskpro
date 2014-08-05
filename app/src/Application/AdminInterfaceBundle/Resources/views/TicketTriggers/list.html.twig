@@ -45,7 +45,10 @@
 							<ul class="dp-item-list" ng-if="List.eventType == 'newticket'">
 								<li ng-repeat="dep in List.depList" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('dep.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-' + dep.id}") }}">
-										<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+										<h4>
+											<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[dep.id]') }}</span>
+											<span class="title-text">{{ ng_var('dep.title') }}</span>
+										</h4>
 									</a>
 									<ul class="dp-item-list sublist" ng-show="dep.children.length">
 										<li ng-repeat="subdep in dep.children" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('subdep.id') }}">
@@ -53,6 +56,7 @@
 												<h4>
 													<span class="tree-char middle" ng-if="!$last"></span>
 													<span class="tree-char last" ng-if="$last"></span>
+													<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[subdep.id]') }}</span>
 													<span class="title-text">{{ ng_var('subdep.title') }}</span>
 												</h4>
 											</a>
@@ -71,6 +75,7 @@
 												<h4>
 													<span class="tree-char middle" ng-if="!$last"></span>
 													<span class="tree-char last" ng-if="$last"></span>
+													<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[subdep.id]') }}</span>
 													<span class="title-text">{{ ng_var('subdep.title') }}</span>
 												</h4>
 											</a>
@@ -111,7 +116,10 @@
 							<ul class="dp-item-list">
 								<li ng-repeat="acc in List.accounts" dp-state-mark="id:tickets.triggers.editemailacc.emailaccount-{{ ng_var('acc.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editemailacc', "{type: List.eventType, id: 'emailaccount-' + acc.id}") }}">
-										<h4><span class="title-text">{{ ng_var('acc.address') }}</span></h4>
+										<h4>
+											<span class="title-id" title="ID">#{{ ng_var('email_trigger_ids[acc.id]') }}</span>
+											<span class="title-text">{{ ng_var('acc.address') }}</span>
+										</h4>
 									</a>
 								</li>
 							</ul>

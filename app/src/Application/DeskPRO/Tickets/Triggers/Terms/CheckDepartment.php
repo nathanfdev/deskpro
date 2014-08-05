@@ -52,9 +52,6 @@ class CheckDepartment extends AbstractTriggerTerm
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('department_ids');
-		$options->addCallbackCheckedOption('department_ids', function($v) {
-			return is_array($v) && !empty($v);
-		});
 		return $options;
 	}
 

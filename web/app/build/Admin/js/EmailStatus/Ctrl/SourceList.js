@@ -19,6 +19,7 @@
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.init = function() {
         this.filter = {
+          account: "0",
           page: 1
         };
         this.results = [];
@@ -41,7 +42,14 @@
       };
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.initialLoad = function() {
-        return this.loadResults();
+        var p1, p2;
+        p1 = this.loadResults();
+        p2 = this.Api.sendGet('/email_accounts').success((function(_this) {
+          return function(data) {
+            return _this.$scope.email_accounts = data.email_accounts;
+          };
+        })(this));
+        return this.$q.all([p1, p2]);
       };
 
       Admin_EmailStatus_Ctrl_SourceList.prototype.changePage = function() {

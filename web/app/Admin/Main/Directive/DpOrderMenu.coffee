@@ -27,6 +27,9 @@ define [
 				scope.title = ''
 				scope.options = []
 
+				orderPrefs = if attrs.orderDirPrefs then scope.$eval(attrs.orderDirPrefs) else {}
+				console.log(orderPrefs)
+
 				element.find('.orig').find('option').each(->
 					scope.options.push({
 						title: Strings.trim($(this).text()),
@@ -56,7 +59,7 @@ define [
 							scope.title = v.title
 							break
 
-				scope.$watch('sortField + sortDir', ->
+				update = ->
 					ngModel.$setViewValue({
 						field: scope.sortField,
 						dir: scope.sortDir
@@ -66,6 +69,16 @@ define [
 						if v.value == scope.sortField
 							scope.title = v.title
 							break
+
+				scope.$watch('sortField', ->
+					if orderPrefs[scope.sortField]
+						scope.sortDir = orderPrefs[scope.sortField]
+
+					update()
+				)
+
+				scope.$watch('sortDir', ->
+					update()
 				)
 		}
 	]

@@ -186,19 +186,20 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
 		$password_validator = App::$container->getSystemService('password_policy_validator');
 
+		$error = null;
+
 		if (!$this->person->checkPassword($this->in->getString('current_password'))) {
 			$this->session->setFlash('invalid_current_password', 1);
 		} else if ($password != $password2) {
 			$this->session->setFlash('invalid_repeat_password', 1);
-		} elseif ($password_validator->checkPassword($password, $this->person)) {
+		} elseif (!$password_validator->checkPassword($password, $this->person, $error)) {
 			$this->session->setFlash('invalid_password', 1);
 		} else {
 			$this->person->setPassword($password);
-			$person = $this->person;
-			$this->em->transactional(function ($em) use ($person, $history) {
-				$em->persist($person);
-				$em->persist($history);
-			});
+
+			$this->em->persist($this->person);
+			$this->em->persist($history);
+			$this->em->flush();
 
 			// Reset user session
 			$this->db->delete('sessions', array('person_id' => $this->person->id));

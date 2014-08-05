@@ -511,6 +511,10 @@ class TicketSearchController extends AbstractController
 		$per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
 		$filter = $this->_getFiltersApi()->getFilterFromId($filter_id);
+		if (!$filter) {
+			throw $this->createNotFoundException();
+		}
+
 		$total = $filter->getResultsCount();
 
 		$tickets = $this->_getFiltersApi()->getTicketsFromFilter($filter_id, $page, $per_page);

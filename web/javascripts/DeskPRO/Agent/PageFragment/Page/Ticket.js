@@ -537,13 +537,41 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			})();
 		}
         
-        this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
-		loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
-		saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
-		ticket_id: this.meta.ticket_id
-	});
-	
-	this.ownObject(this.linkExistingTicket);
+		this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
+			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
+			saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
+			ticket_id: this.meta.ticket_id
+		});
+
+		this.ownObject(this.linkExistingTicket);
+
+		this.wrapper.find('.unlink-ticket').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unlink the selected ticket?")) {
+				return;
+			}
+
+			var linkType     = $(this).data('from-type');
+			var linkTicketId = $(this).data('from-id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: BASE_URL + "agent/tickets/" + self.meta.ticket_id + "/unlink-ticket",
+				type: 'POST',
+				data: {
+					ticket_id: self.meta.ticket_id,
+					link_type: linkType,
+					link_ticket_id: linkTicketId
+				},
+				error: function() {
+					$(this).closest('tr').show();
+				},
+				success: function() {
+					$(this).closest('tr').remove();
+				}
+			});
+		});
 
 		this.addEvent('deactivate', function() {
 			if (self.ticketReplyBox && self.ticketReplyBox.textarea) {
@@ -2877,6 +2905,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						$this.closest('tr').remove();
 
 						rowRemoved(slaId);
+
+						if (getVisibleOptions(idSelect.find('option')).length >= 1) {
+							form.show();
+						}
 					}
 				});
 			}

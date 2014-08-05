@@ -1,7 +1,14 @@
 {% extends 'AdminInterfaceBundle:Layout:fill-page-alt.html.twig' %}
 {% block alt_content %}
 	<div class="dp-appalt-section">
-		<header><h2>Agents</h2></header>
+		<header>
+            <h2 style="width: 100%;">
+                Agents
+                <button class="btn btn-default btn-xs pull-right" ng-click="Home.$modal.open({ templateUrl: Home.getTemplatePath('Agents/import.html') })">
+                    {{ phrase('agent.general.add_bulk') }}
+                </button>
+            </h2>
+        </header>
 		<section ng-if="Home.online_agents.length">
 			<header><h3>Online</h3></header>
 			<article>
@@ -28,7 +35,14 @@
 	</div>
 
 	<div class="dp-appalt-section">
-		<header><h2>Invite Agent</h2></header>
+		<header>
+            <h2 style="width: 100%;">
+                Invite Agent
+                <button class="btn btn-default btn-xs pull-right" ng-click="Home.$modal.open({ templateUrl: Home.getTemplatePath('Agents/import.html') })">
+                    {{ phrase('agent.general.add_bulk') }}
+                </button>
+            </h2>
+        </header>
 		<section>
 			<article>
 				<form>
@@ -221,7 +235,7 @@
 							&bull; Download our manuals for in-depth information:
 							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Admin-Manual.pdf' }) }}" target="_blank">Admin Manual</a></span>
 							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Agent-Manual.pdf' }) }}" target="_blank">Agent Manual</a></span>
-							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }}" target="_blank">Quick Start Guide</a></span>
+							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }}" target="_blank">Agent Quick Start Guide</a></span>
 						</div>
 					</article>
 

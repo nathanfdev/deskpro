@@ -69,13 +69,15 @@
 			</h3>
             <h3 class="pull-right" style="border: none;">
 
-                <button style="position: relative;" tooltip="Export">
-                    <a ng-href="{{ ng_var('exportUrl') }}" style="color: black;">
-                        <i class="fa fa-download"></i>
-                    </a>
-                </button>
+                <div tooltip="Export" style="display: inline-block">
+                    <button class="btn btn-default">
+                        <a ng-href="{{ ng_var('exportUrl') }}" style="color: black;">
+                            <i class="fa fa-download"></i>
+                        </a>
+                    </button>
+                </div>
 
-                <button class="fileinput-button" tooltip="Import">
+                <button class="fileinput-button btn btn-default" tooltip="Import">
                     <form method="POST" enctype="multipart/form-data" file-upload="fileUploadOptions"
                           action="{{ ng_var('fileUploadOptions.url') }}">
                         <i class="fa fa-upload"></i>

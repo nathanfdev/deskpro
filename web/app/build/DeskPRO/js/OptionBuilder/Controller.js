@@ -221,7 +221,7 @@
        */
 
       DeskPRO_OptionBuilder_Controller.prototype.addRow = function(type, value, existId, isFixed, isFixedOn) {
-        var dataFormatter, dataPromise, def, placeholder, retData, retTpl, run, scopeInit, time, tplPromise;
+        var dataFormatter, dataPromise, def, placeholder, retData, retTpl, rowIdx, run, scopeInit, time, tplPromise;
         if (!this.hasLoaded) {
           return;
         }
@@ -244,6 +244,8 @@
         }
         placeholder = $('<div/>');
         this.els.optionList.append(placeholder);
+        rowIdx = this.rowsCount + 1;
+        this.rowsCount += 1;
         time = (new Date()).getTime();
         this.els.loadingOptionMessage.show().addClass('loading-on');
         run = (function(_this) {
@@ -293,14 +295,26 @@
               rowScope.model = dataFormatter.getViewValue(rowScope.value, data);
               rowScope.$watch('model', function() {
                 rowScope.value = dataFormatter.getValue(rowScope.model, data);
-                return _this.$scope.saveTarget[rowId] = rowScope.value;
+                _this.$scope.saveTarget[rowId] = rowScope.value;
+                if (rowScope.rowOpts.rowEnabled) {
+                  _this.$scope.saveTarget[rowId].DP_DISABLED = false;
+                  return delete _this.$scope.saveTarget[rowId].DP_DISABLED;
+                } else {
+                  return _this.$scope.saveTarget[rowId].DP_DISABLED = true;
+                }
               }, true);
             } else {
               rowScope.model = {};
               rowScope.value = rowScope.model;
               rowScope.$watch('model', function() {
                 rowScope.value = rowScope.model;
-                return _this.$scope.saveTarget[rowId] = rowScope.value;
+                _this.$scope.saveTarget[rowId] = rowScope.value;
+                if (rowScope.rowOpts.rowEnabled) {
+                  _this.$scope.saveTarget[rowId].DP_DISABLED = false;
+                  return delete _this.$scope.saveTarget[rowId].DP_DISABLED;
+                } else {
+                  return _this.$scope.saveTarget[rowId].DP_DISABLED = true;
+                }
               }, true);
             }
             if (data) {
@@ -328,7 +342,7 @@
               rowScope.rowOpts.withCheck = true;
               rowScope.rowOpts.withCheckId = Util.uid('check');
             }
-            rowScope.rowOpts.rowIdx = _this.rowsCount + 1;
+            rowScope.rowOpts.rowIdx = rowIdx;
             rowScope.rowOpts.tagString = _this.options.tagString || null;
             rowScope.rowOpts.tagClass = _this.options.tagClass || '';
             element = _this.$compile(tpl)(rowScope);
@@ -344,7 +358,6 @@
             _this.els.loadingOptionMessage.hide().removeClass('loading-on');
             _this.els.noOptionsMessage.hide();
             placeholder.replaceWith(element);
-            _this.rowsCount++;
             _this.rows[rowId] = {
               element: element,
               scope: rowScope
@@ -399,7 +412,7 @@
        */
 
       DeskPRO_OptionBuilder_Controller.prototype.removeRowById = function(scopeId) {
-        var idx, row, _ref;
+        var idx, k, row, _ref;
         row = this.rows[scopeId];
         delete this.rows[scopeId];
         delete this.$scope.saveTarget[scopeId];
@@ -410,10 +423,11 @@
         if (this.rowsCount === 0) {
           this.els.noOptionsMessage.show();
         } else {
-          idx = 0;
+          idx = 1;
           _ref = this.rows;
-          for (row in _ref) {
-            if (!__hasProp.call(_ref, row)) continue;
+          for (k in _ref) {
+            if (!__hasProp.call(_ref, k)) continue;
+            row = _ref[k];
             row.scope.rowOpts.rowIdx = idx;
             idx++;
           }

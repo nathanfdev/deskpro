@@ -1,7 +1,9 @@
 define [
 	'Admin/OptionBuilder/TypesDef/BaseActionTypesDef',
+	'DeskPRO/Util/Numbers'
 ], (
-	BaseActionTypesDef
+	BaseActionTypesDef,
+	Numbers
 ) ->
 	class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef
 		init: ->
@@ -146,7 +148,7 @@ define [
 
 			options.push({
 				title: 'Set Ticket User',
-				value: 'ChangeUser'
+				value: 'SetUserOwner'
 			})
 
 			options.push({
@@ -213,12 +215,17 @@ define [
 
 			options.push({
 				title: 'Prevent Emails To User',
-				value: 'ModQuietUserEmails'
+				value: 'ModMuteUserEmails'
 			})
 
 			options.push({
 				title: 'Prevent Emails To Agents',
-				value: 'ModQuietAgentEmails'
+				value: 'ModMuteAgentEmails'
+			})
+
+			options.push({
+				title: 'Force Agent Email Subscriptions',
+				value: 'ModForceAgentEmails'
 			})
 
 			options.push({
@@ -310,6 +317,10 @@ define [
 					})
 
 			return set_options
+
+		resetData: ->
+			@options_data = null
+			@loadDataPromise = null
 
 		loadDataOptions: ->
 			if @options_data
@@ -453,16 +464,22 @@ define [
 				return {
 					getViewValue: (value = {}, data) ->
 						options = value?.options || {}
-						return {
+						viewValue = {
 							add_labels:       (options.add_labels || []).join(', '),
 							remove_labels:    (options.remove_labels || []).join(', '),
 						}
+
+						viewValue.with_add    = !!viewValue.add_labels
+						viewValue.with_remove = !!viewValue.remove_labels
+
+						return viewValue
+
 					getValue: (model = {}, data) ->
 						value = {}
 						value.type = 'SetLabels'
 						value.options = {}
-						value.options.add_labels = (model.add_labels || '').split(',')
-						value.options.remove_labels = (model.remove_labels || '').split(',')
+						value.options.add_labels    = if model.with_add then     (model.add_labels || '').split(',')    else ''
+						value.options.remove_labels = if model.with_remove then  (model.remove_labels || '').split(',') else ''
 						return value
 				}
 			}
@@ -626,6 +643,12 @@ define [
 					}
 			}
 
+		getSetUserOwner: (options = {}) ->
+			options.propName = 'email_address'
+			options.placeholder = 'Enter an email address'
+			def = @getStandardInput(options)
+			return def
+
 		getSetDeleted: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
@@ -637,6 +660,7 @@ define [
 
 		getModStopTriggers: (options = {}) ->
 			options.propName = 'stop_triggers'
+			options.icon = 'fa-chain-broken'
 			def = @getStandardIs(options)
 			return def
 
@@ -668,13 +692,55 @@ define [
 					}
 			}
 
-		getModQuietUserEmails: (options = {}) ->
+		getModMuteUserEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
 
-		getModQuietAgentEmails: (options = {}) ->
+		getModMuteAgentEmails: (options = {}) ->
 			def = @getStandardIs(options)
 			return def
+
+		getModForceAgentEmails: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-force-agent-emails.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value?.options || {}
+
+							agent_ids = {}
+							if options.agent_ids
+								for aid in options.agent_ids
+									agent_ids[aid+""] = true
+
+							return {
+								agent_ids: agent_ids
+							}
+						getValue: (model = {}, data) ->
+							options = {
+								agent_ids: []
+							}
+
+							if model.agent_ids
+								for own k, v of model.agent_ids
+									if v
+										if Numbers.isNumeric(k)
+											options.agent_ids.push(parseInt(k))
+										else
+											options.agent_ids.push(k)
+
+							value = {}
+							value.type = 'ModForceAgentEmails'
+							value.options = options
+							return value
+					}
+			}
 
 		getSendUserEmail: (options = {}) ->
 			me = @
@@ -816,8 +882,7 @@ define [
 							agent_ids = {}
 							if options.agent_ids
 								for aid in options.agent_ids
-									if aid != 'notify_list' then aid = parseInt(aid)
-									agent_ids[aid] = true
+									agent_ids[aid+""] = true
 							else
 								agent_ids['notify_list'] = true
 
@@ -844,10 +909,10 @@ define [
 							if model.agent_ids
 								for own k, v of model.agent_ids
 									if v
-										if k == 'notify_list'
-											options.agent_ids.push('notify_list')
-										else
+										if Numbers.isNumeric(k)
 											options.agent_ids.push(parseInt(k))
+										else
+											options.agent_ids.push(k)
 
 							value = {}
 							value.type = 'SendAgentEmail'

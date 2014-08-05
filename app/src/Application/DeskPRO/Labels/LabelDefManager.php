@@ -110,35 +110,40 @@ class LabelDefManager
 	 */
 	public function getLabels($types = null)
 	{
-		if ($types) {
-			$labels = $this->db->fetchAllCol("SELECT DISTINCT label FROM label_defs WHERE label_type IN ('" . implode("','", (array)$types) . "') ORDER BY label ASC");
-		} else {
-			$labels = $this->db->fetchAllCol("SELECT DISTINCT label FROM label_defs ORDER BY label ASC");
+		static $valid = array('articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations');
+
+		if ($types === null) {
+			$types = $valid;
+		}
+		if (is_string($types)) {
+			$types = explode(',', $types);
+			$types = array_map('trim', $types);
 		}
 
+		if (!$types) {
+			return array();
+		}
+
+		$types = array_map(function($t) {
+			if ($t == 'chat') $t = 'chat_conversations';
+			return $t;
+		}, $types);
+
+		// invalid type(s)
+		if (array_diff($types, $valid)) {
+			throw new \InvalidArgumentException();
+		}
+
+		$parts = array();
+		$parts[] = "SELECT DISTINCT(label) FROM label_defs " . (count($types) < 8 ? "WHERE label_type IN ('" . implode("','", $types) . "')" : '');
+		foreach ($types as $t) {
+			$parts[] = "SELECT DISTINCT(label) FROM labels_$t";
+		}
+
+		$q = '(' . implode(') UNION (', $parts) . ')';
+		$labels = $this->db->fetchAllCol($q);
+
 		return $labels;
-	}
-
-
-	/**
-	 * Count all label definitions
-	 *
-	 * @return array
-	 */
-	public function countDefs()
-	{
-		$counts = $this->db->fetchAllKeyValue("
-			SELECT label_type, COUNT(*) as count
-			FROM label_defs
-			GROUP BY label_type
-		");
-
-		$counts['TOTAL'] = $this->db->fetchColumn("
-			SELECT COUNT(DISTINCT label) as count
-			FROM label_defs
-		");
-
-		return $counts;
 	}
 
 
@@ -307,11 +312,6 @@ class LabelDefManager
 
 				$this->db->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $old_label));
 				$adjusted = $this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
-				$this->db->executeUpdate("
-					INSERT INTO label_defs (label_type, label, total)
-					VALUES (?, ?, ?)
-					ON DUPLICATE KEY UPDATE total = total + VALUES(total)
-				", array($t, $new_label, $adjusted));
 				$this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($old_label));
 			}
 

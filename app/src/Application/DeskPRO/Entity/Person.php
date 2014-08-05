@@ -986,11 +986,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$this->setModelField('is_user', true);
 
 		$hash = $this->hashPassword($plain_password);
-
-		$pass = $hash;
 		$this->_set_plain_password = $plain_password;
 
-		$this->setModelField('password', $pass);
+		$this->setModelField('password', $hash);
 		$this->setModelField('date_password_set', new \DateTime());
 
 		if ($this->id) {

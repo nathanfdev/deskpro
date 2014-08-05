@@ -70,8 +70,8 @@ class TransportFactory
 	public function createSmtpTransport(SmtpConfig $config)
 	{
 		$tr = \Swift_SmtpTransport::newInstance(
-			$config->host,
-			$config->port,
+			$config->host ?: 'localhost',
+			$config->port ?: 25,
 			$config->secure_mode == 'none' ? null : $config->secure_mode
 		);
 

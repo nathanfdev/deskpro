@@ -11,11 +11,37 @@
           return new Admin_Cloud_App_CloudService();
         }
       ]);
-      return Module.run([
+      Module.run([
         'SessionPing', function(SessionPing) {
           return window.setTimeout(function() {
             return SessionPing.startInterval();
           }, 20000);
+        }
+      ]);
+      return Module.run([
+        '$rootScope', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions', 'dpObTypesDefTicketFilter', function($rootScope, dpObTypesDefTicketCriteria, dpObTypesDefTicketActions, dpObTypesDefTicketFilter) {
+          var getAppStateName;
+          getAppStateName = function(name) {
+            var parts;
+            parts = name.split('.');
+            while (parts.length > 2) {
+              parts.pop();
+            }
+            return parts.join('.');
+          };
+          return $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+            var last, now;
+            if (!fromState || !toState) {
+              return;
+            }
+            last = getAppStateName(fromState.name);
+            now = getAppStateName(toState.name);
+            if (last !== now) {
+              dpObTypesDefTicketCriteria.resetData();
+              dpObTypesDefTicketActions.resetData();
+              return dpObTypesDefTicketFilter.resetData();
+            }
+          });
         }
       ]);
     };

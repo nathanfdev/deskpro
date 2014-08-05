@@ -45,4 +45,9 @@ class OrgPermissions implements PermissionValueInterface
 	{
 		return array('create', 'edit', 'notes', 'delete');
 	}
+
+	public function getDestructiveNames()
+	{
+		return array('delete');
+	}
 }

@@ -27,7 +27,7 @@
           return function(lic_code) {
             lic_code = lic_code || '';
             lic_code = lic_code.replace(/\s/g, '');
-            lic_code = lic_code.match(/(.{1,50})/g).join("\n");
+            lic_code = (lic_code.match(/(.{1,50})/g) || [lic_code]).join("\n");
             return _this.$scope.lic_code = lic_code;
           };
         })(this));

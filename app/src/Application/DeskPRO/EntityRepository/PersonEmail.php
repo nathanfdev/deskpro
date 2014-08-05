@@ -35,17 +35,25 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Doctrine\DBAL\LockMode;
 
 class PersonEmail extends AbstractEntityRepository
 {
 	public function getEmail($email_address)
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT e
-			FROM DeskPRO:PersonEmail e
-			WHERE e.email = ?1
-		")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
-
+		if (App::getDb()->isTransactionActive()) {
+			return $this->getEntityManager()->createQuery("
+				SELECT e
+				FROM DeskPRO:PersonEmail e
+				WHERE e.email = ?1
+			")->setLockMode(LockMode::PESSIMISTIC_READ)->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
+		} else {
+			return $this->getEntityManager()->createQuery("
+				SELECT e
+				FROM DeskPRO:PersonEmail e
+				WHERE e.email = ?1
+			")->setParameters(array(1=> $email_address))->setMaxResults(1)->getOneOrNullResult();
+		}
 	}
 
 

@@ -61,6 +61,8 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 					if check.id == g.id
 						enabled = true
 						break
+				if not enabled and not agent.id and g.sys_name == 'agent_all_perms'
+					enabled = true
 
 				@form.agent_groups.push({
 					id:    g.id,

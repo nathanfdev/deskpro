@@ -120,11 +120,17 @@
 
 					</td><td width="35%">
 						<h3>{{ phrase('agent.general.window_navigation') }}</h3>
-						<div class="row">
-							<kbd>{{ phrase('agent.interface.kbd_ctrl_shift_left') }}</kbd> {{ phrase('agent.interface.go_to_previous_tab') }}
+						<div class="row noshowmac">
+							<kbd>alt+shift+left</kbd> {{ phrase('agent.interface.go_to_previous_tab') }}
 						</div>
-						<div class="row">
-							<kbd>{{ phrase('agent.interface.kbd_ctrl_shift_right') }}</kbd> {{ phrase('agent.interface.go_to_next_tab') }}
+						<div class="row showmac">
+							<kbd>ctrl+shift+left</kbd> {{ phrase('agent.interface.go_to_previous_tab') }}
+						</div>
+						<div class="row noshowmac">
+							<kbd>alt+shift+right</kbd> {{ phrase('agent.interface.go_to_next_tab') }}
+						</div>
+						<div class="row showmac">
+							<kbd>ctrl+shift+right</kbd> {{ phrase('agent.interface.go_to_next_tab') }}
 						</div>
 						<div class="row">
 							<kbd>{{ phrase('agent.interface.kbd_ctrl_shift_c') }}</kbd> {{ phrase('agent.interface.close_current_tab') }}

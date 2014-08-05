@@ -70,7 +70,7 @@ define ->
 				buildDirectiveVariables = (value) ->
 
 					lastPiece = value
-					regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g
+					regex = /(.*?)(<(\d+:.+?)>)/g
 
 					while match = regex.exec(value)
 						scope.texts.push(match[1])
@@ -144,7 +144,7 @@ define ->
 				scope.changeLinkParams = () ->
 					updateLink()
 					linkParams = scope.selected.join(',')
-					$state.go('builder.edit', {id: scope.reportId, params:linkParams})
+					$state.go('builder.edit', {id: scope.reportId, params:linkParams, type: scope.type})
 		}
 	]
 

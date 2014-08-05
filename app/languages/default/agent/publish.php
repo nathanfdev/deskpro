@@ -69,7 +69,7 @@
 	'agent.publish.no_downlod_cats_error'         => 'There are no categories defined. Before you can add files to the downloads section, you need to define a category.',
 	'agent.publish.no_kb_cats_error'              => 'There are no categories defined. Before you can add articles to the knowledgebase section, you need to define a category.',
 	'agent.publish.no_news_cats_error'            => 'There are no categories defined. Before you can add posts to the news section, you need to define a category.',
-	'agent.publish.no_related_explain'            => 'No other articles, downloads or news posts have been linked to this. Browse the listings and click "Add as related" to add related content.',
+	'agent.publish.no_related_explain'            => 'No related articles, downloads or news posts have been linked to this item. To add related items, view them in the list pane and click the green arrow icon.',
 	'agent.publish.no_uploads_yet'                => 'There have not been any uploads yet.,',
 	'agent.publish.not_helpful'                   => 'Not Helpful',
 	'agent.publish.pending_articles'              => 'Pending Articles',

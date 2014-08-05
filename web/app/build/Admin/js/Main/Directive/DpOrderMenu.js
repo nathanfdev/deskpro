@@ -10,10 +10,13 @@
           transclude: true,
           template: "<span class=\"dp-order-ctrl dropdown\">\n	<div class=\"orig\" style=\"display: none;\" ng-transclude></div>\n	<a class=\"title dropdown-toggle\" data-toggle=\"dropdown\">Order by: {{title}} <i class=\"fa fa-sort-alpha-desc\" ng-show=\"sortDir == 'DESC'\"></i><i class=\"fa fa-sort-alpha-asc\" ng-show=\"sortDir == 'ASC'\"></i></a>\n	<ul class=\"dropdown-menu\">\n		<li class=\"dropdown-header\">Sort Field</li>\n		<li ng-repeat=\"opt in options\"><a ng-click=\"$event.preventDefault(); setSortField(opt.value);\">{{opt.title}} <i class=\"fa fa-check\" ng-show=\"sortField == opt.value\"></i></a></li>\n		<li class=\"divider\"></li>\n		<li class=\"dropdown-header\">Sort Direction</li>\n		<li><a ng-click=\"$event.preventDefault(); setSortDirection('ASC');\">Ascending <i class=\"fa fa-check\" ng-show=\"sortDir == 'ASC'\"></i></a></li>\n		<li><a ng-click=\"$event.preventDefault(); setSortDirection('DESC');\">Descending <i class=\"fa fa-check\" ng-show=\"sortDir == 'DESC'\"></i></a></li>\n	</ul>\n</span>",
           link: function(scope, element, attrs, ngModel) {
+            var orderPrefs, update;
             scope.sortField = null;
             scope.sortDir = 'ASC';
             scope.title = '';
             scope.options = [];
+            orderPrefs = attrs.orderDirPrefs ? scope.$eval(attrs.orderDirPrefs) : {};
+            console.log(orderPrefs);
             element.find('.orig').find('option').each(function() {
               return scope.options.push({
                 title: Strings.trim($(this).text()),
@@ -49,7 +52,7 @@
               }
               return _results;
             };
-            return scope.$watch('sortField + sortDir', function() {
+            update = function() {
               var v, _i, _len, _ref, _results;
               ngModel.$setViewValue({
                 field: scope.sortField,
@@ -67,6 +70,15 @@
                 }
               }
               return _results;
+            };
+            scope.$watch('sortField', function() {
+              if (orderPrefs[scope.sortField]) {
+                scope.sortDir = orderPrefs[scope.sortField];
+              }
+              return update();
+            });
+            return scope.$watch('sortDir', function() {
+              return update();
             });
           }
         };

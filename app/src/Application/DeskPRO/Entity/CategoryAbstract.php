@@ -114,7 +114,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		$this->setModelField('parent', $cat);
 
 		if ($cat) {
-			$this->setModelField('root', $cat->root ? $cat->root : $cat);
+			$this->setModelField('root', $cat->root ? $cat->root : $cat->id);
 			$this->setModelField('depth', $cat->depth + 1);
 		} else {
 			$this->setModelField('root', null);

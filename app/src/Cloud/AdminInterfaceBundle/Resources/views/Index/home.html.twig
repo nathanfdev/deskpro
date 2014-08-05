@@ -69,27 +69,31 @@
 	</div>
 
 	<div ng-if="Home.license.isDemo" class="alert" ng-class="{'alert-success': Home.license.expireDays >= 29, 'alert-info': Home.license.expireDays < 29 && Home.license.expireDays >= 7, 'alert-danger': Home.license.expireDays < 7}" style="margin: 15px 15px 0 15px;">
-		<div ng-if="Home.license.expireDays >= 29">
+		<div ng-if="Home.license.expireDays >= 14">
 			<h3 style="margin-top: 8px;">Welcome to your DeskPRO Demo</h3>
 			<p>
 				Welcome to your fully-functional DeskPRO demo.
 			</p>
 			<p>
-				You have 30 days to try DeskPRO. When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
-				Feel free to enter your billing information now&mdash;you get 30 days free even if you decide to subscribe now.
+				You have {{ ng_var('Home.license.expireDays') }} days to try DeskPRO. When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
+			</p>
+			<p>
+				Feel free to enter your billing information now&mdash;you will get to keep your {{ ng_var('Home.license.expireDays') }} free days, even if you subscribe now.
 			</p>
 		</div>
-		<div ng-if="Home.license.expireDays < 29 && Home.license.expireDays >= 7">
+		<div ng-if="Home.license.expireDays < 14 && Home.license.expireDays >= 7">
 			<h3 style="margin-top: 8px;">DeskPRO Demo</h3>
 			<p>
 				Your DeskPRO demo will expire in {{ ng_var('Home.license.expireDays') }} days.
 			</p>
 			<p>
 				When you are ready, head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
-				Feel free to enter your billing information now&mdash;you get 30 days free even if you decide to subscribe now.
+			</p>
+			<p>
+				Feel free to enter your billing information now&mdash;you will get to keep your {{ ng_var('Home.license.expireDays') }} free days, even if you subscribe now.
 			</p>
 		</div>
-		<div ng-if="Home.license.expireDays < 7">
+		<div ng-if="Home.license.expireDays < 7 && Home.license.expireDays >= 1">
 			<h3 style="margin-top: 8px;">Demo Expiring Soon</h3>
 			<p>
 				Your DeskPRO demo will expire in <span ng-if="Home.license.expireDays == 1">1 day</span><span ng-if="Home.license.expireDays > 1">{{ ng_var('Home.license.expireDays') }} days</span>.
@@ -99,6 +103,15 @@
 			</p>
 			<p>
 				We recommend entering your billing information now to ensure your helpdesk remains active.
+			</p>
+		</div>
+		<div ng-if="Home.license.expireDays <= 0">
+			<h3 style="margin-top: 8px;">Demo Expiring Today</h3>
+			<p>
+				Your DeskPRO demo is expiring <strong>today</strong>.
+			</p>
+			<p>
+				Head over to the <a href="{{ ng_href('license') }}">Billing section</a> to enter your credit-card details.
 			</p>
 		</div>
 	</div>
@@ -156,7 +169,7 @@
 							&bull; Download our manuals for in-depth information:
 							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Admin-Manual.pdf' }) }}" target="_blank">Admin Manual</a></span>
 							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Agent-Manual.pdf' }) }}" target="_blank">Agent Manual</a></span>
-							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }}" target="_blank">Quick Start Guide</a></span>
+							<span style="display: inline-block; margin-left: 4px;"><i class="fa fa-book"></i> <a href="{{ path('serve_dp_asset', { filename: 'Getting-Started-with-DeskPRO.pdf' }) }}" target="_blank">Agent Quick Start Guide</a></span>
 						</div>
 					</article>
 

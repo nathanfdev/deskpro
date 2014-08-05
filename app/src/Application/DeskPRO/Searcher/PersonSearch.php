@@ -664,13 +664,26 @@ class PersonSearch extends SearcherAbstract
 									$wheres[] = "$field = " . $db->quote($choice);
 									break;
 								case self::OP_NOT:
-									$wheres[] = "$field != " . $db->quote($choice);
+									$w = "$field != " . $db->quote($choice);
+
+									if ($choice != "") {
+										$w = "($w OR $field IS NULL)";
+									}
+
+									$where[] = $w;
+
 									break;
 								case self::OP_CONTAINS:
 								case self::OP_NOTCONTAINS:
 									$op = 'LIKE';
 									if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-									$wheres[] = "$field $op " . $db->quote('%'.$choice.'%');
+									$w = "$field $op " . $db->quote('%'.$choice.'%');
+
+									if ($op == self::OP_NOTCONTAINS) {
+										$w = "($w OR $field IS NULL)";
+									}
+
+									$where[] = $w;
 									break;
 							}
 							break;

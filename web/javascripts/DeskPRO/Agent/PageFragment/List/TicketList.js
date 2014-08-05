@@ -57,6 +57,24 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}
 	},
 
+	updateSlaListForTicket: function(info) {
+		if (!info.ticket_id || !info.sla_id || !this.meta.sla_id || info.sla_id != this.meta.sla_id) {
+			return;
+		}
+
+		var self = this;
+
+		if (this.isRefreshing) {
+			return;
+		}
+		this.isRefreshing = true;
+
+		setTimeout(function() {
+			self.isRefreshing = false;
+			DeskPRO_Window.loadListPane(self.meta.refreshUrl);
+		}, 0);
+	},
+
 	initScope: function() {
 		var $scope = this.$scope,
 			$timeout = this.$timeout,
@@ -1011,7 +1029,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		//------------------------------
 
 		$scope.uncheckTicketId = function(ticketId) {
+			ticketId = parseInt(ticketId);
 			if ($scope.checkedTickets[ticketId]) {
+				$scope.checkedTickets[ticketId] = false;
 				delete $scope.checkedTickets[ticketId];
 				$scope.checkedTicketsCount--;
 			}
@@ -1043,7 +1063,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.checkAllTickets = function(isChecked) {
 			if (isChecked) {
 				$scope.checkedTickets = {};
-				$scope.tickets.forEach(function(x) { $scope.checkedTickets[x.id] = true; });
+				$scope.tickets.forEach(function(x) { $scope.checkedTickets[parseInt(x.id)] = true; });
 			} else {
 				$scope.checkedTickets = {};
 			}
@@ -1108,7 +1128,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self = this;
 
 		for (var i in $scope.checkedTickets) {
-			if ($scope.checkedTickets.hasOwnProperty(i)) {
+			if ($scope.checkedTickets.hasOwnProperty(i) && $scope.checkedTickets[i] === true) {
 				ids.push(parseInt(i));
 			}
 		}
@@ -1128,7 +1148,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self = this;
 
 		for (var i in $scope.checkedTickets) {
-			if ($scope.checkedTickets.hasOwnProperty(i)) {
+			if ($scope.checkedTickets.hasOwnProperty(i) && $scope.checkedTickets[i] === true) {
 				ids.push(parseInt(i));
 			}
 		}

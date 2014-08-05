@@ -1,0 +1,34 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table" width="100%">
+			<tr>
+				<td width="80" class="nowrap" style="padding-right: 8px;">
+					<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.op" style="min-width: 50px;">
+						<option value="contains">Ticket has SLAs</option>
+						<option value="notcontains">Ticket does NOT have SLAs</option>
+					</select>
+				</td>
+				<td width="100%" class="nowrap">
+					<select multiple ui-select2 ng-model="model.sla_ids" style="width: 90%">
+						<option value="{{ ng_var('opt.value') }}" ng-repeat="opt in options">{{ ng_var('opt.title') }}</option>
+					</select>
+					<div ng-if="model.op != 'notcontains'">
+						<div>
+							<label><input type="checkbox" ng-model="model.show_status" /> and status is</label>
+							<div style="display: inline" ng-if="model.show_status">
+								<select ui-select2 ng-model="model.sla_status">
+									<option value="passing">Passing</option>
+									<option value="warning">Warning</option>
+									<option value="fail">Failed</option>
+								</select>
+							</div>
+						</div>
+						<div>
+							<label><input type="checkbox" ng-model="model.is_complete" /> and SLA is complete (no longer running)</label>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

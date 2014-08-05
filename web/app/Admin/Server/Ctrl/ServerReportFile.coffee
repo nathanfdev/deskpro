@@ -8,7 +8,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			@server_file_check = null
 
 			@total_checks = 0
-			@current_check = 0
+			@current_check =
 			@current_percentage = 0
 
 			@check_started = false
@@ -48,8 +48,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		doNextRequest: ->
 			@current_check++
 
-			if @current_check < @total_checks and @$scope.with_file_check and @file_check_results.length < 153600
-				@Api.sendGet('/server_file_check/' + @current_check).then((res) =>
+			if @current_check <= @total_checks and @$scope.with_file_check and @file_check_results.length < 153600
+				@Api.sendGet('/server_file_check/' + (@current_check-1)).then((res) =>
 					data = res.data.server_file_check
 
 					if data.okay

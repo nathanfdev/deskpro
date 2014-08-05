@@ -558,7 +558,7 @@ class Arrays
 	 * @param string $recursive_key  A string to recurse down only speciifc keys (eg, only reindex 'children').
 	 * @return array
 	 */
-	public static function assocToNumericArary(array $array, $recursive_key = false)
+	public static function assocToNumericArary(array $array, $recursive_key = null)
 	{
 		$new = array();
 
@@ -568,6 +568,55 @@ class Arrays
 			}
 
 			$new[] = $v;
+		}
+
+		return $new;
+	}
+
+
+	/**
+	 * Takes a lookup array and
+	 * reverses it so the value is the new key, and the key is the new value.
+	 *
+	 * E.g.:
+	 * <code>
+	 * $map = array(1 => array('x', 'y', 'z'), 2 => array('x'));
+	 * $rmap = reverseLookupArray($map, true);
+	 * // $rmap = array('x' => array(1, 2), 'y' => array(1), 'z' => array(1));
+	 * </code>
+	 *
+	 * @param array $array
+	 * @param bool  $map_to_array  True if the inner array (the thing being mapped to) should itself be an array
+	 * @return array
+	 */
+	public static function reverseLookupArray($array, $map_to_array = false)
+	{
+		$new = array();
+
+		foreach ($array as $outer_id => $inner) {
+			if (is_array($inner) || $inner instanceof \Traversable) {
+				foreach ($inner as $inner_id) {
+					if ($map_to_array) {
+						if (!isset($new[$inner_id])) {
+							$new[$inner_id] = array();
+						}
+
+						$new[$inner_id][] = $outer_id;
+					} else {
+						$new[$inner_id] = $outer_id;
+					}
+				}
+			} else {
+				if ($map_to_array) {
+					if (!isset($new[$inner])) {
+						$new[$inner] = array();
+					}
+
+					$new[$inner][] = $outer_id;
+				} else {
+					$new[$inner] = $outer_id;
+				}
+			}
 		}
 
 		return $new;
@@ -679,6 +728,28 @@ class Arrays
 		return $new_array;
 	}
 
+
+	/**
+	 * Rekey an array using a callback function on each value.
+	 * Callback can return null and the item will not be included in the array.
+	 *
+	 * @param array    $array
+	 * @param callback $fn     Callback should take two params: $v, $k. Should return a new key or null to skip.
+	 * @return array
+	 */
+	public static function rekey($array, $fn)
+	{
+		$new_array = array();
+
+		foreach ($array as $k => $v) {
+			$new_k = call_user_func($fn, $v, $k);
+			if ($new_k !== null) {
+				$new_array[$new_k] = $v;
+			}
+		}
+
+		return $new_array;
+	}
 
 
 	/**
@@ -2195,7 +2266,8 @@ class Arrays
 	 * Just like array_filter except you also get passed the current key as the second parameter.
 	 *
 	 * @param array $array
-	 * @param $fn
+	 * @param callback $fn
+	 * @return array
 	 */
 	public static function filter(array $array, $fn)
 	{
@@ -2204,6 +2276,29 @@ class Arrays
 		foreach ($array as $k => $v) {
 			if ($fn($v, $k) !== false) {
 				$new_array[$k] = $v;
+			}
+		}
+
+		return $new_array;
+	}
+
+
+	/**
+	 * Like array_map except will run recursively on sub-arrays.
+	 *
+	 * @param array $array
+	 * @param $fn
+	 * @return array
+	 */
+	public static function mapRecursive(array $array, $fn)
+	{
+		$new_array = array();
+
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				$new_array[$k] = self::mapRecursive($v, $fn);
+			} else {
+				$new_array[$k] = call_user_func($fn, $v);
 			}
 		}
 

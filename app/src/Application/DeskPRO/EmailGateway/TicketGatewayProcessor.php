@@ -67,6 +67,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	protected $source_info;
 
+	/**
+	 * @var string
+	 */
+	protected $created_object_type;
+
+	/**
+	 * @var int
+	 */
+	protected $created_object_id;
+
 
 	/**
 	 * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
@@ -128,23 +138,15 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		if ($ticket AND !$person AND $can_add_new_person) {
 			$this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user on ticket, adding user with email %s', $this->reader->getFromAddress()->getEmail()));
 
+			$person_processor = new PersonFromEmailProcessor();
+
 			// If the detector didnt find a person, doesnt mean they dont exist
-			$person = $this->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
+			$person = $person_processor->findPerson($this->reader->getFromAddress());
 
 			// But we'll create them now if they dont
 			if (!$person) {
 				$this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
-				$person = Person::newContactPerson(array('email' => $this->reader->getFromAddress()->getEmail()));
-
-				$this->getDb()->beginTransaction();
-				try {
-					$this->getEm()->persist($person);
-					$this->getEm()->flush();
-					$this->getDb()->commit();
-				} catch (\Exception $e) {
-					$this->getDb()->rollback();
-					throw $e;
-				}
+				$person = $person_processor->createPerson($this->reader->getFromAddress());
 			}
 
 			if ($person && !$person->is_agent) {
@@ -259,7 +261,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($check_person && $check_person->is_agent) {
 			if ($email_body_html) {
+				$this->logMessage("Checking for agent reply codes in HTML body");
 				$rc = new AgentReplyCodes($email_body_html, true);
+				$rc->setCleaner($this->container->getInputCleaner());
 				$rc->setLogger($this->logger);
 
 				$reply_actions = $rc->getProperties();
@@ -267,6 +271,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$email_body_html = $rc->getNewBody();
 				}
 			} else {
+				$this->logMessage("Checking for agent reply codes in TEXT body");
 				$rc = new AgentReplyCodes($email_body_text, false);
 				$rc->setLogger($this->logger);
 
@@ -391,6 +396,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
+		$this->created_object_type = 'ticket_message';
+		$this->created_object_id   = $obj->id;
+
 		return $obj;
 	}
 
@@ -409,32 +417,44 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		$person_processor = new PersonFromEmailProcessor();
 		$person = $person_processor->findPerson($this->reader->getFromAddress());
+
+		if ($person) {
+			$this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
+			$person_processor->passPerson($this->reader->getFromAddress(), $person);
+		} else {
+			if ($this->container->getSetting('core.reg_enabled')) {
+				$person = $person_processor->createPerson($this->reader->getFromAddress());
+				$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
+			}
+		}
+
+		// Still no person means reg is closed
+		if (!$person) {
+			$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
+			$this->error = EmailSource::ERR_PERM_INSUFFICIENT;
+			$this->error_type = 'rejected';
+
+			$account_manager = App::$container->getEmailAccountManager();
+			$user_email = $this->reader->getFromAddress()->getEmail();
+
+			if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
+				$message = $this->container->getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
+					'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+					'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+				));
+				$message->setTo($this->reader->getFromAddress()->getEmail());
+				$this->container->getMailer()->send($message);
+				return null;
+			}
+		}
+
 		if ($person) {
 			$this->logMessage('[TicketGatewayProcessor] Found existing person: ' . $person['id']);
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] Creating new contact');
-			if (!$this->container->getSetting('core.reg_enabled')) {
-				$this->logMessage('[TicketGatewayProcessor] No user and closed registration');
-				$this->error = EmailSource::ERR_PERM_INSUFFICIENT;
-				$this->error_type = 'rejected';
 
-				$account_manager = App::$container->getEmailAccountManager();
-				$user_email = $this->reader->getFromAddress()->getEmail();
-
-				if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
-					$message = $this->container->getMailer()->createMessage();
-					$message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', array(
-						'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-						'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-					));
-					$message->setTo($this->reader->getFromAddress()->getEmail());
-					$this->container->getMailer()->send($message);
-					return null;
-				}
-			}
-			$person = $person_processor->createPerson($this->reader->getFromAddress());
-			$this->logMessage('[TicketGatewayProcessor] Created new contact: ' . $person['id']);
 		}
 
 		if ($person && $person->is_agent && $ticket_email->is_bounce) {
@@ -480,6 +500,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				return null;
 			}
 
+			$this->created_object_type = 'ticket';
+			$this->created_object_id   = $obj->id;
+
 			return $obj;
 		} else {
 			$this->logMessage('[TicketGatewayProcessor] runNewTicket');
@@ -496,6 +519,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				$this->error_type = $new_proc->getErrorType();
 				return null;
 			}
+
+			$this->created_object_type = 'ticket';
+			$this->created_object_id   = $obj->id;
 
 			return $obj;
 		}
@@ -556,10 +582,23 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$messages = array();
 		}
 
-		if (isset($this->options['logger_messages'])) {
-			$messages = array_merge($messages, $this->options['logger_messages']->getMessages());
-		}
-
 		return $messages;
+	}
+
+
+	/**
+	 * @return int
+	 */
+	public function getCreatedObjectId()
+	{
+		return $this->created_object_id;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCreatedObjectType()
+	{
+		return $this->created_object_type;
 	}
 }

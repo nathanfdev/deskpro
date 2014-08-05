@@ -4,21 +4,21 @@
   define(function() {
 
     /*
-       * Description
-       * -----------
-    		 *
-    		 *	Example View
-    		 *	------------
-    		 *	<dp-report-builder-title>
-    		 *	</dp-report-builder-title>
-    		 *
-    		 *	Parameters
-    		 *	------------
-       *
+    	 * Description
+    	 * -----------
+    	 *
+    	 *	Example View
+    	 *	------------
+    	 *	<dp-report-builder-title>
+    	 *	</dp-report-builder-title>
+    	 *
+    	 *	Parameters
+    	 *	------------
+    	 *
      */
     var Reports_Directive_DpReportTitle;
     Reports_Directive_DpReportTitle = [
-      '$state', function($state) {
+      '$state', '$location', function($state, $location) {
         return {
           restrict: 'AE',
           replace: true,
@@ -32,9 +32,9 @@
 
             /*
             
-             			Below variables will look like following
+            				Below variables will look like following
             
-             			scope.texts = ['Number of tickets created','grouped by',' & ']
+            				scope.texts = ['Number of tickets created','grouped by',' & ']
             				scope.options = [[{value: 'yesterday', label: 'Yesterday'}, {value: 'today', label: 'Today'}, {value: '123', label: '123'}, {value: '456', label: '456'}]
             																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
             																					[{value: 'department', label: 'Department'}, {value: 'agent', label: 'Agent'}]
@@ -46,6 +46,7 @@
             scope.options = [];
             scope.selected = [];
             scope.defaultLinkParams = '';
+            scope.type = attrs.type || 'builtIn';
             scope.$watch('possibleValues', (function(_this) {
               return function(newVal) {
                 var valueToDecorate;
@@ -63,14 +64,14 @@
 
             /*
             				 * This function builds directive by constructing it on 'the fly' using DOM operations
-             			 * The reason for doing so - problems with inner directives that were compiled with $compile() functionality
+            				 * The reason for doing so - problems with inner directives that were compiled with $compile() functionality
              */
             buildDirectiveVariables = function(value) {
               var collected, key, lastPiece, match, params, regex;
               key = 0;
               params = $state.params.params.split(',');
               lastPiece = value;
-              regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g;
+              regex = /(.*?)(<(\d+:.+?)>)/g;
               while (match = regex.exec(value)) {
                 scope.texts.push(match[1]);
                 collected = collectSelectOptions(match[3]);
@@ -129,15 +130,19 @@
             };
 
             /*
-             			 * Going to correponding route after changing selected options inside select box
+            				 * Going to correponding route after changing selected options inside select box
              */
             return scope.changeLinkParams = function() {
-              var linkParams;
-              linkParams = scope.selected.join(',');
-              return $state.go('builder.edit', {
-                id: scope.reportId,
-                params: linkParams
-              });
+              return window.setTimeout(function() {
+                var href, linkParams;
+                linkParams = scope.selected.join(',');
+                href = $state.href('builder.edit', {
+                  id: scope.reportId,
+                  params: linkParams,
+                  type: scope.type
+                });
+                return window.location.hash = href;
+              }, 100);
             };
           }
         };

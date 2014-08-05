@@ -205,7 +205,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 			$ticket_email->getSentToEmail(),
 			$ticket_email->getSentWithCcs(),
 			$ticket_email->getFromName(),
-			$ticket_email->getFromEmailAccount()->address,
+			$ticket_email->getFromEmailAccount()->getUseEmailAddress(),
 			$ticket_email->getTemplateName()
 		);
 

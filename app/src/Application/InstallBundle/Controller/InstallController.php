@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -172,7 +173,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 				try {
 					$this->getDb()->connect();
-				} catch (\PDOException $e) {
+				} catch (DBALException $e) {
 					if ($e->getCode() == '1049') {
 
 						// Attempt to create an empty database
@@ -720,16 +721,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 			// For the all agent group, fetch permissions from the template
 			if ($AGENTGROUP_ALL) {
-				$scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
-				foreach ($scanner->getNames() as $p_name) {
-					$p = new \Application\DeskPRO\Entity\Permission();
-					$p->usergroup = $AGENTGROUP_ALL;
-					$p->name = $p_name;
-					$p->value = 1;
-					$this->getOrm()->persist($p);
-				}
-				$this->getOrm()->flush();
-
 				$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
 				$ch->setCollection(array($AGENTGROUP_ALL));
 				$this->getOrm()->persist($agent);
@@ -768,6 +759,14 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			null
 		);
 		$app_syncer->runSync();
+
+		$this->container->resetSystemService('app_manager');
+		$instance_installer = new \Application\DeskPRO\App\InstanceInstaller(
+			$this->container->getAppManager(),
+			$this->container->getAppManager()->getPackage('deskpro_gravatar'),
+			$this->container->getEm()
+		);
+		$instance_installer->install('', array(), $this->container);
 
 		$prev_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
 		if (!$prev_time) {

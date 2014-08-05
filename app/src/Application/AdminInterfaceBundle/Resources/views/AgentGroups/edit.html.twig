@@ -15,6 +15,26 @@
 
 			<article class="form-horizontal dp-form">
 				<div dp-tab-body="main.props">
+					<div ng-if="EditCtrl.group.sys_name == 'agent_all_perms'" class="alert alert-info" style="margin: 10px;">
+						<p>
+							This is a special built-in permission group that grants <strong>all permissions</strong> to members.
+						</p>
+						<p>
+							Agents in this group will have full access to the agent interface, including access to all ticket departments.
+						</p>
+					</div>
+					<div ng-if="EditCtrl.group.sys_name == 'agent_all_safe_perms'" class="alert alert-info" style="margin: 10px;">
+						<p>
+							This is a special built-in permission group that grants <strong>all non-destructive permissions</strong> to members.
+						</p>
+						<p>
+							Agents that are in this group will have nearly full access to the agent interface, including access to all ticket departments.
+						</p>
+						<p>
+							The only permissions that this group does not grant are those which allow certain destructive actions, such as irreversible delete operations.
+						</p>
+					</div>
+
 					{% include 'AdminInterfaceBundle:AgentGroups:edit-props.html.twig' %}
 				</div>
 				<div dp-tab-body="main.perms">
@@ -34,7 +54,7 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.group.id">
+					<div class="dp-delete-control" ng-if="EditCtrl.group.id && !EditCtrl.group.sys_name">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
 					</div>
 

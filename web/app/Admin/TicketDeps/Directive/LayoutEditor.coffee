@@ -26,9 +26,6 @@ define [
 				agent: []
 			}
 
-			@_initTab('user', @els.user_tab)
-			@_initTab('agent', @els.agent_tab)
-
 			@ngModel.$formatters.push( (modelValue) =>
 				# Make sure the basic data structure exists
 				if not modelValue
@@ -74,6 +71,9 @@ define [
 
 				return modelValue
 			)
+
+			@_initTab('user', @els.user_tab)
+			@_initTab('agent', @els.agent_tab)
 
 			@ngModel.$parsers.push( (viewModel) =>
 				return viewModel
@@ -259,6 +259,8 @@ define [
 			fieldScope.field = field
 			fieldScope.type  = tabType
 
+			fid = @getFieldId(field)
+
 			fieldScope.removeRow = =>
 				viewValue = @ngModel.$viewValue[tabType]
 				for f, idx in viewValue
@@ -269,16 +271,10 @@ define [
 				fieldRow.remove()
 				fieldScope.$destroy()
 
-				field_id = field.field_id || null
-				if field_id
-					fid = field.field_type + '_' + field_id
-				else
-					fid = field.field_type
-
 				tab = @els["#{tabType}_tab"].find('.form-elements')
 				tab.find("[data-fid=\"#{fid}\"]").show()
 
-			if field.id in @required_fields[tabType]
+			if fid in @required_fields[tabType]
 				fieldScope.removeRow = ->
 					return
 				fieldScope.isSticky = true
@@ -286,7 +282,7 @@ define [
 			fieldRow = @$compile("""
 				<li class="layout-field"><dp-ticket-layout-editor-field type="#{tabType}" ng-model="field" /></li>
 			""")(fieldScope)
-			fieldRow.data('field-id', field.id).addClass("field-#{field.id}")
+			fieldRow.data('field-id', fid).addClass("field-#{fid}")
 
 			return fieldRow
 
@@ -301,105 +297,120 @@ define [
 			]
 
 			for form in forms
-				typeName    = form.typeName
-				form_model  = @ngModel.$viewValue[form.typeName]
-				worksheetEl = @els[form.worksheetName]
-				tabEl       = @els[form.typeName + '_tab']
-				listEl      = worksheetEl.find('ul').first()
+				@renderForm(form)
 
-				layoutFieldEls = worksheetEl.find('.layout-field');
+		renderForm: (form) ->
+			prevField   = null
+			prevFieldEl = null
+			typeName    = form.typeName
+			form_model  = @ngModel.$viewValue[form.typeName]
+			worksheetEl = @els[form.worksheetName]
+			tabEl       = @els[form.typeName + '_tab']
+			listEl      = worksheetEl.find('ul').first()
 
-				validNames = []
-				tabEl.find('.form-elements').find('.layout-field').each(->
-					validNames.push($(this).data('field-type') + '_' + ($(this).data('field-id') || '0'));
-				)
+			layoutFieldEls = worksheetEl.find('.layout-field');
 
-				use_form_model = []
-				for field in form_model
-					nameCheck = field.field_type + '_' + (field.field_id || '0')
-					if validNames.indexOf(nameCheck) != -1
-						use_form_model.push(field)
+			validNames = []
+			tabEl.find('.form-elements').find('.layout-field').each(->
+				validNames.push($(this).data('field-type') + '_' + ($(this).data('field-id') || '0'));
+			)
 
-				draggableEls = tabEl.find('.form-elements')
-				draggableEls.show()
-				draggableEls.find('li').each( ->
-					$el = $(this)
-					field_id = $el.data('field-id') || null
-					if field_id
-						fid = $el.data('field-type') + '_' + field_id
+			use_form_model = []
+			for field in form_model
+				nameCheck = field.field_type + '_' + (field.field_id || '0')
+				if validNames.indexOf(nameCheck) != -1
+					use_form_model.push(field)
+
+			draggableEls = tabEl.find('.form-elements')
+			draggableEls.show()
+			draggableEls.find('li').each( ->
+				$el = $(this)
+				field_id = $el.data('field-id') || null
+				if field_id
+					fid = $el.data('field-type') + '_' + field_id
+				else
+					fid = $el.data('field-type')
+
+				$el.data('fid', fid).attr('data-fid', fid)
+			)
+
+			orderMap = {}
+			elementMap = {}
+
+			# Check for new elements
+			newFields = []
+			for field, order in use_form_model
+				field.id = @getFieldId(field)
+				fieldEl = layoutFieldEls.filter('.field-' + field.id)
+				if not fieldEl[0]
+					newFields.push(field)
+				else
+					elementMap[field.id] = fieldEl
+
+				orderMap[field.id] = order
+
+			# Remove elements
+			layoutFieldEls.each( ->
+				fieldId = $(this).data('field-id')
+				if not elementMap[fieldId]
+					$(this).remove()
+			)
+
+			# Add new elements
+			for field in newFields
+				field.id = @getFieldId(field)
+
+				nameCheck = field.field_type + '_' + (field.field_id || '0')
+				if validNames.indexOf(nameCheck) == -1
+					continue
+
+				fieldRow = @createFieldRow(typeName, field)
+				elementMap[field.id] = fieldRow
+				order = orderMap[field.id]
+
+				if order == 0
+					listEl.prepend(fieldRow)
+				else
+					prevField = use_form_model[order-1]
+					if prevField and elementMap[prevField.id]
+						prevFieldEl = elementMap[prevField.id]
+						fieldRow.insertAfter(prevFieldEl)
 					else
-						fid = $el.data('field-type')
+						listEl.append(fieldRow)
 
-					$el.data('fid', fid).attr('data-fid', fid)
-				)
+			# Verify order
+			doReorder = false
+			layoutFieldEls = worksheetEl.find('.layout-field')
+			layoutFieldEls.each( (currentOrder) ->
+				fieldId = $(this).data('field-id')
+				expectedOrder = orderMap[fieldId] || 0
 
-				orderMap = {}
-				elementMap = {}
+				if currentOrder != expectedOrder
+					doReorder = true
+					return false
+			)
 
-				# Check for new elements
-				newFields = []
-				for field, order in use_form_model
+			if doReorder
+				layoutFieldEls.detach()
+				for field in use_form_model
 					fieldEl = layoutFieldEls.filter('.field-' + field.id)
-					if not fieldEl[0]
-						newFields.push(field)
-					else
-						elementMap[field.id] = fieldEl
+					fieldEl.appendTo(listEl)
 
-					orderMap[field.id] = order
+			for f in use_form_model
+				fid = @getFieldId(f)
+				draggableEls.find("[data-fid=\"#{fid}\"]").hide();
 
-				# Remove elements
-				layoutFieldEls.each( ->
-					fieldId = $(this).data('field-id')
-					if not elementMap[fieldId]
-						$(this).remove()
-				)
+		getFieldId: (field) ->
+			return field.id if field.id
 
-				# Add new elements
-				for field in newFields
-					nameCheck = field.field_type + '_' + (field.field_id || '0')
-					if validNames.indexOf(nameCheck) == -1
-						continue
+			field_id = field.field_id || null
+			if field_id
+				fid = field.field_type + '_' + field_id
+			else
+				fid = field.field_type
 
-					fieldRow = @createFieldRow(typeName, field)
-					elementMap[field.id] = fieldRow
-					order = orderMap[field.id]
-
-					if order == 0
-						listEl.prepend(fieldRow)
-					else
-						prevField = use_form_model[order-1]
-						if prevField and elementMap[prevField.id]
-							prevFieldEl = elementMap[prevField.id]
-							fieldRow.insertAfter(prevFieldEl)
-						else
-							listEl.append(fieldRow)
-
-				# Verify order
-				doReorder = false
-				layoutFieldEls = worksheetEl.find('.layout-field')
-				layoutFieldEls.each( (currentOrder) ->
-					fieldId = $(this).data('field-id')
-					expectedOrder = orderMap[fieldId] || 0
-
-					if currentOrder != expectedOrder
-						doReorder = true
-						return false
-				)
-
-				if doReorder
-					layoutFieldEls.detach()
-					for field in use_form_model
-						fieldEl = layoutFieldEls.filter('.field-' + field.id)
-						fieldEl.appendTo(listEl)
-
-				for f in use_form_model
-					field_id = f.field_id || null
-					if field_id
-						fid = f.field_type + '_' + field_id
-					else
-						fid = f.field_type
-
-					draggableEls.find("[data-fid=\"#{fid}\"]").hide();
+			field.id = fid
+			return fid
 
 	return ['$compile', 'LoggerManager', 'DataService', '$q', '$timeout', ($compile, LoggerManager, DataService, $q, $timeout) ->
 

@@ -89,9 +89,18 @@
 			<% } %>
 		<div class="bound-fade"></div>
 	</div>
+	<%
+	var displayable_fields = [];
+	for (var i = 0; i < display_fields.length; i++) {
+		var field = display_fields[i];
+		if (!this.isFieldDisplayable(ticket, field)) continue;
+		displayable_fields.push(field);
+	}
+	%>
+	<% if (displayable_fields.length) { %>
 	<div class="extra-fields">
 		<ul>
-			<% for (var i = 0; i < display_fields.length; i++) { var field = display_fields[i]; if (!this.isFieldDisplayable(ticket, field)) continue; %>
+			<% for (var i = 0; i < displayable_fields.length; i++) { var field = displayable_fields[i]; %>
 				<li>
 					<% if (field == 'department') { %>
 						<span class="prop-title">{{ phrase('agent.general.department') }}:</span>
@@ -248,4 +257,5 @@
 		</ul>
 		<br class="clear"/>
 	</div>
+	<% } %>
 </article>

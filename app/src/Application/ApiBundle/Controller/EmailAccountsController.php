@@ -43,6 +43,7 @@ use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\OutgoingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Orb\Validator\StringEmail;
 
 class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -231,7 +232,28 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 		$data = $this->getTestOutgoingFormData();
 		$form->submit($data);
 
-		$tester = new OutgoingAccountTester($edit_account->getOutgoingAccountConfig());
+		if (!StringEmail::isValueValid($this->in->getString('test_email.to'))) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'Invalid TO email address',
+			));
+		}
+		if (!StringEmail::isValueValid($this->in->getString('test_email.from'))) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'Invalid FROM email address',
+			));
+		}
+
+		$out_account = $edit_account->getOutgoingAccountConfig();
+		if (!$out_account) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'No outgoing account configuration was specified.',
+			));
+		}
+
+		$tester = new OutgoingAccountTester($out_account);
 		$tester->test(
 			$this->in->getString('test_email.to'),
 			$this->in->getString('test_email.from'),

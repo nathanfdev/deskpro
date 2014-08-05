@@ -9,7 +9,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 		this.options = {
 			loadUrl: '',
 			saveUrl: '',
-                        ticket_id: null
+			ticket_id: null
 		};
 
 		this.setOptions(options);
@@ -58,9 +58,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 		var wrapper = this.overlay.getWrapper();
 
 		wrapper.on('click', '.save-trigger', this._doSave.bind(this));
-		
-		console.log(wrapper);
-		
+
 		$('.ticket-search-box').on('click', 'ul.results-list li', function(){
 			var footerEl = self.overlay.getWrapper().find('.overlay-footer').addClass('loading');
 			
@@ -87,7 +85,10 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 
 							//DeskPRO_Window.runPageRoute(self.options.loadRoute.replace('{id}', data.id));
 						}
+
 						self.overlay.close();
+						DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.page.getMetaData('ticket_id'), {ignoreExist:true});
+						self.page.closeSelf();
 					},
 					error: function(xhr, textStatus, errorThrown) {
 						self.overlay.close();
@@ -101,8 +102,6 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 	},
 
 	_doSave: function(e) {
-		alert("_doSave triggered!");
-
 		this.close();
 	},
 

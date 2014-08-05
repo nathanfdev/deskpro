@@ -39,6 +39,15 @@ abstract class AbstractEntityCheckTest extends \DpUnitTestCase
 
 
 	/**
+	 * @return ExecutorContext
+	 */
+	protected function getExecContext()
+	{
+		return $this->exec_context;
+	}
+
+
+	/**
 	 * Called exactly twice with $id being 1 and 2.
 	 *
 	 * IMPORTANT:

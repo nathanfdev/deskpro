@@ -54,7 +54,6 @@ class Build1400056734 extends AbstractBuild
 		$this->out("Upgrading escalations");
 
 		$db = $this->container->getDb();
-		$db->exec("DROP TABLE IF EXISTS ticket_trigger_logs");
 		$db->executeUpdate('DELETE FROM ticket_escalations');
 
 		#------------------------------
@@ -75,6 +74,8 @@ class Build1400056734 extends AbstractBuild
 
 		$old_escalations = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
 
+		$id_map = array();
+
 		foreach ($old_escalations as $esc) {
 			// We only care about escalations
 			if (strpos($esc['event_trigger'], 'time') === false) {
@@ -85,13 +86,18 @@ class Build1400056734 extends AbstractBuild
 			$new_esc = $this->processTrigger($esc);
 			if ($new_esc) {
 				$this->container->getEm()->persist($new_esc);
+				$this->container->getEm()->flush();
 				$this->out("-- Saved");
+
+				$id_map[$esc['id']] = $new_esc->id;
 			} else {
 				$this->out("-- Skipped");
 			}
 		}
 
-		$this->container->getEm()->flush();
+		if ($id_map) {
+			$this->saveUpgradeData('201404', 'esc_id_map', $id_map);
+		}
 	}
 
 
@@ -154,6 +160,15 @@ class Build1400056734 extends AbstractBuild
 		$esc->event_trigger_time = $this->getTimeSeconds($old_esc['event_trigger_options']['time']);
 		$esc->date_created  = new \DateTime();
 		$esc->date_last_run = new \DateTime();
+
+		if (!empty($old_esc['date_created'])) {
+			try {
+				$d = \DateTime::createFromFormat('Y-m-d H:i:s', $old_esc['date_created']);
+				if ($d) {
+					$esc->date_created = $d;
+				}
+			} catch (\Exception $e) {}
+		}
 
 		$esc->title      = $old_esc['title'] ?: 'Trigger ' . $old_esc['id'];
 		if ($is_incomplete) {

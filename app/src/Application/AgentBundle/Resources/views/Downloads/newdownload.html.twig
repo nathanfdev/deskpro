@@ -7,11 +7,12 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
+<div class="layout-content page-new-download page-new-content">
+<div class="dp-page-content">
+
 <div class="form-header-error" style="display: none">
 	{{ phrase('agent.publish.no_downlod_cats_error') }}
 </div>
-<div class="form-outer">
-<div class="layout-content page-new-download page-new-content">
 
 <a class="tab-anchor" href="#">&nbsp;</a>
 
@@ -139,6 +140,5 @@ pageMeta.baseId = '{{ baseId }}';
 
 </form>
 
-</div>
 </div>
 </div>

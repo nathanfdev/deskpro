@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
+use Doctrine\DBAL\LockMode;
 
 class Person extends AbstractEntityRepository
 {
@@ -235,15 +236,25 @@ class Person extends AbstractEntityRepository
 	 * @param string $email
 	 * @return Person
 	 */
-	public function findOneByEmail($email)
+	public function findOneByEmail($email, $for_write = false)
 	{
-		$person = $this->getEntityManager()->createQuery("
-			SELECT p
-			FROM DeskPRO:Person p
-			LEFT JOIN p.emails e
-			WHERE e.email = ?1
-			ORDER BY p.id ASC
-		")->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+		if (App::getDb()->isTransactionActive() && $for_write) {
+			$person = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				LEFT JOIN p.emails e
+				WHERE e.email = ?1
+				ORDER BY p.id ASC
+			")->setLockMode(LockMode::PESSIMISTIC_WRITE)->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+		} else {
+			$person = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				LEFT JOIN p.emails e
+				WHERE e.email = ?1
+				ORDER BY p.id ASC
+			")->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+		}
 
 		return $person;
 	}

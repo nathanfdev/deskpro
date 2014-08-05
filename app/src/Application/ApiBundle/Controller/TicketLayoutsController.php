@@ -313,7 +313,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 					'on_viewticket' => true,
 					'on_newticket' => true
 				));
-				$user_layout->add($field);
+				$user_layout->add($field, 'message');
 				$change = true;
 			}
 
@@ -327,7 +327,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 					'on_viewticket' => true,
 					'on_newticket' => true
 				));
-				$agent_layout->add($field);
+				$agent_layout->add($field, 'message');
 				$change = true;
 			}
 

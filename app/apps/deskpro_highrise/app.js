@@ -12,6 +12,17 @@ define(function() {
 					});
 				});
 			}
+			if (this.getSetting('widget_profile')) {
+				this.registerWidgetTab('user', '@summary.tab', "Highrise ({{content.matches.length}})", 'Ticket/tab.html', function($scope, $app, $person) {
+					$scope.matches = [];
+
+					$app.findEmail($person.primary_email.email).then(function(data) {
+						$scope.isError      = data.isError;
+						$scope.errorMessage = data.errorMessage;
+						$scope.matches      = data.matches;
+					});
+				});
+			}
 		},
 
 		findEmail: function(email) {

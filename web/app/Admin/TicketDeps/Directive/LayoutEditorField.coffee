@@ -82,6 +82,8 @@ define ->
 
 					$scope.criteriaTypesDef = typeDef
 
+					$scope.dismiss = -> $modalInstance.dismiss();
+
 					$scope.done = ->
 						if not $scope.with_criteria
 							$scope.options.criteria.terms.length = 0

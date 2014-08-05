@@ -69,7 +69,7 @@
             buildDirectiveVariables = function(value) {
               var collected, lastPiece, match, regex;
               lastPiece = value;
-              regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g;
+              regex = /(.*?)(<(\d+:.+?)>)/g;
               while (match = regex.exec(value)) {
                 scope.texts.push(match[1]);
                 collected = collectSelectOptions(match[3]);
@@ -151,7 +151,8 @@
               linkParams = scope.selected.join(',');
               return $state.go('builder.edit', {
                 id: scope.reportId,
-                params: linkParams
+                params: linkParams,
+                type: scope.type
               });
             };
           }
