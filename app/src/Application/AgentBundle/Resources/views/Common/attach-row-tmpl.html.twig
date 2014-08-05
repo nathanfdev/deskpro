@@ -13,7 +13,7 @@
 	<li>
 		<input type="hidden" name="{{ formname|default('attach') }}" value="{{ '{%=file.blob_id%}' }}" />
 		{% if not noremove %}<em class="remove-attach-trigger"></em>{% endif %}
-		<label><a href="{{ '{%=file.download_url%}' }}" target="_blank">{{ '{%=file.filename%}' }}</a><span>{{ '{%=file.filesize_readable%}' }}</span></label>
+		<label><a href="{{ '{%=file.download_url%}' }}" target="_blank" data-blob-id="{{ '{%=file.blob_id%}' }}">{{ '{%=file.filename%}' }}</a><span>{{ '{%=file.filesize_readable%}' }}</span></label>
 	</li>
 	{{ '{% } %}' }}
 	{{ '{% } %}' }}
