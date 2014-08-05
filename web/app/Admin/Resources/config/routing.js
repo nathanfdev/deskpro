@@ -925,6 +925,14 @@ define(function() {
 		target: "appbody@tickets"
 	});
 
+	routes.push({
+		id: 'tickets.ticket_accounts.advancedsettings',
+		url: '/advanced-settings',
+		templateName: 'TicketAccounts/advanced-settings.html',
+		controller: 'Admin_TicketAccounts_Ctrl_Settings',
+		target: "appbody@tickets"
+	});
+
 	//##################################################################################################################
 	// CRM
 	//##################################################################################################################

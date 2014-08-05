@@ -39,6 +39,7 @@ use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class ProcessAbstract
 {
@@ -79,6 +80,21 @@ abstract class ProcessAbstract
 	 * @var array
 	 */
 	protected $dupe_inline_blobs = array();
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person;
+
+	/**
+	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
+	 */
+	protected $reader;
+
+	/**
+	 * @var \Application\DeskPRO\Translate\Translate
+	 */
+	protected $translator;
 
 	/**
 	 * @return mixed
@@ -240,17 +256,27 @@ abstract class ProcessAbstract
 		if ($this->processed_blobs !== null) return $this->processed_blobs;
 		$this->processed_blobs = array();
 
+		$accept = App::$container->getAttachmentAccepter();
+
 		foreach ($this->reader->getAttachments() as $attach) {
 
 			if ($skip_attach && $skip_attach === $attach) {
 				continue;
 			}
 
-			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
-				$attach->getFileContents(),
-				$attach->getFileName(),
-				$attach->getMimeType()
-			);
+			$path = tempnam(sys_get_temp_dir(), 'tmp_attachment_');
+			$file = new UploadedFile($path, $attach->getFileNameUtf8(), $attach->getMimeType());
+
+			if ($error = $accept->getError($file, $this->person->is_agent ? 'emails.agent' : 'emails.user')) {
+				$errorMessage = $this->translator
+					->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				$this->logMessage($errorMessage);
+
+				continue;
+			}
+
+			$blob = $accept->accept($file);
+			unlink($file->getRealPath());
 
 			$this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
 			$this->processed_blobs[$blob->id] = $blob;

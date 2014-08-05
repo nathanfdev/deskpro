@@ -25,61 +25,70 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category DependencyInjection
- */
+namespace Application\DeskPRO\Settings;
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Attachments\AcceptAttachment;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Orb\Util\Env as EnvUtil;
-
-class AttachmentAccepterService
+class EmailAccountsSettings
 {
-	public static function create(DeskproContainer $container)
+	const PREFIX = 'core.emails';
+
+	/**
+	 * @var Settings
+	 */
+	protected $settings;
+
+	// todo default values should be defined in cfg
+	protected $values = array(
+		'attach_agent_maxsize' => 5242880,
+		'attach_agent_must_exts' => array(),
+		'attach_agent_not_exts' => array(),
+		'attach_user_maxsize' => 5242880,
+		'attach_user_must_exts' => array(),
+		'attach_user_not_exts' => array(),
+	);
+
+	public function __construct(Settings $settings)
 	{
-		$accepter = new AcceptAttachment(
-			$container->getEm(),
-			$container->getBlobStorage()
-		);
+		$this->settings = $settings;
+	}
 
-		$effective_max_size = EnvUtil::getEffectiveMaxUploadSize();
+	public function toArray()
+	{
+		$data = array();
+		foreach ($this->values as $k => $v) {
+			$storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
 
-		foreach (array('', 'emails.') as $prefix) {
-			foreach (array('agent', 'user') as $type) {
-				$res = new \Application\DeskPRO\Attachments\RestrictionSet();
-
-				$max_size  = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_maxsize');
-				$max_size  = min($effective_max_size, $max_size);
-
-				$must_exts = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_must_exts');
-				$not_exts  = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_not_exts');
-
-				if ($must_exts) {
-					$must_exts = explode(',', strtolower($must_exts));
-					array_walk($must_exts, 'trim');
-				} else {
-					$must_exts = null;
-				}
-
-				if ($not_exts) {
-					$not_exts = explode(',', strtolower($not_exts));
-					array_walk($not_exts, 'trim');
-				} else {
-					$not_exts = null;
-				}
-
-				$res->setMaxSize($max_size)->setAllowedExts($must_exts)->setDisallowedExts($not_exts);
-
-				$accepter->addRestrictionSet($prefix . $type, $res);
+			if (is_int($v)) {
+				$storedValue = (int) $storedValue;
+			} elseif (is_array($v)) {
+				$storedValue = $storedValue
+					? explode(',', $storedValue)
+					: $v;
 			}
+
+			$data[$k] = $this->values[$k] = $storedValue
+				?: $v; // todo remove after merge with branch where Settings class can return default value
 		}
 
-		return $accepter;
+		return $data;
 	}
-}
+
+	public function fromArray(array $data = array())
+	{
+		foreach ($data as $k => $v) {
+			if (!array_key_exists($k, $this->values)) {
+				continue;
+			}
+
+			$storeValue = $v;
+			if (is_int($this->values[$k])) {
+				$storeValue = $v = (int) $v;
+			} elseif (is_array($this->values[$k])) {
+				$v = (array) $v;
+				$storeValue = implode(',', $v);
+			}
+			$this->values[$k] = $v;
+			$this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
+		}
+	}
+} 

@@ -31,16 +31,23 @@
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
-			<h3>Incoming Email Log</h3>
+            <h3>{{ phrase('adm.ticket_accounts.incoming_log') }}</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
-			<h3>Outgoing Email Log</h3>
+			<h3>{{ phrase('adm.ticket_accounts.outgoing_log') }}</h3>
 		</a>
 	</section>
+
+    <section class="dp-paneblock dp-panelink">
+        <a href="{{ ng_href('tickets.ticket_accounts.advancedsettings') }}">
+            <em><i class="fa fa-chevron-down"></i></em>
+            <h3>{{ phrase('adm.ticket_accounts.advanced_settings') }}</h3>
+        </a>
+    </section>
 
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
 	{{ ng_tpl('AdminInterface:TicketAccounts:delete-modal.html.twig') }}
