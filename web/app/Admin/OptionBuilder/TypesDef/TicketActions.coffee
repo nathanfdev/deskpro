@@ -471,7 +471,6 @@ define [
 						options_data = {}
 						options_data['agents']           = data.agents.agents
 						options_data['agent_teams']      = data.agent_teams.agent_teams
-						options_data['departments']      = data.departments.departments
 						options_data['ticket_deps']      = data.ticket_deps.departments
 						options_data['ticket_cats']      = data.ticket_cats.categories
 						options_data['ticket_pris']      = data.ticket_pris.priorities
@@ -487,6 +486,8 @@ define [
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
 						options_data['round_robin']      = data.round_robin
 						options_data['round_robins']     = data.round_robins
+
+						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
 						@options_data = options_data
 

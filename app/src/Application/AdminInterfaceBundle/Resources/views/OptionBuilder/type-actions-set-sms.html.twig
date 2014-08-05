@@ -73,10 +73,10 @@
 							<td>To Department(s):</td>
 							<td>
 								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
-									<li ng-repeat="department in departments">
+									<li ng-repeat="dep in ticket_dep_options">
 										<label>
-											<input type="checkbox" ng-model="model.department_ids[department.id]"/>
-											{{ ng_var('department.title') }}
+											<input type="checkbox" ng-model="model.department_ids[dep.id]"/>
+											{{ ng_var('dep.title') }}
 										</label>
 									</li>
 								</ul>

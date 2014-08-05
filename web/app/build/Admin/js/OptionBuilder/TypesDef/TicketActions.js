@@ -471,7 +471,6 @@
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
                 options_data['agent_teams'] = data.agent_teams.agent_teams;
-                options_data['departments'] = data.departments.departments;
                 options_data['ticket_deps'] = data.ticket_deps.departments;
                 options_data['ticket_cats'] = data.ticket_cats.categories;
                 options_data['ticket_pris'] = data.ticket_pris.priorities;
@@ -487,6 +486,7 @@
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
                 options_data['round_robin'] = data.round_robin;
                 options_data['round_robins'] = data.round_robins;
+                options_data['ticket_dep_options'] = _this.standardOptionsFormatter(options_data['ticket_deps']);
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
                   _ref7 = _this.options_data.ticket_fields;
