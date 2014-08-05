@@ -106,29 +106,38 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\RoundRobin';
-		$metadata->setPrimaryTable(array( 'name' => 'round_robin', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RoundRobin';
+		$metadata->setPrimaryTable(array('name' => 'round_robin'));
 
-		$metadata->mapOneToOne(array(
-			'fieldName' => 'next',
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'nullable'   => false,
+			'id'         => true
+		));
+		$metadata->mapField(array(
+			'fieldName'  => 'title',
+			'columnName' => 'title',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'  => false
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'next',
 			'dpApi'        => true,
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-			'mappedBy' => NULL,
-			'inversedBy' => NULL,
-			'joinColumns' => array(
-				0 => array(
-					'name' => 'next_agent_id',
-					'referencedColumnName' => 'id',
-					'nullable' => true,
-					'onDelete' => 'set null',
-					'columnDefinition' => NULL,
-				),
-			),
+			'joinColumns' => array(array(
+				'name'                 => 'next_agent_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'set null',
+				'columnDefinition'    => NULL,
+			)),
 		));
 
 		$metadata->mapOneToMany(array(
