@@ -13,10 +13,20 @@
 
       TicketDeps.$inject = ['Api', '$q'];
 
+      TicketDeps.prototype.url = function() {
+        return '/ticket_deps';
+      };
+
+      TicketDeps.prototype.resolveResponse = function(response) {
+        return response.departments;
+      };
+
       TicketDeps.prototype._doLoadList = function() {
         var deferred;
         deferred = this.$q.defer();
-        this.Api.sendGet('/ticket_deps').success((function(_this) {
+        this.Api.sendGet(this.url(), {
+          with_perms: 1
+        }).success((function(_this) {
           return function(data, status, headers, config) {
             var models, proc;
             _this.deps = data.departments;
