@@ -132,7 +132,7 @@ class JiraController extends AbstractController
 			$service = $this->_getService();
 			$meta['assignee'] = array();
 
-			foreach( $service->lookupAssignees($projectKey) as &$assignee )
+			foreach($service->lookupAssignees($projectKey) as $assignee)
 			{
 				$assignee['avatarUrls']['xsmall']	= $assignee['avatarUrls']['16x16'];
 				$assignee['avatarUrls']['small']	= $assignee['avatarUrls']['24x24'];
