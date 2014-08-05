@@ -108,7 +108,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		// Wait til after updatePageCursor since it needs full list to know proper cursor
 		$scope.tickets = startTicketsBatch[0];
-
 		this.getEl('ticket_json').remove();
 		this.getEl('ticket_ids_json').remove();
 
