@@ -31,7 +31,7 @@
         });
         if ((this.options_data.round_robin != null) && this.options_data.round_robin.enabled) {
           options.push({
-            title: 'Set Round Robin Queue',
+            title: 'Set Assigned Agent from Round Robin',
             value: 'SetRoundRobin'
           });
         }
