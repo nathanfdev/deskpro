@@ -374,8 +374,13 @@
 	 */
 	'core.ga_property_id' => '',
 
+
 	/**
-	 * Number of allowed requests to the API per hour. 0 to disable.
+	 * Interval to limit allowed requests to API in seconds
+	 */
+	'core.api_rate_limit_interval' => 60,
+	/**
+	 * Number of allowed requests to the API per interval. 0 to disable.
 	 */
 	'core.api_rate_limit' => defined('DPC_IS_CLOUD') ? 1000 : 0,
 

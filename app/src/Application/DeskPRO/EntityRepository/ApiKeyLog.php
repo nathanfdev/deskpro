@@ -33,77 +33,47 @@
  */
 
 namespace Application\DeskPRO\EntityRepository;
+
 use Application\DeskPRO\App;
+use Doctrine\ORM\Query;
 
-class ApiToken extends AbstractEntityRepository
+class ApiKeyLog extends AbstractEntityRepository
 {
+	const LIMIT = 50;
+
 	/**
-	 * Find an API key based off of a key string. A key string is: "id:code"
-	 * 
-	 * @param string $api_string
-	 *
-	 * @return \Application\DeskPRO\Entity\ApiToken
+	 * clean old records
 	 */
-	public function findByTokenString($token_string)
+	public function cleanup()
 	{
-		if (strpos($token_string, ':') === false) return null;
-		
-		list ($id, $token) = explode(':', $token_string, 2);
+		$limit = self::LIMIT;
 
-		$token_obj = $this->find($id);
-		if (!$token_obj) return null;
-		if ($token_obj->token != $token) return null;
+		$key_ids = App::$container->getDb()->fetchAllCol("
+			SELECT key_id
+			FROM api_key_log
+			GROUP BY key_id
+			HAVING COUNT(*) > $limit
+		");
 
-		return $token_obj;
-	}
-
-	public function getTokenForPerson(\Application\DeskPRO\Entity\Person $person)
-	{
-		return $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:ApiToken t
-			WHERE t.person = ?0 AND t.scope = 'client'
-		")->setParameters(array($person))->getOneOrNullResult();
-	}
-
-	public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiToken $api_token)
-	{
-		$rate_limit = App::getDb()->fetchAssoc("
-			SELECT *
-			FROM api_token_rate_limit
-			WHERE api_token_id = ?
-		", array($api_token->id));
-
-		if ($rate_limit && $rate_limit['reset_stamp'] <= time()) {
-			App::getDb()->delete('api_token_rate_limit', array(
-				'api_token_id' => $api_token->id
-			));
+		if (!$key_ids) {
+			return 0;
 		}
 
-		$interval = (int) App::getSetting('core.api_rate_limit_interval');
-		if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
-			$rate_limit = array(
-				'api_token_id' => $api_token->id,
-				'hits' => 0,
-				'created_stamp' => time(),
-				'reset_stamp' => time() + $interval
-			);
+		foreach ($key_ids as $key_id) {
+			$lid = App::$container->getDb()->fetchColumn("
+				SELECT id
+				FROM api_key_log
+				WHERE key_id = ?
+				ORDER BY id DESC
+				LIMIT $limit, 1
+			", array($key_id));
+
+			if ($lid) {
+				App::$container->getDb()->executeUpdate("
+					DELETE FROM api_key_log
+					WHERE key_id = ? AND id <= ?
+				", array($key_id, $lid));
+			}
 		}
-
-		return $rate_limit;
-	}
-
-	public function updateRateLimit(\Application\DeskPRO\Entity\ApiToken $api_token)
-	{
-		$time = time();
-
-		$interval = (int) App::getSetting('core.api_rate_limit_interval');
-		App::getDb()->executeUpdate("
-			INSERT INTO api_token_rate_limit
-				(api_token_id, hits, created_stamp, reset_stamp)
-			VALUES
-				(?, 1, ?, ?)
-			ON DUPLICATE KEY UPDATE hits = hits + 1
-		", array($api_token->id, $time, $time + $interval));
 	}
 }

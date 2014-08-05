@@ -203,7 +203,7 @@
 									<h3>Display style</h3>
 								</div>
 								<div class="col-lg-9">
-									<select ng-model="EditCtrl.form.choice.field_type" ui-select2 style="width: 250px;">
+									<select ng-model="EditCtrl.form.choice.field_type" ui-select2 style="width: 250px;" ng-change="EditCtrl.form.choice.default_value = null">
 										<option value="select">Select box (single selection)</option>
 										<option value="multi_select">Multiple-select box (multiple selection)</option>
 										<option value="radio">Radio buttons (single selection)</option>
@@ -219,9 +219,9 @@
 								<div class="col-lg-9">
 									<dp-category-builder max-depth="2" ng-model="EditCtrl.form.choice.options" save-flat-array="EditCtrl.choice_default_value_options"></dp-category-builder>
 									<p style="margin-top: 4px;">
-										Default option: <select ng-model="EditCtrl.form.choice.default_value" ui-select2 style="min-width: 200px;">
-											<option value="0">No default option</option>
-											<option value="{{ ng_var('c.id') }}" ng-repeat="c in EditCtrl.choice_default_value_options">{{ ng_var('c.title') }}</option>
+										Default option: <select ng-model="EditCtrl.form.choice.default_value" ui-select2 style="min-width: 200px;" ng-multiple="'multi_select' == EditCtrl.form.choice.field_type || 'checkbox' == EditCtrl.form.choice.field_type">
+											<option ng-if="'select' == EditCtrl.form.choice.field_type || 'radio' == EditCtrl.form.choice.field_type" value="0">No default option</option>
+											<option value="{{ ng_var('c.id') }}" ng-repeat="c in EditCtrl.form.choice.options">{{ ng_var('c.title') }}</option>
 										</select>
 									</p>
 								</div>

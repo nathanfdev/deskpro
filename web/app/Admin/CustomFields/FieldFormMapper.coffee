@@ -132,8 +132,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 						if fieldModel.choices and fieldModel.choices.length
 							formTypeOpts.options = fieldModel.choices
 
-						if fieldModel.default_value
-							formTypeOpts.default_value = parseInt(fieldModel.default_value)
+						formTypeOpts.default_value = fieldModel.default_value
 
 					when "toggle"
 						formTypeOpts.label_text = fieldModel.options.label_text || ''
