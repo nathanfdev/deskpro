@@ -30,6 +30,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 
 		initialLoad: ->
+			@service.loadList true
 			promises = [@serviceAgents.all(), @service.get(parseInt(@$stateParams.id || 0)),
 			            @serviceDeps.all(), @serviceGroups.all(), @serviceTeams.all(),]
 
