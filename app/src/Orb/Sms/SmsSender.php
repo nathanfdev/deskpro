@@ -26,13 +26,13 @@
 \**************************************************************************/
 
 /**
- * @package Orb
+ * Orb
+ *
+ * @package    Orb
  * @subpackage Sms
  */
 
 namespace Orb\Sms;
-
-use Orb\Sms\SmsException;
 
 /**
  * Responsible for sending SMS messages.
@@ -83,13 +83,11 @@ class SmsSender
 	 * @param string               $message
 	 * @param string|null          $from_number
 	 * @param SmsProviderInterface $provider
-	 *
-	 * @return SmsResult
 	 * @throws SmsException
 	 */
-	public function send($to_number, $message, $from_number = null, SmsProviderInterface $provider = null)
+	public function send($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
 	{
-		return $this->doSend($to_number, $message, $from_number, $provider);
+		$this->doSend($to_number, $message, $from_number, $provider);
 	}
 
 	/**
@@ -147,16 +145,19 @@ class SmsSender
 	/**
 	 * This is called from within the send() method. It's arguments and return values are the same.
 	 *
+	 * doSend() will always take the $message, and split it into 160 character chunks and send those.
+	 *
 	 * This allows subclasses to reuse this sending logic, if they want, and wrap it with other functionality.
 	 *
 	 * @param string               $to_number
 	 * @param string               $message
 	 * @param string|null          $from_number
 	 * @param SmsProviderInterface $provider
-	 * @return SmsResult
 	 * @throws SmsException
 	 */
-	protected function doSend($to_number, $message, $from_number = null, SmsProviderInterface $provider = null)
+	protected function doSend(
+		$to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null
+	)
 	{
 		if (!$provider = $this->getProvider($provider)) {
 			throw new SmsException('cannot send SMS without an SmsProvider');
@@ -164,6 +165,11 @@ class SmsSender
 
 		$from = $this->getFromNumber($from_number);
 
-		return $provider->sendMessage($to_number, $message, $from);
+		foreach ($message->getChunks() as $chunk) {
+			$result = $provider->sendMessage($to_number, $chunk, $from);
+			$chunk->setResult($result);
+		}
+
+		return $message->isSent();
 	}
 }

@@ -342,6 +342,11 @@
 	'core.apps_downloads' => 1,
 
 	/**
+	 * Maximum SMS chunks to send for a single message
+	 */
+	'core.max_sms_chunks' => 5,
+
+	/**
 	 * Max email size to read from gateways
 	 */
 	'core.gateway_max_email' => 41943040,

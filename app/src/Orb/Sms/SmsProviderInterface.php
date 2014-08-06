@@ -47,12 +47,12 @@ interface SmsProviderInterface
     /**
      * @param string $fromPhoneNumber phone number to send to, provider should be able to handle any format
      * @param string $toPhoneNumber phone number, provider should be able to handle any format
-     * @param string $textMessage the message to be sent to the given number
+     * @param SmsMessageChunk $messageChunk the message chunk to be sent to the given number
      *
      * @throws \Orb\Sms\SmsException
      * @return \Orb\Sms\SmsResult
      */
-    public function sendMessage($toPhoneNumber, $textMessage, $fromPhoneNumber);
+    public function sendMessage($toPhoneNumber, SmsMessageChunk $textMessage, $fromPhoneNumber);
 
     /**
      * A string identifier of the provider. This should be unique across the system.

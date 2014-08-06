@@ -35,6 +35,7 @@
 namespace DpUnitTests\DeskPRO\Sms;
 
 use Application\DeskPRO\Sms\DeskPROSmsSender;
+use Orb\Sms\SmsMessage;
 
 class DeskPROSmsSenderTest extends \DpUnitTestCase
 {
@@ -43,12 +44,24 @@ class DeskPROSmsSenderTest extends \DpUnitTestCase
 		$sms = new DeskPROSmsSender();
 		$sms->setDefaultFromNumber($from = '+12345678901');
 		$to = '1029384765';
-		$text = 'Some text message!';
+		$text = new SmsMessage('Some text message!');
 
 		$sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-		$sms_provider->shouldReceive('sendMessage')->with($to, $text, $from)->once();
+		$sms_provider->shouldReceive('sendMessage')->with($to, \Mockery::type('Orb\Sms\SmsMessageChunk'), $from)->once();
 
 		$sms->setDefaultProvider($sms_provider);
+
+		$sms->send($to, $text);
+	}
+
+	public function testMaxChunks()
+	{
+		$sms = new DeskPROSmsSender(null, null, 2);
+		$sms->setDefaultFromNumber($from = '+12345678901');
+		$to = '1029384765';
+		$text = new SmsMessage(str_repeat('Some text message!', 50));
+
+		$this->setExpectedException('Orb\Sms\SmsException');
 
 		$sms->send($to, $text);
 	}

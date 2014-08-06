@@ -25,35 +25,84 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace DpUnitTests\Orb\Util;
+/**
+ * Orb
+ *
+ * @package    Orb
+ * @subpackage Sms
+ */
 
-use Orb\Util\PhoneNumbers;
+namespace Orb\Sms;
 
-class PhoneNumbersTest extends \DpUnitTestCase
+/**
+ * Represents a single text message of 160 characters or less.
+ */
+class SmsMessageChunk
 {
-	public function testType()
+	/**
+	 * @var string text message
+	 */
+	private $text;
+
+	/**
+	 * @var SmsResult|null null until a send attempt, then it knows the last SmsResult
+	 */
+	private $result;
+
+	public function __construct($text, SmsResult $result = null)
 	{
-		// note how US/Canada (and many countries) make it impossible to
-		// distinguish between mobile/landline by looking only at the number
-		$this->assertEquals('landline-or-mobile', PhoneNumbers::getType('+19024038712'));
-		$this->assertEquals('landline-or-mobile', PhoneNumbers::getType('+16617480241'));
-		$this->assertEquals('mobile', PhoneNumbers::getType('+8109090908989'));
-		$this->assertEquals('toll-free', PhoneNumbers::getType('+18009835929'));
-		$this->assertEquals('unknown', PhoneNumbers::getType('+814590908989'));
+		if (strlen($text) > 160) {
+			throw new SmsException(
+				"SMS text message chunks cannot be greater than 160 characters. Given '$text'"
+			);
+		}
+
+		$this->text = $text;
+		$this->result = $result;
 	}
 
-	public function testRegion()
+
+	public function __toString()
 	{
-		$this->assertEquals('CA', PhoneNumbers::getRegionForNumber('+19024334909'));
-		$this->assertEquals('PR', PhoneNumbers::getRegionForNumber('+17879920947'));
-		$this->assertEquals('BS', PhoneNumbers::getRegionForNumber('+12424459909'));
-		$this->assertEquals('NO', PhoneNumbers::getRegionForNumber('+4799872329'));
-		$this->assertEquals('GB', PhoneNumbers::getRegionForNumber('+441224451909'));
-		$this->assertEquals('US', PhoneNumbers::getRegionForNumber('+16174530990'));
-		$this->assertEquals('BR', PhoneNumbers::getRegionForNumber('+55918930093'));
-		$this->assertEquals('RU', PhoneNumbers::getRegionForNumber('+74718790092'));
-		$this->assertEquals('CN', PhoneNumbers::getRegionForNumber('+869153450959'));
-		$this->assertEquals('ZA', PhoneNumbers::getRegionForNumber('+27110982345'));
-		$this->assertEquals('JP', PhoneNumbers::getRegionForNumber('+816690908989'));
+		return $this->text ?: '';
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isSent()
+	{
+		if (!$this->result) {
+			return false;
+		}
+
+		return $this->result->isSent();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getText()
+	{
+		return $this->text;
+	}
+
+
+	/**
+	 * @return SmsResult
+	 */
+	public function getResult()
+	{
+		return $this->result;
+	}
+
+
+	/**
+	 * @param null|SmsResult $result
+	 */
+	public function setResult(SmsResult $result = null)
+	{
+		$this->result = $result;
 	}
 }

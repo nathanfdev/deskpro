@@ -34,7 +34,6 @@
 
 namespace DpUnitTests\Sms;
 
-use DpTestingMocks\SmsNullProvider;
 use Orb\Sms\SmsResult;
 
 class SmsResultTest extends \DpUnitTestCase

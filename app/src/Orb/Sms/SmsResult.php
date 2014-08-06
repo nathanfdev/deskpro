@@ -26,10 +26,10 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
+ * Orb
  *
- * @package DeskPRO
- * @subpackage
+ * @package    Orb
+ * @subpackage Sms
  */
 
 namespace Orb\Sms;

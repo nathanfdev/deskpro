@@ -1238,7 +1238,7 @@ class Strings
 	 */
 	public static function trimHtml($string)
 	{
-		
+
 		// Dont attempt to run on very large strings
 		// the regex can be slow
 		if (strlen($string) > 716800) {
@@ -2565,5 +2565,34 @@ class Strings
 		} else {
 			throw new \BadMethodCallException('Unknown method `'.$name.'`');
 		}
+	}
+
+
+	/**
+	 * Takes a string and chops it into multiple string after a given $maxLength while preserving words.
+	 *
+	 * Input string is trimmed to start, and each element in the array is trimmed in the result array.
+	 *
+	 * @param string $string the input message that might be above $maxLength and need splitting
+	 * @param int $maxLength the maximum length of each element in the returned array
+	 * @return array the result array of the pieces of the string that were split
+	 */
+	public static function splitStringIntoArray($string, $maxLength)
+	{
+		$string = trim($string);
+
+		$arr = explode("\n", wordwrap($string, $maxLength, "\n", false));
+
+		// ensure trim
+		$arr = array_map(function ($val) {
+				return trim($val);
+			}, $arr);
+
+		// no empty array values
+		$arr = array_filter($arr, function ($val) {
+				return strlen($val) > 0;
+			});
+
+		return $arr;
 	}
 }
