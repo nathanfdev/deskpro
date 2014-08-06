@@ -43,6 +43,7 @@ use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\Filters\FilterChangeSet;
 use Monolog\Logger;
+use Orb\Util\Arrays;
 
 class AgentNotifyListBuilder implements PersonContextInterface
 {
@@ -77,9 +78,9 @@ class AgentNotifyListBuilder implements PersonContextInterface
 	private $person_context;
 
 	/**
-	 * @param Ticket $ticket
-	 * @param FilterChangeSet $filter_changes
-	 * @param TicketFilterSubscription $filter_sub_repos
+	 * @param Ticket                        $ticket
+	 * @param FilterChangeSet               $filter_changes
+	 * @param TicketFilterSubscriptionRepos $filter_sub_repos
 	 */
 	public function __construct(Ticket $ticket, FilterChangeSet $filter_changes, TicketFilterSubscriptionRepos $filter_sub_repos)
 	{
@@ -148,6 +149,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
 			'assign_change'        => $this->state->hasChangedField('agent'),
 			'assign_team_change'   => $this->state->hasChangedField('agent_team'),
 			'assign_follow_change' => $this->state->hasChangedField('participants'),
+			'property_change'      => false,
 		);
 
 		if ($this->state->isNewTicket()) {
@@ -172,6 +174,11 @@ class AgentNotifyListBuilder implements PersonContextInterface
 		} else if ($this->state->hasNewUserReply()) {
 			$event_types['user_reply'] = true;
 			$this->logMessage("notify_user_reply = true");
+		}
+
+		// Its a property change subscription event if its not a reply
+		if (!$event_types['new'] && !$event_types['agent_reply'] && !$event_types['agent_note'] && !$event_types['user_reply']) {
+			$event_types['property_change'] = true;
 		}
 
 		#------------------------------
@@ -265,8 +272,9 @@ class AgentNotifyListBuilder implements PersonContextInterface
 
 
 	/**
-	 * @param array $event_types
-	 * @param TicketFilter $filter
+	 * @param array                    $event_types
+	 * @param                          $with_origmatch
+	 * @param TicketFilter             $filter
 	 * @param TicketFilterSubscription $sub
 	 * @return array
 	 */
@@ -282,8 +290,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
 			}
 		} else if ($filter->sys_name != 'all') {
 			if (
-				$sub->email_property_change
-				|| (!$filter->sys_name && $sub->email_new && !$with_origmatch)
+				(!$filter->sys_name && $sub->email_new && !$with_origmatch)
 				|| (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $event_types['assign_change'] && $sub->email_new)
 				|| ($filter->sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->email_new)
 				|| ($filter->sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->email_new)
@@ -291,8 +298,7 @@ class AgentNotifyListBuilder implements PersonContextInterface
 				$types[] = 'email';
 			}
 			if (
-				$sub->alert_property_change
-				|| (!$filter->sys_name && $sub->alert_new && $with_origmatch)
+				(!$filter->sys_name && $sub->alert_new && $with_origmatch)
 				|| (($filter->sys_name == 'agent' || $filter->sys_name == 'unassigned') && $event_types['assign_change'] && $sub->alert_new)
 				|| ($filter->sys_name == 'agent_team' && $event_types['assign_team_change'] && $sub->alert_new)
 				|| ($filter->sys_name == 'participant' && $event_types['assign_follow_change'] && $sub->alert_new)
@@ -315,27 +321,25 @@ class AgentNotifyListBuilder implements PersonContextInterface
 	private function getSubTypesForFilterOrigMatch(array $event_types, $with_newmatch, TicketFilter $filter, TicketFilterSubscription $sub)
 	{
 		$types = array();
-		if ($sub->email_property_change) {
+
+		if ($event_types['property_change'] && $sub->email_property_change) {
 			$types[] = 'email';
-		} else {
-			if ($event_types['agent_note'] && $sub->email_agent_note) {
-				$types[] = 'email';
-			} else if ($event_types['agent_reply'] && $sub->email_agent_activity) {
-				$types[] = 'email';
-			} else if ($event_types['user_reply'] && $sub->email_user_activity) {
-				$types[] = 'email';
-			}
+		} else if ($event_types['agent_note'] && $sub->email_agent_note) {
+			$types[] = 'email';
+		} else if ($event_types['agent_reply'] && $sub->email_agent_activity) {
+			$types[] = 'email';
+		} else if ($event_types['user_reply'] && $sub->email_user_activity) {
+			$types[] = 'email';
 		}
-		if ($sub->alert_property_change) {
+
+		if ($event_types['property_change'] && $sub->alert_property_change) {
 			$types[] = 'alert';
-		} else {
-			if ($event_types['agent_note'] && $sub->alert_agent_note) {
-				$types[] = 'alert';
-			} else if ($event_types['agent_reply'] && $sub->alert_agent_activity) {
-				$types[] = 'alert';
-			} else if ($event_types['user_reply'] && $sub->alert_user_activity) {
-				$types[] = 'alert';
-			}
+		} else if ($event_types['agent_note'] && $sub->alert_agent_note) {
+			$types[] = 'alert';
+		} else if ($event_types['agent_reply'] && $sub->alert_agent_activity) {
+			$types[] = 'alert';
+		} else if ($event_types['user_reply'] && $sub->alert_user_activity) {
+			$types[] = 'alert';
 		}
 
 		// If orig matched but its not a new match,

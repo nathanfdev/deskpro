@@ -35,10 +35,13 @@
 namespace Application\DeskPRO\Tickets\Filters;
 
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Monolog\Logger;
+use Orb\Util\Arrays;
 
 class FilterChangeDetector
 {
@@ -63,6 +66,11 @@ class FilterChangeDetector
 	private $extended_log_info = false;
 
 	/**
+	 * @var array
+	 */
+	private $explicit_filter_scopes = array();
+
+	/**
 	 * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
 	 * @param \Application\DeskPRO\Entity\Person[] $agents
 	 */
@@ -84,6 +92,24 @@ class FilterChangeDetector
 				$this->team_to_agents[$t->id][] = $agent;
 			}
 		}
+	}
+
+
+	/**
+	 * Add a filter check for an agent explicitly. Usually this only goes through
+	 * detection for chagned filters, but sometimes you need to know if a ticket
+	 * was in an unaffected filter (e.g., for an 'updated' notification).
+	 *
+	 * @param TicketFilter $filter
+	 * @param Person       $agent
+	 */
+	public function addExplicitFilterScope(TicketFilter $filter, Person $agent)
+	{
+		if (!isset($this->explicit_filter_scopes[$filter->id])) {
+			$this->explicit_filter_scopes[$filter->id] = array('filter' => $filter, 'scopes' => array());
+		}
+
+		$this->explicit_filter_scopes[$filter->id]['scopes'][] = $agent;
 	}
 
 
@@ -153,6 +179,53 @@ class FilterChangeDetector
 
 
 	/**
+	 * @param array $affected_filters
+	 * @return array
+	 */
+	private function buildFilterCheckList(array $affected_filters)
+	{
+		$check_list = array();
+
+		foreach ($affected_filters as $filter) {
+			if ($filter->sys_name == 'archive_deleted') {
+				continue;
+			}
+
+			$agent_scopes = array();
+			if ($filter->is_global) {
+				$agent_scopes = $this->agents;
+			} else if ($filter->agent_team) {
+				$team_id = $filter->agent_team->id;
+				if (isset($this->team_to_agents[$team_id])) {
+					foreach ($this->team_to_agents[$team_id] as $agent) {
+						$agent_scopes[] = $agent;
+					}
+				}
+			} else if ($filter->person) {
+				$agent_scopes[] = $filter->person;
+			}
+
+			if (!$agent_scopes) {
+				continue;
+			}
+
+			$check_list[$filter->id] = array(
+				'filter' => $filter,
+				'scopes' => $agent_scopes
+			);
+		}
+
+		foreach ($this->explicit_filter_scopes as $sub) {
+			if (!isset($check_list[$sub['filter']->id])) {
+				$check_list[$sub['filter']->id] = $sub;
+			}
+		}
+
+		return array_values($check_list);
+	}
+
+
+	/**
 	 * @param Ticket $ticket
 	 * @param ExecutorContextInterface $context
 	 * @return FilterChangeSet
@@ -169,8 +242,6 @@ class FilterChangeDetector
 				return $set;
 			}
 		}
-
-		$affected_filters = $this->getAffectedFilters($ticket, $logger);
 
 		$old_dep_id = null;
 		$new_dep_id = null;
@@ -198,37 +269,22 @@ class FilterChangeDetector
 		/** @var FilterChange[] $changed */
 		$changed = array();
 
-		$logger->info(sprintf("[FilterChangeDetector] Checking %d filters with on %d agents", count($affected_filters), count($this->agents)));
+		$affected_filters = $this->getAffectedFilters($ticket, $logger);
+		$filter_checks = $this->buildFilterCheckList($affected_filters);
 
-		foreach ($affected_filters as $filter) {
-			if ($filter->sys_name == 'archive_deleted') {
-				continue;
-			}
+		$logger->info(sprintf("[FilterChangeDetector] Checking %d filters", count($filter_checks)));
+
+		foreach ($filter_checks as $filter_check) {
+
+			$filter       = $filter_check['filter'];
+			$agent_scopes = $filter_check['scopes'];
 
 			$filter_ts = microtime(true);
 
 			$filter_change = new FilterChange($filter);
 			$changed[$filter->id] = $filter_change;
 
-			if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -----", $filter->id, $filter->title));
-
-			$agent_scopes = array();
-			if ($filter->is_global) {
-				$agent_scopes = $this->agents;
-			} else if ($filter->agent_team) {
-				$team_id = $filter->agent_team->id;
-				if (isset($this->team_to_agents[$team_id])) {
-					foreach ($this->team_to_agents[$team_id] as $agent) {
-						$agent_scopes[] = $agent;
-					}
-				}
-			} else if ($filter->person) {
-				$agent_scopes[] = $filter->person;
-			}
-
-			if (!$agent_scopes) {
-				continue;
-			}
+			if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----", $filter->id, $filter->title, count($agent_scopes)));
 
 			foreach ($agent_scopes as $agent) {
 
