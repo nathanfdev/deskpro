@@ -869,6 +869,20 @@ define(function() {
 		controller: 'Admin_ChannelSms_Ctrl_List'
 	});
 
+	routes.push({
+		id: 'tickets.channel_sms.gocreate',
+		url: '/channel_sms/go-create',
+		templateName: '',
+		controller: ['$state', function ($state) { $state.go('tickets.channel_sms.create'); }]
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.create',
+		url: '/channel_sms/create',
+		templateName: 'ChannelSms/edit.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
 	//###
 	//# Ticket Accounts
 	//###

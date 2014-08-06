@@ -47,7 +47,7 @@ define [
 
 		_setListData: (raw_recs) ->
 			for rec in raw_recs
-				model = @em.createEntity('ticket_account', 'id', rec) #TODO
+				model = @em.createEntity('sms_account', 'id', rec)
 				model.retain()
 				@recs.set(model.id, model)
 
@@ -56,7 +56,7 @@ define [
 	# with account provided. Or adds it to the list if it doesnt exist.
 	###
 		updateModel: (account) ->
-			new_model = @em.createEntity('ticket_account', 'id', account)
+			new_model = @em.createEntity('sms_account', 'id', account)
 			@recs.set(new_model.id, new_model)
 			return new_model
 
@@ -67,7 +67,7 @@ define [
 		###
 		addToList: (rec) ->
 			if not rec._is_model
-				model = @em.createEntity('ticket_account', 'id', dep)
+				model = @em.createEntity('sms_account', 'id', dep)
 			else
 				model = @em.add(rec, true)
 

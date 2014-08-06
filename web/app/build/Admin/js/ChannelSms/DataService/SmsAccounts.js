@@ -54,7 +54,7 @@
         _results = [];
         for (_i = 0, _len = raw_recs.length; _i < _len; _i++) {
           rec = raw_recs[_i];
-          model = this.em.createEntity('ticket_account', 'id', rec);
+          model = this.em.createEntity('sms_account', 'id', rec);
           model.retain();
           _results.push(this.recs.set(model.id, model));
         }
@@ -69,7 +69,7 @@
 
       Admin_ChannelSms_DataService_SmsAccounts.prototype.updateModel = function(account) {
         var new_model;
-        new_model = this.em.createEntity('ticket_account', 'id', account);
+        new_model = this.em.createEntity('sms_account', 'id', account);
         this.recs.set(new_model.id, new_model);
         return new_model;
       };
@@ -84,7 +84,7 @@
       Admin_ChannelSms_DataService_SmsAccounts.prototype.addToList = function(rec) {
         var model;
         if (!rec._is_model) {
-          model = this.em.createEntity('ticket_account', 'id', dep);
+          model = this.em.createEntity('sms_account', 'id', dep);
         } else {
           model = this.em.add(rec, true);
         }

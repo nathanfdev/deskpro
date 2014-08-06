@@ -1,17 +1,18 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
-	class Admin_ChannelSms_Ctrl_List extends Admin_Main_Ctrl_Base
-		@CTRL_ID = 'Admin_ChannelSms_Ctrl_List'
-		@CTRL_AS = 'ChannelSmsList'
-		@CTRL_TYPE = 'list'
-		@DEPS = ['SmsAccountsData']
+define [
+	'Admin/Main/Ctrl/Base'
+], (
+	Admin_Ctrl_Base
+) ->
+	class Admin_ChannelSms_Ctrl_Edit extends Admin_Ctrl_Base
+		@CTRL_ID = 'Admin_ChannelSms_Ctrl_Edit'
+		@CTRL_AS = 'ChannelSmsEdit'
+		@DEPS    = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions']
 
 		init: ->
-			@accounts = []
+			@accountId = parseInt(@$stateParams.id || 0)
 
 		initialLoad: ->
 			list_promise = @SmsAccountsData.loadList().then((recs) =>
-				console.log recs
-				console.log recs.values()
 				@accounts = recs.values()
 
 				if @$state.current.name == 'tickets.channel_sms'
@@ -22,11 +23,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 
 				@addManagedListener(@SmsAccountsData.recs, 'changed', =>
 					@accounts = @SmsAccountsData.recs.values()
-					@ngApply()
 					console.log @accounts
+					@ngApply()
 				)
 			)
 
 			return @$q.all([list_promise]);
 
-	Admin_ChannelSms_Ctrl_List.EXPORT_CTRL()
+	Admin_ChannelSms_Ctrl_Edit.EXPORT_CTRL()
