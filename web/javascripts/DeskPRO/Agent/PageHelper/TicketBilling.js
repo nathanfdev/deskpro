@@ -121,7 +121,12 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 	updateBillingForm: function(reset) {
 		var form = this.getEl('billing_form');
 		var typeInputs = form.find('input[name=' + this.baseId + '_billing_type]');
-		var val = typeInputs.filter(':checked').val();
+
+		if (typeInputs.is('[type="hidden"]')) {
+			var val = typeInputs.val();
+		} else {
+			var val = typeInputs.filter(':checked').val();
+		}
 
 		this.getEl('billing_type_hidden').val(val);
 
