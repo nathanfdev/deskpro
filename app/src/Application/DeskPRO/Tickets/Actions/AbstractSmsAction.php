@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\SnippetFormatter;
+use Orb\Sms\SmsMessage;
 use Orb\Util\Util;
 
 abstract class AbstractSmsAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
@@ -162,9 +163,10 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 		foreach ($numbers as $number) {
 			$this->logSendingTo($number, $context);
 			try {
-				$result = $sms_sender->send($number, $message);
+				$sms_message = new SmsMessage($message);
+				$result = $sms_sender->send($number, $sms_message);
 
-				if ($result->isSent()) {
+				if ($sms_message->isSent()) {
 					$this->recordSuccessfulTicketChange($ticket, $number);
 				} else {
 					$this->logErrorSendingTo($result->getProviderMessage(), $context);

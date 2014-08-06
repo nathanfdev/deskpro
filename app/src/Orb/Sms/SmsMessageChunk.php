@@ -67,6 +67,19 @@ class SmsMessageChunk
 		return $this->text ?: '';
 	}
 
+
+	/**
+	 * @return bool
+	 */
+	public function isSent()
+	{
+		if (!$this->result) {
+			return false;
+		}
+
+		return $this->result->isSent();
+	}
+
 	/**
 	 * @return string
 	 */

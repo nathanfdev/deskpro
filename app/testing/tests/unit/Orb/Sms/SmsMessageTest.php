@@ -35,6 +35,8 @@
 namespace DpUnitTests\Sms;
 
 use Orb\Sms\SmsMessage;
+use Orb\Sms\SmsMessageChunk;
+use Orb\Sms\SmsResult;
 
 class SmsMessageTest extends \DpUnitTestCase
 {
@@ -61,5 +63,37 @@ class SmsMessageTest extends \DpUnitTestCase
 		$this->assertCount(1, $message->getChunks());
 		$chunks = $message->getChunks();
 		$this->assertEquals(trim(str_repeat($msg, 16)), $chunks[0]);
+	}
+
+
+	public function testMessageIsSentIfAllChunksSent()
+	{
+		$message = new SmsMessage(str_repeat('ten chars ', 34));
+		$chunks = $message->getChunks();
+		$chunk1 = $chunks[0];
+		$chunk2 = $chunks[1];
+		$chunk3 = $chunks[2];
+
+		$chunk1->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
+		$chunk2->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
+		$chunk3->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
+
+		$this->assertTrue($message->isSent());
+	}
+
+
+	public function testMessageIsNotSentIfAnyChunkIsNotSent()
+	{
+		$message = new SmsMessage(str_repeat('ten chars ', 34));
+		$chunks = $message->getChunks();
+		$chunk1 = $chunks[0];
+		$chunk2 = $chunks[1];
+		$chunk3 = $chunks[2];
+
+		$chunk1->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
+		$chunk2->setResult(new SmsResult(SmsResult::SMS_FAIL, '90293029', '9020290', 'text', 'twilio', array()));
+		$chunk3->setResult(new SmsResult(SmsResult::SMS_SENT, '90293029', '9020290', 'text', 'twilio', array()));
+
+		$this->assertFalse($message->isSent());
 	}
 }

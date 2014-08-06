@@ -172,5 +172,7 @@ class SmsSender
 			$result = $provider->sendMessage($to_number, $chunk, $from);
 			$chunk->setResult($result);
 		}
+
+		return $message->isSent();
 	}
 }
