@@ -34,9 +34,6 @@
 
 namespace Orb\Sms;
 
-use Orb\Sms\SmsException;
-use Orb\Util\Strings;
-
 /**
  * Responsible for sending SMS messages.
  *
@@ -90,7 +87,7 @@ class SmsSender
 	 */
 	public function send($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
 	{
-		 $this->doSend($to_number, $message, $from_number, $provider);
+		$this->doSend($to_number, $message, $from_number, $provider);
 	}
 
 	/**

@@ -29,40 +29,26 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Sms
+ * @category DependencyInjection
  */
 
-namespace DpUnitTests\DeskPRO\Sms;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\Sms\DeskPROSmsSender;
-use Orb\Sms\SmsMessage;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-class DeskPROSmsSenderTest extends \DpUnitTestCase
+class InstantSmsSenderService
 {
-	public function testSendUsesDefaults()
+	/**
+	 * @param DeskproContainer $container
+	 * @param array            $options
+	 * @return \Application\DeskPRO\Sms\DeskPROSmsSender
+	 */
+	public static function create(DeskproContainer $container, $options = array())
 	{
-		$sms = new DeskPROSmsSender();
-		$sms->setDefaultFromNumber($from = '+12345678901');
-		$to = '1029384765';
-		$text = new SmsMessage('Some text message!');
+		$sms_sender = $container->get('deskpro.sms_sender');
+		$max_chunks = $container->getSettingsHandler()->get('core.max_sms_chunks');
+		$sms_sender->setMaxChunks($max_chunks);
 
-		$sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-		$sms_provider->shouldReceive('sendMessage')->with($to, \Mockery::type('Orb\Sms\SmsMessageChunk'), $from)->once();
-
-		$sms->setDefaultProvider($sms_provider);
-
-		$sms->send($to, $text);
-	}
-
-	public function testMaxChunks()
-	{
-		$sms = new DeskPROSmsSender(null, null, 2);
-		$sms->setDefaultFromNumber($from = '+12345678901');
-		$to = '1029384765';
-		$text = new SmsMessage(str_repeat('Some text message!', 50));
-
-		$this->setExpectedException('Orb\Sms\SmsException');
-
-		$sms->send($to, $text);
+		return $sms_sender;
 	}
 }

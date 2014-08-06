@@ -77,7 +77,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 		###########################################################################
 		# Prepare the DeskproSmsSender
 		###########################################################################
-		$sms_sender = $this->getContainer()->get('deskpro.sms_sender');
+		$sms_sender = $this->getContainer()->getSystemService('instant_sms_sender');
 		$sms_sender->setDefaultProvider($this->getSmsProvider());
 		$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
 
