@@ -417,6 +417,19 @@
 	'core.agent_translate_debug' => false,
 	'core.agent_enable_kb_shortcuts' => true,
 
+	/**#@+
+	 * If agents can create various labels
+	 */
+	'labels.downloads.agent_can_create'     => true,
+	'labels.feedback.agent_can_create'      => true,
+	'labels.kb.agent_can_create'            => true,
+	'labels.news.agent_can_create'          => true,
+	'labels.organizations.agent_can_create' => true,
+	'labels.people.agent_can_create'        => true,
+	'labels.tickets.agent_can_create'       => true,
+	'labels.chat.agent_can_create'          => true,
+	/**#@-*/
+
 	####################################################################################################################
 	# core_tickets
 	####################################################################################################################

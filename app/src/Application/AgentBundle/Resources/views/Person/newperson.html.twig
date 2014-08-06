@@ -119,6 +119,7 @@ pageMeta.baseId = '{{ baseId }}';
                                                                                         data-select-width="auto"
                                                                                         data-placeholder="Add a label"
                                                                                         value="{% for label in state.newperson.labels %}{{label}},{% endfor %}"
+                                                                                        {% if app.getSetting('labels.people.agent_can_create') %}data-allow-new="1"{% endif %}
                                                                                 />
                                                                         </td>
                                                                 </tr>

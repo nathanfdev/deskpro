@@ -172,6 +172,34 @@ class LabelDef extends AbstractEntityRepository
 		return null;
 	}
 
+	public function getTypeByEntityName($entityName)
+	{
+		if (false === $type = array_search($entityName, $this->getLabelEntities(), 1)) {
+			return null;
+		}
+
+		return substr($type, 7);
+	}
+
+	public function findLabelsByType($type)
+	{
+		$ret = array();
+		$res = $this->getEntityManager()->getConnection()->executeQuery(sprintf(
+			'SELECT label FROM %s WHERE label_type = :type', $this->getTableName()
+		), array('type' => $type));
+
+		while ($row = $res->fetchColumn(0)) {
+			$ret[] = $row;
+		}
+
+		return $ret;
+	}
+
+	public function findLabelsByEntityName($entityName)
+	{
+		return $this->findLabelsByType($this->getTypeByEntityName($entityName));
+	}
+
 	/**
 	 * A tablename=>entityname array of objects that have label capabiltiies.
 	 *
@@ -185,7 +213,7 @@ class LabelDef extends AbstractEntityRepository
 			'labels_people'        => 'DeskPRO:LabelPerson',
 			'labels_tickets'       => 'DeskPRO:LabelTicket',
 			'labels_articles'      => 'DeskPRO:LabelArticle',
-			'labels_feedback'         => 'DeskPRO:LabelFeedback',
+			'labels_feedback'      => 'DeskPRO:LabelFeedback',
 			'labels_downloads'     => 'DeskPRO:LabelDownload',
 			'labels_news'          => 'DeskPRO:LabelNews',
 		);

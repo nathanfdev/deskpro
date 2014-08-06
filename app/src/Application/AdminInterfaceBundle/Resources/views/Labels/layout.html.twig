@@ -1,0 +1,65 @@
+{% set listpane_help %}{% block listpane_help %}{% endblock %}{% endset %}
+{% if listpane_help %}<dp-help-page>{{ listpane_help }}</dp-help-page>{% endif %}
+
+<div class="dp-layout-loading" ng-show="state_loading || $parent.state_loading"><i></i></div>
+<div class="ng-hide dp-layout-fullpage" ng-hide="state_loading || $parent.state_loading"
+     ng-controller="Admin_Labels_Base_Ctrl_Settings">
+    <div class="dp-pane">
+
+        <form class="form-horizontal dp-form" role="form" name="Form" ng-submit="Ctrl.save()">
+            <section class="dp-paneblock dp-listpane">
+                <header>
+                    <h3>
+                        <span>{{ phrase('adm.labels.settings_title') }}</span>
+                    </h3>
+                </header>
+
+                {##################################################################################################}
+
+                <article class="form-horizontal dp-form">
+                    <div class="panel panel-innertable">
+                        <div class="form-group">
+                            <div class="col-lg-12">
+                                <div class="inner-group">
+                                    <label>
+                                        <input type="checkbox" ng-model="Ctrl.settings.agent_can_create" />
+                                        <h4>{{ phrase('adm.labels.settings_agent_creation_title') }}</h4>
+                                    </label>
+                                    <span class="help-block">
+                                        {{ phrase('adm.labels.settings_agent_creation_description') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                {##################################################################################################}
+
+                <footer>
+                    <div class="dp-content">
+                        <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                            <div dp-hide-spinning="saving">
+                                <button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+                            </div>
+                            <div dp-show-spinning="saving">
+                                <i class="spinner-flat"></i>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </section>
+        </form>
+        <div dp-register-message="saved_settings">Settings saved successfully.</div>
+
+    </div>
+</div>
+
+<div class="dp-layout-list">
+    <div class="dp-layout-list-listpane" ng-show="state_loading || $parent.state_loading"><div class="dp-layout-loading"><i></i></div></div>
+
+    <div class="ng-hide dp-layout-list-listpane" ng-hide="state_loading || $parent.state_loading">
+        <div class="dp-pane">{% block listpane_content %}{% endblock %}</div>
+    </div>
+    <div class="ng-hide dp-layout-list-editpane" ng-hide="state_loading || $parent.state_loading" ui-view></div>
+</div>

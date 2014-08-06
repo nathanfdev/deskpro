@@ -67,6 +67,7 @@ pageMeta.baseId = '{{ baseId }}';
 						data-select-width="auto"
 						data-placeholder="{{ phrase('agent.general.add_a_label') }}"
 						value="{% for label in convo.labels %}{{ label.label }},{% endfor %}"
+                        data-allow-new="{{ app.getSetting('labels.chat.agent_can_create') }}"
 					/>
 				</div>
 			</td>
