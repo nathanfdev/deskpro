@@ -212,6 +212,11 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 	_initBasic: function() {
 		var self = this;
 
+		var editTitle = new DeskPRO.Agent.PageFragment.Page.EditTitle(
+			this,
+			BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save'
+		);
+
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('bodytabs')),
