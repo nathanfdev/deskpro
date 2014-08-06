@@ -627,14 +627,39 @@ class DpLoader extends LoaderAbstract
 				}
 
 				if ($agents_online_ids) {
+
+					// Are any in 'all perms'?
 					$q = $this->getPdo()->prepare("
-						SELECT COUNT(*)
-						FROM department_permissions
-						WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND department_id IN (" . implode(',', $dep_ids) . ")
-						LIMIT 1
+						SELECT id
+						FROM usergroups
+						WHERE sys_name IN ('agent_all_perms', 'agent_all_safe_perms')
 					");
 					$q->execute();
-					$any_online = $q->fetchColumn();
+					$all_perm_groups = array();
+					while ($gid = $q->fetchColumn()) {
+						$all_perm_groups[] = $gid;
+					}
+					if ($all_perm_groups) {
+						$q = $this->getPdo()->prepare("
+							SELECT COUNT(*)
+							FROM person2usergroups
+							WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND usergroup_id IN (" . implode(',', $all_perm_groups) . ")
+							LIMIT 1
+						");
+						$q->execute();
+						$any_online = $q->fetchColumn();
+					}
+
+					if (!$any_online) {
+						$q = $this->getPdo()->prepare("
+							SELECT COUNT(*)
+							FROM department_permissions
+							WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND department_id IN (" . implode(',', $dep_ids) . ")
+							LIMIT 1
+						");
+						$q->execute();
+						$any_online = $q->fetchColumn();
+					}
 
 					if (!$any_online) {
 						$online_time = 0;
