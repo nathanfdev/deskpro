@@ -258,7 +258,7 @@ class ProcessNew extends ProcessAbstract
 		$ticket->person          = $this->person;
 		$ticket->status          = 'awaiting_agent';
 		$ticket->email_account   = $this->account;
-		$ticket->creation_system = 'gatway.person';
+		$ticket->creation_system = 'gateway.person';
 
 		// Set the proper email address on the ticket from the users account
 		if ($this->reader->getFromAddress()->email != $this->person->getPrimaryEmailAddress()) {

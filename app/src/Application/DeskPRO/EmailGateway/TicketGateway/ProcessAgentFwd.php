@@ -197,7 +197,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
 		$ticket_message = new TicketMessage();
 		$ticket_message->person = $user;
-		$ticket_message->creation_system = 'gatway.agent';
+		$ticket_message->creation_system = 'gateway.agent';
 
 		$body = $fwd_cutter->getForwardedMessage();
 		$body = $this->cleanBodyText($body);
