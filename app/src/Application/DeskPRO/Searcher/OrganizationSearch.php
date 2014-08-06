@@ -299,6 +299,7 @@ class OrganizationSearch extends SearcherAbstract
 							$choices_in[] = $db->quote($c);
 						}
 						$choices_in = implode(',', $choices_in);
+						if (!$choices_in) $choices_in = '';
 					}
 
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);

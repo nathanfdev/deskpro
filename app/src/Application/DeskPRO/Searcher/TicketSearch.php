@@ -1877,6 +1877,7 @@ class TicketSearch extends SearcherAbstract
 								$choices_in[] = $this->quoteDbValue($c);
 							}
 							$choices_in = implode(',', $choices_in);
+							if (!$choices_in) $choices_in = '';
 						}
 
 						if (!$this->is_testing) $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
