@@ -66,6 +66,30 @@ class SmsMessageTest extends \DpUnitTestCase
 	}
 
 
+	public function testMessageChunkOrder()
+	{
+		$msg = '
+			The beginning of this message starts a little bit like this, and we have to allow for 160 characters inside of it.  Once we get past 160 characters, we cut. There, this should be chunk two.
+			';
+
+		$message = new SmsMessage($msg);
+
+		$chunks = $message->getChunks();
+		$chunk1 = $chunks[0];
+		$chunk2 = $chunks[1];
+
+		$this->assertEquals(
+			'The beginning of this message starts a little bit like this, and we have to allow for 160 characters inside of it.  Once we get past 160 characters, we cut.',
+			$chunk1->getText()
+		);
+
+		$this->assertEquals(
+			'There, this should be chunk two.',
+			$chunk2->getText()
+		);
+	}
+
+
 	public function testMessageIsSentIfAllChunksSent()
 	{
 		$message = new SmsMessage(str_repeat('ten chars ', 34));
