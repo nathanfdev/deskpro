@@ -35,6 +35,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
@@ -47,7 +49,10 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 	 */
 	public function getPermissionStrategy()
 	{
-		return new AdminManagePermission();
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+		return $multi;
 	}
 
 
