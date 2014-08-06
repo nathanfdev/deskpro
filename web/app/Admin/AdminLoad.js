@@ -103,6 +103,7 @@ define([
 	'Admin/Templates/Ctrl/TemplateEditor',
 	'Admin/Templates/Ctrl/TemplateGroupList',
 	'Admin/Templates/Ctrl/TemplateList',
+	'Admin/ChannelSms/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',
 	'Admin/TicketAccounts/Ctrl/Settings',

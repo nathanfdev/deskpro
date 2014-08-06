@@ -858,6 +858,17 @@ define(function() {
 		controller: 'Admin_CustomFields_Tickets_Ctrl_Edit'
 	});
 
+
+	//###
+	//# Sms Channel
+	//###
+	routes.push({
+		id: 'tickets.channel_sms',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/list.html',
+		controller: 'Admin_ChannelSms_Ctrl_List'
+	});
+
 	//###
 	//# Ticket Accounts
 	//###
