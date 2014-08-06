@@ -29,7 +29,9 @@ define [
 
 		# update agents checkboxes states
 		updateAgents: =>
-			for agent in @$scope.settings.agents
+
+			@$scope.settings.agents.map (agent) =>
+
 				for group in agent.usergroups
 
 					if @map[group.id]?.perms.tasks.use
