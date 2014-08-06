@@ -55,6 +55,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 			var agent_id = parseInt($(this).find(':selected').val()) || 0;
 			var agentProp = self.changeManager.getPropertyManager('agent_id');
+			var $assign = self.getEl('assign_me');
+			agent_id == $assign.data('me') ? $assign.hide() : $assign.show();
 
 			if (self.page.ticketReplyBox) {
 				self.page.ticketReplyBox.getElById('agent_sel').select2('val', agent_id);
@@ -81,6 +83,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 			var agent_team_id = parseInt($(this).find(':selected').val()) || 0;
 			var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
+			var $assign = self.getEl('assign_team');
+			agent_team_id == $assign.data('team') ? $assign.hide() : $assign.show();
 
 			if (self.page.ticketReplyBox) {
 				self.page.ticketReplyBox.getElById('agent_team_sel').select2('val', agent_team_id);
@@ -158,6 +162,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					callQueue.next();
 				});
 			});
+
+			var $assign = self.getEl('follower_me');
+			followersList.find('.agent-' + $assign.data('me')).length ? $assign.hide() : $assign.show();
 		};
 
 		//------------------------------

@@ -382,7 +382,7 @@ pageMeta.lang = {{ {
 					<label class="field-label-title">
                         {{ phrase('agent.general.agent') }}
                         {% if ticket_perms.modify_assign_agent or not ticket.agent %}
-                        <a id="{{baseId}}_assign_me" class="pull-right" style="font-weight: 200" data-me="{{ app.user.id }}">
+                        <a id="{{baseId}}_assign_me" class="pull-right" style="font-weight: 200;{% if app.user == ticket.agent %}display:none;{% endif %}" data-me="{{ app.user.id }}">
                             [{{ phrase('agent.general.assign_to_me') }}]
                         </a>
                         {% endif %}
@@ -404,7 +404,7 @@ pageMeta.lang = {{ {
 					<label class="field-label-title">
                         {{ phrase('agent.general.team') }}
                         {% if 1 == app.user.agent.teams|length and ticket_perms.modify_assign_self %}
-                            <a id="{{baseId}}_assign_team" class="pull-right" style="font-weight: 200" data-team="{{ (app.user.agent.teams|first).id }}">
+                            <a id="{{baseId}}_assign_team" class="pull-right" style="font-weight: 200;{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}" data-team="{{ (app.user.agent.teams|first).id }}">
                                 [{{ phrase('agent.general.assign_to_my_team') }}]
                             </a>
                         {% endif %}
@@ -433,7 +433,11 @@ pageMeta.lang = {{ {
 			<td width="100%">
 				<label class="field-label-title">
                     {{ phrase('agent.general.followers') }}
-                    <a id="{{baseId}}_follower_me" class="pull-right" style="font-weight: 200" data-me="{{ app.user.id }}">
+                    {% set show = '' %}
+                    {% for a in agent_parts if a.person.id == app.user.id %}
+                        {% set show = 'display:none;' %}
+                    {% endfor %}
+                    <a id="{{baseId}}_follower_me" class="pull-right" style="font-weight: 200;{{ show }}" data-me="{{ app.user.id }}">
                         [{{ phrase('agent.general.add_me') }}]
                     </a>
                 </label>
