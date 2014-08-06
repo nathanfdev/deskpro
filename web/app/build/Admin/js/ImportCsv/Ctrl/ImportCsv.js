@@ -27,6 +27,9 @@
         this.$scope.processStarted = false;
         this.$scope.importErrors = {};
         this.$scope.importStarted = false;
+        this.$scope.delimeter = 'comma';
+        this.$scope.enclosure = 'none';
+        this.options = {};
         this.$scope.importSettings = {
           fieldMappings: [],
           additionalMappings: [],
@@ -89,7 +92,7 @@
        */
 
       Admin_ImportCsv_Ctrl_ImportCsv.prototype.startImport = function() {
-        var field_maps, filename, key, key2, obj, skip_first, user_filename, value, value2, welcome_email, _i, _len, _ref, _ref1;
+        var field_maps, filename, key, key2, obj, options, skip_first, user_filename, value, value2, welcome_email, _i, _len, _ref, _ref1;
         field_maps = [];
         _ref = this.$scope.importSettings.fieldMappings;
         for (key = _i = 0, _len = _ref.length; _i < _len; key = ++_i) {
@@ -108,13 +111,15 @@
         skip_first = this.$scope.importSettings.skipFirst;
         welcome_email = this.$scope.importSettings.welcomeEmail;
         filename = this.$scope.fileUploadResults.filename;
+        options = this.$scope.fileUploadResults.options;
         this.startSpinner('saving');
         return this.Api.sendPostJson('import_csv_import', {
           field_maps: field_maps,
           user_filename: user_filename,
           skip_first: skip_first,
           welcome_email: welcome_email ? 1 : 0,
-          filename: filename
+          filename: filename,
+          options: options
         }).then((function(_this) {
           return function(result) {
             return _this.stopSpinner('saving', true).then(function() {
