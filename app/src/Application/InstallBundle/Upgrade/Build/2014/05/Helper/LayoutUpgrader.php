@@ -184,6 +184,8 @@ class LayoutUpgrader
 
 		foreach ($this->form_new as $old_field) {
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+			
 			$field->enableOnNew();
 			$field->enableOnView();
 			$field->enableOnEdit();
@@ -191,6 +193,8 @@ class LayoutUpgrader
 		}
 		foreach ($this->form_view as $old_field) {
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			if ($layout->has($field->getId())) {
 				$field = $layout->get($field->getId());
 			} else {
@@ -203,6 +207,8 @@ class LayoutUpgrader
 		}
 		foreach ($this->form_edit as $old_field) {
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			if ($layout->has($field->getId())) {
 				$field = $layout->get($field->getId());
 			} else {
