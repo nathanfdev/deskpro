@@ -25,35 +25,41 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace DpUnitTests\Orb\Util;
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage Sms
+ */
 
-use Orb\Util\PhoneNumbers;
+namespace DpUnitTests\Sms;
 
-class PhoneNumbersTest extends \DpUnitTestCase
+use Orb\Sms\SmsMessage;
+
+class SmsMessageTest extends \DpUnitTestCase
 {
-	public function testType()
+	public function testChunks()
 	{
-		// note how US/Canada (and many countries) make it impossible to
-		// distinguish between mobile/landline by looking only at the number
-		$this->assertEquals('landline-or-mobile', PhoneNumbers::getType('+19024038712'));
-		$this->assertEquals('landline-or-mobile', PhoneNumbers::getType('+16617480241'));
-		$this->assertEquals('mobile', PhoneNumbers::getType('+8109090908989'));
-		$this->assertEquals('toll-free', PhoneNumbers::getType('+18009835929'));
-		$this->assertEquals('unknown', PhoneNumbers::getType('+814590908989'));
+		$msg = 'ten chars ';
+
+		$message = new SmsMessage(str_repeat($msg, 17));
+
+		$this->assertTrue($message->hasMultipleChunks());
+		$this->assertCount(2, $message->getChunks());
+		$chunks = $message->getChunks();
+		$this->assertEquals(trim(str_repeat($msg, 16)), $chunks[0]);
+		$this->assertEquals(trim(str_repeat($msg, 1)), $chunks[1]);
 	}
 
-	public function testRegion()
+	public function testNoChunks()
 	{
-		$this->assertEquals('CA', PhoneNumbers::getRegionForNumber('+19024334909'));
-		$this->assertEquals('PR', PhoneNumbers::getRegionForNumber('+17879920947'));
-		$this->assertEquals('BS', PhoneNumbers::getRegionForNumber('+12424459909'));
-		$this->assertEquals('NO', PhoneNumbers::getRegionForNumber('+4799872329'));
-		$this->assertEquals('GB', PhoneNumbers::getRegionForNumber('+441224451909'));
-		$this->assertEquals('US', PhoneNumbers::getRegionForNumber('+16174530990'));
-		$this->assertEquals('BR', PhoneNumbers::getRegionForNumber('+55918930093'));
-		$this->assertEquals('RU', PhoneNumbers::getRegionForNumber('+74718790092'));
-		$this->assertEquals('CN', PhoneNumbers::getRegionForNumber('+869153450959'));
-		$this->assertEquals('ZA', PhoneNumbers::getRegionForNumber('+27110982345'));
-		$this->assertEquals('JP', PhoneNumbers::getRegionForNumber('+816690908989'));
+		$msg = 'ten chars ';
+
+		$message = new SmsMessage(str_repeat($msg, 16));
+
+		$this->assertFalse($message->hasMultipleChunks());
+		$this->assertCount(1, $message->getChunks());
+		$chunks = $message->getChunks();
+		$this->assertEquals(trim(str_repeat($msg, 16)), $chunks[0]);
 	}
 }

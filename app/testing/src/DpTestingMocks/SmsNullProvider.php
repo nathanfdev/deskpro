@@ -25,23 +25,17 @@
  * | ~ Thanks, Everyone at Team DeskPRO                                       |
  * \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage Sms
- */
-
 namespace DpTestingMocks;
 
+use Orb\Sms\SmsMessageChunk;
 use Orb\Sms\SmsProviderInterface;
 use Orb\Sms\SmsResult;
 
 class SmsNullProvider implements SmsProviderInterface
 {
-	public function sendMessage($fromPhoneNumber, $toPhoneNumber, $textMessage)
+	public function sendMessage($toPhoneNumber, SmsMessageChunk $textMessage, $fromPhoneNumber)
 	{
-		return new SmsResult(SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this);
+		return new SmsResult(SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this, array());
 	}
 
 	public function getName()
