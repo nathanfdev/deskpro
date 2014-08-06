@@ -27,12 +27,7 @@
         var list_promise;
         list_promise = this.SmsAccountsData.loadList().then((function(_this) {
           return function(recs) {
-            console.log(recs);
             _this.accounts = recs.values();
-            console.log(_this.accounts);
-            if (_this.$state.current.name === 'tickets.channel_sms') {
-              console.log('yes, in correct state name');
-            }
             return _this.addManagedListener(_this.SmsAccountsData.recs, 'changed', function() {
               _this.accounts = _this.SmsAccountsData.recs.values();
               return _this.ngApply();

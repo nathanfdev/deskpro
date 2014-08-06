@@ -13,19 +13,17 @@
         this.Api = Api;
         this.loadListPromise = null;
         this.recs = new Admin_Main_Collection_OrderedDictionary();
-        console.log('constructed');
       }
 
 
       /**
-		* Loads list of accounts
-		*
-		* @return {Promise}
+      		* Loads list of accounts
+      	*
+      	* @return {Promise}
        */
 
       Admin_ChannelSms_DataService_SmsAccounts.prototype.loadList = function(reload) {
         var deferred, http_def;
-        console.log('loading the list');
         if (this.loadListPromise) {
           return this.loadListPromise;
         }
@@ -36,16 +34,6 @@
         }
         http_def = this.Api.sendGet('/channel_sms').success((function(_this) {
           return function(data, status, headers, config) {
-            console.log(data);
-            _this._setListData(data.sms_accounts);
-            return deferred.resolve(_this.recs);
-          };
-        })(this), function(data, status, headers, config) {
-          return deferred.reject();
-        });
-        http_def = this.Api.sendGet('/email_accounts').success((function(_this) {
-          return function(data, status, headers, config) {
-            console.log(data);
             _this._setListData(data.sms_accounts);
             return deferred.resolve(_this.recs);
           };
@@ -75,8 +63,8 @@
 
 
       /*
-		 * Updates the first-class model (title, etc)
-		 * with account provided. Or adds it to the list if it doesnt exist.
+      	 * Updates the first-class model (title, etc)
+      	 * with account provided. Or adds it to the list if it doesnt exist.
        */
 
       Admin_ChannelSms_DataService_SmsAccounts.prototype.updateModel = function(account) {
@@ -88,9 +76,9 @@
 
 
       /**
-		* Adds a new model to the existing list (eg was just created)
-		*
-		* @return {Admin_Main_Model_Base}
+      		* Adds a new model to the existing list (eg was just created)
+      	*
+      	* @return {Admin_Main_Model_Base}
        */
 
       Admin_ChannelSms_DataService_SmsAccounts.prototype.addToList = function(rec) {

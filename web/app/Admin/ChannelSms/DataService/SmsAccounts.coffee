@@ -15,7 +15,6 @@ define [
 
 			@loadListPromise = null
 			@recs = new Admin_Main_Collection_OrderedDictionary()
-			console.log 'constructed'
 
 		###*
 		* Loads list of accounts
@@ -23,8 +22,6 @@ define [
 	* @return {Promise}
 		###
 		loadList: (reload) ->
-			console.log 'loading the list'
-
 			if @loadListPromise
 				return @loadListPromise
 
@@ -34,14 +31,6 @@ define [
 				return deferred.promise
 
 			http_def = @Api.sendGet('/channel_sms').success( (data, status, headers, config) =>
-				console.log data
-				@_setListData(data.sms_accounts)
-				deferred.resolve(@recs)
-			, (data, status, headers, config) ->
-				deferred.reject()
-			)
-			http_def = @Api.sendGet('/email_accounts').success( (data, status, headers, config) =>
-				console.log data
 				@_setListData(data.sms_accounts)
 				deferred.resolve(@recs)
 			, (data, status, headers, config) ->

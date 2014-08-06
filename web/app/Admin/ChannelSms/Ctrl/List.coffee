@@ -10,12 +10,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 
 		initialLoad: ->
 			list_promise = @SmsAccountsData.loadList().then((recs) =>
-				console.log recs
 				@accounts = recs.values()
-				console.log @accounts
 
-				if @$state.current.name == 'tickets.channel_sms'
-					console.log 'yes, in correct state name'
+#				if @$state.current.name == 'tickets.channel_sms'
 #					if @accounts[0]
 #						@$state.go('tickets.ticket_accounts.edit', {id: @accounts[0].id})
 #					else
