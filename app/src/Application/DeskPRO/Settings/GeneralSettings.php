@@ -195,6 +195,7 @@ class GeneralSettings
 	public function saveSettings()
 	{
 		if ($this->deskpro_url) {
+			$this->deskpro_url = rtrim($this->deskpro_url, '/') . '/';
 			$this->settings->setSetting('core.deskpro_url', $this->deskpro_url);
 		}
 
