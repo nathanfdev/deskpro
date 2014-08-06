@@ -417,9 +417,10 @@ define [
 		_addModel: (model) ->
 			return null if !model[@idProp]?
 			if @map[model[@idProp]]?
+				console.log @listModels
 				angular.copy model, @map[model[@idProp]] # update exist model
-				if @listModels.indexOf(model) == -1
-					@listModels.push(model)
+				if @listModels.indexOf(@map[model[@idProp]]) == -1
+					@listModels.push(@map[model[@idProp]])
 			else
 				@map[model[@idProp]] = model
 				@listModels.push model
