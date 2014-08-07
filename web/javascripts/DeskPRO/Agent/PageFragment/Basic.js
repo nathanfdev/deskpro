@@ -145,7 +145,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			if (self.destroyObjects) {
 				var i;
 				for (i = 0; i < self.destroyObjects.length; i++) {
-					self.destroyObjects[i].destroy();
+					if (self.destroyObjects[i] && self.destroyObjects[i].destroy) {
+						self.destroyObjects[i].destroy();
+					}
 				}
 				self.destroyObjects = null;
 			}
