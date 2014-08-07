@@ -3225,6 +3225,27 @@ class TicketController extends AbstractController
 				$ticket->setProductId($this->settings->get('core.default_prod_id'));
 			}
 		}
+		
+		if ($message && count($message->attachments)) {
+			$attachments = array();
+			foreach ($message->attachments as $attach) {
+				$new_blob = clone $attach->blob;
+				
+				$this->em->detach($new_blob);
+				
+				$this->em->persist($new_blob);
+				
+				$this->em->flush();
+				
+				$attach_data = array();
+				
+				$attach_data['blob'] = $new_blob->toArray();
+				
+				$attach_data['url'] =  $new_blob->getDownloadUrl(true);
+				
+				$attachments[] = $attach_data;
+			}
+		}
 
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
@@ -3232,6 +3253,7 @@ class TicketController extends AbstractController
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'ticket'                 => $ticket,
 			'message'                => $message,
+			'attachments'            => isset($attachments) ? $attachments : null,
 			'agents'                 => $agents,
 			'agent_signature'        => $this->person->getSignature(),
 	        'agent_signature_html'   => $this->person->getSignatureHtml(),
