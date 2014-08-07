@@ -203,6 +203,12 @@ $collection->create('agent_send_lost', array(
 	'defaults'    => array('_format' => 'json'),
 ));
 
+$collection->create('agent_whitelist_ip', array(
+	'path'        => '/whitelist-ip/{code}',
+	'controller'  => 'AgentBundle:Login:whitelistIp'
+));
+
+
 $collection->create('agent_settings', array(
 	'path'        => '/settings',
 	'controller'  => 'AgentBundle:Settings:profile',

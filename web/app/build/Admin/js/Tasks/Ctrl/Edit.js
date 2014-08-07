@@ -45,22 +45,22 @@
       };
 
       Admin_Tasks_Ctrl_Edit.prototype.updateAgents = function() {
-        var agent, group, _i, _j, _len, _len1, _ref, _ref1, _ref2;
-        _ref = this.$scope.settings.agents;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          agent = _ref[_i];
-          _ref1 = agent.usergroups;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            group = _ref1[_j];
-            if ((_ref2 = this.map[group.id]) != null ? _ref2.perms.tasks.use : void 0) {
-              agent._checked = true;
-              agent._disabled = true;
-              return;
+        return this.$scope.settings.agents.map((function(_this) {
+          return function(agent) {
+            var group, _i, _len, _ref, _ref1;
+            _ref = agent.usergroups;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              group = _ref[_i];
+              if ((_ref1 = _this.map[group.id]) != null ? _ref1.perms.tasks.use : void 0) {
+                agent._checked = true;
+                agent._disabled = true;
+                return;
+              }
             }
-          }
-          agent._checked = agent.perms.tasks.use;
-          agent._disabled = false;
-        }
+            agent._checked = agent.perms.tasks.use;
+            return agent._disabled = false;
+          };
+        })(this));
       };
 
       Admin_Tasks_Ctrl_Edit.prototype.save = function() {

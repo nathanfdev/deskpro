@@ -54,6 +54,9 @@ class PasswordSettings
 
 	public $sessions_lifetime = 3600;
 	public $session_keepalive_require_page = false;
+	public $ip_security_enabled = false;
+	public $ip_security_mode = 'admins';
+	public $ip_security_whitelist_lifetime = 1814400;
 
 
 	/**
@@ -111,8 +114,11 @@ class PasswordSettings
 			$type_obj->verify();
 		}
 
-		$this->sessions_lifetime = (int)$this->settings->get('core.sessions_lifetime');
+		$this->sessions_lifetime              = (int)$this->settings->get('core.sessions_lifetime');
 		$this->session_keepalive_require_page = (bool)$this->settings->get('core.session_keepalive_require_page');
+		$this->ip_security_enabled            = (bool)$this->settings->get('agent.ip_security.enabled');
+		$this->ip_security_mode               = $this->settings->get('agent.ip_security.mode');
+		$this->ip_security_whitelist_lifetime = (int)$this->settings->get('agent.ip_security.whitelist_lifetime');
 	}
 
 
@@ -126,6 +132,9 @@ class PasswordSettings
 			'agent' => $this->agent_policy->toArray(),
 			'sessions_lifetime'               => $this->sessions_lifetime,
 			'session_keepalive_require_page'  => $this->session_keepalive_require_page,
+			'ip_security_enabled'             => $this->ip_security_enabled,
+			'ip_security_mode'                => $this->ip_security_mode,
+			'ip_security_whitelist_lifetime'  => $this->ip_security_whitelist_lifetime,
 		);
 	}
 
@@ -139,6 +148,10 @@ class PasswordSettings
 		$this->agent_policy->fromArray($set_settings['agent']);
 		$this->sessions_lifetime = $set_settings['sessions_lifetime'];
 		$this->session_keepalive_require_page = $set_settings['session_keepalive_require_page'];
+
+		$this->ip_security_enabled            = !empty($set_settings['ip_security_enabled']) && $set_settings['ip_security_enabled'];
+		$this->ip_security_mode               = $set_settings['ip_security_mode'] ?: 'admins';
+		$this->ip_security_whitelist_lifetime = ((int)$set_settings['ip_security_whitelist_lifetime']) ?: 1814400;
 	}
 
 
@@ -163,5 +176,9 @@ class PasswordSettings
 		} else {
 			$this->settings->setSetting('core.session_keepalive_require_page', null);
 		}
+
+		$this->settings->setSetting('agent.ip_security.enabled',            $this->ip_security_enabled ? 1 : 0);
+		$this->settings->setSetting('agent.ip_security.mode',               $this->ip_security_mode);
+		$this->settings->setSetting('agent.ip_security.whitelist_lifetime', $this->ip_security_whitelist_lifetime);
 	}
 }

@@ -27,7 +27,10 @@
           return function(res) {
             _this.$scope.settings = {
               sessions_lifetime: res.data.settings.settings.sessions_lifetime,
-              session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page
+              session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page,
+              ip_security_enabled: res.data.settings.settings.ip_security_enabled,
+              ip_security_mode: res.data.settings.settings.ip_security_mode || 'admins',
+              ip_security_whitelist_lifetime: res.data.settings.settings.ip_security_whitelist_lifetime + ""
             };
             _this.$scope.agent = res.data.settings.settings.agent;
             _this.$scope.user = res.data.settings.settings.user;

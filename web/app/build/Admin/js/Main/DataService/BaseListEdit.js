@@ -564,8 +564,8 @@
         }
         if (this.map[model[this.idProp]] != null) {
           angular.copy(model, this.map[model[this.idProp]]);
-          if (this.listModels.indexOf(model) === -1) {
-            this.listModels.push(model);
+          if (this.listModels.indexOf(this.map[model[this.idProp]]) === -1) {
+            this.listModels.push(this.map[model[this.idProp]]);
           }
         } else {
           this.map[model[this.idProp]] = model;

@@ -808,6 +808,10 @@
 	'agent.password_policy.require_num_lowercase' => 0,
 	'agent.password_policy.require_num_number' => 0,
 	'agent.password_policy.require_num_symbol' => 0,
+	
+	'agent.ip_security.enabled'            => false,
+	'agent.ip_security.mode'               => 'agents,admins',
+	'agent.ip_security.whitelist_lifetime' => 1814400,
 
 	####################################################################################################################
 	# user_style
