@@ -2295,8 +2295,9 @@ class TicketController extends AbstractController
 			));
 		}
 		
-		$old_amount = $charge->amount;
-		$old_time   = $charge->charge_time;
+		$old_amount	= $charge->amount;
+		$old_time	= $charge->charge_time;
+		$old_comment	= $charge->comment;
 		
 		$amount = $this->in->getFloat('amount');
 		
@@ -2320,7 +2321,11 @@ class TicketController extends AbstractController
 		$ticket_log->details     = array(
 			'charge_id'	=> $charge->id,
 			'old_amount'	=> $old_amount,
-			'old_time'	=> $old_time
+			'old_time'	=> $old_time,
+			'new_amount'	=> $charge->amount,
+			'new_time'	=> $charge->charge_time,
+			'old_comment'	=> $old_comment,
+			'new_comment'	=> $charge->comment
 		);
 		
 		$this->em->persist($charge);

@@ -442,6 +442,18 @@
 			</ul>
 		{% endif %}
 	</div>
+{% elseif log.action_type == 'modify_billing' %}
+	Billing ID #{{ log.id_object }} modified<br/>
+	{% if log.details.old_amount or log.details.new_amount %}
+		Set charge from <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span> to <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br/>
+	{% endif %}
+	{% if log.details.old_time or log.details.new_time %}
+		Set time from <span class="old-val">{{ log.details.old_time | number_format }}</span> to <span class="old-val">{{ log.details.new_time | number_format}}</span><br/>
+	{% endif %}
+	{% if log.details.old_comment != log.details.new_comment %}
+		Old Comment: {{ log.details.old_comment }} <br/>
+		New Comment: {{ log.details.new_comment }} <br/>
+	{% endif %}
 {% elseif hide_unknow%}
 	{{ log.action_type }}
 {% endif %}
