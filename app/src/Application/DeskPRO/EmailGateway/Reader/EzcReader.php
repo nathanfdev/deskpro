@@ -326,7 +326,7 @@ class EzcReader extends AbstractReader
 						$attach->file_name = 'email.eml';
 					}
 					$attach->mime_type = 'message/rfc822';
-				} elseif($part->mimeType === 'ms-tnef') {
+				} elseif($part->mimeType == 'ms-tnef' || $part->mimeType == 'application/ms-tnef') {
 					$attach = null;
 					$winmail_attach = $this->decodeTnef($part);
 					foreach ($winmail_attach as $a) {
@@ -369,13 +369,13 @@ class EzcReader extends AbstractReader
 					}
 				}
 
-				$attach->content_id = $part->getHeader('Content-ID');
-				if ($attach->content_id) {
-					// Content-ID is enclosed in brackets, remove those
-					$attach->content_id = preg_replace('#^<(.*?)>$#', '$1', $attach->content_id);
-				}
-
 				if ($attach) {
+					$attach->content_id = $part->getHeader('Content-ID');
+					if ($attach->content_id) {
+						// Content-ID is enclosed in brackets, remove those
+						$attach->content_id = preg_replace('#^<(.*?)>$#', '$1', $attach->content_id);
+					}
+
 					$attachments[] = $attach;
 				}
 			}
