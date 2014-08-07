@@ -382,9 +382,9 @@ pageMeta.lang = {{ {
 					<label class="field-label-title">
                         {{ phrase('agent.general.agent') }}
                         {% if ticket_perms.modify_assign_agent or not ticket.agent %}
-                        <a id="{{baseId}}_assign_me" class="pull-right" style="font-weight: 200;{% if app.user == ticket.agent %}display:none;{% endif %}" data-me="{{ app.user.id }}">
-                            [{{ phrase('agent.general.assign_to_me') }}]
-                        </a>
+							<a id="{{baseId}}_assign_me" class="assign-self-link" style="{% if app.user == ticket.agent %}display:none;{% endif %}" data-me="{{ app.user.id }}">
+								({{ phrase('agent.general.assign_to_me') }})
+							</a>
                         {% endif %}
                     </label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
@@ -404,8 +404,8 @@ pageMeta.lang = {{ {
 					<label class="field-label-title">
                         {{ phrase('agent.general.team') }}
                         {% if 1 == app.user.agent.teams|length and ticket_perms.modify_assign_self %}
-                            <a id="{{baseId}}_assign_team" class="pull-right" style="font-weight: 200;{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}" data-team="{{ (app.user.agent.teams|first).id }}">
-                                [{{ phrase('agent.general.assign_to_my_team') }}]
+                            <a id="{{baseId}}_assign_team" class="assign-self-link" style="{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}" data-team="{{ (app.user.agent.teams|first).id }}">
+                                ({{ phrase('agent.general.assign_to_my_team') }})
                             </a>
                         {% endif %}
                     </label>
@@ -437,8 +437,8 @@ pageMeta.lang = {{ {
                     {% for a in agent_parts if a.person.id == app.user.id %}
                         {% set show = 'display:none;' %}
                     {% endfor %}
-                    <a id="{{baseId}}_follower_me" class="pull-right" style="font-weight: 200;{{ show }}" data-me="{{ app.user.id }}">
-                        [{{ phrase('agent.general.add_me') }}]
+                    <a id="{{baseId}}_follower_me" class="assign-self-link" style="{{ show }}" data-me="{{ app.user.id }}">
+                        ({{ phrase('agent.general.add_me') }})
                     </a>
                 </label>
 				<div class="followers-list">

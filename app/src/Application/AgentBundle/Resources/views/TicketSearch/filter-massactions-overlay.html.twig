@@ -70,8 +70,8 @@
 						<dl>
 							<dt>
 							    {{ phrase('agent.general.agent') }}
-                                <a id="%baseId%_assign_me" class="pull-right" style="font-weight: 200" data-me="{{ app.user.id }}">
-                                    [{{ phrase('agent.general.assign_to_me') }}]
+                                <a id="%baseId%_assign_me" class="assign-self-link" data-me="{{ app.user.id }}">
+                                    ({{ phrase('agent.general.assign_to_me') }})
                                 </a>
                             </dt>
 							<dd>
@@ -91,8 +91,8 @@
 							<dt>
 							    {{ phrase('agent.general.team') }}
                                 {% if 1 == app.user.agent.teams|length %}
-                                <a id="%baseId%_assign_team" class="pull-right" style="font-weight: 200" data-team="{{ (app.user.agent.teams|first).id }}">
-                                    [{{ phrase('agent.general.assign_to_my_team') }}]
+                                <a id="%baseId%_assign_team" class="assign-self-link" data-team="{{ (app.user.agent.teams|first).id }}">
+                                    ({{ phrase('agent.general.assign_to_my_team') }})
                                 </a>
                                 {% endif %}
                             </dt>
@@ -113,8 +113,8 @@
 				<dl>
 					<dt>
 					    {{ phrase('agent.general.followers') }}
-					    <a id="%baseId%_follower_me" style="margin-left: 36px; font-weight: 200" data-me="{{ app.user.id }}">
-                            [{{ phrase('agent.general.add_me') }}]
+					    <a id="%baseId%_follower_me" class="assign-self-link" data-me="{{ app.user.id }}">
+                            ({{ phrase('agent.general.add_me') }})
                         </a>
                     </dt>
 					<dd>
