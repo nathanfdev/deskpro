@@ -1570,12 +1570,6 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 				return ticket.agent_team ? ticket.agent_team.id : null;
 			case 'urgency':
 				return ticket.urgency ? ticket.urgency : null;
-			case 'id':
-				return ticket.id;
-			case 'subject':
-				return ticket.subject;
-			case 'status':
-				return ticket.status;
 			default:
 				console.log("[getFieldValue] Unknown field: %s", field);
 				return '__UNKNOWN__';

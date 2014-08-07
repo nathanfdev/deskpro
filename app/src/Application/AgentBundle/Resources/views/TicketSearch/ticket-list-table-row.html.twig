@@ -3,10 +3,11 @@
 </td>
 <td ng-repeat="field in getDisplayableFields()" ng-switch="field">
 
-
+    {# Id #}
     <span ng-switch-when="id" class="prop-val">{{ ng_var('ticket.id') }}</span>
 
 
+    {# Agent #}
     <span ng-switch-when="agent" class="prop-val" ng-if="!ticket.agent">
         {{ phrase('agent.general.unassigned') }}
     </span>
@@ -20,20 +21,25 @@
     </span>
 
 
+    {# Department #}
     <span ng-switch-when="department" class="prop-val">{{ ng_var('ticket.department.title_full') }}</span>
 
 
+    {# Subject #}
     <span ng-switch-when="subject" class="prop-val">{{ ng_var('ticket.subject') }}</span>
 
 
+    {# Status #}
     <span ng-switch-when="status" class="prop-val">{{ ng_var('ticket.status') }}</span>
 
 
+    {# User #}
     <span ng-switch-when="user" class="prop-val" ng-if="ticket.previews[0]">
         {{ ng_var('ticket.previews[0].person.display_name') }}
     </span>
 
 
+    {# Team #}
     <span ng-switch-when="agent_team" class="prop-val" ng-if="ticket.agent_team">
         {{ ng_var('ticket.agent_team.name') }}
     </span>
@@ -42,8 +48,22 @@
     </span>
 
 
+    {# Custom Ticket Fields #}
+    {% for field in app.getCustomFieldManager('tickets').getFields() %}
+        <span ng-switch-when="ticket_fields[{{ field.id }}]" class="prop-val">
+            {{ ng_var('ticket.field' ~ field.id) }}
+        </span>
+    {% endfor %}
 
 
-    <span ng-switch-default></span>
+    {# Custom Person Fields #}
+    {% for field in app.getCustomFieldManager('people').getFields() %}
+        <span ng-switch-when="person_fields[{{ field.id }}]" class="prop-val">
+            {{ ng_var('ticket.person.field' ~ field.id) }}
+        </span>
+    {% endfor %}
+
+
+    <span ng-switch-default class="prop-val">-</span>
 
 </td>

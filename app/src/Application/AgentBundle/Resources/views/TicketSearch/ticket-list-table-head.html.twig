@@ -2,8 +2,31 @@
 <tr>
     <th width="20">
     </th>
-    <th ng-repeat="field in getDisplayableFields()">
-        {{ ng_var('getFieldDisplayName(field)') }}
+    <th ng-repeat="field in getDisplayableFields()" ng-switch="field">
+
+
+
+
+
+
+        {# Custom Ticket Fields #}
+        {% for field in app.getCustomFieldManager('tickets').getFields() %}
+            <span ng-switch-when="ticket_fields[{{ field.id }}]">
+                {{ field.title }}
+            </span>
+        {% endfor %}
+
+
+        {# Custom Person Fields #}
+        {% for field in app.getCustomFieldManager('people').getFields() %}
+            <span ng-switch-when="person_fields[{{ field.id }}]">
+                {{ field.title }}
+            </span>
+        {% endfor %}
+
+
+        <span ng-switch-default>{{ ng_var('getFieldDisplayName(field)') }}</span>
+
     </th>
 </tr>
 </thead>
