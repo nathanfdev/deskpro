@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "dependencies": {
     "requirejs": "2.1.8",
-    "angular": "v1.2.0",
+    "angular": "v1.2.*",
     "angular-route": "latest",
     "angular-dragdrop": "latest",
-    "angular-animate": "v1.2.0",
-    "angular-sanitize": "v1.2.0",
-    "angular-i18n": "1.2.0",
+    "angular-animate": "v1.2.*",
+    "angular-sanitize": "v1.2.*",
+    "angular-i18n": "1.2.*",
     "angular-ui-ace": "latest",
     "angular-ui-router": "latest",
     "angular-ui-select2": "latest",
@@ -29,8 +29,5 @@
     "blueimp-file-upload": "latest",
     "animate.css": "latest",
     "notify.js": "latest"
-  },
-  "resolutions": {
-    "angular": "v1.2.0-rc.3"
   }
 }
