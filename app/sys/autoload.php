@@ -77,6 +77,7 @@ $loader->registerClassNames(array(
 	'ExchangeWebServices'             => DP_ROOT.'/vendor-src/php-ews/ExchangeWebServices.php',
 	'NTLMSoapClient'                  => DP_ROOT.'/vendor-src/php-ews/NTLMSoapClient.php',
 	'NTLMSoapClient_Exchange'         => DP_ROOT.'/vendor-src/php-ews/NTLMSoapClient/Exchange.php',
+	'tnef'                            => DP_ROOT.'/vendor-src/tnef-decoder/tnef.php',
 ));
 
 spl_autoload_register(function($classname) {
