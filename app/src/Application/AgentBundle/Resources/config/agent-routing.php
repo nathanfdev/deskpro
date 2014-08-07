@@ -434,6 +434,12 @@ $collection->create('agent_people_ajaxsave_organization', array(
 	'requirements'  => array('person_id' => '\\d+'),
 ));
 
+$collection->create('agent_person_get_tickets', array(
+	'path'          => '/person/{person_id}/tickets',
+	'controller'    => 'AgentBundle:Person:getPersonTickets',
+	'requirements'  => array('person_id' => '\\d+' ),
+));
+
 $collection->create('agent_person_ajax_labels_save', array(
 	'path'          => '/person/{person_id}/ajax-save-labels',
 	'controller'    => 'AgentBundle:Person:ajaxSaveLabels',

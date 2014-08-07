@@ -361,6 +361,27 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 
 		var person_id = this.meta.person_id;
+		
+		this.sortTicketsMenu = new DeskPRO.UI.Menu({
+			triggerElement: this.getEl('sort_tickets_menu_trigger'),
+			menuElement: this.getEl('sort_tickets_menu'),
+			onItemClicked: function(info) {
+				var itemEl = $(info.itemEl), sort_by = itemEl.data('sort-by');
+				
+				$.ajax({
+					url: '/agent/person/' + person_id + '/tickets',
+					data: {sort_by: sort_by},
+					type: 'get',
+					dataType: 'html',
+					success: function(html) {
+						self.getEl('tickets_rest').remove();
+						self.getEl('tickets_initial').html(html);
+					}
+				});
+			}
+		});
+		
+		this.ownObject(this.sortTicketsMenu);
 
 		this.moreactionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.more', this.getEl('action_buttons')),

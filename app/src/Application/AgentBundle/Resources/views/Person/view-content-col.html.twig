@@ -93,6 +93,7 @@
 				{% if person_charges %}<li data-tab-for="#{{baseId}}_billing_tab">Billing <span class="count">{{ person_charge_totals.count }}</span></li>{% endif %}
 			</ul>
 		</nav>
+				<button class="save sort-trigger" id="{{baseId}}_sort_tickets_menu_trigger" style="float: right; margin: 5px;">Sort Tickets By <em class="downarrow"></em></button>
 	</header>
 	<section>
 		{# Tickets Tab #}
@@ -180,6 +181,13 @@
 				{% endif %}
 			</table>
 		</article>
+			<ul id="{{baseId}}_sort_tickets_menu" style="display: none;">
+				<li data-sort-by="status">{{ phrase('agent.general.status') }}</li>
+				<li data-sort-by="date_last_user_reply">{{ phrase('agent.general.date_of_last_user_reply')}}</li>
+				<li data-sort-by="date_last_agent_reply">{{ phrase('agent.general.date_of_last_agent_reply')}}</li>
+				<li data-sort-by="last_reply">{{ phrase('agent.general.date_of_last_reply')}}</li>
+				<li data-sort-by="date_created">{{ phrase('agent.general.date_created')}} </li>
+			</ul>
 		{% endif %}
 		{# /Tickets Tab #}
 

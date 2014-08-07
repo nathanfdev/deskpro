@@ -84,7 +84,7 @@ class PersonController extends AbstractController
 		#------------------------------
 
 		$notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 251, true);
+		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 251, 'status');
 		$person_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
 		
 		$person_files = $this->em->getRepository('DeskPRO:PersonFile')->getFilesForPerson($person);
@@ -1453,6 +1453,19 @@ class PersonController extends AbstractController
 				'success' => false,
 			));
 		}
+	}
+	
+	public function getPersonTicketsAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+		
+		$sort_by = $this->in->getString('sort_by');
+		
+		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 250, $sort_by);
+		
+		return $this->render('AgentBundle:Person:view-tickets.html.twig', array(
+			'tickets'	=> $person_tickets
+		));
 	}
 
 	public function isPersonEditable($person)

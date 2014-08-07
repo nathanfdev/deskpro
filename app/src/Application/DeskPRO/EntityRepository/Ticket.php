@@ -245,13 +245,15 @@ class Ticket extends AbstractEntityRepository
 	 *
 	 * @return array
 	 */
-	public function getPersonTickets(Entity\Person $person, $limit = null, $status_order = false)
+	public function getPersonTickets(Entity\Person $person, $limit = null, $sort_by = null, $sort_order = 'DESC')
 	{
 		if ($person->is_agent) {
 			$ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
 				WHERE person_id = ?
+				ORDER BY id DESC
+				LIMIT 2000
 			", array($person->id));
 		} else {
 			$ids = App::getDb()->fetchAllCol("
@@ -264,14 +266,39 @@ class Ticket extends AbstractEntityRepository
 		if (!$ids) {
 			return array();
 		}
-
-		if ($status_order && count($ids) < 2000) {
+		
+		if ($sort_by === 'date_last_reply') {
+			$ids = App::getDb()->fetchAllCol(
+				"
+								SELECT id
+								FROM tickets
+								WHERE id IN (" . implode(',', $ids) . ")
+				ORDER BY GREATEST(
++					COALESCE(date_last_user_reply,0),
++					COALESCE(date_last_agent_reply,0)
++				) DESC
+			"
+			);
+		} elseif ($sort_by == 'status') {
 			$ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
 				WHERE id IN (" . implode(',', $ids) . ")
 				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, IF(tickets.status = 'awaiting_agent', tickets.urgency, 0) DESC, tickets.id DESC
 			");
+		} elseif ($sort_by && in_array(strtolower($sort_by), $this->_em->getClassMetadata('DeskPRO:Ticket')->getFieldNames())) {
+			$sort_by = strtolower($sort_by);
+
+			$sort_order = strtolower($sort_order);
+			$sort_order = in_array($sort_order, array('asc', 'desc')) ? $sort_order : 'DESC';
+
+			$ids = App::getDb()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE id IN (" . implode(',', $ids) . ")
+				ORDER BY $sort_by $sort_order
+			"
+			);
 		} else {
 			sort($ids, \SORT_NUMERIC);
 		}
