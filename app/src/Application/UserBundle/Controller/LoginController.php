@@ -338,6 +338,12 @@ HTML;
 		if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
 			$person->setLastLoginAt();
 		}
+
+		$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		if (!$person->browser && $browser) {
+			$person->browser = $browser;
+		}
+		
 		$this->em->persist($person);
 		$this->em->flush();
 
