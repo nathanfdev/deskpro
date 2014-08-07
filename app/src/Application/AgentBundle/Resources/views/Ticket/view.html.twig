@@ -379,7 +379,14 @@ pageMeta.lang = {{ {
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
-					<label class="field-label-title">{{ phrase('agent.general.agent') }}</label>
+					<label class="field-label-title">
+                        {{ phrase('agent.general.agent') }}
+                        {% if ticket_perms.modify_assign_agent or not ticket.agent %}
+							<a id="{{baseId}}_assign_me" class="assign-self-link" style="{% if app.user == ticket.agent %}display:none;{% endif %}" data-me="{{ app.user.id }}">
+								({{ phrase('agent.general.assign_to_me') }})
+							</a>
+                        {% endif %}
+                    </label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">{{ phrase('agent.general.unassigned') }}</option>{% endif %}
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
@@ -394,7 +401,14 @@ pageMeta.lang = {{ {
 			</td>
 			{% if agent_teams|length %}
 				<td style="padding-right: 5px;">
-					<label class="field-label-title">{{ phrase('agent.general.team') }}</label>
+					<label class="field-label-title">
+                        {{ phrase('agent.general.team') }}
+                        {% if 1 == app.user.agent.teams|length and ticket_perms.modify_assign_self %}
+                            <a id="{{baseId}}_assign_team" class="assign-self-link" style="{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}" data-team="{{ (app.user.agent.teams|first).id }}">
+                                ({{ phrase('agent.general.assign_to_my_team') }})
+                            </a>
+                        {% endif %}
+                    </label>
 					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
 						{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
 							<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
@@ -417,7 +431,16 @@ pageMeta.lang = {{ {
 				</td>
 			{% endif %}
 			<td width="100%">
-				<label class="field-label-title">{{ phrase('agent.general.followers') }}</label>
+				<label class="field-label-title">
+                    {{ phrase('agent.general.followers') }}
+                    {% set show = '' %}
+                    {% for a in agent_parts if a.person.id == app.user.id %}
+                        {% set show = 'display:none;' %}
+                    {% endfor %}
+                    <a id="{{baseId}}_follower_me" class="assign-self-link" style="{{ show }}" data-me="{{ app.user.id }}">
+                        ({{ phrase('agent.general.add_me') }})
+                    </a>
+                </label>
 				<div class="followers-list">
 					<ul id="{{ baseId }}_followers_list">
 						{% for a in agent_parts %}
