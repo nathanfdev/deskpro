@@ -101,7 +101,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.checkedTicketsCount  = 0;
 		$scope.display_fields       = this.meta.display_fields || [];
 		$scope.openTickets          = {};
-		$scope.listType             = 'table';
+		$scope.listType             = 'list';
 		$scope.DESKPRO_PERSON_ID    = DESKPRO_PERSON_ID;
 
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
@@ -552,15 +552,17 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		didRemoveList = {};
 		ticketIds.forEach(function(x) { removeTicketIdsMap[x] = true; });
 
-		$scope.tickets = $scope.tickets.filter(function(t) {
-			if (removeTicketIdsMap[t.id]) {
-				self.updateSubgroupingBubbles('remove', t);
-				didRemoveList[t.id] = true;
-				return false;
-			} else {
-				return true;
-			}
+		var remove = $scope.tickets.filter(function(t) {
+			return removeTicketIdsMap[t.id] ? true : false;
 		});
+
+		if (!remove.length) return;
+		remove.each(function(t){
+			$scope.tickets.splice($scope.tickets.indexOf(t), 1);
+			self.updateSubgroupingBubbles('remove', t);
+			didRemoveList[t.id] = true;
+		});
+
 		this.listTicketIds = this.listTicketIds.filter(function(tid) {
 			if (removeTicketIdsMap[tid]) {
 				if (!didRemoveList[tid]) {
