@@ -1,3 +1,16 @@
+<style>
+	.editable-visible  {
+		display: none;
+	}
+	
+	.editable .editable-visible {
+		display: inline-block;
+	}
+	
+	.editable .editable-hidden {
+		display: none;
+	}
+</style>
 {{ dp_app_loc(baseId, 'left_col.top') }}
 
 {# Box Summary #}
@@ -214,6 +227,61 @@
 </div>
 {% endif %}
 {{ dp_app_loc(baseId, 'interactions.after') }}
+{# /Interaction Tabs #}
+
+{# Interaction Tabs #}
+{{ dp_app_loc(baseId, 'files.before') }}
+<div class="profile-box-container dp-simpletab-container tabbed" id="{{baseId}}_files_box">
+	<header>
+		<nav>
+			<ul>
+				<li data-tab-for="#{{baseId}}_files_tab" class="on">{{ phrase('agent.general.files') }} <span class="count">{{ person_files_count }}</span></li>
+				<li data-tab-for="#{{baseId}}_add_file_tab" class="off">Add File</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{# Files Tab #}
+		<article id="{{baseId}}_files_tab" class="on">
+			<div class="notes-wrap profile-files-wrap">
+				<ul id="{{baseId}}_files_initial">
+					{% for file in person_files %}
+						{% include 'AgentBundle:Person:file-row.html.twig' with { 'file' : file } %}
+					{% else %}
+						<li class="note profile-file-row empty-notice"><p style="padding:10px;">No files.</p></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</article>
+		{# /Files Tab #}
+		{# Add File Tab #}
+		<article id="{{baseId}}_add_file_tab" class="off">
+			<form id="{{baseId}}_add_file_form" method="POST" action="{{ path('agent_people_ajaxsave_file', {person_id: person.id}) }}">
+			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody id="{{baseId}}_add_file_initial">
+					<tr>
+						<td colspan="2"><textarea style="width: 97%" placeholder="comment" id="input_note"></textarea>
+					</tr>
+					<tr>
+						<td style="width: 70%;"><h4 style="float:left;">{{ phrase('agent.general.file') }}</h4>
+								<br class="clear" />
+								<div id="{{baseId}}_file_section_up">
+									<input type="file" name="file-upload" multiple="multiple" />
+								</div>
+								{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'blob_id' } %}
+								<ul class="files file-list"></ul>
+						</td>
+						<td style="width: 30%"><input type="submit" class="save-trigger" value="save"/></td>
+					</tr>
+				</tbody>
+			</table>
+			</form>
+		</article>
+		{# /Add file Tab #}
+		{{ dp_app_loc(baseId, 'files.tab') }}
+	</section>
+</div>
+{{ dp_app_loc(baseId, 'files.after') }}
 {# /Interaction Tabs #}
 
 {# Info Tabs #}

@@ -335,8 +335,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
                                 person_id: this.meta.person_id
 			});
+			
+			this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{ 
+				el: self.getEl('files_box'),
+				deleteUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save',
+                                person_id: this.meta.person_id
+			});
+			
 			this.ownObject(this.changePic);
 			this.ownObject(this.uploadVcard);
+			this.ownObject(this.uploadFile);
 
 		} // can edit
 
