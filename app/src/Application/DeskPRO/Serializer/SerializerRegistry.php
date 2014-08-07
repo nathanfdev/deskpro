@@ -29,30 +29,24 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage Serializer
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Serializer;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Serializer\PersonSerializer;
-use Application\DeskPRO\Serializer\ToApiDataMethodSerializer;
-use Application\DeskPRO\Serializer\SerializerRegistry;
-use Orb\Serializer\Serializer\ArraySerializer;
+use Orb\Serializer\SerializerRegistry as BaseSerializerRegistry;
 
-class SerializerService
+class SerializerRegistry extends BaseSerializerRegistry
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * {@inheritdoc}
+	 */
+	public function serialize($data, $view = 'default', $format = 'array')
 	{
-		/**
-		 * Recall that the ORDER matters in the registry. First added, first checked.
-		 * Put more specific serializers at the top, and more generic at the bottom.
-		 */
-		$serializer = new SerializerRegistry();
-		$serializer->addSerializer(new PersonSerializer($container->get('deskpro.core.settings')));
-		$serializer->addSerializer(new ToApiDataMethodSerializer());
-		$serializer->addSerializer(new ArraySerializer());
+		if ('array' !== $format) {
+			throw new \LogicException('deskpro serializer can only output array format, currently');
+		}
 
-		return $serializer;
+		return parent::serialize($data, $view, $format);
 	}
 }

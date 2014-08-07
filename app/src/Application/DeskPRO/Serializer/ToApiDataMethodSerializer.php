@@ -29,7 +29,7 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage Serializer
  */
 
 namespace Application\DeskPRO\Serializer;
