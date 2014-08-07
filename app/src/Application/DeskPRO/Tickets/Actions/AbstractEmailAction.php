@@ -183,6 +183,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 			'new_message'        => Arrays::getLastItem($new_replies),
 			'new_messages'       => $new_replies,
 			'ticket_logs'        => $ticket_logs,
+			'user_vars'          => $context->getUserVars(),
 		);
 
 		return $vars;
