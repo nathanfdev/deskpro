@@ -100,6 +100,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.checkedTicketsCount  = 0;
 		$scope.display_fields       = this.meta.display_fields || [];
 		$scope.openTickets          = {};
+		$scope.listType             = 'table';
 
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 

@@ -70,7 +70,9 @@
 			</div>
 
 			<section class="list-listing" ng-hide="refreshCursorLoading" ng-class="{'list-animation': isLoaded && !pauseListAnim}">
-				<div
+
+                <div
+                    ng-if="listType == 'list'"
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
 					dp-removed="uncheckTicketId(ticket.id)"
@@ -79,6 +81,20 @@
 						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
 					</script>
 				</div>
+
+                <div
+                    ng-if="listType == 'table'"
+                    class="table-result-list">
+                    <table cellspacing="0" width="100%">
+
+                        {{ include 'AgentBundle:TicketSearch:ticket-list-table-head.html.twig' }}
+
+                        <tbody>
+                        {{ include 'AgentBundle:TicketSearch:ticket-list-table-row.html.twig' }}
+                        </tbody>
+
+                    </table>
+                </div>
 			</section>
 
 		</article>
