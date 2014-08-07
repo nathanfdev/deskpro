@@ -297,13 +297,17 @@
 							<div class="arrow-up"></div>
 							<header>
 								<a class="pref-link trigger-notify-prefs" data-type="{{ type }}"><i class="icon-cog"></i></a>
-								{{ phrase('agent.chrome.notify_list-new-messages', {}, true) }}
+								<a href="#" class="see_current selected">{{ phrase('agent.chrome.notify_list-new-messages', {}, true) }}</a> &bull; <a href="#" class="see_dismissed">View Dismissed</a>
 							</header>
 							<article>
+								<div class="no-notifications notification-progress-on" style="display: none;">
+									<h4>Please wait...</h4>
+								</div>
 								<div class="no-notifications">
 									<h4>{{ phrase('agent.chrome.notify_list-no-notifications') }}</h4>
 								</div>
 								<ul class="notify-list" id="dp_notify_list"></ul>
+								<ul class="notify-list" id="dp_notify_list_archive" style="display: none;"></ul>
 							</article>
 							<footer>
 								<a class="btn trigger-dismiss"><i class="icon-ban-circle"></i> {{ phrase('agent.chrome.notify_list-dismiss-all') }}</a>

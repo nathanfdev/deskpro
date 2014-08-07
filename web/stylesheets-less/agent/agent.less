@@ -1467,6 +1467,14 @@ em.counter, em.list-counter {
 				color: @agent_menu_text_color;
 			}
 		}
+
+		.see_current, .see_dismissed {
+			color: #444;
+
+			&.selected, &:hover {
+				border-bottom: 2px solid #999;
+			}
+		}
 	}
 
 	footer {
@@ -4534,3 +4542,4 @@ em.downarrow {
 	display: inline-block;
 	height: 6px;
 	width: 6px;
+}

@@ -48,8 +48,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			DeskPRO_Window.runPageRouteFromElement($(this));
 
-			var ul = $(this).closest('ul');
 			var row = $(this).closest('li');
+
+			if (row.hasClass('is-dismissed')) {
+				return;
+			}
+
+			var ul = $(this).closest('ul');
 
 			if (row.data('alert-id')) {
 				self.dismissAlertId(row.data('alert-id'));
@@ -66,6 +71,40 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			ev.stopImmediatePropagation();
 			Orb.shimClickCallbackPop();
 			$('#settingswin').trigger('dp_open', 'ticket-notify');
+		}).on('click', '.see_dismissed', function(e) {
+			Orb.cancelEvent(e);
+			
+			$('a.see_current').removeClass('selected');
+			$(this).addClass('selected');
+			
+			$(".no-notifications").hide();
+			$(".notification-progress-on").show();
+			$.ajax({
+				url: '/get_messages.php',
+				data: {dismissed: true},
+				type: 'get',
+				dataType: 'json',
+				success: function(rows) {
+					$(".notification-progress-on").hide();
+					var ul = $("ul#dp_notify_list_archive");
+					ul.html(rows.rendered_list);
+					ul.find('.dismiss').remove();
+					ul.find('li').addClass('is-dismissed');
+					ul.show();
+				}
+			});
+		}).on('click', '.see_current', function(e) {
+			$('a.see_dismissed').removeClass('selected');
+			$(this).addClass('selected');
+
+			$(".notification-progress-on").hide();
+			$("ul#dp_notify_list_archive").hide();
+			
+			if ($("#dp_notify_list").is(':empty')) {
+				$(".no-notifications").not(".notification-progress-on").show();
+			} else {
+				$("#dp_notify_list").show();
+			}
 		});
 	},
 

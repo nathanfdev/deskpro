@@ -79,7 +79,7 @@ class CleanupQuarterHourly extends AbstractJob
 			$datetime = date('Y-m-d H:i:s', time() - $maxage);
 			$num = App::getDb()->executeUpdate("
 				DELETE FROM agent_alerts
-				WHERE date_created < ? OR is_dismissed = 1
+				WHERE date_created < ? AND is_dismissed = 1
 			", array($datetime));
 
 			if ($num) {
