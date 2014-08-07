@@ -1,0 +1,49 @@
+<td width="20">
+    <input type="checkbox" />
+</td>
+<td ng-repeat="field in getDisplayableFields()" ng-switch="field">
+
+
+    <span ng-switch-when="id" class="prop-val">{{ ng_var('ticket.id') }}</span>
+
+
+    <span ng-switch-when="agent" class="prop-val" ng-if="!ticket.agent">
+        {{ phrase('agent.general.unassigned') }}
+    </span>
+    <span ng-switch-when="agent" class="prop-val" ng-if="ticket.agent && ticket.agent.id == DESKPRO_PERSON_ID">
+        {{ ng_var('ticket.agent.display_name') }}
+    </span>
+    <span ng-switch-when="agent" class="prop-val" ng-if="ticket.agent && ticket.agent.id != DESKPRO_PERSON_ID">
+        <a class="agent_link" ng-click="openAgentChat(ticket.agent.id, $event)">
+            {{ ng_var('ticket.agent.display_name') }}
+        </a>
+    </span>
+
+
+    <span ng-switch-when="department" class="prop-val">{{ ng_var('ticket.department.title_full') }}</span>
+
+
+    <span ng-switch-when="subject" class="prop-val">{{ ng_var('ticket.subject') }}</span>
+
+
+    <span ng-switch-when="status" class="prop-val">{{ ng_var('ticket.status') }}</span>
+
+
+    <span ng-switch-when="user" class="prop-val" ng-if="ticket.previews[0]">
+        {{ ng_var('ticket.previews[0].person.display_name') }}
+    </span>
+
+
+    <span ng-switch-when="agent_team" class="prop-val" ng-if="ticket.agent_team">
+        {{ ng_var('ticket.agent_team.name') }}
+    </span>
+    <span ng-switch-when="agent_team" class="prop-val" ng-if="!ticket.agent_team">
+        {{ phrase('agent.general.no_team') }}
+    </span>
+
+
+
+
+    <span ng-switch-default></span>
+
+</td>

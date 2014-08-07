@@ -14,6 +14,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.wrapper = el;
 		this.perPage = 50;
 		this.filterId = parseInt(this.meta.filter_id) || 0;
+		this.fixed_fields = ['id', 'user', 'subject', 'status', 'agent'];
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
 			self.$scope = $rootScope.$new();
@@ -101,6 +102,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.display_fields       = this.meta.display_fields || [];
 		$scope.openTickets          = {};
 		$scope.listType             = 'table';
+		$scope.DESKPRO_PERSON_ID    = DESKPRO_PERSON_ID;
 
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 
@@ -863,7 +865,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				ticket.version_id++;
 			}
 		});
-		console.log(this.$scope.tickets);
 	},
 
 
@@ -1271,6 +1272,22 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 		};
 
+		$scope.getDisplayableFields = function() {
+			var fields = [];
+			self.fixed_fields.each(function(v){
+				fields.push(v);
+			});
+			$scope.display_fields.each(function(v){
+				if (fields.indexOf(v) > -1) return;
+				fields.push(v);
+			});
+			return fields;
+		};
+
+		$scope.getFieldDisplayName = function(field){
+			return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
+		};
+
 		displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'ticket-' + this.meta.resultTypeName,
 			resultId: this.meta.resultTypeId,
@@ -1370,7 +1387,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		//------------------------------
 
 		$scope.openDisplayOptions = function() { displayOptions.open(); };
-		$scope.openTableView = function() { self.openTableView(); };
+		$scope.openTableView = function() {
+			$scope.listType = 'table' === $scope.listType ? 'list' : 'table';
+//			self.openTableView();
+		};
 	},
 
 
@@ -1548,6 +1568,12 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 				return ticket.agent_team ? ticket.agent_team.id : null;
 			case 'urgency':
 				return ticket.urgency ? ticket.urgency : null;
+			case 'id':
+				return ticket.id;
+			case 'subject':
+				return ticket.subject;
+			case 'status':
+				return ticket.status;
 			default:
 				console.log("[getFieldValue] Unknown field: %s", field);
 				return '__UNKNOWN__';

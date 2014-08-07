@@ -87,10 +87,16 @@
                     class="table-result-list">
                     <table cellspacing="0" width="100%">
 
-                        {{ include 'AgentBundle:TicketSearch:ticket-list-table-head.html.twig' }}
+                        {% include 'AgentBundle:TicketSearch:ticket-list-table-head.html.twig' %}
 
                         <tbody>
-                        {{ include 'AgentBundle:TicketSearch:ticket-list-table-row.html.twig' }}
+                            <tr
+                                class="row-item ticket-row-{{ ng_var('ticket.id') }} sla-status-{{ ng_var('ticket.worst_sla_status') }}"
+                                data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '{{ ticket.id }}'})|raw }}"
+                                ng-repeat="ticket in tickets track by ticket.id"
+                            >
+                                {% include 'AgentBundle:TicketSearch:ticket-list-table-row.html.twig' %}
+                            </tr>
                         </tbody>
 
                     </table>
