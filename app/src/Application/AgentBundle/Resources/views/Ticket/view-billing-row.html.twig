@@ -1,14 +1,34 @@
-<tr>
+<tr data-charge="{{ charge.toArray() | json_encode() }}">
 	<td>
 		{% if charge.charge_time %}
-			{{ charge.charge_time|time_length }}
+			<span id="billing_inputs_edit_{{ charge.id }}" class="billing-form-time visible-edit-mode">
+				<input type="text" id="billing_hours_edit_{{ charge.id }}" name="hours" size="2" placeholder="H" style="max-width: 20%">:
+				<input type="text" id="billing_minutes_edit_{{ charge.id }}" name="minutes" size="2" placeholder="M" maxlength="2" style="max-width: 20%">:
+				<input type="text" id="billing_seconds_edit_{{ charge.id }}" name="seconds" size="2" placeholder="S" maxlength="2" style="max-width: 20%">
+			</span>
+			<span class="hidden-edit-mode">
+				{{ charge.charge_time|time_length }}
+			</span>
 		{% endif %}
 		{% if charge.amount %}
-			{{ charge.amount|number_format(2) }} {{ app.getSetting('core_tickets.billing_currency') }}
+			<span class="visible-edit-mode">
+				<input type="text" id="billing_amount_edit_{{ charge.id }}" name="amount" size="7" placeholder="0.00" class="billing-form-amount" value="{{ charge.amount|number_format(2) }}">
+			</span>
+			<span class="hidden-edit-mode">
+				{{ charge.amount|number_format(2) }}
+			</span> {{ app.getSetting('core_tickets.billing_currency') }}
 		{% endif %}
 	</td>
 	<td>{{ charge.agent.name }}</td>
 	<td><time class="timeago" datetime="{{charge.date_created|date('c', 'UTC')}}">{{charge.date_created|date('fulltime')}}</time></td>
-	<td>{{ charge.comment }}</td>
+	<td>
+		<span class="visible-edit-mode">
+			<input value="{{ charge.comment }}" type="text" id="billing_comment_edit_{{ charge.id }}" name="billing_comment" style="width: 98%" maxlength="255">
+		</span>
+		<span class="hidden-edit-mode">
+			{{ charge.comment }}
+		</span>
+	</td>
+	<td class="edit"><span class="hidden-edit-mode"><a class="billing-edit">Edit</a></span><span class="visible-edit-mode"><a href="{{ path('agent_ticket_editcharge', {ticket_id: ticket.id, charge_id: charge.id}) }}" class="billing-edit-save">Save</a> | <a class="billing-edit-discard">Discard</a></span></td>
 	<td class="delete"><a href="{{ path('agent_ticket_chargedelete', {ticket_id: ticket.id, charge_id: charge.id, security_token: security_token('delete_charge'), '_rt': security_token('request_token', 10800)}) }}" class="billing-delete">{{ phrase('agent.general.delete') }}</a></td>
 </tr>

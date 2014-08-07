@@ -70,6 +70,9 @@
 		{{ _self.perm_row('ticket', 'create') }}
 		{{ _self.perm_row('ticket', 'reply_mass') }}
 		{{ _self.perm_row('ticket', 'modify_set_closed') }}
+		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+			{{ _self.perm_row('ticket', 'modify_billing') }}
+		{% endif %}
 		</tbody>
 		<tbody>
 		{{ _self.perm_row('ticket', 'reply_own',                     {first: true}) }}

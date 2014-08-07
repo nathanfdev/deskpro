@@ -1009,6 +1009,12 @@ $collection->create('agent_ticket_addcharge', array(
 	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
+$collection->create('agent_ticket_editcharge', array(
+	'path'          => '/ticket/{ticket_id}/edit-charge/{charge_id}',
+	'controller'    => 'AgentBundle:Ticket:editCharge',
+	'requirements'  => array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
+));
+
 $collection->create('agent_ticket_chargedelete', array(
 	'path'          => '/ticket/{ticket_id}/charge/{charge_id}/delete/{security_token}',
 	'controller'    => 'AgentBundle:Ticket:deleteCharge',
