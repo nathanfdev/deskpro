@@ -72,3 +72,4 @@ app/sys/Resources/agent-perm-names.php
 /app/testing/logs/*
 !/app/testing/logs/.gitkeep
 /app/testing/data/dbset-cache
+web/app/bower_components
