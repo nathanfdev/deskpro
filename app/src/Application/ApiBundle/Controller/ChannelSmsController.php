@@ -82,6 +82,6 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 		));
 
 
-		return $this->createSerializedResponse($data);
+		return $this->createApiResponse($data);
 	}
 }
