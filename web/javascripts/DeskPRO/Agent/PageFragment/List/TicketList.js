@@ -862,7 +862,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				ticket.version_id++;
 			}
 		});
-		console.log(this.$scope.tickets);
 	},
 
 
@@ -1917,14 +1916,33 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			self._formUpdatedDebounce();
 		});
 
-		this.getElById('assign_me').on('click', function(){
+		// todo should be redo to $scope models
+		var $assignMe = this.getElById('assign_me');
+		$assignMe.on('click', function(){
 			$('select[name="actions[agent]"]', this.wrapper).val($(this).data('me')).trigger('change');
 		});
-		this.getElById('assign_team').on('click', function(){
+		$('select[name="actions[agent]"]').on('change', function(){
+			$(this).val() == $assignMe.data('me') ? $assignMe.hide() : $assignMe.show();
+		});
+		var $assignTeam = this.getElById('assign_team');
+		$assignTeam.on('click', function(){
 			$('select[name="actions[agent_team]"]', this.wrapper).val($(this).data('team')).trigger('change');
 		});
-		this.getElById('follower_me').on('click', function(){
-			$('select[name="actions[add_participants][add_participants][]"]', this.wrapper).val($(this).data('me')).trigger('change');
+		$('select[name="actions[agent_team]"]').on('change', function(){
+			$(this).val() == $assignTeam.data('team') ? $assignTeam.hide() : $assignTeam.show();
+		});
+		var $assignFollow = this.getElById('follower_me');
+		$assignFollow.on('click', function(){
+			var $sel = $('select[name="actions[add_participants][add_participants][]"]', this.wrapper),
+				me = $(this).data('me').toString(),
+				val = $sel.val();
+			val ? val.push(me) : val = [me];
+			$sel.val(val);
+			$sel.trigger('change');
+		});
+		$('select[name="actions[add_participants][add_participants][]"]').on('change', function(){
+			var val = $(this).val();
+			val && val.length && val.indexOf($assignFollow.data('me').toString()) > -1 ? $assignFollow.hide() : $assignFollow.show();
 		});
 
 		$('.apply-actions', this.wrapper).on('click', (function(ev) {
