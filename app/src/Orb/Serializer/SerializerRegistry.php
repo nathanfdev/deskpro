@@ -84,7 +84,7 @@ class SerializerRegistry implements SerializerInterface
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	/**
