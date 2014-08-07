@@ -280,7 +280,7 @@
 		</li>
 	</script>
 
-	<div class="notifications-group pull-left" id="dp_header_notify_wrap">
+	<div class="notifications-group pull-left mode-current" id="dp_header_notify_wrap">
 		<ul>
 			{% for type in ['tickets', 'people', 'chat', 'publish', 'tasks', 'twitter', 'none'] %}
 				{% set show = true %}
@@ -300,16 +300,16 @@
 								<a href="#" class="see_current selected">{{ phrase('agent.chrome.notify_list-new-messages', {}, true) }}</a> &bull; <a href="#" class="see_dismissed">View Dismissed</a>
 							</header>
 							<article>
-								<div class="no-notifications notification-progress-on" style="display: none;">
+								<div class="no-notifications for-dismissed notification-progress-on" style="display: none;">
 									<h4>Please wait...</h4>
 								</div>
-								<div class="no-notifications">
+								<div class="no-notifications for-current">
 									<h4>{{ phrase('agent.chrome.notify_list-no-notifications') }}</h4>
 								</div>
-								<ul class="notify-list" id="dp_notify_list"></ul>
-								<ul class="notify-list" id="dp_notify_list_archive" style="display: none;"></ul>
+								<ul class="notify-list for-current" id="dp_notify_list"></ul>
+								<ul class="notify-list for-dismissed" id="dp_notify_list_archive" style="display: none;"></ul>
 							</article>
-							<footer>
+							<footer class="for-current">
 								<a class="btn trigger-dismiss"><i class="icon-ban-circle"></i> {{ phrase('agent.chrome.notify_list-dismiss-all') }}</a>
 							</footer>
 						</div>
