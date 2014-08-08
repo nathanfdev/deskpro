@@ -355,6 +355,18 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * Get the DeskPRO serializer
+	 *
+	 * @return \Application\DeskPRO\Serializer\SerializerRegistry
+	 */
+	public function getSerializer()
+	{
+		return $this->getSystemService('serializer');
+	}
+
+
+
+	/**
 	 * Get the request
 	 *
 	 * @deprecated Should inject the request into the current controller action
