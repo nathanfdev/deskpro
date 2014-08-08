@@ -36,6 +36,7 @@ namespace Application\DeskPRO\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
 
 class ElasticaClientPass implements CompilerPassInterface
 {
@@ -51,7 +52,6 @@ class ElasticaClientPass implements CompilerPassInterface
 		$definition = $container->getDefinition('fos_elastica.client.default');
 		$definition->setClass('Application\\DeskPRO\\Elastica\\Client');
 		$definition->setFactoryService('deskpro.elastica.client_factory');
-		$definition->setFactoryMethod('createClientById');
-		$definition->setArguments(array('default'));
+		$definition->setFactoryMethod('createSystemClientByConfig');
 	}
 }
