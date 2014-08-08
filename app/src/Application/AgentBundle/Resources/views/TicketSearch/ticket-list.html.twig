@@ -113,6 +113,13 @@
 		<footer class="view-footer results-nav">
 			<div class="cursor">
 				Showing {{ ng_bind('pageCursorStart') }} to {{ ng_bind('pageCursorEnd') }} of {{ ng_bind('ticketCount') }}
+                {% if filter %}
+                    {% set refresh_url %}{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}{% endset %}
+                {% elseif sla_id %}
+                    {% set refresh_url %}{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}{% endset %}
+                {% else %}
+                    {% set refresh_url %}{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}{% endset %}
+                {% endif %}
                 <a ng-if="listType == 'table'" title="{{ phrase('agent.tickets.export_to_csv') }}" target="_blank" href="{{ refresh_url }}&view_type=csv&_rt={{ security_token('request_token', 10800) }}">
                     <button class="clean-white">
                         <i class="fa fa-file-excel-o"></i>
