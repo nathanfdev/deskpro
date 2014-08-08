@@ -4,10 +4,62 @@
     </th>
     <th ng-repeat="field in getDisplayableFields()" ng-switch="field">
 
+        {# Department #}
+        <span ng-switch-when="department">{{ phrase('agent.general.department') }}</span>
 
+        {# Ref #}
+        <span ng-switch-when="ref">{{ phrase('agent.general.ref') }}</span>
 
+        {# Language #}
+        <span ng-switch-when="language">{{ phrase('agent.general.language') }}</span>
 
+        {# category #}
+        <span ng-switch-when="category">{{ phrase('agent.general.category') }}</span>
 
+        {# Priority #}
+        <span ng-switch-when="priority">{{ phrase('agent.general.priority') }}</span>
+
+        {# Workflow #}
+        <span ng-switch-when="workflow">{{ phrase('agent.general.workflow') }}</span>
+
+        {# Product #}
+        <span ng-switch-when="product">{{ phrase('agent.general.product') }}</span>
+
+        {# Agent #}
+        <span ng-switch-when="agent">{{ phrase('agent.general.agent') }}</span>
+
+        {# Team #}
+        <span ng-switch-when="agent_team">{{ phrase('agent.general.agent_team') }}</span>
+
+        {# Labels #}
+        <span ng-switch-when="labels">{{ phrase('agent.general.labels') }}</span>
+
+        {# Organization #}
+        <span ng-switch-when="organization">{{ phrase('agent.general.organization') }}</span>
+
+        {# Date created #}
+        <span ng-switch-when="date_created">{{ phrase('agent.general.date_created') }}</span>
+
+        {# Date user waiting #}
+        <span ng-switch-when="date_user_waiting">{{ phrase('agent.general.user_waiting') }}</span>
+
+        {# Date resolved #}
+        <span ng-switch-when="date_resolved">{{ phrase('agent.general.date_resolved') }}</span>
+
+        {# Date last user reply #}
+        <span ng-switch-when="date_last_user_reply">{{ phrase('agent.general.date_of_last_user_reply') }}</span>
+
+        {# Date last agent reply #}
+        <span ng-switch-when="date_last_agent_reply">{{ phrase('agent.general.date_of_last_agent_reply') }}</span>
+
+        {# Date last reply #}
+        <span ng-switch-when="date_last_reply">{{ phrase('agent.general.date_of_last_reply') }}</span>
+
+        {# Total waiting #}
+        <span ng-switch-when="total_user_waiting">{{ phrase('agent.general.total_time_waiting') }}</span>
+
+        {# SLAs #}
+        <span ng-switch-when="slas">{{ phrase('agent.general.slas') }}</span>
 
         {# Custom Ticket Fields #}
         {% for field in app.getCustomFieldManager('tickets').getFields() %}
@@ -15,7 +67,6 @@
                 {{ field.title }}
             </span>
         {% endfor %}
-
 
         {# Custom Person Fields #}
         {% for field in app.getCustomFieldManager('people').getFields() %}
