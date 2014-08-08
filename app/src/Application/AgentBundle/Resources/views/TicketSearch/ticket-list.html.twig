@@ -113,6 +113,11 @@
 		<footer class="view-footer results-nav">
 			<div class="cursor">
 				Showing {{ ng_bind('pageCursorStart') }} to {{ ng_bind('pageCursorEnd') }} of {{ ng_bind('ticketCount') }}
+                <a ng-if="listType == 'table'" title="{{ phrase('agent.tickets.export_to_csv') }}" target="_blank" href="{{ refresh_url }}&view_type=csv&_rt={{ security_token('request_token', 10800) }}">
+                    <button class="clean-white">
+                        <i class="fa fa-file-excel-o"></i>
+                    </button>
+                </a>
 			</div>
 			<ul class="pagenav" ng-class="{'no-prev': !hasPrevPage, 'no-next': !hasNextPage}">
 				<li class="prev" ng-click="loadPrevCursorPage();"></li>

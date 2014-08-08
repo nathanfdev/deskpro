@@ -661,6 +661,7 @@ $CONFIG['agent_interface_css1'] = array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-agent-chat.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
+		'app/bower_components/font-awesome/css/font-awesome.min.css',
 	)
 );
 
