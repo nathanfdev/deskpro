@@ -10,20 +10,17 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 
 		initialLoad: ->
 			list_promise = @SmsAccountsData.loadList().then((recs) =>
-				console.log recs
-				console.log recs.values()
 				@accounts = recs.values()
 
-				if @$state.current.name == 'tickets.channel_sms'
-					if @accounts[0]
-						@$state.go('tickets.channel_sms.edit', {id: @accounts[0].id})
-					else
-						@$state.go('tickets.channel_sms.create')
+#				if @$state.current.name == 'tickets.channel_sms'
+#					if @accounts[0]
+#						@$state.go('tickets.channel_sms.edit', {id: @accounts[0].id})
+#					else
+#						@$state.go('tickets.channel_sms.create')
 
 				@addManagedListener(@SmsAccountsData.recs, 'changed', =>
 					@accounts = @SmsAccountsData.recs.values()
 					@ngApply()
-					console.log @accounts
 				)
 			)
 

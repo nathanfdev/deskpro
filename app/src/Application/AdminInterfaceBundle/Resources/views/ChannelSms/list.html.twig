@@ -15,13 +15,19 @@
 		</p>
 		<ul class="dp-item-list" ng-if="ChannelSmsList.accounts.length">
 			<li ng-repeat="account in ChannelSmsList.accounts"
-				dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('account.id') }}" data-id="{{ ng_var('account.id') }}">
-				<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: account.id}') }}">
+				dp-state-mark="tickets.channel_sms.edit.{{ ng_var('account.id') }}" data-id="{{ ng_var('account.id') }}">
+				<a href="{{ ng_href('tickets.channel_sms.edit', '{id: account.id}') }}">
 					<div class="pull-right">
 						<em class="tag tag-warn" ng-show="!account.is_enabled">Disabled</em>
 					</div>
-
-					<span class="title-id" title="ID">#{{ ng_var('account.id') }}</span> <span class="title-text">{{ ng_var('account.type') }}</span></h4>
+					<span class="title-id" title="ID">#{{ ng_var('account.id') }}</span>
+					<span class="title-text">
+						{{ ng_var('account.type') }}
+						-
+						{{ ng_var('account.phone_number_region') }}
+						-
+						{{ ng_var('account.phone_number') }}
+					</span>
 				</a>
 			</li>
 		</ul>

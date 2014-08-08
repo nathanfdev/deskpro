@@ -2936,14 +2936,32 @@ $collection->create('api_ticket_fields_setenabled', array(
 ));
 
 ########################################################################################################################
-# Channels
+# SMS Channel
 ########################################################################################################################
 
 $collection->create(
 	'api_channel_sms_accounts', array(
-		'path'       => '/channel_sms',
+		'path'       => '/channel/sms/accounts',
 		'controller' => 'ApiBundle:ChannelSms:list',
 		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_get', array(
+		'path'       => '/channel/sms/account/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelSms:get',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_save', array(
+		'path'       => '/channel/sms/account/{id}',
+		'controller' => 'ApiBundle:ChannelSms:save',
+		'defaults'   => array('id' => 'create'),
+		'methods'    => array('POST'),
 	)
 );
 

@@ -34,12 +34,17 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1407447526 extends AbstractBuild
+class Build1407459090 extends AbstractBuild
 {
 	public function run()
 	{
 		$this->out("Adds the SmsAccounts table");
-		$this->execMutateSql("CREATE TABLE sms_accounts (id INT AUTO_INCREMENT NOT NULL, phone_number_id INT DEFAULT NULL, type VARCHAR(20) NOT NULL, params LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)', identifier VARCHAR(20) DEFAULT NULL, UNIQUE INDEX UNIQ_AC3EBFAD39DFD528 (phone_number_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE sms_accounts ADD CONSTRAINT FK_AC3EBFAD39DFD528 FOREIGN KEY (phone_number_id) REFERENCES phone_numbers (id)");
+		$this->execMutateSql(
+			"CREATE TABLE sms_accounts (id INT AUTO_INCREMENT NOT NULL, phone_number_id INT DEFAULT NULL, type VARCHAR(20) NOT NULL, params LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)', identifier VARCHAR(20) DEFAULT NULL, UNIQUE INDEX UNIQ_AC3EBFAD39DFD528 (phone_number_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci"
+		);
+		$this->execMutateSql(
+			"ALTER TABLE sms_accounts ADD CONSTRAINT FK_AC3EBFAD39DFD528 FOREIGN KEY (phone_number_id) REFERENCES phone_numbers (id)"
+		);
+		$this->execMutateSql("ALTER TABLE sms_accounts ADD is_enabled TINYINT(1) NOT NULL");
 	}
 }

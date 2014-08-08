@@ -59,29 +59,30 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 
 	public function listAction()
 	{
-		$data = array('sms_accounts' => array(
-			'21' => array(
-				'id' => 21,
-				'type' => 'twilio',
-				'is_enabled' => false,
-				'params' => array(
-					'auth_token' => 'akdfnaL332nlaLDJienaLj9',
-					'api_key' => 'okkk34302@',
-					'from_number' => 9902990090
-				)
-			),
-			'32' => array(
-				'id' => 32,
-				'type' => 'clickatell',
-				'is_enabled' => true,
-				'params' => array(
-					'auth_token' => 'LLoKNk2KLNK2k',
-					'api_key' => 'LNAKDJALKN2@',
-				)
-			),
-		));
+		$accounts = $this->getContainer()->getEm()->getRepository('DeskPRO:SmsAccount')->findAll();
+
+		$data = $this->getContainer()->getSerializer()->serializeArray($accounts);
+
+		return $this->createApiResponse(array('sms_accounts' => $data));
+	}
 
 
-		return $this->createApiResponse($data);
+	####################################################################################################################
+	# get sms account
+	####################################################################################################################
+
+	public function getAction($id)
+	{
+		return $this->createApiResponse(array());
+	}
+
+
+	####################################################################################################################
+	# save sms account
+	####################################################################################################################
+
+	public function saveAction($id)
+	{
+		return $this->createApiResponse(array());
 	}
 }

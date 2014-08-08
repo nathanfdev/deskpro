@@ -37,7 +37,16 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use \Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\PhoneNumbers;
 
+/**
+ * @property int $id
+ * @property string $type
+ * @property array $params
+ * @property string $identifier
+ * @property bool $is_enabled
+ * @property PhoneNumber|null $phone_number
+ */
 class SmsAccount extends DomainObject
 {
 	/**
@@ -66,6 +75,31 @@ class SmsAccount extends DomainObject
 	 * @var PhoneNumber a stored phone number that is used
 	 */
 	protected $phone_number;
+
+	/**
+	 * @var bool if the acount is enabled or not
+	 */
+	protected $is_enabled;
+
+
+	public function __construct()
+	{
+		$this->is_enabled = false;
+	}
+
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+
+		$data['phone_number'] = null;
+		if ($this->phone_number) {
+			$data['phone_number'] = PhoneNumbers::toInternationalFormat($this->phone_number->number);
+		}
+		$data['phone_number_region'] = $this->phone_number ? $this->phone_number->region : null;
+
+		return $data;
+	}
 
 	############################################################################
 	# Doctrine Metadata
@@ -101,10 +135,16 @@ class SmsAccount extends DomainObject
 				'nullable'  => true, 'columnName' => 'identifier',
 			)
 		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'is_enabled', 'type' => 'boolean', 'columnName' => 'is_enabled',
+			)
+		);
 		$metadata->mapOneToOne(
 			array(
 				'fieldName'    => 'phone_number',
-				'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber'
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+				'cascade'      => array('all')
 			)
 		);
 	}

@@ -2,16 +2,14 @@ define [
 	'Admin/Main/DataService/Base',
 	'Admin/Main/Model/Base',
 	'Admin/Main/Collection/OrderedDictionary'
-], (
-	Admin_Main_DataService_Base,
+], (Admin_Main_DataService_Base,
 	Admin_Main_Model_Base,
-	Admin_Main_Collection_OrderedDictionary
-)  ->
+	Admin_Main_Collection_OrderedDictionary)  ->
 	class Admin_ChannelSms_DataService_SmsAccounts extends Admin_Main_DataService_Base
 		constructor: (em, Api, $q) ->
 			super(em)
-			@$q   = $q
-			@Api  = Api
+			@$q = $q
+			@Api = Api
 
 			@loadListPromise = null
 			@recs = new Admin_Main_Collection_OrderedDictionary()
@@ -30,7 +28,7 @@ define [
 				deferred.resolve(@recs)
 				return deferred.promise
 
-			http_def = @Api.sendGet('/channel_sms').success( (data, status, headers, config) =>
+			http_def = @Api.sendGet('/channel/sms/accounts').success((data, status, headers, config) =>
 				@_setListData(data.sms_accounts)
 				deferred.resolve(@recs)
 			, (data, status, headers, config) ->
@@ -47,7 +45,9 @@ define [
 
 		_setListData: (raw_recs) ->
 			for rec in raw_recs
+				console.log rec
 				model = @em.createEntity('sms_account', 'id', rec)
+				console.log model
 				model.retain()
 				@recs.set(model.id, model)
 

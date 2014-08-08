@@ -32,7 +32,7 @@
           deferred.resolve(this.recs);
           return deferred.promise;
         }
-        http_def = this.Api.sendGet('/channel_sms').success((function(_this) {
+        http_def = this.Api.sendGet('/channel/sms/accounts').success((function(_this) {
           return function(data, status, headers, config) {
             _this._setListData(data.sms_accounts);
             return deferred.resolve(_this.recs);
@@ -54,7 +54,9 @@
         _results = [];
         for (_i = 0, _len = raw_recs.length; _i < _len; _i++) {
           rec = raw_recs[_i];
+          console.log(rec);
           model = this.em.createEntity('sms_account', 'id', rec);
+          console.log(model);
           model.retain();
           _results.push(this.recs.set(model.id, model));
         }
