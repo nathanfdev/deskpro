@@ -6,7 +6,7 @@
     "angular": "v1.2.*",
     "angular-route": "1.2.10",
     "angular-dragdrop": "1.0.4",
-	"angular-bindonce": "0.3.1",
+    "angular-bindonce": "0.3.1",
     "angular-animate": "v1.2.*",
     "angular-sanitize": "v1.2.*",
     "angular-i18n": "1.2.*",
@@ -29,6 +29,9 @@
     "stacktrace": "0.5.3",
     "blueimp-file-upload": "9.3.0",
     "animate.css": "3.0.0",
-    "notify.js": "1.0.0"
+    "notify.js": "1.1.0"
+  },
+  "resolutions": {
+    "angular": ">= 1.0.6"
   }
 }
