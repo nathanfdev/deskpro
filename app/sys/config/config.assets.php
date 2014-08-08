@@ -71,7 +71,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/tmpl.min.js',
 
-		'vendor/underscore/underscore-min.js',
+		'vendor/underscore/underscore.js',
 
 		'vendor/jquery/jquery.localscroll.js',
 		'vendor/jquery/jquery.mousewheel.js',
