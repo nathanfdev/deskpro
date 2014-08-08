@@ -45,6 +45,8 @@ use Orb\Util\PhoneNumbers;
  * @property array $params
  * @property string $identifier
  * @property bool $is_enabled
+ * @property bool $is_connected
+ * @property bool $is_tested
  * @property PhoneNumber|null $phone_number
  */
 class SmsAccount extends DomainObject
@@ -81,10 +83,22 @@ class SmsAccount extends DomainObject
 	 */
 	protected $is_enabled;
 
+	/**
+	 * @var bool the account succeeded in connecting to the API with current credentials
+	 */
+	protected $is_connected;
+
+	/**
+	 * @var bool if the account was tested via SMS with the current credentials
+	 */
+	protected $is_tested;
+
 
 	public function __construct()
 	{
 		$this->is_enabled = false;
+		$this->is_connected = false;
+		$this->is_tested = false;
 	}
 
 
@@ -138,6 +152,16 @@ class SmsAccount extends DomainObject
 		$metadata->mapField(
 			array(
 				'fieldName' => 'is_enabled', 'type' => 'boolean', 'columnName' => 'is_enabled',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'is_connected', 'type' => 'boolean', 'columnName' => 'is_connected',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'is_tested', 'type' => 'boolean', 'columnName' => 'is_tested',
 			)
 		);
 		$metadata->mapOneToOne(

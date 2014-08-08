@@ -34,7 +34,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1407459090 extends AbstractBuild
+class Build1407514786 extends AbstractBuild
 {
 	public function run()
 	{
@@ -46,5 +46,6 @@ class Build1407459090 extends AbstractBuild
 			"ALTER TABLE sms_accounts ADD CONSTRAINT FK_AC3EBFAD39DFD528 FOREIGN KEY (phone_number_id) REFERENCES phone_numbers (id)"
 		);
 		$this->execMutateSql("ALTER TABLE sms_accounts ADD is_enabled TINYINT(1) NOT NULL");
+		$this->execMutateSql("ALTER TABLE sms_accounts ADD is_connected TINYINT(1) NOT NULL, ADD is_tested TINYINT(1) NOT NULL");
 	}
 }
