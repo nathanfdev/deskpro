@@ -145,7 +145,7 @@ class SmsAccount extends DomainObject
 		);
 		$metadata->mapField(
 			array(
-				'fieldName' => 'identifier', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0,
+				'fieldName' => 'identifier', 'type' => 'string', 'length' => 128, 'precision' => 0, 'scale' => 0,
 				'nullable'  => true, 'columnName' => 'identifier',
 			)
 		);
@@ -168,7 +168,13 @@ class SmsAccount extends DomainObject
 			array(
 				'fieldName'    => 'phone_number',
 				'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
-				'cascade'      => array('all')
+				'cascade' => array('all'),
+				'joinColumns' => array(
+					array(
+						'name'     => 'phone_number_id', 'referencedColumnName' => 'id', 'nullable' => true,
+						'onDelete' => 'SET NULL'
+					)
+				)
 			)
 		);
 	}

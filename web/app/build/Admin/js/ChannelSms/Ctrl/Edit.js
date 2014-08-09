@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base', 'Admin/ChannelSms/FormModel/EditSmsAccountModel'], function(Admin_Ctrl_Base, Admin_ChannelSms_FormModel_EditSmsAccountModel) {
     var Admin_ChannelSms_Ctrl_Edit;
     Admin_ChannelSms_Ctrl_Edit = (function(_super) {
       __extends(Admin_ChannelSms_Ctrl_Edit, _super);
@@ -15,34 +15,99 @@
 
       Admin_ChannelSms_Ctrl_Edit.CTRL_AS = 'ChannelSmsEdit';
 
-      Admin_ChannelSms_Ctrl_Edit.DEPS = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions'];
+      Admin_ChannelSms_Ctrl_Edit.DEPS = ['Api', 'Growl', 'SmsAccountsData', '$stateParams'];
 
       Admin_ChannelSms_Ctrl_Edit.prototype.init = function() {
         return this.accountId = parseInt(this.$stateParams.id || 0);
       };
 
+      Admin_ChannelSms_Ctrl_Edit.prototype.getFormModel = function() {
+        return new Admin_ChannelSms_FormModel_EditSmsAccountModel(this.account || {});
+      };
+
       Admin_ChannelSms_Ctrl_Edit.prototype.initialLoad = function() {
-        var list_promise;
-        list_promise = this.SmsAccountsData.loadList().then((function(_this) {
-          return function(recs) {
-            _this.accounts = recs.values();
-            if (_this.$state.current.name === 'tickets.channel_sms') {
-              if (_this.accounts[0]) {
-                _this.$state.go('tickets.channel_sms.edit', {
-                  id: _this.accounts[0].id
-                });
-              } else {
-                _this.$state.go('tickets.channel_sms.create');
+        var promise;
+        if (this.accountId) {
+          promise = this.Api.sendGet("/channel/sms/account/" + this.accountId).then((function(_this) {
+            return function(result) {
+              if (result.data) {
+                _this.account = result.data;
               }
+              return _this.setFormOnScope();
+            };
+          })(this));
+        } else {
+          this.setFormOnScope();
+        }
+        return promise;
+      };
+
+      Admin_ChannelSms_Ctrl_Edit.prototype.setFormOnScope = function() {
+        this.form_model = this.getFormModel();
+        return this.$scope.form = this.form_model.form;
+      };
+
+      Admin_ChannelSms_Ctrl_Edit.prototype.clearCredentials = function() {
+        console.log('ok clear it');
+        this.form_model.markConnected(false);
+        return this.$scope.connection_problem = false;
+      };
+
+      Admin_ChannelSms_Ctrl_Edit.prototype.connect = function() {
+        var connectUrl, postData, promise;
+        postData = this.form_model.getConnectData();
+        connectUrl = "/channel/sms/connect_provider";
+        promise = this.Api.sendPostJson(connectUrl, postData);
+        promise.then((function(_this) {
+          return function(result) {
+            console.log('from server');
+            console.log(result);
+            if (result.data.success) {
+              _this.$scope.connection_problem = false;
+              _this.form_model.markConnected(true);
+              _this.form_model.setNumbers(result.data.numbers);
+              _this.form_model.setFriendlyName(result.data.friendly_name);
+            } else {
+              _this.$scope.connection_problem = true;
+              _this.form_model.markConnected(false);
             }
-            return _this.addManagedListener(_this.SmsAccountsData.recs, 'changed', function() {
-              _this.accounts = _this.SmsAccountsData.recs.values();
-              console.log(_this.accounts);
-              return _this.ngApply();
-            });
+            return _this.stopSpinner('sms_connect_provider');
           };
         })(this));
-        return this.$q.all([list_promise]);
+        promise.error((function(_this) {
+          return function(result) {
+            _this.$scope.connection_problem = true;
+            return _this.form_model.markConnected(false);
+          };
+        })(this));
+        this.startSpinner('sms_connect_provider');
+        return promise;
+      };
+
+      Admin_ChannelSms_Ctrl_Edit.prototype.testRoundTrip = function() {
+        return alert("testing");
+      };
+
+      Admin_ChannelSms_Ctrl_Edit.prototype.saveAccount = function() {
+        var formData;
+        formData = this.form_model.getFormData().account;
+        if (this.accountId) {
+          console.log("Save an existing account! POST!");
+          this.Api.sendPostJson("/channel/sms/account/" + this.accountId, formData).then((function(_this) {
+            return function(result) {
+              return console.log(result);
+            };
+          })(this));
+        } else {
+          console.log("Put a new SMS Account on the server!");
+          console.log(formData);
+          this.Api.sendPutJson("/channel/sms/account", formData).then((function(_this) {
+            return function(result) {
+              return console.log(result);
+            };
+          })(this));
+        }
+        return this.account = formData;
       };
 
       return Admin_ChannelSms_Ctrl_Edit;

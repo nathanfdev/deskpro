@@ -35,6 +35,7 @@
 namespace Orb\Sms\Provider;
 
 use Orb\Service\Twilio\Twilio;
+use Orb\Sms\SmsException;
 use Orb\Sms\SmsMessageChunk;
 use Orb\Sms\SmsProviderInterface;
 use Orb\Sms\SmsResult;
@@ -49,6 +50,15 @@ class TwilioSmsProvider implements SmsProviderInterface
 	public function __construct($sid, $auth_token)
 	{
 		$this->twilio = new Twilio($sid, $auth_token);
+	}
+
+
+	/**
+	 * @return string a friendly name for the account
+	 */
+	public function getAccountName()
+	{
+		return $this->twilio->getFriendlyName();
 	}
 
 	/**
@@ -101,9 +111,26 @@ class TwilioSmsProvider implements SmsProviderInterface
 		return $result;
 	}
 
+
+	/**
+	 * @throws \Orb\Sms\SmsException
+	 * @return array an array of arrays in the format:
+	 *               array( 'display_name' => 'Some Name', 'phone_number' => '+19023340390 )
+	 */
 	public function getIncomingNumbers()
 	{
-		return $this->twilio->getIncomingNumbers();
+		try {
+			$out = array();
+
+			$nums = $this->twilio->getIncomingNumbers();
+			foreach ($nums as $display => $number) {
+				$out[] = array('display_name' => $display, 'phone_number' => $number);
+			}
+
+			return $out;
+		} catch (\Exception $e) {
+			throw new SmsException('could not get incoming numbers from Twilio provider');
+		}
 	}
 
 	/**

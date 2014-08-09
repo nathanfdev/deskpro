@@ -45,9 +45,7 @@ define [
 
 		_setListData: (raw_recs) ->
 			for rec in raw_recs
-				console.log rec
 				model = @em.createEntity('sms_account', 'id', rec)
-				console.log model
 				model.retain()
 				@recs.set(model.id, model)
 

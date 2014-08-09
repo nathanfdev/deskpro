@@ -34,6 +34,9 @@
 
 namespace Orb\Service\Twilio;
 
+/**
+ * Represents a single twillio api account
+ */
 class Twilio
 {
 	/**
@@ -41,8 +44,21 @@ class Twilio
 	 */
 	protected $twilio;
 
+	/**
+	 * @var string the sid
+	 */
+	protected $sid;
+
+	/**
+	 * @var string the auth token
+	 */
+	protected $auth_token;
+
 	public function __construct($sid, $auth_token)
 	{
+		$this->sid = $sid;
+		$this->auth_token = $auth_token;
+
 		$this->twilio = new \Services_Twilio($sid, $auth_token);
 	}
 
@@ -55,11 +71,20 @@ class Twilio
 		);
 	}
 
+
+	/**
+	 * @return string a friendly name that the user sets in twillio, usually their email
+	 */
+	public function getFriendlyName()
+	{
+		return $this->twilio->accounts->get($this->sid)->friendly_name;
+	}
+
 	public function getIncomingNumbers()
 	{
 		$numbers = array();
 		foreach ($this->twilio->account->incoming_phone_numbers as $number) {
-			$numbers[] = $number->phone_number;
+			$numbers[$number->friendly_name] = $number->phone_number;
 		}
 
 		return $numbers;

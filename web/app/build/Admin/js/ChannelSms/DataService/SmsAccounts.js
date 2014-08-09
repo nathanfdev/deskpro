@@ -54,9 +54,7 @@
         _results = [];
         for (_i = 0, _len = raw_recs.length; _i < _len; _i++) {
           rec = raw_recs[_i];
-          console.log(rec);
           model = this.em.createEntity('sms_account', 'id', rec);
-          console.log(model);
           model.retain();
           _results.push(this.recs.set(model.id, model));
         }

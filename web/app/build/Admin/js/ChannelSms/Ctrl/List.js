@@ -28,6 +28,15 @@
         list_promise = this.SmsAccountsData.loadList().then((function(_this) {
           return function(recs) {
             _this.accounts = recs.values();
+            if (_this.$state.current.name === 'tickets.channel_sms') {
+              if (_this.accounts[0]) {
+                _this.$state.go('tickets.channel_sms.edit', {
+                  id: _this.accounts[0].id
+                });
+              } else {
+                _this.$state.go('tickets.channel_sms.create');
+              }
+            }
             return _this.addManagedListener(_this.SmsAccountsData.recs, 'changed', function() {
               _this.accounts = _this.SmsAccountsData.recs.values();
               return _this.ngApply();

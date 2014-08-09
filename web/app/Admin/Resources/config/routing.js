@@ -870,15 +870,15 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'tickets.channel_sms.gocreate',
-		url: '/go-create',
-		templateName: '',
-		controller: ['$state', function ($state) { $state.go('tickets.channel_sms.create'); }]
+		id: 'tickets.channel_sms.create',
+		url: '/create',
+		templateName: 'ChannelSms/edit.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
 	});
 
 	routes.push({
-		id: 'tickets.channel_sms.create',
-		url: '/create',
+		id: 'tickets.channel_sms.edit',
+		url: '/{id:[0-9]+}',
 		templateName: 'ChannelSms/edit.html',
 		controller: 'Admin_ChannelSms_Ctrl_Edit'
 	});

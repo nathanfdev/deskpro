@@ -2960,7 +2960,22 @@ $collection->create(
 	'api_channel_sms_account_save', array(
 		'path'       => '/channel/sms/account/{id}',
 		'controller' => 'ApiBundle:ChannelSms:save',
-		'defaults'   => array('id' => 'create'),
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_create', array(
+		'path'       => '/channel/sms/account',
+		'controller' => 'ApiBundle:ChannelSms:save',
+		'methods'    => array('PUT'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_connect_provider', array(
+		'path'       => '/channel/sms/connect_provider',
+		'controller' => 'ApiBundle:ChannelSms:connectProvider',
 		'methods'    => array('POST'),
 	)
 );
