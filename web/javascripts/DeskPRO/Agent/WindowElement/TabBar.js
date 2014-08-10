@@ -42,7 +42,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var self = this;
 		this.tabList2.on('click', function(ev) {
 			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('tabs', true);
+
+// todo tabs click handler
+//			DeskPRO_Window.setPaneVis('tabs', true);
 
 			var el = $(ev.target);
 			if (el.data('tab')) {

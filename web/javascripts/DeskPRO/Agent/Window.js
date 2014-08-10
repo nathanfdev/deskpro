@@ -876,25 +876,29 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		$('#dp_source, #dp_left_collapsed').on('click', '.toggle_source_pane', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('source', !DeskPRO_Window.paneVis.source);
-		});
-		$('#dp_list, #dp_left_collapsed').on('click', '.toggle_list_pane', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
-		});
-		$('#dp_right_collapsed').on('click', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('tabs', true);
-		});
+// todo dp_left_collapsed click
+//		$('#dp_source, #dp_left_collapsed').on('click', '.toggle_source_pane', function(ev) {
+//			ev.preventDefault();
+//			DeskPRO_Window.setPaneVis('source', !DeskPRO_Window.paneVis.source);
+//		});
+//		$('#dp_list, #dp_left_collapsed').on('click', '.toggle_list_pane', function(ev) {
+//			ev.preventDefault();
+//			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
+//		});
 
-		$('#dp_nav_sections').on('click', function() {
-			self.paneVis.source = true; // todo
-		});
+// todo tabs click handler
+//		$('#dp_right_collapsed').on('click', function(ev) {
+//			ev.preventDefault();
+//			DeskPRO_Window.setPaneVis('tabs', true);
+//		});
+
+// todo section click handler
+//		$('#dp_nav_sections').on('click', function() {
+//			self.paneVis.source = true; // todo
+//		});
 
 
-// todo
+// todo list click handler
 //		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
 //			ev.preventDefault();
 //
@@ -1168,7 +1172,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	initScope: function() {
 		var $scope = this.$scope,
-			self = this;
+			self = this,
+			resizeTimeout;
 
 		$scope.paneVis = this.paneVis;
 		$scope.COL2 = this.COL2 = true; // 2 columns view
@@ -1179,7 +1184,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				self.paneVis.tabs = true;
 			} else {
 				self.paneVis.list = false;
-				self.paneVis.tabs = true; // todo
+				self.paneVis.tabs = true; // todo show active pane in 1col view
 			}
 		});
 
@@ -2778,9 +2783,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('listpane', (function(routeData) {
 
-			if (!this.paneVis.list) {
-				this.setPaneVis('list', true);
-			}
+// todo change paneVis re route
+//			if (!this.paneVis.list) {
+//				this.setPaneVis('list', true);
+//			}
 
 			this.loadRoute(routeData);
 		}).bind(this));
