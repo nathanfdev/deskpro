@@ -882,50 +882,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-// todo dp_left_collapsed click
-//		$('#dp_source, #dp_left_collapsed').on('click', '.toggle_source_pane', function(ev) {
-//			ev.preventDefault();
-//			DeskPRO_Window.setPaneVis('source', !DeskPRO_Window.paneVis.source);
-//		});
-//		$('#dp_list, #dp_left_collapsed').on('click', '.toggle_list_pane', function(ev) {
-//			ev.preventDefault();
-//			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
-//		});
-
-// todo tabs click handler
-//		$('#dp_right_collapsed').on('click', function(ev) {
-//			ev.preventDefault();
-//			DeskPRO_Window.setPaneVis('tabs', true);
-//		});
-
-// todo section click handler
-//		$('#dp_nav_sections').on('click', function() {
-//			self.paneVis.source = true; // todo
-//		});
-
-
-// todo list click handler
-//		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
-//			ev.preventDefault();
-//
-//			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.tabs) {
-//				DeskPRO_Window.setPaneVis('source', true, 'tabs', true);
-//			} else {
-//				DeskPRO_Window.setPaneVis('source', false, 'tabs', false);
-//			}
-//		});
-
-//		$('#tabNavigationPane .maximise_tabs_pane').on('click', function(ev) {
-//			ev.preventDefault();
-//
-//			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.list) {
-//				DeskPRO_Window.setPaneVis('source', true, 'list', true);
-//			} else {
-//				DeskPRO_Window.setPaneVis('source', false, 'list', false);
-//			}
-//		});
-
-
 		$('#dp_header_userchat_btn').on('click', function() {
 			if (DeskPRO_Window.sections.chat_section) {
 				DeskPRO_Window.sections.chat_section.refreshOnlineUsers();
@@ -1192,6 +1148,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$scope.twoColumnsView = function() {
 			if (this.paneVis.list && this.paneVis.tabs) return;
 			self.paneVis.list = true;
+			self.paneVis.tabs = true;
+		};
+
+		$scope.showList = function() {
+			if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
+				self.paneVis.tabs = false;
+			}
+			self.paneVis.list = true;
+		};
+
+		$scope.showTabs = function() {
+			if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
+				self.paneVis.list = false;
+			}
 			self.paneVis.tabs = true;
 		};
 	},
@@ -1870,6 +1840,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.switchToSection(sectionId, true);
 			this.updateWindowUrlFragment();
 		}
+
+		this.$scope && this.$scope.showList();
 	},
 
 	getListPage: function() {
@@ -2794,12 +2766,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('listpane', (function(routeData) {
-
-// todo change paneVis re route
-//			if (!this.paneVis.list) {
-//				this.setPaneVis('list', true);
-//			}
-
 			this.loadRoute(routeData);
 		}).bind(this));
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));

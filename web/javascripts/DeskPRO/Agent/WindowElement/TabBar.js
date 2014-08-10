@@ -290,7 +290,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 //		}
 
 		// force show tabs on new
-		if (!(DeskPRO_Window.paneVis.list && DeskPRO_Window.paneVis.tabs)) {
+		if (DeskPRO_Window.$timeout && !(DeskPRO_Window.paneVis.list && DeskPRO_Window.paneVis.tabs)) {
 			DeskPRO_Window.$timeout(function(){
 				DeskPRO_Window.paneVis.tabs = true;
 				DeskPRO_Window.paneVis.list = false;
