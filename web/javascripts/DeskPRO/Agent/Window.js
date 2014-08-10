@@ -1176,9 +1176,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			resizeTimeout;
 
 		$scope.paneVis = this.paneVis;
-		$scope.COL2 = this.COL2 = true; // 2 columns view
+		$scope.COL2 = true; // 2 columns view
 
-		$scope.$watch('COL2', function(newVal){
+		$scope.$watch('COL2', function(newVal, oldVal){
 			if (newVal) {
 				self.paneVis.list = true;
 				self.paneVis.tabs = true;
@@ -1866,6 +1866,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	addPageTab: function(page) {
 		DeskPRO_Window.TabBar.addTab(page);
+		var $scope = this.$scope;
+		if (!$scope.COL2) {
+			this.$timeout(function(){
+				$scope.paneVis.tabs = true;
+				$scope.paneVis.list = false;
+			}, 10);
+		}
 	},
 
 	/**
