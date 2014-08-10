@@ -25,7 +25,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.tabPane = $(this.options.tabPane);
 		this.tabList = this.tabPane.find('ul.dp-tab-list').first();
-		this.tabList2 = $('#dp_collapsed_tabs');
+//		this.tabList2 = $('#dp_collapsed_tabs');
 		this.bodyPane = $(this.options.bodyPane);
 		this.menuBtn = $(this.options.menuBtn);
 
@@ -39,18 +39,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.tabBarOverflow = new DeskPRO.Agent.WindowElement.TabBarOverflow();
 
-		var self = this;
-		this.tabList2.on('click', function(ev) {
-			ev.preventDefault();
-
-// todo tabs click handler
+//		var self = this;
+//		this.tabList2.on('click', function(ev) {
+//			ev.preventDefault();
 //			DeskPRO_Window.setPaneVis('tabs', true);
-
-			var el = $(ev.target);
-			if (el.data('tab')) {
-				self.activateTab(el.data('tab'));
-			}
-		});
+//
+//			var el = $(ev.target);
+//			if (el.data('tab')) {
+//				self.activateTab(el.data('tab'));
+//			}
+//		});
 	},
 
 
@@ -282,7 +280,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		} else {
 			data.tabBtn.prependTo(this.tabList);
-			data.tabBtn2.appendTo(this.tabList2);
+//			data.tabBtn2.appendTo(this.tabList2);
 		}
 
 		// If tabs are collapsed, then we need to re-calc
@@ -512,12 +510,11 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 						// The timeout is in case we have other routines that auto-open
 						// a new tab (e.g., after ticket reply)
 						var self = this;
-						window.setTimeout(function(){
+						DeskPRO_Window.$timeout(function(){
 							var last_tab_id = Object.keys(self.tabs).getLast();
 							if (!last_tab_id) {
 								DeskPRO_Window.paneVis.list = true;
 								DeskPRO_Window.paneVis.tabs = false;
-								DeskPRO_Window.layout.doResize(true);
 							}
 						}, 100);
 					}
