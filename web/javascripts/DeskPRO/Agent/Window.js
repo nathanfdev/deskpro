@@ -890,52 +890,30 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		$('#dp_nav_sections').on('click', function() {
-			if (!self.paneVis['source']) {
-				self.paneVis['source'] = true;
-				self.layout.doResize(true);
-			}
+			self.paneVis.source = true; // todo
 		});
 
-		$(document).on('click', '.panevis-toggle-sourcepane', function() {
-			self.paneVis['source'] = !self.paneVis['source'];
-			self.layout.doResize(true);
-		});
 
-		$(document).on('click', '.panevis-toggle-tableview', function() {
-			self.paneVis['list'] = true;
-			self.paneVis['tabs'] = false;
-			self.layout.doResize(true);
-		});
-		$(document).on('click', '.panevis-toggle-normalview', function() {
-			self.paneVis['list'] = true;
-			self.paneVis['tabs'] = true;
-			self.layout.doResize(true);
-		});
-		$(document).on('click', '.panevis-toggle-tabview', function() {
-			self.paneVis['list'] = false;
-			self.paneVis['tabs'] = true;
-			self.layout.doResize(true);
-		});
+// todo
+//		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
+//			ev.preventDefault();
+//
+//			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.tabs) {
+//				DeskPRO_Window.setPaneVis('source', true, 'tabs', true);
+//			} else {
+//				DeskPRO_Window.setPaneVis('source', false, 'tabs', false);
+//			}
+//		});
 
-		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
-			ev.preventDefault();
-
-			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.tabs) {
-				DeskPRO_Window.setPaneVis('source', true, 'tabs', true);
-			} else {
-				DeskPRO_Window.setPaneVis('source', false, 'tabs', false);
-			}
-		});
-
-		$('#tabNavigationPane .maximise_tabs_pane').on('click', function(ev) {
-			ev.preventDefault();
-
-			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.list) {
-				DeskPRO_Window.setPaneVis('source', true, 'list', true);
-			} else {
-				DeskPRO_Window.setPaneVis('source', false, 'list', false);
-			}
-		});
+//		$('#tabNavigationPane .maximise_tabs_pane').on('click', function(ev) {
+//			ev.preventDefault();
+//
+//			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.list) {
+//				DeskPRO_Window.setPaneVis('source', true, 'list', true);
+//			} else {
+//				DeskPRO_Window.setPaneVis('source', false, 'list', false);
+//			}
+//		});
 
 
 		$('#dp_header_userchat_btn').on('click', function() {
@@ -1184,18 +1162,30 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.$q = $q;
 			self.$timeout = $timeout;
 
-			var $dom = $('body');
-			$dom.data('$ngControllerController', self);
-			$compile($dom.contents())($rootScope);
-
 			self.initScope();
 		}]);
 	},
 
 	initScope: function() {
-		var $scope = this.$scope;
+		var $scope = this.$scope,
+			self = this;
+
+		$scope.paneVis = this.paneVis;
 		$scope.COL2 = this.COL2 = true; // 2 columns view
-		$scope.view = {active: 'list'}; // todo
+
+		$scope.$watch('COL2', function(newVal){
+			if (newVal) {
+				self.paneVis.list = true;
+				self.paneVis.tabs = true;
+			} else {
+				self.paneVis.list = false;
+				self.paneVis.tabs = true; // todo
+			}
+		});
+
+		$scope.$watch('paneVis', function(newVal, oldVal){
+			self.layout.doResize(true);
+		}, true);
 	},
 
 	initAppPlatform: function(AppPlatform) {
