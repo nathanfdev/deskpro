@@ -465,9 +465,6 @@
 	</div>
 
 	<div class="panevis-switcher pull-right">
-        <span ng-if="paneVis.source">S</span>
-        <span ng-if="paneVis.list">L</span>
-        <span ng-if="paneVis.tabs">T</span>
 		<ul>
 			<li ng-click="paneVis.source = !paneVis.source" ng-class="paneVis.source && 'active'" class="view-source" title="{{ phrase('agent.interface.viewbtn-source') }}"></li>
             <li ng-click="oneColumnView()" ng-class="!(paneVis.list && paneVis.tabs) && 'active'" class="view3" title="{{ phrase('agent.interface.viewbtn-tab') }}"></li>

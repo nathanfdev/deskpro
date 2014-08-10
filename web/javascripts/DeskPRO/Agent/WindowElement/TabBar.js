@@ -28,6 +28,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 //		this.tabList2 = $('#dp_collapsed_tabs');
 		this.bodyPane = $(this.options.bodyPane);
 		this.menuBtn = $(this.options.menuBtn);
+		this.active = null;
 
 		this.tabCount = 0;
 
@@ -254,34 +255,34 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		data.tabBtn2.data('tab', data);
 
 		var wasActive = false;
-		var otherTab = null;
-		if (data.page && data.page.meta.tabPlaceholderId) {
-			otherTab = this.getTab(data.page.meta.tabPlaceholderId);
-		}
+//		var otherTab = null;
+//		if (data.page && data.page.meta.tabPlaceholderId) {
+//			otherTab = this.getTab(data.page.meta.tabPlaceholderId);
+//		}
 
-		if (otherTab) {
-			// We may have had a placeholder, in which case we want to place
-			// the new tab where the old one was while also removing the placeholder
-			// content in the body pane
-
-			var otherTab = this.getTab(data.page.meta.tabPlaceholderId);
-			data.tabBtn.insertAfter(otherTab.tabBtn);
-			otherTab.tabBtn.remove();
-
-			data.tabBtn2.insertAfter(otherTab.tabBtn2);
-			otherTab.tabBtn2.remove();
-
-			if (this.currentTabId == otherTab.id) {
-				wasActive = true;
-				this.currentTabId = null;
-			}
-
-			this.removeTab(otherTab, true);
-
-		} else {
-			data.tabBtn.prependTo(this.tabList);
+//		if (otherTab) {
+//			// We may have had a placeholder, in which case we want to place
+//			// the new tab where the old one was while also removing the placeholder
+//			// content in the body pane
+//
+//			var otherTab = this.getTab(data.page.meta.tabPlaceholderId);
+//			data.tabBtn.insertAfter(otherTab.tabBtn);
+//			otherTab.tabBtn.remove();
+//
+//			data.tabBtn2.insertAfter(otherTab.tabBtn2);
+//			otherTab.tabBtn2.remove();
+//
+//			if (this.currentTabId == otherTab.id) {
+//				wasActive = true;
+//				this.currentTabId = null;
+//			}
+//
+//			this.removeTab(otherTab, true);
+//
+//		} else {
+//			data.tabBtn.prependTo(this.tabList);
 //			data.tabBtn2.appendTo(this.tabList2);
-		}
+//		}
 
 		// If tabs are collapsed, then we need to re-calc
 		// the layout when adding a new tab in case the side navstrip is hidden (it was empty and now is not)
@@ -364,6 +365,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			return;
 		}
 
+		this.active = tab;
 		var id = tab.id;
 
 		// Already the current tab

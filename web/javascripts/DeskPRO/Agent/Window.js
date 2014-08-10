@@ -47,7 +47,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.paneVis = {
 			source: true,
 			list: true,
-			tabs: true,
+			tabs: false,
 		};
 
 		this.paneVisBit = {
@@ -1127,6 +1127,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self = this;
 
 		$scope.paneVis = this.paneVis;
+		$scope.tabs = this.TabBar.tabs;
 
 		$scope.$watch('paneVis', function(newVal, oldVal){
 			self.layout.doResize(true);
