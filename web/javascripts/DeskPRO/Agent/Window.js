@@ -47,8 +47,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.paneVis = {
 			source: true,
 			list: true,
-			tabs: true
+			tabs: true,
 		};
+
+		this.paneVisBit = {
+			source: 1,
+			list: 2,
+			tabs: 4
+		}
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -1158,39 +1164,36 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 		/***************** /scrolling handle on drag ******************/
-
-
-		var self = this;
-		this.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
-			self.$scope = $rootScope;
-			self.$q = $q;
-			self.$timeout = $timeout;
-
-			self.initScope();
-		}]);
 	},
 
 	initScope: function() {
 		var $scope = this.$scope,
-			self = this,
-			resizeTimeout;
+			self = this;
 
 		$scope.paneVis = this.paneVis;
-		$scope.COL2 = true; // 2 columns view
-
-		$scope.$watch('COL2', function(newVal, oldVal){
-			if (newVal) {
-				self.paneVis.list = true;
-				self.paneVis.tabs = true;
-			} else {
-				self.paneVis.list = false;
-				self.paneVis.tabs = true; // todo show active pane in 1col view
-			}
-		});
 
 		$scope.$watch('paneVis', function(newVal, oldVal){
 			self.layout.doResize(true);
 		}, true);
+
+		$scope.oneColumnView = function() {
+			if (!(this.paneVis.list && this.paneVis.tabs)) return;
+
+			// todo set active pane
+			if (DeskPRO_Window.TabBar.getActiveTabId()) {
+				self.paneVis.tabs = true;
+				self.paneVis.list = false;
+			} else {
+				self.paneVis.list = true;
+				self.paneVis.tabs = false;
+			}
+		};
+
+		$scope.twoColumnsView = function() {
+			if (this.paneVis.list && this.paneVis.tabs) return;
+			self.paneVis.list = true;
+			self.paneVis.tabs = true;
+		};
 	},
 
 	initAppPlatform: function(AppPlatform) {
@@ -1200,6 +1203,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.ngModule = this.AppPlatform.getNgModule();
 		this.ngModule.dpInjector = angular.element(document).injector();
+
+		var self = this;
+		this.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
+			self.$scope = $rootScope;
+			self.$q = $q;
+			self.$timeout = $timeout;
+
+			self.initScope();
+		}]);
 	},
 
 	getAppPlatform: function() {
@@ -1866,13 +1878,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	addPageTab: function(page) {
 		DeskPRO_Window.TabBar.addTab(page);
-		var $scope = this.$scope;
-		if (!$scope.COL2) {
-			this.$timeout(function(){
-				$scope.paneVis.tabs = true;
-				$scope.paneVis.list = false;
-			}, 10);
-		}
 	},
 
 	/**
@@ -4384,60 +4389,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	setPaneVis: function(id, vis) {
 		this.paneVis[id] = vis;
-		this.layout.doResize(true);
 	},
 
 	setPaneVisNum: function(num) {
-		switch (num) {
-			case 0:
-				this.paneVis.source = true;
-				this.paneVis.list = true;
-				this.paneVis.tabs = true;
-				break;
-
-			case 1:
-				this.paneVis.source = true;
-				this.paneVis.list = true;
-				this.paneVis.tabs = false;
-				break;
-
-			case 2:
-				this.paneVis.source = true;
-				this.paneVis.list = false;
-				this.paneVis.tabs = true;
-				break;
-
-			case 3:
-				this.paneVis.source = false;
-				this.paneVis.list = true;
-				this.paneVis.tabs = false;
-				break;
-
-			case 4:
-				this.paneVis.source = false;
-				this.paneVis.list = false;
-				this.paneVis.tabs = true;
-				break;
-
-			case 5:
-				this.paneVis.source = false;
-				this.paneVis.list = true;
-				this.paneVis.tabs = true;
-				break;
+		for (var k in this.paneVis) {
+			this.paneVis[k] = num & this.paneVisBit[k] ? true : false;
 		}
-
-		this.layout.doResize(true);
 	},
 
 	getPaneVisNum: function() {
-		var source = this.paneVis.source, list = this.paneVis.list, tabs = this.paneVis.tabs;
-
-		if (source && list && tabs)   return 0;
-		if (source && list && !tabs)  return 1;
-		if (source && !list && tabs)  return 2;
-		if (!source && list && !tabs) return 3;
-		if (!source && !list && tabs) return 4;
-		if (!source && list && tabs)  return 5;
-		return 0;
+		var num = 0;
+		for (var k in this.paneVis) {
+			if (this.paneVis[k]) {
+				num += this.paneVisBit[k]
+			}
+		}
+		return num;
 	}
 });
