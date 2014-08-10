@@ -285,8 +285,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		// If tabs are collapsed, then we need to re-calc
 		// the layout when adding a new tab in case the side navstrip is hidden (it was empty and now is not)
-		if (!DeskPRO_Window.paneVis.tabs) {
-			DeskPRO_Window.layout.doResize(true);
+//		if (!DeskPRO_Window.paneVis.tabs) {
+//			DeskPRO_Window.layout.doResize(true);
+//		}
+
+		// force show tabs on new
+		if (!(DeskPRO_Window.paneVis.list && DeskPRO_Window.paneVis.tabs)) {
+			DeskPRO_Window.$timeout(function(){
+				DeskPRO_Window.paneVis.tabs = true;
+				DeskPRO_Window.paneVis.list = false;
+			}, 0);
 		}
 
 		//----------
@@ -504,7 +512,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				if (last_tab_id) {
 					this.activateTabById(last_tab_id);
 				} else {
-					if (!DeskPRO_Window.paneVis.list) {
+					if (!(DeskPRO_Window.paneVis.list && DeskPRO_Window.paneVis.tabs)) {
 						// If list view isnt active, then after a small timeout
 						// make it visiable.
 						// The timeout is in case we have other routines that auto-open
@@ -527,12 +535,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		DeskPRO_Window.updateWindowUrlFragment();
 		this.tabBarOverflow.update();
-
-		// Trigger a resize so the sidebar tabs can be hidden
-		// if there are now no tabs
-		if (!DeskPRO_Window.paneVis.tabs) {
-			DeskPRO_Window.layout.doResize(true);
-		}
 	},
 
 
