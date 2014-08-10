@@ -556,6 +556,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				window.location.reload(false);
 			}
 		};
+
+
 	},
 
 	initPage: function() {
@@ -1174,6 +1176,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 		/***************** /scrolling handle on drag ******************/
+
+
+		var self = this;
+		this.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
+			self.$scope = $rootScope;
+			self.$q = $q;
+			self.$timeout = $timeout;
+
+			var $dom = $('body');
+			$dom.data('$ngControllerController', self);
+			$compile($dom.contents())($rootScope);
+
+			self.initScope();
+		}]);
+	},
+
+	initScope: function() {
+		var $scope = this.$scope;
+		$scope.COL2 = this.COL2 = true; // 2 columns view
+		$scope.view = {active: 'list'}; // todo
 	},
 
 	initAppPlatform: function(AppPlatform) {
