@@ -3,6 +3,7 @@
     var Admin_ChannelSms_FormModel_EditSmsAccountModel;
     return Admin_ChannelSms_FormModel_EditSmsAccountModel = (function() {
       function Admin_ChannelSms_FormModel_EditSmsAccountModel(account) {
+        var _ref;
         this.account = account;
         this.form = {
           account: {}
@@ -18,7 +19,6 @@
         this.form.account.is_tested = this.account.is_enabled || false;
         this.form.account.phone_number = this.account.phone_number || null;
         this.form.account.identifier = this.account.identifier || "";
-        this.form.numbers = [];
       }
 
       Admin_ChannelSms_FormModel_EditSmsAccountModel.prototype.getFormData = function() {

@@ -2957,6 +2957,15 @@ $collection->create(
 );
 
 $collection->create(
+	'api_channel_sms_account_delete', array(
+		'path'       => '/channel/sms/account/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelSms:delete',
+		'methods'    => array('DELETE'),
+	)
+);
+
+$collection->create(
 	'api_channel_sms_account_save', array(
 		'path'       => '/channel/sms/account/{id}',
 		'controller' => 'ApiBundle:ChannelSms:save',

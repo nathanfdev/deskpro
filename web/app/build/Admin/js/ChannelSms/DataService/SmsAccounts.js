@@ -84,7 +84,7 @@
       Admin_ChannelSms_DataService_SmsAccounts.prototype.addToList = function(rec) {
         var model;
         if (!rec._is_model) {
-          model = this.em.createEntity('sms_account', 'id', dep);
+          model = this.em.createEntity('sms_account', 'id', rec);
         } else {
           model = this.em.add(rec, true);
         }

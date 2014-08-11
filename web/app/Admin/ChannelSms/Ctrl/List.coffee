@@ -26,4 +26,36 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 
 			return @$q.all([list_promise]);
 
+		startDelete: (for_acc_id) ->
+			for_acc = null
+			for v in @accounts
+				if v.id == for_acc_id
+					for_acc = v
+
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('ChannelSms/delete-modal.html'),
+				controller: [
+					'$scope', '$modalInstance', ($scope, $modalInstance) ->
+						$scope.confirm = ->
+							$modalInstance.close();
+
+						$scope.dismiss = ->
+							$modalInstance.dismiss();
+				]
+			});
+
+			inst.result.then(=>
+				@deleteAccount(for_acc)
+			)
+
+		deleteAccount: (acc) ->
+			@Api.sendDelete('/channel/sms/account/' + acc.id).success(=>
+				@SmsAccountsData.remove(acc.id)
+				@ngApply()
+
+				# if currently viewing the deleted account, then should need to switch state
+				if @$state.current.name == 'tickets.channel_sms.edit' and parseInt(@$state.params.id) == acc.id
+					@$state.go('tickets.channel_sms')
+			)
+
 	Admin_ChannelSms_Ctrl_List.EXPORT_CTRL()

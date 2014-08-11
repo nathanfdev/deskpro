@@ -15,7 +15,7 @@
 
       Admin_ChannelSms_Ctrl_Edit.CTRL_AS = 'ChannelSmsEdit';
 
-      Admin_ChannelSms_Ctrl_Edit.DEPS = ['Api', 'Growl', 'SmsAccountsData', '$stateParams'];
+      Admin_ChannelSms_Ctrl_Edit.DEPS = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$state'];
 
       Admin_ChannelSms_Ctrl_Edit.prototype.init = function() {
         return this.accountId = parseInt(this.$stateParams.id || 0);
@@ -32,6 +32,10 @@
             return function(result) {
               if (result.data) {
                 _this.account = result.data;
+                _this.form_model = _this.getFormModel();
+              }
+              if (_this.account.is_connected) {
+                _this.connect();
               }
               return _this.setFormOnScope();
             };
@@ -43,12 +47,13 @@
       };
 
       Admin_ChannelSms_Ctrl_Edit.prototype.setFormOnScope = function() {
-        this.form_model = this.getFormModel();
+        if (!this.form_model) {
+          this.form_model = this.getFormModel();
+        }
         return this.$scope.form = this.form_model.form;
       };
 
       Admin_ChannelSms_Ctrl_Edit.prototype.clearCredentials = function() {
-        console.log('ok clear it');
         this.form_model.markConnected(false);
         return this.$scope.connection_problem = false;
       };
@@ -60,8 +65,6 @@
         promise = this.Api.sendPostJson(connectUrl, postData);
         promise.then((function(_this) {
           return function(result) {
-            console.log('from server');
-            console.log(result);
             if (result.data.success) {
               _this.$scope.connection_problem = false;
               _this.form_model.markConnected(true);
@@ -92,22 +95,26 @@
         var formData;
         formData = this.form_model.getFormData().account;
         if (this.accountId) {
-          console.log("Save an existing account! POST!");
-          this.Api.sendPostJson("/channel/sms/account/" + this.accountId, formData).then((function(_this) {
+          return this.Api.sendPostJson("/channel/sms/account/" + this.accountId, formData).then((function(_this) {
             return function(result) {
-              return console.log(result);
+              _this.account = formData;
+              return _this.SmsAccountsData.updateModel(_this.account);
             };
           })(this));
         } else {
-          console.log("Put a new SMS Account on the server!");
-          console.log(formData);
-          this.Api.sendPutJson("/channel/sms/account", formData).then((function(_this) {
+          return this.Api.sendPutJson("/channel/sms/account", formData).then((function(_this) {
             return function(result) {
-              return console.log(result);
+              _this.account = formData;
+              _this.account.id = result.data.sms_account_id;
+              _this.accountId = result.data.sms_account_id;
+              _this.account.phone_number_region = result.data.phone_number_region;
+              _this.SmsAccountsData.addToList(_this.account);
+              return _this.$state.go('tickets.channel_sms.edit', {
+                id: _this.accountId
+              });
             };
           })(this));
         }
-        return this.account = formData;
       };
 
       return Admin_ChannelSms_Ctrl_Edit;

@@ -92,26 +92,35 @@
 													{{ ng_var('form.account.identifier') }}
 												</div>
 												<div class="col-lg-5">
-													<button class="btn btn-default btn-sm" type="button" ng-click="ChannelSmsEdit.clearCredentials()">
+													<button class="btn btn-default btn-sm" type="button"
+														ng-click="ChannelSmsEdit.clearCredentials()">
 														Gears -> Change Credentials
 													</button>
 												</div>
 											</div>
 										</div>
 
-												<div class="col-lg-3">
-													<h3>Twilio Number</h3>
-												</div>
-												<div class="col-lg-9">
-													<select data-placeholder="Select a Number" ng-required
-														ng-model="form.account.phone_number">
-														<option ng-repeat="number in form.numbers"
-															value="{{ ng_var('number.phone_number') }}">{{ ng_var('number.display_name') }}</option>
-													</select>
+										<div class="col-lg-3">
+											<h3>Twilio Number</h3>
+										</div>
+										<div class="col-lg-9">
+											<select data-placeholder="Select a Number" ng-required
+												ng-model="form.account.phone_number">
+												<option ng-repeat="number in form.numbers"
+													value="{{ ng_var('number.phone_number') }}">{{ ng_var('number.display_name') }}</option>
+											</select>
+											<button style="margin-bottom: 15px;" class="btn btn-default"
+												type="button"
+												ng-click="ChannelSmsEdit.connect()" style="width: 25%">Refresh
+											</button>
+											<div dp-show-spinning="sms_connect_provider">
+												<i class="spinner-flat"></i>
+											</div>
+
 												<span class="help-block" style="margin-bottom: 15px;">
 													This will be the SMS number used for this channel.
 												</span>
-												</div>
+										</div>
 									</div>
 
 								</div>
@@ -122,11 +131,11 @@
 						<div class="form-group" ng-show="form.account.is_connected">
 							<div class="col-lg-3"><h3>Enabled</h3></div>
 							<div class="col-lg-9">
-									<label>
-										<input type="checkbox" ng-model="form.account.is_enabled"
-											/>
-										Enable this SMS account
-									</label>
+								<label>
+									<input type="checkbox" ng-model="form.account.is_enabled"
+										/>
+									Enable this SMS account
+								</label>
 								<span class="help-block" style="margin-bottom: 15px;"
 									ng-show="!form.account.is_enabled">Enabling this account opens it up as a channel.</span>
 									<span class="help-block" style="margin-bottom: 15px;"
@@ -137,7 +146,7 @@
 					</div>
 				</div>
 			</article>
-			<footer>
+			<footer ng-hide="form_props.$attempted && form_props.$invalid">
 				<div class="dp-content">
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
@@ -161,7 +170,7 @@
 							<button class="btn btn-primary" type="submit"
 								dp-submit-form>{{ phrase('agent.general.save') }}</button>
 							{#<button class="btn btn-default" type="button"#}
-								{#ng-click="ChannelSmsEdit.testRoundTrip()">Test#}
+							{#ng-click="ChannelSmsEdit.testRoundTrip()">Test#}
 							{#</button>#}
 						</div>
 						<div dp-show-spinning="saving_account">

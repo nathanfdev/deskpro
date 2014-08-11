@@ -65,7 +65,7 @@ define [
 		###
 		addToList: (rec) ->
 			if not rec._is_model
-				model = @em.createEntity('sms_account', 'id', dep)
+				model = @em.createEntity('sms_account', 'id', rec)
 			else
 				model = @em.add(rec, true)
 

@@ -69,6 +69,21 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 		return $this->createApiResponse(array('sms_accounts' => $data));
 	}
 
+	public function deleteAction($id)
+	{
+		$account = $this->getSmsAccountRepo()->find($id);
+
+		if (!$account) {
+			return $this->createApiErrorResponse('not_found', sprintf('sms account (id=%s) does not exist', $id));
+		}
+
+		$em = $this->getContainer()->getEm();
+		$em->remove($account);
+		$em->flush();
+
+		return $this->createApiSuccessResponse();
+	}
+
 
 	####################################################################################################################
 	# get sms account
@@ -117,7 +132,16 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 		$this->getContainer()->getEm()->persist($account);
 		$this->getContainer()->getEm()->flush();
 
-		return $this->createApiSuccessResponse(array());
+		if ($id) {
+			return $this->createApiSuccessResponse();
+		} else {
+			return $this->createApiCreateResponse(
+				array(
+					'sms_account_id' => $account->id,
+					'phone_number_region' => $account->phone_number->region
+				), $this->generateUrl('api_channel_sms_account_get', array('id' => $account->id))
+			);
+		}
 	}
 
 

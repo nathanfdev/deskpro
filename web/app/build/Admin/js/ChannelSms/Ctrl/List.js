@@ -46,6 +46,48 @@
         return this.$q.all([list_promise]);
       };
 
+      Admin_ChannelSms_Ctrl_List.prototype.startDelete = function(for_acc_id) {
+        var for_acc, inst, v, _i, _len, _ref;
+        for_acc = null;
+        _ref = this.accounts;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          v = _ref[_i];
+          if (v.id === for_acc_id) {
+            for_acc = v;
+          }
+        }
+        inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('ChannelSms/delete-modal.html'),
+          controller: [
+            '$scope', '$modalInstance', function($scope, $modalInstance) {
+              $scope.confirm = function() {
+                return $modalInstance.close();
+              };
+              return $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
+            }
+          ]
+        });
+        return inst.result.then((function(_this) {
+          return function() {
+            return _this.deleteAccount(for_acc);
+          };
+        })(this));
+      };
+
+      Admin_ChannelSms_Ctrl_List.prototype.deleteAccount = function(acc) {
+        return this.Api.sendDelete('/channel/sms/account/' + acc.id).success((function(_this) {
+          return function() {
+            _this.SmsAccountsData.remove(acc.id);
+            _this.ngApply();
+            if (_this.$state.current.name === 'tickets.channel_sms.edit' && parseInt(_this.$state.params.id) === acc.id) {
+              return _this.$state.go('tickets.channel_sms');
+            }
+          };
+        })(this));
+      };
+
       return Admin_ChannelSms_Ctrl_List;
 
     })(Admin_Main_Ctrl_Base);

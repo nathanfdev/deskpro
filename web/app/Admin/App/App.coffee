@@ -1,4 +1,4 @@
-define [
+	define [
 	'angular',
 	'Admin/App/AdminModule',
 

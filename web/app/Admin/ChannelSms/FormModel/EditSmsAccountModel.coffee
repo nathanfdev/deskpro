@@ -12,7 +12,7 @@ define [
 			@form.account.is_tested = @account.is_enabled || false
 			@form.account.phone_number = @account.phone_number || null
 			@form.account.identifier = @account.identifier || ""
-			@form.numbers = []
+			@form.numbers = if @form.account.phone_number?.length then [@account.phone_number] else []
 
 		getFormData: ->
 			form = Util.clone(@form, true)

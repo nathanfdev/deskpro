@@ -39,6 +39,7 @@ use Orb\Sms\SmsException;
 use Orb\Sms\SmsMessageChunk;
 use Orb\Sms\SmsProviderInterface;
 use Orb\Sms\SmsResult;
+use Orb\Util\PhoneNumbers;
 
 class TwilioSmsProvider implements SmsProviderInterface
 {
@@ -122,8 +123,9 @@ class TwilioSmsProvider implements SmsProviderInterface
 		try {
 			$out = array();
 
-			$nums = $this->twilio->getIncomingNumbers();
-			foreach ($nums as $display => $number) {
+			$numbers = $this->twilio->getIncomingNumbers();
+			foreach ($numbers as $display => $number) {
+				$number = PhoneNumbers::toInternationalFormat($number);
 				$out[] = array('display_name' => $display, 'phone_number' => $number);
 			}
 

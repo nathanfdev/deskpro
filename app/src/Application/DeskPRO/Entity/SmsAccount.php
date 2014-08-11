@@ -169,6 +169,7 @@ class SmsAccount extends DomainObject
 				'fieldName'    => 'phone_number',
 				'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
 				'cascade' => array('all'),
+				'orphanRemoval' => true,
 				'joinColumns' => array(
 					array(
 						'name'     => 'phone_number_id', 'referencedColumnName' => 'id', 'nullable' => true,
