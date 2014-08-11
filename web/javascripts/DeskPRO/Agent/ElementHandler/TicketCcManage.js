@@ -43,6 +43,8 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 								DeskPRO_Window.showAlert(btn.data('msg-invalid-email'));
 							} else if (data.error_code == 'invalid_email_gatewayaccount') {
 								DeskPRO_Window.showAlert(btn.data('msg-invalid-email-isaccount'));
+							} else if (data.error_code == 'is_dupe') {
+								DeskPRO_Window.showAlert(btn.data('msg-is-dupe'));
 							} else if (data.error_code == 'is_agent') {
 								DeskPRO_Window.showAlert(btn.data('msg-invalid-email-isagent'));
 								self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
