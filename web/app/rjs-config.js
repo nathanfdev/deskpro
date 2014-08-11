@@ -1,7 +1,7 @@
 ({
 	"baseUrl": ".",
 	"paths": {
-		"angular":                         "bower_components/angular/angular.min",
+		"angular":                         "bower_components/angular/angular",
 		"angularRoute":                    "bower_components/angular-route/angular-route.min",
 		"angularAnimate":                  "bower_components/angular-animate/angular-animate.min",
 		"angularBootstrap":                "bower_components/angular-bootstrap/ui-bootstrap-tpls.min",
@@ -10,7 +10,7 @@
 		"angularUiAce":                    "bower_components/angular-ui-ace/ui-ace",
 		"angularUiRouter":                 "bower_components/angular-ui-router/release/angular-ui-router.min",
 		"angularUiSortable":               "bower_components/angular-ui-sortable/src/sortable",
-		"angular-moment":                   "bower_components/angular-moment/angular-moment",
+		"angularMoment":                   "bower_components/angular-moment/angular-moment",
 		"angularFileUpload":               "bower_components/blueimp-file-upload/js/jquery.fileupload-angular",
 		"angularSlider":                   "bower_components/angular-slider/angular-slider.min",
 		"angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
@@ -30,8 +30,8 @@
 		"load-image-exif":                 "bower_components/blueimp-load-image/js/load-image-exif",
 		"canvas-to-blob":                  "bower_components/blueimp-canvas-to-blob/js/canvas-to-blob.min",
 		"underscore":                      "bower_components/underscore/underscore-min",
-		"moment":                          "bower_components/moment/min/moment-with-langs.min",
 		"momentTimezone":                  "vendor-src/moment-timezone",
+		"moment":                          "bower_components/moment/min/moment-with-langs.min",
 		"aceEditor":                       "bower_components/ace-builds/src-min-noconflict/ace",
 		"stacktrace":                      "bower_components/stacktrace/stacktrace",
 		"bootstrapModal":                  "bower_components/bootstrap/js/modal",
