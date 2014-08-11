@@ -71,15 +71,17 @@ define [
 			if @accountId
 				@Api.sendPostJson("/channel/sms/account/#{@accountId}", formData).then((result) =>
 					@account = formData
+					@Growl.success(@getRegisteredMessage('saved_account'))
 					@SmsAccountsData.updateModel(@account)
 				)
 			else
 				@Api.sendPutJson("/channel/sms/account", formData).then( (result) =>
-					@account = formData
-					@account.id = result.data.sms_account_id
 					@accountId = result.data.sms_account_id
+					@account = formData
+					@account.id = @accountId
 					@account.phone_number_region = result.data.phone_number_region
 					@SmsAccountsData.addToList(@account)
+					@Growl.success(@getRegisteredMessage('saved_account'))
 					@$state.go('tickets.channel_sms.edit', { id: @accountId })
 
 #					@$state.go('tickets.channel_sms')

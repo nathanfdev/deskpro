@@ -98,17 +98,19 @@
           return this.Api.sendPostJson("/channel/sms/account/" + this.accountId, formData).then((function(_this) {
             return function(result) {
               _this.account = formData;
+              _this.Growl.success(_this.getRegisteredMessage('saved_account'));
               return _this.SmsAccountsData.updateModel(_this.account);
             };
           })(this));
         } else {
           return this.Api.sendPutJson("/channel/sms/account", formData).then((function(_this) {
             return function(result) {
-              _this.account = formData;
-              _this.account.id = result.data.sms_account_id;
               _this.accountId = result.data.sms_account_id;
+              _this.account = formData;
+              _this.account.id = _this.accountId;
               _this.account.phone_number_region = result.data.phone_number_region;
               _this.SmsAccountsData.addToList(_this.account);
+              _this.Growl.success(_this.getRegisteredMessage('saved_account'));
               return _this.$state.go('tickets.channel_sms.edit', {
                 id: _this.accountId
               });
