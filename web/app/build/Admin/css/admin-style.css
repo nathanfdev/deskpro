@@ -11357,8 +11357,9 @@ table.display-table.spaced > tr > td {
   top: 13px;
   left: 31px;
   display: block;
-  width: 18px;
+  width: 10px;
   height: 1px;
+  padding-right: 8px;
   border-top: 1px solid #999;
 }
 

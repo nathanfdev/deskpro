@@ -70,7 +70,22 @@ define [
 			)
 
 		updateOrder: ->
+			order = 10
+			cat_rows = @cat_rows
+			@$element.find('.dp-cb-row').each(->
+				rowId = $(this).data('cat-id')
+				if not rowId or not cat_rows[rowId] then return
+				cat_rows[rowId].display_order = order
+				order += 10
+			)
 
+			viewValue = @ngModel.$viewValue || []
+			for row in viewValue
+				rowId = row.id
+				if rowId and cat_rows[rowId]
+					row.display_order = cat_rows[rowId].display_order
+
+			@ngModel.$setViewValue(viewValue)
 
 		setModel: (@ngModel) ->
 			@cat_rows = {}
@@ -158,7 +173,7 @@ define [
 
 		renderRow: (cat) ->
 			tpl = """
-				<li class="dp-cb-row">
+				<li class="dp-cb-row" data-cat-id="{{cat.id}}">
 					<div class="dp-cb-titlewrap">
 						<div class="dp-cb-row-move"><i class="fa fa-bars"></i></div>
 						<div class="dp-cb-row-controls">
@@ -187,6 +202,17 @@ define [
 			@ngModel.$setViewValue(viewValue)
 			@updateView(viewValue)
 
+		getMaxDisplayOrder: (parentId) ->
+			max = 10
+
+			viewValue = @ngModel.$viewValue || []
+			for row in viewValue
+				if (parentId and (row.parent_id? and (row.parent_id+"") == (parentId+""))) or not parentId
+					if row.display_order >= max
+						max = row.display_order + 10
+
+			return max
+
 		addNewCatFromTrigger: (triggerEl) ->
 			rowEl = $(triggerEl).closest('.dp-cb-addrow')
 			title = Strings.trim(@$scope.new_cat_title)
@@ -205,7 +231,7 @@ define [
 				"@is_new":     true,
 				title:         title,
 				parent_id:     parent_id,
-				display_order: 0
+				display_order: @getMaxDisplayOrder(parent_id)
 			}
 
 			if rowEl.data('parentId')
