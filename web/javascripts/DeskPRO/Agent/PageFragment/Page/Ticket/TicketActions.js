@@ -55,6 +55,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 			var agent_id = parseInt($(this).find(':selected').val()) || 0;
 			var agentProp = self.changeManager.getPropertyManager('agent_id');
+			var $assign = self.getEl('assign_me');
+			agent_id == $assign.data('me') ? $assign.hide() : $assign.show();
 
 			if (self.page.ticketReplyBox) {
 				self.page.ticketReplyBox.getElById('agent_sel').select2('val', agent_id);
@@ -68,6 +70,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			});
 		});
 
+		this.getEl('assign_me').on('click', function() {
+			self.getEl('agent_sel').val($(this).data('me')).trigger('change');
+		});
+
 		this.getEl('agent_team_sel').on('change', function() {
 
 			if ($(this).hasClass('eat-change')) {
@@ -77,6 +83,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 			var agent_team_id = parseInt($(this).find(':selected').val()) || 0;
 			var agentTeamProp = self.changeManager.getPropertyManager('agent_team_id');
+			var $assign = self.getEl('assign_team');
+			agent_team_id == $assign.data('team') ? $assign.hide() : $assign.show();
 
 			if (self.page.ticketReplyBox) {
 				self.page.ticketReplyBox.getElById('agent_team_sel').select2('val', agent_team_id);
@@ -90,6 +98,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			});
 		});
 
+		this.getEl('assign_team').on('click', function() {
+			self.getEl('agent_team_sel').val($(this).data('team')).trigger('change');
+		});
+
 		//------------------------------
 		// Followers
 		//------------------------------
@@ -101,6 +113,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			ev.preventDefault();
 			self.page.getEl('followers_sel_wrap').toggleClass('on');
 			followerSel.select2('val', '0');
+		});
+
+		this.page.getEl('follower_me').on('click', function() {
+			followerSel.val($(this).data('me')).trigger('change');
 		});
 
 		followerSel.on('change', function() {
@@ -146,6 +162,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 					callQueue.next();
 				});
 			});
+
+			var $assign = self.getEl('follower_me');
+			followersList.find('.agent-' + $assign.data('me')).length ? $assign.hide() : $assign.show();
 		};
 
 		//------------------------------

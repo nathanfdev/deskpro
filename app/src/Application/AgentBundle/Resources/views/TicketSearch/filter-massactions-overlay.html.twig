@@ -68,7 +68,12 @@
 				<table cellspacing="0" cellpadding="0" border="0"><tr>
 					<td>
 						<dl>
-							<dt>{{ phrase('agent.general.agent') }}</dt>
+							<dt>
+							    {{ phrase('agent.general.agent') }}
+                                <a id="%baseId%_assign_me" class="assign-self-link" data-me="{{ app.user.id }}">
+                                    ({{ phrase('agent.general.assign_to_me') }})
+                                </a>
+                            </dt>
 							<dd>
 								<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 									<option value="-1"></option>
@@ -83,7 +88,14 @@
 					</td>
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>{{ phrase('agent.general.team') }}</dt>
+							<dt>
+							    {{ phrase('agent.general.team') }}
+                                {% if 1 == app.user.agent.teams|length %}
+                                <a id="%baseId%_assign_team" class="assign-self-link" data-team="{{ (app.user.agent.teams|first).id }}">
+                                    ({{ phrase('agent.general.assign_to_my_team') }})
+                                </a>
+                                {% endif %}
+                            </dt>
 							<dd>
 								<select name="actions[agent_team]" class="dpe_select">
 									<option value="-1"></option>
@@ -99,7 +111,12 @@
 				</tr></table>
 
 				<dl>
-					<dt>{{ phrase('agent.general.followers') }}</dt>
+					<dt>
+					    {{ phrase('agent.general.followers') }}
+					    <a id="%baseId%_follower_me" class="assign-self-link" data-me="{{ app.user.id }}">
+                            ({{ phrase('agent.general.add_me') }})
+                        </a>
+                    </dt>
 					<dd>
 						<select name="actions[add_participants][add_participants][]" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="{{ phrase('agent.tickets.add_followers') }}">
 							<option data-icon="{{ app.user.getPictureUrl(16) }}" value="{{ app.user.id }}">{{ app.user.display_name }}</option>

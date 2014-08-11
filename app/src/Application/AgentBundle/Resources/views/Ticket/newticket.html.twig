@@ -401,10 +401,22 @@ pageMeta.baseId = '{{ baseId }}';
 								<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="{% if ticket.id %}{{ ticket.subject }}{% endif %}" />
 							</div>
 						</li>
-						<li id="{{baseId}}_attach_row" class="attach-row is-hidden" style="display: none">
+						{% if attachments | length %}
+							<li id="{{baseId}}_attach_row" class="attach-row">
+						{% else %}
+							<li id="{{baseId}}_attach_row" class="attach-row is-hidden" style="display: none">
+						{% endif %}
 							<label><span>{{ phrase('agent.general.attachments') }}</span></label>
 							<div>
-								<ul class="files"></ul>
+								<ul class="files">
+									{% for attachment in attachments %}
+										<li class="in" style="height: 18px;">
+											<input type="hidden" name="newticket[attach][]" value="{{ attachment.blob.id }}">
+											<em class="remove-attach-trigger"></em>		
+											<label><a href="{{ attachment.url }}" target="_blank">{{ attachment.blob.filename }}</a><span>{{ attachment.blob.filesize }} KB</span></label>
+										</li>
+									{% endfor %}
+								</ul>
 								<br class="clear"/>
 							</div>
 						</li>

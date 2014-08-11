@@ -1032,6 +1032,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			wrap.addClass('active');
 			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
+			$('#dp_header_notify_wrap').find('a.see_dismissed').removeClass('selected');
+			$('#dp_header_notify_wrap').find('a.see_current').addClass('selected');
+			$('#dp_header_notify_wrap').removeClass('mode-dismissed').addClass('mode-current');
+
 			var closeFn = function() {
 				wrap.removeClass('active');
 				Orb.shimClickCallbackPop();

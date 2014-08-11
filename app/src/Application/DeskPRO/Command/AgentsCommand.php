@@ -55,6 +55,7 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 		$this->addOption('make-admin', null, InputOption::VALUE_NONE, 'Turn an agent into an admin');
 		$this->addOption('make-billing', null, InputOption::VALUE_NONE, 'Turn an agent into a user with billing permission');
 		$this->addArgument('email', InputArgument::OPTIONAL, 'Agent email address or ID', null);
+		$this->addOption('whitelist-ip', null, InputOption::VALUE_NONE, 'Whitelist an IP for an agent');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -161,6 +162,38 @@ class AgentsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
 			$this->getContainer()->getEm()->flush();
 
 			$output->writeln("{$agent->display_name} <$agent->email_address> has been given billing permissions");
+			return 0;
+
+		} elseif ($input->getOption('whitelist-ip')) {
+			if (!$this->container->getSetting('agent.ip_security.enabled')) {
+				$output->writeln("IP Security is not enabled for your helpdesk.");
+				return 0;
+			}
+			
+			$agent = $find_agent("Enter the email address of the agent to whitelist an IP for");
+			if (!$agent) {
+				return 1;
+			}
+			
+			$repo = $this->getContainer()->getEm()->getRepository('DeskPRO:WhiteListedIP');
+			
+			$ip_address = $this->getHelper('dialog')->ask($output, "Enter the IP address to whitelist> ", '');
+			
+			$existing_ips = $repo->getIpsForPerson($agent);
+			
+			if (in_array($ip_address, $existing_ips)) {
+				$output->writeln($ip_address . " is already whitelisted for this agent");
+				return 1;
+			}
+			
+			$whitelisted_ip = new Entity\WhiteListedIp();
+			$whitelisted_ip['person']	= $agent;
+			$whitelisted_ip['ip_address']	= $ip_address;
+			
+			$this->getContainer()->getEm()->persist($whitelisted_ip);
+			$this->getContainer()->getEm()->flush();
+
+			$output->writeln("$ip_address has been whitelisted for {$agent->display_name} <$agent->email_address>");
 			return 0;
 
 		} else {

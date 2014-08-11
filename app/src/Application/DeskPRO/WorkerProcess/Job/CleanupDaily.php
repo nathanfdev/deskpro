@@ -283,7 +283,24 @@ class CleanupDaily extends AbstractJob
 		if ($num) {
 			$this->logStatus("Cleaned up $num ref_reserve records");
 		}
+		
+		#------------------------------
+		# whitelisted IPs
+		#------------------------------
 
+		if (App::getSetting('agent.ip_security.enabled')) {
+			$cutoff = App::getSetting('agent.ip_security.whitelist_lifetime');
+			$datecut = date('Y-m-d H:i:s', time() - $cutoff);
+			$num = App::getDb()->executeUpdate("
+				DELETE FROM white_listed_ips
+				WHERE date_created < ?
+			", array($datecut));
+
+			if ($num) {
+				$this->logStatus("Cleaned up $num white_listed_ips records");
+			}
+		}
+		
 		#------------------------------
 		# Enable/disable like search
 		#------------------------------

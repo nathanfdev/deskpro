@@ -97,6 +97,57 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				});
 			}
 		});
+		
+		wrap.on('click', 'a.billing-edit', function(e) {
+			e.preventDefault();
+			
+			var $this = $(this);
+			
+			var row = $this.parents('tr');
+			
+			billingRows.children('tr').removeClass('edit-mode');
+			
+			row.addClass('edit-mode');
+			
+			var charge = row.data('charge');
+			
+			self.populateForm(row, charge);
+			
+			return false;
+		});
+		
+		wrap.on('click', 'a.billing-edit-discard', function(e) {
+			e.preventDefault();
+			
+			var $this = $(this);
+			
+			$this.parents('tr').removeClass('edit-mode');
+			
+			return false;
+		});
+		
+		wrap.on('click', 'a.billing-edit-save', function(e) {
+			e.preventDefault();
+			
+			var $this = $(this);
+			
+			var row = $this.parents('tr');
+			
+			$.ajax({
+				url: $this.attr('href'),
+				data: row.find('input').serialize(),
+				type: 'POST',
+				dataType: 'json'
+			}).done(function(json) {
+				if (json.updated && json.html) {
+					row.replaceWith(json.html);
+				}
+			}).always(function() {
+				progress.hide();
+			});
+			
+			return false;
+		});
 
 		if (this.options.auto_start_bill) {
 			this.getEl('billing_start').hide();
@@ -278,5 +329,37 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		}
 
 		return $('#' + id);
+	},
+	
+	populateForm: function(form, charge) {
+		form.find('#billing_comment_edit_' + charge.id).val(charge.comment);
+		
+		if (charge.amount) {
+			form.find('#billing_hours_edit_' + charge.id).val('');
+			form.find('#billing_minutes_edit_' + charge.id).val('');
+			form.find('#billing_seconds_edit_' + charge.id).val('');
+			
+			form.find('#billing_amount_edit_' + charge.id).val(charge.amount);
+		} else if(charge.charge_time) {
+			form.find('#billing_amount_edit_' + charge.id).val('');
+			
+			var hours, minutes, seconds;
+			
+			var seconds = charge.charge_time;
+			
+			if (seconds >= 3600) {
+				hours = Math.floor(seconds / 3600);
+				seconds -= hours * 3600;
+			} 
+
+			if (seconds >= 60) {
+				minutes = Math.floor(seconds / 60);
+				seconds -= minutes * 60;
+			}
+			
+			form.find('#billing_hours_edit_' + charge.id).val(hours);
+			form.find('#billing_minutes_edit_' + charge.id).val(minutes);
+			form.find('#billing_seconds_edit_' + charge.id).val(seconds);
+		}
 	}
 });

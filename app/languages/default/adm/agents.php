@@ -71,6 +71,7 @@
 	'adm.agents.perm_ticket_modify_set_awaiting_user'             => 'Can set status to awaiting user',
 	'adm.agents.perm_ticket_modify_set_awaiting_agent'            => 'Can set status to awaiting agent',
 	'adm.agents.perm_ticket_modify_set_resolved'                  => 'Can set status to resolved',
+	'adm.agents.perm_ticket_modify_billing'			              => 'Can modify billing and time log records',
 
 
 

@@ -39,6 +39,7 @@
 
       Admin_RoundRobin_Ctrl_Edit.prototype.initialLoad = function() {
         var promises;
+        this.service.loadList(true);
         promises = [this.serviceAgents.all(), this.service.get(parseInt(this.$stateParams.id || 0)), this.serviceDeps.all(), this.serviceGroups.all(), this.serviceTeams.all()];
         return this.$q.all(promises).then((function(_this) {
           return function(res) {

@@ -2270,6 +2270,77 @@ class TicketController extends AbstractController
 			return $this->createJsonResponse(array('inserted' => false));
 		}
 	}
+	
+	############################################################################
+	# edit-charge
+	############################################################################
+
+	public function editChargeAction($ticket_id, $charge_id)
+	{
+		if (!$this->person->hasPerm('agent_tickets.modify_billing')) {
+			//throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+		
+		$ticket = $this->getTicketOr404($ticket_id);
+		
+		$charge = $this->em->createQuery('
+			SELECT c
+			FROM DeskPRO:TicketCharge c
+			WHERE c.ticket = ?0 AND c.id = ?1
+		')->setParameters(array($ticket, $charge_id))->getOneOrNullResult();
+
+		if (!$charge) {
+			return $this->createJsonResponse(array(
+				'success' => false
+			));
+		}
+		
+		$old_amount	= $charge->amount;
+		$old_time	= $charge->charge_time;
+		$old_comment	= $charge->comment;
+		
+		$amount = $this->in->getFloat('amount');
+		
+		$time = (
+			3600 * $this->in->getUint('hours')
+			+ 60 * $this->in->getUint('minutes')
+			+ $this->in->getUint('seconds')
+		);
+
+		$comment = $this->in->getString('billing_comment');
+		
+		$charge->charge_time	= $time;
+		$charge->amount		= $amount;
+		$charge->comment	= $comment;
+		
+		$ticket_log = new TicketLog();
+		$ticket_log->ticket      = $ticket;
+		$ticket_log->person      = $this->person;
+		$ticket_log->action_type = 'modify_billing';
+		$ticket_log->id_object   = $charge->id;
+		$ticket_log->details     = array(
+			'charge_id'	=> $charge->id,
+			'old_amount'	=> $old_amount,
+			'old_time'	=> $old_time,
+			'new_amount'	=> $charge->amount,
+			'new_time'	=> $charge->charge_time,
+			'old_comment'	=> $old_comment,
+			'new_comment'	=> $charge->comment
+		);
+		
+		$this->em->persist($charge);
+		$this->em->persist($ticket_log);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array(
+			'updated'	=> true,
+			'html' => $this->renderView('AgentBundle:Ticket:view-billing-row.html.twig', array(
+				'ticket' => $ticket,
+				'charge' => $charge
+			))
+		));
+		
+	}
 
 	public function deleteChargeAction($ticket_id, $charge_id, $security_token)
 	{
@@ -3154,6 +3225,27 @@ class TicketController extends AbstractController
 				$ticket->setProductId($this->settings->get('core.default_prod_id'));
 			}
 		}
+		
+		if ($message && count($message->attachments)) {
+			$attachments = array();
+			foreach ($message->attachments as $attach) {
+				$new_blob = clone $attach->blob;
+				
+				$this->em->detach($new_blob);
+				
+				$this->em->persist($new_blob);
+				
+				$this->em->flush();
+				
+				$attach_data = array();
+				
+				$attach_data['blob'] = $new_blob->toArray();
+				
+				$attach_data['url'] =  $new_blob->getDownloadUrl(true);
+				
+				$attachments[] = $attach_data;
+			}
+		}
 
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
@@ -3161,6 +3253,7 @@ class TicketController extends AbstractController
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'ticket'                 => $ticket,
 			'message'                => $message,
+			'attachments'            => isset($attachments) ? $attachments : null,
 			'agents'                 => $agents,
 			'agent_signature'        => $this->person->getSignature(),
 	        'agent_signature_html'   => $this->person->getSignatureHtml(),

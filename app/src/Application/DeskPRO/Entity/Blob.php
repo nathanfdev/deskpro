@@ -497,4 +497,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __getPropValue__($k) { return $this->$k; }
 	public function __setPropValue__($k, $v) { $this->$k = $v; }
+	
+	
+	public function __clone()
+	{
+		$this->id = null;
+		
+		return parent::__clone();
+	}
 }

@@ -37,12 +37,12 @@
 {% block listpane_help %}
 	<header>
 		<h1>Round robins enable you to assign tickets evenly to a queue of agents</h1>
-		<p>Specify a queue of agents, and whenever the round robin's action runs, the next agent in the queue is assigned the relevant ticket.</p>
+		<p>Specify a queue of agents, and whenever the round robin's action runs, the next agent in the queue is assigned the relevant ticket; looping back to the beginning when the end of the queue is reached.</p>
 	</header>
 	<article>
 		<section>
 		
-			<p>Use a round robin if you want to assign tickets individually to a list of agents, and have each agent receive an equal number of tickets.</p>
+			<p>Use a round robin if you want to assign tickets individually to a list of agents, and have each agent receive an equal number of tickets, assigned in rotation.</p>
             <p>Once you create a round robin, you must add the corresponding <strong>Set Assigned Agent from Round Robin</strong> action to a trigger, escalation or SLA. </p>
             <p>
             <ul>

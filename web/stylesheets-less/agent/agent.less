@@ -1417,6 +1417,13 @@ em.counter, em.list-counter {
 			z-index: 2;
 		}
 	}
+
+	.mode-current {
+		.for-dismissed { display: none !important; }
+	}
+	.mode-dismissed {
+		.for-current { display: none !important; }
+	}
 }
 
 .active .dp-header-notify-menu {
@@ -1465,6 +1472,14 @@ em.counter, em.list-counter {
 
 			&:hover {
 				color: @agent_menu_text_color;
+			}
+		}
+
+		.see_current, .see_dismissed {
+			color: #444;
+
+			&.selected, &:hover {
+				border-bottom: 2px solid #999;
 			}
 		}
 	}
@@ -4526,4 +4541,12 @@ section.list-results {
 			border: none;
 		}
 	}
+}
+
+em.downarrow {
+	background: url('@{img_path}/agent/button-downarrow.png') no-repeat left center;
+	margin: 0px;
+	display: inline-block;
+	height: 6px;
+	width: 6px;
 }

@@ -11,9 +11,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 				'settings': '/password_settings'
 			}).then( (res) =>
 				@$scope.settings = {
-					sessions_lifetime: res.data.settings.settings.sessions_lifetime,
-					session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page
+					sessions_lifetime:              res.data.settings.settings.sessions_lifetime,
+					session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page,
+					ip_security_enabled:            res.data.settings.settings.ip_security_enabled,
+					ip_security_mode:               res.data.settings.settings.ip_security_mode || 'admins',
+					ip_security_whitelist_lifetime: res.data.settings.settings.ip_security_whitelist_lifetime + "",
 				}
+
 				@$scope.agent = res.data.settings.settings.agent
 				@$scope.user  = res.data.settings.settings.user
 

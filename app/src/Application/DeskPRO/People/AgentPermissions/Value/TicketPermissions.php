@@ -114,6 +114,7 @@ class TicketPermissions implements PermissionValueInterface
 	public $modify_set_resolved_others           = false;
 	public $modify_messages_others               = false;
 	public $delete_others                        = false;
+	public $modify_billing                       = false;
 
 	public function getNames()
 	{
@@ -132,7 +133,7 @@ class TicketPermissions implements PermissionValueInterface
 			'modify_set_resolved_unassigned', 'modify_messages_unassigned', 'delete_unassigned', 'view_others', 'reply_others', 'modify_others',
 			'modify_department_others', 'modify_fields_others', 'modify_assign_agent_others', 'modify_assign_team_others', 'modify_assign_self_others',
 			'modify_cc_others', 'modify_merge_others', 'modify_labels_others', 'modify_slas_others', 'modify_notes_others', 'modify_set_hold_others',
-			'modify_set_awaiting_user_others', 'modify_set_awaiting_agent_others', 'modify_set_resolved_others', 'modify_messages_others', 'delete_others',
+			'modify_set_awaiting_user_others', 'modify_set_awaiting_agent_others', 'modify_set_resolved_others', 'modify_messages_others', 'delete_others', 'modify_billing'
 		);
 	}
 

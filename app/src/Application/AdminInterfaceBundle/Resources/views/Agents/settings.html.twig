@@ -101,7 +101,7 @@
         </article>
     </section>
 
-    {#&#123;&#35;################################################################################################&#35;&#125;#}
+	{##################################################################################################}
 
     <section class="dp-paneblock dp-listpane">
         <header>
@@ -141,6 +141,62 @@
             </div>
         </article>
     </section>
+
+	{##################################################################################################}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>IP Whitelisting</h3>
+		</header>
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<label>
+								<input type="checkbox" ng-model="settings.ip_security_enabled" />
+								<h4>Use IP Whitelisting</h4>
+							</label>
+							<span class="help-block">
+								When IP whitelisting is enabled, agents can only log in from IP addresses
+								that have been marked as trusted. When someone attempts to log in from an
+								untrusted IP address, an email alert is sent. The email will contain
+								a link to whitelist the IP address. Without clicking the link,
+								any log in from the untrusted IP address will be rejected.
+							</span>
+							<div ng-show="settings.ip_security_enabled">
+								<select ng-model="settings.ip_security_mode">
+									<option value="agents,admins">Enable for both agents and admins</option>
+									<option value="admins">Enable for just admins</option>
+								</select>
+							</div>
+						</div>
+						<div class="inner-group" ng-show="settings.ip_security_enabled">
+							<label>
+								<h4>How long should IP addresses remain trusted until they must be re-validated?</h4>
+							</label>
+							<br/>
+							<select dp-closest-number ng-model="settings.ip_security_whitelist_lifetime" ui-select2="{dropdownAutoWidth:true}">
+								<option value="86400">1 day</option>
+								<option value="259200">3 days</option>
+								<option value="432000">5 days</option>
+								<option value="604800">1 week</option>
+								<option value="1209600">2 weeks</option>
+								<option value="1814400">3 weeks</option>
+								<option value="2592000">1 month</option>
+								<option value="5184000">2 months</option>
+								<option value="7776000">3 months</option>
+								<option value="15552000">6 months</option>
+								<option value="23328000">9 months</option>
+								<option value="31536000">1 year</option>
+								<option value="63072000">2 years</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
 
     {##################################################################################################}
 

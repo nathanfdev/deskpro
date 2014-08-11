@@ -8053,6 +8053,7 @@ table.data-display-table tr th {
 	.remove-row-trigger {
 		color: #7C7C7C;
 		font-size: 11px;
+		cursor: pointer;
 		&:hover {
 			color: #000;
 			text-shadow: 0px 0px 8px #f00;
@@ -8093,4 +8094,36 @@ nav#popup_top_tabbar ul li:hover {
 
 nav#popup_top_tabbar ul li a {
 	color: #000;
+}
+
+a.assign-self-link {
+	margin-left: 4px;
+	font-size: 11px;
+	color: #aaa;
+	font-weight: normal;
+
+	&:hover {
+		color: #444;
+	}
+}
+
+.profile-files-wrap {
+	.file-delete, .file-edit, .file-edit-save {
+		color: #aaa;
+		text-decoration: none;
+		font-size: 10px;
+
+		&:hover {
+			color: #444;
+		}
+	}
+
+	textarea {
+		min-width: 200px;
+	}
+
+	.editable .editable-visible.block {
+		display: block;
+		width: 80%;
+	}
 }

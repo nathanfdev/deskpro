@@ -92,7 +92,13 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			loadUrl: BASE_URL + "agent/organizations/" + this.meta.org_id + "/change-picture-overlay",
 			saveUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save'
 		});
+		this.uploadFile = new DeskPRO.Agent.PageFragment.Page.PersonHelper.UploadFile(this,{ 
+			el: self.getEl('files_box'),
+			deleteUrl: BASE_URL + 'agent/organizations/' + this.meta.org_id + '/ajax-save',
+		});
+		
 		this.ownObject(this.changePic);
+		this.ownObject(this.uploadFile);
 
 		this._initLabels();
 		this._initCustomFieldsEditor();

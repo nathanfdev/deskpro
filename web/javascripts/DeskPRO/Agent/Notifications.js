@@ -21,7 +21,10 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.new_registration', function(info) { this.addRow(info.row); }, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notify.twitter', function(info) { this.addRow(info.row); }, this);
 
-		$('#dp_header_notify_wrap').on('click', '.trigger-dismiss', function(ev) {
+		var notifyBox = $('#dp_header_notify_wrap');
+		this.notifyBox = notifyBox;
+
+		notifyBox.on('click', '.trigger-dismiss', function(ev) {
 			Orb.cancelEvent(ev);
 			self.dismissAll();
 			Orb.shimClickCallbackPop();
@@ -48,8 +51,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			DeskPRO_Window.runPageRouteFromElement($(this));
 
-			var ul = $(this).closest('ul');
 			var row = $(this).closest('li');
+
+			if (row.hasClass('is-dismissed')) {
+				return;
+			}
+
+			var ul = $(this).closest('ul');
 
 			if (row.data('alert-id')) {
 				self.dismissAlertId(row.data('alert-id'));
@@ -66,14 +74,63 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			ev.stopImmediatePropagation();
 			Orb.shimClickCallbackPop();
 			$('#settingswin').trigger('dp_open', 'ticket-notify');
+		}).on('click', '.see_dismissed', function(e) {
+
+			var type = $(this).closest('.type-row').data('notif-type');
+
+			Orb.cancelEvent(e);
+
+			notifyBox.find('a.see_current').removeClass('selected');
+			$(this).addClass('selected');
+			notifyBox.removeClass('mode-current').addClass('mode-dismissed');
+
+			notifyBox.find('.notify-list.for-current').hide();
+			var ul = notifyBox.find('.notify-list.for-dismissed');
+			ul.empty();
+
+			notifyBox.find(".no-notifications").hide();
+			notifyBox.find(".notification-progress-on").show();
+			$.ajax({
+				url: '/get_messages.php',
+				data: {dismissed: true},
+				type: 'get',
+				dataType: 'json',
+				success: function(rows) {
+					notifyBox.find(".notification-progress-on").hide();
+					ul.html(rows.rendered_list);
+					ul.find('.dismiss').remove();
+					ul.find('li').addClass('is-dismissed');
+					ul.find('time').addClass('timeago').timeago();
+					ul.show();
+				}
+			});
+		}).on('click', '.see_current', function(e) {
+			var mainRow = $(this).closest('.type-row');
+			var notifUl = mainRow.find('.notify-list.for-current')
+			notifyBox.find('a.see_dismissed').removeClass('selected');
+			$(this).addClass('selected');
+
+			notifyBox.removeClass('mode-dismissed').addClass('mode-current');
+
+			notifyBox.find(".no-notifications").hide();
+			notifyBox.find('.notify-list.for-dismissed').empty().hide();
+
+			if (!notifUl.find('li')[0]) {
+				notifyBox.find(".no-notifications").not(".notification-progress-on").show();
+				$("#dp_notify_wrap").find('.notify-list.for-current').hide();
+			} else {
+				notifUl.show();
+			}
 		});
 	},
 
 	dismissAll: function() {
 		var self = this;
-		$('#dp_notify_list').find('li').each(function() {
-			var row = $(this);
-			self.removeRow(row, true);
+		this.notifyBox.find('.notify-list.for-current').each(function() {
+			$(this).find('li').each(function() {
+				var row = $(this);
+				self.removeRow(row, true);
+			});
 		});
 
 		DeskPRO_Window.dismissAlertQueue = [-1];
@@ -146,7 +203,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 
 		var listType = this.getListTypeByType(type);
-		var list = $('#dp_header_notify_wrap').find('li.type-row.' + listType).find('ul.notify-list');
+		var list = $('#dp_notify_list_' + listType);
 
 		var self = this;
 
@@ -238,7 +295,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this.modCount(type, '-');
 
 		if (row.data('class-id')) {
-			var related = $('#dp_header_notify_wrap').find('li.' + row.data('class-id'));
+			var related = $('#dp_notify_list_' + type).find('li.' + row.data('class-id'));
 			related.each(function() {
 				var $related = $(this);
 				$related.remove();
@@ -257,7 +314,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 
 		if (!noSendUpdate && any_alert_ids) {
-			if ($('#dp_notify_list').find('li').length < 1) {
+			if ($('#dp_notify_list_' + type).find('li').length < 1) {
 				this.dismissAll();
 			} else {
 				DeskPRO_Window.getMessageChanneler().poller.send();
@@ -271,7 +328,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var self = this;
 		var any = false;
 
-		$('#dp_header_notify_wrap').find('li').each(function() {
+		$('.notify-list.for-current').find('li').each(function() {
 			var row = $(this);
 			if (row.data('related') === related) {
 				any = true;
@@ -286,7 +343,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 	removeRowById: function(id) {
 		var self = this;
-		var row = $('#dp_header_notify_wrap').find('li.id-' + id);
+		var row = $('.notify-list.for-current').find('li.id-' + id);
 		row.each(function() {
 			self.removeRow($(this), true);
 		});
@@ -294,7 +351,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 	removeRowByClass: function(id) {
 		var self = this;
-		var row = $('#dp_header_notify_wrap').find('li.' + id);
+		var row = $('.notify-list.for-current').find('li.' + id);
 		row.each(function() {
 			self.removeRow($(this), true);
 		});
@@ -304,19 +361,19 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var listType = this.getListTypeByType(type);
 		if (!listType) return;
 
-		var list = $('#dp_header_notify_wrap').find('li.type-row.' + listType);
+		var list = this.notifyBox.find('.type-row.' + type);
 		var el = list.find('.badge').first();
 		var el2 = list.find('.notify-count').first();
 
 		var ev = { notif: this, type: type, op: op, count: count, el: el, el2: el };
 		this.fireEvent('beforeModCount', ev);
 
-		newcount = list.find('#dp_notify_list').find('li').length;
+		var newcount = list.find('#dp_notify_list_' + listType).find('li').length;
 		el.text(newcount);
 		el2.text(newcount);
 
 		// <3 because the dismiss button and the help note are li's
-		if (list.find('#dp_notify_list').find('li').length) {
+		if (list.find('#dp_notify_list_' + listType).find('li').length) {
 			list.find('#dp_notify_list_none').hide();
 			list.find('#dp_notify_list_dismiss').show();
 		} else {
@@ -330,15 +387,15 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			list.hide();
 			this.fireEvent('typeHide', [type, el]);
 
-			if (!$('#dp_header_notify_wrap').find('.dp-notifications-on')[0]) {
-				$('#dp_header_notify_wrap').find('li.none').show();
+			if (!this.notifyBox.find('.dp-notifications-on')[0]) {
+				this.notifyBox.find('li.none').show();
 			}
 		} else {
 			el.show();
 			list.show();
 			list.addClass('dp-notifications-on');
 			this.fireEvent('typeShow', [type, el]);
-			$('#dp_header_notify_wrap').find('li.none').hide();
+			this.notifyBox.find('li.none').hide();
 		}
 
 		this.fireEvent('modCount', ev);

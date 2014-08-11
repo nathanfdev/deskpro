@@ -56,6 +56,20 @@ class ClientFactory
 
 
 	/**
+	 * @param array $config
+	 * @return Client
+	 */
+	public function createSystemClientByConfig(array $config)
+	{
+		if (isset($config['connections'][0]['host']) && $config['connections'][0]['host'] == 'DEFAULT') {
+			return $this->createClientById('default');
+		} else {
+			return $this->createClientByConfig($config);
+		}
+	}
+
+
+	/**
 	 * @param string $id
 	 * @return Client
 	 */

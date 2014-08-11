@@ -98,6 +98,27 @@ class AgentMessagesLoader extends LoaderAbstract
 				$activity_time = 0;
 			}
 			$is_initial_pool = !empty($_REQUEST['is_initial_poll']);
+			
+			#------------------------------
+			# Dismissed client messages
+			#------------------------------
+			if (isset($_REQUEST['dismissed'])) {
+				$notifications = array();
+				
+				$dismissed_notifications = $this->getDismissedNotifications();
+				
+				foreach ($dismissed_notifications as $notification) {
+					$notification['data'] = unserialize($notification['data']);
+
+					if (!empty($notification['data']['browser_rendered'])) {
+						$notifications[] = $notification['data']['browser_rendered'];
+					}
+				}
+				
+				echo json_encode(array('rendered_list' => implode("\n", $notifications)));
+				
+				return true;
+			}
 
 			#------------------------------
 			# Standard client messages
@@ -801,6 +822,25 @@ class AgentMessagesLoader extends LoaderAbstract
 		}
 
 		return $this->_person;
+	}
+	
+	protected function getDismissedNotifications()
+	{
+		$person = $this->_getPerson();
+		if (!$person) {
+			return array();
+		}
+		
+		$q = $this->getPdoRead()->query("
+			SELECT id, typename, data
+			FROM agent_alerts
+			WHERE person_id = {$person->id} AND is_dismissed = 1
+			ORDER BY id DESC
+			LIMIT 100
+		");
+		$q->execute();
+		
+		return $q->fetchAll();
 	}
 }
 

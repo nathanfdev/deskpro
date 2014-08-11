@@ -39,6 +39,7 @@ use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
@@ -83,9 +84,12 @@ class PersonController extends AbstractController
 		#------------------------------
 
 		$notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 251, true);
+		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 251, 'status');
 		$person_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
-
+		
+		$person_files = $this->em->getRepository('DeskPRO:PersonFile')->getFilesForPerson($person);
+		$person_files_count = count($person_files);
+		
 		$max = 5;
 		$person_tickets_initial = array();
 		foreach ($person_tickets as $t) {
@@ -293,6 +297,8 @@ class PersonController extends AbstractController
 			'activity_stream'           => $activity_stream,
 			'custom_fields'             => $custom_fields,
 			'notes'                     => $notes,
+			'person_files'              => $person_files,
+			'person_files_count'        => $person_files_count,
 			'person_tickets'            => $person_tickets,
 			'person_chats'              => $person_chats,
 			'person_chats_count'        => $person_chats_count,
@@ -613,7 +619,14 @@ class PersonController extends AbstractController
 				}
 
 				$this->em->flush();
+				break;
 
+			case 'remove-file':
+				$file = $this->em->find('DeskPRO:PersonFile', $this->in->getUint('file_id'));
+				if ($file && $file->person && $file->person->id == $person->id) {
+					$this->em->remove($file);
+					$data['removed_file_id'] = $file['id'];
+				}
 				break;
 
 			case 'password':
@@ -1088,6 +1101,58 @@ class PersonController extends AbstractController
 			'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note))
 		));
 	}
+	
+	############################################################################
+	# /agent/people/:person_id/ajax-save-note           agent_people_ajaxsave_note
+	############################################################################
+
+	public function ajaxSaveFileAction($person_id)
+	{
+		if (!$this->person->hasPerm('agent_people.notes')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$person = $this->getPersonOr404($person_id);
+
+		$note_txt	= $this->in->getString('note');
+		
+		if ($this->in->getUint('file_id')) {
+			$file = $this->em->find('DeskPRO:PersonFile', $this->in->getUint('file_id'));
+		} else {
+			$blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
+			
+			if (!$blob) {
+				return $this->createJsonResponse(array(
+					'error' => true,
+					'error_code' => 'invalid_blob',
+					'person_id' => $person->id,
+				));
+			}
+
+			$file = new PersonFile();
+		
+			$file['agent'] = $this->person;
+			$file['person'] = $person;
+			$file['blob'] = $blob;
+		}
+		
+		$file['note'] = $note_txt;
+		
+		$em = $this->em;
+
+		$em->beginTransaction();
+		
+		$em->persist($file);
+
+		$em->flush();
+		$em->commit();
+		
+		return $this->createJsonResponse(array(
+			'success'	=> true,
+			'person_id'	=> $person['id'],
+			'html'		=> $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file))
+		));
+	}
 
 	############################################################################
 	# ajax-save-labels
@@ -1388,6 +1453,19 @@ class PersonController extends AbstractController
 				'success' => false,
 			));
 		}
+	}
+	
+	public function getPersonTicketsAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+		
+		$sort_by = $this->in->getString('sort_by');
+		
+		$person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 250, $sort_by);
+		
+		return $this->render('AgentBundle:Person:view-tickets.html.twig', array(
+			'tickets'	=> $person_tickets
+		));
 	}
 
 	public function isPersonEditable($person)
