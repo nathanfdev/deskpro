@@ -275,8 +275,8 @@ class TemplateSet
 	public function resolvePhraseTags($code, Translate $tr)
 	{
 		$code = preg_replace_callback('#\{\{\s*phrase\((\"|\')([a-zA-Z0-9_\-\.]+)\\1\)\s*\}\}#', function($m) use ($tr) {
-			$phrase = $tr->phrase($m[2]);
-			if ($phrase) {
+			$phrase = $tr->getPhraseText($m[2], null, true);
+			if ($phrase && strpos('|', $phrase) === false) {
 				return $phrase;
 			} else {
 				return $m[0];
