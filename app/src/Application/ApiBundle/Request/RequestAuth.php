@@ -103,6 +103,9 @@ class RequestAuth
 
 				// API Keys can specify an agent ID context which overrides their own
 				$agent_id = $this->getRequestValue('X-DeskPRO-Agent-ID', 'AGENT-ID', false);
+				if (!$agent_id) {
+					$agent_id = $this->getRequestValue('X-DeskPRO-Agent-ID', 'DP-AGENT-ID', false);
+				}
 				if ($agent_id) {
 					$agent = $this->em->getRepository('DeskPRO:Person')->find($agent_id);
 					if ($agent && $agent->is_agent && !$agent->is_deleted) {
