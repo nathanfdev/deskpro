@@ -143,7 +143,7 @@ class Filters
 			$o2 = $b->display_order;
 
 			if ($o1 == $o2) {
-				return 0;
+				return strcmp($a->title, $b->title);
 			}
 
 			return $o1 < $o2 ? -1 : 1;
