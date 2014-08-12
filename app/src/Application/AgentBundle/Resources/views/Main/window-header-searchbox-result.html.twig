@@ -1,0 +1,185 @@
+{#########################################################################}
+{# Tickets #}
+{#########################################################################}
+
+<% if (group.type == 'ticket') { var ticket = result.item; %>
+	<article class="row-item no-check" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- ticket.id %>'})|raw }}">
+		<div class="top-row">
+			<div class="top-row-left">
+				<h3>
+					<span class="obj-id">#<%- ticket.id %></span>
+					<a class="subject click-through">
+						<%= ticket.subject %>
+					</a>
+				</h3>
+			</div>
+			<div class="top-row-right">
+				<div class="bound-fade"></div>
+				<% if (ticket_display.locked_by_agent) { %>
+				<span class="tipped agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
+					<i class="icon-lock" style="font-size: 150%;"></i>
+				</span>
+				<% } %>
+				<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
+				<div class="status-pill status urgency-<%= ticket_display.urgency %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
+					<% if (ticket_display.status == 'awaiting_agent') { %>
+						<label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
+					<% } %>
+					<% if (ticket_display.status == 'awaiting_user') { %>
+						<label>{{ phrase('agent.tickets.status_awaiting_user') }}</label>
+					<% } %>
+					<% if (ticket_display.status == 'resolved') { %>
+						<label>{{ phrase('agent.tickets.status_resolved') }}</label>
+					<% } %>
+					<% if (ticket_display.status == 'closed') { %>
+						<label>{{ phrase('agent.tickets.status_closed') }}</label>
+					<% } %>
+					<% if (ticket_display.status == 'hidden' && !ticket_display.hidden_status) { %>
+						<label>{{ phrase('agent.tickets.status_hidden') }}</label>
+					<% } %>
+					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'deleted') { %>
+						<label>{{ phrase('agent.tickets.status_hidden_deleted') }}</label>
+					<% } %>
+					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'spam') { %>
+						<label>{{ phrase('agent.tickets.status_hidden_spam') }}</label>
+					<% } %>
+					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'temp') { %>
+						<label>{{ phrase('agent.tickets.status_hidden_temp') }}</label>
+					<% } %>
+					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'validating') { %>
+						<label>{{ phrase('agent.tickets.status_hidden_validating') }}</label>
+					<% } %>
+
+					<% if (ticket_display.status == 'awaiting_agent') { %>
+						<i class="ticket-urgency"><%= ticket_display.urgency %></i>
+					<% } %>
+				</div>
+
+				<% if (ticket_display.agent) { %>
+					<span class="tipped agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>');"></span>
+				<% } %>
+
+				<% if (ticket_display.flag) { %>
+					<i class="flag <%= ticket_display.flag %>"></i>
+				<% } %>
+				<br class="clear" />
+			</div>
+		</div>
+		<div class="userinfo">
+			<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
+			<span class="with-icon" style="background-image: url('<%- ticket.person.picture_url_16 %>');"><%- ticket.person.display_name %></span></a>
+			<span class="email">&lt;<%- ticket.person.primary_email.email %>&gt;</span>
+			<div class="bound-fade"></div>
+		</div>
+	</article>
+<% } %>
+
+{#########################################################################}
+{# People #}
+{#########################################################################}
+
+<% if (group.type == 'person') { var person = result.item; %>
+<article class="row-item single-row" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}">
+	<div class="userinfo">
+		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
+			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>');"><%- person.display_name %></span></a>
+		<span class="email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
+		<div class="bound-fade"></div>
+	</div>
+</article>
+<% } %>
+
+{#########################################################################}
+{# Organization #}
+{#########################################################################}
+
+<% if (group.type == 'organization') { var org = result.item; %>
+<article class="row-item single-row" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= org.id %>'})|raw }}">
+	<div class="top-row">
+		<div class="top-row-left">
+			<h3>
+				<span class="obj-id">#<%- org.id %></span>
+				<a class="subject click-through">
+					<%= org.name %>
+				</a>
+			</h3>
+		</div>
+	</div>
+</article>
+<% } %>
+
+{#########################################################################}
+{# Article #}
+{#########################################################################}
+
+<% if (group.type == 'article') { var item = result.item; %>
+<article class="row-item single-row" data-route="page:{{ path('agent_kb_article', {'article_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
+	<div class="top-row">
+		<div class="top-row-left">
+			<h3>
+				<span class="obj-id">#<%- item.id %></span>
+				<a class="subject click-through">
+					<%= item.title %>
+				</a>
+			</h3>
+		</div>
+	</div>
+</article>
+<% } %>
+
+{#########################################################################}
+{# Download #}
+{#########################################################################}
+
+<% if (group.type == 'download') { var item = result.item; %>
+<article class="row-item single-row" data-route="page:{{ path('agent_downloads_view', {'download_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
+	<div class="top-row">
+		<div class="top-row-left">
+			<h3>
+				<span class="obj-id">#<%- item.id %></span>
+				<a class="subject click-through">
+					<%= item.title %>
+				</a>
+			</h3>
+		</div>
+	</div>
+</article>
+<% } %>
+
+{#########################################################################}
+{# News #}
+{#########################################################################}
+
+<% if (group.type == 'news') { var item = result.item; %>
+<article class="row-item single-row" data-route="page:{{ path('agent_news_view', {'news_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
+	<div class="top-row">
+		<div class="top-row-left">
+			<h3>
+				<span class="obj-id">#<%- item.id %></span>
+				<a class="subject click-through">
+					<%= item.title %>
+				</a>
+			</h3>
+		</div>
+	</div>
+</article>
+<% } %>
+
+{#########################################################################}
+{# Feedback #}
+{#########################################################################}
+
+<% if (group.type == 'feedback') { var item = result.item; %>
+<article class="row-item single-row" data-route="page:{{ path('agent_feedback_view', {'feedback_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
+	<div class="top-row">
+		<div class="top-row-left">
+			<h3>
+				<span class="obj-id">#<%- item.id %></span>
+				<a class="subject click-through">
+					<%= item.title %>
+				</a>
+			</h3>
+		</div>
+	</div>
+</article>
+<% } %>

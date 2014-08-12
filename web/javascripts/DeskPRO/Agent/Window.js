@@ -2121,6 +2121,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (routeData && !routeData.isBackgroundLoad) {
 			this.loadingListPage = xhr;
+
+			if (window.DP_CLOSE_SEARCH) {
+				window.DP_CLOSE_SEARCH();
+			}
 		}
 	},
 

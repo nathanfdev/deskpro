@@ -517,15 +517,23 @@ define(['angular'], function(angular) {
 		}
 	}]);
 
-	AgentApp.directive('dpOmnibox', ['$compile', function($compile) {
+	AgentApp.directive('dpOmnibox', ['$http', function($http) {
 		return {
 			restrict: 'A',
 			link: function(scope, $el, attr) {
+
+				window.DP_CLOSE_SEARCH = function() {
+					scope.$apply(function() {
+						scope.isActive = false;
+					});
+				};
+
 				var $headerBg = $('#dp_header_listpane_aligned');
 				var $input = $el.find('input');
 				var $results = $el.find('.dp-omnibox-results');
 				var $listPane = $('#dp_list');
 
+				scope.issearchQuery = '';
 				scope.isActive = false;
 
 				scope.$watch('isActive', function(isActive) {
@@ -533,6 +541,7 @@ define(['angular'], function(angular) {
 						$headerBg.addClass('with-search-active');
 					} else {
 						$headerBg.removeClass('with-search-active');
+						$results.hide();
 					}
 				});
 
@@ -547,16 +556,20 @@ define(['angular'], function(angular) {
 					var pos = $listPane.offset();
 					var width = $listPane.width();
 
-					scope.resultGroups = [
-						{
-							title: "Tickets",
-							results: [
-								{ title: "Result 1" },
-								{ title: "Result 2" },
-								{ title: "Result 3" }
-							]
-						}
-					];
+					scope.isMainLoading = true;
+					$http({
+						method: 'GET',
+						params: { q: scope.searchQuery || '' },
+						url: 'DP_URL/agent/quick-search.json'
+					}).success(function(data) {
+						scope.isMainLoading = false;
+
+						scope.resultGroups = data.grouped_results || [];
+						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
+
+					}).error(function() {
+						scope.isMainLoading = false;
+					});
 
 					$results.css({
 						top: 52,

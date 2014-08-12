@@ -6,15 +6,22 @@
 		</div>
 	</div>
 	<div class="dp-omnibox-results" style="display: none;">
-		<section ng-repeat="group in resultGroups" class="result-group">
-			<header>{{ ng_var('group.title') }}</header>
-			<article>
-				<ul>
-					<li ng-repeat="result in group.results">
-						{{ ng_var('result.title') }}
-					</li>
-				</ul>
-			</article>
-		</section>
+		<div ng-show="isMainLoading" style="text-align: center;">
+			<i class="spinner-circle-32"></i>
+		</div>
+		<div ng-show="!isMainLoading">
+			<section ng-repeat="group in resultGroups" class="result-group">
+				<header>{{ ng_var('group.title') }}</header>
+				<article>
+					<div class="list-listing">
+						<div ng-repeat="result in group.results">
+							<script type="text/plain" dp-tpl tpl-id="dp_search_list_row">
+								{% include 'AgentBundle:Main:window-header-searchbox-result.html.twig' %}
+							</script>
+						</div>
+					</div>
+				</article>
+			</section>
+		</div>
 	</div>
 </div>
