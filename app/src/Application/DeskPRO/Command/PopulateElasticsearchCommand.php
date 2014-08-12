@@ -53,7 +53,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             ->addOption('reset', null, InputOption::VALUE_NONE, 'Reset index before populating')
             ->addOption('offset', null, InputOption::VALUE_REQUIRED, 'Start indexing at offset', 0)
             ->addOption('sleep', null, InputOption::VALUE_REQUIRED, 'Sleep time between persisting iterations (microseconds)', 0)
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)', 100)
+            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Index packet size (overrides provider config option)', 1000)
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Do not stop on errors')
             ->setDescription('Populates search indexes from providers')
         ;
