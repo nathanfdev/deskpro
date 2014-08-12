@@ -126,7 +126,7 @@ class TwilioSmsProvider implements SmsProviderInterface
 			$numbers = $this->twilio->getIncomingNumbers();
 			foreach ($numbers as $display => $number) {
 				$number = PhoneNumbers::toInternationalFormat($number);
-				$out[] = array('display_name' => $display, 'phone_number' => $number);
+				$out[] = array('display_name' => $display, 'number' => $number);
 			}
 
 			return $out;

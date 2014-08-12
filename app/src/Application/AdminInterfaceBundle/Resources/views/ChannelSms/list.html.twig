@@ -22,10 +22,10 @@
 					</div>
 					<span class="title-id" title="ID">#{{ ng_var('account.id') }}</span>
 					<span class="title-text">
-						{{ ng_var('account.type') }}
-						-
-						{{ ng_var('account.phone_number_region') }}
-						-
+						<img ng-show="account.type == 'twilio'" src="{{ asset('images/site-icons/twilio_256.png') }}" height="16" width="16">
+						<span class="intl-tel-input">
+								<div class="flag" ng-class="account.phone_number_region" style=" position: relative; top: 2px;"></div>
+						</span>
 						{{ ng_var('account.phone_number') }}
 					</span>
 				</a>

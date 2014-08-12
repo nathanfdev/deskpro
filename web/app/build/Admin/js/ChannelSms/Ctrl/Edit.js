@@ -34,9 +34,6 @@
                 _this.account = result.data;
                 _this.form_model = _this.getFormModel();
               }
-              if (_this.account.is_connected) {
-                _this.connect();
-              }
               return _this.setFormOnScope();
             };
           })(this));
@@ -70,6 +67,7 @@
               _this.form_model.markConnected(true);
               _this.form_model.setNumbers(result.data.numbers);
               _this.form_model.setFriendlyName(result.data.friendly_name);
+              _this.ngApply();
             } else {
               _this.$scope.connection_problem = true;
               _this.form_model.markConnected(false);

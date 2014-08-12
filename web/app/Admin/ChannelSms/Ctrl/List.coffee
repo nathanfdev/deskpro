@@ -10,7 +10,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 
 		initialLoad: ->
 			list_promise = @SmsAccountsData.loadList().then((recs) =>
-				@accounts = recs.values()
+				@accounts = []
+				accounts = recs.values()
+				for acc in accounts
+					acc.phone_number_region = acc.phone_number_region?.toLowerCase()
+					@accounts.push acc
+
 
 				if @$state.current.name == 'tickets.channel_sms'
 					if @accounts[0]
@@ -19,7 +24,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 						@$state.go('tickets.channel_sms.create')
 
 				@addManagedListener(@SmsAccountsData.recs, 'changed', =>
-					@accounts = @SmsAccountsData.recs.values()
+					@accounts = []
+					accounts = @SmsAccountsData.recs.values()
+					for acc in accounts
+						acc.phone_number_region = acc.phone_number_region?.toLowerCase()
+						@accounts.push acc
 					@ngApply()
 				)
 			)

@@ -27,7 +27,14 @@
         var list_promise;
         list_promise = this.SmsAccountsData.loadList().then((function(_this) {
           return function(recs) {
-            _this.accounts = recs.values();
+            var acc, accounts, _i, _len, _ref;
+            _this.accounts = [];
+            accounts = recs.values();
+            for (_i = 0, _len = accounts.length; _i < _len; _i++) {
+              acc = accounts[_i];
+              acc.phone_number_region = (_ref = acc.phone_number_region) != null ? _ref.toLowerCase() : void 0;
+              _this.accounts.push(acc);
+            }
             if (_this.$state.current.name === 'tickets.channel_sms') {
               if (_this.accounts[0]) {
                 _this.$state.go('tickets.channel_sms.edit', {
@@ -38,7 +45,14 @@
               }
             }
             return _this.addManagedListener(_this.SmsAccountsData.recs, 'changed', function() {
-              _this.accounts = _this.SmsAccountsData.recs.values();
+              var _j, _len1, _ref1;
+              _this.accounts = [];
+              accounts = _this.SmsAccountsData.recs.values();
+              for (_j = 0, _len1 = accounts.length; _j < _len1; _j++) {
+                acc = accounts[_j];
+                acc.phone_number_region = (_ref1 = acc.phone_number_region) != null ? _ref1.toLowerCase() : void 0;
+                _this.accounts.push(acc);
+              }
               return _this.ngApply();
             });
           };

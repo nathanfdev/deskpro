@@ -14,9 +14,15 @@
           sid: 'AC82e05c22887c7a336941107979bc9709',
           auth_token: '9755c4ee6ab8e43c7fca39a38f664a6e'
         };
-        this.form.account.is_enabled = this.account.is_enabled || true;
-        this.form.account.is_connected = this.account.is_connected || false;
-        this.form.account.is_tested = this.account.is_enabled || false;
+        this.form.account.is_enabled = this.account.is_enabled;
+        this.form.account.is_connected = this.account.is_connected;
+        this.form.account.is_tested = this.account.is_enabled;
+        this.form.numbers = ((_ref = this.account.phone_number) != null ? _ref.length : void 0) ? [
+          {
+            number: this.account.phone_number,
+            display_name: this.account.phone_number
+          }
+        ] : [];
         this.form.account.phone_number = this.account.phone_number || null;
         this.form.account.identifier = this.account.identifier || "";
       }

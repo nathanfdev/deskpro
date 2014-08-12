@@ -22,8 +22,6 @@ define [
 					if result.data
 						@account = result.data
 						@form_model = @getFormModel()
-					if @account.is_connected
-						@connect()
 					@setFormOnScope()
 				)
 			else
@@ -49,6 +47,7 @@ define [
 					@form_model.markConnected(true)
 					@form_model.setNumbers(result.data.numbers)
 					@form_model.setFriendlyName(result.data.friendly_name)
+					@ngApply();
 				else
 					@$scope.connection_problem = true
 					@form_model.markConnected(false)
@@ -83,8 +82,6 @@ define [
 					@SmsAccountsData.addToList(@account)
 					@Growl.success(@getRegisteredMessage('saved_account'))
 					@$state.go('tickets.channel_sms.edit', { id: @accountId })
-
-#					@$state.go('tickets.channel_sms')
 				)
 
 

@@ -69,21 +69,6 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 		return $this->createApiResponse(array('sms_accounts' => $data));
 	}
 
-	public function deleteAction($id)
-	{
-		$account = $this->getSmsAccountRepo()->find($id);
-
-		if (!$account) {
-			return $this->createApiErrorResponse('not_found', sprintf('sms account (id=%s) does not exist', $id));
-		}
-
-		$em = $this->getContainer()->getEm();
-		$em->remove($account);
-		$em->flush();
-
-		return $this->createApiSuccessResponse();
-	}
-
 
 	####################################################################################################################
 	# get sms account
@@ -149,14 +134,13 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 	# connect to a provider and return provider specific info
 	####################################################################################################################
 
-
 	/**
 	 * Client expects json response with {
 	 * success: true,
-	 * numbers: [{display_name: 'friendly number name', phone_number: '+19023330302'}, ...etc],
+	 * numbers: [{display_name: 'friendly number name', number: '+19023330302'}, ...etc],
 	 * friendly_name: 'name' a friendly name to call this account (usually a provider account name, their email, etc)
 	 * }
-*@return Response
+	 * @return Response
 	 */
 	public function connectProviderAction()
 	{
@@ -181,6 +165,26 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 		$res = $this->createApiErrorResponse('sms.connection_error', 'Invalid SMS account type');
 
 		return $res;
+	}
+
+
+	####################################################################################################################
+	# delete sms accounts
+	####################################################################################################################
+
+	public function deleteAction($id)
+	{
+		$account = $this->getSmsAccountRepo()->find($id);
+
+		if (!$account) {
+			return $this->createApiErrorResponse('not_found', sprintf('sms account (id=%s) does not exist', $id));
+		}
+
+		$em = $this->getContainer()->getEm();
+		$em->remove($account);
+		$em->flush();
+
+		return $this->createApiSuccessResponse();
 	}
 
 
