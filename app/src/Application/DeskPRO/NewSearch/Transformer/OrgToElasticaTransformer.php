@@ -3,19 +3,19 @@
 namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Elastica\Document;
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Organization;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
 /**
  * Person To Elastica Transformer
  */
-class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
+class OrgToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
      * Transform
      *
-     * @param Person $object
+     * @param Organization $object
      * @param array $fields
      *
      * @return Document
@@ -27,25 +27,15 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->setId($object->getId());
 
         $document->set('name', $object->name);
-        $document->set('first_name', $object->first_name);
-        $document->set('last_name', $object->last_name);
 
-		$emails = array();
-		foreach ($object->emails as $e) {
-			$emails[] = $e->email;
+		$email_domains = array();
+		foreach ($object->email_domains as $d) {
+			$email_domains[] = $d->domain;
 		}
 
-		$document->set('emails', $emails);
-
-		$phones = array();
-		foreach ($object->phone_numbers as $p) {
-			$pn = $p->getPhoneNumber();
-			if ($pn) {
-				$phones[] = "+" . $pn->getCountryCode() . " " . preg_replace('#[^0-9]#', '', $pn->getNationalNumber());
-			}
+		if ($email_domains) {
+			$document->set('email_domains', $email_domains);
 		}
-
-        $document->set('phone_numbers', $phones);
 
 		if ($object->labels) {
 			$labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);

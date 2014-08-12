@@ -5,7 +5,7 @@ namespace Application\DeskPRO\NewSearch\Repository;
 /**
  * Organization Repository
  */
-class OrganizationRepository extends AbstractRepository
+class OrganizationRepository extends AbstractRepository implements WithLabelsInterface
 {
     /**
      * Fields to be highlighted
@@ -15,4 +15,12 @@ class OrganizationRepository extends AbstractRepository
     protected $highlightFields = array(
         'name' => array('fragment_size' => 100)
     );
+
+	/**
+	 * @return array
+	 */
+	protected function getQueryFields()
+	{
+		return array('_all', 'name', 'email_domains');
+	}
 } 

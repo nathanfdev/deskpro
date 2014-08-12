@@ -2304,4 +2304,21 @@ class Arrays
 
 		return $new_array;
 	}
+
+
+	/**
+	 * Like array_map except works with iterators.
+	 *
+	 * @param       $fn
+	 * @param array $array
+	 * @return array
+	 */
+	public static function map($fn, $array)
+	{
+		if (!is_array($array)) {
+			$array = iterator_to_array($array);
+		}
+
+		return array_map($fn, $array);
+	}
 }

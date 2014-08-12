@@ -5,7 +5,7 @@ namespace Application\DeskPRO\NewSearch\Repository;
 /**
  * Person Repository
  */
-class PersonRepository extends AbstractRepository
+class PersonRepository extends AbstractRepository implements WithLabelsInterface
 {
     /**
      * Fields to be highlighted

@@ -5,6 +5,7 @@ namespace Application\DeskPRO\NewSearch\Transformer;
 use Elastica\Document;
 use Application\DeskPRO\Entity\Ticket;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
+use Orb\Util\Arrays;
 
 /**
  * Ticket To Elastica Transformer
@@ -36,10 +37,10 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('agent_team', $object->getAgentTeamId());
         $document->set('participants', $object->getParticipantPeopleIds());
 
-        $labels = array();
-        foreach ($object->getLabels() as $label) {
-            $labels[] = $label->getLabel();
-        }
+		if ($object->labels) {
+			$labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
+			$document->set('labels', $labels);
+		}
 
         $document->set('labels', $labels);
 

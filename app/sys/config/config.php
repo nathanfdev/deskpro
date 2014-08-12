@@ -203,6 +203,11 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\PersonToElasticaTransformer');
 $container->setDefinition('deskpro.search.person_to_elastica_transformer', $definition);
 
+// deskpro.search.org_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\OrgToElasticaTransformer');
+$container->setDefinition('deskpro.search.org_to_elastica_transformer', $definition);
+
 // fos_elastica.provider.prototype.orm
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Provider\\Doctrine');
@@ -388,6 +393,11 @@ $container->loadFromExtension('fos_elastica', array(
                             'tokenizer' => 'whitespace',
                             'filter'    => array('lowercase', 'asciifolding', 'ngram_filter')
                         ),
+						'ngram_analyzer_3'  => array(
+							'type' => 'custom',
+							'tokenizer' => 'whitespace',
+							'filter'    => array('lowercase', 'asciifolding', 'ngram_filter_3')
+						),
                         'whitespace_analyzer' => array(
                             'type' => 'custom',
                             'tokenizer' => 'whitespace',
@@ -485,6 +495,7 @@ $container->loadFromExtension('fos_elastica', array(
                         'name'       => array(),
                         'first_name' => array(),
                         'last_name'  => array(),
+						'labels'     => array('type' => 'string'),
                         'emails' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
 						'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer')
                     ),
@@ -499,15 +510,16 @@ $container->loadFromExtension('fos_elastica', array(
                 ),
                 'organization'   => array(
                     'mappings'    => array(
-                        'name'    => array(),
-                        'labels'  => array(),
-                        'email_domains' => array()
+                        'name'    => array('type' => 'string', 'analyzer' => 'ngram_analyzer_3'),
+						'email_domains' => array('type' => 'string', 'analyzer' => 'ngram_analyzer_3'),
+                        'labels'  => array('type' => 'string'),
                     ),
                     'persistence' => array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Organization',
                         'provider' => array(),
                         'finder'   => array(),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository'
                     )
                 )
