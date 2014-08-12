@@ -32,15 +32,17 @@
 			</div>
 			<div class="deskproTabList">
 				<div class="deskproTabListInner">
+                    <div ng-click="showList()" ng-show="tabs.length && !paneVis.list" class="btn-show-list"
+                         style="float: left; position: relative; margin: 11px 5px 0 11px;">
+                    </div>
 					<ul class="dp-tab-list">
-
-                        <li ng-repeat="(id, tab) in tabs" id="{{ ng_var('tab.tabBtnId') }}"
-                            data-tab-id="{{ ng_var('id') }}"
-                            class="{{ ng_var('data.page.getMetaData("tabIdClass", "")') }}"
-                            ng-class="data.page && data.page.meta.alert_id"
-                            ng-class="data.active && 'activeTabList'"
-                            {{ ng_var('data.page.TYPENAME') }}
-                            {{ ng_var('data.page.LOADING_TYPENAME') }}
+                        <li ng-repeat="tab in tabs" id="{{ ng_var('tab.tabBtnId') }}"
+                            ng-click="tabClick($event, tab)"
+                            data-tab-id="{{ ng_var('tab.id') }}"
+                            class="{{ ng_var('tab.class') }}"
+                            ng-class="tab.isActive && 'activeTabList'"
+                            {{ ng_var('tab.page.TYPENAME') }}
+                            {{ ng_var('tab.page.LOADING_TYPENAME') }}
                             >
                             <div class="item-hover-over-indicator"></div>
                                 <a>

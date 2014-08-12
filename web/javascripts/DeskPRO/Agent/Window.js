@@ -47,7 +47,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.paneVis = {
 			source: true,
 			list: true,
-			tabs: false,
+			tabs: true,
 		};
 
 		this.paneVisBit = {
@@ -55,6 +55,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 			list: 2,
 			tabs: 4
 		}
+
+		var self = this;
+		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
+		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+			self.$scope = $rootScope;
+			self.$q = $q;
+			self.$timeout = $timeout;
+
+			self.$scope.$safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase == '$apply' || phase == '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					this.$apply(fn);
+				}
+			};
+		}]);
+		this.initScope();
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -510,7 +530,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				return $(el).fileupload(options);
 			},
-			
+
 			filedownload: function(el) {
 				if (!el.is('.dragout')) {
 					el = el.find('.dragout');
@@ -521,7 +541,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					if (!fileDetails) {
 						fileDetails = $(this).attr('drag-to-download');
 					}
-					
+
 					if (evt.dataTransfer) {
 						evt.dataTransfer.setData("DownloadURL",fileDetails);
 						if (blobAuthId) evt.dataTransfer.setData("DpAuthId", blobAuthId);
@@ -1127,7 +1147,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self = this;
 
 		$scope.paneVis = this.paneVis;
-		$scope.tabs = this.TabBar.tabs;
+		self._last = 'list';
 
 		$scope.$watch('paneVis', function(newVal, oldVal){
 			self.layout.doResize(true);
@@ -1135,15 +1155,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$scope.oneColumnView = function() {
 			if (!(this.paneVis.list && this.paneVis.tabs)) return;
-
 			// todo set active pane
-			if (DeskPRO_Window.TabBar.getActiveTabId()) {
-				self.paneVis.tabs = true;
-				self.paneVis.list = false;
-			} else {
-				self.paneVis.list = true;
-				self.paneVis.tabs = false;
-			}
+
+			this.paneVis.list = false;
+			this.paneVis.tabs = false;
+			this.paneVis[self._last] = true;
 		};
 
 		$scope.twoColumnsView = function() {
@@ -1153,17 +1169,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 
 		$scope.showList = function() {
-			if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
-				self.paneVis.tabs = false;
-			}
-			self.paneVis.list = true;
+			$scope.$safeApply(function(){
+				if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
+					self.paneVis.tabs = false;
+				}
+				self.paneVis.list = true;
+				self._last = 'list';
+			});
 		};
 
 		$scope.showTabs = function() {
-			if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
-				self.paneVis.list = false;
-			}
-			self.paneVis.tabs = true;
+			$scope.$safeApply(function(){
+				if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
+					self.paneVis.list = false;
+				}
+				self.paneVis.tabs = true;
+				self._last = 'tabs';
+			});
 		};
 	},
 
@@ -1174,15 +1196,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.ngModule = this.AppPlatform.getNgModule();
 		this.ngModule.dpInjector = angular.element(document).injector();
-
-		var self = this;
-		this.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
-			self.$scope = $rootScope;
-			self.$q = $q;
-			self.$timeout = $timeout;
-
-			self.initScope();
-		}]);
 	},
 
 	getAppPlatform: function() {
@@ -1394,15 +1407,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (DeskPRO_Window.TabBar) {			// Only if we have current tab, cuz no current tab means there are no tabs open at all
-			$('#tabNavigationPane ul.dp-tab-list li').each(function() {
-				var isActive = $(this).hasClass('activeTabList');
 
-				var tab = $(this).data('tab');
-				if (tab && tab.page && tab.page.getMetaData('url_fragment')) {
+			for (var id in this.TabBar.tabs ) {
+				var tab = this.TabBar.tabs[id];
+
+				if (tab.page && tab.page.getMetaData('url_fragment')) {
 					var tabPage = tab.page;
 					var hash = tabPage.getMetaData('url_fragment');
 
-					if (isActive) {
+					if (tab.isActive) {
 						if (hash.indexOf(':') !== -1) {
 							// ticket:123 to ticket.o:123
 							hash = hash.replace(/:/, '.o:');
@@ -1414,7 +1427,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 					segments.push(hash);
 				}
-			});
+			};
 		}
 
 		var paneVisNum = this.getPaneVisNum();
@@ -1841,8 +1854,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.switchToSection(sectionId, true);
 			this.updateWindowUrlFragment();
 		}
-
-		this.$scope && this.$scope.showList();
 	},
 
 	getListPage: function() {
@@ -1886,6 +1897,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var data = this.parseRoute(route);
 		if (extraData) {
 			data = Object.merge(extraData, data);
+		}
+
+		// todo? store last active pane
+		if ('listpane' === data.master) {
+			this.$scope.showList();
+		} else {
+			this.$scope.showTabs();
 		}
 
 		Object.each(this.routePrefixes, function(listeners, prefix) {
@@ -2083,7 +2101,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#dp_list > section').removeClass('on');
 			$('#dp_list_loading').addClass('on');
 		}
-
 		var xhr = this._doAjaxLoadRoute(url, routeData, (function(data) {
 
 			if (!routeData) {
