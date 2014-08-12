@@ -8,8 +8,23 @@
 		<div class="panel panel-innertable" style="margin-top: 0;">
 			<p>
 				<a href="http://www.elasticsearch.org/" target="_blank">Elastic Search <i class="fa fa-globe"></i></a> is a specialized search server technology.
-				You can configure DeskPRO to use Elastic Search to power searching and filtering to drastically improve performance as well as
-				improve overall search results.
+			</p>
+			<p>
+				DeskPRO's default search engine uses your database, MySQL, to run queries. Elastic Search provides a faster and more powerful solution.
+			</p>
+			<p>
+				Some benefits of using Elastic Search:
+			</p>
+			<ul>
+				<li>More properties are searched including full ticket messages and notes.</li>
+				<li>You can search on phrases, such as "dog and cat".</li>
+				<li>Search results are returned much faster and results are more accurate.</li>
+			</ul>
+			<p>
+				<strong>The Elastic Search search engine is currently in beta. Once the beta is finished, you may require a specific license for ongoing use.</strong>
+			</p>
+			<p>
+				To use this feature, you will first need to <a href="http://www.elasticsearch.org/overview/elkdownloads/">download, install and configure an Elastic Search</a> server and then enter the connection details below.
 			</p>
 		</div>
 	</section>
@@ -64,11 +79,11 @@ $ php cmd.php dp:elastica:populate</pre>
 				</div>
 			</div>
 		</div>
-		<footer ng-show="settings.enabled">
+		<footer>
 			<div class="dp-content">
 				<div class="dp-btn-controls">
 					<div dp-hide-spinning="saving">
-						<button class="btn btn-info" ng-click="Settings.testSettingsModal()"><i class="fa fa-bolt"></i> Test Settings</button>
+						<button class="btn btn-info" ng-show="settings.enabled" ng-click="Settings.testSettingsModal()"><i class="fa fa-bolt"></i> Test Settings</button>
 						<button class="btn btn-primary" ng-click="Settings.saveSettings()">Save Settings</button>
 					</div>
 					<div dp-show-spinning="saving">

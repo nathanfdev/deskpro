@@ -25,15 +25,6 @@
 					<i class="fa fa-caret-right"></i>
 				</a>
 			</li>
-			{% if app.getSetting('elastica.allow_elastic') %}
-				<li dp-state-mark="setup.elastic_search">
-					<a href="{{ ng_href('setup.elastic_search') }}">
-						<i class="fa fa-search"></i>
-						<span>Elastic Search</span>
-						<i class="fa fa-caret-right"></i>
-					</a>
-				</li>
-			{% endif %}
 		</ul>
 	</nav>
 {% endblock %}
