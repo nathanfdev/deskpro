@@ -104,9 +104,9 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/ZeroClipboard/ZeroClipboard.min.js',
 		'vendor/idbstore/idbstore.min.js',
 		'vendor/twig/twig.js',
-		'vendor/angular/angular.min.js',
-		'vendor/angular/angular-animate.min.js',
-		'vendor/angular/modules/bindonce.min.js',
+		'app/bower_components/angular/angular.min.js',
+		'app/bower_components/angular-animate/angular-animate.min.js',
+		'app/bower_components/angular-bindonce/bindonce.min.js',
 		'vendor/momentjs/moment.min.js',
 
 		'app/bower_components/notify.js/notify.js',
@@ -662,6 +662,7 @@ $CONFIG['agent_interface_css1'] = array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-agent-chat.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
+		'app/bower_components/font-awesome/css/font-awesome.min.css',
 	)
 );
 

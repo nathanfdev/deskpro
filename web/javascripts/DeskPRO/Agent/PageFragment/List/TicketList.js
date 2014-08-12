@@ -14,6 +14,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.wrapper = el;
 		this.perPage = 50;
 		this.filterId = parseInt(this.meta.filter_id) || 0;
+		this.fixed_fields = ['id', 'user', 'subject', 'status', 'agent'];
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
 			self.$scope = $rootScope.$new();
@@ -100,6 +101,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.checkedTicketsCount  = 0;
 		$scope.display_fields       = this.meta.display_fields || [];
 		$scope.openTickets          = {};
+		$scope.listType             = 'list';
+		$scope.DESKPRO_PERSON_ID    = DESKPRO_PERSON_ID;
 
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 
@@ -549,15 +552,17 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		didRemoveList = {};
 		ticketIds.forEach(function(x) { removeTicketIdsMap[x] = true; });
 
-		$scope.tickets = $scope.tickets.filter(function(t) {
-			if (removeTicketIdsMap[t.id]) {
-				self.updateSubgroupingBubbles('remove', t);
-				didRemoveList[t.id] = true;
-				return false;
-			} else {
-				return true;
-			}
+		var remove = $scope.tickets.filter(function(t) {
+			return removeTicketIdsMap[t.id] ? true : false;
 		});
+
+		if (!remove.length) return;
+		remove.each(function(t){
+			$scope.tickets.splice($scope.tickets.indexOf(t), 1);
+			self.updateSubgroupingBubbles('remove', t);
+			didRemoveList[t.id] = true;
+		});
+
 		this.listTicketIds = this.listTicketIds.filter(function(tid) {
 			if (removeTicketIdsMap[tid]) {
 				if (!didRemoveList[tid]) {
@@ -1269,6 +1274,22 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 		};
 
+		$scope.getDisplayableFields = function() {
+			var fields = [];
+			self.fixed_fields.each(function(v){
+				fields.push(v);
+			});
+			$scope.display_fields.each(function(v){
+				if (fields.indexOf(v) > -1) return;
+				fields.push(v);
+			});
+			return fields;
+		};
+
+		$scope.getFieldDisplayName = function(field){
+			return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
+		};
+
 		displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'ticket-' + this.meta.resultTypeName,
 			resultId: this.meta.resultTypeId,
@@ -1368,7 +1389,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		//------------------------------
 
 		$scope.openDisplayOptions = function() { displayOptions.open(); };
-		$scope.openTableView = function() { self.openTableView(); };
+		$scope.openTableView = function() {
+			$scope.listType = 'table' === $scope.listType ? 'list' : 'table';
+//			self.openTableView();
+		};
 	},
 
 
