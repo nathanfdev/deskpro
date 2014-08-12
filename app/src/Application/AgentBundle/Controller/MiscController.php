@@ -953,10 +953,12 @@ JS;
 		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/app/bower_components/angular/angular.min"');
 		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
 		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
+		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap"');
 
 		$rjs->addShim('angular', array('exports' => 'angular'));
 		$rjs->addShim('angularAnimate', array('angular'));
 		$rjs->addShim('angularSanitize', array('angular'));
+		$rjs->addShim('angularBootstrap', array('angular'));
 
 		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
 		$rjs->addPathsFromGenerator($rjs_apps);
