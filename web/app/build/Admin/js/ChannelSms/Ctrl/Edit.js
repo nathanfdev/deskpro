@@ -78,7 +78,8 @@
         promise.error((function(_this) {
           return function(result) {
             _this.$scope.connection_problem = true;
-            return _this.form_model.markConnected(false);
+            _this.form_model.markConnected(false);
+            return _this.stopSpinner('sms_connect_provider');
           };
         })(this));
         this.startSpinner('sms_connect_provider');
@@ -86,7 +87,33 @@
       };
 
       Admin_ChannelSms_Ctrl_Edit.prototype.testRoundTrip = function() {
-        return alert("testing");
+        var connectUrl, postData, promise;
+        this.form_model.markTested(true);
+        postData = this.form_model.getConnectData();
+        connectUrl = "/channel/sms/test_account";
+        promise = this.Api.sendPostJson(connectUrl, postData);
+        promise.then((function(_this) {
+          return function(result) {
+            if (result.data.success) {
+              _this.form_model.markTested(true);
+              _this.form_model.setNumbers(result.data.numbers);
+              _this.form_model.setFriendlyName(result.data.friendly_name);
+              _this.ngApply();
+            } else {
+              _this.form_model.markTested(false);
+            }
+            return _this.stopSpinner('sms_test');
+          };
+        })(this));
+        promise.error((function(_this) {
+          return function(result) {
+            _this.$scope.connection_problem = true;
+            _this.form_model.markTested(true);
+            return _this.stopSpinner('sms_test');
+          };
+        })(this));
+        this.startSpinner('sms_test');
+        return promise;
       };
 
       Admin_ChannelSms_Ctrl_Edit.prototype.saveAccount = function() {

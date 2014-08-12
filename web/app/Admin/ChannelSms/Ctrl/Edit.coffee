@@ -47,26 +47,46 @@ define [
 					@form_model.markConnected(true)
 					@form_model.setNumbers(result.data.numbers)
 					@form_model.setFriendlyName(result.data.friendly_name)
-					@ngApply();
+					@ngApply()
 				else
 					@$scope.connection_problem = true
 					@form_model.markConnected(false)
-
-				@stopSpinner('sms_connect_provider');
+				@stopSpinner('sms_connect_provider')
 			)
 			promise.error( (result) =>
 				@$scope.connection_problem = true
 				@form_model.markConnected(false)
+				@stopSpinner('sms_connect_provider')
 			)
-			@startSpinner('sms_connect_provider');
+			@startSpinner('sms_connect_provider')
 			return promise
 
 		testRoundTrip: ->
-			alert "testing"
+			@form_model.markTested(true)
+			postData = @form_model.getConnectData()
+			connectUrl = "/channel/sms/test_account"
+			promise = @Api.sendPostJson(connectUrl, postData)
+			promise.then((result) =>
+				if result.data.success
+					@form_model.markTested(true)
+					@form_model.setNumbers(result.data.numbers)
+					@form_model.setFriendlyName(result.data.friendly_name)
+					@ngApply()
+				else
+					@form_model.markTested(false)
+				@stopSpinner('sms_test')
+			)
+			promise.error((result) =>
+				@$scope.connection_problem = true
+				@form_model.markTested(true)
+				@stopSpinner('sms_test')
+			)
+			@startSpinner('sms_test')
+			return promise
+
 
 		saveAccount: ->
 			formData = @form_model.getFormData().account
-
 			if @accountId
 				@Api.sendPostJson("/channel/sms/account/#{@accountId}", formData).then((result) =>
 					@account = formData

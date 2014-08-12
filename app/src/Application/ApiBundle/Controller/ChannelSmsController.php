@@ -105,6 +105,10 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 		}
 
 
+		/**
+		 * If anything needs to be done with the data here in the future, a Form should be made
+		 * on an EditSmsAccount object
+		 */
 		$account->type                 = $this->in->getValue('type');
 		$account->params               = $this->in->getValue('params');
 		$account->identifier           = $this->in->getValue('identifier');
