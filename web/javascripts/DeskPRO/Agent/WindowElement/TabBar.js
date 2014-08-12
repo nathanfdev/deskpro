@@ -239,9 +239,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			this.removeTab(otherTab, true);
 		}
 
-		// force show tabs on new
-		this.$scope.showTabs();
-
 		//----------
 		// Just about done
 		//----------
@@ -258,6 +255,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.tabBarOverflow.update();
 
+		this.$scope.$safeApply();
 		return id;
 	},
 
@@ -294,6 +292,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			routeData.tabLoad();
 		}
 
+		this.$scope.$safeApply();
 		return id;
 	},
 
@@ -350,7 +349,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isActivating = false;
 		data.isActive = true;
-
+		this.$scope.$safeApply();
 		DeskPRO_Window.updateWindowUrlFragment();
 	},
 
@@ -384,6 +383,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.fireEvent('deactivateTab', [data, $('#' + data.wrapperId), this.isActivating, this]);
 
 		this.currentTabId = null;
+		this.$scope.$safeApply();
 	},
 
 	/**
@@ -392,11 +392,12 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 * @param tab
 	 */
 	isTabVisible: function(tab) {
-		var left = tab.tabBtn.position().left;
+		var $el = $(tab.tabBtnId);
+		var left = $el.position().left;
 
 		// Attempt to ignore margin and border. Lets hope they're the same on both sides.
-		var guess_slack = Math.round((tab.tabBtn.outerWidth() - tab.tabBtn.innerWidth()) / 2);
-		var right = left + tab.tabBtn.innerWidth() + guess_slack;
+		var guess_slack = Math.round(($el.outerWidth() - $el.innerWidth()) / 2);
+		var right = left + $el.innerWidth() + guess_slack;
 
 		var bounds = this.tabBarOverflow.getBounds();
 
@@ -474,6 +475,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			if (data.tabBtn2) data.tabBtn2.remove();
 		}
 
+		this.$scope.$safeApply();
 		DeskPRO_Window.updateWindowUrlFragment();
 		this.tabBarOverflow.update();
 	},
@@ -520,35 +522,26 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			DP.console.log("Cannot activate, unknown tab %s", id);
 		}
 
-		var btn = tab.tabBtn;
-		tab.tabBtn.detach();
-		tab.tabBtn = btn;
-
 		var otherTab = null;
 		if (tab.page && tab.page.meta.tabPlaceholderId) {
 			otherTab = this.getTab(tab.page.meta.tabPlaceholderId);
 		}
 
 		if (otherTab && otherTab != tab) {
-			tab.tabBtn.insertAfter(otherTab.tabBtn);
-			otherTab.tabBtn.remove();
-
 			if (this.currentTabId == otherTab.id) {
 				wasActive = true;
 				this.currentTabId = null;
 			}
 
 			this.removeTab(otherTab, true);
-
-		} else {
-			tab.tabBtn.prependTo(this.tabList);
 		}
 
 		this.tabBarOverflow.resetScroll();
 
 		if(!noalert) {
-			tab.tabBtn.effect("pulsate", { times:4 }, 500);
+			$(tab.tabBtnId).effect("pulsate", { times:4 }, 500);
 		}
+		this.$scope.$safeApply();
 	},
 
 	//##################################################################################################################
@@ -556,8 +549,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	//##################################################################################################################
 
 	alertTab: function(tab) {
-		var el = tab.tabBtn;
-		if (!el.length || el.is('.activeTabList') || el.is('.is-alerting')) return;
+		var el = $(tab.tabBtnId);
+		if (tab.isActive || el.is('.is-alerting')) return;
 
 		if(!this.isTabVisible(tab)) {
 			this.tabToFrontTabById(tab.id, true);
@@ -569,11 +562,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	},
 
 	clearAlertTab: function(tab) {
-		var el = tab.tabBtn;
-
-		// todo alerting classes
-
-		return;
+		var el = $(tab.tabBtnId);
 
 		if (!el.length) return;
 
@@ -606,24 +595,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.cancelClickActivate = true;
 
 		var el_click = $(event.target);
-//
-//		if (el_click.is('li')) {
-//			var el = el_click;
-//		} else {
-//			var el = el_click.closest('li');
-//		}
-//
-//		// If its not a tab, we can just ignore the event
-//		if (!el[0] || !el.is('li')) {
-//			DP.console.log('not click %o', event.target);
-//			this.cancelClickActivate = false;
-//			return;
-//		}
-//
-//		event.preventDefault();
-//		event.stopPropagation();
-
-//		var tabId = el.data('tab-id');
 
 		// If the clicked thing was the close button, or if its a middle-click...
 		if (el_click.is('.close') || event.which == 2 || event.isDbl) {

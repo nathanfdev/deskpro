@@ -70,7 +70,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 						fn();
 					}
 				} else {
-					this.$apply(fn);
+					self.$scope.$apply(fn);
 				}
 			};
 		}]);
@@ -1155,8 +1155,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$scope.oneColumnView = function() {
 			if (!(this.paneVis.list && this.paneVis.tabs)) return;
-			// todo set active pane
-
 			this.paneVis.list = false;
 			this.paneVis.tabs = false;
 			this.paneVis[self._last] = true;
@@ -1899,13 +1897,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			data = Object.merge(extraData, data);
 		}
 
-		// todo? store last active pane
-		if ('listpane' === data.master) {
-			this.$scope.showList();
-		} else {
-			this.$scope.showTabs();
-		}
-
 		Object.each(this.routePrefixes, function(listeners, prefix) {
 			if (route.indexOf(prefix) == 0) {
 				Array.each(listeners, function(callback) {
@@ -2031,6 +2022,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (el.data('route-preload-id')) {
 			extraData.preloadId = el.data('route-preload-id');
+		}
+
+
+		// this should be handled only when click event occurs
+		if (0 === el.data('route').indexOf('listpane:')) {
+			this.$scope.showList();
+		} else {
+			this.$scope.showTabs();
 		}
 
 		this.runPageRoute(el.data('route'), extraData);
