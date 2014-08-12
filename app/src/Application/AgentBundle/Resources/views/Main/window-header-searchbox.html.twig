@@ -1,8 +1,20 @@
-<div class="dp-omnibox">
+<div class="dp-omnibox" ng-class="{'is-active': isActive}" dp-omnibox>
 	<div class="input-area">
 		<i class="fa fa-search"></i>
 		<div class="input-wrap">
-			<input type="text" />
+			<input type="text" ng-model="searchQuery" ng-change="touchSearch()" />
 		</div>
+	</div>
+	<div class="dp-omnibox-results" style="display: none;">
+		<section ng-repeat="group in resultGroups" class="result-group">
+			<header>{{ ng_var('group.title') }}</header>
+			<article>
+				<ul>
+					<li ng-repeat="result in group.results">
+						{{ ng_var('result.title') }}
+					</li>
+				</ul>
+			</article>
+		</section>
 	</div>
 </div>

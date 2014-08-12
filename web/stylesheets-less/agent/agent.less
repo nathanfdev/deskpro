@@ -4612,15 +4612,22 @@ em.downarrow {
 	}
 }
 
+#dp_header_listpane_aligned.with-search-active {
+
+}
+
 .dp-omnibox {
 	.input-area {
-
 		position: relative;
 
-		background: #fff;
+		background: #eee;
 		border-radius: 3px;
 		border: 1px solid #aaa;
 		padding: 6px;
+
+		&.is-active {
+			background: #fff;
+		}
 
 		i {
 			position: absolute;
@@ -4641,4 +4648,12 @@ em.downarrow {
 			vertical-align: middle;
 		}
 	}
+}
+
+.dp-omnibox-results {
+	position: absolute;
+	background: #fff;
+	z-index: 1000000;
+
+	.
 }

@@ -517,6 +517,58 @@ define(['angular'], function(angular) {
 		}
 	}]);
 
+	AgentApp.directive('dpOmnibox', ['$compile', function($compile) {
+		return {
+			restrict: 'A',
+			link: function(scope, $el, attr) {
+				var $headerBg = $('#dp_header_listpane_aligned');
+				var $input = $el.find('input');
+				var $results = $el.find('.dp-omnibox-results');
+				var $listPane = $('#dp_list');
+
+				scope.isActive = false;
+
+				scope.$watch('isActive', function(isActive) {
+					if (isActive) {
+						$headerBg.addClass('with-search-active');
+					} else {
+						$headerBg.removeClass('with-search-active');
+					}
+				});
+
+				$input.on('focus', function() { scope.isActive = true; });
+				$input.on('blur', function() { scope.isActive = false; });
+
+				scope.touchSearch = function() {
+					updateSearch();
+				}
+
+				var updateSearch = function() {
+					var pos = $listPane.offset();
+					var width = $listPane.width();
+
+					scope.resultGroups = [
+						{
+							title: "Tickets",
+							results: [
+								{ title: "Result 1" },
+								{ title: "Result 2" },
+								{ title: "Result 3" }
+							]
+						}
+					];
+
+					$results.css({
+						top: 52,
+						left: -1,
+						width: width,
+						bottom: 0
+					}).show();
+				};
+			}
+		}
+	}]);
+
 	AgentApp.config(['$locationProvider', function($locationProvider) {
 		$locationProvider.html5Mode(true).hashPrefix('');
 	}]);

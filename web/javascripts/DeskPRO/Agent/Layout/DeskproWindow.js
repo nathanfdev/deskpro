@@ -122,9 +122,8 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			$('#dp_content').css('left', 0);
 		}
 
-		visibleLeft += 270; // sourcepane
+		visibleLeft += 270;
 		visibleLeft += listWidth;
-		visibleLeft += 1;
 
 		$('#dp_header_listpane_aligned').width(listWidth);
 		$('#dp_header_contentpane_aligned').css('left', visibleLeft);
