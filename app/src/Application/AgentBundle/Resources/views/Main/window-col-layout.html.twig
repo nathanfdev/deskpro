@@ -32,18 +32,23 @@
 			</div>
             <div class="bootstrap" ng-show="tabs.length && !paneVis.list" style="position: absolute; left:10px; bottom: 0px;">
                 <div class="btn-group" dropdown>
+
                     <button type="button" class="btn btn-show-list" ng-click="showList()"></button>
                     <button type="button" class="btn btn-primary btn-sm dropdown-toggle" style="height: 25px; padding: 3px 5px;">
                         <span class="caret"></span>
                         <span class="sr-only">Split button!</span>
                     </button>
-                    <ul class="dropdown-menu" role="menu" style="z-index: 2;">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
+
+                    <ul class="dropdown-menu" role="menu" style="z-index: 2; max-height: 300px; max-width: 200px; overflow-y: scroll;">
+                        <li ng-repeat="item in listItems" ng-class="item.open && 'active'">
+                            <a href="#" data-route="{{ ng_var('item.route') }}" style="overflow: hidden;">
+                                {{ ng_var('item.title') }}
+                                <div class="pull-right" ng-show="!item.open">+</div>
+                                <div class="pull-right" ng-show="item.open">-</div>
+                            </a>
+                        </li>
                     </ul>
+
                 </div>
             </div>
 			<div class="deskproTabList">

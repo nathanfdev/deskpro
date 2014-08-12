@@ -1147,6 +1147,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self = this;
 
 		$scope.paneVis = this.paneVis;
+		$scope.listItems = [];
 		self._last = 'list';
 
 		$scope.$watch('paneVis', function(newVal, oldVal){
@@ -1184,6 +1185,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				self.paneVis.tabs = true;
 				self._last = 'tabs';
 			});
+		};
+
+		$scope.addListItem = function(identity, title, route) {
+			$scope.listItems.push({identity: identity, title: title, route: route});
 		};
 	},
 

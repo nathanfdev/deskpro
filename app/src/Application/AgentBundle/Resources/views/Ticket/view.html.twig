@@ -6,6 +6,7 @@ pageMeta.title         = {{ticket.subject|json_encode|raw}};
 pageMeta.ticket_id     = {{ticket.id}};
 pageMeta.alert_id      = 'ticket-{{ ticket.id }}';
 pageMeta.url_fragment  = '{{ url_fragment('agent_ticket_view', {'ticket_id': ticket.id}) }}';
+pageMeta.pageIdentity  = 'ticket:{{ticket.id}}';
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'tickets'}) }}';
 pageMeta.labelsSaveUrl                = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
