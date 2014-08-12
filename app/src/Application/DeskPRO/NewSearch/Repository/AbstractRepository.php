@@ -81,10 +81,19 @@ abstract class AbstractRepository extends Repository
     protected function getQueryString($q)
     {
         $queryString = new QueryString($q);
+		$queryString->setFields($this->getQueryFields());
         $queryString->setDefaultOperator('AND');
 
         return $queryString->toArray();
     }
+
+	/**
+	 * @return array
+	 */
+	protected function getQueryFields()
+	{
+		return array('_all');
+	}
 
     /**
      * Constructs the filters array (override as needed)

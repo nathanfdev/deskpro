@@ -367,20 +367,22 @@ class MainController extends AbstractController
 
 		$return_results = array();
 
-		foreach ($results as $type => $raw_rows) {
-			$rows = array();
-			foreach ($raw_rows as $r) {
-				$rows[] = array(
-					'type' => get_class($r),
-					'item' => $r->toApiData(),
+		if ($results) {
+			foreach ($results as $type => $raw_rows) {
+				$rows = array();
+				foreach ($raw_rows as $r) {
+					$rows[] = array(
+						'type' => get_class($r),
+						'item' => $r->toApiData(),
+					);
+				}
+
+				$return_results[] = array(
+					'type'    => $type,
+					'title'   => $type,
+					'results' => $rows
 				);
 			}
-
-			$return_results[] = array(
-				'type'    => $type,
-				'title'   => $type,
-				'results' => $rows
-			);
 		}
 
         return $this->createJsonResponse(array(
