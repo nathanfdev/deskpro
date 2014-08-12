@@ -259,25 +259,25 @@ em.counter, em.list-counter {
 				width: 34px;
 				height: 26px;
 			}
-			li.view1:hover {
-				background-position: center center;
-			}
+//			li.view1:hover {
+//				background-position: center center;
+//			}
 			li.view2 {
 				background: url('@{img_path}/switch-buttons-center.png') no-repeat top center;
 				width: 34px;
 				height: 26px;
 			}
-			li.view2:hover {
-				background-position: center center;
-			}
+//			li.view2:hover {
+//				background-position: center center;
+//			}
 			li.view3 {
 				background: url('@{img_path}/switch-buttons-right.png') no-repeat top center;
 				width: 32px;
 				height: 26px;
 			}
-			li.view3:hover {
-				background-position: center center;
-			}
+//			li.view3:hover {
+//				background-position: center center;
+//			}
 		}
 	}
 
@@ -344,21 +344,10 @@ em.counter, em.list-counter {
 	}
 }
 
-.panevis-source-on {
-	#dp_header .panevis-switcher .view-source { background-position: bottom center; }
-}
-
-.panevis-list-on.panevis-tabs-off {
-	#dp_header .panevis-switcher .view1 { background-position: bottom center; }
-}
-
-.panevis-list-on.panevis-tabs-on {
-	#dp_header .panevis-switcher .view2 { background-position: bottom center; }
-}
-
-.panevis-list-off.panevis-tabs-on {
-	#dp_header .panevis-switcher .view3 { background-position: bottom center; }
-}
+#dp_header .panevis-switcher .view-source.active { background-position: bottom center; }
+#dp_header .panevis-switcher .view1.active { background-position: bottom center; }
+#dp_header .panevis-switcher .view2.active { background-position: bottom center; }
+#dp_header .panevis-switcher .view3.active { background-position: bottom center; }
 
 .panevis-list-on.panevis-tabs-on {
 	#dp_header .panevis-switcher ul li.view1 { background: url('@{img_path}/switch-buttons-left-fix.png') no-repeat 1px 0; }
@@ -3722,7 +3711,7 @@ ul.pane-tabs {
 		background: @agent_panetabs_bg_color;
 		border-bottom: 3px solid @agent_panetabs_color;
 		height: (@agent_panetabs_height - 3);
-		z-index: 1;
+		z-index: 3;
 		overflow: visible;
 	}
 

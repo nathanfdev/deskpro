@@ -1,5 +1,5 @@
-define(['angular'], function(angular) {
-	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'pasvaz.bindonce']);
+define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
+	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap']);
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor

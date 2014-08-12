@@ -185,8 +185,17 @@
 	</style>
 	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
 </head>
-<body class="dp {% if is_demo %}is-demo{% endif %}">
-
+<body class="dp {% if is_demo %}is-demo{% endif %}"
+      ng-class="{
+        'panevis-source-on': paneVis.source,
+        'panevis-source-off': !paneVis.source,
+        'panevis-tabs-on': paneVis.tabs,
+        'panevis-tabs-off': !paneVis.tabs,
+        'panevis-list-on': paneVis.list,
+        'panevis-list-off': !paneVis.list
+      }"
+        >
+{{ ng_var('paneVis.tabs') }}
 <script type="text/javascript">
 	(function() {
 		var ua = navigator.userAgent.toLowerCase();

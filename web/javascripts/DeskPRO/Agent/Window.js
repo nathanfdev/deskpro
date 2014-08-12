@@ -47,8 +47,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.paneVis = {
 			source: true,
 			list: true,
-			tabs: true
+			tabs: true,
 		};
+
+		this.paneVisBit = {
+			source: 1,
+			list: 2,
+			tabs: 4
+		}
+
+		var self = this;
+		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
+		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+			self.$scope = $rootScope;
+			self.$q = $q;
+			self.$timeout = $timeout;
+
+			self.$scope.$safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase == '$apply' || phase == '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					self.$scope.$apply(fn);
+				}
+			};
+		}]);
+		this.initScope();
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -504,7 +530,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				return $(el).fileupload(options);
 			},
-			
+
 			filedownload: function(el) {
 				if (!el.is('.dragout')) {
 					el = el.find('.dragout');
@@ -515,7 +541,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					if (!fileDetails) {
 						fileDetails = $(this).attr('drag-to-download');
 					}
-					
+
 					if (evt.dataTransfer) {
 						evt.dataTransfer.setData("DownloadURL",fileDetails);
 						if (blobAuthId) evt.dataTransfer.setData("DpAuthId", blobAuthId);
@@ -556,6 +582,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				window.location.reload(false);
 			}
 		};
+
+
 	},
 
 	initPage: function() {
@@ -874,68 +902,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		$('#dp_source, #dp_left_collapsed').on('click', '.toggle_source_pane', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('source', !DeskPRO_Window.paneVis.source);
-		});
-		$('#dp_list, #dp_left_collapsed').on('click', '.toggle_list_pane', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
-		});
-		$('#dp_right_collapsed').on('click', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('tabs', true);
-		});
-
-		$('#dp_nav_sections').on('click', function() {
-			if (!self.paneVis['source']) {
-				self.paneVis['source'] = true;
-				self.layout.doResize(true);
-			}
-		});
-
-		$(document).on('click', '.panevis-toggle-sourcepane', function() {
-			self.paneVis['source'] = !self.paneVis['source'];
-			self.layout.doResize(true);
-		});
-
-		$(document).on('click', '.panevis-toggle-tableview', function() {
-			self.paneVis['list'] = true;
-			self.paneVis['tabs'] = false;
-			self.layout.doResize(true);
-		});
-		$(document).on('click', '.panevis-toggle-normalview', function() {
-			self.paneVis['list'] = true;
-			self.paneVis['tabs'] = true;
-			self.layout.doResize(true);
-		});
-		$(document).on('click', '.panevis-toggle-tabview', function() {
-			self.paneVis['list'] = false;
-			self.paneVis['tabs'] = true;
-			self.layout.doResize(true);
-		});
-
-		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
-			ev.preventDefault();
-
-			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.tabs) {
-				DeskPRO_Window.setPaneVis('source', true, 'tabs', true);
-			} else {
-				DeskPRO_Window.setPaneVis('source', false, 'tabs', false);
-			}
-		});
-
-		$('#tabNavigationPane .maximise_tabs_pane').on('click', function(ev) {
-			ev.preventDefault();
-
-			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.list) {
-				DeskPRO_Window.setPaneVis('source', true, 'list', true);
-			} else {
-				DeskPRO_Window.setPaneVis('source', false, 'list', false);
-			}
-		});
-
-
 		$('#dp_header_userchat_btn').on('click', function() {
 			if (DeskPRO_Window.sections.chat_section) {
 				DeskPRO_Window.sections.chat_section.refreshOnlineUsers();
@@ -1190,6 +1156,51 @@ DeskPRO.Agent.Window = new Orb.Class({
 		/***************** /scrolling handle on drag ******************/
 	},
 
+	initScope: function() {
+		var $scope = this.$scope,
+			self = this;
+
+		$scope.paneVis = this.paneVis;
+		self._last = 'list';
+
+		$scope.$watch('paneVis', function(newVal, oldVal){
+			self.layout.doResize(true);
+		}, true);
+
+		$scope.oneColumnView = function() {
+			if (!(this.paneVis.list && this.paneVis.tabs)) return;
+			this.paneVis.list = false;
+			this.paneVis.tabs = false;
+			this.paneVis[self._last] = true;
+		};
+
+		$scope.twoColumnsView = function() {
+			if (this.paneVis.list && this.paneVis.tabs) return;
+			self.paneVis.list = true;
+			self.paneVis.tabs = true;
+		};
+
+		$scope.showList = function() {
+			$scope.$safeApply(function(){
+				if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
+					self.paneVis.tabs = false;
+				}
+				self.paneVis.list = true;
+				self._last = 'list';
+			});
+		};
+
+		$scope.showTabs = function() {
+			$scope.$safeApply(function(){
+				if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
+					self.paneVis.list = false;
+				}
+				self.paneVis.tabs = true;
+				self._last = 'tabs';
+			});
+		};
+	},
+
 	initAppPlatform: function(AppPlatform) {
 		if (this.AppPlatform) return;
 		this.AppPlatform = AppPlatform;
@@ -1408,15 +1419,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (DeskPRO_Window.TabBar) {			// Only if we have current tab, cuz no current tab means there are no tabs open at all
-			$('#tabNavigationPane ul.dp-tab-list li').each(function() {
-				var isActive = $(this).hasClass('activeTabList');
 
-				var tab = $(this).data('tab');
-				if (tab && tab.page && tab.page.getMetaData('url_fragment')) {
+			for (var id in this.TabBar.tabs ) {
+				var tab = this.TabBar.tabs[id];
+
+				if (tab.page && tab.page.getMetaData('url_fragment')) {
 					var tabPage = tab.page;
 					var hash = tabPage.getMetaData('url_fragment');
 
-					if (isActive) {
+					if (tab.isActive) {
 						if (hash.indexOf(':') !== -1) {
 							// ticket:123 to ticket.o:123
 							hash = hash.replace(/:/, '.o:');
@@ -1428,7 +1439,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 					segments.push(hash);
 				}
-			});
+			};
 		}
 
 		var paneVisNum = this.getPaneVisNum();
@@ -2027,6 +2038,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.preloadId = el.data('route-preload-id');
 		}
 
+
+		// this should be handled only when click event occurs
+		if (0 === el.data('route').indexOf('listpane:')) {
+			this.$scope.showList();
+		} else {
+			this.$scope.showTabs();
+		}
+
 		this.runPageRoute(el.data('route'), extraData);
 	},
 
@@ -2095,7 +2114,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#dp_list > section').removeClass('on');
 			$('#dp_list_loading').addClass('on');
 		}
-
 		var xhr = this._doAjaxLoadRoute(url, routeData, (function(data) {
 
 			if (!routeData) {
@@ -2783,11 +2801,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('listpane', (function(routeData) {
-
-			if (!this.paneVis.list) {
-				this.setPaneVis('list', true);
-			}
-
 			this.loadRoute(routeData);
 		}).bind(this));
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));
@@ -4377,60 +4390,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	setPaneVis: function(id, vis) {
 		this.paneVis[id] = vis;
-		this.layout.doResize(true);
 	},
 
 	setPaneVisNum: function(num) {
-		switch (num) {
-			case 0:
-				this.paneVis.source = true;
-				this.paneVis.list = true;
-				this.paneVis.tabs = true;
-				break;
-
-			case 1:
-				this.paneVis.source = true;
-				this.paneVis.list = true;
-				this.paneVis.tabs = false;
-				break;
-
-			case 2:
-				this.paneVis.source = true;
-				this.paneVis.list = false;
-				this.paneVis.tabs = true;
-				break;
-
-			case 3:
-				this.paneVis.source = false;
-				this.paneVis.list = true;
-				this.paneVis.tabs = false;
-				break;
-
-			case 4:
-				this.paneVis.source = false;
-				this.paneVis.list = false;
-				this.paneVis.tabs = true;
-				break;
-
-			case 5:
-				this.paneVis.source = false;
-				this.paneVis.list = true;
-				this.paneVis.tabs = true;
-				break;
+		for (var k in this.paneVis) {
+			this.paneVis[k] = num & this.paneVisBit[k] ? true : false;
 		}
-
-		this.layout.doResize(true);
 	},
 
 	getPaneVisNum: function() {
-		var source = this.paneVis.source, list = this.paneVis.list, tabs = this.paneVis.tabs;
-
-		if (source && list && tabs)   return 0;
-		if (source && list && !tabs)  return 1;
-		if (source && !list && tabs)  return 2;
-		if (!source && list && !tabs) return 3;
-		if (!source && !list && tabs) return 4;
-		if (!source && list && tabs)  return 5;
-		return 0;
+		var num = 0;
+		for (var k in this.paneVis) {
+			if (this.paneVis[k]) {
+				num += this.paneVisBit[k]
+			}
+		}
+		return num;
 	}
 });

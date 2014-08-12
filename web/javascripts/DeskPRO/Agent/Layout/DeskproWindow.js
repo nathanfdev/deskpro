@@ -62,7 +62,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		$('#dp_content').css('left', this.LEFT_START + listWidth + 1); //+1 for border
 
 		$('.with-scroll-handler').each(function() {
-			if ($(this).data('scroll_handler')) {
+			if ($(this).data('scroll_handler') && $(this).is(':visible')) {
 				$(this).data('scroll_handler').updateSize();
 			}
 		});
@@ -129,16 +129,6 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		$('#dp_header_contentpane_aligned').css('left', visibleLeft);
 
 		listSizer.css('left', left-2);
-
-		var body = $('body');
-		if (paneVis.source) body.addClass('panevis-source-on').removeClass('panevis-source-off');
-		else body.removeClass('panevis-source-on').addClass('panevis-source-off');
-
-		if (paneVis.list) body.addClass('panevis-list-on').removeClass('panevis-list-off');
-		else body.removeClass('panevis-list-on').addClass('panevis-list-off');
-
-		if (paneVis.tabs) body.addClass('panevis-tabs-on').removeClass('panevis-tabs-off');
-		else body.removeClass('panevis-tabs-on').addClass('panevis-tabs-off');
 
 		if (this.enableHashUpdate) {
 			DeskPRO_Window.updateWindowUrlFragment();

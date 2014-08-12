@@ -72,11 +72,10 @@
 
 		<div class="panevis-switcher pull-right">
 			<ul>
-				<li class="view-source panevis-toggle-sourcepane" title="{{ phrase('agent.interface.viewbtn-source') }}"></li>
-				<li class="view1 panevis-toggle-tableview" title="{{ phrase('agent.interface.viewbtn-table') }}"></li>
-				<li class="view2 panevis-toggle-normalview" title="{{ phrase('agent.interface.viewbtn-normal') }}"></li>
-				<li class="view3 panevis-toggle-tabview" title="{{ phrase('agent.interface.viewbtn-tab') }}"></li>
-			</ul>
+				<li ng-click="paneVis.source = !paneVis.source" ng-class="paneVis.source && 'active'" class="view-source" title="{{ phrase('agent.interface.viewbtn-source') }}"></li>
+            	<li ng-click="oneColumnView()" ng-class="!(paneVis.list && paneVis.tabs) && 'active'" class="view3" title="{{ phrase('agent.interface.viewbtn-tab') }}"></li>
+            	<li ng-click="twoColumnsView()" ng-class="paneVis.list && paneVis.tabs && 'active'" class="view2" title="{{ phrase('agent.interface.viewbtn-normal') }}"></li>
+      	  </ul>
 		</div>
 	</div>
 </div>
