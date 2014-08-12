@@ -90,7 +90,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			});
 		}
 
-		var left = 0;
+		var left = 0, visibleLeft = 0;
 		if (!paneVis.source) {
 			$('#dp_source').hide();
 			$('#dp_center').css('left', 55);
@@ -121,6 +121,13 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		} else {
 			$('#dp_content').css('left', 0);
 		}
+
+		visibleLeft += 270; // sourcepane
+		visibleLeft += listWidth;
+		visibleLeft += 1;
+
+		$('#dp_header_listpane_aligned').width(listWidth);
+		$('#dp_header_contentpane_aligned').css('left', visibleLeft);
 
 		listSizer.css('left', left-2);
 

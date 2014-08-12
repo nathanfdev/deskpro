@@ -952,7 +952,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var isIe = $('html').hasClass('browser-ie');
 
-		$('#dp_header').find('.btn-group-actions').find('.btn').on('click', function() {
+		$('#dp_header').find('.btn-group-actions, .btn-group-wrap').find('.btn, .dp-recent-btn').on('click', function() {
 			var wrap = $(this).parent();
 			var btnMenu = wrap.find('.btn-menu');
 
