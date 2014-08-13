@@ -963,13 +963,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
-		$('#tabNavigationPane .btn-group-actions .btn').on('click, mouseover', function(){
-			var wrap = $(this).parent();
+		$('#dp_create_btn').on('click mouseover', function(){
+			var wrap = $(this);
 			var btnMenu = $('#create-menu');
-
-			if (wrap.hasClass('active')) {
-				return;
-			}
 
 			// Bug in IE10 means the li's dont render properly
 			// until you force a repaint somehow while they are displayed
@@ -982,7 +978,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			wrap.addClass('active');
 			btnMenu.addClass('active');
-			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() - 1});
+			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() + 4});
 
 			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
@@ -1003,7 +999,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if (!btnMenu.hasClass('active')) return;
 
 				var left = wrap.offset().left - 5,
-					top = wrap.offset().top - 5,
+					top = wrap.offset().top,
 					right = left + btnMenu.width() + 10,
 					bottom = top + wrap.height() + btnMenu.height() + 10
 

@@ -3740,6 +3740,34 @@ ul.pane-tabs {
 		width: 125px;
 		font-family: Helvetica,Arial,sans-serif;
 
+		&.add-btn {
+			position: relative;
+			border-color: #aaa;
+			background: #d5d6da;
+			width: auto;
+			text-align: center;
+			padding: 4px 5px 1px 5px;
+			color: #777;
+			font-weight: normal;
+
+			span {
+				font-size: 11px;
+				text-transform: uppercase;
+				padding-left: 2px;
+			}
+
+			i {
+				font-size: 11px;
+			}
+
+			&:hover, &.active {
+				color: #444;
+				background: #fff;
+				cursor: pointer;
+				border-color: #99999D;
+			}
+		}
+
 		span.close {
 			top: 5px;
 		}

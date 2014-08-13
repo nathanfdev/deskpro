@@ -28,11 +28,11 @@
 	<div id="dp_content">
 		<div id="tabNavigationPane" style="width: 5500px; vertical-align: bottom;">
 
-            <div class="btn-group-actions" style="background: none; display: inline-block; position: static; height: 28px; vertical-align: bottom; padding: 0;">
-                <div class="btn-wrap create-group pull-left">
-                    <a class="btn" style="line-height: 24px; height: 24px;"><i class="icon-plus"></i><span class="btn-text">{{ phrase('agent.chrome.btn_add') }}</span></a>
-                </div>
-            </div>
+			<div class="deskproTabList" style="position:relative; display: none; vertical-align: bottom;">
+				<ul class="dp-tab-list">
+
+				</ul>
+			</div>
 
             <div class="bootstrap" ng-show="tabs.length && !paneVis.list" style="display: inline-block; vertical-align: bottom; margin-bottom: 3px;">
                 <div class="btn-group" dropdown>
@@ -56,7 +56,7 @@
                 </div>
             </div>
 
-			<div class="deskproTabList" style="position: static; display: inline-block; vertical-align: bottom;">
+			<div class="mainDeskproTabList deskproTabList" style="position: static; display: inline-block; vertical-align: bottom;">
 				<div class="deskproTabListInner" style="position: static;">
 					<ul class="dp-tab-list">
 
@@ -76,6 +76,8 @@
                                 <span class="close"></span>
                             </li>
                         </li>
+
+						<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>add</span></li>
 
 					</ul>
 				</div>
