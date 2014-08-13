@@ -166,11 +166,11 @@ class SmsAccount extends DomainObject
 		);
 		$metadata->mapOneToOne(
 			array(
-				'fieldName'    => 'phone_number',
-				'targetEntity' => 'Application\\DeskPRO\\Entity\\PhoneNumber',
-				'cascade' => array('all'),
+				'fieldName'     => 'phone_number',
+				'targetEntity'  => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+				'cascade'       => array('all'),
 				'orphanRemoval' => true,
-				'joinColumns' => array(
+				'joinColumns'   => array(
 					array(
 						'name'     => 'phone_number_id', 'referencedColumnName' => 'id', 'nullable' => true,
 						'onDelete' => 'SET NULL'

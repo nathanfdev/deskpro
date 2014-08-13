@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Util;
 
 /**
@@ -312,7 +314,6 @@ abstract class DomainObject extends BasicDomainObject
 		return $this->_no_persist;
 	}
 
-
 	/**
 	 * @return string
 	 */
@@ -331,5 +332,85 @@ abstract class DomainObject extends BasicDomainObject
 		} else {
 			return "<$me:" . spl_object_hash($this) . ">";
 		}
+	}
+
+
+	protected static function _mapId(ClassMetadata $metadata, $fieldName = 'id')
+	{
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
+
+		$metadata->mapField(
+			array(
+				'id'         => true,
+				'fieldName'  => $fieldName,
+				'columnName' => $fieldName,
+				'type'       => 'integer',
+				'precision'  => 0,
+				'scale'      => 0,
+				'nullable'   => false,
+			)
+		);
+	}
+
+	protected static function _mapString(ClassMetadata $metadata, $fieldName, $length=256, $nullable=true)
+	{
+		$metadata->mapField(
+			array(
+				'fieldName'  => $fieldName,
+				'columnName' => $fieldName,
+				'type'       => 'string',
+				'length'     => $length,
+				'nullable'   => $nullable,
+			)
+		);
+	}
+
+	protected static function _mapText(ClassMetadata $metadata, $fieldName)
+	{
+		$metadata->mapField(
+			array(
+				'fieldName'  => $fieldName,
+				'columnName' => $fieldName,
+				'type'       => 'text',
+				'nullable'   => true
+			)
+		);
+	}
+
+	protected static function _mapBool(ClassMetadata $metadata, $fieldName)
+	{
+		$metadata->mapField(
+			array(
+				'fieldName'  => $fieldName,
+				'columnName' => $fieldName,
+				'type'       => 'boolean',
+			)
+		);
+	}
+
+	protected static function _mapInt(ClassMetadata $metadata, $fieldName, $precision=0, $scale=0, $nullable=true)
+	{
+		$metadata->mapField(
+			array(
+				'fieldName'  => $fieldName,
+				'columnName' => $fieldName,
+				'type'       => 'string',
+				'precision'  => $precision,
+				'scale'      => $scale,
+				'nullable'   => $nullable,
+			)
+		);
+	}
+
+	protected static function _mapDateTime(ClassMetadata $metadata, $fieldName, $nullable=true)
+	{
+		$metadata->mapField(
+			array(
+				'fieldName'  => $fieldName,
+				'columnName' => $fieldName,
+				'type'       => 'datetime',
+				'nullable'   => $nullable,
+			)
+		);
 	}
 }
