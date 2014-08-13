@@ -7,8 +7,8 @@
     "angular-route": "1.2.21",
     "angular-dragdrop": "1.0.4",
     "angular-bindonce": "0.3.1",
-    "angular-animate": "v1.2.*",
-    "angular-sanitize": "v1.2.*",
+    "angular-animate": "v1.2.21",
+    "angular-sanitize": "v1.2.21",
     "angular-i18n": "1.2.*",
     "angular-ui-ace": "0.0.4",
     "angular-ui-router": "0.2.0",
@@ -30,8 +30,5 @@
     "blueimp-file-upload": "9.3.0",
     "animate.css": "3.0.0",
     "notify.js": "1.1.0"
-  },
-  "resolutions": {
-    "angular": ">=1.2.0"
   }
 }
