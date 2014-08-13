@@ -22,6 +22,31 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
 
+		var attachPoint = $('people-list-result', this.wrapper);
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
+			self.$scope = $rootScope.$new();
+
+			self.$scope.$safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase == '$apply' || phase == '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					this.$apply(fn);
+				}
+			};
+
+			self.$q = $q;
+			self.$timeout = $timeout;
+
+			attachPoint.data('$ngControllerController', self);
+			$compile(attachPoint.contents())(self.$scope);
+
+			self.initScope();
+		}]);
+
+
 		this.resultTypeId = this.meta.cache_id || 0;
 
 		if (this.getMetaData('noResults')) {
@@ -228,8 +253,15 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		});
 	},
 
-	destroyPage: function() {
+	initScope: function(){
 
+	},
+
+	destroyPage: function() {
+		if (this.$scope) {
+			this.$scope.$destroy();
+			this.$scope = null;
+		}
 	},
 
 	switchViewType: function(view_type) {

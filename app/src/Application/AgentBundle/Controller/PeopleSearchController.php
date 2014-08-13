@@ -35,9 +35,11 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\PeopleResults;
+use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\PeopleResultsDisplay;
 use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -162,7 +164,7 @@ class PeopleSearchController extends AbstractController
 	protected function _getResponseForPeople($type, $type_id, PeopleResults $results_helper, array $vars = array())
 	{
 		$view_type = $this->in->getString('view_type');
-		if (!$view_type OR !in_array($view_type, array('list', 'simple'))) {
+		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'json'))) {
 			$view_type = 'simple';
 		}
 
@@ -218,10 +220,13 @@ class PeopleSearchController extends AbstractController
 			);
 		}
 
+		$person_display = new PeopleResultsDisplay($people);
+		$renderer = new PeopleListRenderer($this->container);
 		$vars = array_merge($vars, array(
 			'type'                    => $type,
 			'type_id'                 => $type_id,
 			'people'                  => $people,
+			'people_json'             => $renderer->renderJson($person_display),
 			'page'                    => $page,
 			'person_field_defs'       => $person_field_defs,
 			'load_first'              => $this->in->getBool('load_first'),
@@ -229,15 +234,20 @@ class PeopleSearchController extends AbstractController
 			'alphabet'                => $letters
 		));
 
-		$html = $this->renderView($tpl, $vars);
 
-		if ($is_partial) {
-			return $this->createJsonResponse(array(
-				'html'              => $html,
-				'page'              => $page,
-			));
+		if ('json' === $view_type) {
+			return $this->createJsonpResponse($vars);
 		} else {
-			return $this->createResponse($html);
+			$html = $this->renderView($tpl, $vars);
+
+			if ($is_partial) {
+				return $this->createJsonResponse(array(
+					'html'              => $html,
+					'page'              => $page,
+				));
+			} else {
+				return $this->createResponse($html);
+			}
 		}
 	}
 
@@ -527,7 +537,7 @@ class PeopleSearchController extends AbstractController
 		return $this->_getResponseForPeople('list', $result_cache['id'], $results_helper, $vars);
 	}
 
-	public function showUsergroupAction($id)
+	public function showUsergroupAction($id, $format)
 	{
 		$usergroup = $this->em->find('DeskPRO:Usergroup', $id);
 		if (!$usergroup || $usergroup->is_agent_group) {

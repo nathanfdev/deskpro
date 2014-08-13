@@ -30,6 +30,7 @@ pageMeta.cache_id = {{cache_id}};
 pageMeta.perPage = 50;
 pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 </script>
+<script id="{{ baseId }}_people_list_json" type="application/json">{{ people_json|raw }}</script>
 {% endblock top %}
 
 {######################################################################################################################}
