@@ -38,6 +38,18 @@ class FilterTermFactory
 {
 	public function createFromArray(array $term_info)
 	{
+		if (empty($term_info['type'])) {
+			throw new \InvalidArgumentException("Missing type");
+		}
+
+		if (empty($term_info['op'])) {
+			$term_info['op'] = 'is';
+		}
+
+		if (empty($term_info['options'])) {
+			$term_info['options'] = array();
+		}
+
 		return $this->create($term_info['type'], $term_info['op'], $term_info['options']);
 	}
 

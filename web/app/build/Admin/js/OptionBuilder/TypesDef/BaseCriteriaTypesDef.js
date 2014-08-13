@@ -384,7 +384,7 @@
                 value.type = type;
                 value.op = model.op;
                 value.options = {};
-                valie.options[prop_name] = val;
+                value.options[prop_name] = val;
                 return value;
               }
             };
