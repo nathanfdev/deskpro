@@ -20,11 +20,6 @@ mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'deskpro'@'localhost' WITH GRAN
 mysql -u root -e "SET GLOBAL wait_timeout=600;"
 echo "--> Done"
 
-echo "Creating other test databases"
-mysql -e "CREATE DATABASE dp_test_emptydb;"
-mysql -e "CREATE DATABASE dp_test_apisampledb;"
-echo "--> Done"
-
 echo "Creating config.php"
 rm config.php
 cp app/testing/travis-ci/deskpro-config.php config.php
@@ -36,6 +31,8 @@ echo "--> Done"
 
 echo "Cleaning test env"
 app/testing/bin/reset-data
+mysql -e "CREATE DATABASE dp_test_emptydb;"
+mysql -e "CREATE DATABASE dp_test_apisampledb;"
 echo "--> Done"
 
 echo "Ensuring permissions"
