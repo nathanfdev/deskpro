@@ -144,6 +144,7 @@ class KernelBooter
 		setlocale(LC_CTYPE, 'C');
 		date_default_timezone_set('UTC');
 		ini_set('default_charset', 'UTF-8');
+		libxml_disable_entity_loader(true);
 
 		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor-src/php-utf8');
 

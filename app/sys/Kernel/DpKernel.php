@@ -126,7 +126,13 @@ class DpKernel extends AbstractKernel
 			}
 		}
 
+		// entity loader required to construct symfony container
+		// so enable it temporarily while the container builds
+		$v = libxml_disable_entity_loader(false);
+
 		parent::initializeContainer();
+
+		libxml_disable_entity_loader($v);
 	}
 
 
