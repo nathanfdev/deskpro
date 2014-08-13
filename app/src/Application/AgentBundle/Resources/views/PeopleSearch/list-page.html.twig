@@ -65,26 +65,26 @@
             <br class="clear" />
         </div>
 
+        <div class="validation-row" ng-if="!(person.is_confirmed && person.is_agent_confirmed)" ng-switch="!0">
+            <span ng-switch-when="!person.is_confirmed && !person.is_agent_confirmed">
+                {{ phrase('agent.people.user_awaiting_email_and_agent_validation') }}
+            </span>
+            <span ng-switch-when="!person.is_confirmed">
+                {{ phrase('agent.people.user_awaiting_email_validation') }}
+            </span>
+            <span ng-switch-when="!person.is_agent_confirmed">
+                {{ phrase('agent.people.user_awaiting_agent_validation') }}
+            </span>
+            <button class="agent-confirm-approve" data-person-id="{{ ng_var('person.id') }}">
+                {{ phrase('agent.general.approve') }}
+            </button>
+            {%  if app.user.hasPerm('agent_people.delete') %}
+                <button class="agent-confirm-delete" data-person-id="{{ ng_var('person.id') }}">
+                {{ phrase('agent.general.delete') }}
+                </button>
+            {% endif %}
+        </div>
 
-
-				{#{% endset %}#}
-				{#{% if has_set %}{{ extra_info_row }}{% endif %}#}
-				{#{% if not person.is_confirmed or not person.is_agent_confirmed %}#}
-					{#<div class="validation-row">#}
-						{#{% if not person.is_confirmed and not person.is_agent_confirmed %}#}
-							{#{{ phrase('agent.people.user_awaiting_email_and_agent_validation') }}#}
-						{#{% elseif not person.is_confirmed %}#}
-							{#{{ phrase('agent.people.user_awaiting_email_validation') }}#}
-						{#{% elseif not person.is_agent_confirmed %}#}
-							{#{{ phrase('agent.people.user_awaiting_agent_validation') }}#}
-						{#{% endif %}#}
-						{#<button class="agent-confirm-approve" data-person-id="{{ person.id }}">{{ phrase('agent.general.approve') }}</button>#}
-						{#{%  if app.user.hasPerm('agent_people.delete') %}<button class="agent-confirm-delete" data-person-id="{{ person.id }}">{{ phrase('agent.general.delete') }}</button>{% endif %}#}
-					{#</div>#}
-				{#{% endif %}#}
-			{#{% endif %}#}
-
-
-		</article>
+	</article>
 
 </section>

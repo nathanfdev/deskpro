@@ -534,7 +534,7 @@ class PeopleSearchController extends AbstractController
 		return $this->_getResponseForPeople('list', $result_cache['id'], $results_helper, $vars);
 	}
 
-	public function showUsergroupAction($id, $format)
+	public function showUsergroupAction($id)
 	{
 		$usergroup = $this->em->find('DeskPRO:Usergroup', $id);
 		if (!$usergroup || $usergroup->is_agent_group) {
