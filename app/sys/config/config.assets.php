@@ -640,7 +640,7 @@ $CONFIG['agent_vendor_out_css'] = array(
 	'out' => 'css/agent-vendors-all.css',
 	'post_filters' => array('css'),
 	'references' => array(
-		'agent_vendors_css',
+		'agent_vendors_css'
 	)
 );
 
@@ -659,7 +659,8 @@ $CONFIG['agent_interface_css1'] = array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-agent-chat.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
-		'app/bower_components/font-awesome/css/font-awesome.min.css',
+		'stylesheets-less/agent/dp-source-pane.less',
+		'stylesheets-less/agent/dp-list-pane.less',
 	)
 );
 
@@ -667,8 +668,6 @@ $CONFIG['agent_interface_css2'] = array(
 	'out' => 'css/agent-interface2.css',
 	'filters' => array('less'),
 	'files' => array(
-		'stylesheets-less/agent/dp-source-pane.less',
-		'stylesheets-less/agent/dp-list-pane.less',
 		'stylesheets-less/agent/dp-content-pane.less',
 		'stylesheets-less/agent/agent.less',
 		'stylesheets-less/agent/jira.less',
@@ -702,6 +701,7 @@ $CONFIG['agent_vendors_css'] = array(
 		'vendor/jquery/colorbox/colorbox.css',
 		'vendor/select2/select2.css',
 		'vendor/redactor/redactor.css',
+		'app/bower_components/font-awesome/css/font-awesome.min.css',
 	)
 );
 
