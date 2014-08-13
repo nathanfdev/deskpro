@@ -22,16 +22,14 @@ pageMeta.resultId = {{cache_id}};
 pageMeta.cache_id = {{cache_id}};
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
-pageMeta.display_fields = {{ display_fields|json_encode|raw }};
+pageMeta.displayFields = {{ display_fields|json_encode|raw }};
 
-{% if not people %}
-	pageMeta.noResults = true;
-{% endif %}
-
-pageMeta.perPage = 50;
+pageMeta.page = {{ page }};
+pageMeta.perPage = {{ per_page }};
 pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
+pageMeta.resultsTotal = {{ person_ids|length }};
+pageMeta.persons = {{ people_json|raw }};
 </script>
-<script id="{{ baseId }}_people_list_json" type="application/json">{{ people_json|raw }}</script>
 {% endblock top %}
 
 {######################################################################################################################}
@@ -68,42 +66,50 @@ pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 {######################################################################################################################}
 
 {% block pane_content %}
-	{% if people|length %}
-		<div id="people-list-result">
-			{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
-			{% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
-			{#{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}#}
 
-			<section class="people-list list-listing no-check">
-				{% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
-			</section>
+    <div id="people-list-result" ng-show="persons.length">
+        {% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
+        {% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
+        {#{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}#}
 
-			<footer class="results-nav">
-				<div class="cursor">
-					{% set phrase_part1 %}
-					<span class="results-showing-count" id="{{ tplvars.baseId }}_showing_count"></span>
-					{% endset %}
-					{% set phrase_part2 %}
-					<span class="results-total-count" id="{{ tplvars.baseId }}_total_count">{{ person_ids|length }}</span>
-					{% endset %}
-					{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
-				</div>
-				{% if person_ids|length > 50 %}
-					<ul class="pagenav no-prev">
-						<li class="prev"></li>
-						<li class="next"></li>
-					</ul>
-				{% endif %}
-				<div class="loading">
+        <section class="people-list list-listing no-check">
+            {% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
+        </section>
 
-				</div>
-			</footer>
-		</div>
-	{% else %}
-		<section class="list-listing no-results">
-			<article class="row-item no-results">
-				<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
-			</article>
-		</section>
-	{% endif %}
+        {# todo should be separate controller #}
+        <footer class="results-nav" ng-class="pagination.isLoading && 'loading'">
+
+            <div class="cursor">
+                {% set phrase_part1 %}
+                <span class="results-showing-count">
+                    {{ ng_var('(pagination.page - 1) * pagination.perPage + 1') }}
+                    -
+                    {{ ng_var('Math.min(pagination.total, pagination.page * pagination.perPage)') }}
+                </span>
+                {% endset %}
+                {% set phrase_part2 %}
+                <span class="results-total-count">{{ ng_var('pagination.total') }}</span>
+                {% endset %}
+                {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
+            </div>
+
+            <ul class="pagenav" ng-show="pagination.total > pagination.perPage"
+                    ng-class="{
+                        'no-prev': pagination.page === 1,
+                        'no-next': pagination.page === Math.ceil(pagination.total / pagination.perPage)
+                    }">
+                <li class="prev" ng-click="fetchPage(pagination.page - 1)"></li>
+                <li class="next" ng-click="fetchPage(pagination.page + 1)"></li>
+            </ul>
+            <div class="loading"></div>
+
+        </footer>
+    </div>
+
+    <section class="list-listing no-results" ng-show="!persons.length">
+        <article class="row-item no-results">
+            <p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
+        </article>
+    </section>
+
 {% endblock pane_content %}

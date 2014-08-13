@@ -227,6 +227,7 @@ class PeopleSearchController extends AbstractController
 			'people'                  => $people,
 			'people_json'             => $renderer->renderJson($person_display),
 			'page'                    => $page,
+			'per_page'                => $results_helper->getPerPageCount(),
 			'load_first'              => $this->in->getBool('load_first'),
 			'alphabet'                => $letters
 		));
@@ -268,9 +269,14 @@ class PeopleSearchController extends AbstractController
 		$user_field_manager = $this->container->getSystemService('person_fields_manager');
 		$person_field_defs = $user_field_manager->getFields();
 
+		$view_type = $this->in->getString('view_type');
 		$tpl = 'list-page.html.twig';
-		if ($this->in->getString('view_type') == 'list') {
+		if ('list' === $view_type) {
 			$tpl = 'list-list-page.html.twig';
+		} elseif ('json' === $view_type) {
+			$person_display = new PeopleResultsDisplay($people);
+			$renderer = new PeopleListRenderer($this->container);
+			return $this->createJsonResponse($renderer->renderArray($person_display));
 		}
 
 		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);

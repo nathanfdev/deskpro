@@ -11,9 +11,9 @@
             <div class="top-row-left">
                 <h3>
                     <a class="name click-through">
-                            <span class="person-name-picture" style="background-image: url({{ ng_var('person.picture_url_16') }})">
-                                {{ ng_var('person.name_with_title') }}
-                            </span>
+                        <span class="person-name-picture" ng-style="{'background-image': 'url({{ ng_var('person.picture_url_16') }})'}">
+                            {{ ng_var('person.name_with_title') }}
+                        </span>
                     </a>
                     <span ng-if="person.email" class="person-email">&lt;{{ ng_var('person.email') }}&gt;</span>
                     <span ng-if="person.organization" class="person-org"
@@ -47,7 +47,8 @@
                     <span ng-switch-when="labels">
                         <span class="prop-title">{{ phrase('agent.general.labels') }}: </span>
                         <span class="prop-val labels">
-                            <span class="listing-tag" ng-repeat="label in person.labels">{{ ng_var('label') }}</span>
+                            <span class="listing-tag" ng-repeat-start="label in person.labels">{{ ng_var('label') }}</span>
+                            <span ng-repeat-end></span>
                         </span>
                     </span>
 

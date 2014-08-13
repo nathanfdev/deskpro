@@ -22,8 +22,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
 
-		var attachPoint = $('#people-list-result', this.wrapper);
-		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', '$http', function($compile, $rootScope, $q, $timeout, $http) {
 			self.$scope = $rootScope.$new();
 
 			self.$scope.$safeApply = function(fn) {
@@ -39,20 +38,16 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
 			self.$q = $q;
 			self.$timeout = $timeout;
+			self.$http = $http;
 
-			attachPoint.data('$ngControllerController', self);
-			$compile(attachPoint.contents())(self.$scope);
+			self.wrapper.data('$ngControllerController', self);
+			$compile(self.wrapper.contents())(self.$scope);
 
 			self.initScope();
 		}]);
 
 
 		this.resultTypeId = this.meta.cache_id || 0;
-
-		if (this.getMetaData('noResults')) {
-			this.noMoreResults = true;
-			$('.no-more-results', this.contentWrapper).show();
-		}
 
 		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'people-filter',
@@ -197,22 +192,22 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 			resultIds: this.meta.peopleResultIds,
 			perPage: this.meta.perPage || 50
 		};
-		if (this.meta.viewType == 'list') {
-			opt.resultRowSelector = 'tr.row-item';
-			opt.resultsContainer = $('.table-result-list table', el);
-			opt.navEl = $('.bottom-action-bar', el);
-		}
-		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
-		this.ownObject(this.resultsHelper);
+//		if (this.meta.viewType == 'list') {
+//			opt.resultRowSelector = 'tr.row-item';
+//			opt.resultsContainer = $('.table-result-list table', el);
+//			opt.navEl = $('.bottom-action-bar', el);
+//		}
+//		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
+//		this.ownObject(this.resultsHelper);
 
 		// We dont need them anymore, and resultsHelper
 		// has its own strucutred array anyway,
 		// since it could be large we can delete it from memory
-		delete this.meta.peopleResultIds;
-
-		if (this.meta.viewType != 'list') {
-			this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
-		}
+//		delete this.meta.peopleResultIds;
+//
+//		if (this.meta.viewType != 'list') {
+//			this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
+//		}
 
 		this.wrapper.on('click', 'button.agent-confirm-approve', function(ev) {
 			ev.preventDefault();
@@ -257,8 +252,18 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		var self = this,
 			$scope = this.$scope;
 
-		$scope.persons = eval(this.getEl('people_list_json').html());
-		$scope.displayFields = this.meta.display_fields;
+		$scope.persons = this.meta.persons;
+		$scope.displayFields = this.meta.displayFields;
+
+		// todo separate controller
+		$scope.pagination = {
+			page: this.meta.page,
+			perPage: this.meta.perPage,
+			ids: this.meta.peopleResultIds, // todo remove
+			total: this.meta.resultsTotal,
+			isLoading: false
+		};
+		$scope.Math = window.Math;
 
 		$scope.isFieldDisplayable = function(person, field) {
 			switch (field) {
@@ -275,6 +280,43 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 					return !!person[field];
 			}
 		};
+
+		$scope.fetchPage = function(page){
+			var pag = $scope.pagination;
+			if (pag.isLoading) return;
+			if (page < 1 || page > Math.ceil(pag.total / pag.perPage)) return;
+
+			pag.isLoading = true;
+			self.$http({
+				url: self.meta.fetchResultsUrl,
+				method: 'GET',
+				params: {
+					'result_ids[]': pag.ids.slice((page - 1) * pag.perPage, (page - 1) * pag.perPage + pag.perPage),
+					'display_fields[]': $scope.displayFields,
+					page: page,
+					view_type: 'json'
+				}
+			}).then(function(data){
+				pag.isLoading = false;
+				$scope.persons.length = 0;
+				if (!data.data) data.data = [];
+				data.data.each(function(person){ $scope.persons.push(person); });
+				pag.page = page;
+			}, function(){
+				pag.isLoading = false;
+			});
+		};
+
+		$scope.$watch('persons', function(newVal, oldVal){
+			$scope.$parent.listItems.length = 0;
+			var routeTemplate = $scope.$parent.routes.person;
+			newVal.each(function(person){
+				$scope.$parent.addListItem('person:'+person.id, person.name_with_title, routeTemplate.replace('0000', person.id));
+			});
+		});
+
+		// sometimes $scope.persons won't apply (as we're working outside of digest loop most of time), so force it
+		$scope.$safeApply();
 	},
 
 	destroyPage: function() {
