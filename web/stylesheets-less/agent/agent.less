@@ -3711,212 +3711,206 @@ ul.pane-tabs {
 	top: 51px;
 }
 
-#dp_content {
-	#tabNavigationPane {
-		background: @agent_panetabs_bg_color;
-		border-bottom: 3px solid @agent_panetabs_color;
-		height: (@agent_panetabs_height - 3);
-		z-index: 3;
-		overflow: visible;
-	}
+#tabNavigationPane {
+	background: @agent_panetabs_bg_color;
+	border-bottom: 3px solid @agent_panetabs_color;
+	height: (@agent_panetabs_height - 3);
+	z-index: 3;
+	overflow: visible;
+}
 
-	.dp-tab-list {
+.dp-tab-list {
+	position: relative;
+	z-index: 2;
+}
+
+.deskproTabList li {
+	.border-radius(3px, 3px, 0, 0);
+	background: #d5d6da;
+	border: 1px solid #99999D;
+	border-bottom: none;
+	box-shadow: none;
+	margin: 11px 6px 0 0;
+	padding: 0;
+	width: 125px;
+	font-family: Helvetica,Arial,sans-serif;
+
+	&.add-btn {
 		position: relative;
-		z-index: 2;
-	}
-
-	.deskproTabList {
-		height: 39px;
-	}
-
-	.deskproTabList li {
-		.border-radius(3px, 3px, 0, 0);
+		border-color: #aaa;
 		background: #d5d6da;
-		border: 1px solid #99999D;
-		border-bottom: none;
-		box-shadow: none;
-		margin: 11px 6px 0 0;
-		padding: 0;
-		width: 125px;
-		font-family: Helvetica,Arial,sans-serif;
+		width: auto;
+		text-align: center;
+		padding: 4px 5px 1px 5px;
+		color: #777;
+		font-weight: normal;
 
-		&.add-btn {
-			position: relative;
-			border-color: #aaa;
-			background: #d5d6da;
-			width: auto;
+		span {
+			font-size: 11px;
+			text-transform: uppercase;
+			padding-left: 2px;
+		}
+
+		i {
+			font-size: 11px;
+		}
+
+		&:hover, &.active {
+			color: #444;
+			background: #fff;
+			cursor: pointer;
+			border-color: #99999D;
+		}
+	}
+
+	&.list-btn {
+		padding: 4px 0 2px 4px;
+		border-color: #aaa;
+		background: #d5d6da;
+		color: #777;
+		width: 50px;
+
+		i {
+			font-size: 15px;
+		}
+
+		span {
+			margin-left: 4px;
+		}
+
+		.down-btn {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			width: 20px;
+			border-left: 1px solid #ccc;
 			text-align: center;
-			padding: 4px 5px 1px 5px;
-			color: #777;
-			font-weight: normal;
-
-			span {
-				font-size: 11px;
-				text-transform: uppercase;
-				padding-left: 2px;
-			}
 
 			i {
-				font-size: 11px;
+				position: relative;
+				top: 5px;
 			}
 
 			&:hover, &.active {
-				color: #444;
-				background: #fff;
-				cursor: pointer;
-				border-color: #99999D;
+				background: #99999D;
+				color: #fff;
 			}
 		}
 
-		&.list-btn {
-			padding: 4px 0 2px 4px;
-			border-color: #aaa;
-			background: #d5d6da;
-			color: #777;
-			width: 50px;
-
-			i {
-				font-size: 15px;
-			}
-
-			span {
-				margin-left: 4px;
-			}
-
-			.down-btn {
-				position: absolute;
-				top: 0;
-				right: 0;
-				bottom: 0;
-				width: 20px;
-				border-left: 1px solid #ccc;
-				text-align: center;
-
-				i {
-					position: relative;
-					top: 5px;
-				}
-
-				&:hover, &.active {
-					background: #99999D;
-					color: #fff;
-				}
-			}
-
-			&:hover, &.active {
-				color: #444;
-				background: #fff;
-				cursor: pointer;
-				border-color: #99999D;
-			}
+		&:hover, &.active {
+			color: #444;
+			background: #fff;
+			cursor: pointer;
+			border-color: #99999D;
 		}
+	}
 
-		span.close {
-			top: 5px;
-		}
+	span.close {
+		top: 5px;
+	}
 
-		.bound-fade {
-			@rgba_start: rgba(213,214,218,0);
-			@rgba_end: rgba(213,214,218,1);
-			background: transparent; /* old browsers just dont have fading */
-			background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
-			background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
-			background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
-			background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
-			background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
-		}
+	.bound-fade {
+		@rgba_start: rgba(213,214,218,0);
+		@rgba_end: rgba(213,214,218,1);
+		background: transparent; /* old browsers just dont have fading */
+		background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+		background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+	}
 
+	.item-hover-over-indicator {
+		display: none;
+	}
+
+	&.item-hover-over {
 		.item-hover-over-indicator {
-			display: none;
-		}
-
-		&.item-hover-over {
-			.item-hover-over-indicator {
-				display: block;
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				left: 0;
-				right: 0;
-				border: 2px solid #000;
-				z-index: 10000;
-			}
-		}
-
-		&.is-alerting.alert-highlight {
-			border-color: #1C5D9F;
-			-webkit-box-shadow:  0px -1px 3px 0px rgba(0, 0, 0, 0.2);
-        	box-shadow:  0px -1px 3px 0px rgba(0, 0, 0, 0.2);
+			display: block;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			border: 2px solid #000;
+			z-index: 10000;
 		}
 	}
 
-	.deskproTabList li.activeTabList {
-		box-shadow: none;
-		background: @agent_panetabs_color;
-		border: 1px solid @agent_panetabs_color;
+	&.is-alerting.alert-highlight {
+		border-color: #1C5D9F;
+		-webkit-box-shadow:  0px -1px 3px 0px rgba(0, 0, 0, 0.2);
+		box-shadow:  0px -1px 3px 0px rgba(0, 0, 0, 0.2);
+	}
+}
+
+.deskproTabList li.activeTabList {
+	box-shadow: none;
+	background: @agent_panetabs_color;
+	border: 1px solid @agent_panetabs_color;
+	position: relative;
+
+	a {
+		color: @agent_panetabs_active_text_color;
+	}
+
+	.bound-fade {
+		@rgba_start: rgba(34,115,175,0%);
+		@rgba_end: rgba(34,115,175,100%);
+		background: transparent; /* old browsers just dont have fading */
+		background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+		background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+	}
+}
+
+.deskproTabList li {
+	i.dp-icon-placeholder {
 		position: relative;
-
-		a {
-			color: @agent_panetabs_active_text_color;
-		}
-
-		.bound-fade {
-			@rgba_start: rgba(34,115,175,0%);
-			@rgba_end: rgba(34,115,175,100%);
-			background: transparent; /* old browsers just dont have fading */
-			background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
-			background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
-			background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
-			background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
-			background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
-		}
+		left: -3px;
+		margin-right: 0;
+		width: 14px;
+		text-align: center;
+		display: inline-block;
+		font-size: 12px;
 	}
-
-	.deskproTabList li {
-		i.dp-icon-placeholder {
-			position: relative;
-			left: -3px;
-			margin-right: 0;
-			width: 14px;
-			text-align: center;
-			display: inline-block;
-			font-size: 12px;
-		}
-		i.image-icon {
-			position: relative;
-			left: -3px;
-			margin-right: 0;
-			height: 14px;
-			width: 14px;
-			overflow: hidden;
-			.rounded(2px);
-			text-align: center;
-			display: inline-block;
-			font-size: 12px;
-			background-color: #fff;
-			background-position: 2px 50%;
-			background-repeat: no-repeat;
-			top: 3px;
-		}
-		&.ticket i.dp-icon-placeholder:before             { content: "\f0e0"; }
-		&.newticket i.dp-icon-placeholder:before          { content: "\f0e0"; }
-		&.person i.dp-icon-placeholder:before             { content: "\f007"; }
-		&.organization i.dp-icon-placeholder:before       { content: "\f0c0"; }
-		&.news i.dp-icon-placeholder:before               { content: "\f02d"; }
-		&.task i.dp-icon-placeholder:before               { content: "\f046"; }
-		&.feedback i.dp-icon-placeholder:before           { content: "\f087"; }
-		&.download i.dp-icon-placeholder:before           { content: "\f01a"; }
-		&.article i.dp-icon-placeholder:before            { content: "\f0f6"; }
-	}
-
-	.deskproTabList li a {
-		padding: 0 8px;
-		line-height: 24px;
-		display: block;
-		background: none;
-		height: 24px;
+	i.image-icon {
+		position: relative;
+		left: -3px;
+		margin-right: 0;
+		height: 14px;
+		width: 14px;
 		overflow: hidden;
+		.rounded(2px);
+		text-align: center;
+		display: inline-block;
+		font-size: 12px;
+		background-color: #fff;
+		background-position: 2px 50%;
+		background-repeat: no-repeat;
+		top: 3px;
 	}
+	&.ticket i.dp-icon-placeholder:before             { content: "\f0e0"; }
+	&.newticket i.dp-icon-placeholder:before          { content: "\f0e0"; }
+	&.person i.dp-icon-placeholder:before             { content: "\f007"; }
+	&.organization i.dp-icon-placeholder:before       { content: "\f0c0"; }
+	&.news i.dp-icon-placeholder:before               { content: "\f02d"; }
+	&.task i.dp-icon-placeholder:before               { content: "\f046"; }
+	&.feedback i.dp-icon-placeholder:before           { content: "\f087"; }
+	&.download i.dp-icon-placeholder:before           { content: "\f01a"; }
+	&.article i.dp-icon-placeholder:before            { content: "\f0f6"; }
+}
+
+.deskproTabList li a {
+	padding: 0 8px;
+	line-height: 26px;
+	display: block;
+	background: none;
+	height: 24px;
+	overflow: hidden;
 }
 
 .dp-tab-list-menu {

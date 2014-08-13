@@ -656,6 +656,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		// Otherwise activate the tab
 		this.activateTabById(tab.id);
 
+		DeskPRO_Window.$scope.showTabs();
+
 		this.cancelClickActivate = false;
 	}
 });
