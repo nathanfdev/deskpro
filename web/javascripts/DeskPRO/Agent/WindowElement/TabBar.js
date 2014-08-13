@@ -282,6 +282,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.isAdding = false;
 
 		this.tabBarOverflow.update();
+		this.$scope.$safeApply();
 		return id;
 	},
 
@@ -501,6 +502,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		DeskPRO_Window.updateWindowUrlFragment();
 		this.tabBarOverflow.update();
+		this.$scope.$safeApply();
 	},
 
 
