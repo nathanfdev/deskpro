@@ -7,33 +7,6 @@
 		<div class="dp-omnibox-wrap">
 			{% include 'AgentBundle:Main:window-header-searchbox.html.twig' %}
 		</div>
-		<div class="dp-omnibox-side">
-			{% include 'AgentBundle:Main:window-header-notifs.html.twig' %}
-			<div class="btn-group-wrap">
-				<a class="dp-recent-btn"><i class="icon-time"></i></a>
-				<div class="dp-recent-list-dropdown">
-					<header>
-						<input type="text" name="filter" class="filter" placeholder="{{ phrase('agent.chrome.recent_list-filter-info') }}" id="recent_tabs_list_filter" />
-					</header>
-					<article>
-						<ul id="recent_tabs_list">
-							<li id="recent_tabs_list_li_none">{{ phrase('agent.chrome.recent_list-none') }}</li>
-						</ul>
-					</article>
-				</div>
-			</div>
-
-			<script type="text/x-deskpro-plain" id="recent_tabs_list_tpl">
-				<li>
-					<time></time>
-					<a>
-						<i class="icon-envelope dp-icon-placeholder"></i>
-						<strong></strong>
-						<span></span>
-					</a>
-				</li>
-			</script>
-		</div>
 	</div>
 
 	<div id="dp_header_contentpane_aligned" class="contentpane-aligned">

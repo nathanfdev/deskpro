@@ -1,6 +1,6 @@
 <div class="notifications-group mode-current" id="dp_header_notify_wrap">
 	<ul>
-		{% for type in ['tickets', 'people', 'chat', 'publish', 'tasks', 'twitter', 'none'] %}
+		{% for type in ['main'] %}
 			{% set show = true %}
 			{% if type == 'tickets' and not app.user.hasPerm('agent_tickets.use') %}{% set show = false %}{% endif %}
 			{% if type == 'chat' and not (app.getSetting('core.apps_chat') and app.user.hasPerm('agent_chat.use')) %}{% set show = false %}{% endif %}
@@ -8,6 +8,7 @@
 			{% if type == 'publish' and not (app.user.hasPerm('apps_feedback.use') or app.getSetting('core.apps_kb') or app.getSetting('core.apps_news') or app.getSetting('core.apps_downloads')) %}{% set show = false %}{% endif %}
 			{% if type == 'tasks' and not app.getSetting('core.apps_tasks') %}{% set show = false %}{% endif %}
 			{% if type == 'twitter' and not (app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length) %}{% set show = false %}{% endif %}
+			{% if type == 'main' %}{% set show = false %}{% endif %}
 			{% if show %}
 				<li class="{{ type }} notification type-row" {% if type != 'none' %}style="display: none;"{% endif %} data-notif-type="{{ type }}">
 					<span class="badge" {% if type != 'none' %}style="display: none;"{% endif %}>0</span>

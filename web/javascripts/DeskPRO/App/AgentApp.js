@@ -517,7 +517,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 		}
 	}]);
 
-	AgentApp.directive('dpOmnibox', ['$http', function($http) {
+	AgentApp.directive('dpOmnibox', ['$http', '$timeout', function($http, $timeout) {
 		return {
 			restrict: 'A',
 			link: function(scope, $el, attr) {
@@ -532,9 +532,12 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 				var $input = $el.find('input');
 				var $results = $el.find('.dp-omnibox-results');
 				var $listPane = $('#dp_list');
+				var recentOpen = false;
+				var notifsOpen = false;
 
 				scope.issearchQuery = '';
 				scope.isActive = false;
+				scope.mode = 'search';
 
 				scope.$watch('isActive', function(isActive) {
 					if (isActive) {
@@ -550,7 +553,77 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 
 				scope.touchSearch = function() {
 					updateSearch();
-				}
+				};
+
+				scope.toggleMode = function(mode) {
+					if (!mode) {
+						scope.mode = 'search';
+					} else {
+						if (scope.mode == mode) {
+							scope.mode = 'search';
+						} else {
+							scope.mode = mode;
+						}
+					}
+
+					updateMode();
+				};
+
+				var updateMode = function() {
+					if (recentOpen) {
+						Orb.shimClickCallbackPop();
+						recentOpen = false;
+						$('#recent_tabs_menu').hide().removeClass('active');
+					}
+					if (notifsOpen) {
+						Orb.shimClickCallbackPop();
+						notifsOpen = false;
+						$('#dp_header_notify_wrap').hide().removeClass('active');
+					}
+
+					if (scope.mode == 'search') {
+						//nothing
+					} else if (scope.mode == 'recent') {
+						showRecent();
+					} else if (scope.mode == 'notif') {
+						showNotifs();
+					}
+				};
+
+				var showRecent = function() {
+					recentOpen = true;
+					var wrap = $('#recent_tabs_menu');
+					wrap.addClass('active').show();
+					wrap.width($el.width());
+					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
+
+					var closeFn = function() {
+						scope.$apply(function() {
+							scope.toggleMode('recent');
+						});
+					};
+
+					Orb.shimClickCallback(closeFn, 'zindex-chrome0', 'fromtop');
+					$timeout(function() {
+						$('#recent_tabs_list_filter').focus();
+					});
+				};
+
+				var showNotifs = function() {
+					notifsOpen = true;
+					var wrap = $('#dp_header_notify_wrap');
+					wrap.addClass('active').show();
+					wrap.width($el.width());
+					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
+
+					var closeFn = function() {
+						scope.$apply(function() {
+							scope.toggleMode('notif');
+						});
+					};
+
+					Orb.shimClickCallback(closeFn, 'zindex-chrome0', 'fromtop');
+				};
 
 				var updateSearch = function() {
 					var pos = $listPane.offset();
