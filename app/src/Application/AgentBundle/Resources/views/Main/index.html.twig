@@ -274,5 +274,27 @@
 </style>
 <![endif]-->
 
+<ul id="create-menu" class="btn-menu">
+    {% if app.user.hasPerm('agent_tickets.create') %}
+        <li id="create_ticket_btn"><a><div class="wrap"><i class="icon-dp-ticket"></i></div>{{ phrase('agent.chrome.create_new-ticket') }} <kbd>t</kbd></a></li>
+    {% endif %}
+    {% if app.user.hasPerm('agent_people.create') %}
+        <li id="create_person_btn"><a><div class="wrap"><i class="icon-dp-person"></i></div>{{ phrase('agent.chrome.create_new-person') }} <kbd>p</kbd></a></li>
+    {% endif %}
+    {% if app.user.hasPerm('agent_org.create') %}
+        <li id="create_organization_btn"><a><div class="wrap"><i class="icon-dp-organization"></i></div>{{ phrase('agent.chrome.create_new-organization') }} <kbd>o</kbd></a></li>
+    {% endif %}
+    {% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
+        <li id="create_tweet_btn"><a><div class="wrap"><i class="icon-dp-twitter"></i></div>{{ phrase('agent.chrome.create_new-tweet') }} <kbd>w</kbd></a></li>
+    {% endif %}
+    {% if app.user.hasPerm('agent_publish.create') %}
+        <li id="create_article_btn"><a><div class="wrap"><i class="icon-dp-article"></i></div>{{ phrase('agent.chrome.create_new-article') }} <kbd>a</kbd></a></li>
+        <li id="create_news_btn"><a><div class="wrap"><i class="icon-dp-news"></i></div>{{ phrase('agent.chrome.create_new-news') }} <kbd>n</kbd></a></li>
+        <li id="create_download_btn"><a><div class="wrap"><i class="icon-dp-download"></i></div>{{ phrase('agent.chrome.create_new-download') }} <kbd>d</kbd></a></li>
+        <li id="create_feedback_btn"><a><div class="wrap"><i class="icon-dp-feedback" title="{{ phrase('agent.chrome.quicksearch_title-feedback') }}"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
+    {% endif %}
+    {% if app.getSetting('core.apps_tasks') %}<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></a></li>{% endif %}
+</ul>
+
 </body>
 </html>

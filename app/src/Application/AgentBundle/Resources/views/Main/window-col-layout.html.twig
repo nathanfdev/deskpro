@@ -26,11 +26,15 @@
 	</div>
 	<div id="dp_list_resizer"><div></div></div>
 	<div id="dp_content">
-		<div id="tabNavigationPane">
-			<div id="tabNavSelectorLeft">
-				<a class="tabSlideLeft"></a>
-			</div>
-            <div class="bootstrap" ng-show="tabs.length && !paneVis.list" style="position: absolute; left:10px; bottom: 0px;">
+		<div id="tabNavigationPane" style="width: 5500px; vertical-align: bottom;">
+
+            <div class="btn-group-actions" style="background: none; display: inline-block; position: static; height: 28px; vertical-align: bottom; padding: 0;">
+                <div class="btn-wrap create-group pull-left">
+                    <a class="btn" style="line-height: 24px; height: 24px;"><i class="icon-plus"></i><span class="btn-text">{{ phrase('agent.chrome.btn_add') }}</span></a>
+                </div>
+            </div>
+
+            <div class="bootstrap" ng-show="tabs.length && !paneVis.list" style="display: inline-block; vertical-align: bottom; margin-bottom: 3px;">
                 <div class="btn-group" dropdown>
 
                     <button type="button" class="btn btn-show-list" ng-click="showList()"></button>
@@ -51,8 +55,9 @@
 
                 </div>
             </div>
-			<div class="deskproTabList">
-				<div class="deskproTabListInner">
+
+			<div class="deskproTabList" style="position: static; display: inline-block; vertical-align: bottom;">
+				<div class="deskproTabListInner" style="position: static;">
 					<ul class="dp-tab-list">
 
                         <li ng-repeat="tab in tabs" id="{{ ng_var('tab.tabBtnId') }}"

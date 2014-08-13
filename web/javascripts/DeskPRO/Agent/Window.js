@@ -922,6 +922,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var wrap = $(this).parent();
 			var btnMenu = wrap.find('.btn-menu');
 
+			if (wrap.hasClass('active')) {
+				return;
+			}
+
 			// Bug in IE10 means the li's dont render properly
 			// until you force a repaint somehow while they are displayed
 			// So we show with no opacity, toggle the display on li's
@@ -971,6 +975,65 @@ DeskPRO.Agent.Window = new Orb.Class({
 				$('#recent_tabs_list_filter').focus();
 				$('#recent_tabs_list').parent().scrollTop(0);
 			}
+		});
+
+		$('#tabNavigationPane .btn-group-actions .btn').on('click, mouseover', function(){
+			var wrap = $(this).parent();
+			var btnMenu = $('#create-menu');
+
+			if (wrap.hasClass('active')) {
+				return;
+			}
+
+			// Bug in IE10 means the li's dont render properly
+			// until you force a repaint somehow while they are displayed
+			// So we show with no opacity, toggle the display on li's
+			// which does the trick of repainting them, then set the opacity
+			// back to 1. The user doesnt see anything amiss and we solve the bug :)
+			if (isIe) {
+				btnMenu.css('opacity', 0);
+			}
+
+			wrap.addClass('active');
+			btnMenu.addClass('active');
+			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() - 1});
+
+			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
+
+			if (isIe) {
+				window.setTimeout(function() {
+					btnMenu.find('li').css('display', 'block');
+					btnMenu.css('opacity', 1);
+				}, 10);
+			}
+
+			var closeFn = function() {
+				wrap.removeClass('active');
+				btnMenu.removeClass('active');
+				$(document).off('mousemove.create-menu');
+			};
+
+			$(document).on('mousemove.create-menu', function(e){
+				if (!btnMenu.hasClass('active')) return;
+
+				var left = wrap.offset().left - 5,
+					top = wrap.offset().top - 5,
+					right = left + btnMenu.width() + 10,
+					bottom = top + wrap.height() + btnMenu.height() + 10
+
+				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
+					$('.zindex-chrome0').trigger('click');
+				}
+			});
+
+			if (!wrap.data('has-init')) {
+				btnMenu.on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					Orb.shimClickCallbackPop();
+				});
+			}
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
 		$('#dp_header_help_trigger').on('click', function(ev) {
