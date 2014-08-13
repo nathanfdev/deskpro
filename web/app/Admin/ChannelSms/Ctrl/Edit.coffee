@@ -37,40 +37,43 @@ define [
 			@form_model.markConnected(false)
 			@$scope.connection_problem = false
 
+		getPostData: ->
+			return {account: @form_model.getFormData()}
+
 		connect: ->
-			postData = @form_model.getConnectData()
-			connectUrl = "/channel/sms/connect_provider"
-			promise = @Api.sendPostJson(connectUrl, postData)
+			postData = @getPostData()
+			promise = @Api.sendPostJson("/channel/sms/connect_provider", postData)
 			promise.then( (result) =>
 				if result.data.success
 					@$scope.connection_problem = false
-					@form_model.markConnected(true)
-					@form_model.setNumbers(result.data.numbers)
-					@form_model.setFriendlyName(result.data.friendly_name)
+					@account = result.data.account
+					@form_model.setAccountData(result.data.account)
+					if @accountId
+						@SmsAccountsData.updateModel(@account)
 					@ngApply()
+					@Growl.success(@getRegisteredMessage('connected'))
 				else
 					@$scope.connection_problem = true
 					@form_model.markConnected(false)
+					@Growl.error(@getRegisteredMessage('connected_fail'))
 				@stopSpinner('sms_connect_provider')
 			)
 			promise.error( (result) =>
 				@$scope.connection_problem = true
 				@form_model.markConnected(false)
 				@stopSpinner('sms_connect_provider')
+				@Growl.error(@getRegisteredMessage('connected_fail'))
 			)
 			@startSpinner('sms_connect_provider')
 			return promise
 
 		testRoundTrip: ->
 			@form_model.markTested(true)
-			postData = @form_model.getConnectData()
-			connectUrl = "/channel/sms/test_account"
-			promise = @Api.sendPostJson(connectUrl, postData)
+			postData = @getPostData()
+			promise = @Api.sendPostJson("/channel/sms/test_account", {account: postData})
 			promise.then((result) =>
-				if result.data.success
-					@form_model.markTested(true)
-					@form_model.setNumbers(result.data.numbers)
-					@form_model.setFriendlyName(result.data.friendly_name)
+				if result
+					#test
 					@ngApply()
 				else
 					@form_model.markTested(false)
@@ -84,21 +87,18 @@ define [
 			@startSpinner('sms_test')
 			return promise
 
-
 		saveAccount: ->
-			formData = @form_model.getFormData().account
+			postData = @getPostData()
 			if @accountId
-				@Api.sendPostJson("/channel/sms/account/#{@accountId}", formData).then((result) =>
-					@account = formData
-					@Growl.success(@getRegisteredMessage('saved_account'))
+				@Api.sendPostJson("/channel/sms/account/#{@accountId}", postData).then((result) =>
+					@account = result.data.account
 					@SmsAccountsData.updateModel(@account)
+					@Growl.success(@getRegisteredMessage('saved_account'))
 				)
 			else
-				@Api.sendPutJson("/channel/sms/account", formData).then( (result) =>
-					@accountId = result.data.sms_account_id
-					@account = formData
-					@account.id = @accountId
-					@account.phone_number_region = result.data.phone_number_region
+				@Api.sendPutJson("/channel/sms/account", postData).then( (result) =>
+					@account = result.data.account
+					@accountId = @account.id
 					@SmsAccountsData.addToList(@account)
 					@Growl.success(@getRegisteredMessage('saved_account'))
 					@$state.go('tickets.channel_sms.edit', { id: @accountId })

@@ -109,25 +109,31 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 		 * If anything needs to be done with the data here in the future, a Form should be made
 		 * on an EditSmsAccount object
 		 */
-		$account->type                 = $this->in->getValue('type');
-		$account->params               = $this->in->getValue('params');
-		$account->identifier           = $this->in->getValue('identifier');
-		$account->phone_number         = new PhoneNumber();
-		$account->phone_number->number = $this->in->getValue('phone_number');
-		$account->is_enabled           = $this->in->getValue('is_enabled');
-		$account->is_tested            = $this->in->getValue('is_tested');
-		$account->is_connected         = $this->in->getValue('is_connected');
+		if (!$account->phone_number) {
+			$account->phone_number = new PhoneNumber();
+		}
+		$account->type                 = $this->in->getValue('account.type');
+		$account->params               = $this->in->getValue('account.params');
+		$account->identifier           = $this->in->getValue('account.identifier');
+		$account->phone_number->number = $this->in->getValue('account.phone_number');
+		$account->is_enabled           = $this->in->getValue('account.is_enabled');
+		$account->is_tested            = $this->in->getValue('account.is_tested');
+		$account->is_connected         = $this->in->getValue('account.is_connected');
 
 		$this->getContainer()->getEm()->persist($account);
 		$this->getContainer()->getEm()->flush();
 
+		$serializedAccount = $this->getContainer()->getSerializer()->serialize($account);
+
 		if ($id) {
-			return $this->createApiSuccessResponse();
+			return $this->createApiSuccessResponse(
+				array(
+					'account' => $serializedAccount
+				));
 		} else {
 			return $this->createApiCreateResponse(
 				array(
-					'sms_account_id' => $account->id,
-					'phone_number_region' => $account->phone_number->region
+					'account' => $serializedAccount
 				), $this->generateUrl('api_channel_sms_account_get', array('id' => $account->id))
 			);
 		}
@@ -138,29 +144,42 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 	# connect to a provider and return provider specific info
 	####################################################################################################################
 
-	/**
-	 * Client expects json response with {
-	 * success: true,
-	 * numbers: [{display_name: 'friendly number name', number: '+19023330302'}, ...etc],
-	 * friendly_name: 'name' a friendly name to call this account (usually a provider account name, their email, etc)
-	 * }
-	 * @return Response
-	 */
 	public function connectProviderAction()
 	{
-		$type = $this->in->getValue('type');
+		$accountData = $this->in->getValue('account');
+		$id = $this->in->getValue('account.id');
 
-		switch ($type) {
+		$account = null;
+		if ($id) {
+			$account = $this->getSmsAccountRepo()->find($id);
+		}
+
+		switch ($this->in->getValue('account.type')) {
 			case 'twilio':
-				$sid = $this->in->getValue('params.sid');
-				$auth_token = $this->in->getValue('params.auth_token');
+				$sid = $this->in->getValue('account.params.sid');
+				$auth_token = $this->in->getValue('account.params.auth_token');
 				$provider = new TwilioSmsProvider($sid, $auth_token);
 
 				try {
 					$data = $provider->getIncomingNumbers();
 					$name = $provider->getAccountName();
+					if (!isset($accountData['params'])) {
+						$accountData['params'] = array();
+					}
+					$accountData['params']['numbers'] = $data;
+					$accountData['identifier'] = $name;
+					$accountData['is_connected'] = true;
 
-					return $this->createApiSuccessResponse(array('numbers' => $data, 'friendly_name' => $name));
+					// update the SmsAccount with new "synced" data
+					if ($account) {
+						$account->params = $accountData['params'];
+						$account->identifier = $accountData['identifier'];
+						$account->is_connected = $accountData['is_connected'];
+						$this->getContainer()->getEm()->persist($account);
+						$this->getContainer()->getEm()->flush();
+					}
+
+					return $this->createApiSuccessResponse(array('account' => $accountData));
 				} catch (\Exception $e) {
 					return $this->createApiErrorResponse('sms.connection_error', 'Could not connect. Please check your credentials');
 				}

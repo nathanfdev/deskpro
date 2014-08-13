@@ -1,0 +1,130 @@
+<div class="form-group">
+	<div ng-form="twilio_form">
+		<div ng-show="!form.account.is_connected">
+			<div class="row">
+				<div class="col-lg-3">
+					<h3>Account SID</h3>
+				</div>
+				<div class="col-lg-9">
+					<input name="sid" type="text" ng-model="form.account.params.sid"
+						required
+						class="form-control"
+						style="width: 50%;" />
+					<span class="help-block"
+						style="margin-bottom: 15px;">
+						This is the "AccountSID" for your Twilio account. You can find this value here: <a
+							href="https://www.twilio.com/user/account/settings">https://www.twilio.com/user/account/settings</a>
+					</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-3">
+					<h3>Auth Token</h3>
+				</div>
+				<div class="col-lg-9">
+					<input name="auth_token" type="text"
+						ng-model="form.account.params.auth_token"
+						class="form-control" required style="width: 50%;" />
+					<span class="help-block" style="margin-bottom: 15px;">
+						This is the "AuthToken" for your Twilio account. You can find this value here:
+						<a href="https://www.twilio.com/user/account/settings">
+							https://www.twilio.com/user/account/settings
+						</a>
+					</span>
+				</div>
+			</div>
+			<div class="row" ng-show="connection_problem">
+				<div class="col-lg-9 col-lg-offset-3">
+					<div class="alert alert-danger" style="text-align:center;">
+						<strong>
+							There was a problem connecting with your account. Please
+							check your credentials and try again.
+						</strong>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div style="text-align:center;">
+					<button style="margin-bottom: 15px;" class="btn btn-primary"
+						type="button"
+						ng-click="ChannelSmsEdit.connect()" style="width: 25%">
+						<i class="fa fa-bolt"></i>
+						Connect
+					</button>
+					<div dp-show-spinning="sms_connect_provider">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-show="form.account.is_connected" style="margin-bottom: 40px;">
+		<div class="col-lg-12">
+			<h2 style="display: inline;">
+				<img ng-show="form.account.type == 'twilio'"
+					src="{{ asset('images/site-icons/twilio_256.png') }}"
+					height="30" width="30">
+				{{ ng_var('form.account.identifier') }}
+				<small ng-show="form.account.is_tested">{{ ng_var('form.account.phone_number') }}</small>
+			</h2>
+			<button class="btn btn-default dropdown-toggle pull-right">
+				<span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right">
+				<li>
+					<a ng-click="ChannelSmsEdit.connect()">
+						<i class="fa fa-refresh"></i>
+						Sync Account Information
+					</a>
+				</li>
+				<li>
+					<a ng-click="ChannelSmsEdit.clearCredentials()">
+						<i class="fa fa-key"></i> Configure Account
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div ng-show="!form.account.is_tested">
+			<div class="col-lg-3" style="margin-top: 30px;">
+				<h3>Twilio Number</h3>
+			</div>
+			<div class="col-lg-9" style="margin-top: 30px;">
+				<select data-placeholder="Select a Number" ng-required
+					ng-model="form.account.phone_number"
+					ng-options="number.number as number.display_name for number in form.account.params.numbers"
+					ng-if="form.account.params.numbers">
+				</select>
+				<button class="btn btn-default btn-xs"
+					type="button"
+					ng-click="ChannelSmsEdit.connect()" style="width: 25%">
+					<i class="fa fa-refresh"></i>
+					Sync Account
+				</button>
+				<div dp-show-spinning="sms_connect_provider">
+					<i class="spinner-flat"></i>
+				</div>
+				<span ng-show="form.account.params.numbers.length > 0" class="help-block"
+					style="margin-bottom: 15px;">
+					This will be the SMS number used for this channel.  If you've updated your Twilio phone numbers, press "Sync Account" so that we can fetch them for you.
+				</span>
+				<span ng-show="form.account.params.numbers.length == 0" class="help-block">
+					It appears you have no phone numbers available in your Twilio account for use in a new SMS channel. Please purchase a new one at the Twilio website and click "Sync Account" to continue.
+					<a href="https://www.twilio.com/user/account/phone-numbers/available">https://www.twilio.com/user/account/phone-numbers/available</a>
+				</span>
+			</div>
+		</div>
+		<div ng-show="!form.account.is_tested" class="row">
+			<div style="text-align:center;" ng-show="form.account.is_connected">
+				<button style="margin-bottom: 15px;" class="btn btn-primary"
+					type="button"
+					ng-click="ChannelSmsEdit.testRoundTrip()" style="width: 25%">
+					<i class="fa fa-bolt"></i>
+					Setup and Test Account
+				</button>
+				<div dp-show-spinning="sms_test">
+					<i class="spinner-flat"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
