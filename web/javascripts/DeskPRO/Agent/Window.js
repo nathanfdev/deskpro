@@ -905,19 +905,22 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#dp_tab_list_btn').on('click', function(ev) {
 			Orb.cancelEvent(ev);
 			var $menu = $('#dp_tab_list_menu');
-			var $me = $(this).addClass('active');
-			var pos = $(this).offset();
+			var $me = $(this);
+			var pos = $me.offset();
+
+			$me.addClass('active').parent().addClass('active');
 
 			$menu.css({
-				top: pos.top + 25,
-				left: pos.left
+				top: pos.top + 23,
+				left: pos.left + 1
 			}).show();
 
 			var closeFn = function() {
-				$me.removeClass('active');
+				$me.removeClass('active').parent().removeClass('active');
 				$menu.hide();
 			};
 
+			$menu.on('click', function() { closeFn(); Orb.shimClickCallbackPop(); });
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 		$('#dp_tab_list_menu').detach().appendTo('body');
@@ -2126,6 +2129,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.preloadId = el.data('route-preload-id');
 		}
 
+		if (!this.paneVis.tabs) {
+			extraData.noToggle = true;
+			extraData.focus = true;
+		}
+
+		if (el.data('route-replacetab')) {
+			extraData.replaceTab = true;
+		} else if (el.hasClass('row-item') && !this.paneVis.tabs) {
+			extraData.replaceTab = true;
+		}
+
 
 		// this should be handled only when click event occurs
 		if (0 === el.data('route').indexOf('listpane:')) {
@@ -2245,8 +2259,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var self = this;
 		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = DeskPRO_Window.TabBar.findTabByRouteUrl(url);
-			if (existTab && routeData.noToggle) {
-				if (routeData.focus) {
+			if (existTab && (routeData.noToggle || routeData.replaceTab)) {
+				if (routeData.focus || routeData.replaceTab) {
 					DeskPRO_Window.TabBar.activateTab(existTab);
 				}
 				return;
@@ -2269,8 +2283,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
+		var currentActiveTabId = DeskPRO_Window.TabBar.getActiveTabId();
+
 		// Add a temporary tab to the tabstrip
 		routeData.tabPlaceholderId = DeskPRO_Window.TabBar.addTabPlaceholder(url, routeData);
+
+		if (currentActiveTabId && routeData && routeData.replaceTab) {
+			DeskPRO_Window.TabBar.removeTabById(currentActiveTabId);
+		}
 
 		if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
 			routeData.routeTriggerEl.addClass(routeData.toggleOpenClass);

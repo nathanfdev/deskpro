@@ -63,10 +63,10 @@
 
 				<div id="dp_tab_list_menu" class="dp-tab-list-menu">
 					<ul>
-						<li ng-repeat="item in listItems" ng-class="item.open && 'active'">
-							<a href="#" data-route="{{ ng_var('item.route') }}" style="overflow: hidden;">
+						<li ng-repeat="item in listItems" ng-class="{'is-open': item.open}">
+							<a href="#" data-route="{{ ng_var('item.route') }}" data-route-replacetab="true" style="overflow: hidden;">
+								<div class="right-icon new-tab" ng-show="!item.open" data-route="{{ ng_var('item.route') }}" data-route-notabreload="true"><i class="fa fa-external-link" title="Open in a new tab"></i></div>
 								{{ ng_var('item.title') }}
-								<div class="pull-right active-indicator" ng-show="item.open" tilte="This tab is already open">&bull;</div>
 							</a>
 						</li>
 					</ul>

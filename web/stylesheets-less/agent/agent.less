@@ -3731,7 +3731,7 @@ ul.pane-tabs {
 
 	.deskproTabList li {
 		.border-radius(3px, 3px, 0, 0);
-		background: #fff;
+		background: #d5d6da;
 		border: 1px solid #99999D;
 		border-bottom: none;
 		box-shadow: none;
@@ -3816,8 +3816,8 @@ ul.pane-tabs {
 		}
 
 		.bound-fade {
-			@rgba_start: rgba(255,255,255,0);
-			@rgba_end: rgba(255,255,255,1);
+			@rgba_start: rgba(213,214,218,0);
+			@rgba_end: rgba(213,214,218,1);
 			background: transparent; /* old browsers just dont have fading */
 			background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
 			background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
@@ -3929,11 +3929,12 @@ ul.pane-tabs {
 	display: none;
 	background: #fff;
 	border-radius: 3px;
-	border: 1px solid #999;
+	border-top-left-radius: 0;
+	border: 1px solid #99999d;
 	z-index: 99999999;
 
-	-webkit-box-shadow: 1px 1px 3px 0 rgba(0,0,0,0.5);
-	box-shadow: 1px 1px 3px 0 rgba(0,0,0,0.5);
+	//-webkit-box-shadow: 1px 1px 3px 0 rgba(0,0,0,0.6);
+	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.5);
 
 	ul {
 		padding: 0;
@@ -3950,24 +3951,47 @@ ul.pane-tabs {
 			border-top: none;
 		}
 
+		&.is-open {
+			a {
+				color: #999;
+			}
+		}
+
 		a {
 			display: block;
-			padding: 5px 8px;
+			padding: 4px 8px;
 			color: #444;
+			font-size: 9pt;
 
 			&:hover {
 				background: #2273af;
 				color: #fff;
 
-				.active-indicator {
+				.right-icon {
 					color: #fff;
 				}
 			}
 		}
 
-		.active-indicator {
+		.right-icon {
+			display: block;
 			color: #aaa;
-			font-size: 19px;
+			font-size: 14px;
+			float: right;
+
+			width: 18px;
+			height: 18px;
+			text-align: center;
+			border-radius: 4px;
+			vertical-align: middle;
+
+			i {
+				vertical-align: middle;
+			}
+
+			&:hover {
+				background: #134d77;
+			}
 		}
 	}
 }
@@ -3989,7 +4013,6 @@ ul.pane-tabs {
 		}
 	}
 }
-
 
 //-------------------------
 // Option group
