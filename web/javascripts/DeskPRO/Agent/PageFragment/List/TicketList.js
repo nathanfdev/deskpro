@@ -143,6 +143,15 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				$scope.isLoaded = true;
 			}
 		}, 10);
+
+
+		$scope.$watch('tickets', function(newVal, oldVal){
+			$scope.$parent.listItems.length = 0;
+			var routeTemplate = $scope.$parent.routes.ticket;
+			newVal.each(function(ticket){
+				$scope.$parent.addListItem('ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
+			});
+		});
 	},
 
 	//#########################################################################

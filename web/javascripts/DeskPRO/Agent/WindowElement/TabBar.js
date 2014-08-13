@@ -45,6 +45,25 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.$timeout = DeskPRO_Window.$timeout;
 		this.$scope.tabs = this._tabs;
 		this.$scope.tabClick = function($event, tab){ self._tabStripClick($event, tab); };
+
+		this.$scope.$watch('listItems', function(){
+			self._checkOpenedItems();
+		}, true);
+	},
+
+	_checkOpenedItems: function(){
+		var self = this;
+
+		this.$scope.listItems.each(function(item){
+			item.open = false;
+			for (var i = 0; i < self._tabs.length; i++) {
+				var tab = self._tabs[i];
+				if (tab.page && tab.page.meta.pageIdentity === item.identity) {
+					item.open = true;
+					return;
+				}
+			}
+		});
 	},
 
 	//##################################################################################################################
@@ -188,8 +207,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			this.tabCount++;
 		}
 		this.tabs[id] = data;
-		this._tabs.unshift(data);
-
 
 		//----------
 		// Render content to dom
@@ -226,11 +243,20 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		if (data.page && data.page.meta.tabPlaceholderId) {
 			otherTab = this.getTab(data.page.meta.tabPlaceholderId);
+		}
 
 			// We may have had a placeholder, in which case we want to place
 			// the new tab where the old one was while also removing the placeholder
 			// content in the body pane
 
+		// insert new tab after active
+		if (otherTab && this._tabs.indexOf(otherTab) < this._tabs.length - 1) {
+			this._tabs.splice(this._tabs.indexOf(otherTab) + 1, 0, data);
+		} else {
+			this._tabs.push(data);
+		}
+
+		if (otherTab) {
 			if (this.currentTabId == otherTab.id) {
 				wasActive = true;
 				this.currentTabId = null;
@@ -238,6 +264,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 			this.removeTab(otherTab, true);
 		}
+
+		this._checkOpenedItems();
 
 		//----------
 		// Just about done
@@ -254,8 +282,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.isAdding = false;
 
 		this.tabBarOverflow.update();
-
-		this.$scope.$safeApply();
 		return id;
 	},
 
@@ -292,7 +318,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			routeData.tabLoad();
 		}
 
-		this.$scope.$safeApply();
 		return id;
 	},
 
@@ -349,7 +374,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isActivating = false;
 		data.isActive = true;
-		this.$scope.$safeApply();
 		DeskPRO_Window.updateWindowUrlFragment();
 	},
 
@@ -383,7 +407,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.fireEvent('deactivateTab', [data, $('#' + data.wrapperId), this.isActivating, this]);
 
 		this.currentTabId = null;
-		this.$scope.$safeApply();
 	},
 
 	/**
@@ -428,6 +451,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		delete this.tabs[id];
 		this.tabCount--;
 		this._tabs.splice(this._tabs.indexOf(tab), 1);
+		this._checkOpenedItems();
 
 		if (data.callback_remove_content !== undefined) {
 			data.callback_remove_content(data, $('#' + data.wrapperId), this);
@@ -475,7 +499,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			if (data.tabBtn2) data.tabBtn2.remove();
 		}
 
-		this.$scope.$safeApply();
 		DeskPRO_Window.updateWindowUrlFragment();
 		this.tabBarOverflow.update();
 	},
@@ -527,13 +550,21 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			otherTab = this.getTab(tab.page.meta.tabPlaceholderId);
 		}
 
+		this._tabs.splice(this._tabs.indexOf(tab), 1);
+
 		if (otherTab && otherTab != tab) {
 			if (this.currentTabId == otherTab.id) {
 				wasActive = true;
 				this.currentTabId = null;
 			}
 
+			this._tabs.indexOf(otherTab) < this._tabs.length - 1
+				? this._tabs.splice(this._tabs.indexOf(otherTab) + 1, 0, tab)
+				: this._tabs.push(tab);
+
 			this.removeTab(otherTab, true);
+		} else {
+			this._tabs.unshift(tab);
 		}
 
 		this.tabBarOverflow.resetScroll();
@@ -541,7 +572,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		if(!noalert) {
 			$(tab.tabBtnId).effect("pulsate", { times:4 }, 500);
 		}
-		this.$scope.$safeApply();
 	},
 
 	//##################################################################################################################

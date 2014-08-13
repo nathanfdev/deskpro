@@ -210,7 +210,11 @@
 </script>
 
 <div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
-<div id="dp_window">
+<div id="dp_window" ng-init="
+    routes = {
+        ticket: 'ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|raw }}'
+    };
+    ">
 
 {% include 'AgentBundle:Main:window-header.html.twig' %}
 {% include 'AgentBundle:Main:window-nav.html.twig' %}
