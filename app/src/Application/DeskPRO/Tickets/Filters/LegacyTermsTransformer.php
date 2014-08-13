@@ -652,7 +652,12 @@ class LegacyTermsTransformer
 				));
 
 			case 'total_user_waiting':
-				return new Terms\FilterTotalUserWaiting($op, $options);
+				return new Terms\FilterTotalUserWaiting($op, array(
+					'time' => array(
+						@$options['waiting_time'] ?: 1,
+						@$options['waiting_time_unit'] ?: 'days'
+					)
+				));
 
 			case 'date_created':
 				return new Terms\FilterDateCreated($op, $options);
