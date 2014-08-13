@@ -57,6 +57,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property $has_warnings
  * @property Job|null $original_job
  * @property Job[]|null $child_jobs
+ * @property $worker_id
  */
 class Job extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -140,7 +141,9 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_next_try;
 
 	/**
-	 * The priority of the job, used in the Job Router select SQL
+	 * The priority of the job, used in the Job Router select SQL.
+	 *
+	 * Order is DESC, so higher priority numbers are selected first
 	 *
 	 * @var int
 	 */
@@ -170,6 +173,8 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * An array of data, or payload, that the job processor needs to execute this job (stored in the db as json)
 	 *
+	 * This MUST always be an array, even if its an empty array
+	 *
 	 * @var array
 	 */
 	protected $data;
@@ -197,8 +202,15 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $child_jobs;
 
+	/**
+	 * A unique worker ID. Any worker that spawns and uses the queue should use a unique ID here.
+	 *
+	 * @var string
+	 */
+	protected $worker_id;
 
-	public function __construct($type, $data = array())
+
+	public function __construct($type, array $data = array())
 	{
 		$this->date_created = new \DateTime();
 		$this->date_next_try = new \DateTime();
@@ -226,6 +238,7 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 		self::_mapString($metadata, 'type', 50);
 		self::_mapString($metadata, 'status', 25);
 		self::_mapString($metadata, 'status_code', 25);
+		self::_mapString($metadata, 'worker_id', 128);
 		self::_mapDateTime($metadata, 'date_touch');
 		self::_mapDateTime($metadata, 'date_created');
 		self::_mapDateTime($metadata, 'date_last_try');
