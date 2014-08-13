@@ -200,8 +200,6 @@ class PeopleSearchController extends AbstractController
 		$user_field_manager = $this->container->getSystemService('person_fields_manager');
 		$person_field_defs = $user_field_manager->getFields();
 
-		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
-
 		$alphabet = $this->getAlphabet();
 		$letters = array();
 
@@ -222,15 +220,14 @@ class PeopleSearchController extends AbstractController
 
 		$person_display = new PeopleResultsDisplay($people);
 		$renderer = new PeopleListRenderer($this->container);
+
 		$vars = array_merge($vars, array(
 			'type'                    => $type,
 			'type_id'                 => $type_id,
 			'people'                  => $people,
 			'people_json'             => $renderer->renderJson($person_display),
 			'page'                    => $page,
-			'person_field_defs'       => $person_field_defs,
 			'load_first'              => $this->in->getBool('load_first'),
-			'result_display'          => $result_display,
 			'alphabet'                => $letters
 		));
 

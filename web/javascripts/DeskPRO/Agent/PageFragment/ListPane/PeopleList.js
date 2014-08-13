@@ -22,7 +22,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
 
-		var attachPoint = $('people-list-result', this.wrapper);
+		var attachPoint = $('#people-list-result', this.wrapper);
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
 			self.$scope = $rootScope.$new();
 
@@ -254,7 +254,27 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 	},
 
 	initScope: function(){
+		var self = this,
+			$scope = this.$scope;
 
+		$scope.persons = eval(this.getEl('people_list_json').html());
+		$scope.displayFields = this.meta.display_fields;
+
+		$scope.isFieldDisplayable = function(person, field) {
+			switch (field) {
+				case 'language':
+					return !!person.language;
+				case 'organization':
+					return !!person.organization;
+				case 'labels':
+					return person.labels && person.labels.length > 0;
+				case 'person_username':
+					return person.person_username.length > 0;
+				default:
+					if (-1 === field.indexOf('person_fields')) return false;
+					return !!person[field];
+			}
+		};
 	},
 
 	destroyPage: function() {

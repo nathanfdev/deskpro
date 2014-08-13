@@ -36,9 +36,7 @@ namespace Application\AgentBundle\Controller\JsonRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PeopleResultsDisplay;
-use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Util;
 use Orb\Util\Arrays;
 
@@ -140,6 +138,8 @@ class PeopleListRenderer
 		$data = array();
 
 		$data['id']                    = $person->id;
+		$data['name_with_title']       = $person->getNameWithTitle();
+		$data['organization']          = $person->organization ? array('name' => $person->organization['name']) : null;
 		$data['is_contact']            = $person->is_contact;
 		$data['is_user']               = $person->is_user;
 		$data['is_agent']              = $person->is_agent;
@@ -172,6 +172,13 @@ class PeopleListRenderer
 			);
 		}
 
+		$email = $display->getEmail($person);
+		$data['email'] = $email ? $email['email'] : null;
+		$data['usernames'] = $display->getPersonUsernames($person);
+		$data['language'] = $person->language ? $person->language->title : null;
+		$data['labels'] = $display->getPersonLabels($person);
+		$data['tickets_count'] = $display->getPersonTicketCount($person);
+
 		$data['picture_url']    = $person->getPictureUrl();
 		$data['picture_url_80'] = $person->getPictureUrl(80);
 		$data['picture_url_64'] = $person->getPictureUrl(64);
@@ -188,7 +195,10 @@ class PeopleListRenderer
 
 			$rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
 			foreach ($rendered_data as $fid => $v) {
-				$data["field{$fid}"] = $v['rendered'];
+				$data['person_fields[' . $fid . ']'] = array(
+					'title' => $v['title'],
+					'value' => $v['rendered'],
+				);
 			}
 		}
 

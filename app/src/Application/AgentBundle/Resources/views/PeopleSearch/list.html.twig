@@ -1,7 +1,4 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -23,6 +20,10 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage') }}';
 pageMeta.resultId = {{cache_id}};
 pageMeta.cache_id = {{cache_id}};
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+pageMeta.display_fields = {{ display_fields|json_encode|raw }};
+
 {% if not people %}
 	pageMeta.noResults = true;
 {% endif %}
