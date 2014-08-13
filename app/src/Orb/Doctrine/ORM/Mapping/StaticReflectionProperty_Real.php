@@ -68,7 +68,7 @@ class StaticReflectionProperty extends \ReflectionProperty
 		return $object->__setPropValue__($this->_prop, $value);
 	}
 
-	public function setAccessible()
+	public function setAccessible($accessible)
 	{
 		// nullop
 	}
