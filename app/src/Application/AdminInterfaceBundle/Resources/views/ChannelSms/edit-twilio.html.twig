@@ -37,8 +37,7 @@
 				<div class="col-lg-9 col-lg-offset-3">
 					<div class="alert alert-danger" style="text-align:center;">
 						<strong>
-							There was a problem connecting with your account. Please
-							check your credentials and try again.
+							{{ phrase('admin.channels.sms_connection_problem') }}
 						</strong>
 					</div>
 				</div>
@@ -49,7 +48,7 @@
 						type="button"
 						ng-click="ChannelSmsEdit.connect()" style="width: 25%">
 						<i class="fa fa-bolt"></i>
-						Connect
+						{{  phrase('admin.general.connect') }}
 					</button>
 					<div dp-show-spinning="sms_connect_provider">
 						<i class="spinner-flat"></i>
@@ -74,12 +73,13 @@
 				<li>
 					<a ng-click="ChannelSmsEdit.connect()">
 						<i class="fa fa-refresh"></i>
-						Sync Account Information
+						{{ phrase('admin.channels.sync_account_information') }}
 					</a>
 				</li>
 				<li>
 					<a ng-click="ChannelSmsEdit.clearCredentials()">
-						<i class="fa fa-key"></i> Configure Account
+						<i class="fa fa-key"></i>
+						{{ phrase('admin.channels.configure_account') }}
 					</a>
 				</li>
 			</ul>
@@ -98,7 +98,7 @@
 					type="button"
 					ng-click="ChannelSmsEdit.connect()" style="width: 25%">
 					<i class="fa fa-refresh"></i>
-					Sync Account
+					{{ phrase('admin.channels.sync_account_information') }}
 				</button>
 				<div dp-show-spinning="sms_connect_provider">
 					<i class="spinner-flat"></i>
@@ -119,7 +119,7 @@
 					type="button"
 					ng-click="ChannelSmsEdit.testRoundTrip()" style="width: 25%">
 					<i class="fa fa-bolt"></i>
-					Setup and Test Account
+					{{ phrase('admin.channels.setup_and_test_account') }}
 				</button>
 				<div dp-show-spinning="sms_test">
 					<i class="spinner-flat"></i>

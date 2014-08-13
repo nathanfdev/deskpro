@@ -34,6 +34,9 @@
 
 namespace Orb\Service\Twilio;
 
+use Application\DeskPRO\Entity\PhoneNumber;
+use Orb\Util\PhoneNumbers;
+
 /**
  * Represents a single twillio api account
  */
@@ -78,6 +81,36 @@ class Twilio
 	public function getFriendlyName()
 	{
 		return $this->twilio->accounts->get($this->sid)->friendly_name;
+	}
+
+
+	/**
+	 * This method works only for phone numbers already purchased on Twilio. The number must be
+	 * SMS capable. Upon call, if the number is valid, we will tell the API to update the
+	 * "SmsUrl" and "VoiceUrl" to our service.
+	 *
+	 * @param        $phone_number a phone number to set the incoming URL config on
+	 * @param        $url http url for SMS script
+	 * @param string $method http method for SMS script
+	 */
+	public function setSmsUrl($phone_number, $url, $method = 'POST')
+	{
+		$request_num = PhoneNumbers::toE164Format($phone_number);
+		$numbers = $this->twilio->account->incoming_phone_numbers;
+		/** @var \Services_Twilio_Rest_IncomingPhoneNumber $number */
+		foreach ($numbers as $number) {
+			if ($request_num == PhoneNumbers::toE164Format($number->phone_number)) {
+				$number_sid = $number->sid;
+				$number = $this->twilio->account->incoming_phone_numbers->get($number_sid);
+				$number->update(
+					array(
+						"SmsUrl"   => "http://demo.twilio.com/docs/sms.xml"
+					)
+				);
+			}
+		}
+
+		return null;
 	}
 
 	public function getIncomingNumbers()

@@ -8,7 +8,7 @@
 						<div ng-hide="form.account.is_connected">
 							<div class="form-group" style="border-bottom: none;">
 								<div class="row">
-									<div class="col-lg-3"><h3>Service Provider</h3></div>
+									<div class="col-lg-3"><h3>{{ phrase('admin.channels.sms_service_provider') }}</h3></div>
 									<div class="col-lg-9">
 										<select style="margin-bottom: 15px;" ui-select2 ng-model="form.account.type">
 											<option value="">Select...</option>
@@ -24,18 +24,22 @@
 							</div>
 						</div>
 						<div class="form-group" ng-show="form.account.is_connected && form.account.is_tested">
-							<div class="col-lg-3"><h3>Enabled</h3></div>
+							<div class="col-lg-3">
+								<h3>{{ phrase('admin.general.enabled') }}</h3>
+							</div>
 							<div class="col-lg-9">
 								<label>
 									<input type="checkbox" ng-model="form.account.is_enabled"
 										/>
-									Enable this SMS account
+									{{ phrase('admin.channels.sms_enable_account') }}
 								</label>
 								<span class="help-block" style="margin-bottom: 15px;"
-									ng-show="!form.account.is_enabled">Enabling this account opens it up as a channel.</span>
+									ng-show="!form.account.is_enabled">
+									{{ phrase('admin.channels.sms_enable_account_help') }}
+								</span>
 									<span class="help-block" style="margin-bottom: 15px;"
 										ng-show="form.account.is_enabled">
-										Uncheck this box to disable this account. Disabling this account will remove it as a channel. You can re-enable it later.
+										{{ phrase('admin.channels.sms_disable_account_help') }}
 									</span>
 							</div>
 						</div>
@@ -55,7 +59,7 @@
 						ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger"
 							ng-click="$event.preventDefault(); $parent.ChannelSmsList.startDelete(ChannelSmsEdit.account.id);">
-							Delete
+							{{ phrase('agent.general.delete') }}
 						</button>
 					</div>
 					<div class="dp-btn-controls"
@@ -72,8 +76,8 @@
 				</div>
 			</footer>
 		</section>
-		<div dp-register-message="saved_account">{{ ng_var('form.account.identifier') }} was saved successfully</div>
-		<div dp-register-message="connected">Synced account successfully</div>
-		<div dp-register-message="connected_fail">Failed to connect</div>
+		<div dp-register-message="saved_account">{{ phrase('admin.general.save_settings_success') }}</div>
+		<div dp-register-message="connected">{{ phrase('admin.channels.sms_sync_success') }}</div>
+		<div dp-register-message="connected_fail">{{ phrase('admin.channels.sms_sync_fail') }}</div>
 	</form>
 {% endblock %}

@@ -38,31 +38,32 @@
 	</article>
 </section>
 
-{#<section class="dp-paneblock dp-panelink">#}
-	{#<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">#}
-		{#<em><i class="fa fa-chevron-down"></i></em>#}
+<section class="dp-paneblock dp-panelink">
+	<a href="{{ ng_href('tickets.sms_accounts.incoming_log') }}">
+		<em><i class="fa fa-chevron-down"></i></em>
 
-		{#<h3>{{ phrase('adm.ticket_accounts.incoming_log') }}</h3>#}
-	{#</a>#}
-{#</section>#}
+		<h3>{{ phrase('admin.channels.sms_incoming_log') }}</h3>
+	</a>
+</section>
 
-{#<section class="dp-paneblock dp-panelink">#}
-	{#<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">#}
-		{#<em><i class="fa fa-chevron-down"></i></em>#}
+<section class="dp-paneblock dp-panelink">
+	<a href="{{ ng_href('tickets.sms_accounts.outgoing_log') }}">
+		<em><i class="fa fa-chevron-down"></i></em>
 
-		{#<h3>{{ phrase('adm.ticket_accounts.outgoing_log') }}</h3>#}
-	{#</a>#}
-{#</section>#}
+		<h3>{{ phrase('admin.channels.sms_outgoing_log') }}</h3>
+	</a>
+</section>
+
 {% endblock %}
 {% block listpane_help %}
 <header>
-	<h1>SMS Channel.</h1>
+	<h1>{{ phrase('admin.channels.sms_help_header_title') }}</h1>
 
-	<p>SMS Channel</p>
+	<p>{{ phrase('admin.channels.sms_help_header_desc') }}</p>
 </header>
 <article>
 	<section>
-		Extended help
+		{{ phrase('admin.channels.sms_help_extended') }}
 	</section>
 </article>
 {% endblock %}

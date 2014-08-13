@@ -1,6 +1,24 @@
 <?php return array(
-	'admin.channels.sms_x_accounts'       => '{{count}} SMS Account|{{count}} SMS Accounts',
-	'admin.channels.sms_account_saved'   => 'SMS Account Saved',
-	'admin.channels.sms_no_accounts_yet' => 'You have not created any SMS accounts yet.',
-	'admin.channels.sms_new_account' => 'New SMS Account'
+	'admin.channels.sms_x_accounts'             => '{{count}} SMS Account|{{count}} SMS Accounts',
+	'admin.channels.sms_account_saved'          => 'SMS Account Saved',
+	'admin.channels.sms_no_accounts_yet'        => 'You have not created any SMS accounts yet.',
+	'admin.channels.sms_new_account'            => 'New SMS Account',
+	'admin.channels.sms_sync_success'           => 'Synced account successfully',
+	'admin.channels.sms_sync_fail'              => 'Failed to connect',
+	'admin.channels.sms_service_provider'       => 'Service Provider',
+	'admin.channels.sms_enable_account'         => 'Enable this SMS account',
+	'admin.channels.sms_enable_account_help'    => 'Enabling this account opens it up as a channel.',
+	'admin.channels.sms_disable_account_help'   => 'Uncheck this box to disable this account. Disabling this account will remove it as a channel. You can re-enable it later.',
+	'admin.channels.sms_delete_account'         => 'Delete SMS Account',
+	'admin.channels.sms_delete_account_confirm' => 'Are you sure you want to delete this SMS account? DeskPRO will stop processing SMS messages to and from this account.',
+	'admin.channels.sms_help_header_title'      => 'SMS Channel',
+	'admin.channels.sms_help_header_desc'       => 'SMS Channels allow you to communicate with users via SMS messaging',
+	'admin.channels.sms_help_extended'          => 'SMS Channels allow you to communicate with users via SMS messaging',
+	'admin.channels.sms_incoming_log'           => 'Incoming SMS Log',
+	'admin.channels.sms_outgoing_log'           => 'Outgoing SMS Log',
+	'admin.channels.sms_connection_problem'     => 'There was a problem connecting with your account. Please There was a problem connecting with your account. Please check your credentials and try again.check your credentials and try again.',
+
+	'admin.channels.sync_account_information'   => 'Sync Account Information',
+	'admin.channels.setup_and_test_account'     => 'Setup and Test Account',
+	'admin.channels.configure_account'          => 'Configure Account',
 );
