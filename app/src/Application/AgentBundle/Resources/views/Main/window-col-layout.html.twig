@@ -28,37 +28,16 @@
 	<div id="dp_content">
 		<div id="tabNavigationPane" style="width: 5500px; vertical-align: bottom;">
 
-			<div class="deskproTabList" style="position:relative; display: none; vertical-align: bottom;">
-				<ul class="dp-tab-list">
-
-				</ul>
-			</div>
-
-            <div class="bootstrap" ng-show="tabs.length && !paneVis.list" style="display: inline-block; vertical-align: bottom; margin-bottom: 3px;">
-                <div class="btn-group" dropdown>
-
-                    <button type="button" class="btn btn-show-list" ng-click="showList()"></button>
-                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" style="height: 25px; padding: 3px 5px;">
-                        <span class="caret"></span>
-                        <span class="sr-only">Split button!</span>
-                    </button>
-
-                    <ul class="dropdown-menu" role="menu" style="z-index: 2; max-height: 300px; max-width: 200px; overflow-y: scroll;">
-                        <li ng-repeat="item in listItems" ng-class="item.open && 'active'">
-                            <a href="#" data-route="{{ ng_var('item.route') }}" style="overflow: hidden;">
-                                {{ ng_var('item.title') }}
-                                <div class="pull-right" ng-show="!item.open">+</div>
-                                <div class="pull-right" ng-show="item.open">-</div>
-                            </a>
-                        </li>
-                    </ul>
-
-                </div>
-            </div>
-
 			<div class="mainDeskproTabList deskproTabList" style="position: static; display: inline-block; vertical-align: bottom;">
 				<div class="deskproTabListInner" style="position: static;">
 					<ul class="dp-tab-list">
+
+						<li class="list-btn" ng-show="tabs.length && !paneVis.list" ng-click="showList()">
+							<span><i class="fa fa-list-ul"></i></span>
+							<div class="down-btn" id="dp_tab_list_btn">
+								<i class="fa fa-caret-down"></i>
+							</div>
+						</li>
 
                         <li ng-repeat="tab in tabs" id="{{ ng_var('tab.tabBtnId') }}"
                             ng-click="tabClick($event, tab)"
@@ -81,6 +60,18 @@
 
 					</ul>
 				</div>
+
+				<div id="dp_tab_list_menu" class="dp-tab-list-menu">
+					<ul>
+						<li ng-repeat="item in listItems" ng-class="item.open && 'active'">
+							<a href="#" data-route="{{ ng_var('item.route') }}" style="overflow: hidden;">
+								{{ ng_var('item.title') }}
+								<div class="pull-right active-indicator" ng-show="item.open" tilte="This tab is already open">&bull;</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+
 			</div>
 			<div id="tabNavSelectorRight">
 				<a class="tabSlideRight"></a>

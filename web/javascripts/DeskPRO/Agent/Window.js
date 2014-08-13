@@ -902,6 +902,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
+		$('#dp_tab_list_btn').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			var $menu = $('#dp_tab_list_menu');
+			var $me = $(this).addClass('active');
+			var pos = $(this).offset();
+
+			$menu.css({
+				top: pos.top + 25,
+				left: pos.left
+			}).show();
+
+			var closeFn = function() {
+				$me.removeClass('active');
+				$menu.hide();
+			};
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+		});
+		$('#dp_tab_list_menu').detach().appendTo('body');
+
 		var isIe = $('html').hasClass('browser-ie');
 
 		$('#dp_header').find('.btn-group-actions, .btn-group-wrap').find('.btn, .dp-recent-btn').on('click', function() {
