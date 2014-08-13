@@ -47,7 +47,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.paneVis = {
 			source: true,
 			list: true,
-			tabs: true,
+			tabs: true
 		};
 
 		this.paneVisBit = {
@@ -57,24 +57,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		var self = this;
-		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
-		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
-			self.$scope = $rootScope;
-			self.$q = $q;
-			self.$timeout = $timeout;
 
-			self.$scope.$safeApply = function(fn) {
-				var phase = this.$root.$$phase;
-				if(phase == '$apply' || phase == '$digest') {
-					if(fn && (typeof(fn) === 'function')) {
-						fn();
-					}
-				} else {
-					self.$scope.$apply(fn);
-				}
-			};
-		}]);
-		this.initScope();
+		if (window.AppPlatform) {
+			this.initAppPlatform(window.AppPlatform);
+		}
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -1149,10 +1135,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		if (window.AppPlatform) {
-			this.initAppPlatform(window.AppPlatform);
-		}
-
 		$('#agents_section').on('click', function(ev) {
 			if (window['DP_FRAME_OVERLAYS']) {
 				for (var k in window['DP_FRAME_OVERLAYS']) {
@@ -1270,12 +1252,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initAppPlatform: function(AppPlatform) {
+
+		var self = this;
+
 		if (this.AppPlatform) return;
 		this.AppPlatform = AppPlatform;
 		this.AppPlatform.start();
 
 		this.ngModule = this.AppPlatform.getNgModule();
 		this.ngModule.dpInjector = angular.element(document).injector();
+
+		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
+		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+			self.$scope = $rootScope;
+			self.$q = $q;
+			self.$timeout = $timeout;
+
+			self.$scope.$safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase == '$apply' || phase == '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					self.$scope.$apply(fn);
+				}
+			};
+		}]);
+		this.initScope();
 	},
 
 	getAppPlatform: function() {
