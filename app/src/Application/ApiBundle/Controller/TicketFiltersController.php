@@ -135,7 +135,11 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 
 		$crit = new FilterTerms();
 		foreach ($this->in->getArrayValue('filter.terms') as $term_info) {
-			$crit->addTermFromArray($term_info);
+			try {
+				$crit->addTermFromArray($term_info);
+			} catch (\Exception $e) {
+				// Ignore invalid terms
+			}
 		}
 
 		$trans = new LegacyTermsTransformer();
