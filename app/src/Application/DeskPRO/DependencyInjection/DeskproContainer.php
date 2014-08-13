@@ -242,6 +242,17 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * Get the DB abstraction object.
+	 *
+	 * @return \Application\DeskPRO\JobQueue\JobQueue
+	 */
+	public function getJobQueue()
+	{
+		return $this->getSystemService('job_queue');
+	}
+
+
+	/**
 	 * Gets a DB reader.
 	 *
 	 * There can be many types of readers:
