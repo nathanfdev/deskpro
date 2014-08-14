@@ -71,7 +71,6 @@ class JobWorker extends AbstractJob
 				$this->executeNextJob();
 			} catch (\Exception $e) {
 				// doing nothing after this catch is better than exiting the process
-				throw $e;
 			}
 
 			// don't burn out the CPU cycles. CPU can get to 100% on an infinite loop.
@@ -98,7 +97,6 @@ class JobWorker extends AbstractJob
 				// the router layer and processor layer are responsible for recording failures and retries etc on their own
 				// router is supposed to handle all situations and catch all errors and never throw
 				// this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
-				return;
 			}
 		}
 	}

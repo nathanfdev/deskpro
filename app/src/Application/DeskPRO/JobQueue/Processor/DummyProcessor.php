@@ -46,7 +46,7 @@ class DummyProcessor extends AbstractJobProcessor
 	{
 		$this->touchJob($job);
 
-		sleep(11);
+//		sleep(15);
 
 		$this->markComplete($job, 'Successfully sent out emails!', "MORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nok");
 	}
@@ -70,13 +70,13 @@ class DummyProcessor extends AbstractJobProcessor
 				log = :detailed_logs,
 				status = :completed_status,
 				status_code = :status_code,
-				date_touch = ::date_touch
+				date_touch = :date_touch
 			WHERE id = :job_id
 			',
 			array(
 				'log_summary' => $log_summary,
 				'detailed_logs' => $detailed_logs,
-				'status' => Job::STATUS_COMPLETE,
+				'completed_status' => Job::STATUS_COMPLETE,
 				'status_code' => $status_code,
 				'date_touch' => new \DateTime(),
 				'job_id' => $job['id']
@@ -84,7 +84,7 @@ class DummyProcessor extends AbstractJobProcessor
 			array(
 				'log_summary' => 'string',
 				'detailed_logs' => 'text',
-				'status' => 'string',
+				'completed_status' => 'string',
 				'status_code' => 'string',
 				'date_touch' => 'datetime',
 				'job_id' => 'integer'

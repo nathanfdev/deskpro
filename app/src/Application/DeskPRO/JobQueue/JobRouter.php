@@ -34,7 +34,9 @@
 
 namespace Application\DeskPRO\JobQueue;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\Processor\DummyProcessor;
 
 /**
@@ -100,17 +102,18 @@ class JobRouter
 				SET status = :error_status,
 					date_touch = :date_now,
 					date_last_try = :date_now,
-					num_tries = num_tries + 1,
 					log = :error_log,
-					log_summary = :log_summary
+					log_summary = :log_summary,
+					num_tries = num_tries + 1,
+					has_warning = 1
 				WHERE id = :job_id
 				',
 				array(
 					'error_status' => Job::STATUS_ERROR,
 					'date_now'     => new \DateTime(),
 					'job_id'       => $job['id'],
-					'error_log'    => $e->getTraceAsString(),
-					'log_summary'  => $e->getMessage(),
+					'error_log'    => $e->getMessage() . "\n\n\n" . $e->getTraceAsString(),
+					'log_summary'  => 'A system error occurred',
 				),
 				array(
 					'error_status' => 'string',
