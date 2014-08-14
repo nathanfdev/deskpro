@@ -50,45 +50,4 @@ class DummyProcessor extends AbstractJobProcessor
 
 		$this->markComplete($job, 'Successfully sent out emails!', "MORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nMORE DETAILS \nok");
 	}
-
-
-	/*
-	 * TODO: Move to AbstractProcessor
-	 *
-	 * @param array  $job
-	 * @param        $log_summary
-	 * @param        $detailed_logs
-	 * @param string $status_code
-	 * @throws \Doctrine\DBAL\DBALException
-	 */
-	public function markComplete(array $job, $log_summary, $detailed_logs, $status_code = 'success')
-	{
-		$this->connection->executeUpdate(
-			'
-			UPDATE jobs
-			SET log_summary = :log_summary,
-				log = :detailed_logs,
-				status = :completed_status,
-				status_code = :status_code,
-				date_touch = :date_touch
-			WHERE id = :job_id
-			',
-			array(
-				'log_summary' => $log_summary,
-				'detailed_logs' => $detailed_logs,
-				'completed_status' => Job::STATUS_COMPLETE,
-				'status_code' => $status_code,
-				'date_touch' => new \DateTime(),
-				'job_id' => $job['id']
-			),
-			array(
-				'log_summary' => 'string',
-				'detailed_logs' => 'text',
-				'completed_status' => 'string',
-				'status_code' => 'string',
-				'date_touch' => 'datetime',
-				'job_id' => 'integer'
-			)
-		);
-	}
 }
