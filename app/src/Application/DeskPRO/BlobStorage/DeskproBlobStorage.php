@@ -98,7 +98,7 @@ class DeskproBlobStorage implements Loggable
 	 * The filepath is represented as a full path that a file will be written to. Include
 	 * any of these variables in the path: %ID%, %AUTH%, %BATCH%, %FILENAME%, %DATETIME%
 	 *
-	 * @param string $url
+	 * @param string $path
 	 */
 	public function setSaveCopyPath($path)
 	{
@@ -125,8 +125,9 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @param StorageAdapter\AbstractStorageAdapter $adapter
-	 * @param int $priority
+	 * @param                        $id
+	 * @param AbstractStorageAdapter $adapter
+	 * @param int                    $priority
 	 */
 	public function addAdapter($id, AbstractStorageAdapter $adapter, $priority = 0)
 	{
@@ -241,7 +242,12 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Blob
+	 * @param string $source_path
+	 * @param string $filename
+	 * @param string $content_type
+	 * @param array $props
+	 * @return BlobEntity
+	 * @throws \RuntimeException
 	 */
 	public function createBlobRecordFromFile($source_path, $filename, $content_type, array $props = null)
 	{
@@ -377,9 +383,13 @@ class DeskproBlobStorage implements Loggable
 	}
 
 
-
 	/**
-	 * @return \Application\DeskPRO\Entity\Blob
+	 * @param string $source_data
+	 * @param string $filename
+	 * @param string $content_type
+	 * @param array $props
+	 * @return BlobEntity
+	 * @throws \RuntimeException
 	 */
 	public function createBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
 	{
@@ -575,7 +585,8 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @param \Application\DeskPRO\Entity\Blob $blob_entity
+	 * @param BlobEntity $blob_entity
+	 * @return null|string
 	 */
 	public function copyBlobRecordToString(BlobEntity $blob_entity)
 	{
@@ -605,8 +616,9 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @param $target_path
+	 * @param string $target_path
 	 * @param BlobEntity $blob_entity
+	 * @return int|null|string
 	 */
 	public function copyBlobRecordToFile($target_path, BlobEntity $blob_entity)
 	{

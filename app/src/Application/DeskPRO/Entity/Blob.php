@@ -45,7 +45,23 @@ use Orb\Util\Strings;
  *
  * @property int $id
  * @property int $sys_name
- * @property int $original_blob
+ * @property Blob $original_blob
+ * @property string $storage_loc
+ * @property string $storage_loc_pref
+ * @property string $save_path
+ * @property string $file_url
+ * @property string $filename
+ * @property string $filesize
+ * @property string $content_type
+ * @property string $authcode
+ * @property string $blob_hash
+ * @property string $is_media_upload
+ * @property string $title
+ * @property int $dim_w
+ * @property int $dim_h
+ * @property \DateTime $date_created
+ * @property bool $is_temp
+ * @property \DateTime $date_cleanup
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
