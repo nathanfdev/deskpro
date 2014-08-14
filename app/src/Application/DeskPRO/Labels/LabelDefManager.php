@@ -148,6 +148,42 @@ class LabelDefManager
 
 
 	/**
+	 * @return array
+	 */
+	public function getAllLabelsToTyped()
+	{
+		$ret = array();
+
+		// Admin defined
+		foreach ($this->db->fetchAll("SELECT * FROM label_defs") as $x) {
+			if (!isset($x['label'])) {
+				$ret[$x['label']] = array();
+			}
+
+			$ret[$x['label']][] = $x['label_type'];
+		}
+
+		// Non-admin defined
+		$types = array('articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations');
+		$parts = array();
+		foreach ($types as $t) {
+			$parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";
+		}
+
+		$q = '(' . implode(') UNION (', $parts) . ')';
+		foreach ($this->db->fetchAll($q) as $x) {
+			if (!isset($x['label'])) {
+				$ret[$x['label']] = array();
+			}
+
+			$ret[$x['label']][] = $x['label_type'];
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * Get counts for all labels used for a type
 	 *
 	 * @param null $types
