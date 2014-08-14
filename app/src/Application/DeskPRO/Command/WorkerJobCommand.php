@@ -55,8 +55,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			->addOption('group', 'g', InputOption::VALUE_REQUIRED, 'Run only a specific group of jobs')
 			->addOption('ignore-interval', 'f', InputOption::VALUE_NONE, 'Always run job(s) even if the job interval has not ellapsed since last run')
 			->addOption('options', 'o', InputOption::VALUE_REQUIRED, 'Specify a JSON-encoded array of options to pass to worker jobs')
-			->addOption('info', null, InputOption::VALUE_NONE, 'Don\'t execute anything, just list info about scheduled tasks')
-			->addOption('dummyq', 'q', InputOption::VALUE_NONE, 'Dummy q option');
+			->addOption('info', null, InputOption::VALUE_NONE, 'Don\'t execute anything, just list info about scheduled tasks');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
