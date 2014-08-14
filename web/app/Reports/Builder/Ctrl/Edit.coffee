@@ -53,15 +53,21 @@ define [
 
 			run = =>
 				promise = @Api.sendPostJson('/reports/builder/test/' + @report.id, {
-					parts: @query_parts
+					parts: @query_parts,
+					params: @$stateParams.params
 				})
 
 				promise.success((data) =>
-					if data.error then @query_error = data.error
+					if data.error
+						@query_error = data.error
 
-					if data.rendered_result
-						@query_error = null
-						@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
+					else
+						if data.rendered_result
+							@query_error = null
+							@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
+						else
+							@query_error = null
+							@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
 
 					@stopSpinner('builder_loading', true)
 					@stopSpinner('query_loading', true)
