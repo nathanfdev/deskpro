@@ -29,19 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage JobQueue
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\JobQueue;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Job;
-use Application\DeskPRO\JobQueue\JobRouter;
 
-class JobWorker extends AbstractJob
+/**
+ * The worker is the heart of the JobQueue system, and sets the stage for the JobRouter to route the job
+ * to its Processor.
+ */
+class JobWorker
 {
-	const DEFAULT_INTERVAL = 1;
-
 	/**
 	 * @var string worker ID string
 	 */
@@ -52,19 +53,35 @@ class JobWorker extends AbstractJob
 	 */
 	protected $jobRouter;
 
-	public function run()
+	/**
+	 * @var Connection
+	 */
+	private $connection;
+
+	public function __construct(Connection $connection)
+	{
+		$this->connection = $connection;
+	}
+
+
+	/**
+	 * Goto work, starts the loop. Continues until max_time, or no jobs found.
+	 *
+	 * @param int $max_time_in_seconds max time for the loop to run
+	 */
+	public function work($max_time_in_seconds = 25)
 	{
 		// a unique ID for this particular worker
 		$this->workerId = uniqid();
 
 		// create the JobRouter for this worker instance
-		$this->jobRouter = new JobRouter(App::getDb());
+		$this->jobRouter = new JobRouter($this->connection);
 
 		#------------------------------
 		# loop for a max of 25 seconds
 		#------------------------------
 		$workerStartTime = time();
-		$workerEndTime = $workerStartTime + 25;
+		$workerEndTime   = $workerStartTime + $max_time_in_seconds;
 		// if it can't find a job to execute, the loop ends
 		while ($this->executeNextJob()) {
 			// if its past the time limit of 25 seconds, we also end
@@ -107,7 +124,6 @@ class JobWorker extends AbstractJob
 	/**
 	 * @throws \Doctrine\DBAL\DBALException
 	 * @throws \Exception
-	 *
 	 * @return array|null an array of the job, or null if none available to work on
 	 */
 	protected function popJob()
@@ -115,7 +131,7 @@ class JobWorker extends AbstractJob
 		/**
 		 * Reserve the next available job
 		 */
-		$result = App::getDb()->executeUpdate(
+		$this->connection->executeUpdate(
 			'
 			UPDATE jobs
 			SET worker_id = :this_worker_id,
@@ -128,16 +144,16 @@ class JobWorker extends AbstractJob
 			LIMIT 1
 			',
 			array(
-				'this_worker_id' => $this->workerId,
+				'this_worker_id'  => $this->workerId,
 				'reserved_status' => Job::STATUS_RESERVED,
-				'waiting_status' => Job::STATUS_WAITING,
-				'date_now' => new \DateTime()
+				'waiting_status'  => Job::STATUS_WAITING,
+				'date_now'        => new \DateTime()
 			),
 			array(
-				'this_worker_id' => 'string',
-				'reserved_status' =>'string',
-				'waiting_status' => 'string',
-				'date_now' => 'datetime'
+				'this_worker_id'  => 'string',
+				'reserved_status' => 'string',
+				'waiting_status'  => 'string',
+				'date_now'        => 'datetime'
 			)
 		);
 
@@ -145,7 +161,7 @@ class JobWorker extends AbstractJob
 		/**
 		 * Fetch the next job reserved for me
 		 */
-		$job = App::getDb()->fetchAssoc(
+		$job = $this->connection->fetchAssoc(
 			'
 			SELECT *
 			FROM jobs
@@ -154,11 +170,11 @@ class JobWorker extends AbstractJob
 			',
 			array(
 				'reserved_status' => Job::STATUS_RESERVED,
-				'this_worker_id' => $this->workerId
+				'this_worker_id'  => $this->workerId
 			),
 			array(
 				'reserved_status' => 'string',
-				'this_worker_id' => 'string',
+				'this_worker_id'  => 'string',
 			)
 		);
 
@@ -176,7 +192,7 @@ class JobWorker extends AbstractJob
 	protected function markProcessing(array $job)
 	{
 		if (is_array($job) && array_key_exists('id', $job)) {
-			App::getDb()->executeUpdate(
+			$this->connection->executeUpdate(
 				'
 				UPDATE jobs
 				SET status = :processing_status,
