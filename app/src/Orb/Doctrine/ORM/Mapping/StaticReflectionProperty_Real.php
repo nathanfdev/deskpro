@@ -50,7 +50,7 @@ class StaticReflectionProperty extends \ReflectionProperty
 		return $this->_prop;
 	}
 
-	public function getValue($object)
+	public function getValue($object = null)
 	{
 		if (!$object) {
 			throw new \RuntimeException("Unsupported Operation");
