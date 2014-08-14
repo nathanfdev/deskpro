@@ -46,7 +46,7 @@ use Orb\Util\Arrays;
  */
 class PeopleResults
 {
-	const PER_PAGE_DEFAULT = 50;
+	const PER_PAGE_DEFAULT = 2;
 
 	/**
 	 * @var \Application\AgentBundle\Controller\AbstractController

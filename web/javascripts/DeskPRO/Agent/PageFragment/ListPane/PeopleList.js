@@ -255,16 +255,6 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		$scope.persons = this.meta.persons;
 		$scope.displayFields = this.meta.displayFields;
 
-		// todo separate controller
-		$scope.pagination = {
-			page: this.meta.page,
-			perPage: this.meta.perPage,
-			ids: this.meta.resultIds, // todo remove
-			total: this.meta.resultsTotal,
-			isLoading: false
-		};
-		$scope.Math = window.Math;
-
 		$scope.isFieldDisplayable = function(person, field) {
 			switch (field) {
 				case 'language':
@@ -276,35 +266,9 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 				case 'person_username':
 					return person.person_username.length > 0;
 				default:
-					if (-1 === field.indexOf('person_fields')) return false;
+					if (0 !== field.indexOf('person_fields')) return false;
 					return !!person[field];
 			}
-		};
-
-		$scope.fetchPage = function(page){
-			var pag = $scope.pagination;
-			if (pag.isLoading) return;
-			if (page < 1 || page > Math.ceil(pag.total / pag.perPage)) return;
-
-			pag.isLoading = true;
-			self.$http({
-				url: self.meta.fetchResultsUrl,
-				method: 'GET',
-				params: {
-					'result_ids[]': pag.ids.slice((page - 1) * pag.perPage, (page - 1) * pag.perPage + pag.perPage),
-					'display_fields[]': $scope.displayFields,
-					page: page,
-					view_type: 'json'
-				}
-			}).then(function(data){
-				pag.isLoading = false;
-				$scope.persons.length = 0;
-				if (!data.data) data.data = [];
-				data.data.each(function(person){ $scope.persons.push(person); });
-				pag.page = page;
-			}, function(){
-				pag.isLoading = false;
-			});
 		};
 
 		$scope.$watch('persons', function(newVal, oldVal){

@@ -108,16 +108,6 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 		$scope.organizations = this.meta.organizations;
 		$scope.displayFields = this.meta.displayFields;
 
-		// todo separate controller
-		$scope.pagination = {
-			page: this.meta.page,
-			perPage: this.meta.perPage,
-			ids: this.meta.resultIds, // todo remove
-			total: this.meta.resultsTotal,
-			isLoading: false
-		};
-		$scope.Math = window.Math;
-
 		$scope.isFieldDisplayable = function(org, field) {
 			switch (field) {
 				case 'members_count':
@@ -125,36 +115,9 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 				case 'labels':
 					return org.labels && org.labels.length > 0;
 				default:
-					if (-1 === field.indexOf('organization_fields')) return false;
+					if (0 !== field.indexOf('organization_fields')) return false;
 					return !!org[field];
 			}
-		};
-
-		// todo move to pagination controller
-		$scope.fetchPage = function(page){
-			var pag = $scope.pagination;
-			if (pag.isLoading) return;
-			if (page < 1 || page > Math.ceil(pag.total / pag.perPage)) return;
-
-			pag.isLoading = true;
-			self.$http({
-				url: self.meta.fetchResultsUrl,
-				method: 'GET',
-				params: {
-					'result_ids[]': pag.ids.slice((page - 1) * pag.perPage, (page - 1) * pag.perPage + pag.perPage),
-					'display_fields[]': $scope.displayFields,
-					page: page,
-					view_type: 'json'
-				}
-			}).then(function(data){
-				pag.isLoading = false;
-				$scope.organizations.length = 0;
-				if (!data.data) data.data = [];
-				data.data.each(function(org){ $scope.organizations.push(org); });
-				pag.page = page;
-			}, function(){
-				pag.isLoading = false;
-			});
 		};
 
 		$scope.$watch('organizations', function(newVal, oldVal){

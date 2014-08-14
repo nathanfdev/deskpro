@@ -586,5 +586,43 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 		$locationProvider.html5Mode(true).hashPrefix('');
 	}]);
 
+	AgentApp.controller('ListPanePagination', ['$scope', '$http', function($scope, $http){
+
+		$scope.page = $scope.page || 1;
+		$scope.perPage = $scope.perPage || 0;
+		$scope.ids = $scope.ids || [];
+		$scope.total = $scope.total || 0;
+		$scope.displayFields = $scope.displayFields || [];
+		$scope.isLoading = false;
+		$scope.Math = window.Math;
+
+
+		$scope.fetchPage = function(page){
+
+			if ($scope.isLoading) return;
+			if (page < 1 || page > Math.ceil($scope.total / $scope.perPage)) return;
+
+			$scope.isLoading = true;
+			$http({
+				url: $scope.url,
+				method: 'GET',
+				params: {
+					'result_ids[]': $scope.ids.slice((page - 1) * $scope.perPage, (page - 1) * $scope.perPage + $scope.perPage),
+					'display_fields[]': $scope.displayFields,
+					page: page,
+					view_type: 'json'
+				}
+			}).then(function(data){
+				$scope.isLoading = false;
+				$scope.$parent[$scope.listName].length = 0;
+				if (!data.data) data.data = [];
+				data.data.each(function(item){ $scope.$parent[$scope.listName].push(item); });
+				$scope.page = page;
+			}, function(){
+				$scope.isLoading = false;
+			});
+		};
+	}]);
+
 	return AgentApp;
 });
