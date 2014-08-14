@@ -61,6 +61,12 @@ class JobWorker
 	public function __construct(Connection $connection)
 	{
 		$this->connection = $connection;
+
+		// a unique ID for this particular worker
+		$this->workerId = uniqid();
+
+		// create the JobRouter for this worker instance
+		$this->jobRouter = new JobRouter($this->connection);
 	}
 
 
@@ -71,12 +77,6 @@ class JobWorker
 	 */
 	public function work($max_time_in_seconds = 25)
 	{
-		// a unique ID for this particular worker
-		$this->workerId = uniqid();
-
-		// create the JobRouter for this worker instance
-		$this->jobRouter = new JobRouter($this->connection);
-
 		#------------------------------
 		# loop for a max of 25 seconds
 		#------------------------------
@@ -93,6 +93,22 @@ class JobWorker
 
 
 	/**
+	 * Execute a job directly via passing in a job ID.
+	 *
+	 * Note that this is not following the normal JobQueue rules. Use at your own risk.
+	 *
+	 * @param $id
+	 * @return bool
+	 */
+	public function executeJobById($id)
+	{
+		$job = $this->getJobById($id);
+
+		return $this->executeJob($job);
+	}
+
+
+	/**
 	 * Pop the next job, mark it as processing, and attempt to handle it
 	 *
 	 * @return bool whether there was a job process attempt made
@@ -101,23 +117,7 @@ class JobWorker
 	{
 		$job = $this->popJob();
 
-		// can only continue if we have a job array with an ID
-		if (is_array($job) && array_key_exists('id', $job)) {
-			$this->markProcessing($job);
-
-			try {
-				$this->jobRouter->handle($job);
-
-				return true;
-			} catch (\Exception $e) {
-				// the router layer and processor layer are responsible for recording failures and retries etc on their own
-				// router is supposed to handle all situations and catch all errors and never throw
-				// this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
-				return true;
-			}
-		} else {
-			return false;
-		}
+		return $this->executeJob($job);
 	}
 
 
@@ -158,6 +158,7 @@ class JobWorker
 		);
 
 
+
 		/**
 		 * Fetch the next job reserved for me
 		 */
@@ -181,6 +182,30 @@ class JobWorker
 		return $job ?: null;
 	}
 
+	/**
+	 * @param $job
+	 * @return bool
+	 */
+	protected function executeJob($job)
+	{
+		if ($this->looksLikeAJobArray($job)) {
+			$this->markProcessing($job);
+
+			try {
+				$this->jobRouter->handle($job);
+
+				return true;
+			} catch (\Exception $e) {
+				// the router layer and processor layer are responsible for recording failures and retries etc on their own
+				// router is supposed to handle all situations and catch all errors and never throw
+				// this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
+
 
 	/**
 	 * Worker calls this before executing a job
@@ -191,7 +216,7 @@ class JobWorker
 	 */
 	protected function markProcessing(array $job)
 	{
-		if (is_array($job) && array_key_exists('id', $job)) {
+		if ($this->looksLikeAJobArray($job)) {
 			$this->connection->executeUpdate(
 				'
 				UPDATE jobs
@@ -213,5 +238,37 @@ class JobWorker
 				)
 			);
 		}
+	}
+
+
+	/**
+	 * @param $id
+	 * @return array|null
+	 */
+	protected function getJobById($id)
+	{
+		return $this->connection->fetchAssoc(
+			'
+			SELECT *
+			FROM jobs
+			WHERE id = :job_id
+			',
+			array(
+				'job_id' => $id
+			),
+			array(
+				'job_id' => 'integer'
+			)
+		);
+	}
+
+	/**
+	 * @param mixed $job
+	 * @return bool
+	 */
+	protected function looksLikeAJobArray($job)
+	{
+		// can only be a job if we have a job array with an ID
+		return is_array($job) && array_key_exists('id', $job);
 	}
 }
