@@ -472,6 +472,34 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		);
 	}
 
+
+	/**
+	 * @return array
+	 */
+	public function toDbArray()
+	{
+		return array(
+			'date_created'     => $this->date_created->format('Y-m-d H:i:s'),
+			'authcode'         => $this->authcode,
+			'sys_name'         => $this->sys_name,
+			'original_blob_id' => $this->original_blob ? $this->original_blob->id : null,
+			'storage_loc'      => $this->storage_loc,
+			'storage_loc_pref' => $this->storage_loc_pref,
+			'save_path'        => $this->save_path,
+			'file_url'         => $this->file_url,
+			'filename'         => $this->filename,
+			'filesize'         => $this->filesize,
+			'content_type'     => $this->content_type,
+			'blob_hash'        => $this->blob_hash,
+			'is_media_upload'  => $this->is_media_upload,
+			'title'            => $this->title,
+			'dim_w'            => $this->dim_w,
+			'dim_h'            => $this->dim_h,
+			'is_temp'          => $this->is_temp ? 1 : 0,
+			'date_cleanup'     => $this->date_cleanup ? $this->date_cleanup->format('Y-m-d H:i:s') : null
+		);
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

@@ -286,8 +286,9 @@ class Runner
 	 * where the doctrine entity manager is closed due to some critical error.
 	 *
 	 * @param EmailSource $source
+	 * @param array $manual_set
 	 */
-	private function ensureSourceStatus(EmailSource $source)
+	private function ensureSourceStatus(EmailSource $source, array $manual_set = null)
 	{
 		global $DP_SET_SOURCE_STATUS;
 		if (!$DP_SET_SOURCE_STATUS) {
@@ -296,16 +297,25 @@ class Runner
 
 		$db = App::$container->getDb();
 		$id = $source->id;
-		$DP_SET_SOURCE_STATUS[$id] = array(
+
+		if (!isset($DP_SET_SOURCE_STATUS[$id])) {
+			$DP_SET_SOURCE_STATUS[$id] = array();
+		}
+
+		$DP_SET_SOURCE_STATUS[$id] = array_merge($DP_SET_SOURCE_STATUS[$id], array(
 			'status'      => $source->status,
 			'error_code'  => $source->error_code,
 			'source_info' => serialize($source->source_info ?: array())
-		);
+		));
+
+		if ($manual_set) {
+			$DP_SET_SOURCE_STATUS[$id] = array_merge($DP_SET_SOURCE_STATUS[$id], $manual_set);
+		}
 
 		\DpShutdown::add(function() use ($db, $id) {
 
 			global $DP_SET_SOURCE_STATUS;
-			if (!isset($DP_SET_SOURCE_STATUS[$id])) {
+			if (empty($DP_SET_SOURCE_STATUS[$id])) {
 				return;
 			}
 
@@ -499,20 +509,25 @@ class Runner
 			$log_messages = $previous_log_text . "\n\n\n" . str_repeat('-', 80) . "\n\n\n" . $log_messages;
 		}
 
-		$saved_log = false;
-		if (!$did_rollback) {
-			try {
-				$this->logger->logDebug("Saving log blob...");
-				$blob = App::$container->getBlobStorage()->createBlobRecordFromString($log_messages, 'email-process.log', 'plain/text');
-				$source->log_blob = $blob;
-				$this->logger->logInfo("Log blob {$blob->id}");
+		try {
+			$this->logger->logDebug("Saving log blob...");
+			$log_blob_row = App::$container->getBlobStorage()->createBlobRowFromString($log_messages, 'email-process.log', 'plain/text');
+			$this->logger->logInfo("Log blob {$log_blob_row['id']}");
 
-				App::getOrm()->persist($source);
-				App::getOrm()->flush();
-				$saved_log = true;
-			} catch (\Exception $e) {
-				$saved_log = false;
+			$this->ensureSourceStatus($source, array('log_blob_id' => $log_blob_row['id']));
+
+			if (!$did_rollback) {
+				$blob = App::$container->getEm()->find('DeskPRO:Blob', $log_blob_row['id']);
+				$source['log_blob'] = $blob;
+				try {
+					App::$container->getEm()->persist($blob);
+					App::$container->getEm()->flush();
+				} catch (\Exception $e) {}
 			}
+
+			$saved_log = true;
+		} catch (\Exception $e) {
+			$saved_log = false;
 		}
 
 		if (!$saved_log) {
