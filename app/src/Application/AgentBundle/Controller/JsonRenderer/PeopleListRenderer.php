@@ -133,65 +133,70 @@ class PeopleListRenderer
 		return Util::jsonEncode($this->renderArray($display));
 	}
 
-	private function renderPerson(Person $person, PeopleResultsDisplay $display)
+	/**
+	 * @param Person $entity
+	 * @param PeopleResultsDisplay $display
+	 * @return array
+	 */
+	private function renderPerson(Person $entity, PeopleResultsDisplay $display)
 	{
 		$data = array();
 
-		$data['id']                    = $person->id;
-		$data['name_with_title']       = $person->getNameWithTitle();
-		$data['organization']          = $person->organization ? array('name' => $person->organization['name']) : null;
-		$data['is_contact']            = $person->is_contact;
-		$data['is_user']               = $person->is_user;
-		$data['is_agent']              = $person->is_agent;
-		$data['was_agent']             = $person->was_agent;
-		$data['can_agent']             = $person->can_agent;
-		$data['can_admin']             = $person->can_admin;
-		$data['is_confirmed']          = $person->is_confirmed;
-		$data['is_agent_confirmed']    = $person->is_agent_confirmed;
-		$data['is_deleted']            = $person->is_deleted;
-		$data['is_disabled']           = $person->is_disabled;
-		$data['creation_system']       = $person->creation_system;
-		$data['name']                  = $person->name;
-		$data['first_name']            = $person->first_name;
-		$data['last_name']             = $person->last_name;
-		$data['title_prefix']          = $person->title_prefix;
-		$data['override_display_name'] = $person->override_display_name;
-		$data['summary']               = $person->summary;
-		$data['organization_position'] = $person->organization_position;
-		$data['organization_manager']  = $person->organization_manager;
-		$data['timezone']              = $person->timezone;
+		$data['id']                    = $entity->id;
+		$data['name_with_title']       = $entity->getNameWithTitle();
+		$data['organization']          = $entity->organization ? array('name' => $entity->organization['name']) : null;
+		$data['is_contact']            = $entity->is_contact;
+		$data['is_user']               = $entity->is_user;
+		$data['is_agent']              = $entity->is_agent;
+		$data['was_agent']             = $entity->was_agent;
+		$data['can_agent']             = $entity->can_agent;
+		$data['can_admin']             = $entity->can_admin;
+		$data['is_confirmed']          = $entity->is_confirmed;
+		$data['is_agent_confirmed']    = $entity->is_agent_confirmed;
+		$data['is_deleted']            = $entity->is_deleted;
+		$data['is_disabled']           = $entity->is_disabled;
+		$data['creation_system']       = $entity->creation_system;
+		$data['name']                  = $entity->name;
+		$data['first_name']            = $entity->first_name;
+		$data['last_name']             = $entity->last_name;
+		$data['title_prefix']          = $entity->title_prefix;
+		$data['override_display_name'] = $entity->override_display_name;
+		$data['summary']               = $entity->summary;
+		$data['organization_position'] = $entity->organization_position;
+		$data['organization_manager']  = $entity->organization_manager;
+		$data['timezone']              = $entity->timezone;
 
-		$data['date_created'] = $person->date_created->format('Y-m-d H:i:s');
-		$data['date_created_ts'] = $person->date_created->getTimestamp();
+		$data['date_created'] = $entity->date_created->format('Y-m-d H:i:s');
+		$data['date_created_ts'] = $entity->date_created->getTimestamp();
 
-		$data['display_name']  = $person->getDisplayName();
-		if ($person->primary_email) {
+		$data['display_name']  = $entity->getDisplayName();
+		if ($entity->primary_email) {
 			$data['primary_email'] = array(
-				'id'    => $person->primary_email->id,
-				'email' => $person->primary_email->email
+				'id'    => $entity->primary_email->id,
+				'email' => $entity->primary_email->email
 			);
 		}
 
-		$email = $display->getEmail($person);
+		$email = $display->getEmail($entity);
 		$data['email'] = $email ? $email['email'] : null;
-		$data['usernames'] = $display->getPersonUsernames($person);
-		$data['language'] = $person->language ? $person->language->title : null;
-		$data['labels'] = $display->getPersonLabels($person);
-		$data['tickets_count'] = $display->getPersonTicketCount($person);
+		$data['usernames'] = $display->getPersonUsernames($entity);
+		$data['language'] = $entity->language ? $entity->language->title : null;
+		$data['labels'] = $display->getPersonLabels($entity);
+		$data['tickets_count'] = $display->getPersonTicketCount($entity);
 
-		$data['picture_url']    = $person->getPictureUrl();
-		$data['picture_url_80'] = $person->getPictureUrl(80);
-		$data['picture_url_64'] = $person->getPictureUrl(64);
-		$data['picture_url_50'] = $person->getPictureUrl(50);
-		$data['picture_url_45'] = $person->getPictureUrl(45);
-		$data['picture_url_32'] = $person->getPictureUrl(32);
-		$data['picture_url_22'] = $person->getPictureUrl(22);
-		$data['picture_url_16'] = $person->getPictureUrl(16);
+		$data['picture_url']    = $entity->getPictureUrl();
+		$data['picture_url_80'] = $entity->getPictureUrl(80);
+		$data['picture_url_64'] = $entity->getPictureUrl(64);
+		$data['picture_url_50'] = $entity->getPictureUrl(50);
+		$data['picture_url_45'] = $entity->getPictureUrl(45);
+		$data['picture_url_32'] = $entity->getPictureUrl(32);
+		$data['picture_url_22'] = $entity->getPictureUrl(22);
+		$data['picture_url_16'] = $entity->getPictureUrl(16);
 
 
-		$custom_data = $display->getUserFieldData($person);
+		$custom_data = $display->getUserFieldData($entity);
 		if ($custom_data) {
-			$field_manager = $this->container->getSystemService('person_fields_manager');
+			$field_manager = $this->container->getPersonFieldManager();
 
 			$rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
 			foreach ($rendered_data as $fid => $v) {

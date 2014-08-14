@@ -259,7 +259,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		$scope.pagination = {
 			page: this.meta.page,
 			perPage: this.meta.perPage,
-			ids: this.meta.peopleResultIds, // todo remove
+			ids: this.meta.resultIds, // todo remove
 			total: this.meta.resultsTotal,
 			isLoading: false
 		};

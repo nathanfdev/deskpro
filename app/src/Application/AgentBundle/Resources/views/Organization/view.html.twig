@@ -5,6 +5,7 @@ pageMeta.org_id = {{org.id}};
 pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'organizations'}) }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_org_ajax_labels_save', {'organization_id': org.id}) }}';
 pageMeta.url_fragment  = '{{ url_fragment('agent_org_view', {'organization_id': org.id}) }}';
+pageMeta.pageIdentity = 'organization:{{org.id}}';
 
 {% if org.picture_blob %}
 pageMeta.orgPicIcon = '{{ org.picture_blob.getThumbnailUrl(13) }}';

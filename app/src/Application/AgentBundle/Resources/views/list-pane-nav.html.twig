@@ -1,0 +1,28 @@
+{# todo should be separate controller #}
+<footer class="results-nav" ng-class="pagination.isLoading && 'loading'">
+
+    <div class="cursor">
+        {% set phrase_part1 %}
+        <span class="results-showing-count">
+                    {{ ng_var('(pagination.page - 1) * pagination.perPage + 1') }}
+            -
+            {{ ng_var('Math.min(pagination.total, pagination.page * pagination.perPage)') }}
+                </span>
+        {% endset %}
+        {% set phrase_part2 %}
+        <span class="results-total-count">{{ ng_var('pagination.total') }}</span>
+        {% endset %}
+        {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
+    </div>
+
+    <ul class="pagenav" ng-show="pagination.total > pagination.perPage"
+        ng-class="{
+                        'no-prev': pagination.page === 1,
+                        'no-next': pagination.page === Math.ceil(pagination.total / pagination.perPage)
+                    }">
+        <li class="prev" ng-click="fetchPage(pagination.page - 1)"></li>
+        <li class="next" ng-click="fetchPage(pagination.page + 1)"></li>
+    </ul>
+    <div class="loading"></div>
+
+</footer>

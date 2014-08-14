@@ -22,6 +22,13 @@
 	pageMeta.perPage = 50;
 	pageMeta.orgResultIds = {{ org_ids|json_encode|raw }};
 	pageMeta.url_fragment = '{{ url_fragment('agent_orgsearch_customfilter') }}';
+
+    pageMeta.page = {{ page }};
+    pageMeta.perPage = {{ per_page }};
+    pageMeta.resultIds = {{ org_ids|json_encode|raw }};
+    pageMeta.resultsTotal = {{ org_ids|length }};
+    pageMeta.organizations = {{ organizations_json|raw }};
+    pageMeta.displayFields = {{ display_fields|json_encode|raw }};
 	</script>
 {% endblock top %}
 
@@ -38,7 +45,8 @@
 {######################################################################################################################}
 
 {% block pane_content %}
-	{% if org_ids|length %}
+
+    <div ng-show="organizations.length">
 		{% include 'AgentBundle:OrganizationSearch:filter-display-options.html.twig' %}
 		{% include 'AgentBundle:OrganizationSearch:filter-control-bar.html.twig' %}
 
@@ -46,31 +54,13 @@
 			{% include 'AgentBundle:OrganizationSearch:filter-page.html.twig' %}
 		</section>
 
-		<footer class="results-nav">
-			<div class="cursor">
-				{% set phrase_part1 %}
-				<span class="results-showing-count" id="{{ tplvars.baseId }}_showing_count"></span>
-				{% endset %}
-				{% set phrase_part2 %}
-				<span class="results-total-count" id="{{ tplvars.baseId }}_total_count">{{ org_ids|length }}</span>
-				{% endset %}
-				{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
-			</div>
-			{% if org_ids|length > 50 %}
-				<ul class="pagenav no-prev">
-					<li class="prev"></li>
-					<li class="next"></li>
-				</ul>
-			{% endif %}
-			<div class="loading">
+        {% include 'AgentBundle::list-pane-nav.html.twig' %}
+	</div>
 
-			</div>
-		</footer>
-	{% else %}
-		<section class="list-listing no-results">
-			<article class="row-item no-results">
-				<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
-			</article>
-		</section>
-	{% endif %}
+    <section class="list-listing no-results" ng-show="!organizations.length">
+        <article class="row-item no-results">
+            <p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
+        </article>
+    </section>
+
 {% endblock pane_content %}
