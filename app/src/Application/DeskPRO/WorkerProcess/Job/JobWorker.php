@@ -61,27 +61,24 @@ class JobWorker extends AbstractJob
 		$this->jobRouter = new JobRouter(App::getDb());
 
 		#------------------------------
-		# loop for 60 seconds
+		# loop for a max of 25 seconds
 		#------------------------------
 		$workerStartTime = time();
-		$workerEndTime = $workerStartTime + 60;
-		while (time() <= $workerEndTime) {
-
-			try {
-				$this->executeNextJob();
-			} catch (\Exception $e) {
-				// doing nothing after this catch is better than exiting the process
+		$workerEndTime = $workerStartTime + 25;
+		// if it can't find a job to execute, the loop ends
+		while ($this->executeNextJob()) {
+			// if its past the time limit of 25 seconds, we also end
+			if (time() > $workerEndTime) {
+				break;
 			}
-
-			// don't burn out the CPU cycles. CPU can get to 100% on an infinite loop.
-			// TODO: probably make this a usleep()
-			sleep(1);
 		}
 	}
 
 
 	/**
 	 * Pop the next job, mark it as processing, and attempt to handle it
+	 *
+	 * @return bool whether there was a job process attempt made
 	 */
 	protected function executeNextJob()
 	{
@@ -93,11 +90,16 @@ class JobWorker extends AbstractJob
 
 			try {
 				$this->jobRouter->handle($job);
+
+				return true;
 			} catch (\Exception $e) {
 				// the router layer and processor layer are responsible for recording failures and retries etc on their own
 				// router is supposed to handle all situations and catch all errors and never throw
 				// this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
+				return true;
 			}
+		} else {
+			return false;
 		}
 	}
 
