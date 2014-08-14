@@ -29,19 +29,14 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage JobQueue
  */
 
-namespace Application\DeskPRO\JobQueue\Processor;
+namespace Application\DeskPRO\JobQueue;
 
-class DummyProcessor extends AbstractJobProcessor
+/**
+ * A JobSupervisorRuleInterface was violated
+ */
+class JobSupervisorException extends \LogicException
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function execute(array $job)
-	{
-		$this->touchJob($job);
-		$this->markComplete($job, 'Successful, congrats!', "More details! \nDummy job complete!");
-	}
 }

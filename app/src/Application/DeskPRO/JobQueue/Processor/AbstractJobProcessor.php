@@ -32,8 +32,10 @@
  * @subpackage JobQueue
  */
 
-namespace Application\DeskPRO\JobQueue;
+namespace Application\DeskPRO\JobQueue\Processor;
 
+use Application\DeskPRO\JobQueue\JobProcessorInterface;
+use Application\DeskPRO\Entity\Job;
 use Doctrine\DBAL\Connection;
 
 /**

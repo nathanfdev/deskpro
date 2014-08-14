@@ -29,19 +29,85 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage JobQueue
  */
 
-namespace Application\DeskPRO\JobQueue\Processor;
+namespace Application\DeskPRO\JobQueue;
 
-class DummyProcessor extends AbstractJobProcessor
+use Application\DeskPRO\DBAL\Connection;
+
+/**
+ * The JobSupervisor maintains a list of rules that contain business logic to determine if they are violated.
+ *
+ * When you run() the JobSupervisor, it iterates over all of the rules and makes them check for violations.
+ * In the case that a violation is encountered inside of a rule check, the rule fires a JobSupervisorException
+ * with a detailed message.
+ *
+ * After the exception is caught, the rule has a chance to attempt to fix its problem, and if it can successfully fix
+ * the violation, we silently log it, but do not fire out an admin alert.
+ *
+ * If the rule cannot fix the violation, the JobSupervisor will send a notification to the admin.
+ */
+class JobSupervisor
 {
 	/**
-	 * {@inheritdoc}
+	 * @var JobSupervisorRuleInterface[]
 	 */
-	public function execute(array $job)
+	protected $rules;
+
+	/**
+	 * @var Connection
+	 */
+	private $connection;
+
+
+	/**
+	 * @param Connection $connection
+	 * @param array      $rules
+	 */
+	public function __construct(Connection $connection, array $rules = array())
 	{
-		$this->touchJob($job);
-		$this->markComplete($job, 'Successful, congrats!', "More details! \nDummy job complete!");
+		$this->connection = $connection;
+		$this->rules = $rules;
+	}
+
+
+	/**
+	 * Runs the supervisor instance, checking all of the registered rules, and reporting any violations that
+	 * cannot be fixed.
+	 */
+	public function run()
+	{
+		foreach ($this->rules as $rule) {
+			try {
+
+				$rule->check();
+
+			} catch (JobSupervisorException $e) {
+
+				if (!$rule->attemptToFix()) {
+					$this->reportViolation($e);
+				} else {
+					// fixed, silently log the violation and that it was resolved by the rule
+				}
+
+			} catch (\Exception $e) {
+				// something terribly wrong happened because we shouldn't be here, we should probably do something now
+				// because this is a problem with the job supervising system! Probably DB query issues.
+			}
+		}
+
+	}
+
+
+	public function reportViolation(JobSupervisorException $e)
+	{
+		// report it
+		// log to kernel for now
+	}
+
+	public function addRule(JobSupervisorRuleInterface $rule)
+	{
+		$this->rules[] = $rule;
 	}
 }

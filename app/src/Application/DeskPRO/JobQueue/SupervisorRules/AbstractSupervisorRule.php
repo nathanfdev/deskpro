@@ -32,16 +32,31 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\JobQueue\Processor;
+namespace Application\DeskPRO\JobQueue\SupervisorRules;
 
-class DummyProcessor extends AbstractJobProcessor
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\JobQueue\JobSupervisorRuleInterface;
+
+abstract class AbstractSupervisorRule implements JobSupervisorRuleInterface
 {
+	/**
+	 * @var Connection
+	 */
+	private $connection;
+
+	public function __construct(Connection $connection)
+	{
+		$this->connection = $connection;
+	}
+
 	/**
 	 * {@inheritdoc}
 	 */
-	public function execute(array $job)
-	{
-		$this->touchJob($job);
-		$this->markComplete($job, 'Successful, congrats!', "More details! \nDummy job complete!");
-	}
+	public abstract function check();
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public abstract function attemptToFix();
 }
