@@ -485,8 +485,8 @@ class Service
 		}
 
 		try {
-		//Reaching this point means there are DeskPRO tickets associated to this issue_id 
-		$issue		= $this->findIssue($issue_id);
+			//Reaching this point means there are DeskPRO tickets associated to this issue_id
+			$issue	= $this->findIssue($issue_id);
 		} catch (\Exception $e) {
 			if (404 === $e->getCode()) {
 				foreach ($jiraIssues as $issue) {
@@ -494,6 +494,10 @@ class Service
 				}
 				return $this->_em->flush();
 			}
+		}
+
+		if (!$issue) {
+			return;
 		}
 		
 		$jiraRepository	= $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
