@@ -273,6 +273,9 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
 		$scope.$watch('persons', function(newVal, oldVal){
 			$scope.$parent.listItems.length = 0;
+			if (!newVal || !newVal.length) {
+				return;
+			}
 			var routeTemplate = $scope.$parent.routes.person;
 			newVal.each(function(person){
 				$scope.$parent.addListItem('person:'+person.id, person.name_with_title, routeTemplate.replace('0000', person.id));
