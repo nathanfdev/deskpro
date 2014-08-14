@@ -148,9 +148,9 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 				}
 			}).then(function(data){
 				pag.isLoading = false;
-				$scope.persons.length = 0;
+				$scope.organizations.length = 0;
 				if (!data.data) data.data = [];
-				data.data.each(function(person){ $scope.persons.push(person); });
+				data.data.each(function(org){ $scope.organizations.push(org); });
 				pag.page = page;
 			}, function(){
 				pag.isLoading = false;
