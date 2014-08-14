@@ -87,6 +87,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\InstallCommand',
 			'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
 			'Application\\DeskPRO\\Command\\InternalUpgradeRunnerCommand',
+			'Application\\DeskPRO\\Command\\JobSupervisorCommand',
 			'Application\\DeskPRO\\Command\\LanguageToPOCommand',
 			'Application\\DeskPRO\\Command\\LicenseInfoCommand',
 			'Application\\DeskPRO\\Command\\LoginTokenCommand',
