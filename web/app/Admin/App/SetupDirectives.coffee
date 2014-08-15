@@ -124,6 +124,14 @@ define [
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
 
+		Module.directive('dpNoDrag', [ ->
+			return {
+				restrict: 'AC',
+				link: (scope, el, attrs) ->
+					el.get(0).draggable = false
+			}
+		])
+
 		Module.directive('dpMoveListToPos', [ '$timeout', ($timeout) ->
 			return {
 				restrict: 'A',

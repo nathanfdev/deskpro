@@ -39,6 +39,16 @@
       Module.directive('dpPortalEditor', Admin_Portal_Directive_PortalEditor);
       Module.directive('dpTicketLayoutEditor', Admin_TicketDeps_Directive_LayoutEditor);
       Module.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
+      Module.directive('dpNoDrag', [
+        function() {
+          return {
+            restrict: 'AC',
+            link: function(scope, el, attrs) {
+              return el.get(0).draggable = false;
+            }
+          };
+        }
+      ]);
       Module.directive('dpMoveListToPos', [
         '$timeout', function($timeout) {
           return {
