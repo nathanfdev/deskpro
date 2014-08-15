@@ -1592,7 +1592,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function ngHref($route, $params = '{}')
 	{
-		return '{{ state_path(\'' . addslashes($route) . '\', ' . $params . ') }}';
+		return '{{ state_path(\'' . addslashes($route) . '\', ' . str_replace(array("'", '"'), array('&apos;', '&quot;'), $params) . ') }}';
 	}
 
 	public function smartWrap($string, $len = 50, $break = null)

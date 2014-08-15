@@ -1,8 +1,13 @@
 define [
-	'angular'
+	'angular',
+	'ZeroClipboard',
 ], (
-	angular
+	angular,
+	ZeroClipboard
 ) ->
+
+	window.ZeroClipboard = ZeroClipboard;
+
 	AdminModule = angular.module('Admin_App', [
 		'ngAnimate',
 		'ngSanitize',

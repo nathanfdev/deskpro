@@ -1,0 +1,39 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Website Embeds</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li dp-state-mark="type:portal.embeds.type.tab">
+					<a href="{{ ng_href('portal.embeds.type', '{type:"tab"}') }}" dp-list-autoload>
+						<h4><span class="title-text">Website Button</span></h4>
+					</a>
+				</li>
+				<li dp-state-mark="type:portal.embeds.type.chat">
+					<a href="{{ ng_href('portal.embeds.type', '{type:"chat"}') }}" dp-list-autoload>
+						<h4><span class="title-text">Chat Button</span></h4>
+					</a>
+				</li>
+				<li dp-state-mark="type:portal.embeds.type.form">
+					<a href="{{ ng_href('portal.embeds.type', '{type:"form"}') }}" dp-list-autoload>
+						<h4><span class="title-text">Contact Form</span></h4>
+					</a>
+				</li>
+				<li dp-state-mark="type:portal.embeds.type.helpdesk">
+					<a href="{{ ng_href('portal.embeds.type', '{type:"helpdesk"}') }}" dp-list-autoload>
+						<h4><span class="title-text">Entire Helpdesk</span></h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Embed DeskPRO in your website</h1>
+		<p>Use these code snippets to add portal functions to your site, or embed the whole portal.</p>
+	</header>
+{% endblock %}

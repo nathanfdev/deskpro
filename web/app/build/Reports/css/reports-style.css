@@ -11302,6 +11302,10 @@ button.toast-close-button {
   border-radius: 2px;
 }
 
+.editor {
+  font-size: 11px;
+}
+
 .ace-tm .ace_print-margin {
   display: none !important;
 }

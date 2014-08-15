@@ -49,7 +49,7 @@ requirejs.config({
 		"sifter":                          "app/bower_components/sifter/sifter",
 		"microplugin":                     "app/bower_components/microplugin/src/microplugin",
 
-		"zeroclipboard":                   "app/bower_components/zeroclipboard/dist/ZeroClipboard",
+		"ZeroClipboard":                   "app/bower_components/zeroclipboard/dist/ZeroClipboard",
 		"ngClip":                          "app/bower_components/ng-clip/src/ngClip",
 
 		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/AdminLoad"),
@@ -81,7 +81,8 @@ requirejs.config({
 		"angularSlider":                   ["angular"],
 		"angularSelectize":                ["angular"],
 		"angularGrid":                     ["angular"],
-		"ngClip":                          ["angular"],
+		"ZeroClipboard":                   { "exports": "ZeroClipboard"},
+		"ngClip":                          ["angular", "ZeroClipboard"],
 		"ngFileUpload":                    ["angular"],
 		"jquery":                          { "exports": "jquery" },
 		"jqueryUi":                        ["jquery"],
