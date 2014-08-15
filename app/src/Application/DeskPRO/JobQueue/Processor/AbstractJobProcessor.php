@@ -163,32 +163,31 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	 * @param       $date_string
 	 * @throws \Doctrine\DBAL\DBALException
 	 */
-	protected function scheduleRetry(array $job, $date_string)
+	protected function scheduleRetryExisting(array $job, $date_string)
 	{
 		$retry_date = new \DateTime($date_string);
 
+		// took out "original_job_id" because this is an EXISTING job we are retrying. That is for external
+		// processes to create a new job to retry.
 		$this->connection->executeUpdate(
 			'
 			UPDATE jobs
 			SET date_touch = :date_now,
 				date_next_try = :date_retry,
 				status = :waiting_status,
-				worker_id = NULL,
-				original_job_id = :original_job_id
+				worker_id = NULL
 			WHERE id = :job_id
 			',
 			array(
 				'date_now' => new \DateTime(),
 				'date_retry' => $retry_date,
 				'waiting_status' => Job::STATUS_WAITING,
-				'original_job_id' => $this->getOriginalJobId($job),
 				'job_id'   => $job['id']
 			),
 			array(
 				'date_now' => 'datetime',
 				'date_retry' => 'datetime',
 				'waiting_status' => 'string',
-				'original_job_id' => 'integer',
 				'job_id'   => 'integer'
 			)
 		);
@@ -223,5 +222,19 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	protected function getOriginalJobId(array $job)
 	{
 		return isset($job['original_job_id']) ? $job['original_job_id'] : $job['id'];
+	}
+
+
+	/**
+	 * Gets the array of data for the job
+
+
+*
+*@param $job
+	 * @return array
+	 */
+	protected function getData($job)
+	{
+		return json_decode($job['data'], true);
 	}
 }

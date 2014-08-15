@@ -42,4 +42,9 @@ class SmsNullProvider implements SmsProviderInterface
 	{
 		return 'null';
 	}
+
+	public function getParams()
+	{
+		return array();
+	}
 }

@@ -48,8 +48,20 @@ class TwilioSmsProvider implements SmsProviderInterface
 	 */
 	protected $twilio;
 
+	/**
+	 * @var string
+	 */
+	protected $sid;
+
+	/**
+	 * @var string
+	 */
+	protected $auth_token;
+
 	public function __construct($sid, $auth_token)
 	{
+		$this->sid = $sid;
+		$this->auth_token = $auth_token;
 		$this->twilio = new Twilio($sid, $auth_token);
 	}
 
@@ -143,5 +155,17 @@ class TwilioSmsProvider implements SmsProviderInterface
 	public function getName()
 	{
 		return 'twilio';
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParams()
+	{
+		return array(
+			'sid' => $this->sid,
+			'auth_token' => $this->auth_token
+		);
 	}
 }

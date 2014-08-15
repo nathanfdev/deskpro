@@ -34,10 +34,10 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
-use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Sms\DeskPROSmsSender;
+use Application\DeskPRO\Sms\SmsProviderFactory;
 use Orb\Sms\SmsException;
 use Orb\Sms\SmsMessage;
+use Orb\Sms\SmsSender;
 
 /**
  * Processes an outgoing SMS message.
@@ -49,17 +49,7 @@ use Orb\Sms\SmsMessage;
  */
 class OutgoingSmsProcessor extends AbstractJobProcessor
 {
-	/**
-	 * @var DeskPROSmsSender
-	 */
-	protected $sms_sender;
-
-	public function __construct(Connection $connection, DeskPROSmsSender $sms_sender)
-	{
-		parent::__construct($connection);
-
-		$this->sms_sender = $sms_sender;
-	}
+	const JOB_TYPE = 'outgoing_sms';
 
 	/**
 	 * {@inheritdoc}
@@ -69,30 +59,30 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
 		$this->touchJob($job);
 
 		try {
+			$data = $this->getData($job);
 
-			$data = $job['data'];
 			$provider = SmsProviderFactory::create($data['provider'], $data['provider_params']);
-			$this->sms_sender->setDefaultProvider($provider);
-			$this->sms_sender->setDefaultFromNumber($data['from']);
-			$message = new SmsMessage($data['message']);
-			$this->sms_sender->send($data['to'], $message);
+			$sender = new SmsSender($provider, $data['from_number']);
 
-		} catch (SmsException $e) {
+			$message = new SmsMessage($data['message']);
+			$sender->send($data['to_number'], $message);
+
+			$this->markComplete($job, 'SMS Sent Successfully', '');
+
+		} catch (\Exception $e) {
 
 			$this->markExceptionError(
 				$job,
-				sprintf('SMS Failed (%s/5 attempts)', $job['num_tries']+1), // num_tries starts at 0
 				$this->willRetry($job) ? 'retrying' : 'exhausted',
+				sprintf('SMS Failed (%s/5 attempts)', $job['num_tries'] + 1), // num_tries starts at 0
 				$e
 			);
 
 			if ($this->willRetry($job)) {
-				$this->scheduleRetry($job, '2 minutes');
+				$this->scheduleRetryExisting($job, '2 minutes');
 			}
 
 		}
-
-		$this->markComplete($job, 'SMS Sent Successfully', '');
 	}
 
 

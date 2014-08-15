@@ -60,4 +60,12 @@ interface SmsProviderInterface
      * @return string
      */
     public function getName();
+
+    /**
+     * An array of parameters currently being used by this provider. Useful for serializing/deserializing a provider.
+     * These values are usually sent to a factory along with the value of getName() to re-construct the provider.
+     *
+     * @return array
+     */
+    public function getParams();
 }

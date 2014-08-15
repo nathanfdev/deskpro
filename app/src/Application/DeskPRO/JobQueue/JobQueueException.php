@@ -29,53 +29,25 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Sms
+ * @subpackage JobQueue
  */
 
-namespace DpUnitTests\DeskPRO\Sms;
+namespace Application\DeskPRO\JobQueue;
 
-use Application\DeskPRO\JobQueue\JobQueue;
-use Application\DeskPRO\Sms\DeskPROSmsSender;
-use Orb\Sms\SmsMessage;
+use Orb\Util\Strings;
 
-class DeskPROSmsSenderTest extends \DpUnitTestCase
+/**
+ * Anything that goes wrong that a worker (or router) detects
+ *
+ * Default error code: 1545
+ */
+class JobQueueException extends \LogicException
 {
-	public function testSendUsesDefaults()
+	public function __construct($message, $code = 1545, \Exception $previous = null)
 	{
-		$queue = $this->getMockJobQueue();
-		$queue->shouldReceive('scheduleJob')->once();
-
-		$sms = new DeskPROSmsSender(null, null, $queue);
-		$sms->setDefaultFromNumber($from = '+12345678901');
-		$to = '1029384765';
-		$text = new SmsMessage('Some text message!');
-
-		$sms_provider = \Mockery::mock('Orb\Sms\SmsProviderInterface');
-		$sms_provider->shouldReceive('getName')->andReturn('name');
-		$sms_provider->shouldReceive('getParams')->andReturn(array());
-
-		$sms->setDefaultProvider($sms_provider);
-
-		$sms->send($to, $text);
-	}
-
-	public function testMaxChunks()
-	{
-		$sms = new DeskPROSmsSender(null, null, $this->getMockJobQueue(), 2);
-		$sms->setDefaultFromNumber($from = '+12345678901');
-		$to = '1029384765';
-		$text = new SmsMessage(str_repeat('Some text message!', 50));
-
-		$this->setExpectedException('Orb\Sms\SmsException');
-
-		$sms->send($to, $text);
-	}
-
-
-	private function getMockJobQueue()
-	{
-		$queue = \Mockery::mock('Application\DeskPRO\JobQueue\JobQueue');
-
-		return $queue;
+		if (!Strings::startsWith('Job Queue', $message)) {
+			$message = "Job Queue: $message";
+		}
+		parent::__construct($message, $code, $previous);
 	}
 }

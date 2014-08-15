@@ -154,6 +154,7 @@ class SmsSender
 	 * @param string|null          $from_number
 	 * @param SmsProviderInterface $provider
 	 * @throws SmsException
+	 * @return bool
 	 */
 	protected function doSend(
 		$to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null

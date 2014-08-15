@@ -35,8 +35,9 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Sms\DeskPROSmsSender;
 
-class InstantSmsSenderService
+class SmsSenderService
 {
 	/**
 	 * @param DeskproContainer $container
@@ -45,9 +46,12 @@ class InstantSmsSenderService
 	 */
 	public static function create(DeskproContainer $container, $options = array())
 	{
-		$sms_sender = $container->get('deskpro.sms_sender');
-		$max_chunks = $container->getSettingsHandler()->get('core.max_sms_chunks');
-		$sms_sender->setMaxChunks($max_chunks);
+		$sms_sender = new DeskPROSmsSender(
+			null,
+			null,
+			$container->getJobQueue(),
+			$container->getSettingsHandler()->get('core.max_sms_chunks')
+		);
 
 		return $sms_sender;
 	}

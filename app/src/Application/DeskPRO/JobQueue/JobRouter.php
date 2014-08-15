@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\Processor\DummyProcessor;
+use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 
 /**
  * The Job Router is responsible for instantiating the JobProcessor for a job and executing it
@@ -62,8 +63,7 @@ class JobRouter
 	public function handle(array $job)
 	{
 		try {
-			// TODO: processors should somehow be stored intelligently so they can be reused
-			//       make the JobRouter aware of how to identify these and reuse the instantiated processor
+			// TODO: maybe make processors reusable?
 			$processor = $this->findProcessor($job);
 			$processor->execute($job);
 		} catch (\Exception $e) {
@@ -79,8 +79,13 @@ class JobRouter
 	 */
 	private function findProcessor(array $job)
 	{
-		// TODO: temporarily, for initial testing/building of queue, they all get handled the same
-		return new DummyProcessor($this->connection);
+		// TODO: route these more intelligently, probably have the processors instantiated outside this class, injected
+		switch ($job['type']) {
+			case 'outgoing_sms':
+				return new OutgoingSmsProcessor($this->connection);
+			default:
+				throw new JobQueueException(sprintf('No processor found for "%s"', $job['type']));
+		}
 	}
 
 

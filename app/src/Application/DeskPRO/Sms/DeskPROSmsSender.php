@@ -33,9 +33,14 @@
 
 namespace Application\DeskPRO\Sms;
 
+use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\JobQueue\JobQueue;
+use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
+use Doctrine\ORM\EntityManager;
 use Orb\Sms\SmsException;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsProviderInterface;
+use Orb\Sms\SmsResult;
 use Orb\Sms\SmsSender;
 
 /**
@@ -46,19 +51,30 @@ use Orb\Sms\SmsSender;
  */
 class DeskPROSmsSender extends SmsSender
 {
+	/**
+	 * @var int
+	 */
 	protected $max_chunks;
+
+	/**
+	 * @var JobQueue
+	 */
+	protected $queue;
+
 
 	/**
 	 * @param SmsProviderInterface $provider
 	 * @param null                 $from_number
+	 * @param JobQueue             $queue
 	 * @param null                 $max_chunks if a message requires more than this amount of messages to be send
 	 *                                         it will fail and not send any
 	 */
-	public function __construct(SmsProviderInterface $provider = null, $from_number = null, $max_chunks = null)
+	public function __construct(SmsProviderInterface $provider = null, $from_number = null, JobQueue $queue, $max_chunks = null)
 	{
 		$this->default_provider = $provider;
 		$this->from_number      = $from_number;
 		$this->max_chunks       = $max_chunks;
+		$this->queue            = $queue;
 	}
 
 
@@ -69,6 +85,7 @@ class DeskPROSmsSender extends SmsSender
 	 * @param SmsMessage           $message
 	 * @param null                 $from_number
 	 * @param SmsProviderInterface $provider
+	 * @return bool
 	 */
 	public function send($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
 	{
@@ -77,7 +94,32 @@ class DeskPROSmsSender extends SmsSender
 			for SMS chunks is %s', count($message->getChunks()), $this->max_chunks));
 		}
 
-		$this->doSend($to_number, $message, $from_number, $provider);
+		return $this->doSend($to_number, $message, $from_number, $provider);
+	}
+
+
+	public function doSend($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
+	{
+		if (!$provider = $this->getProvider($provider)) {
+			throw new SmsException('cannot send SMS without an SmsProvider');
+		}
+
+		$from_number = $this->getFromNumber($from_number);
+
+		$data = array(
+			'provider'        => $provider->getName(),
+			'provider_params' => $provider->getParams(),
+			'to_number'       => $to_number,
+			'from_number'     => $from_number,
+			'message'         => $message->getRawMessage()
+		);
+		$job = new Job(
+			OutgoingSmsProcessor::JOB_TYPE,
+			$data
+		);
+		$this->queue->scheduleJob($job);
+
+		return true;
 	}
 
 
