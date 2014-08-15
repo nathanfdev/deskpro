@@ -7748,6 +7748,21 @@ div.success-message.well {
   margin-bottom: 0;
 }
 
+.soft-link {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 1px dotted #777;
+}
+
+.soft-link:hover {
+  border-bottom: 1px solid #555;
+}
+
+.help-block .soft-link {
+  color: #737373;
+}
+
 div.danger-message {
   background: #f2dede;
 }

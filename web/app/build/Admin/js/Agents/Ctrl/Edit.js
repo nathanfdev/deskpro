@@ -10,6 +10,7 @@
       __extends(Admin_Agents_Ctrl_Edit, _super);
 
       function Admin_Agents_Ctrl_Edit() {
+        this.clearDepOverrides = __bind(this.clearDepOverrides, this);
         this.clearPermOverrides = __bind(this.clearPermOverrides, this);
         return Admin_Agents_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
@@ -27,7 +28,9 @@
           emails_list: []
         };
         this.hasPermOverrides = false;
+        this.hasDepOverrides = false;
         this.primary_phone_number_region = 'US';
+        this.dep_perms = {};
         this.$scope.$watch('EditCtrl.form.emails_list', (function(_this) {
           return function(emails_list) {
             _this.email_sysaccount_error = false;
@@ -267,24 +270,59 @@
        */
 
       Admin_Agents_Ctrl_Edit.prototype.updateHasPermOverridesStatus = function() {
-        var permName, perms, type, value, _ref, _ref1;
+        var run;
         this.updateEffectiveUgPerms();
         this.hasPermOverrides = false;
-        _ref = this.perm_form;
-        for (type in _ref) {
-          if (!__hasProp.call(_ref, type)) continue;
-          perms = _ref[type];
-          for (permName in perms) {
-            if (!__hasProp.call(perms, permName)) continue;
-            value = perms[permName];
-            if (value) {
-              if ((((_ref1 = this.ugEffectivePerms[type]) != null ? _ref1[permName] : void 0) == null) || !this.ugEffectivePerms[type][permName]) {
-                this.hasPermOverrides = true;
-                return;
+        run = (function(_this) {
+          return function() {
+            var permName, perms, type, value, _ref, _ref1;
+            _ref = _this.perm_form;
+            for (type in _ref) {
+              if (!__hasProp.call(_ref, type)) continue;
+              perms = _ref[type];
+              for (permName in perms) {
+                if (!__hasProp.call(perms, permName)) continue;
+                value = perms[permName];
+                if (value) {
+                  if ((((_ref1 = _this.ugEffectivePerms[type]) != null ? _ref1[permName] : void 0) == null) || !_this.ugEffectivePerms[type][permName]) {
+                    _this.hasPermOverrides = true;
+                    return;
+                  }
+                }
               }
             }
-          }
-        }
+          };
+        })(this);
+        run();
+        this.hasDepOverrides = false;
+        run = (function(_this) {
+          return function() {
+            var app, depId, perm, perms, value, _i, _len, _ref, _ref1;
+            if (!_this.deps_perms || !_this.deps_perms.tickets) {
+              return;
+            }
+            _ref = ['tickets', 'chat'];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              app = _ref[_i];
+              _ref1 = _this.deps_perms[app];
+              for (depId in _ref1) {
+                if (!__hasProp.call(_ref1, depId)) continue;
+                perms = _ref1[depId];
+                for (perm in perms) {
+                  if (!__hasProp.call(perms, perm)) continue;
+                  value = perms[perm];
+                  if (value) {
+                    if (!_this.ugEffectiveDepPerms[app][depId][perm]) {
+                      _this.hasDepOverrides = true;
+                      return;
+                    }
+                  }
+                }
+              }
+            }
+          };
+        })(this);
+        return run();
       };
 
 
@@ -305,6 +343,30 @@
           }
         }
         return this.hasPermOverrides = false;
+      };
+
+
+      /*
+        	 * This does the actual removal of all depoverrides
+       */
+
+      Admin_Agents_Ctrl_Edit.prototype.clearDepOverrides = function() {
+        var app, depId, perm, perms, value, _i, _len, _ref, _ref1;
+        _ref = ['tickets', 'chat'];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          app = _ref[_i];
+          _ref1 = this.deps_perms[app];
+          for (depId in _ref1) {
+            if (!__hasProp.call(_ref1, depId)) continue;
+            perms = _ref1[depId];
+            for (perm in perms) {
+              if (!__hasProp.call(perms, perm)) continue;
+              value = perms[perm];
+              this.deps_perms[app][depId][perm] = false;
+            }
+          }
+        }
+        return this.hasDepOverrides = false;
       };
 
 
