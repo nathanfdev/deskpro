@@ -6,6 +6,7 @@ define [
 	AdminModule = angular.module('Admin_App', [
 		'ngAnimate',
 		'ngSanitize',
+		'ngClipboard',
 		'ui.router',
 		'ui.bootstrap',
 		'ui.select2',

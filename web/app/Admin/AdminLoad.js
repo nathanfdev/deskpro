@@ -27,6 +27,9 @@ define([
 	'sifter',
 	'selectize',
 
+	'zeroclipboard',
+	'ngClip',
+
 	'bootstrapTooltip',
 
 	'select2',
