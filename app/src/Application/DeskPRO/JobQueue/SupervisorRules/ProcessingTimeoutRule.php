@@ -29,25 +29,59 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage JobQueue
+ * @subpackage
  */
 
-namespace Application\DeskPRO\JobQueue;
+namespace Application\DeskPRO\JobQueue\SupervisorRules;
 
-use Orb\Util\Strings;
+use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\JobQueue\JobSupervisorException;
 
 /**
- * A JobSupervisorRuleInterface was violated
- *
- * Default error code: 1550
+ * A job should not be in the "processing" state for more than 5 minutes, signal an error as there is unfinished work!
  */
-class JobSupervisorException extends \LogicException
+class ProcessingTimeoutRule extends AbstractSupervisorRule
 {
-	public function __construct($message, $code = 1550, \Exception $previous = null)
+	/**
+	 * {@inheritdoc}
+	 */
+	public function check()
 	{
-		if (!Strings::startsWith('Job Supervisor', $message)) {
-			$message = "Job Supervisor: $message";
+		$date = new \DateTime('5 minutes ago');
+
+		$query = $this->connection->executeQuery(
+			'
+			SELECT count(id) as total
+			FROM jobs
+			WHERE status = :processing_state
+			AND date_touch < :five_mins_ago
+			',
+			array(
+				'processing_state' => Job::STATUS_PROCESSING,
+				'five_mins_ago' => $date
+			),
+			array(
+				'processing_state' => 'string',
+				'five_mins_ago' => 'datetime'
+			)
+		);
+		$result = $query->fetch();
+		if (is_array($result) and array_key_exists('total', $result)) {
+			$total = $result['total'];
+			if ($total > 0) {
+				throw new JobSupervisorException("Found $total idle jobs that have been processing for 5+ minutes.");
+			}
 		}
-		parent::__construct($message, $code, $previous);
+
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function attemptToFix()
+	{
+		// we might want to retry jobs like this up to 5 "num_tries" or something
+		return false;
 	}
 }

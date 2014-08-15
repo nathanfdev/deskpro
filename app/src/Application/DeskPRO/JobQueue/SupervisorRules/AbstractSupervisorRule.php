@@ -42,7 +42,7 @@ abstract class AbstractSupervisorRule implements JobSupervisorRuleInterface
 	/**
 	 * @var Connection
 	 */
-	private $connection;
+	protected $connection;
 
 	public function __construct(Connection $connection)
 	{

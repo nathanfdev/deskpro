@@ -73,13 +73,16 @@ class JobWorker
 	/**
 	 * Goto work, starts the loop. Continues until max_time, or no jobs found.
 	 *
-	 * @param int $max_time_in_seconds max time for the loop to run
+	 * @param int $max_time_in_seconds max time for the loop to run (seconds)
 	 */
 	public function work($max_time_in_seconds = 25)
 	{
 		#------------------------------
-		# loop for a max of 25 seconds
+		# loop for a max N seconds
 		#------------------------------
+		//
+		// TODO: look much deeper into this algorithm. suspect it might be slowing down the WorkerProcess (cron).
+		//
 		$workerStartTime = time();
 		$workerEndTime   = $workerStartTime + $max_time_in_seconds;
 		// if it can't find a job to execute, the loop ends

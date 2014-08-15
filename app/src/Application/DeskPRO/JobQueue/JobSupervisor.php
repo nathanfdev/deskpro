@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\DBAL\Connection;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * The JobSupervisor maintains a list of rules that contain business logic to determine if they are violated.
@@ -89,11 +90,13 @@ class JobSupervisor
 					$this->reportViolation($e);
 				} else {
 					// fixed, silently log the violation and that it was resolved by the rule
+					KernelErrorHandler::logException($e);
 				}
 
 			} catch (\Exception $e) {
 				// something terribly wrong happened because we shouldn't be here, we should probably do something now
 				// because this is a problem with the job supervising system! Probably DB query issues.
+				KernelErrorHandler::logException($e);
 			}
 		}
 
@@ -102,8 +105,7 @@ class JobSupervisor
 
 	public function reportViolation(JobSupervisorException $e)
 	{
-		// report it
-		// log to kernel for now
+		KernelErrorHandler::logException($e);
 	}
 
 	public function addRule(JobSupervisorRuleInterface $rule)

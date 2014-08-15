@@ -36,7 +36,8 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\JobSupervisor;
-use Application\DeskPRO\JobQueue\SupervisorRules\FunSupervisorRule;
+use Application\DeskPRO\JobQueue\SupervisorRules\ProcessingTimeoutRule;
+use Application\DeskPRO\JobQueue\SupervisorRules\ReservedTimeoutRule;
 
 class JobSupervisorService
 {
@@ -49,7 +50,8 @@ class JobSupervisorService
 		$conn = $container->get('doctrine.dbal.default_connection');
 
 		$supervisor = new JobSupervisor($conn);
-		$supervisor->addRule(new FunSupervisorRule($conn)); // TODO: delete this rule
+		$supervisor->addRule(new ProcessingTimeoutRule($conn));
+		$supervisor->addRule(new ReservedTimeoutRule($conn));
 
 		return $supervisor;
 	}
