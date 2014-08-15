@@ -4,6 +4,7 @@
 		<header>
 			<nav>
 				<span dp-ping-flash="display_orders_active" class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="FeedbackStatusesList.feedback_active_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_active_statuses') }}"></h3>
 		</header>

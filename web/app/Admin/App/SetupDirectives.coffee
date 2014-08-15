@@ -124,23 +124,49 @@ define [
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
 
+		Module.directive('dpToggleShowIds', [ ->
+			return {
+				restrict: 'A',
+				link: (scope, el, attrs) ->
+					window.DP_DO_SHOW_IDS = false;
+					scope.do_show_ids = false
+
+					update = ->
+						if window.DP_DO_SHOW_IDS
+							scope.do_show_ids = true
+							$('body').addClass('show-title-ids')
+						else
+							scope.do_show_ids = false
+							$('body').removeClass('show-title-ids')
+
+					update()
+
+					el.on('click', (ev) ->
+						ev.stopPropagation()
+						ev.preventDefault()
+						window.DP_DO_SHOW_IDS = !window.DP_DO_SHOW_IDS
+						scope.$apply(-> update())
+					)
+			}
+		])
+
 		Module.directive('dpGo', [ '$location', ($location) ->
 			return {
-			restrict: 'A',
-			link: (scope, el, attrs) ->
-				el.on('click', (ev) ->
-					ev.stopPropagation();
-					ev.preventDefault();
+				restrict: 'A',
+				link: (scope, el, attrs) ->
+					el.on('click', (ev) ->
+						ev.stopPropagation();
+						ev.preventDefault();
 
-					path = attrs.dpGo.replace(/^#/, '')
-					search = scope.$eval(attrs.dpGoParams)
+						path = attrs.dpGo.replace(/^#/, '')
+						search = scope.$eval(attrs.dpGoParams)
 
-					scope.$apply(->
-						$location.path(path)
-						if search
-							$location.search(search)
+						scope.$apply(->
+							$location.path(path)
+							if search
+								$location.search(search)
+						)
 					)
-				)
 			}
 		])
 

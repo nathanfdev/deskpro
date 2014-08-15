@@ -7,6 +7,9 @@
 
 	<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.settings.enabled">
         <header>
+			<nav>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+			</nav>
 			<h3 ng-pluralize count="ListCtrl.robins.length || 0" when="{{ ng_plural_phrase('adm.round_robins.count') }}"></h3>
 		</header>
 		<article>
@@ -14,6 +17,7 @@
 				<li ng-repeat="robin in ListCtrl.robins" dp-state-mark="tickets.roundrobin.edit.{{ ng_var('robin.id') }}">
 					<a href="{{ ng_href('tickets.roundrobin.edit', '{id: robin.id}') }}">
 						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('robin.id') }}</span>
 							<span class="title-text">{{ng_var('robin.title')}}</span>
 						</h4>
 					</a>

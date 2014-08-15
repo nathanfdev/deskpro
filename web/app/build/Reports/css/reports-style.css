@@ -10129,6 +10129,32 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   color: #999;
 }
 
+.dp-settings-ctrl {
+  display: inline-block;
+}
+
+.dp-settings-ctrl a {
+  cursor: pointer;
+}
+
+.dp-settings-ctrl a.title {
+  display: block;
+  padding: 0;
+  margin: 11px 13px 0 0;
+  color: #aaa;
+  text-decoration: none;
+}
+
+.dp-settings-ctrl a.title i.fa {
+  position: relative;
+  top: 1px;
+  font-size: 13px;
+}
+
+.dp-settings-ctrl a.title:hover {
+  color: #444;
+}
+
 .panel {
   margin: 0;
 }

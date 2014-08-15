@@ -27,6 +27,7 @@
 						</li>
 					</ul>
 				</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="ListCtrl.list.length" when="{{ ng_plural_phrase('adm.ticket_macros.count_macros') }}"></h3>
 		</header>
