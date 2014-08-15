@@ -8028,6 +8028,11 @@ form {
   margin: 0;
 }
 
+input[type="checkbox"],
+input[type="radio"] {
+  vertical-align: middle;
+}
+
 label {
   font-weight: normal;
 }
@@ -10536,6 +10541,10 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   margin-bottom: 0;
 }
 
+.dp-form label input {
+  vertical-align: text-bottom;
+}
+
 .panel-innertable .form-group {
   margin: 0;
 }
@@ -10577,7 +10586,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .labels-group label input {
   margin-right: 3px;
-  vertical-align: baseline;
+  vertical-align: text-bottom;
 }
 
 .labels-group label p {
@@ -10617,7 +10626,7 @@ ul.checkbox-list > li label {
 
 ul.checkbox-list > li label input {
   margin: 0 2px 0 0;
-  vertical-align: baseline;
+  vertical-align: middle;
 }
 
 .alert ul.checkbox-list {

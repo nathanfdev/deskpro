@@ -19,6 +19,10 @@ form {
 	margin: 0;
 }
 
+input[type="checkbox"], input[type="radio"] {
+	vertical-align: middle;
+}
+
 label {
 	font-weight: normal;
 }
@@ -2260,6 +2264,10 @@ section.dp-help-content-wrapper.open {
 		display: inline-block;
 		margin-bottom: 0;
 	}
+
+	label input {
+		vertical-align: text-bottom;
+	}
 }
 
 .panel-innertable .form-group {
@@ -2296,7 +2304,7 @@ section.dp-help-content-wrapper.open {
 
 		input {
 			margin-right: 3px;
-			vertical-align: baseline;
+			vertical-align: text-bottom;
 		}
 
 		p {
@@ -2337,7 +2345,7 @@ ul.checkbox-list {
 
 			input {
 				margin: 0 2px 0 0;
-				vertical-align: baseline;
+				vertical-align: middle;
 			}
 
 			span {
