@@ -8,7 +8,10 @@
         <span ng-switch-when="id">{{ phrase('agent.general.id') }}</span>
 
         {# Name #}
-        <span ng-switch-when="name">{{ phrase('agent.general.name') }}</span>
+        <span ng-switch-when="name">{{ phrase('agent.general.organization_name') }}</span>
+
+        {# Members count #}
+        <span ng-switch-when="members_count">{{ phrase('agent.general.number_of_members') }}</span>
 
         {# Labels #}
         <span ng-switch-when="labels">{{ phrase('agent.general.labels') }}</span>
