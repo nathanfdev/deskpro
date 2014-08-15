@@ -158,6 +158,11 @@ class HierarchyStructureProcessor
 			")->execute(array($have_ids));
 
 			foreach ($missing_recs as $r) {
+				if ($r->parent) {
+					$this->em->remove($r);
+				}
+			}
+			foreach ($missing_recs as $r) {
 				$this->em->remove($r);
 			}
 		}
