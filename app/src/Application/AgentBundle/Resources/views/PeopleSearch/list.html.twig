@@ -68,9 +68,31 @@ pageMeta.persons = {{ people_json|raw }};
         {% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
         {#{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}#}
 
-        <section class="people-list list-listing no-check">
+        <section class="people-list list-listing no-check"
+                 ng-if="listType == 'list'">
             {% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
         </section>
+
+        <div class="table-result-list"
+             ng-if="'table' === listType"
+                >
+            <table cellspacing="0" width="100%">
+
+                {% include 'AgentBundle:PeopleSearch:list-table-head.html.twig' %}
+
+                <tbody>
+                <tr
+                        ng-repeat="person in persons"
+                        class="row-item person person-{{ ng_var('person.id') }}"
+                        data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ person.id }}'})|raw }}"
+                        data-route-title="@selector(a.name)" data-route-openclass="open"
+                        >
+                    {% include 'AgentBundle:PeopleSearch:list-table-row.html.twig' %}
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
 
         {% include 'AgentBundle::list-pane-nav.html.twig' with {
             listName: 'persons',

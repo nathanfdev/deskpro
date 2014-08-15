@@ -47,9 +47,33 @@
 		{% include 'AgentBundle:OrganizationSearch:filter-display-options.html.twig' %}
 		{% include 'AgentBundle:OrganizationSearch:filter-control-bar.html.twig' %}
 
-		<section class="downloads-simple-list list-listing no-check">
+		<section class="downloads-simple-list list-listing no-check"
+                ng-if="'list' === listType"
+                >
 			{% include 'AgentBundle:OrganizationSearch:filter-page.html.twig' %}
 		</section>
+
+        <div class="table-result-list"
+                ng-if="'table' === listType"
+                >
+            <table cellspacing="0" width="100%">
+
+                {% include 'AgentBundle:OrganizationSearch:filter-table-head.html.twig' %}
+
+                <tbody>
+                    <tr
+                        ng-repeat="org in organizations"
+                        class="row-item org org-{{ ng_var('org.id')}} downloads-{{ ng_var('org.id')}}"
+                        data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('org.id')})|raw }}"
+                        data-route-title="@selector(a.row-title)"
+                        data-route-openclass="open"
+                        >
+                        {% include 'AgentBundle:OrganizationSearch:filter-table-row.html.twig' %}
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
 
         {% include 'AgentBundle::list-pane-nav.html.twig' with {
             listName: 'organizations',

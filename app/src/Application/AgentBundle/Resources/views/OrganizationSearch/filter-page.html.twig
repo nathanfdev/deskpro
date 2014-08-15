@@ -1,61 +1,57 @@
-<section class="search-reuslts page-set" data-page="{{ ng_var('pagination.page') }}">
-
-        <article
-            ng-repeat="org in organizations"
-			class="row-item org org-{{ ng_var('org.id')}} downloads-{{ ng_var('org.id')}}"
-			data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('org.id')})|raw }}"
-			data-route-title="@selector(a.row-title)"
-			data-route-openclass="open"
-		>
-			<div class="top-row">
-				<div class="top-row-left">
-					<h3>
-						<a class="row-title click-through">
-							<span class="person-name-picture" ng-style="{'background-image': 'url({{ ng_var('org.picture_url_15') }})'}">
-                                {{ ng_var('org.name') }}
-                            </span>
-						</a>
-					</h3>
-				</div>
-			</div>
-			<hr class="clear-top" />
+<article
+    ng-repeat="org in organizations"
+    class="row-item org org-{{ ng_var('org.id')}} downloads-{{ ng_var('org.id')}}"
+    data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('org.id')})|raw }}"
+    data-route-title="@selector(a.row-title)"
+    data-route-openclass="open"
+    >
+    <div class="top-row">
+        <div class="top-row-left">
+            <h3>
+                <a class="row-title click-through">
+                    <span class="person-name-picture" ng-style="{'background-image': 'url({{ ng_var('org.picture_url_15') }})'}">
+                        {{ ng_var('org.name') }}
+                    </span>
+                </a>
+            </h3>
+        </div>
+    </div>
+    <hr class="clear-top" />
 
 
-            <div class="extra-fields" ng-if="displayFields.length">
-                <ul>
-                    <li ng-repeat="field in displayFields" ng-if="isFieldDisplayable(org, field)" ng-switch="field">
+    <div class="extra-fields" ng-if="displayFields.length">
+        <ul>
+            <li ng-repeat="field in displayFields" ng-if="isFieldDisplayable(org, field)" ng-switch="field">
 
-                        <span ng-switch-when="labels">
-                            <span class="prop-title">{{ phrase('agent.general.labels') }}: </span>
-                            <span class="prop-val labels">
-                                <span class="listing-tag" ng-repeat-start="label in org.labels">{{ ng_var('label') }}</span>
-                                <span ng-repeat-end></span>
-                            </span>
-                        </span>
-
-
-                        <span ng-switch-when="members_count">
-                            <span class="prop-title">{{ phrase('agent.general.members') }}:</span>
-                            <span class="prop-val">
-                                <a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_organization&amp;terms[0][op]=is&amp;terms[0][organization]={{ ng_var('org.id') }}&amp;terms[1][type]=any_mode&amp;terms[1][op]=is&amp;terms[1][any_mode]=1">
-                                    {{ ng_var('org.members_count') }}
-                                </a>
-                            </span>
-                        </span>
+                <span ng-switch-when="labels">
+                    <span class="prop-title">{{ phrase('agent.general.labels') }}: </span>
+                    <span class="prop-val labels">
+                        <span class="listing-tag" ng-repeat-start="label in org.labels">{{ ng_var('label') }}</span>
+                        <span ng-repeat-end></span>
+                    </span>
+                </span>
 
 
-                        <span ng-switch-default>
-                            <span class="prop-title">{{ ng_var('org[field].title') }}:</span>
-                            <span class="prop-val">{{ ng_var('org[field].value') }}</span>
-                        </span>
+                <span ng-switch-when="members_count">
+                    <span class="prop-title">{{ phrase('agent.general.members') }}:</span>
+                    <span class="prop-val">
+                        <a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_organization&amp;terms[0][op]=is&amp;terms[0][organization]={{ ng_var('org.id') }}&amp;terms[1][type]=any_mode&amp;terms[1][op]=is&amp;terms[1][any_mode]=1">
+                            {{ ng_var('org.members_count') }}
+                        </a>
+                    </span>
+                </span>
 
-                    </li>
-                </ul>
-                <br class="clear" />
-            </div>
 
-            <br class="clear" ng-if="!displayFields.length" />
+                <span ng-switch-default>
+                    <span class="prop-title">{{ ng_var('org[field].title') }}:</span>
+                    <span class="prop-val">{{ ng_var('org[field].value') }}</span>
+                </span>
 
-		</article>
+            </li>
+        </ul>
+        <br class="clear" />
+    </div>
 
-</section>
+    <br class="clear" ng-if="!displayFields.length" />
+
+</article>

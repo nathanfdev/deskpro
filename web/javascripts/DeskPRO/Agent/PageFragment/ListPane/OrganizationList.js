@@ -21,6 +21,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
+        this.fixed_fields = ['id', 'name'];
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', '$http', function($compile, $rootScope, $q, $timeout, $http) {
 			self.$scope = $rootScope.$new();
@@ -107,6 +108,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
 		$scope.organizations = this.meta.organizations;
 		$scope.displayFields = this.meta.displayFields;
+        $scope.listType = 'list';
 
 		$scope.isFieldDisplayable = function(org, field) {
 			switch (field) {
@@ -127,6 +129,22 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 				$scope.$parent.addListItem('organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
 			});
 		});
+
+        $scope.getDisplayableFields = function() {
+            var fields = [];
+            self.fixed_fields.each(function(v){
+                fields.push(v);
+            });
+            $scope.displayFields.each(function(v){
+                if (fields.indexOf(v) > -1) return;
+                fields.push(v);
+            });
+            return fields;
+        };
+
+        $scope.getFieldDisplayName = function(field){
+            return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
+        };
 
 		// sometimes $scope.persons won't apply (as we're working outside of digest loop most of time), so force it
 		$scope.$safeApply();

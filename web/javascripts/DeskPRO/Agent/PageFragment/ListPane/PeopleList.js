@@ -21,6 +21,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
+        this.fixed_fields = ['id', 'name_with_title'];
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', '$http', function($compile, $rootScope, $q, $timeout, $http) {
 			self.$scope = $rootScope.$new();
@@ -95,9 +96,9 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		});
 		this.ownObject(this.selectionBar);
 
-		$('.detail-view-trigger', this.wrapper).on('click', (function() {
-			this.switchViewType('list');
-		}).bind(this));
+//		$('.detail-view-trigger', this.wrapper).on('click', (function() {
+//			this.switchViewType('list');
+//		}).bind(this));
 
 		this.massActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.perform-actions-trigger:first', this.wrapper),
@@ -254,6 +255,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
 		$scope.persons = this.meta.persons;
 		$scope.displayFields = this.meta.displayFields;
+        $scope.listType = 'list';
 
 		$scope.isFieldDisplayable = function(person, field) {
 			switch (field) {
@@ -270,6 +272,22 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 					return !!person[field];
 			}
 		};
+
+        $scope.getDisplayableFields = function() {
+            var fields = [];
+            self.fixed_fields.each(function(v){
+                fields.push(v);
+            });
+            $scope.displayFields.each(function(v){
+                if (fields.indexOf(v) > -1) return;
+                fields.push(v);
+            });
+            return fields;
+        };
+
+        $scope.getFieldDisplayName = function(field){
+            return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
+        };
 
 		$scope.$watch('persons', function(newVal, oldVal){
 			$scope.$parent.listItems.length = 0;
