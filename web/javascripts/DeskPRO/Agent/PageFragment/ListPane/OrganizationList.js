@@ -127,13 +127,11 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
             if (!newVal || !newVal.length) {
                 return;
             }
-            console.info(newVal);
 			var routeTemplate = $scope.$parent.routes.organization;
 			newVal.each(function(org){
 				$scope.$parent.addListItem('organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
 			});
 		});
-        console.info($scope.displayFields);
 
         $scope.getDisplayableFields = function() {
             var fields = [];
