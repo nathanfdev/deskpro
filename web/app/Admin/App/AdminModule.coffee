@@ -15,6 +15,7 @@ define [
 		'blueimp.fileupload',
 		'angularFileUpload',
 		'uiSlider',
+		'selectize'
 		'ngGrid',
 		'deskpro.option_builder',
 		'deskpro.category_builder'
