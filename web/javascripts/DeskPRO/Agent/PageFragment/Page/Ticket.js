@@ -808,7 +808,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var jiraWidget = new DeskPRO.Agent.Jira.Widget({
 				ticketId: self.meta.ticket_id,
 				baseId: self.meta.baseId,
-				defaultProject: self.meta.jiraDefaultProject,
+				defaultProject: self.meta.jiraDefaultProject
 			});
 		}
 	},
@@ -1237,10 +1237,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 			}
-		}
-
-		if (typeof data.cc_list == "string") {
-			this.wrapper.find('ul.cc-row-list').empty().html(data.cc_list);
 		}
 
 		var billing = this.billing;
