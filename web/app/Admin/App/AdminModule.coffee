@@ -1,11 +1,17 @@
 define [
-	'angular'
+	'angular',
+	'ZeroClipboard',
 ], (
-	angular
+	angular,
+	ZeroClipboard
 ) ->
+
+	window.ZeroClipboard = ZeroClipboard;
+
 	AdminModule = angular.module('Admin_App', [
 		'ngAnimate',
 		'ngSanitize',
+		'ngClipboard',
 		'ui.router',
 		'ui.bootstrap',
 		'ui.select2',
@@ -15,6 +21,7 @@ define [
 		'blueimp.fileupload',
 		'angularFileUpload',
 		'uiSlider',
+		'selectize'
 		'ngGrid',
 		'deskpro.option_builder',
 		'deskpro.category_builder'

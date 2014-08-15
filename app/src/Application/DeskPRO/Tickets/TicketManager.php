@@ -374,7 +374,7 @@ class TicketManager
 			$log_text = $context->getLogger()->getSavedMessages();
 			if ($log_text) {
 				try {
-					$blob = $this->blob_storage->createBlobRecordFromString($log_text, 'ticket-manager.' . date('Y-m-d_H-i-s') . '.log', 'plain/text');
+					$blob = $this->blob_storage->createBlobRecordFromString($log_text, 'ticket-manager.' . date('Y-m-d.H-i-s') . '.' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '.log', 'plain/text');
 				} catch (\Exception $e) {
 					$blob = null;
 					KernelErrorHandler::logException($e);

@@ -479,8 +479,7 @@
 	'core_tickets.use_archive' => 0,
 	'core_tickets.auto_archive_time' => 2419000,
 
-	'core_tickets.enable_like_search_mode' => 'auto',
-	'core_tickets.enable_like_search_auto' => true,
+	'core_tickets.enable_like_search_mode' => true,
 
 	// True to force agent emails to have the marker line
 	'core_tickets.gateway_agent_require_marker' => true,

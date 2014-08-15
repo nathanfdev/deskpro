@@ -40,6 +40,6 @@ class KbLabelsController extends AbstractLabelsController
 	 */
 	protected function getLabelsTypes()
 	{
-		return array('kb');
+		return array('articles');
 	}
 }

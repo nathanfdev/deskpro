@@ -718,14 +718,6 @@ class Connection extends \Doctrine\DBAL\Connection
 
 	public function rollback($is_unexpected = true)
 	{
-		if ($is_unexpected) {
-			if (!(defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing')) {
-				$e = new \Exception("Rollback called");
-				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
-			}
-		}
-
 		try {
 			parent::rollback();
 		} catch (\Exception $e) {

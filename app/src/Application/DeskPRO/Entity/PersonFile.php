@@ -80,7 +80,7 @@ class PersonFile extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 */
-	protected $note;
+	protected $note = '';
 
 	public function __construct()
 	{

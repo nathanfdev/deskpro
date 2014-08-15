@@ -865,9 +865,8 @@ class TicketController extends AbstractController
 		if ($person->id) {
 			if ($ticket->hasParticipantPerson($person) || $ticket->person->getId() == $person->getId()) {
 				return $this->createJsonResponse(array(
-					'success' => true,
-					'is_dupe' => true,
-					'cc_list' => $this->_getTicketCcList($ticket)
+					'error'      => true,
+					'error_code' => 'is_dupe',
 				));
 			}
 		}

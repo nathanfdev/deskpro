@@ -114,7 +114,7 @@ class LdapRaw implements FormLoginInterface, Loggable
 	public function getZendAuthAdapter()
 	{
 		$options = array();
-		foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn') as $k) {
+		foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn', 'useStartTls', 'useSsl') as $k) {
 			if (isset($this->options[$k]) && $this->options[$k]) {
 				$options[$k] = $this->options[$k];
 			}

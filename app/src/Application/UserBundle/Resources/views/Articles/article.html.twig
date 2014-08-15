@@ -41,7 +41,7 @@
 		<ul class="dp-post-info">
 			<li class="dp-author"><i class="dp-icon-user"></i> {{ article.person.display_name_user }}</li>
 			<li class="dp-date"><i class="dp-icon-calendar"></i> {{ article.date_created|date('full') }}</li>
-			{% if app.getSetting('user.publish_comments') %}<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="#comments">{{ phrase('user.general.count_comments', {'count': comment_counts[article.id]|default(0)}) }}</a></li>{% endif %}
+			{% if app.getSetting('user.publish_comments') %}<li class="dp-comments"><i class="dp-icon-comment"></i> <a href="#comments">{{ phrase('user.general.count_comments', {'count': comments|length|default(0)}) }}</a></li>{% endif %}
 		</ul>
 		{% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
 			<div class="sub-note">{{ phrase('user.general.can-view-because-agent') }}</div>

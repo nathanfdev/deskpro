@@ -45,7 +45,23 @@ use Orb\Util\Strings;
  *
  * @property int $id
  * @property int $sys_name
- * @property int $original_blob
+ * @property Blob $original_blob
+ * @property string $storage_loc
+ * @property string $storage_loc_pref
+ * @property string $save_path
+ * @property string $file_url
+ * @property string $filename
+ * @property string $filesize
+ * @property string $content_type
+ * @property string $authcode
+ * @property string $blob_hash
+ * @property string $is_media_upload
+ * @property string $title
+ * @property int $dim_w
+ * @property int $dim_h
+ * @property \DateTime $date_created
+ * @property bool $is_temp
+ * @property \DateTime $date_cleanup
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -453,6 +469,34 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 			'thumbnail_url_30'   => $is_image ? $this->getThumbnailUrl(30, true) : null,
 			'thumbnail_url_20'   => $is_image ? $this->getThumbnailUrl(20, true) : null,
 			'thumbnail_url_16'   => $is_image ? $this->getThumbnailUrl(16, true) : null,
+		);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function toDbArray()
+	{
+		return array(
+			'date_created'     => $this->date_created->format('Y-m-d H:i:s'),
+			'authcode'         => $this->authcode,
+			'sys_name'         => $this->sys_name,
+			'original_blob_id' => $this->original_blob ? $this->original_blob->id : null,
+			'storage_loc'      => $this->storage_loc,
+			'storage_loc_pref' => $this->storage_loc_pref,
+			'save_path'        => $this->save_path,
+			'file_url'         => $this->file_url,
+			'filename'         => $this->filename,
+			'filesize'         => $this->filesize,
+			'content_type'     => $this->content_type,
+			'blob_hash'        => $this->blob_hash,
+			'is_media_upload'  => $this->is_media_upload,
+			'title'            => $this->title,
+			'dim_w'            => $this->dim_w,
+			'dim_h'            => $this->dim_h,
+			'is_temp'          => $this->is_temp ? 1 : 0,
+			'date_cleanup'     => $this->date_cleanup ? $this->date_cleanup->format('Y-m-d H:i:s') : null
 		);
 	}
 

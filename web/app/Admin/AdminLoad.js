@@ -10,6 +10,7 @@ define([
 	'angularMoment',
 	'angularFileUpload',
 	'angularSlider',
+	'angularSelectize',
 	'angularGrid',
 	'ngFileUpload',
 
@@ -21,6 +22,13 @@ define([
 	'jqueryUi',
 	'underscore',
 	'stacktrace',
+
+	'microplugin',
+	'sifter',
+	'selectize',
+
+	'ZeroClipboard',
+	'ngClip',
 
 	'bootstrapTooltip',
 

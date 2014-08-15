@@ -110,6 +110,7 @@
           this.$scope[this.constructor.CTRL_AS] = this;
         }
         this._managed_listeners = [];
+        this.$scope.Growl = this.Growl;
         this.$scope._autoload_links = [];
         this.$scope.$on('$destroy', (function(_this) {
           return function(ev) {
@@ -142,7 +143,7 @@
             if (params == null) {
               params = {};
             }
-            return _this.$state.href(route, params);
+            return _this.$state.href(route, params).replace(/\?.*$/, '');
           };
         })(this);
         this.$scope.showAlert = (function(_this) {

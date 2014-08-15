@@ -114,7 +114,7 @@ class TicketFilter extends DomainObject
 	/**
 	 * @var int
 	 */
-	protected $display_order = 0;
+	protected $display_order = 1000;
 
 	/**
 	 * Results from the last search

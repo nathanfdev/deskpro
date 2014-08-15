@@ -115,9 +115,14 @@ class SlaProcessor
 
 			if ($set_warn_date = $calc->calculateWarnDate($ticket)) {
 				$ticket_sla->warn_date = $set_warn_date;
+			} else if (!$ticket_sla->is_completed) {
+				$ticket_sla->warn_date = null;
 			}
+
 			if ($set_fail_date = $calc->calculateFailDate($ticket)) {
 				$ticket_sla->fail_date = $set_fail_date;
+			} else if (!$ticket_sla->is_completed) {
+				$ticket_sla->fail_date = null;
 			}
 
 			if (!$ticket_sla->is_completed) {

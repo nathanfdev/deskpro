@@ -2,6 +2,9 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
+			<nav>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+			</nav>
 			<h3>Agent Permission Groups</h3>
 		</header>
 		<article>
@@ -66,6 +69,8 @@
 				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-permissions" target="_blank">Agent permissions</a></li>
 				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#permission-overrides" target="_blank">Permission overrides</a></li>
 				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-department-permissions" target="_blank">Agent department permissions</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/256" target="_blank">Limiting agent access to tickets by department</a>
+</li>
 			</ul>
 	</section>
 	</article>

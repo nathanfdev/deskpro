@@ -298,6 +298,11 @@ class TicketEmail
 		$ticketdisplay = new TicketDisplay($this->ticket, $this->to_person);
 		$ticketdisplay->setPersonContext($this->to_person, $this->user_mode);
 
+		if ($this->to_person && $this->to_person->is_agent) {
+			$this->to_person->loadHelper('Agent');
+			$this->to_person->loadHelper('AgentTeam');
+		}
+
 		$vars['ticket']        = $this->ticket;
 		$vars['person']        = $this->to_person;
 		$vars['ticketdisplay'] = $ticketdisplay;

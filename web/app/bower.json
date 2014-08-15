@@ -28,9 +28,12 @@
     "stacktrace": "latest",
     "blueimp-file-upload": "latest",
     "animate.css": "latest",
-    "notify.js": "latest"
+    "notify.js": "latest",
+	"angular-selectize.js": "v1.3.1",
+	"ng-clip": "v0.2.2",
+	"zeroclipboard": "v2.1.6"
   },
   "resolutions": {
-    "angular": "v1.2.0-rc.3"
+    "angular": "1.2.22"
   }
 }

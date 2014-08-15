@@ -19,6 +19,10 @@ form {
 	margin: 0;
 }
 
+input[type="checkbox"], input[type="radio"] {
+	vertical-align: middle;
+}
+
 label {
 	font-weight: normal;
 }
@@ -160,6 +164,39 @@ div.success-message {
 		padding: 5px;
 		margin-bottom: 0;
 	}
+}
+
+.soft-link {
+	cursor: pointer;
+	text-decoration: none;
+	color: #333;
+	border-bottom: 1px dotted #777;
+
+	&:hover {
+		border-bottom: 1px solid #555;
+	}
+}
+
+.no-text-select {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.yes-text-select {
+	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
+
+.help-block .soft-link {
+	color: #737373;
 }
 
 div.danger-message {
@@ -1799,6 +1836,31 @@ section.dp-help-content-wrapper.open {
 	}
 }
 
+.dp-settings-ctrl {
+	display: inline-block;
+	a {
+		cursor: pointer;
+	}
+
+	a.title {
+		display: block;
+		margin: 11px 13px 0 0;
+		padding: 0;
+		color: #aaa;
+		text-decoration: none;
+
+		i.fa {
+			font-size: 13px;
+			position: relative;
+			top: 1px;
+		}
+
+		&:hover {
+			color: #444;
+		}
+	}
+}
+
 //######################################################################################################################
 //# Panel Style
 //######################################################################################################################
@@ -2227,6 +2289,10 @@ section.dp-help-content-wrapper.open {
 		display: inline-block;
 		margin-bottom: 0;
 	}
+
+	label input {
+		vertical-align: text-bottom;
+	}
 }
 
 .panel-innertable .form-group {
@@ -2263,7 +2329,7 @@ section.dp-help-content-wrapper.open {
 
 		input {
 			margin-right: 3px;
-			vertical-align: baseline;
+			vertical-align: text-bottom;
 		}
 
 		p {
@@ -2304,7 +2370,7 @@ ul.checkbox-list {
 
 			input {
 				margin: 0 2px 0 0;
-				vertical-align: baseline;
+				vertical-align: middle;
 			}
 
 			span {
@@ -2945,7 +3011,7 @@ button.toast-close-button {
 }
 
 .editor {
-
+	font-size: 11px;
 }
 
 .ace-tm .ace_print-margin {
@@ -3413,7 +3479,8 @@ table.display-table.spaced {
 		display: block;
 		border-top: 1px solid #999;
 		height: 1px;
-		width: 18px;
+		width: 10px;
+		padding-right: 8px;
 		position: absolute;
 		top: 13px;
 		left: 31px;

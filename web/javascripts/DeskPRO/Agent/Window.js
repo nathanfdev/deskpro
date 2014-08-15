@@ -1032,6 +1032,24 @@ DeskPRO.Agent.Window = new Orb.Class({
 			wrap.addClass('active');
 			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
+			var mainRow = $(this).closest('.type-row');
+			var notifUl = mainRow.find('.notify-list.for-current')
+			var notifyBox = $('#dp_header_notify_wrap');
+			notifyBox.find('a.see_dismissed').removeClass('selected');
+			$(this).find('a.see_current').addClass('selected');
+
+			notifyBox.removeClass('mode-dismissed').addClass('mode-current');
+
+			notifyBox.find(".no-notifications").hide();
+			notifyBox.find('.notify-list.for-dismissed').empty().hide();
+
+			if (!notifUl.find('li')[0]) {
+				notifyBox.find(".no-notifications").not(".notification-progress-on").show();
+				$("#dp_notify_wrap").find('.notify-list.for-current').hide();
+			} else {
+				notifUl.show();
+			}
+
 			var closeFn = function() {
 				wrap.removeClass('active');
 				Orb.shimClickCallbackPop();

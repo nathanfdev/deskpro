@@ -118,7 +118,7 @@ class LicenseService
 			$client = new HttpClient(\DeskPRO\Kernel\License::getSupportUrl(), array(
 				'ssl.certificate_authority' => false
 			));
-			$request = $client->get('/news.rss');
+			$request = $client->get('/2-product.rss');
 			$response = $request->send();
 
 			if (!$response->isSuccessful()) {

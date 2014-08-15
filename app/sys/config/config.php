@@ -202,8 +202,9 @@ $container->setDefinition('deskpro.search.ticket_to_elastica_transformer', $defi
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Provider\\Doctrine');
 $definition->setArguments(array(
-    '',
-    '',
+	'',
+    new Reference('fos_elastica.indexable'),
+	'',
     array(),
     new Reference('doctrine')
 ));
@@ -314,7 +315,7 @@ $container->loadFromExtension('swiftmailer', array(
 $container->loadFromExtension('fos_elastica', array(
 
     'clients' => array(
-        'default' => array('host' => 'localhost', 'port' => 9200)
+        'default' => array('host' => 'DEFAULT', 'port' => 9200)
     ),
 
     'indexes' => array(
