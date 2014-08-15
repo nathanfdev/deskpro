@@ -63,20 +63,6 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
 		this.enableHighlightOpenRows('organization', 'org_id', 'article.org-');
 
-//		var opt = {
-//			resultIds: this.meta.orgResultIds,
-//			perPage: this.meta.perPage || 50
-//		};
-//		if (this.meta.viewType && this.meta.viewType == 'list') {
-//			opt.resultRowSelector = 'tr.row-item';
-//			opt.resultsContainer = $('.table-result-list table', el);
-//			opt.navEl = $('.bottom-action-bar', el);
-//		}
-//		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
-//		this.ownObject(this.resultsHelper);
-
-//		delete this.meta.orgResultIds;
-
 		// Sorting options
 		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
 		this.sortingMenu = new DeskPRO.UI.Menu({
@@ -109,6 +95,9 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 		$scope.organizations = this.meta.organizations;
 		$scope.displayFields = this.meta.displayFields;
         $scope.listType = 'list';
+        $scope.switchViewType = function() {
+            $scope.listType = 'list' === $scope.listType ? 'table' : 'list';
+        };
 
 		$scope.isFieldDisplayable = function(org, field) {
 			switch (field) {
