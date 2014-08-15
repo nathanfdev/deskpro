@@ -83,7 +83,7 @@
 					<span class="text-middle"><a href="#">{{ ng_var('groupObj.model.title') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button locked-model="groupObj.perms.full.locked" dp-toggle-switch
+					<button locked-model="groupObj.perms.full.locked || groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms'" dp-toggle-switch
 							ng-model="groupObj.perms.full.state"
 							ng-change="EditCtrl.propogatePermission(groupObj, 'full')"></button>
 				</td>
@@ -95,7 +95,7 @@
 					<span class="text-middle"><a href="#">{{ ng_var('agentObj.model.display_name') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button locked-model="agentObj.perms.full.locked" dp-toggle-switch
+					<button locked-model="agentObj.perms.full.locked || groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms'" dp-toggle-switch
 							ng-model="agentObj.perms.full.state"
 							ng-change="EditCtrl.propogatePermission(agentObj, 'full')"
 							locked-tip="{{ phrase('adm.departments.perm_group_locked_tip') }}"></button>
