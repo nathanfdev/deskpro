@@ -64,6 +64,8 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	}
 
 	/*
+	 * Mark the job as completed successfully
+	 *
 	 * @param array  $job
 	 * @param        $log_summary
 	 * @param        $detailed_logs
@@ -101,8 +103,100 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 		);
 	}
 
+
 	/**
-	 * Touch the job
+	 * Mark the job as "error" status, using the exception to provide the detailed log
+	 *
+	 * @param array      $job
+	 * @param            $status_code
+	 * @param            $log_summary
+	 * @param \Exception $e
+	 * @throws \Doctrine\DBAL\DBALException
+	 */
+	protected function markExceptionError(array $job, $status_code, $log_summary, \Exception $e)
+	{
+		$this->connection->executeUpdate(
+			'
+			UPDATE jobs
+			SET log_summary = :log_summary,
+				log = :detailed_logs,
+				status = :error_status,
+				status_code = :status_code,
+				date_touch = :date_touch,
+				has_warning = 1
+			WHERE id = :job_id
+			',
+			array(
+				'log_summary'   => $log_summary,
+				'detailed_logs' => sprintf(
+					"Exception: %s\n
+					Code: %s\n
+					File: %s (line %s)\n
+					\n\n%s",
+					$e->getMessage(),
+					$e->getCode(),
+					$e->getFile(),
+					$e->getLine(),
+					$e->getTraceAsString()
+				),
+				'error_status'   => Job::STATUS_ERROR,
+				'status_code'   => $status_code,
+				'date_touch'    => new \DateTime(),
+				'job_id'        => $job['id']
+			),
+			array(
+				'log_summary'   => 'string',
+				'detailed_logs' => 'text',
+				'error_status'   => 'string',
+				'status_code'   => 'string',
+				'date_touch'    => 'datetime',
+				'job_id'        => 'integer'
+			)
+		);
+	}
+
+
+	/**
+	 * Do the SQL to handle the common retry logic. Make sure to set the job status /logs and such yourself, before this.
+	 *
+	 * @param array $job
+	 * @param       $date_string
+	 * @throws \Doctrine\DBAL\DBALException
+	 */
+	protected function scheduleRetry(array $job, $date_string)
+	{
+		$retry_date = new \DateTime($date_string);
+
+		$this->connection->executeUpdate(
+			'
+			UPDATE jobs
+			SET date_touch = :date_now,
+				date_next_try = :date_retry,
+				status = :waiting_status,
+				worker_id = NULL,
+				original_job_id = :original_job_id
+			WHERE id = :job_id
+			',
+			array(
+				'date_now' => new \DateTime(),
+				'date_retry' => $retry_date,
+				'waiting_status' => Job::STATUS_WAITING,
+				'original_job_id' => $this->getOriginalJobId($job),
+				'job_id'   => $job['id']
+			),
+			array(
+				'date_now' => 'datetime',
+				'date_retry' => 'datetime',
+				'waiting_status' => 'string',
+				'original_job_id' => 'integer',
+				'job_id'   => 'integer'
+			)
+		);
+	}
+
+	/**
+	 * Touch the job - if you are looping or doing a job that takes a long time, touch it every once in a while
+	 * so the JobSupervisor does not get upset.
 	 *
 	 * @param $job
 	 * @throws \Doctrine\DBAL\DBALException
@@ -124,5 +218,10 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 				'job_id' => 'integer'
 			)
 		);
+	}
+
+	protected function getOriginalJobId(array $job)
+	{
+		return isset($job['original_job_id']) ? $job['original_job_id'] : $job['id'];
 	}
 }

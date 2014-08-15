@@ -26,91 +26,78 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package    Orb
- * @subpackage Sms
+ * @package DeskPRO
+ * @subpackage
  */
 
-namespace Orb\Sms;
+namespace Application\DeskPRO\JobQueue\Processor;
 
-use Orb\Util\Strings;
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Sms\DeskPROSmsSender;
+use Orb\Sms\SmsException;
+use Orb\Sms\SmsMessage;
 
 /**
- * Represents a single message that needs to be sent. SmsMessages are one or many chunks of 160 characters.
- * Each SmsMessageChunk holds a SmsResult of it's current status.
+ * Processes an outgoing SMS message.
  *
- * A value object.
+ * The job data contains provider auth details, the message, and to to/from number, and is considered a
+ * "dumb" or standalone job.
+ *
+ * The processor will automatically attempt to send it 5 times before giving up completely.
  */
-class SmsMessage
+class OutgoingSmsProcessor extends AbstractJobProcessor
 {
-	const STATUS_SUCCESS = 'success';
-	const STATUS_PENDING = 'queued';
-	const STATUS_FAILED = 'failed';
-
 	/**
-	 * @var string full message, without chunking
+	 * @var DeskPROSmsSender
 	 */
-	private $rawMessage;
+	protected $sms_sender;
 
-	/**
-	 * @var SmsMessageChunk[]|array the split string
-	 */
-	private $chunks;
-
-	public function __construct($rawMessage)
+	public function __construct(Connection $connection, DeskPROSmsSender $sms_sender)
 	{
-		$this->rawMessage = $rawMessage;
-		$chunks = Strings::splitStringIntoArray($rawMessage, 160);
-		$this->chunks = array();
-		foreach ($chunks as $chunk) {
-			$this->chunks[] = new SmsMessageChunk($chunk);
-		}
+		parent::__construct($connection);
+
+		$this->sms_sender = $sms_sender;
 	}
 
-
 	/**
-	 * This method will advance over time to allow for queuing, pending, etc
-	 *
-	 * @return bool
+	 * {@inheritdoc}
 	 */
-	public function isSent()
+	public function execute(array $job)
 	{
-		$status = self::STATUS_SUCCESS;
+		$this->touchJob($job);
 
-		foreach ($this->chunks as $chunk) {
-			if (!$chunk->isSent()) {
-				$status = self::STATUS_FAILED;
+		try {
+
+			$data = $job['data'];
+			$provider = SmsProviderFactory::create($data['provider'], $data['provider_params']);
+			$this->sms_sender->setDefaultProvider($provider);
+			$this->sms_sender->setDefaultFromNumber($data['from']);
+			$message = new SmsMessage($data['message']);
+			$this->sms_sender->send($data['to'], $message);
+
+		} catch (SmsException $e) {
+
+			$this->markExceptionError(
+				$job,
+				sprintf('SMS Failed (%s/5 attempts)', $job['num_tries']+1), // num_tries starts at 0
+				$this->willRetry($job) ? 'retrying' : 'exhausted',
+				$e
+			);
+
+			if ($this->willRetry($job)) {
+				$this->scheduleRetry($job, '2 minutes');
 			}
+
 		}
 
-		return $status == self::STATUS_SUCCESS;
+		$this->markComplete($job, 'SMS Sent Successfully', '');
 	}
 
 
-	/**
-	 * @return SmsMessageChunk[]
-	 */
-	public function getChunks()
+	private function willRetry($job)
 	{
-		return $this->chunks;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function hasMultipleChunks()
-	{
-		return count($this->chunks) > 1;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getRawMessage()
-	{
-		return $this->rawMessage;
+		return $job['num_tries'] < 5;
 	}
 }
