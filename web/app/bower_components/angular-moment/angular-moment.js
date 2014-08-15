@@ -388,5 +388,10 @@
 			}]);
 	}
 
-	angularMoment(angular, window.moment);
+	if (typeof define === 'function' && define.amd) {
+		define('angular-moment', ['angular', 'moment'], angularMoment);
+	} else {
+		angularMoment(angular, window.moment);
+	}
 })();
+
