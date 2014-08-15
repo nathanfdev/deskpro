@@ -142,7 +142,7 @@
             if (params == null) {
               params = {};
             }
-            return _this.$state.href(route, params);
+            return _this.$state.href(route, params).replace(/\?.*$/, '');
           };
         })(this);
         this.$scope.showAlert = (function(_this) {

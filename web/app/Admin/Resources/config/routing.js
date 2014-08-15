@@ -779,7 +779,7 @@ define(function() {
 
 	routes.push({
 		id: 'tickets.ticket_deps.edit',
-		url: '/{id:[0-9]+}',
+		url: '/{id:[0-9]+}?tab',
 		templateName: 'TicketDeps/edit.html',
 		controller: 'Admin_TicketDeps_Ctrl_Edit'
 	});

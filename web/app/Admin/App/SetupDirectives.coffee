@@ -124,6 +124,26 @@ define [
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
 
+		Module.directive('dpGo', [ '$location', ($location) ->
+			return {
+			restrict: 'A',
+			link: (scope, el, attrs) ->
+				el.on('click', (ev) ->
+					ev.stopPropagation();
+					ev.preventDefault();
+
+					path = attrs.dpGo.replace(/^#/, '')
+					search = scope.$eval(attrs.dpGoParams)
+
+					scope.$apply(->
+						$location.path(path)
+						if search
+							$location.search(search)
+					)
+				)
+			}
+		])
+
 		Module.directive('dpNoDrag', [ ->
 			return {
 				restrict: 'AC',

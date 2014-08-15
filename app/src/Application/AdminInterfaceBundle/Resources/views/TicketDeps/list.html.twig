@@ -13,7 +13,7 @@
 					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<div style="float:right">
-							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="!dep.children.length && dep.has_layout"><i class="fa fa-columns"></i></span>
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="!dep.children.length && dep.has_layout" dp-go="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}" dp-go-params="{tab: 'layout'}"><i class="fa fa-columns"></i></span>
 						</div>
 						<h4><span class="title-id" title="ID">#{{ ng_var('dep.id') }}</span> <span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
@@ -22,7 +22,7 @@
 							<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}">
 								<i class="fa fa-bars drag-handle"></i>
 								<div style="float:right">
-									<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="subdep.has_layout"><i class="fa fa-columns"></i></span>
+									<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="subdep.has_layout" dp-go="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}" dp-go-params="{tab: 'layout'}"><i class="fa fa-columns"></i></span>
 								</div>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>

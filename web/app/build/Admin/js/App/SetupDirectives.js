@@ -39,6 +39,28 @@
       Module.directive('dpPortalEditor', Admin_Portal_Directive_PortalEditor);
       Module.directive('dpTicketLayoutEditor', Admin_TicketDeps_Directive_LayoutEditor);
       Module.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
+      Module.directive('dpGo', [
+        '$location', function($location) {
+          return {
+            restrict: 'A',
+            link: function(scope, el, attrs) {
+              return el.on('click', function(ev) {
+                var path, search;
+                ev.stopPropagation();
+                ev.preventDefault();
+                path = attrs.dpGo.replace(/^#/, '');
+                search = scope.$eval(attrs.dpGoParams);
+                return scope.$apply(function() {
+                  $location.path(path);
+                  if (search) {
+                    return $location.search(search);
+                  }
+                });
+              });
+            }
+          };
+        }
+      ]);
       Module.directive('dpNoDrag', [
         function() {
           return {
