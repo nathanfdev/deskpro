@@ -389,7 +389,7 @@
 	}
 
 	if (typeof define === 'function' && define.amd) {
-		define('angular-moment', ['angular', 'moment'], angularMoment);
+		define('angularMoment', ['angular', 'moment'], angularMoment);
 	} else {
 		angularMoment(angular, window.moment);
 	}
