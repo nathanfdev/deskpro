@@ -29,73 +29,32 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace deskpro_googleanalytics;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\App\Native\NativeAppsSync;
+use Application\DeskPRO\App\Package\PackageInstaller;
+use Application\DeskPRO\Monolog\Logger;
 
-class InstallerHandler extends AbstractInstallerHandler
+class Build1408287917 extends AbstractBuild
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
+	public function run()
 	{
-		$this->_doInstall($context);
-	}
+		$this->out("Upgrade packages");
 
+		$logger = new Logger('apps');
+		$logger->enableSavedMessages();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$handler = $context->getContainer()->getSettingsHandler();
-		if (!is_array($this->settingsDef)) {
-			throw new \Exception('Wrong Package settings definition');
-		}
-		foreach ($this->settingsDef as $set) {
-			if (isset($set['name'])) {
-				$handler->setSetting('core.' . $set['name'], null);
-			}
-		}
-	}
+		$app_syncer = new NativeAppsSync(
+			$this->container,
+			$this->container->getAppManager(),
+			new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
+			$logger
+		);
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
-
-
-	/**
-	 * @param InstallerContext $context
-	 */
-	private function _doInstall(InstallerContext $context)
-	{
-		$handler = $context->getContainer()->getSettingsHandler();
-		if (!is_array($this->settingsDef)) {
-			throw new \Exception('Wrong Package settings definition');
-		}
-		foreach ($this->settingsDef as $set) {
-			if (isset($set['name'])) {
-				$handler->setSetting('core.' . $set['name'], $context->getApp()->getSetting($set['name']));
-			}
-		}
+		$app_syncer->runUpdates();
+		$app_syncer->runSync();
 	}
 }

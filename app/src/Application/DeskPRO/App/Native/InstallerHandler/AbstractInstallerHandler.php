@@ -36,6 +36,13 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 abstract class AbstractInstallerHandler implements InstallerHandlerInterface
 {
+	protected $settingsDef;
+
+	public function __construct($settingsDef = array())
+	{
+		$this->settingsDef = $settingsDef;
+	}
+
 	/**
 	 * @param InstallerContext $context
 	 * @param array $settings

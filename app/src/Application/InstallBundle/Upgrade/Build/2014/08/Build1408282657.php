@@ -38,7 +38,7 @@ class Build1408282657 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("My Upgrade Class");
+		$this->out("Upgrade downloads");
 		$this->execMutateSql("ALTER TABLE downloads ADD date_updated DATETIME NOT NULL");
 		$this->execMutateSql("UPDATE downloads SET date_updated = IFNULL(date_published, date_created)  WHERE date_updated IS NULL");
 	}
