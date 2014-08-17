@@ -2699,6 +2699,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapManyToMany(array(
 			'fieldName' => 'teams',
 			'mappedBy' => 'members',
+			'dpApi' => true,
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
 			'joinTable' => array(
 				'name' => 'agent_team_members',
@@ -2709,6 +2710,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 		$metadata->mapManyToOne(array(
 			'fieldName' => 'primaryTeam',
+			'dpApi' => true,
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
 			'nullable' => true,
 		));

@@ -1,5 +1,7 @@
 <?php return array(
 
+	'adm.agents.primary_team'                                     => 'Primary Team',
+
 	'adm.agents.perm_title_tickets'                               => 'Tickets',
 	'adm.agents.perm_title_people'                                => 'People',
 	'adm.agents.perm_title_chat'                                  => 'Chat',

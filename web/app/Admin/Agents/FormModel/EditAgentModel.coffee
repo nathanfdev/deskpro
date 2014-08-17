@@ -10,6 +10,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			@form.name = agent.name
 			@form.primary_phone_number_text = agent.primary_phone_number_text
 			@form.primary_phone_number_region = agent.primary_phone_number_region
+			@form.primaryTeam = agent.primaryTeam
 			if !@form.primary_phone_number_region
 				@form.primary_phone_number_region = primary_phone_number_region
 

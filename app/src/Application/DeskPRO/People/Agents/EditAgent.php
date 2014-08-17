@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\Agents;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PhoneNumber;
@@ -166,27 +167,14 @@ class EditAgent
 		# Teams
 		#------------------------------
 
-		$current_teams = array();
-		if ($agent->id) {
-			$agent->loadHelper('AgentTeam');
-			$current_teams = $agent->getHelper('AgentTeam')->getAgentTeams();
+		foreach ($agent->teams as $team) {
+			/** @var $team AgentTeam */
+			$team->removePerson($agent); // unidirectional
 		}
 
-		if ($this->teams instanceof ArrayCollection) {
-			$this->teams = $this->teams->toArray();
-		}
-		$add_teams = array_diff($this->teams, $current_teams);
-		$del_teams = array_diff($current_teams, $this->teams);
-
-		foreach ($add_teams as $team) {
-			$team->members->add($agent);
-			$em->persist($team);
-		}
-		if ($agent->id) {
-			foreach ($del_teams as $team) {
-				$team->members->removeElement($agent);
-				$em->persist($team);
-			}
+		foreach ($this->teams as $team) {
+			/** @var $team AgentTeam */
+			$agent->addTeam($team); // bidirectional
 		}
 
 		#------------------------------
