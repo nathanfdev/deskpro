@@ -234,10 +234,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		//----------
 
 		data.tabBtnId = 'tabbtn_' + id;
-		data['class'] = data.page.getMetaData('tabIdClass', '');
-		data['class'] += ' ' + data.page.meta.alert_id;
+		data.tabType = null;
 
-		var tabIdClass = data.page.getMetaData('tabIdClass', '');
+		if (page) {
+			if (page.TYPENAME_FOR) {
+				data.tabType = page.TYPENAME_FOR;
+			} else if (page.TYPENAME) {
+				data.tabType = page.TYPENAME;
+			}
+		}
+
 		var wasActive = false;
 		var otherTab = null;
 

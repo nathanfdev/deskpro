@@ -51,14 +51,22 @@
 				<li ng-repeat="tab in tabs" id="{{ ng_var('tab.tabBtnId') }}"
 					ng-click="tabClick($event, tab)"
 					data-tab-id="{{ ng_var('tab.id') }}"
-					class="{{ ng_var('tab.class') }}"
 					ng-class="{'activeTabList': tab.isActive && paneVis.tabs}"
 					{{ ng_var('tab.page.TYPENAME') }}
 					{{ ng_var('tab.page.LOADING_TYPENAME') }}
 					>
 					<div class="item-hover-over-indicator"></div>
 					<a>
-						<i class="icon-globe dp-icon-placeholder"></i>{{ ng_var('tab.title') }}
+						<i class="" ng-class="{
+							'fa fa-envelope':  tab.tabType == 'ticket',
+							'fa fa-user':      tab.tabType == 'person',
+							'fa fa-users':     tab.tabType == 'organization',
+							'fa fa-file-text': tab.tabType == 'article',
+							'fa fa-download':  tab.tabType == 'download',
+							'fa fa-list-alt':  tab.tabType == 'news',
+							'fa fa-th-list':   tab.tabType == 'feedback',
+							'fa fa-comment':   tab.tabType == 'userchat'
+						}"></i>{{ ng_var('tab.title') }}
 					</a>
 					<span class="bound-fade"></span>
 					<span class="close"></span>
