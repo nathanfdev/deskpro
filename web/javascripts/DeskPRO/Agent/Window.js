@@ -2148,6 +2148,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.$scope.showTabs();
 		}
 
+		var popoverEl = el.closest('.popover-wrapper');
+		if (popoverEl[0] && popoverEl.data('popover-handler')) {
+			popoverEl.data('popover-handler').close(true);
+		}
+
 		this.runPageRoute(el.data('route'), extraData);
 	},
 
