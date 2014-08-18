@@ -1,4 +1,4 @@
-define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
+define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions'], function(angular, x1, x2, Functions) {
 	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap']);
 
 	//-------------------------------------------------------------------------
@@ -534,6 +534,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 				var $listPane = $('#dp_list');
 				var recentOpen = false;
 				var notifsOpen = false;
+				var lastUpdateTime = null;
 
 				scope.issearchQuery = '';
 				scope.isActive = false;
@@ -551,9 +552,9 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 				$input.on('focus', function() { scope.isActive = true; });
 				$input.on('blur', function() { scope.isActive = false; });
 
-				scope.touchSearch = function() {
-					updateSearch();
-				};
+				scope.touchSearch = Functions.debounce(function() {
+					updateSearch()
+				}, 300)
 
 				scope.toggleMode = function(mode) {
 					if (!mode) {
@@ -628,6 +629,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 				var updateSearch = function() {
 					var pos = $listPane.offset();
 					var width = $listPane.width();
+					var t = (new Date()).getTime()
 
 					scope.isMainLoading = true;
 					$http({
@@ -637,6 +639,12 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 					}).success(function(data) {
 						scope.isMainLoading = false;
 
+						if (lastUpdateTime && lastUpdateTime > t) {
+							// ignore this response, we have a newer one
+							return;
+						}
+
+						lastUpdateTime = t
 						scope.resultGroups = data.grouped_results || [];
 						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
 
