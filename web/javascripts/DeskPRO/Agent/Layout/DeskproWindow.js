@@ -14,6 +14,10 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		// Where the center section (where all cols are embedded) starts
 		this.CENTER_START = 55;
 
+		// Width of the collapsed source pane placeholder
+		this.SOURCE_PLACE_WIDTH = 23;
+		this.SOURCE_WIDTH = 214;
+
 		this.listWidthRatio = 0.40;
 
 		this.enableHashUpdate = true;
@@ -28,10 +32,87 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			var pos = parseInt(listSizer.css('left').replace(/px/, ''));
 			self.doResize();
 		});
+
+		//--------------------------------
+		// Source pane toggle
+		//--------------------------------
+
+		var openSourceOverlay = function() {
+			if (DeskPRO_Window.paneVis.source) return;
+			$('#dp_source').css({
+				left: -self.SOURCE_WIDTH,
+				display: 'block'
+			});
+			$('#dp_source').stop().animate({left: 0 }, {
+				duration: 350
+			});
+		};
+
+		var closeSourceOverlay = function() {
+			if (DeskPRO_Window.paneVis.source) return;
+			isSourceClosing = true;
+			$('#dp_source').stop().animate({left: -self.SOURCE_WIDTH }, {
+				duration: 350,
+				complete: function() {
+					isSourceClosing = false;
+					$('#dp_source').css('display', 'none');
+				}
+			});
+		};
+
+		$('#dp_source_place').on('click', function() {
+			openSourceOverlay();
+		});
+
+		var isSourceOver = false;
+		var sourceOutTimeout = null;
+		var isSourceClosing = false;
+		$('#dp_source').on('mouseover', function() {
+			isSourceOver = true;
+			if (sourceOutTimeout) {
+				window.clearTimeout(sourceOutTimeout);
+				sourceOutTimeout = null;
+			}
+
+			if (isSourceClosing) {
+				isSourceClosing = false;
+				$('#dp_source').stop().animate({left: 0 }, {
+					duration: 150
+				});
+			}
+		});
+		$('#dp_source').on('mouseout', function() {
+			isSourceOver = false;
+			if (!sourceOutTimeout) {
+				sourceOutTimeout = window.setTimeout(function() {
+					sourceOutTimeout = null;
+					if (!isSourceOver) {
+						closeSourceOverlay();
+					}
+				}, 380);
+			}
+		});
+
+		var openSourceTimeout = null;
+		var isSourcePlaceOver = false;
+		$('#dp_source_place').on('mouseover', function() {
+			isSourcePlaceOver = true;
+			window.setTimeout(function() {
+				openSourceTimeout = null;
+				if (isSourcePlaceOver) {
+					openSourceOverlay();
+				}
+			}, 250);
+		}).on('mouseout', function() {
+			isSourcePlaceOver = false;
+			if (openSourceTimeout) {
+				window.clearTimeout(openSourceTimeout);
+				openSourceTimeout = null;
+			}
+		});
 	},
 
 	doResize: function(widthCalc) {
-		var rightHide = $('#dp_right_collapsed');
 		var listSizer = $('#dp_list_resizer');
 		var paneVis = DeskPRO_Window.paneVis;
 
@@ -68,22 +149,12 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		});
 
 		if (!paneVis.tabs) {
-			var rightEdge = 0;
-
-			if (rightHide.find('li')[0]) {
-				rightEdge = 26;
-				rightHide.show();
-			} else {
-				rightHide.hide();
-			}
-
 			$('#dp_content').hide();
 			$('#dp_list').css({
 				width: 'auto',
-				right: rightEdge
+				right: 0
 			});
 		} else {
-			rightHide.hide();
 			$('#dp_content').show();
 			$('#dp_list').css({
 				right: 'auto'
@@ -92,10 +163,17 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		var left = 0, sourceLeft = 0, visibleLeft = 0;
 		if (!paneVis.source) {
-			$('#dp_source').hide();
+			$('#dp_source').stop().hide().css('left', 0);
+			$('#dp_source_btn').find('.collapse-btn').hide();
+			$('#dp_source_btn').find('.pin-btn').show();
+			$('#dp_source_place').show();
 			$('#dp_center').css('left', 55);
+			left += this.SOURCE_PLACE_WIDTH;
 		} else {
-			$('#dp_source').show();
+			$('#dp_source').stop().show().css('left', 0);
+			$('#dp_source_btn').find('.collapse-btn').show();
+			$('#dp_source_btn').find('.pin-btn').hide();
+			$('#dp_source_place').hide();
 			$('#dp_nav').show();
 			$('#dp_center').css('left', 55);
 			left += 215;
@@ -108,7 +186,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			$('#dp_list').show();
 			listSizer.show();
 			if (!paneVis.source) {
-				$('#dp_list').css('left', 0);
+				$('#dp_list').css('left', this.SOURCE_PLACE_WIDTH);
 				left += listWidth;
 			} else {
 				$('#dp_list').css('left', this.LEFT_START);
@@ -125,7 +203,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		if (paneVis.source) {
 			sourceLeft += 270;
 		} else {
-			sourceLeft += 55;
+			sourceLeft += 55 + this.SOURCE_PLACE_WIDTH;
 		}
 		visibleLeft += 270;
 		visibleLeft += listWidth;

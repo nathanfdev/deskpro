@@ -1,8 +1,9 @@
 <div id="dp_center">
-	<div class="collapsed-area" id="dp_right_collapsed">
-		<ul id="dp_collapsed_tabs"></ul>
-	</div>
 	<div id="dp_source">
+		<div id="dp_source_btn" ng-click="paneVis.source = !paneVis.source" ng-class="paneVis.source && 'active'">
+			<span class="collapse-btn"><i class="fa fa-chevron-left"></i></span>
+			<span class="pin-btn" style="display: none;"><i class="fa fa-lock"></i></span>
+		</div>
 		<div id="dp_source_loading"></div>
 		<div id="dp_source_footer">
 			<footer class="results-nav no-click-switch" id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat">
@@ -20,6 +21,9 @@
 				</div>
 			</footer>
 		</div>
+	</div>
+	<div id="dp_source_place" style="display: none;">
+		<span><i class="fa fa-chevron-right"></i></span>
 	</div>
 	<div id="dp_list">
 		<div id="dp_list_loading"></div>
