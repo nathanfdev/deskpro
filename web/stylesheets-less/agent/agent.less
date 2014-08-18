@@ -260,7 +260,7 @@ em.counter, em.list-counter {
 				height: 26px;
 			}
 			li.view2 {
-				background: url('@{img_path}/switch-buttons-center.png') no-repeat top center;
+				background: url('@{img_path}/switch-buttons-left-list.png') no-repeat top center;
 				width: 34px;
 				height: 26px;
 			}
@@ -339,14 +339,6 @@ em.counter, em.list-counter {
 #dp_header .panevis-switcher .view1.active { background-position: bottom center; }
 #dp_header .panevis-switcher .view2.active { background-position: bottom center; }
 #dp_header .panevis-switcher .view3.active { background-position: bottom center; }
-
-.panevis-list-on.panevis-tabs-on {
-	#dp_header .panevis-switcher ul li.view1 { background: url('@{img_path}/switch-buttons-left-fix.png') no-repeat 1px 0; }
-}
-
-.panevis-list-off.panevis-tabs-on {
-	#dp_header .panevis-switcher ul li.view2 { background: url('@{img_path}/switch-buttons-center-fix.png') no-repeat 0 0; }
-}
 
 @media all and (max-width: 1200px) {
 	#dp_header_logo_wrap {
@@ -440,20 +432,6 @@ em.counter, em.list-counter {
 
 	ul li a:hover, ul li:hover a {
 		color: darken(@agent_header_userprofile_text_color, 8%);
-	}
-}
-
-@media all and (max-width: 1172px) {
-	#dp_header .user-profile {
-		width: 188px;
-	}
-
-	#dp_header .user-profile .gravatar {
-		display: none;
-	}
-
-	#dp_header .user-profile .username {
-		margin-left: 3px;
 	}
 }
 

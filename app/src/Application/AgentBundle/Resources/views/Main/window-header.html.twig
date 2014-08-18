@@ -19,9 +19,9 @@
 		<div class="panevis-switcher pull-right">
 			<ul>
 				<li ng-click="paneVis.source = !paneVis.source" ng-class="paneVis.source && 'active'" class="view-source" title="{{ phrase('agent.interface.viewbtn-source') }}"></li>
-            	<li ng-click="oneColumnView()" ng-class="!(paneVis.list && paneVis.tabs) && 'active'" class="view3" title="{{ phrase('agent.interface.viewbtn-tab') }}"></li>
-            	<li ng-click="twoColumnsView()" ng-class="paneVis.list && paneVis.tabs && 'active'" class="view2" title="{{ phrase('agent.interface.viewbtn-normal') }}"></li>
-      	  </ul>
+            	<li ng-click="twoColumnsView()" ng-class="paneVis.list && paneVis.tabs && 'active'" class="view2" title="{{ phrase('agent.interface.viewbtn-2col') }}"></li>
+				<li ng-click="oneColumnView()" ng-class="!(paneVis.list && paneVis.tabs) && 'active'" class="view3" title="{{ phrase('agent.interface.viewbtn-1col') }}"></li>
+			</ul>
 		</div>
 	</div>
 </div>
