@@ -51,7 +51,7 @@
 
 				<li class="list-btn" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
 					<span><i class="fa fa-list-ul"></i></span>
-					<div class="down-btn" id="dp_tab_list_btn">
+					<div class="down-btn" id="dp_tab_list_btn" ng-show="listItems && listItems.length">
 						<i class="fa fa-caret-down"></i>
 					</div>
 				</li>
@@ -89,6 +89,16 @@
 				<li ng-repeat="item in listItems" ng-class="{'is-open': item.open}">
 					<a href="#" data-route="{{ ng_var('item.route') }}" data-route-replacetab="true" style="overflow: hidden;">
 						<div class="right-icon new-tab" ng-show="!item.open" data-route="{{ ng_var('item.route') }}" data-route-notabreload="true"><i class="fa fa-external-link" title="Open in a new tab"></i></div>
+						<i class="" ng-class="{
+							'fa fa-envelope':  item.type == 'ticket',
+							'fa fa-user':      item.type == 'person',
+							'fa fa-users':     item.type == 'organization',
+							'fa fa-file-text': item.type == 'article',
+							'fa fa-download':  item.type == 'download',
+							'fa fa-list-alt':  item.type == 'news',
+							'fa fa-th-list':   item.type == 'feedback',
+							'fa fa-comment':   item.type == 'userchat'
+						}"></i>
 						{{ ng_var('item.title') }}
 					</a>
 				</li>

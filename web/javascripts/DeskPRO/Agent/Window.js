@@ -1265,8 +1265,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		};
 
-		$scope.addListItem = function(identity, title, route) {
-			$scope.listItems.push({identity: identity, title: title, route: route});
+		$scope.addListItem = function(type, identity, title, route) {
+			$scope.listItems.push({type: type, identity: identity, title: title, route: route});
 		};
 	},
 
