@@ -176,6 +176,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	addTab: function(page) {
 
+		var self = this;
+
 		this.isAdding = true;
 
 		var id = Orb.uuid();
@@ -287,8 +289,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isAdding = false;
 
-		this.tabBarOverflow.update();
 		this.$scope.$safeApply();
+		this.$timeout(function() {
+			self.tabBarOverflow.update();
+		})
 		return id;
 	},
 
@@ -442,6 +446,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	removeTab: function(tab, silent) {
 
+		var self = this;
 		var id = tab.id;
 		var wasActive = false;
 
@@ -507,8 +512,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
-		this.tabBarOverflow.update();
 		this.$scope.$safeApply();
+		this.$timeout(function() {
+			self.tabBarOverflow.update();
+		})
 	},
 
 

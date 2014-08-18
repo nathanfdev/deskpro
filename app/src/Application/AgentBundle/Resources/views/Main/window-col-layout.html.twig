@@ -36,9 +36,13 @@
 	</div>
 </div>
 
-<div id="tabNavigationPane" style="width: 5500px; vertical-align: bottom;">
-	<div class="mainDeskproTabList deskproTabList" style="position: static; display: inline-block; vertical-align: bottom;">
-		<div class="deskproTabListInner" style="position: static;">
+<div id="tabNavigationPane" style="vertical-align: bottom;">
+	<div id="tabNavSelectorLeft">
+		<a class="tabSlideLeft"></a>
+	</div>
+
+	<div class="mainDeskproTabList deskproTabList" style="vertical-align: bottom;">
+		<div class="deskproTabListInner">
 			<ul class="dp-tab-list">
 
 				<li class="list-btn" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
@@ -47,6 +51,8 @@
 						<i class="fa fa-caret-down"></i>
 					</div>
 				</li>
+
+				<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>add</span></li>
 
 				<li ng-repeat="tab in tabs" id="{{ ng_var('tab.tabBtnId') }}"
 					ng-click="tabClick($event, tab)"
@@ -71,10 +77,6 @@
 					<span class="bound-fade"></span>
 					<span class="close"></span>
 				</li>
-				</li>
-
-				<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>add</span></li>
-
 			</ul>
 		</div>
 
@@ -88,8 +90,8 @@
 				</li>
 			</ul>
 		</div>
-
 	</div>
+
 	<div id="tabNavSelectorRight">
 		<a class="tabSlideRight"></a>
 	</div>
