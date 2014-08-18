@@ -247,11 +247,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		var newFormString = JSON.stringify(data);
 		var ret = false;
 
-		if (this.formString != newFormString) {
+		if (this.formString && this.formString.length && this.formString != newFormString) {
 			ret = true;
 		}
 
-		if (do_resave) {
+		if (do_resave || !this.formString || !this.formString.length) {
 			this.formString = newFormString;
 		}
 
