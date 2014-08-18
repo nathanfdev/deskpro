@@ -64,21 +64,20 @@ abstract class AbstractRepository extends Repository
     {
 		$l = Strings::extractRegexMatch('#^\[(.*?)\]$#', $q);
 		if ($l && $this instanceof WithLabelsInterface) {
-			$queryString = new QueryString($l);
+			$queryString = new QueryString(ElasticaUtil::escapeTerm($l));
 			$queryString->setFields(array('labels'));
 			$queryString->setDefaultOperator('AND');
 			$query = new Query(
 				array(
 					'query' => array(
 						'filtered' => array(
-							'query'  => $queryString,
+							'query'  => $queryString->toArray(),
 							'filter' => $this->getFilters(),
 						)
 					)
 				)
 			);
 		} else {
-			if ($l) $q = $l;
 			$query = new Query(
 				array(
 					'query' => array(
@@ -102,7 +101,7 @@ abstract class AbstractRepository extends Repository
      */
     protected function getQueryString($q)
     {
-        $queryString = new QueryString($q);
+        $queryString = new QueryString(ElasticaUtil::escapeTerm($q));
 		$queryString->setFields($this->getQueryFields());
         $queryString->setDefaultOperator('AND');
 
