@@ -127,7 +127,7 @@ class ClientFactory
 			'host'      => $url_info->host,
 			'port'      => $url_info->port ?: 9200,
 			'path'      => $url_info->path ?: null,
-			'transport' => strtolower($url_info->get('scheme', 'http')) == 'https' ? 'https' : 'http'
+			'transport' => strtolower($url_info->get('scheme', 'http')) == 'https' ? 'Https' : 'Http'
 		);
 
 		if ($url_info->user && $url_info->pass) {
