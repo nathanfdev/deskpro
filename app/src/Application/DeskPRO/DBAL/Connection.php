@@ -706,7 +706,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		if (!$this->getTransactionNestingLevel()) {
 
-			// Set in SearchUpdater::run
+			// Set in EntityWatcher
 			// If we have got here with a successful commit, then the changes are now
 			// properly synced and we dont need the flag set anymore
 			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);

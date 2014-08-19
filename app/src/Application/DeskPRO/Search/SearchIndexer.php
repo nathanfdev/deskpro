@@ -93,7 +93,6 @@ class SearchIndexer
 			};
 
 			foreach ($updates as $object) {
-				dp_log(get_class($object));
 				$persister_id = $get_persister($object);
 				if ($persister_id) {
 					if (!isset($updates_by_type[$persister_id])) {

@@ -83,6 +83,10 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		\DpShutdown::add(array($this, 'flushUpdatesQuiet'));
 	}
 
+
+	/**
+	 * Flushes updates and eats errors
+	 */
 	public function flushUpdatesQuiet()
 	{
 		try {
@@ -90,6 +94,10 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		} catch (\Exception $e) {}
 	}
 
+
+	/**
+	 * Flushes all updates
+	 */
 	public function flushUpdates()
 	{
 		if ($this->is_running) return;
@@ -100,6 +108,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 
 		$this->updates = array('updates' => array(), 'deletes' => array());
 
+		$GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'] = true;
+
 		/** @var \Application\DeskPRO\Search\SearchIndexer $indexer */
 		$indexer = $this->container->getSystemService('search_indexer');
 		$indexer->handle($updates, $deletes);
@@ -109,37 +119,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 
 
 	/**
-	 * Filters take entities that we've detected changes on, and is meant to
-	 * take a look at the changes to see if we actually need to update the index.
-	 * For example, if a ticket status is just changed, we dont need to update the fulltext index
-	 *
-	 * @param                 $entity_type
-	 * @param FilterInterface $filter
+	 * @param OnFlushEventArgs $eventArgs
 	 */
-	public function addEntityTypeFilter($entity_type, FilterInterface $filter)
-	{
-		$this->entity_filters[$entity_type] = $filter;
-	}
-
-
-	/**
-	 * Filter an entity to see if it sholud be updated
-	 *
-	 * @param $entity
-	 * @return bool
-	 */
-	public function filterEntity($entity)
-	{
-		$entity_type = get_class($entity);
-		if (isset($this->entity_filters[$entity_type])) {
-			return $this->entity_filters[$entity_type]->filter($entity);
-		}
-
-		// Default to true
-		return true;
-	}
-
-
 	public function onFlush(OnFlushEventArgs $eventArgs)
 	{
 		if ($this->is_running) return;
@@ -152,13 +133,13 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		$uow = $em->getUnitOfWork();
 
 		foreach ($uow->getScheduledEntityInsertions() as $ent) {
-			if (self::isWatchedEntity($ent) && $this->filterEntity($ent)) {
+			if (self::isWatchedEntity($ent)) {
 				$ent = $this->replaceEntity($ent);
 				$update[] = $ent;
 			}
 		}
 		foreach ($uow->getScheduledEntityUpdates() as $ent) {
-			if (self::isWatchedEntity($ent) && $this->filterEntity($ent)) {
+			if (self::isWatchedEntity($ent)) {
 				$ent = $this->replaceEntity($ent);
 				$update[] = $ent;
 			}
@@ -186,7 +167,12 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		$this->is_running = false;
 	}
 
-	public function replaceEntity($ent)
+
+	/**
+	 * @param object $ent
+	 * @return object
+	 */
+	private function replaceEntity($ent)
 	{
 		if ($ent instanceof \Application\DeskPRO\Entity\LabelArticle) {
 			return $ent->article;
@@ -206,6 +192,9 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 	}
 
 
+	/**
+	 * @return array
+	 */
 	public function getSubscribedEvents()
 	{
 		return array(
@@ -226,6 +215,11 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		return isset(self::$watched_entities[$name]);
 	}
 
+
+	/**
+	 * @param object $entity
+	 * @return string
+	 */
 	public static function getEntityClassName($entity)
 	{
 		if (is_string($entity)) {
