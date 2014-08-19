@@ -395,7 +395,7 @@ $container->loadFromExtension('fos_elastica', array(
 						'email_analyzer' => array(
 							'type' => 'custom',
 							'tokenizer' => 'keyword',
-							'filter' => array("email_filter", "lowercase",  "unique", 'ngram_filter_3')
+							'filter' => array("email_filter", "lowercase",  "unique")
 						),
 						'phone_analyzer' => array(
 							'type' => 'custom',
@@ -409,7 +409,7 @@ $container->loadFromExtension('fos_elastica', array(
             'types'    => array(
                 'ticket'   => array(
                     'mappings'    => array(
-                        'subject'       => array('analyzer' => 'ngram_analyzer'),
+                        'subject'       => array(),
                         'ref'           => array(),
                         'department_id' => array(),
                         'agent_id'      => array(),
@@ -499,8 +499,8 @@ $container->loadFromExtension('fos_elastica', array(
                 ),
                 'organization'   => array(
                     'mappings'    => array(
-                        'name'    => array('type' => 'string', 'analyzer' => 'ngram_analyzer_3'),
-						'email_domains' => array('type' => 'string', 'analyzer' => 'ngram_analyzer_3'),
+                        'name'    => array('type' => 'string'),
+						'email_domains' => array('type' => 'string', 'analyzer' => 'email_filter'),
                         'labels'  => array('type' => 'string'),
                     ),
                     'persistence' => array(
