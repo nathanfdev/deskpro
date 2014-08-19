@@ -60,85 +60,11 @@ class SearchIndexUpdate extends AbstractJob
 
 	public function run()
 	{
-		// run() is called from shutdown, so dont want
-		// to throw exceptions
 
-		try {
-			$this->processUpdates();
-		} catch (\Exception $e) {}
 	}
 
 	public function processUpdates()
 	{
-		$time = time();
 
-		$this->em = App::getContainer()->getEm();
-		$this->db = $this->em->getConnection();
-		$this->queue = App::getContainer()->getQueue('search_object_update');
-
-		$batch = $this->queue->receive(20);
-		while (count($batch)) {
-			$update = array();
-			$delete = array();
-
-			foreach ($batch as $info) {
-				$op = isset($info->op) ? $info->op : 'update';
-
-				$exists = false;
-				try {
-					if (@$this->em->getClassMetadata($info->entity_class)) {
-						$exists = true;
-					}
-				} catch (\Exception $e) {}
-
-				if (!$exists) {
-					$this->queue->deleteMessage($info);
-					continue;
-				}
-
-				$idx = "{$info->entity_class}.{$info->id}";
-
-				if ($op == 'update') {
-					if (!isset($delete[$idx])) {
-						$entity = $this->em->find($info->entity_class, array('id' => $info->id ?: 0));
-						if ($entity) {
-							$update[$idx] = $entity;
-						}
-					}
-				} else {
-					$doc = new \Application\DeskPRO\Search\Indexer\Document($info->id, $info->entity_class);
-					$delete[$idx] = $doc;
-
-					if (isset($update[$idx])) {
-						unset($update[$idx]);
-					}
-				}
-				$this->queue->deleteMessage($info);
-			}
-
-			// Sometimes an object might have been detached/deleted
-			// before it got here, so we should just ignore reindex
-			// commands on them
-			if ($update && $update instanceof \Doctrine\ORM\Proxy\Proxy) {
-				try {
-					$update->__load();
-				} catch (\Doctrine\ORM\EntityNotFoundException $e) {
-					continue;
-				}
-			}
-
-			if ($update) {
-				App::getContainer()->getSearchAdapter()->updateObjectsInIndex($update);
-			}
-			if ($delete) {
-				App::getContainer()->getSearchAdapter()->deleteDocumentsFromIndex($delete);
-			}
-
-			if (time() - $time > 30) {
-				break;
-			}
-
-			$batch = $this->queue->receive(20);
-		}
 	}
 }
