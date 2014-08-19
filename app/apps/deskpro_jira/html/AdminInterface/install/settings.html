@@ -1,6 +1,18 @@
 <article class="form-horizontal dp-form">
 	<div class="panel panel-fill indent">
-		<div class="panel-body">
+		<div class="panel-body" ng-if="no_curl_support">
+			<h3>Server Requirements</h3>
+			<p>
+				This app requires PHP to be compiled with cURL support.
+			</p>
+			<p>
+				According to our tests, your server does not have the cURL support.
+			</p>
+			<p>
+				<a href="http://php.net/manual/curl.installation.php" target="_blank" class="btn btn-default">Refer to the PHP manual for more information</a>
+			</p>
+		</div>
+		<div class="panel-body" ng-if="!no_curl_support">
 			<!--#include file="AdminInterface/Install/settings-list.html" -->
 		</div>
 	</div>

@@ -7,7 +7,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 		$scope.has_errors = false;
 		$scope.errors = {};
 
-		// do a bg check for soap support
+		// do a bg check for curl support
 		Api.sendGet('/apps/packages/deskpro_jira/check-requirements').then(function(res) {
 			if (!res.data.curl_support) {
 				$scope.no_curl_support = true;
