@@ -837,7 +837,7 @@ em.counter, em.list-counter {
 				font-size: 10px;
 				color: ligthen(@agent_menu_text_color, 10%);
 				line-height: 100%;
-				margin-top: 10px;
+				margin-top: 4px;
 				margin-right: 5px;
 			}
 
@@ -845,6 +845,13 @@ em.counter, em.list-counter {
 				display: block;
 				padding: 6px 6px 6px 11px;
 				color: @agent_menu_text_color;
+
+				.title {
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					padding-right: 25px;
+				}
 
 				strong {
 					border: 1px solid #717780;
@@ -857,14 +864,6 @@ em.counter, em.list-counter {
 					display: inline-block;
 					line-height: 15px;
 					text-align: center;
-				}
-
-				span {
-					display: inline-block;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					width: 265px;
-					vertical-align: bottom;
 				}
 			}
 
@@ -1522,6 +1521,8 @@ ul.btn-menu {
 			border-top: 1px solid darken(@agent_menu_bg_color, 20%);
 			.clearfix;
 			line-height: 100%;
+			position: relative;
+			display: block;
 
 			&:first-child {
 				border-top: none;
@@ -1568,13 +1569,17 @@ ul.btn-menu {
 			big {
 				font-size: 11px;
 				font-weight: bold;
-				max-width: 266px;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
 				margin: 1px 0 3px 0;
 				padding: 0;
+				padding-right: 25px;
 				line-height: 100%;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: block;
 
 				span.row-id {
 					font-weight: normal;
