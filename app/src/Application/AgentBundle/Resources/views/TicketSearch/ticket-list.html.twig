@@ -82,26 +82,26 @@
 					</script>
 				</div>
 
-                <div
-                    ng-if="listType == 'table'"
-                    class="table-result-list">
+                <div ng-if="listType == 'table'" class="table-result-list">
                     <table cellspacing="0" width="100%">
-                        {% include 'AgentBundle:TicketSearch:ticket-list-table-head.html.twig' %}
+						<script type="text/plain" dp-tpl="thead" tpl-id="ticket_list_thead" watch-vars-deep="['display_fields']">
+                        	{% include 'AgentBundle:TicketSearch:ticket-list-table-head.html.twig' %}
+                        </script>
 
-                        <tbody>
-                            <tr
-                                bindonce
-                                class="row-item ticket-row-{{ ng_var('ticket.id') }} sla-status-{{ ng_var('ticket.worst_sla_status') }}"
-                                ng-repeat="ticket in tickets track by ticket.id"
-                                dp-removed="uncheckTicketId(ticket.id)"
-                                data-ticket-id="{{ ng_var('ticket.id') }}"
-                                data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '{{ ticket.id }}'})|raw }}"
-                                data-route-title="@selector(a.subject)"
-                                data-route-openclass="open"
-                                ng-class="{'open': openTickets[ticket.id]}"
-                            >
-                                {% include 'AgentBundle:TicketSearch:ticket-list-table-row.html.twig' %}
-                            </tr>
+                        <tbody
+							bindonce
+							class="row-item ticket-row-{{ ng_var('ticket.id') }} sla-status-{{ ng_var('ticket.worst_sla_status') }}"
+							ng-repeat="ticket in tickets track by ticket.id"
+							dp-removed="uncheckTicketId(ticket.id)"
+							data-ticket-id="{{ ng_var('ticket.id') }}"
+							data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '{{ ticket.id }}'})|raw }}"
+							data-route-title="@selector(a.subject)"
+							data-route-openclass="open"
+							ng-class="{'open': openTickets[ticket.id]}"
+						>
+							<script type="text/plain" dp-tpl="tr" tpl-id="ticket_list_tr_row" watch-vars="['ticket', 'ticket.version_id']" watch-vars-deep="['display_fields']">
+								{% include 'AgentBundle:TicketSearch:ticket-list-table-row.html.twig' %}
+							</script>
                         </tbody>
 
                     </table>

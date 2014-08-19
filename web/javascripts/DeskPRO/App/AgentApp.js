@@ -204,7 +204,6 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 			transclude: false,
 			compile: function(element, attrs) {
 				var elType = attrs['dpTpl'] || 'div';
-				var newElement = '<'+elType+' class="dp-tpl"></'+elType+'>', tpl;
 
 				if (attrs['tplId'] && cache[attrs['tplId']]) {
 					tpl = cache[attrs['tplId']];
@@ -215,7 +214,15 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					}
 				}
 
-				element.replaceWith(newElement);
+				if (elType != '@parent') {
+					var newElement = '<' + elType + ' class="dp-tpl"></' + elType + '>', tpl;
+					element.replaceWith(newElement);
+				} else {
+					console.log("ERE");
+					element.remove();
+					element = element.parent();
+					element.addClass('dp-tpl');
+				}
 
 				return function(scope, element, attrs) {
 					var watch = attrs['watchVars'] ? scope.$eval(attrs['watchVars']) : null;
