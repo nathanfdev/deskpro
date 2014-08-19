@@ -22,9 +22,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		this.enableHashUpdate = true;
 
-		window.onresize = function() {
+		$(window).on('resize', function() {
 			self.doResize(true);
-		};
+		});
 
 		var listSizer = $('#dp_list_resizer').draggable({
 			axis: 'x'
