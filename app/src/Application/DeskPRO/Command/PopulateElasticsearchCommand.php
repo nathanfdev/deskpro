@@ -137,14 +137,14 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             /** @var $providers DoctrineProvider[] */
             $providers = $this->providerRegistry->getIndexProviders($index);
 
+			if ($reset) {
+				$output->writeln(sprintf('<info>Resetting</info> <comment>%s</comment>', $index));
+				$this->resetter->resetIndex($index);
+			}
+
             foreach ($providers as $type => $provider) {
 
 				$provider_id = $index . '_' . $type;
-
-                if ($reset) {
-                    $output->writeln(sprintf('<info>Resetting</info> <comment>%s/%s</comment>', $index, $type));
-                    $this->resetter->resetIndexType($index, $type);
-                }
 
                 $total = $all_totals[$provider_id];
                 $offset = $input->getOption('offset');
