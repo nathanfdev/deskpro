@@ -49,9 +49,9 @@
 		<div class="deskproTabListInner">
 			<ul class="dp-tab-list">
 
-				<li class="list-btn" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
-					<span><i class="fa fa-list-ul"></i></span>
-					<div class="down-btn" id="dp_tab_list_btn" ng-show="listItems && listItems.length">
+				<li class="list-btn with-list" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
+					<span><i class="fa fa-bars"></i></span>
+					<div class="down-btn" id="dp_tab_list_btn">
 						<i class="fa fa-caret-down"></i>
 					</div>
 				</li>
@@ -101,6 +101,9 @@
 						}"></i>
 						<span class="title">{{ ng_var('item.title') }}</span>
 					</a>
+				</li>
+				<li ng-if="!listItems || !listItems.length">
+					<em style="color: #999; padding: 10px; display: block; text-align: center;">The list is empty.</em>
 				</li>
 			</ul>
 		</div>

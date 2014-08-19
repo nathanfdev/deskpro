@@ -3699,7 +3699,15 @@ ul.pane-tabs {
 		border-color: #aaa;
 		background: #d5d6da;
 		color: #777;
-		width: 50px;
+		width: 25px;
+		padding-left: 10px;
+		padding-right: 6px;
+
+		&.with-list {
+			width: 45px;
+			padding-left: 4px;
+			padding-right: 0;
+		}
 
 		i {
 			font-size: 15px;
@@ -3730,7 +3738,7 @@ ul.pane-tabs {
 			}
 		}
 
-		&.activeTabList {
+		&.activeTabList, &.activeTabList:hover {
 			color: #fff;
 			.down-btn {
 				border-left: 1px solid #2683c6;
