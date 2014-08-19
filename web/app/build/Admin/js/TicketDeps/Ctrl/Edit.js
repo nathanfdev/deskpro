@@ -15,7 +15,7 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$templateCache', 'dpObTypesDefTicketActions'];
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$templateCache', 'dpObTypesDefTicketActions', '$location'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
@@ -152,7 +152,12 @@
         promises = [promise1, promise2, promise3];
         return this.$q.all(promises).then((function(_this) {
           return function() {
-            return _this.updateCriteriaOptionTypes();
+            var search;
+            _this.updateCriteriaOptionTypes();
+            search = _this.$location.search();
+            if (search && search.tab) {
+              return _this.$scope.dp_tab_ids.main = search.tab;
+            }
           };
         })(this));
       };

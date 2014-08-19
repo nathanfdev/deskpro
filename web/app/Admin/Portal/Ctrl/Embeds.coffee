@@ -5,6 +5,8 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 		@DEPS    = ['Api']
 
 		init: ->
+			@$scope.type = @$stateParams.type;
+
 			@$scope.code_snippets = {
 				overlay: '',
 				chat: '',

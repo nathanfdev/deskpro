@@ -103,12 +103,24 @@
 					</li>
 				</ul>
 				<span class="help-block">
-					<div ng-show="EditCtrl.hasPermOverrides">
-						<span class="fa fa-exclamation-triangle"></span>
-						This agent has permission overrides on the <button class="btn btn-default btn-xs" dp-tab-btn="main.perms">Permissions</button> tab.
+					<div>
+						Switch to the <span class="soft-link" dp-tab-btn="main.perms">Permissions</span> or <span class="soft-link" dp-tab-btn="main.deps">Departments</span> tab to manage permission overrides.
 					</div>
-					<div ng-show="!EditCtrl.hasPermOverrides">
-						Switch to the <button class="btn btn-default btn-xs" dp-tab-btn="main.perms">Permissions</button> tab to manage permission overrides.
+					<div ng-show="EditCtrl.hasPermOverrides || EditCtrl.hasDepOverrides">
+						<span class="fa fa-exclamation-triangle"></span>
+						<span ng-show="EditCtrl.hasPermOverrides && EditCtrl.hasDepOverrides">
+							Note: This agent has permission overrides on both the
+							<span class="soft-link" dp-tab-btn="main.perms">Permissions</span>
+							and <span class="soft-link" dp-tab-btn="main.deps">Departments</span> tabs.
+						</span>
+						<span ng-show="EditCtrl.hasPermOverrides && !EditCtrl.hasDepOverrides">
+							Note: This agent has permission overrides on the
+							<span class="soft-link" dp-tab-btn="main.perms">Permissions</span> tab.
+						</span>
+						<span ng-show="!EditCtrl.hasPermOverrides && EditCtrl.hasDepOverrides">
+							Note: This agent has permission overrides on the
+							<span class="soft-link" dp-tab-btn="main.deps">Departments</span> tab.
+						</span>
 					</div>
 				</span>
 			</div>

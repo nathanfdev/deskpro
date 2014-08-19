@@ -18,7 +18,9 @@ define [
 			@agentId = parseInt(@$stateParams.id)
 			@form = {email_primary: '', emails_list: []}
 			@hasPermOverrides = false
+			@hasDepOverrides = false
 			@primary_phone_number_region = 'US'
+			@dep_perms = {}
 
 			@$scope.$watch('EditCtrl.form.emails_list', (emails_list) =>
 				@email_sysaccount_error = false
@@ -189,12 +191,26 @@ define [
 			@updateEffectiveUgPerms()
 
 			@hasPermOverrides = false
-			for own type, perms of @perm_form
-				for own permName, value of perms
-					if value
-						if not @ugEffectivePerms[type]?[permName]? or not @ugEffectivePerms[type][permName]
-							@hasPermOverrides = true
-							return
+			run = =>
+				for own type, perms of @perm_form
+					for own permName, value of perms
+						if value
+							if not @ugEffectivePerms[type]?[permName]? or not @ugEffectivePerms[type][permName]
+								@hasPermOverrides = true
+								return
+			run()
+
+			@hasDepOverrides = false
+			run = =>
+				return if not @deps_perms or not @deps_perms.tickets
+				for app in ['tickets', 'chat']
+					for own depId, perms of @deps_perms[app]
+						for own perm, value of perms
+							if value
+								if not @ugEffectiveDepPerms[app][depId][perm]
+									@hasDepOverrides = true
+									return
+			run()
 
 
 		###
@@ -205,6 +221,16 @@ define [
 				for own permName, value of perms
 					perms[permName] = false
 			@hasPermOverrides = false
+
+		###
+    	# This does the actual removal of all depoverrides
+		###
+		clearDepOverrides: =>
+			for app in ['tickets', 'chat']
+				for own depId, perms of @deps_perms[app]
+					for own perm, value of perms
+						@deps_perms[app][depId][perm] = false
+			@hasDepOverrides = false
 
 
 		###

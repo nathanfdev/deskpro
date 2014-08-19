@@ -5,6 +5,7 @@
 		<header>
 			<nav>
 				<span dp-ping-flash="display_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 
 			<h3 ng-pluralize count="ChatFieldsList.custom_fields.length || 0"

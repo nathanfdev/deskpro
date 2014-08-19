@@ -769,7 +769,7 @@ define(function() {
 
 	routes.push({
 		id: 'tickets.ticket_deps.edit',
-		url: '/{id:[0-9]+}',
+		url: '/{id:[0-9]+}?tab',
 		templateName: 'TicketDeps/edit.html',
 		controller: 'Admin_TicketDeps_Ctrl_Edit'
 	});
@@ -1291,6 +1291,13 @@ define(function() {
 	routes.push({
 		id: 'portal.embeds',
 		url: '/embeds',
+		templateName: 'Portal/embeds-list.html',
+		controller: 'Admin_Main_Ctrl_Bare'
+	});
+
+	routes.push({
+		id: 'portal.embeds.type',
+		url: '/{type:tab|chat|form|helpdesk}',
 		templateName: 'Portal/embeds.html',
 		controller: 'Admin_Portal_Ctrl_Embeds'
 	});
