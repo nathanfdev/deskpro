@@ -1,19 +1,17 @@
 <td width="20">
-    <input type="checkbox" class="" ng-model="checkedTickets[ticket.id]" />
+	<input type="checkbox" class="" ng-model="checkedTickets[ticket.id]" />
 </td>
-<td ng-repeat="field in getDisplayableFields()" ng-switch="field">
-
-    {# Id #}
-    <span ng-switch-when="id" class="prop-val">{{ ng_var('ticket.id') }}</span>
-
+<td ng-repeat="field in getDisplayableFields()" ng-switch="field" ng-class="'col-' + field">
 
     {# Subject #}
-    <span ng-switch-when="subject" class="prop-val">{{ ng_var('ticket.subject') }}</span>
+    <span ng-switch-when="subject" class="prop-val"><span class="obj-id">{{ ng_var('ticket.id') }}</span> <span class="obj-link">{{ ng_var('ticket.subject') }}</span></span>
 
 
     {# User #}
-    <span ng-switch-when="user" class="prop-val" ng-if="ticket.previews[0]">
-        {{ ng_var('ticket.previews[0].person.display_name') }}
+    <span ng-switch-when="user" class="prop-val" title="{{ ng_var('ticket.person.primary_email.email') }}">
+        <a class="name link click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ ticket.person.id }}'})|raw }}" data-route-title="@selector(.person-tip)">
+			{{ ng_var('ticket.person.display_name') }}
+		</a>
     </span>
 
 
@@ -79,15 +77,13 @@
 
 
     {# Agent #}
-    <span ng-switch-when="agent" class="prop-val" ng-if="!ticket.agent">
-        {{ phrase('agent.general.unassigned') }}
-    </span>
+    <span ng-switch-when="agent" class="prop-val" ng-if="!ticket.agent">&nbsp;</span>
     <span ng-switch-when="agent" class="prop-val" ng-if="ticket.agent && ticket.agent.id == DESKPRO_PERSON_ID">
-        {{ ng_var('ticket.agent.display_name') }}
+        <img ng-src="{{ ng_var('ticket.agent.picture_url_16') }}" title="{{ ng_var('ticket.agent.display_name') }}" />
     </span>
     <span ng-switch-when="agent" class="prop-val" ng-if="ticket.agent && ticket.agent.id != DESKPRO_PERSON_ID">
         <a class="agent_link" ng-click="openAgentChat(ticket.agent.id, $event)">
-            {{ ng_var('ticket.agent.display_name') }}
+			<img ng-src="{{ ng_var('ticket.agent.picture_url_16') }}" title="{{ ng_var('ticket.agent.display_name') }}" />
         </a>
     </span>
 

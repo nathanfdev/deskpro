@@ -203,7 +203,8 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 			replace: true,
 			transclude: false,
 			compile: function(element, attrs) {
-				var newElement = '<div class="dp-tpl"></div>', tpl;
+				var elType = attrs['dpTpl'] || 'div';
+				var newElement = '<'+elType+' class="dp-tpl"></'+elType+'>', tpl;
 
 				if (attrs['tplId'] && cache[attrs['tplId']]) {
 					tpl = cache[attrs['tplId']];

@@ -14,7 +14,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.wrapper = el;
 		this.perPage = 50;
 		this.filterId = parseInt(this.meta.filter_id) || 0;
-		this.fixed_fields = ['id', 'user', 'subject', 'status', 'agent'];
+		this.fixed_fields = ['subject'];
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
 			self.$scope = $rootScope.$new();
@@ -1289,7 +1289,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				fields.push(v);
 			});
 			$scope.display_fields.each(function(v){
-				if (fields.indexOf(v) > -1) return;
+				if (fields.indexOf(v) > -1 || v == 'id') return;
 				fields.push(v);
 			});
 			return fields;
@@ -1399,8 +1399,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		$scope.openDisplayOptions = function() { displayOptions.open(); };
 		$scope.openTableView = function() {
+			$scope.pauseListAnim = true;
 			$scope.listType = 'table' === $scope.listType ? 'list' : 'table';
-//			self.openTableView();
+			$timeout(function() {
+				$scope.pauseListAnim = false;
+			}, 500);
 		};
 	},
 
