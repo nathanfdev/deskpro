@@ -67,14 +67,17 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
                 $repository->setPersonContext($this->person);
             }
 
-            if (Numbers::isInteger($q)) {
-                $result = $repository->find('_id:' . $q);
-            } else {
-                $result = $repository->find($q);
-            }
+			if (Numbers::isInteger($q)) {
+				$result = $repository->find('_id:' . $q);
+				if ($result) {
+					$this->handleResult($object, $result);
+				}
+			}
 
-            $this->handleResult($object, $result);
-
+            $result = $repository->find($q);
+			if ($result) {
+				$this->handleResult($object, $result);
+			}
         }
 
         return array($this->results, $result_meta, $people_top);

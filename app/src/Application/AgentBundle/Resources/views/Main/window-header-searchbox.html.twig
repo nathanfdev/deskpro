@@ -1,0 +1,84 @@
+<div class="dp-omnibox" ng-class="{'is-active': isActive}" dp-omnibox>
+	<div class="input-area">
+		<i class="search-icon fa fa-search"></i>
+		<div class="input-wrap">
+			<input type="text" ng-show="mode == 'search'" ng-model="searchQuery" ng-change="touchSearch()" />
+			<input type="text" ng-show="mode == 'recent'" placeholder="{{ phrase('agent.chrome.recent_list-filter-info') }}" id="recent_tabs_list_filter" />
+		</div>
+		<div class="icons-well">
+			<ul>
+				<li class="recent" title="Recent Tabs" id="recent_tabs_btn" ng-click="toggleMode('recent')"><i class="fa fa-clock-o"></i></li>
+				<li class="notif" title="Notifications" id="notifs_btn" ng-click="toggleMode('notif')"><i class="fa fa-bell"></i><em id="notifs_counts" data-count="0">0</em></li>
+			</ul>
+		</div>
+	</div>
+	<div class="dp-omnibox-results" style="display: none;">
+		<div ng-show="isMainLoading" style="text-align: center;">
+			<i class="spinner-circle-32"></i>
+		</div>
+		<div ng-show="!isMainLoading">
+			<section ng-repeat="group in resultGroups" class="result-group">
+				<header>{{ ng_var('group.title') }}</header>
+				<article>
+					<div class="list-listing">
+						<div ng-repeat="result in group.results">
+							<script type="text/plain" dp-tpl tpl-id="dp_search_list_row">
+								{% include 'AgentBundle:Main:window-header-searchbox-result.html.twig' %}
+							</script>
+						</div>
+					</div>
+				</article>
+			</section>
+		</div>
+	</div>
+
+	{######################################}
+
+	<div class="dp-recent-list-dropdown" id="recent_tabs_menu">
+		<article>
+			<ul id="recent_tabs_list">
+				<li id="recent_tabs_list_li_none">{{ phrase('agent.chrome.recent_list-none') }}</li>
+			</ul>
+		</article>
+	</div>
+	<script type="text/x-deskpro-plain" id="recent_tabs_list_tpl">
+		<li>
+			<time></time>
+			<a>
+				<i class="icon-envelope dp-icon-placeholder"></i>
+				<strong></strong>
+				<span></span>
+			</a>
+		</li>
+	</script>
+
+	{######################################}
+
+	<div class="dp-header-notify-menu" id="dp_header_notify_wrap">
+		<header>
+			<a class="pref-link trigger-notify-prefs" data-type="main"><i class="icon-cog"></i></a>
+			<a href="#" class="see_current selected">{{ phrase('agent.chrome.notify_list-new-messages', {}, true) }}</a> &bull; <a href="#" class="see_dismissed">View Dismissed</a>
+		</header>
+		<article>
+			<div class="no-notifications for-dismissed notification-progress-on" style="display: none;">
+				<h4>Please wait...</h4>
+			</div>
+			<div class="no-notifications for-current">
+				<h4>{{ phrase('agent.chrome.notify_list-no-notifications') }}</h4>
+			</div>
+			<ul class="notify-list for-current" id="dp_notify_list_main"></ul>
+			<ul class="notify-list for-dismissed" id="dp_notify_list_archive_main" style="display: none;"></ul>
+		</article>
+		<footer class="for-current">
+			<a class="btn trigger-dismiss"><i class="icon-ban-circle"></i> {{ phrase('agent.chrome.notify_list-dismiss-all') }}</a>
+		</footer>
+	</div>
+	<script type="text/x-deskpro-plain" id="dp_header_notify_row_tpl">
+		<li class="inside">
+			<div class="dismiss"><i class="icon-remove"></i></div>
+			<time></time>
+			<big></big>
+			<small></small>
+		</li>
+	</script>
+</div>

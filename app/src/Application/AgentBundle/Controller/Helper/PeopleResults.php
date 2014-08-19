@@ -46,8 +46,10 @@ use Orb\Util\Arrays;
  */
 class PeopleResults
 {
+	const PER_PAGE_DEFAULT = 2;
+
 	/**
-	 * @var Application\AgentBundle\Controller\AbstractController
+	 * @var \Application\AgentBundle\Controller\AbstractController
 	 */
 	protected $controller;
 
@@ -61,8 +63,10 @@ class PeopleResults
 	 */
 	protected $order_by = null;
 
+	protected $perPage;
+
 	/**
-	 * @return Application\AgentBundle\Controller\Helper\PeopleResults
+	 * @return \Application\AgentBundle\Controller\Helper\PeopleResults
 	 */
 	public static function newFromResultCache($controller, ResultCache $result_cache)
 	{
@@ -74,11 +78,16 @@ class PeopleResults
 
 
 
-	public function __construct($controller)
+	public function __construct($controller, $resultsPerPage = self::PER_PAGE_DEFAULT)
 	{
 		$this->controller = $controller;
+		$this->perPage = $resultsPerPage;
 	}
 
+	public function getPerPageCount()
+	{
+		return $this->perPage;
+	}
 
 
 	/**
@@ -108,9 +117,9 @@ class PeopleResults
 	 *
 	 * @return array
 	 */
-	public function getPeopleForPage($page, $per_page = 50)
+	public function getPeopleForPage($page)
 	{
-		return $this->_getPageFromPeopleIds($this->getPeopleIds(), $page, $per_page);
+		return $this->_getPageFromPeopleIds($this->getPeopleIds(), $page, $this->getPerPageCount());
 	}
 
 

@@ -1,6 +1,6 @@
 <!-- BEGIN NAVIGATION -->
 <div id="dp_nav">
-	<div id="dp_nav_sections" class="deskproPane dp-appstrip">
+	<div id="dp_nav_sections" class="deskproPane dp-appstrip" ng-click="paneVis.source = true">
 		<ul class="is-nav-section is-default">
 			{% if app.user.hasPerm('agent_tickets.use') %}
 				<li class="active" id="tickets_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tickets">

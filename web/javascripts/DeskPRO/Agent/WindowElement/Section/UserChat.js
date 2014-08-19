@@ -985,9 +985,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			alertEl.remove();
 			window.clearTimeout(waitTimer);
 
-			if (!DeskPRO_Window.paneVis.tabs) {
-				DeskPRO_Window.setPaneVis('tabs', true);
-			}
+// todo trigger, chat click handler (show tabs)
+//			if (!DeskPRO_Window.paneVis.tabs) {
+//				DeskPRO_Window.setPaneVis('tabs', true);
+//			}
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
 	},
 

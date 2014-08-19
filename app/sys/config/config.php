@@ -157,17 +157,6 @@ $definition->setArguments(array(
 $definition->addMethodCall('setPrefix', array('dres', new Reference('deskpro.interface_value')));
 $container->setDefinition('default_result_cache', $definition);
 
-// deskpro.search_index.entity_updater_listener
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Entity\\EventListener\\SearchUpdater');
-$definition->setArguments(array(
-	new Reference('service_container')
-));
-$definition->addTag('doctrine.event_subscriber', array(
-	'connection' => 'default',
-));
-$container->setDefinition('deskpro.search_index.entity_updater_listener', $definition);
-
 // browser_sniffer
 $definition = new Definition();
 $definition->setClass('Browser');
@@ -197,6 +186,16 @@ $container->setDefinition('deskpro.search_manager.doctrine', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\TicketToElasticaTransformer');
 $container->setDefinition('deskpro.search.ticket_to_elastica_transformer', $definition);
+
+// deskpro.search.person_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\PersonToElasticaTransformer');
+$container->setDefinition('deskpro.search.person_to_elastica_transformer', $definition);
+
+// deskpro.search.org_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\OrgToElasticaTransformer');
+$container->setDefinition('deskpro.search.org_to_elastica_transformer', $definition);
 
 // fos_elastica.provider.prototype.orm
 $definition = new Definition();
@@ -328,24 +327,81 @@ $container->loadFromExtension('fos_elastica', array(
             'settings' => array(
                 'analysis' => array(
                     'filter' => array(
-                        'nGram_filter' => array(
+                        'ngram_filter' => array(
                             'type' => 'nGram',
                             'min_gram' => 2,
                             'max_gram' => 20,
                             'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
-                        )
+                        ),
+						'ngram_filter_3' => array(
+							'type' => 'nGram',
+							'min_gram' => 3,
+							'max_gram' => 20,
+							'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+						),
+						'ngram_filter_4' => array(
+							'type' => 'nGram',
+							'min_gram' => 4,
+							'max_gram' => 20,
+							'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+						),
+						'ngram_filter_5' => array(
+							'type' => 'nGram',
+							'min_gram' => 5,
+							'max_gram' => 20,
+							'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+						),
+						'email_filter' => array(
+							'type' => 'pattern_capture',
+							'preserve_original' => 1,
+							'patterns' => array(
+								"(\\w+)",
+								"(\\p{L}+)",
+								"(\\d+)",
+								"@(.+)"
+							)
+						),
+						'phone_filter_leading_zero' => array(
+							'type' => 'pattern_replace',
+							'preserve_original' => 1,
+							'pattern' => '^(\\+\\d+)\\s+(\\d+)$',
+							'replacement' => '$1$2 $10$2 0$2 $2'
+						),
+						'phone_filter' => array(
+							'type' => 'pattern_capture',
+							'preserve_original' => 0,
+							'patterns' => array(
+								"(\\+\\d+)",
+								"(\\d+)"
+							)
+						),
                     ),
                     'analyzer' => array(
-                        'nGram_analyzer'  => array(
+                        'ngram_analyzer'  => array(
                             'type' => 'custom',
                             'tokenizer' => 'whitespace',
-                            'filter'    => array('lowercase', 'asciifolding', 'nGram_filter')
+                            'filter'    => array('lowercase', 'asciifolding', 'ngram_filter')
                         ),
+						'ngram_analyzer_3'  => array(
+							'type' => 'custom',
+							'tokenizer' => 'whitespace',
+							'filter'    => array('lowercase', 'asciifolding', 'ngram_filter_3')
+						),
                         'whitespace_analyzer' => array(
                             'type' => 'custom',
                             'tokenizer' => 'whitespace',
                             'filter'    => array('lowercase', 'asciifolding')
-                        )
+                        ),
+						'email_analyzer' => array(
+							'type' => 'custom',
+							'tokenizer' => 'keyword',
+							'filter' => array("email_filter", "lowercase",  "unique", 'ngram_filter_3')
+						),
+						'phone_analyzer' => array(
+							'type' => 'custom',
+							'tokenizer' => 'keyword',
+							'filter' => array("phone_filter_leading_zero", "phone_filter", 'ngram_filter_5')
+						)
                     )
                 )
             ),
@@ -353,7 +409,7 @@ $container->loadFromExtension('fos_elastica', array(
             'types'    => array(
                 'ticket'   => array(
                     'mappings'    => array(
-                        'subject'       => array('analyzer' => 'nGram_analyzer'),
+                        'subject'       => array('analyzer' => 'ngram_analyzer'),
                         'ref'           => array(),
                         'department_id' => array(),
                         'agent_id'      => array(),
@@ -428,29 +484,31 @@ $container->loadFromExtension('fos_elastica', array(
                         'name'       => array(),
                         'first_name' => array(),
                         'last_name'  => array(),
-                        'emails' => array('type' => 'nested', 'properties' => array(
-                            'email' => array()
-                        ))
+						'labels'     => array('type' => 'string'),
+                        'emails' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
+						'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer')
                     ),
                     'persistence' => array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Person',
                         'provider' => array(),
                         'finder'   => array(),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.person_to_elastica_transformer'),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\PersonRepository'
                     )
                 ),
                 'organization'   => array(
                     'mappings'    => array(
-                        'name'    => array(),
-                        'labels'  => array(),
-                        'email_domains' => array()
+                        'name'    => array('type' => 'string', 'analyzer' => 'ngram_analyzer_3'),
+						'email_domains' => array('type' => 'string', 'analyzer' => 'ngram_analyzer_3'),
+                        'labels'  => array('type' => 'string'),
                     ),
                     'persistence' => array(
                         'driver'   => 'orm',
                         'model'    => 'Application\DeskPRO\Entity\Organization',
                         'provider' => array(),
                         'finder'   => array(),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository'
                     )
                 )

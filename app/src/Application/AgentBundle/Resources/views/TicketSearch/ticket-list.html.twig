@@ -70,7 +70,9 @@
 			</div>
 
 			<section class="list-listing" ng-hide="refreshCursorLoading" ng-class="{'list-animation': isLoaded && !pauseListAnim}">
-				<div
+
+                <div
+                    ng-if="listType == 'list'"
 					bindonce
 					ng-repeat="ticket in tickets track by ticket.id"
 					dp-removed="uncheckTicketId(ticket.id)"
@@ -79,12 +81,49 @@
 						{% include 'AgentBundle:TicketSearch:ticket-list-row.html.twig' %}
 					</script>
 				</div>
+
+                <div
+                    ng-if="listType == 'table'"
+                    class="table-result-list">
+                    <table cellspacing="0" width="100%">
+                        {% include 'AgentBundle:TicketSearch:ticket-list-table-head.html.twig' %}
+
+                        <tbody>
+                            <tr
+                                bindonce
+                                class="row-item ticket-row-{{ ng_var('ticket.id') }} sla-status-{{ ng_var('ticket.worst_sla_status') }}"
+                                ng-repeat="ticket in tickets track by ticket.id"
+                                dp-removed="uncheckTicketId(ticket.id)"
+                                data-ticket-id="{{ ng_var('ticket.id') }}"
+                                data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '{{ ticket.id }}'})|raw }}"
+                                data-route-title="@selector(a.subject)"
+                                data-route-openclass="open"
+                                ng-class="{'open': openTickets[ticket.id]}"
+                            >
+                                {% include 'AgentBundle:TicketSearch:ticket-list-table-row.html.twig' %}
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
 			</section>
 
 		</article>
 		<footer class="view-footer results-nav">
 			<div class="cursor">
 				Showing {{ ng_bind('pageCursorStart') }} to {{ ng_bind('pageCursorEnd') }} of {{ ng_bind('ticketCount') }}
+                {% if filter %}
+                    {% set refresh_url %}{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}{% endset %}
+                {% elseif sla_id %}
+                    {% set refresh_url %}{{ path('agent_ticketsearch_runsla', {'sla_id': sla_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}{% endset %}
+                {% else %}
+                    {% set refresh_url %}{{ path('agent_ticketsearch_runcustomfilter', {'cache_id': cache_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}{% endset %}
+                {% endif %}
+                <a ng-if="listType == 'table'" title="{{ phrase('agent.tickets.export_to_csv') }}" target="_blank" href="{{ refresh_url }}&view_type=csv&_rt={{ security_token('request_token', 10800) }}">
+                    <button class="clean-white">
+                        <i class="fa fa-file-excel-o"></i>
+                    </button>
+                </a>
 			</div>
 			<ul class="pagenav" ng-class="{'no-prev': !hasPrevPage, 'no-next': !hasNextPage}">
 				<li class="prev" ng-click="loadPrevCursorPage();"></li>

@@ -22,6 +22,30 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
 
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', '$http', function($compile, $rootScope, $q, $timeout, $http) {
+			self.$scope = $rootScope.$new();
+
+			self.$scope.$safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase == '$apply' || phase == '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					this.$apply(fn);
+				}
+			};
+
+			self.$q = $q;
+			self.$timeout = $timeout;
+			self.$http = $http;
+
+			self.wrapper.data('$ngControllerController', self);
+			$compile(self.wrapper.contents())(self.$scope);
+
+			self.initScope();
+		}]);
+
 		this.resultTypeId = this.meta.cache_id || 0;
 
 		if (this.getMetaData('noResults')) {
@@ -38,19 +62,19 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
 		this.enableHighlightOpenRows('organization', 'org_id', 'article.org-');
 
-		var opt = {
-			resultIds: this.meta.orgResultIds,
-			perPage: this.meta.perPage || 50
-		};
-		if (this.meta.viewType && this.meta.viewType == 'list') {
-			opt.resultRowSelector = 'tr.row-item';
-			opt.resultsContainer = $('.table-result-list table', el);
-			opt.navEl = $('.bottom-action-bar', el);
-		}
-		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
-		this.ownObject(this.resultsHelper);
+//		var opt = {
+//			resultIds: this.meta.orgResultIds,
+//			perPage: this.meta.perPage || 50
+//		};
+//		if (this.meta.viewType && this.meta.viewType == 'list') {
+//			opt.resultRowSelector = 'tr.row-item';
+//			opt.resultsContainer = $('.table-result-list table', el);
+//			opt.navEl = $('.bottom-action-bar', el);
+//		}
+//		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
+//		this.ownObject(this.resultsHelper);
 
-		delete this.meta.orgResultIds;
+//		delete this.meta.orgResultIds;
 
 		// Sorting options
 		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
@@ -75,5 +99,36 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 			}
 		});
 		this.ownObject(this.sortingMenu);
+	},
+
+	initScope: function(){
+		var self = this,
+			$scope = self.$scope;
+
+		$scope.organizations = this.meta.organizations;
+		$scope.displayFields = this.meta.displayFields;
+
+		$scope.isFieldDisplayable = function(org, field) {
+			switch (field) {
+				case 'members_count':
+					return org.members_count === undefined ? false : true;
+				case 'labels':
+					return org.labels && org.labels.length > 0;
+				default:
+					if (0 !== field.indexOf('organization_fields')) return false;
+					return !!org[field];
+			}
+		};
+
+		$scope.$watch('organizations', function(newVal, oldVal){
+			$scope.$parent.listItems.length = 0;
+			var routeTemplate = $scope.$parent.routes.organization;
+			newVal.each(function(org){
+				$scope.$parent.addListItem('organization', 'organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
+			});
+		});
+
+		// sometimes $scope.persons won't apply (as we're working outside of digest loop most of time), so force it
+		$scope.$safeApply();
 	}
 });

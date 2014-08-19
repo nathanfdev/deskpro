@@ -1,89 +1,91 @@
-<section class="search-reuslts page-set" data-page="{{page}}">
-	{% for person in people %}
+<section class="search-reuslts page-set" data-page="{{ ng_var('pagination.page') }}">
 
-		{% set person_email = result_display.getEmail(person) %}
+    <article
+            ng-repeat="person in persons"
+            class="row-item person person-{{ ng_var('person.id') }}"
+            data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ person.id }}'})|raw }}"
+            data-route-title="@selector(a.name)" data-route-openclass="open"
+            >
+        <span class="top-row-spacer"></span>
+        <div class="top-row">
+            <div class="top-row-left">
+                <h3>
+                    <a class="name click-through">
+                        <span class="person-name-picture" ng-style="{'background-image': 'url({{ ng_var('person.picture_url_16') }})'}">
+                            {{ ng_var('person.name_with_title') }}
+                        </span>
+                    </a>
+                    <span ng-if="person.email" class="person-email">&lt;{{ ng_var('person.email') }}&gt;</span>
+                    <span ng-if="person.organization" class="person-org"
+                            data-route="org:{{ path('agent_org_view', {organization_id: '0000'})|replace({'0000': '{{ person.organization.id }}'})|raw }}">
+                        <span ng-if="person.organization_position">{{ ng_var('person.organization_position') }}, </span>
+                        {{ ng_var('person.organization.name') }}
+                    </span>
+                </h3>
+            </div>
+        </div>
 
-		<article class="row-item person person-{{person.id}}" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}" data-route-title="@selector(a.name)" data-route-openclass="open">
-			<span class="top-row-spacer"></span>
-			<div class="top-row">
-				<div class="top-row-left">
-					<h3>
-						<a class="name click-through"><span class="person-name-picture" style="background-image: url({{ person.getPictureUrl(15) }})">{{ person.getNameWithTitle() }}</span></a>
-						{% if person_email.email %}<span class="person-email">&lt;{{ person_email.email }}&gt;</span>{% endif %}
-						{% if person.organization %}<span class="person-org" data-route="org:{{ path('agent_org_view', {organization_id: person.organization.id})}}">{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
-					</h3>
-				</div>
-			</div>
-			{% if display_fields|length %}
-				{% set extra_info_row %}
-				{% set has_set = false %}
-				<div class="extra-fields">
-					<ul>
-						{% for field in display_fields %}
-							{% if field == 'organization' and person.organization %}
-								{% set has_set = true %}
-								<li>
-									<span class="prop-val org">{{ person.organization.name }}</span>
-									{% if person.organization_position %}
-										({{ person.organization_position }})
-									{% endif %}
-								</li>
-							{% elseif field == 'person_username' %}
-								{% if result_display.getPersonUsernames(person) %}
-									<li>
-										<span class="prop-val org">{{ phrase('agent.general.username') }}: </span>
-										{% for u in result_display.getPersonUsernames(person) %}
-											{{ u }}
-										{% endfor %}
-									</li>
-								{% endif %}
-							{% elseif field == 'language' %}
-								{% set has_set = true %}
-								<li><span class="prop-val email_address">{{person.language.title}}</span></li>
-							{% elseif field == 'labels' and result_display.hasPersonLabels(person) %}
-								<li>
-									<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
-									<span class="prop-val labels">
-										{% for label in result_display.getPersonLabels(person) %}
-											<span class="listing-tag">{{ label }}</span>
-										{% endfor %}
-									</span>
-								</li>
-							{% elseif field == 'num_tickets' %}
-								{% set has_set = true %}
-								<li><span class="prop-val num_tickets">{{ phrase('agent.general.tickets') }}: {{ result_display.getPersonTicketCount(person) }}</span></li>
-							{% else %}
-								{% set custom_fields = result_display.getCustomFields(person) %}
-								{% for f in custom_fields %}
-									{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
-									{% set has_set = true %}
-									<li>
-										<span class="prop-title">{{ f.title }}:</span>
-										<span class="prop-val">{{ render_custom_field(f) }}</span>
-									</li>
-									{% endif %}
-								{% endfor %}
-							{% endif %}
-						{% endfor %}
-					</ul>
-					<br class="clear" />
-				</div>
-				{% endset %}
-				{% if has_set %}{{ extra_info_row }}{% endif %}
-				{% if not person.is_confirmed or not person.is_agent_confirmed %}
-					<div class="validation-row">
-						{% if not person.is_confirmed and not person.is_agent_confirmed %}
-							{{ phrase('agent.people.user_awaiting_email_and_agent_validation') }}
-						{% elseif not person.is_confirmed %}
-							{{ phrase('agent.people.user_awaiting_email_validation') }}
-						{% elseif not person.is_agent_confirmed %}
-							{{ phrase('agent.people.user_awaiting_agent_validation') }}
-						{% endif %}
-						<button class="agent-confirm-approve" data-person-id="{{ person.id }}">{{ phrase('agent.general.approve') }}</button>
-						{%  if app.user.hasPerm('agent_people.delete') %}<button class="agent-confirm-delete" data-person-id="{{ person.id }}">{{ phrase('agent.general.delete') }}</button>{% endif %}
-					</div>
-				{% endif %}
-			{% endif %}
-		</article>
-	{% endfor %}
+
+        <div class="extra-fields" ng-if="displayFields.length">
+            <ul>
+                <li ng-repeat="field in displayFields" ng-if="isFieldDisplayable(person, field)" ng-switch="field">
+
+                    <span ng-switch-when="organization">
+                        <span class="prop-val org">{{ ng_var('person.organization.name') }}</span>
+                        {{ ng_var('person.organization_position') }}
+                    </span>
+
+                    <span ng-switch-when="person_username">
+                        <span class="prop-val org">{{ phrase('agent.general.username') }}: </span>
+                        <span ng-repeat="username in person.usernames">{{ username }}</span>
+                    </span>
+
+                    <span ng-switch-when="language">
+                        <span class="prop-val email_address">{{ ng_var('person.language') }}</span>
+                    </span>
+
+                    <span ng-switch-when="labels">
+                        <span class="prop-title">{{ phrase('agent.general.labels') }}: </span>
+                        <span class="prop-val labels">
+                            <span class="listing-tag" ng-repeat-start="label in person.labels">{{ ng_var('label') }}</span>
+                            <span ng-repeat-end></span>
+                        </span>
+                    </span>
+
+                    <span ng-switch-when="num_tickets" class="prop-val num_tickets">
+                        {{ phrase('agent.general.tickets') }}: {{ ng_var('person.tickets_count') }}
+                    </span>
+
+                    <span ng-switch-default>
+                        <span class="prop-title">{{ ng_var('person[field].title') }}:</span>
+                        <span class="prop-val">{{ ng_var('person[field].value') }}</span>
+                    </span>
+                </li>
+
+            </ul>
+            <br class="clear" />
+        </div>
+
+        <div class="validation-row" ng-if="!(person.is_confirmed && person.is_agent_confirmed)" ng-switch="!0">
+            <span ng-switch-when="!person.is_confirmed && !person.is_agent_confirmed">
+                {{ phrase('agent.people.user_awaiting_email_and_agent_validation') }}
+            </span>
+            <span ng-switch-when="!person.is_confirmed">
+                {{ phrase('agent.people.user_awaiting_email_validation') }}
+            </span>
+            <span ng-switch-when="!person.is_agent_confirmed">
+                {{ phrase('agent.people.user_awaiting_agent_validation') }}
+            </span>
+            <button class="agent-confirm-approve" data-person-id="{{ ng_var('person.id') }}">
+                {{ phrase('agent.general.approve') }}
+            </button>
+            {%  if app.user.hasPerm('agent_people.delete') %}
+                <button class="agent-confirm-delete" data-person-id="{{ ng_var('person.id') }}">
+                {{ phrase('agent.general.delete') }}
+                </button>
+            {% endif %}
+        </div>
+
+	</article>
+
 </section>
