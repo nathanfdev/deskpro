@@ -550,7 +550,7 @@ class ServerChecks
 				}
 			} else {
 				$this->getLogger()->log("[CHECK] Checking if OPcache is enabled", Logger::DEBUG);
-				if ((ini_get('opcache.enable') || extension_loaded('Zend_OPcache'))) {
+				if (((int) ini_get('opcache.enable') || extension_loaded('Zend OPcache'))) {
 					$this->getLogger()->log("[OK] OPcache installed", Logger::DEBUG);
 				} else {
 					$msg = "We recommend installing the OPcache extension for PHP to dramatically improve performance";

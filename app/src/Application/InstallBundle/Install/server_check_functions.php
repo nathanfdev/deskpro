@@ -46,7 +46,7 @@ function deskpro_install_check_reqs()
 			$errors['apc_check'] = 'recommended';
 		}
 	} else {
-		if (!(extension_loaded('Zend_OPcache') && ini_get('opcache.enable'))) {
+		if (!(extension_loaded('Zend OPcache') && (int) ini_get('opcache.enable'))) {
 			$errors['apc_check'] = 'recommended';
 		}
 	}

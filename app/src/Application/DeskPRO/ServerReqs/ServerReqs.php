@@ -267,7 +267,7 @@ class ServerReqs
 			),
 		);
 
-		if (version_compare(phpversion(), '5.5.0', '>=')) {
+		if (version_compare(phpversion(), '5.5.0', '=>')) {
 			$this->checksTable['apc_check'] = array(
 				'description'    => 'Checking for the <a href="http://php.net/manual/book.opcache.php">OPcache extension</a>',
 				'error'          => 'We recommend installing the <a href="http://php.net/manual/book.opcache.php">OPcache extension</a> to dramatically improve performance.',

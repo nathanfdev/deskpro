@@ -229,6 +229,35 @@
 			</table>
 		</article>
 
+        {##################################################################################################}
+
+        <article class="padd" ng-if="server_php_info.opcache_link">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th colspan="2">
+                        OPcache
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        OPcache is installed and is enabled.
+                        Click the link below to view statistics and cache-controls for OPcache.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a ng-href="{{ ng_var('server_php_info.opcache_link') }}" target="_blank">
+                            {{ ng_var('server_php_info.opcache_link') }}
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+
 		{##################################################################################################}
 
 		<article class="padd" ng-if="server_php_info.has_wincache">
