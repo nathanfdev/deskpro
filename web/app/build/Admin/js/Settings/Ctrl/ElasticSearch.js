@@ -19,6 +19,7 @@
 
       Admin_Settings_Ctrl_ElasticSearch.prototype.init = function() {
         this.pollTimer = null;
+        this.hasInit = false;
       };
 
       Admin_Settings_Ctrl_ElasticSearch.prototype.initialLoad = function() {
@@ -44,13 +45,15 @@
         }).then((function(_this) {
           return function(res) {
             var _ref, _ref1, _ref2;
-            _this.$scope.settings = res.data.settings.elastic_settings;
-            _this.$scope.was_on = _this.$scope.settings.enabled;
+            if (!_this.hasInit) {
+              _this.$scope.settings = res.data.settings.elastic_settings;
+              _this.$scope.was_on = _this.$scope.settings.enabled;
+              _this.hasInit = true;
+            }
             _this.$scope.status = res.data.status;
             _this.$scope.indexer_status = (_ref = res.data.status) != null ? _ref.indexer_status : void 0;
             _this.$scope.indexer_log = (_ref1 = res.data.status) != null ? _ref1.indexer_log : void 0;
             _this.$scope.info = (_ref2 = res.data.status) != null ? _ref2.info : void 0;
-            console.log(_this.$scope.info);
             if (_this.$scope.status.is_indexing) {
               _this.startStatusPoller();
             }

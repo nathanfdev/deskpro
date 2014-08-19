@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		init: ->
 			@pollTimer = null
+			@hasInit = false
 			return
 
 		initialLoad: ->
@@ -25,13 +26,15 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				'settings': '/elastic-search/settings',
 				'status':   '/elastic-search/index-status'
 			}).then( (res) =>
-				@$scope.settings       = res.data.settings.elastic_settings
-				@$scope.was_on         = @$scope.settings.enabled
+				if not @hasInit
+					@$scope.settings       = res.data.settings.elastic_settings
+					@$scope.was_on         = @$scope.settings.enabled
+					@hasInit = true
+
 				@$scope.status         = res.data.status
 				@$scope.indexer_status = res.data.status?.indexer_status
 				@$scope.indexer_log    = res.data.status?.indexer_log
 				@$scope.info           = res.data.status?.info
-				console.log(@$scope.info)
 
 				if @$scope.status.is_indexing
 					@startStatusPoller()
