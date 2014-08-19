@@ -537,7 +537,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				var notifsOpen = false;
 				var lastUpdateTime = null;
 
-				scope.issearchQuery = '';
+				scope.searchQuery = '';
 				scope.isActive = false;
 				scope.mode = 'search';
 
@@ -553,9 +553,17 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				$input.on('focus', function() { scope.isActive = true; });
 				$input.on('blur', function() { scope.isActive = false; });
 
-				scope.touchSearch = Functions.debounce(function() {
+				var debouncedUpdateSearch = Functions.debounce(function() {
 					updateSearch()
-				}, 300)
+				}, 300);
+
+				scope.touchSearch = function() {
+					if ($.trim(scope.searchQuery) === "") {
+						scope.isActive = false;
+					} else {
+						debouncedUpdateSearch();
+					}
+				};
 
 				scope.toggleMode = function(mode) {
 					if (!mode) {
