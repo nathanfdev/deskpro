@@ -552,8 +552,11 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				scope.expanded = {};
 
 				$backdrop.on('click', function() {
+					$backdrop.hide();
 					scope.$apply(function() {
 						scope.isActive = false;
+						scope.mode = 'search';
+						updateMode();
 					});
 				});
 
@@ -621,10 +624,10 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 						$backdrop.show();
 					} else if (scope.mode == 'recent') {
 						showRecent();
-						$backdrop.hide();
+						$backdrop.show();
 					} else if (scope.mode == 'notif') {
 						showNotifs();
-						$backdrop.hide();
+						$backdrop.show();
 					}
 				};
 
@@ -641,7 +644,6 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 						});
 					};
 
-					Orb.shimClickCallback(closeFn, 'zindex-chrome0', 'fromtop');
 					$timeout(function() {
 						$('#recent_tabs_list_filter').focus();
 					});
@@ -655,14 +657,6 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 					DeskPRO_Window.notifications.resetElements();
-
-					var closeFn = function() {
-						scope.$apply(function() {
-							scope.toggleMode('notif');
-						});
-					};
-
-					Orb.shimClickCallback(closeFn, 'zindex-chrome0', 'fromtop');
 				};
 
 				var updateSearch = function() {
