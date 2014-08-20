@@ -326,7 +326,7 @@ class CategoryEdit
 					SELECT COUNT(*)
 					FROM article_to_categories
 					LEFT JOIN articles ON articles.id = article_to_categories.article_id
-					WHERE category_id = ? AND (articles.hidden_status IS NULL OR articles.hidden_status != 'deleted')
+					WHERE category_id = ? AND (articles.hidden_status IS NULL OR (articles.hidden_status != 'deleted' AND articles.hidden_status != 'draft'))
 					LIMIT 1
 				", array($category_id));
 				break;
