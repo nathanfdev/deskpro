@@ -76,6 +76,11 @@ class Connection extends \Doctrine\DBAL\Connection
 	protected $trans_count = 0;
 
 	/**
+	 * @var array
+	 */
+	protected $writes_in_tx = array();
+
+	/**
 	 * @var bool
 	 */
 	protected $has_run_avoid = false;
@@ -498,13 +503,29 @@ class Connection extends \Doctrine\DBAL\Connection
 			$this->_writeDeleteQuery($query, $params);
 		}
 
+		$level = $this->getTransactionNestingLevel();
+		if ($level && !$is_retry) {
+			$this->writes_in_tx[] = array($query, $params, $types);
+		}
+
 		try {
 			return parent::executeUpdate($query, $params, $types);
 		} catch (\Doctrine\DBAL\DBALException $e) {
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false) && !$this->isTransactionActive()) {
+			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false) && !$level) {
 				usleep(500000);
-				return $this->executeUpdate($query, $params, $types, $is_retry+1);
+				return $this->executeUpdate($query, $params, $types, $is_retry + 1);
+			} else if ($this->writes_in_tx && $is_retry <= 1 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+				usleep(500000);
+
+				$retry = $this->writes_in_tx;
+
+				// Retry the trans
+				$this->_conn->exec("START TRANSACTION"); // restart trans that mysql rolledback implicitly
+				foreach ($retry as $q) {
+					$last = $this->executeUpdate($q[0], $q[1], $q[2], 99);
+				}
+				return $last;
 			}
 
 			$e->_dp_query = $query;
@@ -672,6 +693,11 @@ class Connection extends \Doctrine\DBAL\Connection
 
 	public function beginTransaction()
 	{
+		$level = $this->getTransactionNestingLevel();
+		if ($level == 0) {
+			$this->writes_in_tx = array();
+		}
+
 		parent::beginTransaction();
 		if ($this->transaction_logger) {
 			$e = new \Exception();
@@ -684,10 +710,33 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 	}
 
-	public function commit()
+	public function commit($is_retry = 0)
 	{
+		try {
+			parent::commit();
+		} catch (\Exception $e) {
+			if ($this->writes_in_tx && $is_retry <= 1 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+				usleep(500000);
+
+				$retry = $this->writes_in_tx;
+				$this->writes_in_tx = array();
+
+				// Retry the trans
+				$this->_conn->beginTransaction();
+				foreach ($retry as $q) {
+					$this->executeUpdate($q[0], $q[1], $q[2], 99);
+				}
+				$this->commit(true);
+			} else {
+				$this->writes_in_tx = array();
+				throw $e;
+			}
+		}
+
 		$level = $this->getTransactionNestingLevel();
-		parent::commit();
+		if ($level == 0) {
+			$this->writes_in_tx = array();
+		}
 
 		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
 			$this->running_trans_event = true;
@@ -727,6 +776,9 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		$level = $this->getTransactionNestingLevel();
+		if ($level == 0) {
+			$this->writes_in_tx = array();
+		}
 
 		if ($is_unexpected) {
 			if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
