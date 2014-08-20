@@ -23,6 +23,9 @@
 	{####################}
 	<div class="dp-header-group-chat-dropdown" id="dp_header_userchat_dropdown">
 		<table class="layout-table" width="100%"><tbody><tr>
+			<td class="column2" id="agent_status_online_users">
+				{% include 'AgentBundle:UserTrack:header-table.html.twig' %}
+			</td>
 			<td class="column1" id="agent_status_menu_onlinelist">
 				<div id="agent_status_menu_me_list">
 				<div class="dp-not-loading">
@@ -64,9 +67,6 @@
 						</li>
 					{% endfor %}
 				</ul>
-			</td>
-			<td class="column2" id="agent_status_online_users">
-				{% include 'AgentBundle:UserTrack:header-table.html.twig' %}
 			</td>
 		</tr></tbody></table>
 	</div>
