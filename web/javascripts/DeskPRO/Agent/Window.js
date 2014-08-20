@@ -987,6 +987,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		$('#dp_create_btn').on('click mouseover', function(){
+			if ($('body').hasClass('with-tabresizing')) return;
+
 			var wrap = $(this);
 			var btnMenu = $('#create-menu');
 

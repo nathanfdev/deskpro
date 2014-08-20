@@ -28,7 +28,10 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		var listSizer = $('#dp_list_resizer').draggable({
 			axis: 'x'
+		}).on('dragstart', function() {
+			$('body').addClass('with-tabresizing');
 		}).on('dragstop', function() {
+			$('body').removeClass('with-tabresizing');
 			var pos = parseInt(listSizer.css('left').replace(/px/, ''));
 			self.doResize();
 		});

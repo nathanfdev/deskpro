@@ -3579,17 +3579,10 @@ ul.pane-tabs {
 #dp_list_resizer {
 	position: absolute;
 	top: 0;
+	bottom: auto;
 	height: @agent_panetabs_height;
 	width: 6px;
 	z-index: 200;
-
-	&:hover {
-		cursor: col-resize;
-	}
-
-	&:hover > div {
-		background: #888;
-	}
 
 	> div {
 		position: absolute;
@@ -3598,6 +3591,15 @@ ul.pane-tabs {
 		left: 2px;
 		right: 2px;
 		width: 2px;
+	}
+}
+
+.with-tabresizing #dp_list_resizer, #dp_list_resizer:hover {
+	bottom: 0;
+	height: auto;
+	cursor: col-resize;
+	> div {
+		background: #888;
 	}
 }
 
