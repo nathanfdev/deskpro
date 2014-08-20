@@ -70,6 +70,12 @@ switch ($_GET['_sys']) {
 		require DP_ROOT . '/sys/scripts/apc.php';
 		break;
 
+	case 'opcache':
+		if (defined('DPC_IS_CLOUD')) exit;
+		if (!$is_authed) die('Invalid auth code.');
+		require DP_ROOT . '/sys/scripts/opcache.php';
+		break;
+
 	case 'apcclear':
 		if (defined('DPC_IS_CLOUD')) exit;
 		if (!$is_authed) die('Invalid auth code.');
