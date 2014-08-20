@@ -627,7 +627,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		var loadVis = false;
-		if (loadVis = window.location.hash.match(/vis:([0-5]{1})/)) {
+		if (loadVis = window.location.hash.match(/vis:([0-9]{1})/)) {
 			loadVis = parseInt(loadVis[1]);
 		}
 
@@ -1264,6 +1264,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 				self.paneVis.tabs = true;
 				self._last = 'tabs';
+			});
+		};
+
+		$scope.toggleSourcePane = function() {
+			$scope.$safeApply(function() {
+				self.setPaneVis('source', !self.paneVis.source);
 			});
 		};
 
@@ -3469,6 +3475,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (this.openSection.listPage) {
 			this.listPage = this.openSection.listPage;
+		}
+
+		if (!this.paneVis.source) {
+			this.layout.openSourceOverlay();
 		}
 
 		this.updateWindowUrlFragment();

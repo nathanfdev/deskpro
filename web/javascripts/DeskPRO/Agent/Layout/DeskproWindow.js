@@ -49,7 +49,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			$('#dp_source').stop().animate({left: 0 }, {
 				duration: 350,
 				complete: function() {
-					if (!isSourceOver && !sourceOutTimeout) {
+					if (!isSourceOver && !isSourceNavOver && !isSourcePlaceOver && !sourceOutTimeout) {
 						sourceOutTimeout = window.setTimeout(function() {
 							sourceOutTimeout = null;
 							if (!isSourceOver) {
@@ -60,6 +60,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				}
 			});
 		};
+		this.openSourceOverlay = openSourceOverlay;
 
 		var closeSourceOverlay = function() {
 			if (DeskPRO_Window.paneVis.source) return;
@@ -80,34 +81,42 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		var isSourceOver = false;
 		var sourceOutTimeout = null;
 		var isSourceClosing = false;
-		$('#dp_source').on('mouseover', function() {
-			isSourceOver = true;
+		var openSourceTimeout = null;
+		var isSourcePlaceOver = false;
+		var isSourceNavOver = false;
+		var cancelCloseSourceOverlayTimeout = function() {
 			if (sourceOutTimeout) {
 				window.clearTimeout(sourceOutTimeout);
 				sourceOutTimeout = null;
 			}
-
 			if (isSourceClosing) {
 				isSourceClosing = false;
 				$('#dp_source').stop().animate({left: 0 }, {
 					duration: 150
 				});
 			}
-		});
-		$('#dp_source').on('mouseout', function() {
-			isSourceOver = false;
+		};
+		var startCloseSourceOverlayTimeout = function() {
 			if (!sourceOutTimeout) {
 				sourceOutTimeout = window.setTimeout(function() {
 					sourceOutTimeout = null;
-					if (!isSourceOver) {
+					if (!isSourceOver && !isSourcePlaceOver && !isSourceNavOver) {
 						closeSourceOverlay();
 					}
 				}, 380);
 			}
+		};
+
+
+		$('#dp_source').on('mouseover', function() {
+			isSourceOver = true;
+			cancelCloseSourceOverlayTimeout();
+		});
+		$('#dp_source').on('mouseout', function() {
+			isSourceOver = false;
+			startCloseSourceOverlayTimeout();
 		});
 
-		var openSourceTimeout = null;
-		var isSourcePlaceOver = false;
 		$('#dp_source_place').on('mouseover', function() {
 			isSourcePlaceOver = true;
 			window.setTimeout(function() {
@@ -122,6 +131,13 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				window.clearTimeout(openSourceTimeout);
 				openSourceTimeout = null;
 			}
+		});
+		$('#dp_nav_sections').on('mouseover', function() {
+			isSourceNavOver = true;
+			cancelCloseSourceOverlayTimeout();
+		}).on('mouseout', function() {
+			isSourceNavOver = false;
+			startCloseSourceOverlayTimeout();
 		});
 	},
 
