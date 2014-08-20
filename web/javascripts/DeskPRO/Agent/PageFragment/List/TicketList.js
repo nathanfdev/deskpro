@@ -104,6 +104,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.listType             = 'list';
 		$scope.DESKPRO_PERSON_ID    = DESKPRO_PERSON_ID;
 
+		if (Modernizr.localstorage && window.localStorage['dp_ticket_listtype']) {
+			$scope.listType = window.localStorage['dp_ticket_listtype'];
+		}
+
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 
 		this.updatePageCursorWithTicketId();
@@ -1404,31 +1408,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			$timeout(function() {
 				$scope.pauseListAnim = false;
 			}, 500);
+
+			if (Modernizr.localstorage) {
+				window.localStorage['dp_ticket_listtype'] = $scope.listType;
+			}
 		};
 	},
 
-
-	//#########################################################################
-	//# List View
-	//#########################################################################
-
-	/**
-	 * Opens the current view in the table overlay
-	 */
-	openTableView: function() {
-		var oldlist = this.listview;
-		this.listview = new DeskPRO.Agent.TicketList.ListView(this);
-
-		if (oldlist && !oldlist.OBJ_DESTROYED) {
-			this.listview.addEvent('ajaxLoaded', function() {
-				if (!oldlist.OBJ_DESTROYED) {
-					oldlist.destroy();
-				}
-			});
-		}
-
-		this.listview.open();
-	},
 
 	//#########################################################################
 	//# Paging and refreshing
