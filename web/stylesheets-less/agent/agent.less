@@ -1432,11 +1432,13 @@ ul.btn-menu {
 	}
 
 	header {
-		line-height: 30px;
+		height: 30px;
 		padding: 0 9px;
 		color: @agent_menu_text_color;
 		text-transform: uppercase;
 		font-size: 12px;
+		background: #d6d9dc;
+		border-bottom: 1px solid #a4a4a4;
 
 		a.pref-link {
 			float: right;
@@ -1451,10 +1453,26 @@ ul.btn-menu {
 		}
 
 		.see_current, .see_dismissed {
-			color: #444;
+			position: relative;
+			top: 6px;
+			display: block;
+			float: left;
+			line-height: 23px;
+			margin-right: 5px;
+			color: #666;
 
-			&.selected, &:hover {
-				border-bottom: 2px solid #999;
+			padding: 0px 9px;
+
+			border: 1px solid #a4a4a4;
+			border-radius: 3px 3px 0 0;
+
+			&:hover {
+				background: #eee;
+			}
+
+			&.selected {
+				background: #fff;
+				border-bottom-color: #fff;
 			}
 		}
 	}
