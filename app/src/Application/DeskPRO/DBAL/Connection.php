@@ -706,7 +706,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		if (!$this->getTransactionNestingLevel()) {
 
-			// Set in SearchUpdater::run
+			// Set in EntityWatcher
 			// If we have got here with a successful commit, then the changes are now
 			// properly synced and we dont need the flag set anymore
 			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
@@ -718,14 +718,6 @@ class Connection extends \Doctrine\DBAL\Connection
 
 	public function rollback($is_unexpected = true)
 	{
-		if ($is_unexpected) {
-			if (!(defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing')) {
-				$e = new \Exception("Rollback called");
-				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
-			}
-		}
-
 		try {
 			parent::rollback();
 		} catch (\Exception $e) {

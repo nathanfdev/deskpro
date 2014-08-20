@@ -743,6 +743,7 @@ class KernelBooter
 		}
 
 		$check_twitter = false;
+		$check_indexer = false;
 
 		$do_upgrade = false;
 		try {
@@ -775,6 +776,7 @@ class KernelBooter
 			}
 
 			$check_twitter = true;
+			$check_indexer = true;
 		}
 
 		if ($check_twitter && !defined('DPC_IS_CLOUD') && \Application\DeskPRO\App::getConfig('enable_twitter')) {
@@ -809,6 +811,35 @@ class KernelBooter
 						}
 					}
 				}
+			}
+		}
+
+		if ($check_indexer && !defined('DPC_IS_CLOUD')) {
+			$index_reset = \Application\DeskPRO\App::getSetting('elastica.requires_reset');
+			if ($index_reset) {
+				try {
+					$id = mt_rand(10000,99999);
+					\Application\DeskPRO\App::getDb()->insertIgnore('settings', array('name'  => 'elastica.requires_reset_started', 'value' => $id));
+
+					$file = escapeshellarg(realpath(DP_ROOT . '/../cmd.php'));
+					$args = 'dp:elastica:populate --auto-reset ' . $id;
+					$php_path = dp_get_php_path(false);
+
+					if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+						// this is needed as we need a fake window to hide the process
+						$php_path = str_replace('php-win.exe', 'php.exe', $php_path);
+						$file = str_replace('/', '\\', $file);
+
+						if (class_exists('\COM', false)) {
+							$shell = new \COM("WScript.Shell");
+							$shell->Run("$php_path $file", 0, false);
+						} else {
+							pclose(popen("start \"dpindexer\" /MIN $php_path $file $args", "r"));
+						}
+					} else {
+						exec("nohup $php_path $file $args > /dev/null 2> /dev/null &");
+					}
+				} catch (\Exception $e) {}
 			}
 		}
 

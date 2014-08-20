@@ -39,6 +39,68 @@
       Module.directive('dpPortalEditor', Admin_Portal_Directive_PortalEditor);
       Module.directive('dpTicketLayoutEditor', Admin_TicketDeps_Directive_LayoutEditor);
       Module.directive('dpTicketLayoutEditorField', Admin_TicketDeps_Directive_LayoutEditorField);
+      Module.directive('dpToggleShowIds', [
+        function() {
+          return {
+            restrict: 'A',
+            link: function(scope, el, attrs) {
+              var update;
+              window.DP_DO_SHOW_IDS = false;
+              scope.do_show_ids = false;
+              update = function() {
+                if (window.DP_DO_SHOW_IDS) {
+                  scope.do_show_ids = true;
+                  return $('body').addClass('show-title-ids');
+                } else {
+                  scope.do_show_ids = false;
+                  return $('body').removeClass('show-title-ids');
+                }
+              };
+              update();
+              return el.on('click', function(ev) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                window.DP_DO_SHOW_IDS = !window.DP_DO_SHOW_IDS;
+                return scope.$apply(function() {
+                  return update();
+                });
+              });
+            }
+          };
+        }
+      ]);
+      Module.directive('dpGo', [
+        '$location', function($location) {
+          return {
+            restrict: 'A',
+            link: function(scope, el, attrs) {
+              return el.on('click', function(ev) {
+                var path, search;
+                ev.stopPropagation();
+                ev.preventDefault();
+                path = attrs.dpGo.replace(/^#/, '');
+                search = scope.$eval(attrs.dpGoParams);
+                return scope.$apply(function() {
+                  $location.path(path);
+                  if (search) {
+                    return $location.search(search);
+                  }
+                });
+              });
+            }
+          };
+        }
+      ]);
+      Module.directive('dpNoDrag', [
+        function() {
+          return {
+            restrict: 'AC',
+            link: function(scope, el, attrs) {
+              return el.get(0).draggable = false;
+            }
+          };
+        }
+      ]);
       Module.directive('dpMoveListToPos', [
         '$timeout', function($timeout) {
           return {

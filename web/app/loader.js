@@ -15,6 +15,7 @@ requirejs.config({
 		"angularMoment":                   "app/bower_components/angular-moment/angular-moment",
 		"angularFileUpload":               "app/bower_components/blueimp-file-upload/js/jquery.fileupload-angular",
 		"angularSlider":                   "app/bower_components/angular-slider/angular-slider.min",
+		"angularSelectize":                "app/bower_components/angular-selectize.js/angular-selectize",
 		"angularGrid":                     "app/bower_components/angular-grid/build/ng-grid.min",
 		"ngFileUpload":                    "app/bower_components/ng-file-upload/angular-file-upload.min",
 		"jquery":                          "app/bower_components/jquery/jquery.min",
@@ -44,6 +45,13 @@ requirejs.config({
 		"jstz":                            "vendor/detect_timezone",
 		"intl-tel-input":                  "app/bower_components/intl-tel-input/build/js/intlTelInput.min",
 
+		"selectize":                       "app/bower_components/selectize/dist/js/selectize",
+		"sifter":                          "app/bower_components/sifter/sifter",
+		"microplugin":                     "app/bower_components/microplugin/src/microplugin",
+
+		"ZeroClipboard":                   "app/bower_components/zeroclipboard/dist/ZeroClipboard",
+		"ngClip":                          "app/bower_components/ng-clip/src/ngClip",
+
 		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/AdminLoad"),
 		"CloudAdminLoad":                  (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/Cloud/CloudAdminLoad"),
 		"AdminUpgradeLoad":                (DP_USE_RJS_BUILD ? "app/build/AdminUpgrade/js/build" : "app/AdminUpgrade/AdminUpgradeLoad"),
@@ -71,7 +79,10 @@ requirejs.config({
 		"angularMoment":                   ["angular", "moment"],
 		"angularFileUpload":               ["jquery"],
 		"angularSlider":                   ["angular"],
+		"angularSelectize":                ["angular"],
 		"angularGrid":                     ["angular"],
+		"ZeroClipboard":                   { "exports": "ZeroClipboard"},
+		"ngClip":                          ["angular", "ZeroClipboard"],
 		"ngFileUpload":                    ["angular"],
 		"jquery":                          { "exports": "jquery" },
 		"jqueryUi":                        ["jquery"],

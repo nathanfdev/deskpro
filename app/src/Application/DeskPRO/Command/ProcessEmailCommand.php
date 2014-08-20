@@ -55,7 +55,9 @@ class ProcessEmailCommand extends ContainerAwareCommand
 		$this->addOption('to', null, InputOption::VALUE_REQUIRED, 'The TO address to interpret the email to. If provided, the gateway will be determiend based on this.');
 		$this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
 		$this->addOption('file', null, InputOption::VALUE_OPTIONAL,  'Path to an email file to process. No filename is required if you are sending the file through standard input (e.g., piping).');
-		$this->addOption('success-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of success (e.g., use as a trigger for external tool)');
+		$this->addOption('success-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of success (e.g., use as a trigger for external tool). Note that this command will return 0 on success, so you can use that instead.');
+		$this->addOption('error-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of error (e.g., use as a trigger for external tool). Note that this command will return 1 on an error, so you can use that instead.');
+		$this->addOption('enable-retries', null, InputOption::VALUE_NONE, 'If processing the message fails, enable retry scheduling instead of setting to "error".');
 		$this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from-email=\"user@example.com\" --to-email=\"gateway@example.com\" | php cmd.php dp:process-email --file");
 	}
 
@@ -70,6 +72,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$success_string = $input->getOption('success-string');
+		$error_string   = $input->getOption('error-string');
 
 		#----------------------------------------
 		# Read/save source object
@@ -208,19 +211,28 @@ class ProcessEmailCommand extends ContainerAwareCommand
 		$runner = new Runner();
 		$runner->setLogger($logger);
 		$runner->setPhpTimeLimit(900);
-		$runner->executeSource($source, $reader);
-
-		if ($success_string) {
-			echo "\n";
-			echo $success_string;
-			echo "\n";
+		if ($input->getOption('enable-retries')) {
+			$runner->setRetryScheduling(true);
 		} else {
-			echo "\n\n";
-			echo "STATUS: DPC_EMAIL_SUCCESS";
-			echo "\n\n";
+			$runner->setRetryScheduling(false);
 		}
+		$result = $runner->executeSource($source, $reader);
 
-		return 0;
+		if ($result) {
+			if ($success_string) {
+				echo "\n";
+				echo $success_string;
+				echo "\n";
+			}
+			return 0;
+		} else {
+			if ($error_string) {
+				echo "\n";
+				echo $error_string;
+				echo "\n";
+			}
+			return 1;
+		}
 	}
 
 

@@ -47,7 +47,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.paneVis = {
 			source: true,
 			list: true,
-			tabs: true,
+			tabs: true
 		};
 
 		this.paneVisBit = {
@@ -57,24 +57,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		var self = this;
-		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
-		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
-			self.$scope = $rootScope;
-			self.$q = $q;
-			self.$timeout = $timeout;
 
-			self.$scope.$safeApply = function(fn) {
-				var phase = this.$root.$$phase;
-				if(phase == '$apply' || phase == '$digest') {
-					if(fn && (typeof(fn) === 'function')) {
-						fn();
-					}
-				} else {
-					self.$scope.$apply(fn);
-				}
-			};
-		}]);
-		this.initScope();
+		if (window.AppPlatform) {
+			this.initAppPlatform(window.AppPlatform);
+		}
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -641,7 +627,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		var loadVis = false;
-		if (loadVis = window.location.hash.match(/vis:([0-5]{1})/)) {
+		if (loadVis = window.location.hash.match(/vis:([0-9]{1})/)) {
 			loadVis = parseInt(loadVis[1]);
 		}
 
@@ -916,6 +902,29 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
+		$('#dp_tab_list_btn').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			var $menu = $('#dp_tab_list_menu');
+			var $me = $(this);
+			var pos = $me.offset();
+
+			$me.addClass('active').parent().addClass('active');
+
+			$menu.css({
+				top: pos.top + 23,
+				left: pos.left + 1
+			}).show();
+
+			var closeFn = function() {
+				$me.removeClass('active').parent().removeClass('active');
+				$menu.hide();
+			};
+
+			$menu.on('click', function() { closeFn(); Orb.shimClickCallbackPop(); });
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+		});
+		$('#dp_tab_list_menu').detach().appendTo('body');
+
 		var isIe = $('html').hasClass('browser-ie');
 
 		$('#dp_header').find('.btn-group-actions, .btn-group-wrap').find('.btn, .dp-recent-btn').on('click', function() {
@@ -977,13 +986,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
-		$('#tabNavigationPane .btn-group-actions .btn').on('click, mouseover', function(){
-			var wrap = $(this).parent();
-			var btnMenu = $('#create-menu');
+		$('#dp_create_btn').on('click mouseover', function(){
+			if ($('body').hasClass('with-tabresizing')) return;
 
-			if (wrap.hasClass('active')) {
-				return;
-			}
+			var wrap = $(this);
+			var btnMenu = $('#create-menu');
 
 			// Bug in IE10 means the li's dont render properly
 			// until you force a repaint somehow while they are displayed
@@ -996,7 +1003,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			wrap.addClass('active');
 			btnMenu.addClass('active');
-			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() - 1});
+			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() + 6});
 
 			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
@@ -1017,7 +1024,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if (!btnMenu.hasClass('active')) return;
 
 				var left = wrap.offset().left - 5,
-					top = wrap.offset().top - 5,
+					top = wrap.offset().top,
 					right = left + btnMenu.width() + 10,
 					bottom = top + wrap.height() + btnMenu.height() + 10
 
@@ -1050,43 +1057,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				wrap.find('.btn-menu').on('click', function(ev) {
 					Orb.cancelEvent(ev);
 					Orb.shimClickCallbackPop();
-				});
-			}
-
-			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
-		});
-
-		$('#dp_header_notify_wrap').find('> ul > li').on('click', function() {
-			var wrap = $(this);
-			wrap.addClass('active');
-			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
-
-			var mainRow = $(this).closest('.type-row');
-			var notifUl = mainRow.find('.notify-list.for-current')
-			var notifyBox = $('#dp_header_notify_wrap');
-			notifyBox.find('a.see_dismissed').removeClass('selected');
-			$(this).find('a.see_current').addClass('selected');
-
-			notifyBox.removeClass('mode-dismissed').addClass('mode-current');
-
-			notifyBox.find(".no-notifications").hide();
-			notifyBox.find('.notify-list.for-dismissed').empty().hide();
-
-			if (!notifUl.find('li')[0]) {
-				notifyBox.find(".no-notifications").not(".notification-progress-on").show();
-				$("#dp_notify_wrap").find('.notify-list.for-current').hide();
-			} else {
-				notifUl.show();
-			}
-
-			var closeFn = function() {
-				wrap.removeClass('active');
-				Orb.shimClickCallbackPop();
-			};
-
-			if (!wrap.data('has-init')) {
-				wrap.find('ul').on('click', function(ev) {
-					closeFn();
 				});
 			}
 
@@ -1147,10 +1117,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.cancelHashLoad = 0;
 				this.loadHashPath(startHash);
 			}
-		}
-
-		if (window.AppPlatform) {
-			this.initAppPlatform(window.AppPlatform);
 		}
 
 		$('#agents_section').on('click', function(ev) {
@@ -1264,18 +1230,46 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		};
 
-		$scope.addListItem = function(identity, title, route) {
-			$scope.listItems.push({identity: identity, title: title, route: route});
+		$scope.toggleSourcePane = function() {
+			$scope.$safeApply(function() {
+				self.setPaneVis('source', !self.paneVis.source);
+			});
+		};
+
+		$scope.addListItem = function(type, identity, title, route) {
+			$scope.listItems.push({type: type, identity: identity, title: title, route: route});
 		};
 	},
 
 	initAppPlatform: function(AppPlatform) {
+
+		var self = this;
+
 		if (this.AppPlatform) return;
 		this.AppPlatform = AppPlatform;
 		this.AppPlatform.start();
 
 		this.ngModule = this.AppPlatform.getNgModule();
 		this.ngModule.dpInjector = angular.element(document).injector();
+
+		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
+		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+			self.$scope = $rootScope;
+			self.$q = $q;
+			self.$timeout = $timeout;
+
+			self.$scope.$safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase == '$apply' || phase == '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					self.$scope.$apply(fn);
+				}
+			};
+		}]);
+		this.initScope();
 	},
 
 	getAppPlatform: function() {
@@ -2106,12 +2100,33 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.preloadId = el.data('route-preload-id');
 		}
 
+		if (!this.paneVis.tabs) {
+			extraData.noToggle = true;
+			extraData.focus = true;
+		}
+
+		if (el.data('route-replacetab')) {
+			extraData.replaceTab = true;
+		} else if (el.hasClass('row-item') && !this.paneVis.tabs) {
+			extraData.replaceTab = true;
+		}
+
+		if (el.data('route-newtab')) {
+			extraData.replaceTab = false;
+			extraData.focus = false;
+		}
+
 
 		// this should be handled only when click event occurs
 		if (0 === el.data('route').indexOf('listpane:')) {
 			this.$scope.showList();
 		} else {
 			this.$scope.showTabs();
+		}
+
+		var popoverEl = el.closest('.popover-wrapper');
+		if (popoverEl[0] && popoverEl.data('popover-handler')) {
+			popoverEl.data('popover-handler').close(true);
 		}
 
 		this.runPageRoute(el.data('route'), extraData);
@@ -2225,8 +2240,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var self = this;
 		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = DeskPRO_Window.TabBar.findTabByRouteUrl(url);
-			if (existTab && routeData.noToggle) {
-				if (routeData.focus) {
+			if (existTab && (routeData.noToggle || routeData.replaceTab)) {
+				if (routeData.focus || routeData.replaceTab) {
 					DeskPRO_Window.TabBar.activateTab(existTab);
 				}
 				return;
@@ -2249,8 +2264,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
+		var currentActiveTabId = DeskPRO_Window.TabBar.getActiveTabId();
+
 		// Add a temporary tab to the tabstrip
 		routeData.tabPlaceholderId = DeskPRO_Window.TabBar.addTabPlaceholder(url, routeData);
+
+		if (currentActiveTabId && routeData && routeData.replaceTab) {
+			DeskPRO_Window.TabBar.removeTabById(currentActiveTabId);
+		}
 
 		if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
 			routeData.routeTriggerEl.addClass(routeData.toggleOpenClass);
@@ -3417,6 +3438,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (this.openSection.listPage) {
 			this.listPage = this.openSection.listPage;
+		}
+
+		if (!this.paneVis.source) {
+			this.layout.openSourceOverlay();
 		}
 
 		this.updateWindowUrlFragment();

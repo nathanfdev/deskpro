@@ -14,7 +14,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.wrapper = el;
 		this.perPage = 50;
 		this.filterId = parseInt(this.meta.filter_id) || 0;
-		this.fixed_fields = ['id', 'user', 'subject', 'status', 'agent'];
+		this.fixed_fields = ['subject'];
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
 			self.$scope = $rootScope.$new();
@@ -104,6 +104,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.listType             = 'list';
 		$scope.DESKPRO_PERSON_ID    = DESKPRO_PERSON_ID;
 
+		if (Modernizr.localstorage && window.localStorage['dp_ticket_listtype']) {
+			$scope.listType = window.localStorage['dp_ticket_listtype'];
+		}
+
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 
 		this.updatePageCursorWithTicketId();
@@ -149,7 +153,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			$scope.$parent.listItems.length = 0;
 			var routeTemplate = $scope.$parent.routes.ticket;
 			newVal.each(function(ticket){
-				$scope.$parent.addListItem('ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
+				$scope.$parent.addListItem('ticket', 'ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
 			});
 		});
 	},
@@ -1289,7 +1293,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				fields.push(v);
 			});
 			$scope.display_fields.each(function(v){
-				if (fields.indexOf(v) > -1) return;
+				if (fields.indexOf(v) > -1 || v == 'id') return;
 				fields.push(v);
 			});
 			return fields;
@@ -1399,33 +1403,18 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		$scope.openDisplayOptions = function() { displayOptions.open(); };
 		$scope.openTableView = function() {
+			$scope.pauseListAnim = true;
 			$scope.listType = 'table' === $scope.listType ? 'list' : 'table';
-//			self.openTableView();
+			$timeout(function() {
+				$scope.pauseListAnim = false;
+			}, 500);
+
+			if (Modernizr.localstorage) {
+				window.localStorage['dp_ticket_listtype'] = $scope.listType;
+			}
 		};
 	},
 
-
-	//#########################################################################
-	//# List View
-	//#########################################################################
-
-	/**
-	 * Opens the current view in the table overlay
-	 */
-	openTableView: function() {
-		var oldlist = this.listview;
-		this.listview = new DeskPRO.Agent.TicketList.ListView(this);
-
-		if (oldlist && !oldlist.OBJ_DESTROYED) {
-			this.listview.addEvent('ajaxLoaded', function() {
-				if (!oldlist.OBJ_DESTROYED) {
-					oldlist.destroy();
-				}
-			});
-		}
-
-		this.listview.open();
-	},
 
 	//#########################################################################
 	//# Paging and refreshing

@@ -2,6 +2,9 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
+			<nav>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+			</nav>
 			<h3>{{ phrase('adm.general.builtin_fields') }}</h3>
 		</header>
 		<article>
@@ -40,9 +43,7 @@
 				</li>
 			</ul>
 		</article>
-	</section>
 
-	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav class="dp-controls">
 				<span dp-ping-flash="fields_enabled" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>

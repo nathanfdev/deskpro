@@ -38,6 +38,7 @@ use Application\DeskPRO\People\PrefNoticeSet;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 
 class MainController extends AbstractController
 {
@@ -397,12 +398,30 @@ class MainController extends AbstractController
 
         list($results, $result_meta, $people_top) = $doctrine->quickSearch($q);
 
-        return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
-            'q'           => $q,
-            'router'      => App::getRouter(),
-            'results'     => $results,
-            'result_meta' => $result_meta,
-            'people_top'  => $people_top,
-        ));
+		$return_results = array();
+
+		if ($results) {
+			foreach ($results as $type => $raw_rows) {
+				$rows = array();
+				foreach ($raw_rows as $r) {
+					if (is_object($r)) {
+						$rows[] = array(
+							'type' => get_class($r),
+							'item' => $r->toApiData(),
+						);
+					}
+				}
+
+				$return_results[] = array(
+					'type'    => $type,
+					'title'   => $type,
+					'results' => $rows
+				);
+			}
+		}
+
+		return $this->createJsonResponse(array(
+			'grouped_results' => $return_results
+		));
     }
 }

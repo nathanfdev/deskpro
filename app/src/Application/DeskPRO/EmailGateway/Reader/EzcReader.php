@@ -554,15 +554,20 @@ class EzcReader extends AbstractReader
 
 		foreach ($tnef_arr as $pid => $winatt) {
 		    $attach = new Item\Attachment();
+
+			// We didnt decode it or its a bad file
+			if (empty($winatt['name']) || empty($winatt['type']) || empty($winatt['subtype']) || empty($winatt['stream'])) {
+				continue;
+			}
 		    
 		    $attach->file_name       = trim($winatt['name']);
 		    $attach->ctype_primary   = trim(strtolower($winatt['type']));
 		    $attach->ctype_secondary = trim(strtolower($winatt['subtype']));
 		    $attach->mime_type       = $attach->ctype_primary . '/' . $attach->ctype_secondary;
-		    $attach->size            = $winatt['size'];
-		    $attach->file_contents   = $winatt['stream'];
-		    
-		    $attachments[] = $attach;
+			$attach->file_contents   = $winatt['stream'];
+			$attach->size            = strlen($attach->file_contents);
+
+			$attachments[] = $attach;
 		    
 		    unset($tnef_arr[$pid]);
 		}

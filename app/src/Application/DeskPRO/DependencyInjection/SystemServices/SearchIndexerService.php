@@ -41,7 +41,7 @@ class SearchIndexerService
 {
 	public static function create(DeskproContainer $container)
 	{
-		$ind = new SearchIndexer($container->getEm(), $container->getQueue('search_object_update'));
+		$ind = new SearchIndexer($container);
 
 		return $ind;
 	}

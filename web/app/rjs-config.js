@@ -13,6 +13,7 @@
 		"angularMoment":                   "bower_components/angular-moment/angular-moment",
 		"angularFileUpload":               "bower_components/blueimp-file-upload/js/jquery.fileupload-angular",
 		"angularSlider":                   "bower_components/angular-slider/angular-slider.min",
+		"angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
 		"angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
 		"ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
 		"jquery":                          "bower_components/jquery/jquery.min",
@@ -41,6 +42,13 @@
 		"ColorPicker":                     "../vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "../vendor/detect_timezone",
 		"intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
+
+		"selectize":                       "bower_components/selectize/dist/js/selectize",
+		"sifter":                          "bower_components/sifter/sifter",
+		"microplugin":                     "bower_components/microplugin/src/microplugin",
+
+		"ZeroClipboard":                   "bower_components/zeroclipboard/dist/ZeroClipboard",
+		"ngClip":                          "bower_components/ng-clip/src/ngClip",
 
 		"AdminLoad":                       "Admin/AdminLoad",
 		"CloudAdminLoad":                  "Admin/Cloud/CloudAdminLoad",

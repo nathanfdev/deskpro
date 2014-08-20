@@ -118,7 +118,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
             }
 			var routeTemplate = $scope.$parent.routes.organization;
 			newVal.each(function(org){
-				$scope.$parent.addListItem('organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
+				$scope.$parent.addListItem('organization', 'organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
 			});
 		});
 

@@ -176,6 +176,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	addTab: function(page) {
 
+		var self = this;
+
 		this.isAdding = true;
 
 		var id = Orb.uuid();
@@ -205,6 +207,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		if (!this.tabs[id]) {
 			this.tabCount++;
+			$('body').removeClass('without-tabs').addClass('with-tabs');
 		}
 		this.tabs[id] = data;
 
@@ -234,10 +237,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		//----------
 
 		data.tabBtnId = 'tabbtn_' + id;
-		data.class = data.page.getMetaData('tabIdClass', '');
-		data.class += ' ' + data.page.meta.alert_id;
+		data.tabType = null;
 
-		var tabIdClass = data.page.getMetaData('tabIdClass', '');
+		if (page) {
+			if (page.TYPENAME_FOR) {
+				data.tabType = page.TYPENAME_FOR;
+			} else if (page.TYPENAME) {
+				data.tabType = page.TYPENAME;
+			}
+		}
+
 		var wasActive = false;
 		var otherTab = null;
 
@@ -281,8 +290,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isAdding = false;
 
-		this.tabBarOverflow.update();
 		this.$scope.$safeApply();
+		this.$timeout(function() {
+			self.tabBarOverflow.update();
+		})
 		return id;
 	},
 
@@ -436,6 +447,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	removeTab: function(tab, silent) {
 
+		var self = this;
 		var id = tab.id;
 		var wasActive = false;
 
@@ -451,6 +463,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var data = this.tabs[id];
 		delete this.tabs[id];
 		this.tabCount--;
+		if (this.tabCount <= 0) {
+			$('body').addClass('without-tabs').removeClass('with-tabs');
+		}
 		this._tabs.splice(this._tabs.indexOf(tab), 1);
 		this._checkOpenedItems();
 
@@ -501,8 +516,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
-		this.tabBarOverflow.update();
 		this.$scope.$safeApply();
+		this.$timeout(function() {
+			self.tabBarOverflow.update();
+		})
 	},
 
 
@@ -655,6 +672,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		// Otherwise activate the tab
 		this.activateTabById(tab.id);
+
+		DeskPRO_Window.$scope.showTabs();
 
 		this.cancelClickActivate = false;
 	}

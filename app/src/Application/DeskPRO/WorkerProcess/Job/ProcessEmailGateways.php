@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * Goes through each gateway and processes email
@@ -57,10 +58,12 @@ class ProcessEmailGateways extends AbstractJob
 		$num = App::getDb()->executeUpdate("
 			UPDATE email_sources
 			SET status = 'error', error_code = 'timeout'
-			WHERE status = 'inserted' AND date_created < ?
+			WHERE status = 'processing' AND date_created < ?
 		", array($d));
 
 		if ($num) {
+			$e = new \Exception("$num email source(s) were running for longer than 15 minutes. Assumed fatal error. They have been marked as timeout.");
+			KernelErrorHandler::logException($e);
 			$this->getLogger()->log("$num sources marked as timeout", 'ERR');
 		}
 

@@ -36,6 +36,7 @@
               }
             }
             return _this.addManagedListener(_this.TicketAccountsData.recs, 'changed', function() {
+              _this.TicketAccountsData.recs.reorder();
               _this.accounts = _this.TicketAccountsData.recs.values();
               return _this.ngApply();
             });

@@ -18,6 +18,7 @@
       Admin_Portal_Ctrl_Embeds.DEPS = ['Api'];
 
       Admin_Portal_Ctrl_Embeds.prototype.init = function() {
+        this.$scope.type = this.$stateParams.type;
         this.$scope.code_snippets = {
           overlay: '',
           chat: '',

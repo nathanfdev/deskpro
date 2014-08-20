@@ -70,10 +70,20 @@
 					<span class="text-middle"><a href="#">{{ ng_var('groupObj.model.title') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
+					<div ng-if="groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms'">
+						<button locked-model="true" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(groupObj, 'assign')" locked-tip="Permissions are always enabled for this built-in group."></button>
+					</div>
+					<div ng-if="!(groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms')">
+						<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
+					</div>
 				</td>
 				<td class="text-center">
-					<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="EditCtrl.propogatePermission(groupObj, 'full')"></button>
+					<div ng-if="groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms'">
+						<button locked-model="true" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="EditCtrl.propogatePermission(groupObj, 'full')" locked-tip="Permissions are always enabled for this built-in group."></button>
+					</div>
+					<div ng-if="!(groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms')">
+						<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="EditCtrl.propogatePermission(groupObj, 'full')"></button>
+					</div>
 				</td>
 			</tr>
 			<tr ng-repeat="agentObj in EditCtrl.form.agent_perms.agents" ng-class="{'first-of-type': $first}">

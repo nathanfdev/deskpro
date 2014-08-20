@@ -1,8 +1,9 @@
 <div id="dp_center">
-	<div class="collapsed-area" id="dp_right_collapsed">
-		<ul id="dp_collapsed_tabs"></ul>
-	</div>
 	<div id="dp_source">
+		<div id="dp_source_btn" ng-click="toggleSourcePane()" ng-class="paneVis.source && 'active'">
+			<span class="collapse-btn"><i class="fa fa-chevron-left"></i></span>
+			<span class="pin-btn" style="display: none;"><i class="fa fa-lock"></i></span>
+		</div>
 		<div id="dp_source_loading"></div>
 		<div id="dp_source_footer">
 			<footer class="results-nav no-click-switch" id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat">
@@ -21,69 +22,14 @@
 			</footer>
 		</div>
 	</div>
+	<div id="dp_source_place" style="display: none;">
+		<span><i class="fa fa-chevron-right"></i></span>
+	</div>
 	<div id="dp_list">
 		<div id="dp_list_loading"></div>
 	</div>
 	<div id="dp_list_resizer" ng-show="paneVis.list && paneVis.tabs"><div></div></div>
 	<div id="dp_content">
-		<div id="tabNavigationPane" style="width: 5500px; vertical-align: bottom;">
-
-            <div class="btn-group-actions" style="background: none; display: inline-block; position: static; height: 28px; vertical-align: bottom; padding: 0;">
-                <div class="btn-wrap create-group pull-left">
-                    <a class="btn" style="line-height: 24px; height: 24px;"><i class="icon-plus"></i><span class="btn-text">{{ phrase('agent.chrome.btn_add') }}</span></a>
-                </div>
-            </div>
-
-            <div class="bootstrap" ng-show="tabs.length && !paneVis.list" style="display: inline-block; vertical-align: bottom; margin-bottom: 3px;">
-                <div class="btn-group" dropdown>
-
-                    <button type="button" class="btn btn-show-list" ng-click="showList()"></button>
-                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" style="height: 25px; padding: 3px 5px;">
-                        <span class="caret"></span>
-                        <span class="sr-only">Split button!</span>
-                    </button>
-
-                    <ul class="dropdown-menu" role="menu" style="z-index: 2; max-height: 300px; max-width: 200px; overflow-y: scroll;">
-                        <li ng-repeat="item in listItems" ng-class="item.open && 'active'">
-                            <a href="#" data-route="{{ ng_var('item.route') }}" style="overflow: hidden;">
-                                {{ ng_var('item.title') }}
-                                <div class="pull-right" ng-show="!item.open">+</div>
-                                <div class="pull-right" ng-show="item.open">-</div>
-                            </a>
-                        </li>
-                    </ul>
-
-                </div>
-            </div>
-
-			<div class="deskproTabList" style="position: static; display: inline-block; vertical-align: bottom;">
-				<div class="deskproTabListInner" style="position: static;">
-					<ul class="dp-tab-list">
-
-                        <li ng-repeat="tab in tabs" id="{{ ng_var('tab.tabBtnId') }}"
-                            ng-click="tabClick($event, tab)"
-                            data-tab-id="{{ ng_var('tab.id') }}"
-                            class="{{ ng_var('tab.class') }}"
-                            ng-class="tab.isActive && 'activeTabList'"
-                            {{ ng_var('tab.page.TYPENAME') }}
-                            {{ ng_var('tab.page.LOADING_TYPENAME') }}
-                            >
-                            <div class="item-hover-over-indicator"></div>
-                                <a>
-                                    <i class="icon-globe dp-icon-placeholder"></i>{{ ng_var('tab.title') }}
-                                </a>
-                                <span class="bound-fade"></span>
-                                <span class="close"></span>
-                            </li>
-                        </li>
-
-					</ul>
-				</div>
-			</div>
-			<div id="tabNavSelectorRight">
-				<a class="tabSlideRight"></a>
-			</div>
-		</div>
 		<div id="dp_content_wrap">
 			<div id="dp_content_info">
 				<table cellspacing="0" cellpadding="0" width="100%" height="100%"><tr><td valign="middle">
@@ -91,5 +37,79 @@
 				</td></tr></table>
 			</div>
 		</div>
+	</div>
+</div>
+
+<div id="tabNavigationPane" style="vertical-align: bottom;">
+	<div id="tabNavSelectorLeft">
+		<a class="tabSlideLeft"></a>
+	</div>
+
+	<div class="mainDeskproTabList deskproTabList" style="vertical-align: bottom;">
+		<div class="deskproTabListInner">
+			<ul class="dp-tab-list">
+
+				<li class="list-btn with-list" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
+					<span><i class="fa fa-bars"></i></span>
+					<div class="down-btn" id="dp_tab_list_btn">
+						<i class="fa fa-caret-down"></i>
+					</div>
+				</li>
+
+				<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>add</span></li>
+
+				<li ng-repeat="tab in tabs" id="{{ ng_var('tab.tabBtnId') }}"
+					ng-click="tabClick($event, tab)"
+					data-tab-id="{{ ng_var('tab.id') }}"
+					ng-class="{'activeTabList': tab.isActive && paneVis.tabs}"
+					{{ ng_var('tab.page.TYPENAME') }}
+					{{ ng_var('tab.page.LOADING_TYPENAME') }}
+					>
+					<div class="item-hover-over-indicator"></div>
+					<a>
+						<i class="" ng-class="{
+							'fa fa-envelope':  tab.tabType == 'ticket',
+							'fa fa-user':      tab.tabType == 'person',
+							'fa fa-users':     tab.tabType == 'organization',
+							'fa fa-file-text': tab.tabType == 'article',
+							'fa fa-download':  tab.tabType == 'download',
+							'fa fa-list-alt':  tab.tabType == 'news',
+							'fa fa-th-list':   tab.tabType == 'feedback',
+							'fa fa-comment':   tab.tabType == 'userchat'
+						}"></i>{{ ng_var('tab.title') }}
+					</a>
+					<span class="bound-fade"></span>
+					<span class="close"></span>
+				</li>
+			</ul>
+		</div>
+
+		<div id="dp_tab_list_menu" class="dp-tab-list-menu">
+			<ul>
+				<li ng-repeat="item in listItems" ng-class="{'is-open': item.open}">
+					<a href="#" data-route="{{ ng_var('item.route') }}" data-route-replacetab="true" style="overflow: hidden;">
+						<div class="right-icon new-tab" ng-show="!item.open" data-route="{{ ng_var('item.route') }}" data-route-notabreload="true"><i class="fa fa-external-link" title="Open in a new tab"></i></div>
+						<i class="" ng-class="{
+							'fa fa-envelope':  item.type == 'ticket',
+							'fa fa-user':      item.type == 'person',
+							'fa fa-users':     item.type == 'organization',
+							'fa fa-file-text': item.type == 'article',
+							'fa fa-download':  item.type == 'download',
+							'fa fa-list-alt':  item.type == 'news',
+							'fa fa-th-list':   item.type == 'feedback',
+							'fa fa-comment':   item.type == 'userchat'
+						}"></i>
+						<span class="title">{{ ng_var('item.title') }}</span>
+					</a>
+				</li>
+				<li ng-if="!listItems || !listItems.length">
+					<em style="color: #999; padding: 10px; display: block; text-align: center;">The list is empty.</em>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="tabNavSelectorRight">
+		<a class="tabSlideRight"></a>
 	</div>
 </div>

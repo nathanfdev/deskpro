@@ -1,4 +1,4 @@
-define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
+define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions'], function(angular, x1, x2, Functions) {
 	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap']);
 
 	//-------------------------------------------------------------------------
@@ -203,7 +203,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 			replace: true,
 			transclude: false,
 			compile: function(element, attrs) {
-				var newElement = '<div class="dp-tpl"></div>', tpl;
+				var elType = attrs['dpTpl'] || 'div';
 
 				if (attrs['tplId'] && cache[attrs['tplId']]) {
 					tpl = cache[attrs['tplId']];
@@ -214,7 +214,15 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 					}
 				}
 
-				element.replaceWith(newElement);
+				if (elType != '@parent') {
+					var newElement = '<' + elType + ' class="dp-tpl"></' + elType + '>', tpl;
+					element.replaceWith(newElement);
+				} else {
+					console.log("ERE");
+					element.remove();
+					element = element.parent();
+					element.addClass('dp-tpl');
+				}
 
 				return function(scope, element, attrs) {
 					var watch = attrs['watchVars'] ? scope.$eval(attrs['watchVars']) : null;
@@ -517,7 +525,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 		}
 	}]);
 
-	AgentApp.directive('dpOmnibox', ['$http', function($http) {
+	AgentApp.directive('dpOmnibox', ['$http', '$timeout', function($http, $timeout) {
 		return {
 			restrict: 'A',
 			link: function(scope, $el, attr) {
@@ -532,29 +540,133 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 				var $input = $el.find('input');
 				var $results = $el.find('.dp-omnibox-results');
 				var $listPane = $('#dp_list');
+				var $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">').hide().appendTo('body');
+				var recentOpen = false;
+				var notifsOpen = false;
+				var lastUpdateTime = null;
 
-				scope.issearchQuery = '';
+				scope.searchQuery = '';
 				scope.isActive = false;
+				scope.mode = 'search';
+				scope.initialShow = 10;
+				scope.expanded = {};
+
+				$backdrop.on('click', function() {
+					scope.$apply(function() {
+						scope.isActive = false;
+					});
+				});
 
 				scope.$watch('isActive', function(isActive) {
 					if (isActive) {
 						$headerBg.addClass('with-search-active');
+						$backdrop.show();
 					} else {
 						$headerBg.removeClass('with-search-active');
 						$results.hide();
+						$backdrop.hide();
 					}
 				});
 
-				$input.on('focus', function() { scope.isActive = true; });
-				$input.on('blur', function() { scope.isActive = false; });
+				$input.on('focus', function() {
+					if (!scope.isActive) {
+						scope.$apply(function() {
+							scope.isActive = true;
+							if (scope.searchQuery != "") {
+								resetResultsPos();
+							}
+						});
+					}
+				});
+
+				var debouncedUpdateSearch = Functions.debounce(function() {
+					updateSearch()
+				}, 300);
 
 				scope.touchSearch = function() {
-					updateSearch();
-				}
+					if ($.trim(scope.searchQuery) === "") {
+						scope.isActive = false;
+					} else {
+						debouncedUpdateSearch();
+					}
+				};
+
+				scope.toggleMode = function(mode) {
+					if (!mode) {
+						scope.mode = 'search';
+					} else {
+						if (scope.mode == mode) {
+							scope.mode = 'search';
+						} else {
+							scope.mode = mode;
+						}
+					}
+
+					updateMode();
+				};
+
+				var updateMode = function() {
+					if (recentOpen) {
+						Orb.shimClickCallbackPop();
+						recentOpen = false;
+						$('#recent_tabs_menu').hide().removeClass('active');
+					}
+					if (notifsOpen) {
+						Orb.shimClickCallbackPop();
+						notifsOpen = false;
+						$('#dp_header_notify_wrap').hide().removeClass('active');
+					}
+
+					if (scope.mode == 'search') {
+						$backdrop.show();
+					} else if (scope.mode == 'recent') {
+						showRecent();
+						$backdrop.hide();
+					} else if (scope.mode == 'notif') {
+						showNotifs();
+						$backdrop.hide();
+					}
+				};
+
+				var showRecent = function() {
+					recentOpen = true;
+					var wrap = $('#recent_tabs_menu');
+					wrap.addClass('active').show();
+					wrap.width($el.width() - 2);
+					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
+
+					var closeFn = function() {
+						scope.$apply(function() {
+							scope.toggleMode('recent');
+						});
+					};
+
+					Orb.shimClickCallback(closeFn, 'zindex-chrome0', 'fromtop');
+					$timeout(function() {
+						$('#recent_tabs_list_filter').focus();
+					});
+				};
+
+				var showNotifs = function() {
+					notifsOpen = true;
+					var wrap = $('#dp_header_notify_wrap');
+					wrap.addClass('active').show();
+					wrap.width($el.width() - 2);
+					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
+
+					DeskPRO_Window.notifications.resetElements();
+
+					var closeFn = function() {
+						scope.$apply(function() {
+							scope.toggleMode('notif');
+						});
+					};
+
+					Orb.shimClickCallback(closeFn, 'zindex-chrome0', 'fromtop');
+				};
 
 				var updateSearch = function() {
-					var pos = $listPane.offset();
-					var width = $listPane.width();
+					var t = (new Date()).getTime()
 
 					scope.isMainLoading = true;
 					$http({
@@ -564,18 +676,48 @@ define(['angular', 'angularAnimate', 'angularBootstrap'], function(angular) {
 					}).success(function(data) {
 						scope.isMainLoading = false;
 
+						if (lastUpdateTime && lastUpdateTime > t) {
+							// ignore this response, we have a newer one
+							return;
+						}
+
+						scope.expanded = {};
+
+						lastUpdateTime = t
 						scope.resultGroups = data.grouped_results || [];
 						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
+
+						var sortOrder = {
+							organization: 0,
+							ticket: 1,
+							person: 2,
+							feedback: 3,
+							article: 4,
+							download: 5,
+							news: 6
+						};
+						scope.resultGroups = scope.resultGroups.sort(function(a, b) {
+							return sortOrder[a.type] < sortOrder[b.type] ? -1 : 1;
+						});
 
 					}).error(function() {
 						scope.isMainLoading = false;
 					});
 
+					resetResultsPos();
+				};
+
+				var resetResultsPos = function() {
+					var pos = $listPane.offset();
+					var width = $listPane.width();
+
+					var maxHeight = $(window).height() - 40 - 75;
+
 					$results.css({
-						top: 52,
-						left: -1,
-						width: width,
-						bottom: 0
+						top: 39,
+						left: 5,
+						width: width - 7,
+						'max-height': maxHeight
 					}).show();
 				};
 			}

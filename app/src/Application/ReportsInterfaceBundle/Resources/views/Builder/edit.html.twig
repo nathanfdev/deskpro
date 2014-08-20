@@ -83,8 +83,7 @@
 
 								<div class="dp-delete-control"
 									 ng-if="EditCtrl.report.id && EditCtrl.reportType == 'custom'">
-									<button class="btn btn-danger"
-											ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.report.id);">
+									<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.report.id);" type="button">
 										Delete
 									</button>
 								</div>
@@ -94,8 +93,7 @@
 										<button class="btn btn-primary" dp-submit-form>
 											Save & Run
 										</button>
-										<span class="btn btn-primary" ng-click="EditCtrl.saveToClone()"
-												ng-if="EditCtrl.report.id">
+										<span class="btn btn-primary" ng-click="EditCtrl.saveToClone()" ng-if="EditCtrl.report.id" typeof="button">
 											Save To Clone
 										</span>
 									</div>

@@ -1,190 +1,128 @@
-<td width="20">
-    <input type="checkbox" class="" ng-model="checkedTickets[ticket.id]" />
-</td>
-<td ng-repeat="field in getDisplayableFields()" ng-switch="field">
+<% if (ticket.preview_changes) {
+	ticket_display = ticket.preview_changes;
+} else {
+	ticket_display = ticket;
+} %>
+<% var fields = getDisplayableFields(); %>
+<td width="20"><input type="checkbox" class="item-select" ng-model="checkedTickets[<%= ticket.id %>]" /></td>
 
-    {# Id #}
-    <span ng-switch-when="id" class="prop-val">{{ ng_var('ticket.id') }}</span>
+<% for (var i = 0; i < fields.length; i++) { var field = fields[i]; %>
+	<td class="col-<%- field %>">
+		<% if (field == 'subject') { %>
+			<span class="prop-val"><span class="obj-id">#<%= ticket_display.id %></span> <span class="obj-link"><%- ticket_display.subject %></span></span>
+		<% } %>
+		<% if (field == 'user') { %>
+			<span class="prop-val" title="<%- ticket_display.person.primary_email.email %>">
+				<a class="name link click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket_display.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
+					<%- ticket_display.person.display_name %>
+				</a>
+			</span>
+		<% } %>
+		<% if (field == 'department') { %>
+			<span class="prop-val"><%- ticket_display.department.title_full %></span>
+		<% } %>
+		<% if (field == 'status') { %>
+			<div class="status-pill status urgency-<%- ticket_display.urgency %> <%- ticket_display.status %> <%- ticket_display.status %>_<%- ticket_display.hidden_status %>" style="top: auto;">
+				<% if (ticket_display.status == 'awaiting_agent') { %><label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label><i class="ticket-urgency"><%- ticket_display.urgency %></i><% } %>
+				<% if (ticket_display.status == 'awaiting_user') { %><label>{{ phrase('agent.tickets.status_awaiting_user') }}</label><% } %>
+				<% if (ticket_display.status == 'resolved') { %><label>{{ phrase('agent.tickets.status_resolved') }}</label><% } %>
+				<% if (ticket_display.status == 'closed') { %><label>{{ phrase('agent.tickets.status_closed') }}</label><% } %>
+				<% if (ticket_display.status == 'hidden') { %><label>{{ phrase('agent.tickets.status_hidden') }}</label><% } %>
+			</div>
+		<% } %>
+		<% if (field == 'ref') { %>
+			<span class="prop-val"><%- ticket_display.ref %></span>
+		<% } %>
+		<% if (field == 'language') { %>
+			<span class="prop-val"><%= ticket_display.language.title %></span>
+		<% } %>
+		<% if (field == 'category') { %>
+			<span class="prop-val"><%= ticket_display.category.title %></span>
+		<% } %>
+		<% if (field == 'priority') { %>
+			<span class="prop-val"><%= ticket_display.priority.title %></span>
+		<% } %>
+		<% if (field == 'workflow') { %>
+			<span class="prop-val"><%= ticket_display.workflow.title %></span>
+		<% } %>
+		<% if (field == 'product') { %>
+			<span class="prop-val"><%= ticket_display.product.title %></span>
+		<% } %>
+		<% if (field == 'agent') { %>
+			<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /></span><% } %>
+			<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /></a></span><% } %>
+			<% if (!ticket_display.agent) { %>&nbsp;<% } %>
+		<% } %>
+		<% if (field == 'agent_team') { %>
+			<% if (ticket_display.agent_team) { %><span class="prop-val"><%- ticket_display.agent_team.name %></span><% } %>
+			<% if (!ticket_display.agent_team) { %><span class="prop-val">{{ phrase('agent.general.no_team') }}</span><% } %>
+		<% } %>
+		<% if (field == 'labels') { %>
+			<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
+				<span class="listing-tag"><%- ticket_display.labels[labelIdx] %></span>
+			<% } %>
+		<% } %>
+		<% if (field == 'organization') { %>
+			<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket_display.organization.id %>'}) }}" data-route-title="@text"><%- ticket_display.organization.name %></a>
+		<% } %>
+		<% if (field == 'date_created') { %>
+			<span dp-timeago timestamp="<%= ticket_display.date_created_ts %>" />
+		<% } %>
+		<% if (field == 'date_user_waiting') { %>
+			<span dp-timeago timestamp="<%= ticket_display.date_user_waiting_ts %>" no-suffix />
+		<% } %>
+		<% if (field == 'date_resolved') { %>
+			<span dp-timeago timestamp="<%= ticket_display.date_resolved_ts %>" />
+		<% } %>
+		<% if (field == 'date_last_user_reply') { %>
+			<span dp-timeago timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
+		<% } %>
+		<% if (field == 'date_last_agent_reply') { %>
+			<span dp-timeago timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
+		<% } %>
+		<% if (field == 'date_last_reply') { %>
+			<% if (ticket_display.date_last_agent_reply && (!ticket_display.date_last_user_reply || ticket_display.date_last_agent_reply_ts > ticket_display.date_last_user_reply_ts)) { %>
+				<span class="prop-val">
+					<span dp-timeago timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
+				</span>
+			<% } %>
+			<% if (ticket_display.date_last_user_reply && (!ticket_display.date_last_agent_reply || ticket_display.date_last_user_reply_ts > ticket_display.date_last_agent_reply_ts)) { %>
+				<span dp-timeago timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
+			<% } %>
+		<% } %>
+		<% if (field == 'total_user_waiting') { %>
+			<span class="prop-val">
+				<span ng-bind="<%= parseInt(
+					(ticket_display.total_user_waiting || 0)
+					+ (
+						(ticket_display.date_user_waiting_ts || ticket_display.date_created_ts)
+						- ((new Date()).getTime()/1000)
+					)
+				) %>|formatSeconds"></span>
+			</span>
+		<% } %>
+		<% if (field == 'slas') { %>
+			<span class="prop-val">
+				<% for (var slaIdx = 0; slaIdx < ticket_display.ticket_slas.length; slaIdx++) { var ticket_sla = ticket_display.ticket_slas[slaIdx]; %>
+				<span class="prop-val sla-status-<%= ticket_sla.sla_status %>">
+					<%- ticket_sla.sla.title %>
+					<% if (ticket_sla.next_trigger_date_ts) { %>
+						(<span dp-timeago timestamp="<%= ticket_sla.next_trigger_date_ts %>" no-suffix />)
+					<% } %>
+				</span>
+				<% } %>
+			</span>
+		<% } %>
 
-
-    {# Subject #}
-    <span ng-switch-when="subject" class="prop-val">{{ ng_var('ticket.subject') }}</span>
-
-
-    {# User #}
-    <span ng-switch-when="user" class="prop-val" ng-if="ticket.previews[0]">
-        {{ ng_var('ticket.previews[0].person.display_name') }}
-    </span>
-
-
-    {# Status #}
-    <div
-            class="status-pill status urgency-{{ ng_var('ticket.urgency') }} "
-            ng-class="ticket.status"
-            ng-class="ticket.status + '_' + ticket.hidden_status"
-            ng-switch-when="status"
-            ng-switch="ticket.status"
-            style="top: auto;"
-            >
-        <label ng-switch-when="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
-        <i ng-switch="awaiting_agent" class="ticket-urgency">{{ ng_var('ticket.urgency') }}</i>
-        <label ng-switch-when="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</label>
-        <label ng-switch-when="resolved">{{ phrase('agent.tickets.status_resolved') }}</label>
-        <label ng-switch-when="closed">{{ phrase('agent.tickets.status_closed') }}</label>
-        <label ng-switch-when="hidden">{{ phrase('agent.tickets.status_hidden') }}</label>
-        <label ng-switch-when="hidden" ng-if="'deleted' == ticket.hidden_status">
-            {{ phrase('agent.tickets.status_hidden_deleted') }}
-        </label>
-        <label ng-switch-when="hidden" ng-if="'spam' == ticket.hidden_status">
-            {{ phrase('agent.tickets.status_hidden_spam') }}
-        </label>
-        <label ng-switch-when="hidden" ng-if="'temp' == ticket.hidden_status">
-            {{ phrase('agent.tickets.status_hidden_temp') }}
-        </label>
-        <label ng-switch-when="hidden" ng-if="'validating' == ticket.hidden_status">
-            {{ phrase('agent.tickets.status_hidden_validating') }}
-        </label>
-        <label ng-switch-when="hidden" ng-if="'awaiting_agent' == ticket.urgency">
-            {{ phrase('agent.tickets.status_hidden_spam') }}
-        </label>
-    </div>
-
-
-    {# Department #}
-    <span ng-switch-when="department" class="prop-val">{{ ng_var('ticket.department.title_full') }}</span>
-
-
-    {# Ref #}
-    <span ng-switch-when="ref" class="prop-val">{{ ng_var('ticket.ref') }}</span>
-
-
-    {# Language #}
-    <span ng-switch-when="language" class="prop-val">{{ ng_var('ticket.language.title') }}</span>
-
-
-    {# Category #}
-    <span ng-switch-when="category" class="prop-val">{{ ng_var('ticket.category.title') }}</span>
-
-
-    {# Priority #}
-    <span ng-switch-when="priority" class="prop-val">{{ ng_var('ticket.priority.title') }}</span>
-
-
-    {# Workflow #}
-    <span ng-switch-when="workflow" class="prop-val">{{ ng_var('ticket.workflow.title') }}</span>
-
-
-    {# Product #}
-    <span ng-switch-when="product" class="prop-val">{{ ng_var('ticket.product.title') }}</span>
-
-
-    {# Agent #}
-    <span ng-switch-when="agent" class="prop-val" ng-if="!ticket.agent">
-        {{ phrase('agent.general.unassigned') }}
-    </span>
-    <span ng-switch-when="agent" class="prop-val" ng-if="ticket.agent && ticket.agent.id == DESKPRO_PERSON_ID">
-        {{ ng_var('ticket.agent.display_name') }}
-    </span>
-    <span ng-switch-when="agent" class="prop-val" ng-if="ticket.agent && ticket.agent.id != DESKPRO_PERSON_ID">
-        <a class="agent_link" ng-click="openAgentChat(ticket.agent.id, $event)">
-            {{ ng_var('ticket.agent.display_name') }}
-        </a>
-    </span>
-
-
-    {# Team #}
-    <span ng-switch-when="agent_team" class="prop-val" ng-if="ticket.agent_team">
-        {{ ng_var('ticket.agent_team.name') }}
-    </span>
-    <span ng-switch-when="agent_team" class="prop-val" ng-if="!ticket.agent_team">
-        {{ phrase('agent.general.no_team') }}
-    </span>
-
-
-    {# Labels #}
-    <span ng-switch-when="labels">
-        <span class="listing-tag" ng-repeat="label in ticket.labels" style="margin-right: 5px;">
-            {{ ng_var('label') }}
-        </span>
-    </span>
-
-
-    {# Organization #}
-    <span ng-switch-when="organization" class="prop-val">
-        <a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '{{ ticket.organization.id }}'}) }}" data-route-title="@text">
-            {{ ng_var('ticket.organization.name') }}
-        </a>
-    </span>
-
-
-    {# Date created #}
-    <span ng-switch-when="date_created" class="prop-val" dp-timeago timestamp="{{ ng_var('ticket.date_created_ts') }}">
-    </span>
-
-
-    {# Date user waiting #}
-    <span ng-switch-when="date_user_waiting" class="prop-val" dp-timeago timestamp="{{ ng_var('ticket.date_user_waiting_ts') }}">
-    </span>
-
-
-    {# Date resolved #}
-    <span ng-switch-when="date_resolved" class="prop-val" dp-timeago timestamp="{{ ng_var('ticket.date_resolved_ts') }}">
-    </span>
-
-
-    {# Date last user reply #}
-    <span ng-switch-when="date_last_user_reply" class="prop-val" dp-timeago timestamp="{{ ng_var('ticket.date_last_user_reply_ts') }}">
-    </span>
-
-
-    {# Date last agent reply #}
-    <span ng-switch-when="date_last_agent_reply" class="prop-val" dp-timeago timestamp="{{ ng_var('ticket.date_last_agent_reply_ts') }}">
-    </span>
-
-
-    {# Date last reply #}
-    <span ng-switch-when="date_last_reply" class="prop-val" dp-timeago timestamp="{{ ng_var('ticket.date_last_reply_ts') }}">
-    </span>
-
-    {# Total user waiting #}
-    <span ng-switch-when="total_user_waiting" class="prop-val">
-        <span ng-bind="parseInt(
-                            (ticket.total_user_waiting || 0)
-                            + (
-                                (ticket.date_user_waiting_ts || ticket.date_created_ts)
-                                - ((new Date()).getTime()/1000)
-                            )
-                        ) %>|formatSeconds"></span>
-    </span>
-
-
-    {# SLAs #}
-    <span ng-switch-when="slas">
-        <span ng-repeat="sla in ticket.ticket_slas" class="prop-val sla-status-<%= ticket_sla.sla_status %>">
-            {{ ng_var('sla.sla.title') }}
-            <span ng-if="sla.next_trigger_date_ts">
-                (<span dp-timeago timestamp="{{ ng_var('sla.next_trigger_date_ts') }}" no-suffix />)
-            </span>
-        </span>
-    </span>
-
-
-    {# Custom Ticket Fields #}
-    {% for field in app.getCustomFieldManager('tickets').getFields() %}
-        <span ng-switch-when="ticket_fields[{{ field.id }}]" class="prop-val">
-            {{ ng_var('ticket.field' ~ field.id) }}
-        </span>
-    {% endfor %}
-
-
-    {# Custom Person Fields #}
-    {% for field in app.getCustomFieldManager('people').getFields() %}
-        <span ng-switch-when="person_fields[{{ field.id }}]" class="prop-val">
-            {{ ng_var('ticket.person.field' ~ field.id) }}
-        </span>
-    {% endfor %}
-
-
-    <span ng-switch-default class="prop-val">-</span>
-
-</td>
+		{% for field in app.getCustomFieldManager('tickets').getFields() %}
+			<% if (field == 'ticket_fields[{{ field.id }}]') { %>
+				<span class="prop-val"><%- ticket_display.field{{ field.id }} %></span>
+			<% } %>
+		{% endfor %}
+		{% for field in app.getCustomFieldManager('people').getFields() %}
+			<% if (field == 'person_fields[{{ field.id }}]') { %>
+				<span class="prop-val"><%- ticket_display.person.field{{ field.id }} %></span>
+			<% } %>
+		{% endfor %}
+	</td>
+<% } %>
