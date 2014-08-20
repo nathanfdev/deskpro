@@ -172,7 +172,9 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
 
     private function runCommand($arguments, OutputInterface $output)
     {
-        $command = 'php cmd.php dp:elastica:index ' . implode(' ', $arguments);
+		$php_path = dp_get_php_path(false);
+		$file = escapeshellarg(realpath(DP_ROOT . '/../cmd.php'));
+        $command = $php_path . ' ' . $file . ' dp:elastica:index ' . implode(' ', $arguments);
         $process = new Process($command);
 
 		$log_file = $this->log_file;
