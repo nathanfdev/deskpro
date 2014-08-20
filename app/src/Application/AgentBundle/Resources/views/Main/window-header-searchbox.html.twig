@@ -21,13 +21,16 @@
 				<header>{{ ng_var('group.title') }}</header>
 				<article>
 					<div class="list-listing">
-						<div ng-repeat="result in group.results">
+						<div ng-repeat="result in group.results" ng-if="$index < initialShow || expanded[group.type]">
 							<script type="text/plain" dp-tpl tpl-id="dp_search_list_row">
 								{% include 'AgentBundle:Main:window-header-searchbox-result.html.twig' %}
 							</script>
 						</div>
 					</div>
 				</article>
+				<footer ng-show="group.results.length > initialShow && !expanded[group.type]" ng-click="expanded[group.type] = true">
+					Show {{ ng_var('group.results.length - initialShow') }} more results
+				</footer>
 			</section>
 			<section ng-show="!resultGroups || !resultGroups.length" class="result-group no-results">
 				<p>

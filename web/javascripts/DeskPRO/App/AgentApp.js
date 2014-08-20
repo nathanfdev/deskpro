@@ -540,7 +540,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				var $input = $el.find('input');
 				var $results = $el.find('.dp-omnibox-results');
 				var $listPane = $('#dp_list');
-				var $backdrop = $('<div class="backdrop search-menu-backdrop">').hide().appendTo('body');
+				var $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">').hide().appendTo('body');
 				var recentOpen = false;
 				var notifsOpen = false;
 				var lastUpdateTime = null;
@@ -548,6 +548,8 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				scope.searchQuery = '';
 				scope.isActive = false;
 				scope.mode = 'search';
+				scope.initialShow = 10;
+				scope.expanded = {};
 
 				$backdrop.on('click', function() {
 					scope.$apply(function() {
@@ -678,6 +680,8 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 							// ignore this response, we have a newer one
 							return;
 						}
+
+						scope.expanded = {};
 
 						lastUpdateTime = t
 						scope.resultGroups = data.grouped_results || [];

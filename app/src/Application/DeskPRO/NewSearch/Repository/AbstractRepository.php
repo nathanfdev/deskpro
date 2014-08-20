@@ -49,6 +49,7 @@ abstract class AbstractRepository extends Repository
     public function find($query, $limit = null, $options = array())
     {
         $queryObj = $this->getQuery($query);
+		$queryObj->setSize(100);
         $this->setHighlight($queryObj);
 
         return parent::find($queryObj, $limit, $options);
