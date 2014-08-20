@@ -621,13 +621,10 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					}
 
 					if (scope.mode == 'search') {
-						$backdrop.show();
 					} else if (scope.mode == 'recent') {
 						showRecent();
-						$backdrop.show();
 					} else if (scope.mode == 'notif') {
 						showNotifs();
-						$backdrop.show();
 					}
 				};
 
@@ -647,6 +644,8 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					$timeout(function() {
 						$('#recent_tabs_list_filter').focus();
 					});
+
+					$backdrop.show();
 				};
 
 				var showNotifs = function() {
@@ -657,6 +656,8 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 					DeskPRO_Window.notifications.resetElements();
+
+					$backdrop.show();
 				};
 
 				var updateSearch = function() {
