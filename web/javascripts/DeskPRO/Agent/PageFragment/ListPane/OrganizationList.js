@@ -21,6 +21,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('div.content:first', this.wrapper);
+        this.fixed_fields = ['id', 'name'];
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', '$http', function($compile, $rootScope, $q, $timeout, $http) {
 			self.$scope = $rootScope.$new();
@@ -62,20 +63,6 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
 		this.enableHighlightOpenRows('organization', 'org_id', 'article.org-');
 
-//		var opt = {
-//			resultIds: this.meta.orgResultIds,
-//			perPage: this.meta.perPage || 50
-//		};
-//		if (this.meta.viewType && this.meta.viewType == 'list') {
-//			opt.resultRowSelector = 'tr.row-item';
-//			opt.resultsContainer = $('.table-result-list table', el);
-//			opt.navEl = $('.bottom-action-bar', el);
-//		}
-//		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
-//		this.ownObject(this.resultsHelper);
-
-//		delete this.meta.orgResultIds;
-
 		// Sorting options
 		var sortMenuBtn = $('.order-by-menu-trigger', this.wrapper).first();
 		this.sortingMenu = new DeskPRO.UI.Menu({
@@ -107,6 +94,10 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
 		$scope.organizations = this.meta.organizations;
 		$scope.displayFields = this.meta.displayFields;
+        $scope.listType = 'list';
+        $scope.switchViewType = function() {
+            $scope.listType = 'list' === $scope.listType ? 'table' : 'list';
+        };
 
 		$scope.isFieldDisplayable = function(org, field) {
 			switch (field) {
@@ -122,11 +113,30 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
 		$scope.$watch('organizations', function(newVal, oldVal){
 			$scope.$parent.listItems.length = 0;
+            if (!newVal || !newVal.length) {
+                return;
+            }
 			var routeTemplate = $scope.$parent.routes.organization;
 			newVal.each(function(org){
 				$scope.$parent.addListItem('organization', 'organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
 			});
 		});
+
+        $scope.getDisplayableFields = function() {
+            var fields = [];
+            self.fixed_fields.each(function(v){
+                fields.push(v);
+            });
+            $scope.displayFields.each(function(v){
+                if (fields.indexOf(v) > -1) return;
+                fields.push(v);
+            });
+            return fields;
+        };
+
+        $scope.getFieldDisplayName = function(field){
+            return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
+        };
 
 		// sometimes $scope.persons won't apply (as we're working outside of digest loop most of time), so force it
 		$scope.$safeApply();
