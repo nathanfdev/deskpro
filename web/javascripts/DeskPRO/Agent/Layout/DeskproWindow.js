@@ -47,7 +47,17 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				display: 'block'
 			});
 			$('#dp_source').stop().animate({left: 0 }, {
-				duration: 350
+				duration: 350,
+				complete: function() {
+					if (!isSourceOver && !sourceOutTimeout) {
+						sourceOutTimeout = window.setTimeout(function() {
+							sourceOutTimeout = null;
+							if (!isSourceOver) {
+								closeSourceOverlay();
+							}
+						}, 380);
+					}
+				}
 			});
 		};
 
