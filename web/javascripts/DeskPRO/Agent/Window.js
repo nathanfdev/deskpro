@@ -1063,43 +1063,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
-		$('#dp_header_notify_wrap').find('> ul > li').on('click', function() {
-			var wrap = $(this);
-			wrap.addClass('active');
-			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
-
-			var mainRow = $(this).closest('.type-row');
-			var notifUl = mainRow.find('.notify-list.for-current')
-			var notifyBox = $('#dp_header_notify_wrap');
-			notifyBox.find('a.see_dismissed').removeClass('selected');
-			$(this).find('a.see_current').addClass('selected');
-
-			notifyBox.removeClass('mode-dismissed').addClass('mode-current');
-
-			notifyBox.find(".no-notifications").hide();
-			notifyBox.find('.notify-list.for-dismissed').empty().hide();
-
-			if (!notifUl.find('li')[0]) {
-				notifyBox.find(".no-notifications").not(".notification-progress-on").show();
-				$("#dp_notify_wrap").find('.notify-list.for-current').hide();
-			} else {
-				notifUl.show();
-			}
-
-			var closeFn = function() {
-				wrap.removeClass('active');
-				Orb.shimClickCallbackPop();
-			};
-
-			if (!wrap.data('has-init')) {
-				wrap.find('ul').on('click', function(ev) {
-					closeFn();
-				});
-			}
-
-			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
-		});
-
 		if (DP_PERSON_PASSWORD_EXPIRED) {
 			var settingsInterval = setInterval(function() {
 				if (window.SETTINGS_WINDOW) {

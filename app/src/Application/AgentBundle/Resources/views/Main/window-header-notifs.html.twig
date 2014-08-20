@@ -35,12 +35,6 @@
 				</li>
 			{% endif %}
 		{% endfor %}
-		{% if version_notices.count() %}
-			<li class="version-notes notification type-row" data-ids="{{ version_notices.getWaitingIds()|join(',') }}" id="notice_trigger">
-				<span class="badge no-count">{{ version_notices.count() }}</span>
-				<i class="icon-bullhorn"></i>
-			</li>
-		{% endif %}
 	</ul>
 
 	<script type="text/x-deskpro-plain" id="dp_header_notify_row_tpl">

@@ -90,6 +90,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			var ul = notifyBox.find('.notify-list.for-dismissed');
 			ul.empty();
 
+			$("#dp_header_notify_wrap").find('footer.for-current').hide();
+
 			notifyBox.find(".no-notifications").hide();
 			notifyBox.find(".notification-progress-on").show();
 			$.ajax({
@@ -107,23 +109,31 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 				}
 			});
 		}).on('click', '.see_current', function(e) {
-			var mainRow = $(this).closest('.type-row');
-			var notifUl = mainRow.find('.notify-list.for-current')
-			notifyBox.find('a.see_dismissed').removeClass('selected');
 			$(this).addClass('selected');
-
-			notifyBox.removeClass('mode-dismissed').addClass('mode-current');
-
-			notifyBox.find(".no-notifications").hide();
-			notifyBox.find('.notify-list.for-dismissed').empty().hide();
-
-			if (!notifUl.find('li')[0]) {
-				notifyBox.find(".no-notifications").not(".notification-progress-on").show();
-				$("#dp_notify_wrap").find('.notify-list.for-current').hide();
-			} else {
-				notifUl.show();
-			}
+			self.resetElements();
 		});
+	},
+
+	resetElements: function() {
+		var wrap = $('#dp_header_notify_wrap');
+
+		var notifUl = wrap.find('.notify-list.for-current')
+		wrap.find('a.see_dismissed').removeClass('selected');
+		wrap.find('a.see_current').addClass('selected');
+
+		wrap.removeClass('mode-dismissed').addClass('mode-current');
+
+		wrap.find(".no-notifications").hide();
+		wrap.find('.notify-list.for-dismissed').empty().hide();
+
+		if (!notifUl.find('li')[0]) {
+			wrap.find(".no-notifications").not(".notification-progress-on").show();
+			$("#dp_notify_wrap").find('.notify-list.for-current').hide();
+			wrap.find('footer.for-current').hide();
+		} else {
+			notifUl.show();
+			wrap.find('footer.for-current').show();
+		}
 	},
 
 	dismissAll: function() {
@@ -264,7 +274,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this._isRemoving = true;
 
 		var self = this;
-		var type = row.data('type');
+		var type = 'main';
 		var ev = { row: row, type: type };
 		var any_alert_ids = false;
 		this.fireEvent('removeRow');
@@ -364,6 +374,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			if (!this.notifyBox.find('.dp-notifications-on')[0]) {
 				this.notifyBox.find('li.none').show();
 			}
+
+			$("#dp_header_notify_wrap").find('footer.for-current').hide();
 		} else {
 			this.notifBtn.addClass('with-activity');
 			this.notifyBox.addClass('dp-notifications-on');

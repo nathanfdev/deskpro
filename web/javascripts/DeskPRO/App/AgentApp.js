@@ -633,6 +633,8 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					wrap.width($el.width());
 					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
+					DeskPRO_Window.notifications.resetElements();
+
 					var closeFn = function() {
 						scope.$apply(function() {
 							scope.toggleMode('notif');
