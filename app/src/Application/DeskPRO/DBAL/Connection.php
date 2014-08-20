@@ -480,11 +480,17 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param array $types
 	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile|null $qcp
 	 */
-	public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null)
+	public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
 	{
 		try {
 			return parent::executeQuery($query, $params, $types, $qcp);
 		} catch (\Doctrine\DBAL\DBALException $e) {
+
+			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+				usleep(500000);
+				return $this->executeQuery($query, $params, $types, $is_retry + 1);
+			}
+
 			$e->_dp_query = $query;
 			$e->_dp_query_params = $params;
 			throw $e;
@@ -512,20 +518,9 @@ class Connection extends \Doctrine\DBAL\Connection
 			return parent::executeUpdate($query, $params, $types);
 		} catch (\Doctrine\DBAL\DBALException $e) {
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false) && !$level) {
+			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
 				usleep(500000);
 				return $this->executeUpdate($query, $params, $types, $is_retry + 1);
-			} else if ($this->writes_in_tx && $is_retry <= 1 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
-				usleep(500000);
-
-				$retry = $this->writes_in_tx;
-
-				// Retry the trans
-				$this->_conn->exec("START TRANSACTION"); // restart trans that mysql rolledback implicitly
-				foreach ($retry as $q) {
-					$last = $this->executeUpdate($q[0], $q[1], $q[2], 99);
-				}
-				return $last;
 			}
 
 			$e->_dp_query = $query;
@@ -724,7 +719,7 @@ class Connection extends \Doctrine\DBAL\Connection
 				// Retry the trans
 				$this->_conn->beginTransaction();
 				foreach ($retry as $q) {
-					$this->executeUpdate($q[0], $q[1], $q[2], 99);
+					$this->executeUpdate($q[0], $q[1], $q[2], 1);
 				}
 				$this->commit(true);
 			} else {
