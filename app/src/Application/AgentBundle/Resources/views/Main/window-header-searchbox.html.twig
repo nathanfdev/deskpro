@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	<div class="dp-omnibox-results" style="display: none;">
-		<div ng-show="isMainLoading" style="text-align: center;">
+		<div ng-show="isMainLoading" style="text-align: center; padding: 15px;">
 			<i class="spinner-circle-32"></i>
 		</div>
 		<div ng-show="!isMainLoading">
@@ -28,6 +28,11 @@
 						</div>
 					</div>
 				</article>
+			</section>
+			<section ng-show="!resultGroups || !resultGroups.length" class="result-group no-results">
+				<p>
+					No results found.
+				</p>
 			</section>
 		</div>
 	</div>

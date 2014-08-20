@@ -2,7 +2,7 @@
 {# Tickets #}
 {#########################################################################}
 
-<% if (group.type == 'ticket') { var ticket = result.item; %>
+<% if (group.type == 'ticket') { var ticket = result.item; var ticket_display = ticket; %>
 	<article class="row-item no-check" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- ticket.id %>'})|raw }}">
 		<div class="top-row">
 			<div class="top-row-left">

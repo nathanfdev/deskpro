@@ -500,7 +500,7 @@ $container->loadFromExtension('fos_elastica', array(
                 'organization'   => array(
                     'mappings'    => array(
                         'name'    => array('type' => 'string'),
-						'email_domains' => array('type' => 'string', 'analyzer' => 'email_filter'),
+						'email_domains' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
                         'labels'  => array('type' => 'string'),
                     ),
                     'persistence' => array(
