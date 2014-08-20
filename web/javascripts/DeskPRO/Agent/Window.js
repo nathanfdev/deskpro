@@ -1003,7 +1003,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			wrap.addClass('active');
 			btnMenu.addClass('active');
-			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() + 4});
+			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() + 6});
 
 			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
