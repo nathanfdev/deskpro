@@ -36,10 +36,10 @@
 		<td>
 			<input
 				dp-slider-switch
-				ng-model="EditCtrl.perm_form.{{ typename }}.{{ permname }}"
+				ng-model="EditCtrl.group.perms.{{ typename }}.{{ permname }}"
 				{% if opts.toggleName %}
-					is-on="EditCtrl.perm_form.{{ opts.toggleName }}"
-					is-locked="all_locked_perms || EditCtrl.perm_form.{{ opts.toggleName }}"
+					is-on="EditCtrl.group.perms.{{ opts.toggleName }}"
+					is-locked="all_locked_perms || EditCtrl.group.perms.{{ opts.toggleName }}"
 					locked-tip="This permission is locked because the parent permission is enabled"
 				{% else %}
 					is-locked="all_locked_perms"

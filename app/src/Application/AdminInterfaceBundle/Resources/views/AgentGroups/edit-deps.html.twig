@@ -36,8 +36,8 @@
 						<div ng-if="!dep.has_children">
 							<input
 								dp-slider-switch
-								ng-model="EditCtrl.deps_perms.tickets[dep.id].assign"
-								is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full"
+								ng-model="EditCtrl.group.deps_perms.tickets[dep.id].assign"
+								is-on="EditCtrl.group.deps_perms.tickets[dep.id].assign || EditCtrl.group.deps_perms.tickets[dep.id].full"
 								is-locked="all_locked_perms"
 							/>
 						</div>
@@ -46,8 +46,8 @@
 						<div ng-if="!dep.has_children">
 							<input
 								dp-slider-switch
-								ng-model="EditCtrl.deps_perms.tickets[dep.id].full"
-								is-on="EditCtrl.deps_perms.tickets[dep.id].full"
+								ng-model="EditCtrl.group.deps_perms.tickets[dep.id].full"
+								is-on="EditCtrl.group.deps_perms.tickets[dep.id].full"
 								locked-tip="This permission is locked because the permission is granted through an enabled agent group"
 								is-locked="all_locked_perms"
 							/>
@@ -77,8 +77,8 @@
 						<div ng-if="!dep.has_children">
 							<input
 								dp-slider-switch
-								ng-model="EditCtrl.deps_perms.chat[dep.id].full"
-								is-on="EditCtrl.deps_perms.chat[dep.id].full"
+								ng-model="EditCtrl.group.deps_perms.chat[dep.id].full"
+								is-on="EditCtrl.group.deps_perms.chat[dep.id].full"
 								is-locked="all_locked_perms"
 							/>
 						</div>
