@@ -333,6 +333,29 @@
 	position: relative;
 }
 
+.list-listing .new-tab-icon {
+	display: none;
+	float: left;
+	margin-right: 3px;
+	position: relative;
+	top: -4px;
+
+	border-radius: 2px;
+	font-size: 13px;
+	padding: 2px;
+	vertical-align: baseline;
+	text-align: center;
+
+	&:hover {
+		background: #134d77;
+		color: #fff;
+	}
+}
+
+.panevis-tabs-off.with-tabs .list-listing .new-tab-icon {
+	display: block;
+}
+
 .ipad .list-listing .row-item, .iphone .list-listing .row-item {
 	/* this fixes some weird wrapping issues on ios */
 	display: inline-block;

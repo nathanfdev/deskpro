@@ -2140,6 +2140,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.replaceTab = true;
 		}
 
+		if (el.data('route-newtab')) {
+			extraData.replaceTab = false;
+			extraData.focus = false;
+		}
+
 
 		// this should be handled only when click event occurs
 		if (0 === el.data('route').indexOf('listpane:')) {

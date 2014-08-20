@@ -207,6 +207,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		if (!this.tabs[id]) {
 			this.tabCount++;
+			$('body').removeClass('without-tabs').addClass('with-tabs');
 		}
 		this.tabs[id] = data;
 
@@ -462,6 +463,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var data = this.tabs[id];
 		delete this.tabs[id];
 		this.tabCount--;
+		if (this.tabCount <= 0) {
+			$('body').addClass('without-tabs').removeClass('with-tabs');
+		}
 		this._tabs.splice(this._tabs.indexOf(tab), 1);
 		this._checkOpenedItems();
 

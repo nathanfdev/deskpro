@@ -32,6 +32,11 @@
 		<div class="top-row-right">
 
 			<div class="bound-fade"></div>
+
+			<span class="new-tab-icon" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- ticket_display.id %>'})|raw }}" data-route-newtab="true" title="Open in a new tab instead of replacing the currently open tab">
+				<i class="fa fa-external-link"></i>
+			</span>
+
             <% if (ticket_display.locked_by_agent) { %>
             <span class="tipped agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
                 <i class="icon-lock" style="font-size: 150%;"></i>
@@ -79,6 +84,7 @@
 			<% if (ticket_display.flag) { %>
 				<i class="flag <%= ticket_display.flag %>"></i>
 			<% } %>
+
 			<br class="clear" />
 		</div>
 	</div>
