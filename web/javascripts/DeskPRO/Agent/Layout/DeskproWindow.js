@@ -46,6 +46,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				left: -self.SOURCE_WIDTH,
 				display: 'block'
 			});
+			if (DeskPRO_Window.openSection) {
+				DeskPRO_Window.openSection.updateUi();
+			}
 			$('#dp_source').stop().animate({left: 0 }, {
 				duration: 350,
 				complete: function() {
@@ -254,6 +257,10 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		if (this.enableHashUpdate) {
 			DeskPRO_Window.updateWindowUrlFragment();
+		}
+
+		if (DeskPRO_Window.openSection) {
+			DeskPRO_Window.openSection.updateUi();
 		}
 
 		this.fireEvent('resized', [this]);
