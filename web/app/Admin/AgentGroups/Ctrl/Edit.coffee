@@ -12,6 +12,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				ticketDeps: @DataService.get 'TicketDeps'
 				chatDeps: @DataService.get 'ChatDeps'
 
+			@all_perms =
+				perms: {}
+				deps_perms:
+					tickets: {assign: true, full: true}
+					chat: {full: true}
+
 			@$scope.toggleAgent = (agent) =>
 				index = @group.person_ids.indexOf(agent.id)
 				groupIndex = agent.agentgroup_ids.indexOf @group
@@ -39,6 +45,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 				@group.person_ids = []
 				@assignDepsPerms @group
+				@updateAllPermsState()
 
 				@agents.map (agent) =>
 					@group.person_ids.push agent.id if -1 != agent.agentgroup_ids.indexOf @group.id
@@ -75,6 +82,48 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 						full = true
 
 				group.deps_perms.chat[dep.id] = { full: full }
+
+
+
+		changeAllPerms: (type, section) ->
+			return if !@group?
+
+			if 'perms' == type
+				for perm of @group.perms[section]
+					@group.perms[section][perm] = @all_perms[type][section]
+
+				if 'people' == section
+					@changeAllPerms('perms', 'org')
+
+			else if 'deps_perms_tickets' == type
+				for dep of @group.deps_perms.tickets
+					@group.deps_perms.tickets[dep][section] = @all_perms.deps_perms.tickets[section]
+
+			else if 'deps_perms_chat' == type
+				for dep of @group.deps_perms.chat
+					@group.deps_perms.chat[dep][section] = @all_perms.deps_perms.chat[section]
+
+
+
+		updateAllPermsState: ->
+			return if !@group?
+
+			for section, perms of @group.perms
+				enabled = true
+				for perm of perms
+					if !perms[perm]
+						enabled = false
+						break
+				@all_perms.perms[section] = enabled
+
+			return if !@group.deps_perms
+			for type, sections of @all_perms.deps_perms
+				for section of sections
+					enabled = true
+					for dep of @group.deps_perms[type]
+						if !@group.deps_perms[type][dep][section]
+							enabled = false
+					@all_perms.deps_perms[type][section] = enabled
 
 				
 
