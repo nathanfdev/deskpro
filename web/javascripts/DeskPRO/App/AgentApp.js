@@ -610,12 +610,10 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 
 				var updateMode = function() {
 					if (recentOpen) {
-						Orb.shimClickCallbackPop();
 						recentOpen = false;
 						$('#recent_tabs_menu').hide().removeClass('active');
 					}
 					if (notifsOpen) {
-						Orb.shimClickCallbackPop();
 						notifsOpen = false;
 						$('#dp_header_notify_wrap').hide().removeClass('active');
 					}
