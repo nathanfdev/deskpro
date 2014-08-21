@@ -234,8 +234,7 @@ class ServerController extends AbstractController implements ProtectedController
 		$server_error_logs = $this->container->getSystemService('server_error_logs');
 
 		if (!$server_error_logs->clearAllErrors()) {
-
-			ValidationException::create('server_error_logs.clear_all.file_not_writable');
+			throw ValidationException::create('server_error_logs.clear_all.file_not_writable');
 		}
 
 		return $this->createSuccessResponse();

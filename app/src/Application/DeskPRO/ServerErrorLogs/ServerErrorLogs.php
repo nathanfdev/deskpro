@@ -101,7 +101,6 @@ class ServerErrorLogs
 	public function clearAllErrors()
 	{
 		if (!is_writable(dp_get_log_dir() . '/error.log')) {
-
 			return false;
 		}
 
