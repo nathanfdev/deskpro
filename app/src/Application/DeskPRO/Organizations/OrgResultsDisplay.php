@@ -171,7 +171,7 @@ class OrgResultsDisplay
 		$this->org_member_counts = $this->db->fetchAllKeyValue("
 			SELECT organization_id, COUNT(*)
 			FROM people
-			WHERE organization_id IN($org_ids) AND is_disabled = 0 AND is_deleted = 0
+			WHERE organization_id IN($org_ids) AND is_deleted = 0
 			GROUP BY organization_id
 		");
 

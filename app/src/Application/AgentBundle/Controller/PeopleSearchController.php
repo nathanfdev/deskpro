@@ -331,6 +331,7 @@ class PeopleSearchController extends AbstractController
 				'person_contact_phone'      => array('op' => 'contains', 'options' => array()),
 				'is_agent_confirmed'        => array('op' => 'is', 'options' => array()),
 				'is_confirmed'              => array('op' => 'is', 'options' => array()),
+				'any_mode'                  => array('op' => 'is', 'options' => array()),
 			);
 
 			foreach ($set_terms_map as $name => $info) {
@@ -557,7 +558,7 @@ class PeopleSearchController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		return $this->searchAction('*', array('person_organization' => $id), 'organization.' . $id);
+		return $this->searchAction('*', array('person_organization' => $id, 'any_mode' => 1), 'organization.' . $id);
 	}
 
 	protected function applyLetterToSearcher($letter, $searcher)

@@ -35,7 +35,7 @@
                 <span ng-switch-when="members_count">
                     <span class="prop-title">{{ phrase('agent.general.members') }}:</span>
                     <span class="prop-val">
-                        <a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_organization&amp;terms[0][op]=is&amp;terms[0][organization]={{ ng_var('org.id') }}&amp;terms[1][type]=any_mode&amp;terms[1][op]=is&amp;terms[1][any_mode]=1">
+                        <a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_organization', {id: '0000'})|replace({'0000': '{{ org.id }}'}) }}">
                             {{ ng_var('org.members_count') }}
                         </a>
                     </span>

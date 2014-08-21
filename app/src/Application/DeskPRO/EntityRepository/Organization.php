@@ -135,7 +135,7 @@ class Organization extends AbstractEntityRepository
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM people
-			WHERE organization_id = {$org['id']}
+			WHERE organization_id = {$org['id']} AND is_deleted = false
 		");
 	}
 

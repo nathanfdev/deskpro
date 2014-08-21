@@ -102,7 +102,8 @@ class PersonSearch extends SearcherAbstract
 	{
 		$db = App::getDbRead('search.filter.people');
 
-		$people_ids = $db->fetchAllCol($this->getSql());
+		$sql = $this->getSql();
+		$people_ids = $db->fetchAllCol($sql);
 
 		return $people_ids;
 	}
