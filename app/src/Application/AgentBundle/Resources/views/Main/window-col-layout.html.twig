@@ -58,12 +58,10 @@
 
 				<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>add</span></li>
 
-				<li ng-repeat="tab in tabs" id="{{ ng_var('tab.tabBtnId') }}"
+				<li ng-repeat="tab in tabs track by tab.id" id="{{ ng_var('tab.tabBtnId') }}"
 					ng-click="tabClick($event, tab)"
 					data-tab-id="{{ ng_var('tab.id') }}"
 					ng-class="{'activeTabList': tab.isActive && paneVis.tabs}"
-					{{ ng_var('tab.page.TYPENAME') }}
-					{{ ng_var('tab.page.LOADING_TYPENAME') }}
 					>
 					<div class="item-hover-over-indicator"></div>
 					<a>
