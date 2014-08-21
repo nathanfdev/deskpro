@@ -165,8 +165,10 @@
 					<% if (field == 'labels') { %>
 						<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
 						<span class="prop-val">
-							<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
-								<span class="listing-tag"><%- ticket_display.labels[labelIdx] %></span>
+							<% if (ticket_display.labels) { %>
+								<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
+									<span class="listing-tag"><%- ticket_display.labels[labelIdx] %></span>
+								<% } %>
 							<% } %>
 						</span>
 					<% } %>

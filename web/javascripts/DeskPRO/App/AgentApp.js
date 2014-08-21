@@ -1,4 +1,4 @@
-define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions'], function(angular, x1, x2, Functions) {
+define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions', 'DeskPRO/Util/Strings'], function(angular, x1, x2, Functions, Strings) {
 	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap']);
 
 	//-------------------------------------------------------------------------
@@ -198,6 +198,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 
 	AgentApp.directive('dpTpl', ['$compile', '$timeout', function($compile, $timeout) {
 		var cache = {};
+		var errorHits = {}
 		return {
 			restrict: 'AE',
 			replace: true,
@@ -208,7 +209,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				if (attrs['tplId'] && cache[attrs['tplId']]) {
 					tpl = cache[attrs['tplId']];
 				} else {
-					tpl = _.template(element.html());
+					tpl = Strings.simpleTemplate(element.html());
 					if (attrs['tplId']) {
 						cache[attrs['tplId']] = tpl;
 					}
@@ -218,7 +219,6 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					var newElement = '<' + elType + ' class="dp-tpl"></' + elType + '>', tpl;
 					element.replaceWith(newElement);
 				} else {
-					console.log("ERE");
 					element.remove();
 					element = element.parent();
 					element.addClass('dp-tpl');
@@ -235,7 +235,19 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 							newHtml;
 
 						oldHtml = element.data('oldTplHtml');
-						newHtml = tpl.call(scope, scope);
+
+						try {
+							newHtml = tpl.call(scope, scope);
+						} catch (e) {
+							console.error("Error rendering template: " + e + "\n" + (e.stack ? e.stack : 'no trace'))
+
+							if (!errorHits[attrs['tplId']]) {
+								errorHits[attrs['tplId']] = true;
+								console.log("----- TEMPLATE SOURCE :: " + attrs['tplId'] + " -----\n" + tpl.source);
+							}
+
+							newHtml = '';
+						}
 
 						// Prevents re-compiling the element with angular needlessly
 						if (oldHtml != newHtml) {
