@@ -12,6 +12,11 @@
 				<input class="selection-control" type="checkbox" ng-model="checkedTicketsToggle" ng-change="checkAllTickets(checkedTicketsToggle)" />
 				{{ phrase('agent.general.x_selected', {'num_placeholder': '{{ checkedTicketsCount }}'}, true) }}
 
+				<span ng-show="!paneVis.tabs && checkedTicketsCount > 0">
+					&mdash;
+					<a class="clean-white" ng-click="openMassActions()">Perform mass actions</a>
+				</span>
+
 				<div class="realtime-indicator half-realtime" ng-show="halfrealtime && massActionsOpen">
 					<em>Limited real-time updating</em>
 					<div dp-sticky-tip offset-top="18" right-align>
