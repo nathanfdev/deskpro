@@ -648,9 +648,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			filterOps = {ticketId: ticketId, op: 'add'};
 
-//			if (page && ticketId) {
-//				page.addTicketResults([ticketId]);
-//			}
+			if (page && ticketId) {
+				page.addTicketResults([ticketId]);
+			}
 
 		} else if (data.op == 'del') {
 			if (this.archiveFilterIds.indexOf(filterId) != -1) {
@@ -664,9 +664,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 			filterOps = {ticketId: ticketId, op: 'del'};
 
-//			if (page && ticketId) {
-//				page.removeTicketResults([ticketId]);
-//			}
+			if (page && ticketId) {
+				page.removeTicketResults([ticketId]);
+			}
 		}
 
 		this.collectedFilterUpdates.push(filterId);
