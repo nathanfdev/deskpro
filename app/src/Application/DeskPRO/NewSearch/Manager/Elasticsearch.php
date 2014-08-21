@@ -71,7 +71,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
 			if ($model == 'DeskPRO:Ticket' && preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
 				$result = $ent_repos->findTicketRef($q);
 				if ($result) {
-					$this->handleResult($object, array($result));
+					$this->handleResult($object, $result);
 				}
 			}
 
@@ -82,7 +82,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
 					$result = $ent_repos->findById($q);
 				}
 				if ($result) {
-					$this->handleResult($object, array($result));
+					$this->handleResult($object, $result);
 				}
 			}
 
@@ -113,6 +113,10 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
     {
 		if (!isset($this->results[$object])) {
 			$this->results[$object] = array();
+		}
+
+		if (!is_array($result)) {
+			$result = array($result);
 		}
 
         switch ($object) {
