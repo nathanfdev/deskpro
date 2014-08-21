@@ -343,7 +343,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		// Beside
 		if (this.options.positionMode == 'side') {
-			if (!DeskPRO_Window.paneVis.list) {
+			if (!DeskPRO_Window.paneVis.list || (DeskPRO_Window.paneVis.list && !DeskPRO_Window.paneVis.tabs)) {
 				if (this.options.sidePosition == 'bottom') {
 					// Only calc if we dont have a bottom calculated, else it means the thing is full height
 					if (!bottom) {
