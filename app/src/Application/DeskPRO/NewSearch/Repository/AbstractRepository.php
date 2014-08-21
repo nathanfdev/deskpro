@@ -3,7 +3,6 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 use Elastica\Query;
-use Elastica\Query\QueryString;
 use FOS\ElasticaBundle\Repository;
 use Orb\Util\Strings;
 use Elastica\Util as ElasticaUtil;
@@ -65,7 +64,7 @@ abstract class AbstractRepository extends Repository
     {
 		$l = Strings::extractRegexMatch('#^\[(.*?)\]$#', $q);
 		if ($l && $this instanceof WithLabelsInterface) {
-			$queryString = new QueryString(ElasticaUtil::escapeTerm($l));
+			$queryString = new Query\QueryString(ElasticaUtil::escapeTerm($l));
 			$queryString->setFields(array('labels'));
 			$queryString->setDefaultOperator('AND');
 			$query = new Query(
@@ -83,7 +82,7 @@ abstract class AbstractRepository extends Repository
 				array(
 					'query' => array(
 						'filtered' => array(
-							'query'  => $this->getQueryString($q),
+							'query'  => $this->getQueryString($q)->toArray(),
 							'filter' => $this->getFilters(),
 						)
 					)
@@ -98,15 +97,15 @@ abstract class AbstractRepository extends Repository
      * Constructs the query string
      *
      * @param $q
-     * @return array
+     * @return Query\QueryString|Query\MultiMatch
      */
-    protected function getQueryString($q)
+	protected function getQueryString($q)
     {
-        $queryString = new QueryString(ElasticaUtil::escapeTerm($q));
+        $queryString = new Query\QueryString(ElasticaUtil::escapeTerm($q));
 		$queryString->setFields($this->getQueryFields());
         $queryString->setDefaultOperator('AND');
 
-        return $queryString->toArray();
+        return $queryString;
     }
 
 	/**
