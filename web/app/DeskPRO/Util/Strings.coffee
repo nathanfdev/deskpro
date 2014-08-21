@@ -371,7 +371,6 @@ define ->
 				return render.call(this, data, window.STRINGS)
 
 			fn.source = source
-			console.log(source)
 
 			return fn
 
