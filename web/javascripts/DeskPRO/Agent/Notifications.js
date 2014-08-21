@@ -29,7 +29,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		notifyBox.on('click', '.trigger-dismiss', function(ev) {
 			Orb.cancelEvent(ev);
 			self.dismissAll();
-			Orb.shimClickCallbackPop();
+			$('#dp_header_notify_wrap').trigger('dpClose');
 		}).on('click', '.dismiss', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
@@ -45,7 +45,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.removeRow(row);
 
 			if (!ul.find('li')[0]) {
-				Orb.shimClickCallbackPop();
+				$('#dp_header_notify_wrap').trigger('dpClose');
 			}
 		}).on('click', 'li.inside', function(ev) {
 			Orb.cancelEvent(ev);
@@ -69,12 +69,12 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.removeRow(row);
 
 			if (!ul.find('li')[0]) {
-				Orb.shimClickCallbackPop();
+				$('#dp_header_notify_wrap').trigger('dpClose');
 			}
 		}).on('click', '.trigger-notify-prefs', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
-			Orb.shimClickCallbackPop();
+			$('#dp_header_notify_wrap').trigger('dpClose');
 			$('#settingswin').trigger('dp_open', 'ticket-notify');
 		}).on('click', '.see_dismissed', function(e) {
 

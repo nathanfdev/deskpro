@@ -551,13 +551,21 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				scope.initialShow = 10;
 				scope.expanded = {};
 
-				$backdrop.on('click', function() {
+				var closeAll = function() {
 					$backdrop.hide();
 					scope.$apply(function() {
 						scope.isActive = false;
 						scope.mode = 'search';
 						updateMode();
 					});
+				};
+
+				$('#dp_header_notify_wrap, #recent_tabs_menu').on('dpClose', function() {
+					closeAll();
+				});
+
+				$backdrop.on('click', function() {
+					closeAll();
 				});
 
 				scope.$watch('isActive', function(isActive) {
