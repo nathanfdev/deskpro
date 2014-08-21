@@ -128,7 +128,7 @@
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_download_done') }}</td>
 						</tr>
 						<tr ng-class="{'success': indexer_status.deskpro_feedback_done >= indexer_status.deskpro_feedback_total}">
-							<td>Downloads</td>
+							<td>Feedback</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_feedback_total') }}</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_feedback_done') }}</td>
 						</tr>
@@ -173,6 +173,16 @@
 					<tr>
 						<td>Indexed Documents:</td>
 						<td>{{ ng_var('info.num_docs') }}</td>
+					</tr>
+					<tr ng-if="indexer_log">
+						<td>Log</td>
+						<td>
+							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = true" ng-hide="show_log"><i class="fa fa-file-text-o"></i> View full log of initial indexing process</button>
+							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = false" ng-show="show_log"><i class="fa fa-file-text-o"></i> Hide full log</button>
+							<div ng-if="show_log" style="margin-top: 4px;">
+								<textarea ng-model="indexer_log" class="form-control" style="width: 100%; height: 175px; font-family: Monaco, Consolas, monospace; font-size: 11px;"></textarea>
+							</div>
+						</td>
 					</tr>
 				</table>
 			</div>
