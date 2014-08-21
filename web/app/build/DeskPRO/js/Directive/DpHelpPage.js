@@ -62,7 +62,7 @@
               ev.preventDefault();
               return toggle();
             });
-            return element.on('click', function(ev) {
+            return element.find('.dp-help-content-outer').on('click', function(ev) {
               ev.stopPropagation();
               return open();
             });
