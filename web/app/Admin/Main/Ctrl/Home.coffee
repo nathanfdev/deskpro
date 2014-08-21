@@ -27,6 +27,7 @@ define [
 				data = result.data
 				@online_agents  = []
 				@offline_agents = []
+				@unactive_agents = []
 
 				@version_info   = result.data.versionInfo
 				@last_login     = result.data.lastLogin.last_login
@@ -37,6 +38,8 @@ define [
 				for agent in data.agents.agents
 					if agent.is_online_now or agent.id == DP_PERSON_ID
 						@online_agents.push(agent)
+					else if !agent.date_last_login?
+						@unactive_agents.push(agent)
 					else
 						@offline_agents.push(agent)
 			)
@@ -152,7 +155,8 @@ define [
 				return
 
 			@startSpinner('saving_new_agent')
-			@Api.sendPutJson('/agents', postData).then(=>
+			@Api.sendPutJson('/agents', postData).then( (data) =>
+				@unactive_agents.push data.data
 				@stopSpinner('saving_new_agent').then(=>
 					@$scope.created_agent = @$scope.new_agent
 					@$scope.new_agent = {}
