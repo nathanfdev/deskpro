@@ -2,7 +2,7 @@
 {# Tickets #}
 {#########################################################################}
 
-<% if (group.type == 'ticket') { var ticket = result.item; var ticket_display = ticket; %>
+<% if (group.type == 'ticket') { var ticket = result; var ticket_display = ticket; %>
 	<article class="row-item no-check" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- ticket.id %>'})|raw }}">
 		<div class="top-row">
 			<div class="top-row-left">
@@ -78,7 +78,7 @@
 {# People #}
 {#########################################################################}
 
-<% if (group.type == 'person') { var person = result.item; %>
+<% if (group.type == 'person') { var person = result; %>
 <article class="row-item single-row" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}">
 	<div class="userinfo">
 		<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
@@ -93,7 +93,7 @@
 {# Organization #}
 {#########################################################################}
 
-<% if (group.type == 'organization') { var org = result.item; %>
+<% if (group.type == 'organization') { var org = result; %>
 <article class="row-item single-row" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= org.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">
@@ -112,7 +112,7 @@
 {# Article #}
 {#########################################################################}
 
-<% if (group.type == 'article') { var item = result.item; %>
+<% if (group.type == 'article') { var item = result; %>
 <article class="row-item single-row" data-route="page:{{ path('agent_kb_article', {'article_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">
@@ -131,7 +131,7 @@
 {# Download #}
 {#########################################################################}
 
-<% if (group.type == 'download') { var item = result.item; %>
+<% if (group.type == 'download') { var item = result; %>
 <article class="row-item single-row" data-route="page:{{ path('agent_downloads_view', {'download_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">
@@ -150,7 +150,7 @@
 {# News #}
 {#########################################################################}
 
-<% if (group.type == 'news') { var item = result.item; %>
+<% if (group.type == 'news') { var item = result; %>
 <article class="row-item single-row" data-route="page:{{ path('agent_news_view', {'news_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">
@@ -169,7 +169,7 @@
 {# Feedback #}
 {#########################################################################}
 
-<% if (group.type == 'feedback') { var item = result.item; %>
+<% if (group.type == 'feedback') { var item = result; %>
 <article class="row-item single-row" data-route="page:{{ path('agent_feedback_view', {'feedback_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">
