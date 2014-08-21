@@ -565,15 +565,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		didRemoveList = {};
 		ticketIds.forEach(function(x) { removeTicketIdsMap[x] = true; });
 
-		var remove = $scope.tickets.filter(function(t) {
-			return removeTicketIdsMap[t.id] ? true : false;
-		});
-
-		if (!remove.length) return;
-		remove.each(function(t){
-			$scope.tickets.splice($scope.tickets.indexOf(t), 1);
-			self.updateSubgroupingBubbles('remove', t);
-			didRemoveList[t.id] = true;
+		$scope.tickets = $scope.tickets.filter(function(t) {
+			if (removeTicketIdsMap[t.id]) {
+				self.updateSubgroupingBubbles('remove', t);
+				didRemoveList[t.id] = true;
+				return false;
+			} else {
+				return true;
+			}
 		});
 
 		this.listTicketIds = this.listTicketIds.filter(function(tid) {
