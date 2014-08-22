@@ -199,6 +199,23 @@ class TicketLog extends DomainObject
 		$this->setModelField('details', $details);
 	}
 
+	public function getDetails()
+	{
+		$details = $this->details;
+
+		// Legacy name (bug caused bad key name)
+		if ($this->action_type == 'changed_category') {
+			if (isset($details['old_category_name'])) {
+				$details['old_category_title'] = $details['old_category_name'];
+			}
+			if (isset($details['new_category_name'])) {
+				$details['new_category_title'] = $details['new_category_name'];
+			}
+		}
+
+		return $details;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
