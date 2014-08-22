@@ -34,6 +34,8 @@
 namespace Application\DeskPRO\CsvUpload;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\TaskQueue;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Application\DeskPRO\TaskQueueJob\CsvImport;
@@ -146,23 +148,37 @@ class CsvUpload
 
 	public function returnStatusOfImport()
 	{
-		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import');
+		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import', true);
 
 		if (!count($tasks)) {
 
 			return array(
-				'status'  => 'completed',
-				'message' => 'CSV Import done',
+				'status'  => '',
+				'message' => '',
 			);
 
 		} else {
 
-			$task   = reset($tasks);
+			/** @var TaskQueue $task */
+			$task   = end($tasks);
 			$runner = $task->getRunner();
+			$data = $task['task_data'];
+
+			if ('completed' === $task['status'] || 'errored' === $task['status']) {
+				/** @var Blob $logBlob */
+				$logBlob = $this->em->find('DeskPRO:Blob', $data['log_blob_id']);
+				return array(
+					'status'  => 'completed',
+					'message' => $task['run_status'],
+					'imported' => $data['imported'],
+					'failed' => $data['failed'],
+					'log' => $logBlob ? $logBlob->getDownloadUrl(true) : null,
+				);
+			}
 
 			return array(
 				'status'  => 'progress',
-				'message' => $runner->getTitle(),
+				'message' => $task['run_status'] ?: $runner->getTitle(),
 			);
 		}
 	}

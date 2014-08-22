@@ -97,9 +97,12 @@ class CsvImport extends AbstractJob
 			'welcome_subject' => '',
 			'welcome_message' => '',
 			'imported' => 0,
+			'failed' => 0,
 			'lines_done' => 0,
 			'fseek' => 0,
-			'user_filename' => ''
+			'user_filename' => '',
+			'log_blob_id' => 0,
+			'log' => array(),
 		);
 	}
 
@@ -143,7 +146,7 @@ class CsvImport extends AbstractJob
 				break;
 			}
 
-			$row = fgetcsv($fp, null, $this->_data['options']['delimeter'], $this->_data['options']['enclosure']);
+			$row = fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 			if (!$row) {
 				$complete = true;
 				break;
@@ -165,10 +168,32 @@ class CsvImport extends AbstractJob
 			$this->getLogger()->logDebug("Imported $imported people");
 		}
 
-		$this->getTask()->run_status = "Processed " . $this->_data['lines_done']
+		$task = $this->getTask();
+		$task['run_status'] = "Processed " . $this->_data['lines_done']
 			. " entries, imported " . $this->_data['imported'] . " people";
+		$task['task_data'] = array_merge($task['task_data'], $this->_data);
+
 
 		if ($complete) {
+
+			$tmpFile = dp_get_tmp_dir() . '/blob-import-log-'.$task['id'].'.csv';
+			if ($task['task_data']['log'] && ($fp = fopen($tmpFile, 'w'))) {
+				foreach ($task['task_data']['log'] as $logEntry) {
+					fputcsv($fp, $logEntry, $options['delimeter'], $options['enclosure']);
+				}
+				fclose($fp);
+				$logBlob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+					$tmpFile,
+					'import-log-'.$task['id'].'.csv',
+					'text/csv'
+				);
+				$task['task_data'] = array_merge(
+					$task['task_data'],
+					array('log' => null, 'log_blob_id' => $logBlob['id'])
+				);
+				@unlink($tmpFile);
+			}
+
 			@unlink($csv_file);
 			try {
 				App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
@@ -177,6 +202,12 @@ class CsvImport extends AbstractJob
 		} else {
 			return self::TASK_CONTINUING;
 		}
+	}
+
+	protected function log(array $errors)
+	{
+		$this->_data['failed']++;
+		$this->_data['log'][] = $errors;
 	}
 
 	protected function _createNewCustomFields()
@@ -221,6 +252,7 @@ class CsvImport extends AbstractJob
 		$password = false;
 		$secondary_emails = array();
 		$addresses = array();
+		$errors = array();
 
 		foreach ($field_maps AS $column_id => $info) {
 			if (empty($info['map'])) {
@@ -234,19 +266,33 @@ class CsvImport extends AbstractJob
 
 			if ($info['map'] == 'primary_email') {
 
-				if (!\Orb\Validator\StringEmail::isValueValid($column_value) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($column_value)) {
+
+				if (!\Orb\Validator\StringEmail::isValueValid($column_value)) {
+					$errors[] = sprintf('Invalid email %s', $column_value);
 					continue;
 				}
+				if (App::$container->getEmailAccountManager()->findAccountForEmailAddress($column_value)) {
+					$errors[] = sprintf('Email %s already exist', $column_value);
+					continue;
+				}
+
 				if ($person_em->findOneByEmail($column_value)) {
+					$errors[] = sprintf('Email %s already exist', $column_value);
 					continue;
 				}
 
 				$primary_email = strtolower($column_value);
 			} else if ($info['map'] == 'secondary_email') {
-				if (!\Orb\Validator\StringEmail::isValueValid($column_value) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($column_value)) {
+				if (!\Orb\Validator\StringEmail::isValueValid($column_value)) {
+					$errors[] = sprintf('Invalid email %s', $column_value);
+					break;
+				}
+				if (App::$container->getEmailAccountManager()->findAccountForEmailAddress($column_value)) {
+					$errors[] = sprintf('Email %s already exist', $column_value);
 					break;
 				}
 				if ($person_em->findOneByEmail($column_value)) {
+					$errors[] = sprintf('Email %s already exist', $column_value);
 					break;
 				}
 
@@ -259,6 +305,7 @@ class CsvImport extends AbstractJob
 		}
 
 		if (!$primary_email) {
+			$this->log($errors);
 			return false;
 		}
 
