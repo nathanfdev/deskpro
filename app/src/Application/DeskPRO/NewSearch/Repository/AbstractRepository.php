@@ -101,7 +101,16 @@ abstract class AbstractRepository extends Repository
      */
 	protected function getQueryString($q)
     {
-        $queryString = new Query\QueryString(ElasticaUtil::escapeTerm($q));
+		$term = ElasticaUtil::escapeTerm($q);
+
+		// If we have an equal number of quotes, then
+		// they are properly balanced and it's valid so we can
+		// accept the "phrase" search
+		if (substr_count($term, '\\"') % 2 === 0) {
+			$term = str_replace('\\"', '"', $term);
+		}
+
+        $queryString = new Query\QueryString($term);
 		$queryString->setFields($this->getQueryFields());
         $queryString->setDefaultOperator('AND');
 
