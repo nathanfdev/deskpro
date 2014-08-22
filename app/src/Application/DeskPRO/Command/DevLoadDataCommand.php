@@ -1525,6 +1525,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$text = str_replace("\n", " ", $text);
 			$text = preg_replace('#[ ]{2,}#', ' ', $text);
 			$text = explode(' ', $text);
+			shuffle($text);
 			return implode(' ', array_slice($text, 0, $word_length, false));
 		} else {
 			return $this->_getRandomWordlist($word_length);
