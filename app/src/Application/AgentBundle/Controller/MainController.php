@@ -451,10 +451,15 @@ class MainController extends AbstractController
 			foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name') as $k) {
 				$data[$k] = $person[$k];
 			}
-			$data['primary_email'] = array(
-				'id'    => (int)$person->primary_email->id,
-				'email' => $person->primary_email->email
-			);
+
+			if ($person->primary_email) {
+				$data['primary_email'] = array(
+					'id'    => (int)$person->primary_email->id,
+					'email' => $person->primary_email->email
+				);
+			} else {
+				$data['primary_email'] = null;
+			}
 			return $data;
 		};
 
