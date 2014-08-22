@@ -3043,6 +3043,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'POST',
 				data: postData
 			});
+
+			self.meta.title = setName;
+
+			if (DeskPRO_Window.TabBar) {
+				DeskPRO_Window.TabBar.rescanTitles();
+			}
 		};
 
 		namef.on('dblclick', startEditable).on('keypress', function(ev) {

@@ -66,6 +66,18 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		});
 	},
 
+	rescanTitles: function() {
+		var i, tab;
+		for (i = 0; i < this._tabs.length; i++) {
+			tab = this._tabs[i];
+			if (tab.page) {
+				tab.title = tab.page.getMetaData('title', 'Untitled');
+				console.log(tab)
+			}
+		}
+		this.$scope.$safeApply();
+	},
+
 	//##################################################################################################################
 	// Methods to fetch tabs
 	//##################################################################################################################
@@ -293,7 +305,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.$scope.$safeApply();
 		this.$timeout(function() {
 			self.tabBarOverflow.update();
-		})
+		});
 		return id;
 	},
 
@@ -337,7 +349,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	/**
 	 * Activate a tab in the tabbar
 	 *
-	 * @param {Object} id
+	 * @param {Object} tab
 	 */
 	activateTab: function(tab) {
 
@@ -497,11 +509,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				if (last_tab_id) {
 					this.activateTabById(last_tab_id);
 				} else {
-						// If list view isnt active, then after a small timeout
-						// make it visiable.
-						// The timeout is in case we have other routines that auto-open
-						// a new tab (e.g., after ticket reply)
-					var self = this;
+					// If list view isnt active, then after a small timeout
+					// make it visiable.
+					// The timeout is in case we have other routines that auto-open
+					// a new tab (e.g., after ticket reply)
 					this.$timeout(function(){
 						var last_tab_id = Object.keys(self.tabs).getLast();
 						if (!last_tab_id) {
@@ -573,7 +584,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		if (otherTab && otherTab != tab) {
 			if (this.currentTabId == otherTab.id) {
-				wasActive = true;
 				this.currentTabId = null;
 			}
 
