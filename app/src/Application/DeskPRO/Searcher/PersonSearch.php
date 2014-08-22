@@ -506,14 +506,14 @@ class PersonSearch extends SearcherAbstract
 				case self::TERM_DIRECTORY_NAME:
 
 					if ($choice == 'OTHER') {
-						$where[] = "people.last_name RLIKE '^[^A-Za-z]'";
+						$wheres[] = "people.last_name RLIKE '^[^A-Za-z]'";
 					} else {
 						$letter = $choice[0];
 						if (!preg_match('#^[a-zA-Z]#', $letter)) {
 							$letter = 'A';
 						}
 
-						$where[] = "people.last_name LIKE '%$letter'";
+						$wheres[] = "people.last_name LIKE '%$letter'";
 					}
 
 					break;
@@ -672,7 +672,7 @@ class PersonSearch extends SearcherAbstract
 										$w = "($w OR $field IS NULL)";
 									}
 
-									$where[] = $w;
+									$wheres[] = $w;
 
 									break;
 								case self::OP_CONTAINS:
@@ -685,7 +685,7 @@ class PersonSearch extends SearcherAbstract
 										$w = "($w OR $field IS NULL)";
 									}
 
-									$where[] = $w;
+									$wheres[] = $w;
 									break;
 							}
 							break;
