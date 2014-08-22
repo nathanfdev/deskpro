@@ -552,7 +552,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				var $input = $el.find('input');
 				var $results = $el.find('.dp-omnibox-results');
 				var $listPane = $('#dp_list');
-				var $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">').hide().appendTo('body');
+				var $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">')
 				var recentOpen = false;
 				var notifsOpen = false;
 				var lastUpdateTime = null;
@@ -564,15 +564,21 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 
 				var closeAll = function() {
 					$backdrop.hide();
-					scope.$apply(function() {
+					$timeout(function() {
 						scope.isActive = false;
 						scope.mode = 'search';
 						updateMode();
-					});
+					})
 				};
 
 				$('#dp_header_notify_wrap, #recent_tabs_menu').on('dpClose', function() {
 					closeAll();
+				});
+
+				$('body').on('mousedown mouseup click', function(ev) {
+					if (!ev.target || !$(ev.target).closest('.dp-omnibox-wrap')[0]) {
+						closeAll();
+					}
 				});
 
 				$backdrop.on('click', function() {
@@ -591,12 +597,25 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				});
 
 				$input.on('focus', function() {
-					if (!scope.isActive) {
-						scope.$apply(function() {
-							scope.isActive = true;
-							if (scope.searchQuery != "") {
-								resetResultsPos();
+					if (scope.mode == 'search') {
+						$timeout(function () {
+							if (scope.mode == 'search') {
+								scope.isActive = true;
+								if (scope.searchQuery != "") {
+									$results.show();
+									resetResultsPos();
+								}
 							}
+						});
+					}
+				});
+
+				$input.on('keyup', function(ev) {
+					if (ev.keyCode == 27) {
+						$timeout(function() {
+							scope.isActive = false;
+							scope.mode = 'search';
+							$input.blur();
 						});
 					}
 				});
@@ -627,6 +646,15 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					updateMode();
 				};
 
+				scope.clearSearch = function() {
+					$timeout(function() {
+						scope.searchQuery = '';
+						scope.isActive = false;
+						scope.mode = 'search';
+						$input.blur();
+					});
+				};
+
 				var updateMode = function() {
 					if (recentOpen) {
 						recentOpen = false;
@@ -639,8 +667,10 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 
 					if (scope.mode == 'search') {
 					} else if (scope.mode == 'recent') {
+						$results.hide();
 						showRecent();
 					} else if (scope.mode == 'notif') {
+						$results.hide();
 						showNotifs();
 					}
 				};
