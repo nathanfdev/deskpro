@@ -774,6 +774,16 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 						'max-height': maxHeight
 					}).show();
 				};
+
+				var resizeDebounced = Functions.debounce(function() {
+					window.setTimeout(function() { resetResultsPos(); }, 10);
+				}, 300);
+
+				$(window).on('resize', function() {
+					if (scope.isActive) {
+						resizeDebounced();
+					}
+				});
 			}
 		}
 	}]);
