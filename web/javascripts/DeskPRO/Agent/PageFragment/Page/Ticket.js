@@ -2410,7 +2410,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					success: function(info) {
 						self.messageEditOverlay.close();
 						var messageHtml = info.message_html;
-						self.wrapper.find('article.message-' + self.currentOpenMessageId).find('.body-text-message').html(messageHtml);
+
+						var messageEl = self.wrapper.find('article.message-' + self.currentOpenMessageId);
+						messageEl.find('.body-text-message').html(messageHtml);
+
+						// reprocess events on message (eg image preview)
+						self._initMessage(messageEl);
 					}
 				});
 			});
