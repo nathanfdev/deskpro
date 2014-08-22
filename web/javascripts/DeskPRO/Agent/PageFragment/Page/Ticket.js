@@ -668,9 +668,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var st   = head.find('nav').data('simpletabs');
 		if (st) {
 			st.addEvent('tabSwitch', function(evData) {
-				var id = $(evData.tabEl).attr('id') || '';
+				var id = $(evData.tabContent).attr('id') || '';
 
-				if (id && id.indexOf('fields_display_main_wrap_tab') !== -1) {
+				if (id && id.indexOf('fields_display_main_wrap') !== -1) {
 					head.removeClass('controls-off');
 				} else {
 					head.addClass('controls-off');
