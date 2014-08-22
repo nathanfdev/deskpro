@@ -560,7 +560,6 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				scope.searchQuery = '';
 				scope.isActive = false;
 				scope.mode = 'search';
-				scope.initialShow = 10;
 				scope.expanded = {};
 
 				var closeAll = function() {
@@ -700,15 +699,27 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 						scope.resultGroups = data.grouped_results || [];
 						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
 
+						var initialShow = {
+							organization: 3,
+							person: 3,
+							ticket: 10,
+							feedback: 5,
+							article: 5,
+							download: 5,
+							news: 5
+						};
 						var sortOrder = {
 							organization: 0,
-							ticket: 1,
-							person: 2,
+							person: 1,
+							ticket: 2,
 							feedback: 3,
 							article: 4,
 							download: 5,
 							news: 6
 						};
+						for (var i = 0; i < scope.resultGroups.length; i++) {
+							scope.resultGroups[i].initialShow = initialShow[scope.resultGroups[i].type] || 5;
+						}
 						scope.resultGroups = scope.resultGroups.sort(function(a, b) {
 							return sortOrder[a.type] < sortOrder[b.type] ? -1 : 1;
 						});
