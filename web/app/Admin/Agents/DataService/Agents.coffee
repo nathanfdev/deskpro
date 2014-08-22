@@ -16,5 +16,5 @@ define [
 
 			models
 
-		all: ->
-			super false, {full: 1}
+		all: (reload) ->
+			super (reload), {full: 1}
