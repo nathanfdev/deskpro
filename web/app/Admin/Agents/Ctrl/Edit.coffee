@@ -20,6 +20,8 @@ define [
 			@hasPermOverrides = false
 			@hasDepOverrides = false
 			@primary_phone_number_region = 'US'
+			@service =
+				agents: @DataService.get 'Agents'
 			@all_perms =
 				perms: {}
 				deps_perms:
@@ -481,7 +483,9 @@ define [
 
 				p = @Api.sendDelete(target)
 				p.then(=>
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.removeAgentFromList(@agentId)
+					# todo
+					@service.agents.get(@agentId).then (agent) =>
+						@service.agents._removeModel agent
 					@$state.go('agents.agents')
 				)
 
@@ -570,13 +574,12 @@ define [
 				promise = @Api.sendPutJson("/agents", postData)
 
 			promise.then( (res) =>
+				# todo
+				@service.agents._addModel res.data.agent
 				@agent.display_name = @form.name
 
-				if @agentId
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.updateAgent(@agent)
-				else
+				if !@agentId
 					@$state.go('agents.agents.edit', {id: res.data.person_id})
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.addAgent(res.data.person_id, @agent.display_name)
 
 				@stopSpinner('saving')
 			, (res) =>
