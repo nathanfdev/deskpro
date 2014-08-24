@@ -65,9 +65,7 @@ define [
 			promise.then( (result) =>
 				if @agentId
 					@agent = result.data.agent.agent
-					@agent.signature_html = result.data.agent.signature_html
 					@perm_form = result.data.agent.perms
-					@primary_phone_number_region = result.data.default_country.value
 				else
 					@agent = {
 						id: 0,
@@ -92,6 +90,7 @@ define [
 
 				@agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
 				@form = @agentFormModel.form
+				console.info @form
 
 				@$scope.$watch('EditCtrl.form.agent_groups', =>
 					@updateEffectiveUgPerms()
