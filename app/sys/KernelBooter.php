@@ -38,10 +38,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
-use Application\DeskPRO\PageLog\PageLogger;
 use Doctrine\DBAL\DBALException;
-use Orb\Util\Strings;
-use Orb\Util\Util;
 
 class KernelBooter
 {
