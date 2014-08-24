@@ -43,6 +43,8 @@ class GeneralSettings
 
 	public $deskpro_name;
 	public $deskpro_url;
+	public $helpdesk_disabled;
+	public $helpdesk_disabled_message;
 	public $site_name;
 	public $site_url;
 
@@ -65,6 +67,8 @@ class GeneralSettings
 	public $attach_agent_not_exts = array();
 	public $attach_agent_maxsize;
 
+	protected $isCloud;
+
 	/**
 	 * @param Settings $settings
 	 */
@@ -72,6 +76,9 @@ class GeneralSettings
 	{
 		$this->settings = $settings;
 		$this->resetSettings();
+
+		// todo inject. maybe to Settings?
+		$this->isCloud = defined('DPC_IS_CLOUD');
 	}
 
 
@@ -82,6 +89,10 @@ class GeneralSettings
 	{
 		$this->deskpro_name = $this->settings->get('core.deskpro_name');
 		$this->deskpro_url  = $this->settings->get('core.deskpro_url');
+
+		$this->helpdesk_disabled = (bool) $this->settings->get('core.helpdesk_disabled');
+		$this->helpdesk_disabled_message = $this->settings->get('core.helpdesk_disabled_message');
+
 		$this->site_name    = $this->settings->get('core.site_name');
 		$this->site_url     = $this->settings->get('core.site_url');
 
@@ -154,6 +165,8 @@ class GeneralSettings
 		$export_settings = array(
 			'deskpro_name'           => $this->deskpro_name,
 			'deskpro_url'            => $this->deskpro_url,
+			'helpdesk_disabled'      => $this->helpdesk_disabled,
+			'helpdesk_disabled_message' => $this->helpdesk_disabled_message,
 			'default_timezone'       => $this->default_timezone,
 			'task_reminder_time'     => $this->task_reminder_time,
 			'site_name'              => $this->site_name,
@@ -197,6 +210,14 @@ class GeneralSettings
 		if ($this->deskpro_url) {
 			$this->deskpro_url = rtrim($this->deskpro_url, '/') . '/';
 			$this->settings->setSetting('core.deskpro_url', $this->deskpro_url);
+		}
+
+		if (!$this->isCloud) {
+			$this->settings->setSetting('core.helpdesk_disabled', (bool) $this->helpdesk_disabled);
+			$this->settings->setSetting('core.helpdesk_disabled_message', $this->helpdesk_disabled_message);
+
+			// todo? legacy code
+			@file_put_contents(dp_get_data_dir() . '/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
 		}
 
 		$this->settings->setSetting('core.deskpro_name', $this->deskpro_name);
