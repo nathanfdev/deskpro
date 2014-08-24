@@ -44,6 +44,7 @@ requirejs.config({
 		"ColorPicker":                     "vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "vendor/detect_timezone",
 		"intl-tel-input":                  "app/bower_components/intl-tel-input/build/js/intlTelInput.min",
+		"redactor":                        "vendor/redactor/redactor.min",
 
 		"selectize":                       "app/bower_components/selectize/dist/js/selectize",
 		"sifter":                          "app/bower_components/sifter/sifter",
