@@ -74,9 +74,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 		$agents = array();
 
 		$person_context = $context->getPersonContext();
+		$isNotificationsDisabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
 		foreach ($agent_ids as $aid) {
 			if ($aid == 'notify_list') {
+
+				if ($isNotificationsDisabled) continue;
+
 				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
 				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
 				$list_builder  = new AgentNotifyListBuilder(

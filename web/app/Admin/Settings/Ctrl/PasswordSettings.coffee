@@ -16,6 +16,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 					ip_security_enabled:            res.data.settings.settings.ip_security_enabled,
 					ip_security_mode:               res.data.settings.settings.ip_security_mode || 'admins',
 					ip_security_whitelist_lifetime: res.data.settings.settings.ip_security_whitelist_lifetime + "",
+					disable_notifications:          res.data.settings.settings.disable_notifications,
 				}
 
 				@$scope.agent = res.data.settings.settings.agent
