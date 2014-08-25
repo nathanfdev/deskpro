@@ -1,0 +1,23 @@
+<thead>
+<tr>
+    <th width="20">
+    </th>
+    <th ng-repeat="field in getDisplayableFields()" ng-switch="field">
+
+        {# Id #}
+        <span ng-switch-when="id">{{ phrase('agent.general.id') }}</span>
+
+        {# Name #}
+        <span ng-switch-when="name">{{ phrase('agent.general.organization_name') }}</span>
+
+        {# Members count #}
+        <span ng-switch-when="members_count">{{ phrase('agent.general.number_of_members') }}</span>
+
+        {# Labels #}
+        <span ng-switch-when="labels">{{ phrase('agent.general.labels') }}</span>
+
+        {#<span ng-switch-default>{{ ng_var('getFieldDisplayName(field)') }}</span>#}
+
+    </th>
+</tr>
+</thead>

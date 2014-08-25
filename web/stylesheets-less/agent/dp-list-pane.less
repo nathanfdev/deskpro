@@ -333,6 +333,29 @@
 	position: relative;
 }
 
+.list-listing .new-tab-icon {
+	display: none;
+	float: left;
+	margin-right: 3px;
+	position: relative;
+	top: -4px;
+
+	border-radius: 2px;
+	font-size: 13px;
+	padding: 2px;
+	vertical-align: baseline;
+	text-align: center;
+
+	&:hover {
+		background: #134d77;
+		color: #fff;
+	}
+}
+
+.panevis-tabs-off.with-tabs .list-listing .new-tab-icon {
+	display: block;
+}
+
 .ipad .list-listing .row-item, .iphone .list-listing .row-item {
 	/* this fixes some weird wrapping issues on ios */
 	display: inline-block;
@@ -510,6 +533,25 @@
 	height: 15px;
 }
 
+.list-listing .row-item.no-check .top-row {
+	left: 5px;
+}
+.list-listing .row-item.single-row .top-row {
+	position: relative;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: auto;
+	padding: 5px;
+}
+.list-listing .row-item.single-row .top-row .top-row-left h3 {
+	margin-top: 0;
+}
+.list-listing .row-item.no-check .userinfo {
+	position: relative;
+	left: 5px;
+}
+
 .list-listing.no-check .row-item .top-row {
 	left: 7px;
 }
@@ -583,6 +625,12 @@
 }
 .list-listing .row-item .userinfo.general {
 	margin-left: 8px;
+}
+.list-listing .row-item.single-row .userinfo {
+	margin-top: 0;
+	margin-left: 5px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 }
 .list-listing .row-item a.name {
 	color: @link-color;
@@ -886,7 +934,7 @@ table.tickets-simple td.status .status
 	border-bottom: 1px solid #E1E3E6;
 	border-top: 1px solid #fff;
 	white-space: nowrap;
-	text-overflow: clipped;
+	text-overflow: clip;
 	text-overflow: ellipsis;
 	-o-text-overflow: ellipsis;
 	overflow: hidden;
@@ -895,6 +943,28 @@ table.tickets-simple td.status .status
 
 .table-result-list table tbody tr.open td {
 	background-color: #D4E7FC;
+}
+
+.table-result-list table {
+	.col-agent { width: 50px; overflow: visible; text-overflow: clip; text-align: center; }
+	.col-subject { width: 45%; }
+
+	.obj-link {
+		color: #4769b3;
+		text-decoration: none;
+		cursor: pointer;
+		&:hover {
+			text-decoration: underline;
+			color: #4769b3;
+		}
+	}
+	.obj-id {
+		border-radius: 2px;
+		border: 1px solid #cccccc;
+		background: #f5f5f5;
+		color: #636B73;
+		padding: 0 2px 0 2px;
+	}
 }
 
 .bottom-action-bar {

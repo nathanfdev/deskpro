@@ -43,7 +43,6 @@ class ChatFieldManager extends FieldManager
 	 *
 	 * @return array
 	 */
-
 	public function getDefinedFields()
 	{
 		return array_values($this->em->getRepository('DeskPRO:CustomDefChat')->getTopFields());

@@ -236,9 +236,9 @@ class TicketLogGenerator
 					'id_after'    => $new ? $new->id : null,
 
 					'old_category_id'    => $old ? $old->id : null,
-					'old_category_name'  => $old ? $old->title : null,
+					'old_category_title' => $old ? $old->title : null,
 					'new_category_id'    => $new ? $new->id : null,
-					'new_category_name'  => $new ? $new->title : null,
+					'new_category_title' => $new ? $new->title : null,
 				);
 				break;
 

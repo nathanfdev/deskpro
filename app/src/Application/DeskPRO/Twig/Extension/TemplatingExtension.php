@@ -1663,8 +1663,8 @@ class TemplatingExtension extends \Twig_Extension
 
 		$html = <<<HTML
 <script type="text/javascript">
+window.onerror = function() {};
 window.onerror = null;
-delete window.onerror;
 window._trackJs = {
 	sessionId: '$sid',
 	token: '4eebe4aa1bc2404e89fc4250152d18a0',

@@ -27,6 +27,9 @@ if (!defined('DPC_IS_CLOUD') && file_exists(dp_get_tmp_dir() . '/apc-clear.trigg
 		wincache_ucache_clear();
 		wincache_refresh_if_changed();
 	}
+	if (function_exists('opcache_reset')) {
+		opcache_reset();
+	}
 	@unlink(dp_get_tmp_dir() . '/apc-clear.trigger');
 }
 

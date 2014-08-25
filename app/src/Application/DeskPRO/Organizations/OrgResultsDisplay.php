@@ -74,14 +74,16 @@ class OrgResultsDisplay
 	 */
 	protected $org_member_counts;
 
+	protected $all_fields_data;
+
 	/**
 	 * @param \Application\DeskPRO\Entity\Organization[] $orgs
 	 */
 	public function __construct(array $orgs)
 	{
-		$this->people = $orgs;
+		$this->orgs = $orgs;
 		$this->orgs_count = count($orgs);
-		$this->org_ids = Arrays::flattenToIndex($this->people, 'id');
+		$this->org_ids = Arrays::flattenToIndex($this->orgs, 'id');
 
 
 		$this->em = App::getOrm();
@@ -169,7 +171,7 @@ class OrgResultsDisplay
 		$this->org_member_counts = $this->db->fetchAllKeyValue("
 			SELECT organization_id, COUNT(*)
 			FROM people
-			WHERE organization_id IN($org_ids) AND is_disabled = 0 AND is_deleted = 0
+			WHERE organization_id IN($org_ids) AND is_deleted = 0
 			GROUP BY organization_id
 		");
 
@@ -187,5 +189,35 @@ class OrgResultsDisplay
 	{
 		$this->getAllOrgMemberCounts();
 		return isset($this->org_member_counts[$org->id]) ? $this->org_member_counts[$org->id] : 0;
+	}
+
+	public function getFieldsData(Organization $org)
+	{
+		$this->getAllFieldsData();
+		return isset($this->all_fields_data[$org->getId()]) ? $this->all_fields_data[$org->getId()] : array();
+	}
+
+	public function getAllFieldsData()
+	{
+		if ($this->all_fields_data !== null) return $this->all_fields_data;
+		$data = $this->em->createQuery("
+			SELECT d, def, root_def
+			FROM DeskPRO:CustomDataOrganization AS d
+			LEFT JOIN d.field def
+			LEFT JOIN d.root_field root_def
+			WHERE d.organization IN (?0)
+		")->execute(array(array_values($this->org_ids)));
+
+		$this->all_fields_data = array();
+		foreach ($data as $d) {
+			$tid = $d->organization['id'];
+			if (!isset($this->all_fields_data[$tid])) {
+				$this->all_fields_data[$tid] = array();
+			}
+
+			$this->all_fields_data[$tid][] = $d;
+		}
+
+		return $this->all_fields_data;
 	}
 }

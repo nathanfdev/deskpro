@@ -141,7 +141,7 @@
 			{% endif %}
 		</ul>
 
-		<ul class="btm">
+		<ul class="btm normal">
 			<li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
 				<a href="/{{ path('user')|ltrim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
 			</li>
@@ -156,6 +156,37 @@
 			</li>
 			<li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right" class="user-ifce-btn">
 				<a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i class="app-icon app-icon-user-ifce"></i></a>
+			</li>
+		</ul>
+		<ul class="btm mini-rest ng-hide" ng-show="miniAppStrip">
+			<li class="dotdotdot" ng-click="miniAppStrip = false">
+				<span><i class="fa fa-caret-down"></i></span>
+			</li>
+			<li tooltip="Go to Agent Interface" tooltip-append-to-body="true" tooltip-placement="right" class="agent-ifce-btn">
+				<a href="/{{ path('user')|ltrim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
+			</li>
+			<li tooltip="Go to Reports Interface" tooltip-append-to-body="true" tooltip-placement="right" class="reports-ifce-btn">
+				<a href="/{{ path('user')|ltrim('/') }}reports/"><i class="app-icon app-icon-reports-ifce"></i></a>
+			</li>
+			<li ng-show="!isBillingInterface" tooltip="Go to Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+			</li>
+			<li ng-show="isBillingInterface" tooltip="Go to Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
+			</li>
+			<li tooltip="Go to User Interface" tooltip-append-to-body="true" tooltip-placement="right" class="user-ifce-btn">
+				<a href="{{ path('user') }}" dp-click-href="#/go_to_user"><i class="app-icon app-icon-user-ifce"></i></a>
+			</li>
+		</ul>
+		<ul class="btm mini">
+			<li class="dotdotdot" ng-hide="miniAppStrip" ng-click="miniAppStrip = true">
+				<span>&middot; &middot; &middot;</span>
+			</li>
+			<li ng-show="isBillingInterface" tooltip="You are currently using the Billing Interface" tooltip-append-to-body="true" tooltip-placement="right" class="lic-ifce-btn">
+				<a href="#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+			</li>
+			<li ng-show="!isBillingInterface" tooltip="You are currently using the Admin Interface" tooltip-append-to-body="true" tooltip-placement="right">
+				<a href="#/"><i class="app-icon app-icon-admin-ifce"></i></a>
 			</li>
 		</ul>
 	</nav>

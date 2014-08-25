@@ -34,10 +34,12 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PrefNoticeSet;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 
 class MainController extends AbstractController
 {
@@ -365,13 +367,30 @@ class MainController extends AbstractController
 
         list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q);
 
-        return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
-            'q'           => $q,
-            'router'      => App::getRouter(),
-            'results'     => $results,
-            'result_meta' => $result_meta,
-            'people_top'  => $people_top,
-        ));
+		$return_results = array();
+
+		if ($results) {
+			foreach ($results as $type => $raw_rows) {
+				$rows = array();
+				foreach ($raw_rows as $r) {
+					$rows[] = $r;
+				}
+
+				$return_results[] = array(
+					'type'    => $type,
+					'title'   => $type,
+					'results' => $rows
+				);
+			}
+		}
+
+		foreach ($return_results as &$group) {
+			$group['results'] = $this->renderSearchResults($group['type'], $group['results']);
+		}
+
+		return $this->createJsonResponse(array(
+			'grouped_results' => $return_results
+		));
     }
 
     private function searchInDB($q)
@@ -381,12 +400,126 @@ class MainController extends AbstractController
 
         list($results, $result_meta, $people_top) = $doctrine->quickSearch($q);
 
-        return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
-            'q'           => $q,
-            'router'      => App::getRouter(),
-            'results'     => $results,
-            'result_meta' => $result_meta,
-            'people_top'  => $people_top,
-        ));
+		$return_results = array();
+
+		if ($results) {
+			foreach ($results as $type => $raw_rows) {
+				$rows = array();
+				foreach ($raw_rows as $r) {
+					if (is_object($r)) {
+						$rows[] = $r;
+					}
+				}
+
+				$return_results[] = array(
+					'type'    => $type,
+					'title'   => $type,
+					'results' => $rows
+				);
+			}
+		}
+
+		foreach ($return_results as &$group) {
+			$group['results'] = $this->renderSearchResults($group['type'], $group['results']);
+		}
+
+		return $this->createJsonResponse(array(
+			'grouped_results' => $return_results
+		));
     }
+
+
+	/**
+	 * @param string $type
+	 * @param array $results
+	 * @return array
+	 */
+	private function renderSearchResults($type, array $results)
+	{
+		$rows = array();
+
+		$render_person = function(Person $person) {
+			$data = array();
+			$data['picture_url']    = $person->getPictureUrl();
+			$data['picture_url_80'] = $person->getPictureUrl(80);
+			$data['picture_url_64'] = $person->getPictureUrl(64);
+			$data['picture_url_50'] = $person->getPictureUrl(50);
+			$data['picture_url_45'] = $person->getPictureUrl(45);
+			$data['picture_url_32'] = $person->getPictureUrl(32);
+			$data['picture_url_22'] = $person->getPictureUrl(22);
+			$data['picture_url_16'] = $person->getPictureUrl(16);
+			foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name') as $k) {
+				$data[$k] = $person[$k];
+			}
+
+			if ($person->primary_email) {
+				$data['primary_email'] = array(
+					'id'    => (int)$person->primary_email->id,
+					'email' => $person->primary_email->email
+				);
+			} else {
+				$data['primary_email'] = null;
+			}
+			return $data;
+		};
+
+		switch ($type) {
+			case 'ticket':
+				$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($results);
+				$ticket_display->setPersonContext($this->person);
+
+				foreach ($results as $r) {
+					$ticket_info = array(
+						'id'      => $r->id,
+						'subject' => $r->subject,
+						'status'  => $r->status,
+						'urgency' => $r->urgency,
+						'person'  => null,
+						'agent'   => null
+					);
+
+					$agent= $ticket_display->getAgent($r);
+					if ($agent) {
+						$ticket_info['agent'] = $render_person($agent);
+					}
+
+					$person = $ticket_display->getPerson($r);
+					if ($person) {
+						$ticket_info['person'] = $render_person($person);
+					}
+
+					$rows[] = $ticket_info;
+				}
+				break;
+
+			case 'person':
+				foreach ($results as $r) {
+					$rows[] = $render_person($r);
+				}
+				break;
+
+			case 'organization':
+				foreach ($results as $r) {
+					$rows[] = array(
+						'id'   => $r->id,
+						'name' => $r->name
+					);
+				}
+				break;
+
+			case 'article':
+			case 'news':
+			case 'feedback':
+			case 'download':
+				foreach ($results as $r) {
+					$rows[] = array(
+						'id'    => $r->id,
+						'title' => $r->title
+					);
+				}
+			break;
+		}
+
+		return $rows;
+	}
 }

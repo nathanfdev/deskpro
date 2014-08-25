@@ -93,6 +93,8 @@ class PeopleResultsDisplay
 	 */
 	protected $people_usernames;
 
+	protected $all_fields_data;
+
 	/**
 	 * @param \Application\DeskPRO\Entity\People[] $people
 	 */
@@ -196,6 +198,40 @@ class PeopleResultsDisplay
 		}
 
 		return $this->primary_emails[$person->primary_email->getId()];
+	}
+
+	public function getAllFieldsData()
+	{
+		if ($this->all_fields_data !== null) return $this->all_fields_data;
+		$data = $this->em->createQuery("
+			SELECT d, def, root_def
+			FROM DeskPRO:CustomDataPerson AS d
+			LEFT JOIN d.field def
+			LEFT JOIN d.root_field root_def
+			WHERE d.person IN (?0)
+		")->execute(array(array_values($this->people_ids)));
+
+		$this->all_fields_data = array();
+		foreach ($data as $d) {
+			$tid = $d->person->getId();
+			if (!isset($this->all_fields_data[$tid])) {
+				$this->all_fields_data[$tid] = array();
+			}
+
+			$this->all_fields_data[$tid][] = $d;
+		}
+
+		return $this->all_fields_data;
+	}
+
+	/**
+	 * @param Person $person
+	 * @return array
+	 */
+	public function getUserFieldData(Person $person)
+	{
+		$this->getAllFieldsData();
+		return isset($this->all_fields_data[$person->getId()]) ? $this->all_fields_data[$person->getId()] : array();
 	}
 
 	/**

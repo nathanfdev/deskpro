@@ -160,6 +160,9 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	public function stopQuery()
 	{
 		$queryinfo = $this->_last_query;
+
+		if (!$queryinfo) return;
+
 		$queryinfo['time_end']       = microtime(true);
 		$queryinfo['time_taken']     = $queryinfo['time_end'] - $queryinfo['time_start'];
 
@@ -167,9 +170,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$this->_last_query = null;
 
 		if (!$this->_enabled) return;
-		if (!$this->_last_query) return;
 		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
-
 		if ($this->_query_count > self::SAFE_MAX) return;
 
 		$queryinfo['params_string']  = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);

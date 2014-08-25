@@ -178,16 +178,10 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			this.clear();
 		}
 
-		if (
-			this.options.tabRoute
-			&& (
-				!DeskPRO_Window.paneVis.list
-				|| (DeskPRO_Window.paneVis.list && !DeskPRO_Window.paneVis.tabs)
-			)
-		) {
+		if (this.options.tabRoute) {
 			DeskPRO_Window.runPageRoute(this.options.tabRoute);
 			if (!DeskPRO_Window.paneVis.tabs) {
-				DeskPRO_Window.setPaneVisNum(2);
+				DeskPRO_Window.$scope.showTabs();
 			}
 			return;
 		}

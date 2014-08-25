@@ -16,32 +16,24 @@
        */
 
       DeskPRO_Util_Functions.prototype.debounce = function(fn, wait, immediate) {
+        var res, timeout;
+        timeout = null;
+        res = null;
         return function() {
-          var args, later, res, self, time, timeout;
+          var args, callNow, later, self;
           self = this;
           args = arguments;
-          time = (new Date()).getTime();
           later = function() {
-            var last, res, timeout;
-            last = (new Date()).getTime() - time;
-            if (last < wait) {
-              return timeout = setTimeout(later, wait - last);
-            } else {
-              timeout = null;
-              if (!immediate) {
-                res = fn.apply(self, args);
-                self = null;
-                return args = null;
-              }
+            timeout = null;
+            if (!immediate) {
+              return res = fn.apply(self, args);
             }
           };
-          if (!timeout) {
-            timeout = setTimeout(later, wait);
-          }
-          if (immediate && !timeout) {
+          callNow = immediate && !timeout;
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+          if (callNow) {
             res = fn.apply(self, args);
-            self = null;
-            args = null;
           }
           return res;
         };

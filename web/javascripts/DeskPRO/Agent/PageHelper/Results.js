@@ -258,7 +258,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 		if (this.options.refreshMode) {
 			var url = this.page.meta.refreshUrl;
 			url = Orb.appendQueryData(url, 'page', pageNum);
-			DeskPRO_Window.loadListPane(url, {noChangePaneVis: true, isBackgroundLoad: true});
+			DeskPRO_Window.loadListPane(url, {isBackgroundLoad: true});
 			return;
 		}
 

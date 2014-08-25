@@ -315,26 +315,35 @@ JS;
 
 	public function proxyAction()
 	{
-		$url = $this->in->getString('url');
+		$url = $this->request->headers->get('X-DeskPRO-Proxy-Url');
+		if ($url) {
+			$used_req_url = false;
+		} else {
+			$url = $this->in->getString('url');
+			$used_req_url = true;
+		}
+
 		$urlinfo = @parse_url($url);
 		if (!$url OR !$urlinfo OR empty($urlinfo['scheme']) OR !preg_match('#^https?#', $urlinfo['scheme'])) {
 			return $this->createResponse('Bad url', 400);
 		}
 
 		$originalMethod = $this->request->getMethod();
-		$method = $originalMethod;
-		if ($originalMethod == 'GET' || $originalMethod == 'POST') {
-			$newMethod = $this->in->getString('method');
-			if ($newMethod) {
-				$method = $newMethod;
-			}
+		$method = $this->request->headers->get('X-DeskPRO-Proxy-Method');
+		if (!$method) {
+			$method = $originalMethod;
+		}
 
+		if ($originalMethod == 'GET' || $originalMethod == 'POST') {
 			if ($originalMethod == 'GET') {
 				$passData = $_GET;
 			} else {
 				$passData = $_POST;
 			}
-			unset($passData['url'], $passData['method']);
+
+			if ($used_req_url) {
+				unset($passData['url']);
+			}
 		} else {
 			$passData = file_get_contents('php://input');
 		}
@@ -400,8 +409,25 @@ JS;
 			}
 		}
 
+		$headers = array();
 		if (!empty($_SERVER['CONTENT_TYPE'])) {
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: ' . $_SERVER['CONTENT_TYPE']));
+			$headers[] = 'Content-Type: ' . $_SERVER['CONTENT_TYPE'];
+		}
+
+		// Proxy custom headers
+		foreach ($this->request->headers->all() as $name => $value) {
+			$realname = Strings::extractRegexMatch('#^X\-DeskPRO\-Proxy\-Header\-(.*?)$#i', $name);
+			if ($realname) {
+				foreach ($value as $v) {
+					$headers[] = "$realname: " . $v;
+				}
+			}
+		}
+
+		dp_log($headers);
+
+		if ($headers) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		}
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_HEADER, false);
@@ -953,13 +979,15 @@ JS;
 		$rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
 		$rjs->addPath('DeskPRO/Util', 'app/build/DeskPRO/js/Util');
 		$rjs->addPath('AgentApp', 'javascripts/DeskPRO/App/AgentApp');
-		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/app/bower_components/angular/angular"');
+		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/app/bower_components/angular/angular.min"');
 		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
 		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
+		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap"');
 
 		$rjs->addShim('angular', array('exports' => 'angular'));
 		$rjs->addShim('angularAnimate', array('angular'));
 		$rjs->addShim('angularSanitize', array('angular'));
+		$rjs->addShim('angularBootstrap', array('angular'));
 
 		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
 		$rjs->addPathsFromGenerator($rjs_apps);

@@ -1969,7 +1969,7 @@ class TicketSearch extends SearcherAbstract
 												$w = "($w OR $field IS NULL)";
 											}
 
-											$where[] = $w;
+											$wheres[] = $w;
 										}
 										break;
 									case self::OP_CONTAINS:
@@ -1982,7 +1982,7 @@ class TicketSearch extends SearcherAbstract
 											$w = "($w OR $field IS NULL)";
 										}
 
-										$where[] = $w;
+										$wheres[] = $w;
 
 										break;
 								}

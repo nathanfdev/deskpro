@@ -381,6 +381,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
 		$filename_safe = preg_replace('#\-{2,}#', '-', $filename_safe);
 
+		if (!$filename_safe) {
+			return 'file';
+		}
+
 		return $filename_safe;
 	}
 
