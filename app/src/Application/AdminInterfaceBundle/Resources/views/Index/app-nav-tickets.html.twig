@@ -3,6 +3,8 @@
 	<nav class="dp-appnav">
 		<ul>
 
+			{% if experimental_admin_features %}
+			{# normal users wont see this #}
 			<li>
 				<a href="#"><i class="fa fa-tasks"></i> <span>Channels</span> <i class="fa fa-caret-down"></i></a>
 				<ul dp-nav-subnav>
@@ -14,10 +16,19 @@
 					</li>
 				</ul>
 			</li>
+			{% endif %}
 
 
 			<li dp-state-mark="tickets.ticket_deps"><a href="#/tickets/ticket_deps"><i class="fa fa-briefcase"></i>
 					<span>Departments</span><i class="fa fa-caret-right"></i></a></li>
+
+			{%  if not experimental_admin_features %}
+			{# normal users see this, for now, unless twig global in config.php is set to true #}
+			<li dp-state-mark="tickets.ticket_accounts"><a href="#/tickets/ticket_accounts"><i
+						class="fa fa-envelope"></i> <span>Email Accounts</span><i class="fa fa-caret-right"></i></a>
+			</li>
+			{% endif %}
+
 			<li dp-state-mark="tickets.statuses"><a href="#/tickets/statuses"><i class="fa fa-ticket"></i> <span>Statuses</span><i class="fa fa-caret-right"></i></a></li>
 			<li dp-state-mark="tickets.urgency"><a href="#/tickets/urgency"><i class="fa fa-exclamation"></i> <span>Urgency</span><i class="fa fa-caret-right"></i></a></li>
 			<li dp-state-mark="tickets.fields"><a href="#/tickets/fields"><i class="fa fa-terminal"></i> <span>Fields</span><i class="fa fa-caret-right"></i></a></li>
