@@ -860,6 +860,20 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'tickets.channel_sms.outgoing_log',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/create.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.incoming_log',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/create.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
 		id: 'tickets.channel_sms.create',
 		url: '/create',
 		templateName: 'ChannelSms/edit.html',
