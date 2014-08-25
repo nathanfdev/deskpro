@@ -8,7 +8,7 @@ define [
 			@form.account.type = @account.type || "twilio"
 			@form.account.identifier = @account.identifier || ""
 			@form.account.phone_number = @account.phone_number || ""
-			@form.account.params = @account.params || { sid: 'AC82e05c22887c7a336941107979bc9709', auth_token: '9755c4ee6ab8e43c7fca39a38f664a6e'}
+			@form.account.params = @account.params || {}
 			@form.account.is_enabled = if Util.isEmpty(@account.is_enabled) then false else @account.is_enabled
 			@form.account.is_connected = if Util.isEmpty(@account.is_connected) then false else @account.is_connected
 			@form.account.is_tested = if Util.isEmpty(@account.is_tested) then false else @account.is_tested

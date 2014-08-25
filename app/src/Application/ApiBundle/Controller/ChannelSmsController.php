@@ -154,6 +154,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 			$account = $this->getSmsAccountRepo()->find($id);
 		}
 
+		// TODO: switch to the SmsProviderFactory for provider creation
 		switch ($this->in->getValue('account.type')) {
 			case 'twilio':
 				$sid = $this->in->getValue('account.params.sid');

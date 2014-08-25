@@ -4,7 +4,7 @@
 	'admin.channels.sms_no_accounts_yet'               => 'You have not created any SMS accounts yet.',
 	'admin.channels.sms_new_account'                   => 'New SMS Account',
 	'admin.channels.sms_sync_success'                  => 'Synced account successfully',
-	'admin.channels.sms_sync_fail'                     => 'Failed to connect',
+	'admin.channels.sms_sync_fail'                     => 'Failed to connect. Please check your credentials.',
 	'admin.channels.sms_service_provider'              => 'Service Provider',
 	'admin.channels.sms_enable_account'                => 'Enable this SMS account',
 	'admin.channels.sms_enable_account_help'           => 'Enabling this account opens it up as a channel.',
