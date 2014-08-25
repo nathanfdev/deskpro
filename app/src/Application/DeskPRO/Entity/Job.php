@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A job
@@ -229,50 +229,30 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\WorkerJob';
-		$metadata->setPrimaryTable(array('name' => 'jobs',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
-		self::_mapId($metadata);
-		self::_mapString($metadata, 'type', 50);
-		self::_mapString($metadata, 'status', 25);
-		self::_mapString($metadata, 'status_code', 25);
-		self::_mapString($metadata, 'worker_id', 128);
-		self::_mapDateTime($metadata, 'date_touch');
-		self::_mapDateTime($metadata, 'date_created');
-		self::_mapDateTime($metadata, 'date_last_try');
-		self::_mapDateTime($metadata, 'date_next_try');
-		self::_mapInt($metadata, 'priority');
-		self::_mapInt($metadata, 'num_tries');
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'data',
-				'columnName' => 'data',
-				'type'       => 'json_array',
-				'nullable'   => true,
-			)
-		);
-		self::_mapString($metadata, 'log_summary');
-		self::_mapText($metadata, 'log');
-		self::_mapBool($metadata, 'has_warning');
+		$builder = new ClassMetadataBuilder($metadata);
+		$builder
+			->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\WorkerJob')
+			->setChangeTrackingPolicyNotify()
+			->setTable('jobs')
+		;
+		$builder->mapId();
 
-		$metadata->mapOneToMany(
-			array(
-				'fieldName'     => 'child_jobs',
-				'targetEntity'  => 'Application\\DeskPRO\\Entity\\Job',
-				'orphanRemoval' => false,
-				'mappedBy'      => 'original_job'
-				)
-			);
-
-		$metadata->mapManyToOne(
-			array(
-				'fieldName'     => 'original_job',
-				'targetEntity'  => 'Application\\DeskPRO\\Entity\\Job',
-				'orphanRemoval' => false,
-				'inversedBy'    => 'child_jobs'
-				)
-			);
+		$builder->mapString('type', 50);
+		$builder->mapString('status', 25);
+		$builder->mapString('status_code', 25);
+		$builder->mapString('worker_id', 128);
+		$builder->mapDateTime('date_touch');
+		$builder->mapDateTime('date_created');
+		$builder->mapDateTime('date_next_try');
+		$builder->mapDateTime('date_last_try');
+		$builder->mapInteger('priority', false);
+		$builder->mapInteger('num_tries', false);
+		$builder->addField('data', 'json_array', array('nullable' => true));
+		$builder->mapString('log_summary');
+		$builder->mapText('log');
+		$builder->mapBoolean('has_warning');
+		$builder->addManyToOne('original_job', 'Application\DeskPRO\Entity\Job', 'child_jobs');
+		$builder->addOneToMany('child_jobs', 'Application\DeskPRO\Entity\Job', 'original_job');
 	}
 }
