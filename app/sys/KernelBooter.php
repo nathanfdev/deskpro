@@ -644,8 +644,12 @@ class KernelBooter
 		$content = $res['content'];
 
 		if (!empty($res['app_secret'])) {
-			require_once DP_ROOT.'/src/Orb/Util/Strings.php';
-			require_once DP_ROOT.'/src/Orb/Util/Util.php';
+			if (!class_exists('Orb\Util\Util', false)) {
+				require_once DP_ROOT.'/src/Orb/Util/Util.php';
+			}
+			if (!class_exists('Orb\Util\Strings', false)) {
+				require_once DP_ROOT.'/src/Orb/Util/Strings.php';
+			}
 			$app_secret = $res['app_secret'];
 			$content = preg_replace_callback('#<!\-\-DP_FORM_TOKEN\((.*?), (.*?)\)\-\->.*?<!\-\-DP_FORM_TOKEN_END\-\->#s', function($m) use ($app_secret) {
 				$name = $m[1];
