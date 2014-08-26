@@ -88,18 +88,18 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 		changeAllPerms: (type, section) ->
 			return if !@group?
 
-			if 'perms' == type
+			if 'perms' == type and @group.perms[section]
 				for perm of @group.perms[section]
 					@group.perms[section][perm] = @all_perms[type][section]
 
 				if 'people' == section
 					@changeAllPerms('perms', 'org')
 
-			else if 'deps_perms_tickets' == type
+			else if 'deps_perms_tickets' == type and @group.deps_perms.tickets
 				for dep of @group.deps_perms.tickets
 					@group.deps_perms.tickets[dep][section] = @all_perms.deps_perms.tickets[section]
 
-			else if 'deps_perms_chat' == type
+			else if 'deps_perms_chat' == type and @group.deps_perms.chat
 				for dep of @group.deps_perms.chat
 					@group.deps_perms.chat[dep][section] = @all_perms.deps_perms.chat[section]
 

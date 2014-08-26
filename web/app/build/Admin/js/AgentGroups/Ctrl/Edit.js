@@ -138,20 +138,20 @@
         if (this.group == null) {
           return;
         }
-        if ('perms' === type) {
+        if ('perms' === type && this.group.perms[section]) {
           for (perm in this.group.perms[section]) {
             this.group.perms[section][perm] = this.all_perms[type][section];
           }
           if ('people' === section) {
             return this.changeAllPerms('perms', 'org');
           }
-        } else if ('deps_perms_tickets' === type) {
+        } else if ('deps_perms_tickets' === type && this.group.deps_perms.tickets) {
           _results = [];
           for (dep in this.group.deps_perms.tickets) {
             _results.push(this.group.deps_perms.tickets[dep][section] = this.all_perms.deps_perms.tickets[section]);
           }
           return _results;
-        } else if ('deps_perms_chat' === type) {
+        } else if ('deps_perms_chat' === type && this.group.deps_perms.chat) {
           _results1 = [];
           for (dep in this.group.deps_perms.chat) {
             _results1.push(this.group.deps_perms.chat[dep][section] = this.all_perms.deps_perms.chat[section]);
