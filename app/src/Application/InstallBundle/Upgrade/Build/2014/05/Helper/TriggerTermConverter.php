@@ -171,12 +171,22 @@ class TriggerTermConverter
 
 	private function upgradeTerm_email_cc_email($type, $op, OptionsArray $options)
 	{
-		return new Terms\CheckEmailCcAddress($op, array('email' => $options->get('email', 'NO EMAIL')));
+		return new Terms\CheckEmailCcAddress($op, array('email' => $options->get('email_address', 'NO EMAIL')));
+	}
+
+	private function upgradeTerm_email_cc_name($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckEmailCcName($op, array('name' => $options->get('email', 'NO NAME')));
 	}
 
 	private function upgradeTerm_email_from_email($type, $op, OptionsArray $options)
 	{
-		return new Terms\CheckEmailFromAddress($op, array('email' => $options->get('email', 'NO EMAIL')));
+		return new Terms\CheckEmailFromAddress($op, array('email' => $options->get('email_address', 'NO EMAIL')));
+	}
+
+	private function upgradeTerm_email_from_name($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckEmailFromName($op, array('name' => $options->get('name', 'NO NAME')));
 	}
 
 	private function upgradeTerm_email_subject($type, $op, OptionsArray $options)
@@ -186,7 +196,12 @@ class TriggerTermConverter
 
 	private function upgradeTerm_email_to_email($type, $op, OptionsArray $options)
 	{
-		return new Terms\CheckEmailToAddress($op, array('email' => $options->get('email', 'NO EMAIL')));
+		return new Terms\CheckEmailToAddress($op, array('email' => $options->get('email_address', 'NO EMAIL')));
+	}
+
+	private function upgradeTerm_email_to_name($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckEmailToName($op, array('name' => $options->get('name', 'NO NAME')));
 	}
 
 	private function upgradeTerm_email_header($type, $op, OptionsArray $options)
