@@ -51,7 +51,10 @@ class DevJobExecuteCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$worker = new JobWorker($this->getContainer()->get('doctrine.dbal.default_connection'));
+		$connection = $this->getContainer()->get('doctrine.dbal.default_connection');
+		$router = $this->getContainer()->getSystemService('job_router');
+		$worker = new JobWorker($connection, $router);
+
 		$res = $worker->executeJobById($input->getArgument('job'));
 
 		if ($res) {
