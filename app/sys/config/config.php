@@ -407,26 +407,6 @@ $container->loadFromExtension('fos_elastica', array(
             ),
 
             'types'    => array(
-                'ticket'   => array(
-                    'mappings'    => array(
-                        'subject'       => array(),
-                        'ref'           => array(),
-                        'department_id' => array(),
-                        'agent_id'      => array(),
-                        'agent_team_id' => array(),
-                        'labels'        => array(),
-                        'participants'  => array(),
-                        'messages'      => array()
-                    ),
-                    'persistence' => array(
-                        'driver'   => 'orm',
-                        'model'    => 'Application\DeskPRO\Entity\Ticket',
-                        'provider' => array(),
-                        'finder'   => array(),
-                        'model_to_elastica_transformer' => array('service' => 'deskpro.search.ticket_to_elastica_transformer'),
-                        'repository' => 'Application\DeskPRO\NewSearch\Repository\TicketRepository'
-                    )
-                ),
                 'article'  => array(
                     'mappings'    => array(
                         'title' => array(),
@@ -440,6 +420,19 @@ $container->loadFromExtension('fos_elastica', array(
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository'
                     )
                 ),
+				'news'     => array(
+					'mappings'    => array(
+						'title' => array(),
+						'labels'   => array()
+					),
+					'persistence' => array(
+						'driver'   => 'orm',
+						'model'    => 'Application\DeskPRO\Entity\News',
+						'provider' => array(),
+						'finder'   => array(),
+						'repository' => 'Application\DeskPRO\NewSearch\Repository\NewsRepository'
+					)
+				),
                 'download' => array(
                     'mappings'    => array(
                         'title' => array(),
@@ -466,19 +459,21 @@ $container->loadFromExtension('fos_elastica', array(
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository'
                     )
                 ),
-                'news'     => array(
-                    'mappings'    => array(
-                        'title' => array(),
-                        'labels'   => array()
-                    ),
-                    'persistence' => array(
-                        'driver'   => 'orm',
-                        'model'    => 'Application\DeskPRO\Entity\News',
-                        'provider' => array(),
-                        'finder'   => array(),
-                        'repository' => 'Application\DeskPRO\NewSearch\Repository\NewsRepository'
-                    )
-                ),
+				'organization'   => array(
+					'mappings'    => array(
+						'name'    => array('type' => 'string'),
+						'email_domains' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
+						'labels'  => array('type' => 'string'),
+					),
+					'persistence' => array(
+						'driver'   => 'orm',
+						'model'    => 'Application\DeskPRO\Entity\Organization',
+						'provider' => array(),
+						'finder'   => array(),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
+						'repository' => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository'
+					)
+				),
                 'person'   => array(
                     'mappings'    => array(
                         'name'       => array(),
@@ -497,21 +492,26 @@ $container->loadFromExtension('fos_elastica', array(
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\PersonRepository'
                     )
                 ),
-                'organization'   => array(
-                    'mappings'    => array(
-                        'name'    => array('type' => 'string'),
-						'email_domains' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
-                        'labels'  => array('type' => 'string'),
-                    ),
-                    'persistence' => array(
-                        'driver'   => 'orm',
-                        'model'    => 'Application\DeskPRO\Entity\Organization',
-                        'provider' => array(),
-                        'finder'   => array(),
-						'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
-                        'repository' => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository'
-                    )
-                )
+				'ticket'   => array(
+					'mappings'    => array(
+						'subject'       => array(),
+						'ref'           => array(),
+						'department_id' => array(),
+						'agent_id'      => array(),
+						'agent_team_id' => array(),
+						'labels'        => array(),
+						'participants'  => array(),
+						'messages'      => array()
+					),
+					'persistence' => array(
+						'driver'   => 'orm',
+						'model'    => 'Application\DeskPRO\Entity\Ticket',
+						'provider' => array(),
+						'finder'   => array(),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.ticket_to_elastica_transformer'),
+						'repository' => 'Application\DeskPRO\NewSearch\Repository\TicketRepository'
+					)
+				),
             )
         )
     )
