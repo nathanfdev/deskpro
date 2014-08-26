@@ -39,6 +39,7 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\SmsAccount;
+use Application\DeskPRO\Sms\SmsProviderFactory;
 use Orb\Sms\Provider\TwilioSmsProvider;
 
 class ChannelSmsController extends AbstractController implements ProtectedControllerInterface
@@ -154,41 +155,43 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 			$account = $this->getSmsAccountRepo()->find($id);
 		}
 
-		// TODO: switch to the SmsProviderFactory for provider creation
-		switch ($this->in->getValue('account.type')) {
-			case 'twilio':
-				$sid = $this->in->getValue('account.params.sid');
-				$auth_token = $this->in->getValue('account.params.auth_token');
-				$provider = new TwilioSmsProvider($sid, $auth_token);
-
-				try {
-					$data = $provider->getIncomingNumbers();
-					$name = $provider->getAccountName();
-					if (!isset($accountData['params'])) {
-						$accountData['params'] = array();
-					}
-					$accountData['params']['numbers'] = $data;
-					$accountData['identifier'] = $name;
-					$accountData['is_connected'] = true;
-
-					// update the SmsAccount with new "synced" data
-					if ($account) {
-						$account->params = $accountData['params'];
-						$account->identifier = $accountData['identifier'];
-						$account->is_connected = $accountData['is_connected'];
-						$this->getContainer()->getEm()->persist($account);
-						$this->getContainer()->getEm()->flush();
-					}
-
-					return $this->createApiSuccessResponse(array('account' => $accountData));
-				} catch (\Exception $e) {
-					return $this->createApiErrorResponse('sms.connection_error', 'Could not connect. Please check your credentials');
-				}
+		try {
+			$provider = SmsProviderFactory::create(
+				$this->in->getValue('account.type'), $this->in->getValue('account.params')
+			);
+		} catch (\InvalidArgumentException $e) {
+			return $this->createApiErrorResponse('sms.connection_error', 'Invalid SMS account type');
 		}
 
-		$res = $this->createApiErrorResponse('sms.connection_error', 'Invalid SMS account type');
 
-		return $res;
+		try {
+			$data = $provider->getIncomingNumbers();
+			$name = $provider->getAccountName();
+			if (!isset($accountData['params'])) {
+				$accountData['params'] = array();
+			}
+			$accountData['params']['numbers'] = $data;
+			$accountData['identifier']        = $name;
+			$accountData['is_connected']      = true;
+
+			// update the SmsAccount with new "synced" data
+			if ($account) {
+				$account->params       = $accountData['params'];
+				$account->identifier   = $accountData['identifier'];
+				$account->is_connected = $accountData['is_connected'];
+				$this->getContainer()->getEm()->persist($account);
+				$this->getContainer()->getEm()->flush();
+			}
+
+			return $this->createApiSuccessResponse(array('account' => $accountData));
+		} catch (\Exception $e) {
+			return $this->createApiErrorResponse(
+				'sms.connection_error', 'Could not connect. Please check your credentials'
+			);
+		}
+
+
+
 	}
 
 

@@ -177,7 +177,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $parent_ticket = null;
-	
+
 	/**
 	 * The language the ticket is in
 	 *
