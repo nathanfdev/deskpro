@@ -18,6 +18,10 @@
 			<i class="spinner-circle-32"></i>
 		</div>
 		<div ng-show="!isMainLoading">
+			<div ng-if="index_running" class="result-is-indexing">
+				<i class="fa fa-exclamation-circle"></i>
+				Search results may be incomplete because items are still being indexed.
+			</div>
 			<section ng-repeat="group in resultGroups" class="result-group">
 				<header>{{ ng_var('group.title') }}</header>
 				<article>
