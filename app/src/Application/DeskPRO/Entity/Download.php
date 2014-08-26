@@ -107,12 +107,12 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 	public function __construct()
 	{
 		parent::__construct();
-		$this->date_updated = new \DateTime();
+		$this->setModelField('date_updated', new \DateTime());
 	}
 
 	public function _preUpdate()
 	{
-		$this->date_updated = new \DateTime();
+		$this->setModelField('date_updated', new \DateTime());
 	}
 
 	/**
