@@ -10,30 +10,21 @@ define ->
     	# @param {bool} immediate
 		###
 		debounce: (fn, wait, immediate) ->
+			timeout = null
+			res = null
+
 			return ->
-				self = @
+				self = this
 				args = arguments
-				time = (new Date()).getTime()
 
 				later = ->
-					last = (new Date()).getTime() - time
-					if last < wait
-						timeout = setTimeout(later, wait - last)
-					else
-						timeout = null
-						if not immediate
-							res = fn.apply(self, args)
-							self = null
-							args = null
+					timeout = null
+					if not immediate then res = fn.apply(self, args)
 
-				if not timeout
-					timeout = setTimeout(later, wait)
-
-				if immediate and not timeout
-					res = fn.apply(self, args)
-					self = null
-					args = null
-
+				callNow = immediate && !timeout
+				clearTimeout(timeout)
+				timeout = setTimeout(later, wait)
+				if callNow then res = fn.apply(self, args)
 				return res
 
 	return new DeskPRO_Util_Functions()

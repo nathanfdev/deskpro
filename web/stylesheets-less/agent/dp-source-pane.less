@@ -14,6 +14,48 @@
 	line-height: 16px;
 }
 
+.panevis-source-off #dp_source {
+	z-index: 9999999;
+}
+
+#dp_source_btn {
+	position: absolute;
+	top: 12px;
+	right: 5px;
+	z-index: 999;
+
+	color: #959a9e;
+	cursor: pointer;
+
+	&:hover {
+		color: #000;
+	}
+}
+
+#dp_source_place {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	background-color: #dfe5eb;
+	width: 22px;
+	border-right: 1px;
+	border-right-style: solid;
+	border-right-color: #b6babf;
+	overflow: hidden;
+	line-height: 16px;
+	text-align: center;
+	padding-top: 15px;
+
+	color: #959a9e;
+	cursor: pointer;
+
+	&:hover {
+		background: #fff;
+		color: #444;
+	}
+}
+
 #dp_source_footer {
 	position: absolute;
 	bottom: 0;

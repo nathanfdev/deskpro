@@ -668,9 +668,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var st   = head.find('nav').data('simpletabs');
 		if (st) {
 			st.addEvent('tabSwitch', function(evData) {
-				var id = $(evData.tabEl).attr('id') || '';
+				var id = $(evData.tabContent).attr('id') || '';
 
-				if (id && id.indexOf('fields_display_main_wrap_tab') !== -1) {
+				if (id && id.indexOf('fields_display_main_wrap') !== -1) {
 					head.removeClass('controls-off');
 				} else {
 					head.addClass('controls-off');
@@ -2410,7 +2410,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					success: function(info) {
 						self.messageEditOverlay.close();
 						var messageHtml = info.message_html;
-						self.wrapper.find('article.message-' + self.currentOpenMessageId).find('.body-text-message').html(messageHtml);
+
+						var messageEl = self.wrapper.find('article.message-' + self.currentOpenMessageId);
+						messageEl.find('.body-text-message').html(messageHtml);
+
+						// reprocess events on message (eg image preview)
+						self._initMessage(messageEl);
 					}
 				});
 			});
@@ -3043,6 +3048,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'POST',
 				data: postData
 			});
+
+			self.meta.title = setName;
+
+			if (DeskPRO_Window.TabBar) {
+				DeskPRO_Window.TabBar.rescanTitles();
+			}
 		};
 
 		namef.on('dblclick', startEditable).on('keypress', function(ev) {

@@ -41,6 +41,17 @@
         return new AppState(Api);
       }
     ]);
+    AdminStartModule.run([
+      'Api', function(Api) {
+        return window.setInterval(function() {
+          return Api.sendGet('/my/session/renew-request-token?session_id=' + window.DP_SESSION_ID).success(function(data) {
+            if (data.request_token) {
+              return window.DP_REQUEST_TOKEN = data.request_token;
+            }
+          });
+        }, 30000);
+      }
+    ]);
     AdminStartModule.directive('script', DeskPRO_Directive_DpJsonData);
     AdminStartModule.directive('script', DeskPRO_Directive_DpNgTemplate);
     AdminStartModule.config([

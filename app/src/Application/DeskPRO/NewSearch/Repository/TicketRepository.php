@@ -11,7 +11,7 @@ use Application\DeskPRO\NewSearch\Filter\ParticipationFilter;
 /**
  * Ticket Repository
  */
-class TicketRepository extends AbstractRepository
+class TicketRepository extends AbstractRepository implements WithLabelsInterface
 {
     /**
      * The currently logged in person.

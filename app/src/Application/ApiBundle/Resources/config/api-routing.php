@@ -2495,6 +2495,12 @@ $collection->create('api_elastic_settings', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_elastic_index_status', array(
+		'path'        => '/elastic-search/index-status',
+		'controller'  => 'ApiBundle:ElasticSearch:indexStatus',
+		'methods'     => array('GET'),
+	));
+
 $collection->create('api_elastic_settings_save', array(
 	'path'        => '/elastic-search/settings',
 	'controller'  => 'ApiBundle:ElasticSearch:saveSettings',

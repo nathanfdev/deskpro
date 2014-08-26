@@ -8399,6 +8399,23 @@ div.info-message.well {
   border-bottom: 1px solid transparent;
 }
 
+.dp-appstrip ul li.dotdotdot {
+  line-height: 100%;
+}
+
+.dp-appstrip ul li.dotdotdot span {
+  display: block;
+  padding: 2px 0;
+  margin: 0 6px 0 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #eee;
+  text-align: center;
+  cursor: pointer;
+  background: #3c4146;
+  border-radius: 2px;
+}
+
 .dp-appstrip ul li a {
   display: block;
   width: 55px;
@@ -8833,6 +8850,34 @@ div.info-message.well {
   .dp-appstrip .state-on .app-icon-reports-satisfaction,
   .dp-appstrip .section-on .app-icon-reports-satisfaction {
     background-image: url('../../../../images/app-icons/2x_active/Ticket-Feedback.png');
+  }
+}
+
+.dp-appstrip ul.btm.mini {
+  display: none;
+}
+
+.dp-appstrip ul.btm.mini-rest {
+  width: 43px;
+  margin: 0 6px 0 6px;
+  background: #3c4146;
+  border-radius: 2px;
+}
+
+.dp-appstrip ul.btm.mini-rest li a {
+  width: 43px;
+}
+
+.dp-appstrip ul.btm.mini-rest li i.app-icon {
+  width: 43px;
+}
+
+@media all and (max-height: 790px) {
+  .dp-appstrip ul.btm.mini {
+    display: block;
+  }
+  .dp-appstrip ul.btm.normal {
+    display: none;
   }
 }
 

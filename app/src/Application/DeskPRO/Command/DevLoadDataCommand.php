@@ -35,14 +35,28 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-// Usage: php cmd.php dpdev:load-data --count=# --types=a,b,c --range="3 years"
-// Count defaults to 100, types must be explicitly specified. If no
-// types are specified, a list of available ones is given. If you want
-// to insert into everything, use --types=*
+/*
+Usage: php cmd.php dpdev:load-data --count=# --types=a,b,c --range="3 years"
+Count defaults to 100, types must be explicitly specified. If no
+types are specified, a list of available ones is given. If you want
+to insert into everything, use --types=*
+
+To use the --wordlist="database" option, enter this in to config.php:
+
+$DP_CONFIG['load_data_database'] = array(
+	'db_host' => 'localhost',
+	'db_user' => 'root',
+	'db_password' => '',
+	'db_name' => 'wordlist',
+	'db_query' => 'SELECT content FROM pages WHERE id = (FLOOR(RAND() * (500000)) + 1) LIMIT 1'
+);
+
+*/
 
 class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -53,7 +67,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->addOption('types', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types (* for all)', '');
 		$this->addOption('types-not', null, InputOption::VALUE_REQUIRED, 'Comma separated list of data types to skip (implies --types=*)', '');
 		$this->addOption('range', null, InputOption::VALUE_REQUIRED, 'Range of dates to cover data for (eg, "3 years")', '');
-		$this->addOption('wordlist', null, InputOption::VALUE_REQUIRED, 'Optional path to a wordlist file with one word per line', '');
+		$this->addOption('wordlist', null, InputOption::VALUE_REQUIRED, 'Optional path to a wordlist file with one word per line. Specify "database" to fetch from a database connection as specified in config.php', '');
 	}
 
 	protected $_data_cache = array();
@@ -66,6 +80,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$GLOBALS['DP_NOSQL_LOG'] = true;
 		ini_set('memory_limit', -1);
 		set_time_limit(0);
 		App::getDb()->getConfiguration()->setSQLLogger(null);
@@ -96,7 +111,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$this->_wordlist_file = $input->getOption('wordlist');
-		if ($this->_wordlist_file && !is_file($this->_wordlist_file)) {
+		if ($this->_wordlist_file && $this->_wordlist_file != 'database' && !is_file($this->_wordlist_file)) {
 			echo "--wordlist is not a valid file\n";
 			return 1;
 		}
@@ -284,8 +299,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadAgent($i)
 	{
 		$agent = new Entity\Person();
-		$agent->name = $this->_getRandomText(2);
-		$agent->setEmail($this->_getRandomText(1) . microtime(true) . '@example.com', true);
+		$agent->name = $this->_getRandomWords(2);
+		$agent->setEmail($this->_getRandomWords(1) . microtime(true) . '@example.com', true);
 		$agent->date_created = $this->_getRandomDate();
 		$agent->is_user = true;
 		$agent->is_confirmed = true;
@@ -379,8 +394,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadOrgField()
 	{
 		$org_field = new Entity\CustomDefOrganization();
-		$org_field->title = $this->_getRandomText(2);
-		$org_field->description = $this->_getRandomText(mt_rand(1, 10));
+		$org_field->title = $this->_getRandomWords(2);
+		$org_field->description = $this->_getRandomWords(mt_rand(1, 10));
 		$org_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
 		App::getOrm()->persist($org_field);
@@ -396,7 +411,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$org = array(
-			'name' => $this->_getRandomText(mt_rand(1, 3)),
+			'name' => $this->_getRandomWords(mt_rand(1, 3)),
 			'date_created' => $this->_getRandomDate('string')
 		);
 		$org_ent = new Entity\Organization();
@@ -428,7 +443,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
-					'input' => $this->_getRandomText(mt_rand(1, 5))
+					'input' => $this->_getRandomWords(mt_rand(1, 5))
 				));
 			}
 		}
@@ -439,8 +454,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadUsergroup()
 	{
 		$usergroup = new Entity\Usergroup();
-		$usergroup->title = $this->_getRandomText(2);
-		$usergroup->note = $this->_getRandomText(mt_rand(1, 5));
+		$usergroup->title = $this->_getRandomWords(2);
+		$usergroup->note = $this->_getRandomWords(mt_rand(1, 5));
 
 		App::getOrm()->persist($usergroup);
 	}
@@ -448,8 +463,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadPersonField()
 	{
 		$field = new Entity\CustomDefPerson();
-		$field->title = $this->_getRandomText(2);
-		$field->description = $this->_getRandomText(mt_rand(1, 10));
+		$field->title = $this->_getRandomWords(2);
+		$field->description = $this->_getRandomWords(mt_rand(1, 10));
 		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
 		App::getOrm()->persist($field);
@@ -464,7 +479,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['person_fields'] = App::getEntityRepository('DeskPRO:CustomDefPerson')->findAll();
 		}
 
-		list($first_name, $last_name) = explode(' ', $this->_getRandomText(2));
+		list($first_name, $last_name) = explode(' ', $this->_getRandomWords(2));
 
 		$person = array(
 			'name' => "$first_name $last_name",
@@ -486,7 +501,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 		$email = array(
 			'person_id' => $person['id'],
-			'email' => $this->_getRandomText(1) . microtime(true) . '@example.com',
+			'email' => $this->_getRandomWords(1) . microtime(true) . '@example.com',
 			'email_domain' => 'example.com',
 			'is_validated' => 1,
 			'date_created' => $person['date_created'],
@@ -520,7 +535,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
-					'input' => $this->_getRandomText(mt_rand(1, 5))
+					'input' => $this->_getRandomWords(mt_rand(1, 5))
 				));
 			}
 		}
@@ -531,7 +546,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadSla()
 	{
 		$sla = new Entity\Sla();
-		$sla->title = $this->_getRandomText(mt_rand(1, 4));
+		$sla->title = $this->_getRandomWords(mt_rand(1, 4));
 		$types = array(
 			0 => \Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE,
 			1 => \Application\DeskPRO\Entity\Sla::TYPE_RESOLUTION,
@@ -581,8 +596,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTicketField()
 	{
 		$field = new Entity\CustomDefTicket();
-		$field->title = $this->_getRandomText(2);
-		$field->description = $this->_getRandomText(mt_rand(1, 10));
+		$field->title = $this->_getRandomWords(2);
+		$field->description = $this->_getRandomWords(mt_rand(1, 10));
 		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
 		App::getOrm()->persist($field);
@@ -591,7 +606,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTicketDepartment()
 	{
 		$department = new Entity\Department();
-		$department->title = $this->_getRandomText(mt_rand(2, 4));
+		$department->title = $this->_getRandomWords(mt_rand(2, 4));
 		$department->is_tickets_enabled = true;
 		$department->is_chat_enabled = false;
 		$department->display_order = mt_rand(1, 1000000);
@@ -666,7 +681,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$date_created = $this->_getRandomDate();
 
 		$ticket = array(
-			'subject' => $this->_getRandomText(mt_rand(2, 6)),
+			'subject' => $this->_getRandomWords(mt_rand(2, 6)),
 			'date_created' => $date_created->format('Y-m-d H:i:s'),
 			'person_id' => $this->_getRandomPersonId(),
 			'department_id' => $this->_getRandomFromCache('ticket_departments', 'id'),
@@ -701,7 +716,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			'person_id' => $ticket['person_id'],
 			'is_agent_note' => 0,
 			'creation_system' => Entity\TicketMessage::CREATED_WEB_API,
-			'message' => $this->_getRandomText(mt_rand(50, 500)),
+			'message' => $this->_getRandomText(mt_rand(250, 5000)),
 			'date_created' => $ticket['date_created']
 		);
 		if (mt_rand(1, 50) == 1) {
@@ -722,7 +737,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'person_id' => $is_agent ? $ticket['agent_id'] : $ticket['person_id'],
 					'is_agent_note' => ($is_agent && mt_rand(0, 1) ? 1 : 0),
 					'creation_system' => Entity\TicketMessage::CREATED_WEB_API,
-					'message' => $this->_getRandomText(mt_rand(50, 500)),
+					'message' => $this->_getRandomText(mt_rand(250, 5000)),
 					'date_created' => $this->_getRandomDate('string', $ticket['date_created'], $range)
 				);
 				if (mt_rand(1, 50) == 1) {
@@ -742,7 +757,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
-					'input' => $this->_getRandomText(mt_rand(1, 5))
+					'input' => $this->_getRandomWords(mt_rand(1, 5))
 				));
 			}
 		}
@@ -808,7 +823,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		);
 
 		$filter = new Entity\TicketFilter();
-		$filter->title = $this->_getRandomText(2);
+		$filter->title = $this->_getRandomWords(2);
 		$filter->is_global = true;
 
 		$terms = array();
@@ -825,7 +840,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTicketMacro()
 	{
 		$macro = new Entity\TicketMacro();
-		$macro->title = $this->_getRandomText(mt_rand(2, 4));
+		$macro->title = $this->_getRandomWords(mt_rand(2, 4));
 		$macro->is_global = (mt_rand(0, 1) == 1);
 		$macro->is_enabled = true;
 		$macro->actions = array(
@@ -850,7 +865,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			'language_id' => 1,
 			'ref'         => 'text_snippet_categories.'.$category->getId(),
 			'prop_name'   => 'title',
-			'value'       => $this->_getRandomText(mt_rand(1, 4)),
+			'value'       => $this->_getRandomWords(mt_rand(1, 4)),
 		));
 	}
 
@@ -864,8 +879,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$snippet->category = $this->_getRandomFromCache('text_snippet_categories');
 		$snippet->person = $this->_getRandomAgent();
 
-		$title = $this->_getRandomText(mt_rand(2, 5));
-		$text = $this->_getRandomText(mt_rand(10, 200));
+		$title = $this->_getRandomWords(mt_rand(2, 5));
+		$text = $this->_getRandomWords(mt_rand(10, 200));
 
 		App::getOrm()->persist($snippet);
 		App::getOrm()->flush();
@@ -890,7 +905,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$category = new Entity\TextSnippetCategory();
 		$category->typename = 'chat';
 		$category->is_global = true;
-		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->title = $this->_getRandomWords(mt_rand(1, 4));
 		$category->person = $this->_getRandomAgent();
 
 		App::getOrm()->persist($category);
@@ -903,8 +918,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		}
 
 		$snippet = new Entity\TextSnippet();
-		$snippet->title = $this->_getRandomText(mt_rand(2, 5));
-		$snippet->snippet = $this->_getRandomText(mt_rand(10, 200));
+		$snippet->title = $this->_getRandomWords(mt_rand(2, 5));
+		$snippet->snippet = $this->_getRandomWords(mt_rand(10, 200));
 
 		$snippet->category = $this->_getRandomFromCache('chat_snippet_categories');
 		$snippet->person = $this->_getRandomAgent();
@@ -915,7 +930,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadChatDepartment()
 	{
 		$department = new Entity\Department();
-		$department->title = $this->_getRandomText(mt_rand(2, 4));
+		$department->title = $this->_getRandomWords(mt_rand(2, 4));
 		$department->is_tickets_enabled = false;
 		$department->is_chat_enabled = true;
 		$department->display_order = mt_rand(1, 1000000);
@@ -959,7 +974,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadFeedbackType()
 	{
 		$category = new Entity\FeedbackCategory();
-		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->title = $this->_getRandomWords(mt_rand(1, 4));
 		$category->display_order = mt_rand(1, 1000000);
 
 		App::getOrm()->persist($category);
@@ -974,7 +989,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadFeedbackStatus()
 	{
 		$category = new Entity\FeedbackStatusCategory();
-		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->title = $this->_getRandomWords(mt_rand(1, 4));
 		$category->display_order = mt_rand(1, 1000000);
 		$category->status_type = mt_rand(1, 2) == 1 ? 'active' : 'closed';
 
@@ -990,12 +1005,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['feedback_statuses'] = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->findAll();
 		}
 
-		$title = $this->_getRandomText(mt_rand(2, 6));
+		$title = $this->_getRandomWords(mt_rand(2, 6));
 
 		$feedback = array(
 			'title' => $title,
 			'slug' => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
-			'content' => htmlspecialchars($this->_getRandomText(30)),
+			'content' => htmlspecialchars($this->_getRandomText(mt_rand(100, 1000))),
 			'date_created' => $this->_getRandomDate('string'),
 			'status' => 'published',
 			'person_id' => $this->_getRandomAgent(true),
@@ -1025,8 +1040,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadArticleField()
 	{
 		$field = new Entity\CustomDefArticle();
-		$field->title = $this->_getRandomText(2);
-		$field->description = $this->_getRandomText(mt_rand(1, 10));
+		$field->title = $this->_getRandomWords(2);
+		$field->description = $this->_getRandomWords(mt_rand(1, 10));
 		$field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
 		App::getOrm()->persist($field);
@@ -1035,7 +1050,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadArticleCategory()
 	{
 		$category = new Entity\ArticleCategory();
-		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->title = $this->_getRandomWords(mt_rand(1, 4));
 		$category->display_order = mt_rand(1, 1000000);
 
 		App::getOrm()->persist($category);
@@ -1056,12 +1071,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['article_fields'] = App::getEntityRepository('DeskPRO:CustomDefArticle')->findAll();
 		}
 
-		$title = $this->_getRandomText(mt_rand(2, 6));
+		$title = $this->_getRandomWords(mt_rand(2, 6));
 
 		$article = array(
 			'title' => $title,
 			'slug' => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
-			'content' => htmlspecialchars($this->_getRandomText(30)),
+			'content' => htmlspecialchars($this->_getRandomWords(30)),
 			'date_created' => $this->_getRandomDate('string'),
 			'status' => 'published',
 			'person_id' => $this->_getRandomAgent(true)
@@ -1088,7 +1103,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 					'field_id' => $field->id,
 					'root_field_id' => $field->id,
 					'value' => 0,
-					'input' => $this->_getRandomText(mt_rand(1, 5))
+					'input' => $this->_getRandomWords(mt_rand(1, 5))
 				));
 			}
 		}
@@ -1099,7 +1114,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadNewsCategory()
 	{
 		$category = new Entity\NewsCategory();
-		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->title = $this->_getRandomWords(mt_rand(1, 4));
 		$category->display_order = mt_rand(1, 1000000);
 
 		App::getOrm()->persist($category);
@@ -1117,12 +1132,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['news_categories'] = App::getEntityRepository('DeskPRO:NewsCategory')->findAll();
 		}
 
-		$title = $this->_getRandomText(mt_rand(2, 6));
+		$title = $this->_getRandomWords(mt_rand(2, 6));
 
 		$news = array(
 			'title' => $title,
 			'slug' => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
-			'content' => htmlspecialchars($this->_getRandomText(30)),
+			'content' => htmlspecialchars($this->_getRandomText(mt_rand(100, 2000))),
 			'date_created' => $this->_getRandomDate('string'),
 			'status' => 'published',
 			'person_id' => $this->_getRandomAgent(true),
@@ -1144,7 +1159,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadDownloadCategory()
 	{
 		$category = new Entity\DownloadCategory();
-		$category->title = $this->_getRandomText(mt_rand(1, 4));
+		$category->title = $this->_getRandomWords(mt_rand(1, 4));
 		$category->display_order = mt_rand(1, 1000000);
 
 		App::getOrm()->persist($category);
@@ -1162,12 +1177,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$this->_data_cache['download_categories'] = App::getEntityRepository('DeskPRO:DownloadCategory')->findAll();
 		}
 
-		$title = $this->_getRandomText(mt_rand(2, 6));
+		$title = $this->_getRandomWords(mt_rand(2, 6));
 
 		$download = array(
 			'title' => $title,
 			'slug' => \Orb\Util\Strings::slugifyTitle($title) ?: 'view',
-			'content' => htmlspecialchars($this->_getRandomText(30)),
+			'content' => htmlspecialchars($this->_getRandomText(100, 1000)),
 			'date_created' => $this->_getRandomDate('string'),
 			'status' => 'published',
 			'person_id' => $this->_getRandomAgent(true),
@@ -1189,11 +1204,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadGlossary()
 	{
 		$def = new Entity\GlossaryWordDefinition();
-		$def->definition = $this->_getRandomText(mt_rand(5, 10));
+		$def->definition = $this->_getRandomText(mt_rand(50, 100));
 		$word_count = mt_rand(1, 5);
 		for ($i = 0; $i < $word_count; $i++) {
 			$start = chr(mt_rand(64, 90)); // @ and A-Z
-			$def->addWord($start . $this->_getRandomText(1));
+			$def->addWord($start . $this->_getRandomWords(1));
 		}
 
 		if (count($def->words)) {
@@ -1205,7 +1220,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _loadTask($i)
 	{
 		$task = new Entity\Task();
-		$task->title = $this->_getRandomText(mt_rand(2, 8));
+		$task->title = $this->_getRandomWords(mt_rand(2, 8));
 		$task->person = $this->_getRandomAgent();
 		$task->setVisibility(mt_rand(1, 3) == 1 ? 0 : 1);
 		$task->date_created = $this->_getRandomDate();
@@ -1230,14 +1245,14 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	{
 		$this->_addBatchInsert('twitter_users', array(
 			'id' => mt_rand(1, mt_getrandmax()),
-			'name' => $this->_getRandomText(2),
-			'screen_name' => $this->_getRandomText(1) . microtime(true),
+			'name' => $this->_getRandomWords(2),
+			'screen_name' => $this->_getRandomWords(1) . microtime(true),
 			'profile_image_url' => '',
 			'language' => 'en',
 			'is_protected' => 0,
 			'is_verified' => 0,
 			'location' => '',
-			'description' => $this->_getRandomText(mt_rand(3, 10)),
+			'description' => $this->_getRandomWords(mt_rand(3, 10)),
 			'is_geo_enabled' => 0,
 			'is_stub' => 0,
 			'url' => '',
@@ -1256,7 +1271,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$data = array(
 			'id' => mt_rand(1, mt_getrandmax()),
 			'user_id' => $this->_getRandomTwitterUserId(),
-			'text' => $this->_getRandomText(mt_rand(1, 20)),
+			'text' => $this->_getRandomWords(mt_rand(1, 20)),
 			'date_created' => $this->_getRandomDate('string')
 		);
 
@@ -1343,6 +1358,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 				LIMIT 1000
 			');
 			if (!$this->_data_cache['random_people_ids']) {
+				if (empty($this->_data_cache['agents'])) {
+					$this->_getRandomAgent();
+				}
 				$this->_data_cache['random_people_ids'] = array_keys($this->_data_cache['agents']);
 			}
 
@@ -1456,7 +1474,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			for ($i = 0; $i < $labels; $i++) {
 				list($table, $field) = $this->_label_type_map[$type];
 
-				$label = $this->_getRandomText(1);
+				$label = $this->_getRandomWords(1);
 				$label = strtolower(trim($label));
 
 				$this->_addBatchInsert($table, array(
@@ -1491,16 +1509,90 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			App::getOrm()->flush(); // must generate an ID first
 
 			for ($i = 0; $i < $labels; $i++) {
-				$label = $manager->addLabel($this->_getRandomText(1));
+				$label = $manager->addLabel($this->_getRandomWords(1));
 				App::getOrm()->persist($label);
 			}
 		}
 	}
 
 	protected $_words = null;
+	protected $_word_db = null;
 	protected $_max_word_index;
 
-	protected function _getRandomText($word_length = 1)
+	protected function _getRandomWords($word_length = 1)
+	{
+		if ($this->_wordlist_file == 'database') {
+			$text = $this->_getRandomText();
+			$text = strip_tags($text);
+			$text = preg_replace('#[^a-zA-Z0-9 ]#', '', $text);
+			$text = Strings::standardEol($text);
+			$text = str_replace("\n", " ", $text);
+			$text = preg_replace('#[ ]{2,}#', ' ', $text);
+			$text = explode(' ', $text);
+			shuffle($text);
+
+			while (count($text) < $word_length) {
+				$text = array_merge($text, $text);
+			}
+
+			return implode(' ', array_slice($text, 0, $word_length, false));
+		} else {
+			return $this->_getRandomWordlist($word_length);
+		}
+	}
+
+	protected function _getRandomText($max_length = 0)
+	{
+		if ($this->_wordlist_file == 'database') {
+			$text = $this->_getRandomTextDb();
+			$text = strip_tags($text);
+			$text = Strings::standardEol($text);
+			$text = str_replace("\n", " ", $text);
+			$text = preg_replace('#[ ]{2,}#', ' ', $text);
+			$text = explode(' ', $text);
+			shuffle($text);
+			$text = implode(' ', $text);
+
+			if ($max_length) {
+				while (!isset($text[$max_length])) {
+					$text .= ' ' . $text;
+				}
+			}
+		} else {
+			$text = $this->_getRandomWordlist(0);
+		}
+
+		if ($max_length && isset($text[$max_length])) {
+			$text = substr($text, 0, $max_length);
+		}
+
+		return $text;
+	}
+
+	protected function _getRandomTextDb()
+	{
+		global $DP_CONFIG;
+		if ($this->_word_db === null) {
+			$this->_word_db = $this->getContainer()->get('doctrine.dbal.connection_factory')->createConnection(array(
+				'driver'        => 'pdo_mysql',
+				'host'          => $DP_CONFIG['load_data_database']['db_host'],
+				'user'          => $DP_CONFIG['load_data_database']['db_user'],
+				'password'      => $DP_CONFIG['load_data_database']['db_password'],
+				'dbname'        => $DP_CONFIG['load_data_database']['db_name']
+			));
+		}
+
+		do {
+			$words = trim($this->_word_db->fetchColumn($DP_CONFIG['load_data_database']['db_query']));
+			if (preg_match('/\s*#REDIRECT/i', $words)) {
+				$words = null;
+			}
+		} while (!$words);
+
+		return $words;
+	}
+
+	protected function _getRandomWordlist($word_length = 1)
 	{
 		if (!is_array($this->_words)) {
 			if ($this->_wordlist_file) {
@@ -1517,6 +1609,10 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 				$this->_words = explode(' ', 'Lorem ipsum dolor sit amet consectetur adipiscing elit Morbi ac semper lorem Mauris ut suscipit leo Suspendisse orci sem consequat venenatis quis volutpat sit amet lorem Nulla sed sodales leo Duis erat magna commodo nec consectetur quis rhoncus ac arcu Suspendisse egestas metus id nunc interdum nec volutpat orci laoreet Ut porttitor nisi vel urna congue eleifend Fusce semper justo sit amet elit tempor ut ultrices neque pharetra In at tellus at dolor consectetur dapibus in eleifend est Aenean sed neque id sapien aliquet semper id at velit Nullam laoreet est vitae dui pulvinar consectetur Aenean ipsum ipsum convallis ac pellentesque nec ullamcorper sit amet ipsum Fusce accumsan orci in bibendum ornare dolor nunc condimentum massa eget aliquam lectus tortor sed est Proin tempor quam congue mi tempus vitae cursus orci interdum Aliquam aliquet vulputate cursus Etiam hendrerit lorem vitae ipsum lacinia feugiat Fusce ornare purus et felis placerat ut venenatis nisl dignissim Mauris sed lacus nunc Curabitur et metus quis orci molestie sodales Suspendisse interdum cursus ullamcorper Donec pretium consequat lacus ac condimentum Fusce lacinia faucibus urna eu varius Etiam volutpat porta nisi in euismod sapien consequat vitae Ut feugiat porttitor dui nec vehicula Suspendisse sed nibh id leo euismod scelerisque Praesent malesuada sagittis dui et iaculis ante vulputate id Quisque risus nec orci eleifend volutpat sit amet sit amet lectus Aliquam ut felis felis mattis turpis Nulla eget orci lorem id rutrum orci Donec neque nisl tristique ac fringilla vel ullamcorper vitae erat Praesent erat metus tristique in gravida id tempus fringilla diam Integer vitae aliquet nulla Sed dictum lectus ac sem rhoncus et laoreet augue volutpat Ut venenatis laoreet mauris non pulvinar Etiam lacinia augue vel elit facilisis quis molestie sapien congue Praesent eu lacus justo vitae iaculis libero Curabitur nibh massa Aenean sed dui orci Suspendisse vehicula nibh eu dictum bibendum lorem nisl congue felis ac dictum mauris nisl vitae orci Phasellus et turpis massa tempor sodales eget eget quam Cras ut purus nisl sit amet ultricies lacus Nunc congue molestie accumsan Sed ut volutpat dui Donec sit amet nunc rhoncus risus convallis adipiscing Aenean tincidunt tempor consequat Vivamus blandit lacus quam ornare tortor Vestibulum tellus in orci ultrices semper Aenean sit amet libero ipsum aliquet condimentum Quisque volutpat congue felis vel hendrerit Proin congue enim et mi mattis tempor Praesent nec ante nec mauris suscipit pulvinar condimentum eu massa Aliquam iaculis ipsum sed ligula condimentum sed ultrices odio iaculis Nulla viverra ipsum et auctor viverra dolor est condimentum nisl in tincidunt erat massa vitae lacus Donec convallis tincidunt nisl vitae laoreet Mauris ligula mauris lacinia quis dictum volutpat tincidunt ac neque Phasellus dapibus suscipit pulvinar Fusce lacus est ultrices adipiscing sed condimentum sit amet leo Proin mauris ante tempor non tempor at commodo id mi Quisque ac massa justo Quisque lacinia malesuada ipsum hendrerit facilisis Nulla metus augue viverra placerat dapibus ac lacus Integer lectus metus laoreet semper eget dictum at purus Sed');
 			}
 			$this->_max_word_index = count($this->_words) - 1;
+		}
+
+		if (!$word_length) {
+			return implode(' ', $this->_words);
 		}
 
 		$output = array();

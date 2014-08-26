@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
 
 /**
@@ -125,6 +126,20 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 			$this->setModelField('guessed_type', $guessed_type);
 		} else {
 			throw new \InvalidArgumentException("Phone number is invalid - couldn't extract region information");
+		}
+	}
+
+
+	/**
+	 * @return \libphonenumber\PhoneNumber|null
+	 */
+	public function getPhoneNumber()
+	{
+		$phone_util = PhoneNumberUtil::getInstance();
+		try {
+			return $phone_util->parse($this->number, null);
+		} catch (\Exception $e) {
+			return null;
 		}
 	}
 

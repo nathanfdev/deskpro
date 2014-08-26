@@ -62,6 +62,8 @@ DeskPRO.Agent.RteEditor = {
 			minHeight: 150,
 			observeImages: false,
 			cleanup: false,
+			convertDivs: false,
+			linebreaks: true,
 			imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
 			uploadFields: {
 				_rt: window.DP_REQUEST_TOKEN

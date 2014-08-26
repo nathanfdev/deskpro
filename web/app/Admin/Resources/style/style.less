@@ -361,6 +361,23 @@ div.info-message {
 			border-top: 1px solid transparent;
 			border-bottom: 1px solid transparent;
 
+			&.dotdotdot {
+				line-height: 100%;
+				span {
+					color: #eee;
+					font-size: 14px;
+					font-weight: bold;
+					text-align: center;
+					display: block;
+					margin: 0 6px 0 6px;
+					padding: 2px 0;
+
+					background: #3c4146;
+					cursor: pointer;
+					border-radius: 2px;
+				}
+			}
+
 			a {
 				display: block;
 				width: @appIconBlockW;
@@ -523,6 +540,26 @@ div.info-message {
 			.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x_active/Ticket-Feedback.png'); }
 		}
 	}
+}
+
+.dp-appstrip ul.btm.mini { display: none; }
+.dp-appstrip ul.btm.mini-rest {
+	width: 43px;
+	background: #3c4146;
+	border-radius: 2px;
+	margin: 0 6px 0 6px;
+
+	li a {
+		width: 43px;
+	}
+	li i.app-icon {
+		width: 43px;
+	}
+}
+
+@media all and (max-height: 790px) {
+	.dp-appstrip ul.btm.mini { display: block; }
+	.dp-appstrip ul.btm.normal { display: none; }
 }
 
 .agent-interface-hover, .reports-interface-hover, .lic-interface-hover {

@@ -75,12 +75,18 @@ class ClientFactory
 	 */
 	public function createClientById($id)
 	{
-		$config = array(
-			'host'      => $this->settings->get("elastica.clients.$id.host"),
-			'port'      => $this->settings->get("elastica.clients.$id.port"),
-			'path'      => $this->settings->get("elastica.clients.$id.path") ?: null,
-			'transport' => $this->settings->get("elastica.clients.$id.transport") ?: null
-		);
+		if ($this->settings->get("elastica.clients.$id.url")) {
+
+			$config = self::createConfigFromUrl($this->settings->get("elastica.clients.$id.url"));
+
+		} else {
+			$config = array(
+				'host'      => $this->settings->get("elastica.clients.$id.host"),
+				'port'      => $this->settings->get("elastica.clients.$id.port"),
+				'path'      => $this->settings->get("elastica.clients.$id.path") ? : null,
+				'transport' => $this->settings->get("elastica.clients.$id.transport") ? : null
+			);
+		}
 
 		if (!$config['host'] || !$config['port']) {
 			throw new MissingConfigurationException;
@@ -89,6 +95,46 @@ class ClientFactory
 		$config = Arrays::removeFalsey($config);
 
 		return $this->createClientByConfig($config);
+	}
+
+
+	/**
+	 * @param string $url
+	 * @return array
+	 * @throws \Application\DeskPRO\Exception\MissingConfigurationException
+	 */
+	public static function createConfigFromUrl($url)
+	{
+		if (!$url) {
+			throw new MissingConfigurationException("No URL specified");
+		}
+
+		if (!preg_match('#^\w+://#', $url)) {
+			$url = 'http://' . $url;
+		}
+
+		$url_info = parse_url($url);
+		if (!$url_info) {
+			throw new MissingConfigurationException("Invalid URL");
+		}
+
+		$url_info = new OptionsArray($url_info);
+		if (!$url_info->has('host')) {
+			throw new MissingConfigurationException("Missing host");
+		}
+
+		$config = array(
+			'host'      => $url_info->host,
+			'port'      => $url_info->port ?: 9200,
+			'path'      => $url_info->path ?: null,
+			'transport' => strtolower($url_info->get('scheme', 'http')) == 'https' ? 'Https' : 'Http'
+		);
+
+		if ($url_info->user && $url_info->pass) {
+			$config['headers'] = array('Authorization'=> 'Basic '.  base64_encode($url_info->user .':'. $url_info->pass));
+		}
+
+		return $config;
 	}
 
 

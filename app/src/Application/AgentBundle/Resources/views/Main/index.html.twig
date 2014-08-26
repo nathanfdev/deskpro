@@ -185,8 +185,17 @@
 	</style>
 	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
 </head>
-<body class="dp {% if is_demo %}is-demo{% endif %}">
-
+<body class="dp {% if is_demo %}is-demo{% endif %}"
+      ng-class="{
+        'panevis-source-on': paneVis.source,
+        'panevis-source-off': !paneVis.source,
+        'panevis-tabs-on': paneVis.tabs,
+        'panevis-tabs-off': !paneVis.tabs,
+        'panevis-list-on': paneVis.list,
+        'panevis-list-off': !paneVis.list
+      }"
+        >
+{{ ng_var('paneVis.tabs') }}
 <script type="text/javascript">
 	(function() {
 		var ua = navigator.userAgent.toLowerCase();
@@ -201,7 +210,13 @@
 </script>
 
 <div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
-<div id="dp_window">
+<div id="dp_window" ng-init="
+    routes = {
+        ticket: 'ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|raw }}',
+        person: 'person:{{ path('agent_people_view', {'person_id': '0000'})|raw }}',
+        organization: 'page:{{ path('agent_org_view', {'organization_id': '0000'})|raw }}'
+    };
+    ">
 
 {% include 'AgentBundle:Main:window-header.html.twig' %}
 {% include 'AgentBundle:Main:window-nav.html.twig' %}
@@ -260,6 +275,28 @@
 	}
 </style>
 <![endif]-->
+
+<ul id="create-menu" class="btn-menu">
+    {% if app.user.hasPerm('agent_tickets.create') %}
+        <li id="create_ticket_btn"><a><div class="wrap"><i class="icon-dp-ticket"></i></div>{{ phrase('agent.chrome.create_new-ticket') }} <kbd>t</kbd></a></li>
+    {% endif %}
+    {% if app.user.hasPerm('agent_people.create') %}
+        <li id="create_person_btn"><a><div class="wrap"><i class="icon-dp-person"></i></div>{{ phrase('agent.chrome.create_new-person') }} <kbd>p</kbd></a></li>
+    {% endif %}
+    {% if app.user.hasPerm('agent_org.create') %}
+        <li id="create_organization_btn"><a><div class="wrap"><i class="icon-dp-organization"></i></div>{{ phrase('agent.chrome.create_new-organization') }} <kbd>o</kbd></a></li>
+    {% endif %}
+    {% if app.getConfig('enable_twitter') and app.user.getTwitterAccountIds()|length %}
+        <li id="create_tweet_btn"><a><div class="wrap"><i class="icon-dp-twitter"></i></div>{{ phrase('agent.chrome.create_new-tweet') }} <kbd>w</kbd></a></li>
+    {% endif %}
+    {% if app.user.hasPerm('agent_publish.create') %}
+        <li id="create_article_btn"><a><div class="wrap"><i class="icon-dp-article"></i></div>{{ phrase('agent.chrome.create_new-article') }} <kbd>a</kbd></a></li>
+        <li id="create_news_btn"><a><div class="wrap"><i class="icon-dp-news"></i></div>{{ phrase('agent.chrome.create_new-news') }} <kbd>n</kbd></a></li>
+        <li id="create_download_btn"><a><div class="wrap"><i class="icon-dp-download"></i></div>{{ phrase('agent.chrome.create_new-download') }} <kbd>d</kbd></a></li>
+        <li id="create_feedback_btn"><a><div class="wrap"><i class="icon-dp-feedback" title="{{ phrase('agent.chrome.quicksearch_title-feedback') }}"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
+    {% endif %}
+    {% if app.getSetting('core.apps_tasks') %}<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></a></li>{% endif %}
+</ul>
 
 </body>
 </html>

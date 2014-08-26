@@ -89,6 +89,13 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		$stream_handler = new StreamHandler(dp_get_log_dir() . '/upgrade.log');
 		$logger->pushHandler($stream_handler);
 
+		try {
+			$this->getContainer()->getDb()->exec("SET SESSION wait_timeout = 86400");
+			$logger->debug("Set wait_timeout to 86400");
+		} catch (\Exception $e) {
+			$logger->warn("Failed to set wait_timeout: " . $e->getMessage());
+		}
+
 		$manager = new \Application\InstallBundle\Upgrade\Manager(
 			$this->getContainer(),
 			$logger

@@ -3,7 +3,7 @@ requirejs.config({
 	"waitSeconds": 60,
 	"urlArgs": ((DP_IS_DEBUG && !DP_USE_RJS_BUILD) ? "bust=" + (new Date()).getTime() : "v=" + (DP_BUILD_TIME || "0")),
 	"paths": {
-		"angular":                         "app/bower_components/angular/angular.min",
+		"angular":                         "app/bower_components/angular/angular",
 		"angularRoute":                    "app/bower_components/angular-route/angular-route.min",
 		"angularAnimate":                  "app/bower_components/angular-animate/angular-animate.min",
 		"angularBootstrap":                "app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min",

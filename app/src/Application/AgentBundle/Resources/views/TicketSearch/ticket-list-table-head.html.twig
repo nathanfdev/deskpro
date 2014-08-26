@@ -1,0 +1,36 @@
+<% var fields = getDisplayableFields(); %>
+<tr>
+    <th width="20"></th>
+	<% for (var i = 0; i < fields.length; i++) { var field = fields[i]; %>
+	<th class="col-<%= field %>">
+		<% if (field == 'subject') { %>{{ phrase('agent.general.subject') }}<% } %>
+		<% if (field == 'user') { %>{{ phrase('agent.general.user') }}<% } %>
+		<% if (field == 'department') { %>{{ phrase('agent.general.department') }}<% } %>
+		<% if (field == 'ref') { %>{{ phrase('agent.general.ref') }}<% } %>
+		<% if (field == 'language') { %>{{ phrase('agent.general.language') }}<% } %>
+		<% if (field == 'category') { %>{{ phrase('agent.general.category') }}<% } %>
+		<% if (field == 'priority') { %>{{ phrase('agent.general.priority') }}<% } %>
+		<% if (field == 'workflow') { %>{{ phrase('agent.general.workflow') }}<% } %>
+		<% if (field == 'product') { %>{{ phrase('agent.general.product') }}<% } %>
+		<% if (field == 'agent') { %>{{ phrase('agent.general.agent') }}<% } %>
+		<% if (field == 'agent_team') { %>{{ phrase('agent.general.agent_team') }}<% } %>
+		<% if (field == 'labels') { %>{{ phrase('agent.general.labels') }}<% } %>
+		<% if (field == 'organization') { %>{{ phrase('agent.general.organization') }}<% } %>
+		<% if (field == 'date_created') { %>{{ phrase('agent.general.date_created') }}<% } %>
+		<% if (field == 'date_user_waiting') { %>{{ phrase('agent.general.user_waiting') }}<% } %>
+		<% if (field == 'date_resolved') { %>{{ phrase('agent.general.date_resolved') }}<% } %>
+		<% if (field == 'date_last_user_reply') { %>{{ phrase('agent.general.date_of_last_user_reply') }}<% } %>
+		<% if (field == 'date_last_agent_reply') { %>{{ phrase('agent.general.date_of_last_agent_reply') }}<% } %>
+		<% if (field == 'date_last_reply') { %>{{ phrase('agent.general.date_of_last_reply') }}<% } %>
+		<% if (field == 'total_user_waiting') { %>{{ phrase('agent.general.total_time_waiting') }}<% } %>
+		<% if (field == 'slas') { %>{{ phrase('agent.general.slas') }}<% } %>
+
+		{% for field in app.getCustomFieldManager('tickets').getFields() %}
+			<% if (field == 'ticket_fields[{{ field.id }}]') { %>{{ field.title }}<% } %>
+		{% endfor %}
+		{% for field in app.getCustomFieldManager('people').getFields() %}
+			<% if (field == 'person_fields[{{ field.id }}]') { %>{{ field.title }}<% } %>
+		{% endfor %}
+	</th>
+	<% } %>
+</tr>

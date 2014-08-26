@@ -392,7 +392,7 @@ class Person extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT p
 			FROM DeskPRO:Person p INDEX BY p.id
-			WHERE p.organization = ?1
+			WHERE p.organization = ?1 AND p.is_deleted = false
 			ORDER BY p.organization_manager DESC, p.last_name ASC, p.first_name ASC
 		")->setFirstResult(($page - 1)*$limit)->setMaxResults($limit)->execute(array(1=> $org));
 	}

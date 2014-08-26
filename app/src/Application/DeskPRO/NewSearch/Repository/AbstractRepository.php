@@ -3,8 +3,9 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 use Elastica\Query;
-use Elastica\Query\QueryString;
 use FOS\ElasticaBundle\Repository;
+use Orb\Util\Strings;
+use Elastica\Util as ElasticaUtil;
 
 /**
  * Abstract Repository
@@ -47,6 +48,7 @@ abstract class AbstractRepository extends Repository
     public function find($query, $limit = null, $options = array())
     {
         $queryObj = $this->getQuery($query);
+		$queryObj->setSize(50);
         $this->setHighlight($queryObj);
 
         return parent::find($queryObj, $limit, $options);
@@ -60,14 +62,33 @@ abstract class AbstractRepository extends Repository
      */
     protected function getQuery($q)
     {
-        $query = new Query(array(
-            'query' => array(
-                'filtered' => array(
-                    'query'  => $this->getQueryString($q),
-                    'filter' => $this->getFilters(),
-                )
-            )
-        ));
+		$l = Strings::extractRegexMatch('#^\[(.*?)\]$#', $q);
+		if ($l && $this instanceof WithLabelsInterface) {
+			$queryString = new Query\QueryString(ElasticaUtil::escapeTerm($l));
+			$queryString->setFields(array('labels'));
+			$queryString->setDefaultOperator('AND');
+			$query = new Query(
+				array(
+					'query' => array(
+						'filtered' => array(
+							'query'  => $queryString->toArray(),
+							'filter' => $this->getFilters(),
+						)
+					)
+				)
+			);
+		} else {
+			$query = new Query(
+				array(
+					'query' => array(
+						'filtered' => array(
+							'query'  => $this->getQueryString($q)->toArray(),
+							'filter' => $this->getFilters(),
+						)
+					)
+				)
+			);
+		}
 
         return $query;
     }
@@ -76,15 +97,33 @@ abstract class AbstractRepository extends Repository
      * Constructs the query string
      *
      * @param $q
-     * @return array
+     * @return Query\QueryString|Query\MultiMatch
      */
-    protected function getQueryString($q)
+	protected function getQueryString($q)
     {
-        $queryString = new QueryString($q);
+		$term = ElasticaUtil::escapeTerm($q);
+
+		// If we have an equal number of quotes, then
+		// they are properly balanced and it's valid so we can
+		// accept the "phrase" search
+		if (substr_count($term, '\\"') % 2 === 0) {
+			$term = str_replace('\\"', '"', $term);
+		}
+
+        $queryString = new Query\QueryString($term);
+		$queryString->setFields($this->getQueryFields());
         $queryString->setDefaultOperator('AND');
 
-        return $queryString->toArray();
+        return $queryString;
     }
+
+	/**
+	 * @return array
+	 */
+	protected function getQueryFields()
+	{
+		return array('_all');
+	}
 
     /**
      * Constructs the filters array (override as needed)
