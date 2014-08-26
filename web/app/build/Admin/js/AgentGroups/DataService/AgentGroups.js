@@ -21,6 +21,12 @@
         return response.groups;
       };
 
+      Admin_AgentGroups_DataService_AgentGroups.prototype.all = function() {
+        return Admin_AgentGroups_DataService_AgentGroups.__super__.all.call(this, false, {
+          with_perms: 1
+        });
+      };
+
       return Admin_AgentGroups_DataService_AgentGroups;
 
     })(Admin_Main_DataService_BaseListEdit);
