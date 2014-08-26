@@ -252,6 +252,12 @@ class ServerPhpInfo
 		$apc_link = App::getSetting('core.deskpro_url') . '?_sys=apc';
 		$apc_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'apc', 86400);
 
+		$opcache_link = null;
+		if (version_compare(phpversion(), '5.5.0', '>=') && extension_loaded('Zend OPcache') && (int) ini_get('opcache.enable')) {
+			$opcache_link = App::getSetting('core.deskpro_url') . '?_sys=opcache';
+			$opcache_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'opcache', 86400);
+		}
+
 		$wincache_link = App::getSetting('core.deskpro_url') . '?_sys=wincache';
 		$wincache_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'wincache', 86400);
 
@@ -267,6 +273,7 @@ class ServerPhpInfo
 			'web_php_link'   => $web_php_link,
 			'cli_php_link'   => $cli_php_link,
 			'apc_link'       => $apc_link,
+			'opcache_link'   => $opcache_link,
 			'wincache_link'  => $wincache_link,
 		);
 	}

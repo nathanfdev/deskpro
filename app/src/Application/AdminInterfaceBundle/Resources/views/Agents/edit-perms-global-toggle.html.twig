@@ -1,0 +1,14 @@
+<tr>
+    <td width="100%">
+        <span class="title">
+            {{ phrase('adm.agents.perm_toggle_all') }}
+        </span>
+    </td>
+    <td>
+        <input
+            dp-slider-switch
+            ng-model="EditCtrl.all_perms.{{ type }}.{{ section }}"
+            ng-change="EditCtrl.changeAllPerms('{{ type }}', '{{ section }}')"
+            />
+    </td>
+</tr>

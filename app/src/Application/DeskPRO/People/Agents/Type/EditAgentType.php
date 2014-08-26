@@ -80,6 +80,8 @@ class EditAgentType extends AbstractType
 			},
 			'invalid_message' => 'Invalid Agent Group.',
 		));
+
+		$builder->add('notification_settings', 'collection');
 	}
 
 

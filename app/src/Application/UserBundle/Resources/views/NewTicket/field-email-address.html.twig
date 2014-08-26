@@ -4,12 +4,12 @@
 			<label><strong>{{ phrase('user.general.your_email_address') }} *</strong></label>
 		</div>
 		<div class="dp-controls dp-fill">
-			<input type="text" name="newticket[person][email]" value="{{ newticket.person.email }}" data-field-validators="DeskPRO.Form.EmailValidator" />
+			<input type="text" name="newticket[person][email]" value="{{ form.person.email.vars.value }}" data-field-validators="DeskPRO.Form.EmailValidator" />
 			<div class="dp-help-inline dp-error-explain">
 				{{ phrase('user.general.form_fix_email') }}
 			</div>
 		</div>
 	</div>
 {% else %}
-	{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': newticket.person.email, 'mode': 'advanced', context: 'newticket' } %}
+	{% include 'UserBundle:Common:form-email-login-row.html.twig' with { 'email_form_name': 'newticket[person][email]', 'form_key_prefix': 'person.', 'initial_value': form.person.email.vars.value, 'mode': 'advanced', context: 'newticket' } %}
 {% endif %}

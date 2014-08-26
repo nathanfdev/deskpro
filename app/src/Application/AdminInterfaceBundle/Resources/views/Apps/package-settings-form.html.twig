@@ -46,6 +46,6 @@
 				<option ng-repeat="opt in setting.options" value="{{ ng_var('opt.value') }}">{{ ng_var('opt.label') }}</option>
 			</select>
 		</div>
-		<span class="help-block" ng-show="setting.description">{{ ng_var('setting.description') }}</span>
+		<span class="help-block" ng-show="setting.description" ng-bind-html="setting.description"></span>
 	</div>
 </div>

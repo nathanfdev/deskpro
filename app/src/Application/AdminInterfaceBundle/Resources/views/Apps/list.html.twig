@@ -51,9 +51,7 @@
 		<p class="info">
 			by {{ ng_var('package.author_name') }} &middot; <a ng-href="{{ ng_var('package.author_link') }}">Website</a>
 		</p>
-		<p>
-			{{ ng_var('package.description') }}
-		</p>
+		<p ng-bind-html="package.description"></p>
 	</div>
 {% endmacro %}
 

@@ -616,6 +616,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var startHash = window.location.hash + "";
 		startHash = startHash.substring(1);
 
+		if (!startHash.length && $.cookie('last_state')) {
+			startHash = $.cookie('last_state');
+		}
+
 		var loadNewTicket = false;
 		if (loadNewTicket = window.location.hash.match(/#newticket:(\d+)/)) {
 			loadNewTicket = loadNewTicket[1];
@@ -715,6 +719,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 			self.loadHashPath(hash);
+			$.cookie('last_state', hash);
 		},{ unescape: ",/:" });
 
 		if (!this.openSection) {

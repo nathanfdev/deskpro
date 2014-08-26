@@ -41,6 +41,20 @@
 
 							<input type="text" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
 						</div>
+
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    Make the helpdesk disabled
+                                </h4>
+                                <input type="checkbox" class="form-control" ng-model="settings.helpdesk_disabled" style="width: auto;vertical-align: middle;margin-top: 1px;" />
+                            </label>
+							<span class="help-block">
+                                This message will be displayed when the helpdesk is offline or when you are installing updates. HTML is allowed.
+							</span>
+                            <textarea class="form-control" ng-model="settings.helpdesk_disabled_message" rows="5" style="width: 40%;"></textarea>
+
+                        </div>
 					{% endif %}
 				</div>
 			</div>

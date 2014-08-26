@@ -79,6 +79,11 @@ class PersonApiDataFactoryService
 			$data['primary_phone_number_region'] = $this->settings->get('core.default_country_code');
 		}
 
+		$data['notification_settings'] = array(
+			'no_allow_set_email' => (bool) $agent->getPref('agent_notif.no_allow_set_email'),
+			'no_allow_set_browser' => (bool) $agent->getPref('agent_notif.no_allow_set_browser'),
+		);
+
 		return $data;
 	}
 }

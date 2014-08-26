@@ -1938,19 +1938,28 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		});
 
 		// todo should be redo to $scope models
-		var $assignMe = this.getElById('assign_me');
+		var $assignMe = this.getElById('assign_me'), $unassignAgent = this.getElById('unassign_agent');
 		$assignMe.on('click', function(){
 			$('select[name="actions[agent]"]', this.wrapper).val($(this).data('me')).trigger('change');
 		});
+		$unassignAgent.on('click', function(){
+			$('select[name="actions[agent]"]', this.wrapper).val(0).trigger('change');
+		});
 		$('select[name="actions[agent]"]').on('change', function(){
 			$(this).val() == $assignMe.data('me') ? $assignMe.hide() : $assignMe.show();
+			parseInt($(this).val()) ? $unassignAgent.show() : $unassignAgent.hide();
 		});
-		var $assignTeam = this.getElById('assign_team');
+		var $assignTeam = this.getElById('assign_team'),
+			$unassignTeam = this.getElById('unassign_team');
 		$assignTeam.on('click', function(){
 			$('select[name="actions[agent_team]"]', this.wrapper).val($(this).data('team')).trigger('change');
 		});
+		$unassignTeam.on('click', function(){
+			$('select[name="actions[agent_team]"]', this.wrapper).val(0).trigger('change');
+		});
 		$('select[name="actions[agent_team]"]').on('change', function(){
 			$(this).val() == $assignTeam.data('team') ? $assignTeam.hide() : $assignTeam.show();
+			parseInt($(this).val()) ? $unassignTeam.show() : $unassignTeam.hide();
 		});
 		var $assignFollow = this.getElById('follower_me');
 		$assignFollow.on('click', function(){

@@ -293,7 +293,7 @@ class AppsController extends AbstractController
 			$class = $native_app->getConfig()->getInstallerHandlerClass();
 			if ($class) {
 				$context = new InstallerContext($this->container, $native_app, $this->in->getCleanValueArray('settings'));
-				$handler = new $class();
+				$handler = new $class($app->package['settings_def']);
 			}
 		}
 
@@ -367,7 +367,7 @@ class AppsController extends AbstractController
 			$class = $native_app->getConfig()->getInstallerHandlerClass();
 			if ($class) {
 				$context = new InstallerContext($this->container, $native_app);
-				$handler = new $class();
+				$handler = new $class($app->package['settings_def']);
 				$handler->uninstall($context);
 			}
 		}

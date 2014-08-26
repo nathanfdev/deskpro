@@ -388,6 +388,11 @@ pageMeta.lang = {{ {
 								({{ phrase('agent.general.assign_to_me') }})
 							</a>
                         {% endif %}
+                        {% if ticket_perms.modify_assign_agent %}
+                            <a id="{{baseId}}_unassign_agent" class="assign-self-link" {% if not ticket.agent %}style="display: none;" {% endif %}>
+                                ({{ phrase('agent.general.unassign') }})
+                            </a>
+                        {% endif %}
                     </label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">{{ phrase('agent.general.unassigned') }}</option>{% endif %}
@@ -410,6 +415,9 @@ pageMeta.lang = {{ {
                                 ({{ phrase('agent.general.assign_to_my_team') }})
                             </a>
                         {% endif %}
+                        <a id="{{baseId}}_unassign_team" class="assign-self-link" style="{% if not ticket.agent_team  %}display: none;{% endif %}">
+                            ({{ phrase('agent.general.unassign') }})
+                        </a>
                     </label>
 					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
 						{% if ticket_perms.modify_assign_team or not ticket.agent_team %}

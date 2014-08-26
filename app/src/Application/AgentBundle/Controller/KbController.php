@@ -209,7 +209,13 @@ class KbController extends AbstractController
 
 	public function ajaxSaveLabelsAction($article_id)
 	{
-		$article = $this->em->find('DeskPRO:Article', $article_id);
+		if (!$article = $this->em->find('DeskPRO:Article', $article_id)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+			return $this->createJsonResponse(array('success' => 0));
+		}
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 

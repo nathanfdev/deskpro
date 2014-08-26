@@ -9,3 +9,6 @@ define [
 		url: -> 'agent_groups'
 
 		resolveResponse: (response) -> response.groups
+
+		all: ->
+			super false, {with_perms: 1}

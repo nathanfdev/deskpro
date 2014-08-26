@@ -73,6 +73,9 @@
                                 <a id="%baseId%_assign_me" class="assign-self-link" data-me="{{ app.user.id }}">
                                     ({{ phrase('agent.general.assign_to_me') }})
                                 </a>
+                                <a id="%baseId%_unassign_agent" class="assign-self-link" style="display:none;">
+                                    ({{ phrase('agent.general.unassign') }})
+                                </a>
                             </dt>
 							<dd>
 								<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
@@ -90,9 +93,13 @@
 						<dl>
 							<dt>
 							    {{ phrase('agent.general.team') }}
-                                {% if 1 == app.user.agent.teams|length %}
+
+                                {% if app.user.agent.teams|length >= 1 %}
                                 <a id="%baseId%_assign_team" class="assign-self-link" data-team="{{ (app.user.agent.teams|first).id }}">
                                     ({{ phrase('agent.general.assign_to_my_team') }})
+                                </a>
+                                <a id="%baseId%_unassign_team" class="assign-self-link" style="display:none;">
+                                    ({{ phrase('agent.general.unassign') }})
                                 </a>
                                 {% endif %}
                             </dt>

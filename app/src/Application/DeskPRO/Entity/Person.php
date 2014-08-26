@@ -2519,6 +2519,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 			}
 		}
 
+		// todo maybe 'registered' and 'everyone' usergroups should be added to user on registration?
+		$data['usergroup_ids'][] = 2;
+
 		$data['usergroup_ids']  = Arrays::castToType($data['usergroup_ids'], 'int');
 		$data['agentgroup_ids'] = Arrays::castToType($data['agentgroup_ids'], 'int');
 

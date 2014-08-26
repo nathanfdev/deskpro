@@ -5,87 +5,132 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		init: ->
 			@groupId = parseInt(@$stateParams.id)
+
+			@service =
+				groups: @DataService.get 'AgentGroups'
+				agents: @DataService.get 'Agents'
+				ticketDeps: @DataService.get 'TicketDeps'
+				chatDeps: @DataService.get 'ChatDeps'
+
+			@all_perms =
+				perms: {}
+				deps_perms:
+					tickets: {assign: true, full: true}
+					chat: {full: true}
+
+			@$scope.toggleAgent = (agent) =>
+				index = @group.person_ids.indexOf(agent.id)
+				groupIndex = agent.agentgroup_ids.indexOf @group
+
+				if index != -1
+					@group.person_ids.splice(index, 1)
+					agent.agentgroup_ids.splice(groupIndex, 1) if groupIndex != -1
+				else
+					@group.person_ids.push agent.id
+					agent.agentgroup_ids.push @group.id if groupIndex == -1
+
 			return
 
+
+
 		initialLoad: ->
-			if @groupId
-				promise = @Api.sendDataGet({
-					group: "/agent_groups/#{@groupId}",
-					agents: "/agents",
-					ticketDeps: "/ticket_deps?with_perms=1",
-					chatDeps: "/chat_deps?with_perms=1"
-				})
-			else
-				promise = @Api.sendDataGet({
-					agents: "/agents",
-					ticketDeps: "/ticket_deps?with_perms=1",
-					chatDeps: "/chat_deps?with_perms=1"
-				})
 
-			promise.then( (res) =>
-				@agents = res.data.agents.agents
+			promises = [@service.groups.get(@groupId), @service.agents.all(), @service.ticketDeps.all(), @service.chatDeps.all()]
 
-				if @groupId
-					@group  = res.data.group.group
-					if @group.sys_name == 'agent_all_perms' or @group.sys_name == 'agent_all_safe_perms'
-						@$scope.all_locked_perms = true
-				else
-					@group = { id: 0, title: '', members: [] }
+			@$q.all(promises).then (res) =>
+				@group = res[0] || {id: 0}
+				@agents = res[1]
+				@ticketDeps = res[2]
+				@chatDeps   = res[3]
 
-				# value=true on agents that are members
-				memberIds = @group.members.map((x) -> x.id)
-				@agents.map((x) -> if x.id in memberIds then x.value = true)
+				@group.person_ids = []
+				@assignDepsPerms @group
+				@updateAllPermsState()
 
-				@perm_form = @group.perms
+				@agents.map (agent) =>
+					@group.person_ids.push agent.id if -1 != agent.agentgroup_ids.indexOf @group.id
 
-				#--------------------
-				# Departments
-				#--------------------
+				if @group.sys_name == 'agent_all_perms' or @group.sys_name == 'agent_all_safe_perms'
+					@$scope.all_locked_perms = true
 
-				@ticketDeps = res.data.ticketDeps.departments
-				@chatDeps   = res.data.chatDeps.departments
 
-				@deps_perms = {
-					tickets: {},
-					chat: {}
-				}
 
-				if @groupId
-					for dep in @ticketDeps
-						assign = false
-						full = false
+		# todo load from controller
+		assignDepsPerms: (group) ->
 
-						if dep.permissions?.agentgroups
-							u = dep.permissions.agentgroups.filter((x) => x.id == @groupId)[0]
-							if u
-								if u.name == 'full' then full = true else assign = true
-
-						@deps_perms.tickets[dep.id] = { assign: assign, full: full }
-
-					for dep in @chatDeps
-						full = false
-						if dep.permissions?.agentgroups
-							u = dep.permissions.agentgroups.filter((x) => x.id == @groupId)[0]
-							if u
-								full = true
-
-						@deps_perms.chat[dep.id] = { full: full }
-			)
-			return promise
-
-		saveForm: ->
-			postData = {
-				group: {
-					title: @group.title,
-					perms: @perm_form,
-					person_ids: []
-				},
-				dep_perms: @deps_perms
+			group.deps_perms = {
+				tickets: {},
+				chat: {}
 			}
 
-			for a in @agents
-				if a.value
-					postData.group.person_ids.push(a.id)
+			for dep in @ticketDeps
+				assign = false
+				full = false
+
+				if dep.permissions?.agentgroups
+					u = dep.permissions.agentgroups.filter((x) => x.id == group.id)[0]
+					if u
+						if u.name == 'full' then full = true else assign = true
+
+				group.deps_perms.tickets[dep.id] = { assign: assign, full: full }
+
+			for dep in @chatDeps
+				full = false
+				if dep.permissions?.agentgroups
+					u = dep.permissions.agentgroups.filter((x) => x.id == group.id)[0]
+					if u
+						full = true
+
+				group.deps_perms.chat[dep.id] = { full: full }
+
+
+
+		changeAllPerms: (type, section) ->
+			return if !@group?
+
+			if 'perms' == type
+				for perm of @group.perms[section]
+					@group.perms[section][perm] = @all_perms[type][section]
+
+				if 'people' == section
+					@changeAllPerms('perms', 'org')
+
+			else if 'deps_perms_tickets' == type
+				for dep of @group.deps_perms.tickets
+					@group.deps_perms.tickets[dep][section] = @all_perms.deps_perms.tickets[section]
+
+			else if 'deps_perms_chat' == type
+				for dep of @group.deps_perms.chat
+					@group.deps_perms.chat[dep][section] = @all_perms.deps_perms.chat[section]
+
+
+
+		updateAllPermsState: ->
+			return if !@group?
+
+			for section, perms of @group.perms
+				enabled = true
+				for perm of perms
+					if !perms[perm]
+						enabled = false
+						break
+				@all_perms.perms[section] = enabled
+
+			return if !@group.deps_perms
+			for type, sections of @all_perms.deps_perms
+				for section of sections
+					enabled = true
+					for dep of @group.deps_perms[type]
+						if !@group.deps_perms[type][dep][section]
+							enabled = false
+					@all_perms.deps_perms[type][section] = enabled
+
+				
+
+		saveForm: ->
+			postData =
+				group: @group
+				dep_perms: @group.deps_perms
 
 			if @groupId
 				p = @sendFormSaveApiCall('POST', "/agent_groups/#{@groupId}", postData)
@@ -95,26 +140,27 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			p.then( (res) =>
 				@Growl.success(@getRegisteredMessage('saved_group'))
 
-				if @groupId
-					@getGroupListCtrl().renameGroupById(@groupId, @group.title)
-				else
-					@groupId = res.data.group_id
-					@getGroupListCtrl().addGroup({ id: @groupId, title: @group.title})
-					@$state.go('agents.groups.edit', {id: @groupId})
+				if !@groupId
+					@groupId = @group.id = res.data.group_id
+					@service.groups._addModel @group
+
+				# force reload deps perms
+				# todo move deps perms as @group attribute
+				@$q.all [@service.ticketDeps.all(true), @service.chatDeps.all(true)]
+
+				@$state.go('agents.groups.edit', {id: @groupId})
 			)
 			return
 
-		###
-    	# Shows the copy settings modal
-    	###
+
+
 		showDelete: ->
 			deleteGroup = =>
-				p = @Api.sendDelete("/agent_groups/#{@groupId}")
-				p.then(=>
-					@getGroupListCtrl().removeGroupById(@groupId)
-					@$state.go('agents.agents')
-				)
-				return p
+				@service.groups.remove(@group).then =>
+					# force reload deps perms
+					# todo move deps perms as @group attribute
+					@$q.all [@service.ticketDeps.all(true), @service.chatDeps.all(true)]
+					@$state.go('agents.groups')
 
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('AgentGroups/delete-modal.html'),
@@ -129,18 +175,60 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			});
 
 
+
 		###
-    	# Gets a reference to the parent list view which we need to update with the new details
-		###
-		getGroupListCtrl: ->
-			if @$scope.$parent?.ListCtrl?
-				return @$scope.$parent.ListCtrl
-			else
-				# mock since list isnt there yet
-				return {
-					addGroup:        -> return
-					removeGroupById: -> return
-					renameGroupById: -> return
-				}
+    # Shows the copy settings modal
+    ###
+		showCopySettings: ->
+
+			groups = []
+
+			#------------------------------
+			# Function callback that loads and applies the settings
+			#------------------------------
+
+			copySettings = (settings) =>
+
+				@service.groups.get(settings.group_id).then (group) =>
+					return if !group?
+
+					if settings.copy_perms
+						@group.perms = {}
+						angular.copy group.perms, @group.perms
+
+					if settings.copy_deps_perms
+						@assignDepsPerms group
+						@group.deps_perms = {}
+						angular.copy group.deps_perms, @group.deps_perms
+
+			#------------------------------
+			# Show the modal
+			#------------------------------
+
+			@service.groups.all().then (list) =>
+				list.map (group) => groups.push group if group != @group
+
+				if !groups.length
+					return @showAlert('There are no other groups to copy permissions from')
+
+				inst = @$modal.open({
+					templateUrl: @getTemplatePath('AgentGroups/copy-perms-modal.html'),
+					controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+
+						$scope.groups = groups
+						$scope.options =
+							group_id: groups[0].id
+							copy_perms: true
+							copy_deps_perms: true
+
+						$scope.dismiss = -> $modalInstance.dismiss()
+
+						$scope.doCopySettings = ->
+							$scope.is_loading = true
+							copySettings($scope.options).then -> $modalInstance.dismiss()
+					]
+				});
+
+
 
 	Admin_AgentGroups_Ctrl_Edit.EXPORT_CTRL()
