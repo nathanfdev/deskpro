@@ -38,10 +38,19 @@
 				dp-slider-switch
 				ng-model="EditCtrl.group.perms.{{ typename }}.{{ permname }}"
 				{% if opts.toggleName %}
-					is-on="EditCtrl.group.perms.{{ opts.toggleName }}"
+					{% if opts.destructive %}
+						is-on="EditCtrl.group.perms.{{ opts.toggleName }} || EditCtrl.group.sys_name == 'agent_all_perms'"
+					{% else %}
+						is-on="EditCtrl.group.perms.{{ opts.toggleName }} || all_locked_perms"
+					{% endif %}
 					is-locked="all_locked_perms || EditCtrl.group.perms.{{ opts.toggleName }}"
 					locked-tip="This permission is locked because the parent permission is enabled"
 				{% else %}
+					{% if opts.destructive %}
+						is-on="EditCtrl.group.perms.{{ typename }}.{{ permname }} || EditCtrl.group.sys_name == 'agent_all_perms'"
+					{% else %}
+						is-on="EditCtrl.group.perms.{{ typename }}.{{ permname }} || all_locked_perms"
+					{% endif %}
 					is-locked="all_locked_perms"
 				{% endif %}
                 ng-change="EditCtrl.updateAllPermsState()"
@@ -96,7 +105,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_own', {toggleName: 'ticket.modify_own'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_own',       {toggleName: 'ticket.modify_own'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_own') }}
-		{{ _self.perm_row('ticket', 'delete_own') }}
+		{{ _self.perm_row('ticket', 'delete_own', {destructive: true}) }}
 		</tbody>
 		<tbody>
 		{{ _self.perm_row('ticket', 'reply_to_followed',                  {first: true}) }}
@@ -116,7 +125,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_followed', {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_followed',       {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_followed') }}
-		{{ _self.perm_row('ticket', 'delete_followed') }}
+		{{ _self.perm_row('ticket', 'delete_followed', {destructive: true}) }}
 		</tbody>
 		<tbody>
 		{{ _self.perm_row('ticket', 'view_unassigned',                       {first: true}) }}
@@ -137,7 +146,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_unassigned',  {toggleName: 'ticket.modify_unassigned'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_unassigned') }}
-		{{ _self.perm_row('ticket', 'delete_unassigned') }}
+		{{ _self.perm_row('ticket', 'delete_unassigned', {destructive: true}) }}
 		</tbody>
 		<tbody>
 		{{ _self.perm_row('ticket', 'view_others',                      {first: true}) }}
@@ -158,7 +167,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_others', {toggleName: 'ticket.modify_others'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_others',       {toggleName: 'ticket.modify_others'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_others') }}
-		{{ _self.perm_row('ticket', 'delete_others') }}
+		{{ _self.perm_row('ticket', 'delete_others', {destructive: true}) }}
 		</tbody>
 	</table>
 	{# /TICKET PERMISSIONS #}
@@ -176,7 +185,7 @@
 		{{ _self.perm_row('people', 'manage_emails') }}
 		{{ _self.perm_row('people', 'reset_password') }}
 		{{ _self.perm_row('people', 'notes') }}
-		{{ _self.perm_row('people', 'delete') }}
+		{{ _self.perm_row('people', 'delete', {destructive: true}) }}
 		{{ _self.perm_row('people', 'disable') }}
 		{{ _self.perm_row('people', 'login_as') }}
 		{{ _self.perm_row('people', 'merge') }}
@@ -185,7 +194,7 @@
 		{{ _self.perm_row('org', 'create', {first: true}) }}
 		{{ _self.perm_row('org', 'edit') }}
 		{{ _self.perm_row('org', 'notes') }}
-		{{ _self.perm_row('org', 'delete') }}
+		{{ _self.perm_row('org', 'delete', {destructive: true}) }}
 		</tbody>
 	</table>
 	{# /PEOPLE PERMISSIONS #}
@@ -201,7 +210,7 @@
 			{{ _self.perm_row('chat', 'view_transcripts') }}
 			{{ _self.perm_row('chat', 'view_unassigned') }}
 			{{ _self.perm_row('chat', 'view_others') }}
-			{{ _self.perm_row('chat', 'delete') }}
+			{{ _self.perm_row('chat', 'delete', {destructive: true}) }}
 			</tbody>
 		</table>
 	{% else %}
