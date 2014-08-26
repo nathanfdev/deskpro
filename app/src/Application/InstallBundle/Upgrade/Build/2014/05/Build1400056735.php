@@ -297,7 +297,9 @@ class Build1400056735 extends AbstractBuild
 				}
 			} else {
 				$this->out("-- Skipping action {$act['type']}");
-				$is_incomplete = true;
+				if ($act['type'] != 'recalculate_sla_status') {
+					$is_incomplete = true;
+				}
 			}
 		}
 
