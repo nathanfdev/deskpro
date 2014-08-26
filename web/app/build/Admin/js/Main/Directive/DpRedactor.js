@@ -14,16 +14,35 @@
           restrict: 'A',
           require: 'ngModel',
           link: function(scope, element, attrs, ngModel) {
-            var defaults;
+            var api, defaults, updateModel;
+            api = null;
             defaults = {
-              minHeight: 100,
-              keyupCallback: function(html) {
-                ngModel.$setViewValue(html.$el.val());
-                return ngModel.$render();
+              minHeight: 100
+            };
+            updateModel = function(val) {
+              return $timeout(function() {
+                return scope.$apply(function() {
+                  return ngModel.$setViewValue(val);
+                });
+              });
+            };
+            ngModel.$render = function() {
+              if (api) {
+                return $timeout(function() {
+                  return api.setCode(ngModel.$viewValue || '');
+                });
               }
             };
             return $timeout(function() {
-              return element.redactor(defaults);
+              var origSyncCode;
+              element.redactor(defaults);
+              api = element.data('redactor');
+              origSyncCode = api.syncCode;
+              api.syncCode = function() {
+                origSyncCode.call(api);
+                return updateModel(api.getCode());
+              };
+              return ngModel.$render();
             });
           }
         };
