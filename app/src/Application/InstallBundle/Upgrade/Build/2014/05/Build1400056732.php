@@ -43,6 +43,23 @@ class Build1400056732 extends AbstractBuild
 		$db = $this->container->getDb();
 
 		#------------------------------
+		# Rename templates
+		#------------------------------
+
+		$this->out("Renaming templates");
+
+		$replacements = array(
+			'DeskPRO:emails_user:new-reply-agent.html.twig' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
+			'DeskPRO:emails_user:new-reply-user.html.twig'  => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+			'DeskPRO:emails_user:new-ticket.html.twig'      => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+		);
+
+		foreach ($replacements as $oldname => $newname) {
+			$this->out("Rename $oldname -> $newname");
+			$db->update('templates', array('name' => $newname), array('name' => $oldname));
+		}
+
+		#------------------------------
 		# Recompile tempaltes
 		#------------------------------
 
@@ -57,12 +74,6 @@ class Build1400056732 extends AbstractBuild
 		$tids = $db->fetchAllCol("SELECT id FROM templates");
 		$failed = array();
 		$failed_data = array();
-
-		$replacements = array(
-			'DeskPRO:emails_user:new-reply-agent.html.twig' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
-			'DeskPRO:emails_user:new-reply-user.html.twig'  => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
-			'DeskPRO:emails_user:new-ticket.html.twig'      => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
-		);
 
 		foreach ($tids as $id) {
 			$info = $db->fetchAssoc("SELECT name, template_code FROM templates WHERE id = ?", array($id));
@@ -94,7 +105,7 @@ class Build1400056732 extends AbstractBuild
 
 		$this->out("Renaming custom templates");
 
-		$custom_names = $db->fetchAllKeyValue("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_user:custom_%' OR name LIKE 'DeskPRO:emails_agent:custom_'");
+		$custom_names = $db->fetchAllKeyValue("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_user:custom_%' OR name LIKE 'DeskPRO:emails_agent:custom_%'");
 
 		foreach ($custom_names as $id => $name) {
 			$new_name = preg_replace('#^DeskPRO:emails_(user|agent):custom_(.*?)\.html\.twig$#', 'DeskPRO:emails_custom:$1_$2.html.twig', $name);
