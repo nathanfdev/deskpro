@@ -34,11 +34,32 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1407241625 extends AbstractBuild
+use DeskPRO\Kernel\KernelErrorHandler;
+
+class Build1409052752 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Add jira_issues.last_synced");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD last_synced INT NOT NULL");
+		$this->out("Correcting schema");
+		$schemadiff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql();
+
+		$db = $this->container->getDb();
+		$db->exec("SET FOREIGN_KEY_CHECKS = 0");
+
+		if ($schemadiff) {
+			foreach ($schemadiff as $line) {
+				$this->out("-> $line");
+
+				try {
+					$db->exec($line);
+					$this->out("-> OK");
+				} catch (\Exception $e) {
+					$this->out("-> Failed: {$e->getMessage()}");
+					KernelErrorHandler::logException($e);
+				}
+			}
+		}
+
+		$db->exec("SET FOREIGN_KEY_CHECKS = 1");
 	}
 }
