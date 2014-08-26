@@ -58,7 +58,7 @@ class JobWorker
 	 */
 	private $connection;
 
-	public function __construct(Connection $connection)
+	public function __construct(Connection $connection, JobRouter $jobRouter)
 	{
 		$this->connection = $connection;
 
@@ -66,7 +66,7 @@ class JobWorker
 		$this->workerId = uniqid();
 
 		// create the JobRouter for this worker instance
-		$this->jobRouter = new JobRouter($this->connection);
+		$this->jobRouter = $jobRouter;
 	}
 
 

@@ -44,4 +44,13 @@ interface JobProcessorInterface
 	 * @return mixed
 	 */
 	public function execute(array $job);
+
+
+	/**
+	 * $job['type'] will usually be checked here to determine if its the right type of job for this processor
+	 *
+	 * @param array $job the job row from the dbal
+	 * @return bool TRUE if this processor can handle the job, FALSE otherwise
+	 */
+	public function canHandle(array $job);
 }

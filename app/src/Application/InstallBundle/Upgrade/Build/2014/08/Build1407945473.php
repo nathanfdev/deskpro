@@ -38,7 +38,7 @@ class Build1407945473 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Create the 'jobs' table");
+		$this->out("Create the 'jobs' table and setup cron jobs");
 		$this->execMutateSql("CREATE TABLE jobs (id INT AUTO_INCREMENT NOT NULL, original_job_id INT DEFAULT NULL, type VARCHAR(50) DEFAULT NULL, status VARCHAR(25) DEFAULT NULL, status_code VARCHAR(25) DEFAULT NULL, date_touch DATETIME DEFAULT NULL, date_created DATETIME DEFAULT NULL, date_last_try DATETIME DEFAULT NULL, date_next_try DATETIME DEFAULT NULL, priority VARCHAR(255) DEFAULT NULL, num_tries VARCHAR(255) DEFAULT NULL, data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', log_summary VARCHAR(256) DEFAULT NULL, log LONGTEXT DEFAULT NULL, has_warning TINYINT(1) NOT NULL, worker_id VARCHAR(128) DEFAULT NULL, INDEX IDX_A8936DC5589C6D79 (original_job_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 		$this->execMutateSql(
 			"ALTER TABLE jobs ADD CONSTRAINT FK_A8936DC5589C6D79 FOREIGN KEY (original_job_id) REFERENCES jobs (id)"

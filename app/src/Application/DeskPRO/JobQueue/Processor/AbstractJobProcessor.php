@@ -36,24 +36,44 @@ namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\JobQueue\JobProcessorInterface;
 use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\JobQueue\JobQueueException;
 use Doctrine\DBAL\Connection;
 
 /**
  * Helper methods available to children, encouraged to extend this when creating a job processor (but not required to).
+ *
+ * Please see the JOB_TYPE constant and the canHandle() method of this class
  */
 abstract class AbstractJobProcessor implements JobProcessorInterface
 {
+	const JOB_TYPE = null;
+
 	/**
 	 * @var Connection
 	 */
 	protected $connection;
-
 
 	/**
 	 * {@inheritdoc}
 	 */
 	abstract public function execute(array $job);
 
+	/**
+	 * Children of AbstractJobProcessor MUST define a JOB_TYPE constant, which matches 1-1 with the passed $job['type']
+	 * So, if your processor defines JOB_TYPE as "test_job", then any job time we process a job with the "type" field
+	 * equal to "test_job", it will be processed by this.
+	 *
+	 * @param array $job
+	 * @return string
+	 */
+	public function canHandle(array $job)
+	{
+		if (!static::JOB_TYPE) {
+			throw new JobQueueException(sprintf('The processor "%s" does not define the JOB_TYPE constant', get_class($this)));
+		}
+
+		return static::JOB_TYPE == $job['type'];
+	}
 
 	/**
 	 * @param Connection $connection

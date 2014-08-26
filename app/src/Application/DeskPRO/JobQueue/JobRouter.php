@@ -50,10 +50,16 @@ class JobRouter
 	 */
 	private $connection;
 
+	/**
+	 * @var \Application\DeskPRO\JobQueue\JobProcessorInterface[]
+	 */
+	private $processors;
 
-	public function __construct(Connection $connection)
+
+	public function __construct(Connection $connection, array $processors = array())
 	{
 		$this->connection = $connection;
+		$this->processors = $processors;
 	}
 
 
@@ -63,7 +69,6 @@ class JobRouter
 	public function handle(array $job)
 	{
 		try {
-			// TODO: maybe make processors reusable?
 			$processor = $this->findProcessor($job);
 			$processor->execute($job);
 		} catch (\Exception $e) {
@@ -73,19 +78,31 @@ class JobRouter
 
 
 	/**
+	 * Add a processor to the router
+	 *
+	 * @param JobProcessorInterface $processor
+	 */
+	public function addProcessor(JobProcessorInterface $processor)
+	{
+		$this->processors[] = $processor;
+	}
+
+
+	/**
 	 * Does the actual job array -> job processor mapping and returns an instantiated JobProcessorInterface
 	 *
-	 * @return DummyProcessor
+	 * @throws JobQueueException
+	 * @return JobProcessorInterface
 	 */
 	private function findProcessor(array $job)
 	{
-		// TODO: route these more intelligently, probably have the processors instantiated outside this class, injected
-		switch ($job['type']) {
-			case 'outgoing_sms':
-				return new OutgoingSmsProcessor($this->connection);
-			default:
-				throw new JobQueueException(sprintf('No processor found for "%s"', $job['type']));
+		foreach ($this->processors as $processor) {
+			if ($processor->canHandle($job)) {
+				return $processor;
+			}
 		}
+
+		throw new JobQueueException(sprintf('No processor found for "%s"', $job['type']));
 	}
 
 

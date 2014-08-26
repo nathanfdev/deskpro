@@ -29,21 +29,26 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\JobQueue\Processor;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-class DummyProcessor extends AbstractJobProcessor
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\JobQueue\JobRouter;
+use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
+use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
+
+class JobRouterService
 {
-	const JOB_TYPE = 'dummy';
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function execute(array $job)
+	public static function create(DeskproContainer $container)
 	{
-		$this->touchJob($job);
-		$this->markComplete($job, 'Successful, congrats!', "More details! \nDummy job complete!");
+		$conn = $container->get('doctrine.dbal.default_connection');
+
+		$router = new JobRouter($conn);
+		$router->addProcessor(new OutgoingSmsProcessor($conn));
+		$router->addProcessor(new IncomingSmsProcessor($conn));
+
+		return $router;
 	}
 }
