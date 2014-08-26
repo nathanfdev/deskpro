@@ -51,9 +51,16 @@
           value: 'FilterPriority'
         });
         options.push({
+          title: 'Urgency',
+          value: 'FilterUrgency'
+        });
+        options.push({
           title: 'Workflow',
           value: 'FilterWorkflow'
-        });
+        }, options.push({
+          title: 'Labels',
+          value: 'FilterLabels'
+        }));
         options.push({
           title: 'Email Account',
           value: 'FilterEmailAccount'
@@ -306,6 +313,19 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterLabels = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'labels';
+        options.type_title = 'Labels';
+        options.tags = true;
+        options.operators = ['contains', 'notcontains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterPriority = function(options) {
         var def;
         if (options == null) {
@@ -320,6 +340,17 @@
           }
         ];
         def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUrgency = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'urgency';
+        options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte'];
+        def = this.getStandardInput(options);
         return def;
       };
 
