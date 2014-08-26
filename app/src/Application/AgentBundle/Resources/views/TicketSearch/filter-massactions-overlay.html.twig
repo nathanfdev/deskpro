@@ -68,14 +68,20 @@
 				<table cellspacing="0" cellpadding="0" border="0"><tr>
 					<td>
 						<dl>
-							<dt>
+							<dt style="white-space: nowrap">
 							    {{ phrase('agent.general.agent') }}
-                                <a id="%baseId%_assign_me" class="assign-self-link" data-me="{{ app.user.id }}">
-                                    ({{ phrase('agent.general.assign_to_me') }})
-                                </a>
-                                <a id="%baseId%_unassign_agent" class="assign-self-link" style="display:none;">
-                                    ({{ phrase('agent.general.unassign') }})
-                                </a>
+							    <span id="%baseId%_assign_me" class="assign-self-link-wrap">
+									&middot;
+									<a class="assign-self-link" data-me="{{ app.user.id }}">
+										{{ phrase('agent.general.assign_to_me') }}
+									</a>
+								</span>
+								<span id="%baseId%_unassign_agent" class="assign-self-link-wrap" style="display:none">
+									&middot;
+									<a class="assign-self-link">
+										{{ phrase('agent.general.unassign') }}
+									</a>
+								</span>
                             </dt>
 							<dd>
 								<select name="actions[agent]" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
@@ -91,16 +97,22 @@
 					</td>
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>
+							<dt style="white-space: nowrap">
 							    {{ phrase('agent.general.team') }}
 
                                 {% if app.user.agent.teams|length >= 1 %}
-                                <a id="%baseId%_assign_team" class="assign-self-link" data-team="{{ (app.user.agent.teams|first).id }}">
-                                    ({{ phrase('agent.general.assign_to_my_team') }})
-                                </a>
-                                <a id="%baseId%_unassign_team" class="assign-self-link" style="display:none;">
-                                    ({{ phrase('agent.general.unassign') }})
-                                </a>
+                                <span id="%baseId%_assign_team" class="assign-self-link-wrap" data-team="{{ (app.user.agent.teams|first).id }}">
+                                	&middot;
+									<a class="assign-self-link">
+										{{ phrase('agent.general.assign_to_my_team') }}
+									</a>
+								</span>
+                                <span id="%baseId%_unassign_team" class="assign-self-link-wrap" style="display:none;">
+                                	&middot;
+                                	<a class="assign-self-link">
+                                    	{{ phrase('agent.general.unassign') }}
+                                    </a>
+                                </span>
                                 {% endif %}
                             </dt>
 							<dd>
@@ -120,9 +132,12 @@
 				<dl>
 					<dt>
 					    {{ phrase('agent.general.followers') }}
-					    <a id="%baseId%_follower_me" class="assign-self-link" data-me="{{ app.user.id }}">
-                            ({{ phrase('agent.general.add_me') }})
-                        </a>
+					    <span id="%baseId%_follower_me" class="assign-self-link-wrap" data-me="{{ app.user.id }}">
+					    	&middot;
+                            <a class="assign-self-link">
+                            	{{ phrase('agent.general.add_me') }}
+                            </a>
+                        </span>
                     </dt>
 					<dd>
 						<select name="actions[add_participants][add_participants][]" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="{{ phrase('agent.tickets.add_followers') }}">

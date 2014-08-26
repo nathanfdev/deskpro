@@ -741,5 +741,5 @@
 	'agent.general.your_email_address'                      => 'Your Email Address',
 	'agent.general.your_teams'                              => 'Your Teams',
 	'agent.general.new'                                     => 'New',
-	'agent.general.unassign'                                => 'Unasign',
+	'agent.general.unassign'                                => 'Unassign',
 );
