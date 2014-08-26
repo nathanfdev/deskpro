@@ -124,7 +124,6 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
 			'type' => 'integer',
 			'nullable' => false,
 			'columnName' => 'time',
-			'columnDefinition' => 'int(11) unsigned not null',
 		));
 
 		$metadata->mapField(array(

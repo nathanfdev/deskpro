@@ -97,21 +97,6 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-class="{'success': indexer_status.deskpro_ticket_done >= indexer_status.deskpro_ticket_total}">
-							<td>Tickets</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_total') }}</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_done') }}</td>
-						</tr>
-						<tr ng-class="{'success': indexer_status.deskpro_person_done >= indexer_status.deskpro_person_total}">
-							<td>People</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_total') }}</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_done') }}</td>
-						</tr>
-						<tr ng-class="{'success': indexer_status.deskpro_organization_done >= indexer_status.deskpro_organization_total}">
-							<td>Organizations</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_total') }}</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_done') }}</td>
-						</tr>
 						<tr ng-class="{'success': indexer_status.deskpro_article_done >= indexer_status.deskpro_article_total}">
 							<td>Articles</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_article_total') }}</td>
@@ -131,6 +116,21 @@
 							<td>Feedback</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_feedback_total') }}</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_feedback_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_organization_done >= indexer_status.deskpro_organization_total}">
+							<td>Organizations</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_person_done >= indexer_status.deskpro_person_total}">
+							<td>People</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_ticket_done >= indexer_status.deskpro_ticket_total}">
+							<td>Tickets</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_done') }}</td>
 						</tr>
 					</tbody>
 				</table>

@@ -728,6 +728,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 						lastUpdateTime = t
 						scope.resultGroups = data.grouped_results || [];
 						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
+						scope.index_running = data.index_running || false;
 
 						var initialShow = {
 							organization: 3,

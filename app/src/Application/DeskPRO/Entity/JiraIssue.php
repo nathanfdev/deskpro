@@ -44,9 +44,9 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 	
 	/**
 	 * When was it last synced with JIRA?
-	 * @var type 
+	 * @var int
 	 */
-	protected $lastSynced;
+	protected $lastSynced = 0;
 	
 	/**
 	 * Issues Comments
