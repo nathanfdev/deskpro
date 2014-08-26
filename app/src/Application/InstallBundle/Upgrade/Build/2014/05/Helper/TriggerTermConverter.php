@@ -176,7 +176,7 @@ class TriggerTermConverter
 
 	private function upgradeTerm_email_cc_name($type, $op, OptionsArray $options)
 	{
-		return new Terms\CheckEmailCcName($op, array('name' => $options->get('email', 'NO NAME')));
+		return new Terms\CheckEmailCcName($op, array('name' => $options->get('name', 'NO NAME')));
 	}
 
 	private function upgradeTerm_email_from_email($type, $op, OptionsArray $options)
