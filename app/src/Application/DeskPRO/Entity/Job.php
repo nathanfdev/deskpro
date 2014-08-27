@@ -71,9 +71,11 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_DELEGATED = 'delegated';
 	const STATUS_ABORTED = 'aborted';
 
+	const STATUS_CODE_SUCCESS = 'success'; // completed successfully
 	const STATUS_CODE_RESCHEDULED = 'rescheduled'; // a job we depend on is not yet done, we will retry
 	const STATUS_CODE_RETRYING = 'retrying'; // failed but we are retrying
 	const STATUS_CODE_EXHAUSTED = 'exhausted'; // retried it a bunch of times, won't retry again
+	const STATUS_CODE_INVALID_DATA = 'invalid_data'; // the job data (payload) was invalid in some way, or couldn't be processed
 
 	/**
 	 * @var int
