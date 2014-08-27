@@ -2797,13 +2797,22 @@ class TicketController extends AbstractController
 		$split = new TicketSplit($ticket);
 		$split->setPersonContext($this->person);
 
+		$this->em->beginTransaction();
 		try {
-			$this->em->beginTransaction();
 			$new_ticket = $split->split($subject, $message_ids);
 			$this->em->commit();
+		} catch (\InvalidArgumentException $e) {
+			if ($e->getCode() == 100) {
+				$code = 'no_messages';
+			} else {
+				$code = 'all_messages';
+			}
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => $code
+			));
 		} catch (\Exception $e) {
 			$this->em->rollback();
-
 			throw $e;
 		}
 

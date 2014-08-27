@@ -2280,6 +2280,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}).always(function() {
 						form.removeClass('loading');
 					}).done(function(data) {
+
+						if (data.error) {
+							if (data.error_code == 'no_messages') {
+								alert('Please select at least one message to split from this ticket.');
+							} else {
+								alert('You cannot split all messages from this ticket.');
+							}
+							return;
+						}
+
 						overlay.close();
 
 						if (data.ticket_id) {
