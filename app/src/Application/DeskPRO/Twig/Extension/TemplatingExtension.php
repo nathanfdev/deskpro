@@ -1654,7 +1654,7 @@ class TemplatingExtension extends \Twig_Extension
 			$sid .= 'unknown';
 		}
 
-		$version = defined(DP_BUILD_TIME) ? DP_BUILD_TIME : '0';
+		$version = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
 
 		/** @var \Application\DeskPRO\Templating\Asset\UrlPackage $helper */
 		$helper = $this->getContainer()->get('templating.helper.assets');
