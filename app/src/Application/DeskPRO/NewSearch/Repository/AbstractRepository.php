@@ -93,6 +93,21 @@ abstract class AbstractRepository extends Repository
         return $query;
     }
 
+
+	/**
+	 * Makes sure a "query" var is formatted for use with QueryString
+	 *
+	 * @param string $q
+	 * @return string
+	 */
+	protected function escapeQueryStringTerm($q)
+	{
+		$q = ElasticaUtil::escapeTerm($q);
+		$q = str_replace(array('AND', 'OR', 'NOT'), array('and', 'or', 'not'), $q);
+
+		return $q;
+	}
+
     /**
      * Constructs the query string
      *
@@ -101,7 +116,7 @@ abstract class AbstractRepository extends Repository
      */
 	protected function getQueryString($q)
     {
-		$term = ElasticaUtil::escapeTerm($q);
+		$term = $this->escapeQueryStringTerm($q);
 
 		// If we have an equal number of quotes, then
 		// they are properly balanced and it's valid so we can
