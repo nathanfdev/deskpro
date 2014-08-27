@@ -72,7 +72,7 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_ABORTED = 'aborted';
 
 	const STATUS_CODE_RESCHEDULED = 'rescheduled'; // a job we depend on is not yet done, we will retry
-	const STATUS_CODE_RETRYING = 'retrying'; // failed but we want to retry
+	const STATUS_CODE_RETRYING = 'retrying'; // failed but we are retrying
 	const STATUS_CODE_EXHAUSTED = 'exhausted'; // retried it a bunch of times, won't retry again
 
 	/**
@@ -97,7 +97,7 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	 * reserved: The job has been reserved by a job processor.
 	 * processing: The job has started processing.
 	 * complete: The job has finished successfully.
-	 * error: The job has stopped due to error. It will not be retried.
+	 * error: The job has stopped due to error.
 	 * rejected: The job has been rejected and will not be retried.
 	 * delegated: The job has been delegated to an external job service.
 	 * aborted: The job was manually aborted/cancelled by the admin.
