@@ -41,6 +41,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.cancelHashLoad = 0;
 		this.activeListNav = null;
 		this.activityTime = new Date();
+		this.isMobile = false;
 
 		this.agentNotifyListShown = false;
 
@@ -633,6 +634,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var loadVis = false;
 		if (loadVis = window.location.hash.match(/vis:([0-9]{1})/)) {
 			loadVis = parseInt(loadVis[1]);
+		}
+		if ($('html').hasClass('ipad') || $('html').hasClass('iphone')) {
+			this.paneVis.source = false;
+			this.paneVis.list = true;
+			this.paneVis.tabs = false;
+			this.isMobile = true;
+			loadVis = 2;
 		}
 
 		var loadAdmin = false;
