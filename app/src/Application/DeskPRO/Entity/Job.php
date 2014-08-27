@@ -203,6 +203,14 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	protected $child_jobs;
 
 	/**
+	 * If a Job is set here, then the workers will make sure this $depends_on_job has a status of complete before
+	 * processing the current job, usually it will be re-scheduled to be run later if not.
+	 *
+	 * @var Job|null
+	 */
+	protected $depends_on_job;
+
+	/**
 	 * A unique worker ID. Any worker that spawns and uses the queue should use a unique ID here.
 	 *
 	 * @var string
@@ -254,5 +262,6 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 		$builder->mapBoolean('has_warning');
 		$builder->addManyToOne('original_job', 'Application\DeskPRO\Entity\Job', 'child_jobs');
 		$builder->addOneToMany('child_jobs', 'Application\DeskPRO\Entity\Job', 'original_job');
+		$builder->addManyToOne('depends_on_job', 'Application\DeskPRO\Entity\Job');
 	}
 }
