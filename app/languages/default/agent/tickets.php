@@ -139,6 +139,7 @@
 	'agent.tickets.hidden_status_deleted'               => 'Deleted',
 	'agent.tickets.hidden_status_spam'                  => 'Spam',
 	'agent.tickets.hidden_status_validating'            => 'Validating',
+	'agent.tickets.hidden_status_temp'                  => 'Temporary',
 	'agent.tickets.hidden_tickets'                      => 'Hidden Tickets',
 	'agent.tickets.hold_btn'                            => 'Put ticket on hold',
 	'agent.tickets.html_body'                           => 'HTML Body',
