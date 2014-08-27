@@ -95,7 +95,8 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 
 
 	/**
-	 * OVERRIDE this method to change how the processor handles uncaught exceptions
+	 * OVERRIDE this method to change how the processor handles uncaught exceptions.
+	 * You might want to catch various types of exceptions here, or in your process() method
 	 *
 	 * @param array $job
 	 * @param       $e
@@ -245,6 +246,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	 * @param array $job
 	 * @param       $date_string
 	 * @throws \Doctrine\DBAL\DBALException
+	 * @deprecated this will be deleted soon, inject the JobQueue and use JobQueue->retry(Job) instead
 	 */
 	protected function scheduleRetryExisting(array $job, $date_string)
 	{

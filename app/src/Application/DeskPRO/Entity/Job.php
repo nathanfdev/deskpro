@@ -39,9 +39,8 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * A job
-
  *
-*@property $id
+ * @property $id
  * @property $type
  * @property $status
  * @property $status_code
@@ -57,6 +56,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * @property $has_warnings
  * @property Job|null $original_job
  * @property Job[]|null $child_jobs
+ * @property Job|null $depends_on_job
  * @property $worker_id
  */
 class Job extends \Application\DeskPRO\Domain\DomainObject
@@ -71,6 +71,7 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_DELEGATED = 'delegated';
 	const STATUS_ABORTED = 'aborted';
 
+	const STATUS_CODE_RESCHEDULED = 'rescheduled';
 	/**
 	 * @var int
 	 */
@@ -95,7 +96,7 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	 * complete: The job has finished successfully.
 	 * error: The job has stopped due to error. It will not be retried.
 	 * rejected: The job has been rejected and will not be retried.
-	 * delegated: The job has been delegated to an external job service (more on this below).
+	 * delegated: The job has been delegated to an external job service.
 	 * aborted: The job was manually aborted/cancelled by the admin.
 	 *
 	 * @var string
@@ -263,5 +264,15 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 		$builder->addManyToOne('original_job', 'Application\DeskPRO\Entity\Job', 'child_jobs');
 		$builder->addOneToMany('child_jobs', 'Application\DeskPRO\Entity\Job', 'original_job');
 		$builder->addManyToOne('depends_on_job', 'Application\DeskPRO\Entity\Job');
+	}
+
+
+	public function reschedule(\DateTime $retryDate)
+	{
+		$this->setModelField('date_next_try', $retryDate);
+		$this->setModelField('status', Job::STATUS_WAITING);
+		$this->setModelField('status_code', Job::STATUS_CODE_RESCHEDULED);
+		$this->setModelField('worker_id', null);
+		$this->setModelField('date_touch', new \DateTime());
 	}
 }

@@ -117,7 +117,7 @@ class DeskPROSmsSender extends SmsSender
 			OutgoingSmsProcessor::JOB_TYPE,
 			$data
 		);
-		$this->queue->scheduleJob($job);
+		$this->queue->addJob($job);
 
 		return true;
 	}

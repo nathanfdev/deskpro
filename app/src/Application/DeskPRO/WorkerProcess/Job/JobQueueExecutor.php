@@ -46,7 +46,8 @@ class JobQueueExecutor extends AbstractJob
 		// the old job "WorkerProcess" system wasn't designed with DI in mind, using the globals
 		$connection = App::getDb();
 		$router = App::$container->getSystemService('job_router');
-		$worker = new JobWorker($connection, $router);
+		$queue = App::$container->getSystemService('job_queue');
+		$worker = new JobWorker($connection, $router, $queue);
 
 		$worker->work(25);
 	}

@@ -37,8 +37,6 @@ namespace Application\DeskPRO\JobQueue;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Job;
-use Application\DeskPRO\JobQueue\Processor\DummyProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 
 /**
  * The Job Router is responsible for instantiating the JobProcessor for a job and executing it

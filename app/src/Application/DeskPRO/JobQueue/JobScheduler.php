@@ -37,130 +37,61 @@ namespace Application\DeskPRO\JobQueue;
 use Application\DeskPRO\Entity\Job;
 use Doctrine\ORM\EntityManager;
 
-class JobQueue
+/**
+ * Handles job dependencies.
+ *
+ * Responsible for making a job depend on another before it is persisted, using its own logic to determine how different
+ * job types depend on each other. Also responsible for checking to see if a job is ready to run now.
+ */
+class JobScheduler
 {
 	/**
 	 * @var EntityManager
 	 */
 	private $em;
 
-	/**
-	 * @var JobScheduler
-	 */
-	private $scheduler;
-
-	public function __construct(EntityManager $em, JobScheduler $scheduler)
+	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
-		$this->scheduler = $scheduler;
 	}
 
-
 	/**
-	 * Allows adding a job with just the job type and payload
-	 *
-	 * @param           $type
-	 * @param array     $data
-	 * @param \DateTime $nextTry
-	 */
-	public function add($type, array $data, \DateTime $nextTry = null)
-	{
-		$this->addJob(new Job($type, $data), $nextTry);
-	}
-
-
-	/**
-	 * allows adding a job directly
-	 *
-	 * @param Job       $job
-	 * @param \DateTime $nextTry
-	 */
-	public function addJob(Job $job, \DateTime $nextTry = null)
-	{
-		// schedule the job as waiting directly as we flush it into the db
-		$job->status = Job::STATUS_WAITING;
-
-		// if the user did not request a future date, schedule it to be run immediately
-		$job->date_next_try = $nextTry ?: new \DateTime();
-
-		// tells scheduler to perform logic before we persist
-		$this->scheduler->schedule($job);
-
-		// save and flush immediately
-		$this->saveJob($job);
-	}
-
-
-	/**
-	 * This will usually be run if the isReady() check returns false. Responsible for ensuring this job will attempt
-	 * to run sometime in the future.
+	 * Set the $depends_on_job field with a Job object if the given Job needs to be run after the $depends_on_job
+	 * In the event that multiple jobs ned to run before this one, the $depends_on_job chain should be setup correctly
+	 * A depends on B which depends on C which depends on D, etc.
 	 *
 	 * @param Job $job
+	 * @return null
 	 */
-	public function reschedule(Job $job)
+	public function schedule(Job $job)
 	{
-		$job->reschedule(new \DateTime('now + 15 seconds'));
-		$this->saveJob($job);
+		// TODO: implement some scheduling logic. You should maybe add a "job_grouping" field to Job entity
+		//       and somehow use that to determine if this job should depend on the last job in the group (or something)
+		// currently no dependencies are setup, but this will be useful in future.
+		// scheduler should not save the job if it sets a dep, the queue does the save after this
+		// ex: $job->depends_on_job = $this->em->getRepository('DeskPRO:Job')->find(26);
 	}
 
+
 	/**
-	 * Determines if the job is ready to run now
+	 * Before we execute ANY job, the scheduler is asked via this method if the Job is ready to be run. If not, it
+	 * will be rescheduled. Return TRUE if it is safe to run now, and false otherwise.
 	 *
 	 * @param Job $job
 	 * @return bool
 	 */
 	public function isReady(Job $job)
 	{
-		return $this->scheduler->isReady($job);
-	}
+		// if we don't depend on a job then its ready now
+		if (!$job->depends_on_job) {
+			return true;
+		}
 
+		// if the $depends_on_job is complete, we are ready to run this one
+		if ($job->depends_on_job->status == Job::STATUS_COMPLETE) {
+			return true;
+		}
 
-	/**
-	 * Useful proxy if you only have the job ID
-	 *
-	 * @param int $id
-	 * @return bool
-	 */
-	public function isReadyByJobId($id)
-	{
-		return $this->isReady($this->getJob($id));
-	}
-
-
-	/**
-	 * Useful proxy if you only have the job ID
-	 *
-	 * @param int $id
-	 */
-	public function rescheduleByJobId($id)
-	{
-		$this->reschedule($this->getJob($id));
-	}
-
-
-	/**
-	 * Save a Job
-	 *
-	 * @param Job $job
-	 */
-	public function saveJob(Job $job)
-	{
-		// push it immediately to the queue
-		$this->em->persist($job);
-		$this->em->flush($job);
-	}
-
-	/**
-	 * Get a Job directly from the database (refreshes)
-	 *
-	 * @param int $id the job id
-	 * @return Job|null
-	 */
-	public function getJob($id)
-	{
-		$job = $this->em->getRepository('DeskPRO:Job')->find($id);
-		$this->em->refresh($job);
-
-		return $job;
+		return false;
 	}
 }

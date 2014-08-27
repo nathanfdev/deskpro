@@ -58,9 +58,16 @@ class JobWorker
 	 */
 	private $connection;
 
-	public function __construct(Connection $connection, JobRouter $jobRouter)
+	/**
+	 * @var JobQueue
+	 */
+	private $queue;
+
+
+	public function __construct(Connection $connection, JobRouter $jobRouter, JobQueue $queue)
 	{
 		$this->connection = $connection;
+		$this->queue = $queue;
 
 		// a unique ID for this particular worker
 		$this->workerId = uniqid();
@@ -192,6 +199,13 @@ class JobWorker
 	protected function executeJob($job)
 	{
 		if ($this->looksLikeAJobArray($job)) {
+
+			if (!$this->queue->isReadyByJobId($job['id'])) {
+				$this->queue->rescheduleByJobId($job['id']);
+
+				return true;
+			}
+
 			$this->markProcessing($job);
 
 			try {
@@ -202,6 +216,7 @@ class JobWorker
 				// the router layer and processor layer are responsible for recording failures and retries etc on their own
 				// router is supposed to handle all situations and catch all errors and never throw
 				// this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
+				// this will eventually do something other than return true
 				return true;
 			}
 		} else {

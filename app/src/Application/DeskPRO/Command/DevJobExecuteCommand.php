@@ -53,7 +53,8 @@ class DevJobExecuteCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 	{
 		$connection = $this->getContainer()->get('doctrine.dbal.default_connection');
 		$router = $this->getContainer()->getSystemService('job_router');
-		$worker = new JobWorker($connection, $router);
+		$queue = $this->getContainer()->getSystemService('job_queue');
+		$worker = new JobWorker($connection, $router, $queue);
 
 		$res = $worker->executeJobById($input->getArgument('job'));
 
