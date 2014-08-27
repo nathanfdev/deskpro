@@ -86,6 +86,16 @@ class Connection extends \Doctrine\DBAL\Connection
 	 */
 	protected $has_run_avoid = false;
 
+	/**
+	 * @var string
+	 */
+	protected $default_isolation = 'REPEATABLE READ';
+
+	/**
+	 * @var bool
+	 */
+	protected $do_reset_isolation = false;
+
 	public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
 	{
 		if (!isset($params['driverOptions'])) {
@@ -768,6 +778,11 @@ class Connection extends \Doctrine\DBAL\Connection
 			// properly synced and we dont need the flag set anymore
 			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
 
+			if ($this->do_reset_isolation) {
+				$this->do_reset_isolation = false;
+				$this->setIsolationDefault();
+			}
+
 			\DpShutdown::run('db_done_trans');
 			\DpShutdown::run('db_done_trans_commit');
 		}
@@ -805,8 +820,49 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		if (!$level) {
+			if ($this->do_reset_isolation) {
+				$this->do_reset_isolation = false;
+				$this->setIsolationDefault();
+			}
 			\DpShutdown::run('db_done_trans');
 			\DpShutdown::run('db_done_trans_rollback');
 		}
+	}
+
+
+	/**
+	 * Set isolation level to REPEATABLE READ
+	 *
+	 * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
+	 */
+	public function setIsolationRepeatableRead($auto_reset = false)
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ");
+		if ($auto_reset) {
+			$this->do_reset_isolation = true;
+		}
+	}
+
+
+	/**
+	 * Set isolation level to READ COMMITTED
+	 *
+	 * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
+	 */
+	public function setIsolationReadCommitted($auto_reset = false)
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED");
+		if ($auto_reset) {
+			$this->do_reset_isolation = true;
+		}
+	}
+
+
+	/**
+	 * Set isolation level back to default (REPEATABLE READ usually)
+	 */
+	public function setIsolationDefault()
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL {$this->default_isolation}");
 	}
 }
