@@ -163,7 +163,7 @@ class IncomingSmsProcessor extends AbstractJobProcessor
 		 * Create a new Ticket SMS Message
 		 */
 
-		$message = new TicketSms();
+		$message = new TicketSms('incoming');
 		$message->ticket = $ticket;
 		$message->person = $from_person;
 		$message->sms_account = $sms_account;

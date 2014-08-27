@@ -52,6 +52,7 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  * @property string $from_number
  * @property string $to_number
  * @property string $message
+ * @property string $direction
  */
 class TicketSms extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -107,8 +108,16 @@ class TicketSms extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $message;
 
-	public function __construct()
+	/**
+	 * Just a system flag for reporting
+	 *
+	 * @var string "incoming" or "outgoing"
+	 */
+	protected $direction;
+
+	public function __construct($direction)
 	{
+		$this->direction = $direction;
 		$this->setModelField('date_created', new \DateTime());
 	}
 
@@ -177,11 +186,12 @@ class TicketSms extends \Application\DeskPRO\Domain\DomainObject
 		$builder->mapDateTime('date_created');
 		$builder->mapString('from_number', 30);
 		$builder->mapString('to_number', 30);
+		$builder->mapString('direction', 10);
 		$builder->mapText('message');
 
 		$builder->addManyToOne('ticket', 'Application\\DeskPRO\\Entity\\Ticket', 'sms_messages');
 		$builder->addManyToOne('person', 'Application\\DeskPRO\\Entity\\Person');
 		$builder->addManyToOne('sms_account', 'Application\\DeskPRO\\Entity\\SmsAccount');
-		$builder->addOwningOneToOne('job', 'Application\\DeskPRO\\Entity\\Job');
+		$builder->addManyToOne('job', 'Application\\DeskPRO\\Entity\\Job');
 	}
 }
