@@ -42,6 +42,8 @@ use Doctrine\DBAL\Connection;
 /**
  * Helper methods available to children, encouraged to extend this when creating a job processor (but not required to).
  *
+ * AbstractJobProcessor's need to implement process() for its logic, and getDataOptions() to set expectations of payload
+ *
  * Please see the JOB_TYPE constant and the canHandle() method of this class
  */
 abstract class AbstractJobProcessor implements JobProcessorInterface
@@ -53,10 +55,25 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	 */
 	protected $connection;
 
+
 	/**
 	 * {@inheritdoc}
 	 */
-	abstract public function execute(array $job);
+	public function execute(array $job)
+	{
+		try {
+
+			$this->touchJob($job);
+			$data = $this->getData($job);
+			$this->process($data, $job);
+			$this->runSuccessHandler($job);
+
+		} catch (\Exception $e) {
+
+			$this->runExceptionHandler($job, $e);
+
+		}
+	}
 
 	/**
 	 * Instantiate an options resolver that defines the data that your processor expects (and its defaults if necessary)
@@ -65,6 +82,44 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	 * @return \Symfony\Component\OptionsResolver\OptionsResolver
 	 */
 	abstract public function getDataOptions();
+
+
+	/**
+	 * this is what needs to be implemented - this method will receive the payload and it needs to be dealt with
+	 *
+	 * @param array $data validated data (the payload)
+	 * @param array $job the full job db row array
+	 * @return null
+	 */
+	abstract public function process(array $data, array $job);
+
+
+	/**
+	 * OVERRIDE this method to change how the processor handles uncaught exceptions
+	 *
+	 * @param array $job
+	 * @param       $e
+	 */
+	protected function runExceptionHandler(array $job, \Exception $e)
+	{
+		$this->markExceptionError(
+			$job,
+			'failed',
+			'Failed',
+			$e
+		);
+	}
+
+
+	/**
+	 * OVERRIDE this method to change how the processor handles itself after successfully processing
+	 *
+	 * @param array $job
+	 */
+	protected function runSuccessHandler(array $job)
+	{
+		$this->markComplete($job, 'Successful', '');
+	}
 
 	/**
 	 * Children of AbstractJobProcessor MUST define a JOB_TYPE constant, which matches 1-1 with the passed $job['type']

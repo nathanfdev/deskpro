@@ -69,37 +69,27 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
 		);
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function execute(array $job)
+
+	public function process(array $data, array $job)
 	{
-		$this->touchJob($job);
+		$provider = SmsProviderFactory::create($data['provider'], $data['provider_params']);
+		$sender   = new SmsSender($provider, $data['from_number']);
 
-		try {
-			$data = $this->getData($job);
+		$message = new SmsMessage($data['message']);
+		$sender->send($data['to_number'], $message);
+	}
 
-			$provider = SmsProviderFactory::create($data['provider'], $data['provider_params']);
-			$sender = new SmsSender($provider, $data['from_number']);
+	public function runExceptionHandler(array $job, \Exception $e)
+	{
+		$this->markExceptionError(
+			$job,
+			$this->willRetry($job) ? 'retrying' : 'exhausted',
+			sprintf('SMS Failed (%s/5 attempts)', $job['num_tries'] + 1), // num_tries starts at 0
+			$e
+		);
 
-			$message = new SmsMessage($data['message']);
-			$sender->send($data['to_number'], $message);
-
-			$this->markComplete($job, 'SMS Sent Successfully', '');
-
-		} catch (\Exception $e) {
-
-			$this->markExceptionError(
-				$job,
-				$this->willRetry($job) ? 'retrying' : 'exhausted',
-				sprintf('SMS Failed (%s/5 attempts)', $job['num_tries'] + 1), // num_tries starts at 0
-				$e
-			);
-
-			if ($this->willRetry($job)) {
-				$this->scheduleRetryExisting($job, '2 minutes');
-			}
-
+		if ($this->willRetry($job)) {
+			$this->scheduleRetryExisting($job, '2 minutes');
 		}
 	}
 

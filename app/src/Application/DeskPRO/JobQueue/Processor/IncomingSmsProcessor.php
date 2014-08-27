@@ -34,20 +34,13 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
-use Application\DeskPRO\Entity\PhoneNumber;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSms;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
-use Application\DeskPRO\Sms\SmsProviderFactory;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManager;
-use Orb\Sms\SmsException;
-use Orb\Sms\SmsMessage;
-use Orb\Sms\SmsSender;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -118,33 +111,11 @@ class IncomingSmsProcessor extends AbstractJobProcessor
 		return $resolver;
 	}
 
+
 	/**
-	 * {@inheritdoc}
+	 * {@inheritDoc}
 	 */
-	public function execute(array $job)
-	{
-		$this->touchJob($job);
-
-		try {
-			$data = $this->getData($job);
-			$this->processSms($data, $job['id']);
-			$this->markComplete($job, 'Incoming SMS Processed', '');
-
-		} catch (\Exception $e) {
-
-			$this->markExceptionError(
-				$job,
-				'failed',
-				'Incoming SMS Processing Failed',
-				$e
-			);
-
-		}
-	}
-
-
-
-	protected function processSms(array $data, $job_id)
+	public function process(array $data, array $job)
 	{
 		$context = new ExecutorContext();
 		$context->setEventMethod(ExecutorContext::METHOD_SMS);
@@ -196,7 +167,7 @@ class IncomingSmsProcessor extends AbstractJobProcessor
 		$message->ticket = $ticket;
 		$message->person = $from_person;
 		$message->sms_account = $sms_account;
-		$message->job_id = $job_id;
+		$message->job_id = $job['id'];
 		$message->message = $data['message'];
 		$message->from_number = $from_number;
 		$message->to_number = $to_number;
