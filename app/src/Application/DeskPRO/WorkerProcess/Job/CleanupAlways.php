@@ -42,7 +42,6 @@ class CleanupAlways extends AbstractJob
 
 	public function run()
 	{
-		App::getDb()->setIsolationReadCommitted();
 		$this->doRun();
 		App::getDb()->setIsolationDefault();
 	}

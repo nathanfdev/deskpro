@@ -239,7 +239,6 @@ class TicketManager
 	public function saveTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->db->beginTransaction();
-		$this->db->setIsolationReadCommitted(true);
 
 		try {
 			$ret = $this->doSaveTicket($ticket, $context);
