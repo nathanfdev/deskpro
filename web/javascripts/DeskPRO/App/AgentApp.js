@@ -537,6 +537,88 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 		}
 	}]);
 
+	AgentApp.directive('dpSettableTable', ['$timeout', '$interval', function($timeout, $interval) {
+		return {
+			restrict: 'A',
+			link: function (scope, $el, attr) {
+				$el.addClass('is-settable');
+
+				var isRunning = false;
+				var count = 0;
+				var colCount = 0;
+				var vis = DeskPRO_Window.getPaneVisNum();
+				var interval;
+				var update = function() {
+					if (isRunning) return;
+					isRunning = true;
+					$el.removeClass('with-set');
+					$timeout(function() {
+						var tr = $el.find('th').first().closest('tr');
+						var tds = tr.find('th');
+						tds.css('width', 'auto').attr('width', '');
+						$timeout(function() {
+							tds.each(function() {
+								var w = $(this).width();
+								$(this).css('width', w).attr('width', w);
+							});
+							$el.addClass('with-set');
+							isRunning = false;
+							update();
+						},10);
+					});
+				};
+
+				var updateDebounce = Functions.debounce(function() {
+					update()
+				}, 300);
+
+				var updateIfChanged = function() {
+					var newCount = $el.find('tr').length;
+					var newColCount = $el.find('tr').first().find('td').length;
+					var newVis = DeskPRO_Window.getPaneVisNum();
+					var doUpdate = false;
+
+					if (newCount != count) {
+						count = newCount;
+						doUpdate = true;
+					}
+					if (newColCount != colCount) {
+						colCount = newColCount;
+						doUpdate = true;
+					}
+					if (newVis != vis) {
+						vis = newVis;
+						doUpdate = true;
+					}
+
+					if (doUpdate) {
+						update();
+						$timeout(function() { update(); });
+					}
+				};
+
+				$timeout(function() {
+					$timeout(function() {
+						update();
+						interval = $interval(function() {
+							updateIfChanged();
+						}, 750);
+						$timeout(function() {
+							update();
+						}, 200);
+					});
+				});
+
+				$(window).on('resize', updateDebounce);
+
+				scope.$on('$destroy', function() {
+					$interval.cancel(interval);
+					$(window).off('resize', updateDebounce);
+				});
+			}
+		}
+	}]);
+
 	AgentApp.directive('dpOmnibox', ['$http', '$timeout', function($http, $timeout) {
 		return {
 			restrict: 'A',
