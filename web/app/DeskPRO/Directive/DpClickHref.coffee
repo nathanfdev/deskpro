@@ -5,9 +5,14 @@ define ->
 			link: (scope, element, attrs) ->
 				clickHref = attrs['dpClickHref']
 				element.on('click', (ev) ->
+					if element.is('a')
+						a = element
+					else
+						a = element.find('a').first()
+
 					if ev.which == 1 and not (ev.shiftKey or ev.altKey or ev.metaKey or ev.ctrlKey)
 						ev.preventDefault()
-						$('a').attr('href', clickHref).click()
+						a.attr('href', clickHref).click()
 				)
 		}
 	]
