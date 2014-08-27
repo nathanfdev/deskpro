@@ -50,6 +50,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<div style="display:none;" class="error-message free" id="{{ baseId }}_freemessage"></div>
 </div>
 
+{% if ticket.id %}
+	<div class="pending-info ticket">
+		{{ phrase('agent.tickets.linking_with_ticket') }} {{ ticket.subject }}
+	</div>
+{% endif %}
+
 <div class="pending-info chat" style="display: none; padding: 7px; background: #FFFEFE; border-bottom: 1px solid #9CA7B1; font-size: 11px;">
 	{{ phrase('agent.tickets.linking_with_chat') }} <span id="{{ baseId }}_chat_title"></span>
 </div>

@@ -390,4 +390,5 @@
 	'agent.tickets.your_tickets'                        => 'Your tickets',
 	'agent.tickets.create_linked_ticket'                => 'Create Linked Ticket',
 	'agent.tickets.linked_tickets'                      => 'Linked Tickets',
+	'agent.tickets.linking_with_ticket'                 => 'Linking with ticket:',
 );

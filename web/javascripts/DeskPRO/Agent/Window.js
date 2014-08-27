@@ -2359,6 +2359,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				dataType: 'text',
 				url: url,
 				type: 'GET',
+				data: routeData.params || null,
 				success: (function(data) {
 					successFn(data);
 				}).bind(this),
