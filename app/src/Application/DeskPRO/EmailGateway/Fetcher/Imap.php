@@ -231,8 +231,6 @@ class Imap extends AbstractFetcher
 
 		$raw_message->headers = $headers;
 
-		$this->next_id++;
-
 		return $raw_message;
 	}
 
