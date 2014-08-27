@@ -59,6 +59,14 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	abstract public function execute(array $job);
 
 	/**
+	 * Instantiate an options resolver that defines the data that your processor expects (and its defaults if necessary)
+	 * See: http://symfony.com/doc/current/components/options_resolver.html
+	 *
+	 * @return \Symfony\Component\OptionsResolver\OptionsResolver
+	 */
+	abstract public function getDataOptions();
+
+	/**
 	 * Children of AbstractJobProcessor MUST define a JOB_TYPE constant, which matches 1-1 with the passed $job['type']
 	 * So, if your processor defines JOB_TYPE as "test_job", then any job time we process a job with the "type" field
 	 * equal to "test_job", it will be processed by this.
@@ -247,14 +255,16 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 
 	/**
 	 * Gets the array of data for the job
-
-
-*
-*@param $job
+	 *
+	 * @param $job
 	 * @return array
 	 */
 	protected function getData($job)
 	{
-		return json_decode($job['data'], true);
+		$data_array = json_decode($job['data'], true);
+
+		$resolver = $this->getDataOptions();
+
+		return $resolver->resolve($data_array);
 	}
 }

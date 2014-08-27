@@ -38,6 +38,7 @@ use Application\DeskPRO\Sms\SmsProviderFactory;
 use Orb\Sms\SmsException;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Processes an outgoing SMS message.
@@ -50,6 +51,23 @@ use Orb\Sms\SmsSender;
 class OutgoingSmsProcessor extends AbstractJobProcessor
 {
 	const JOB_TYPE = 'outgoing_sms';
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDataOptions()
+	{
+		$resolver = new OptionsResolver();
+
+		$resolver->setRequired(array('message', 'to_number', 'provider'));
+
+		$resolver->setDefaults(
+			array(
+				'from_number' => null,
+				'provider_params' => array()
+			)
+		);
+	}
 
 	/**
 	 * {@inheritdoc}
