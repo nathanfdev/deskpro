@@ -103,6 +103,14 @@ class JobQueue
 		$this->saveJob($job);
 	}
 
+
+	public function retry(Job $job, \DateTime $when)
+	{
+		$job->retry($when);
+		$this->saveJob($job);
+	}
+
+
 	/**
 	 * Determines if the job is ready to run now
 	 *
@@ -139,6 +147,17 @@ class JobQueue
 
 
 	/**
+	 * Useful proxy if you only have the job ID
+	 *
+	 * @param int $id
+	 */
+	public function retryByJobId($id, \DateTime $when)
+	{
+		$this->retry($this->getJob($id), $when);
+	}
+
+
+	/**
 	 * Save a Job
 	 *
 	 * @param Job $job
@@ -149,6 +168,7 @@ class JobQueue
 		$this->em->persist($job);
 		$this->em->flush($job);
 	}
+
 
 	/**
 	 * Get a Job directly from the database (refreshes)

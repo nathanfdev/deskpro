@@ -71,7 +71,10 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_DELEGATED = 'delegated';
 	const STATUS_ABORTED = 'aborted';
 
-	const STATUS_CODE_RESCHEDULED = 'rescheduled';
+	const STATUS_CODE_RESCHEDULED = 'rescheduled'; // a job we depend on is not yet done, we will retry
+	const STATUS_CODE_RETRYING = 'retrying'; // failed but we want to retry
+	const STATUS_CODE_EXHAUSTED = 'exhausted'; // retried it a bunch of times, won't retry again
+
 	/**
 	 * @var int
 	 */
@@ -272,6 +275,15 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 		$this->setModelField('date_next_try', $retryDate);
 		$this->setModelField('status', Job::STATUS_WAITING);
 		$this->setModelField('status_code', Job::STATUS_CODE_RESCHEDULED);
+		$this->setModelField('worker_id', null);
+		$this->setModelField('date_touch', new \DateTime());
+	}
+
+	public function retry(\DateTime $retryDate)
+	{
+		$this->setModelField('date_next_try', $retryDate);
+		$this->setModelField('status', Job::STATUS_WAITING);
+		$this->setModelField('status_code', Job::STATUS_CODE_RETRYING);
 		$this->setModelField('worker_id', null);
 		$this->setModelField('date_touch', new \DateTime());
 	}

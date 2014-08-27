@@ -48,13 +48,19 @@ class JobRouterService
 	{
 		$conn = $container->get('doctrine.dbal.default_connection');
 		$em = $container->getEm();
+		$queue = $container->getJobQueue();
 
 		$router = new JobRouter($conn);
 
 		/*************************************
 		 * outgoing_sms
 		 */
-		$router->addProcessor(new OutgoingSmsProcessor($conn));
+		$router->addProcessor(
+			new OutgoingSmsProcessor(
+				$conn,
+				$queue
+			)
+		);
 
 
 		/*************************************

@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Processes an incoming SMS message.
@@ -101,14 +102,19 @@ class IncomingSmsProcessor extends AbstractJobProcessor
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDataOptions()
+	public function setDataOptions(OptionsResolverInterface $resolver)
 	{
-		$resolver = new OptionsResolver();
+		$resolver->setRequired(array(
+				'message',
+				'from_number'
+			)
+		);
 
-		$resolver->setRequired(array('message', 'from_number'));
-		$resolver->setDefaults(array('sms_account_id' => null, 'to_number' => null));
-
-		return $resolver;
+		$resolver->setDefaults(array(
+				'sms_account_id' => null,
+				'to_number' => null
+			)
+		);
 	}
 
 

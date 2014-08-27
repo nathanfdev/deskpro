@@ -34,11 +34,13 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
+use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\Sms\SmsProviderFactory;
-use Orb\Sms\SmsException;
+use Doctrine\DBAL\Connection;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Processes an outgoing SMS message.
@@ -53,13 +55,28 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
 	const JOB_TYPE = 'outgoing_sms';
 
 	/**
+	 * @var JobQueue
+	 */
+	private $queue;
+
+	public function __construct(Connection $connection, JobQueue $queue)
+	{
+		parent::__construct($connection);
+		$this->queue = $queue;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
-	public function getDataOptions()
+	public function setDataOptions(OptionsResolverInterface $resolver)
 	{
-		$resolver = new OptionsResolver();
-
-		$resolver->setRequired(array('message', 'to_number', 'provider'));
+		$resolver->setRequired(
+			array(
+				'message',
+				'to_number',
+				'provider'
+			)
+		);
 
 		$resolver->setDefaults(
 			array(
@@ -83,13 +100,13 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
 	{
 		$this->markExceptionError(
 			$job,
-			$this->willRetry($job) ? 'retrying' : 'exhausted',
+			$this->willRetry($job) ? Job::STATUS_CODE_RETRYING : Job::STATUS_CODE_EXHAUSTED,
 			sprintf('SMS Failed (%s/5 attempts)', $job['num_tries'] + 1), // num_tries starts at 0
 			$e
 		);
 
 		if ($this->willRetry($job)) {
-			$this->scheduleRetryExisting($job, '2 minutes');
+			$this->queue->retryByJobId($job['id'], new \DateTime('now + 2 minutes'));
 		}
 	}
 

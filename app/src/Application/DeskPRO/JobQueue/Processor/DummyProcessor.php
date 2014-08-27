@@ -34,30 +34,22 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DummyProcessor extends AbstractJobProcessor
 {
 	const JOB_TYPE = 'dummy';
 
 	/**
-	 * Instantiate an options resolver that defines the data that your processor expects (and its defaults if necessary)
-	 * See: http://symfony.com/doc/current/components/options_resolver.html
-	 *
-	 * @return \Symfony\Component\OptionsResolver\OptionsResolver
+	 * {@inheritDoc}
 	 */
-	public function getDataOptions()
+	public function setDataOptions(OptionsResolverInterface $resolver)
 	{
-		return new OptionsResolver();
 	}
 
 
 	/**
-	 * this is what needs to be implemented - this method will receive the payload and it needs to be dealt with
-	 *
-	 * @param array $data validated data (the payload)
-	 * @param array $job  the full job db row array
-	 * @return null
+	 * {@inheritDoc}
 	 */
 	public function process(array $data, array $job)
 	{

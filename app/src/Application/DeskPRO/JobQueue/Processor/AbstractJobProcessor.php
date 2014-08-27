@@ -38,6 +38,8 @@ use Application\DeskPRO\JobQueue\JobProcessorInterface;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\JobQueueException;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Helper methods available to children, encouraged to extend this when creating a job processor (but not required to).
@@ -76,12 +78,13 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	}
 
 	/**
-	 * Instantiate an options resolver that defines the data that your processor expects (and its defaults if necessary)
+	 * Setup an options resolver that defines the data that your processor requires (and its defaults if necessary)
 	 * See: http://symfony.com/doc/current/components/options_resolver.html
 	 *
-	 * @return \Symfony\Component\OptionsResolver\OptionsResolver
+	 * @param OptionsResolverInterface $resolver
+	 * @return null
 	 */
-	abstract public function getDataOptions();
+	abstract public function setDataOptions(OptionsResolverInterface $resolver);
 
 
 	/**
@@ -320,7 +323,8 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	{
 		$data_array = json_decode($job['data'], true);
 
-		$resolver = $this->getDataOptions();
+		$resolver = new OptionsResolver();
+		$this->setDataOptions($resolver);
 
 		return $resolver->resolve($data_array);
 	}
