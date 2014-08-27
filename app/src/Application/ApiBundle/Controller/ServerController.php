@@ -230,7 +230,6 @@ class ServerController extends AbstractController implements ProtectedController
 		/**
 		 * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs $server_error_logs
 		 */
-
 		$server_error_logs = $this->container->getSystemService('server_error_logs');
 
 		if (!$server_error_logs->clearAllErrors()) {

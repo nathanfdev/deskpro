@@ -459,6 +459,11 @@ class SettingsController extends AbstractController implements ProtectedControll
 	public function setDoneInitialAction()
 	{
 		$this->settings->setSetting('core.setup_initial', 1);
+
+		// Attempt to clear error log from anything that might've happened during install (eg bad database etc)
+		$server_error_logs = $this->container->getSystemService('server_error_logs');
+		$server_error_logs->clearAllErrors();
+
 		return $this->createApiSuccessResponse();
 	}
 
