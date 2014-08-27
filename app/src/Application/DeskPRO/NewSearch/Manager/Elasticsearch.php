@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\NewSearch\Manager;
 
 use Orb\Util\Numbers;
+use Orb\Validator\StringEmail;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
@@ -86,11 +87,22 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
 				}
 			}
 
+			if ($model == 'DeskPRO:Person' && StringEmail::isValueValid($q)) {
+				$result = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+				if ($result) {
+					$this->handleResult($object, $result);
+				}
+			}
+
             $result = $repository->find($q);
 			if ($result) {
 				$this->handleResult($object, $result);
 			}
         }
+
+		foreach ($this->results as &$group) {
+			$group = array_unique($group);
+		}
 
         return array($this->results, $result_meta, $people_top);
     }
