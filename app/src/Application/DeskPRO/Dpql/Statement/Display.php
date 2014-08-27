@@ -1065,10 +1065,14 @@ class Display
 			if (empty($parts['display'][0])) {
 				$display = 'TABLE';
 			} else {
-				$parts['display'] = array_unique($parts['display']);
-				$display = $parts['display'][0];
-				if (!empty($parts['display'][1])) {
-					$display .= ', ' . $parts['display'][1];
+				if (is_array($parts['display'])) {
+					$parts['display'] = array_unique($parts['display']);
+					$display          = $parts['display'][0];
+					if (!empty($parts['display'][1])) {
+						$display .= ', ' . $parts['display'][1];
+					}
+				} else {
+					$display = $parts['display'];
 				}
 			}
 
