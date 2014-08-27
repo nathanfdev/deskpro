@@ -386,15 +386,19 @@ class KernelBooter
 			dp_pagelog_set('response_type', $response->headers->get('Content-Type'));
 			dp_pagelog_set('response_code', $response->getStatusCode());
 			dp_pagelog_set('response_size', strlen($response->getContent()));
-		} catch (DBALException $e) {
-			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
-				// This will show an error page if already installed, so the redirect to install wont happen
-				deskpro_handle_boot_db_exception($e);
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
+					// This will show an error page if already installed, so the redirect to install wont happen
+					deskpro_handle_boot_db_exception($e);
 
-				header('Location: ' . $request->getBasePath() . '/index.php/install/');
-				exit;
+					header('Location: ' . $request->getBasePath() . '/index.php/install/');
+					exit;
+				}
+				throw $e;
+			} else {
+				throw $e;
 			}
-			throw $e;
 		}
 	}
 

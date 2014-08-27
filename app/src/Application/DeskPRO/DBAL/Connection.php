@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\DBAL;
 
+use Doctrine\DBAL\DBALException;
 use Orb\Log\Logger;
 use PDO;
 
@@ -484,16 +485,20 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::executeQuery($query, $params, $types, $qcp);
-		} catch (\Doctrine\DBAL\DBALException $e) {
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+					usleep(500000);
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
-				usleep(500000);
-				return $this->executeQuery($query, $params, $types, $is_retry + 1);
+					return $this->executeQuery($query, $params, $types, $is_retry + 1);
+				}
+
+				$e->_dp_query        = $query;
+				$e->_dp_query_params = $params;
+				throw $e;
+			} else {
+				throw $e;
 			}
-
-			$e->_dp_query = $query;
-			$e->_dp_query_params = $params;
-			throw $e;
 		}
 	}
 
@@ -516,16 +521,20 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		try {
 			return parent::executeUpdate($query, $params, $types);
-		} catch (\Doctrine\DBAL\DBALException $e) {
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+					usleep(500000);
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
-				usleep(500000);
-				return $this->executeUpdate($query, $params, $types, $is_retry + 1);
+					return $this->executeUpdate($query, $params, $types, $is_retry + 1);
+				}
+
+				$e->_dp_query        = $query;
+				$e->_dp_query_params = $params;
+				throw $e;
+			} else {
+				throw $e;
 			}
-
-			$e->_dp_query = $query;
-			$e->_dp_query_params = $params;
-			throw $e;
 		}
 	}
 
@@ -667,10 +676,14 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::exec($statement);
-		} catch (\Doctrine\DBAL\DBALException $e) {
-			$e->_dp_query = is_string($statement) ? $statement : null;
-			$e->_dp_query_params = array();
-			throw $e;
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				$e->_dp_query        = is_string($statement) ? $statement : null;
+				$e->_dp_query_params = array();
+				throw $e;
+			} else {
+				throw $e;
+			}
 		}
 	}
 
