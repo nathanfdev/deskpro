@@ -35,16 +35,14 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\JobQueue\JobWorker;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class JobSupervisorCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
 	{
-		$this->setName('dp:job-supervisor')
+		$this->setName('dp:job:supervisor')
 			->setDescription('Runs the job queue supervisor (once)');
 	}
 
