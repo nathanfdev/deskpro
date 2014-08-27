@@ -29,47 +29,30 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
 
-class JobRouterService
+class PhoneNumber extends AbstractEntityRepository
 {
-	public static function create(DeskproContainer $container)
+	public function findByNumber($number)
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
+		$tempNumber      = new \Application\DeskPRO\Entity\PhoneNumber($number);
+		$formattedNumber = $tempNumber->number;
 
-		$router = new JobRouter($conn);
+		$phone_number = $this->getEntityManager()->createQuery(
+			"
+			SELECT p
+			FROM DeskPRO:PhoneNumber p
+			WHERE p.number = :number
+		"
+		)
+		->setMaxResults(1)
+        ->setParameter('number', $formattedNumber)
+        ->getOneOrNullResult();
 
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(new OutgoingSmsProcessor($conn));
-
-
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
-
-		return $router;
+		return $phone_number;
 	}
 }

@@ -45,6 +45,28 @@ class Person extends AbstractEntityRepository
 {
 	protected $identity_helper;
 
+
+	public function findOneByPhoneNumber($from_number)
+	{
+		$phone_number = $this->getEntityManager()->getRepository('DeskPRO:PhoneNumber')->findByNumber($from_number);
+
+		if (!$phone_number) {
+			return null; // didnt find the number in the db
+		}
+
+		$query = $this->getEntityManager()->createQuery(
+		"
+			SELECT p
+			FROM DeskPRO:Person p
+			WHERE :found_phone_number MEMBER OF p.phone_numbers
+		"
+		);
+
+		$query->setMaxResults(1)->setParameter('found_phone_number', $phone_number);
+
+		return $query->getOneOrNullResult();
+	}
+
 	/**
 	 * @return \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
 	 */

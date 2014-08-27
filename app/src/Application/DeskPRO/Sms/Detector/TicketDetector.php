@@ -29,47 +29,50 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Sms\Detector;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\SmsAccount;
+use Doctrine\ORM\EntityManager;
 
-class JobRouterService
+class TicketDetector
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var EntityManager
+	 */
+	private $em;
+
+
+	public function __construct(EntityManager $em)
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
-
-		$router = new JobRouter($conn);
-
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(new OutgoingSmsProcessor($conn));
+		$this->em = $em;
+	}
 
 
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
+	/**
+	 * find a ticket based on who sent the sms
+	 * finds a ticket to reply to using our logic
+	 *
+	 * return a ticket if this person is probably replying to that ticket
+	 * or return null if this person is initiating a new ticket
+	 *
+	 * @param Person     $from_person
+	 * @return \Application\DeskPRO\Entity\Ticket|null
+	 */
+	public function detectBySender(Person $from_person = null)
+	{
+		if (!$from_person) {
+			return null;
+		}
+
+		$ticket = $this->em->getRepository('DeskPRO:Ticket')->findMostRecentSmsTicketFromPerson(
+			$from_person,
+			new \DateTime("now - 3 days")
 		);
 
-		return $router;
+		return $ticket;
 	}
 }

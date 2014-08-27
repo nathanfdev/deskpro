@@ -29,47 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
-
-class JobRouterService
+class Build1409099884 extends AbstractBuild
 {
-	public static function create(DeskproContainer $container)
+	public function run()
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
-
-		$router = new JobRouter($conn);
-
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(new OutgoingSmsProcessor($conn));
-
-
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
-
-		return $router;
+		$this->out("Create Ticket SMS Messages table");
+		$this->execMutateSql("CREATE TABLE tickets_sms (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, person_id INT DEFAULT NULL, sms_account_id INT DEFAULT NULL, job_id INT DEFAULT NULL, date_created DATETIME DEFAULT NULL, from_number VARCHAR(30) DEFAULT NULL, to_number VARCHAR(30) DEFAULT NULL, message LONGTEXT DEFAULT NULL, INDEX IDX_CB28F4B0700047D2 (ticket_id), INDEX IDX_CB28F4B0217BBB47 (person_id), INDEX IDX_CB28F4B0CE191853 (sms_account_id), UNIQUE INDEX UNIQ_CB28F4B0BE04EA9 (job_id), INDEX date_created_idx (date_created), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE tickets_sms ADD CONSTRAINT FK_CB28F4B0700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id)");
+		$this->execMutateSql("ALTER TABLE tickets_sms ADD CONSTRAINT FK_CB28F4B0217BBB47 FOREIGN KEY (person_id) REFERENCES people (id)");
+		$this->execMutateSql("ALTER TABLE tickets_sms ADD CONSTRAINT FK_CB28F4B0CE191853 FOREIGN KEY (sms_account_id) REFERENCES sms_accounts (id)");
+		$this->execMutateSql("ALTER TABLE tickets_sms ADD CONSTRAINT FK_CB28F4B0BE04EA9 FOREIGN KEY (job_id) REFERENCES jobs (id)");
 	}
 }

@@ -29,47 +29,14 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @category Entities
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-class JobRouterService
+class TicketSms extends AbstractEntityRepository
 {
-	public static function create(DeskproContainer $container)
-	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
-
-		$router = new JobRouter($conn);
-
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(new OutgoingSmsProcessor($conn));
-
-
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
-
-		return $router;
-	}
 }

@@ -29,47 +29,76 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Sms\Detector;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PhoneNumber;
+use Doctrine\ORM\EntityManager;
 
-class JobRouterService
+class PersonDetector
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var EntityManager
+	 */
+	private $em;
+
+
+	public function __construct(EntityManager $em)
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
+		$this->em = $em;
+	}
 
-		$router = new JobRouter($conn);
+	/**
+	 *  use number to find a person that sent us an sms
+	 *
+	 * @param string $from_number
+	 * @return \Application\DeskPRO\Entity\Person|null
+	 */
+	public function detectWithFromNumber($from_number = null)
+	{
+		return $this->em->getRepository('DeskPRO:Person')->findOneByPhoneNumber($from_number);
+	}
 
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(new OutgoingSmsProcessor($conn));
 
+	/**
+	 * creates a person with the given phone number
+	 *
+	 * @param string $from_number
+	 * @return Person
+	 * @throws \Doctrine\DBAL\ConnectionException
+	 */
+	public function createPersonWithNumber($from_number)
+	{
+		$this->em->getConnection()->beginTransaction();
 
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
+		$person = $this->detectWithFromNumber($from_number);
 
-		return $router;
+		if ($person) {
+			$this->em->getConnection()->commit();
+
+			return $person;
+		}
+
+		$person                  = Person::newContactPerson();
+		$person->creation_system = 'gateway.person';
+		$person->is_confirmed    = true;
+		$from_number = new PhoneNumber($from_number);
+		$person->setPrimaryPhoneNumber($from_number);
+
+		if (App::getSetting('core.agent_validation')) {
+			$person->is_agent_confirmed = false;
+		}
+
+		$this->em->persist($person);
+		$this->em->persist($from_number);
+		$this->em->flush();
+
+		$this->em->getConnection()->commit();
+
+		return $person;
 	}
 }

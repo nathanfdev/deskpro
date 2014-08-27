@@ -29,47 +29,45 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Sms\Detector;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
+use Application\DeskPRO\Entity\PhoneNumber;
+use Doctrine\ORM\EntityManager;
 
-class JobRouterService
+/**
+ * Detect what SmsAccount entity is related to sms messages
+ */
+class SmsAccountDetector
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * @var EntityManager
+	 */
+	private $em;
+
+	public function __construct(EntityManager $em)
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
+		$this->em = $em;
+	}
 
-		$router = new JobRouter($conn);
+	public function detect($sms_account_id, $to_number = null)
+	{
+		if ($sms_account_id) {
+			return $this->em->getRepository('DeskPRO:SmsAccount')->find($sms_account_id);
+		}
 
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(new OutgoingSmsProcessor($conn));
+		$phone_number = $this->em->getRepository('DeskPRO:PhoneNumber')->findByNumber($to_number);
 
+		$query = $this->em->createQuery("
+			SELECT a
+			FROM DeskPRO:SmsAccount a
+			WHERE a.phone_number = :found_phone_number
+		");
 
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
+		$query->setParameter('found_phone_number', $phone_number);
 
-		return $router;
+		return $query->getOneOrNullResult();
 	}
 }

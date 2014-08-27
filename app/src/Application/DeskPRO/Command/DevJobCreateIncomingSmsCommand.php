@@ -26,50 +26,42 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @category DependencyInjection
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class JobRouterService
+class DevJobCreateIncomingSmsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	public static function create(DeskproContainer $container)
+	protected function configure()
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
+		$this->setName('dpdev:job:create-incoming-sms')
+			->setDescription('Creates an incoming job and puts it in the queue')
+			->addArgument('message', InputOption::VALUE_REQUIRED, 'The text message', 'Hello World')
+			->addOption('to', null, InputOption::VALUE_OPTIONAL, 'To Number', '+11111111111')
+			->addOption('from', null, InputOption::VALUE_OPTIONAL, 'From Number', '+12222222222')
+		;
+	}
 
-		$router = new JobRouter($conn);
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		/** @var \Application\DeskPRO\JobQueue\JobQueue $queue */
+		$queue = $this->getContainer()->getSystemService('job_queue');
 
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(new OutgoingSmsProcessor($conn));
-
-
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
+		$queue->schedule(IncomingSmsProcessor::JOB_TYPE, array(
+				'message' => $input->getArgument('message'),
+				'to_number' => $input->getOption('to'),
+				'from_number' => $input->getOption('from')
 			)
 		);
-
-		return $router;
 	}
 }
