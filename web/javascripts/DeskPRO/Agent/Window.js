@@ -2306,6 +2306,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			this.addPageTab(page);
 
+			if (routeData.openCallback) {
+				routeData.openCallback(page);
+			}
+
 			if (callback) callback(page);
 		}).bind(this);
 
