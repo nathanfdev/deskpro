@@ -12,7 +12,7 @@
 			<h3 ng-pluralize count="LabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list">
+			<ul class="dp-item-list" dp-max-height>
 				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse" dp-state-mark="label!:portal.kb_labels.edit.{{ ng_var('label.label|murmurhash') }}">
 					<a href="{{ ng_href('portal.kb_labels.edit', '{label: label.label}') }}">
 						<div class="pull-right">

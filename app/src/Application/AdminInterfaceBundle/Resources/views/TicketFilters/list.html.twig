@@ -44,7 +44,7 @@
 			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.general.x_ticket_filters') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length">
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" ng-if="ListCtrl.list.length" dp-max-height>
 				<li class="with-drag-handle" ng-repeat="filter in filterList"
 					dp-state-mark="tickets.ticket_filters.edit.{{ ng_var('filter.id') }}"
 					data-id="{{ ng_var('filter.id') }}">

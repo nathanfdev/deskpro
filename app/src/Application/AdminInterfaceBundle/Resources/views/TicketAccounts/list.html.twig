@@ -12,7 +12,7 @@
 			<p class="dp-empty-list-notice" ng-if="!TicketAccountsList.accounts.length">
 				{{ phrase('adm.tickets.no_email_accounts') }}
 			</p>
-			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length">
+			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length" dp-max-height>
 				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
 					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
 						<div class="pull-right">

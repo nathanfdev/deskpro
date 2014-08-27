@@ -9279,6 +9279,7 @@ div.dp-appalt-section > section header h3 {
 
 .dp-paneblock {
   margin: 10px;
+  overflow: auto;
   background: #fff;
   border: 1px solid #d0d9e6;
   border-radius: 2px;
@@ -9783,6 +9784,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 .dp-item-list {
   padding: 0;
   margin: 0;
+  overflow: auto;
 }
 
 .dp-item-list > li {

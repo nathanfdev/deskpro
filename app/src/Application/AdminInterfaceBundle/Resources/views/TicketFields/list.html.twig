@@ -52,7 +52,7 @@
 			<h3 ng-pluralize count="TicketFieldsList.custom_fields.length || 0" when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list">
+			<ul class="dp-item-list" dp-max-height dp-height-add="-250">
 				<li ng-repeat="field in TicketFieldsList.custom_fields" dp-state-mark="tickets.fields.edit.{{ ng_var('field.id') }}" data-id="{{ ng_var('field.id') }}">
 					<a href="{{ ng_href('tickets.fields.edit', '{id: field.id}') }}">
 						<div class="pull-right">
