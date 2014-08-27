@@ -783,8 +783,8 @@ class Connection extends \Doctrine\DBAL\Connection
 				$this->setIsolationDefault();
 			}
 
-			\DpShutdown::run('db_done_trans');
 			\DpShutdown::run('db_done_trans_commit');
+			\DpShutdown::run('db_done_trans');
 		}
 	}
 
@@ -824,8 +824,8 @@ class Connection extends \Doctrine\DBAL\Connection
 				$this->do_reset_isolation = false;
 				$this->setIsolationDefault();
 			}
-			\DpShutdown::run('db_done_trans');
 			\DpShutdown::run('db_done_trans_rollback');
+			\DpShutdown::run('db_done_trans');
 		}
 	}
 
