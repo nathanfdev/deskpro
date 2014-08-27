@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\TicketSms;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
@@ -41,7 +42,6 @@ use Application\DeskPRO\Sms\Detector\TicketDetector;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -134,7 +134,8 @@ class IncomingSmsProcessor extends AbstractJobProcessor
 		$to_number = $data['to_number'];
 		$sms_account = $this->sms_account_detector->detect($sms_account_id, $to_number);
 		if (!$sms_account) {
-			throw new \InvalidArgumentException("no sms account found");
+			$this->markRejected($job, 'SMS Account not found', '', Job::STATUS_CODE_INVALID_DATA);
+			return false;
 		}
 
 
@@ -186,5 +187,7 @@ class IncomingSmsProcessor extends AbstractJobProcessor
 
 		// Done!
 		$this->ticket_manager->saveTicket($ticket, $context);
+
+		return true;
 	}
 }

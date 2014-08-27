@@ -40,6 +40,7 @@ use Application\DeskPRO\JobQueue\JobQueueException;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\Exception\ExceptionInterface as OptionsResolverException;
 
 /**
  * Helper methods available to children, encouraged to extend this when creating a job processor (but not required to).
@@ -66,9 +67,26 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 		try {
 
 			$this->touchJob($job);
-			$data = $this->getData($job);
-			$this->process($data, $job);
-			$this->runSuccessHandler($job);
+
+			try {
+				$data = $this->getData($job);
+			} catch (OptionsResolverException $e) {
+
+				// reject this because the payload data is invalid
+				$this->markRejected(
+					$job,
+					'invalid job data',
+					$this->formatExceptionIntoString($e),
+					Job::STATUS_CODE_INVALID_DATA
+				);
+				return;
+
+			}
+
+
+			if ($this->process($data, $job)) {
+				$this->runSuccessHandler($job);
+			}
 
 		} catch (\Exception $e) {
 
@@ -81,6 +99,9 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	 * Setup an options resolver that defines the data that your processor requires (and its defaults if necessary)
 	 * See: http://symfony.com/doc/current/components/options_resolver.html
 	 *
+	 * Note: if the job data (payload) causes this resolver to throw an exception, the job will be rejected automatically
+	 * for you
+	 *
 	 * @param OptionsResolverInterface $resolver
 	 * @return null
 	 */
@@ -92,7 +113,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	 *
 	 * @param array $data validated data (the payload)
 	 * @param array $job the full job db row array
-	 * @return null
+	 * @return bool TRUE if successfully processed
 	 */
 	abstract public function process(array $data, array $job);
 
@@ -159,7 +180,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	 * @param string $status_code
 	 * @throws \Doctrine\DBAL\DBALException
 	 */
-	public function markComplete(array $job, $log_summary, $detailed_logs, $status_code = 'success')
+	public function markComplete(array $job, $log_summary, $detailed_logs, $status_code = Job::STATUS_CODE_SUCCESS)
 	{
 		$this->connection->executeUpdate(
 			'
@@ -175,6 +196,47 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 				'log_summary'      => $log_summary,
 				'detailed_logs'    => $detailed_logs,
 				'completed_status' => Job::STATUS_COMPLETE,
+				'status_code'      => $status_code,
+				'date_touch'       => new \DateTime(),
+				'job_id'           => $job['id']
+			),
+			array(
+				'log_summary'      => 'string',
+				'detailed_logs'    => 'text',
+				'completed_status' => 'string',
+				'status_code'      => 'string',
+				'date_touch'       => 'datetime',
+				'job_id'           => 'integer'
+			)
+		);
+	}
+
+
+	/*
+	 * Mark the job as rejected
+	 *
+	 * @param array  $job
+	 * @param        $log_summary
+	 * @param        $detailed_logs
+	 * @param string $status_code
+	 * @throws \Doctrine\DBAL\DBALException
+	 */
+	public function markRejected(array $job, $log_summary, $detailed_logs, $status_code = Job::STATUS_CODE_INVALID_DATA)
+	{
+		$this->connection->executeUpdate(
+			'
+			UPDATE jobs
+			SET log_summary = :log_summary,
+				log = :detailed_logs,
+				status = :completed_status,
+				status_code = :status_code,
+				date_touch = :date_touch
+			WHERE id = :job_id
+			',
+			array(
+				'log_summary'      => $log_summary,
+				'detailed_logs'    => $detailed_logs,
+				'completed_status' => Job::STATUS_REJECTED,
 				'status_code'      => $status_code,
 				'date_touch'       => new \DateTime(),
 				'job_id'           => $job['id']
@@ -215,17 +277,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 			',
 			array(
 				'log_summary'   => $log_summary,
-				'detailed_logs' => sprintf(
-					"Exception: %s\n
-					Code: %s\n
-					File: %s (line %s)\n
-					\n\n%s",
-					$e->getMessage(),
-					$e->getCode(),
-					$e->getFile(),
-					$e->getLine(),
-					$e->getTraceAsString()
-				),
+				'detailed_logs' => $this->formatExceptionIntoString($e),
 				'error_status'   => Job::STATUS_ERROR,
 				'status_code'   => $status_code,
 				'date_touch'    => new \DateTime(),
@@ -327,5 +379,22 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 		$this->setDataOptions($resolver);
 
 		return $resolver->resolve($data_array);
+	}
+
+
+	/**
+	 * @param \Exception $e
+	 * @return string
+	 */
+	protected function formatExceptionIntoString(\Exception $e)
+	{
+		return sprintf(
+			"Exception: %s\nCode: %s\nFile: %s (line %s)\n\n\n%s",
+			$e->getMessage(),
+			$e->getCode(),
+			$e->getFile(),
+			$e->getLine(),
+			$e->getTraceAsString()
+		);
 	}
 }

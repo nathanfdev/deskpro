@@ -89,11 +89,18 @@ class OutgoingSmsProcessor extends AbstractJobProcessor
 
 	public function process(array $data, array $job)
 	{
-		$provider = SmsProviderFactory::create($data['provider'], $data['provider_params']);
+		try {
+			$provider = SmsProviderFactory::create($data['provider'], $data['provider_params']);
+		} catch(\InvalidArgumentException $e) {
+			$this->markRejected($job, 'sms provider not found', '', Job::STATUS_CODE_INVALID_DATA);
+			return false;
+		}
 		$sender   = new SmsSender($provider, $data['from_number']);
 
 		$message = new SmsMessage($data['message']);
 		$sender->send($data['to_number'], $message);
+
+		return true;
 	}
 
 	public function runExceptionHandler(array $job, \Exception $e)

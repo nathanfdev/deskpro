@@ -41,7 +41,7 @@ interface JobProcessorInterface
 	 * because otherwise the processor can't make its own decisions about logging and job status
 	 *
 	 * @param array $job the job row from the dbal
-	 * @return mixed
+	 * @return null
 	 */
 	public function execute(array $job);
 
