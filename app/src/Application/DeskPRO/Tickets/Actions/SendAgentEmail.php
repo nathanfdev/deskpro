@@ -120,6 +120,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 		}
 
 		$agents = array_unique($agents);
+		$agents = array_filter($agents, function($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
 
 		return $agents;
 	}
