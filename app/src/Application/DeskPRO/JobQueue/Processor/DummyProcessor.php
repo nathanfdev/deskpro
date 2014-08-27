@@ -53,5 +53,6 @@ class DummyProcessor extends AbstractJobProcessor
 	 */
 	public function process(array $data, array $job)
 	{
+		return true;
 	}
 }
