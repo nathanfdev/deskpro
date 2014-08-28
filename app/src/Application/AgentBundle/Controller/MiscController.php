@@ -971,7 +971,9 @@ JS;
 		$rjs->setBaseUrlExpr('ASSETS_BASE_URL');
 
 		if ($this->container->isDebug()) {
-			$rjs->setUrlArgsExpr('"bust=" + (new Date()).getTime()');
+			$rjs->setUrlArgsExpr('"v=" + (new Date()).getTime()');
+		} else if (defined('DP_BUILD_TIME')) {
+			$rjs->setUrlArgsExpr('"v=' . DP_BUILD_TIME . '"');
 		}
 
 		$rjs->addPath('DeskPRO/App', 'javascripts/DeskPRO/App');
