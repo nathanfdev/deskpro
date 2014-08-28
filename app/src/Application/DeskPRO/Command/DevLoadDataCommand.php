@@ -690,7 +690,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		);
 		if (mt_rand(0, 2) == 0) {
 			$rand = $this->_getRandomAgent();
-			$ticket['agent_id'] = $rand->id;
+			if ($rand) {
+				$ticket['agent_id'] = $rand->id;
+			}
 		}
 		if (time() - $date_created->getTimestamp() > 90*86400) {
 			$ticket['status'] = 'closed';
@@ -1374,7 +1376,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _getRandomAgent($id = false)
 	{
 		if (!isset($this->_data_cache['agents'])) {
-			$this->_data_cache['agents'] = App::getEntityRepository('DeskPRO:Person')->getAgents();
+			$this->_data_cache['agents'] = App::getOrm()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p INDEX BY p.id
+				WHERE p.is_agent = true AND p.is_deleted = false
+				ORDER BY p.first_name ASC, p.last_name ASC
+			")->execute();
 		}
 
 		return $this->_getRandomFromCache('agents', $id ? 'id' : null);
