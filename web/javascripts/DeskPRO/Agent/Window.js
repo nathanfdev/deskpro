@@ -636,11 +636,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadVis = parseInt(loadVis[1]);
 		}
 		if ($('html').hasClass('ipad') || $('html').hasClass('iphone')) {
-			this.paneVis.source = false;
-			this.paneVis.list = true;
-			this.paneVis.tabs = false;
-			this.isMobile = true;
 			loadVis = 2;
+			this.isMobile = true;
+			this.setPaneVisNum(loadVis);
+		}
+		if (!loadVis && Modernizr.localstorage && window.localStorage['dp_vis']) {
+			loadVis = parseInt(window.localStorage['dp_vis']) || 7;
+			this.setPaneVisNum(loadVis);
 		}
 
 		var loadAdmin = false;
@@ -1520,6 +1522,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var paneVisNum = this.getPaneVisNum();
 		if (paneVisNum) {
 			segments.push('vis:'+paneVisNum)
+		}
+		if (Modernizr.localstorage) {
+			window.localStorage['dp_vis'] = paneVisNum || 7;
 		}
 
 		var browserHash = segments.join(',');
