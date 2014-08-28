@@ -88,7 +88,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				return $this->createJsonResponse($data, 403);
 			}
 
-			return $this->redirectRoute('agent_login', array('return' => $return));
+			return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+				'return' => $return
+			));
 		}
 
 		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
