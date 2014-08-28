@@ -506,6 +506,13 @@
 	margin: 7px 5px 7px 4px;
 }
 
+.list-listing .table-result-list .row-item .item-select {
+	float: none;
+	margin: 0;
+	padding: 0;
+	vertical-align: middle;
+}
+
 .list-listing .row-item .loading-arrow {
 	float: left;
 	margin: 5px;
@@ -895,10 +902,6 @@ table.tickets-simple td.status .status
 
 }
 
-.table-result-list table {
-	table-layout: fixed;
-}
-
 .table-result-list table thead {
 	.gradient(#e6e9ec, #d8dbdf);
 	border-bottom: 1px solid #d5d5d5;
@@ -933,12 +936,8 @@ table.tickets-simple td.status .status
 	background-color: #F5F7FA;
 	border-bottom: 1px solid #E1E3E6;
 	border-top: 1px solid #fff;
-	white-space: nowrap;
-	text-overflow: clip;
-	text-overflow: ellipsis;
-	-o-text-overflow: ellipsis;
-	overflow: hidden;
 	font-size: 11px;
+	vertical-align: middle;
 }
 
 .table-result-list table tbody tr.open td {
@@ -947,7 +946,15 @@ table.tickets-simple td.status .status
 
 .table-result-list table {
 	.col-agent { width: 50px; overflow: visible; text-overflow: clip; text-align: center; }
-	.col-subject { width: 45%; }
+	.col-subject { width: 45%; min-width: 180px; }
+
+	.cell-value {
+		display: block;
+		height: 16px;
+		overflow: hidden;
+		padding-top: 1px;
+		padding-bottom: 1px;
+	}
 
 	.obj-link {
 		color: #4769b3;
@@ -964,6 +971,30 @@ table.tickets-simple td.status .status
 		background: #f5f5f5;
 		color: #636B73;
 		padding: 0 2px 0 2px;
+	}
+}
+
+.table-result-list table.is-settable {
+	table-layout: auto;
+}
+.table-result-list table.with-set {
+	table-layout: fixed;
+
+	tbody td {
+		white-space: nowrap;
+		text-overflow: clip;
+		text-overflow: ellipsis;
+		-o-text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	.cell-value {
+		height: auto;
+		white-space: nowrap;
+		text-overflow: clip;
+		text-overflow: ellipsis;
+		-o-text-overflow: ellipsis;
+		overflow: hidden;
 	}
 }
 

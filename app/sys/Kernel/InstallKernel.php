@@ -145,6 +145,19 @@ class InstallKernel extends BaseKernel
 	/**
 	 * {@inheritDoc}
 	 */
+	protected function initializeContainer()
+	{
+		$v = libxml_disable_entity_loader(false);
+
+		parent::initializeContainer();
+
+		libxml_disable_entity_loader($v);
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getRootDir()
 	{
 		return DP_ROOT.'/sys';

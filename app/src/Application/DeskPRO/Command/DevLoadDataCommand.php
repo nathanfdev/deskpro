@@ -80,6 +80,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$GLOBALS['DP_NOSQL_LOG'] = true;
 		ini_set('memory_limit', -1);
 		set_time_limit(0);
 		App::getDb()->getConfiguration()->setSQLLogger(null);
@@ -689,7 +690,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		);
 		if (mt_rand(0, 2) == 0) {
 			$rand = $this->_getRandomAgent();
-			$ticket['agent_id'] = $rand->id;
+			if ($rand) {
+				$ticket['agent_id'] = $rand->id;
+			}
 		}
 		if (time() - $date_created->getTimestamp() > 90*86400) {
 			$ticket['status'] = 'closed';
@@ -1357,6 +1360,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 				LIMIT 1000
 			');
 			if (!$this->_data_cache['random_people_ids']) {
+				if (empty($this->_data_cache['agents'])) {
+					$this->_getRandomAgent();
+				}
 				$this->_data_cache['random_people_ids'] = array_keys($this->_data_cache['agents']);
 			}
 
@@ -1370,7 +1376,12 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _getRandomAgent($id = false)
 	{
 		if (!isset($this->_data_cache['agents'])) {
-			$this->_data_cache['agents'] = App::getEntityRepository('DeskPRO:Person')->getAgents();
+			$this->_data_cache['agents'] = App::getOrm()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p INDEX BY p.id
+				WHERE p.is_agent = true AND p.is_deleted = false
+				ORDER BY p.first_name ASC, p.last_name ASC
+			")->execute();
 		}
 
 		return $this->_getRandomFromCache('agents', $id ? 'id' : null);
@@ -1526,6 +1537,11 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$text = preg_replace('#[ ]{2,}#', ' ', $text);
 			$text = explode(' ', $text);
 			shuffle($text);
+
+			while (count($text) < $word_length) {
+				$text = array_merge($text, $text);
+			}
+
 			return implode(' ', array_slice($text, 0, $word_length, false));
 		} else {
 			return $this->_getRandomWordlist($word_length);
@@ -1535,7 +1551,20 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 	protected function _getRandomText($max_length = 0)
 	{
 		if ($this->_wordlist_file == 'database') {
-			return $this->_getRandomTextDb();
+			$text = $this->_getRandomTextDb();
+			$text = strip_tags($text);
+			$text = Strings::standardEol($text);
+			$text = str_replace("\n", " ", $text);
+			$text = preg_replace('#[ ]{2,}#', ' ', $text);
+			$text = explode(' ', $text);
+			shuffle($text);
+			$text = implode(' ', $text);
+
+			if ($max_length) {
+				while (!isset($text[$max_length])) {
+					$text .= ' ' . $text;
+				}
+			}
 		} else {
 			$text = $this->_getRandomWordlist(0);
 		}
@@ -1562,6 +1591,9 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 
 		do {
 			$words = trim($this->_word_db->fetchColumn($DP_CONFIG['load_data_database']['db_query']));
+			if (preg_match('/\s*#REDIRECT/i', $words)) {
+				$words = null;
+			}
 		} while (!$words);
 
 		return $words;

@@ -8,7 +8,7 @@
 			<h3>User Groups</h3>
 		</header>
 		<article>
-			<ul class="dp-item-list">
+			<ul class="dp-item-list" dp-max-height>
 				<li ng-repeat="group in ListCtrl.list" dp-state-mark="crm.groups.edit.{{ ng_var('group.id') }}" data-id="{{ ng_var('group.id') }}">
 					<a href="{{ ng_href('crm.groups.edit', '{id: group.id}') }}">
 						<h4><span class="title-id" title="ID">#{{ ng_var('group.id') }}</span> <span class="title-text">{{ ng_var('group.title') }}</span></h4>

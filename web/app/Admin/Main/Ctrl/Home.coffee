@@ -15,30 +15,28 @@ define [
 			@offline_agents = []
 			@$scope.new_agent = {}
 			@$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false
+
+			@online_agents  = []
+			@offline_agents = []
+			@unactive_agents = []
+			@agentsMap = {}
+			@service =
+				agents: @DataService.get 'Agents'
+
 			@loadMethodTests()
 			return
 
 		initialLoad: ->
+			@refreshAgents()
 			promise = @Api.sendDataGet({
-				agents:      '/agents',
 				lastLogin:   '/me/last-login',
 				versionInfo: '/dp_license/version-info'
 			}).then( (result) =>
-				data = result.data
-				@online_agents  = []
-				@offline_agents = []
-
 				@version_info   = result.data.versionInfo
 				@last_login     = result.data.lastLogin.last_login
 
 				if @last_login
 					@last_login.date_created_d = new Date(@last_login.date_created_ts * 1000)
-
-				for agent in data.agents.agents
-					if agent.is_online_now or agent.id == DP_PERSON_ID
-						@online_agents.push(agent)
-					else
-						@offline_agents.push(agent)
 			)
 
 			@Api.sendDataGet({
@@ -82,6 +80,55 @@ define [
 			)
 
 			return promise
+
+		# todo just move agent object from one array to another when BaseListEdit will be able to handle model objects updates after reload
+		refreshAgents: ->
+			@service.agents.all(true).then (agents) =>
+				for agent in agents
+					# if we see this agent for the first time
+					if !@agentsMap[agent.id]?
+						if agent.is_online_now or agent.id == DP_PERSON_ID
+							@online_agents.push(agent)
+							@agentsMap[agent.id] = 'online_agents'
+						else if !agent.date_last_login?
+							@unactive_agents.push(agent)
+							@agentsMap[agent.id] = 'unactive_agents'
+						else
+							@offline_agents.push(agent)
+							@agentsMap[agent.id] = 'offline_agents'
+
+					# or we already stored this agent in @agentsMap
+					else
+						# state - is the new state of agent
+						state = 'offline_agents'
+						if agent.is_online_now or agent.id == DP_PERSON_ID
+							state = 'online_agents'
+						else if !agent.date_last_login?
+							state = 'unactive_agents'
+
+						# if agent state changed
+						if @agentsMap[agent.id] != state
+							list = @[@agentsMap[agent.id]]
+							index = -1
+
+							# then find agent index in old state array
+							for _agent, i in list
+								if _agent.id == agent.id
+									index = i
+									break
+
+							# then remove it if found
+							if -1 != index
+								list.splice index, 1
+
+							# and push to new state array
+							@[state].push agent
+							@agentsMap[agent.id] = state
+
+
+				@$timeout (=> @refreshAgents()), 60 * 1000
+
+
 
 		loadMethodTests: ->
 			promises = []
@@ -152,7 +199,8 @@ define [
 				return
 
 			@startSpinner('saving_new_agent')
-			@Api.sendPutJson('/agents', postData).then(=>
+			@Api.sendPutJson('/agents', postData).then( (data) =>
+				@unactive_agents.push data.data
 				@stopSpinner('saving_new_agent').then(=>
 					@$scope.created_agent = @$scope.new_agent
 					@$scope.new_agent = {}

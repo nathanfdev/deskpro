@@ -167,7 +167,6 @@
 	'agent.general.date_of_last_agent_reply'                               => 'Dátum poslednej odpovede operátora',
 	'agent.general.date_of_last_reply'                                     => 'Dátum poslednej odpovede',
 	'agent.general.date_of_last_user_reply'                                => 'Dátum poslednej odpovede užívateľa',
-	'agent.general.date_opened'                                            => 'Schôdza otvorená',
 	'agent.general.date_published'                                         => 'Schôdza publikovaná',
 	'agent.general.date_resolved'                                          => 'Schôdza vyriešená',
 	'agent.general.dates_and_times'                                        => 'Dátumy a časy',

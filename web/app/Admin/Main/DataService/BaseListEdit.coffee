@@ -13,6 +13,7 @@ define [
 	# This is a simple base data service that implements some default functionality for
 	# loading the "list" collection, and some methods for keeping the list up to date.
 	###
+  # todo update models after reload instead of creating new
 	class Admin_Main_DataService_BaseListEdit
 		constructor: ->
 			Util_Angular.setInjectedProperties(this, arguments)
@@ -48,7 +49,7 @@ define [
 		#
 		# @return {Promise}
 		###
-		loadList: (reload) ->
+		loadList: (reload, params) ->
 			if reload or @isReloadWaiting
 				@loadListPromise = null
 				@isListLoaded = false
@@ -64,7 +65,7 @@ define [
 			deferred = @$q.defer()
 			@loadListPromise = deferred.promise
 
-			@_doLoadList().then( (models) =>
+			@_doLoadList(params).then( (models) =>
 				@isListLoaded = true
 				@_setListData(models)
 				@_setPaginationData(models)
@@ -441,18 +442,17 @@ define [
 
 
 		# simple proxy
-		all: ->
-			@loadList()
+		all: (reload, params) ->
+			@loadList(reload, params)
 
 
 
 		# simple proxy
 		get: (id) ->
 			if !id? then return null
-
 			deferred = @$q.defer()
-			@loadList().then =>
-				deferred.resolve @map[id] || null
+			@all().then =>
+				deferred.resolve @map[id]
 
 			deferred.promise
 
@@ -499,10 +499,11 @@ define [
 
 
 		# overriden by child classes for back compatibiliy
-		_doLoadList: ->
+		_doLoadList: (params) ->
 			deferred = @$q.defer()
+			params = {} if !params?
 
-			@Api.sendGet(@url()).success (data) =>
+			@Api.sendGet(@url(), params).success (data) =>
 				deferred.resolve @resolveResponse(data)
 			.error (data, status, headers, config) ->
 					deferred.reject(data)

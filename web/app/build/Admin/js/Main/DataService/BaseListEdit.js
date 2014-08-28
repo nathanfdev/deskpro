@@ -45,7 +45,7 @@
       		 * @return {Promise}
        */
 
-      Admin_Main_DataService_BaseListEdit.prototype.loadList = function(reload) {
+      Admin_Main_DataService_BaseListEdit.prototype.loadList = function(reload, params) {
         var deferred;
         if (reload || this.isReloadWaiting) {
           this.loadListPromise = null;
@@ -61,7 +61,7 @@
         }
         deferred = this.$q.defer();
         this.loadListPromise = deferred.promise;
-        this._doLoadList().then((function(_this) {
+        this._doLoadList(params).then((function(_this) {
           return function(models) {
             _this.isListLoaded = true;
             _this._setListData(models);
@@ -590,8 +590,8 @@
         }
       };
 
-      Admin_Main_DataService_BaseListEdit.prototype.all = function() {
-        return this.loadList();
+      Admin_Main_DataService_BaseListEdit.prototype.all = function(reload, params) {
+        return this.loadList(reload, params);
       };
 
       Admin_Main_DataService_BaseListEdit.prototype.get = function(id) {
@@ -600,9 +600,9 @@
           return null;
         }
         deferred = this.$q.defer();
-        this.loadList().then((function(_this) {
+        this.all().then((function(_this) {
           return function() {
-            return deferred.resolve(_this.map[id] || null);
+            return deferred.resolve(_this.map[id]);
           };
         })(this));
         return deferred.promise;
@@ -646,10 +646,13 @@
         return response;
       };
 
-      Admin_Main_DataService_BaseListEdit.prototype._doLoadList = function() {
+      Admin_Main_DataService_BaseListEdit.prototype._doLoadList = function(params) {
         var deferred;
         deferred = this.$q.defer();
-        this.Api.sendGet(this.url()).success((function(_this) {
+        if (params == null) {
+          params = {};
+        }
+        this.Api.sendGet(this.url(), params).success((function(_this) {
           return function(data) {
             return deferred.resolve(_this.resolveResponse(data));
           };

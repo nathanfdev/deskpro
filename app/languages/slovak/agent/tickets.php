@@ -78,8 +78,6 @@
 	'agent.tickets.date_last_agent_reply'                                  => 'Dátum poslednej odpovede operátora',
 	'agent.tickets.date_last_reply'                                        => 'Dátum poslednej odpovede',
 	'agent.tickets.date_last_user_reply'                                   => 'Dátum poslednej odpovede užívateľa',
-	'agent.tickets.date_opened_newerolder'                                 => 'Dátum otvorenia (Najnovší-Najstarší)',
-	'agent.tickets.date_opened_oldernewer'                                 => 'Dátum otvorenia (Najstarší-Najnovší)',
 	'agent.tickets.debug_file'                                             => 'Ladiaci súbor',
 	'agent.tickets.debug_file_download'                                    => 'Stiahni Ladiaci súbor',
 	'agent.tickets.debug_file_explain'                                     => 'DeskPRO operátor Vás môže požiadať o sprostredkovanie tohto súboru pre lepšiu diagnózu problémov.',

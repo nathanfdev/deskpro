@@ -227,6 +227,9 @@ class ChatController extends AbstractController
 		}
 
 		$blob = $this->em->getRepository('DeskPRO:Blob')->find($this->in->getUint('send_blob_id'));
+		if (!$blob) {
+			throw $this->createNotFoundException();
+		}
 
 		$msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
 		if ($blob->isImage()) {

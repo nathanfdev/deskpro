@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Doctrine\DBAL\DBALException;
 
 class Draft extends AbstractEntityRepository
 {
@@ -149,7 +150,7 @@ class Draft extends AbstractEntityRepository
 
 			$this->getEntityManager()->persist($draft);
 			$this->getEntityManager()->flush($draft);
-		} catch (\Doctrine\DBAL\DBALException $e) {
+		} catch (\PDOException $e) {
 			return null;
 		}
 

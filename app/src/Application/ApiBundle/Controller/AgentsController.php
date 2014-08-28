@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\HttpFoundation\JsonResponse;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\DependencyInjection\SystemServices\PersonApiDataFactoryService;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
@@ -130,6 +131,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		$serializer = $this->getContainer()->getSystemService('serializer');
 		$agent_data = $serializer->serialize($agent);
+
 		$agent_data['teams'] = array();
 
 		$agent->loadHelper('Agent');
@@ -152,6 +154,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			$data['signature_html'] = $agent->getSignatureHtml();
 		}
 
+		$data['person_id'] = $agent['id']; // back compatibility
 		return $data;
 	}
 
@@ -212,7 +215,7 @@ class AgentsController extends AbstractController implements ProtectedController
 		$skip_email = $this->in->getBool('skip_email');
 
 		return $this->saveAgent($id, $agent_postdata, $profile, $filter_subs, $other_subs, $quick_add, $perm_overrides,
-								$dep_perm_overrides);
+								$dep_perm_overrides, $skip_email);
 	}
 
 	protected function saveAgent($id = null, $agent_postdata = array(), $profile = array(), $filter_subs = array(),
@@ -265,71 +268,42 @@ class AgentsController extends AbstractController implements ProtectedController
 			return $email_validator->isValidUserEmail($e);
 		});
 
-		$find_existing = array();
-		foreach ($set_emails as $email_addr) {
-			$exist = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email_addr);
-			if ($exist && $exist->id != $id) {
-				if (!isset($find_existing[$exist->id])) {
-					$find_existing[$exist->id] = array(
-						'person' => $exist,
-						'emails' => array()
-					);
-				}
-				$find_existing[$exist->id]['emails'][] = $email_addr;
-			}
-		}
+		$existPersons = $this->em->getRepository('DeskPRO:Person')->findByEmails($set_emails);
 
-		if ($find_existing) {
-			// If there is just one existing person and we're creating a new agent,
-			// then we can just promote the user to be an agent
-			if (count($find_existing) == 1 && !$id) {
-				$exist = array_pop($find_existing);
-				$id = $exist['person']->id;
-				$exist_person = $exist['person'];
+		// we have a dupe email error
+		if(count($existPersons) > 1) {
+			$error_info = array('existing' => array());
 
-			// In all other cases, we have a dupe email error
-			} else {
-				$error_info = array('existing' => array());
-				foreach ($find_existing as $info) {
-					$error_info['existing'][] = array(
-						'person_id'   => $info['person']->id,
-						'person_name' => $info['person']->display_name,
-						'email'       => implode(', ', $info['emails'])
-					);
-				}
-				return $this->createApiErrorInfoResponse('dupe_email', 'One or more email addresses are already in use by other users', $error_info);
+			foreach ($existPersons as $person) {
+				$error_info['existing'][] = array(
+					'person_id'   => $person['id'],
+					'person_name' => $person['display_name'],
+					'email'       => implode(', ', $person->getEmailAddresses()),
+				);
 			}
+			return $this->createApiErrorInfoResponse('dupe_email', 'One or more email addresses are already in use by other users', $error_info);
+
 		}
 
 		#-------------------------
 		# Get agent
 		#-------------------------
 
-		if ($id) {
-			$is_new = false;
-
-			if ($exist_person) {
-				$agent = $exist_person;
+		if (!$agent = reset($existPersons)) {
+			if ($id) {
+				if (!$agent = $this->container->getAgentData()->get($id)) {
+					throw $this->createNotFoundException();
+				}
 			} else {
-				$agent = $this->container->getAgentData()->get($id);
+				$agent = new Person();
+				$agent->setPassword(Strings::random(20));
 			}
+		}
 
-			if (!$agent) {
-				throw $this->createNotFoundException();
-			}
-
-			// Promoting an existing user to an agent needs to call the preNewAgent callback
-			if ($agent && !$agent->is_agent) {
-				$r = $this->preNewAgent(1);
-				if ($r) return $r;
-			}
-		} else {
+		// Promoting an existing user to an agent needs to call the preNewAgent callback
+		if (!$agent['is_agent']) {
 			$r = $this->preNewAgent(1);
 			if ($r) return $r;
-
-			$is_new = true;
-			$agent = new Person();
-			$agent->setPassword(Strings::random(20));
 		}
 
 		$edit_agent = new EditAgent($agent);
@@ -460,23 +434,26 @@ class AgentsController extends AbstractController implements ProtectedController
 		#-------------------------
 
 		// Send welcome email for new users
-		if ($is_new && !$skip_email) {
-			$message = $this->container->getMailer()->createMessage();
-			$message->setToPerson($agent);
-			$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
-			$attach = \Swift_Attachment::fromPath(DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf', 'application/pdf');
-			$attach->setFilename('Getting Started with DeskPRO.pdf');
-			$message->attach($attach);
-			$this->container->getMailer()->send($message);
+		if (!$id && !$skip_email) {
+			$this->sendWelcomeEmail($agent);
 		}
 
 		#-------------------------
 		# Return
 		#-------------------------
 
-		$data = $agent->toApiData();
-		$data['person_id'] = $agent['id']; // back compatibility
-		return $this->createApiResponse($data);
+		return $this->getAgentAction($agent['id']);
+	}
+
+	protected function sendWelcomeEmail(Person $agent)
+	{
+		$message = $this->container->getMailer()->createMessage();
+		$message->setToPerson($agent);
+		$message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', array('agent' => $agent));
+		$attach = \Swift_Attachment::fromPath(DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf', 'application/pdf');
+		$attach->setFilename('Getting Started with DeskPRO.pdf');
+		$message->attach($attach);
+		$this->container->getMailer()->send($message);
 	}
 
 	/**

@@ -51,13 +51,11 @@
 		<p class="info">
 			by {{ ng_var('package.author_name') }} &middot; <a ng-href="{{ ng_var('package.author_link') }}">Website</a>
 		</p>
-		<p>
-			{{ ng_var('package.description') }}
-		</p>
+		<p ng-bind-html="package.description"></p>
 	</div>
 {% endmacro %}
 
-<section class="dp-paneblock dp-listpane">
+<section class="dp-paneblock dp-listpane" dp-max-height dp-height-add="-35">
 	<header>
 		<nav ng-show="ListCtrl.apps.length">
 			<label style="margin: 10px 15px 0 0; font-size: 11px;">

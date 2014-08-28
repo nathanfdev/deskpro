@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PrefNoticeSet;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -354,7 +355,14 @@ class MainController extends AbstractController
         }
 
         if ($this->container->getSetting('elastica.enabled')) {
-            return $this->searchInElasticsearch($q);
+			try {
+				return $this->searchInElasticsearch($q);
+			} catch (\Exception $e) {
+				KernelErrorHandler::logException($e);
+
+				// fallback on DB search
+				return $this->searchInDB($q);
+			}
         } else {
             return $this->searchInDB($q);
         }
@@ -388,8 +396,17 @@ class MainController extends AbstractController
 			$group['results'] = $this->renderSearchResults($group['type'], $group['results']);
 		}
 
+		$es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
+		$timecut = new \DateTime('-10 minutes');
+		if ($es_status && $es_status->getData('status') == 'running' && $es_status->getData('date_last') && $es_status->getData('date_last') > $timecut) {
+			$index_running = true;
+		} else {
+			$index_running = false;
+		}
+
 		return $this->createJsonResponse(array(
-			'grouped_results' => $return_results
+			'grouped_results' => $return_results,
+			'index_running'   => $index_running
 		));
     }
 

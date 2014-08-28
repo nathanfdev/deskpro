@@ -108,11 +108,17 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
 		$adapter = $this->getAuthAdapter();
 
 		$userinfo = null;
-		if (\Orb\Validator\StringEmail::isValueValid($id_input)) {
-			$userinfo = $adapter->getUserInfoForEmail($id_input);
-		}
-		if (!$userinfo) {
-			$userinfo = $adapter->getUserInfoForUsername($id_input);
+
+		try {
+			if (\Orb\Validator\StringEmail::isValueValid($id_input)) {
+				$userinfo = $adapter->getUserInfoForEmail($id_input);
+			}
+			if (!$userinfo) {
+				$userinfo = $adapter->getUserInfoForUsername($id_input);
+			}
+		} catch (\Exception $e) {
+			if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+			throw $e;
 		}
 
 		if (!$userinfo) {

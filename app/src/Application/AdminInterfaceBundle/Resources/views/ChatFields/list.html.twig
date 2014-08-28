@@ -12,7 +12,7 @@
 				when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="ChatFieldsList.sortedListOptions">
+			<ul class="dp-item-list" ui-sortable="ChatFieldsList.sortedListOptions" dp-max-height>
 				<li ng-repeat="field in ChatFieldsList.custom_fields"
 					class="with-drag-handle"
 					dp-state-mark="chat.fields.edit.{{ ng_var('field.id') }}"

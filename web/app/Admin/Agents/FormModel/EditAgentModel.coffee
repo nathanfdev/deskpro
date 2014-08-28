@@ -10,6 +10,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			@form.name = agent.name
 			@form.primary_phone_number_text = agent.primary_phone_number_text
 			@form.primary_phone_number_region = agent.primary_phone_number_region
+			@form.notification_settings = agent.notification_settings
 			if !@form.primary_phone_number_region
 				@form.primary_phone_number_region = primary_phone_number_region
 
@@ -78,6 +79,7 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 			formData = {}
 			formData.name = @form.name
 			formData.primary_phone_number_text = @form.primary_phone_number_text
+			formData.notification_settings = @form.notification_settings
 
 			if @form.enable_display_name and Strings.trim(@form.override_name)
 				formData.override_name = Strings.trim(@form.override_name)

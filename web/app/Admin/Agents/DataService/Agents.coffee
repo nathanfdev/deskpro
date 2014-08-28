@@ -16,13 +16,5 @@ define [
 
 			models
 
-		_doLoadList: ->
-			deferred = @$q.defer()
-
-			@Api.sendGet(@url(), {full: 1}).success( (data) =>
-				deferred.resolve @resolveResponse(data)
-			, (data, status, headers, config) ->
-				deferred.reject()
-			)
-
-			deferred.promise
+		all: (reload) ->
+			super (reload), {full: 1}

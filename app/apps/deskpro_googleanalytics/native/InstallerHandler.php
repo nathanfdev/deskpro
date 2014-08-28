@@ -53,7 +53,15 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	public function uninstall(InstallerContext $context)
 	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.ga_property_id', null);
+		$handler = $context->getContainer()->getSettingsHandler();
+		if (!is_array($this->settingsDef)) {
+			throw new \Exception('Wrong Package settings definition');
+		}
+		foreach ($this->settingsDef as $set) {
+			if (isset($set['name'])) {
+				$handler->setSetting('core.' . $set['name'], null);
+			}
+		}
 	}
 
 
@@ -80,6 +88,14 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	private function _doInstall(InstallerContext $context)
 	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.ga_property_id', $context->getApp()->getSetting('ga_property_id'));
+		$handler = $context->getContainer()->getSettingsHandler();
+		if (!is_array($this->settingsDef)) {
+			throw new \Exception('Wrong Package settings definition');
+		}
+		foreach ($this->settingsDef as $set) {
+			if (isset($set['name'])) {
+				$handler->setSetting('core.' . $set['name'], $context->getApp()->getSetting($set['name']));
+			}
+		}
 	}
 }

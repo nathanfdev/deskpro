@@ -232,12 +232,10 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
 				if ($last_error) {
 					$e = new \Exception("Cron did not shut down cleanly. Last error: " . implode("\n", $last_error));
-					$e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
+					\DeskPRO\Kernel\KernelErrorHandler::logException($e, false);
 				} else {
 					$e = new \Exception("Cron did not shut down cleanly");
-					$e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-					\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($e_info);
+					\DeskPRO\Kernel\KernelErrorHandler::logException($e, false);
 				}
 
 				App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $GLOBALS['DP_CRON_ID']));

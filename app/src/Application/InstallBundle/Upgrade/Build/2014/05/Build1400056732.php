@@ -42,21 +42,17 @@ class Build1400056732 extends AbstractBuild
 	{
 		$db = $this->container->getDb();
 
-		#------------------------------
-		# Recompile tempaltes
-		#------------------------------
-
-		$this->out("Re-compiling custom templates");
-
 		$set = new TemplateSet(
 			$this->container->getEm(),
 			$this->container->get('twig'),
 			$this->container->getSystemService('style')
 		);
 
-		$tids = $db->fetchAllCol("SELECT id FROM templates");
-		$failed = array();
-		$failed_data = array();
+		#------------------------------
+		# Rename templates
+		#------------------------------
+
+		$this->out("Renaming templates");
 
 		$replacements = array(
 			'DeskPRO:emails_user:new-reply-agent.html.twig' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
@@ -64,28 +60,9 @@ class Build1400056732 extends AbstractBuild
 			'DeskPRO:emails_user:new-ticket.html.twig'      => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
 		);
 
-		foreach ($tids as $id) {
-			$info = $db->fetchAssoc("SELECT name, template_code FROM templates WHERE id = ?", array($id));
-			$this->out("Re-compiling {$info['name']}");
-
-			try {
-				$code = $info['template_code'];
-				$code = str_replace(array_keys($replacements), array_values($replacements), $code);
-
-				$template      = $set->getCustomTemplate($info['name']);
-				$template_code = $template->getTemplateCode();
-				$template_code->setCode($code);
-				$set->saveTemplate($template);
-			} catch (\Exception $e) {
-				$this->out("... Failed: {$e->getMessage()}");
-				$failed[] = $id;
-				$failed_data[] = $info;
-			}
-		}
-
-		if ($failed) {
-			$this->saveUpgradeData('201404', 'bad-templates', $failed_data);
-			$db->executeUpdate("DELETE FROM templates WHERE id IN (" . implode(',', $failed) . ")");
+		foreach ($replacements as $oldname => $newname) {
+			$this->out("Rename $oldname -> $newname");
+			$db->update('templates', array('name' => $newname), array('name' => $oldname));
 		}
 
 		#------------------------------
@@ -94,7 +71,7 @@ class Build1400056732 extends AbstractBuild
 
 		$this->out("Renaming custom templates");
 
-		$custom_names = $db->fetchAllKeyValue("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_user:custom_%' OR name LIKE 'DeskPRO:emails_agent:custom_'");
+		$custom_names = $db->fetchAllKeyValue("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_user:custom_%' OR name LIKE 'DeskPRO:emails_agent:custom_%'");
 
 		foreach ($custom_names as $id => $name) {
 			$new_name = preg_replace('#^DeskPRO:emails_(user|agent):custom_(.*?)\.html\.twig$#', 'DeskPRO:emails_custom:$1_$2.html.twig', $name);
@@ -130,6 +107,40 @@ class Build1400056732 extends AbstractBuild
 			} catch (\Exception $e) {
 				$this->out("... Failed: {$e->getMessage()}");
 			}
+		}
+
+		#------------------------------
+		# Recompile templates
+		#------------------------------
+
+		$this->out("Re-compiling custom templates");
+
+		$tids = $db->fetchAllCol("SELECT id FROM templates");
+		$failed = array();
+		$failed_data = array();
+
+		foreach ($tids as $id) {
+			$info = $db->fetchAssoc("SELECT name, template_code FROM templates WHERE id = ?", array($id));
+			$this->out("Re-compiling {$info['name']}");
+
+			try {
+				$code = $info['template_code'];
+				$code = str_replace(array_keys($replacements), array_values($replacements), $code);
+
+				$template      = $set->getCustomTemplate($info['name']);
+				$template_code = $template->getTemplateCode();
+				$template_code->setCode($code);
+				$set->saveTemplate($template);
+			} catch (\Exception $e) {
+				$this->out("... Failed: {$e->getMessage()}");
+				$failed[] = $id;
+				$failed_data[] = $info;
+			}
+		}
+
+		if ($failed) {
+			$this->saveUpgradeData('201404', 'bad-templates', $failed_data);
+			$db->executeUpdate("DELETE FROM templates WHERE id IN (" . implode(',', $failed) . ")");
 		}
 
 		#------------------------------

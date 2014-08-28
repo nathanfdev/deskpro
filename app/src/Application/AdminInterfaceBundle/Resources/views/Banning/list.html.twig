@@ -15,7 +15,7 @@
 				<button class="btn btn-primary" ng-click="ListCtrl.goFirstIpBanPage()">Search</button>
 			</div>
 
-			<ul class="dp-item-list">
+			<ul class="dp-item-list" dp-max-height="50" dp-add-height="180">
 				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.ip_bans"
 					dp-state-mark="ban!:crm.banning.edit_ip.{{ ng_var('ban.banned_ip|murmurhash') }}">
 					<a href="{{ ng_href('crm.banning.edit_ip', '{ban: ban.banned_ip}') }}">
@@ -100,7 +100,7 @@
                 </label>
 			</div>
 
-			<ul class="dp-item-list">
+			<ul class="dp-item-list" dp-max-height="50" dp-add-height="180">
 				<li class="with-drag-handle" ng-repeat="ban in ListCtrl.list.email_bans"
 					dp-state-mark="ban!:crm.banning.edit_email.{{ ng_var('ban.banned_email|murmurhash') }}">
 					<a href="{{ ng_href('crm.banning.edit_email', '{ban: ban.banned_email}') }}">

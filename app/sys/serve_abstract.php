@@ -135,7 +135,7 @@ abstract class LoaderAbstract
 
 		if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger') || is_file(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
 			header('HTTP/1.1 503 Service Unavailable');
-			echo "Helpdesk is offline.";
+			echo HelpdeskOfflineMessage::getOfflineMessage();
 			exit(1);
 		}
 

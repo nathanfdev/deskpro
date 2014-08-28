@@ -21,10 +21,7 @@
 				<li>Search results are returned much faster and results are more accurate.</li>
 			</ul>
 			<p>
-				<strong>The Elastic Search search engine is currently in beta. Once the beta is finished, you may require a specific license for ongoing use.</strong>
-			</p>
-			<p>
-				To use this feature, you will first need to <a href="http://www.elasticsearch.org/overview/elkdownloads/">download, install and configure an Elastic Search</a> server and then enter the connection details below.
+				To use this feature, you will first need to <a href="https://support.deskpro.com/kb/articles/263-installing-elasticsearch">configure an ElasticSearch server or use a third-party ElasticSearch service.</a>
 			</p>
 		</div>
 	</section>
@@ -97,21 +94,6 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-class="{'success': indexer_status.deskpro_ticket_done >= indexer_status.deskpro_ticket_total}">
-							<td>Tickets</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_total') }}</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_done') }}</td>
-						</tr>
-						<tr ng-class="{'success': indexer_status.deskpro_person_done >= indexer_status.deskpro_person_total}">
-							<td>People</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_total') }}</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_done') }}</td>
-						</tr>
-						<tr ng-class="{'success': indexer_status.deskpro_organization_done >= indexer_status.deskpro_organization_total}">
-							<td>Organizations</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_total') }}</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_done') }}</td>
-						</tr>
 						<tr ng-class="{'success': indexer_status.deskpro_article_done >= indexer_status.deskpro_article_total}">
 							<td>Articles</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_article_total') }}</td>
@@ -131,6 +113,21 @@
 							<td>Feedback</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_feedback_total') }}</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_feedback_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_organization_done >= indexer_status.deskpro_organization_total}">
+							<td>Organizations</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_person_done >= indexer_status.deskpro_person_total}">
+							<td>People</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_ticket_done >= indexer_status.deskpro_ticket_total}">
+							<td>Tickets</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_done') }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -188,6 +185,9 @@
 			</div>
 		</div>
 	</section>
+	<div style="font-size: 11px; font-style: italic; padding: 4px; background-color: #fff; margin: 10px; border: 1px solid #d0d9e6; border-radius: 2px;">
+		The Elastic Search Engine is an optional technology. It's currently provided without charge but may require a license in the future.
+	</div>
 </div>
 <div dp-register-message="saved_settings">Settings saved successfully.</div>
 {{ ng_tpl('AdminInterfaceBundle:ElasticSearch:test-settings-modal.html.twig') }}

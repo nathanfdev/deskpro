@@ -648,8 +648,7 @@ class Runner
 					}
 				} catch (\Exception $e) {
 					$this->logger->log(sprintf("readNext exception: %s", $e->getMessage()), 'info');
-					$einfo = KernelErrorHandler::getExceptionInfo($e);
-					KernelErrorHandler::logErrorInfo($einfo);
+					KernelErrorHandler::logException($e, false);
 					break;
 				}
 			}

@@ -42,6 +42,7 @@
 		"ColorPicker":                     "../vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "../vendor/detect_timezone",
 		"intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
+		"redactor":                        "../vendor/redactor/redactor.min",
 
 		"selectize":                       "bower_components/selectize/dist/js/selectize",
 		"sifter":                          "bower_components/sifter/sifter",

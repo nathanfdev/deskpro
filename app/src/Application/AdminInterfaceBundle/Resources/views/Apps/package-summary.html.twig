@@ -10,8 +10,7 @@
 					by {{ ng_var('Ctrl.pack.author_name') }} &lt;<a href="mailto:{{ ng_var('Ctrl.pack.author_email') }}">{{ ng_var('Ctrl.pack.author_email') }}</a>&gt;
 					&bull; <a ng-href="{{ ng_var('Ctrl.pack.author_link') }}">{{ ng_var('Ctrl.pack.author_link') }}</a>
 				</p>
-				<p>
-					{{ ng_var('Ctrl.pack.description') }}
+				<p ng-bind-html="Ctrl.pack.description">
 				</p>
 
 				<a ng-hide="Ctrl.pack.is_installed" class="btn btn-primary" href="{{ ng_href('apps.apps.install_package', "{name: Ctrl.pack.name+'.install'}") }}">

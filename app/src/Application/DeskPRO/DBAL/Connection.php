@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\DBAL;
 
+use Doctrine\DBAL\DBALException;
 use Orb\Log\Logger;
 use PDO;
 
@@ -84,6 +85,16 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @var bool
 	 */
 	protected $has_run_avoid = false;
+
+	/**
+	 * @var string
+	 */
+	protected $default_isolation = 'REPEATABLE READ';
+
+	/**
+	 * @var bool
+	 */
+	protected $do_reset_isolation = false;
 
 	public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
 	{
@@ -484,16 +495,20 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::executeQuery($query, $params, $types, $qcp);
-		} catch (\Doctrine\DBAL\DBALException $e) {
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+					usleep(500000);
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
-				usleep(500000);
-				return $this->executeQuery($query, $params, $types, $is_retry + 1);
+					return $this->executeQuery($query, $params, $types, $is_retry + 1);
+				}
+
+				$e->_dp_query        = $query;
+				$e->_dp_query_params = $params;
+				throw $e;
+			} else {
+				throw $e;
 			}
-
-			$e->_dp_query = $query;
-			$e->_dp_query_params = $params;
-			throw $e;
 		}
 	}
 
@@ -516,16 +531,20 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		try {
 			return parent::executeUpdate($query, $params, $types);
-		} catch (\Doctrine\DBAL\DBALException $e) {
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+					usleep(500000);
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
-				usleep(500000);
-				return $this->executeUpdate($query, $params, $types, $is_retry + 1);
+					return $this->executeUpdate($query, $params, $types, $is_retry + 1);
+				}
+
+				$e->_dp_query        = $query;
+				$e->_dp_query_params = $params;
+				throw $e;
+			} else {
+				throw $e;
 			}
-
-			$e->_dp_query = $query;
-			$e->_dp_query_params = $params;
-			throw $e;
 		}
 	}
 
@@ -667,10 +686,14 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::exec($statement);
-		} catch (\Doctrine\DBAL\DBALException $e) {
-			$e->_dp_query = is_string($statement) ? $statement : null;
-			$e->_dp_query_params = array();
-			throw $e;
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				$e->_dp_query        = is_string($statement) ? $statement : null;
+				$e->_dp_query_params = array();
+				throw $e;
+			} else {
+				throw $e;
+			}
 		}
 	}
 
@@ -755,8 +778,13 @@ class Connection extends \Doctrine\DBAL\Connection
 			// properly synced and we dont need the flag set anymore
 			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
 
-			\DpShutdown::run('db_done_trans');
+			if ($this->do_reset_isolation) {
+				$this->do_reset_isolation = false;
+				$this->setIsolationDefault();
+			}
+
 			\DpShutdown::run('db_done_trans_commit');
+			\DpShutdown::run('db_done_trans');
 		}
 	}
 
@@ -792,8 +820,49 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		if (!$level) {
-			\DpShutdown::run('db_done_trans');
+			if ($this->do_reset_isolation) {
+				$this->do_reset_isolation = false;
+				$this->setIsolationDefault();
+			}
 			\DpShutdown::run('db_done_trans_rollback');
+			\DpShutdown::run('db_done_trans');
 		}
+	}
+
+
+	/**
+	 * Set isolation level to REPEATABLE READ
+	 *
+	 * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
+	 */
+	public function setIsolationRepeatableRead($auto_reset = false)
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ");
+		if ($auto_reset) {
+			$this->do_reset_isolation = true;
+		}
+	}
+
+
+	/**
+	 * Set isolation level to READ COMMITTED
+	 *
+	 * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
+	 */
+	public function setIsolationReadCommitted($auto_reset = false)
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED");
+		if ($auto_reset) {
+			$this->do_reset_isolation = true;
+		}
+	}
+
+
+	/**
+	 * Set isolation level back to default (REPEATABLE READ usually)
+	 */
+	public function setIsolationDefault()
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL {$this->default_isolation}");
 	}
 }

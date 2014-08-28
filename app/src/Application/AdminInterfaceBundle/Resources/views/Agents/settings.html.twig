@@ -1,6 +1,30 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
     <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>Agents Notifications</h3>
+        </header>
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.disable_notifications" />
+                                <h4>Disable all notifications</h4>
+                            </label>
+							<span class="help-block">
+
+							</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
     <section class="dp-paneblock dp-listpane">
         <header>
             <h3>Agent Password Policy</h3>

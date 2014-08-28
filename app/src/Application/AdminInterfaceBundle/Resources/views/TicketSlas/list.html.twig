@@ -8,7 +8,7 @@
 			<h3 ng-pluralize count="ListCtrl.list.length || 0" when="{{ ng_plural_phrase('adm.ticket_slas.count_slas') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
+			<ul class="dp-item-list" ng-if="ListCtrl.list.length" dp-max-height>
 				<li ng-repeat="sla in ListCtrl.list" dp-state-mark="tickets.slas.edit.{{ ng_var('sla.id') }}" data-id="{{ ng_var('sla.id') }}">
 					<a href="{{ ng_href('tickets.slas.edit', '{id: sla.id}') }}">
 						<h4>

@@ -88,7 +88,7 @@
 				</div>
 
                 <div ng-if="listType == 'table'" class="table-result-list">
-                    <table cellspacing="0" width="100%">
+                    <table cellspacing="0" width="100%" dp-settable-table>
 						<script type="text/plain" dp-tpl="thead" tpl-id="ticket_list_thead" watch-vars-deep="['display_fields']">
                         	{% include 'AgentBundle:TicketSearch:ticket-list-table-head.html.twig' %}
                         </script>

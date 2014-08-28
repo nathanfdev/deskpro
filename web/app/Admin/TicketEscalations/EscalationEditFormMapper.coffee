@@ -12,12 +12,18 @@ define [
 			form.actions            = escModel.actions?.actions || {}
 
 			form.terms = {}
+			form.terms_any = {}
 			form.actions = {}
 
 			if escModel.terms?.terms?.length
 				for term in escModel.terms.terms
 					rowId = _.uniqueId('term')
 					form.terms[rowId] = term
+
+			if escModel.terms_any?.terms?.length
+				for term in escModel.terms_any.terms
+					rowId = _.uniqueId('term_any')
+					form.terms_any[rowId] = term
 
 			if escModel.actions?.actions?.length
 				for action in escModel.actions.actions
@@ -42,5 +48,9 @@ define [
 			postData.terms = []
 			for own id, row of formModel.terms
 				postData.terms.push(row)
+
+			postData.terms_any = []
+			for own id, row of formModel.terms_any
+				postData.terms_any.push(row)
 
 			return postData

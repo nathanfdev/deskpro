@@ -446,8 +446,6 @@ class Upgrade
 
 	public function runAction_auto()
 	{
-
-
 		$time_start = microtime(true);
 
 		$is_quiet        = in_array('--quiet', $this->argv);
@@ -818,6 +816,7 @@ class Upgrade
 			if ($failures) {
 				$write_status("error_installing_files", sprintf("%d files failed to install due to file permissions", count($failures)));
 				$this->out(sprintf("%d files failed to install due to file permissions", count($failures)));
+				$this->outAndLog("Files: " . implode(', ', $failures));
 
 				$e = new \Exception(sprintf("%d files failed to install due to file permissions", count($failures)));
 				$e->_dp_failures = $failures;
@@ -1043,7 +1042,7 @@ class Upgrade
 			), $failures);
 		}
 		if ($failures) {
-			$this->out("Failed to install these files:\n" . implode("\n", $failures));
+			$this->outAndLog("Failed to install these files:\n" . implode("\n", $failures));
 		}
 
 		$failures = array();
@@ -1054,7 +1053,7 @@ class Upgrade
 			$failures
 		);
 		if ($failures) {
-			$this->out("Failed to delete these old files:\n" . implode("\n", $failures));
+			$this->outAndLog("Failed to delete these old files:\n" . implode("\n", $failures));
 		}
 
 		$this->registerCleanupParam('unlink_scratch_dir', null);
@@ -2206,7 +2205,7 @@ class FilesystemUtil extends \Symfony\Component\Filesystem\Filesystem
 			}
 
 			if (!isset($origin_filelist[$file_rel_path])) {
-				if (!@unlink($file->getRealPath())) {
+				if (is_file($file->getRealPath()) && !@unlink($file->getRealPath())) {
 					$failures[] = $file->getRealPath();
 				}
 			}

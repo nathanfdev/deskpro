@@ -59,7 +59,7 @@ define ->
 
 					scope.update_in_progress = true
 
-					doGetRequest = ->
+					doGetRequest = (immediate) ->
 
 						Api.sendGet(statusUpdateUrl).then((res) =>
 
@@ -69,17 +69,18 @@ define ->
 							message = data.message
 
 							scope.status_update_message = message
+							scope.$emit 'dp-status-update', data
 
 							if validStatuses.indexOf(status) == -1
 
-								if updateCompletedGrowlMessage and status == 'completed' then Growl.success(updateCompletedGrowlMessage)
+								if !immediate and updateCompletedGrowlMessage and status == 'completed' then Growl.success(updateCompletedGrowlMessage)
 								scope.update_in_progress = false
 								clearInterval(interval)
 						)
 
 					interval = setInterval(doGetRequest, updateInterval)
 
-					if updateImmediate then doGetRequest()
+					if updateImmediate then doGetRequest(true)
 				);
 		}
 	]

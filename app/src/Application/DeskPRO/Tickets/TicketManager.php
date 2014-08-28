@@ -239,6 +239,7 @@ class TicketManager
 	public function saveTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->db->beginTransaction();
+
 		try {
 			$ret = $this->doSaveTicket($ticket, $context);
 			$this->db->commit();

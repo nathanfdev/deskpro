@@ -1,0 +1,40 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Copy Settings</h4>
+{% endblock %}
+{% block modal_body %}
+	<p>
+		Copy permissions from <select ui-select2 style="width: 250px;" ng-model="options.group_id">
+			<option ng-repeat="group in groups" value="{{ ng_var('group.id') }}">{{ ng_var('group.title') }}</option>
+		</select>
+	</p>
+	<p>
+		Which permissions do you want to copy?
+	</p>
+	<ul class="checkbox-list" style="min-width: 250px; margin-bottom: 15px;">
+		<li>
+			<label>
+				<input type="checkbox" ng-model="options.copy_perms" />
+				<span>Permissions</span>
+			</label>
+		</li>
+		<li>
+			<label>
+				<input type="checkbox" ng-model="options.copy_deps_perms" />
+				<span>Departments permissions</span>
+			</label>
+		</li>
+	</ul>
+	<p>
+		Note that permissions will be applied to the edit form and you will
+		need to click the "Save" button to actually save any changes.
+	</p>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-primary" ng-click="doCopySettings(options)">Apply permissions to form</button>
+	</div>
+	<div ng-show="is_loading">
+		<i class="spinner-flat"></i>
+	</div>
+{% endblock %}

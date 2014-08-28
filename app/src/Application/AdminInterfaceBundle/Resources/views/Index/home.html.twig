@@ -32,6 +32,18 @@
 				</ul>
 			</article>
 		</section>
+
+        <section ng-if="Home.unactive_agents.length">
+            <header><h3>Never Logged In</h3></header>
+            <article>
+                <ul class="dp-icon-list with-icons x22">
+                    <li class="media" ng-repeat="agent in Home.unactive_agents">
+                        <i class="icon-img" bg-img="agent.picture_url_22"></i>
+                        <a href="{{ ng_href('agents.agents.edit', '{id:agent.id}') }}"><span class="title">{{ ng_var('agent.display_name') }}</span></a>
+                    </li>
+                </ul>
+            </article>
+        </section>
 	</div>
 
 	<div class="dp-appalt-section">

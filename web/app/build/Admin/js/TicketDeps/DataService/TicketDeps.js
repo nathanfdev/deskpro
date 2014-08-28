@@ -21,12 +21,17 @@
         return response.departments;
       };
 
-      TicketDeps.prototype._doLoadList = function() {
+      TicketDeps.prototype.all = function(reload) {
+        return TicketDeps.__super__.all.call(this, reload, {
+          with_perms: 1
+        });
+      };
+
+      TicketDeps.prototype._doLoadList = function(params) {
         var deferred;
         deferred = this.$q.defer();
-        this.Api.sendGet(this.url(), {
-          with_perms: 1
-        }).success((function(_this) {
+        params = params || {};
+        this.Api.sendGet(this.url(), params).success((function(_this) {
           return function(data, status, headers, config) {
             var models, proc;
             _this.deps = data.departments;

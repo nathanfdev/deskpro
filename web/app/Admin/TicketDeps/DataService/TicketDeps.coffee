@@ -16,13 +16,16 @@ define [
 
 		resolveResponse: (response) -> response.departments
 
-		_doLoadList: ->
+		all: (reload) ->
+			super reload, {with_perms: 1}
+
+		_doLoadList: (params) ->
 			deferred = @$q.defer()
+			params = params || {}
 
 			# maybe should init query params as method argument
-			@Api.sendGet(@url(), {with_perms: 1}).success( (data, status, headers, config) =>
+			@Api.sendGet(@url(), params).success( (data, status, headers, config) =>
 				@deps = data.departments
-
 				proc = (parent) ->
 					list = []
 

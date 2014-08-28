@@ -88,6 +88,8 @@ class EditAgent
 	 */
 	public $agent_groups;
 
+	public $notification_settings;
+
 
 	/**
 	 * @param Person $person
@@ -125,6 +127,11 @@ class EditAgent
 		}
 
 		$this->agent_groups = $person->usergroups->toArray();
+
+		$this->notification_settings = array(
+			'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
+			'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
+		);
 	}
 
 
@@ -235,6 +242,10 @@ class EditAgent
 				$agent->primary_email = $email;
 				break;
 			}
+		}
+
+		foreach ($this->notification_settings as $k => $v) {
+			$agent->setPreference('agent_notif.'.$k, (int) $v);
 		}
 
 		#------------------------------

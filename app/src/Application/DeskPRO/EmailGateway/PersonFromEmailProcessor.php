@@ -37,7 +37,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Doctrine\DBAL\DBALException;
 
 /**
  * This finds a user based on the email sent, or creates a new user

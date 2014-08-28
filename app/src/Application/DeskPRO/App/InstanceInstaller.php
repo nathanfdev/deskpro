@@ -95,7 +95,7 @@ class InstanceInstaller
 			$class = $native_app->getConfig()->getInstallerHandlerClass();
 			if ($class) {
 				$context = new InstallerContext($container, $native_app, $settings);
-				$handler = new $class();
+				$handler = new $class($this->package['settings_def']);
 			}
 		}
 

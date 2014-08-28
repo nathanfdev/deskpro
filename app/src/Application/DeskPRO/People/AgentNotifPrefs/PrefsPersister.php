@@ -136,6 +136,22 @@ class PrefsPersister
 			}
 		}
 
+		// todo
+		if ($this->person->getPref('agent_notif.no_allow_set_email')) {
+			$pref_records[] = array(
+				'person_id' => $this->person->id,
+				'name'      => 'agent_notif.no_allow_set_email',
+				'value_str' => '1',
+			);
+		}
+		if ($this->person->getPref('agent_notif.no_allow_set_browser')) {
+			$pref_records[] = array(
+				'person_id' => $this->person->id,
+				'name'      => 'agent_notif.no_allow_set_browser',
+				'value_str' => '1',
+			);
+		}
+
 		#------------------------------
 		# Save
 		#------------------------------

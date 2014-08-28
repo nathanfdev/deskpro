@@ -12,7 +12,7 @@
 			<p ng-if="!List.triggers.length" style="padding: 15px;">
 				{{ phrase('adm.ticket_triggers.no_triggers') }}
 			</p>
-			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length" dp-move-list-to-pos>
+			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length" dp-move-list-to-pos dp-max-height>
 
 				{#######################}
 				{# Department Triggers #}

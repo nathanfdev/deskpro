@@ -29,19 +29,10 @@
         return models;
       };
 
-      Admin_Agents_DataService_Agents.prototype._doLoadList = function() {
-        var deferred;
-        deferred = this.$q.defer();
-        this.Api.sendGet(this.url(), {
+      Admin_Agents_DataService_Agents.prototype.all = function(reload) {
+        return Admin_Agents_DataService_Agents.__super__.all.call(this, reload, {
           full: 1
-        }).success((function(_this) {
-          return function(data) {
-            return deferred.resolve(_this.resolveResponse(data));
-          };
-        })(this), function(data, status, headers, config) {
-          return deferred.reject();
         });
-        return deferred.promise;
       };
 
       return Admin_Agents_DataService_Agents;

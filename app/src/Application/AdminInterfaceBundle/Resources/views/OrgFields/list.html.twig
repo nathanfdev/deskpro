@@ -12,7 +12,7 @@
 				when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions">
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-max-height>
 				<li ng-repeat="field in ListCtrl.custom_fields"
 					class="with-drag-handle"
 					dp-state-mark="crm.org_fields.edit.{{ ng_var('field.id') }}"

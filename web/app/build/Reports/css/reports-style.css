@@ -9279,6 +9279,7 @@ div.dp-appalt-section > section header h3 {
 
 .dp-paneblock {
   margin: 10px;
+  overflow: auto;
   background: #fff;
   border: 1px solid #d0d9e6;
   border-radius: 2px;
@@ -9783,6 +9784,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 .dp-item-list {
   padding: 0;
   margin: 0;
+  overflow: auto;
 }
 
 .dp-item-list > li {
@@ -9893,6 +9895,23 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .dp-item-list a:hover h4 > .title-text {
   text-decoration: underline;
+}
+
+.dp-item-list h4:hover .title-copy,
+.dp-item-list a:hover .title-copy,
+.dp-item-list .title-copy.zeroclipboard-is-hover {
+  visibility: visible;
+}
+
+.dp-item-list .title-copy {
+  padding: 1px;
+  font-size: 15px;
+  line-height: 100%;
+  color: #853f24;
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 2px;
+  visibility: hidden;
 }
 
 .dp-item-list .drag-handle {
