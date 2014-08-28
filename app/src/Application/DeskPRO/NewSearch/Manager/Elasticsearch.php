@@ -47,7 +47,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
      *
      * @var array
      */
-    protected $results;
+    protected $results = array();
 
     public function quickSearch($q)
     {
