@@ -389,7 +389,7 @@ abstract class AbstractJobProcessor implements JobProcessorInterface
 	protected function formatExceptionIntoString(\Exception $e)
 	{
 		return sprintf(
-			"Exception: %s\nCode: %s\nFile: %s (line %s)\n\n\n%s",
+			"Exception: %s\nCode: %s\nFile: %s\nLine: %s\n\n%s",
 			$e->getMessage(),
 			$e->getCode(),
 			$e->getFile(),
