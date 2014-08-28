@@ -47,6 +47,7 @@ use Orb\Util\PhoneNumbers;
  * @property bool $is_enabled
  * @property bool $is_connected
  * @property bool $is_tested
+ * @property string $test_code
  * @property PhoneNumber|null $phone_number
  */
 class SmsAccount extends DomainObject
@@ -92,6 +93,11 @@ class SmsAccount extends DomainObject
 	 * @var bool if the account was tested via SMS with the current credentials
 	 */
 	protected $is_tested;
+
+	/**
+	 * @var string the code used in a text message to test this account
+	 */
+	protected $test_code;
 
 
 	public function __construct()
@@ -162,6 +168,11 @@ class SmsAccount extends DomainObject
 		$metadata->mapField(
 			array(
 				'fieldName' => 'is_tested', 'type' => 'boolean', 'columnName' => 'is_tested',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'test_code', 'type' => 'string', 'columnName' => 'test_code', 'nullable' => true
 			)
 		);
 		$metadata->mapOneToOne(
