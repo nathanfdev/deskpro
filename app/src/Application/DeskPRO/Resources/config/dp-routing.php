@@ -216,4 +216,16 @@ $collection->create('dp3_redirect_view_php', array(
 	'controller'  => 'DeskPRO:Deskpro3Redirect:ticketView',
 ));
 
+########################################################################################################################
+# Incoming Channel Endpoints
+########################################################################################################################
+
+$collection->create(
+	'api_channel_incoming_sms_twilio', array(
+		'path'       => '/sms.php/twilio',
+		'controller' => 'DeskPRO:ChannelIncoming:twilioSms',
+		'methods'    => array('POST'),
+	)
+);
+
 return $collection;

@@ -15,7 +15,7 @@
 
       Admin_ChannelSms_Ctrl_Edit.CTRL_AS = 'ChannelSmsEdit';
 
-      Admin_ChannelSms_Ctrl_Edit.DEPS = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$state'];
+      Admin_ChannelSms_Ctrl_Edit.DEPS = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$state', '$timeout'];
 
       Admin_ChannelSms_Ctrl_Edit.prototype.init = function() {
         return this.accountId = parseInt(this.$stateParams.id || 0);
@@ -96,31 +96,48 @@
         return promise;
       };
 
-      Admin_ChannelSms_Ctrl_Edit.prototype.testRoundTrip = function() {
+      Admin_ChannelSms_Ctrl_Edit.prototype.setupAndTest = function() {
         var postData, promise;
-        this.form_model.markTested(true);
         postData = this.getPostData();
-        promise = this.Api.sendPostJson("/channel/sms/test_account", {
-          account: postData
-        });
+        promise = this.Api.sendPostJson("/channel/sms/setup-and-test/twilio", postData);
         promise.then((function(_this) {
           return function(result) {
+            var checkTestStatus;
             if (result) {
-              _this.ngApply();
+              checkTestStatus = function() {
+                var url;
+                url = "/channel/sms/account/" + _this.accountId;
+                return _this.$timeout(function() {
+                  return _this.Api.sendGet(url).then(function(result) {
+                    console.log(result);
+                    if (result.data.is_tested) {
+                      _this.stopSpinner('sms_test_provider');
+                      _this.account = result.data;
+                      _this.form_model.setAccountData(result.data);
+                      _this.SmsAccountsData.updateModel(_this.account);
+                      _this.ngApply();
+                      return _this.Growl.success(_this.getRegisteredMessage('setup_and_tested_success'));
+                    } else {
+                      return checkTestStatus();
+                    }
+                  });
+                }, 1000);
+              };
+              return checkTestStatus();
             } else {
-              _this.form_model.markTested(false);
+              _this.Growl.error(_this.getRegisteredMessage('connected_fail'));
+              return _this.form_model.markTested(false);
             }
-            return _this.stopSpinner('sms_test');
           };
         })(this));
         promise.error((function(_this) {
           return function(result) {
             _this.$scope.connection_problem = true;
-            _this.form_model.markTested(true);
-            return _this.stopSpinner('sms_test');
+            _this.Growl.error(_this.getRegisteredMessage('connected_fail'));
+            return _this.stopSpinner('sms_test_provider');
           };
         })(this));
-        this.startSpinner('sms_test');
+        this.startSpinner('sms_test_provider');
         return promise;
       };
 

@@ -116,10 +116,30 @@ class Twilio
 	public function getIncomingNumbers()
 	{
 		$numbers = array();
-		foreach ($this->twilio->account->incoming_phone_numbers as $number) {
+		$nums = $this->twilio->account->incoming_phone_numbers;
+		foreach ($nums as $number) {
 			$numbers[$number->friendly_name] = $number->phone_number;
 		}
 
 		return $numbers;
+	}
+
+
+	public function setUrlForNumber($url, $number)
+	{
+		$nums = $this->twilio->account->incoming_phone_numbers;
+		foreach ($nums as $num) {
+			if (PhoneNumbers::toE164Format($num->phone_number) == PhoneNumbers::toE164Format($number)) {
+				// this is the correct number
+				$num->update(
+					array(
+						"SmsUrl"   => $url,
+						"SmsMethod" => 'POST'
+					)
+				);
+			}
+		}
+
+		return true;
 	}
 }

@@ -147,6 +147,12 @@ class TwilioSmsProvider implements SmsProviderInterface
 		}
 	}
 
+
+	public function setUrlForNumber($twilio_endpoint, $number)
+	{
+		$this->twilio->setUrlForNumber($twilio_endpoint, $number);
+	}
+
 	/**
 	 * A string identifier of the provider. This should be unique across the system.
 	 *

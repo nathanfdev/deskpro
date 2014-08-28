@@ -21,4 +21,5 @@
 	'admin.channels.sync_account_information'          => 'Sync Account Information',
 	'admin.channels.configure_and_test_twilio_account' => 'Configure and Test Twilio Account',
 	'admin.channels.configure_account'                 => 'Configure Account',
+	'admin.channels.setup_and_tested_success'          => 'Successfully Setup and Tested Account',
 );

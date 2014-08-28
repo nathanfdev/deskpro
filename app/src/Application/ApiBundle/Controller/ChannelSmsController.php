@@ -40,7 +40,12 @@ use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\SmsAccount;
 use Application\DeskPRO\Sms\SmsProviderFactory;
+use Orb\Service\Twilio\Twilio;
 use Orb\Sms\Provider\TwilioSmsProvider;
+use Orb\Sms\SmsMessage;
+use Orb\Sms\SmsSender;
+use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ChannelSmsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -121,8 +126,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 		$account->is_tested            = $this->in->getValue('account.is_tested');
 		$account->is_connected         = $this->in->getValue('account.is_connected');
 
-		$this->getContainer()->getEm()->persist($account);
-		$this->getContainer()->getEm()->flush();
+		$this->saveSmsAccount($account);
 
 		$serializedAccount = $this->getContainer()->getSerializer()->serialize($account);
 
@@ -190,8 +194,41 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 			);
 		}
 
+	}
 
 
+	public function setupAndTestTwilioAction()
+	{
+		$request = $this->request;
+
+		$accountData = $this->in->getValue('account');
+		$id          = $this->in->getValue('account.id');
+
+		$account = null;
+		if ($id) {
+			$account = $this->getSmsAccountRepo()->find($id);
+		}
+
+		if (!$account) {
+			$this->createApiErrorResponse('invalid', 'no sms account found');
+		}
+
+		$account->is_tested = false;
+		$account->is_enabled = false;
+		$account->test_code = Strings::random(8);
+
+		$this->saveSmsAccount($account);
+
+		// setup twilio endpoint
+		$twilio_endpoint = $this->generateUrl('api_channel_incoming_sms_twilio', array(), UrlGeneratorInterface::ABSOLUTE_URL);
+		$provider = SmsProviderFactory::create($account->type, $account->params);
+		$provider->setUrlForNumber($twilio_endpoint, $account->phone_number->number);
+
+		// send a text
+		$sender = new SmsSender($provider, $account->phone_number->number);
+		$sender->send($account->phone_number->number, $msg = new SmsMessage($account->test_code));
+
+		return $this->createApiSuccessResponse();
 	}
 
 
@@ -221,5 +258,15 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
 	private function getSmsAccountRepo()
 	{
 		return $this->getContainer()->getEm()->getRepository('DeskPRO:SmsAccount');
+	}
+
+
+	/**
+	 * @param $account
+	 */
+	protected function saveSmsAccount(SmsAccount $account)
+	{
+		$this->getContainer()->getEm()->persist($account);
+		$this->getContainer()->getEm()->flush();
 	}
 }

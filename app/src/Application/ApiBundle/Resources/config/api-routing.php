@@ -2995,6 +2995,14 @@ $collection->create(
 	)
 );
 
+$collection->create(
+	'api_channel_sms_setup_and_test_twilio', array(
+		'path'       => '/channel/sms/setup-and-test/twilio',
+		'controller' => 'ApiBundle:ChannelSms:setupAndTestTwilio',
+		'methods'    => array('POST'),
+	)
+);
+
 ########################################################################################################################
 # Email Accounts
 ########################################################################################################################

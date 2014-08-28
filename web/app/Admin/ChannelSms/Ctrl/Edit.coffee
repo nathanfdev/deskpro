@@ -8,7 +8,7 @@ define [
 	class Admin_ChannelSms_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_ChannelSms_Ctrl_Edit'
 		@CTRL_AS = 'ChannelSmsEdit'
-		@DEPS    = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$state']
+		@DEPS    = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$state', '$timeout']
 
 		init: ->
 			@accountId = parseInt(@$stateParams.id || 0)
@@ -67,24 +67,38 @@ define [
 			@startSpinner('sms_connect_provider')
 			return promise
 
-		testRoundTrip: ->
-			@form_model.markTested(true)
+		setupAndTest: ->
 			postData = @getPostData()
-			promise = @Api.sendPostJson("/channel/sms/test_account", {account: postData})
+			promise = @Api.sendPostJson("/channel/sms/setup-and-test/twilio", postData)
 			promise.then((result) =>
 				if result
-					#test
-					@ngApply()
+					checkTestStatus = =>
+						url = "/channel/sms/account/#{@accountId}"
+						@$timeout =>
+							@Api.sendGet(url).then((result) =>
+								console.log(result)
+								if result.data.is_tested
+									@stopSpinner('sms_test_provider')
+									@account = result.data
+									@form_model.setAccountData(result.data)
+									@SmsAccountsData.updateModel(@account)
+									@ngApply()
+									@Growl.success(@getRegisteredMessage('setup_and_tested_success'))
+								else
+									checkTestStatus()
+							)
+						, 1000
+					checkTestStatus()
 				else
+					@Growl.error(@getRegisteredMessage('connected_fail'))
 					@form_model.markTested(false)
-				@stopSpinner('sms_test')
 			)
 			promise.error((result) =>
 				@$scope.connection_problem = true
-				@form_model.markTested(true)
-				@stopSpinner('sms_test')
+				@Growl.error(@getRegisteredMessage('connected_fail'))
+				@stopSpinner('sms_test_provider')
 			)
-			@startSpinner('sms_test')
+			@startSpinner('sms_test_provider')
 			return promise
 
 		saveAccount: ->

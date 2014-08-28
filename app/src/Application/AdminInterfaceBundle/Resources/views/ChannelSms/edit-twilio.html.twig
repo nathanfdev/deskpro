@@ -117,11 +117,11 @@
 			<div style="text-align:center;" ng-show="form.account.is_connected">
 				<button style="margin-bottom: 15px;" class="btn btn-primary"
 					type="button"
-					ng-click="ChannelSmsEdit.testRoundTrip()" style="width: 25%">
+					ng-click="ChannelSmsEdit.setupAndTest()" style="width: 25%">
 					<i class="fa fa-bolt"></i>
 					{{ phrase('admin.channels.configure_and_test_twilio_account') }}
 				</button>
-				<div dp-show-spinning="sms_test">
+				<div dp-show-spinning="sms_test_provider">
 					<i class="spinner-flat"></i>
 				</div>
 			</div>
