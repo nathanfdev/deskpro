@@ -1,76 +1,94 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define [
+	'Admin/Main/Ctrl/Base'
+	'angular'
+], (Admin_Ctrl_Base, angular) ->
 	class Admin_Labels_Base_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_AS = 'LabelsEdit'
-		@DEPS = ['em', '$stateParams', '$rootScope', 'LabelManager']
+		@DEPS = ['em', '$stateParams', '$rootScope', 'LabelManager', 'LabelDefinition']
+
+
 
 		init: ->
-			@api_endpoint = ''
-			@ng_route = ''
-			@typename = ''
-			@old_label = ''
-			@$scope.form = { label: '' }
+			@endpoint = '/labels/definitions'
+			@$scope.isNew = true if !@$stateParams.label
+			@definition = null
+			@$scope.picker = false
+			@$scope.colors = [
+				'#e11d21', '#eb6420', '#fbca04', '#009800', '#006b75', '#207de5', '#0052cc', '#5319e7',
+				'#f7c6c7', '#fad8c7', '#fef2c0', '#bfe5bf', '#bfdadc', '#c7def8', '#bfd4f2', '#d4c5f9'
+			]
+			@$scope.form = {label: '', color: @$scope.colors[0], label_type: @type()}
+			@$scope.startDelete = => @startDelete()
 			return
+
+
+
+		type: ->
+			throw new Exception("This method must be implemented by a sub-class")
+
+
 
 		initialLoad: ->
 			if @$stateParams.label
-				get_label = @Api.sendGet("#{@api_endpoint}/get", {
-					label: @$stateParams.label
-				}).then( (result) =>
-					rec = @em.createEntity(@typename, 'label', { label: result.data.label })
+				@LabelDefinition.get(@type(), @$stateParams.label).then (def) =>
+					return if !def?
+					@definition = def
+					# @definition !== @$scope.form
+					@$scope.form = angular.copy def
 
-					@is_new = false
-					@old_label = result.data.label
-					@label_object = { label: @old_label }
-					@$scope.form.label = result.data.label
-				)
 
-				return get_label
-			else
-				@is_new = true
-				@$scope.form.label = ''
-				return null
-
-		addNewLabel: ->
-			return false if not @$scope.form.label
-
-			@startSpinner('saving_label')
-			@Api.sendPost(@api_endpoint, {label: @$scope.form.label}).success(=>
-				@stopSpinner('saving_label', true).then(=>
-					@Growl.success(@getRegisteredMessage('saved_label'))
-					@LabelManager.addLabel(@api_endpoint, @$scope.form.label)
-				)
-				@skipDirtyState()
-				@$state.go("#{@ng_route}.gocreate")
-			).error(=>
-				@Growl.error(@getRegisteredMessage('not_created_label'))
-			).finally(=>
-				@stopSpinner('saving_label', true)
-			)
 
 		saveLabel: ->
 			return false if not @$scope.form.label
-			return false if @old_label == @$scope.form.label
+			return false if @definition && @definition.label == @$scope.form.label && @definition.color == @$scope.form.color
 
-			if @is_new
-				return @addNewLabel()
+			@startSpinner 'saving_label'
+			@Api.sendPutJson @endpoint, {old: @definition || {}, new: @$scope.form}
 
-			@startSpinner('saving_label')
-			@Api.sendPost("#{@api_endpoint}/save", {
-				label_old: @old_label, label_new: @$scope.form.label
-			}).success(=>
-				@stopSpinner('saving_label', true).then(=>
-					@Growl.success(@getRegisteredMessage('saved_label'))
-					@LabelManager.renameLabel(@api_endpoint, @old_label, @$scope.form.label)
-					@old_label = @$scope.form.label
-					@label_object = { label: @old_label }
-				)
-				@skipDirtyState()
-			).error(=>
-				@Growl.error(@getRegisteredMessage('not_saved_label'))
-			).finally(=>
-				@stopSpinner('saving_label', true)
-			)
+			.success (data) =>
+				@stopSpinner('saving_label', true).then =>
+					@Growl.success @getRegisteredMessage 'saved_label'
 
-		isDirtyState: ->
-			if @$scope.form.label != @old_label then return true
-			return false
+				@LabelDefinition.update @definition, data
+				@definition = data
+
+				if @$scope.isNew
+					@$state.go 'tickets.labels.gocreate'
+				else
+					@$state.go 'tickets.labels.edit', {label: data.label}
+
+			.error =>
+				@Growl.error @getRegisteredMessage 'not_saved_label'
+
+			.finally =>
+				@stopSpinner 'saving_label', true
+
+
+
+		startDelete: () ->
+			return if !@definition
+			inst = @$modal.open({
+				templateUrl: @getTemplatePath('Labels/delete-modal.html'),
+				controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+					$scope.confirm = ->
+						$modalInstance.close();
+
+					$scope.dismiss = ->
+						$modalInstance.dismiss();
+				]
+			});
+
+			inst.result.then =>
+				@Api.sendDelete @endpoint, @definition
+
+				.success =>
+					@LabelDefinition.remove @definition
+					@$state.go 'tickets.labels'
+
+			  # todo
+				.error =>
+					@$state.go 'tickets.labels'
+
+				# todo
+				.finally =>
+					@$state.go 'tickets.labels'

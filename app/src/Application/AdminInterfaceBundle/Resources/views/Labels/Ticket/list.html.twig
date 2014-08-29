@@ -3,26 +3,26 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<dp-order-menu ng-model="sortOrder" order-dir-prefs="{'label': 'ASC', 'count': 'DESC'}">
+				<dp-order-menu ng-model="sortOrder" order-dir-prefs="{'label': 'ASC', 'total': 'DESC'}">
 					<option value="label">Label</option>
-					<option value="count">Count</option>
+					<option value="total">Count</option>
 				</dp-order-menu>
 			</nav>
 
-			<h3 ng-pluralize count="LabelsList.labels.length || 0" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
+			<h3 ng-pluralize count="countDefinitions()" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="label in LabelsList.labels | orderBy:order:orderReverse" dp-state-mark="label!:tickets.labels.edit.{{ ng_var('label.label|murmurhash') }}">
+				<li ng-repeat="label in labels | orderObjectBy:order:orderReverse" dp-state-mark="label!:tickets.labels.edit.{{ ng_var('label.label|murmurhash') }}">
 					<a href="{{ ng_href('tickets.labels.edit', '{label: label.label}') }}">
 						<div class="pull-right">
-							<span class="badge" ng-show="!delete_mode" tooltip="The number of tickets with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.count')}}</span>
+							<span class="badge" ng-show="!delete_mode" tooltip="The number of tickets with this label" tooltip-placement="left" style="margin-top: -2px;">{{ng_var('label.total')}}</span>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"
 								  ng-class="{'active':label.delete_mode}"
 								  ng-click="LabelsList.startDelete(label); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
 						<h4>
-							<span class="title-text">{{ng_var('label.label')}}</span>
+                            <span dp-label="label" label-type="tickets"></span>
 						</h4>
 					</a>
 				</li>

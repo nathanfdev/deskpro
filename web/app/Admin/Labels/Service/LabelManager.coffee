@@ -1,4 +1,4 @@
-define ['toastr'], (toastr) ->
+define ['angular'], (angular) ->
 	class Admin_Labels_Services_LabelManager
 		constructor: (Api, $q) ->
 			@Api = Api

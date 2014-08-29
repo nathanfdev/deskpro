@@ -6,6 +6,7 @@ define [
 	'Admin/FeedbackCategories/DataService/FeedbackCategories',
 	'Admin/TicketAccounts/DataService/TicketAccounts',
 	'Admin/Labels/Service/LabelManager'
+	'DeskPRO/Service/LabelDefinition'
 
 	'Admin/OptionBuilder/TypesDef/TicketCriteria',
 	'Admin/OptionBuilder/TypesDef/TicketActions',
@@ -19,6 +20,7 @@ define [
 	Admin_FeedbackCategories_DataService_FeedbackCategories,
 	Admin_TicketAccounts_DataService_TicketAccounts,
 	Admin_Labels_Service_LabelManager,
+	DeskPRO_Service_LabelDefinition
 
 	Admin_OptionBuilder_TypesDef_TicketCriteria,
 	Admin_OptionBuilder_TypesDef_TicketActions,
@@ -65,4 +67,8 @@ define [
 	
 		Module.factory('DataService', [ '$injector', ($injector) ->
 			return new Admin_Main_Service_DataServiceManager($injector)
+		])
+
+		Module.service('LabelDefinition', ['Api', '$q', (Api, $q) ->
+			return new DeskPRO_Service_LabelDefinition($q, Api.sendGet('/labels/definitions'))
 		])

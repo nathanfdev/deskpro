@@ -38,6 +38,20 @@ use Application\DeskPRO\App;
 
 class LabelDef extends AbstractEntityRepository
 {
+	static protected $types = array(
+		'articles'             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
+		'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
+		'downloads'            => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
+		'feedback'             => array('table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'),
+		'chat'                 => array('table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'),
+		'news'                 => array('table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'),
+		'organizations'        => array('table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'),
+		'people'               => array('table' => 'labels_people',             'entity' => 'DeskPRO:LabelPeople'),
+		'tasks'                => array('table' => 'labels_tasks',              'entity' => 'DeskPRO:LabelTask'),
+		'tickets'              => array('table' => 'labels_tickets',            'entity' => 'DeskPRO:LabelTicket'),
+		'kb'                   => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
+	);
+
 	/**
 	 * Count how many different labels exist
 	 *
@@ -59,30 +73,6 @@ class LabelDef extends AbstractEntityRepository
 			");
 		}
 	}
-
-	/**
-	 * Fetch all labels from the db and which types they're set for.
-	 * This returns an array of array('label' => array('type1', 'type2'))
-	 *
-	 * @return array
-	 */
-	public function getAllLabelsToTyped()
-	{
-		$all = App::getDb()->fetchAll("SELECT * FROM label_defs");
-
-		$ret = array();
-
-		foreach ($all as $x) {
-			if (!isset($x['label'])) {
-				$ret[$x['label']] = array();
-			}
-
-			$ret[$x['label']][] = $x['label_type'];
-		}
-
-		return $ret;
-	}
-
 
 	/**
 	 * Get the top counts for labels of a certain type.
@@ -217,5 +207,409 @@ class LabelDef extends AbstractEntityRepository
 			'labels_downloads'     => 'DeskPRO:LabelDownload',
 			'labels_news'          => 'DeskPRO:LabelNews',
 		);
+	}
+
+	public function getDefinition($type, $label)
+	{
+		return $this->getEntityManager()->createQuery(
+			'SELECT d FROM DeskPRO:LabelDef d WHERE d.label_type = :type AND LOWER(d.label) = :label'
+		)->setParameters(array(
+			'type' => $type,
+			'label' => strtolower(trim($label)),
+		))->getOneOrNullResult();
+	}
+
+
+
+
+
+	/***************** these are moved from LabelDefManager ****************/
+	/** todo cleanup! */
+	/**
+	 * Get an array of labels and their usage counts, ordered by $order_by
+	 *
+	 * @param mixed $types
+	 * @param string $order_by
+	 * @return array
+	 */
+	public function getLabelsAndCounts(array $types = array())
+	{
+		$labels = $this->getLabels($types);
+		$counts = $this->countDefUsages($types);
+
+		$ret = array();
+
+		foreach ($labels as $l) {
+			$ret[$l] = 0;
+			if (isset($counts[$l])) {
+				$ret[$l] = $counts[$l];
+			}
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * Get defined labels
+	 *
+	 * @return array
+	 */
+	public function getLabels($types = null)
+	{
+		if ($types === null) {
+			$types = self::valid();
+		}
+		if (is_string($types)) {
+			$types = explode(',', $types);
+			$types = array_map('trim', $types);
+		}
+
+		if (!$types) {
+			return array();
+		}
+
+		$types = array_map(function($t) {
+			if ($t == 'chat') $t = 'chat_conversations';
+			return $t;
+		}, $types);
+
+		// invalid type(s)
+		if (array_diff($types, self::valid())) {
+			throw new \InvalidArgumentException();
+		}
+
+		$parts = array();
+		$parts[] = "SELECT DISTINCT(label) FROM label_defs " . (count($types) < 8 ? "WHERE label_type IN ('" . implode("','", $types) . "')" : '');
+		foreach ($types as $t) {
+			$parts[] = "SELECT DISTINCT(label) FROM labels_$t";
+		}
+
+		$q = '(' . implode(') UNION (', $parts) . ')';
+		$labels = $this->getEntityManager()->getConnection()->fetchAllCol($q);
+
+		return $labels;
+	}
+
+	public function getAllDefinitions()
+	{
+		return $this->getEntityManager()->getConnection()->fetchAll('SELECT * FROM label_defs');
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllLabelsToTyped()
+	{
+		$ret = array();
+
+		// Admin defined
+		foreach ($this->getEntityManager()->getConnection()->fetchAll("SELECT * FROM label_defs") as $x) {
+			if (!isset($x['label'])) {
+				$ret[$x['label']] = array();
+			}
+
+			$ret[$x['label']][] = $x['label_type'];
+		}
+
+		// Non-admin defined
+		$types = array('articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations');
+		$parts = array();
+		foreach ($types as $t) {
+			$parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";
+		}
+
+		$q = '(' . implode(') UNION (', $parts) . ')';
+		foreach ($this->getEntityManager()->getConnection()->fetchAll($q) as $x) {
+			if (!isset($x['label'])) {
+				$ret[$x['label']] = array();
+			}
+
+			$ret[$x['label']][] = $x['label_type'];
+		}
+
+		return $ret;
+	}
+
+
+	/**
+	 * Get counts for all labels used for a type
+	 *
+	 * @param null $types
+	 * @return array
+	 */
+	public function countDefUsages(array $types = array())
+	{
+		$query  = array();
+		$types = $types ?: array_keys(self::$types);
+
+		foreach ($types as $t) {
+			$info = self::$types[$t];
+			$query[]  = 'SELECT COUNT(*) AS count, label FROM ' . $info['table'] . ' GROUP BY label';
+		}
+
+		if (count($query) > 1) {
+			$query = '(' . implode(') UNION (', $query) . ')';
+		} else {
+			$query = $query[0];
+		}
+
+		$count_res = $this->getEntityManager()->getConnection()->fetchAll($query);
+
+		foreach ($count_res as $r) {
+			if (!isset($label_counts[$r['label']])) $label_counts[$r['label']] = 0;
+			$label_counts[$r['label']] += $r['count'];
+		}
+
+		return $label_counts;
+	}
+
+
+	/**
+	 * Count usages of a label
+	 *
+	 * @param $label
+	 * @param null $types
+	 */
+	public function countLabelUsages($label, $types = null)
+	{
+		$query  = array();
+		$params = array();
+
+		if (!$types) {
+			$types = array_keys(self::$types);
+		} else {
+			$types = (array)$types;
+		}
+
+		foreach ($types as $t) {
+			$info = self::$types[$t];
+
+			$query[]  = 'SELECT COUNT(*) AS count FROM ' . $info['table'] . ' WHERE label = ?';
+			$params[] = $label;
+		}
+
+		if (count($query) > 1) {
+			$query = '(' . implode(') UNION (', $query) . ')';
+		} else {
+			$query = $query[0];
+		}
+
+		$count_res = $this->getEntityManager()->getConnection()->fetchAll($query, $params);
+		$count = 0;
+
+		foreach ($count_res as $r) {
+			$count += $r['count'];
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Delete a label definition, and all its usages.
+	 *
+	 * @param $label
+	 * @param null $types
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function deleteLabelDef($label, $types = null)
+	{
+		if (!$types) {
+			$types = array_keys(self::$types);
+		} else {
+			$types = (array)$types;
+		}
+
+		$this->getEntityManager()->getConnection()->beginTransaction();
+
+		try {
+			foreach ($types as $t) {
+				$table = self::$types[$t]['table'];
+
+				$this->getEntityManager()->getConnection()->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $label));
+				$this->getEntityManager()->getConnection()->executeUpdate("DELETE FROM $table WHERE label = ?", array($label));
+			}
+
+			$this->getEntityManager()->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			throw $e;
+		}
+		return true;
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\LabelDef $definition
+	 * @throws \Exception
+	 */
+	public function deleteDefinition(\Application\DeskPRO\Entity\LabelDef $definition)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+
+		try {
+			$this->getEntityManager()->getConnection()->executeUpdate(
+				sprintf('DELETE FROM %s WHERE LOWER(label) = ?', self::$types[$definition['label_type']]['table']),
+				array(strtolower($definition['label']))
+			);
+			$this->getEntityManager()->remove($definition);
+			$this->getEntityManager()->flush();
+
+			$this->getEntityManager()->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * Rename a label
+	 *
+	 * @param $old_label
+	 * @param $new_label
+	 * @param $color
+	 * @param null $types
+	 * @throws \Exception
+	 */
+	public function renameLabelDef($old_label, $new_label, $color, $types = null)
+	{
+		if (!$types) {
+			$types = array_keys(self::$types);
+		} else {
+			$types = (array)$types;
+		}
+
+		$this->getEntityManager()->getConnection()->beginTransaction();
+		try {
+			foreach ($types as $t) {
+				$table = self::$types[$t]['table'];
+
+				$this->getEntityManager()->getConnection()->executeUpdate(
+					'UPDATE ' . $table . ' SET label = ? WHERE LOWER(label) = ?',
+					array($new_label, strtolower($old_label))
+				);
+			}
+
+			$this->getEntityManager()->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			throw $e;
+		}
+
+		#------------------------------
+		# Rename labels within filters/macros/triggers
+		#------------------------------
+
+		$replace_label_arr = function($actions_str, $accept_types) use ($old_label, $new_label) {
+			$actions = @unserialize($actions_str);
+
+			if (!$actions) {
+				return $actions_str;
+			}
+
+			foreach ($actions as &$a) {
+				if (isset($a['type']) && in_array($a['type'], $accept_types) && !empty($a['options']['labels'])) {
+					$a['options']['labels'] = Arrays::replaceValue($a['options']['labels'], $old_label, $new_label);
+					$a['options']['labels'] = array_unique($a['options']['labels']);
+				}
+			}
+			unset($a);
+
+			$actions_str = serialize($actions);
+			return $actions_str;
+		};
+
+		foreach ($types as $t) {
+			if ($t == 'tickets') {
+				$macros = $this->getEntityManager()->getConnection()->fetchAll("
+					SELECT id, actions
+					FROM ticket_macros
+					WHERE actions LIKE '%\"add_labels\"%' OR actions LIKE '%\"remove_labels\"%'
+				");
+				foreach ($macros as $r) {
+					$actions_new = $replace_label_arr($r['actions'], array('add_labels', 'remove_labels'));
+
+					if ($actions_new != $r['actions']) {
+						$this->getEntityManager()->getConnection()->update('ticket_macros', array('actions' => $actions_new), array('id' => $r['id']));
+					}
+				}
+			}
+
+			// TODO - fix removing labels from triggers/filters
+			if (false && in_array($t, array('persons', 'tickets', 'organizations'))) {
+				$triggers = $this->getEntityManager()->getConnection()->fetchAll("
+					SELECT id, actions, terms, terms_any
+					FROM ticket_triggers
+					WHERE
+						actions LIKE '%\"add_labels\"%'
+						OR actions LIKE '%\"remove_labels\"%'
+						OR terms LIKE '%\"label\"%'
+						OR terms LIKE '%\"org_label\"%'
+						OR terms LIKE '%\"person_label\"%'
+						OR terms_any LIKE '%\"label\"%'
+						OR terms_any LIKE '%\"person_label\"%'
+						OR terms_any LIKE '%\"org_label\"%'
+				");
+				foreach ($triggers as $r) {
+					$changes = array();
+					if ($t == 'tickets') {
+						$actions_new = $replace_label_arr($r['actions'], array('add_labels', 'remove_labels'));
+						if ($actions_new != $r['actions']) {
+							$changes['actions'] = $actions_new;
+						}
+					}
+
+					$terms_new = $r['terms'];
+					if ($t == 'tickets') $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
+					if ($t == 'persons') $terms_new = $replace_label_arr($terms_new, array('person_label'));
+					if ($t == 'organizations') $terms_new = $replace_label_arr($terms_new, array('org_label'));
+					if ($terms_new != $r['terms']) {
+						$changes['terms'] = $terms_new;
+					}
+
+					$terms_any_new = $r['terms_any'];
+					if ($t == 'tickets') $terms_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
+					if ($t == 'persons') $terms_new = $replace_label_arr($terms_any_new, array('person_label'));
+					if ($t == 'organizations') $terms_new = $replace_label_arr($terms_any_new, array('org_label'));
+					if ($terms_any_new != $r['terms']) {
+						$changes['terms_any'] = $terms_any_new;
+					}
+
+					if ($changes) {
+						$this->getEntityManager()->getConnection()->update('ticket_triggers', $changes, array('id' => $r['id']));
+					}
+				}
+
+				$filters = $this->getEntityManager()->getConnection()->fetchAll("
+					SELECT id, terms
+					FROM ticket_filters
+					WHERE
+						terms LIKE '%\"label\"%'
+						OR terms LIKE '%\"org_label\"%'
+						OR terms LIKE '%\"person_label\"%'
+				");
+				foreach ($filters as $r) {
+
+					$changes = array();
+					$terms_new = $r['terms'];
+					if ($t == 'tickets') $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
+					if ($t == 'persons') $terms_new = $replace_label_arr($terms_new, array('person_label'));
+					if ($t == 'organizations') $terms_new = $replace_label_arr($terms_new, array('org_label'));
+					if ($terms_new != $r['terms']) {
+						$changes['terms'] = $terms_new;
+					}
+
+					if ($changes) {
+						$this->getEntityManager()->getConnection()->update('ticket_filters', $changes, array('id' => $r['id']));
+					}
+				}
+			}
+		}
+	}
+
+	static public function valid($type = null)
+	{
+		return null === $type ? array_keys(self::$types) : isset(self::$types[$type]);
 	}
 }

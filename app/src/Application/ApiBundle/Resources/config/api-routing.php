@@ -87,14 +87,32 @@ $collection->create('api_labels_settings_get', array(
 	'path'          => '/labels/{type}/settings',
 	'controller'    => 'ApiBundle:Labels:getSettings',
 	'methods'       => array('GET'),
-	'requirements'  => array('type' => implode('|', \Application\ApiBundle\Controller\LabelsController::$allowed)),
+	'requirements'  => array('type' => implode('|', \Application\DeskPRO\EntityRepository\LabelDef::valid())),
 ));
 
 $collection->create('api_labels_settings_set', array(
 	'path'          => '/labels/{type}/settings',
 	'controller'    => 'ApiBundle:Labels:setSettings',
 	'methods'       => array('PUT'),
-	'requirements'  => array('type' => implode('|', \Application\ApiBundle\Controller\LabelsController::$allowed)),
+	'requirements'  => array('type' => implode('|', \Application\DeskPRO\EntityRepository\LabelDef::valid())),
+));
+
+$collection->create('api_labels_definitions', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:getDefinitions',
+	'methods'       => array('GET'),
+));
+
+$collection->create('api_labels_definitions_update', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:updateDefinition',
+	'methods'       => array('PUT'),
+));
+
+$collection->create('api_labels_definitions_delete', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:deleteDefinition',
+	'methods'       => array('DELETE'),
 ));
 
 $collection->create('api_misc_upload', array(

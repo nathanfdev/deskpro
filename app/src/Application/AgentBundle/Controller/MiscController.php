@@ -194,10 +194,9 @@ class MiscController extends AbstractController
 		$fragment_router = new FragmentRouter($this->get('router')->getGenerator());
 		$js[] = $fragment_router->compile();
 
-		/** @var \Application\DeskPRO\Labels\LabelDefManager $label_def_manager */
-		$label_def_manager = $this->container->getSystemService('label_def_manager');
-
-		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($label_def_manager->getAllLabelsToTyped());
+		/** @var \Application\DeskPRO\EntityRepository\LabelDef $labelDef */
+		$labelDef = $this->em->getRepository('DeskPRO:LabelDef');
+		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($labelDef->getAllLabelsToTyped());
 
 		if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
 			$ms_translator = $this->container->getAppManager()->getService('ms_translator');

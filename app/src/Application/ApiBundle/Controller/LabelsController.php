@@ -34,13 +34,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
+use Application\DeskPRO\EntityRepository\LabelDef;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelsController extends AbstractController implements ProtectedControllerInterface
 {
-	static public $allowed = array(
-		'chat', 'downloads', 'feedback', 'articles', 'news', 'organizations', 'people', 'tickets',
-	);
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -54,6 +52,11 @@ class LabelsController extends AbstractController implements ProtectedController
 	 */
 	public function getSettingsAction($type)
 	{
+		$rep = $this->rep();
+		if (!$rep::valid($type)) {
+			throw new NotFoundHttpException;
+		}
+
 		return $this->createApiResponse(array(
 			'agent_can_create' => (bool) $this->settings->get(sprintf('labels.%s.agent_can_create', $type), false),
 		));
@@ -64,10 +67,98 @@ class LabelsController extends AbstractController implements ProtectedController
 	 */
 	public function setSettingsAction($type)
 	{
+		$rep = $this->rep();
+		if (!$rep::valid($type)) {
+			throw new NotFoundHttpException;
+		}
+
 		$this->settings->setSetting(
 			sprintf('labels.%s.agent_can_create', $type),
 			$this->in->getBool('agent_can_create')
 		);
 		return $this->getSettingsAction($type);
+	}
+
+	public function getDefinitionsAction()
+	{
+		return $this->createApiResponse($this->rep()->getAllDefinitions());
+	}
+
+	####################################################################################################################
+	# update
+	####################################################################################################################
+
+	public function updateDefinitionAction()
+	{
+		$old = $this->in->getArrayValue('old');
+		if (!$new = $this->in->getArrayValue('new')) {
+			throw new NotFoundHttpException;
+		}
+
+		if (!isset($new['label_type']) || !isset($new['label']) || !isset($new['color'])) {
+			throw new NotFoundHttpException;
+		}
+
+		$rep = $this->rep();
+
+		$oldLabel = null;
+		if (!$old) {
+			if (!$definition = $rep->getDefinition($new['label_type'], $new['label'])) {
+				$definition = new \Application\DeskPRO\Entity\LabelDef($new);
+				$this->em->persist($definition);
+				$this->em->flush();
+				return $this->createApiResponse($definition->toApiData());
+			}
+
+			$oldLabel = $definition['label'];
+		} else {
+			if (!$definition = $rep->getDefinition($old['label_type'], $old['label'])) {
+				throw new NotFoundHttpException;
+			}
+
+			if ($exist = $rep->getDefinition($new['label_type'], $new['label'])) {
+				$this->em->remove($exist);
+				$this->em->flush();
+			}
+
+			$oldLabel = $old['label'];
+		}
+
+		$definition['label'] = trim($new['label']);
+		$definition['color'] = $new['color'];
+		$this->em->flush();
+
+		$rep->renameLabelDef(trim($oldLabel), trim($new['label']), $new['color'], $definition['label_type']);
+		return $this->createApiResponse($definition->toApiData());
+	}
+
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function deleteDefinitionAction()
+	{
+		$label = $this->in->getString('label');
+		$type = $this->in->getString('label_type');
+		try {
+			if (!$definition = $this->rep()->getDefinition($type, $label)) {
+				throw $this->createNotFoundException();
+			}
+			$this->rep()->deleteDefinition($definition);
+		}
+		catch (\Exception $e) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(array(), 200);
+	}
+
+	/**
+	 * @return LabelDef
+	 */
+	protected function rep()
+	{
+		return $this->em->getRepository('DeskPRO:LabelDef');
 	}
 }

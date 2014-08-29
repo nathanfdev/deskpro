@@ -1,5 +1,38 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
+    <style>
+        .picker {
+            display: table-row;
+            height: 25px;
+            list-style: none;
+        }
+        .picker li {
+            display: table-cell;
+            width: 1%;
+        }
+        .picker-color {
+            display: block;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            cursor: pointer;
+        }
+        label[for="picker-input"] {
+            position: absolute;
+            display: block;
+            top: 6px;
+            left: 5px;
+            height: 20px;
+            width: 20px;
+            border-radius: 2px;
+            cursor: pointer;
+            z-index: 1;
+        }
+        #picker-input {
+            padding-left: 30px;
+        }
+    </style>
+
 	<form role="form" name="form_props" ng-submit="LabelsEdit.saveLabel()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
@@ -12,6 +45,31 @@
 							<div class="col-lg-9">
 								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text" class="form-control" name="label"  ng-model="form.label" style="width: 50%;" required autofocus/>
+                                    <div style="display: inline-block; position: relative; width: 20%;">
+                                        <label for="picker-input" style="background-color: {{ ng_var('form.color') }}"></label>
+                                        <input id="picker-input" type="text" class="form-control" name="color"  ng-model="form.color"
+                                               ng-focus="picker = true"
+                                               ng-blur="picker = false"
+                                               required />
+                                        <div ng-show="picker" style="position: absolute;">
+
+                                            <ul class="picker">
+                                                <li ng-repeat="color in colors.slice(0, colors.length / 2)">
+                                                    <span ng-mouseenter="form.color = color" class="picker-color" style="background-color: {{ ng_var('color') }}">
+                                                    </span>
+                                                </li>
+                                            </ul>
+
+                                            <ul class="picker">
+                                                <li ng-repeat="color in colors.slice(colors.length / 2)">
+                                                    <span ng-mouseenter="form.color = color" class="picker-color" style="background-color: {{ ng_var('color') }}">
+                                                    </span>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+
 									<span class="help-block">
 										{{phrase('adm.departments.title_explain')}}
 									</span>
@@ -31,8 +89,8 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="!LabelsEdit.is_new && (LabelsEdit.old_label == form.label)">
-						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.LabelsList.startDelete(LabelsEdit.old_label);">Delete</button>
+					<div class="dp-delete-control" ng-if="!isNew">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); startDelete();">Delete</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
