@@ -4,15 +4,19 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 		@CTRL_AS   = 'Ctrl'
 		@DEPS      = ['Growl']
 
+
+
 		init: ->
 			@settings = null
 			@service = @DataService.get 'LabelSettings'
 			@type = null
 
+
+
 		initialLoad: ->
-			typename = @$scope.$parent.LabelsList.typename
-			throw "Can't get typename from parent" if !typename? || !typename
-			@type = typename.substring 7
+			@type = @$scope.$parent.LabelsList.type()
+			throw '[Labels_Base_Ctrl_Settings] Can\'t get type from parent' if !@type
+
 			@service.get(@type).then (settings) =>
 				@settings = settings
 

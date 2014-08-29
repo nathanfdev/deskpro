@@ -3,14 +3,6 @@ define ['Admin/Labels/Base/Ctrl/Edit'], (Admin_Labels_Base_Ctrl_Edit) ->
 		@CTRL_ID = 'Admin_Labels_Ticket_Ctrl_Edit'
 		@CTRL_AS = 'LabelsEdit'
 
-
-
-		init: ->
-			super()
-
-
-
-		type: ->
-			'tickets'
+		type: -> 'tickets'
 
 	Admin_Labels_Ticket_Ctrl_Edit.EXPORT_CTRL()

@@ -42,7 +42,7 @@ define ->
 						color: getContrast(color.substr(1))
 
 				if attr.labelType?
-					LabelDefinition.get(attr.labelType, label.label).then (def) =>
+					LabelDefinition.get($parse(attr.labelType)(scope), label.label).then (def) =>
 						scope.$watch def, (newVal) =>
 							updateLabelElement newVal
 						updateLabelElement def

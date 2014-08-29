@@ -1,0 +1,45 @@
+<section class="dp-paneblock dp-listpane">
+    <header>
+        <nav>
+            <dp-order-menu ng-model="sortOrder" order-dir-prefs="{'label': 'ASC', 'count': 'DESC'}">
+                <option value="label">Label</option>
+                <option value="count">Count</option>
+            </dp-order-menu>
+        </nav>
+
+        <h3 ng-pluralize count="countDefinitions()" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
+    </header>
+    <article>
+        <ul class="dp-item-list" dp-max-height>
+            <li ng-repeat="label in labels | orderObjectBy:order:orderReverse"
+                dp-state-mark="label!:{{ prefix }}.edit.{{ ng_var('label.label|murmurhash') }}">
+
+                <a href="{{ ng_href(prefix ~ '.edit', '{label: label.label}') }}">
+                    <div class="pull-right">
+
+                        <span class="badge" ng-show="!delete_mode"
+                              tooltip="The number of organizations with this label"
+                              tooltip-placement="left" style="margin-top: -2px;">
+                            {{ng_var('label.count')}}
+                        </span>
+
+                        {# todo remove? this not used and was shown only with delete modal in prev version #}
+                        <span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;"
+                              ng-class="{'active':label.delete_mode}"
+                              ng-click="LabelsList.startDelete(label); $event.preventDefault();">
+                            <i class="fa fa-trash-o"></i>
+                        </span>
+
+                    </div>
+                    <h4>
+                        <span dp-label="label" label-type="LabelsList.type()"></span>
+                    </h4>
+                </a>
+
+            </li>
+        </ul>
+        <div class="dp-add-control">
+            <a class="btn btn-default" href="{{ ng_href(prefix ~ '.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{phrase('agent.general.add')}}</a>
+        </div>
+    </article>
+</section>

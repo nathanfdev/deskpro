@@ -19,12 +19,17 @@ define [
 			]
 			@$scope.form = {label: '', color: @$scope.colors[0], label_type: @type()}
 			@$scope.startDelete = => @startDelete()
-			return
 
 
 
 		type: ->
-			throw new Exception("This method must be implemented by a sub-class")
+			throw new Exception 'This method must be implemented by a sub-class'
+
+
+
+		state: (to) ->
+			to = '.' + to if to
+			@$state.current.name.replace /(.+)\.edit|\.create$/, '$1' + to
 
 
 
@@ -53,9 +58,9 @@ define [
 				@definition = data
 
 				if @$scope.isNew
-					@$state.go 'tickets.labels.gocreate'
+					@$state.go @state('gocreate')
 				else
-					@$state.go 'tickets.labels.edit', {label: data.label}
+					@$state.go @state('edit'), {label: data.label}
 
 			.error =>
 				@Growl.error @getRegisteredMessage 'not_saved_label'
@@ -67,6 +72,7 @@ define [
 
 		startDelete: () ->
 			return if !@definition
+
 			inst = @$modal.open({
 				templateUrl: @getTemplatePath('Labels/delete-modal.html'),
 				controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
@@ -83,12 +89,12 @@ define [
 
 				.success =>
 					@LabelDefinition.remove @definition
-					@$state.go 'tickets.labels'
+					@$state.go @state ''
 
 			  # todo
 				.error =>
-					@$state.go 'tickets.labels'
+					@$state.go @state ''
 
 				# todo
 				.finally =>
-					@$state.go 'tickets.labels'
+					@$state.go @state ''

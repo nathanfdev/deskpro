@@ -4,15 +4,24 @@ define ['angular'], (angular) ->
 		updateColorForLabel = null
 
 		constructor: (@$q, definitionsPromise) ->
-			@definitions = null
-			@colors = null # global to all label_types
+			loadPromise = null
+			@definitions =
+				tickets: {}
+				people: {}
+				organizations: {}
+				news: {}
+				kb: {}
+				feedback: {}
+				downloads: {}
+				chat: {}
+
+			@colors = {} # global to all label_types
 
 			loadDefinitions = =>
+				return loadPromise if loadPromise
 				d = @$q.defer()
 
 				definitionsPromise.then (data) =>
-					@definitions = {}
-					@colors = {}
 
 					for def in data.data
 						continue if !def.label? || !def.label_type?
@@ -23,7 +32,7 @@ define ['angular'], (angular) ->
 
 					d.resolve @definitions
 
-				d.promise
+				loadPromise = d.promise
 
 			updateColorForLabel = (color, label) =>
 				label = label.toLowerCase()
