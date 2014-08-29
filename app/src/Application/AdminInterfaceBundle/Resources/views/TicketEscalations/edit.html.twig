@@ -76,6 +76,23 @@
 								</article>
 							</div>
 						</div>
+
+						<div class="dp-ob-set">
+							<div class="dp-ob-setrow">
+								<header>
+									<em class="dp-ob-row-tag if">and</em>
+									Any of following conditions are met:
+								</header>
+								<article>
+									<dp-option-builder types-def="EditCtrl.criteriaTypeDef"
+										save-target="EditCtrl.form.terms_any"
+										options="{tag_first: false, tag_after: 'or'}"
+										option-types="EditCtrl.criteriaOptionTypes">
+										<add-btn-label>Criteria</add-btn-label>
+									</dp-option-builder>
+								</article>
+							</div>
+						</div>
 					</div>
 
 					<div class="panel panel-innertable">

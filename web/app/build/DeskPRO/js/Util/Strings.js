@@ -37,7 +37,7 @@
         "/": '&#x2F;'
       };
 
-      DeskPRO_Util_Strings.TPL_MATCHER = /<%=([\s\S]+?)%>|<%-([\s\S]+?)%>|<%([\s\S]+?)%>|$/g;
+      DeskPRO_Util_Strings.TPL_MATCHER = /<%-([\s\S]+?)%>|<%=([\s\S]+?)%>|<%([\s\S]+?)%>|$/g;
 
       DeskPRO_Util_Strings.TPL_ESCAPES = {
         "'": "'",

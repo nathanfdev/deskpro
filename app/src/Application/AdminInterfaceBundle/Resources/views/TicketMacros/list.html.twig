@@ -39,7 +39,7 @@
 				You can view and manage permissions on macros here. To create and edit macros, you need to
 				go to the Agent Interface.
 			</div>
-			<ul class="dp-item-list" ng-if="ListCtrl.list.length">
+			<ul class="dp-item-list" ng-if="ListCtrl.list.length" dp-max-height>
 				<li ng-repeat="macro in filterList" dp-state-mark="tickets.macros.edit.{{ ng_var('macro.id') }}" data-id="{{ ng_var('macro.id') }}">
 					<a href="{{ ng_href('tickets.macros.edit', '{id: macro.id}') }}">
 						<div class="pull-right">

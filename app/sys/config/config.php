@@ -417,6 +417,7 @@ $container->loadFromExtension('fos_elastica', array(
                         'model'    => 'Application\DeskPRO\Entity\Article',
                         'provider' => array(),
                         'finder'   => array(),
+						'elastica_to_model_transformer' => array('ignore_missing' => true),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository'
                     )
                 ),
@@ -430,6 +431,7 @@ $container->loadFromExtension('fos_elastica', array(
 						'model'    => 'Application\DeskPRO\Entity\News',
 						'provider' => array(),
 						'finder'   => array(),
+						'elastica_to_model_transformer' => array('ignore_missing' => true),
 						'repository' => 'Application\DeskPRO\NewSearch\Repository\NewsRepository'
 					)
 				),
@@ -443,6 +445,7 @@ $container->loadFromExtension('fos_elastica', array(
                         'model'    => 'Application\DeskPRO\Entity\Download',
                         'provider' => array(),
                         'finder'   => array(),
+						'elastica_to_model_transformer' => array('ignore_missing' => true),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\DownloadRepository'
                     )
                 ),
@@ -456,6 +459,7 @@ $container->loadFromExtension('fos_elastica', array(
                         'model'    => 'Application\DeskPRO\Entity\Feedback',
                         'provider' => array(),
                         'finder'   => array(),
+						'elastica_to_model_transformer' => array('ignore_missing' => true),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository'
                     )
                 ),
@@ -470,6 +474,7 @@ $container->loadFromExtension('fos_elastica', array(
 						'model'    => 'Application\DeskPRO\Entity\Organization',
 						'provider' => array(),
 						'finder'   => array(),
+						'elastica_to_model_transformer' => array('ignore_missing' => true),
 						'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
 						'repository' => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository'
 					)
@@ -488,6 +493,7 @@ $container->loadFromExtension('fos_elastica', array(
                         'model'    => 'Application\DeskPRO\Entity\Person',
                         'provider' => array(),
                         'finder'   => array(),
+						'elastica_to_model_transformer' => array('ignore_missing' => true),
 						'model_to_elastica_transformer' => array('service' => 'deskpro.search.person_to_elastica_transformer'),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\PersonRepository'
                     )
@@ -508,6 +514,7 @@ $container->loadFromExtension('fos_elastica', array(
 						'model'    => 'Application\DeskPRO\Entity\Ticket',
 						'provider' => array(),
 						'finder'   => array(),
+						'elastica_to_model_transformer' => array('ignore_missing' => true),
 						'model_to_elastica_transformer' => array('service' => 'deskpro.search.ticket_to_elastica_transformer'),
 						'repository' => 'Application\DeskPRO\NewSearch\Repository\TicketRepository'
 					)

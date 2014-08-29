@@ -42,6 +42,12 @@ class CleanupAlways extends AbstractJob
 
 	public function run()
 	{
+		$this->doRun();
+		App::getDb()->setIsolationDefault();
+	}
+
+	private function doRun()
+	{
 		#------------------------------
 		# cleanup chat pings
 		#------------------------------

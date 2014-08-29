@@ -447,8 +447,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				));
 				$message->setTo($this->reader->getFromAddress()->getEmail());
 				$this->container->getMailer()->send($message);
-				return null;
 			}
+			return null;
 		}
 
 		if ($person) {

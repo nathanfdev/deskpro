@@ -328,6 +328,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		DP.select(el.find('input.word'), {
 			tags: [],
+			allowCreate: true,
 			id: function (e) { if (!e) return null; return e.id; },
 			formatResult: function(result, container, query) {
 				if (!result || !result.text) {

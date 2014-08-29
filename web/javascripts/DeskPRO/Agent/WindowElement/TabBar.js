@@ -399,6 +399,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.isActivating = false;
 		data.isActive = true;
 		DeskPRO_Window.updateWindowUrlFragment();
+		this.$scope.$safeApply();
 	},
 
 

@@ -8,7 +8,7 @@
 			<h3>Agents</h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" dp-list-autoload>
+			<ul class="dp-item-list" dp-list-autoload dp-max-height>
 				<li ng-repeat="agent in ListCtrl.agents" dp-state-mark="agents.agents.edit.{{ ng_var('agent.id') }}">
 					<a href="{{ ng_href('agents.agents.edit', '{id: agent.id}') }}" title="{{ ng_var('agent.primary_email.email') }}">
 						<div style="float:right">

@@ -172,13 +172,22 @@ class Choice extends HandlerAbstract
 			$field_opts['expanded'] = true;
 		}
 
+		$is_radio = false;
+		if ($this->expanded && !$this->multiple) {
+			$is_radio = true;
+		}
+		$is_check = false;
+		if ($this->expanded && $this->multiple) {
+			$is_check = true;
+		}
+
 		$req_opt = false;
 		if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 			$req_opt = $this->field_def->getOption('required');
 		} else if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 			$req_opt = $this->field_def->getOption('agent_required');
 		}
-		if ($req_opt) {
+		if ($req_opt || $is_radio || $is_check) {
 			$field_opts['empty_value'] = false;
 		}
 

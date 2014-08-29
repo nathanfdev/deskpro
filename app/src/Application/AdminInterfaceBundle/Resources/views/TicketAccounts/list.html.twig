@@ -12,14 +12,17 @@
 			<p class="dp-empty-list-notice" ng-if="!TicketAccountsList.accounts.length">
 				{{ phrase('adm.tickets.no_email_accounts') }}
 			</p>
-			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length">
+			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length" dp-max-height>
 				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
 					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
 						<div class="pull-right">
 							<em class="tag tag-warn" ng-show="!acc.is_enabled">Disabled</em>
 						</div>
-
-						<span class="title-id" title="ID">#{{ ng_var('acc.id') }}</span> <span class="title-text">{{ ng_var('acc.address') }}</span></h4>
+						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('acc.id') }}</span>
+							<span class="title-text">{{ ng_var('acc.address') }}</span>
+							<span class="title-copy" clip-copy="acc.address" clip-click="Growl.success('The email addresswas copied to your clipboard');"><i class="fa fa-clipboard"></i></span>
+						</h4>
 					</a>
 				</li>
 			</ul>

@@ -437,7 +437,7 @@ var DP = {
 			updateBoundEl();
 		}
 
-		if (el[0] && 'SELECT' !== el[0].tagName && 1 !== el.data('allow-new')) {
+		if (el[0] && 'SELECT' !== el[0].tagName && 1 !== el.data('allow-new') && !options.allowCreate) {
 			options.createSearchChoice = null;
 		}
 

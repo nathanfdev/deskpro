@@ -1005,6 +1005,7 @@ div.dp-appalt-section {
 	background: #fff;
 	border-radius: 2px;
 	border: 1px solid #d0d9e6;
+	overflow: auto;
 
 	> header, header.dp-panelblock-header {
 		nav {
@@ -1509,6 +1510,7 @@ section.dp-help-content-wrapper.open {
 .dp-item-list {
 	padding: 0;
 	margin: 0;
+	overflow: auto;
 
 	> li {
 		list-style-type: none;
@@ -1600,6 +1602,21 @@ section.dp-help-content-wrapper.open {
 	}
 	a:hover h4 > .title-text {
 		text-decoration: underline;
+	}
+
+	h4:hover .title-copy, a:hover .title-copy, .title-copy.zeroclipboard-is-hover {
+		visibility: visible;
+	}
+
+	.title-copy {
+		visibility: hidden;
+		font-size: 15px;
+		color: #853f24;
+		background-color: #fff;
+		border-radius: 2px;
+		padding: 1px;
+		line-height: 100%;
+		cursor: pointer;
 	}
 
 	.drag-handle {

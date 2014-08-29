@@ -386,15 +386,19 @@ class KernelBooter
 			dp_pagelog_set('response_type', $response->headers->get('Content-Type'));
 			dp_pagelog_set('response_code', $response->getStatusCode());
 			dp_pagelog_set('response_size', strlen($response->getContent()));
-		} catch (DBALException $e) {
-			if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
-				// This will show an error page if already installed, so the redirect to install wont happen
-				deskpro_handle_boot_db_exception($e);
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
+					// This will show an error page if already installed, so the redirect to install wont happen
+					deskpro_handle_boot_db_exception($e);
 
-				header('Location: ' . $request->getBasePath() . '/index.php/install/');
-				exit;
+					header('Location: ' . $request->getBasePath() . '/index.php/install/');
+					exit;
+				}
+				throw $e;
+			} else {
+				throw $e;
 			}
-			throw $e;
 		}
 	}
 
@@ -644,8 +648,12 @@ class KernelBooter
 		$content = $res['content'];
 
 		if (!empty($res['app_secret'])) {
-			require_once DP_ROOT.'/src/Orb/Util/Strings.php';
-			require_once DP_ROOT.'/src/Orb/Util/Util.php';
+			if (!class_exists('Orb\Util\Util', false)) {
+				require_once DP_ROOT.'/src/Orb/Util/Util.php';
+			}
+			if (!class_exists('Orb\Util\Strings', false)) {
+				require_once DP_ROOT.'/src/Orb/Util/Strings.php';
+			}
 			$app_secret = $res['app_secret'];
 			$content = preg_replace_callback('#<!\-\-DP_FORM_TOKEN\((.*?), (.*?)\)\-\->.*?<!\-\-DP_FORM_TOKEN_END\-\->#s', function($m) use ($app_secret) {
 				$name = $m[1];

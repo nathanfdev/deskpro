@@ -408,7 +408,7 @@ class DeskproBlobStorage implements Loggable
 	 * @param string $filename
 	 * @param string $content_type
 	 * @param array $props
-	 * @return BlobEntity
+	 * @return array
 	 * @throws \RuntimeException
 	 */
 	public function createBlobRowFromString($source_data, $filename, $content_type, array $props = null)

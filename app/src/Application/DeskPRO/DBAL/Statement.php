@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\DBAL;
 
+use Doctrine\DBAL\DBALException;
+
 class Statement extends \Doctrine\DBAL\Statement
 {
 	public function execute($params = null)
@@ -49,13 +51,17 @@ class Statement extends \Doctrine\DBAL\Statement
 		}
 		try {
 			return parent::execute($params);
-		} catch (\Doctrine\DBAL\DBALException $e) {
-			if ($is_ignore) {
-				return false;
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($is_ignore) {
+					return false;
+				}
+				$e->_dp_query        = $this->sql;
+				$e->_dp_query_params = $params;
+				throw $e;
+			} else {
+				throw $e;
 			}
-			$e->_dp_query = $this->sql;
-			$e->_dp_query_params = $params;
-			throw $e;
 		}
 	}
 }

@@ -108,6 +108,15 @@ class ChangeMerge implements ChangeInterface, NonStateTrackingInterface
 
 
 	/**
+	 * @param array $lost_data
+	 */
+	public function setLostData(array $lost_data)
+	{
+		$this->lost_data = $lost_data;
+	}
+
+
+	/**
 	 * @return int
 	 */
 	public function getOldTicketId()

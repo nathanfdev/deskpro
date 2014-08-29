@@ -142,6 +142,14 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			isSourceNavOver = false;
 			startCloseSourceOverlayTimeout();
 		});
+
+		if (DeskPRO_Window.isMobile) {
+			$('body').on('touch click', function (ev) {
+				if (!($(ev.target).is('#dp_source') || $(ev.target).closest('#dp_source')[0])) {
+					closeSourceOverlay();
+				}
+			});
+		}
 	},
 
 	doResize: function(widthCalc) {

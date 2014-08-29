@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
@@ -269,16 +270,21 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     {
         try {
             App::getDb()->connect();
-        } catch (\Doctrine\DBAL\DBALException $e) {
-            if ($e->getCode() == '1049') {
+        } catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($e->getCode() == '1049') {
 
-                // Attempt to create an empty database
-                try {
-                    global $DP_CONFIG;
-                    $dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-                    $dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
-                } catch (\Exception $e) {}
-            }
+					// Attempt to create an empty database
+					try {
+						global $DP_CONFIG;
+						$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+						$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
+					} catch (\Exception $e) {
+					}
+				}
+			} else {
+				throw $e;
+			}
         }
     }
 

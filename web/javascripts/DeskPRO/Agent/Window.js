@@ -41,6 +41,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.cancelHashLoad = 0;
 		this.activeListNav = null;
 		this.activityTime = new Date();
+		this.isMobile = false;
 
 		this.agentNotifyListShown = false;
 
@@ -633,6 +634,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var loadVis = false;
 		if (loadVis = window.location.hash.match(/vis:([0-9]{1})/)) {
 			loadVis = parseInt(loadVis[1]);
+		}
+		if ($('html').hasClass('ipad') || $('html').hasClass('iphone')) {
+			loadVis = 2;
+			this.isMobile = true;
+			this.setPaneVisNum(loadVis);
+		}
+		if (!loadVis && Modernizr.localstorage && window.localStorage['dp_vis']) {
+			loadVis = parseInt(window.localStorage['dp_vis']) || 7;
+			this.setPaneVisNum(loadVis);
 		}
 
 		var loadAdmin = false;
@@ -1513,6 +1523,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (paneVisNum) {
 			segments.push('vis:'+paneVisNum)
 		}
+		if (Modernizr.localstorage) {
+			window.localStorage['dp_vis'] = paneVisNum || 7;
+		}
 
 		var browserHash = segments.join(',');
 
@@ -2306,6 +2319,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			this.addPageTab(page);
 
+			if (routeData.openCallback) {
+				routeData.openCallback(page);
+			}
+
 			if (callback) callback(page);
 		}).bind(this);
 
@@ -2355,6 +2372,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				dataType: 'text',
 				url: url,
 				type: 'GET',
+				data: routeData.params || null,
 				success: (function(data) {
 					successFn(data);
 				}).bind(this),

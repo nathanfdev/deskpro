@@ -25,21 +25,45 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\DeskPRO\Elastica;
+
+use Elastica\Client;
+
 /**
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
-
-class Build1408282657 extends AbstractBuild
+class IndexFactory
 {
-	public function run()
+	/**
+	 * @var \Elastica\Client
+	 */
+	private $client;
+
+
+	/**
+	 * @param Client $client
+	 */
+	public function __construct(Client $client)
 	{
-		$this->out("Add downloads.date_updated");
-		$this->execMutateSql("ALTER TABLE downloads ADD date_updated DATETIME NOT NULL");
-		$this->execMutateSql("UPDATE downloads SET date_updated = IFNULL(date_published, date_created)");
+		$this->client = $client;
+	}
+
+
+	/**
+	 * @param string $index_name
+	 * @return \Elastica\Index
+	 */
+	public function getIndex($index_name)
+	{
+		if (defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
+			return $this->client->getIndex($index_name . '_' . DPC_SITE_ID);
+		} else if (defined('DP_ELASTIC_INDEX')) {
+			return $this->client->getIndex(DP_ELASTIC_INDEX);
+		} else {
+			return $this->client->getIndex($index_name);
+		}
 	}
 }

@@ -8,6 +8,7 @@
 
 <% for (var i = 0; i < fields.length; i++) { var field = fields[i]; %>
 	<td class="col-<%- field %>">
+		<div class="cell-value">
 		<% if (field == 'subject') { %>
 			<span class="prop-val"><span class="obj-id">#<%= ticket_display.id %></span> <span class="obj-link"><%- ticket_display.subject %></span></span>
 		<% } %>
@@ -126,5 +127,6 @@
 				<span class="prop-val"><%- ticket_display.person.field{{ field.id }} %></span>
 			<% } %>
 		{% endfor %}
+		</div>
 	</td>
 <% } %>

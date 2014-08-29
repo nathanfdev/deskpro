@@ -76,7 +76,11 @@ class UsersourceManager
 			/** @var $adapter \Application\DeskPRO\Usersource\Adapter\AbstractAdapter */
 			$adapter = $us->getAdapter();
 
-			$identity = $adapter->findIdentityByInput($email);
+			try {
+				$identity = $adapter->findIdentityByInput($email);
+			} catch (\Exception $e) {
+				$identity = null;
+			}
 			if (!$identity) {
 				continue;
 			}

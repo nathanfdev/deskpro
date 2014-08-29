@@ -29,34 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class CleanupWeekly extends AbstractJob
+class Build1409052751 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 604800;
-
 	public function run()
 	{
-		$this->doRun();
-		App::getDb()->setIsolationDefault();
-	}
-
-	private function doRun()
-	{
-		$date = date('Y-m-d H:i:s', strtotime('-1 year'));
-
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM login_log
-			WHERE date_created < ?
-		", array($date));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num old login logs");
-		}
+		$this->out("Add downloads.date_updated");
+		$this->execMutateSql("ALTER TABLE downloads ADD date_updated DATETIME NOT NULL");
+		$this->execMutateSql("UPDATE downloads SET date_updated = IFNULL(date_published, date_created)");
 	}
 }
