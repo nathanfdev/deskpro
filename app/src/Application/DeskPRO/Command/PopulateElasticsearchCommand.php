@@ -100,7 +100,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
 		$this->getContainer()->getDb()->delete('settings', array('name' => 'elastica.requires_reset_started'));
 
 		if (!App::$container->getSetting('elastica.enabled')) {
-			$output->writeln("<error>Elastic Search is not enabled.");
+			$output->writeln("<error>Elasticsearch is not enabled.");
 			return 1;
 		}
 
