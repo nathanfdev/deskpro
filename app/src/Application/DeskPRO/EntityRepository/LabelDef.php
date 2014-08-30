@@ -300,6 +300,7 @@ class LabelDef extends AbstractEntityRepository
 
 		$count_res = $this->getEntityManager()->getConnection()->fetchAll($query);
 
+		$label_counts = array();
 		foreach ($count_res as $r) {
 			if (!isset($label_counts[$r['label_type']][$r['label']])) {
 				$label_counts[$r['label_type']][$r['label']] = 0;
@@ -308,6 +309,15 @@ class LabelDef extends AbstractEntityRepository
 		}
 
 		return $label_counts;
+	}
+
+	public function updateDefinitionUsages(\Application\DeskPRO\Entity\LabelDef $definition)
+	{
+		$counts = $this->countDefUsages(array($definition['label_type']));
+		$label = strtolower($definition['label']);
+		$definition['total'] = isset($counts[$definition['label_type']][$label])
+			? $counts[$definition['label_type']][$label]
+			: 0;
 	}
 
 	/**
