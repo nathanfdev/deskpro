@@ -108,8 +108,10 @@ class LabelsController extends AbstractController implements ProtectedController
 		}
 
 		if ($exist = $rep->getDefinition($new['label_type'], $new['label'])) {
-			$this->em->remove($exist);
-			$this->em->flush();
+			if ($definition['label'] !== $exist['label']) {
+				$this->em->remove($exist);
+				$this->em->flush();
+			}
 		}
 
 		$rep->renameLabelDef($definition['label'], trim($new['label']), $new['color'], $definition['label_type']);
@@ -140,6 +142,7 @@ class LabelsController extends AbstractController implements ProtectedController
 		if (!$definition = $rep->getDefinition($type, $label)) {
 			$definition = new \Application\DeskPRO\Entity\LabelDef();
 			$definition['label_type'] = $type;
+			$definition['label'] = trim($label);
 			$this->em->persist($definition);
 
 		} else {
