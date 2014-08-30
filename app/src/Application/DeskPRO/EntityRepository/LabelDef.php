@@ -276,6 +276,13 @@ class LabelDef extends AbstractEntityRepository
 		}
 	}
 
+	public function updateColorForLabel($label, $color)
+	{
+		$this->getEntityManager()->createQuery('
+			UPDATE DeskPRO:LabelDef l SET l.color = :color WHERE LOWER(l.label) = :label
+		')->execute(array('label' => strtolower($label), 'color' => $color));
+	}
+
 
 
 
