@@ -99,8 +99,14 @@ $collection->create('api_labels_settings_set', array(
 
 $collection->create('api_labels_definitions', array(
 	'path'          => '/labels/definitions',
-	'controller'    => 'ApiBundle:Labels:getDefinitions',
+	'controller'    => 'ApiBundle:Labels:listDefinitions',
 	'methods'       => array('GET'),
+));
+
+$collection->create('api_labels_definitions_create', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:createDefinition',
+	'methods'       => array('POST'),
 ));
 
 $collection->create('api_labels_definitions_update', array(

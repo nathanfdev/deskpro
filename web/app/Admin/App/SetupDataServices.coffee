@@ -5,7 +5,6 @@ define [
 	'Admin/FeedbackTypes/DataService/FeedbackTypes',
 	'Admin/FeedbackCategories/DataService/FeedbackCategories',
 	'Admin/TicketAccounts/DataService/TicketAccounts',
-	'Admin/Labels/Service/LabelManager'
 	'DeskPRO/Service/LabelDefinition'
 
 	'Admin/OptionBuilder/TypesDef/TicketCriteria',
@@ -19,7 +18,6 @@ define [
 	Admin_FeedbackTypes_DataService_FeedbackTypes,
 	Admin_FeedbackCategories_DataService_FeedbackCategories,
 	Admin_TicketAccounts_DataService_TicketAccounts,
-	Admin_Labels_Service_LabelManager,
 	DeskPRO_Service_LabelDefinition
 
 	Admin_OptionBuilder_TypesDef_TicketCriteria,
@@ -47,10 +45,6 @@ define [
 	
 		Module.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->
 			return new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
-		])
-	
-		Module.service('LabelManager', ['Api', '$q', (Api, $q) ->
-			return new Admin_Labels_Service_LabelManager(Api, $q)
 		])
 	
 		Module.factory('dpObTypesDefTicketCriteria', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->

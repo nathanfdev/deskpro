@@ -54,10 +54,7 @@ define ['angular'], (angular) ->
 		get: (label_type, label) ->
 			d = @$q.defer()
 			label = (label || '').toLowerCase()
-			if null == @definitions
-				loadDefinitions().then => d.resolve @definitions[label_type]?[label]
-			else
-				d.resolve @definitions[label_type]?[label]
+			loadDefinitions().then => d.resolve @definitions[label_type]?[label]
 			d.promise
 
 

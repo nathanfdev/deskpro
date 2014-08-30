@@ -1,11 +1,13 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-	class Admin_Labels_Base_Ctrl_List extends Admin_Ctrl_Base
+	class Admin_Labels_Ctrl_List extends Admin_Ctrl_Base
+		@CTRL_ID   = 'Admin_Labels_Ctrl_List'
 		@DEPS = ['em', '$rootScope', 'LabelDefinition']
 		@CTRL_AS = 'LabelsList'
 
 
 
 		init: ->
+			@type = @$state.current.data.type
 			@$scope.order = 'label'
 			@$scope.orderReverse = false
 			@$scope.labels = {}
@@ -29,5 +31,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 
 		initialLoad: ->
-			@LabelDefinition.all(@type()).then (definitions) =>
+			@LabelDefinition.all(@type).then (definitions) =>
 				@$scope.labels = definitions
+
+
+
+	Admin_Labels_Ctrl_List.EXPORT_CTRL()

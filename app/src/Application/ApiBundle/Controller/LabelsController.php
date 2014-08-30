@@ -79,7 +79,7 @@ class LabelsController extends AbstractController implements ProtectedController
 		return $this->getSettingsAction($type);
 	}
 
-	public function getDefinitionsAction()
+	public function listDefinitionsAction()
 	{
 		return $this->createApiResponse($this->rep()->getAllDefinitions());
 	}
@@ -90,7 +90,10 @@ class LabelsController extends AbstractController implements ProtectedController
 
 	public function updateDefinitionAction()
 	{
-		$old = $this->in->getArrayValue('old');
+		if (!$old = $this->in->getArrayValue('old')) {
+			throw new NotFoundHttpException;
+		}
+
 		if (!$new = $this->in->getArrayValue('new')) {
 			throw new NotFoundHttpException;
 		}
@@ -100,35 +103,53 @@ class LabelsController extends AbstractController implements ProtectedController
 		}
 
 		$rep = $this->rep();
-
-		$oldLabel = null;
-		if (!$old) {
-			if (!$definition = $rep->getDefinition($new['label_type'], $new['label'])) {
-				$definition = new \Application\DeskPRO\Entity\LabelDef($new);
-				$this->em->persist($definition);
-				$this->em->flush();
-				return $this->createApiResponse($definition->toApiData());
-			}
-
-			$oldLabel = $definition['label'];
-		} else {
-			if (!$definition = $rep->getDefinition($old['label_type'], $old['label'])) {
-				throw new NotFoundHttpException;
-			}
-
-			if ($exist = $rep->getDefinition($new['label_type'], $new['label'])) {
-				$this->em->remove($exist);
-				$this->em->flush();
-			}
-
-			$oldLabel = $old['label'];
+		if (!$definition = $rep->getDefinition($old['label_type'], $old['label'])) {
+			throw new NotFoundHttpException;
 		}
 
+		if ($exist = $rep->getDefinition($new['label_type'], $new['label'])) {
+			$this->em->remove($exist);
+			$this->em->flush();
+		}
+
+		$rep->renameLabelDef($definition['label'], trim($new['label']), $new['color'], $definition['label_type']);
 		$definition['label'] = trim($new['label']);
 		$definition['color'] = $new['color'];
 		$this->em->flush();
 
-		$rep->renameLabelDef(trim($oldLabel), trim($new['label']), $new['color'], $definition['label_type']);
+		return $this->createApiResponse($definition->toApiData());
+	}
+
+	####################################################################################################################
+	# create
+	####################################################################################################################
+
+	public function createDefinitionAction()
+	{
+		$rep = $this->rep();
+		if (!$label = $this->in->getString('label')) {
+			throw new NotFoundHttpException;
+		}
+
+		if ((!$type = $this->in->getString('label_type')) || !$rep::valid($type)) {
+			throw new NotFoundHttpException;
+		}
+
+		$color = $this->in->getString('color');
+
+		if (!$definition = $rep->getDefinition($type, $label)) {
+			$definition = new \Application\DeskPRO\Entity\LabelDef();
+			$definition['label_type'] = $type;
+			$this->em->persist($definition);
+
+		} else {
+			$rep->renameLabelDef($definition['label'], trim($label), $color, $type);
+		}
+
+		$definition['label'] = trim($label);
+		$definition['color'] = $color;
+		$this->em->flush();
+
 		return $this->createApiResponse($definition->toApiData());
 	}
 

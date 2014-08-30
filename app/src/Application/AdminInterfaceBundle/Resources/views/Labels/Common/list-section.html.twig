@@ -1,9 +1,9 @@
 <section class="dp-paneblock dp-listpane">
     <header>
         <nav>
-            <dp-order-menu ng-model="sortOrder" order-dir-prefs="{'label': 'ASC', 'count': 'DESC'}">
+            <dp-order-menu ng-model="sortOrder" order-dir-prefs="{'label': 'ASC', 'total': 'DESC'}">
                 <option value="label">Label</option>
-                <option value="count">Count</option>
+                <option value="total">Count</option>
             </dp-order-menu>
         </nav>
 
@@ -20,7 +20,7 @@
                         <span class="badge" ng-show="!delete_mode"
                               tooltip="The number of organizations with this label"
                               tooltip-placement="left" style="margin-top: -2px;">
-                            {{ng_var('label.count')}}
+                            {{ng_var('label.total')}}
                         </span>
 
                         {# todo remove? this not used and was shown only with delete modal in prev version #}
@@ -32,7 +32,7 @@
 
                     </div>
                     <h4>
-                        <span dp-label="label" label-type="LabelsList.type()"></span>
+                        <span dp-label="label"></span>
                     </h4>
                 </a>
 

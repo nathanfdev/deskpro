@@ -1,6 +1,6 @@
 define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-	class Admin_Labels_Base_Ctrl_Settings extends Admin_Ctrl_Base
-		@CTRL_ID   = 'Admin_Labels_Base_Ctrl_Settings'
+	class Admin_Labels_Ctrl_Settings extends Admin_Ctrl_Base
+		@CTRL_ID   = 'Admin_Labels_Ctrl_Settings'
 		@CTRL_AS   = 'Ctrl'
 		@DEPS      = ['Growl']
 
@@ -14,8 +14,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 		initialLoad: ->
-			@type = @$scope.$parent.LabelsList.type()
-			throw '[Labels_Base_Ctrl_Settings] Can\'t get type from parent' if !@type
+			@type = @$scope.$parent.LabelsList.type
+			throw '[Labels_Ctrl_Settings] Can\'t get type from parent' if !@type
 
 			@service.get(@type).then (settings) =>
 				@settings = settings
@@ -33,4 +33,4 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					@applyErrorResponseToView res.info
 			)
 
-	Admin_Labels_Base_Ctrl_Settings.EXPORT_CTRL()
+	Admin_Labels_Ctrl_Settings.EXPORT_CTRL()

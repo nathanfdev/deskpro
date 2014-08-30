@@ -225,29 +225,6 @@ class LabelDef extends AbstractEntityRepository
 
 	/***************** these are moved from LabelDefManager ****************/
 	/** todo cleanup! */
-	/**
-	 * Get an array of labels and their usage counts, ordered by $order_by
-	 *
-	 * @param mixed $types
-	 * @param string $order_by
-	 * @return array
-	 */
-	public function getLabelsAndCounts(array $types = array())
-	{
-		$labels = $this->getLabels($types);
-		$counts = $this->countDefUsages($types);
-
-		$ret = array();
-
-		foreach ($labels as $l) {
-			$ret[$l] = 0;
-			if (isset($counts[$l])) {
-				$ret[$l] = $counts[$l];
-			}
-		}
-
-		return $ret;
-	}
 
 	/**
 	 * Get defined labels
@@ -292,9 +269,46 @@ class LabelDef extends AbstractEntityRepository
 
 	public function getAllDefinitions()
 	{
-		return $this->getEntityManager()->getConnection()->fetchAll('SELECT * FROM label_defs');
+		$definitions = $this->getEntityManager()->getConnection()->fetchAll('SELECT * FROM label_defs');
+		$counts = $this->countDefUsages();
+
+		foreach ($definitions as &$def) {
+			$label = strtolower($def['label']);
+			$def['total'] = isset($counts[$def['label_type']][$label]) ? $counts[$def['label_type']][$label] : 0;
+		}
+
+		return $definitions;
 	}
 
+	/**
+	 * Get counts for all labels used for a type
+	 * @param array $types
+	 * @return mixed
+	 */
+	public function countDefUsages(array $types = array())
+	{
+		$query = '';
+		$types = $types ?: array_keys(self::$types);
+
+		foreach ($types as $k => $t) {
+			$info = self::$types[$t];
+			if ($k > 0) {
+				$query .= "\n UNION ";
+			}
+			$query .= 'SELECT "'.$t.'" as label_type, COUNT(*) AS count, LOWER(label) as label FROM ' . $info['table'] . ' GROUP BY label';
+		}
+
+		$count_res = $this->getEntityManager()->getConnection()->fetchAll($query);
+
+		foreach ($count_res as $r) {
+			if (!isset($label_counts[$r['label_type']][$r['label']])) {
+				$label_counts[$r['label_type']][$r['label']] = 0;
+			}
+			$label_counts[$r['label_type']][$r['label']] += $r['count'];
+		}
+
+		return $label_counts;
+	}
 
 	/**
 	 * @return array
@@ -331,114 +345,6 @@ class LabelDef extends AbstractEntityRepository
 		return $ret;
 	}
 
-
-	/**
-	 * Get counts for all labels used for a type
-	 *
-	 * @param null $types
-	 * @return array
-	 */
-	public function countDefUsages(array $types = array())
-	{
-		$query  = array();
-		$types = $types ?: array_keys(self::$types);
-
-		foreach ($types as $t) {
-			$info = self::$types[$t];
-			$query[]  = 'SELECT COUNT(*) AS count, label FROM ' . $info['table'] . ' GROUP BY label';
-		}
-
-		if (count($query) > 1) {
-			$query = '(' . implode(') UNION (', $query) . ')';
-		} else {
-			$query = $query[0];
-		}
-
-		$count_res = $this->getEntityManager()->getConnection()->fetchAll($query);
-
-		foreach ($count_res as $r) {
-			if (!isset($label_counts[$r['label']])) $label_counts[$r['label']] = 0;
-			$label_counts[$r['label']] += $r['count'];
-		}
-
-		return $label_counts;
-	}
-
-
-	/**
-	 * Count usages of a label
-	 *
-	 * @param $label
-	 * @param null $types
-	 */
-	public function countLabelUsages($label, $types = null)
-	{
-		$query  = array();
-		$params = array();
-
-		if (!$types) {
-			$types = array_keys(self::$types);
-		} else {
-			$types = (array)$types;
-		}
-
-		foreach ($types as $t) {
-			$info = self::$types[$t];
-
-			$query[]  = 'SELECT COUNT(*) AS count FROM ' . $info['table'] . ' WHERE label = ?';
-			$params[] = $label;
-		}
-
-		if (count($query) > 1) {
-			$query = '(' . implode(') UNION (', $query) . ')';
-		} else {
-			$query = $query[0];
-		}
-
-		$count_res = $this->getEntityManager()->getConnection()->fetchAll($query, $params);
-		$count = 0;
-
-		foreach ($count_res as $r) {
-			$count += $r['count'];
-		}
-
-		return $count;
-	}
-
-	/**
-	 * Delete a label definition, and all its usages.
-	 *
-	 * @param $label
-	 * @param null $types
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function deleteLabelDef($label, $types = null)
-	{
-		if (!$types) {
-			$types = array_keys(self::$types);
-		} else {
-			$types = (array)$types;
-		}
-
-		$this->getEntityManager()->getConnection()->beginTransaction();
-
-		try {
-			foreach ($types as $t) {
-				$table = self::$types[$t]['table'];
-
-				$this->getEntityManager()->getConnection()->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $label));
-				$this->getEntityManager()->getConnection()->executeUpdate("DELETE FROM $table WHERE label = ?", array($label));
-			}
-
-			$this->getEntityManager()->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->getEntityManager()->getConnection()->rollback();
-			throw $e;
-		}
-		return true;
-	}
-
 	/**
 	 * @param \Application\DeskPRO\Entity\LabelDef $definition
 	 * @throws \Exception
@@ -464,6 +370,7 @@ class LabelDef extends AbstractEntityRepository
 
 
 	/**
+	 * TODO!
 	 * Rename a label
 	 *
 	 * @param $old_label
