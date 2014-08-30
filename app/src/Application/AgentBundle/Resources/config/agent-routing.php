@@ -2298,4 +2298,10 @@ $collection->create('jira_post_comment', array(
 	'requirements'  => array('issue_id' => '\\d+'),
 ));
 
+$collection->create('agent_label_definitions_list', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'AgentBundle:Labels:listDefinitions',
+	'methods'       => array('GET'),
+));
+
 return $collection;

@@ -2,6 +2,7 @@ define ['angular'], (angular) ->
 	class DeskPRO_Service_LabelDefinition
 		loadDefinitions = null
 		updateColorForLabel = null
+		defaultColor = '#d4d4d4'
 
 		constructor: (@$q, definitionsPromise) ->
 			loadPromise = null
@@ -87,5 +88,5 @@ define ['angular'], (angular) ->
 		getColor: (label) ->
 			d = @$q.defer()
 			label = (label || '').toLowerCase()
-			loadDefinitions().then => d.resolve @colors[label]
+			loadDefinitions().then => d.resolve @colors[label] || defaultColor
 			d.promise

@@ -1,4 +1,20 @@
-define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions', 'DeskPRO/Util/Strings'], function(angular, x1, x2, Functions, Strings) {
+define([
+	'angular',
+	'angularAnimate',
+	'angularBootstrap',
+	'DeskPRO/Util/Functions',
+	'DeskPRO/Util/Strings',
+	'DeskPRO/Directive/DpLabel',
+	'DeskPRO/Service/LabelDefinition'
+], function(
+	angular,
+	x1,
+	x2,
+	Functions,
+	Strings,
+	DeskPRO_Directive_DpLabel,
+    DeskPRO_Service_LabelDefinition
+	) {
 	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap']);
 
 	//-------------------------------------------------------------------------
@@ -912,6 +928,12 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 			});
 		};
 	}]);
+
+	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
+		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
+	}]);
+
+	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 
 	return AgentApp;
 });

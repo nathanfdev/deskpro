@@ -210,6 +210,11 @@ class LabelDef extends AbstractEntityRepository
 		);
 	}
 
+	/**
+	 * @param $type
+	 * @param $label
+	 * @return mixed
+	 */
 	public function getDefinition($type, $label)
 	{
 		return $this->getEntityManager()->createQuery(
@@ -220,54 +225,9 @@ class LabelDef extends AbstractEntityRepository
 		))->getOneOrNullResult();
 	}
 
-
-
-
-
-	/***************** these are moved from LabelDefManager ****************/
-	/** todo cleanup! */
-
 	/**
-	 * Get defined labels
-	 *
 	 * @return array
 	 */
-	public function getLabels($types = null)
-	{
-		if ($types === null) {
-			$types = self::valid();
-		}
-		if (is_string($types)) {
-			$types = explode(',', $types);
-			$types = array_map('trim', $types);
-		}
-
-		if (!$types) {
-			return array();
-		}
-
-		$types = array_map(function($t) {
-			if ($t == 'chat') $t = 'chat_conversations';
-			return $t;
-		}, $types);
-
-		// invalid type(s)
-		if (array_diff($types, self::valid())) {
-			throw new \InvalidArgumentException();
-		}
-
-		$parts = array();
-		$parts[] = "SELECT DISTINCT(label) FROM label_defs " . (count($types) < 8 ? "WHERE label_type IN ('" . implode("','", $types) . "')" : '');
-		foreach ($types as $t) {
-			$parts[] = "SELECT DISTINCT(label) FROM labels_$t";
-		}
-
-		$q = '(' . implode(') UNION (', $parts) . ')';
-		$labels = $this->getEntityManager()->getConnection()->fetchAllCol($q);
-
-		return $labels;
-	}
-
 	public function getAllDefinitions()
 	{
 		$definitions = $this->getEntityManager()->getConnection()->fetchAll('SELECT * FROM label_defs');
@@ -280,6 +240,47 @@ class LabelDef extends AbstractEntityRepository
 
 		return $definitions;
 	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\LabelDef $definition
+	 */
+	public function updateDefinitionUsages(\Application\DeskPRO\Entity\LabelDef $definition)
+	{
+		$counts = $this->countDefUsages(array($definition['label_type']));
+		$label = strtolower($definition['label']);
+		$definition['total'] = isset($counts[$definition['label_type']][$label])
+			? $counts[$definition['label_type']][$label]
+			: 0;
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\LabelDef $definition
+	 * @throws \Exception
+	 */
+	public function deleteDefinition(\Application\DeskPRO\Entity\LabelDef $definition)
+	{
+		$this->getEntityManager()->getConnection()->beginTransaction();
+
+		try {
+			$this->getEntityManager()->getConnection()->executeUpdate(
+				sprintf('DELETE FROM %s WHERE LOWER(label) = ?', self::$types[$definition['label_type']]['table']),
+				array(strtolower($definition['label']))
+			);
+			$this->getEntityManager()->remove($definition);
+			$this->getEntityManager()->flush();
+
+			$this->getEntityManager()->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->getEntityManager()->getConnection()->rollback();
+			throw $e;
+		}
+	}
+
+
+
+
+	/***************** these are moved from LabelDefManager ****************/
+	/** todo cleanup! */
 
 	/**
 	 * Get counts for all labels used for a type
@@ -310,15 +311,6 @@ class LabelDef extends AbstractEntityRepository
 		}
 
 		return $label_counts;
-	}
-
-	public function updateDefinitionUsages(\Application\DeskPRO\Entity\LabelDef $definition)
-	{
-		$counts = $this->countDefUsages(array($definition['label_type']));
-		$label = strtolower($definition['label']);
-		$definition['total'] = isset($counts[$definition['label_type']][$label])
-			? $counts[$definition['label_type']][$label]
-			: 0;
 	}
 
 	/**
@@ -355,30 +347,6 @@ class LabelDef extends AbstractEntityRepository
 
 		return $ret;
 	}
-
-	/**
-	 * @param \Application\DeskPRO\Entity\LabelDef $definition
-	 * @throws \Exception
-	 */
-	public function deleteDefinition(\Application\DeskPRO\Entity\LabelDef $definition)
-	{
-		$this->getEntityManager()->getConnection()->beginTransaction();
-
-		try {
-			$this->getEntityManager()->getConnection()->executeUpdate(
-				sprintf('DELETE FROM %s WHERE LOWER(label) = ?', self::$types[$definition['label_type']]['table']),
-				array(strtolower($definition['label']))
-			);
-			$this->getEntityManager()->remove($definition);
-			$this->getEntityManager()->flush();
-
-			$this->getEntityManager()->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->getEntityManager()->getConnection()->rollback();
-			throw $e;
-		}
-	}
-
 
 	/**
 	 * TODO!

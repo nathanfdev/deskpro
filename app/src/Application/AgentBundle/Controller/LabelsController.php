@@ -4,7 +4,7 @@
 | a British company located in London, England.                            |
 |                                                                          |
 | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
+1|                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
 |                                                                          |
@@ -29,22 +29,32 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage AgentBundle
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Labels\LabelDefManager;
+use Application\AgentBundle\Controller\Helper\ArticleResults;
+use Application\DeskPRO\App;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\ArticlePendingCreate;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Orb\Data\ContentTypes;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 
-class LabelDefManagerService
+/**
+ * Handles label definitions
+ */
+class LabelsController extends AbstractController
 {
-	public static function create(DeskproContainer $container)
+	public function listDefinitionsAction()
 	{
-		$s = new LabelDefManager(
-			$container->get('doctrine.orm.entity_manager')
-		);
-
-		return $s;
+		$rep = $this->em->getRepository('DeskPRO:LabelDef');
+		return $this->createJsonResponse($rep->getAllDefinitions());
 	}
 }

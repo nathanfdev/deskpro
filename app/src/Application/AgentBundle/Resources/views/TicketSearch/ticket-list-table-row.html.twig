@@ -61,7 +61,7 @@
 		<% if (field == 'labels') { %>
 			<% if (ticket_display.labels) { %>
 				<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
-					<span class="listing-tag"><%- ticket_display.labels[labelIdx] %></span>
+					<span dp-label="<%- ticket_display.labels[labelIdx] %>"></span>
 				<% } %>
 			<% } %>
 		<% } %>

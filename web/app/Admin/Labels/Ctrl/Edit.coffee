@@ -40,6 +40,17 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 		saveLabel: ->
 			return false if not @$scope.form.label
 			return false if @definition && @definition.label == @$scope.form.label && @definition.color == @$scope.form.color
+
+			dummy = $('<i></i>').css 'color', @$scope.form.color
+			color = dummy.css 'color'
+			if 0 == color.indexOf 'rgb'
+				color = color.replace /^[^\d]+(\d{1,3})\s*\,\s*(\d{1,3})\s*\,\s*(\d{1,3}).+/, "$1,$2,$3"
+				parts = color.split ','
+				color = ((parts[0] << 16)|(parts[1] << 8)|parts[2]).toString 16
+				color = '0' + color if color.length < 6
+				color = '#' + color
+			@$scope.form.color = color
+
 			@startSpinner 'saving_label'
 
 			if @definition

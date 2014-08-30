@@ -22,33 +22,31 @@ define ->
 
 		return {
 			restrict: 'A'
-			template: '<span></span>'
 			link: (scope, element, attr) ->
-				$span = element.children 'span'
 				label = $parse(attr.dpLabel)(scope)
-
-				$span.css
-					display: 'inline-block'
-					borderRadius: '3px'
-					padding: '1% 2%'
-					verticalAlign: 'middle'
 
 				updateLabelElement = (data) ->
 					return if !data?
 					color = data.color || '#c8c8c8'
-					$span.text data.label
-					$span.css
+					element.css
 						backgroundColor: color
-						color: getContrast(color.substr(1))
+						color: getContrast color.substr(1)
+						textShadow: 'none'
+						backgroundImage: 'none'
 
-				if label.label_type
+					if !data.r
+						element.text data.label
+
+				# we have label object, so we can track it
+				if 'object' == typeof label && label.label_type
 					LabelDefinition.get(label.label_type, label.label).then (def) =>
 						scope.$watch def, (newVal) =>
 							updateLabelElement newVal
 						updateLabelElement def
+
 				else
-					LabelDefinition.getColor(label.label).then (color) =>
-						updateLabelElement {label: label.label, color: color}
+					LabelDefinition.getColor(attr.dpLabel).then (color) =>
+						updateLabelElement {label: attr.dpLabel, color: color, r: true}
 		}
 
 	return DeskPRO_Directive_DpLabel
