@@ -102,25 +102,12 @@ class LabelsController extends AbstractController implements ProtectedController
 			throw new NotFoundHttpException;
 		}
 
+		$label = trim($new['label']);
+		$type = trim($new['label_type']);
 		$rep = $this->rep();
-		if (!$definition = $rep->getDefinition($old['label_type'], $old['label'])) {
-			throw new NotFoundHttpException;
-		}
+		$rep->renameLabelDef($old['label'], $label, $new['color'], $type);
 
-		if ($exist = $rep->getDefinition($new['label_type'], $new['label'])) {
-			if ($definition['label'] !== $exist['label']) {
-				$this->em->remove($exist);
-				$this->em->flush();
-			}
-		}
-
-		$rep->renameLabelDef($definition['label'], trim($new['label']), $new['color'], $definition['label_type']);
-		$definition['label'] = trim($new['label']);
-		$definition['color'] = $new['color'];
-		$rep->updateDefinitionUsages($definition);
-		$this->em->flush();
-
-		return $this->createApiResponse($definition->toApiData());
+		return $this->createApiResponse($rep->getDefinition($type, $label)->toApiData());
 	}
 
 	####################################################################################################################
@@ -142,6 +129,7 @@ class LabelsController extends AbstractController implements ProtectedController
 
 		if (!$definition = $rep->getDefinition($type, $label)) {
 			$definition = new \Application\DeskPRO\Entity\LabelDef();
+			// primary key
 			$definition['label_type'] = $type;
 			$definition['label'] = trim($label);
 			$this->em->persist($definition);

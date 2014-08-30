@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelDef extends AbstractEntityRepository
 {
@@ -389,24 +390,41 @@ class LabelDef extends AbstractEntityRepository
 	 * @param null $types
 	 * @throws \Exception
 	 */
-	public function renameLabelDef($old_label, $new_label, $color, $types = null)
+	public function renameLabelDef($old_label, $new_label, $color, $type)
 	{
-		if (!$types) {
-			$types = array_keys(self::$types);
-		} else {
-			$types = (array)$types;
+		if (!self::valid($type)) {
+			throw new NotFoundHttpException;
 		}
 
+		$types = (array)$type;
+
 		$this->getEntityManager()->getConnection()->beginTransaction();
+
+		if (!$definition = $this->getDefinition($type, $old_label)) {
+			throw new NotFoundHttpException;
+		}
+
+		if ($exist = $this->getDefinition($type, $new_label)) {
+			if ($definition['label'] !== $exist['label']) {
+				$this->getEntityManager()->remove($exist);
+				$this->getEntityManager()->flush();
+			}
+		}
+
 		try {
 			foreach ($types as $t) {
 				$table = self::$types[$t]['table'];
 
 				$this->getEntityManager()->getConnection()->executeUpdate(
-					'UPDATE ' . $table . ' SET label = ? WHERE LOWER(label) = ?',
+					'UPDATE IGNORE ' . $table . ' SET label = ? WHERE LOWER(label) = ?',
 					array($new_label, strtolower($old_label))
 				);
 			}
+
+			$definition['label'] = $new_label;
+			$definition['color'] = $color;
+			$this->updateDefinitionUsages($definition);
+			$this->getEntityManager()->flush();
 
 			$this->getEntityManager()->getConnection()->commit();
 		} catch (\Exception $e) {
