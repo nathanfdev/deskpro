@@ -54,28 +54,6 @@ class LabelDef extends AbstractEntityRepository
 	);
 
 	/**
-	 * Count how many different labels exist
-	 *
-	 * @param string $type Type or null to count all [distinct] labels across every type
-	 * @return int
-	 */
-	public function countLabels($type = null)
-	{
-		if ($type) {
-			return App::getDb()->fetchColumn("
-				SELECT COUNT(*)
-				FROM label_defs
-				WHERE label_type = ?
-			", array($type));
-		} else {
-			return App::getDb()->fetchColumn("
-				SELECT COUNT(DISTINCT label)
-				FROM label_defs
-			");
-		}
-	}
-
-	/**
 	 * Get the top counts for labels of a certain type.
 	 *
 	 * @return array
@@ -176,7 +154,7 @@ class LabelDef extends AbstractEntityRepository
 	{
 		$ret = array();
 		$res = $this->getEntityManager()->getConnection()->executeQuery(sprintf(
-			'SELECT label FROM %s WHERE label_type = :type', $this->getTableName()
+			'SELECT LOWER(label) as label FROM %s WHERE label_type = :type', $this->getTableName()
 		), array('type' => $type));
 
 		while ($row = $res->fetchColumn(0)) {
@@ -281,6 +259,17 @@ class LabelDef extends AbstractEntityRepository
 		$this->getEntityManager()->createQuery('
 			UPDATE DeskPRO:LabelDef l SET l.color = :color WHERE LOWER(l.label) = :label
 		')->execute(array('label' => strtolower($label), 'color' => $color));
+	}
+
+	public function getColorForLabel($label)
+	{
+		$q = $this->getEntityManager()->createQuery('
+			SELECT d.color FROM DeskPRO:LabelDef d WHERE LOWER(d.label) = :label
+		')->setMaxResults(1)->setParameters(array('label' => strtolower($label)));
+
+		$res = $q->getScalarResult();
+
+		return $res ? $res[0]['color'] : '#d4d4d4';
 	}
 
 

@@ -3465,7 +3465,7 @@ class TicketController extends AbstractController
                                 
 				$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
-				$ticket->getLabelManager()->setLabelsArray($labels);
+				$ticket->getLabelManager()->setLabelsArray(explode(',', $labels));
 
 				$this->em->persist($ticket);
 
@@ -3491,6 +3491,9 @@ class TicketController extends AbstractController
 
 				$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 				if ($labels) {
+					if (is_string($labels)) {
+						$labels = explode(',', $labels);
+					}
 					$ticket->getLabelManager()->setLabelsArray($labels);
 					$this->em->flush();
 				}
