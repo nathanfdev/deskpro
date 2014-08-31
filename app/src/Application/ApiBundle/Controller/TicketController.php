@@ -410,12 +410,8 @@ class TicketController extends AbstractController
 			$this->em->persist($ticket);
 			$this->em->persist($message);
 
-			if ($labels = $this->in->getCleanValueArray('label', 'string', 'discard')) {
-				if (is_string($labels)) {
-					$labels = explode(',', $labels);
-				}
-				$ticket->getLabelManager()->setLabelsArray($labels, $this->em);
-			}
+			$labels = $this->in->getCleanValue('label', 'string', 'discard');
+			$ticket->getLabelManager()->setLabelsArray($labels);
 
 			App::setCurrentPerson($this->person);
 

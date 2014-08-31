@@ -184,10 +184,19 @@ class LabelManager
 	}
 
 	/**
-	 * @param array $labels
+	 * @param null $labels
 	 */
-	public function setLabelsArray(array $labels)
+	public function setLabelsArray($labels = null)
 	{
+		// back compatibility
+		if (!$labels) {
+			$labels = array();
+		} elseif (!is_array($labels)) {
+			$labels = explode(',', $labels);
+		}
+
+
+
 		$labels_raw = $labels;
 		$labels = array();
 
