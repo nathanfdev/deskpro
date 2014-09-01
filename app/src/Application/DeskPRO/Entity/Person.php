@@ -501,7 +501,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	protected $teams;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @var AgentTeam
 	 */
 	protected $primary_team;
 

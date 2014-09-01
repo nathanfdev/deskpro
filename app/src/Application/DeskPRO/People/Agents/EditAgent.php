@@ -89,6 +89,11 @@ class EditAgent
 	 */
 	public $agent_groups;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\AgentTeam
+	 */
+	public $primary_team;
+
 	public $notification_settings;
 
 
@@ -133,6 +138,8 @@ class EditAgent
 			'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
 			'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
 		);
+
+		$this->primary_team = $person->primary_team;
 	}
 
 
@@ -235,6 +242,8 @@ class EditAgent
 		foreach ($this->notification_settings as $k => $v) {
 			$agent->setPreference('agent_notif.'.$k, (int) $v);
 		}
+
+		$agent->primary_team = $this->primary_team;
 
 		#------------------------------
 		# Save

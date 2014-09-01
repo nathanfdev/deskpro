@@ -90,7 +90,6 @@ define [
 
 				@agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
 				@form = @agentFormModel.form
-				console.info @form
 
 				@$scope.$watch('EditCtrl.form.agent_groups', =>
 					@updateEffectiveUgPerms()
@@ -127,8 +126,22 @@ define [
 					@deps_perms.chat[dep.id] = { full: full }
 
 				@updateHasPermOverridesStatus()
+				@updatePrimaryTeam()
 			)
 			return promise
+
+
+
+		updatePrimaryTeam: ->
+			if @form.primary_team?
+				for team in @form.teams
+					if @form.primary_team.id == team.id && !team.value
+						@form.primary_team = null
+						break
+
+			if !@form.primary_team
+				for team in @form.teams
+					return @form.primary_team = team if team.value
 
 
 
@@ -366,6 +379,8 @@ define [
 
 					agentFormModel = new EditAgentModel(agent, groups, teams)
 					form = agentFormModel.form
+
+					@form.primary_team = form.primary_team
 
 					if settings.zones
 						@form.zones.admin   = form.zones.admin
