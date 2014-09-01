@@ -503,7 +503,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
-	protected $primaryTeam;
+	protected $primary_team;
 
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
@@ -2470,8 +2470,8 @@ class Person extends DomainObject implements HighlightableModelInterface
 	public function addTeam(AgentTeam $team)
 	{
 		if (!$this->teams->contains($team)) {
-			if (!$this->primaryTeam) {
-				$this->primaryTeam = $team;
+			if (!$this->primary_team) {
+				$this->primary_team = $team;
 			}
 			$this->teams->add($team);
 			$this->_onPropertyChanged('teams', $this->teams, $this->teams);
@@ -2486,8 +2486,8 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$this->_onPropertyChanged('teams', $this->teams, $this->teams);
 		$team->removePerson($this);
 
-		if ($this->primaryTeam === $team) {
-			$this->primaryTeam = $this->teams->first() ?: null;
+		if ($this->primary_team === $team) {
+			$this->primary_team = $this->teams->first() ?: null;
 		}
 	}
 
@@ -2712,7 +2712,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		));
 
 		$metadata->mapManyToOne(array(
-			'fieldName' => 'primaryTeam',
+			'fieldName' => 'primary_team',
 			'dpApi' => true,
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
 			'nullable' => true,
