@@ -60,13 +60,14 @@
 					<li><strong>Resolved</strong>: The ticket is completed and does not require any further response.</li>
 				
 				</ul>
+				<p>Click on each status below to see the number of tickets in your helpdesk with that status.</p>
 			
 			<p>Agents can set tickets to a sub-status called <strong>On Hold</strong>. This status only applies to tickets that are Awaiting Agent. This status is designed for tickets that agents cannot reply to currently (e.g. because they are waiting for a third party). Tickets on hold are accessible from the Awaiting Agent section of the agent interface filter pane. 
-			<p>You could use the Workflow field to specify why the ticket is on hold, and use triggers or escalations to make sure tickets are not left on hold indefinitely.</p>
+	
 			<p>A ticket can have status <strong>Awaiting Validation</strong> if it has been submitted by a user who needs to be validated by an agent or to validate their own email address (these validation requirements depend on your settings under <strong>CRM &gt; Registration</strong>).</p>
 			<p>Tickets can also have their status set to <strong>Spam</strong> or <strong>Deleted</strong>. You can set how long spam or deleted tickets are kept before they are automatically deleted by clicking on the relevant status.</p>
-			<p>You can also turn on <strong>archiving</strong> of old, resolved tickets. For very large helpdesks with millions of tickets, archiving can greatly improve performance. Click <strong>Archived</strong> to enable this, and specify how long before resolved tickets are archived.</p>
-			<p>When an old ticket is archived it is given archived status. Agents can still view archived tickets from the Tickets app filter pane, and agents with the correct permission can restore archived tickets.</p>
+			<p>You can turn on <strong>archiving</strong> of old, resolved tickets. For very large helpdesks with millions of tickets, archiving can greatly improve performance. Click <strong>Archived</strong> to enable this, and specify how long before resolved tickets are archived.</p>
+			<p>When an old ticket is archived it is given archived status (sometimes referred to as 'closed'). Agents can still view archived tickets from the Tickets app filter pane, and agents with the correct permission can restore archived tickets.</p>
 		</section>
 
 		<section>
@@ -75,7 +76,7 @@
 				<dt><em>Q:</em> Can I have a custom status?</dt>
 				<dd><em>A:</em>
 					No. Being able to add extra statuses would break the core flow of how DeskPRO handles tickets.
-					If you wish to track the state of a ticket more closely, we recommend you use the <strong>Workflow</strong> field.
+					If you wish to track the state of a ticket more closely, we recommend you use the <strong>Workflow</strong> custom field.
 				</dd>
 
 				<dt><em>Q:</em> My helpdesk is slow; should I enable archiving?</dt>
