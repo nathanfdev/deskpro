@@ -668,9 +668,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var st   = head.find('nav').data('simpletabs');
 		if (st) {
 			st.addEvent('tabSwitch', function(evData) {
-				var id = $(evData.tabEl).attr('id') || '';
+				var id = $(evData.tabContent).attr('id') || '';
 
-				if (id && id.indexOf('fields_display_main_wrap_tab') !== -1) {
+				if (id && id.indexOf('fields_display_main_wrap') !== -1) {
 					head.removeClass('controls-off');
 				} else {
 					head.addClass('controls-off');
@@ -808,7 +808,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var jiraWidget = new DeskPRO.Agent.Jira.Widget({
 				ticketId: self.meta.ticket_id,
 				baseId: self.meta.baseId,
-				defaultProject: self.meta.jiraDefaultProject,
+				defaultProject: self.meta.jiraDefaultProject
 			});
 		}
 	},
@@ -1237,10 +1237,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 			}
-		}
-
-		if (typeof data.cc_list == "string") {
-			this.wrapper.find('ul.cc-row-list').empty().html(data.cc_list);
 		}
 
 		var billing = this.billing;
@@ -2284,6 +2280,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}).always(function() {
 						form.removeClass('loading');
 					}).done(function(data) {
+
+						if (data.error) {
+							if (data.error_code == 'no_messages') {
+								alert('Please select at least one message to split from this ticket.');
+							} else {
+								alert('You cannot split all messages from this ticket.');
+							}
+							return;
+						}
+
 						overlay.close();
 
 						if (data.ticket_id) {
@@ -2414,7 +2420,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					success: function(info) {
 						self.messageEditOverlay.close();
 						var messageHtml = info.message_html;
-						self.wrapper.find('article.message-' + self.currentOpenMessageId).find('.body-text-message').html(messageHtml);
+
+						var messageEl = self.wrapper.find('article.message-' + self.currentOpenMessageId);
+						messageEl.find('.body-text-message').html(messageHtml);
+
+						// reprocess events on message (eg image preview)
+						self._initMessage(messageEl);
 					}
 				});
 			});
@@ -3047,6 +3058,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'POST',
 				data: postData
 			});
+
+			self.meta.title = setName;
+
+			if (DeskPRO_Window.TabBar) {
+				DeskPRO_Window.TabBar.rescanTitles();
+			}
 		};
 
 		namef.on('dblclick', startEditable).on('keypress', function(ev) {

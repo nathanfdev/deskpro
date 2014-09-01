@@ -41,9 +41,16 @@ function deskpro_install_check_reqs()
 		$errors['openssl_ext'] = 'recommended';
 	}
 
-	if (!(function_exists('apc_store') && ini_get('apc.enabled'))) {
-		$errors['apc_check'] = 'recommended';
+	if (version_compare(phpversion(), '5.5.0', '<')) {
+		if (!(function_exists('apc_store') && ini_get('apc.enabled'))) {
+			$errors['apc_check'] = 'recommended';
+		}
+	} else {
+		if (!(extension_loaded('Zend OPcache') && (int) ini_get('opcache.enable'))) {
+			$errors['apc_check'] = 'recommended';
+		}
 	}
+
 
 	if (!function_exists('get_magic_quotes_gpc')) {
 		$errors['magic_quotes_gpc_check'] = 'recommended';
@@ -63,6 +70,14 @@ function deskpro_install_check_reqs()
 		if (!deskpro_install_check_data_writable(dp_get_data_dir())) {
 			$errors['data_write'] = 'fatal';
 		}
+	}
+
+	if (!function_exists('curl_init')) {
+		$errors['curl_check'] = 'recommended';
+	}
+
+	if (!function_exists('ldap_connect')) {
+		$errors['ldap_check'] = 'recommended';
 	}
 
 	return $errors;

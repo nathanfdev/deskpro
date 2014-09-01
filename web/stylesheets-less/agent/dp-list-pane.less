@@ -333,6 +333,29 @@
 	position: relative;
 }
 
+.list-listing .new-tab-icon {
+	display: none;
+	float: left;
+	margin-right: 3px;
+	position: relative;
+	top: -4px;
+
+	border-radius: 2px;
+	font-size: 13px;
+	padding: 2px;
+	vertical-align: baseline;
+	text-align: center;
+
+	&:hover {
+		background: #134d77;
+		color: #fff;
+	}
+}
+
+.panevis-tabs-off.with-tabs .list-listing .new-tab-icon {
+	display: block;
+}
+
 .ipad .list-listing .row-item, .iphone .list-listing .row-item {
 	/* this fixes some weird wrapping issues on ios */
 	display: inline-block;
@@ -483,6 +506,13 @@
 	margin: 7px 5px 7px 4px;
 }
 
+.list-listing .table-result-list .row-item .item-select {
+	float: none;
+	margin: 0;
+	padding: 0;
+	vertical-align: middle;
+}
+
 .list-listing .row-item .loading-arrow {
 	float: left;
 	margin: 5px;
@@ -508,6 +538,25 @@
 	left: 23px;
 	right: 0;
 	height: 15px;
+}
+
+.list-listing .row-item.no-check .top-row {
+	left: 5px;
+}
+.list-listing .row-item.single-row .top-row {
+	position: relative;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: auto;
+	padding: 5px;
+}
+.list-listing .row-item.single-row .top-row .top-row-left h3 {
+	margin-top: 0;
+}
+.list-listing .row-item.no-check .userinfo {
+	position: relative;
+	left: 5px;
 }
 
 .list-listing.no-check .row-item .top-row {
@@ -583,6 +632,12 @@
 }
 .list-listing .row-item .userinfo.general {
 	margin-left: 8px;
+}
+.list-listing .row-item.single-row .userinfo {
+	margin-top: 0;
+	margin-left: 5px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 }
 .list-listing .row-item a.name {
 	color: @link-color;
@@ -847,10 +902,6 @@ table.tickets-simple td.status .status
 
 }
 
-.table-result-list table {
-	table-layout: fixed;
-}
-
 .table-result-list table thead {
 	.gradient(#e6e9ec, #d8dbdf);
 	border-bottom: 1px solid #d5d5d5;
@@ -885,16 +936,66 @@ table.tickets-simple td.status .status
 	background-color: #F5F7FA;
 	border-bottom: 1px solid #E1E3E6;
 	border-top: 1px solid #fff;
-	white-space: nowrap;
-	text-overflow: clipped;
-	text-overflow: ellipsis;
-	-o-text-overflow: ellipsis;
-	overflow: hidden;
 	font-size: 11px;
+	vertical-align: middle;
 }
 
 .table-result-list table tbody tr.open td {
 	background-color: #D4E7FC;
+}
+
+.table-result-list table {
+	.col-agent { width: 50px; overflow: visible; text-overflow: clip; text-align: center; }
+	.col-subject { width: 45%; min-width: 180px; }
+
+	.cell-value {
+		display: block;
+		height: 16px;
+		overflow: hidden;
+		padding-top: 1px;
+		padding-bottom: 1px;
+	}
+
+	.obj-link {
+		color: #4769b3;
+		text-decoration: none;
+		cursor: pointer;
+		&:hover {
+			text-decoration: underline;
+			color: #4769b3;
+		}
+	}
+	.obj-id {
+		border-radius: 2px;
+		border: 1px solid #cccccc;
+		background: #f5f5f5;
+		color: #636B73;
+		padding: 0 2px 0 2px;
+	}
+}
+
+.table-result-list table.is-settable {
+	table-layout: auto;
+}
+.table-result-list table.with-set {
+	table-layout: fixed;
+
+	tbody td {
+		white-space: nowrap;
+		text-overflow: clip;
+		text-overflow: ellipsis;
+		-o-text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	.cell-value {
+		height: auto;
+		white-space: nowrap;
+		text-overflow: clip;
+		text-overflow: ellipsis;
+		-o-text-overflow: ellipsis;
+		overflow: hidden;
+	}
 }
 
 .bottom-action-bar {

@@ -152,7 +152,7 @@ class LegacyTermsTransformer
 				return array(
 					'type'    => 'label',
 					'op'      => $term->getTermOperator(),
-					'options' => array('labels' => $options['labels'])
+					'options' => array('label' => $options['labels'])
 				);
 
 			case 'FilterLanguage':
@@ -533,7 +533,7 @@ class LegacyTermsTransformer
 				));
 
 			case 'label':
-				$labels = @$options['labels'] ?: array();
+				$labels = @$options['label'] ?: array();
 				if (!is_array($labels)) {
 					$labels = array($labels);
 				}

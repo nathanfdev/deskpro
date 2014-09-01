@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\NewSearch\Manager;
 
 use Orb\Util\Numbers;
+use Orb\Validator\StringEmail;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
@@ -46,7 +47,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
      *
      * @var array
      */
-    protected $results;
+    protected $results = array();
 
     public function quickSearch($q)
     {
@@ -62,20 +63,46 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
             }
 
             $repository = $repositoryManager->getRepository($model);
+			$ent_repos = $this->container->getEm()->getRepository($model);
 
             if ($this->requiresPermission($object)) {
                 $repository->setPersonContext($this->person);
             }
 
-            if (Numbers::isInteger($q)) {
-                $result = $repository->find('_id:' . $q);
-            } else {
-                $result = $repository->find($q);
-            }
+			if ($model == 'DeskPRO:Ticket' && preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
+				$result = $ent_repos->findTicketRef($q);
+				if ($result) {
+					$this->handleResult($object, $result);
+				}
+			}
 
-            $this->handleResult($object, $result);
+			if (Numbers::isInteger($q)) {
+				if ($model == 'DeskPRO:Ticket') {
+					$result = $ent_repos->findTicketId($q);
+				} else {
+					$result = $ent_repos->findById($q);
+				}
+				if ($result) {
+					$this->handleResult($object, $result);
+				}
+			}
 
+			if ($model == 'DeskPRO:Person' && StringEmail::isValueValid($q)) {
+				$result = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+				if ($result) {
+					$this->handleResult($object, $result);
+				}
+			}
+
+            $result = $repository->find($q);
+			if ($result) {
+				$this->handleResult($object, $result);
+			}
         }
+
+		foreach ($this->results as &$group) {
+			$group = array_unique($group);
+		}
 
         return array($this->results, $result_meta, $people_top);
     }
@@ -96,36 +123,17 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
 
     private function handleResult($object, $result)
     {
+		if (!isset($this->results[$object])) {
+			$this->results[$object] = array();
+		}
+
+		if (!is_array($result)) {
+			$result = array($result);
+		}
+
         switch ($object) {
-
-            case 'person':
-
-                $newResult = array();
-
-                foreach ($result as $person) {
-                    $newResult[$person->id] = $person;
-                    if ($person->organization) {
-                        $this->results['organization'][$person->organization->id] = $person->organization;
-                    }
-                }
-
-                $this->results[$object] = $result;
-                break;
-
-            case 'organization':
-
-                $newResult = array();
-
-                foreach ($result as $item) {
-                    $newResult[$item->id] = $item;
-                }
-
-                $this->results[$object] = $result;
-                break;
-
             default:
-
-                $this->results[$object] = $result;
+				$this->results[$object] = array_merge($this->results[$object], $result);
         }
     }
 

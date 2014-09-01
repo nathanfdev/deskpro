@@ -18,13 +18,13 @@
 		<td colspan="2">
 			{{ phrase('agent.publish.comment_requires_validation') }}<br />
 			{% if get_type(comment.getObject()) == 'Article' %}
-				<a href="{{ url_full('agent') }}#app.publish,validating_comments,a.o={{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,a.o={{ comment.getObject().getId() }}</a>
+				<a href="{{ url_full('agent') }}#app.publish,validating_comments,a.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,a.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'Download' %}
-				<a href="{{ url_full('agent') }}#app.publish,validating_comments,d.o={{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,d.o={{ comment.getObject().getId() }}</a>
+				<a href="{{ url_full('agent') }}#app.publish,validating_comments,d.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,d.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'News' %}
-				<a href="{{ url_full('agent') }}#app.publish,validating_comments,n.o={{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,n.o={{ comment.getObject().getId() }}</a>
+				<a href="{{ url_full('agent') }}#app.publish,validating_comments,n.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,n.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'Feedback' %}
-				<a href="{{ url_full('agent') }}#app.publish,fb_comments,i.o={{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,fb_comments,i.o={{ comment.getObject().getId() }}</a>
+				<a href="{{ url_full('agent') }}#app.publish,fb_comments,i.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,fb_comments,i.o={{ comment.getObject().getId() }}</a>
 			{% else %}
 				<a href="{{ url_full('agent') }}#app.publish,validating_comments">{{ url_full('agent') }}#app.publish,validating_comments</a>
 			{% endif %}
@@ -47,13 +47,13 @@
 	<tr>
 		<td colspan="2">
 			{% if get_type(comment.getObject()) == 'Article' %}
-				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#a.o={{ comment.getObject().getId() }}">{{ url_full('agent') }}#a.o={{ comment.getObject().getId() }}</a>
+				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#a.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#a.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'Download' %}
-				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#d.o={{ comment.getObject().getId() }}">{{ url_full('agent') }}#d.o={{ comment.getObject().getId() }}</a>
+				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#d.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#d.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'News' %}
-				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#n.o={{ comment.getObject().getId() }}">{{ url_full('agent') }}#n.o={{ comment.getObject().getId() }}</a>
+				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#n.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#n.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'Feedback' %}
-				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#i.o={{ comment.getObject().getId() }}">{{ url_full('agent') }}#i.o={{ comment.getObject().getId() }}</a>
+				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#i.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#i.o={{ comment.getObject().getId() }}</a>
 			{% endif %}
 		</td>
 	</tr>

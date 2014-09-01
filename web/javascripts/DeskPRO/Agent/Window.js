@@ -41,6 +41,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.cancelHashLoad = 0;
 		this.activeListNav = null;
 		this.activityTime = new Date();
+		this.isMobile = false;
 
 		this.agentNotifyListShown = false;
 
@@ -49,6 +50,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 			list: true,
 			tabs: true
 		};
+
+		this.paneVisBit = {
+			source: 1,
+			list: 2,
+			tabs: 4
+		}
+
+		var self = this;
+
+		if (window.AppPlatform) {
+			this.initAppPlatform(window.AppPlatform);
+		}
 
 		this.util = {
 			modCountEl: function(el, op, num) {
@@ -504,7 +517,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				return $(el).fileupload(options);
 			},
-			
+
 			filedownload: function(el) {
 				if (!el.is('.dragout')) {
 					el = el.find('.dragout');
@@ -515,7 +528,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					if (!fileDetails) {
 						fileDetails = $(this).attr('drag-to-download');
 					}
-					
+
 					if (evt.dataTransfer) {
 						evt.dataTransfer.setData("DownloadURL",fileDetails);
 						if (blobAuthId) evt.dataTransfer.setData("DpAuthId", blobAuthId);
@@ -556,6 +569,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				window.location.reload(false);
 			}
 		};
+
+
 	},
 
 	initPage: function() {
@@ -602,6 +617,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var startHash = window.location.hash + "";
 		startHash = startHash.substring(1);
 
+		if (!startHash.length && $.cookie('last_state')) {
+			startHash = $.cookie('last_state');
+		}
+
 		var loadNewTicket = false;
 		if (loadNewTicket = window.location.hash.match(/#newticket:(\d+)/)) {
 			loadNewTicket = loadNewTicket[1];
@@ -613,8 +632,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		var loadVis = false;
-		if (loadVis = window.location.hash.match(/vis:([0-5]{1})/)) {
+		if (loadVis = window.location.hash.match(/vis:([0-9]{1})/)) {
 			loadVis = parseInt(loadVis[1]);
+		}
+		if ($('html').hasClass('ipad') || $('html').hasClass('iphone')) {
+			loadVis = 2;
+			this.isMobile = true;
+			this.setPaneVisNum(loadVis);
+		}
+		if (!loadVis && Modernizr.localstorage && window.localStorage['dp_vis']) {
+			loadVis = parseInt(window.localStorage['dp_vis']) || 7;
+			this.setPaneVisNum(loadVis);
 		}
 
 		var loadAdmin = false;
@@ -701,6 +729,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 			self.loadHashPath(hash);
+			$.cookie('last_state', hash);
 		},{ unescape: ",/:" });
 
 		if (!this.openSection) {
@@ -874,68 +903,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		$('#dp_source, #dp_left_collapsed').on('click', '.toggle_source_pane', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('source', !DeskPRO_Window.paneVis.source);
-		});
-		$('#dp_list, #dp_left_collapsed').on('click', '.toggle_list_pane', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('list', !DeskPRO_Window.paneVis.list);
-		});
-		$('#dp_right_collapsed').on('click', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('tabs', true);
-		});
-
-		$('#dp_nav_sections').on('click', function() {
-			if (!self.paneVis['source']) {
-				self.paneVis['source'] = true;
-				self.layout.doResize(true);
-			}
-		});
-
-		$(document).on('click', '.panevis-toggle-sourcepane', function() {
-			self.paneVis['source'] = !self.paneVis['source'];
-			self.layout.doResize(true);
-		});
-
-		$(document).on('click', '.panevis-toggle-tableview', function() {
-			self.paneVis['list'] = true;
-			self.paneVis['tabs'] = false;
-			self.layout.doResize(true);
-		});
-		$(document).on('click', '.panevis-toggle-normalview', function() {
-			self.paneVis['list'] = true;
-			self.paneVis['tabs'] = true;
-			self.layout.doResize(true);
-		});
-		$(document).on('click', '.panevis-toggle-tabview', function() {
-			self.paneVis['list'] = false;
-			self.paneVis['tabs'] = true;
-			self.layout.doResize(true);
-		});
-
-		$('#dp_list').on('click', '.maximise_list_pane', function(ev) {
-			ev.preventDefault();
-
-			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.tabs) {
-				DeskPRO_Window.setPaneVis('source', true, 'tabs', true);
-			} else {
-				DeskPRO_Window.setPaneVis('source', false, 'tabs', false);
-			}
-		});
-
-		$('#tabNavigationPane .maximise_tabs_pane').on('click', function(ev) {
-			ev.preventDefault();
-
-			if (!DeskPRO_Window.paneVis.source && !DeskPRO_Window.paneVis.list) {
-				DeskPRO_Window.setPaneVis('source', true, 'list', true);
-			} else {
-				DeskPRO_Window.setPaneVis('source', false, 'list', false);
-			}
-		});
-
-
 		$('#dp_header_userchat_btn').on('click', function() {
 			if (DeskPRO_Window.sections.chat_section) {
 				DeskPRO_Window.sections.chat_section.refreshOnlineUsers();
@@ -950,11 +917,38 @@ DeskPRO.Agent.Window = new Orb.Class({
 			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
 		});
 
+		$('#dp_tab_list_btn').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+			var $menu = $('#dp_tab_list_menu');
+			var $me = $(this);
+			var pos = $me.offset();
+
+			$me.addClass('active').parent().addClass('active');
+
+			$menu.css({
+				top: pos.top + 23,
+				left: pos.left + 1
+			}).show();
+
+			var closeFn = function() {
+				$me.removeClass('active').parent().removeClass('active');
+				$menu.hide();
+			};
+
+			$menu.on('click', function() { closeFn(); Orb.shimClickCallbackPop(); });
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+		});
+		$('#dp_tab_list_menu').detach().appendTo('body');
+
 		var isIe = $('html').hasClass('browser-ie');
 
-		$('#dp_header').find('.btn-group-actions').find('.btn').on('click', function() {
+		$('#dp_header').find('.btn-group-actions, .btn-group-wrap').find('.btn, .dp-recent-btn').on('click', function() {
 			var wrap = $(this).parent();
 			var btnMenu = wrap.find('.btn-menu');
+
+			if (wrap.hasClass('active')) {
+				return;
+			}
 
 			// Bug in IE10 means the li's dont render properly
 			// until you force a repaint somehow while they are displayed
@@ -1007,6 +1001,63 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 
+		$('#dp_create_btn').on('click mouseover', function(){
+			if ($('body').hasClass('with-tabresizing')) return;
+
+			var wrap = $(this);
+			var btnMenu = $('#create-menu');
+
+			// Bug in IE10 means the li's dont render properly
+			// until you force a repaint somehow while they are displayed
+			// So we show with no opacity, toggle the display on li's
+			// which does the trick of repainting them, then set the opacity
+			// back to 1. The user doesnt see anything amiss and we solve the bug :)
+			if (isIe) {
+				btnMenu.css('opacity', 0);
+			}
+
+			wrap.addClass('active');
+			btnMenu.addClass('active');
+			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() + 6});
+
+			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
+
+			if (isIe) {
+				window.setTimeout(function() {
+					btnMenu.find('li').css('display', 'block');
+					btnMenu.css('opacity', 1);
+				}, 10);
+			}
+
+			var closeFn = function() {
+				wrap.removeClass('active');
+				btnMenu.removeClass('active');
+				$(document).off('mousemove.create-menu');
+			};
+
+			$(document).on('mousemove.create-menu', function(e){
+				if (!btnMenu.hasClass('active')) return;
+
+				var left = wrap.offset().left - 5,
+					top = wrap.offset().top,
+					right = left + btnMenu.width() + 10,
+					bottom = top + wrap.height() + btnMenu.height() + 10
+
+				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
+					$('.zindex-chrome0').trigger('click');
+				}
+			});
+
+			if (!wrap.data('has-init')) {
+				btnMenu.on('click', function(ev) {
+					Orb.cancelEvent(ev);
+					Orb.shimClickCallbackPop();
+				});
+			}
+
+			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
+		});
+
 		$('#dp_header_help_trigger').on('click', function(ev) {
 			ev.preventDefault();
 
@@ -1021,43 +1072,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				wrap.find('.btn-menu').on('click', function(ev) {
 					Orb.cancelEvent(ev);
 					Orb.shimClickCallbackPop();
-				});
-			}
-
-			Orb.shimClickCallback(closeFn, 'zindex-chrome0');
-		});
-
-		$('#dp_header_notify_wrap').find('> ul > li').on('click', function() {
-			var wrap = $(this);
-			wrap.addClass('active');
-			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
-
-			var mainRow = $(this).closest('.type-row');
-			var notifUl = mainRow.find('.notify-list.for-current')
-			var notifyBox = $('#dp_header_notify_wrap');
-			notifyBox.find('a.see_dismissed').removeClass('selected');
-			$(this).find('a.see_current').addClass('selected');
-
-			notifyBox.removeClass('mode-dismissed').addClass('mode-current');
-
-			notifyBox.find(".no-notifications").hide();
-			notifyBox.find('.notify-list.for-dismissed').empty().hide();
-
-			if (!notifUl.find('li')[0]) {
-				notifyBox.find(".no-notifications").not(".notification-progress-on").show();
-				$("#dp_notify_wrap").find('.notify-list.for-current').hide();
-			} else {
-				notifUl.show();
-			}
-
-			var closeFn = function() {
-				wrap.removeClass('active');
-				Orb.shimClickCallbackPop();
-			};
-
-			if (!wrap.data('has-init')) {
-				wrap.find('ul').on('click', function(ev) {
-					closeFn();
 				});
 			}
 
@@ -1118,10 +1132,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.cancelHashLoad = 0;
 				this.loadHashPath(startHash);
 			}
-		}
-
-		if (window.AppPlatform) {
-			this.initAppPlatform(window.AppPlatform);
 		}
 
 		$('#agents_section').on('click', function(ev) {
@@ -1190,13 +1200,91 @@ DeskPRO.Agent.Window = new Orb.Class({
 		/***************** /scrolling handle on drag ******************/
 	},
 
+	initScope: function() {
+		var $scope = this.$scope,
+			self = this;
+
+		$scope.paneVis = this.paneVis;
+		$scope.listItems = [];
+		self._last = 'list';
+
+		$scope.$watch('paneVis', function(newVal, oldVal){
+			self.layout.doResize(true);
+		}, true);
+
+		$scope.oneColumnView = function() {
+			if (!(this.paneVis.list && this.paneVis.tabs)) return;
+			this.paneVis.list = false;
+			this.paneVis.tabs = false;
+			this.paneVis[self._last] = true;
+		};
+
+		$scope.twoColumnsView = function() {
+			if (this.paneVis.list && this.paneVis.tabs) return;
+			self.paneVis.list = true;
+			self.paneVis.tabs = true;
+		};
+
+		$scope.showList = function() {
+			$scope.$safeApply(function(){
+				if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
+					self.paneVis.tabs = false;
+				}
+				self.paneVis.list = true;
+				self._last = 'list';
+			});
+		};
+
+		$scope.showTabs = function() {
+			$scope.$safeApply(function(){
+				if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
+					self.paneVis.list = false;
+				}
+				self.paneVis.tabs = true;
+				self._last = 'tabs';
+			});
+		};
+
+		$scope.toggleSourcePane = function() {
+			$scope.$safeApply(function() {
+				self.setPaneVis('source', !self.paneVis.source);
+			});
+		};
+
+		$scope.addListItem = function(type, identity, title, route) {
+			$scope.listItems.push({type: type, identity: identity, title: title, route: route});
+		};
+	},
+
 	initAppPlatform: function(AppPlatform) {
+
+		var self = this;
+
 		if (this.AppPlatform) return;
 		this.AppPlatform = AppPlatform;
 		this.AppPlatform.start();
 
 		this.ngModule = this.AppPlatform.getNgModule();
 		this.ngModule.dpInjector = angular.element(document).injector();
+
+		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
+		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+			self.$scope = $rootScope;
+			self.$q = $q;
+			self.$timeout = $timeout;
+
+			self.$scope.$safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if(phase == '$apply' || phase == '$digest') {
+					if(fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					self.$scope.$apply(fn);
+				}
+			};
+		}]);
+		this.initScope();
 	},
 
 	getAppPlatform: function() {
@@ -1408,15 +1496,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (DeskPRO_Window.TabBar) {			// Only if we have current tab, cuz no current tab means there are no tabs open at all
-			$('#tabNavigationPane ul.dp-tab-list li').each(function() {
-				var isActive = $(this).hasClass('activeTabList');
 
-				var tab = $(this).data('tab');
-				if (tab && tab.page && tab.page.getMetaData('url_fragment')) {
+			for (var id in this.TabBar.tabs ) {
+				var tab = this.TabBar.tabs[id];
+
+				if (tab.page && tab.page.getMetaData('url_fragment')) {
 					var tabPage = tab.page;
 					var hash = tabPage.getMetaData('url_fragment');
 
-					if (isActive) {
+					if (tab.isActive) {
 						if (hash.indexOf(':') !== -1) {
 							// ticket:123 to ticket.o:123
 							hash = hash.replace(/:/, '.o:');
@@ -1428,12 +1516,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 					segments.push(hash);
 				}
-			});
+			};
 		}
 
 		var paneVisNum = this.getPaneVisNum();
 		if (paneVisNum) {
 			segments.push('vis:'+paneVisNum)
+		}
+		if (Modernizr.localstorage) {
+			window.localStorage['dp_vis'] = paneVisNum || 7;
 		}
 
 		var browserHash = segments.join(',');
@@ -2027,6 +2118,35 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.preloadId = el.data('route-preload-id');
 		}
 
+		if (!this.paneVis.tabs) {
+			extraData.noToggle = true;
+			extraData.focus = true;
+		}
+
+		if (el.data('route-replacetab')) {
+			extraData.replaceTab = true;
+		} else if (el.hasClass('row-item') && !this.paneVis.tabs) {
+			extraData.replaceTab = true;
+		}
+
+		if (el.data('route-newtab')) {
+			extraData.replaceTab = false;
+			extraData.focus = false;
+		}
+
+
+		// this should be handled only when click event occurs
+		if (0 === el.data('route').indexOf('listpane:')) {
+			this.$scope.showList();
+		} else {
+			this.$scope.showTabs();
+		}
+
+		var popoverEl = el.closest('.popover-wrapper');
+		if (popoverEl[0] && popoverEl.data('popover-handler')) {
+			popoverEl.data('popover-handler').close(true);
+		}
+
 		this.runPageRoute(el.data('route'), extraData);
 	},
 
@@ -2095,7 +2215,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#dp_list > section').removeClass('on');
 			$('#dp_list_loading').addClass('on');
 		}
-
 		var xhr = this._doAjaxLoadRoute(url, routeData, (function(data) {
 
 			if (!routeData) {
@@ -2121,6 +2240,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (routeData && !routeData.isBackgroundLoad) {
 			this.loadingListPage = xhr;
+
+			if (window.DP_CLOSE_SEARCH) {
+				window.DP_CLOSE_SEARCH();
+			}
 		}
 	},
 
@@ -2135,8 +2258,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var self = this;
 		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = DeskPRO_Window.TabBar.findTabByRouteUrl(url);
-			if (existTab && routeData.noToggle) {
-				if (routeData.focus) {
+			if (existTab && (routeData.noToggle || routeData.replaceTab)) {
+				if (routeData.focus || routeData.replaceTab) {
 					DeskPRO_Window.TabBar.activateTab(existTab);
 				}
 				return;
@@ -2159,8 +2282,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
+		var currentActiveTabId = DeskPRO_Window.TabBar.getActiveTabId();
+
 		// Add a temporary tab to the tabstrip
 		routeData.tabPlaceholderId = DeskPRO_Window.TabBar.addTabPlaceholder(url, routeData);
+
+		if (currentActiveTabId && routeData && routeData.replaceTab) {
+			DeskPRO_Window.TabBar.removeTabById(currentActiveTabId);
+		}
 
 		if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
 			routeData.routeTriggerEl.addClass(routeData.toggleOpenClass);
@@ -2189,6 +2318,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 			this.addPageTab(page);
+
+			if (routeData.openCallback) {
+				routeData.openCallback(page);
+			}
 
 			if (callback) callback(page);
 		}).bind(this);
@@ -2239,6 +2372,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				dataType: 'text',
 				url: url,
 				type: 'GET',
+				data: routeData.params || null,
 				success: (function(data) {
 					successFn(data);
 				}).bind(this),
@@ -2779,11 +2913,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('listpane', (function(routeData) {
-
-			if (!this.paneVis.list) {
-				this.setPaneVis('list', true);
-			}
-
 			this.loadRoute(routeData);
 		}).bind(this));
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));
@@ -3332,6 +3461,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (this.openSection.listPage) {
 			this.listPage = this.openSection.listPage;
+		}
+
+		if (!this.paneVis.source) {
+			this.layout.openSourceOverlay();
 		}
 
 		this.updateWindowUrlFragment();
@@ -4373,60 +4506,21 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	setPaneVis: function(id, vis) {
 		this.paneVis[id] = vis;
-		this.layout.doResize(true);
 	},
 
 	setPaneVisNum: function(num) {
-		switch (num) {
-			case 0:
-				this.paneVis.source = true;
-				this.paneVis.list = true;
-				this.paneVis.tabs = true;
-				break;
-
-			case 1:
-				this.paneVis.source = true;
-				this.paneVis.list = true;
-				this.paneVis.tabs = false;
-				break;
-
-			case 2:
-				this.paneVis.source = true;
-				this.paneVis.list = false;
-				this.paneVis.tabs = true;
-				break;
-
-			case 3:
-				this.paneVis.source = false;
-				this.paneVis.list = true;
-				this.paneVis.tabs = false;
-				break;
-
-			case 4:
-				this.paneVis.source = false;
-				this.paneVis.list = false;
-				this.paneVis.tabs = true;
-				break;
-
-			case 5:
-				this.paneVis.source = false;
-				this.paneVis.list = true;
-				this.paneVis.tabs = true;
-				break;
+		for (var k in this.paneVis) {
+			this.paneVis[k] = num & this.paneVisBit[k] ? true : false;
 		}
-
-		this.layout.doResize(true);
 	},
 
 	getPaneVisNum: function() {
-		var source = this.paneVis.source, list = this.paneVis.list, tabs = this.paneVis.tabs;
-
-		if (source && list && tabs)   return 0;
-		if (source && list && !tabs)  return 1;
-		if (source && !list && tabs)  return 2;
-		if (!source && list && !tabs) return 3;
-		if (!source && !list && tabs) return 4;
-		if (!source && list && tabs)  return 5;
-		return 0;
+		var num = 0;
+		for (var k in this.paneVis) {
+			if (this.paneVis[k]) {
+				num += this.paneVisBit[k]
+			}
+		}
+		return num;
 	}
 });

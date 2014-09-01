@@ -221,8 +221,8 @@ class AsseticManager
 		}
 
 		if (strpos($file, '.css') !== false) {
-			$content = str_replace('/sprite-ui-h.png', '/sprite-ui-h.png?_'.time(), $content);
-			$content = str_replace('/sprite-ui-v.png', '/sprite-ui-v.png?_'.time(), $content);
+			$content = str_replace('sprite-ui-h.png', 'sprite-ui-h.png?_'.time(), $content);
+			$content = str_replace('sprite-ui-v.png', 'sprite-ui-v.png?_'.time(), $content);
 		}
 
 		file_put_contents($file,  $content);

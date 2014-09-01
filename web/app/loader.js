@@ -3,7 +3,7 @@ requirejs.config({
 	"waitSeconds": 60,
 	"urlArgs": ((DP_IS_DEBUG && !DP_USE_RJS_BUILD) ? "bust=" + (new Date()).getTime() : "v=" + (DP_BUILD_TIME || "0")),
 	"paths": {
-		"angular":                         "app/bower_components/angular/angular.min",
+		"angular":                         "app/bower_components/angular/angular",
 		"angularRoute":                    "app/bower_components/angular-route/angular-route.min",
 		"angularAnimate":                  "app/bower_components/angular-animate/angular-animate.min",
 		"angularBootstrap":                "app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min",
@@ -44,10 +44,14 @@ requirejs.config({
 		"ColorPicker":                     "vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "vendor/detect_timezone",
 		"intl-tel-input":                  "app/bower_components/intl-tel-input/build/js/intlTelInput.min",
+		"redactor":                        "vendor/redactor/redactor.min",
 
 		"selectize":                       "app/bower_components/selectize/dist/js/selectize",
 		"sifter":                          "app/bower_components/sifter/sifter",
 		"microplugin":                     "app/bower_components/microplugin/src/microplugin",
+
+		"ZeroClipboard":                   "app/bower_components/zeroclipboard/dist/ZeroClipboard",
+		"ngClip":                          "app/bower_components/ng-clip/src/ngClip",
 
 		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/AdminLoad"),
 		"CloudAdminLoad":                  (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/Cloud/CloudAdminLoad"),
@@ -78,6 +82,8 @@ requirejs.config({
 		"angularSlider":                   ["angular"],
 		"angularSelectize":                ["angular"],
 		"angularGrid":                     ["angular"],
+		"ZeroClipboard":                   { "exports": "ZeroClipboard"},
+		"ngClip":                          ["angular", "ZeroClipboard"],
 		"ngFileUpload":                    ["angular"],
 		"jquery":                          { "exports": "jquery" },
 		"jqueryUi":                        ["jquery"],

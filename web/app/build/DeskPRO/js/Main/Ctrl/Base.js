@@ -110,6 +110,7 @@
           this.$scope[this.constructor.CTRL_AS] = this;
         }
         this._managed_listeners = [];
+        this.$scope.Growl = this.Growl;
         this.$scope._autoload_links = [];
         this.$scope.$on('$destroy', (function(_this) {
           return function(ev) {

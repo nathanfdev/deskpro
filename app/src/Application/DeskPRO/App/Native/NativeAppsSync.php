@@ -123,7 +123,7 @@ class NativeAppsSync
 			if ($class) {
 				$this->logger->debug("... running update for app #{$app->id}");
 				$context = new InstallerContext($this->container, $native_app);
-				$obj = new $class();
+				$obj = new $class($package['settings_def']);
 				$obj->updatePackage($context);
 				$this->logger->debug("... done");
 			}

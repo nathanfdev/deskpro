@@ -13,9 +13,6 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
 		['url', 'api_user', 'api_key'].forEach(function(field) {
 			$scope.$watch('setting_values.' + field, function() {
-				if (field == 'url' && $scope.setting_values[field]) {
-					$scope.setting_values[field] = $scope.setting_values[field].replace(/\//g, '');
-				}
 
 				if (touched[field] || touched.always || $scope.errors[field]) {
 					updateFormErrors();

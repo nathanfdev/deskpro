@@ -23,11 +23,13 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		var notifyBox = $('#dp_header_notify_wrap');
 		this.notifyBox = notifyBox;
+		this.notifsBadge = $('#notifs_counts');
+		this.notifBtn = $('#notifs_btn');
 
 		notifyBox.on('click', '.trigger-dismiss', function(ev) {
 			Orb.cancelEvent(ev);
 			self.dismissAll();
-			Orb.shimClickCallbackPop();
+			$('#dp_header_notify_wrap').trigger('dpClose');
 		}).on('click', '.dismiss', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
@@ -43,7 +45,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.removeRow(row);
 
 			if (!ul.find('li')[0]) {
-				Orb.shimClickCallbackPop();
+				$('#dp_header_notify_wrap').trigger('dpClose');
 			}
 		}).on('click', 'li.inside', function(ev) {
 			Orb.cancelEvent(ev);
@@ -67,16 +69,16 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			self.removeRow(row);
 
 			if (!ul.find('li')[0]) {
-				Orb.shimClickCallbackPop();
+				$('#dp_header_notify_wrap').trigger('dpClose');
 			}
 		}).on('click', '.trigger-notify-prefs', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
-			Orb.shimClickCallbackPop();
+			$('#dp_header_notify_wrap').trigger('dpClose');
 			$('#settingswin').trigger('dp_open', 'ticket-notify');
 		}).on('click', '.see_dismissed', function(e) {
 
-			var type = $(this).closest('.type-row').data('notif-type');
+			var type = 'main';
 
 			Orb.cancelEvent(e);
 
@@ -87,6 +89,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			notifyBox.find('.notify-list.for-current').hide();
 			var ul = notifyBox.find('.notify-list.for-dismissed');
 			ul.empty();
+
+			$("#dp_header_notify_wrap").find('footer.for-current').hide();
 
 			notifyBox.find(".no-notifications").hide();
 			notifyBox.find(".notification-progress-on").show();
@@ -105,23 +109,31 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 				}
 			});
 		}).on('click', '.see_current', function(e) {
-			var mainRow = $(this).closest('.type-row');
-			var notifUl = mainRow.find('.notify-list.for-current')
-			notifyBox.find('a.see_dismissed').removeClass('selected');
 			$(this).addClass('selected');
-
-			notifyBox.removeClass('mode-dismissed').addClass('mode-current');
-
-			notifyBox.find(".no-notifications").hide();
-			notifyBox.find('.notify-list.for-dismissed').empty().hide();
-
-			if (!notifUl.find('li')[0]) {
-				notifyBox.find(".no-notifications").not(".notification-progress-on").show();
-				$("#dp_notify_wrap").find('.notify-list.for-current').hide();
-			} else {
-				notifUl.show();
-			}
+			self.resetElements();
 		});
+	},
+
+	resetElements: function() {
+		var wrap = $('#dp_header_notify_wrap');
+
+		var notifUl = wrap.find('.notify-list.for-current')
+		wrap.find('a.see_dismissed').removeClass('selected');
+		wrap.find('a.see_current').addClass('selected');
+
+		wrap.removeClass('mode-dismissed').addClass('mode-current');
+
+		wrap.find(".no-notifications").hide();
+		wrap.find('.notify-list.for-dismissed').empty().hide();
+
+		if (!notifUl.find('li')[0]) {
+			wrap.find(".no-notifications").not(".notification-progress-on").show();
+			$("#dp_notify_wrap").find('.notify-list.for-current').hide();
+			wrap.find('footer.for-current').hide();
+		} else {
+			notifUl.show();
+			wrap.find('footer.for-current').show();
+		}
 	},
 
 	dismissAll: function() {
@@ -164,20 +176,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	getListTypeByType: function(type) {
-		var listType = null;
-		if (type == 'tickets') {
-			listType = 'tickets';
-		} else if (type == 'new_registration') {
-			listType = 'people';
-		} else if (type == 'chat') {
-			listType = 'chat';
-		} else if (type == 'tasks') {
-			listType = 'tasks';
-		} else if (type == 'new_comment' || type == 'new_feedback') {
-			listType = 'publish';
-		}
-
-		return listType;
+		return 'main';
 	},
 
 	addRow: function(html_or_el, alert_id) {
@@ -275,7 +274,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this._isRemoving = true;
 
 		var self = this;
-		var type = row.data('type');
+		var type = 'main';
 		var ev = { row: row, type: type };
 		var any_alert_ids = false;
 		this.fireEvent('removeRow');
@@ -361,41 +360,29 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var listType = this.getListTypeByType(type);
 		if (!listType) return;
 
-		var list = this.notifyBox.find('.type-row.' + type);
-		var el = list.find('.badge').first();
-		var el2 = list.find('.notify-count').first();
-
-		var ev = { notif: this, type: type, op: op, count: count, el: el, el2: el };
+		var ev = { notif: this, type: type, op: op, count: count };
 		this.fireEvent('beforeModCount', ev);
 
-		var newcount = list.find('#dp_notify_list_' + listType).find('li').length;
-		el.text(newcount);
-		el2.text(newcount);
-
-		// <3 because the dismiss button and the help note are li's
-		if (list.find('#dp_notify_list_' + listType).find('li').length) {
-			list.find('#dp_notify_list_none').hide();
-			list.find('#dp_notify_list_dismiss').show();
-		} else {
-			list.find('#dp_notify_list_none').show();
-			list.find('#dp_notify_list_dismiss').hide();
-		}
+		var newcount = $('#dp_notify_list_' + listType).find('li').length;
+		this.notifsBadge.text(newcount).data('count', newcount);
 
 		if (newcount < 1) {
-			el.hide();
-			list.removeClass('dp-notifications-on');
-			list.hide();
-			this.fireEvent('typeHide', [type, el]);
+			this.notifBtn.removeClass('with-activity');
+			$('#dp_notify_list_' + listType).hide();
+			this.notifyBox.find('.no-notifications').show();
 
 			if (!this.notifyBox.find('.dp-notifications-on')[0]) {
 				this.notifyBox.find('li.none').show();
 			}
+
+			$("#dp_header_notify_wrap").find('footer.for-current').hide();
 		} else {
-			el.show();
-			list.show();
-			list.addClass('dp-notifications-on');
-			this.fireEvent('typeShow', [type, el]);
+			this.notifBtn.addClass('with-activity');
+			this.notifyBox.addClass('dp-notifications-on');
+			this.fireEvent('typeShow', [type]);
 			this.notifyBox.find('li.none').hide();
+			this.notifyBox.find('.no-notifications').hide();
+			$('#dp_notify_list_' + listType).show();
 		}
 
 		this.fireEvent('modCount', ev);

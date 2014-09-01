@@ -2221,6 +2221,9 @@ class Strings
 	 */
 	public static function prepareWysiwygHtml($html)
 	{
+		$html = preg_replace('#<p></p>#', '', $html);
+		$html = preg_replace('#<p>\s+</p>#', '<br>', $html);
+		$html = preg_replace('#<br\s*/?></p>#', '</p>', $html);
 		$html = str_replace(array('<p', '</p>'), array('<div', '</div>'), $html);
 		$html = preg_replace('#(<br\s*/?>)\s*</div>#', '</div>', $html);
 		$html = preg_replace('#<div[^>]*>\s*(<br\s*/?>)?\s*</div>\s*#i', "<br />\n", $html);

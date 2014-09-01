@@ -113,7 +113,6 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 	},
 
-
 	/**
 	 * Sets the standard button element, and then you can use this.buttonEl thereafter.
 	 *
@@ -171,6 +170,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 * @param {jQuery} contentEl
 	 */
 	setSectionElement: function(el, contentEl) {
+		var self = this;
 		if (this.sectionEl) {
 			this.sectionEl.remove();
 		}
@@ -178,6 +178,9 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		if (!el) {
 			el = $('<section></section>');
 			el.attr('id', Orb.getUniqueId('outline_'));
+			el.on('dpUpdateUi', function() {
+				self.updateUi();
+			});
 		}
 
 		this.sectionEl = el;

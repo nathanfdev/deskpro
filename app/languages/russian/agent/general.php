@@ -167,7 +167,6 @@
 	'agent.general.date_of_last_agent_reply'                               => 'Дата последнего ответа агента',
 	'agent.general.date_of_last_reply'                                     => 'Дата последнего  ответа',
 	'agent.general.date_of_last_user_reply'                                => 'Дата последнего ответа пользователя',
-	'agent.general.date_opened'                                            => 'Дата открытия',
 	'agent.general.date_published'                                         => 'Дата публикации',
 	'agent.general.date_resolved'                                          => 'Дата решения',
 	'agent.general.dates_and_times'                                        => 'Даты и время',

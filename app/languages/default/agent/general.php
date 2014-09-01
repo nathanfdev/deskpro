@@ -464,6 +464,7 @@
 	'agent.general.num_views'                               => 'Number of Views',
 	'agent.general.number_of_comments'                      => 'Number of comments',
 	'agent.general.number_of_downloads'                     => 'Number of downloads',
+    'agent.general.number_of_tickets'                       => 'Number of tickets',
 	'agent.general.number_of_members'                       => 'Number Of Members',
 	'agent.general.number_of_ratings'                       => 'Number of rating votes',
 	'agent.general.of'                                      => 'of',
@@ -740,4 +741,5 @@
 	'agent.general.your_email_address'                      => 'Your Email Address',
 	'agent.general.your_teams'                              => 'Your Teams',
 	'agent.general.new'                                     => 'New',
+	'agent.general.unassign'                                => 'Unassign',
 );

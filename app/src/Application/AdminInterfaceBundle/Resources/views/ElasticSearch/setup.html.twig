@@ -7,68 +7,52 @@
 		</header>
 		<div class="panel panel-innertable" style="margin-top: 0;">
 			<p>
-				<a href="http://www.elasticsearch.org/" target="_blank">Elastic Search <i class="fa fa-globe"></i></a> is a specialized search server technology.
-				You can configure DeskPRO to use Elastic Search to power searching and filtering to drastically improve performance as well as
-				improve overall search results.
+				<a href="http://www.elasticsearch.org/" target="_blank">Elasticsearch <i class="fa fa-globe"></i></a> is a specialized search server technology.
+			</p>
+			<p>
+				DeskPRO's default search engine uses your database, MySQL, to run queries. Elasticsearch provides a faster and more powerful solution.
+			</p>
+			<p>
+				Some benefits of using Elasticsearch:
+			</p>
+			<ul>
+				<li>More properties are searched including full ticket messages and notes.</li>
+				<li>You can search on phrases, such as "dog and cat".</li>
+				<li>Search results are returned much faster and results are more accurate.</li>
+			</ul>
+			<p>
+				To use this feature, you will first need to <a href="https://support.deskpro.com/kb/articles/263-installing-elasticsearch">configure an ElasticSearch server or use a third-party ElasticSearch service.</a>
 			</p>
 		</div>
 	</section>
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3>Elastic Search</h3>
+			<h3>Elasticsearch</h3>
 		</header>
 		<div class="panel panel-innertable" style="margin-top: 0;">
 			<div class="labels-group">
 				<label>
 					<input type="checkbox" ng-model="settings.enabled" />
-					<h4>Enable Elastic Search</h4>
+					<h4>Enable Elasticsearch</h4>
 				</label>
-			</div>
-			<div class="inner-group ng-hide" ng-show="settings.enabled && settings.requires_reset">
-				<div class="alert alert-danger">
-					<p>
-						<strong>Initialize Index</strong>
-					</p>
-					<p>
-						You need to initialize the search index with records that already exist in the DeskPRO database.
-					</p>
-					<p>
-						From the command-line, execute the this special command from within the DeskPRO root directory:
-					</p>
-<pre>$ cd /path/to/deskpro
-$ php cmd.php dp:elastica:populate</pre>
-					<p>
-						You will only need to run this command once. DeskPRO will automatically keep the index
-						up to date with new changes and new content.
-					</p>
-				</div>
 			</div>
 			<div ng-show="settings.enabled">
 				<div class="inner-group">
 					<label>
-						<h4>Server host:</h4>
+						<h4>Elasticsearch URL:</h4>
 					</label>
-					<input type="text" class="form-control" ng-model="settings.host" />
+					<input type="text" class="form-control" ng-model="settings.url" />
 					<span class="help-block">
-						Enter your Elastic Search server hostname. For example, "localhost".
-					</span>
-				</div>
-				<div class="inner-group">
-					<label>
-						<h4>Port:</h4>
-					</label>
-					<input type="text" class="form-control" ng-model="settings.port" />
-					<span class="help-block">
-						Enter the port to that your Elastic Search server is listening on. By default this is 9200.
+						Enter the URL to your Elasticsearch service. Here are a few examples: http://localhost/, https://search:9200/ or http://user:pass@host:9200/.
 					</span>
 				</div>
 			</div>
 		</div>
-		<footer ng-show="settings.enabled">
+		<footer>
 			<div class="dp-content">
 				<div class="dp-btn-controls">
 					<div dp-hide-spinning="saving">
-						<button class="btn btn-info" ng-click="Settings.testSettingsModal()"><i class="fa fa-bolt"></i> Test Settings</button>
+						<button class="btn btn-info" ng-show="settings.enabled" ng-click="Settings.testSettingsModal()"><i class="fa fa-bolt"></i> Test Settings</button>
 						<button class="btn btn-primary" ng-click="Settings.saveSettings()">Save Settings</button>
 					</div>
 					<div dp-show-spinning="saving">
@@ -78,6 +62,132 @@ $ php cmd.php dp:elastica:populate</pre>
 			</div>
 		</footer>
 	</section>
+
+	<section class="dp-paneblock dp-listpane" ng-show="settings.enabled && was_on">
+		<header>
+			<h3>Index Status</h3>
+		</header>
+		<div class="panel panel-innertable" style="margin-top: 0;">
+
+			{###################################}
+			{# Full indexer running #}
+			{###################################}
+
+			<div ng-show="status.is_indexing">
+				<p>
+					The Elasticsearch index is being initialized. This could take a while depending on the size of your database.
+				</p>
+				<p ng-if="indexer_status.status == 'running'">
+					<strong>Status: Running</strong>
+					<i class="spinner-flat"></i>
+				</p>
+				<p ng-if="indexer_status.status != 'running' && indexer_status.status != 'complete'">
+					<strong>Status: Waiting</strong>
+					&middot; The indexing process will start when the next cron run executes.
+				</p>
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th>&nbsp;</th>
+							<th width="100" style="text-align: center;"><strong>Total</strong></th>
+							<th width="100" style="text-align: center;"><strong>Done</strong></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-class="{'success': indexer_status.deskpro_article_done >= indexer_status.deskpro_article_total}">
+							<td>Articles</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_article_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_article_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_news_done >= indexer_status.deskpro_news_total}">
+							<td>News</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_news_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_news_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_download_done >= indexer_status.deskpro_download_total}">
+							<td>Downloads</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_download_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_download_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_feedback_done >= indexer_status.deskpro_feedback_total}">
+							<td>Feedback</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_feedback_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_feedback_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_organization_done >= indexer_status.deskpro_organization_total}">
+							<td>Organizations</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_person_done >= indexer_status.deskpro_person_total}">
+							<td>People</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_done') }}</td>
+						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_ticket_done >= indexer_status.deskpro_ticket_total}">
+							<td>Tickets</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_ticket_done') }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div ng-show="indexer_log">
+					<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = true" ng-hide="show_log"><i class="fa fa-file-text-o"></i> View full log</button>
+					<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = false" ng-show="show_log"><i class="fa fa-file-text-o"></i> Hide full log</button>
+					<div ng-if="show_log" style="margin-top: 4px;">
+						<textarea ng-model="indexer_log" class="form-control" style="width: 100%; height: 175px; font-family: Monaco, Consolas, monospace; font-size: 11px;"></textarea>
+					</div>
+				</div>
+			</div>
+
+			{###################################}
+			{# Indexer Status #}
+			{###################################}
+
+			<div ng-show="!status.is_indexing">
+				<p>
+					The Elasticsearch index was initialized on: {{ ng_var('indexer_status.date_completed.date') }}.
+					&nbsp;
+					<button class="btn btn-default btn-xs" ng-click="Settings.startReindex()"><i class="fa fa-refresh"></i> Reset the search index</button>
+				</p>
+
+				<br/>
+
+				<div ng-if="info.error" style="background-color: #f2dede; padding: 10px; margin-top: 10px;">
+					<p ng-if="info.error == 'no_status'">
+						Could not connect to Elasticsearch server. Is it down?
+					</p>
+					<p ng-if="info.error == 'no_index'">
+						The Elasticsearch server has no DeskPRO index. You should reset the search index above to initialize the index.
+					</p>
+				</div>
+
+				<table class="table table-bordered" ng-if="info && !info.error">
+					<tr>
+						<td width="200">Index Size:</td>
+						<td>{{ ng_var('info.size_readable') }}</td>
+					</tr>
+					<tr>
+						<td>Indexed Documents:</td>
+						<td>{{ ng_var('info.num_docs') }}</td>
+					</tr>
+					<tr ng-if="indexer_log">
+						<td>Log</td>
+						<td>
+							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = true" ng-hide="show_log"><i class="fa fa-file-text-o"></i> View full log of initial indexing process</button>
+							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = false" ng-show="show_log"><i class="fa fa-file-text-o"></i> Hide full log</button>
+							<div ng-if="show_log" style="margin-top: 4px;">
+								<textarea ng-model="indexer_log" class="form-control" style="width: 100%; height: 175px; font-family: Monaco, Consolas, monospace; font-size: 11px;"></textarea>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</section>
+	<div style="font-size: 11px; font-style: italic; padding: 4px; background-color: #fff; margin: 10px; border: 1px solid #d0d9e6; border-radius: 2px;">
+		The Elasticsearch Engine is an optional technology. It's currently provided without charge but may require a license in the future.
+	</div>
 </div>
 <div dp-register-message="saved_settings">Settings saved successfully.</div>
 {{ ng_tpl('AdminInterfaceBundle:ElasticSearch:test-settings-modal.html.twig') }}

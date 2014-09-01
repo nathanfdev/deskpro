@@ -445,7 +445,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'urgency1';
+        options.propName = 'urgency';
         options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte'];
         def = this.getStandardInput(options);
         return def;

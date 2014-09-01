@@ -273,7 +273,7 @@ class Person extends AbstractEntityRepository
 			$person = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:Person p
-				LEFT JOIN p.emails e
+				JOIN p.emails e
 				WHERE e.email = ?1
 				ORDER BY p.id ASC
 			")->setLockMode(LockMode::PESSIMISTIC_WRITE)->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
@@ -281,7 +281,7 @@ class Person extends AbstractEntityRepository
 			$person = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:Person p
-				LEFT JOIN p.emails e
+				JOIN p.emails e
 				WHERE e.email = ?1
 				ORDER BY p.id ASC
 			")->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
@@ -290,6 +290,15 @@ class Person extends AbstractEntityRepository
 		return $person;
 	}
 
+	public function findByEmails(array $emails)
+	{
+		if (!$emails) return array();
+
+		return $this->getEntityManager()->createQuery('
+			SELECT p FROM DeskPRO:Person p
+			JOIN p.emails e WITH e.email IN (:emails)
+		')->setParameter('emails', $emails)->getResult();
+	}
 
 	public function searchByEmailStartingWith($email, $limit = null)
 	{
@@ -383,7 +392,7 @@ class Person extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT p
 			FROM DeskPRO:Person p INDEX BY p.id
-			WHERE p.organization = ?1
+			WHERE p.organization = ?1 AND p.is_deleted = false
 			ORDER BY p.organization_manager DESC, p.last_name ASC, p.first_name ASC
 		")->setFirstResult(($page - 1)*$limit)->setMaxResults($limit)->execute(array(1=> $org));
 	}

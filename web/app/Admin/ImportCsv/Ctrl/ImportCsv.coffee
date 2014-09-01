@@ -27,6 +27,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			for key in @showExtraMappingsCases
 				@$scope.importSettings.showExtraMappings[key] = []
 
+			@$scope.$on 'dp-status-update', (e, data) =>
+				@$scope.log = data.log
+
 			@setupUploadListeners()
 
 			return

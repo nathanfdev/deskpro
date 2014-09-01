@@ -508,6 +508,10 @@ class DpKernel extends AbstractKernel
 			$write = implode("\n", $write);
 			file_put_contents($this->getLogDir() . '/template_use.log', $write, \FILE_APPEND);
 		}
+
+		if (defined('DP_INTERFACE') && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'admin' || DP_INTERFACE == 'reports')) {
+			$response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+		}
 	}
 
 
@@ -572,7 +576,7 @@ class DpKernel extends AbstractKernel
 		}
 
 		// Offline setting applies to all but admin
-		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin') {
+		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE == 'user') {
 			return true;
 		}
 

@@ -254,7 +254,9 @@ class PortalEditorController extends AbstractController
 		$twitter = $this->em->getRepository('DeskPRO:PortalPageDisplay')->findOneByType('twitter');
 		if ($twitter) {
 			if (!\Application\DeskPRO\Service\Twitter::getUserConsumerKey()) {
-				return $this->redirectRoute('admin_twitter_apps');
+				throw $this->createNotFoundException();
+				//TWITTER TODO: this can be re-enabled
+				//return $this->redirectRoute('admin_twitter_apps');
 			}
 
 			$api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi();

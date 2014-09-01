@@ -50,6 +50,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 			case 'test-settings':
 				return $this->testSettingsAction($context);
 				break;
+			case 'check-requirements':
+				return $this->checkRequirementsAction($context);
 			default:
 				throw $context->createNotFoundException();
 		}
@@ -76,5 +78,14 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 		);
 
 		return $context->createJsonResponse($result_data);
+	}
+
+	/**
+	 * @param ApiPackageRequestContext $context
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function checkRequirementsAction(ApiPackageRequestContext $context)
+	{
+		return $context->createJsonResponse(array('ldap_support' => function_exists('ldap_connect')));
 	}
 }

@@ -445,6 +445,7 @@ class KernelErrorHandler
 			}
 
 			@fclose($fh);
+			@chmod(dp_get_log_dir() . '/error.log', 0777);
 		}
 
 		$throttle_id = 'email_error';

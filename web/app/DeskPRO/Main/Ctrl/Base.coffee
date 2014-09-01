@@ -82,6 +82,7 @@ define ['angular'], (angular) ->
 				@$scope[@constructor.CTRL_AS] = @
 
 			@_managed_listeners = []
+			@$scope.Growl = @Growl
 			@$scope._autoload_links = []
 			@$scope.$on('$destroy', (ev) =>
 				return

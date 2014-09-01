@@ -1586,7 +1586,11 @@ class TicketController extends AbstractController
 		$old_message = $message->message;
 		$old_full_message = $message->message_full;
 
-		$new_message = $this->in->getHtmlCore('message_html');
+		// Have to get raw text then proc emebedded images, BFORE using HTML cleaner,
+		// because the processor uses special classnames which will be stripped using the html_core cleaner
+		$new_message = $this->in->getStringRaw('message_html');
+		$new_message = $message->convertEmbeddedImagesToInlineAttachInText($new_message);
+		$new_message = $this->cleaner->clean($new_message, 'html_core');
 		$new_message = Strings::trimHtml($new_message);
 		$new_message = Strings::prepareWysiwygHtml($new_message);
 		$message->setMessageHtml($new_message);
@@ -2793,13 +2797,22 @@ class TicketController extends AbstractController
 		$split = new TicketSplit($ticket);
 		$split->setPersonContext($this->person);
 
+		$this->em->beginTransaction();
 		try {
-			$this->em->beginTransaction();
 			$new_ticket = $split->split($subject, $message_ids);
 			$this->em->commit();
+		} catch (\InvalidArgumentException $e) {
+			if ($e->getCode() == 100) {
+				$code = 'no_messages';
+			} else {
+				$code = 'all_messages';
+			}
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => $code
+			));
 		} catch (\Exception $e) {
 			$this->em->rollback();
-
 			throw $e;
 		}
 

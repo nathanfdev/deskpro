@@ -51,9 +51,19 @@ define [
 			})
 
 			options.push({
+				title: 'Urgency',
+				value: 'FilterUrgency'
+			})
+
+			options.push({
 				title: 'Workflow',
 				value: 'FilterWorkflow'
-			})
+			}
+
+			options.push({
+				title: 'Labels',
+				value: 'FilterLabels'
+			}))
 
 			options.push({
 				title: 'Email Account',
@@ -328,6 +338,14 @@ define [
 			def = @getStandardSelect(options)
 			return def
 
+		getFilterLabels: (options = {}) ->
+			options.propName = 'labels'
+			options.type_title = 'Labels'
+			options.tags = true
+			options.operators = ['contains', 'notcontains']
+			def = @getStandardInput(options)
+			return def
+
 		getFilterPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
@@ -335,6 +353,12 @@ define [
 				{title: 'None', value: 0}
 			]
 			def = @getStandardSelect(options)
+			return def
+
+		getCheckUrgency: (options = {}) ->
+			options.propName = 'urgency'
+			options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+			def = @getStandardInput(options)
 			return def
 
 		getFilterCategory: (options = {}) ->

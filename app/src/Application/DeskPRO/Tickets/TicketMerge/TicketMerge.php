@@ -231,6 +231,8 @@ class TicketMerge implements PersonContextInterface
 			}
 		}
 
+		$merge_change->setLostData($this->data_lost);
+
 		// If they're different users, then add the old person as a participant on the ticket
 		if ($ticket_person->getId() != $other_ticket_person->getId()) {
 			$part = $this->ticket->addParticipantPerson($other_ticket_person);

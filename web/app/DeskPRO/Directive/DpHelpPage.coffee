@@ -63,7 +63,7 @@ define ->
 					toggle()
 				)
 
-				element.on('click', (ev) ->
+				element.find('.dp-help-content-outer').on('click', (ev) ->
 					ev.stopPropagation();
 					open()
 				)

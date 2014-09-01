@@ -1592,7 +1592,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function ngHref($route, $params = '{}')
 	{
-		return '{{ state_path(\'' . addslashes($route) . '\', ' . $params . ') }}';
+		return '{{ state_path(\'' . addslashes($route) . '\', ' . str_replace(array("'", '"'), array('&apos;', '&quot;'), $params) . ') }}';
 	}
 
 	public function smartWrap($string, $len = 50, $break = null)
@@ -1654,7 +1654,7 @@ class TemplatingExtension extends \Twig_Extension
 			$sid .= 'unknown';
 		}
 
-		$version = defined(DP_BUILD_TIME) ? DP_BUILD_TIME : '0';
+		$version = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0';
 
 		/** @var \Application\DeskPRO\Templating\Asset\UrlPackage $helper */
 		$helper = $this->getContainer()->get('templating.helper.assets');
@@ -1663,8 +1663,8 @@ class TemplatingExtension extends \Twig_Extension
 
 		$html = <<<HTML
 <script type="text/javascript">
+window.onerror = function() {};
 window.onerror = null;
-delete window.onerror;
 window._trackJs = {
 	sessionId: '$sid',
 	token: '4eebe4aa1bc2404e89fc4250152d18a0',

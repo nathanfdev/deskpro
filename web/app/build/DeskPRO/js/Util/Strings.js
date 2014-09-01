@@ -37,6 +37,20 @@
         "/": '&#x2F;'
       };
 
+      DeskPRO_Util_Strings.TPL_MATCHER = /<%-([\s\S]+?)%>|<%=([\s\S]+?)%>|<%([\s\S]+?)%>|$/g;
+
+      DeskPRO_Util_Strings.TPL_ESCAPES = {
+        "'": "'",
+        '\\': '\\',
+        '\r': 'r',
+        '\n': 'n',
+        '\t': 't',
+        '\u2028': 'u2028',
+        '\u2029': 'u2029'
+      };
+
+      DeskPRO_Util_Strings.TPL_ESCAPER = /\\|'|\r|\n|\t|\u2028|\u2029/g;
+
 
       /*
         	 * Generates a random string.
@@ -164,7 +178,7 @@
        */
 
       DeskPRO_Util_Strings.prototype.escapeHtml = function(htmlString) {
-        return htmlString.replace(/[&<>"'\/]/g, function(s) {
+        return (htmlString + '').replace(/[&<>"'\/]/g, function(s) {
           return DeskPRO_Util_Strings.ENTITY_MAP[s];
         });
       };
@@ -332,6 +346,97 @@
         } else {
           return res;
         }
+      };
+
+
+      /*
+        	 * Simple JS templates.
+        	 *
+        	 * This is based on Underscore.template: http://underscorejs.org/#template
+        	 *
+        	 * Except there are added features that make it more lenient to errors.
+        	 * - Prefix an escape or interpolation string with '@' to wrap it in a try/catch:
+        	 *     <%- @possibleFailure() %>
+        	 *
+        	 * - If you are outputting simple variables, they are automatically wrapped with undefined checks
+        	 *     <%- this.doesnt.exist %>
+        	 *   The above wont result in an error, just an empty string. Pass settings.disableSafeVar to disable this.
+        	 *
+        	 * @param {String} text The template text
+        	 * @param {Object} settings
+        	 * @return Function
+       */
+
+      DeskPRO_Util_Strings.prototype.simpleTemplate = function(text, settings) {
+        var STRINGS, e, fn, index, render, resolveVar, source;
+        if (settings == null) {
+          settings = {};
+        }
+        STRINGS = this;
+        index = 0;
+        source = "var __t, __p = '', __j=Array.prototype.join, __escape=Strings.escapeHtml, ";
+        source += "print=function(){__p+=__j.call(arguments,'');};\n";
+        source += "with(obj||{}){\n";
+        source += "__p+='";
+        resolveVar = function(varname) {
+          var m, names, p, parts, testparts, _i, _len;
+          if (settings.disableSafeVar) {
+            return varname;
+          }
+          m = varname.match(/^\s*([a-zA-Z0-9\_\\$\\.]+)\s*$/);
+          if (!m) {
+            return varname;
+          }
+          testparts = [];
+          names = [];
+          parts = m[1].split('.');
+          for (_i = 0, _len = parts.length; _i < _len; _i++) {
+            p = parts[_i];
+            names.push(p);
+            testparts.push("typeof " + names.join('.') + " !== 'undefined' && " + names.join('.') + " !== null");
+          }
+          return "((" + testparts.join(' && ') + ") ? " + varname + " : '')";
+        };
+        text.replace(DeskPRO_Util_Strings.TPL_MATCHER, function(match, escape, interpolate, evaluate, offset) {
+          source += text.slice(index, offset).replace(DeskPRO_Util_Strings.TPL_ESCAPER, function(m) {
+            return '\\' + DeskPRO_Util_Strings.TPL_ESCAPES[m];
+          });
+          if (escape) {
+            escape = STRINGS.trim(escape);
+            if (escape[0] === '@') {
+              source += "';\ntry { __p+= ((__t=(" + escape.substring(1) + "))==null?'':__escape(__t)); } catch (e) {}\n__p+='";
+            } else {
+              source += "'+\n((__t=(" + resolveVar(escape) + "))==null?'':__escape(__t))+\n'";
+            }
+          }
+          if (interpolate) {
+            interpolate = STRINGS.trim(interpolate);
+            if (interpolate[0] === '@') {
+              source += "';\ntry { __p+= ((__t=(" + interpolate.substring(1) + "))==null?'':__t+''); } catch (e) {}\n__p+='";
+            } else {
+              source += "'+\n((__t=(" + resolveVar(interpolate) + "))==null?'':__t+'')+\n'";
+            }
+          }
+          if (evaluate) {
+            source += "';\n" + evaluate + "\n__p+='";
+          }
+          index = offset + match.length;
+          return match;
+        });
+        source += "';\n}\nreturn __p;\n";
+        try {
+          render = new Function('obj', 'Strings', source);
+        } catch (_error) {
+          e = _error;
+          console.log("Error compiling source: " + source);
+          e.source = source;
+          throw e;
+        }
+        fn = function(data) {
+          return render.call(this, data, window.STRINGS);
+        };
+        fn.source = source;
+        return fn;
       };
 
       return DeskPRO_Util_Strings;

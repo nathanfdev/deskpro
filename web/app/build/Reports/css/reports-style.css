@@ -8399,6 +8399,23 @@ div.info-message.well {
   border-bottom: 1px solid transparent;
 }
 
+.dp-appstrip ul li.dotdotdot {
+  line-height: 100%;
+}
+
+.dp-appstrip ul li.dotdotdot span {
+  display: block;
+  padding: 2px 0;
+  margin: 0 6px 0 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #eee;
+  text-align: center;
+  cursor: pointer;
+  background: #3c4146;
+  border-radius: 2px;
+}
+
 .dp-appstrip ul li a {
   display: block;
   width: 55px;
@@ -8836,6 +8853,34 @@ div.info-message.well {
   }
 }
 
+.dp-appstrip ul.btm.mini {
+  display: none;
+}
+
+.dp-appstrip ul.btm.mini-rest {
+  width: 43px;
+  margin: 0 6px 0 6px;
+  background: #3c4146;
+  border-radius: 2px;
+}
+
+.dp-appstrip ul.btm.mini-rest li a {
+  width: 43px;
+}
+
+.dp-appstrip ul.btm.mini-rest li i.app-icon {
+  width: 43px;
+}
+
+@media all and (max-height: 790px) {
+  .dp-appstrip ul.btm.mini {
+    display: block;
+  }
+  .dp-appstrip ul.btm.normal {
+    display: none;
+  }
+}
+
 .agent-interface-hover .app-icon.app-icon-admin-ifce,
 .reports-interface-hover .app-icon.app-icon-admin-ifce,
 .lic-interface-hover .app-icon.app-icon-admin-ifce {
@@ -9234,6 +9279,7 @@ div.dp-appalt-section > section header h3 {
 
 .dp-paneblock {
   margin: 10px;
+  overflow: auto;
   background: #fff;
   border: 1px solid #d0d9e6;
   border-radius: 2px;
@@ -9738,6 +9784,7 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 .dp-item-list {
   padding: 0;
   margin: 0;
+  overflow: auto;
 }
 
 .dp-item-list > li {
@@ -9848,6 +9895,24 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
 
 .dp-item-list a:hover h4 > .title-text {
   text-decoration: underline;
+}
+
+.dp-item-list h4:hover .title-copy,
+.dp-item-list a:hover .title-copy,
+.dp-item-list .title-copy.zeroclipboard-is-hover,
+.dp-item-list .title-copy.zeroclipboard-is-hover {
+  visibility: visible;
+}
+
+.dp-item-list .title-copy {
+  padding: 1px;
+  font-size: 15px;
+  line-height: 100%;
+  color: #853f24;
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 2px;
+  visibility: hidden;
 }
 
 .dp-item-list .drag-handle {
@@ -10127,6 +10192,32 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   margin-left: -10px;
   font-size: 10px;
   color: #999;
+}
+
+.dp-settings-ctrl {
+  display: inline-block;
+}
+
+.dp-settings-ctrl a {
+  cursor: pointer;
+}
+
+.dp-settings-ctrl a.title {
+  display: block;
+  padding: 0;
+  margin: 11px 13px 0 0;
+  color: #aaa;
+  text-decoration: none;
+}
+
+.dp-settings-ctrl a.title i.fa {
+  position: relative;
+  top: 1px;
+  font-size: 13px;
+}
+
+.dp-settings-ctrl a.title:hover {
+  color: #444;
 }
 
 .panel {
@@ -11300,6 +11391,10 @@ button.toast-close-button {
   overflow: hidden;
   border: 1px solid #ccc;
   border-radius: 2px;
+}
+
+.editor {
+  font-size: 11px;
 }
 
 .ace-tm .ace_print-margin {

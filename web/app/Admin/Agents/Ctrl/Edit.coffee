@@ -20,7 +20,13 @@ define [
 			@hasPermOverrides = false
 			@hasDepOverrides = false
 			@primary_phone_number_region = 'US'
-			@dep_perms = {}
+			@service =
+				agents: @DataService.get 'Agents'
+			@all_perms =
+				perms: {}
+				deps_perms:
+					tickets: {assign: true, full: true}
+					chat: {full: true}
 
 			@$scope.$watch('EditCtrl.form.emails_list', (emails_list) =>
 				@email_sysaccount_error = false
@@ -59,9 +65,7 @@ define [
 			promise.then( (result) =>
 				if @agentId
 					@agent = result.data.agent.agent
-					@agent.signature_html = result.data.agent.signature_html
 					@perm_form = result.data.agent.perms
-					@primary_phone_number_region = result.data.default_country.value
 				else
 					@agent = {
 						id: 0,
@@ -86,12 +90,12 @@ define [
 
 				@agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
 				@form = @agentFormModel.form
+				console.info @form
 
 				@$scope.$watch('EditCtrl.form.agent_groups', =>
 					@updateEffectiveUgPerms()
+					@updateAllPermsState()
 				, true)
-
-				@updateHasPermOverridesStatus()
 
 				#--------------------
 				# Departments
@@ -121,8 +125,57 @@ define [
 							full = true
 
 					@deps_perms.chat[dep.id] = { full: full }
+
+				@updateHasPermOverridesStatus()
 			)
 			return promise
+
+
+
+		changeAllPerms: (type, section) ->
+			return if !@perm_form? || !@deps_perms?
+
+			if 'perms' == type
+				for perm of @perm_form[section]
+					if not @ugEffectivePerms[section]?[perm]? or not @ugEffectivePerms[section][perm]
+						@perm_form[section][perm] = @all_perms[type][section]
+
+				if 'people' == section
+					@changeAllPerms('perms', 'org')
+
+			else if 'deps_perms_tickets' == type
+				for dep of @deps_perms.tickets
+					if !@ugEffectiveDepPerms.tickets[dep]?[section]? || !@ugEffectiveDepPerms.tickets[dep][section]
+						@deps_perms.tickets[dep][section] = @all_perms.deps_perms.tickets[section]
+
+			else if 'deps_perms_chat' == type
+				for dep of @deps_perms.chat
+					if !@ugEffectiveDepPerms.chat[dep]?[section]? || !@ugEffectiveDepPerms.chat[dep][section]
+						@deps_perms.chat[dep][section] = @all_perms.deps_perms.chat[section]
+
+			@updateHasPermOverridesStatus()
+
+
+
+		updateAllPermsState: ->
+			return if !@perm_form?
+
+			for section, perms of @perm_form
+				enabled = true
+				for perm of perms
+					if !perms[perm] && !@ugEffectivePerms[section]?[perm]
+						enabled = false
+						break
+				@all_perms.perms[section] = enabled
+
+			for type, sections of @all_perms.deps_perms
+				for section of sections
+					enabled = true
+					for dep of @deps_perms[type]
+						if !@deps_perms[type][dep][section] && !@ugEffectiveDepPerms[type][dep][section]
+							enabled = false
+					@all_perms.deps_perms[type][section] = enabled
+
 
 
 		###
@@ -188,7 +241,7 @@ define [
     	# it can become too slow to watch the large graph of permissions.
 		###
 		updateHasPermOverridesStatus: ->
-			@updateEffectiveUgPerms()
+			return if !@ugEffectivePerms? || !@ugEffectiveDepPerms?
 
 			@hasPermOverrides = false
 			run = =>
@@ -211,6 +264,8 @@ define [
 									@hasDepOverrides = true
 									return
 			run()
+
+			@updateAllPermsState()
 
 
 		###
@@ -427,7 +482,9 @@ define [
 
 				p = @Api.sendDelete(target)
 				p.then(=>
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.removeAgentFromList(@agentId)
+					# todo
+					@service.agents.get(@agentId).then (agent) =>
+						@service.agents._removeModel agent
 					@$state.go('agents.agents')
 				)
 
@@ -516,13 +573,12 @@ define [
 				promise = @Api.sendPutJson("/agents", postData)
 
 			promise.then( (res) =>
+				# todo
+				@service.agents._addModel res.data.agent
 				@agent.display_name = @form.name
 
-				if @agentId
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.updateAgent(@agent)
-				else
+				if !@agentId
 					@$state.go('agents.agents.edit', {id: res.data.person_id})
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.addAgent(res.data.person_id, @agent.display_name)
 
 				@stopSpinner('saving')
 			, (res) =>

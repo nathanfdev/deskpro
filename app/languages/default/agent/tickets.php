@@ -139,6 +139,7 @@
 	'agent.tickets.hidden_status_deleted'               => 'Deleted',
 	'agent.tickets.hidden_status_spam'                  => 'Spam',
 	'agent.tickets.hidden_status_validating'            => 'Validating',
+	'agent.tickets.hidden_status_temp'                  => 'Temporary',
 	'agent.tickets.hidden_tickets'                      => 'Hidden Tickets',
 	'agent.tickets.hold_btn'                            => 'Put ticket on hold',
 	'agent.tickets.html_body'                           => 'HTML Body',
@@ -389,4 +390,5 @@
 	'agent.tickets.your_tickets'                        => 'Your tickets',
 	'agent.tickets.create_linked_ticket'                => 'Create Linked Ticket',
 	'agent.tickets.linked_tickets'                      => 'Linked Tickets',
+	'agent.tickets.linking_with_ticket'                 => 'Linking with ticket:',
 );

@@ -30,7 +30,21 @@
         this.hasPermOverrides = false;
         this.hasDepOverrides = false;
         this.primary_phone_number_region = 'US';
-        this.dep_perms = {};
+        this.service = {
+          agents: this.DataService.get('Agents')
+        };
+        this.all_perms = {
+          perms: {},
+          deps_perms: {
+            tickets: {
+              assign: true,
+              full: true
+            },
+            chat: {
+              full: true
+            }
+          }
+        };
         this.$scope.$watch('EditCtrl.form.emails_list', (function(_this) {
           return function(emails_list) {
             _this.email_sysaccount_error = false;
@@ -74,12 +88,10 @@
         }
         promise.then((function(_this) {
           return function(result) {
-            var assign, dep, full, u, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _results;
+            var assign, dep, full, u, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3;
             if (_this.agentId) {
               _this.agent = result.data.agent.agent;
-              _this.agent.signature_html = result.data.agent.signature_html;
               _this.perm_form = result.data.agent.perms;
-              _this.primary_phone_number_region = result.data.default_country.value;
             } else {
               _this.agent = {
                 id: 0,
@@ -100,10 +112,11 @@
             _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;
             _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams, _this.primary_phone_number_region);
             _this.form = _this.agentFormModel.form;
+            console.info(_this.form);
             _this.$scope.$watch('EditCtrl.form.agent_groups', function() {
-              return _this.updateEffectiveUgPerms();
+              _this.updateEffectiveUgPerms();
+              return _this.updateAllPermsState();
             }, true);
-            _this.updateHasPermOverridesStatus();
             _this.deps_perms = {
               tickets: {},
               chat: {}
@@ -131,7 +144,6 @@
               };
             }
             _ref2 = _this.chatDeps;
-            _results = [];
             for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
               dep = _ref2[_j];
               full = false;
@@ -143,14 +155,83 @@
                   full = true;
                 }
               }
-              _results.push(_this.deps_perms.chat[dep.id] = {
+              _this.deps_perms.chat[dep.id] = {
                 full: full
-              });
+              };
             }
-            return _results;
+            return _this.updateHasPermOverridesStatus();
           };
         })(this));
         return promise;
+      };
+
+      Admin_Agents_Ctrl_Edit.prototype.changeAllPerms = function(type, section) {
+        var dep, perm, _ref, _ref1, _ref2;
+        if ((this.perm_form == null) || (this.deps_perms == null)) {
+          return;
+        }
+        if ('perms' === type) {
+          for (perm in this.perm_form[section]) {
+            if ((((_ref = this.ugEffectivePerms[section]) != null ? _ref[perm] : void 0) == null) || !this.ugEffectivePerms[section][perm]) {
+              this.perm_form[section][perm] = this.all_perms[type][section];
+            }
+          }
+          if ('people' === section) {
+            this.changeAllPerms('perms', 'org');
+          }
+        } else if ('deps_perms_tickets' === type) {
+          for (dep in this.deps_perms.tickets) {
+            if ((((_ref1 = this.ugEffectiveDepPerms.tickets[dep]) != null ? _ref1[section] : void 0) == null) || !this.ugEffectiveDepPerms.tickets[dep][section]) {
+              this.deps_perms.tickets[dep][section] = this.all_perms.deps_perms.tickets[section];
+            }
+          }
+        } else if ('deps_perms_chat' === type) {
+          for (dep in this.deps_perms.chat) {
+            if ((((_ref2 = this.ugEffectiveDepPerms.chat[dep]) != null ? _ref2[section] : void 0) == null) || !this.ugEffectiveDepPerms.chat[dep][section]) {
+              this.deps_perms.chat[dep][section] = this.all_perms.deps_perms.chat[section];
+            }
+          }
+        }
+        return this.updateHasPermOverridesStatus();
+      };
+
+      Admin_Agents_Ctrl_Edit.prototype.updateAllPermsState = function() {
+        var dep, enabled, perm, perms, section, sections, type, _ref, _ref1, _ref2, _results;
+        if (this.perm_form == null) {
+          return;
+        }
+        _ref = this.perm_form;
+        for (section in _ref) {
+          perms = _ref[section];
+          enabled = true;
+          for (perm in perms) {
+            if (!perms[perm] && !((_ref1 = this.ugEffectivePerms[section]) != null ? _ref1[perm] : void 0)) {
+              enabled = false;
+              break;
+            }
+          }
+          this.all_perms.perms[section] = enabled;
+        }
+        _ref2 = this.all_perms.deps_perms;
+        _results = [];
+        for (type in _ref2) {
+          sections = _ref2[type];
+          _results.push((function() {
+            var _results1;
+            _results1 = [];
+            for (section in sections) {
+              enabled = true;
+              for (dep in this.deps_perms[type]) {
+                if (!this.deps_perms[type][dep][section] && !this.ugEffectiveDepPerms[type][dep][section]) {
+                  enabled = false;
+                }
+              }
+              _results1.push(this.all_perms.deps_perms[type][section] = enabled);
+            }
+            return _results1;
+          }).call(this));
+        }
+        return _results;
       };
 
 
@@ -271,7 +352,9 @@
 
       Admin_Agents_Ctrl_Edit.prototype.updateHasPermOverridesStatus = function() {
         var run;
-        this.updateEffectiveUgPerms();
+        if ((this.ugEffectivePerms == null) || (this.ugEffectiveDepPerms == null)) {
+          return;
+        }
         this.hasPermOverrides = false;
         run = (function(_this) {
           return function() {
@@ -322,7 +405,8 @@
             }
           };
         })(this);
-        return run();
+        run();
+        return this.updateAllPermsState();
       };
 
 
@@ -643,9 +727,9 @@
             }
             p = _this.Api.sendDelete(target);
             p.then(function() {
-              if (_this.$scope.$parent.ListCtrl != null) {
-                _this.$scope.$parent.ListCtrl.removeAgentFromList(_this.agentId);
-              }
+              _this.service.agents.get(_this.agentId).then(function(agent) {
+                return _this.service.agents._removeModel(agent);
+              });
               return _this.$state.go('agents.agents');
             });
             return p;
@@ -752,18 +836,12 @@
         }
         promise.then((function(_this) {
           return function(res) {
+            _this.service.agents._addModel(res.data.agent);
             _this.agent.display_name = _this.form.name;
-            if (_this.agentId) {
-              if (_this.$scope.$parent.ListCtrl != null) {
-                _this.$scope.$parent.ListCtrl.updateAgent(_this.agent);
-              }
-            } else {
+            if (!_this.agentId) {
               _this.$state.go('agents.agents.edit', {
                 id: res.data.person_id
               });
-              if (_this.$scope.$parent.ListCtrl != null) {
-                _this.$scope.$parent.ListCtrl.addAgent(res.data.person_id, _this.agent.display_name);
-              }
             }
             return _this.stopSpinner('saving');
           };

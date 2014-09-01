@@ -265,14 +265,14 @@ class TriggerActionConverter
 	{
 		return new Actions\SendAgentEmail(array(
 			'agent_ids' => $options->get('agents', array()),
-			'template' => $options->get('template_name')
+			'template' => $this->getNewTemplateName($options->get('template_name'))
 		));
 	}
 
 	private function upgradeAction_send_autoclose_warn_email($type, OptionsArray $options)
 	{
 		return new Actions\SendUserEmail(array(
-			'template' => 'DeskPRO:emails_user:ticket-autoclose-warn.html.twig',
+			'template' => $this->getNewTemplateName('DeskPRO:emails_user:ticket-autoclose-warn.html.twig'),
 		));
 	}
 
@@ -292,7 +292,7 @@ class TriggerActionConverter
 	private function upgradeAction_send_user_email($type, OptionsArray $options)
 	{
 		return new Actions\SendUserEmail(array(
-			'template' => $options->get('template_name')
+			'template' => $this->getNewTemplateName($options->get('template_name'))
 		));
 	}
 
@@ -435,5 +435,21 @@ class TriggerActionConverter
 	private function upgradeAction_workflow($type, OptionsArray $options)
 	{
 		return new Actions\SetWorkflow(array('workflow_id' => $options->get('workflow')));
+	}
+
+	private function getNewTemplateName($name)
+	{
+		static $map = array(
+			'DeskPRO:emails_user:new-reply-agent.html.twig' => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
+			'DeskPRO:emails_user:new-reply-user.html.twig'  => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+			'DeskPRO:emails_user:new-ticket.html.twig'      => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+		);
+
+		if (isset($map[$name])) {
+			return $map[$name];
+		}
+
+		$new_name = preg_replace('#^DeskPRO:emails_(user|agent):custom_(.*?)\.html\.twig$#', 'DeskPRO:emails_custom:$1_$2.html.twig', $name);
+		return $new_name;
 	}
 }

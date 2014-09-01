@@ -35,9 +35,11 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\PeopleResults;
+use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\PeopleResultsDisplay;
 use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -162,7 +164,7 @@ class PeopleSearchController extends AbstractController
 	protected function _getResponseForPeople($type, $type_id, PeopleResults $results_helper, array $vars = array())
 	{
 		$view_type = $this->in->getString('view_type');
-		if (!$view_type OR !in_array($view_type, array('list', 'simple'))) {
+		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'json'))) {
 			$view_type = 'simple';
 		}
 
@@ -198,8 +200,6 @@ class PeopleSearchController extends AbstractController
 		$user_field_manager = $this->container->getSystemService('person_fields_manager');
 		$person_field_defs = $user_field_manager->getFields();
 
-		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
-
 		$alphabet = $this->getAlphabet();
 		$letters = array();
 
@@ -218,26 +218,34 @@ class PeopleSearchController extends AbstractController
 			);
 		}
 
+		$person_display = new PeopleResultsDisplay($people);
+		$renderer = new PeopleListRenderer($this->container);
+
 		$vars = array_merge($vars, array(
 			'type'                    => $type,
 			'type_id'                 => $type_id,
 			'people'                  => $people,
+			'people_json'             => $renderer->renderJson($person_display),
 			'page'                    => $page,
-			'person_field_defs'       => $person_field_defs,
+			'per_page'                => $results_helper->getPerPageCount(),
 			'load_first'              => $this->in->getBool('load_first'),
-			'result_display'          => $result_display,
 			'alphabet'                => $letters
 		));
 
-		$html = $this->renderView($tpl, $vars);
 
-		if ($is_partial) {
-			return $this->createJsonResponse(array(
-				'html'              => $html,
-				'page'              => $page,
-			));
+		if ('json' === $view_type) {
+			return $this->createJsonpResponse($vars);
 		} else {
-			return $this->createResponse($html);
+			$html = $this->renderView($tpl, $vars);
+
+			if ($is_partial) {
+				return $this->createJsonResponse(array(
+					'html'              => $html,
+					'page'              => $page,
+				));
+			} else {
+				return $this->createResponse($html);
+			}
 		}
 	}
 
@@ -261,9 +269,14 @@ class PeopleSearchController extends AbstractController
 		$user_field_manager = $this->container->getSystemService('person_fields_manager');
 		$person_field_defs = $user_field_manager->getFields();
 
+		$view_type = $this->in->getString('view_type');
 		$tpl = 'list-page.html.twig';
-		if ($this->in->getString('view_type') == 'list') {
+		if ('list' === $view_type) {
 			$tpl = 'list-list-page.html.twig';
+		} elseif ('json' === $view_type) {
+			$person_display = new PeopleResultsDisplay($people);
+			$renderer = new PeopleListRenderer($this->container);
+			return $this->createJsonResponse($renderer->renderArray($person_display));
 		}
 
 		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
@@ -318,6 +331,7 @@ class PeopleSearchController extends AbstractController
 				'person_contact_phone'      => array('op' => 'contains', 'options' => array()),
 				'is_agent_confirmed'        => array('op' => 'is', 'options' => array()),
 				'is_confirmed'              => array('op' => 'is', 'options' => array()),
+				'any_mode'                  => array('op' => 'is', 'options' => array()),
 			);
 
 			foreach ($set_terms_map as $name => $info) {
@@ -544,7 +558,7 @@ class PeopleSearchController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		return $this->searchAction('*', array('person_organization' => $id), 'organization.' . $id);
+		return $this->searchAction('*', array('person_organization' => $id, 'any_mode' => 1), 'organization.' . $id);
 	}
 
 	protected function applyLetterToSearcher($letter, $searcher)

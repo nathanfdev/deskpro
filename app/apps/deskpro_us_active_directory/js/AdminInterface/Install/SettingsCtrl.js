@@ -7,6 +7,13 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 		$scope.has_errors = false;
 		$scope.errors = {};
 
+		// do a bg check for soap support
+		Api.sendGet('/apps/packages/deskpro_us_active_directory/check-requirements').then(function(res) {
+			if (!res.data.ldap_support) {
+				$scope.no_ldap_support = true;
+			}
+		});
+
 		//##############################################################################################################
 		//# Form validation / errors
 		//##############################################################################################################

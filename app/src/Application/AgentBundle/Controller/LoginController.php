@@ -60,7 +60,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		// Already logged in
 		if ($this->session->getPerson() && $this->session->getPerson()->is_agent) {
-			return $this->redirectRoute($this->route_prefix);
+			if ($return) return $this->redirect($return);
+			else return $this->redirectRoute($this->route_prefix);
 		}
 
 		$has_done_reset = false;

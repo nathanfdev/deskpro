@@ -39,6 +39,6 @@ class Build1407241625 extends AbstractBuild
 	public function run()
 	{
 		$this->out("Add jira_issues.last_synced");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD last_synced INT NOT NULL DEFAULT 0");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD last_synced INT NOT NULL");
 	}
 }

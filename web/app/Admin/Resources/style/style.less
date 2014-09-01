@@ -361,6 +361,23 @@ div.info-message {
 			border-top: 1px solid transparent;
 			border-bottom: 1px solid transparent;
 
+			&.dotdotdot {
+				line-height: 100%;
+				span {
+					color: #eee;
+					font-size: 14px;
+					font-weight: bold;
+					text-align: center;
+					display: block;
+					margin: 0 6px 0 6px;
+					padding: 2px 0;
+
+					background: #3c4146;
+					cursor: pointer;
+					border-radius: 2px;
+				}
+			}
+
 			a {
 				display: block;
 				width: @appIconBlockW;
@@ -523,6 +540,26 @@ div.info-message {
 			.app-icon-reports-satisfaction  { background-image: url('@{img_path}/app-icons/2x_active/Ticket-Feedback.png'); }
 		}
 	}
+}
+
+.dp-appstrip ul.btm.mini { display: none; }
+.dp-appstrip ul.btm.mini-rest {
+	width: 43px;
+	background: #3c4146;
+	border-radius: 2px;
+	margin: 0 6px 0 6px;
+
+	li a {
+		width: 43px;
+	}
+	li i.app-icon {
+		width: 43px;
+	}
+}
+
+@media all and (max-height: 790px) {
+	.dp-appstrip ul.btm.mini { display: block; }
+	.dp-appstrip ul.btm.normal { display: none; }
 }
 
 .agent-interface-hover, .reports-interface-hover, .lic-interface-hover {
@@ -968,6 +1005,7 @@ div.dp-appalt-section {
 	background: #fff;
 	border-radius: 2px;
 	border: 1px solid #d0d9e6;
+	overflow: auto;
 
 	> header, header.dp-panelblock-header {
 		nav {
@@ -1472,6 +1510,7 @@ section.dp-help-content-wrapper.open {
 .dp-item-list {
 	padding: 0;
 	margin: 0;
+	overflow: auto;
 
 	> li {
 		list-style-type: none;
@@ -1563,6 +1602,21 @@ section.dp-help-content-wrapper.open {
 	}
 	a:hover h4 > .title-text {
 		text-decoration: underline;
+	}
+
+	h4:hover .title-copy, a:hover .title-copy, .title-copy.zeroclipboard-is-hover {
+		visibility: visible;
+	}
+
+	.title-copy {
+		visibility: hidden;
+		font-size: 15px;
+		color: #853f24;
+		background-color: #fff;
+		border-radius: 2px;
+		padding: 1px;
+		line-height: 100%;
+		cursor: pointer;
 	}
 
 	.drag-handle {
@@ -1833,6 +1887,31 @@ section.dp-help-content-wrapper.open {
 		margin-left: -10px;
 		margin-top: 3px;
 		color: #999;
+	}
+}
+
+.dp-settings-ctrl {
+	display: inline-block;
+	a {
+		cursor: pointer;
+	}
+
+	a.title {
+		display: block;
+		margin: 11px 13px 0 0;
+		padding: 0;
+		color: #aaa;
+		text-decoration: none;
+
+		i.fa {
+			font-size: 13px;
+			position: relative;
+			top: 1px;
+		}
+
+		&:hover {
+			color: #444;
+		}
 	}
 }
 
@@ -2986,7 +3065,7 @@ button.toast-close-button {
 }
 
 .editor {
-
+	font-size: 11px;
 }
 
 .ace-tm .ace_print-margin {

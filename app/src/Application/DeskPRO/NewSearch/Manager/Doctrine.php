@@ -55,9 +55,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'news'                   => array(),
             'ticket'                 => array(),
             'person'                 => array(),
-            'person_related'         => array(),
             'organization'           => array(),
-            'organization_related'   => array(),
             'chat'                   => array()
         );
 
@@ -373,18 +371,6 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 							")->setMaxResults(100)->execute(array($oids));
                             foreach ($people as $p) {
                                 $results['person'][$p->id] = $p;
-                            }
-                        }
-                    }
-
-                    if ($results['person']) {
-                        $tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 250);
-                        foreach ($tickets as $t) {
-                            if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
-                                if (!isset($results['person_related'][$t->person->getId()])) {
-                                    $results['person_related'][$t->person->getId()] = array();
-                                }
-                                $results['person_related'][$t->person->getId()][] = $t;
                             }
                         }
                     }

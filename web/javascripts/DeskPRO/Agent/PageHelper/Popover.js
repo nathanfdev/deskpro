@@ -141,6 +141,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this._hasInit = true;
 
 		this.popoverOuter = $($('#popover_tpl').get(0).innerHTML);
+		this.popoverOuter.data('popover-handler', this);
 		this.popover = $('.popover-inner', this.popoverOuter).first();
 
 		this.popoverOuter.detach().appendTo('body');
@@ -247,11 +248,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		var newFormString = JSON.stringify(data);
 		var ret = false;
 
-		if (this.formString != newFormString) {
+		if (this.formString && this.formString.length && this.formString != newFormString) {
 			ret = true;
 		}
 
-		if (do_resave) {
+		if (do_resave || !this.formString || !this.formString.length) {
 			this.formString = newFormString;
 		}
 
@@ -342,7 +343,29 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		// Beside
 		if (this.options.positionMode == 'side') {
-			if (DeskPRO_Window.paneVis.source && DeskPRO_Window.paneVis.list) {
+			if (!DeskPRO_Window.paneVis.list || (DeskPRO_Window.paneVis.list && !DeskPRO_Window.paneVis.tabs)) {
+				if (this.options.sidePosition == 'bottom') {
+					// Only calc if we dont have a bottom calculated, else it means the thing is full height
+					if (!bottom) {
+						top = '';
+						bottom = 10;
+					}
+				}
+
+				var pagePos = $('#dp_content').offset();
+
+				this.popoverOuter.css({
+					'position': 'absolute',
+					'z-index': 30001,
+					'overflow': 'auto',
+					'top': pagePos.top,
+					'left': pagePos.left + 11,
+					'bottom': bottom,
+					'height': height,
+					'right': 10
+				});
+
+			} else if (DeskPRO_Window.paneVis.source && DeskPRO_Window.paneVis.list) {
 				if (this.options.sidePosition == 'bottom') {
 					// Only calc if we dont have a bottom calculated, else it means the thing is full height
 					if (!bottom) {

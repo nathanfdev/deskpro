@@ -62,6 +62,7 @@
           t = _ref[_i];
           qs.push('views[]=' + encodeURIComponent(t));
         }
+        qs.push('v=' + window.DP_BUILD_TIME);
         qs = qs.join('&');
         this.pending = [];
         this.sendPending = this.pendingNames;

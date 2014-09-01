@@ -71,7 +71,6 @@ class RunQueuedTasks extends AbstractJob
 				$logger->logWarn("Task #$task->id ($task->runner_class) errored: " . $e->getMessage());
 			}
 
-			$em->persist($task);
 			$em->flush();
 
 			if ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_COMPLETED) {

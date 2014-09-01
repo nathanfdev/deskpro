@@ -57,6 +57,7 @@ class PasswordSettings
 	public $ip_security_enabled = false;
 	public $ip_security_mode = 'admins';
 	public $ip_security_whitelist_lifetime = 1814400;
+	public $disable_notifications;
 
 
 	/**
@@ -119,6 +120,7 @@ class PasswordSettings
 		$this->ip_security_enabled            = (bool)$this->settings->get('agent.ip_security.enabled');
 		$this->ip_security_mode               = $this->settings->get('agent.ip_security.mode');
 		$this->ip_security_whitelist_lifetime = (int)$this->settings->get('agent.ip_security.whitelist_lifetime');
+		$this->disable_notifications = (bool)$this->settings->get('agent.disable_notifications');
 	}
 
 
@@ -135,6 +137,7 @@ class PasswordSettings
 			'ip_security_enabled'             => $this->ip_security_enabled,
 			'ip_security_mode'                => $this->ip_security_mode,
 			'ip_security_whitelist_lifetime'  => $this->ip_security_whitelist_lifetime,
+			'disable_notifications'           => $this->disable_notifications,
 		);
 	}
 
@@ -152,6 +155,7 @@ class PasswordSettings
 		$this->ip_security_enabled            = !empty($set_settings['ip_security_enabled']) && $set_settings['ip_security_enabled'];
 		$this->ip_security_mode               = $set_settings['ip_security_mode'] ?: 'admins';
 		$this->ip_security_whitelist_lifetime = ((int)$set_settings['ip_security_whitelist_lifetime']) ?: 1814400;
+		$this->disable_notifications =          (bool)$set_settings['disable_notifications'];
 	}
 
 
@@ -180,5 +184,6 @@ class PasswordSettings
 		$this->settings->setSetting('agent.ip_security.enabled',            $this->ip_security_enabled ? 1 : 0);
 		$this->settings->setSetting('agent.ip_security.mode',               $this->ip_security_mode);
 		$this->settings->setSetting('agent.ip_security.whitelist_lifetime', $this->ip_security_whitelist_lifetime);
+		$this->settings->setSetting('agent.disable_notifications', (bool) $this->disable_notifications);
 	}
 }

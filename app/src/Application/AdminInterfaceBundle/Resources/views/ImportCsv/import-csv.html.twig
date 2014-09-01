@@ -80,15 +80,6 @@
 					navigate away from this page.
 					<br><br>
 					The current status will be updated here periodically:
-
-					<span dp-status-update="/import_csv_status"
-						  status-update-conditions="importStarted"
-						  status-update-default-message="Waiting to start..."
-						  status-update-completed-growl-message="CSV Import finished"
-						  status-update-interval="8000"
-						  status-update-immediate="false"
-						  style="font-style:italic;">
-					</span>
 				</div>
 			</article>
 
@@ -319,6 +310,18 @@
 				Problems with uploaded file appeared.
 				It doesn't have CSV format, please re-upload file in appropriate format.
 			</div>
+
+            <br />
+            <span ng-show="!importStarted">Last import state: </span>
+            <span dp-status-update="/import_csv_status"
+                status-update-conditions="importStarted"
+                status-update-default-message="Checking status..."
+                status-update-completed-growl-message="CSV Import finished"
+                status-update-interval="8000"
+                status-update-immediate="true"
+                style="font-style:italic;">
+            </span>
+            <span ng-if="log">[<a href="{{ ng_var('log') }}" target="_blank">Download CSV</a>]</span>
 
 		</article>
 

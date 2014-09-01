@@ -1,12 +1,16 @@
-﻿// DESKPRO EDIT
-// Fixed AMD loader, see https://github.com/CodeSeven/toastr/issues/135
-; (function (factory) {
-	if (typeof define === 'function' && define.amd) {
-		define(['jquery'], factory);
-	} else {
-		window['toastr'] = factory(jQuery);
-	}
-}(function ($) {
+﻿/*
+ * Toastr
+ * Version 2.0.1
+ * Copyright 2012 John Papa and Hans Fjällemark.  
+ * All Rights Reserved.  
+ * Use, reproduction, distribution, and modification of this code is subject to the terms and 
+ * conditions of the MIT license, available at http://www.opensource.org/licenses/mit-license.php
+ *
+ * Author: John Papa and Hans Fjällemark
+ * Project: https://github.com/CodeSeven/toastr
+ */
+; (function (define) {
+	define(['jquery'], function ($) {
 		return (function () {
 			var version = '2.0.1';
 			var $container;
@@ -289,6 +293,14 @@
 					$container.remove();
 				}
 			}
-		})()
-	})
-);
+			//#endregion
+
+		})();
+	});
+}(typeof define === 'function' && define.amd ? define : function (deps, factory) {
+	if (typeof module !== 'undefined' && module.exports) { //Node
+		module.exports = factory(require(deps[0]));
+	} else {
+		window['toastr'] = factory(window['jQuery']);
+	}
+}));

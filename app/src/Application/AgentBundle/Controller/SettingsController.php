@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
+use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
 
@@ -292,6 +293,7 @@ class SettingsController extends AbstractController
 	{
 		$subs = $this->in->getCleanValueArray('filter_sub', 'array', 'uint');
 
+		/** @var PersonEditManager $person_editor */
 		$person_editor = $this->container->getSystemService('person_edit_manager');
 		$person_editor->saveFilterSubscriptions($this->person, $subs);
 

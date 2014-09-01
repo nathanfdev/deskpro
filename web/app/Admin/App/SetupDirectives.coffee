@@ -23,6 +23,7 @@ define [
 	'Admin/Main/Directive/DpInhelpBtn',
 	'Admin/Main/Directive/DpLiGroupSection',
 	'Admin/Main/Directive/DpListAutoload',
+	'Admin/Main/Directive/DpMaxHeight',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
 	'Admin/Main/Directive/DpOrderMenu',
 	'Admin/Main/Directive/DpPingFlash',
@@ -35,6 +36,7 @@ define [
 	'Admin/Main/Directive/DpWorkingHours',
 	'Admin/Main/Directive/DpChange',
 	'Admin/Main/Directive/DpPhoneNumber',
+	'Admin/Main/Directive/DpRedactor',
 
 	'Admin/Portal/Directive/PortalEditor',
 	'Admin/TicketDeps/Directive/LayoutEditor',
@@ -64,6 +66,7 @@ define [
 	Admin_Main_Directive_DpInhelpBtn,
 	Admin_Main_Directive_DpLiGroupSection,
 	Admin_Main_Directive_DpListAutoload,
+	Admin_Main_Directive_DpMaxHeight,
 	Admin_Main_Directive_DpOpenPhraseEditor,
 	Admin_Main_Directive_DpOrderMenu,
 	Admin_Main_Directive_DpPingFlash,
@@ -76,6 +79,7 @@ define [
 	Admin_Main_Directive_DpWorkingHours,
 	Admin_Main_Directive_DpChange,
 	Admin_Main_Directive_DpPhoneNumber,
+	Admin_Main_Directive_DpRedactor,
 
 	Admin_Portal_Directive_PortalEditor,
 	Admin_TicketDeps_Directive_LayoutEditor,
@@ -106,6 +110,7 @@ define [
 		Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody)
 		Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)
 		Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload)
+		Module.directive('dpMaxHeight',                    Admin_Main_Directive_DpMaxHeight)
 		Module.directive('dpOpenPhraseEditor',             Admin_Main_Directive_DpOpenPhraseEditor)
 		Module.directive('dpOrderMenu',                    Admin_Main_Directive_DpOrderMenu)
 		Module.directive('dpPingFlash',                    Admin_Main_Directive_DpPingFlash)
@@ -118,29 +123,56 @@ define [
 		Module.directive('dpWorkingHours',                 Admin_Main_Directive_DpWorkingHours)
 		Module.directive('dpChange',                       Admin_Main_Directive_DpChange)
 		Module.directive('dpPhoneNumber',                  Admin_Main_Directive_DpPhoneNumber)
+		Module.directive('dpRedactor',                     Admin_Main_Directive_DpRedactor)
 
 		Module.directive('dpPortalEditor',                 Admin_Portal_Directive_PortalEditor)
 
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
 
+		Module.directive('dpToggleShowIds', [ ->
+			return {
+				restrict: 'A',
+				link: (scope, el, attrs) ->
+					window.DP_DO_SHOW_IDS = false;
+					scope.do_show_ids = false
+
+					update = ->
+						if window.DP_DO_SHOW_IDS
+							scope.do_show_ids = true
+							$('body').addClass('show-title-ids')
+						else
+							scope.do_show_ids = false
+							$('body').removeClass('show-title-ids')
+
+					update()
+
+					el.on('click', (ev) ->
+						ev.stopPropagation()
+						ev.preventDefault()
+						window.DP_DO_SHOW_IDS = !window.DP_DO_SHOW_IDS
+						scope.$apply(-> update())
+					)
+			}
+		])
+
 		Module.directive('dpGo', [ '$location', ($location) ->
 			return {
-			restrict: 'A',
-			link: (scope, el, attrs) ->
-				el.on('click', (ev) ->
-					ev.stopPropagation();
-					ev.preventDefault();
+				restrict: 'A',
+				link: (scope, el, attrs) ->
+					el.on('click', (ev) ->
+						ev.stopPropagation();
+						ev.preventDefault();
 
-					path = attrs.dpGo.replace(/^#/, '')
-					search = scope.$eval(attrs.dpGoParams)
+						path = attrs.dpGo.replace(/^#/, '')
+						search = scope.$eval(attrs.dpGoParams)
 
-					scope.$apply(->
-						$location.path(path)
-						if search
-							$location.search(search)
+						scope.$apply(->
+							$location.path(path)
+							if search
+								$location.search(search)
+						)
 					)
-				)
 			}
 		])
 

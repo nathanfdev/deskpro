@@ -85,6 +85,9 @@
 
 	{# TICKET PERMISSIONS #}
 	<table class="table table-hover agent-perms-table" dp-tab-body="main.perms.tickets">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'ticket'} %}
+
 		<tbody>
 			{{ _self.perm_row('ticket', 'use') }}
 			{{ _self.perm_row('ticket', 'create') }}
@@ -181,6 +184,9 @@
 
 	{# PEOPLE PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.people">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'people'} %}
+
 		<tbody>
 			{{ _self.perm_row('people', 'use') }}
 			{{ _self.perm_row('people', 'create') }}
@@ -206,6 +212,9 @@
 	{# CHAT PERMISSIONS #}
 	{% if app.getSetting('core.apps_chat') %}
 		<table class="table table-hover" dp-tab-body="main.perms.chat">
+
+            {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'chat'} %}
+
 			<tbody>
 				{{ _self.perm_row('chat', 'use') }}
 				{{ _self.perm_row('chat', 'view_transcripts') }}
@@ -219,6 +228,9 @@
 
 	{# PUBLISH PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.publish">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'publish'} %}
+
 		<tbody>
 			{{ _self.perm_row('publish', 'create') }}
 			{{ _self.perm_row('publish', 'delete') }}
@@ -230,6 +242,10 @@
 
 	{# GENERAL PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.profile">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'general'} %}
+
+        <tbody>
 			{{ _self.perm_row('general', 'picture') }}
 			{{ _self.perm_row('general', 'signature') }}
 		</tbody>
@@ -238,6 +254,10 @@
 
     {# TASKS PERMISSIONS #}
     <table class="table table-hover" dp-tab-body="main.perms.tasks">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'tasks'} %}
+
+        <tbody>
         {{ _self.perm_row('tasks', 'use') }}
         </tbody>
     </table>

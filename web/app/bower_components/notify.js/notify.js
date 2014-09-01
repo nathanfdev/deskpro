@@ -7,25 +7,18 @@
         define('notify', [], function () {
             return factory(root, document);
         });
-    } else if (typeof exports === 'object') {
-        // CommonJS environment
-        module.exports = factory(root, document);
     } else {
         // Browser environment
         root.Notify = factory(root, document);
     }
 
-}(window, function (w, d) {
+}(this, function (w, d) {
 
     'use strict';
 
     function Notify(title, options) {
 
-        if (typeof title !== 'string') {
-            throw new Error('Notify(): first arg (title) must be a string.');
-        }
-
-        this.title = title;
+        this.title = typeof title === 'string' ? title : null;
 
         this.options = {
             icon: '',
@@ -36,14 +29,17 @@
             notifyClick: null,
             notifyError: null,
             permissionGranted: null,
-            permissionDenied: null,
-            timeout: null
+            permissionDenied: null
         };
 
         this.permission = null;
 
-        if (!Notify.isSupported()) {
+        if (!this.isSupported()) {
             return;
+        }
+
+        if (!this.title) {
+            throw new Error('Notify(): first arg (title) must be a string.');
         }
 
         //User defined options for notification content
@@ -74,72 +70,77 @@
             if (typeof this.options.notifyError === 'function') {
                 this.onErrorCallback = this.options.notifyError;
             }
+
+            //callback user grants permission for notification
+            if (typeof this.options.permissionGranted === 'function') {
+                this.onPermissionGrantedCallback = this.options.permissionGranted;
+            }
+
+            //callback user denies permission for notification
+            if (typeof this.options.permissionDenied === 'function') {
+                this.onPermissionDeniedCallback = this.options.permissionDenied;
+            }
         }
     }
 
-    // return true if the browser supports HTML5 Notification
-    Notify.isSupported = function () {
-        if ('Notification' in w) {
-            return true;
+    Notify.prototype.needsPermission = function () {
+        if ('Notification' in w && Notification.permission === 'granted') {
+            return false;
         }
-        return false;
-    };
-
-    // returns true if the permission is not granted
-    Notify.needsPermission = function () {
-        if (Notify.isSupported() && Notification.permission === 'granted') {
+        // mozNotification requests permission automatically
+        // so we don't need to handle that in the lib
+        if ('mozNotification' in navigator) {
             return false;
         }
         return true;
     };
 
-    // asks the user for permission to display notifications.  Then calls the callback functions is supplied.
-    Notify.requestPermission = function (onPermissionGrantedCallback, onPermissionDeniedCallback) {
-        if (Notify.isSupported()) {
-            w.Notification.requestPermission(function (perm) {
-                switch (perm) {
-                    case 'granted':
-                        if (typeof onPermissionGrantedCallback === 'function') {
-                            onPermissionGrantedCallback();
-                        }
-                        break;
-                    case 'denied':
-                        if (typeof onPermissionDeniedCallback === 'function') {
-                            onPermissionDeniedCallback();
-                        }
-                        break;
-                }
-            });
-        }
+    Notify.prototype.requestPermission = function () {
+        var that = this;
+        w.Notification.requestPermission(function (perm) {
+            that.permission = perm;
+            switch (that.permission) {
+            case 'granted':
+                that.onPermissionGranted();
+                break;
+            case 'denied':
+                that.onPermissionDenied();
+                break;
+            }
+        });
     };
 
-
     Notify.prototype.show = function () {
-        var that = this;
 
-        if (!Notify.isSupported()) {
+        if (!this.isSupported()) {
             return;
         }
 
-        this.myNotify = new Notification(this.title, {
-            'body': this.options.body,
-            'tag' : this.options.tag,
-            'icon' : this.options.icon
-        });
+        if ('Notification' in w) {
+            this.myNotify = new Notification(this.title, {
+                'body': this.options.body,
+                'tag' : this.options.tag,
+                'icon' : this.options.icon
+            });
 
-        if (this.options.timeout && !isNaN(this.options.timeout)) {
-            setTimeout(this.close.bind(this), this.options.timeout * 1000);
+            this.myNotify.addEventListener('show', this, false);
+            this.myNotify.addEventListener('error', this, false);
+
+        } else {
+            this.myNotify = navigator.mozNotification.createNotification(
+                this.title,
+                this.options.body
+            );
+            this.myNotify.show();
         }
 
-        this.myNotify.addEventListener('show', this, false);
-        this.myNotify.addEventListener('error', this, false);
         this.myNotify.addEventListener('close', this, false);
         this.myNotify.addEventListener('click', this, false);
     };
 
-    Notify.prototype.onShowNotification = function (e) {
+    Notify.prototype.onShowNotification = function () {
         if (this.onShowCallback) {
-            this.onShowCallback(e);
+            this.onShowCallback();
         }
     };
 
@@ -163,15 +164,32 @@
         this.destroy();
     };
 
+    Notify.prototype.onPermissionGranted = function () {
+        if (this.onPermissionGrantedCallback) {
+            this.onPermissionGrantedCallback();
+        }
+    };
+
+    Notify.prototype.onPermissionDenied = function () {
+        if (this.onPermissionDeniedCallback) {
+            this.onPermissionDeniedCallback();
+        }
+    };
+
     Notify.prototype.destroy = function () {
-        this.myNotify.removeEventListener('show', this, false);
-        this.myNotify.removeEventListener('error', this, false);
+        if ('Notification' in w) {
+            this.myNotify.removeEventListener('show', this, false);
+            this.myNotify.removeEventListener('error', this, false);
+        }
         this.myNotify.removeEventListener('close', this, false);
         this.myNotify.removeEventListener('click', this, false);
     };
 
-    Notify.prototype.close = function () {
-        this.myNotify.close();
+    Notify.prototype.isSupported = function () {
+        if ('Notification' in w || 'mozNotification' in navigator) {
+            return true;
+        }
+        return false;
     };
 
     Notify.prototype.handleEvent = function (e) {

@@ -43,6 +43,11 @@
           key = _ref[_i];
           this.$scope.importSettings.showExtraMappings[key] = [];
         }
+        this.$scope.$on('dp-status-update', (function(_this) {
+          return function(e, data) {
+            return _this.$scope.log = data.log;
+          };
+        })(this));
         this.setupUploadListeners();
       };
 

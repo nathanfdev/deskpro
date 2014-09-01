@@ -74,6 +74,7 @@
 	'agent.emails.user_ip'                                                 => 'IP utilisateur',
 	'agent.emails.user_updated_ticket'                                     => '{{name}} a mis à jour le ticket "{{subject}}"',
 	'agent.emails.view_delegated_tasks'                                    => 'Voir vos tâches déléguées',
+	'agent.emails.view_online_at'                                          => 'Voir en ligne à :',
 	'agent.emails.view_ticket_online'                                      => 'Montrer ce ticket en ligne',
 	'agent.emails.view_your_tasks'                                         => 'Voir vos tâches',
 	'agent.emails.view_your_teams_tasks'                                   => 'Voir les tâches de votre équipe',

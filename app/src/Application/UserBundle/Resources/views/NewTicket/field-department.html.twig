@@ -21,7 +21,7 @@
 			>
 				<option value=""></option>
 				{% for cat in app.departments.getPersonDepartments(app.user, 'tickets') %}
-					{{ formmacro.select_options_hierarchy(cat, newticket.ticket.department_id) }}
+					{{ formmacro.select_options_hierarchy(cat, form.ticket.department_id.vars.value) }}
 				{% endfor %}
 			</select>
 			<div class="dp-help-inline dp-error-explain">
