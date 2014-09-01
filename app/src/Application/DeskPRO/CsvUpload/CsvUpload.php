@@ -154,7 +154,7 @@ class CsvUpload
 
 			return array(
 				'status'  => '',
-				'message' => '',
+				'message' => 'No import data available.',
 			);
 
 		} else {
@@ -178,7 +178,7 @@ class CsvUpload
 
 			return array(
 				'status'  => 'progress',
-				'message' => $task['run_status'] ?: $runner->getTitle(),
+				'message' => $task['run_status'] ?: 'Import will start in 1 minute',
 			);
 		}
 	}
