@@ -60,6 +60,7 @@
 	'agent.general.assign_to'                               => 'Assign to',
 	'agent.general.assign_to_me'                            => 'Assign to Me',
 	'agent.general.assign_to_my_team'                       => 'Assign to My Team',
+	'agent.general.assign_to_primary_team'                  => 'Assign to Primary Team',
 	'agent.general.assigned'                                => 'Assigned',
 	'agent.general.assigned_agent'                          => 'Assigned Agent',
 	'agent.general.assigned_agent_id'                       => 'Agent Id',

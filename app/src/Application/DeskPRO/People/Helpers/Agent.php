@@ -411,4 +411,9 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	{
 		return (string)$this->person->getPref('agent.tweet_signature');
 	}
+
+	public function getPrimaryTeam()
+	{
+		return $this->person->getPrimaryTeam();
+	}
 }

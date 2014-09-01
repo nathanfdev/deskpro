@@ -2471,7 +2471,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	{
 		if (!$this->teams->contains($team)) {
 			if (!$this->primary_team) {
-				$this->primary_team = $team;
+				$this->setModelField('primary_team', $team);
 			}
 			$this->teams->add($team);
 			$this->_onPropertyChanged('teams', $this->teams, $this->teams);
@@ -2487,8 +2487,21 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$team->removePerson($this);
 
 		if ($this->primary_team === $team) {
-			$this->primary_team = $this->teams->first() ?: null;
+			$this->setModelField('primary_team', $this->teams->first() ?: null);
 		}
+	}
+
+	public function getPrimaryTeam()
+	{
+		if ($this->primary_team) {
+			return $this->primary_team;
+		}
+
+		if ($first = $this->teams->first()) {
+			return $first;
+		}
+
+		return null;
 	}
 
 

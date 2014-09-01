@@ -93,7 +93,7 @@
                                   ng-if="team.value"
                                   ng-style="EditCtrl.form.primary_team.id == team.id && {color:'#000'} || {cursor: 'pointer', color:'#ccc'}"
                                   ng-click="EditCtrl.form.primary_team = team">
-                                <i class="fa fa-check"></i>
+                                <i ng-show="EditCtrl.form.primary_team.id == team.id" class="fa fa-check"></i>
                                 {{ phrase('adm.agents.primary_team') }}
                             </span>
 						</div>

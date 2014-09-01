@@ -416,11 +416,17 @@ pageMeta.lang = {{ {
 				<td style="padding-right: 5px;">
 					<label class="field-label-title" style="white-space: nowrap">
                         {{ phrase('agent.general.team') }}
-                        {% if app.user.agent.teams|length and ticket_perms.modify_assign_self %}
-                            <span id="{{baseId}}_assign_team" class="assign-self-link-wrap" style="{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}" data-team="{{ (app.user.agent.teams|first).id }}">
+                        {% if app.user.agent.primaryTeam and ticket_perms.modify_assign_self %}
+                            <span id="{{baseId}}_assign_team" class="assign-self-link-wrap"
+                                  style="{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}"
+                                  data-team="{{ app.user.agent.primaryTeam.id }}">
 								&middot;
 								<a class="assign-self-link">
-									{{ phrase('agent.general.assign_to_my_team') }}
+                                    {% if 1 == app.user.agent.teams|length %}
+									    {{ phrase('agent.general.assign_to_my_team') }}
+                                    {% else %}
+                                        {{ phrase('agent.general.assign_to_primary_team') }}
+                                    {% endif %}
 								</a>
                             </span>
                         {% endif %}
