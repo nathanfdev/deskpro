@@ -2321,4 +2321,24 @@ class Arrays
 
 		return array_map($fn, $array);
 	}
+
+
+	/**
+	 * Takes a simple stdClass and returns an array with its properties -> values.
+	 *
+	 * @param \stdClass|mixed $object
+	 * @return array
+	 */
+	public static function fromStdClass($object)
+	{
+		if (is_object($object)) {
+			$object = get_object_vars($object);
+		}
+
+		if (is_array($object)) {
+			return array_map(__METHOD__, $object);
+		} else {
+			return $object;
+		}
+	}
 }
