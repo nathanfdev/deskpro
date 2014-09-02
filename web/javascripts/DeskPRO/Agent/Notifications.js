@@ -362,10 +362,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var listType = this.getListTypeByType(type);
 		if (!listType) return;
 
-		var ev = { notif: this, type: type, op: op, count: count };
+		var newcount = $('#dp_notify_list_' + listType).find('li').length;
+
+		var ev = { notif: this, type: type, op: op, count: newcount };
 		this.fireEvent('beforeModCount', ev);
 
-		var newcount = $('#dp_notify_list_' + listType).find('li').length;
 		this.notifsBadge.text(newcount).data('count', newcount);
 
 		if (newcount < 1) {

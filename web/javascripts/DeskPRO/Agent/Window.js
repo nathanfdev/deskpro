@@ -2978,10 +2978,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.notifications.addEvent('modCount', function(data) {
-			var count = 0;
-			$('#dp_header_notify_wrap').find('.badge').not('.no-count').each(function() {
-				count += parseInt($(this).text().trim());
-			});
+			var count = data.count || 0;
 
 			var doanim = false;
 			if (!$('html').is('.window-active')) {
