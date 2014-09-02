@@ -1,0 +1,46 @@
+{
+	"package_name": "deskpro_us_jwt",
+	"is_native": true,
+	"title": "JSON Web Token (JWT)",
+	"description": "Enables user authentication through a JSON Web Token (JWT).",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "url",
+			"type": "text",
+			"label": "Remote Login URL",
+			"description": "This is the URL to the page that will generate the JWT token. A user is also sent here if they forgot their password.",
+			"native_only": true
+		},
+		{
+			"name": "secret",
+			"type": "text",
+			"label": "JWT Secret Code",
+			"description": "This secret code is used by your programmer to create the JWT tokens.",
+			"native_only": true
+		},
+		{
+			"name": "login_custom_text",
+			"type": "text",
+			"label": "Login Button Text",
+			"description": "The text that appears on the button on the login page.",
+			"native_only": true
+		},
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enable User Source",
+			"description": "Enable",
+			"native_only": true
+		}
+	]
+}
