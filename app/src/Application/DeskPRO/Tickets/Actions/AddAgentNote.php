@@ -43,12 +43,12 @@ use Orb\Util\CheckedOptionsArray;
 /**
  * Adds a reply to the ticket
  *
- * @option string reply_text
+ * @option string note_text
  * @option int    by_agent_id
  * @option bool   by_assigned_agent
  * @option bool   no_formatter
  */
-class AddAgentReply extends AbstractContainerAwareAction implements ActionInterface
+class AddAgentNote extends AbstractContainerAwareAction implements ActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -57,7 +57,7 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('by_agent_id');
-		$options->addRequiredNames('reply_text');
+		$options->addRequiredNames('note_text');
 		$options->addValidNames('by_assigned_agent');
 		$options->addValidNames('no_formatter');
 		return $options;
@@ -85,16 +85,17 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 		$message = new TicketMessage();
 		$message->person = $agent;
 		$message->date_created = new \DateTime('+1 second');
+		$message['is_agent_note'] = true;
 
-		$reply_text = $this->getActionOption('reply_text');
+		$note_text = $this->getActionOption('note_text');
 
 		if (!$this->getActionOption('no_formatter')) {
 			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
 			$formatter->addVar('user_vars', $context->getUserVars());
-			$reply_text = $formatter->formatText($reply_text, $ticket);
+			$note_text = $formatter->formatText($note_text, $ticket);
 		}
 
-		$message->setMessage($reply_text);
+		$message->setMessage($note_text);
 
 		$ticket->addMessage($message);
 		$em->persist($message);

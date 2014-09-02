@@ -162,6 +162,11 @@ define [
 			})
 
 			options.push({
+				title: 'Add Agent Note',
+				value: 'AddAgentNote'
+			})
+
+			options.push({
 				title: 'Require User Email Validation',
 				value: 'SetRequireValidation'
 			})
@@ -1220,20 +1225,59 @@ define [
 							by_agent_id = by_agent_id + ""
 
 							return {
-								reply_text: opt.reply_text || '',
+								text: opt.reply_text || '',
 								by_assigned_agent: opt.by_assigned_agent || false,
 								by_agent_id: by_agent_id
+								title: 'Reply Text'
 							}
 
 						getValue: (model = {}, data) ->
 							value = {}
 							value.type = 'AddAgentReply'
 							value.options = {}
-							value.options.reply_text = model.reply_text
+							value.options.reply_text = model.text
 							value.options.by_assigned_agent = model.by_assigned_agent || false
 							value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0
 							return value
 					}
+			}
+
+		getAddAgentNote: (options = {}) ->
+			me = @
+			return {
+			getTemplate: ->
+				return me.dpTemplateManager.get('OptionBuilder/type-actions-addagentreply.html')
+
+			getData: ->
+				return me.loadDataOptions()
+
+			getDataFormatter: ->
+				return {
+				getViewValue: (value = {}, data) ->
+					opt = value.options || {}
+
+					by_agent_id = opt.by_agent_id || null
+					if not by_agent_id
+						by_agent_id = data.agents[0].id
+
+					by_agent_id = by_agent_id + ""
+
+					return {
+						text: opt.note_text || '',
+						by_assigned_agent: opt.by_assigned_agent || false,
+						by_agent_id: by_agent_id
+						title: 'Note Text'
+					}
+
+				getValue: (model = {}, data) ->
+					value = {}
+					value.type = 'AddAgentNote'
+					value.options = {}
+					value.options.note_text = model.text
+					value.options.by_assigned_agent = model.by_assigned_agent || false
+					value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0
+					return value
+				}
 			}
 
 		getSetSlasComplete: (options = {}) ->

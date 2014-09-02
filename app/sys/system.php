@@ -594,7 +594,7 @@ final class License
 
 		$enc = base64_decode($enc);
 		$data = @unserialize($enc);
-$data=array('managed' => true);
+
 		$this->data = $data;
 
 		if ($opts) {
