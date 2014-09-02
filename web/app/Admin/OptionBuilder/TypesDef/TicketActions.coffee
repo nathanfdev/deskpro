@@ -1096,7 +1096,7 @@ define [
 				getViewValue: (value = {}, data) ->
 					options = value?.options || {}
 
-					emails = ['test@test.com', 'test2@test.com']
+					emails = options.emails || []
 					from_name = options.from_name || 'helpdesk_name'
 					from_name_custom = null
 					if from_name not in ['performer', 'helpdesk_name', 'site_name']
