@@ -3136,7 +3136,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 			this.newDownloadLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/downloads/new',
-				tabRoute: 'page:' + BASE_URL + 'agent/news/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/downloads/new',
 				autostart: autostart
 			});
 			this.newFeedbackLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
