@@ -30,6 +30,9 @@
           throw "Can't get typename from parent";
         }
         this.type = typename.substring(7);
+        if (this.type === 'kb') {
+          this.type = 'articles';
+        }
         return this.service.get(this.type).then((function(_this) {
           return function(settings) {
             return _this.settings = settings;

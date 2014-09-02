@@ -13,6 +13,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			typename = @$scope.$parent.LabelsList.typename
 			throw "Can't get typename from parent" if !typename? || !typename
 			@type = typename.substring 7
+			if @type == 'kb' then @type = 'articles'
 			@service.get(@type).then (settings) =>
 				@settings = settings
 

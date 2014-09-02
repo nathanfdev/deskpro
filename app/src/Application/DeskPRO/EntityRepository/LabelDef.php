@@ -172,6 +172,33 @@ class LabelDef extends AbstractEntityRepository
 		return null;
 	}
 
+
+	/**
+	 * @param string $label_type
+	 * @return string|null
+	 */
+	public function getLabelTableFromType($label_type)
+	{
+		switch ($label_type) {
+			case 'organizations':
+				return 'labels_organizations';
+			case 'people':
+				return 'labels_people';
+			case 'tickets':
+				return 'Desklabels_tickets';
+			case 'articles':
+				return 'labels_articles';
+			case 'feedback':
+				return 'labels_feedback';
+			case 'downloads':
+				return 'Desklabels_downloads';
+			case 'news':
+				return 'labels_news';
+		}
+
+		return null;
+	}
+
 	public function getTypeByEntityName($entityName)
 	{
 		if (false === $type = array_search($entityName, $this->getLabelEntities(), 1)) {
@@ -183,13 +210,27 @@ class LabelDef extends AbstractEntityRepository
 
 	public function findLabelsByType($type)
 	{
+		$db = $this->getEntityManager()->getConnection();
+
 		$ret = array();
-		$res = $this->getEntityManager()->getConnection()->executeQuery(sprintf(
+		$res = $db->executeQuery(sprintf(
 			'SELECT label FROM %s WHERE label_type = :type', $this->getTableName()
 		), array('type' => $type));
 
 		while ($row = $res->fetchColumn(0)) {
 			$ret[] = $row;
+		}
+
+		$table = $this->getLabelTableFromType($type);
+		if ($table) {
+			$res = $db->executeQuery("
+				SELECT DISTINCT(label)
+				FROM $table
+			");
+			while ($row = $res->fetchColumn(0)) {
+				$ret[] = $row;
+			}
+			$ret = array_unique($ret);
 		}
 
 		return $ret;
