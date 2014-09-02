@@ -607,8 +607,8 @@ define [
 								simple_tags:  true
 								tags: options.remove_labels || []
 
-						viewValue.with_add    = options.add_labels.length > 0
-						viewValue.with_remove = options.remove_labels.length > 0
+						viewValue.with_add    = viewValue.add_labels.length > 0
+						viewValue.with_remove = viewValue.remove_labels.length > 0
 
 						return viewValue
 

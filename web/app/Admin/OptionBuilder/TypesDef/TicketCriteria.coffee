@@ -358,6 +358,11 @@ define [
 				value: 'CheckDateCreated'
 			})
 
+			options.push({
+				title: 'During Working Hours',
+				value: 'CheckWorkingHours'
+			})
+
 			#options.push({
 			#	title: 'Within working hours',
 			#	value: 'CheckWorkingHours'
@@ -1025,20 +1030,23 @@ define [
 					return me.dpTemplateManager.get('OptionBuilder/type-criteria-workinghours.html')
 
 				getData: ->
-					return {
-
-					}
+					return {}
 
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
 							return {
 								op: value.op || 'is'
+								working_hours: value.options.working_hours
 							}
 
-					getValue: (model = {}, data) ->
-						value = {}
-						return value
+						getValue: (model = {}, data) ->
+							return {
+								type: 'CheckWorkingHours'
+								op: model.op
+								options:
+									working_hours: model.working_hours
+							}
 					}
 			}
 
