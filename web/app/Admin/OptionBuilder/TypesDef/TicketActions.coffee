@@ -531,6 +531,9 @@ define [
 			options.propName = 'add_agent_ids'
 			options.dataName = 'agents'
 			options.isMulti = true
+			options.extraOptions = [
+				{title: 'Current Agent', value: -1}
+			]
 			def = @getStandardSelect(options)
 			return def
 

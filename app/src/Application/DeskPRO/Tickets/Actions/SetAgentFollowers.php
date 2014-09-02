@@ -57,6 +57,23 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
 		return $options;
 	}
 
+	protected function resolveAgent(ExecutorContextInterface $context, $id)
+	{
+		if (!$id) {
+			return null;
+		}
+
+		if (-1 == $id) {
+			if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
+				return null;
+			}
+			$agent = $context->getPersonContext();
+		} else {
+			$agent = $this->getContainer()->getAgentData()->get($id);
+		}
+
+		return $agent;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -69,8 +86,7 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
 
 		if ($add_agent_ids = $this->getActionOption('add_agent_ids')) {
 			foreach ($add_agent_ids as $agent_id) {
-				$agent = $this->getContainer()->getAgentData()->get($agent_id);
-				if (!$agent) {
+				if (!$agent = $this->resolveAgent($context, $agent_id)) {
 					continue;
 				}
 
@@ -86,8 +102,7 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
 
 		if ($remove_agent_ids = $this->getActionOption('remove_agent_ids')) {
 			foreach ($remove_agent_ids as $agent_id) {
-				$agent = $this->getContainer()->getAgentData()->get($agent_id);
-				if (!$agent) {
+				if (!$agent = $this->resolveAgent($context, $agent_id)) {
 					continue;
 				}
 
