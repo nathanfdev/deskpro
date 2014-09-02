@@ -221,8 +221,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		this.modCount(type, '+');
 
-		if (Notify.isSupported() && !Notify.needsPermission() && DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
-
+		if (DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
 			var icon = row.data('icon') || '';
 			if (icon) {
 				icon = ASSETS_BASE_URL + '/' + icon;
@@ -238,8 +237,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 				},
 				timeout: DESKPRO_PERSON_NOTIFICATION_DISMISS || null
 			});
-			notification.show();
-			row.data('notification', notification);
+
+			if (notification.isSupported() && !notification.needsPermission()) {
+				notification.show();
+				row.data('notification', notification);
+			}
 		}
 	},
 

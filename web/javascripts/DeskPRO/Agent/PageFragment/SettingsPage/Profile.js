@@ -132,7 +132,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			});
 		});
 
-		if (Notify.isSupported()) {
+		var notification = new Notify('DeskPRO', { body: "This is a test notification." });
+		if (notification.isSupported()) {
 			var notificationsRow = el.find('.dp-desktop-notifications');
 			notificationsRow.show();
 
@@ -144,8 +145,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 				if (didChange) {
 					perm = didChange;
 				} else {
-					perm = !Notify.needsPermission();
-					if (Notify.needsPermission()) {
+					perm = !notification.needsPermission();
+					if (notification.needsPermission()) {
 						perm = 'none';
 					} else {
 						perm = 'granted';
@@ -178,7 +179,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 			enableButton.click(function(e) {
 				e.preventDefault();
-				Notify.requestPermission(
+				notification.requestPermission(
 					function() { permissionCallback('granted') },
 					function() { permissionCallback('denied') }
 				);
@@ -187,11 +188,10 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			notificationsRow.find('.generate-test-notification').click(function(e){
 				e.preventDefault();
 
-				if (Notify.needsPermission()) {
+				if (notification.needsPermission()) {
 					return;
 				}
 
-				var notification = new Notify('DeskPRO', { body: "This is a test notification." });
 				notification.ondisplay = function() {
 					setTimeout(function() {
 						notification.cancel();
