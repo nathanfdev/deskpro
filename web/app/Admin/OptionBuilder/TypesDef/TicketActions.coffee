@@ -197,6 +197,11 @@ define [
 				value: 'SendAgentEmail'
 			})
 
+			options.push({
+				title: 'Send Email to a specific email address',
+				value: 'SendSpecificUserEmail'
+			})
+
 			set_options.push({
 				title: 'Send Email',
 				subOptions: options
@@ -1040,6 +1045,89 @@ define [
 							value.options = options
 							return value
 					}
+			}
+
+		getSendSpecificUserEmail: (options = {}) ->
+			me = @
+			return {
+			getTemplate: ->
+				return me.dpTemplateManager.get('OptionBuilder/type-actions-sendemail.html')
+
+			getData: ->
+				return me.loadDataOptions()
+
+			scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+				$scope.handleTemplateChange = ->
+					if $scope.model.template == 'CREATE'
+						$scope.model.template = null
+						$scope.is_creating = true
+						$modal.open({
+							templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+							controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+							resolve: {
+								templateName: ->
+									return null
+							}
+						}).result.then( (info) =>
+							if info.templateName
+								title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+								tpl = {
+									name: info.templateName,
+									title: title
+								}
+
+								if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
+									me.options_data.custom_email_tpls.push(tpl)
+
+								$scope.model.template = info.templateName
+								$timeout(->
+									$scope.model.template = info.templateName
+									$scope.is_creating = false
+								, 100)
+							else
+								$scope.is_creating = false
+						, ->
+							$scope.is_creating = false
+						)
+			]
+
+			getDataFormatter: ->
+				return {
+				getViewValue: (value = {}, data) ->
+					options = value?.options || {}
+
+					emails = ['test@test.com', 'test2@test.com']
+					from_name = options.from_name || 'helpdesk_name'
+					from_name_custom = null
+					if from_name not in ['performer', 'helpdesk_name', 'site_name']
+						from_name = 'custom'
+						from_name_custom = options.from_name
+
+					return {
+						emails: emails
+						template: options.template || ''
+						from_name: from_name
+						from_name_custom: from_name_custom
+						from_account: (parseInt(options.from_account || 0) || 0)+''
+					}
+				getValue: (model = {}, data) ->
+					options = {
+						emails: model.emails
+						template: model.template || '',
+						from_name: '',
+						from_account: parseInt(model.from_account || 0)
+					}
+
+					if model.from_name == 'custom'
+						options.from_name = model.from_name_custom || ''
+					else
+						options.from_name = model.from_name || ''
+
+					value = {}
+					value.type = 'SendSpecificUserEmail'
+					value.options = options
+					return value
+				}
 			}
 
 		getWebHook: (options = {}) ->

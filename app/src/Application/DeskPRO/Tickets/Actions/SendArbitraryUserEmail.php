@@ -141,7 +141,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
 
 			$build = TicketEmailBuilder::createFromContainer($this->getContainer())
 				->setTicket($ticket)
-				->setToPerson($ticket->person)
+				->setToPerson($person)
 				->setUserMode()
 				->setTemplateName($template)
 				->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
