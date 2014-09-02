@@ -590,13 +590,20 @@ define [
 				return {
 					getViewValue: (value = {}, data) ->
 						options = value?.options || {}
-						viewValue = {
-							add_labels:       (options.add_labels || []).join(', '),
-							remove_labels:    (options.remove_labels || []).join(', '),
-						}
+						viewValue =
+							add_labels:       options.add_labels || []
+							remove_labels:    options.remove_labels || []
+							select2_add:
+								multiple:     true
+								simple_tags:  true
+								tags: options.add_labels || []
+							select2_remove:
+								multiple:     true
+								simple_tags:  true
+								tags: options.remove_labels || []
 
-						viewValue.with_add    = !!viewValue.add_labels
-						viewValue.with_remove = !!viewValue.remove_labels
+						viewValue.with_add    = viewValue.add_labels.length
+						viewValue.with_remove = viewValue.remove_labels.length
 
 						return viewValue
 
@@ -604,8 +611,8 @@ define [
 						value = {}
 						value.type = 'SetLabels'
 						value.options = {}
-						value.options.add_labels    = if model.with_add then     (model.add_labels || '').split(',')    else ''
-						value.options.remove_labels = if model.with_remove then  (model.remove_labels || '').split(',') else ''
+						value.options.add_labels    = if model.with_add then     model.add_labels else []
+						value.options.remove_labels = if model.with_remove then  model.remove_labels else []
 						return value
 				}
 			}
