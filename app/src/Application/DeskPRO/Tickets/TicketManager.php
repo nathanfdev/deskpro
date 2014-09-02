@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -424,6 +425,18 @@ class TicketManager
 			$context->setPersonContext($agent);
 		}
 
+		if ('api' === $event_method) {
+			$key = null;
+			/** @var $auth RequestAuth */
+			if ($auth = $this->container->get('deskpro.api.request_auth')) {
+				$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+			}
+
+			if ($key) {
+				$context->getVars()->set('via_api_key', $key);
+			}
+		}
+
 		$context->setEventPerformer('agent');
 		$context->setEventType($event_type);
 		$context->setEventMethod($event_method, $event_method_options);
@@ -445,6 +458,16 @@ class TicketManager
 
 		if ($user) {
 			$context->setPersonContext($user);
+		}
+
+		if ('api' === $event_method) {
+			$key = null;
+			/** @var $auth RequestAuth */
+			if ($auth = $this->container->get('deskpro.api.request_auth')) {
+				$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+			}
+
+			$context->getVars()->set('via_api_key', $key);
 		}
 
 		$context->setEventPerformer('user');

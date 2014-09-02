@@ -404,6 +404,22 @@ define [
 				subOptions: options
 			})
 
+			#------------------------------
+			# API Criteria
+			#------------------------------
+
+			options = []
+
+			options.push({
+				title: 'Check API key',
+				value: 'CheckApiKey'
+			})
+
+			set_options.push({
+				title: 'API Criteria',
+				subOptions: options
+			})
+
 			return set_options
 
 		resetData: ->
@@ -433,6 +449,7 @@ define [
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
 						'email_tpls':      '/email-templates-info'
+						'api_keys':          '/api_keys'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -451,6 +468,7 @@ define [
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+						options_data['api_keys']         = data.api_keys.api_keys
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -1089,3 +1107,22 @@ define [
 
 		getCheckAgentIsEmailed: ->
 			return @getIsEmailed('CheckAgentIsEmailed', 'type-criteria-agentisemailed.html')
+
+		getCheckApiKey: (options = {}) ->
+			options.propName = 'api_key_id'
+			options.dataName = 'api_keys'
+			options.operators = ['is', 'not']
+			options.single = true
+			options.optionsFormatter = (options) ->
+				opts = []
+
+				for key in options
+					name = if key.person then key.person.display_name else 'Super User'
+					opts.push({
+						value: key.id,
+						title: [name, key.note].join ' | '
+					})
+
+				opts
+
+			@getStandardSelect(options)

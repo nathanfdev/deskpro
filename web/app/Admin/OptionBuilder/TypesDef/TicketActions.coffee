@@ -602,8 +602,8 @@ define [
 								simple_tags:  true
 								tags: options.remove_labels || []
 
-						viewValue.with_add    = viewValue.add_labels.length
-						viewValue.with_remove = viewValue.remove_labels.length
+						viewValue.with_add    = options.add_labels.length > 0
+						viewValue.with_remove = options.remove_labels.length > 0
 
 						return viewValue
 
@@ -611,8 +611,8 @@ define [
 						value = {}
 						value.type = 'SetLabels'
 						value.options = {}
-						value.options.add_labels    = if model.with_add then     model.add_labels else []
-						value.options.remove_labels = if model.with_remove then  model.remove_labels else []
+						value.options.add_labels    = if model.with_add then model.add_labels else []
+						value.options.remove_labels = if model.with_remove then model.remove_labels else []
 						return value
 				}
 			}
