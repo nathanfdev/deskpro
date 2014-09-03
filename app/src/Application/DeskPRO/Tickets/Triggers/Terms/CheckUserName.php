@@ -51,7 +51,7 @@ class CheckUserName extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
+		$options->addRequiredNames('person');
 		return $options;
 	}
 
@@ -62,6 +62,9 @@ class CheckUserName extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		return $this->isStringMatch($ticket, $context, 'person.name', $options['name']);
+
+		return $options['person'] && isset($options['person']['name'])
+			? $this->isStringMatch($ticket, $context, 'person.name', $options['person']['name'])
+			: false;
 	}
 }

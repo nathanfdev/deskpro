@@ -62,7 +62,7 @@ class CheckUserEmail extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		file_put_contents('/tmp/api', print_r($this->getValueOpArray($ticket, $context, 'person.emails[].email'), 1));
+
 		return $options['person'] && isset($options['person']['email'])
 			? $this->isStringMatch($ticket, $context, 'person.emails[].email', $options['person']['email'])
 			: false;

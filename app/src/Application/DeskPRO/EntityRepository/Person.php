@@ -576,7 +576,7 @@ class Person extends AbstractEntityRepository
 
 			if (!strlen($q) && $startWith) {
 				return $db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
 					LEFT JOIN people_emails e ON (e.person_id = p.id)
 					WHERE $agent_sql
@@ -586,7 +586,7 @@ class Person extends AbstractEntityRepository
 				");
 			} else {
 				return $db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
 					LEFT JOIN people_emails e ON (e.person_id = p.id)
 					WHERE
@@ -601,7 +601,7 @@ class Person extends AbstractEntityRepository
 		} else {
 			if (!strlen($q) && $startWith) {
 				return $db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
 					LEFT JOIN people_emails e ON (e.person_id = p.id)
 					WHERE $agent_sql
@@ -611,7 +611,7 @@ class Person extends AbstractEntityRepository
 				");
 			} else {
 				return $db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
 					LEFT JOIN people_emails e ON (e.person_id = p.id)
 					WHERE
