@@ -145,6 +145,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 				$elastica_logger->info("Success. Response: " . json_encode($status->getResponse()->getData()));
 			} else {
 				$elastica_logger->error("Failed: " . $status->getResponse()->getError());
+				$error = true;
 			}
 		} catch (\Exception $e) {
 			$elastica_logger->error("Exception: {$e->getMessage()}");
