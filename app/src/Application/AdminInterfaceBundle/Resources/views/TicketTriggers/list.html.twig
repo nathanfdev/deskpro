@@ -9,7 +9,7 @@
 			<h3 ng-pluralize count="List.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
 		</header>
 		<article>
-			<p ng-if="!List.triggers.length" style="padding: 15px;">
+			<p ng-if="!List.triggers.length && !List.depList.length && !List.accounts.length" style="padding: 15px;">
 				{{ phrase('adm.ticket_triggers.no_triggers') }}
 			</p>
 			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length" dp-move-list-to-pos dp-max-height>
