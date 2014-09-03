@@ -164,6 +164,7 @@ class LoginProcessor
 
 			$em->persist($this->person);
 
+			// TODO: we need to update this to the person phone_number field when we deprecate the contact data phone number
 			if ($mapped_fields->has('phone')) {
 				$contact_data = new PersonContactData();
 				$contact_data->contact_type = 'phone';
