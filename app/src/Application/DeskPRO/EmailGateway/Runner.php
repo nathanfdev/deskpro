@@ -35,6 +35,7 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
+use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
@@ -379,7 +380,7 @@ class Runner
 
 			if ($remain < $min) {
 				$this->logger->log(sprintf("Detected that we are at the memory limit, quitting run"), 'debug');
-				return 'memory_limit';
+				throw new ProcessingException("Detected that we are at the memory limit", ProcessingException::MEMORY_LIMIT);
 			}
 		}
 
@@ -696,7 +697,17 @@ class Runner
 
 			$this->logger->logDebug('START: executeSource('.$source->getId().')');
 			$t = microtime(true);
-			$ret_code = $this->executeSource($source);
+			$is_mem_limit = false;
+			try {
+				$this->executeSource($source);
+			} catch (ProcessingException $e) {
+				if ($e->getCode() == ProcessingException::MEMORY_LIMIT) {
+					$is_mem_limit = true;
+				} else {
+					$this->logger->logError("Exception: " . $e->getMessage());
+				}
+			}
+
 			$this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true)-$t));
 
 			$m_end = memory_get_usage();
@@ -706,10 +717,12 @@ class Runner
 
 			$time_so_far = time() - $exec_start;
 			if ($time_limit && $time_so_far >= $time_limit) {
+				$this->logger->logInfo("Hit time limit, breaking");
 				break;
 			}
 
-			if ($ret_code == 'memory_limit') {
+			if ($is_mem_limit) {
+				$this->logger->logInfo("Hit memory limit, breaking");
 				break;
 			}
 
