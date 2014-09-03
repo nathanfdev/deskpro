@@ -84,10 +84,11 @@
 								<label class="dp-remember-me-row"><input type="checkbox" name="remember_me" value="1" tabindex="53" /> {{ phrase('user.general.remember_me') }}</label>
 								<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" tabindex="52" />
 							</div>
-							{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+							{% set usersources = app.usersourceManager.getAll.configuredForUsers.withCapability('tpl_login_pull_btn') %}
+							{% if usersources|length %}
 								<div class="dp-usersource-list">
 									{{ phrase('user.profile.or_connect_with') }}
-									{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+									{% for usersource in usersources %}
 										{{ render_usersource(usersource, 'login_pull_btn') }}
 									{% endfor %}
 								</div>

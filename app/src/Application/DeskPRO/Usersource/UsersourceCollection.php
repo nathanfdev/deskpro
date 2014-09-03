@@ -67,6 +67,31 @@ class UsersourceCollection extends \ArrayObject
 		return new static($filtered);
 	}
 
+	public function configuredForUsers()
+	{
+		// select only user enabled usersources
+		$filtered = array_filter(
+			(array) $this, function (Usersource $us) {
+				return $us->is_enabled_user;
+			}
+		);
+
+		// order them for the user
+		usort($filtered, function ($us1, $us2) {
+			if ($us1->display_order_user == $us2->display_order_user) {
+				return 0;
+			}
+
+			if ($us1->display_order_user > $us2->display_order_user) {
+				return -1;
+			}
+
+			return 1;
+		});
+
+		return new static($filtered);
+	}
+
 	public function withCapability($capability)
 	{
 		$filtered = array_filter(

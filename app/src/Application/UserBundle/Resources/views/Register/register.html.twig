@@ -59,10 +59,11 @@
 
 	<section class="dp-well">
 		<header>
-			{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+			{% set usersources = app.usersourceManager.getAll.configuredForUsers.withCapability('tpl_login_pull_btn') %}
+			{% if usersources|length %}
 				<div class="dp-connect-with">
 					{{ phrase('user.profile.or_connect_with') }}
-					{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+					{% for usersource in usersources %}
 						{{ render_usersource(usersource, 'login_pull_btn') }}
 					{% endfor %}
 				</div>

@@ -112,8 +112,8 @@
 				</fieldset>
 				<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
 				<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
-				{% set usersources = app.usersourceManager.all.configuredForAgents.withCapability('tpl_login_pull_btn') %}
-				{% if usersources %}
+				{% set usersources = app.usersourceManager.getAll.configuredForAgents.withCapability('tpl_login_pull_btn') %}
+				{% if usersources|length %}
 					<div class="dp-usersource-list">
 						Or log in with &nbsp;
 						{% for usersource in usersources%}
