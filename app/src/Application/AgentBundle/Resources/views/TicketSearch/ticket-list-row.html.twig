@@ -244,7 +244,7 @@
 						<span class="prop-title">{{ phrase('agent.general.slas') }}:</span>
 						<span class="prop-val">
 							<% for (var slaIdx = 0; slaIdx < ticket_display.ticket_slas.length; slaIdx++) { var ticket_sla = ticket_display.ticket_slas[slaIdx]; %>
-							<span class="prop-val sla-status-<%= ticket_sla.sla_status %>">
+							<span class="sla-status-<%= ticket_sla.sla_status %>">
 								<%- ticket_sla.sla.title %>
 								<% if (ticket_sla.next_trigger_date_ts) { %>
 									(<span dp-timeago timestamp="<%= ticket_sla.next_trigger_date_ts %>" no-suffix />)
