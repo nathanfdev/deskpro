@@ -602,6 +602,8 @@ class Runner
 
 		$this->logger->logDebug(sprintf("%d inserted messages being processed first", count($inserted_source_ids)));
 
+		$processed_source_ids = array();
+
 		while (true) {
 			// Make sure any records are flusehd
 			App::getOrm()->flush();
@@ -612,7 +614,7 @@ class Runner
 			// process of emails being rolledback.
 			if (App::getDb()->isTransactionActive()) {
 				$this->logger->log("WARNING: Unclosed transaction!", 'info');
-				$e = new \RuntimeException("WARNING: Unclosed transaction!");
+				$e = new \RuntimeException("WARNING: Unclosed transaction. Sources processed: " . implode(', ', $processed_source_ids));
 				KernelErrorHandler::logException($e);
 				while (App::getDb()->isTransactionActive()) {
 					App::getDb()->commit();
@@ -653,6 +655,8 @@ class Runner
 					break;
 				}
 			}
+
+			$processed_source_ids[] = $source->id;
 
 			if (!$this->log_messages) {
 				$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
