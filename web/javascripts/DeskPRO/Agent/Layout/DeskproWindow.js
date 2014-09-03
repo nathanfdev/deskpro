@@ -173,8 +173,13 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				}
 			}
 		} else {
-			listWidth = parseInt(listSizer.css('left').replace(/px/, '')) - this.LEFT_START;
-			this.listWidthRatio = listWidth / totalWidth;
+			if (!paneVis.source) {
+				listWidth = parseInt(listSizer.css('left').replace(/px/, '')) - this.LEFT_START + this.SOURCE_WIDTH - this.SOURCE_PLACE_WIDTH;
+				this.listWidthRatio = (listWidth) / totalWidth;
+			} else {
+				listWidth = parseInt(listSizer.css('left').replace(/px/, '')) - this.LEFT_START;
+				this.listWidthRatio = listWidth / totalWidth;
+			}
 		}
 
 		$('#dp_list').width(listWidth);
