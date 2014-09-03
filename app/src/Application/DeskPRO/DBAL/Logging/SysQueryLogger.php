@@ -118,6 +118,14 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$this->_track_ids = array_fill_keys($this->_track_ids, true);
 
 		$this->_enabled = true;
+
+		$pattern = dp_get_config('debug.page_log.url_pattern');
+		if ($pattern) {
+			$url = defined('DP_REQUEST_URL') ? DP_REQUEST_URL : @$_SERVER["REQUEST_URI"];
+			if (!$url || !preg_match($pattern, $url)) {
+				$this->_enabled = false;
+			}
+		}
 	}
 
 	public function writeLogQuiet()

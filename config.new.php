@@ -296,6 +296,12 @@ $DP_CONFIG['debug']['page_log'] = array(
 	'enabled' => false,
 
 	/**
+	 * Only enable for URLs that match this regex pattern.
+	 * For example: /agent\/tickets/
+	 */
+	'url_pattern' => null,
+
+	/**
 	 * Slow Query Log: data/logs/pagelog-slow-queries.log
 	 * This logs queries that take longer than a certain time.
 	 *
