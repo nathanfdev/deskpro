@@ -567,9 +567,10 @@ class Person extends AbstractEntityRepository
 		$startWith = (bool) $startWith;
 		$withAgents = (bool) $withAgents;
 		$excludeOrg = abs($excludeOrg);
-		$limit = min($limit, 100);
+		$limit = max(10, min($limit, 100));
 		$agent_sql = $withAgents ? '' : ' p.is_agent = 0 AND ';
 		$db = $this->getEntityManager()->getConnection();
+		$q = strtolower($q);
 
 		if (BigMode::isBigMode(BigMode::PERSON_AUTOCOMPLETE)) {
 
@@ -590,7 +591,7 @@ class Person extends AbstractEntityRepository
 					LEFT JOIN people_emails e ON (e.person_id = p.id)
 					WHERE
 						$agent_sql
-						e.email LIKE ?
+						LOWER(e.email) LIKE ?
 						" . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
 					GROUP BY p.id
 					ORDER BY p.date_last_login DESC, p.id DESC
@@ -615,10 +616,10 @@ class Person extends AbstractEntityRepository
 					LEFT JOIN people_emails e ON (e.person_id = p.id)
 					WHERE
 						$agent_sql
-						(e.email LIKE ?
-						OR p.name LIKE ?
-						OR p.first_name LIKE ?
-						OR p.last_name LIKE ?)
+						(LOWER(e.email) LIKE ?
+						OR LOWER(p.name) LIKE ?
+						OR LOWER(p.first_name) LIKE ?
+						OR LOWER(p.last_name) LIKE ?)
 						" . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
 					GROUP BY p.id
 					ORDER BY p.date_last_login DESC, p.id DESC

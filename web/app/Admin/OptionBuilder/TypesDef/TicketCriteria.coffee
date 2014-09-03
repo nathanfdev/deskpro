@@ -812,8 +812,17 @@ define [
 		getCheckUserEmail: (options = {}) ->
 			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+			options.url = '/people/quick_search'
+
+			format = (item) -> "#{item.email} (#{item.first_name} #{item.last_name})"
+			options.inputOptions =
+				formatResult: format
+				formatSelection: format
+				initSelection: (item) -> item.email
+				ajax:
+					data: (term, page) -> { query: term, limit: 10, with_agents: false }
+
+			@getRemoteInput options
 
 		getCheckUserLabel: (options = {}) ->
 			options.propName = 'labels'

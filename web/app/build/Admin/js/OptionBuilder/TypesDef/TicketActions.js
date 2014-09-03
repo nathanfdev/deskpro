@@ -131,6 +131,10 @@
           value: 'AddAgentReply'
         });
         options.push({
+          title: 'Add Agent Note',
+          value: 'AddAgentNote'
+        });
+        options.push({
           title: 'Require User Email Validation',
           value: 'SetRequireValidation'
         });
@@ -154,6 +158,10 @@
         options.push({
           title: 'Send Email To Agents',
           value: 'SendAgentEmail'
+        });
+        options.push({
+          title: 'Send Email to a specific email address',
+          value: 'SendSpecificUserEmail'
         });
         set_options.push({
           title: 'Send Email',
@@ -550,6 +558,12 @@
         options.propName = 'add_agent_ids';
         options.dataName = 'agents';
         options.isMulti = true;
+        options.extraOptions = [
+          {
+            title: 'Current Agent',
+            value: -1
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -677,11 +691,21 @@
                 }
                 options = (value != null ? value.options : void 0) || {};
                 viewValue = {
-                  add_labels: (options.add_labels || []).join(', '),
-                  remove_labels: (options.remove_labels || []).join(', ')
+                  add_labels: options.add_labels || [],
+                  remove_labels: options.remove_labels || [],
+                  select2_add: {
+                    multiple: true,
+                    simple_tags: true,
+                    tags: options.add_labels || []
+                  },
+                  select2_remove: {
+                    multiple: true,
+                    simple_tags: true,
+                    tags: options.remove_labels || []
+                  }
                 };
-                viewValue.with_add = !!viewValue.add_labels;
-                viewValue.with_remove = !!viewValue.remove_labels;
+                viewValue.with_add = viewValue.add_labels.length > 0;
+                viewValue.with_remove = viewValue.remove_labels.length > 0;
                 return viewValue;
               },
               getValue: function(model, data) {
@@ -692,8 +716,8 @@
                 value = {};
                 value.type = 'SetLabels';
                 value.options = {};
-                value.options.add_labels = model.with_add ? (model.add_labels || '').split(',') : '';
-                value.options.remove_labels = model.with_remove ? (model.remove_labels || '').split(',') : '';
+                value.options.add_labels = model.with_add ? model.add_labels : [];
+                value.options.remove_labels = model.with_remove ? model.remove_labels : [];
                 return value;
               }
             };
@@ -1371,6 +1395,110 @@
         };
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendSpecificUserEmail = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-sendemail.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          scopeInit: [
+            '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
+              return $scope.handleTemplateChange = function() {
+                if ($scope.model.template === 'CREATE') {
+                  $scope.model.template = null;
+                  $scope.is_creating = true;
+                  return $modal.open({
+                    templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                    controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                    resolve: {
+                      templateName: function() {
+                        return null;
+                      }
+                    }
+                  }).result.then((function(_this) {
+                    return function(info) {
+                      var title, tpl, _ref;
+                      if (info.templateName) {
+                        title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
+                        tpl = {
+                          name: info.templateName,
+                          title: title
+                        };
+                        if ((((_ref = me.options_data) != null ? _ref.custom_email_tpls : void 0) != null) && me.options_data.custom_email_tpls.indexOf(tpl) === -1) {
+                          me.options_data.custom_email_tpls.push(tpl);
+                        }
+                        $scope.model.template = info.templateName;
+                        return $timeout(function() {
+                          $scope.model.template = info.templateName;
+                          return $scope.is_creating = false;
+                        }, 100);
+                      } else {
+                        return $scope.is_creating = false;
+                      }
+                    };
+                  })(this), function() {
+                    return $scope.is_creating = false;
+                  });
+                }
+              };
+            }
+          ],
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var emails, from_name, from_name_custom;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                emails = options.emails || [];
+                from_name = options.from_name || 'helpdesk_name';
+                from_name_custom = null;
+                if (from_name !== 'performer' && from_name !== 'helpdesk_name' && from_name !== 'site_name') {
+                  from_name = 'custom';
+                  from_name_custom = options.from_name;
+                }
+                return {
+                  emails: emails,
+                  template: options.template || '',
+                  from_name: from_name,
+                  from_name_custom: from_name_custom,
+                  from_account: (parseInt(options.from_account || 0) || 0) + ''
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  emails: model.emails,
+                  template: model.template || '',
+                  from_name: '',
+                  from_account: parseInt(model.from_account || 0)
+                };
+                if (model.from_name === 'custom') {
+                  options.from_name = model.from_name_custom || '';
+                } else {
+                  options.from_name = model.from_name || '';
+                }
+                value = {};
+                value.type = 'SendSpecificUserEmail';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getWebHook = function(options) {
         var me;
         if (options == null) {
@@ -1495,9 +1623,10 @@
                 }
                 by_agent_id = by_agent_id + "";
                 return {
-                  reply_text: opt.reply_text || '',
+                  text: opt.reply_text || '',
                   by_assigned_agent: opt.by_assigned_agent || false,
-                  by_agent_id: by_agent_id
+                  by_agent_id: by_agent_id,
+                  title: 'Reply Text'
                 };
               },
               getValue: function(model, data) {
@@ -1508,7 +1637,58 @@
                 value = {};
                 value.type = 'AddAgentReply';
                 value.options = {};
-                value.options.reply_text = model.reply_text;
+                value.options.reply_text = model.text;
+                value.options.by_assigned_agent = model.by_assigned_agent || false;
+                value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getAddAgentNote = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-addagentreply.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var by_agent_id, opt;
+                if (value == null) {
+                  value = {};
+                }
+                opt = value.options || {};
+                by_agent_id = opt.by_agent_id || null;
+                if (!by_agent_id) {
+                  by_agent_id = data.agents[0].id;
+                }
+                by_agent_id = by_agent_id + "";
+                return {
+                  text: opt.note_text || '',
+                  by_assigned_agent: opt.by_assigned_agent || false,
+                  by_agent_id: by_agent_id,
+                  title: 'Note Text'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'AddAgentNote';
+                value.options = {};
+                value.options.note_text = model.text;
                 value.options.by_assigned_agent = model.by_assigned_agent || false;
                 value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0;
                 return value;

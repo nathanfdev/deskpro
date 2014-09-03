@@ -64,3 +64,55 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 		setVar: (k, v) ->
 			if not @vars then @vars = {}
 			@vars[k] = v
+
+		###
+		# Constructs autocomplete with remote data
+		###
+		getRemoteInput: (options) ->
+			type      = options.type
+			prop_name = options.propName
+			operators = @getOperators(options)
+
+			me = @
+			{
+				getTemplate: -> return me.dpTemplateManager.get(@remoteTemplate)
+
+				getData: -> { operators: operators, options: options }
+
+				getDataFormatter: ->
+					{
+						getViewValue: (value = {}, data) ->
+
+							if value.op
+								if value.op == 'is' and operators.indexOf('is') == -1
+									value.op = 'contains'
+								else if value.op == 'not' and operators.indexOf('not') == -1
+									value.op = 'notcontains'
+
+							inputOptions =
+								dropdownAutoWidth: true
+								minimumInputLength: 1
+								initSelection: (item) -> item.id
+								ajax:
+									data: (term, page) -> { query: term }
+									quietMillis: 200
+									transport: (query) -> me.Api.sendGet(options.url, query.data).then query.success
+									results: (data, page) -> { results: data.data }
+
+							$.extend true, inputOptions, options.inputOptions || {}
+
+							return {
+								value: value.options?[prop_name] || '',
+								op: value.op || _.first(data.operators)
+								inputOptions: inputOptions
+							}
+
+						getValue: (model = {}, data) ->
+							value = {}
+							value.type = type
+							value.op = model.op
+							value.options = {}
+							value.options[prop_name] = model.value || ''
+							return value
+					}
+			}

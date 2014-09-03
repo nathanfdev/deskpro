@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Orb\Util\Numbers;
 use Orb\Util\Util;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -2590,10 +2591,15 @@ class PersonController extends AbstractController
 		/** @var \Application\DeskPRO\EntityRepository\Person $rep */
 		$rep = $this->em->getRepository('DeskPRO:Person');
 		$res = $rep->quickSearch(
-			$request->get('q'), !$request->get('start_with'), $request->get('with_agents'),
+			$request->get('query'), !$request->get('start_with'), $request->get('with_agents'),
 			$request->get('exclude_org'), $request->get('limit')
 		);
 
-		return $this->createApiResponse($res);
+		$ret = array();
+		foreach ($res as $item) {
+			$ret[] = $item;
+		}
+
+		return $this->createApiResponse($ret);
 	}
 }

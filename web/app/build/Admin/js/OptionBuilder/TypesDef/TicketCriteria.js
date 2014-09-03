@@ -296,6 +296,10 @@
           title: 'Ticket Created Date',
           value: 'CheckDateCreated'
         });
+        options.push({
+          title: 'During Working Hours',
+          value: 'CheckWorkingHours'
+        });
         set_options.push({
           title: 'Dates',
           subOptions: options
@@ -323,6 +327,15 @@
         });
         set_options.push({
           title: 'Trigger Control',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Check API key',
+          value: 'CheckApiKey'
+        });
+        set_options.push({
+          title: 'API Criteria',
           subOptions: options
         });
         return set_options;
@@ -356,7 +369,8 @@
               'ticket_accounts': '/email_accounts',
               'usergroups': '/user_groups',
               'langs': '/langs',
-              'email_tpls': '/email-templates-info'
+              'email_tpls': '/email-templates-info',
+              'api_keys': '/api_keys'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -377,6 +391,7 @@
                 options_data['usergroups'] = data.usergroups.groups;
                 options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
+                options_data['api_keys'] = data.api_keys.api_keys;
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
                   _ref7 = _this.options_data.ticket_fields;
@@ -956,14 +971,33 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserEmail = function(options) {
-        var def;
+        var format;
         if (options == null) {
           options = {};
         }
         options.propName = 'email';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        options.url = '/people/quick_search';
+        format = function(item) {
+          return "" + item.email + " (" + item.first_name + " " + item.last_name + ")";
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          initSelection: function(item) {
+            return item.email;
+          },
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10,
+                with_agents: false
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabel = function(options) {
@@ -1322,16 +1356,21 @@
                   value = {};
                 }
                 return {
-                  op: value.op || 'is'
+                  op: value.op || 'is',
+                  working_hours: value.options.working_hours
                 };
               },
               getValue: function(model, data) {
-                var value;
                 if (model == null) {
                   model = {};
                 }
-                value = {};
-                return value;
+                return {
+                  type: 'CheckWorkingHours',
+                  op: model.op,
+                  options: {
+                    working_hours: model.working_hours
+                  }
+                };
               }
             };
           }
@@ -1431,6 +1470,30 @@
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckAgentIsEmailed = function() {
         return this.getIsEmailed('CheckAgentIsEmailed', 'type-criteria-agentisemailed.html');
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckApiKey = function(options) {
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'api_key_id';
+        options.dataName = 'api_keys';
+        options.operators = ['is', 'not'];
+        options.single = true;
+        options.optionsFormatter = function(options) {
+          var key, name, opts, _i, _len;
+          opts = [];
+          for (_i = 0, _len = options.length; _i < _len; _i++) {
+            key = options[_i];
+            name = key.person ? key.person.display_name : 'Super User';
+            opts.push({
+              value: key.id,
+              title: [name, key.note].join(' | ')
+            });
+          }
+          return opts;
+        };
+        return this.getStandardSelect(options);
       };
 
       return Admin_OptionBuilder_TypesDef_TicketCriteria;
