@@ -55,6 +55,11 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	private $_enabled = false;
 
 	/**
+	 * @var array
+	 */
+	private $_track_ids = array();
+
+	/**
 	 * The time this object was instantiated. Most scripts have the DP_START_TIME constant
 	 * defined during boot, so this is just a fallback used when determining when to log the
 	 * slow page log.
@@ -109,6 +114,9 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		if (!function_exists('dp_get_config')) return;
 		if (!dp_get_config('debug.page_log.enabled') || isset($GLOBALS['DP_NOSQL_LOG'])) return;
 
+		$this->_track_ids = dp_get_config('debug.page_log.track_query_ids', array());
+		$this->_track_ids = array_fill_keys($this->_track_ids, true);
+
 		$this->_enabled = true;
 	}
 
@@ -140,8 +148,10 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$GLOBALS['DP_QUERY_COUNT']++;
 		$this->_query_count++;
 
+		$id = md5($sql);
+
 		$trace = null;
-		if (dp_get_config('debug.page_log.save_trace')) {
+		if (dp_get_config('debug.page_log.save_trace') || isset($this->_track_ids[$id])) {
 			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 		}
@@ -153,7 +163,8 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			'time_end'       => 0,
 			'time_taken'     => 0,
 			'trans_level'    => 0,
-			'trace'          => $trace
+			'trace'          => $trace,
+			'id'             => $id,
 		);
 	}
 
@@ -233,6 +244,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 					'total_time' => $queryinfo['time_taken'],
 					'min_time'   => $queryinfo['time_taken'],
 					'max_time'   => $queryinfo['time_taken'],
+					'id'         => $queryinfo['id']
 				);
 			} else {
 				$repeated_queries[$query_name]['count']++;
@@ -472,13 +484,14 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 		foreach ($repeated_queries as $name => $info) {
 			$write[] = sprintf(
-				"\t<%s> Count: %03d   Time: %.4f   MaxTime: %.4f   MinTime: %.4f   AvgTime: %.4f",
+				"\t<%s> Count: %03d   Time: %.4f   MaxTime: %.4f   MinTime: %.4f   AvgTime: %.4f -- ID: %s",
 				$name,
 				$info['count'],
 				$info['total_time'],
 				$info['max_time'],
 				$info['min_time'],
-				$info['avg_time']
+				$info['avg_time'],
+				$info['id']
 			);
 		}
 
