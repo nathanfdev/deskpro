@@ -1101,4 +1101,32 @@ JS;
 
 		return $response;
 	}
+
+	public function dismissDpNewsAction($id)
+	{
+		$dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+		if (!isset($dp_news[$id])) {
+			throw $this->createNotFoundException();
+		}
+
+		$read_news = $this->person->getPref('agent.ui.dp_news', array());
+		$read_news[] = $id;
+		$p = $this->person->setPreference('agent.ui.dp_news', $read_news);
+		$this->em->persist($p);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success'=> true));
+	}
+
+	public function viewDpNewsAction($id)
+	{
+		$dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+		if (!isset($dp_news[$id])) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->render('AgentBundle:Misc:dp-news-view.html.twig', array(
+				'dp_news' => $dp_news[$id]
+			));
+	}
 }

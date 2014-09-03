@@ -3434,6 +3434,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.getSectionDataSendQueued();
+
+		if (this.openDpNews && this.openDpNews.length) {
+			var focus = true;
+			for (var i = 0; i < this.openDpNews.length; i++) {
+				this.loadPage(BASE_URL + 'agent/misc/view-dp-news/' + this.openDpNews[i].id, { noToggle: true, focus: focus });
+				focus = false;
+			}
+		}
 	},
 
 	switchToSection: function(section_id, no_load_list) {

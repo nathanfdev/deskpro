@@ -742,4 +742,5 @@
 	'agent.general.your_teams'                              => 'Your Teams',
 	'agent.general.new'                                     => 'New',
 	'agent.general.unassign'                                => 'Unassign',
+	'agent.general.dp_updates'                              => 'DeskPRO Updates',
 );

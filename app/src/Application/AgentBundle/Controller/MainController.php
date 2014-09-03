@@ -149,18 +149,20 @@ class MainController extends AbstractController
 
 		\Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
 
-		$version_notices = new PrefNoticeSet(
-			$this->db,
-			$this->person,
-			'agent.ui.version_notices',
-			DP_ROOT.'/docs/changelog/docs.php'
-		);
-
 		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
 		$chat_snippet_cats   = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('chat', $this->person);
 
 		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
 		$password_validator = App::$container->getSystemService('password_policy_validator');
+
+		$dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+		$read_news = $this->person->getPref('agent.ui.dp_news', array());
+		$unread_dp_news = array();
+		foreach ($dp_news as $info) {
+			if (!in_array($info['id'], $read_news)) {
+				$unread_dp_news[] = $info;
+			}
+		}
 
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
@@ -186,9 +188,9 @@ class MainController extends AbstractController
 			'is_first_login'      => $is_first_login,
 			'is_first_login_name' => $is_first_login_name,
 			'timezones'           => \DateTimeZone::listIdentifiers(),
-			'version_notices'     => $version_notices,
 			'ticket_snippet_cats' => $ticket_snippet_cats,
 			'chat_snippet_cats'   => $chat_snippet_cats,
+			'unread_dp_news'      => $unread_dp_news,
 		));
 	}
 

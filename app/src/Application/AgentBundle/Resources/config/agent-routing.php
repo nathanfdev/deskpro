@@ -115,6 +115,20 @@ $collection->create('agent_dismiss_version_notice', array(
 	'controller'  => 'AgentBundle:Main:dismissVersionNotice',
 ));
 
+$collection->create('agent_dpnews_view', array(
+	'path'         => '/misc/view-dp-news/{id}',
+	'controller'   => 'AgentBundle:Misc:viewDpNews',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('agent_dpnews_dismiss', array(
+	'path'         => '/misc/view-dp-news/{id}/dismiss',
+	'controller'   => 'AgentBundle:Misc:dismissDpNews',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('POST'),
+));
+
 $collection->create('agent_redirect_out', array(
 	'path'          => '/redirect-out/{url}',
 	'controller'    => 'AgentBundle:Misc:redirectExternal',
