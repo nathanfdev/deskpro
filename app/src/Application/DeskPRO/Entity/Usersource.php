@@ -42,6 +42,15 @@ use Orb\Util\Util;
 
 /**
  * Defines information about an external user source
+ * @property $title
+ * @property $source_type
+ * @property $lost_password_url
+ * @property $options
+ * @property $display_order_user
+ * @property $display_order_agent
+ * @property $is_enabled_user
+ * @property $is_enabled_agent
+ * @property $app
  */
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {

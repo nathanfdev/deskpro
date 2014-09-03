@@ -50,6 +50,11 @@ class UsersourceManager
 	 */
 	protected $usersources = null;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Usersource[]|\Application\DeskPRO\Usersource\UsersourceCollection
+	 */
+	protected $agentUsersources;
+
 
 	/**
 	 * @param \Doctrine\ORM\EntityManager $em
@@ -99,6 +104,7 @@ class UsersourceManager
 	 * Get all installed usersources
 	 *
 	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 * @deprecated use getAll() and filter with UsersourceCollection as needed
 	 */
 	public function getUsersources()
 	{
@@ -112,8 +118,23 @@ class UsersourceManager
 
 
 	/**
+	 * Get all usersources for the agent/admin area
+	 *
+	 * @param bool $active if true only returns enabled usersources
+	 * @return \Application\DeskPRO\Entity\Usersource[]|\Application\DeskPRO\Usersource\UsersourceCollection
+	 */
+	public function getAll()
+	{
+		return new UsersourceCollection(
+			$this->em->getRepository('DeskPRO:Usersource')->getAll()
+		);
+	}
+
+
+	/**
 	 * @param string $type
 	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 * @deprecated use getAll() and filter with UsersourceCollection as needed
 	 */
 	public function getUsersourcesOfType($type)
 	{
@@ -133,9 +154,9 @@ class UsersourceManager
 
 	/**
 	 * Get usersources with a certain capability
-	 *
 	 * @param $capability
 	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 * @deprecated use getAll() and filter with UsersourceCollection as needed
 	 */
 	public function getWithCapability($capability)
 	{

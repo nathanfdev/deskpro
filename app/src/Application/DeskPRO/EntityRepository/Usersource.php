@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Usersource\UsersourceCollection;
 
 class Usersource extends AbstractEntityRepository
 {
@@ -69,6 +70,19 @@ class Usersource extends AbstractEntityRepository
 				ORDER BY u.display_order ASC
 			")->execute();
 		}
+	}
+
+	/**
+	 * @param bool $active
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public function getAll()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT u
+			FROM DeskPRO:Usersource u
+			INDEX BY u.id
+		")->execute();
 	}
 
 

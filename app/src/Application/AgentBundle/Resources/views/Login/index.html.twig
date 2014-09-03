@@ -82,7 +82,7 @@
 				{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 				{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
 				{% if failed_login_name %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
-				{% if has_done_reset %}<div class="success">{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
+				{% if has_done_reset %}<div class="successa>{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
 				{% if has_logged_out %}<div class="success">{{ phrase('agent.login.has_logged_out') }}</div>{% endif %}
 
 				{% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
@@ -112,10 +112,11 @@
 				</fieldset>
 				<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
 				<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
-				{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+				{% set usersources = app.usersourceManager.all.configuredForAgents.withCapability('tpl_login_pull_btn') %}
+				{% if usersources %}
 					<div class="dp-usersource-list">
 						Or log in with &nbsp;
-						{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+						{% for usersource in usersources%}
 							{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
 						{% endfor %}
 					</div>
