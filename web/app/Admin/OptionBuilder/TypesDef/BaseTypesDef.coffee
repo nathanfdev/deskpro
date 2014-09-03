@@ -102,7 +102,7 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 							$.extend true, inputOptions, options.inputOptions || {}
 
 							return {
-								value: value.options?[prop_name] || '',
+								value: value.options?[prop_name] || {}
 								op: value.op || _.first(data.operators)
 								inputOptions: inputOptions
 							}
@@ -112,7 +112,7 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 							value.type = type
 							value.op = model.op
 							value.options = {}
-							value.options[prop_name] = model.value || ''
+							value.options[prop_name] = model.value || {}
 							return value
 					}
 			}
