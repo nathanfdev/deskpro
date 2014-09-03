@@ -61,7 +61,7 @@
 				<li ng-repeat="tab in tabs track by tab.id" id="{{ ng_var('tab.tabBtnId') }}"
 					ng-click="tabClick($event, tab)"
 					data-tab-id="{{ ng_var('tab.id') }}"
-					ng-class="{'activeTabList': tab.isActive && paneVis.tabs}"
+					ng-class="{'activeTabList': tab.isActive && paneVis.tabs, 'is-alerting': tab.isAlerting}"
 					>
 					<div class="item-hover-over-indicator"></div>
 					<a>

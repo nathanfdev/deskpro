@@ -390,7 +390,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.callback_activate(data, wrapper, this);
 		}
 
-		this.clearAlertTab(data);
+		tab.isAlerting = false;
 
 		this.currentTabId = id;
 
@@ -610,30 +610,17 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 	alertTab: function(tab) {
 		var el = $(tab.tabBtnId);
-		if (tab.isActive || el.is('.is-alerting')) return;
+		if (tab.isActive || el.isAlerting) return;
 
-		if(!this.isTabVisible(tab)) {
-			this.tabToFrontTabById(tab.id, true);
-		}
-
-		el.addClass('is-alerting');
-		var timeout = this._alertTabDoHighlight.periodical(700, this, [el]);
-		el.data('alerting-timeout', timeout);
+		this.$scope.$safeApply(function() {
+			tab.isAlerting = true;
+		});
 	},
 
 	clearAlertTab: function(tab) {
-		var el = $(tab.tabBtnId);
-
-		if (!el.length) return;
-
-		el.removeClass('alert-highlight').removeClass('is-alerting');
-
-		var timeout = el.data('alerting-timeout');
-		if (timeout) {
-			window.clearTimeout(timeout);
-		}
-
-		el.data('alerting-timeout', null);
+		this.$scope.$safeApply(function() {
+			tab.isAlerting = false;
+		});
 	},
 
 	_alertTabDoHighlight: function(el) {
