@@ -75,7 +75,7 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 
 			me = @
 			{
-				getTemplate: -> return me.dpTemplateManager.get(@remoteTemplate)
+				getTemplate: -> return me.dpTemplateManager.get(me.remoteTemplate)
 
 				getData: -> { operators: operators, options: options }
 
