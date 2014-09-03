@@ -185,13 +185,13 @@ class LabelDef extends AbstractEntityRepository
 			case 'people':
 				return 'labels_people';
 			case 'tickets':
-				return 'Desklabels_tickets';
+				return 'labels_tickets';
 			case 'articles':
 				return 'labels_articles';
 			case 'feedback':
 				return 'labels_feedback';
 			case 'downloads':
-				return 'Desklabels_downloads';
+				return 'labels_downloads';
 			case 'news':
 				return 'labels_news';
 		}
