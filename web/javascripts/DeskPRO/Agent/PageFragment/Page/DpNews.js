@@ -20,5 +20,13 @@ DeskPRO.Agent.PageFragment.Page.DpNews = new Orb.Class({
 				type: 'POST'
 			});
 		});
+
+		this.addEvent('destroy', function() {
+			$.ajax({
+				url: BASE_URL + 'agent/misc/view-dp-news/'+self.meta.dpNewsId+'/dismiss',
+				dataType: 'json',
+				type: 'POST'
+			});
+		});
 	}
 });

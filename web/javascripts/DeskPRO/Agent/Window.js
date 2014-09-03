@@ -3436,11 +3436,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.getSectionDataSendQueued();
 
 		if (this.openDpNews && this.openDpNews.length) {
-			var focus = true;
-			for (var i = 0; i < this.openDpNews.length; i++) {
-				this.loadPage(BASE_URL + 'agent/misc/view-dp-news/' + this.openDpNews[i].id, { noToggle: true, focus: focus });
-				focus = false;
-			}
+			$.ajax({
+				url: 'https://support.deskpro.com/?_sys=ping&type=jsonp',
+				dataType: 'jsonp',
+				success: function() {
+					var focus = true;
+					for (var i = 0; i < self.openDpNews.length; i++) {
+						self.loadPage(BASE_URL + 'agent/misc/view-dp-news/' + self.openDpNews[i].id, { noToggle: true, focus: focus });
+						focus = false;
+					}
+				}
+			});
 		}
 	},
 
