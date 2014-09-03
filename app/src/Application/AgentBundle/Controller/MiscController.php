@@ -424,8 +424,6 @@ JS;
 			}
 		}
 
-		dp_log($headers);
-
 		if ($headers) {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		}
