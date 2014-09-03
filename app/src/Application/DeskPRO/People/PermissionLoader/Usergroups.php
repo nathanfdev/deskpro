@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity;
+use Orb\Util\Arrays;
 
 /**
  * Loads general usergroup permissions likes flags and the like.
@@ -133,25 +134,22 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 			if (!$this->usergroup_ids && !$this->person_id) {
 				$this->perms = array();
 			} else {
-				$ids_string = implode(',', $this->usergroup_ids);
-				if (!$ids_string) {
-					$ids_string = '0';
-				}
 				if ($this->person_id) {
-					$perms = App::getOrm()->createQuery("
-						SELECT p
-						FROM DeskPRO:Permission p
-						WHERE p.usergroup IN ($ids_string) OR p.person = ?1
-					")->setParameter(1, $this->person_id)
-					  ->getResult();
+					$perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
+					if ($this->person && $this->person->is_agent) {
+						$perms = array_merge($perms, App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->usergroup_ids));
+					}
 				} else {
-					$perms = App::getOrm()->createQuery("
-						SELECT p
-						FROM DeskPRO:Permission p
-						WHERE p.usergroup IN ($ids_string)
-					")->getResult();
+					$perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
 				}
-				$this->perms = Permission::getEffectivePermissions($perms);
+				$perm_result = array();
+				foreach ($perms as $p_group) {
+					foreach ($p_group as $p) {
+						$perm_result[] = $p;
+					}
+				}
+
+				$this->perms = Permission::getEffectivePermissions($perm_result);
 			}
 		}
 

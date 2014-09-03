@@ -123,7 +123,7 @@ class Permission extends DomainObject
 	/**
 	 * Combine an array of permissions into a superduper array of effective permissions.
 	 *
-	 * @param \Application\DeskPRO\Entity\Permission[] $perms
+	 * @param \Application\DeskPRO\Entity\Permission[]|array $perms
 	 * @return array
 	 */
 
@@ -133,8 +133,16 @@ class Permission extends DomainObject
 
 		foreach ($perms as $perm) {
 
-			$k = $perm->name;
-			$v = $perm->value;
+			if (is_array($perm)) {
+				if (!isset($perm['name'])) {
+					dp_log($perm);
+				}
+				$k = $perm['name'];
+				$v = $perm['value'];
+			} else {
+				$k = $perm->name;
+				$v = $perm->value;
+			}
 
 			if (!Numbers::isInteger($v)) {
 

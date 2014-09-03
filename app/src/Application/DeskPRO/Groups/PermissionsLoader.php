@@ -29,69 +29,111 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Groups;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 
-class PermissionCache extends AbstractEntityRepository
+class PermissionsLoader
 {
+	/**
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	private $db;
+
 	/**
 	 * @var array
 	 */
-	private $cache;
+	private $ug_perms;
 
-	public function loadPermissionTypes($usergroup_key, $person_id = null, array $types = null)
+	/**
+	 * @var array
+	 */
+	private $agent_override_perms;
+
+
+	/**
+	 * @param Connection $db
+	 */
+	public function __construct(Connection $db)
 	{
-		if ($this->cache === null) {
-			$this->cache = $this->_em->getConnection()->fetchAll("
-				SELECT name, usergroup_key, perms
-				FROM permissions_cache
-			");
+		$this->db = $db;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllPermissions()
+	{
+		if ($this->ug_perms !== null) {
+			return $this->ug_perms;
 		}
 
-		$key = $usergroup_key;
+		$this->ug_perms = $this->db->fetchAllGrouped("
+			SELECT usergroup_id, name, value
+			FROM permissions
+			WHERE person_id IS NULL
+		", array(), 'usergroup_id');
 
-		if ($person_id) {
-			$key .= ".$person_id";
-		}
+		return $this->ug_perms;
+	}
 
-		if ($types) {
-			// A simple filter to make sure only valid names are included
-			$types = array_filter($types, function($var) {
-				return !preg_match('#[^a-zA-Z0-9_]#', $var);
-			});
 
-			if (!$types) {
-				return array();
-			}
+	/**
+	 * @param array $ug_ids
+	 * @return array
+	 */
+	public function getUsergroupPermissions(array $ug_ids)
+	{
+		$ug_ids = array_fill_keys($ug_ids, true);
 
-			$types = array_fill_keys($types, true);
-
-			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $key, $types) {
-				return isset($types[$c['name']]) && ($c['usergroup_key'] == $usergroup_key || $c['usergroup_key'] == $key);
-			});
-		} else {
-			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $key) {
-				return ($c['usergroup_key'] == $usergroup_key || $c['usergroup_key'] == $key);
-			});
-		}
-
-		$loaders = array();
-
-		foreach ($recs as &$r) {
-			if (isset($r['perms_loader'])) {
-				$loaders[] = $r['perms_loader'];
-			} else {
-				$r['perms_loader'] = @unserialize($r['perms']);
-				if ($r['perms_loader']) {
-					$loaders[] = $r['perms_loader'];
-				}
+		$ret = array();
+		foreach ($this->getAllPermissions() as $ugid => $p) {
+			if (isset($ug_ids[$ugid])) {
+				$ret[$ugid] = $p;
 			}
 		}
 
-		return $loaders;
+		return $ret;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAllAgentOverridePermissions()
+	{
+		if ($this->agent_override_perms !== null) {
+			return $this->agent_override_perms;
+		}
+
+		$this->agent_override_perms = $this->db->fetchAllGrouped("
+			SELECT person_id, name, value
+			FROM permissions
+			WHERE person_id IS NOT NULL
+		", array(), 'person_id');
+
+		return $this->agent_override_perms;
+	}
+
+
+	/**
+	 * @param array $ug_ids
+	 * @return array
+	 */
+	public function getAgentOverridePermissions(array $agent_ids)
+	{
+		$agent_ids = array_fill_keys($agent_ids, true);
+
+		$ret = array();
+		foreach ($this->getAllAgentOverridePermissions() as $aid => $p) {
+			if (isset($agent_ids[$aid])) {
+				$ret[$aid] = $p;
+			}
+		}
+
+		return $ret;
 	}
 }

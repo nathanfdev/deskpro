@@ -75,6 +75,11 @@ class AgentDataService
 	/**
 	 * @var array
 	 */
+	private $agent_to_groups = array();
+
+	/**
+	 * @var array
+	 */
 	public $online_agent_ids;
 
 	/**
@@ -145,6 +150,14 @@ class AgentDataService
 		", array(), 'team_id', null, 'person_id');
 
 		$this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true);
+
+		if ($this->ids) {
+			$this->agent_to_groups = $this->db->fetchAllGrouped("
+				SELECT person_id, usergroup_id
+				FROM person2usergroups
+				WHERE person_id IN (" . implode(',', $this->ids) . ")
+			", array(), 'person_id', null, 'usergroup_id');
+		}
 	}
 
 
@@ -450,6 +463,30 @@ class AgentDataService
 		}
 
 		return $teams;
+	}
+
+	/**
+	 * @param int|\Application\DeskPRO\Entity\Person $agent
+	 * @return \Application\DeskPRO\Entity\AgentTeam[]
+	 * @throws \InvalidArgumentException
+	 */
+	public function getGroupIdsForAgent($agent)
+	{
+		$this->preload();
+		$this->preloadTeamMap();
+
+		$aid = is_object($agent) ? $agent->id : $agent;
+		$agent = $this->get($aid);
+
+		if (!$agent) {
+			throw new \InvalidArgumentException;
+		}
+
+		if (empty($this->agent_to_groups[$agent->id])) {
+			return array();
+		}
+
+		return $this->agent_to_groups[$agent->id];
 	}
 
 

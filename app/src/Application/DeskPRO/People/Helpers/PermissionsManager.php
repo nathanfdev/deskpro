@@ -100,18 +100,28 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	protected $admin_god_mode = false;
 
 	/**
+	 * Permission records loaded?
+	 * @var bool
+	 */
+	protected $is_loaded = false;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
 	public function __construct(Person $person)
 	{
 		$this->person = $person;
 
-		$this->usergroup_ids = App::getDb()->fetchAllCol("
-			SELECT person2usergroups.usergroup_id
-			FROM person2usergroups
-			LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
-			WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
-		", array($this->person['id']));
+		if ($person->is_agent) {
+			$this->usergroup_ids = App::$container->getAgentData()->getGroupIdsForAgent($person);
+		} else {
+			$this->usergroup_ids = App::getDb()->fetchAllCol("
+				SELECT person2usergroups.usergroup_id
+				FROM person2usergroups
+				LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
+				WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
+			", array($this->person['id']));
+		}
 
 		$everyone_ug = App::$container->getUserGroups()->getEveryoneGroup();
 		if ($everyone_ug && $everyone_ug->is_enabled) {
@@ -237,24 +247,26 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		# Fetch from the cache first
 		#-------------------------
 
-		$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->getId(), $this->queued_types);
+		if (!$this->is_loaded) {
+			$this->is_loaded = true;
+			$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->getId());
 
-		foreach ($caches as $cache) {
-			$loader = $cache->perms;
-			$name = Util::getBaseClassname($loader);
+			foreach ($caches as $cache) {
+				$loader = $cache;
+				$name   = Util::getBaseClassname($loader);
 
-			if ($loader instanceof PersonContextInterface) {
-				$loader->setPersonContext($this->person);
+				if ($loader instanceof PersonContextInterface) {
+					$loader->setPersonContext($this->person);
+				}
+
+				$this->loaders[strtolower($name)] = $loader;
 			}
-
-			$this->loaders[strtolower($name)] = $loader;
 		}
 
 		#-------------------------
 		# Load the rest for the first time
 		#-------------------------
 
-		$do_cache = array();
 		$queued_types = $this->queued_types;
 		$this->queued_types = array();
 

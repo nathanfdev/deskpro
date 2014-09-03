@@ -29,69 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Groups\PermissionsLoader;
 
-class PermissionCache extends AbstractEntityRepository
+class PermissionsLoaderService extends BaseRepositoryService
 {
 	/**
-	 * @var array
+	 * {@inheritDoc}
 	 */
-	private $cache;
-
-	public function loadPermissionTypes($usergroup_key, $person_id = null, array $types = null)
+	public static function create(DeskproContainer $container, array $options = null)
 	{
-		if ($this->cache === null) {
-			$this->cache = $this->_em->getConnection()->fetchAll("
-				SELECT name, usergroup_key, perms
-				FROM permissions_cache
-			");
-		}
-
-		$key = $usergroup_key;
-
-		if ($person_id) {
-			$key .= ".$person_id";
-		}
-
-		if ($types) {
-			// A simple filter to make sure only valid names are included
-			$types = array_filter($types, function($var) {
-				return !preg_match('#[^a-zA-Z0-9_]#', $var);
-			});
-
-			if (!$types) {
-				return array();
-			}
-
-			$types = array_fill_keys($types, true);
-
-			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $key, $types) {
-				return isset($types[$c['name']]) && ($c['usergroup_key'] == $usergroup_key || $c['usergroup_key'] == $key);
-			});
-		} else {
-			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $key) {
-				return ($c['usergroup_key'] == $usergroup_key || $c['usergroup_key'] == $key);
-			});
-		}
-
-		$loaders = array();
-
-		foreach ($recs as &$r) {
-			if (isset($r['perms_loader'])) {
-				$loaders[] = $r['perms_loader'];
-			} else {
-				$r['perms_loader'] = @unserialize($r['perms']);
-				if ($r['perms_loader']) {
-					$loaders[] = $r['perms_loader'];
-				}
-			}
-		}
-
-		return $loaders;
+		return new PermissionsLoader($container->getDb());
 	}
 }
