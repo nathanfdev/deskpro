@@ -173,6 +173,7 @@ class UsersourceManager
 
 	/**
 	 * @return string
+	 * @deprecated this shouldn't be used anymore, try to eliminate it form the codebase and use twig extension instead
 	 */
 	public function renderView(Usersource $usersource, $type, array $params = array())
 	{

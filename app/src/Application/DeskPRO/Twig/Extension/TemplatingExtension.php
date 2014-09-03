@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Usersource;
 use Orb\Data\Countries;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
@@ -582,9 +583,20 @@ class TemplatingExtension extends \Twig_Extension
 		return $string;
 	}
 
-	public function renderUsersource($usersource, $type, array $params = array())
+	public function renderUsersource(Usersource $usersource, $type, array $params = array())
 	{
-		return App::getSystemService('usersource_manager')->renderView($usersource, $type, $params);
+		// clean up params
+		$params['usersource'] = $usersource;
+		if (!isset($params['type'])) {
+			$params['type'] = 'user';
+		}
+
+		// get template name
+		$name = $usersource->getAdapter()->getTypename();
+		$tpl  = "DeskPRO:Auth:" . $name . "-" . $type . ".html.twig";
+
+		$html = $this->getTemplating()->render($tpl, $params);
+		return $html;
 	}
 
 	public function slugify($str)
