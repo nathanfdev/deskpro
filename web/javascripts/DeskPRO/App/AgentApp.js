@@ -847,6 +847,9 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				var resetResultsPos = function() {
 					var pos = $listPane.offset();
 					var width = $listPane.width();
+					if (width < 560) {
+						width = 560;
+					}
 
 					var maxHeight = $(window).height() - 40 - 75;
 
