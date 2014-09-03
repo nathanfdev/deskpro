@@ -1006,6 +1006,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var wrap = $(this);
 			var btnMenu = $('#create-menu');
+			var isActive = false;
+			var isClosingTimeout = false;
 
 			// Bug in IE10 means the li's dont render properly
 			// until you force a repaint somehow while they are displayed
@@ -1018,6 +1020,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			wrap.addClass('active');
 			btnMenu.addClass('active');
+			isActive = true;
 			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() + 6});
 
 			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
@@ -1032,19 +1035,52 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var closeFn = function() {
 				wrap.removeClass('active');
 				btnMenu.removeClass('active');
+				isActive = false;
 				$(document).off('mousemove.create-menu');
+				if (isClosingTimeout) {
+					window.clearTimeout(isClosingTimeout);
+				}
 			};
 
-			$(document).on('mousemove.create-menu', function(e){
-				if (!btnMenu.hasClass('active')) return;
-
-				var left = wrap.offset().left - 5,
-					top = wrap.offset().top,
-					right = left + btnMenu.width() + 10,
-					bottom = top + wrap.height() + btnMenu.height() + 10
+			var isOutCoords1 = function(e) {
+				var left = btnMenu.offset().left,
+					top = btnMenu.offset().top,
+					right = left + btnMenu.outerWidth(),
+					bottom = top + btnMenu.outerHeight()
 
 				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
-					$('.zindex-chrome0').trigger('click');
+					return true;
+				} else {
+					return false;
+				}
+			};
+
+			var isOutCoords2 = function(e) {
+				var left = wrap.offset().left,
+					top = wrap.offset().top,
+					right = left + wrap.outerWidth(),
+					bottom = top + wrap.outerHeight()
+
+				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
+					return true;
+				} else {
+					return false;
+				}
+			};
+			$(document).on('mousemove.create-menu', function(e){
+				if (!isActive) return;
+				if (isOutCoords1(e) && isOutCoords2(e)) {
+					if (!isClosingTimeout) {
+						isClosingTimeout = window.setTimeout(function () {
+							isClosingTimeout = null
+							$('.zindex-chrome0').trigger('click');
+						}, 350);
+					}
+				} else {
+					if (isClosingTimeout) {
+						window.clearTimeout(isClosingTimeout);
+						isClosingTimeout = null;
+					}
 				}
 			});
 
