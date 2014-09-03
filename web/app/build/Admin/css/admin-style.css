@@ -9277,9 +9277,12 @@ div.dp-appalt-section > section header h3 {
   background: url('../../../../images/spinners/loading-big-circle.gif') no-repeat 50% 50%;
 }
 
+.dp-layout-list-listpane .dp-panelbock {
+  overflow: auto;
+}
+
 .dp-paneblock {
   margin: 10px;
-  overflow: auto;
   background: #fff;
   border: 1px solid #d0d9e6;
   border-radius: 2px;
