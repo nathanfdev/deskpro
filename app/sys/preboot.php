@@ -93,7 +93,7 @@ if (!DP_REAL_ERROR_LOG) {
 
 // If DeskPRO is not installed yet, always force-on display_errors
 // so problems during an install process are not missed
-if (!file_exists(dp_get_data_dir().'/is_installed.dat')) {
+if (!file_exists(dp_get_data_dir().'/is_installed.dat') && !defined('DPC_IS_CLOUD')) {
 	@ini_set('display_errors', "1");
 }
 
