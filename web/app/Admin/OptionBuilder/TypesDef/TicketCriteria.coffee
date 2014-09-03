@@ -923,10 +923,16 @@ define [
 			}
 
 		getCheckOrgName: (options = {}) ->
-			options.propName = 'name'
+			options.propName = 'org'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+			options.url = '/organizations/quick_search'
+			format = (item) -> item.name
+			options.inputOptions =
+				formatResult: format
+				formatSelection: format
+				ajax:
+					data: (term, page) -> { query: term, limit: 10 }
+			@getRemoteInput options
 
 		getCheckOrgLabel: (options = {}) ->
 			options.propName = 'labels'

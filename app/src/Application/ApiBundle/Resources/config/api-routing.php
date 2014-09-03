@@ -1006,6 +1006,12 @@ $collection->create('api_organizations', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_organizations_quick_search', array(
+	'path'        => '/organizations/quick_search',
+	'controller'  => 'ApiBundle:Organization:quickSearch',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_organizations_post', array(
 	'path'        => '/organizations',
 	'controller'  => 'ApiBundle:Organization:newOrganization',
