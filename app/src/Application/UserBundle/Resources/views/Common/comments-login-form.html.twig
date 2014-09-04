@@ -60,10 +60,11 @@
 						data-field-validators="DeskPRO.Form.LengthValidator"
 						data-min-len="2"
 						/>
-					{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+					{% set usersources = app.usersourceManager.getAll.configuredForUsers.withCapability('tpl_widget_overlay_btn') %}
+					{% if usersources|length %}
 					<div class="connect-with">
 						{{ phrase('user.profile.or_connect_with') }}
-						{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+						{% for usersource in usersources %}
 						{{ render_usersource(usersource, 'widget_overlay_btn') }}
 						{% endfor %}
 					</div>

@@ -6,12 +6,13 @@
 	<form method="POST" id="dp_newchat_form" class="with-form-validator">
 		{{ form_token() }}
 
-		{% if app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+		{% set usersources = app.usersourceManager.getAll.configuredForUsers.withCapability('tpl_widget_overlay_btn') %}
+		{% if usersources|length %}
 		<div class="socials">
 			<div>
 				<span>{{ phrase('user.widget.login-connect') }}</span>
 				<ul>
-					{% for usersource in app.usersourceManager.getWithCapability('tpl_widget_overlay_btn') %}
+					{% for usersource in usersources %}
 					<li>{{ render_usersource(usersource, 'widget_overlay_btn') }}</li>
 					{% endfor %}
 				</ul>
