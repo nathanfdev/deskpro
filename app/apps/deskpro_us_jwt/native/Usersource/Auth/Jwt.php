@@ -34,6 +34,7 @@
 
 namespace deskpro_us_jwt\Usersource\Auth;
 
+use League\Url\Url;
 use Orb\Auth\Adapter;
 use Orb\Auth\Adapter\AbstractCallbackAdatper;
 use Orb\Auth\Identity;
@@ -100,8 +101,12 @@ class Jwt extends AbstractCallbackAdatper
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
+		$url = Url::createFromUrl($this->options->get('url'));
+		$url->getQuery()->modify(array('return_to' => $this->getCallbackUrl()));
+		$redirect = (string) $url;
+
 		// return a success result if we detect they are already logged in
-		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $this->options->get('url')));
+		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect));
 
 		return $result;
 	}
