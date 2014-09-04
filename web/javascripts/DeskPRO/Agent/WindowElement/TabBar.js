@@ -71,8 +71,18 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		for (i = 0; i < this._tabs.length; i++) {
 			tab = this._tabs[i];
 			if (tab.page) {
-				tab.title = tab.page.getMetaData('title', 'Untitled');
-				console.log(tab)
+				var title = tab.page.getMetaData('title', null);
+				var classId = tab.page.getMetaData('tabClassId', '');
+
+				if (title) {
+					tab.title = title;
+				}
+				if (classId) {
+					classId = classId + '';
+				}
+				if (classId && classId.length) {
+					tab.classId = classId;
+				}
 			}
 		}
 		this.$scope.$safeApply();
@@ -198,6 +208,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var data = {};
 		data.id = id;
 		data.page = page;
+		data.classId = page.getMetaData('tabClassId', '');
 		data.title = page.getMetaData('title', 'Untitled');
 		data.callback_render = function(container) {
 			container = $(container);
@@ -233,7 +244,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		if (page.meta.existingWrapper) {
 			data.wrapper = page.meta.existingWrapper;
 			data.wrapper.attr('id', data.wrapperId);
-			data.wrapper.attr('class', 'tabViewDetailContent test');
+			data.wrapper.attr('class', 'tabViewDetailContent');
 			data.wrapper.css('display', 'none');
 			data.wrapper.appendTo(this.bodyPane);
 		} else {

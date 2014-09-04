@@ -62,6 +62,7 @@
 					ng-click="tabClick($event, tab)"
 					data-tab-id="{{ ng_var('tab.id') }}"
 					ng-class="{'activeTabList': tab.isActive && paneVis.tabs, 'is-alerting': tab.isAlerting}"
+					class="{{ ng_var('tab.classId') }}"
 					>
 					<div class="item-hover-over-indicator"></div>
 					<a>

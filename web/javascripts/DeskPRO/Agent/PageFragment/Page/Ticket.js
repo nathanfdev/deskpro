@@ -329,7 +329,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					var searchListEl = DeskPRO_Window.sections.tickets_section.getListElement();
 					lastOverId = ticketId;
-					lastOvers = searchListEl.find('.ticket-' + ticketId);
+					lastOvers = searchListEl.find('.ticket-row-' + ticketId);
 					lastOvers = lastOvers.add($('#tabNavigationPane').find('.ticket-' + ticketId));
 					lastOvers.addClass('item-hover-over');
 				};
