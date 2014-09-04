@@ -237,12 +237,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		//
 		// SSO Automatic Redirecting
 		//
-		$has_just_logged_out = false;
-		if ($res = $this->needsSsoResponse($has_just_logged_out)) {
+		if ($res = $this->needsSsoResponse(false)) {
 			return $res;
 		}
 
-		if ($this->loginViaToken() || $this->session->getPerson()->getId() || $sso_already_succeeded) {
+		if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute('user');
 		}
@@ -350,6 +349,13 @@ HTML;
 
 			$this->createResponse($html);
 		}
+
+        //
+        // SSO Automatic Redirecting
+        //
+        if ($res = $this->needsSsoResponse(true)) {
+            return $res;
+        }
 
 		if ($this->in->getString('to') == 'admin') {
 			return $this->redirect($this->request->getBaseUrl() . '/admin/login?o');
