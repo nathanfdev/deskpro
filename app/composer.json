@@ -36,7 +36,8 @@
 		"eluceo/ical": "0.1.0",
 		"friendsofsymfony/elastica-bundle": "3.0.*@dev",
 		"fzaninotto/faker": "1.4.*@dev",
-		"firebase/php-jwt": "dev-master"
+		"firebase/php-jwt": "dev-master",
+		"league/url": "~3.0"
 	},
 	"scripts": {
 		"post-update-cmd":  ["bin/clean-vendors.sh", "bin/hack-vendors.sh"],
