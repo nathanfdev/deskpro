@@ -110,6 +110,13 @@ class AppOptionsMapper
 					$connection_options['servicename'] = $settings->get('db_service_name');
 				}
 				break;
+			case 'pdo_odbc':
+				$odbc_settings = Strings::parseEqualsLines($settings->get('db_odbc_dsn'));
+				$connection_options['driverClass'] = 'Orb\\Doctrine\\DBAL\\Driver\\PDOODBC\\Driver';
+				$connection_options['dsn'] = @$odbc_settings['dsn'];
+				$connection_options['user'] = @$odbc_settings['user'];
+				$connection_options['password'] = @$odbc_settings['password'];
+				break;
 		}
 
 		if ($settings->get('db_with_options') && ($custom_settings = trim($settings->get('db_custom_options', '')))) {
