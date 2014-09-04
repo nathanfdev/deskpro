@@ -174,6 +174,11 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     {
 		$php_path = dp_get_php_path(false);
 		$file = escapeshellarg(realpath(DP_ROOT . '/../cmd.php'));
+
+		if (defined('DPC_IS_CLOUD')) {
+			$file .= ' --dpc-site-id ' . DPC_SITE_ID;
+		}
+
         $command = $php_path . ' ' . $file . ' dp:elastica:index ' . implode(' ', $arguments);
         $process = new Process($command);
 
@@ -206,7 +211,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         }
 
         if ($input->hasOption('ignore-errors')) {
-            $arguments[] = '--ignore-errors="' . $input->getOption('ignore-errors') . '"';
+            $arguments[] = '--ignore-errors';
         }
 
         return $arguments;
