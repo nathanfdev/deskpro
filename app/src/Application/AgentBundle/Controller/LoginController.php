@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
@@ -58,27 +59,17 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			else return $this->redirectRoute('agent');
 		}
 
+		$has_logged_out = $this->in->checkIsset('o');
+
 		//
 		// SSO Automatic Redirecting
 		//
-		$sso_already_succeeded = false;
-		// TODO: ensure logout will work, need a logout url for sso usersources
-		if ($sso_result = $this->handleAutomaticSso()) {
-			if ($sso_result->isRedirectRequired()) {
-
-				$return = $this->in->getString('return');
-				$this->session->set('auth_return', $return);
-				$this->session->save();
-
-				return $this->redirect($sso_result->getRedirectUrl());
-			} elseif ($sso_result->isValid()) {
-				$sso_already_succeeded = true;
-			}
+		if ($res = $this->needsSsoResponse($has_logged_out)) {
+			return $res;
 		}
-		////////////////////////////
 
 		// Already logged in
-		if (($this->session->getPerson() && $this->session->getPerson()->is_agent) || $sso_already_succeeded) {
+		if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute($this->route_prefix);
 		}
@@ -123,8 +114,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 				throw $this->createNotFoundException();
 			}
 		}
-
-		$has_logged_out = $this->in->checkIsset('o');
 
 		$failed_login_name = false;
 		if ($this->session->has('failed_login_name')) {

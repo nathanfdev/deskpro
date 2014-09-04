@@ -145,4 +145,11 @@ class UsersourceCollection extends \ArrayObject
 
 		return new static($filtered);
 	}
+
+
+	public function getFirstOrNull()
+	{
+		$arr = (array) $this;
+		return array_pop($arr);
+	}
 }

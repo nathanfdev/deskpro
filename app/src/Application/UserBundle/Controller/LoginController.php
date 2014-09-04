@@ -38,8 +38,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\UsersourceCollection;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
@@ -137,16 +140,83 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	 */
 	protected function handleAutomaticSso()
 	{
-		// TODO: These will be from admin settings ui
-		// TODO: they'll be diff for each of the 2 interfaces
-		$enabled_auto_sso = true;
-		$sso_usersource_id = 2;
+		$sso_settings = $this->getAutoSsoSettings();
+		$usersource = $sso_settings['usersource'];
+		if ($usersource->isCapable(UsersourceInfo::CAPABILITY_SSO)) {
+			$adapter = $this->_initUserSourceAdapter($usersource);
+			return $adapter->authenticate();
+		}
 
-		if ($enabled_auto_sso) {
-			$usersource = $this->usersource_manager->getById($sso_usersource_id);
-			if ($usersource->isCapable(UsersourceInfo::CAPABILITY_SSO)) {
-				$adapter = $this->_initUserSourceAdapter($usersource);
-				return $adapter->authenticate();
+	}
+
+
+	protected function isAutoSsoEnabled()
+	{
+		$settings = $this->getAutoSsoSettings();
+
+		if (!$settings['enabled']) {
+			return false;
+		}
+
+		// ensure the usersource in the settings is actually valid
+		$usersources = new UsersourceCollection(array($settings['usersource']));
+		$possible_sources = $usersources->forInterface(DP_INTERFACE)->withCapability(UsersourceInfo::CAPABILITY_SSO);
+		$us = $possible_sources->getFirstOrNull();
+
+		if (!$us) {
+			return false;
+		}
+
+		return true;
+	}
+
+
+	protected function getAutoSsoSettings()
+	{
+		return array(
+			'enabled' => true,
+			'usersource' => $this->usersource_manager->getById(2)
+		);
+	}
+
+
+	/**
+	 * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
+	 */
+	protected function getAutomaticSsoLogoutRedirectUrl()
+	{
+		$settings = $this->getAutoSsoSettings();
+		$usersource = $settings['usersource'];
+		$adapter = $this->_initUserSourceAdapter($usersource);
+
+		if ($adapter instanceof SsoCapableInterface) {
+			return $adapter->getLogoutRedirectUrl();
+		}
+	}
+
+
+	/**
+	 * Returns a RedirectResponse if SSO says it needs to redirect
+	 *
+	 * @param bool $has_just_logged_out
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
+	protected function needsSsoResponse($has_just_logged_out = false)
+	{
+		if ($this->isAutoSsoEnabled()) {
+			if ($has_just_logged_out) {
+				if ($url = $this->getAutomaticSsoLogoutRedirectUrl()) {
+					return $this->redirect($url);
+				}
+			} elseif ($sso_result = $this->handleAutomaticSso()) {
+				if ($sso_result->isRedirectRequired()) {
+
+					$return = $this->in->getString('return');
+					$this->session->set('auth_return', $return);
+					$this->session->save();
+
+					return $this->redirect($sso_result->getRedirectUrl());
+				}
 			}
 		}
 	}
@@ -167,20 +237,10 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		//
 		// SSO Automatic Redirecting
 		//
-		$sso_already_succeeded = false;
-		if ($sso_result = $this->handleAutomaticSso()) {
-			if ($sso_result->isRedirectRequired()) {
-
-				$return = $this->in->getString('return');
-				$this->session->set('auth_return', $return);
-				$this->session->save();
-
-				return $this->redirect($sso_result->getRedirectUrl());
-			} elseif ($sso_result->isValid()) {
-				$sso_already_succeeded = true;
-			}
+		$has_just_logged_out = false;
+		if ($res = $this->needsSsoResponse($has_just_logged_out)) {
+			return $res;
 		}
-		////////////////////////////
 
 		if ($this->loginViaToken() || $this->session->getPerson()->getId() || $sso_already_succeeded) {
 			if ($return) return $this->redirect($return);
@@ -820,7 +880,7 @@ HTML;
 		));
 	}
 
-	protected function _initUserSourceAdapter($usersource, $context = null)
+	protected function _initUserSourceAdapter(Usersource $usersource, $context = null)
 	{
 		$adapter = $usersource->getAdapter()->getAuthAdapter();
 
@@ -838,7 +898,7 @@ HTML;
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$route_type = 'user';
-			if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
+			if ($this->isAgentInterface()) {
 				$route_type = 'agent';
 			}
 
@@ -853,6 +913,16 @@ HTML;
 			$auth_state->setClearStateMethod('clear');
 
 			$adapter->setStateHandler($auth_state);
+		}
+
+		if ($adapter instanceof \Orb\Auth\Adapter\SsoCapableInterface) {
+			if ($this->isAgentInterface()) {
+				$logout_url = $usersource->getAdapter()->getAgentLogoutRedirectUrl();
+			} else {
+				$logout_url = $usersource->getAdapter()->getUserLogoutRedirectUrl();
+			}
+
+			$adapter->setLogoutRedirectUrl($logout_url);
 		}
 
 		return $adapter;
@@ -1266,5 +1336,14 @@ HTML;
 
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	protected function isAgentInterface()
+	{
+		return defined('DP_INTERFACE') && DP_INTERFACE == 'agent';
 	}
 }
