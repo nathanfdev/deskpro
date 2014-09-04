@@ -189,4 +189,10 @@ class UsersourceManager
 		$html = App::getTemplating()->render($tpl, $params);
 		return $html;
 	}
+
+
+	public function getById($sso_usersource_id)
+	{
+		return $this->usersources = $this->em->getRepository('DeskPRO:Usersource')->find($sso_usersource_id);
+	}
 }

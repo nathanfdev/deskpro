@@ -58,8 +58,27 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			else return $this->redirectRoute('agent');
 		}
 
+		//
+		// SSO Automatic Redirecting
+		//
+		$sso_already_succeeded = false;
+		// TODO: ensure logout will work, need a logout url for sso usersources
+		if ($sso_result = $this->handleAutomaticSso()) {
+			if ($sso_result->isRedirectRequired()) {
+
+				$return = $this->in->getString('return');
+				$this->session->set('auth_return', $return);
+				$this->session->save();
+
+				return $this->redirect($sso_result->getRedirectUrl());
+			} elseif ($sso_result->isValid()) {
+				$sso_already_succeeded = true;
+			}
+		}
+		////////////////////////////
+
 		// Already logged in
-		if ($this->session->getPerson() && $this->session->getPerson()->is_agent) {
+		if (($this->session->getPerson() && $this->session->getPerson()->is_agent) || $sso_already_succeeded) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute($this->route_prefix);
 		}

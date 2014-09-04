@@ -131,6 +131,26 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		return false;
 	}
 
+
+	/**
+	 * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
+	 */
+	protected function handleAutomaticSso()
+	{
+		// TODO: These will be from admin settings ui
+		// TODO: they'll be diff for each of the 2 interfaces
+		$enabled_auto_sso = true;
+		$sso_usersource_id = 2;
+
+		if ($enabled_auto_sso) {
+			$usersource = $this->usersource_manager->getById($sso_usersource_id);
+			if ($usersource->isCapable(UsersourceInfo::CAPABILITY_SSO)) {
+				$adapter = $this->_initUserSourceAdapter($usersource);
+				return $adapter->authenticate();
+			}
+		}
+	}
+
 	/**
 	 * Handles showing the login form, and on POST handles login credentials
 	 * through the auth adapters.
@@ -144,7 +164,25 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
-		if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
+		//
+		// SSO Automatic Redirecting
+		//
+		$sso_already_succeeded = false;
+		if ($sso_result = $this->handleAutomaticSso()) {
+			if ($sso_result->isRedirectRequired()) {
+
+				$return = $this->in->getString('return');
+				$this->session->set('auth_return', $return);
+				$this->session->save();
+
+				return $this->redirect($sso_result->getRedirectUrl());
+			} elseif ($sso_result->isValid()) {
+				$sso_already_succeeded = true;
+			}
+		}
+		////////////////////////////
+
+		if ($this->loginViaToken() || $this->session->getPerson()->getId() || $sso_already_succeeded) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute('user');
 		}

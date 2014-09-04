@@ -68,7 +68,7 @@ class Jwt extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			UsersourceInfo::CAPABILITY_LOGIN_BTN
+			UsersourceInfo::CAPABILITY_SSO
 		);
 	}
 }
