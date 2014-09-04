@@ -111,7 +111,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
 		$url = Url::createFromUrl($this->options->get('url'));
-		$url->getQuery()->modify(array('return_to' => $this->getCallbackUrl()));
+		$url->getQuery()->modify(array('return' => $this->getCallbackUrl()));
 		$redirect = (string)$url;
 
 		// return a success result if we detect they are already logged in
