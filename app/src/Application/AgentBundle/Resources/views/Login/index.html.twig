@@ -90,7 +90,8 @@
 				<fieldset>
 					<p>
 						<i class="icon-envelope-alt"></i>
-						<input type="{% if app.usersourceManager.getWithCapability('form_login') %}text{% else %}email{% endif %}" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}{% if app.usersourceManager.getWithCapability('form_login') %}/ {{ phrase('agent.general.username') }}{% endif %}" tabindex="1" />
+						{% set form_login_usersources_exist = app.usersourceManager.getAll.configuredForAgents.withCapability('form_login')|length > 0 %}
+						<input type="{% if form_login_usersources_exist %}text{% else %}email{% endif %}" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}{% if form_login_usersources_exist %}/{{ phrase('agent.general.username') }}{% endif %}" tabindex="1" />
 					</p>
 					<p>
 						<i class="icon-lock"></i>
