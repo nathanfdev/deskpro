@@ -214,7 +214,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
 			$runner = new Runner();
 			$runner->setLogger($logger);
 			$runner->setPhpTimeLimit(900);
-			if ($input->getOption('enable-retries')) {
+			if ($input->getOption('enable-retries') || defined('DP_EMAILPROC_ALWAYS_RETRY')) {
 				$runner->setRetryScheduling(true);
 			} else {
 				$runner->setRetryScheduling(false);
