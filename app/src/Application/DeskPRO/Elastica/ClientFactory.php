@@ -151,6 +151,7 @@ class ClientFactory
 			'port'      => $config->get('port', 9200),
 			'path'      => $config->get('path', null),
 			'transport' => $config->get('transport', null),
+			'headers'   => $config->get('headers', array()),
 			'log'       => $config->get('log', null)
 		));
 
