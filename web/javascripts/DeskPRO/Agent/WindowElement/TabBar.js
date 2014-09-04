@@ -272,18 +272,25 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		var wasActive = false;
 		var otherTab = null;
+		var placeTab = this.getActiveTab();
 
 		if (data.page && data.page.meta.tabPlaceholderId) {
 			otherTab = this.getTab(data.page.meta.tabPlaceholderId);
 		}
 
-			// We may have had a placeholder, in which case we want to place
-			// the new tab where the old one was while also removing the placeholder
-			// content in the body pane
+		// We may have had a placeholder, in which case we want to place
+		// the new tab where the old one was while also removing the placeholder
+		// content in the body pane
 
-		// insert new tab after active
+		// insert new tab after placeholder that will be removed in a moment
 		if (otherTab && this._tabs.indexOf(otherTab) < this._tabs.length - 1) {
 			this._tabs.splice(this._tabs.indexOf(otherTab) + 1, 0, data);
+
+		// insert new tab after the currently selected tab
+		} else if (placeTab && this._tabs.indexOf(placeTab) < this._tabs.length - 1) {
+			this._tabs.splice(this._tabs.indexOf(placeTab) + 1, 0, data);
+
+		// just push it on to the end
 		} else {
 			this._tabs.push(data);
 		}
@@ -474,6 +481,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var self = this;
 		var id = tab.id;
 		var wasActive = false;
+		var oldTabIdx = this._tabs.indexOf(tab);
 
 		if (this.currentTabId == id) {
 			wasActive = true;
@@ -517,20 +525,31 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			this.fireEvent('removeTab', [data, this]);
 
 			if (wasActive) {
-				var last_tab_id = Object.keys(this.tabs).getLast();
-				if (last_tab_id) {
-					this.activateTabById(last_tab_id);
+				// Go to the next tab
+				if (oldTabIdx != -1 && this._tabs[oldTabIdx]) {
+					this.activateTab(this._tabs[oldTabIdx]);
+
+				// Was last, so go to the previous
+				} else if (oldTabIdx != -1 && this._tabs[oldTabIdx-1]) {
+					this.activateTab(this._tabs[oldTabIdx-1]);
+
+				// Otherwise go to the last
 				} else {
-					// If list view isnt active, then after a small timeout
-					// make it visiable.
-					// The timeout is in case we have other routines that auto-open
-					// a new tab (e.g., after ticket reply)
-					this.$timeout(function(){
-						var last_tab_id = Object.keys(self.tabs).getLast();
-						if (!last_tab_id) {
-							self.$scope.showList();
-						}
-					}, 100);
+					var last_tab_id = Object.keys(this.tabs).getLast();
+					if (last_tab_id) {
+						this.activateTabById(last_tab_id);
+					} else {
+						// If list view isnt active, then after a small timeout
+						// make it visiable.
+						// The timeout is in case we have other routines that auto-open
+						// a new tab (e.g., after ticket reply)
+						this.$timeout(function () {
+							var last_tab_id = Object.keys(self.tabs).getLast();
+							if (!last_tab_id) {
+								self.$scope.showList();
+							}
+						}, 100);
+					}
 				}
 			}
 
