@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Usersource\UsersourceCollection;
+use Application\DeskPRO\Usersource\UsersourceInfo;
 
 class Usersource extends AbstractEntityRepository
 {
@@ -100,7 +101,7 @@ class Usersource extends AbstractEntityRepository
 
 		$ret = array();
 		foreach ($all as $us) {
-			if ($us->getAdapter()->isCapable('form_login')) {
+			if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_FORM_LOGIN)) {
 				$ret[$us->id] = $us;
 			}
 		}
@@ -121,7 +122,7 @@ class Usersource extends AbstractEntityRepository
 
 		$ret = array();
 		foreach ($all as $us) {
-			if ($us->getAdapter()->isCapable('cookie_login')) {
+			if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_COOKIE_LOGIN)) {
 				$ret[$us->id] = $us;
 			}
 		}
@@ -141,7 +142,7 @@ class Usersource extends AbstractEntityRepository
 
 		$ret = array();
 		foreach ($all as $us) {
-			if ($us->getAdapter()->isCapable('js_sso')) {
+			if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_SSO_JS)) {
 				$ret[$us->id] = $us;
 			}
 		}
@@ -163,7 +164,8 @@ class Usersource extends AbstractEntityRepository
 
 		$ret = array();
 		foreach ($all as $us) {
-			if ($us->getAdapter()->isCapable('form_login')) {
+			// TODO: Is this correct?
+			if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_FORM_LOGIN)) {
 				$ret[$us->id] = $us;
 			}
 		}

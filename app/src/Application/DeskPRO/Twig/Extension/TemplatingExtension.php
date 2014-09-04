@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Data\Countries;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
@@ -1441,7 +1442,7 @@ class TemplatingExtension extends \Twig_Extension
 		$output = array();
 		foreach ($person->usersource_assoc as $assoc) {
 			$us = $assoc->usersource;
-			if (!$us->isCapable('share_session')) {
+			if (!$us->isCapable(UsersourceInfo::CAPABILITY_SHARE_SESSION)) {
 				continue;
 			}
 

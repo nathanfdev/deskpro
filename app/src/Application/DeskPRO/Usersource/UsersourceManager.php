@@ -77,7 +77,7 @@ class UsersourceManager
 			return $person;
 		}
 
-		foreach ($this->getWithCapability('find_identity') as $us) {
+		foreach ($this->getWithCapability(UsersourceInfo::CAPABILITY_FIND_IDENTITY) as $us) {
 			/** @var $adapter \Application\DeskPRO\Usersource\Adapter\AbstractAdapter */
 			$adapter = $us->getAdapter();
 

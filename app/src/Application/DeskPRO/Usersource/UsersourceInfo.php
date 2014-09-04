@@ -32,43 +32,67 @@
  * @subpackage
  */
 
-namespace deskpro_us_jwt\Usersource\Adapter;
+namespace Application\DeskPRO\Usersource;
 
-use Application\DeskPRO\Usersource\UsersourceInfo;
-use Orb\Auth\Identity;
-use Application\DeskPRO\App;
-
-class Jwt extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
+/**
+ * Some useful constants/info on Usersources
+ */
+class UsersourceInfo
 {
-	public function getFieldsFromIdentity(Identity $identity)
-	{
-		$info = $identity->getRawData();
-		return array(
-			'name'             => isset($info['name']) ? $info['name'] : '',
-			'first_name'       => isset($info['first_name']) ? $info['first_name'] : '',
-			'last_name'        => isset($info['last_name']) ? $info['last_name'] : '',
-			'email'            => isset($info['email']) ? $info['email'] : '',
-			'email_confirmed'  => true,
-		);
-	}
+	//----------------------------------------------------------------
+	// USERSOURCE CAPABILITIES
+	//----------------------------------------------------------------
 
 	/**
-	 * @return \deskpro_magento\Usersource\Auth\Magento
+	 * Capable of single sign on (automatic/redirect method)
+	 * Most of these also implement sso_background
 	 */
-	protected function _createAuthAdapterObject()
-	{
-		$options = $this->usersource->options;
-
-		return new \deskpro_us_jwt\Usersource\Auth\Jwt($options);
-	}
+	const CAPABILITY_SSO = 'sso';
 
 	/**
-	 * @return array
+	 * Single sign on method that is capable of attempting authentication via JS (in the background)
 	 */
-	public function getCapabilities()
-	{
-		return array(
-			UsersourceInfo::CAPABILITY_LOGIN_BTN
-		);
-	}
+	const CAPABILITY_SSO_JS = 'js_sso';
+
+	/**
+	 * When a user submits a form, if the main dp db doesn't authenticate, it will try to authenticate with these
+	 * sources with the given form data.
+	 */
+	const CAPABILITY_FORM_LOGIN = 'form_login';
+
+	/**
+	 * Given just an email address or username it can return the right Identity object to you
+	 */
+	const CAPABILITY_FIND_IDENTITY = 'find_identity';
+
+	/**
+	 * Given just an email address or username it can return the right Identity object to you
+	 */
+	const CAPABILITY_GET_USER_INFO = 'get_user_info';
+
+	/**
+	 * A logo appears on the login screen, allowing you to click and login with that source (google/fb,etc)
+	 */
+	const CAPABILITY_LOGIN_BTN = 'tpl_login_pull_btn';
+
+	/**
+	 * Capable of logging in using a locally-available cookie (see the Session class for usage of EntityRepository
+	 * Usersource::getCookieInputUsersources)
+	 */
+	const CAPABILITY_COOKIE_LOGIN = 'cookie_login';
+
+	/**
+	 * Popups?
+	 */
+	const CAPABILITY_WIDGET_OVERLAY_BTN = 'tpl_widget_overlay_btn';
+
+	/**
+	 * Not sure at time of writing
+	 */
+	const CAPABILITY_NEW_COMMENT_TAB = 'tpl_newcomment_tab';
+
+	/**
+	 * Not sure at time of writing
+	 */
+	const CAPABILITY_SHARE_SESSION = 'share_session';
 }

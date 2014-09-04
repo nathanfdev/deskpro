@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 
 class Facebook extends AbstractAdapter
@@ -69,9 +70,9 @@ class Facebook extends AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			'tpl_login_pull_btn',
-			'tpl_widget_overlay_btn',
-			'tpl_newcomment_tab',
+			UsersourceInfo::CAPABILITY_LOGIN_BTN,
+			UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
+			UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
 		);
 	}
 

@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -551,7 +552,7 @@ HTML;
 		# Auth usersources that accept local input
 		#------------------------------
 
-		$usersources = $this->usersource_manager->getAll()->withCapability('form_login')->forInterface(DP_INTERFACE);
+		$usersources = $this->usersource_manager->getAll()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN)->forInterface(DP_INTERFACE);
 		foreach ($usersources as $us) {
 
 			/** @var $us \Application\DeskPRO\Entity\Usersource */

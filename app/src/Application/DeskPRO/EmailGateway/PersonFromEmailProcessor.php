@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EmailGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
@@ -78,7 +79,7 @@ class PersonFromEmailProcessor
 					/** @var $adapter \Application\DeskPRO\Usersource\Adapter\AbstractAdapter */
 					$adapter = $us->getAdapter();
 
-					if (!$adapter->isCapable('find_identity')) {
+					if (!$adapter->isCapable(UsersourceInfo::CAPABILITY_FIND_IDENTITY)) {
 						continue;
 					}
 
