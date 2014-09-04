@@ -1541,7 +1541,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 	getSupportedFields: function() {
 		return [
 			'department', 'category', 'product', 'organization', 'person',
-			'language', 'agent', 'agent_team', 'agent_team', 'urgency',
+			'language', 'agent', 'agent_team', 'agent_team', 'urgency'
 		];
 	},
 
@@ -2366,6 +2366,11 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		//------------------------------
 
 		var leftEnd = 269; // Where the left ends (aka where listpane starts)
+
+		if (!DeskPRO_Window.paneVis.source) {
+			leftEnd = 78;
+		}
+
 		var topEnd = 50; // Where the top ends (aka header height)
 		var contentStart = pos.left;
 
