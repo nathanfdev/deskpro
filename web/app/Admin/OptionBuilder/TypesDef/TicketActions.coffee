@@ -944,13 +944,16 @@ define [
 								from_name: from_name,
 								from_name_custom: from_name_custom,
 								from_account: (parseInt(options.from_account || 0) || 0)+''
+								headers: options.headers || []
 							}
 						getValue: (model = {}, data) ->
+
 							options = {
 								template: model.template || '',
 								do_cc_users: model.do_cc_users && model.do_cc_users == "all",
 								from_name: '',
 								from_account: parseInt(model.from_account || 0)
+								headers: model.headers.filter (header) -> header.name
 							}
 
 							if model.from_name == 'custom'
@@ -1033,6 +1036,7 @@ define [
 								from_name: from_name,
 								from_name_custom: from_name_custom,
 								from_account: (parseInt(options.from_account || 0) || 0)+''
+								headers: options.headers || []
 							}
 						getValue: (model = {}, data) ->
 							options = {
@@ -1040,6 +1044,7 @@ define [
 								agent_ids: [],
 								from_name: '',
 								from_account: parseInt(model.from_account || 0)
+								headers: model.headers.filter (header) -> header.name
 							}
 
 							if model.from_name == 'custom'
@@ -1124,6 +1129,7 @@ define [
 						from_name: from_name
 						from_name_custom: from_name_custom
 						from_account: (parseInt(options.from_account || 0) || 0)+''
+						headers: options.headers || []
 					}
 				getValue: (model = {}, data) ->
 					options = {
@@ -1131,6 +1137,7 @@ define [
 						template: model.template || '',
 						from_name: '',
 						from_account: parseInt(model.from_account || 0)
+						headers: model.headers.filter (header) -> header.name
 					}
 
 					if model.from_name == 'custom'

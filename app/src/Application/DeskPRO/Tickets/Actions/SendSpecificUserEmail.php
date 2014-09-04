@@ -55,16 +55,6 @@ class SendSpecificUserEmail extends SendArbitraryUserEmail
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('template', 'from_name', 'from_account', 'emails');
-		return $options;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		return false;

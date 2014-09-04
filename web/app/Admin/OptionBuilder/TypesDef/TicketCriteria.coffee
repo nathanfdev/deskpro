@@ -926,9 +926,7 @@ define [
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			options.url = '/organizations/quick_search'
-			format = (item) ->
-				console.info item
-				item[options.propName]
+			format = (item) -> item[options.propName]
 			options.inputOptions =
 				formatResult: format
 				formatSelection: format
