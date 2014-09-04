@@ -804,11 +804,11 @@ define [
 			return def
 
 		getCheckUserName: (options = {}) ->
-			options.propName = 'person'
+			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			options.url = '/people/quick_search'
 			format = (item) ->
-				"#{item.first_name} #{item.last_name} (#{item.email})"
+				"#{item[options.propName]} (#{item.email || ''})"
 			options.inputOptions =
 				formatResult: format
 				formatSelection: format
@@ -817,11 +817,11 @@ define [
 			@getRemoteInput options
 
 		getCheckUserEmail: (options = {}) ->
-			options.propName = 'person'
+			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			options.url = '/people/quick_search'
 			format = (item) ->
-				"#{item.email} (#{item.first_name} #{item.last_name})"
+				"#{item[options.propName]} (#{item.name || ''})"
 			options.inputOptions =
 				formatResult: format
 				formatSelection: format
@@ -923,10 +923,12 @@ define [
 			}
 
 		getCheckOrgName: (options = {}) ->
-			options.propName = 'org'
+			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			options.url = '/organizations/quick_search'
-			format = (item) -> item.name
+			format = (item) ->
+				console.info item
+				item[options.propName]
 			options.inputOptions =
 				formatResult: format
 				formatSelection: format

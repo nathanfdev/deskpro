@@ -92,7 +92,7 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 							inputOptions =
 								dropdownAutoWidth: true
 								minimumInputLength: 1
-								initSelection: (item) -> item.id
+								initSelection: (item) -> item[prop_name]
 								ajax:
 									data: (term, page) -> { query: term }
 									quietMillis: 200
@@ -101,8 +101,14 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 
 							$.extend true, inputOptions, options.inputOptions || {}
 
+							if !value.options?[prop_name]
+								info = null
+							else
+								info = value.options?.info || {}
+								if !info[prop_name] then info[prop_name] = value.options[prop_name]
+
 							return {
-								value: value.options?[prop_name] || null
+								value: info
 								op: value.op || _.first(data.operators)
 								inputOptions: inputOptions
 							}
@@ -112,7 +118,8 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 							value.type = type
 							value.op = model.op
 							value.options = {}
-							value.options[prop_name] = model.value || null
+							value.options[prop_name] = model.value?[prop_name] || ''
+							value.options.info = model.value
 							return value
 					}
 			}

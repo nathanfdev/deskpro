@@ -51,7 +51,7 @@ class CheckOrgName extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('org');
+		$options->addRequiredNames('name');
 		return $options;
 	}
 
@@ -62,9 +62,6 @@ class CheckOrgName extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-
-		return $options['org'] && isset($options['org']['name'])
-			? $this->isStringMatch($ticket, $context, 'organization.name', $options['org']['name'])
-			: false;
+		return $this->isStringMatch($ticket, $context, 'organization.name', $options['name']);
 	}
 }
