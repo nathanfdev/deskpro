@@ -42,7 +42,7 @@ use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Util\Arrays;
 
-class Jwt extends AbstractCallbackAdatper
+class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 {
 	/**
 	 * @var \Orb\Log\Logger
@@ -54,19 +54,28 @@ class Jwt extends AbstractCallbackAdatper
 	 */
 	protected $options;
 
+	/**
+	 * @var string the single sign-off url
+	 */
+	protected $logout_url;
+
+
 	public function __construct(array $options)
 	{
 		$this->initOptions();
 		$this->options->setArray($options);
 	}
 
+
 	protected function initOptions()
 	{
-		$this->options = new \Orb\Util\OptionsArray(array(
-			'url' => '',
-			'secret' => '',
-			'login_custom_text' => 'Login (JWT)'
-		));
+		$this->options = new \Orb\Util\OptionsArray(
+			array(
+				'url'               => '',
+				'secret'            => '',
+				'login_custom_text' => 'Login (JWT)'
+			)
+		);
 	}
 
 
@@ -78,9 +87,9 @@ class Jwt extends AbstractCallbackAdatper
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
 		try {
-			$jwt     = $callback_data['jwt'];
-			$secret  = $this->options->get('secret');
-			$payload = \JWT::decode($jwt, $secret, true);
+			$jwt           = $callback_data['jwt'];
+			$secret        = $this->options->get('secret');
+			$payload       = \JWT::decode($jwt, $secret, true);
 			$payload_array = Arrays::fromStdClass($payload);
 
 			$identity = new Identity($payload_array['id'], $payload_array);
@@ -103,11 +112,37 @@ class Jwt extends AbstractCallbackAdatper
 	{
 		$url = Url::createFromUrl($this->options->get('url'));
 		$url->getQuery()->modify(array('return_to' => $this->getCallbackUrl()));
-		$redirect = (string) $url;
+		$redirect = (string)$url;
 
 		// return a success result if we detect they are already logged in
 		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect));
 
 		return $result;
+	}
+
+
+	/**
+	 * URL we send the deskpro user to after they log out of our system
+	 * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation
+	 *
+	 * @return string
+	 */
+	public function getLogoutRedirectUrl()
+	{
+		if (!$this->logout_url) {
+			throw new \RuntimeException('no logout url defined for this SSO adapter in this context');
+		}
+
+		return $this->logout_url;
+	}
+
+
+	/**
+	 * Allow external processes to determine and set the logout URL if needed. Should override any internal logic for
+	 * logout URL.
+	 */
+	public function setLogoutRedirectUrl($url)
+	{
+		$this->logout_url = $url;
 	}
 }

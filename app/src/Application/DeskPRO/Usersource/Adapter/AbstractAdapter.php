@@ -139,6 +139,23 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 
 
 	/**
+	 * If the getAuthAdapter method returns an SsoCapableInterface, we need to implement this.
+	 */
+	public function getAgentLogoutRedirectUrl()
+	{
+
+	}
+
+	/**
+	 * If the getAuthAdapter method returns an SsoCapableInterface, we need to implement this.
+	 */
+	public function getUserLogoutRedirectUrl()
+	{
+
+	}
+
+
+	/**
 	 * Create a new instance of the adapter interface, using the usersource info
 	 * for options etc.
 	 *

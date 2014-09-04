@@ -62,6 +62,16 @@ class Jwt extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 		return new \deskpro_us_jwt\Usersource\Auth\Jwt($options);
 	}
 
+	public function getAgentLogoutRedirectUrl()
+	{
+		return isset($this->usersource->options['logout_agent_url']) ? $this->usersource->options['logout_agent_url'] : '';
+	}
+
+	public function getUserLogoutRedirectUrl()
+	{
+		return isset($this->usersource->options['logout_user_url']) ? $this->usersource->options['logout_user_url'] : '';
+	}
+
 	/**
 	 * @return array
 	 */
