@@ -1,22 +1,18 @@
 <?php
-/* This file has been auto-generated (2013-10-07). See build-vendors-mutate.php */
+/* This file has been auto-generated (2014-09-04). See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
+use Doctrine\ORM\Configuration, Doctrine\ORM\ORMException, Doctrine\ORM\UnitOfWork, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder;
+use Exception;
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\LockMode;
-use Doctrine\ORM\Configuration;
-use Doctrine\ORM\Internal;
-use Doctrine\ORM\NativeQuery;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\Proxy\ProxyFactory;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\FilterCollection;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Query\ResultSetMapping;
-use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\UnitOfWork;
-use Exception;
-
+use Doctrine\ORM\Proxy\ProxyFactory;
+use Doctrine\ORM\Query\FilterCollection;
+use Doctrine\Common\Util\ClassUtils;
 class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 {
     protected $config;

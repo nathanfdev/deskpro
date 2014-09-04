@@ -132,46 +132,8 @@ class VendorMutate
 
 		file_put_contents($path, $file);
 	}
-
-	public function mutateSymfony()
-	{
-		$path = DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/File/MimeType/FileBinaryMimeTypeGuesser.php';
-		$file = file_get_contents($path);
-		$file = str_replace('passthru(', '@passthru(', $file);
-		file_put_contents($path, $file);
-	}
-
-	public function mutateDoctrineDrivers()
-	{
-		$data_file = file_get_contents(DP_ROOT.'/sys/Resources/DoctrineData/PDODblib.dat');
-
-		$all_m = null;
-		if (preg_match_all('#\^\^\^DP_BEGIN:(.*?)\^\^\^(.*?)\^\^\^DP_END:\\1\^\^\^#s', $data_file, $all_m, \PREG_SET_ORDER)) {
-			foreach ($all_m as $m) {
-				$filename    = $m[1];
-				$filecontent = trim($m[2]);
-				$target_file = DP_ROOT . DIRECTORY_SEPARATOR . $filename;
-				$target_dir  = dirname($target_file);
-
-				if (!is_dir($target_dir)) {
-					echo "Creating $target_dir\n";
-					mkdir($target_dir, 0644, true);
-				}
-
-				file_put_contents($target_file, $filecontent);
-			}
-		}
-
-		// Add the driver to the driver map
-		$driver_map_file = DP_ROOT . '/vendor/doctrine/dbal/lib/Doctrine/DBAL/DriverManager.php';
-		$file_contents = file_get_contents($driver_map_file);
-		$file_contents = str_replace('$_driverMap = array(', '$_driverMap = array(' . "\n            'pdo_dblib' => 'Doctrine\\DBAL\\Driver\\PDODblib\\Driver',", $file_contents);
-		file_put_contents($driver_map_file, $file_contents);
-	}
 }
 
 $mutate = new VendorMutate();
 $mutate->mutateDoctrine();
 $mutate->mutateGeoipApi();
-$mutate->mutateSymfony();
-$mutate->mutateDoctrineDrivers();
