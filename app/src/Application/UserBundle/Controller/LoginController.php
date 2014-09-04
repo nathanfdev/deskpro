@@ -55,6 +55,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	 */
 	protected $login_helper;
 
+	/**
+	 * @var \Application\DeskPRO\Usersource\UsersourceManager
+	 */
+	protected $usersource_manager;
+
 	public function init()
 	{
 		parent::init();
@@ -64,6 +69,9 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$this->tpl_prefix,
 			$this->route_prefix
 		);
+
+
+		$this->usersource_manager = $this->container->getSystemService('usersource_manager');
 	}
 
 	protected function loginViaToken()
@@ -325,11 +333,11 @@ HTML;
 			$this->session->save();
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
-		
+
 		$identity = $result->getIdentity();
 
 		$person = $identity['person'];
-		
+
 		if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
 			$this->session->set('account_disabled', $person->id);
 			$this->session->save();
@@ -340,7 +348,7 @@ HTML;
 		if ($res) {
 			return $res;
 		}
-		
+
 		if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
 			$person->setLastLoginAt();
 		}
@@ -349,7 +357,7 @@ HTML;
 		if (!$person->browser && $browser) {
 			$person->browser = $browser;
 		}
-		
+
 		$this->em->persist($person);
 		$this->em->flush();
 
@@ -543,7 +551,7 @@ HTML;
 		# Auth usersources that accept local input
 		#------------------------------
 
-		$usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+		$usersources = $this->usersource_manager->getAll()->withCapability('form_login')->forInterface(DP_INTERFACE);
 		foreach ($usersources as $us) {
 
 			/** @var $us \Application\DeskPRO\Entity\Usersource */
@@ -1138,7 +1146,7 @@ HTML;
 
 		return $this->redirectRoute('user_profile');
 	}
-	
+
 	public function whitelistIpAction($code)
 	{
 		$tmp_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
@@ -1150,7 +1158,7 @@ HTML;
 		if(!$person) {
 			throw $this->createNotFoundException();
 		}
-		
+
 		$data = $tmp_data->getData();
 
 		$whitelist_ip = new \Application\DeskPRO\Entity\WhiteListedIp();

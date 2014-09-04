@@ -42,6 +42,27 @@ use Application\DeskPRO\Entity\Usersource;
  */
 class UsersourceCollection extends \ArrayObject
 {
+	/**
+	 * @return UsersourceCollection
+	 */
+	public function forInterface($interface)
+	{
+		switch ($interface) {
+			case 'user':
+				return $this->configuredForUsers();
+			case 'agent':
+			case 'admin':
+			case 'reports':
+			case 'billing':
+				return $this->configuredForAgents();
+		}
+
+		throw new \InvalidArgumentException("Unknown interface '$interface'");
+	}
+
+	/**
+	 * @return UsersourceCollection
+	 */
 	public function configuredForAgents()
 	{
 		// select only agent enabled usersources
@@ -67,6 +88,9 @@ class UsersourceCollection extends \ArrayObject
 		return new static($filtered);
 	}
 
+	/**
+	 * @return UsersourceCollection
+	 */
 	public function configuredForUsers()
 	{
 		// select only user enabled usersources
@@ -92,6 +116,9 @@ class UsersourceCollection extends \ArrayObject
 		return new static($filtered);
 	}
 
+	/**
+	 * @return UsersourceCollection
+	 */
 	public function withCapability($capability)
 	{
 		$filtered = array_filter(
@@ -103,7 +130,9 @@ class UsersourceCollection extends \ArrayObject
 		return new static($filtered);
 	}
 
-
+	/**
+	 * @return UsersourceCollection
+	 */
 	public function ofType($type)
 	{
 		$type = strtolower($type);
