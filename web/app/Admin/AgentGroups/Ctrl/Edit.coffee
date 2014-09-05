@@ -35,10 +35,19 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		initialLoad: ->
 
-			promises = [@service.groups.get(@groupId), @service.agents.all(), @service.ticketDeps.all(), @service.chatDeps.all()]
+			if @groupId
+				groupPromise = @Api.sendGet('/agent_groups/' + @groupId)
+			else
+				groupPromise = @service.groups.get(@groupId)
+
+			promises = [groupPromise, @service.agents.all(), @service.ticketDeps.all(), @service.chatDeps.all()]
 
 			@$q.all(promises).then (res) =>
-				@group = res[0] || {id: 0}
+				if res[0] and res[0].data?.group?
+					@group = res[0].data.group
+				else
+					@group = { id: 0 }
+
 				@agents = res[1]
 				@chatDeps   = res[3]
 
@@ -51,12 +60,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 							subdep.depth = 1
 							@ticketDeps.push(subdep)
 
-				@group.person_ids = []
+				@group.person_ids = (@group.members || []).map( (a) -> a.id )
 				@assignDepsPerms @group
 				@updateAllPermsState()
-
-				@agents.map (agent) =>
-					@group.person_ids.push agent.id if -1 != agent.agentgroup_ids.indexOf @group.id
 
 				if @group.sys_name == 'agent_all_perms' or @group.sys_name == 'agent_all_safe_perms'
 					@$scope.all_locked_perms = true
