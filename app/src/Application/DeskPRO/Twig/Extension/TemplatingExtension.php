@@ -1422,9 +1422,53 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getJsSsoLoader($interface = 'user')
 	{
+		///////////////////////////////////////////////////////////////////////
+		// Settings
 		$person = App::getCurrentPerson();
-		$is_first_page = App::getSession()->isFirstPage();
+		$is_first_page = App::getSession()->isFirstPage(); // not to be trusted
+		/** @var \Application\DeskPRO\Auth\AuthSettings $auth_settings */
+		$auth_settings = $this->container->getSystemService('auth_settings');
+		$auth_interface_settings = $interface == 'user' ? $auth_settings->getUserInterfaceSettings() : $auth_settings->getAgentInterfaceSettings();
 
+		///////////////////////////////////////////////////////////////////////
+		// Get iFrame Output, if any
+		$iFrameOutput = '';
+		if ($auth_interface_settings->isBackgroundSsoEnabled()) {
+			$adapter = $auth_interface_settings->getSsoAuthAdapter(SsoLoginActionInterface::CONTEXT_BACKGROUND);
+
+			if ($adapter instanceof IframeSsoInterface) {
+				$vars = array_merge(
+					array(
+						'iframe_url' => '',
+						'render'     => true
+					),
+					$adapter->getIframeTemplateParams($is_first_page)
+				);
+
+				$iFrameOutput = $this->getTemplating()->render(
+					'DeskPRO:Auth:_sso_iframe.html.twig',
+					$vars
+				);
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////
+		// Some old apps use this code for background authentication
+		// needs to stay because Magento native app still uses this
+		$legacyOutput = $this->legacyMagentoPluginCode($interface, $person, $is_first_page);
+
+
+		return $iFrameOutput . $legacyOutput;
+	}
+
+	/**
+	 * @param $interface
+	 * @param $person
+	 * @param $is_first_page
+	 * @return array
+	 */
+	protected function legacyMagentoPluginCode($interface, $person, $is_first_page)
+	{
 		/** @var \Application\DeskPRO\Usersource\UsersourceManager $us_manager */
 		$us_manager = $this->container->getSystemService('usersource_manager');
 		$sources    = $us_manager->getAll()->forInterface($interface)->withCapability(
@@ -1438,19 +1482,6 @@ class TemplatingExtension extends \Twig_Extension
 
 			if ($adapter instanceof JsSsoInterface) {
 				$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person, $is_first_page);
-			}
-
-			if ($adapter instanceof IframeSsoInterface) {
-				$vars = array_merge(array(
-						'iframe_url' => '',
-						'render' => true
-					),
-					$adapter->getIframeTemplateParams($is_first_page)
-				);
-				return $this->getTemplating()->render(
-					'DeskPRO:Auth:_sso_iframe.html.twig',
-					$vars
-				);
 			}
 		}
 
