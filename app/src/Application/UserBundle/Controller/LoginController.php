@@ -35,6 +35,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
@@ -144,58 +145,25 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	 */
 	protected function handleAutomaticSso()
 	{
-		$sso_settings = $this->getAutoSsoSettings();
-		$usersource = $sso_settings['usersource'];
-		if ($usersource->isCapable(UsersourceInfo::CAPABILITY_SSO)) {
-			$adapter = $this->_initUserSourceAdapter($usersource);
-			return $adapter->authenticate();
+		$authInterfaceSettings = $this->getUserAuthSettings();
+
+		if ($authInterfaceSettings->isAutoSsoEnabled()) {
+			return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
 		}
 
-	}
-
-
-	protected function isAutoSsoEnabled()
-	{
-		$settings = $this->getAutoSsoSettings();
-
-		if (!$settings['enabled']) {
-			return false;
-		}
-
-		// ensure the usersource in the settings is actually valid
-		$usersources = new UsersourceCollection(array($settings['usersource']));
-		$possible_sources = $usersources->forInterface(DP_INTERFACE)->withCapability(UsersourceInfo::CAPABILITY_SSO);
-		$us = $possible_sources->getFirstOrNull();
-
-		if (!$us) {
-			return false;
-		}
-
-		return true;
-	}
-
-
-	protected function getAutoSsoSettings()
-	{
-		return array(
-			'enabled' => true,
-			'usersource' => $this->usersource_manager->getById(2)
-		);
+		return null;
 	}
 
 
 	/**
-	 * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
+	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
 	 */
-	protected function getAutomaticSsoLogoutRedirectUrl()
+	protected function getUserAuthSettings()
 	{
-		$settings = $this->getAutoSsoSettings();
-		$usersource = $settings['usersource'];
-		$adapter = $this->_initUserSourceAdapter($usersource);
+		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
+		$auth = $this->container->getSystemService('auth_settings');
 
-		if ($adapter instanceof SsoCapableInterface) {
-			return $adapter->getLogoutRedirectUrl();
-		}
+		return $auth->getUserInterfaceSettings();
 	}
 
 
@@ -203,13 +171,14 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	 * Returns a RedirectResponse if SSO says it needs to redirect
 	 *
 	 * @param bool $has_just_logged_out
+	 * @param AuthInterfaceSettings $authInterfaceSettings
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
 	 */
-	protected function needsSsoResponse($has_just_logged_out = false)
+	protected function needsSsoResponse(AuthInterfaceSettings $authInterfaceSettings, $has_just_logged_out = false)
 	{
-		if ($this->isAutoSsoEnabled()) {
+		if ($authInterfaceSettings->isAutoSsoEnabled() | $authInterfaceSettings->isBackgroundSsoEnabled()) {
 			if ($has_just_logged_out) {
-				if ($url = $this->getAutomaticSsoLogoutRedirectUrl()) {
+				if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
 					return $this->redirect($url);
 				}
 			} elseif ($sso_result = $this->handleAutomaticSso()) {
@@ -241,7 +210,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		//
 		// SSO Automatic Redirecting
 		//
-		if ($res = $this->needsSsoResponse(false)) {
+		if ($res = $this->needsSsoResponse($this->getUserAuthSettings(), false)) {
 			return $res;
 		}
 
@@ -354,10 +323,9 @@ HTML;
 			$this->createResponse($html);
 		}
 
-        //
+        /////////////////////////////////////////////
         // SSO Automatic Redirecting
-        //
-        if ($res = $this->needsSsoResponse(true)) {
+        if ($res = $this->needsSsoResponse($this->getUserAuthSettings(), true)) {
             return $res;
         }
 

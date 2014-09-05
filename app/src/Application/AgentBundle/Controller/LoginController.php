@@ -64,7 +64,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		//
 		// SSO Automatic Redirecting
 		//
-		if ($res = $this->needsSsoResponse($has_logged_out)) {
+		if ($res = $this->needsSsoResponse($this->getAgentAuthSettings(), $has_logged_out)) {
 			return $res;
 		}
 
@@ -139,6 +139,17 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			'browser_warnings'   => $browser_warnings,
 			'timeout'            => $this->in->getBool('timeout')
 		));
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
+	 */
+	protected function getAgentAuthSettings()
+	{
+		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
+		$auth = $this->container->getSystemService('auth_settings');
+
+		return $auth->getAgentInterfaceSettings();
 	}
 
 	public function preloadSourcesAction()
