@@ -60,6 +60,24 @@ class UsersourceCollection extends \ArrayObject
 		throw new \InvalidArgumentException("Unknown interface '$interface'");
 	}
 
+
+	/**
+	 * Limits to this ID only, still allowing other filters to fit your criteria
+	 *
+	 * @param int $id id
+	 * @return UsersourceCollection
+	 */
+	public function mustHaveId($id)
+	{
+		$filtered = array_filter(
+			(array)$this, function (Usersource $us) use ($id) {
+				return $us->id == $id;
+			}
+		);
+
+		return new static($filtered);
+	}
+
 	/**
 	 * @return UsersourceCollection
 	 */
@@ -147,6 +165,9 @@ class UsersourceCollection extends \ArrayObject
 	}
 
 
+	/**
+	 * @return \Orb\Auth\Adapter\AdapterInterface|null
+	 */
 	public function getFirstOrNull()
 	{
 		$arr = (array) $this;
