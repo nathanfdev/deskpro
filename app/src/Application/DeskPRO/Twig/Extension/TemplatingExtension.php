@@ -35,21 +35,24 @@
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\UsersourceInfo;
+use Orb\Auth\Adapter\IframeSsoInterface;
+use Orb\Auth\Adapter\JsSsoInterface;
+use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Data\Countries;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TemplatingExtension extends \Twig_Extension
 {
     protected $container;
 	protected $counter_registry;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
     }
@@ -1416,16 +1419,39 @@ class TemplatingExtension extends \Twig_Extension
 		return '';
 	}
 
-	public function getJsSsoLoader()
+
+	public function getJsSsoLoader($interface = 'user')
 	{
 		$person = App::getCurrentPerson();
 		$is_first_page = App::getSession()->isFirstPage();
 
-		$sources = App::getEntityRepository('DeskPRO:Usersource')->getJsSsoUsersources();
-		$output = array();
+		/** @var \Application\DeskPRO\Usersource\UsersourceManager $us_manager */
+		$us_manager = $this->container->getSystemService('usersource_manager');
+		$sources    = $us_manager->getAll()->forInterface($interface)->withCapability(
+			UsersourceInfo::CAPABILITY_SSO_JS
+		);
+		$output     = array();
 		foreach ($sources AS $source) {
-			$adapter = $source->getAdapter()->getAuthAdapter();
-			$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person, $is_first_page);
+			/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
+			$factory = $this->container->getSystemService('usersource_auth_adapter_factory');
+			$adapter = $factory->getAuthAdapter($source, SsoLoginActionInterface::CONTEXT_BACKGROUND);
+
+			if ($adapter instanceof JsSsoInterface) {
+				$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person, $is_first_page);
+			}
+
+			if ($adapter instanceof IframeSsoInterface) {
+				$vars = array_merge(array(
+						'iframe_url' => '',
+						'render' => true
+					),
+					$adapter->getIframeTemplateParams($is_first_page)
+				);
+				return $this->getTemplating()->render(
+					'DeskPRO:Auth:_sso_iframe.html.twig',
+					$vars
+				);
+			}
 		}
 
 		return implode("\n\n", $output);

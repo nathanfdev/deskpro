@@ -1247,23 +1247,32 @@ HTML;
 
 	############################################################################
 	# Usersource SSO
+	#
+	# This action should ONLY be used when logging in via the background (iframe)
+	# Use the standard callback URL if user is to see the response of this
 	############################################################################
 
 	public function usersourceSsoAction($usersource_id)
 	{
-		/** @var $source \Application\DeskPRO\Entity\Usersource */
-		$source = $this->em->getRepository('DeskPRO:Usersource')->findOneById($usersource_id);
+		$source = $this
+			->usersource_manager
+			->getAll()
+			->forInterface($this->getInterface()) // TODO: will always be user interface since this is always a user URL
+			->withCapability(UsersourceInfo::CAPABILITY_SSO_JS)
+			->mustHaveId($usersource_id)
+			->getFirstOrNull()
+		;
 
-		$available = ($source && $source->is_enabled);
-		if ($available) {
-			$available = $source->getAdapter()->isCapable('js_sso');
+		if (!$source) {
+			throw new NotFoundHttpException();
 		}
 
-		if (!$available) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		$adapter = $this->_initUserSourceAdapter($source);
+
+		if (!$adapter instanceof SsoLoginActionInterface) {
+			return new NotFoundHttpException();
 		}
 
-		$adapter = $source->getAdapter()->getAuthAdapter();
 		$result = $adapter->getSsoLoginActionResult($this);
 
 		if ($result->isValid()) {
@@ -1271,6 +1280,10 @@ HTML;
 			$person = $login_processor->getPerson();
 
 			$this->_setupUsersourceSession($source, $person, $result);
+
+			if ($adapter->isBackgroundSsoSimpleRefresh()) {
+				return $this->render('DeskPRO:Auth:_sso_refresh.html.twig');
+			}
 		}
 
 		$return = $this->in->getString('return');
