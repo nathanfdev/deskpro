@@ -36,6 +36,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usersource;
@@ -43,10 +44,13 @@ use Application\DeskPRO\Usersource\UsersourceCollection;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Adapter\SsoCapableInterface;
+use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
@@ -886,64 +890,17 @@ HTML;
 		));
 	}
 
-	protected function _initUserSourceAdapter(Usersource $usersource, $context = null)
+	/**
+	 * @param Usersource $usersource
+	 * @param null       $displayContext
+	 * @return \Orb\Auth\Adapter\AdapterInterface
+	 */
+	protected function _initUserSourceAdapter(Usersource $usersource, $displayContext = null)
 	{
-		$adapter = $usersource->getAdapter()->getAuthAdapter();
+		/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
+		$factory = $this->container->getSystemService('usersource_auth_adapter_factory');
 
-		if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
-			$adapter->setLogger($this->_getAdapterLogger());
-		}
-
-		if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
-			$adapter->setFormData($_POST);
-		}
-
-		if ($context && $adapter instanceof \Orb\Auth\Adapter\DisplayContextInterface) {
-			$adapter->setDisplayContext($context);
-		}
-
-		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-			$route_type = 'user';
-			if ($this->isAgentInterface()) {
-				$route_type = 'agent';
-			}
-
-			$adapter->setCallbackUrl(
-				rtrim($this->container->getSetting('core.deskpro_url'), '/') .
-				$this->generateUrl($route_type . '_login_callback', array('usersource_id' => $usersource['id']), false)
-			);
-		}
-
-		if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
-			$auth_state = new \Orb\Auth\StateHandler\ArrayAccessWrapper($this->session);
-			$auth_state->setClearStateMethod('clear');
-
-			$adapter->setStateHandler($auth_state);
-		}
-
-		if ($adapter instanceof \Orb\Auth\Adapter\SsoCapableInterface) {
-			if ($this->isAgentInterface()) {
-				$logout_url = $usersource->getAdapter()->getAgentLogoutRedirectUrl();
-			} else {
-				$logout_url = $usersource->getAdapter()->getUserLogoutRedirectUrl();
-			}
-
-			$adapter->setLogoutRedirectUrl($logout_url);
-		}
-
-		return $adapter;
-	}
-
-	protected function _getAdapterLogger()
-	{
-		static $logger = null;
-
-		if ($logger === null) {
-			$logger = new \Orb\Log\Logger();
-			$logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
-		}
-
-		return $logger;
+		return $factory->getAuthAdapter($usersource, $displayContext);
 	}
 
 	############################################################################
@@ -1348,8 +1305,12 @@ HTML;
 	/**
 	 * @return bool
 	 */
-	protected function isAgentInterface()
+	protected function getInterface()
 	{
-		return defined('DP_INTERFACE') && DP_INTERFACE == 'agent';
+		if (defined('DP_INTERFACE')) {
+			return DP_INTERFACE;
+		} else {
+			return null;
+		}
 	}
 }

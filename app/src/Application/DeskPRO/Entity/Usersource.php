@@ -51,6 +51,7 @@ use Orb\Util\Util;
  * @property $is_enabled_user
  * @property $is_enabled_agent
  * @property $app
+ * @property $id
  */
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {
