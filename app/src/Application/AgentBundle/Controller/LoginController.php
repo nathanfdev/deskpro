@@ -141,17 +141,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		));
 	}
 
-	/**
-	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
-	 */
-	protected function getAgentAuthSettings()
-	{
-		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
-		$auth = $this->container->getSystemService('auth_settings');
-
-		return $auth->getAgentInterfaceSettings();
-	}
-
 	public function preloadSourcesAction()
 	{
 		return $this->render('AgentBundle:Login:js-preload.html.twig');

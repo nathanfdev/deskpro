@@ -141,21 +141,6 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 
 	/**
-	 * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
-	 */
-	protected function handleAutomaticSso()
-	{
-		$authInterfaceSettings = $this->getUserAuthSettings();
-
-		if ($authInterfaceSettings->isAutoSsoEnabled()) {
-			return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
-		}
-
-		return null;
-	}
-
-
-	/**
 	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
 	 */
 	protected function getUserAuthSettings()
@@ -168,30 +153,55 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 
 	/**
+	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
+	 */
+	protected function getAgentAuthSettings()
+	{
+		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
+		$auth = $this->container->getSystemService('auth_settings');
+
+		return $auth->getAgentInterfaceSettings();
+	}
+
+
+	/**
 	 * Returns a RedirectResponse if SSO says it needs to redirect
 	 *
 	 * @param bool $has_just_logged_out
 	 * @param AuthInterfaceSettings $authInterfaceSettings
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
 	 */
-	protected function needsSsoResponse(AuthInterfaceSettings $authInterfaceSettings, $has_just_logged_out = false)
+	protected function checkAuthSystemForResponse(AuthInterfaceSettings $authInterfaceSettings, $has_just_logged_out = false)
 	{
-		if ($authInterfaceSettings->isAutoSsoEnabled() | $authInterfaceSettings->isBackgroundSsoEnabled()) {
-			if ($has_just_logged_out) {
-				if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
-					return $this->redirect($url);
-				}
-			} elseif ($sso_result = $this->handleAutomaticSso()) {
-				if ($sso_result->isRedirectRequired()) {
-
-					$return = $this->in->getString('return');
-					$this->session->set('auth_return', $return);
-					$this->session->save();
-
-					return $this->redirect($sso_result->getRedirectUrl());
-				}
+		if ($has_just_logged_out) {
+			if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
+				return $this->redirect($url);
 			}
 		}
+
+		if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
+			if ($sso_result->isRedirectRequired()) {
+
+				$return = $this->in->getString('return');
+				$this->session->set('auth_return', $return);
+				$this->session->save();
+
+				return $this->redirect($sso_result->getRedirectUrl());
+			}
+		}
+	}
+
+
+	/**
+	 * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
+	 */
+	protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
+	{
+		if ($authInterfaceSettings->isAutoSsoEnabled()) {
+			return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
+		}
+
+		return null;
 	}
 
 	/**
@@ -210,7 +220,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		//
 		// SSO Automatic Redirecting
 		//
-		if ($res = $this->needsSsoResponse($this->getUserAuthSettings(), false)) {
+		if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
 			return $res;
 		}
 
@@ -323,19 +333,22 @@ HTML;
 			$this->createResponse($html);
 		}
 
-        /////////////////////////////////////////////
-        // SSO Automatic Redirecting
-        if ($res = $this->needsSsoResponse($this->getUserAuthSettings(), true)) {
-            return $res;
-        }
-
 		if ($this->in->getString('to') == 'admin') {
+			if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
+				return $res;
+			}
 			return $this->redirect($this->request->getBaseUrl() . '/admin/login?o');
 		} elseif ($this->in->getString('to') == 'agent') {
+			if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
+				return $res;
+			}
 			return $this->redirect($this->request->getBaseUrl() . '/agent/login?o');
 		} else {
 			if ($this->in->getString('via') == 'user_chat') {
 				return $this->redirectRoute('user_widget_chat');
+			}
+			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), true)) {
+				return $res;
 			}
 			return $this->redirectRoute('user');
 		}
