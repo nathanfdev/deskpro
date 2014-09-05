@@ -58,6 +58,7 @@ class AuthSettingsService
 		$agentAuthSettings = new AuthInterfaceSettings($adapterFactory);
 		$agentAuthSettings->setAutoSsoEnabled(true);
 		$agentAuthSettings->setSsoUsersource($jwtUsersource);
+		$agentAuthSettings->setLogoutRedirectUrl('http://google.com');
 
 		////////////////////////////////////////////////
 		// App Auth Settings

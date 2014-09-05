@@ -64,7 +64,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		//
 		// SSO Automatic Redirecting
 		//
-		if ($res = $this->needsSsoResponse($this->getAgentAuthSettings(), $has_logged_out)) {
+		if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), $has_logged_out)) {
 			return $res;
 		}
 
