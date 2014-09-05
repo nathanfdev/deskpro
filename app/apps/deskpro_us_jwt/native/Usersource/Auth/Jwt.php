@@ -34,6 +34,7 @@
 
 namespace deskpro_us_jwt\Usersource\Auth;
 
+use Application\DeskPRO\App;
 use League\Url\Url;
 use Orb\Auth\Adapter;
 use Orb\Auth\Adapter\AbstractCallbackAdatper;
@@ -42,7 +43,7 @@ use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Util\Arrays;
 
-class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
+class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface, Adapter\IframeSsoInterface
 {
 	/**
 	 * @var \Orb\Log\Logger
@@ -86,20 +87,13 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	 */
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
-		try {
-			$jwt           = $callback_data['jwt'];
-			$secret        = $this->options->get('secret');
-			$payload       = \JWT::decode($jwt, $secret, true);
-			$payload_array = Arrays::fromStdClass($payload);
+        return $this->tryJwtAuth($callback_data);
+	}
 
-			$identity = new Identity($payload_array['id'], $payload_array);
-			$identity->setFriendlyIdentity($payload_array['email']);
-			$result = new Result(Result::SUCCESS, $identity);
-		} catch (\Exception $e) {
-			$result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
-		}
 
-		return $result;
+	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller)
+	{
+		return $this->tryJwtAuth($_REQUEST);
 	}
 
 
@@ -110,16 +104,13 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
-		$url = Url::createFromUrl($this->options->get('url'));
-		$url->getQuery()->modify(array('return' => $this->getCallbackUrl()));
-		$redirect = (string)$url;
+        $redirect = $this->getFullRedirectUrl();
 
 		// return a success result if we detect they are already logged in
 		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect));
 
 		return $result;
 	}
-
 
 	/**
 	 * URL we send the deskpro user to after they log out of our system
@@ -144,5 +135,61 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	public function setLogoutRedirectUrl($url)
 	{
 		$this->logout_url = $url;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIframeTemplateParams($is_first_page_load)
+    {
+        return array(
+            'iframe_url' => $this->getFullRedirectUrl(),
+	        'render' => true
+        );
+    }
+
+
+    /**
+     * @param array $callback_data
+     * @return Result
+     */
+    protected function tryJwtAuth(array $callback_data)
+    {
+        try {
+            $jwt           = $callback_data['jwt'];
+            $secret        = $this->options->get('secret');
+            $payload       = \JWT::decode($jwt, $secret, true);
+            $payload_array = Arrays::fromStdClass($payload);
+
+            $identity = new Identity($payload_array['id'], $payload_array);
+            $identity->setFriendlyIdentity($payload_array['email']);
+            $result = new Result(Result::SUCCESS, $identity);
+        } catch (\Exception $e) {
+            $result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * @return string
+     */
+    protected function getFullRedirectUrl()
+    {
+        $url = Url::createFromUrl($this->options->get('url'));
+        $url->getQuery()->modify(array('return' => $this->getCallbackUrl()));
+        $redirect = (string) $url;
+
+        return $redirect;
+    }
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isBackgroundSsoSimpleRefresh()
+	{
+		return true;
 	}
 }
