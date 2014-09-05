@@ -26,32 +26,39 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @category Auth
+ * @package DeskPRO
+ * @subpackage
  */
 
 namespace Orb\Auth\Adapter;
 
 /**
- * SsoCapable adapters adhere to the CallbackInterface, but also need to respect the single sign-off by providing
- * a logout URL. If this SSO adapter does redirects for authentication, you probably want to use this.
+ * stuff that is not meant to goto the callback interface, but instead to use the sso response action
  */
-interface SsoCapableInterface extends CallbackInterface
+interface SsoLoginActionInterface
 {
+	const CONTEXT_BACKGROUND = 'background';
+	const CONTEXT_REDIRECT = 'redirect';
+
 	/**
-	 * URL we send the deskpro user to after they log out of our system
-	 * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation
+	 * TODO: Depending on a controller is odd, this should be cleaned up eventually
 	 *
-	 * @return string
+	 * @param \Application\DeskPRO\Controller\AbstractController $controller
+	 * @return \Orb\Auth\Result
 	 */
-	public function getLogoutRedirectUrl();
+	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller);
 
 
 	/**
-	 * Allow external processes to determine and set the logout URL if needed. Should override any internal logic for
-	 * logout URL.
+	 * Return true if the user is authenticated via a background js (iframe) and you want to signal that
+	 * it should be handled on success as just a simple refresh of parent page.
+	 *
+	 * FALSE means the "return" get param redirect, or redirect to interface main page will be loaded instead of
+	 * the simple refresh JS page.
+	 *
+	 * @return bool
 	 */
-	public function setLogoutRedirectUrl($url);
+	public function isBackgroundSsoSimpleRefresh();
 }

@@ -140,6 +140,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 
 	/**
 	 * If the getAuthAdapter method returns an SsoCapableInterface, we need to implement this.
+	 *
+	 * @return string url
 	 */
 	public function getAgentLogoutRedirectUrl()
 	{
@@ -148,6 +150,8 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 
 	/**
 	 * If the getAuthAdapter method returns an SsoCapableInterface, we need to implement this.
+	 *
+	 * @return string url
 	 */
 	public function getUserLogoutRedirectUrl()
 	{
