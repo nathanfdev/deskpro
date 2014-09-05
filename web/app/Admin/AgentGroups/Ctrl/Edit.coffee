@@ -40,8 +40,16 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			@$q.all(promises).then (res) =>
 				@group = res[0] || {id: 0}
 				@agents = res[1]
-				@ticketDeps = res[2]
 				@chatDeps   = res[3]
+
+				# deps need to be flattened to show in the table
+				@ticketDeps = []
+				for dep in res[2]
+					@ticketDeps.push(dep)
+					if dep.children
+						for subdep in dep.children
+							subdep.depth = 1
+							@ticketDeps.push(subdep)
 
 				@group.person_ids = []
 				@assignDepsPerms @group
@@ -177,8 +185,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 		###
-    # Shows the copy settings modal
-    ###
+		# Shows the copy settings modal
+		###
 		showCopySettings: ->
 
 			groups = []

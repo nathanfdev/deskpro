@@ -60,12 +60,26 @@
         promises = [this.service.groups.get(this.groupId), this.service.agents.all(), this.service.ticketDeps.all(), this.service.chatDeps.all()];
         return this.$q.all(promises).then((function(_this) {
           return function(res) {
+            var dep, subdep, _i, _j, _len, _len1, _ref, _ref1;
             _this.group = res[0] || {
               id: 0
             };
             _this.agents = res[1];
-            _this.ticketDeps = res[2];
             _this.chatDeps = res[3];
+            _this.ticketDeps = [];
+            _ref = res[2];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              dep = _ref[_i];
+              _this.ticketDeps.push(dep);
+              if (dep.children) {
+                _ref1 = dep.children;
+                for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                  subdep = _ref1[_j];
+                  subdep.depth = 1;
+                  _this.ticketDeps.push(subdep);
+                }
+              }
+            }
             _this.group.person_ids = [];
             _this.assignDepsPerms(_this.group);
             _this.updateAllPermsState();
@@ -258,7 +272,7 @@
 
 
       /*
-         * Shows the copy settings modal
+      		 * Shows the copy settings modal
        */
 
       Admin_AgentGroups_Ctrl_Edit.prototype.showCopySettings = function() {

@@ -10397,6 +10397,10 @@ section.dp-help-content-wrapper.open .dp-help-content-outer2 .dp-arrow-wrap i.up
   border-bottom: 1px solid #aaa;
 }
 
+.table tbody.no-tbody + tbody.no-tbody {
+  border-top: none;
+}
+
 .inner-footer {
   padding: 15px;
   margin: 30px 15px;
