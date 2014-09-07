@@ -95,6 +95,7 @@
 										<span ng-switch-when="choice">Predefined Choices</span>
 										<span ng-switch-when="toggle">Toggle (On/Off)</span>
 										<span ng-switch-when="date">Date</span>
+                                        <span ng-switch-when="datetime">Date/Time</span>
 										<span ng-switch-when="display">Display</span>
 										<span ng-switch-when="hidden">Hidden</span>
 										{% block extra_types_titleswitch %}{% endblock %}
@@ -426,11 +427,9 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <div class="inner-group">
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.default_mode" value="0" /> Use date at time of submission</label>
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.default_mode" value="date" /> Specific date</label>
-                                        <p ng-show="EditCtrl.form.date.default_mode == 'date'">
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.date.default_value" style="width: 50%;" datepicker-popup />
-                                        </p>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="0" /> Use date and time at the point of submission</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.default_mode" value="date" /> Specific date/time</label>
+                                        <datetimepicker ng-if="EditCtrl.form.datetime.default_mode == 'date'" ng-model="EditCtrl.form.datetime.default_value"></datetimepicker>
                                     </div>
                                 </div>
                             </div>
@@ -441,13 +440,13 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <div class="inner-group">
-                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[0]" /> Monday</label>
-                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[1]" /> Tuesday</label>
-                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[2]" /> Wednesday</label>
-                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[3]" /> Thursday</label>
-                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[4]" /> Friday</label>
-                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[5]" /> Saturday</label>
-                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[6]" /> Sunday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.datetime.valid_weekdays[0]" /> Monday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.datetime.valid_weekdays[1]" /> Tuesday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.datetime.valid_weekdays[2]" /> Wednesday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.datetime.valid_weekdays[3]" /> Thursday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.datetime.valid_weekdays[4]" /> Friday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.datetime.valid_weekdays[5]" /> Saturday</label>
+                                        <label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.datetime.valid_weekdays[6]" /> Sunday</label>
                                     </div>
                                 </div>
                             </div>
@@ -458,20 +457,20 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <div class="inner-group">
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.valid_dates_mode" value="0" /> Any date is valid</label>
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.valid_dates_mode" value="date" /> Date range</label>
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.valid_dates_mode" value="range" /> Days before/after</label>
-                                        <p ng-show="EditCtrl.form.date.valid_dates_mode == 'date'">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.valid_dates_mode" value="0" /> Any date is valid</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.valid_dates_mode" value="date" /> Date range</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.valid_dates_mode" value="range" /> Days before/after</label>
+                                        <p ng-show="EditCtrl.form.datetime.valid_dates_mode == 'date'">
                                             Between
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_date1" style="width: 150px;" placeholder="Start date" datepicker-popup />
+                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_date1" style="width: 150px;" placeholder="Start date" datepicker-popup />
                                             and
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_date2" style="width: 150px;" placeholder="Start end" datepicker-popup />
+                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_date2" style="width: 150px;" placeholder="Start end" datepicker-popup />
                                         </p>
-                                        <p ng-show="EditCtrl.form.date.valid_dates_mode == 'range'">
+                                        <p ng-show="EditCtrl.form.datetime.valid_dates_mode == 'range'">
                                             Date selected must be between
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate1" style="width: 80px;" placeholder="Start date" />
+                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate1" style="width: 80px;" placeholder="Start date" />
                                             and
-                                            <input type="text" class="form-control" ng-model="EditCtrl.form.date.date_valid_reldate2" style="width: 80px;" placeholder="Start end" />
+                                            <input type="text" class="form-control" ng-model="EditCtrl.form.datetime.date_valid_reldate2" style="width: 80px;" placeholder="Start end" />
                                             days from the time of submission
                                         </p>
                                     </div>
@@ -484,8 +483,8 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <div class="inner-group">
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.user_validation" value="0" /> No user validation</label>
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.user_validation" value="required" /> Require the user to provide a value</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.user_validation" value="0" /> No user validation</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.user_validation" value="required" /> Require the user to provide a value</label>
                                     </div>
                                 </div>
                             </div>
@@ -496,11 +495,11 @@
                                 </div>
                                 <div class="col-lg-9">
                                     <div class="inner-group">
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.agent_validation" value="0" /> No agent validation</label>
-                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.date.agent_validation" value="required" /> Require the agent to provide a value</label>
-                                        <p ng-show="EditCtrl.form.text.agent_validation && EditCtrl.form.date.agent_validation != '0'">
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.agent_validation" value="0" /> No agent validation</label>
+                                        <label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.datetime.agent_validation" value="required" /> Require the agent to provide a value</label>
+                                        <p ng-show="EditCtrl.form.text.agent_validation && EditCtrl.form.datetime.agent_validation != '0'">
                                             <label style="font-weight: normal">
-                                                <input type="checkbox" ng-model="EditCtrl.form.date.agent_validation_resolve" />
+                                                <input type="checkbox" ng-model="EditCtrl.form.datetime.agent_validation_resolve" />
                                                 Only enable agent validation when the ticket is being resolved
                                             </label>
                                         </p>

@@ -24,7 +24,8 @@ define [
 		'selectize'
 		'ngGrid',
 		'deskpro.option_builder',
-		'deskpro.category_builder'
+		'deskpro.category_builder',
+		'ui.datetime'
 	])
 
 	AdminModule.config(['datepickerConfig', 'datepickerPopupConfig', (datepickerConfig, datepickerPopupConfig) ->

@@ -55,7 +55,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 				},
 				datetime: {
 					default_mode:              '0',
-					default_value:             '',
+					default_value:              new Date,
 					valid_weekdays:            [true, true, true, true, true, true, true],
 					valid_dates_mode:          '0',
 					valid_date_range_start:    '',
@@ -160,10 +160,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 						if fieldModel.default_value
 							formTypeOpts.default_value = true
 
-					when "date"
+					when "date", "datetime"
 						if not Util.isBlank(fieldModel.default_value)
 							formTypeOpts.default_mode = 'date'
-							formTypeOpts.default_value = moment(fieldModel.default_value, 'YYYY-MM-DD').toDate()
+							formTypeOpts.default_value = moment(new Date(fieldModel.default_value)).toDate()
 
 						if not Util.isBlank(fieldModel.options.date_valid_dow)
 							formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false]
@@ -280,10 +280,16 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					if formTypeOpts.agent_validation == 'required'
 						postData.agent_validation_type = 'required'
 
-				when "date"
-					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date'
+				when "date", "datetime"
+					format = 'YYYY-MM-DD'
+					if 'date' == fieldType
+						postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date'
+					else
+						postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime'
+						format += ' HH:mm:00'
+
 					if formTypeOpts.default_mode == 'date'
-						postData.default_value = moment(formTypeOpts.default_value).format('YYYY-MM-DD')
+						postData.default_value = moment(formTypeOpts.default_value).format(format)
 
 					postData.date_valid_dow = []
 					for x, day in formTypeOpts.valid_weekdays
