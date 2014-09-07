@@ -87,6 +87,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	{
 		$this->person = $this->session->getPerson();
 
+		///////////////////////////////////////////
+		// SSO Automatic Redirecting
+		//
+		if (!$this->person['id']) {
+			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
+				return $res;
+			}
+		}
+
 		if (
 			($set_lang_id = $this->in->getString('language_id'))
 			&& ($set_lang = $this->container->getDataService('Language')->get($set_lang_id))

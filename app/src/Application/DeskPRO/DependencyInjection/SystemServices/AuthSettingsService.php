@@ -50,8 +50,8 @@ class AuthSettingsService
 		////////////////////////////////////////////////
 		// User Interface Auth Settings
 		$userAuthSettings = new AuthInterfaceSettings($adapterFactory);
-//		$userAuthSettings->setBackgroundSsoEnabled(true);
-//		$userAuthSettings->setSsoUsersource($jwtUsersource);
+		$userAuthSettings->setAutoSsoEnabled(true);
+		$userAuthSettings->setSsoUsersource($jwtUsersource);
 
 		////////////////////////////////////////////////
 		// Agent Interface Auth Settings

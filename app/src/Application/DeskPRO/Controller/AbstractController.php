@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -252,5 +253,71 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 		}
 
 		return parent::render($view, $parameters, $response);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
+	 */
+	protected function getUserAuthSettings()
+	{
+		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
+		$auth = $this->container->getSystemService('auth_settings');
+
+		return $auth->getUserInterfaceSettings();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
+	 */
+	protected function getAgentAuthSettings()
+	{
+		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
+		$auth = $this->container->getSystemService('auth_settings');
+
+		return $auth->getAgentInterfaceSettings();
+	}
+
+
+	/**
+	 * Returns a RedirectResponse if SSO says it needs to redirect
+     *
+	 * @param bool $has_just_logged_out
+	 * @param AuthInterfaceSettings $authInterfaceSettings
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
+	protected function checkAuthSystemForResponse(
+		AuthInterfaceSettings $authInterfaceSettings, $has_just_logged_out = false
+	) {
+		if ($has_just_logged_out) {
+			if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
+				return $this->redirect($url);
+			}
+		}
+
+		if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
+			if ($sso_result->isRedirectRequired()) {
+
+				$return = $this->in->getString('return');
+				$this->session->set('auth_return', $return);
+				$this->session->save();
+
+				return $this->redirect($sso_result->getRedirectUrl());
+			}
+		}
+	}
+
+	/**
+	 * @param AuthInterfaceSettings $authInterfaceSettings
+	 * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
+     */
+	protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
+	{
+		if ($authInterfaceSettings->isAutoSsoEnabled()) {
+			return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
+		}
+
+		return null;
 	}
 }

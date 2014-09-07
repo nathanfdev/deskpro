@@ -141,70 +141,6 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 
 	/**
-	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
-	 */
-	protected function getUserAuthSettings()
-	{
-		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
-		$auth = $this->container->getSystemService('auth_settings');
-
-		return $auth->getUserInterfaceSettings();
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
-	 */
-	protected function getAgentAuthSettings()
-	{
-		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
-		$auth = $this->container->getSystemService('auth_settings');
-
-		return $auth->getAgentInterfaceSettings();
-	}
-
-
-	/**
-	 * Returns a RedirectResponse if SSO says it needs to redirect
-	 *
-	 * @param bool $has_just_logged_out
-	 * @param AuthInterfaceSettings $authInterfaceSettings
-	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
-	 */
-	protected function checkAuthSystemForResponse(AuthInterfaceSettings $authInterfaceSettings, $has_just_logged_out = false)
-	{
-		if ($has_just_logged_out) {
-			if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
-				return $this->redirect($url);
-			}
-		}
-
-		if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
-			if ($sso_result->isRedirectRequired()) {
-
-				$return = $this->in->getString('return');
-				$this->session->set('auth_return', $return);
-				$this->session->save();
-
-				return $this->redirect($sso_result->getRedirectUrl());
-			}
-		}
-	}
-
-
-	/**
-	 * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
-	 */
-	protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
-	{
-		if ($authInterfaceSettings->isAutoSsoEnabled()) {
-			return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
-		}
-
-		return null;
-	}
-
-	/**
 	 * Handles showing the login form, and on POST handles login credentials
 	 * through the auth adapters.
 	 */
@@ -217,16 +153,18 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
-		//
-		// SSO Automatic Redirecting
-		//
-		if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
-			return $res;
-		}
-
 		if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute('user');
+		}
+
+		if (!$this->session->getPerson()->getId()) {
+			///////////////////////////////////////
+			// SSO Automatic Redirecting
+			//
+			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
+				return $res;
+			}
 		}
 
 		$register = new \Application\UserBundle\Form\Model\Register();
