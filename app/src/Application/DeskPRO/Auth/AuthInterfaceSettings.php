@@ -114,7 +114,9 @@ class AuthInterfaceSettings
 		if ($this->isAutoSsoEnabled() || $this->isBackgroundSsoEnabled()) {
 			$adapter = $this->adapterFactory->getAuthAdapter($this->getSsoUsersource());
 			if ($adapter instanceof SsoCapableInterface) {
-				return $adapter->getLogoutRedirectUrl();
+				if ($url = $adapter->getLogoutRedirectUrl()) {
+					return $url;
+				}
 			}
 		}
 

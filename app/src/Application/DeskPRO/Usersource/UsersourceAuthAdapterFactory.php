@@ -116,7 +116,7 @@ class UsersourceAuthAdapterFactory
 
 			if ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
 				$url = $this->router->generate(
-						'user_login_usersource_sso', array('usersource_id' => $usersource['id']),
+						$route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
 						RouterInterface::ABSOLUTE_URL
 					);
 			} else {

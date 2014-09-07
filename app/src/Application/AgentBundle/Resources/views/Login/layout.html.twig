@@ -347,7 +347,9 @@
 		<div class="deskpro-logo">
 	</div>
 </div>
-
+{#{% if not app.user.id %}#}
+{{ dp_js_sso_loader('agent') }}
+{#{% endif %}#}
 <link rel="stylesheet" href="{{ asset('fonts/font-awesome.min.css') }}" type="text/css" />
 </body>
 </html>

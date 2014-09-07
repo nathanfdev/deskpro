@@ -56,7 +56,7 @@ class AuthSettingsService
 		////////////////////////////////////////////////
 		// Agent Interface Auth Settings
 		$agentAuthSettings = new AuthInterfaceSettings($adapterFactory);
-		$agentAuthSettings->setAutoSsoEnabled(true);
+		$agentAuthSettings->setBackgroundSsoEnabled(true);
 		$agentAuthSettings->setSsoUsersource($jwtUsersource);
 		$agentAuthSettings->setLogoutRedirectUrl('http://google.com');
 
