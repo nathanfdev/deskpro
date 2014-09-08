@@ -143,6 +143,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				},1);
 			}
 		});
+		var $dtInput = $('.DateTime.customfield input', this.display);
+		$dtInput.datetimepicker({
+			format: 'yyyy-mm-dd hh:mm',
+			container: $dtInput.css('position', 'relative'),
+			autoclose: true
+		});
 
 		// Make sure field tab is selected
 		this.page.getEl('fields_display_main_wrap_tab').click();

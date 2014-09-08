@@ -357,6 +357,12 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 							},1);
 						}
 					});
+					var $dtInput = $('.DateTime.customfield input', fieldsForm);
+					$dtInput.datetimepicker({
+						format: 'yyyy-mm-dd hh:mm',
+						container: $dtInput.css('position', 'relative'),
+						autoclose: true
+					});
 				}
 
 				$('.prop-edit-trigger', box).hide();
