@@ -593,11 +593,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							},1);
 						}
 					});
-					var $dtInput = $('.DateTime.customfield input', fieldsForm);
-					$dtInput.datetimepicker({
-						format: 'yyyy-mm-dd hh:mm',
-						container: $dtInput.css('position', 'relative'),
-						autoclose: true
+
+					$('.DateTime.customfield input', fieldsForm).each(function(){
+						$(this).datetimepicker({
+							format: 'yyyy-mm-dd hh:mm',
+							container: $(this).parent().css('position', 'relative'),
+							autoclose: true
+						});
 					});
 				}
 

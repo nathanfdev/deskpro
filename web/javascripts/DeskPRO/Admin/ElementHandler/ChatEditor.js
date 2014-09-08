@@ -142,7 +142,7 @@ DeskPRO.Admin.ElementHandler.ChatEditor = new Orb.Class({
 				var $dtInput = $('.DateTime.customfield input', formItem);
 				$dtInput.datetimepicker({
 					format: 'yyyy-mm-dd hh:mm',
-					container: $dtInput.css('position', 'relative'),
+					container: $dtInput.parent().css('position', 'relative'),
 					autoclose: true
 				});
 
@@ -259,12 +259,15 @@ DeskPRO.Admin.ElementHandler.ChatEditor = new Orb.Class({
 			draggingSidebarEl.hide();
 
             $('.Date.customfield input', formItem).datepicker();
-			var $dtInput = $('.DateTime.customfield input', formItem);
-			$dtInput.datetimepicker({
-				format: 'yyyy-mm-dd hh:mm',
-				container: $dtInput.css('position', 'relative'),
-				autoclose: true
+
+			$('.DateTime.customfield input', formItem).each(function(){
+				$(this).datetimepicker({
+					format: 'yyyy-mm-dd hh:mm',
+					container: $(this).parent().css('position', 'relative'),
+					autoclose: true
+				});
 			});
+
 		}
 
 		if (CHAT_DISPLAY_DATA && CHAT_DISPLAY_DATA.length) {
