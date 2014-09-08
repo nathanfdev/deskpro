@@ -46,6 +46,7 @@ use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
+use Orb\Auth\Result;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
@@ -566,55 +567,10 @@ HTML;
 
 	public function authLocalInput()
 	{
-		#------------------------------
-		# Auth local
-		#------------------------------
-
-		if ($this->container->getSetting('core.deskpro_source_enabled') || DP_INTERFACE != 'user') {
-			$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
-			$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
-			$result = $adapter->authenticate();
-
-			if ($result->isValid()) {
-				return $result;
-			}
-		}
-
-		#------------------------------
-		# Auth usersources that accept local input
-		#------------------------------
-
-		$usersources = $this->usersource_manager->getAll()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN)->forInterface(DP_INTERFACE);
-		foreach ($usersources as $us) {
-
-			/** @var $us \Application\DeskPRO\Entity\Usersource */
-			$adapter = $this->_initUserSourceAdapter($us);
-			$adapter->setFormData(array(
-				'username' => $this->in->getString('email'),
-				'password' => $this->in->getString('password')
-			));
-
-			try {
-				$result = $adapter->authenticate();
-			} catch (\Exception $e) {
-				KernelErrorHandler::logException($e, false);
-				$GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
-				$GLOBALS['DP_AUTH_EXCEPTION'] = $e;
-				continue;
-			}
-
-			if ($result->isValid()) {
-				$login_processor = new LoginProcessor($us, $result->getIdentity());
-				$person = $login_processor->getPerson();
-
-				$identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
-				$result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
-
-				return $result;
-			}
-		}
-
-		return new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE_INVALID_CREDS);
+		return $this->auth_manager->authenticateFormLogin(
+			$this->in->getString('email'),
+			$this->in->getString('password')
+		);
 	}
 
 

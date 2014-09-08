@@ -35,8 +35,13 @@
 namespace Application\DeskPRO\Auth;
 
 
+use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
+use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Auth\Adapter\FormLoginInterface;
+use Orb\Auth\Identity;
+use Orb\Auth\Result;
 
 /**
  * AuthenticationManager ties the pieces of the Authentication system together and makes some executive decisions about
@@ -80,17 +85,27 @@ class AuthenticationManager
 	 */
 	private $settings;
 
+	/**
+	 * @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory
+	 */
+	private $authAdapterFactory;
+
 
 	/**
 	 * @param UsersourceManager $usersourceManager system service
 	 * @param AuthSettings      $authSettings system service
 	 * @param string            $interface this MUST be "user" or "agent"
 	 */
-	public function __construct(AuthSettings $authSettings, UsersourceManager $usersourceManager, $interface)
-	{
-		$this->usersourceManager = $usersourceManager;
-		$this->authSettings = $authSettings;
-		$this->interface    = $interface;
+	public function __construct(
+		AuthSettings $authSettings,
+		UsersourceManager $usersourceManager,
+		UsersourceAuthAdapterFactory $auth_adapter_factory,
+		$interface
+	) {
+		$this->usersourceManager  = $usersourceManager;
+		$this->authSettings       = $authSettings;
+		$this->authAdapterFactory = $auth_adapter_factory;
+		$this->interface          = $interface;
 
 		$this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
 		$this->settings = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
@@ -131,6 +146,73 @@ class AuthenticationManager
 	public function hasFormLoginCapability()
 	{
 		return count($this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN)) > 0;
+	}
+
+
+	public function authenticateFormLogin($identifier, $password)
+	{
+		#------------------------------
+		# Auth local
+		#------------------------------
+
+		// local deskpro auth is now a usersource (in the db) like all others
+		//if ($this->container->getSetting('core.deskpro_source_enabled') || DP_INTERFACE != 'user') {
+		//	$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+		//	$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
+		//	$result = $adapter->authenticate();
+		//
+		//	if ($result->isValid()) {
+		//		return $result;
+		//	}
+		//}
+
+		#------------------------------
+		# Auth usersources that accept local input
+		#------------------------------
+
+		$usersources = $this->getFormLoginUsersources();
+		foreach ($usersources as $us) {
+			$adapter = $this->authAdapterFactory->getAuthAdapter($us);
+
+			if ($adapter instanceof FormLoginInterface) {
+				$adapter->setFormData(
+					array(
+						'username' => $identifier,
+						'password' => $password
+					)
+				);
+
+				try {
+					$result = $adapter->authenticate();
+				} catch (\Exception $e) {
+					KernelErrorHandler::logException($e, false);
+					$GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
+					$GLOBALS['DP_AUTH_EXCEPTION']         = $e;
+					continue;
+				}
+
+				if ($result->isValid()) {
+					$login_processor = new LoginProcessor($us, $result->getIdentity());
+					$person          = $login_processor->getPerson();
+
+					$identity = new Identity($person->id, array('person' => $person));
+					$result   = new Result(Result::SUCCESS, $identity);
+
+					return $result;
+				}
+			}
+		}
+
+		return new Result(Result::FAILURE_INVALID_CREDS);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Usersource\UsersourceCollection
+	 */
+	public function getFormLoginUsersources()
+	{
+		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN);
 	}
 
 
