@@ -131,15 +131,16 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 
 		return $this->render('AgentBundle:Login:index.html.twig', array(
-			'return'             => $return,
-		    'display_input_form' => $this->auth_manager->hasFormLoginCapability(),
-			'route_prefix'       => $this->route_prefix,
-			'logo_blob'          => $logo_blob,
-			'has_logged_out'     => $has_logged_out,
-			'has_done_reset'     => $has_done_reset,
-			'failed_login_name'  => $failed_login_name,
-			'browser_warnings'   => $browser_warnings,
-			'timeout'            => $this->in->getBool('timeout')
+			'return'                   => $return,
+			'display_input_form'       => $this->auth_manager->hasFormLoginCapability(),
+			'login_button_usersources' => $this->auth_manager->getLoginButtonUsersources(),
+			'route_prefix'             => $this->route_prefix,
+			'logo_blob'                => $logo_blob,
+			'has_logged_out'           => $has_logged_out,
+			'has_done_reset'           => $has_done_reset,
+			'failed_login_name'        => $failed_login_name,
+			'browser_warnings'         => $browser_warnings,
+			'timeout'                  => $this->in->getBool('timeout')
 		));
 	}
 

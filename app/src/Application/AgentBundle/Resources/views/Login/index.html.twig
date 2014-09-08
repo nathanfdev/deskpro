@@ -115,11 +115,10 @@
 		<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
 		<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
 
-		{% set usersources = app.usersourceManager.getAll.configuredForAgents.withCapability('tpl_login_pull_btn') %}
-		{% if usersources|length %}
+		{% if login_button_usersources|length %}
 			<div class="dp-usersource-list">
 				Or log in with &nbsp;
-				{% for usersource in usersources%}
+				{% for usersource in login_button_usersources %}
 					{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
 				{% endfor %}
 			</div>
@@ -127,10 +126,9 @@
 	</form>
 	{# END FORM LOGIN #}
 	{% else %}
-		{% set usersources = app.usersourceManager.getAll.configuredForAgents.withCapability('tpl_login_pull_btn') %}
-		{% if usersources|length %}
+		{% if login_button_usersources|length %}
 			<ul>
-				{% for usersource in usersources %}
+				{% for usersource in login_button_usersources %}
 					<li>{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }} {{  usersource.title }}</li>
 				{% endfor %}
 			</ul>

@@ -116,6 +116,8 @@ class AuthenticationManager
 
 
 	/**
+	 * All usersources for this interface
+	 *
 	 * @return \Application\DeskPRO\Usersource\UsersourceCollection
 	 */
 	public function getUsersources()
@@ -129,6 +131,26 @@ class AuthenticationManager
 	public function hasFormLoginCapability()
 	{
 		return count($this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN)) > 0;
+	}
+
+
+	/**
+	 * Usersources that have a button to display to login
+	 *
+	 * @return \Application\DeskPRO\Usersource\UsersourceCollection
+	 */
+	public function getLoginButtonUsersources()
+	{
+		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_LOGIN_BTN);
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasLoginButtonUsersources()
+	{
+		return count($this->getLoginButtonUsersources()) > 0;
 	}
 }
  
