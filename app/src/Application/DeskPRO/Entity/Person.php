@@ -544,8 +544,16 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 		$this->setModelField('date_created',    new \DateTime());
 		$this->setModelField('secret_string',   Strings::random(40));
-		$this->setModelField('timezone',        'UTC');
 		$this->setModelField('salt',            Strings::random(40));
+
+		if (class_exists('Application\\DeskPRO\\App', false)) {
+			try {
+				$this->setTimezone(App::$container->getSetting('core.default_timezone'));
+			} catch (\Exception $e) {};
+		}
+		if (!$this->timezone) {
+			$this->setModelField('timezone', 'UTC');
+		}
 
 		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
