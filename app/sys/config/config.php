@@ -252,7 +252,7 @@ $container->loadFromExtension('framework', array(
 		'engines' => array('twig', 'php', 'jsonphp'),
 		'assets_base_urls' => 'CONFIG_HTTP'
 	),
-	'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata')),
+	'validation' => array('enabled' => true, 'static_method' => array('loadValidatorMetadata'), 'api' => '2.4'),
 	'session' => array(),
 	'form' => array('enabled' => true),
 	'router' => array(
