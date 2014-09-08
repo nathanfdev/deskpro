@@ -360,7 +360,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 					$('.DateTime.customfield input', fieldsForm).each(function(){
 						$(this).datetimepicker({
-							format: 'yyyy-mm-dd hh:mm',
+							format: 'yyyy-mm-dd hh:ii',
 							container: $(this).parent().css('position', 'relative'),
 							autoclose: true
 						});

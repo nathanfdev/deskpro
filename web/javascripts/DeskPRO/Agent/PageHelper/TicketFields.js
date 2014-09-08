@@ -146,7 +146,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$('.DateTime.customfield input', this.display).each(function(){
 			$(this).datetimepicker({
-				format: 'yyyy-mm-dd hh:mm',
+				format: 'yyyy-mm-dd hh:ii',
 				container: $(this).parent().css('position', 'relative'),
 				autoclose: true
 			});
