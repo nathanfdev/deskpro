@@ -38,6 +38,12 @@
                 templateName: _this.templateName,
                 mode: 'custom'
               });
+            }, function(result) {
+              _this.$scope.saving_template = false;
+              _this.$scope.is_error = true;
+              _this.$scope.syntax_error = result.data.error_syntax || false;
+              _this.$scope.syntax_line = result.data.error_line || 0;
+              return _this.$scope.error_message = result.data.error_message || 'Unknown';
             });
           };
         })(this);
