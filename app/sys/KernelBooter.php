@@ -820,6 +820,7 @@ class KernelBooter
 		}
 
 		if ($check_indexer && !defined('DPC_IS_CLOUD')) {
+			@set_time_limit(0);
 			$index_reset = \Application\DeskPRO\App::getSetting('elastica.requires_reset');
 			if ($index_reset) {
 				try {
