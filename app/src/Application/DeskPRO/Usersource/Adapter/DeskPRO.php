@@ -29,28 +29,55 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage Usersource
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\DeskPRO\Usersource\Adapter;
 
-class Build1409758642 extends AbstractBuild
+use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\Adapter\Local;
+use Application\DeskPRO\Usersource\UsersourceInfo;
+use Orb\Auth\Identity;
+
+/**
+ * The local DeskPRO login usersource
+ *
+ * @package Application\DeskPRO\Usersource\Adapter
+ */
+class DeskPRO extends AbstractAdapter
 {
-	public function run()
+	public function getFieldsFromIdentity(Identity $identity)
 	{
-		$this->out("Upgrade usersources to new auth settings");
-		//$this->execMutateSql("ALTER TABLE usersources ADD display_order_user INT NOT NULL, ADD display_order_agent INT NOT NULL, ADD is_enabled_user TINYINT(1) NOT NULL, ADD is_enabled_agent TINYINT(1) NOT NULL");
-		$this->execMutateSql("
-			UPDATE usersources
-			SET display_order_user = display_order + 1,
-				display_order_agent = display_order + 1,
-				is_enabled_user = is_enabled,
-				is_enabled_agent = is_enabled
- 		");
+		return $identity->getRawData();
+	}
 
-		$enable = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
-		$this->execMutateSql(
-			"INSERT INTO usersources (title, source_type, lost_password_url, `options`, display_order, is_enabled, display_order_user, display_order_agent, is_enabled_user, is_enabled_agent) VALUES ('DeskPRO', 'Application\\\\DeskPRO\\\\Usersource\\\\Adapter\\\\DeskPRO', '/login/reset-password', '', 0, $enable, 0, 0, $enable, $enable)"
+
+	/**
+	 * @return \Orb\Auth\Adapter\Google
+	 */
+	protected function _createAuthAdapterObject()
+	{
+		return new Local(App::getContainer()->getEm());
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getCapabilities()
+	{
+		return array(
+			UsersourceInfo::CAPABILITY_FORM_LOGIN,
 		);
+	}
+
+
+	/**
+	 * @param  mixed $capability
+	 * @return bool
+	 */
+	public function isCapable($capability)
+	{
+		return in_array($capability, $this->getCapabilities());
 	}
 }

@@ -34,26 +34,39 @@
 
 namespace Application\DeskPRO\Auth\Adapter;
 
+use Doctrine\ORM\EntityManager;
+use Orb\Auth\Adapter\AdapterInterface;
+use Orb\Auth\Adapter\FormLoginInterface;
+use Orb\Auth\Identity;
 use Orb\Auth\Result;
 
 
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
-class Local implements \Orb\Auth\Adapter\AdapterInterface
+class Local implements AdapterInterface, FormLoginInterface
 {
 	/**
 	 * Entity manager
-	 * @var Doctrine\ORM\EntityManager
+	 * @var \Doctrine\ORM\EntityManager
 	 */
 	protected $em;
 
 	protected $email = '';
 	protected $password = '';
 
-	public function __construct(\Doctrine\ORM\EntityManager $em)
+	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
+	}
+
+	/**
+	 * Sets the data got from a form
+	 */
+	public function setFormData(array $form_data)
+	{
+		$identifier = isset($form_data['username']) ? $form_data['username'] : $form_data['email'];
+		$this->setCredentials($identifier, $form_data['password']);
 	}
 
 	public function setCredentials($email, $password)
@@ -82,6 +95,7 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 		$person = null;
 
 		try {
+			/** @var \Application\DeskPRO\Entity\Person $person */
 			$person = $qb->getQuery()->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {}
 
@@ -89,7 +103,14 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 			return new Result(Result::FAILURE_INVALID_CREDS);
 		}
 
-		$identity = new \Orb\Auth\Identity($person['id'], array('person' => $person));
+		$identity = new Identity(
+			$person['id'],
+			array(
+				'email' => $person->primary_email->email,
+				'email_confirmed' => true
+			)
+		);
+		$identity->setFriendlyIdentity($person->primary_email->email);
 		$result = new Result(Result::SUCCESS, $identity);
 
 		return $result;
