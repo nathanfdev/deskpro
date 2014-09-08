@@ -182,7 +182,7 @@ pageMeta.lang = {{ {
 		{% endif %}
 
 		{% if ticket_perms.modify_cc and not user_parts|length %}
-			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
+			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn2"><i class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
 		{% endif %}
 
 		{% if ticket_perms.modify_cc or user_parts|length %}
