@@ -135,13 +135,22 @@ class UsersourceCollection extends \ArrayObject
 	}
 
 	/**
-	 * @return UsersourceCollection
+	 * @param array|string $capability a string with a single capability, or an array of strings
+	 * @return UsersourceCollection with usersources that have at least one of the passed capabilities
 	 */
 	public function withCapability($capability)
 	{
 		$filtered = array_filter(
 			(array) $this, function (Usersource $us) use ($capability) {
-				return $us->isCapable($capability);
+				if (is_array($capability)) {
+					foreach($capability as $cap) {
+						if ($us->isCapable($cap)) {
+							return true;
+						}
+					}
+				} else {
+					return $us->isCapable($capability);
+				}
 			}
 		);
 
