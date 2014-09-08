@@ -334,21 +334,14 @@ JS;
 			$method = $originalMethod;
 		}
 
-		if ($originalMethod == 'GET' || $originalMethod == 'POST') {
-			if ($originalMethod == 'GET') {
-				$passData = $_GET;
-			} else {
-				$passData = $_POST;
-			}
-
+		if ($originalMethod == 'GET') {
+			$passData = $_GET;
 			if ($used_req_url) {
 				unset($passData['url']);
 			}
 		} else {
 			$passData = file_get_contents('php://input');
 		}
-
-		unset($passData['_rt']);
 
 		switch (strtolower($method)) {
 			case 'get': $method = 'GET'; break;
