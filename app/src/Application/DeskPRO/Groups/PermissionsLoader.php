@@ -120,20 +120,16 @@ class PermissionsLoader
 
 
 	/**
-	 * @param array $ug_ids
+	 * @param int $agent_id
 	 * @return array
 	 */
-	public function getAgentOverridePermissions(array $agent_ids)
+	public function getAgentOverridePermissions($agent_id)
 	{
-		$agent_ids = array_fill_keys($agent_ids, true);
-
-		$ret = array();
-		foreach ($this->getAllAgentOverridePermissions() as $aid => $p) {
-			if (isset($agent_ids[$aid])) {
-				$ret[$aid] = $p;
-			}
+		$this->getAllAgentOverridePermissions();
+		if (!isset($this->agent_override_perms[$agent_id])) {
+			return array();
 		}
 
-		return $ret;
+		return $this->agent_override_perms[$agent_id];
 	}
 }
