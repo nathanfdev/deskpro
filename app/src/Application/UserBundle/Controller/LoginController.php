@@ -69,6 +69,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	 */
 	protected $usersource_manager;
 
+	/**
+	 * @var \Application\DeskPRO\Auth\AuthenticationManager
+	 */
+	protected $auth_manager;
+
 	public function init()
 	{
 		parent::init();
@@ -79,7 +84,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$this->route_prefix
 		);
 
-
+		$this->auth_manager = $this->container->getSystemService('authentication_manager');
 		$this->usersource_manager = $this->container->getSystemService('usersource_manager');
 	}
 
