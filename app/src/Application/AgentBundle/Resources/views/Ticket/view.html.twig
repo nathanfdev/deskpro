@@ -385,7 +385,7 @@ pageMeta.lang = {{ {
 						<label class="field-label-title" style="white-space: nowrap">
                         {{ phrase('agent.general.agent') }}
                         {% if ticket_perms.modify_assign_agent or not ticket.agent %}
-							<span id="{{baseId}}_assign_me" class="assign-self-link-wrap" style="{% if app.user == ticket.agent %}display:none;{% endif %}" data-me="{{ app.user.id }}">
+							<span id="{{baseId}}_assign_me" class="assign-self-link-wrap" style="{% if app.user.id == ticket.agent.id %}display:none;{% endif %}" data-me="{{ app.user.id }}">
 								&middot;
 								<a class="assign-self-link">
 									{{ phrase('agent.general.assign_to_me') }}
