@@ -677,7 +677,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		$('.error-message-on', this.wrapper).removeClass('error-message-on').hide();
 		this.getEl('error_section').hide();
 
-		this.wrapper.parent().addClass('loading');
+		this.wrapper.addClass('loading');
 		this.getEl('send_btn').hide();
 		this.getEl('send_loading').show();
 
@@ -688,7 +688,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				this.wrapper.parent().removeClass('loading');
+				this.wrapper.removeClass('loading');
 				this.getEl('send_btn').show();
 				this.getEl('send_loading').hide();
 			},
