@@ -360,6 +360,9 @@ class PortalEditorController extends AbstractController
 
 		$this->db->beginTransaction();
 		try {
+			// Delete existing ones with same name
+			$this->db->delete('templates', array('name' => $template->name));
+
 			$this->em->persist($template);
 			if ($block) {
 				$this->em->persist($block);
