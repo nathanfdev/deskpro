@@ -80,7 +80,7 @@ class DateTime extends HandlerAbstract
 			return array();
 		}
 
-		$date = \DateTime::createFromFormat('Y-m-d', $value, App::getCurrentPerson()->getDateTimezone());
+		$date = \DateTime::createFromFormat('Y-m-d H:i', $value, App::getCurrentPerson()->getDateTimezone());
 		if (!$date) {
 			return array();
 		}
@@ -104,7 +104,7 @@ class DateTime extends HandlerAbstract
 						$setData = $date->format('Y-m-d H:i');
 					}
 				} else {
-					$date = \DateTime::createFromFormat('Y-m-d H:i:s', $data['value']);
+					$date = \DateTime::createFromFormat('Y-m-d H:i', $data['value']);
 					if ($date) {
 						$date->setTimezone(App::getCurrentPerson()->getDateTimezone());
 						$setData = $date->format('Y-m-d H:i');
@@ -156,116 +156,114 @@ class DateTime extends HandlerAbstract
 		}
 
 		if ($data) {
-			$date = \DateTime::createFromFormat('Y-m-d H:i:s', $data);
+			$date = \DateTime::createFromFormat('Y-m-d H:i', $data, App::getCurrentPerson()->getDateTimezone());
 			if (!$date) {
 				return $this->makeErrorArray(array('invalid_input'));
 			}
+		} else {
+			return array();
 		}
 
 		#------------------------------
 		# Validate ranges
 		#------------------------------
 
-		if ($data) {
-			try {
-				$admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
-			} catch (\Exception $e) {
-				$admin_tz = App::getCurrentPerson()->getDateTimezone();
-			}
-			$date = \DateTime::createFromFormat('Y-m-d', $data, App::getCurrentPerson()->getDateTimezone());
-			$date_admin = clone $date;
-			$date_admin->setTimezone($admin_tz);
+		try {
+			$admin_tz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
+		} catch (\Exception $e) {
+			$admin_tz = App::getCurrentPerson()->getDateTimezone();
+		}
 
-			$dow = intval($date_admin->format('N')) - 1;
+		$date_admin = clone $date;
+		$date_admin->setTimezone($admin_tz);
 
-			// Days of week
-			if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
-				if (!in_array($dow, $valid_dow)) {
-					return $this->makeErrorArray(array('invalid_date_dow'));
-				}
-			}
+		$dow = intval($date_admin->format('N')) - 1;
 
-			// Specific date ranges
-			if ($this->field_def->getOption('date_valid_type') == 'date') {
-				$d1 = $this->field_def->getOption('date_valid_date1');
-				$d2 = $this->field_def->getOption('date_valid_date2');
-
-				if ($d1) {
-					$d1 = \DateTime::createFromFormat('Y-m-d', $d1, $admin_tz);
-					$d1->setTime(0,0,0);
-
-					if ($date_admin < $d1) {
-						return $this->makeErrorArray(array('invalid_date_range'));
-					}
-				}
-				if ($d2) {
-					$d2 = \DateTime::createFromFormat('Y-m-d', $d2, $admin_tz);
-					$d2->setTime(23,59,59);
-
-					if ($date_admin > $d2) {
-						return $this->makeErrorArray(array('invalid_date_range'));
-					}
-				}
-
-			// "Days from now"
-			} elseif ($this->field_def->getOption('date_valid_type') == 'range') {
-				if ($context_data && isset($context_data['exist_ticket'])) {
-					$now = clone $context_data['exist_ticket']->date_created;
-					$now->setTimezone($admin_tz);
-				} else {
-					$now = new \DateTime('now', $admin_tz);
-				}
-
-				$days1 = $this->field_def->getOption('date_valid_range1');
-				$days2 = $this->field_def->getOption('date_valid_range2');
-
-				if ($days1) {
-					$d1 = clone $now;
-					$d1->modify("{$days1} days");
-					$d1->setTime(0,0,0);
-
-					// Go back if we hit on a unselectable date
-					if ($valid_dow) {
-						$x = 0;
-						while ($x++ < 5000) {
-							$check_dow = intval($d1->format('N')) - 1;
-							if (in_array($check_dow, $valid_dow)) {
-								break;
-							}
-
-							$d1->modify('-1 day');
-						}
-					}
-
-					if ($date_admin < $d1) {
-						return $this->makeErrorArray(array('invalid_date_range'));
-					}
-				}
-				if ($days2) {
-					$d2 = clone $now;
-					$d2->modify("{$days1} days");
-					$d2->setTime(23,59,59);
-
-					// Go back if we hit on a unselectable date
-					if ($valid_dow) {
-						$x = 0;
-						while ($x++ < 5000) {
-							$check_dow = intval($d2->format('N')) - 1;
-							if (in_array($check_dow, $valid_dow)) {
-								break;
-							}
-
-							$d2->modify(\DateInterval::createFromDateString('1 day'));
-						}
-					}
-
-					if ($date_admin > $d2) {
-						return $this->makeErrorArray(array('invalid_date_range'));
-					}
-				}
+		// Days of week
+		if ($valid_dow = $this->field_def->getOption('date_valid_dow')) {
+			if (!in_array($dow, $valid_dow)) {
+				return $this->makeErrorArray(array('invalid_date_dow'));
 			}
 		}
 
-		return array();
+		// Specific date ranges
+		if ($this->field_def->getOption('date_valid_type') == 'date') {
+			$d1 = $this->field_def->getOption('date_valid_date1');
+			$d2 = $this->field_def->getOption('date_valid_date2');
+
+			if ($d1) {
+				$d1 = \DateTime::createFromFormat('Y-m-d', $d1, $admin_tz);
+				$d1->setTime(0,0,0);
+
+				if ($date_admin < $d1) {
+					return $this->makeErrorArray(array('invalid_date_range'));
+				}
+			}
+			if ($d2) {
+				$d2 = \DateTime::createFromFormat('Y-m-d', $d2, $admin_tz);
+				$d2->setTime(23,59,59);
+
+				if ($date_admin > $d2) {
+					return $this->makeErrorArray(array('invalid_date_range'));
+				}
+			}
+
+		// "Days from now"
+		} elseif ($this->field_def->getOption('date_valid_type') == 'range') {
+			if ($context_data && isset($context_data['exist_ticket'])) {
+				$now = clone $context_data['exist_ticket']->date_created;
+				$now->setTimezone($admin_tz);
+			} else {
+				$now = new \DateTime('now', $admin_tz);
+			}
+
+			$days1 = $this->field_def->getOption('date_valid_range1');
+			$days2 = $this->field_def->getOption('date_valid_range2');
+
+			if ($days1) {
+				$d1 = clone $now;
+				$d1->modify("{$days1} days");
+				$d1->setTime(0,0,0);
+
+				// Go back if we hit on a unselectable date
+				if ($valid_dow) {
+					$x = 0;
+					while ($x++ < 5000) {
+						$check_dow = intval($d1->format('N')) - 1;
+						if (in_array($check_dow, $valid_dow)) {
+							break;
+						}
+
+						$d1->modify('-1 day');
+					}
+				}
+
+				if ($date_admin < $d1) {
+					return $this->makeErrorArray(array('invalid_date_range'));
+				}
+			}
+			if ($days2) {
+				$d2 = clone $now;
+				$d2->modify("{$days1} days");
+				$d2->setTime(23,59,59);
+
+				// Go back if we hit on a unselectable date
+				if ($valid_dow) {
+					$x = 0;
+					while ($x++ < 5000) {
+						$check_dow = intval($d2->format('N')) - 1;
+						if (in_array($check_dow, $valid_dow)) {
+							break;
+						}
+
+						$d2->modify(\DateInterval::createFromDateString('1 day'));
+					}
+				}
+
+				if ($date_admin > $d2) {
+					return $this->makeErrorArray(array('invalid_date_range'));
+				}
+			}
+		}
 	}
 }

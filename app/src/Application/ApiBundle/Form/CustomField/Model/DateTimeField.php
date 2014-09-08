@@ -57,7 +57,7 @@ class DateTimeField extends CustomFieldAbstract
         $this->default_mode = $this->_field->getOption('default_mode');
 
         if(empty($this->default_value)) {
-            $this->default_value = date('Y-m-d H:i:00');
+            $this->default_value = date('Y-m-d H:i');
         }
 
         if(empty($this->default_mode)) {
