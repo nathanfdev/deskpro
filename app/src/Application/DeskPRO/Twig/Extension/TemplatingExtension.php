@@ -1429,6 +1429,17 @@ class TemplatingExtension extends \Twig_Extension
 		/** @var \Application\DeskPRO\Auth\AuthSettings $auth_settings */
 		$auth_settings = $this->container->getSystemService('auth_settings');
 		$auth_interface_settings = $interface == 'user' ? $auth_settings->getUserInterfaceSettings() : $auth_settings->getAgentInterfaceSettings();
+		/** @var \Symfony\Component\HttpFoundation\RequestStack $request_stack */
+		$request_stack = $this->getContainer()->get('request_stack');
+
+		///////////////////////////////////////////////////////////////////////
+		// Ensure GET request
+		if (!$request = $request_stack->getCurrentRequest()) {
+			return '';
+		}
+		if ('GET' !== $request->getMethod()) {
+			return '';
+		}
 
 		///////////////////////////////////////////////////////////////////////
 		// Get iFrame Output, if any
