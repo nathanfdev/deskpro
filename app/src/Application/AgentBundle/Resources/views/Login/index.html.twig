@@ -75,6 +75,8 @@
 		{{ phrase('agent.general.log_in') }}
 	</div>
 	<div class="content">
+		{# FORM LOGIN #}
+		{% if display_input_form %}
 		<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
 				{{ form_token('user_login') }}
 				<input type="hidden" name="agent_login" value="1" />
@@ -90,8 +92,7 @@
 				<fieldset>
 					<p>
 						<i class="icon-envelope-alt"></i>
-						{% set form_login_usersources_exist = app.usersourceManager.getAll.configuredForAgents.withCapability('form_login')|length > 0 %}
-						<input type="{% if form_login_usersources_exist %}text{% else %}email{% endif %}" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}{% if form_login_usersources_exist %}/{{ phrase('agent.general.username') }}{% endif %}" tabindex="1" />
+						<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}" tabindex="1" />
 					</p>
 					<p>
 						<i class="icon-lock"></i>
@@ -111,71 +112,87 @@
 						</table>
 					</p>
 				</fieldset>
-				<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
-				<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
-				{% set usersources = app.usersourceManager.getAll.configuredForAgents.withCapability('tpl_login_pull_btn') %}
-				{% if usersources|length %}
-					<div class="dp-usersource-list">
-						Or log in with &nbsp;
-						{% for usersource in usersources%}
-							{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
-						{% endfor %}
-					</div>
-				{% endif %}
-		</form>
+		<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
+		<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
+
+		{% set usersources = app.usersourceManager.getAll.configuredForAgents.withCapability('tpl_login_pull_btn') %}
+		{% if usersources|length %}
+			<div class="dp-usersource-list">
+				Or log in with &nbsp;
+				{% for usersource in usersources%}
+					{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
+				{% endfor %}
+			</div>
+		{% endif %}
+	</form>
+	{# END FORM LOGIN #}
+	{% else %}
+		{% set usersources = app.usersourceManager.getAll.configuredForAgents.withCapability('tpl_login_pull_btn') %}
+		{% if usersources|length %}
+			<ul>
+				{% for usersource in usersources %}
+					<li>{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }} {{  usersource.title }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endif %}
 	</div>
 </div>
 
-{##############################################################################################################}
-{# LOST PASSWORD #}
-{##############################################################################################################}
+{% if display_input_form %}
+	{##############################################################################################################}
+	{# LOST PASSWORD #}
+	{##############################################################################################################}
 
-<div id="lost_fields" style="display: none">
-	<div class="title">
-		{{ phrase('agent.general.lost_password') }}
+	<div id="lost_fields" style="display: none">
+		<div class="title">
+			{{ phrase('agent.general.lost_password') }}
+		</div>
+		<div class="content">
+			<form id="do_send_lost">
+				<fieldset>
+					<p>{{ phrase('agent.login.reset-password-info') }}</p>
+					<p id="lost_form">
+						<i class="icon-envelope-alt"></i>
+						{{ form_token('user_login') }}
+						<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
+					</p>
+				</fieldset>
+				<div id="lost_fields_submit">
+					<p><input class="full-width" type="submit" value="{{ phrase('agent.login.email_instructions') }}" /></p>
+					<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
+				</div>
+				<div id="lost_fields_laoding" style="display: none;">
+					<center>
+						<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" />
+					</center>
+				</div>
+			</form>
+		</div>
 	</div>
-	<div class="content">
-		<form id="do_send_lost">
-			<fieldset>
-				<p>{{ phrase('agent.login.reset-password-info') }}</p>
-				<p id="lost_form">
-					<i class="icon-envelope-alt"></i>
-					{{ form_token('user_login') }}
-					<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
-				</p>
-			</fieldset>
-			<div id="lost_fields_submit">
-				<p><input class="full-width" type="submit" value="{{ phrase('agent.login.email_instructions') }}" /></p>
+
+	{##############################################################################################################}
+	{# LOST PASSWORD:SENT #}
+	{##############################################################################################################}
+
+	<div id="lost_fields_sent" style="display: none">
+		<div class="title">
+			{{ phrase('agent.general.lost_password') }}
+		</div>
+		<div class="content">
+			<form>
+				<fieldset>
+					<p>{{ phrase('agent.login.reset-password-sent') }}</p>
+				</fieldset>
 				<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
-			</div>
-			<div id="lost_fields_laoding" style="display: none;">
-				<center>
-					<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" />
-				</center>
-			</div>
-		</form>
+			</form>
+		</div>
 	</div>
-</div>
 
-{##############################################################################################################}
-{# LOST PASSWORD:SENT #}
-{##############################################################################################################}
 
-<div id="lost_fields_sent" style="display: none">
-	<div class="title">
-		{{ phrase('agent.general.lost_password') }}
-	</div>
-	<div class="content">
-		<form>
-			<fieldset>
-				<p>{{ phrase('agent.login.reset-password-sent') }}</p>
-			</fieldset>
-			<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
-		</form>
-	</div>
-</div>
+	<script type="text/javascript">
+		document.getElementById('email').focus();
+	</script>
+{% endif %}
 
-<script type="text/javascript">
-	document.getElementById('email').focus();
-</script>
 {% endblock %}

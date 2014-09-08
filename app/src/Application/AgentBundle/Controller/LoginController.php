@@ -129,8 +129,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		$browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
 
+
 		return $this->render('AgentBundle:Login:index.html.twig', array(
 			'return'             => $return,
+		    'display_input_form' => $this->auth_manager->hasFormLoginCapability(),
 			'route_prefix'       => $this->route_prefix,
 			'logo_blob'          => $logo_blob,
 			'has_logged_out'     => $has_logged_out,
