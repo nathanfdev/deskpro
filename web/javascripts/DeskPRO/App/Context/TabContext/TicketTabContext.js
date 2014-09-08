@@ -7,6 +7,14 @@ define(['DeskPRO/App/Context/TabContext/TabContext'], function(TabContext) {
 				['$ticket', this.getFragment().meta.api_data],
 				['$person', this.getFragment().meta.api_data.person]
 			]
+		},
+
+		getTicketData: function() {
+			return this.getFragment().meta.api_data;
+		},
+
+		getPersonData: function() {
+			return this.getFragment().meta.api_data.person;
 		}
 	});
 });

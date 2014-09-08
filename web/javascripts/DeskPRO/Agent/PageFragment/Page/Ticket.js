@@ -898,6 +898,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						this.getEl('message_next_page').show();
 					}
 				}
+
+				this.fireEvent('load_messge_page', [page]);
 			}
 		});
 	},
@@ -1168,6 +1170,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	handleTicketUpdate: function(data) {
+		this.doHandleTicketUpdate(data);
+		this.fireEvent('ticket_updated', [data]);
+	},
+
+	doHandleTicketUpdate: function(data) {
 		var self = this;
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
