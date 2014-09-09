@@ -1,4 +1,5 @@
 {% extends 'AgentBundle:Login:layout.html.twig' %}
+{% set authManager = app.authenticationManager %}
 {% block head %}
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -76,7 +77,7 @@
 	</div>
 	<div class="content">
 		{# FORM LOGIN #}
-		{% if display_input_form %}
+		{% if authManager.isLoginFormVisible %}
 		<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
 				{{ form_token('user_login') }}
 				<input type="hidden" name="agent_login" value="1" />
@@ -115,10 +116,10 @@
 		<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
 		<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
 
-		{% if login_button_usersources|length %}
+		{% if authManager.hasLoginButtonUsersources %}
 			<div class="dp-usersource-list">
 				Or log in with &nbsp;
-				{% for usersource in login_button_usersources %}
+				{% for usersource in authManager.getLoginButtonUsersources %}
 					{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
 				{% endfor %}
 			</div>
@@ -126,9 +127,9 @@
 	</form>
 	{# END FORM LOGIN #}
 	{% else %}
-		{% if login_button_usersources|length %}
+		{% if authManager.hasLoginButtonUsersources %}
 			<ul>
-				{% for usersource in login_button_usersources %}
+				{% for usersource in authManager.getLoginButtonUsersources %}
 					<li>{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }} {{  usersource.title }}</li>
 				{% endfor %}
 			</ul>
@@ -137,7 +138,7 @@
 	</div>
 </div>
 
-{% if display_input_form %}
+{% if authManager.hasFormLoginCapability %}
 	{##############################################################################################################}
 	{# LOST PASSWORD #}
 	{##############################################################################################################}
