@@ -39,7 +39,7 @@ class Build1409758642 extends AbstractBuild
 	public function run()
 	{
 		$this->out("Upgrade usersources to new auth settings");
-		//$this->execMutateSql("ALTER TABLE usersources ADD display_order_user INT NOT NULL, ADD display_order_agent INT NOT NULL, ADD is_enabled_user TINYINT(1) NOT NULL, ADD is_enabled_agent TINYINT(1) NOT NULL");
+		$this->execMutateSql("ALTER TABLE usersources ADD display_order_user INT NOT NULL, ADD display_order_agent INT NOT NULL, ADD is_enabled_user TINYINT(1) NOT NULL, ADD is_enabled_agent TINYINT(1) NOT NULL");
 		$this->execMutateSql("
 			UPDATE usersources
 			SET display_order_user = display_order + 1,
