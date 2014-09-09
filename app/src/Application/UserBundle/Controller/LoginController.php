@@ -592,6 +592,14 @@ HTML;
 		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
 
 		#------------------------------
+		# This needs to be an allowed adapter via settings
+		# -----------------------------
+
+		if (!$this->auth_manager->isUsableUsersource($usersource)) {
+			throw new \LogicException('it is illegal to use this usersource in this context');
+		}
+
+		#------------------------------
 		# Callback types require us to redirect
 		#------------------------------
 
@@ -813,7 +821,7 @@ HTML;
 			// been set up yet. For adapters that support it, we can still see if we
 			// can be helpful and redirect to another source they exist in
 			if (!$is_invalid) {
-				$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
+				$usersources = $this->auth_manager->getForgotPasswordUsersources();
 				foreach ($usersources as $us) {
 					try {
 						$found = $us->findIdentityByInput($email);
@@ -840,6 +848,7 @@ HTML;
 		// but could also mean they registered through a usersource which means they might
 		// need to use a different reset URL
 		if (!$person->password) {
+			// TODO: this needs to be fixed, with new userassoc finder, and needs to be checked in order
 			$associations = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($person);
 			$us_names = array();
 
@@ -1137,6 +1146,7 @@ HTML;
 
 	public function usersourceSsoAction($usersource_id)
 	{
+		// TODO: user auth_manager for this
 		$source = $this
 			->usersource_manager
 			->getAll()

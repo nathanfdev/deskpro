@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Auth;
 
 
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -121,6 +122,30 @@ class AuthenticationManager
 
 		$this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
 		$this->settings = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
+	}
+
+
+	/**
+	 * Tells us if we can use this usersource to log the user in
+	 *
+	 * @param Usersource $usersource
+	 * @return bool
+	 */
+	public function isUsableUsersource(Usersource $usersource)
+	{
+		// if its not enabled for this interface, then no
+		if (!$this->usersourcesForInterface->contains($usersource)) {
+			return false;
+		}
+
+		// if this interface has auto sso, and this is not the usersource, then no
+		if ($this->settings->isAutoSsoEnabled()) {
+			if ($this->settings->getSsoUsersource()->id == $usersource->id) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 
@@ -259,6 +284,17 @@ class AuthenticationManager
 		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_LOGIN_BTN);
 	}
 
+	/**
+	 * This was a VERY confusing capability to decipher. The method in LoginController had an algorithm
+	 * using the form login capability. Emulated this functionality here for B.C.
+	 *
+	 * @return \Application\DeskPRO\Usersource\UsersourceCollection
+	 */
+	public function getForgotPasswordUsersources()
+	{
+		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN);
+	}
+
 
 	/**
 	 * Are we displaying any extra login buttons/icons?
@@ -278,13 +314,7 @@ class AuthenticationManager
 	 */
 	public function hasForgotPasswordUsersources()
 	{
-		foreach ($this->usersourcesForInterface as $us) {
-			if (strlen($us->lost_password_url) > 0) {
-				return true;
-			}
-		}
-
-		return false;
+		return count($this->getForgotPasswordUsersources()) > 0;
 	}
 
 

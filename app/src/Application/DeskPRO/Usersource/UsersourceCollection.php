@@ -184,4 +184,17 @@ class UsersourceCollection extends \ArrayObject
 		$arr = (array) $this;
 		return array_pop($arr);
 	}
+
+
+	public function contains(Usersource $usersource)
+	{
+		$arr = (array)$this;
+		foreach ($arr as $us) {
+			if ($us->id == $usersource->id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
