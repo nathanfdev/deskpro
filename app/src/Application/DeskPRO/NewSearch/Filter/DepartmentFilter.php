@@ -2,6 +2,8 @@
 
 namespace Application\DeskPRO\NewSearch\Filter;
 
+use Orb\Util\Arrays;
+
 class DepartmentFilter extends AbstractFilter
 {
     public function getFilter()
@@ -10,11 +12,14 @@ class DepartmentFilter extends AbstractFilter
         $departmentIds = array();
 
         foreach ($departments as $department) {
-			$departmentIds[] = (int) $department;
+			$departmentIds[] = (int)$department;
         }
+
+		$departmentIds = Arrays::removeFalsey($departmentIds);
 
 		if (!empty($departmentIds)) {
 			$departmentIds = array_unique($departmentIds);
+			$departmentIds = array_values($departmentIds);
 			$filter = array('term' => array('department' => $departmentIds));
 			return $filter;
 		} else {
