@@ -265,5 +265,7 @@ class DateTime extends HandlerAbstract
 				}
 			}
 		}
+
+		return array();
 	}
 }
