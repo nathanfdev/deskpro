@@ -939,7 +939,6 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 
-		return $this->createPermissionErrorResponse('You do not have permission to modify CCs');
 		if (!$this->checkPerm($ticket, 'modify_cc')) {
 			return $this->createPermissionErrorResponse('You do not have permission to modify CCs');
 		}
