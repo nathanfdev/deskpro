@@ -158,7 +158,9 @@
                 full: full
               };
             }
-            return _this.updateHasPermOverridesStatus();
+            return _this.$timeout(function() {
+              return _this.updateHasPermOverridesStatus();
+            });
           };
         })(this));
         return promise;
@@ -366,7 +368,7 @@
                 if (!__hasProp.call(perms, permName)) continue;
                 value = perms[permName];
                 if (value) {
-                  if ((((_ref1 = _this.ugEffectivePerms[type]) != null ? _ref1[permName] : void 0) == null) || !_this.ugEffectivePerms[type][permName]) {
+                  if ((((_ref1 = _this.ugEffectivePerms[type]) != null ? _ref1[permName] : void 0) == null) || !_this.ugEffectivePerms[type][permName] || !_this.form.agent_groups.length) {
                     _this.hasPermOverrides = true;
                     return;
                   }
@@ -394,7 +396,7 @@
                   if (!__hasProp.call(perms, perm)) continue;
                   value = perms[perm];
                   if (value) {
-                    if (!_this.ugEffectiveDepPerms[app][depId][perm]) {
+                    if (!_this.ugEffectiveDepPerms[app][depId][perm] || !_this.form.agent_groups.length) {
                       _this.hasDepOverrides = true;
                       return;
                     }
