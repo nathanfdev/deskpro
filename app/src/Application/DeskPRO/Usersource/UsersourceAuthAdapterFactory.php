@@ -39,14 +39,13 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\HttpFoundation\Session;
-use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Does a bunch of logic (which eventually should be done differently) around getting the AuthAdapter ready to use
- * from a Usersource.
+ * from a Usersource. Make sure this is instantiated with the same "interface" as AuthenticationManager.
  */
 class UsersourceAuthAdapterFactory
 {
@@ -69,6 +68,7 @@ class UsersourceAuthAdapterFactory
 	 * @var string "user" or "agent"/"admin"/etc
 	 */
 	private $interface;
+
 	/**
 	 * @var Request
 	 */

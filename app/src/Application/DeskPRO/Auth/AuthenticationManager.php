@@ -92,9 +92,10 @@ class AuthenticationManager
 
 
 	/**
-	 * @param UsersourceManager $usersourceManager system service
-	 * @param AuthSettings      $authSettings system service
-	 * @param string            $interface this MUST be "user" or "agent"
+	 * @param UsersourceManager            $usersourceManager system service
+	 * @param AuthSettings                 $authSettings      system service
+	 * @param UsersourceAuthAdapterFactory $auth_adapter_factory
+	 * @param string                       $interface         this MUST be "user" or "agent"
 	 */
 	public function __construct(
 		AuthSettings $authSettings,
@@ -113,6 +114,8 @@ class AuthenticationManager
 
 
 	/**
+	 * Settings relevant to THIS request (interface aware)
+	 *
 	 * @return AuthInterfaceSettings
 	 */
 	public function getSettings()
@@ -141,6 +144,8 @@ class AuthenticationManager
 	}
 
 	/**
+	 * Can we handle form logins?
+	 *
 	 * @return bool
 	 */
 	public function hasFormLoginCapability()
@@ -149,6 +154,13 @@ class AuthenticationManager
 	}
 
 
+	/**
+	 * Loop the usersources (in order) and try to authenticate the user. First yes wins.
+	 *
+	 * @param $identifier
+	 * @param $password
+	 * @return Result
+	 */
 	public function authenticateFormLogin($identifier, $password)
 	{
 		#------------------------------
@@ -228,6 +240,8 @@ class AuthenticationManager
 
 
 	/**
+	 * Are we displaying any extra login buttons/icons?
+	 *
 	 * @return bool
 	 */
 	public function hasLoginButtonUsersources()

@@ -144,13 +144,15 @@ class UsersourceCollection extends \ArrayObject
 			(array) $this, function (Usersource $us) use ($capability) {
 				if (is_array($capability)) {
 					foreach($capability as $cap) {
-						if ($us->isCapable($cap)) {
+						if ($us->getAdapter()->isCapable($cap)) {
 							return true;
 						}
 					}
 				} else {
-					return $us->isCapable($capability);
+					return $us->getAdapter()->isCapable($capability);
 				}
+
+				return false;
 			}
 		);
 
