@@ -10,13 +10,15 @@ class DepartmentFilter extends AbstractFilter
         $departmentIds = array();
 
         foreach ($departments as $department) {
-            $departmentId = (int) $department;
-            if (!in_array($departmentId, $departmentIds)) {
-                $departmentIds[] = $departmentId;
-            }
+			$departmentIds[] = (int) $department;
         }
 
-        $filter = array('term' => array('department' => $departmentIds));
-        return $filter;
+		if (!empty($departmentIds)) {
+			$departmentIds = array_unique($departmentIds);
+			$filter = array('term' => array('department' => $departmentIds));
+			return $filter;
+		} else {
+			return null;
+		}
     }
 } 
