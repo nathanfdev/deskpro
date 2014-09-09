@@ -285,7 +285,7 @@ class ProcessNew extends ProcessAbstract
 		$ticket_message->message_raw = $email_info->body_raw;
 		$ticket_message->setMessageHtml($email_info->body);
 		$ticket_message->withNewSubject = $subject;
-		$ticket_message->creation_system = 'gatway.person';
+		$ticket_message->creation_system = 'gateway.person';
 
 		if ($this->reader->getProperty('email_source')) {
 			$ticket_message->email_source = $this->reader->getProperty('email_source');
