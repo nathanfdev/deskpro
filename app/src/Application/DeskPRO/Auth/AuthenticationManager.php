@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Auth;
 
 
+use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
@@ -49,6 +50,8 @@ use Orb\Auth\Result;
  *
  * The AuthenticationManager has the right answers for the CURRENT INTERFACE, freeing you from having to worry about which
  * interface we are on.
+ *
+ * Note: Not to be confused with the Symfony Security Component's AuthenticationManager. Quite different.
  *
  * @package Application\DeskPRO\Auth
  */
@@ -90,23 +93,31 @@ class AuthenticationManager
 	 */
 	private $authAdapterFactory;
 
+	/**
+	 * @var \Application\DeskPRO\Settings\Settings
+	 */
+	private $appSettings;
+
 
 	/**
 	 * @param UsersourceManager            $usersourceManager system service
 	 * @param AuthSettings                 $authSettings      system service
 	 * @param UsersourceAuthAdapterFactory $auth_adapter_factory
+	 * @param Settings                     $appSettings
 	 * @param string                       $interface         this MUST be "user" or "agent"
 	 */
 	public function __construct(
 		AuthSettings $authSettings,
 		UsersourceManager $usersourceManager,
 		UsersourceAuthAdapterFactory $auth_adapter_factory,
+		Settings $appSettings,
 		$interface
 	) {
 		$this->usersourceManager  = $usersourceManager;
 		$this->authSettings       = $authSettings;
 		$this->authAdapterFactory = $auth_adapter_factory;
 		$this->interface          = $interface;
+		$this->appSettings = $appSettings;
 
 		$this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
 		$this->settings = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
@@ -151,6 +162,16 @@ class AuthenticationManager
 	public function hasFormLoginCapability()
 	{
 		return count($this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN)) > 0;
+	}
+
+	/**
+	 * Can we handle user registration requests?
+	 *
+	 * @return bool
+	 */
+	public function hasRegistrationCapability()
+	{
+		return $this->appSettings->get('core.reg_enabled');
 	}
 
 
@@ -247,6 +268,74 @@ class AuthenticationManager
 	public function hasLoginButtonUsersources()
 	{
 		return count($this->getLoginButtonUsersources()) > 0;
+	}
+
+
+	/**
+	 * Has at least one usersource that can redirect to "lost password"
+	 *
+	 * @return bool
+	 */
+	public function hasForgotPasswordUsersources()
+	{
+		foreach ($this->usersourcesForInterface as $us) {
+			if (strlen($us->lost_password_url) > 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/*********************************************
+	#------------------------------
+	# Code below is used for presentation purposes (in twig)
+	# Code above is used internally for processing requests
+	#------------------------------
+	*********************************************/
+
+
+	/**
+	 * Is there anything on the website to show the user when it comes to auth? (login sidebar, registration, reg page, etc)
+	 * For example, if redirect SSO is enabled, then this would be false. If for some reason only background SSO was
+	 * set, and no usersource displayed anything, then this is also false.
+	 * @return bool
+	 */
+	public function isAuthVisible()
+	{
+		if ($this->settings->isAutoSsoEnabled()) {
+			return false;
+		}
+
+		// if no usersource has a visible capability
+		return count(
+				$this->usersourcesForInterface->withCapability(
+					array(
+						UsersourceInfo::CAPABILITY_LOGIN_BTN,
+						UsersourceInfo::CAPABILITY_FORM_LOGIN,
+						UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
+						UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB
+					)
+
+				)
+			) != 0
+		;
+	}
+
+	public function isRegistrationFormVisible()
+	{
+		return $this->isAuthVisible() && $this->hasRegistrationCapability();
+	}
+
+	public function isLoginFormVisible()
+	{
+		return $this->isAuthVisible() && $this->hasFormLoginCapability();
+	}
+
+	public function isForgotPasswordVisible()
+	{
+		return $this->hasForgotPasswordUsersources();
 	}
 }
  

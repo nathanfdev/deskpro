@@ -50,10 +50,14 @@ class AuthenticationManagerService
 		/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $as */
 		$aaf = $container->getSystemService('usersource_auth_adapter_factory');
 
+		/** @var \Application\DeskPRO\Settings\Settings $as */
+		$app_settings = $container->getSettingsHandler();
+
 		return new AuthenticationManager(
 			$as,
 			$um,
 			$aaf,
+			$app_settings,
 			DP_INTERFACE == 'user' ? 'user' : 'agent'
 		);
 	}

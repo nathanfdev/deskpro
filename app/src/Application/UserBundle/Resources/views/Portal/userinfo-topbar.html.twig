@@ -2,6 +2,9 @@
  # This login bar is displayed at the top of the page under the search bar when the browser size is very small
  # and the sidebar is hidden.
  ##}
+
+{% set authManager = app.authenticationManager %}
+
 {% if app.user.id %}
 	<section class="dp-topbar-block dp-userinfo">
 		<div class="dp-left-side">
@@ -52,19 +55,31 @@
 	</section>
 {% else %}
 	<!--DP_OFFLINE_CACHE_REMOVE_START-->
+	{% if authManager.isAuthVisible %}
 	<section class="dp-topbar-block dp-userinfo">
 		<div class="dp-left-side">
 			<h3>{{ phrase('user.portal.welcome-back-guest') }}</h3>
 		</div>
-		<div class="dp-right-side">
-			<form action="{{ path('user_login_authenticate_local') }}" method="post">
-				{{ form_token('user_login') }}
-				<input type="text" value="" name="email" size="40" placeholder="{{ phrase('user.general.email_address') }}" />
-				<input type="password" autocomplete="off" value="" name="password" id="dp_login_password" size="20" placeholder="{{ phrase('user.profile.password') }}" />
-				<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
-				<label style="display: inline"><input type="checkbox" name="remember_me" value="1" style="display:inline; position: relative; top: -2px;" /> {{ phrase('user.general.remember_me') }}</label>
-			</form>
-		</div>
+		{% if authManager.isLoginFormVisible %}
+			<div class="dp-right-side">
+				<form action="{{ path('user_login_authenticate_local') }}" method="post">
+					{{ form_token('user_login') }}
+					<input type="text" value="" name="email" size="40" placeholder="{{ phrase('user.general.email_address') }}" />
+					<input type="password" autocomplete="off" value="" name="password" id="dp_login_password" size="20" placeholder="{{ phrase('user.profile.password') }}" />
+					<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
+					<label style="display: inline"><input type="checkbox" name="remember_me" value="1" style="display:inline; position: relative; top: -2px;" /> {{ phrase('user.general.remember_me') }}</label>
+				</form>
+			</div>
+		{% elseif authManager.hasLoginButtonUsersources %}
+			<div class="dp-right-side">
+				<ul>
+					{% for usersource in authManager.getLoginButtonUsersources %}
+						<li>{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }} {{ usersource.title }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
 	</section>
+	{% endif %}
 	<!--DP_OFFLINE_CACHE_REMOVE_END-->
 {% endif %}

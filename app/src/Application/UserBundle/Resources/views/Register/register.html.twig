@@ -1,4 +1,5 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% set authManager = app.authenticationManager %}
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 {% block breadcrumb %}
 	{% if this_page == 'register' %}
@@ -56,22 +57,32 @@
 	{% endif %}
 
 	{#####################################################################}
-
+	{% if authManager.isAuthVisible %}
 	<section class="dp-well">
 		<header>
-			{% set usersources = app.usersourceManager.getAll.configuredForUsers.withCapability('tpl_login_pull_btn') %}
-			{% if usersources|length %}
+			{% if authManager.hasLoginButtonUsersources %}
 				<div class="dp-connect-with">
-					{{ phrase('user.profile.or_connect_with') }}
-					{% for usersource in usersources %}
+					{% if authManager.isLoginFormVisible %}
+						{{ phrase('user.profile.or_connect_with') }}
+					{% else %}
+						{{ phrase('user.profile.connect_with') }}
+					{% endif %}
+					{% for usersource in authManager.getLoginButtonUsersources %}
 						{{ render_usersource(usersource, 'login_pull_btn') }}
 					{% endfor %}
 				</div>
 			{% endif %}
 			<label>
-				<h3><input type="radio" name="user_type" id="user_type_exist" {% if this_page == 'login' %}checked="checked"{% endif %} /> {{ phrase('user.profile.im_already_registered') }}</h3>
+				<h3>
+					{% if authManager.isLoginFormVisible %}
+						<input type="radio" name="user_type" id="user_type_exist"
+						{% if this_page == 'login' %}checked="checked"{% endif %} />
+					{% endif %}
+					{{ phrase('user.profile.im_already_registered') }}
+				</h3>
 			</label>
 		</header>
+		{% if authManager.isLoginFormVisible %}
 		<article id="user_type_exist_form" class="dp-well dp-well-light" {% if this_page != 'login' %}style="display:none"{% endif %}>
 			{% if app.session.hasFlash('password_reset') %}
 				<div class="dp-alert dp-alert-success">
@@ -122,10 +133,12 @@
 				</table>
 			</form>
 		</article>
+		{% endif %}
 	</section>
+	{% endif %}
 
 	{#####################################################################}
-	{% if app.getSetting('core.deskpro_source_enabled') %}
+	{% if authManager.isForgotPasswordVisible %}
 		<section class="dp-well">
 			<header>
 				<label>
@@ -133,6 +146,7 @@
 				</label>
 			</header>
 			<article id="user_type_exist_pass_form" class="dp-well dp-well-light" {% if this_page != 'reset' %}style="display:none"{% endif %}>
+				{% if authManager.isLoginFormVisible %}
 				<form action="{{ path('user_login_resetpass_send') }}" class="form login" method="post" class="with-form-validator">
 					{{ form_token('user_login') }}
 					<table cellspacing="0" cellpadding="0">
@@ -159,12 +173,13 @@
 						<p style="font-size: 90%">{{ phrase('user.profile.reset_password_current_logged_in', {email: app.user.getEmailAddress()}) }}</p>
 					{% endif %}
 				</form>
+				{% endif %}
 			</article>
 		</section>
 	{% endif %}
 
 	{#####################################################################}
-	{% if app.getSetting('core.reg_enabled') %}
+	{% if authManager.isRegistrationFormVisible %}
 		<section class="dp-well">
 			<header>
 				<label>

@@ -278,6 +278,9 @@ HTML;
 		}
 
 		if ($this->in->getString('to') == 'admin') {
+			// TODO: move these checkAuthSystem calls to actually call AuthenticationManager
+			// but be careful, auth system will detect the interface automatically when we want to
+			// check different interfaces here (the url is always user interface)
 			if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
 				return $res;
 			}
