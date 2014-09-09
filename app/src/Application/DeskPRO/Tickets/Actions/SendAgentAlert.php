@@ -70,7 +70,6 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 	private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
 	{
 		$agents = array();
-		$isNotificationsDisabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
 		foreach ($agent_ids as $aid) {
 			// -1 = current user
