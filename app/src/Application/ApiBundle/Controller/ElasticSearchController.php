@@ -189,13 +189,20 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 				$client = $this->container->get('fos_elastica.client.default');
 				$status = $client->getStatus()->getData();
 
-				if (!isset($status['indices']['deskpro'])) {
+				$index_name = 'deskpro';
+				if (defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
+					$index_name = $index_name . '_' . DPC_SITE_ID;
+				} else if (defined('DP_ELASTIC_INDEX')) {
+					$index_name = DP_ELASTIC_INDEX;
+				}
+
+				if (!isset($status['indices'][$index_name])) {
 					$info = array('error' => 'no_index');
 				} else {
 					$info = array(
-						'size'          => @$status['indices']['deskpro']['index']['size_in_bytes'],
-						'size_readable' => Numbers::filesizeDisplay(@$status['indices']['deskpro']['index']['size_in_bytes']),
-						'num_docs'      => @$status['indices']['deskpro']['docs']['num_docs'],
+						'size'          => @$status['indices'][$index_name]['index']['size_in_bytes'],
+						'size_readable' => Numbers::filesizeDisplay(@$status['indices'][$index_name]['index']['size_in_bytes']),
+						'num_docs'      => @$status['indices'][$index_name]['docs']['num_docs'],
 					);
 				}
 
