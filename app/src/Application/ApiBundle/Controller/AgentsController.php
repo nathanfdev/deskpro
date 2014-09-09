@@ -444,7 +444,7 @@ class AgentsController extends AbstractController implements ProtectedController
 		#-------------------------
 
 		return $this->createApiCreateResponse(array(
-			'agent_id' => $agent->id
+			'person_id' => $agent->id
 		), $this->generateUrl('api_agents_get', array('id' => $agent->id), UrlGeneratorInterface::ABSOLUTE_URL));
 	}
 
