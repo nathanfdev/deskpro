@@ -185,29 +185,46 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 		$info = null;
 		if (!$is_indexing) {
 			try {
-				/** @var \FOS\ElasticaBundle\Client $client */
-				$client = $this->container->get('fos_elastica.client.default');
-				$status = $client->getStatus()->getData();
+				/** @var \Elastica\Index $index */
+				$index = $this->getContainer()->get('fos_elastica.index.deskpro');
+				$index_name = $index->getName();
 
-				$index_name = 'deskpro';
-				if (defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
-					$index_name = $index_name . '_' . DPC_SITE_ID;
-				} else if (defined('DP_ELASTIC_INDEX')) {
-					$index_name = DP_ELASTIC_INDEX;
-				}
+				$stats = $index->request('_stats', 'GET')->getData();
 
-				if (!isset($status['indices'][$index_name])) {
+				if (!isset($stats['indices'][$index_name])) {
 					$info = array('error' => 'no_index');
 				} else {
 					$info = array(
-						'size'          => @$status['indices'][$index_name]['index']['size_in_bytes'],
-						'size_readable' => Numbers::filesizeDisplay(@$status['indices'][$index_name]['index']['size_in_bytes']),
-						'num_docs'      => @$status['indices'][$index_name]['docs']['num_docs'],
+						'size'          => @$stats['indices'][$index_name]['total']['store']['size_in_bytes'],
+						'size_readable' => Numbers::filesizeDisplay(@$stats['indices'][$index_name]['total']['store']['size_in_bytes']),
+						'num_docs'      => @$stats['indices'][$index_name]['total']['docs']['count'],
 					);
 				}
 
 			} catch (\Exception $e) {
 				$info = array('error' => 'no_status');
+			}
+		}
+
+		if (empty($info['error']) && isset($index) && isset($index_name)) {
+			$types = array(
+				'feedback'     => 'feedback',
+				'organization' => 'organizations',
+				'person'       => 'people',
+				'article'      => 'articles',
+				'ticket'       => 'tickets',
+				'news'         => 'news',
+				'download'     => 'downloads',
+			);
+
+			foreach ($types as $type => $table) {
+				try {
+					$count = $index->request("$type/_count", 'GET')->getData();
+					if (isset($count['count'])) {
+						$info["num_$type"]     = $count['count'];
+						$info["realnum_$type"] = $this->db->fetchColumn("SELECT COUNT(*) FROM $table");
+					}
+				} catch (\Exception $e) {}
 			}
 		}
 

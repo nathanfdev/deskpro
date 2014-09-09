@@ -178,15 +178,15 @@
 				<table class="table table-bordered" ng-if="info && !info.error">
 					<tr>
 						<td width="200">Index Size:</td>
-						<td>{{ ng_var('info.size_readable') }}</td>
+						<td colspan="2">{{ ng_var('info.size_readable') }}</td>
 					</tr>
 					<tr>
 						<td>Indexed Documents:</td>
-						<td>{{ ng_var('info.num_docs') }}</td>
+						<td colspan="2">{{ ng_var('info.num_docs') }}</td>
 					</tr>
 					<tr ng-if="indexer_log">
 						<td>Log</td>
-						<td>
+						<td colspan="2">
 							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = true" ng-hide="show_log"><i class="fa fa-file-text-o"></i> View full log of initial indexing process</button>
 							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = false" ng-show="show_log"><i class="fa fa-file-text-o"></i> Hide full log</button>
 							<div ng-if="show_log" style="margin-top: 4px;">
@@ -194,6 +194,46 @@
 							</div>
 						</td>
 					</tr>
+				</table>
+
+				<table class="table table-bordered" ng-if="info && !info.error" width="520" style="width:520px;">
+					<tbody>
+						<tr>
+							<td><strong>Type</strong></td>
+							<td width="200"><strong>Objects in ElasticSearch</strong></td>
+							<td width="200"><strong>Objects in DeskPRO</strong></td>
+						</tr>
+						<tr>
+							<td>Feedback</td>
+							<td>{{ ng_var('info.num_feedback') }}</td>
+							<td>{{ ng_var('info.realnum_feedback') }}</td>
+						</tr>
+						<tr>
+							<td>Organizations</td>
+							<td>{{ ng_var('info.num_organization') }}</td>
+							<td>{{ ng_var('info.realnum_organization') }}</td>
+						</tr>
+						<tr>
+							<td>People</td>
+							<td>{{ ng_var('info.num_person') }}</td>
+							<td>{{ ng_var('info.realnum_person') }}</td>
+						</tr>
+						<tr>
+							<td>Articles</td>
+							<td>{{ ng_var('info.num_article') }}</td>
+							<td>{{ ng_var('info.realnum_article') }}</td>
+						</tr>
+						<tr>
+							<td>Tickets</td>
+							<td>{{ ng_var('info.num_ticket') }}</td>
+							<td>{{ ng_var('info.realnum_ticket') }}</td>
+						</tr>
+						<tr>
+							<td>Downloads</td>
+							<td>{{ ng_var('info.num_download') }}</td>
+							<td>{{ ng_var('info.realnum_download') }}</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		</div>
