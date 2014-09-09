@@ -22,9 +22,10 @@
             add = attrs.dpHeightAdd ? parseInt(attrs.dpHeightAdd || 0) : -100;
             min = attrs.dpMinHeight ? parseInt(attrs.dpMinHeight || 0) : 300;
             perc = parseInt(attrs.dpMaxHeight || 100) / 100;
+            element.addClass('with-dp-max-height');
             resize = function() {
               var setH, top, winH;
-              top = element.offset().top;
+              top = element.offset().top + $('.dp-layout-appbody').scrollTop();
               winH = $(window).height();
               setH = (Math.ceil(winH * perc) - top) + add;
               if (setH < min) {

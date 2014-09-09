@@ -193,7 +193,23 @@ class TemplatesController extends AbstractController implements ProtectedControl
 			$template_code->setCode($code);
 		}
 
-		$set->saveTemplate($template);
+		try {
+			$set->saveTemplate($template);
+		} catch (\Twig_Error_Syntax $e) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_syntax' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage(),
+				'error_line' => $e->getTemplateLine(),
+			), 400);
+		} catch (\Twig_Error $e) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage(),
+			), 400);
+		}
 
 		// CSS templates must regenerate CSS blob file
 		if (strpos($name, ':Css:') !== false) {

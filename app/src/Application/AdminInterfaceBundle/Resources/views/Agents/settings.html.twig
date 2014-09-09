@@ -4,7 +4,7 @@
 
     <section class="dp-paneblock dp-listpane">
         <header>
-            <h3>Agents Notifications</h3>
+            <h3>Agent Notifications</h3>
         </header>
         <article class="form-horizontal dp-form">
             <div class="panel panel-innertable">
@@ -13,10 +13,12 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.disable_notifications" />
-                                <h4>Disable all notifications</h4>
+                                <h4>Disable all email notifications</h4>
                             </label>
 							<span class="help-block">
-
+								This setting disables all email notifications based on subscriptions.
+								Note that you can still create triggers that send messages to specific agents,
+								this setting just disables emails based on subscriptions (e.g., like "new tickets assigned to me").
 							</span>
                         </div>
                     </div>
@@ -160,6 +162,17 @@
 								logged in.
 							</span>
                         </div>
+						<div class="inner-group">
+							<label>
+								<input type="checkbox" ng-model="settings.enable_agent_rememberme" />
+								<h4>Enable "Remember Me"</h4>
+							</label>
+							<span class="help-block">
+								When an agent clicks the "Remember Me" checkbox, a cookie is set which persists
+								their sessionw if their browser is closed. Disabling this can increase security at the
+								cost of requiring the agent to login frequently.
+							</span>
+						</div>
                     </div>
                 </div>
             </div>

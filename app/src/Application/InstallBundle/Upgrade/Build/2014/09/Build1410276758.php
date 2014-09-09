@@ -26,30 +26,20 @@
 \**************************************************************************/
 
 /**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
 
-namespace Application\DeskPRO\Controller;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
-class MiscController extends AbstractController
+class Build1410276758 extends AbstractBuild
 {
-	public function emptyAction()
+	public function run()
 	{
-		return $this->createResponse('');
-	}
-
-	public function notFoundAction()
-	{
-		throw $this->createNotFoundException();
-	}
-
-	public function goToBillingAction()
-	{
-		return $this->redirect($this->generateUrl('admin') . '#/license');
+		$this->out("Correct creation_system");
+		$this->execMutateSql("UPDATE tickets SET creation_system = 'gateway.person' WHERE creation_system = 'gatway.person'");
+		$this->execMutateSql("UPDATE tickets SET creation_system = 'gateway.agent' WHERE creation_system = 'gatway.agent'");
 	}
 }

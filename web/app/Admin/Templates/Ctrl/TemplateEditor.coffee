@@ -21,6 +21,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 						templateName: @templateName,
 						mode: 'custom'
 					})
+				, (result) =>
+					@$scope.saving_template = false
+					@$scope.is_error = true
+					@$scope.syntax_error  = result.data.error_syntax || false
+					@$scope.syntax_line   = result.data.error_line || 0
+					@$scope.error_message = result.data.error_message || 'Unknown'
 				)
 
 			@$scope.revert = =>

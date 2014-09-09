@@ -2772,7 +2772,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 			if (data && data.error && data.error == 'not_allowed') {
-				this.showAlert($('<div>The action you attempted to execute is not allowed:<br />' + data.errorMessage + '</div>'));
+				var message = data.errorMessage || data.message;
+				this.showAlert($('<div>The action you attempted to execute is not allowed:<br />' + message + '</div>'));
 				return;
 			} else {
 				// All 403's should be json responses that are caught above,

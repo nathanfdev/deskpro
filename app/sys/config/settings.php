@@ -199,6 +199,16 @@
 	'core.use_gravatar' => 0,
 
 	/**
+	 * Enable remember-me for agents?
+	 */
+	'core.enable_agent_rememberme' => true,
+
+	/**
+	 * Enable remember-me for users?
+	 */
+	'core.enable_user_rememberme' => true,
+
+	/**
 	 * How long, in seconds, are sessions valid for?
 	 */
 	'core.sessions_lifetime' => 3600,

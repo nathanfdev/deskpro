@@ -55,6 +55,7 @@ use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AgentsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -442,7 +443,9 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Return
 		#-------------------------
 
-		return $this->getAgentAction($agent['id']);
+		return $this->createApiCreateResponse(array(
+			'person_id' => $agent->id
+		), $this->generateUrl('api_agents_get', array('id' => $agent->id), UrlGeneratorInterface::ABSOLUTE_URL));
 	}
 
 	protected function sendWelcomeEmail(Person $agent)

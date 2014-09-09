@@ -53,6 +53,19 @@ class TicketSearchUpdater
 	 */
 	private $ticket;
 
+	/**
+	 * Cols from TicketSearchActive::getFieldNames. Defined here just as a micro-opt.
+	 * @var string
+	 */
+	private static $cols = "
+		`id`, `ref`, `language_id`, `department_id`, `category_id`, `workflow_id`, `priority_id`, `product_id`,
+		`person_id`, `person_email_id`, `agent_id`, `agent_team_id`, `organization_id`, `creation_system`,
+		`creation_system_option`, `status`, `is_hold`, `urgency`, `feedback_rating`, `date_feedback_rating`,
+		`date_created`, `date_resolved`, `date_first_agent_assign`, `date_first_agent_reply`, `date_last_agent_reply`,
+		`date_last_user_reply`, `date_agent_waiting`, `date_user_waiting`, `date_status`, `total_user_waiting`,
+		`total_to_first_reply`, `subject`, `original_subject`
+	";
+
 	public function __construct(Connection $db, Ticket $ticket)
 	{
 		$this->db = $db;
@@ -73,7 +86,13 @@ class TicketSearchUpdater
 	public function update()
 	{
 		if (!$this->ticket->isArchived()) {
-			$this->db->replace('tickets_search_active', TicketSearchActive::copyTicketDbArray($this->ticket));
+			$cols = self::$cols;
+			$data = $this->db->fetchAssoc("SELECT {$cols} FROM tickets WHERE id = ?", array($this->ticket->id));
+			if ($data) {
+				$this->db->replace('tickets_search_active', $data);
+			} else {
+				$this->db->delete('tickets_search_active', array('id' => $this->ticket->id));
+			}
 		} else {
 			$this->db->delete('tickets_search_active', array('id' => $this->ticket->id));
 		}

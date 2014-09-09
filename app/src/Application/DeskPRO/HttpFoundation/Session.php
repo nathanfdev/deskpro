@@ -94,6 +94,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
 		$this->is_first_page = empty($_SESSION);
 
+		$allow_rememberme = false;
+		if ((DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
+			$allow_rememberme = (bool)App::getSetting('core.enable_agent_rememberme');
+		} else if (DP_INTERFACE == 'user') {
+			$allow_rememberme = (bool)App::getSetting('core.enable_user_rememberme');
+		}
+
 		if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id'])) {
 			// See if we should carry an agent session
 			if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
@@ -125,7 +132,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 					}
 				}
 
-			} elseif (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false) {
+			} elseif (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false && $allow_rememberme) {
 				list ($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
 
 				$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);

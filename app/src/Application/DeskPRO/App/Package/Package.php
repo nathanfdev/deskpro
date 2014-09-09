@@ -56,7 +56,8 @@ class Package
 		$reader = ManifestReader::newFromFile($path . '/manifest.json');
 		if ($reader->isError()) {
 			throw new \InvalidArgumentException(sprintf(
-				"Invalid manifest: %s %s",
+				"Invalid manifest %s: %s %s",
+				$path,
 				$reader->getErrorCode(),
 				$reader->getErrorDetailAsString()
 			));

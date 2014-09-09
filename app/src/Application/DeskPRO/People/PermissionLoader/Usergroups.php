@@ -137,7 +137,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 				if ($this->person_id) {
 					$perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
 					if ($this->person && $this->person->is_agent) {
-						$perms = array_merge($perms, App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->usergroup_ids));
+						$perms = array_merge($perms, array(-1 => App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id)));
 					}
 				} else {
 					$perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);

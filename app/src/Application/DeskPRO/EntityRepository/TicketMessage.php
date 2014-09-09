@@ -179,7 +179,7 @@ class TicketMessage extends AbstractEntityRepository
 		$timesnip = date_create('-' . $secs_ago . ' seconds');
 
 		if ($ticket) {
-			if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupe in ticket {$ticket['id']} (-$secs_ago s)");
+			if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupe in ticket {$ticket['id']} (-$secs_ago s) as person " . ($message->person ? $message->person->id : 'none'));
 			$check_matches = $this->_em->createQuery("
 				SELECT m
 				FROM DeskPRO:TicketMessage m
@@ -210,9 +210,12 @@ class TicketMessage extends AbstractEntityRepository
 			$prev_message = $this->_em->createQuery("
 				SELECT m
 				FROM DeskPRO:TicketMessage m
+				LEFT JOIN m.person p
 				WHERE m.ticket = ?0 AND m.id < ?1
 				ORDER BY m.id DESC
 			")->setMaxResults(1)->setParameters(array($check->ticket->getId(), $check->getId()))->getOneOrNullResult();
+
+			if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] Prev message is: " . ($prev_message ? $prev_message->id : "none"));
 
 			// There is no previous message, so it is a dupe
 			if (!$prev_message) {
@@ -220,8 +223,10 @@ class TicketMessage extends AbstractEntityRepository
 				return $check;
 			}
 
+			if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] Prev message person is: " . ($prev_message->person ? $prev_message->person->id : "none"));
+
 			// The previous message is also by us, so it is a dupe
-			if ($prev_message->person->getId() == $message->person->getId()) {
+			if ($prev_message->person->id == $message->person->id) {
 				if ($logger) $logger->logDebug("[EntityRepository:TicketMessage] {$check['id']} is a match because prev message is by us");
 				return $check;
 			}

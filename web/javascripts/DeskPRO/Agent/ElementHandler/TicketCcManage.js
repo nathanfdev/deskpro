@@ -86,12 +86,14 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 			var email = row.data('email-address');
 
 			if (personId) {
+				row.hide();
 				$.ajax({
 					url: self.deleteUrl,
 					type: 'POST',
 					data: { person_id: personId },
 					dataType: 'json',
 					success: function(data) {
+						row.remove();
 						self.el.closest('.tabViewDetailContent').find('ul.cc-row-list').each(function() {
 							$(this).empty().html(data.cc_list || '');
 							self.el.find('ul.cc-row-list').each(function() {
@@ -106,13 +108,9 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 						row.show();
 					}
 				});
-
-				row.fadeOut('fast');
-			}
-
-			row.fadeOut('fast', function() {
+			} else {
 				row.remove();
-			});
+			}
 		});
 	}
 });

@@ -182,7 +182,7 @@ pageMeta.lang = {{ {
 		{% endif %}
 
 		{% if ticket_perms.modify_cc and not user_parts|length %}
-			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
+			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn2"><i class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
 		{% endif %}
 
 		{% if ticket_perms.modify_cc or user_parts|length %}
@@ -385,7 +385,7 @@ pageMeta.lang = {{ {
 						<label class="field-label-title" style="white-space: nowrap">
                         {{ phrase('agent.general.agent') }}
                         {% if ticket_perms.modify_assign_agent or not ticket.agent %}
-							<span id="{{baseId}}_assign_me" class="assign-self-link-wrap" style="{% if app.user == ticket.agent %}display:none;{% endif %}" data-me="{{ app.user.id }}">
+							<span id="{{baseId}}_assign_me" class="assign-self-link-wrap" style="{% if app.user.id == ticket.agent.id %}display:none;{% endif %}" data-me="{{ app.user.id }}">
 								&middot;
 								<a class="assign-self-link">
 									{{ phrase('agent.general.assign_to_me') }}

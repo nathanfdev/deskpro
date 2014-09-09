@@ -96,7 +96,7 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
 
 		$this->body_is_html = false;
 
-		$inline_images = new InlineImageTokens($this->reader);
+		$inline_images = new InlineImageTokens($reader);
 
 		$this->logMessage('[TicketIncomingEmailMessageV3] Processing DP3 reply text');
 
@@ -105,7 +105,7 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
 			$txt = $ticket_email->email_body_text;
 			if (!$txt && $ticket_email->email_body_text) {
 				$txt = $ticket_email->email_body_text;
-				$this->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+				$this->charset_error = $reader->getBodyText()->getOriginalCharset();
 			}
 
 			$this->body = $txt;
@@ -114,7 +114,7 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
 			$this->body = $ticket_email->email_body_html;
 			if (!$this->body) {
 				$this->body = strip_tags($ticket_email->email_body_html);
-				$this->charset_error = $this->reader->getBodyHtml()->getOriginalCharset();
+				$this->charset_error = $reader->getBodyHtml()->getOriginalCharset();
 			}
 
 			// Replace inline image tags with tokens

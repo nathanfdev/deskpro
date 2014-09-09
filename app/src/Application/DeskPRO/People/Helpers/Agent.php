@@ -121,7 +121,12 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	{
 		if ($this->_agent_teams !== null) return $this->_agent_teams;
 
-		$this->_agent_teams = App::$container->getAgentData()->getTeamsForAgent($this->person);
+		try {
+			$this->_agent_teams = App::$container->getAgentData()->getTeamsForAgent($this->person);
+		} catch (\InvalidArgumentException $e) {
+			$this->_agent_teams = array();
+		}
+
 		return $this->_agent_teams;
 	}
 

@@ -296,10 +296,10 @@ $DP_CONFIG['debug']['page_log'] = array(
 	'enabled' => false,
 
 	/**
-	 * Only enable for URLs that match this regex pattern.
-	 * For example: /agent\/tickets/
+	 * Only enable for URLs that match any of these regex patterns.
+	 * For example: array('/agent\/tickets/')
 	 */
-	'url_pattern' => null,
+	'url_pattern' => array(),
 
 	/**
 	 * Slow Query Log: data/logs/pagelog-slow-queries.log
@@ -345,6 +345,32 @@ $DP_CONFIG['debug']['page_log'] = array(
 	 * Example: 0.8 to log any page that takes longer than 0.8 seconds from start to finish
 	 */
 	'slow_page_time' => false,
+
+	/**
+	 * Tracked Query Log: data/logs/pagelog-tracked-queries.log
+	 * This logs tracked queries (configured below).
+	 *
+	 * Value: true or false
+	 */
+	'tracked_query_log' => false,
+
+	/**
+	 * In the generated logs, queries are given an 'id'. If you add that ID to this array,
+	 * then a backtrace will be saved each time the query is executed. Use this to find
+	 * out where a certain query is being called from.
+	 *
+	 * Value: An array of strings which are query IDs.
+	 */
+	'track_query_ids' => array(),
+
+	/**
+	 * Add regex patterns to this array and a backtrace will be saved each time the query
+	 * is executed. Similar to above using IDs except this uses regex instead.
+	 *
+	 * Value: An array of regular expressions to match against queries
+	 * Example: array('/UPDATE\s+permissions\s/i')
+	 */
+	'track_query_regex' => array(),
 );
 
 ######################################################

@@ -90,7 +90,6 @@ define [
 
 				@agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
 				@form = @agentFormModel.form
-				console.info @form
 
 				@$scope.$watch('EditCtrl.form.agent_groups', =>
 					@updateEffectiveUgPerms()
@@ -126,7 +125,7 @@ define [
 
 					@deps_perms.chat[dep.id] = { full: full }
 
-				@updateHasPermOverridesStatus()
+				@$timeout(=> @updateHasPermOverridesStatus())
 			)
 			return promise
 
@@ -248,7 +247,7 @@ define [
 				for own type, perms of @perm_form
 					for own permName, value of perms
 						if value
-							if not @ugEffectivePerms[type]?[permName]? or not @ugEffectivePerms[type][permName]
+							if not @ugEffectivePerms[type]?[permName]? or not @ugEffectivePerms[type][permName] or not @form.agent_groups.length
 								@hasPermOverrides = true
 								return
 			run()
@@ -260,7 +259,7 @@ define [
 					for own depId, perms of @deps_perms[app]
 						for own perm, value of perms
 							if value
-								if not @ugEffectiveDepPerms[app][depId][perm]
+								if not @ugEffectiveDepPerms[app][depId][perm] or not @form.agent_groups.length
 									@hasDepOverrides = true
 									return
 			run()

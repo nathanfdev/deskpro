@@ -937,32 +937,35 @@ class TicketController extends AbstractController
 
 	public function removeParticipantAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		if (!$this->checkPerm($ticket, 'modify_cc')) {
+			return $this->createPermissionErrorResponse('You do not have permission to modify CCs');
+		}
+
 		$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 
-		if (!$person) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
+		if ($person) {
+			$part = $this->em->createQuery("
+				SELECT part
+				FROM DeskPRO:TicketParticipant part
+				WHERE part.ticket = ?0 AND part.person = ?1
+			")->setParameters(array($ticket, $person))->setMaxResults(1)->getOneOrNullResult();
 
-		$part = $this->em->createQuery("
-			SELECT part
-			FROM DeskPRO:TicketParticipant part
-			WHERE part.ticket = ?0 AND part.person = ?1
-		")->setParameters(array($ticket, $person))->setMaxResults(1)->getOneOrNullResult();
+			if (!$part) {
+				return $this->createJsonResponse(array('success' => false));
+			}
 
-		if (!$part) {
-			return $this->createJsonResponse(array('success' => false));
-		}
+			$this->db->beginTransaction();
 
-		$this->db->beginTransaction();
-
-		try {
-			$this->em->remove($part);
-			$this->em->flush();
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-            throw $e;
+			try {
+				$this->em->remove($part);
+				$this->em->flush();
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
 		}
 
 		return $this->createJsonResponse(array('success' => true, 'cc_list' => $this->_getTicketCcList($ticket)));

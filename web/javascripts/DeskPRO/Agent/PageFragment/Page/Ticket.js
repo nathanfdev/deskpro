@@ -678,7 +678,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		}
 
-		this.getEl('cc_list_btn').on('click', function(ev) {
+		this.getEl('cc_list_btn2').on('click', function(ev) {
 			ev.preventDefault();
 
 			if (self.getEl('cc_list').hasClass('cc-open')) {
@@ -686,12 +686,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					self.getEl('cc_list').hide().removeClass('cc-open');
 				} else {
 					self.getEl('cc_list').find('.addrow').toggle();
+					self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 				}
 			} else {
 				self.getEl('cc_list').show().addClass('cc-open');
 				self.getEl('cc_list').find('.addrow').show();
 				self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 			}
+		});
+
+		this.getEl('cc_list_btn').on('click', function(ev) {
+			ev.preventDefault();
+
+			self.getEl('cc_list').show().addClass('cc-open');
+			self.getEl('cc_list').find('.addrow').show();
+			self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 		});
 
 		var logsWrap = this.getEl('logs_wrap');
@@ -898,6 +907,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						this.getEl('message_next_page').show();
 					}
 				}
+
+				this.fireEvent('load', [data]);
 			}
 		});
 	},
@@ -1168,6 +1179,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	handleTicketUpdate: function(data) {
+		this.doHandleTicketUpdate(data);
+		this.fireEvent('ticket_updated', [data]);
+	},
+
+	doHandleTicketUpdate: function(data) {
 		var self = this;
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);

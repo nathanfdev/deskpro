@@ -150,7 +150,7 @@ class TicketManager
 	 * Set an auto context var
 	 *
 	 * @param string $k
-	 * @param mixed d$v
+	 * @param mixed $v
 	 */
 	public function setAutoContextVar($k, $v)
 	{
@@ -269,6 +269,7 @@ class TicketManager
 
 		if ($is_trivial_change) {
 			$context->getLogger()->debug("is_trivial_change = true");
+			$context->setEventType('noop');
 			$is_noop = true;
 		}
 

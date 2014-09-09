@@ -15,11 +15,6 @@
 			</div>
 			<div class="top-row-right">
 				<div class="bound-fade"></div>
-				<% if (ticket_display.locked_by_agent) { %>
-				<span class="tipped agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
-					<i class="icon-lock" style="font-size: 150%;"></i>
-				</span>
-				<% } %>
 				<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
 				<div class="status-pill status urgency-<%= ticket_display.urgency %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
 					<% if (ticket_display.status == 'awaiting_agent') { %>
@@ -56,7 +51,7 @@
 				</div>
 
 				<% if (ticket_display.agent) { %>
-					<span class="tipped agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>');"></span>
+					<span class="tipped agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>'); width:16px; height: 16px;"></span>
 				<% } %>
 
 				<% if (ticket_display.flag) { %>

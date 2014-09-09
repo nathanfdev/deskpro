@@ -166,6 +166,8 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 	{
 		$es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
 
+		$status_data = $es_status ? $es_status->data : array();
+
 		$log_path = dp_get_log_dir() . '/es-indexer.log';
 		$log = null;
 		if (file_exists($log_path)) {
@@ -174,20 +176,28 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
 		$is_indexing = ($this->getContainer()->getSetting('elastica.requires_reset') || ($es_status && $es_status->getData('status') == 'running'));
 
+		if (($es_status && $es_status->getData('status') == 'running') && isset($status_data['date_last'])) {
+			if ($status_data['date_last']->getTimestamp() < (time() - 1200)) {
+				$status_data['status'] = 'crashed';
+			}
+		}
+
 		$info = null;
 		if (!$is_indexing) {
 			try {
-				/** @var \FOS\ElasticaBundle\Client $client */
-				$client = $this->container->get('fos_elastica.client.default');
-				$status = $client->getStatus()->getData();
+				/** @var \Elastica\Index $index */
+				$index = $this->getContainer()->get('fos_elastica.index.deskpro');
+				$index_name = $index->getName();
 
-				if (!isset($status['indices']['deskpro'])) {
+				$stats = $index->request('_stats', 'GET')->getData();
+
+				if (!isset($stats['indices'][$index_name])) {
 					$info = array('error' => 'no_index');
 				} else {
 					$info = array(
-						'size'          => @$status['indices']['deskpro']['index']['size_in_bytes'],
-						'size_readable' => Numbers::filesizeDisplay(@$status['indices']['deskpro']['index']['size_in_bytes']),
-						'num_docs'      => @$status['indices']['deskpro']['docs']['num_docs'],
+						'size'          => @$stats['indices'][$index_name]['total']['store']['size_in_bytes'],
+						'size_readable' => Numbers::filesizeDisplay(@$stats['indices'][$index_name]['total']['store']['size_in_bytes']),
+						'num_docs'      => @$stats['indices'][$index_name]['total']['docs']['count'],
 					);
 				}
 
@@ -196,9 +206,31 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 			}
 		}
 
+		if (empty($info['error']) && isset($index) && isset($index_name)) {
+			$types = array(
+				'feedback'     => 'feedback',
+				'organization' => 'organizations',
+				'person'       => 'people',
+				'article'      => 'articles',
+				'ticket'       => 'tickets',
+				'news'         => 'news',
+				'download'     => 'downloads',
+			);
+
+			foreach ($types as $type => $table) {
+				try {
+					$count = $index->request("$type/_count", 'GET')->getData();
+					if (isset($count['count'])) {
+						$info["num_$type"]     = $count['count'];
+						$info["realnum_$type"] = $this->db->fetchColumn("SELECT COUNT(*) FROM $table");
+					}
+				} catch (\Exception $e) {}
+			}
+		}
+
 		return $this->createJsonResponse(array(
 			'is_indexing'    => $is_indexing,
-			'indexer_status' => $es_status ? $es_status->data : null,
+			'indexer_status' => $status_data ? $status_data : null,
 			'indexer_log'    => $log ?: null,
 			'info'           => $info
 		));
