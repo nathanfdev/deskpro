@@ -90,7 +90,6 @@ define [
 
 				@agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
 				@form = @agentFormModel.form
-				console.info @form
 
 				@$scope.$watch('EditCtrl.form.agent_groups', =>
 					@updateEffectiveUgPerms()

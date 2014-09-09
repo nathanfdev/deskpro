@@ -112,7 +112,6 @@
             _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;
             _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams, _this.primary_phone_number_region);
             _this.form = _this.agentFormModel.form;
-            console.info(_this.form);
             _this.$scope.$watch('EditCtrl.form.agent_groups', function() {
               _this.updateEffectiveUgPerms();
               return _this.updateAllPermsState();
