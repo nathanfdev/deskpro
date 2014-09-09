@@ -62,7 +62,9 @@
 				<input type="text" value="" name="email" size="40" placeholder="{{ phrase('user.general.email_address') }}" />
 				<input type="password" autocomplete="off" value="" name="password" id="dp_login_password" size="20" placeholder="{{ phrase('user.profile.password') }}" />
 				<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" />
-				<label style="display: inline"><input type="checkbox" name="remember_me" value="1" style="display:inline; position: relative; top: -2px;" /> {{ phrase('user.general.remember_me') }}</label>
+				{% if app.getSetting('core.enable_user_rememberme') %}
+					<label style="display: inline"><input type="checkbox" name="remember_me" value="1" style="display:inline; position: relative; top: -2px;" /> {{ phrase('user.general.remember_me') }}</label>
+				{% endif %}
 			</form>
 		</div>
 	</section>

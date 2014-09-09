@@ -81,7 +81,9 @@
 								<dd><input type="password" autocomplete="off" value="" name="password" id="dp_login_password" size="20" tabindex="51" /></dd>
 							</dl>
 							<div class="dp-btn-row">
-								<label class="dp-remember-me-row"><input type="checkbox" name="remember_me" value="1" tabindex="53" /> {{ phrase('user.general.remember_me') }}</label>
+								{% if app.getSetting('core.enable_user_rememberme') %}
+									<label class="dp-remember-me-row"><input type="checkbox" name="remember_me" value="1" tabindex="53" /> {{ phrase('user.general.remember_me') }}</label>
+								{% endif %}
 								<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" tabindex="52" />
 							</div>
 							{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
