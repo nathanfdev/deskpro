@@ -166,6 +166,8 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 	{
 		$es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
 
+		$status_data = $es_status ? $es_status->data : array();
+
 		$log_path = dp_get_log_dir() . '/es-indexer.log';
 		$log = null;
 		if (file_exists($log_path)) {
@@ -173,6 +175,12 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 		}
 
 		$is_indexing = ($this->getContainer()->getSetting('elastica.requires_reset') || ($es_status && $es_status->getData('status') == 'running'));
+
+		if (($es_status && $es_status->getData('status') == 'running') && isset($status_data['date_last'])) {
+			if ($status_data['date_last']->getTimestamp() < (time() - 1200)) {
+				$status_data['status'] = 'crashed';
+			}
+		}
 
 		$info = null;
 		if (!$is_indexing) {
@@ -198,7 +206,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
 		return $this->createJsonResponse(array(
 			'is_indexing'    => $is_indexing,
-			'indexer_status' => $es_status ? $es_status->data : null,
+			'indexer_status' => $status_data ? $status_data : null,
 			'indexer_log'    => $log ?: null,
 			'info'           => $info
 		));

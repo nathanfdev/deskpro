@@ -81,10 +81,23 @@
 					<strong>Status: Running</strong>
 					<i class="spinner-flat"></i>
 				</p>
-				<p ng-if="indexer_status.status != 'running' && indexer_status.status != 'complete'">
+				<p ng-if="indexer_status.status != 'running' && indexer_status.status != 'complete' && indexer_status.status != 'crashed'">
 					<strong>Status: Waiting</strong>
 					&middot; The indexing process will start when the next cron run executes.
 				</p>
+
+				<div ng-if="indexer_status.status == 'crashed'" style="background-color: #f2dede; padding: 10px; margin-top: 10px;">
+					<p>
+						It looks like the indexing process has crashed. You should refer to the <a href="{{ ng_href('server.error_logs') }}">Error Log</a> to see if any information is logged there.
+					</p>
+					<p>
+						Click the button below to restart the indexing process.
+					</p>
+					<p>
+						<button class="btn btn-default btn-xs" ng-click="Settings.startReindex()"><i class="fa fa-refresh"></i> Restart the indexer</button>
+					</p>
+				</div>
+
 				<table class="table table-bordered table-condensed">
 					<thead>
 						<tr>
