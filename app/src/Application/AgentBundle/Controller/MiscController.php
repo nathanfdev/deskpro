@@ -403,7 +403,9 @@ JS;
 		}
 
 		$headers = array();
-		if (!empty($_SERVER['CONTENT_TYPE'])) {
+		if ($this->request->headers->get('X-DeskPRO-Proxy-Content-Type')) {
+			$headers[] = 'Content-Type: ' . $this->request->headers->get('X-DeskPRO-Proxy-Content-Type');
+		} else if (!empty($_SERVER['CONTENT_TYPE'])) {
 			$headers[] = 'Content-Type: ' . $_SERVER['CONTENT_TYPE'];
 		}
 
