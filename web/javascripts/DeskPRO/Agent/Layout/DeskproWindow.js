@@ -66,7 +66,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		this.openSourceOverlay = openSourceOverlay;
 
 		var closeSourceOverlay = function() {
+			if (window.DP_SOURCE_SEARCHFORM_PANEL_OPEN) return; //see SearchForm.js
 			if (DeskPRO_Window.paneVis.source) return;
+			if ($("#select2-drop")[0]) return;
 			isSourceClosing = true;
 			$('#dp_source').stop().animate({left: -self.SOURCE_WIDTH }, {
 				duration: 350,
@@ -143,13 +145,11 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			startCloseSourceOverlayTimeout();
 		});
 
-		if (DeskPRO_Window.isMobile) {
-			$('body').on('touch click', function (ev) {
-				if (!($(ev.target).is('#dp_source') || $(ev.target).closest('#dp_source')[0])) {
-					closeSourceOverlay();
-				}
-			});
-		}
+		$('body').on('touch click', function (ev) {
+			if (!($(ev.target).is('#dp_source') || $(ev.target).closest('#dp_source')[0])) {
+				closeSourceOverlay();
+			}
+		});
 	},
 
 	doResize: function(widthCalc) {
