@@ -95,7 +95,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 		$this->is_first_page = empty($_SESSION);
 
 		$allow_rememberme = false;
-		if ((DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
+		if ((DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin' || DP_INTERFACE == 'agent')) {
 			$allow_rememberme = (bool)App::getSetting('core.enable_agent_rememberme');
 		} else if (DP_INTERFACE == 'user') {
 			$allow_rememberme = (bool)App::getSetting('core.enable_user_rememberme');
