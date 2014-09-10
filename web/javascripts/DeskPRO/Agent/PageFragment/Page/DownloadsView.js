@@ -70,7 +70,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				$.ajax({
 					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
 					type: 'POST',
-					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
 					dataType: 'json'
 				});
