@@ -37,7 +37,8 @@
 		"friendsofsymfony/elastica-bundle": "3.0.*@dev",
 		"fzaninotto/faker": "1.4.*@dev",
 		"firebase/php-jwt": "dev-master",
-		"league/url": "~3.0"
+		"league/url": "~3.0",
+		"onelogin/php-saml": "~2.1.0"
 	},
 	"scripts": {
 		"post-update-cmd":  ["bin/clean-vendors.sh", "bin/hack-vendors.sh"],
