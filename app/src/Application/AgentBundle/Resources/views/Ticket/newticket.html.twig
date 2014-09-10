@@ -274,7 +274,7 @@ pageMeta.baseId = '{{ baseId }}';
         </section>
 </div>
 
-{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.billing_on_new') %}
+{% if app.getSetting('core_tickets.enable_billing') %}
 <div class="profile-box-container reply-box-wrap" style="position: relative">
 	<header>
 		<h4>{{ phrase('agent.tickets.billing') }}</h4>
