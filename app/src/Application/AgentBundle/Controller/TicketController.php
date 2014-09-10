@@ -37,8 +37,10 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Debug\Data\TicketContextData;
 use Application\DeskPRO\Debug\Data\TicketData;
 use Application\DeskPRO\Debug\Data\TicketFilterData;
+use Application\DeskPRO\Debug\Data\TicketLayoutsData;
 use Application\DeskPRO\Debug\Data\TicketLogsData;
 use Application\DeskPRO\Debug\Data\TicketPersonData;
 use Application\DeskPRO\Debug\Data\TicketTriggerData;
@@ -3837,6 +3839,12 @@ class TicketController extends AbstractController
 
 		$d = new TicketFilterData();
 		file_put_contents($tmpdir . '/filters.json', json_encode($d->getData()));
+
+		$d = new TicketLayoutsData();
+		file_put_contents($tmpdir . '/ticket-layouts.json', json_encode($d->getData()));
+
+		$d = new TicketContextData();
+		file_put_contents($tmpdir . '/ticket-context.json', json_encode($d->getData()));
 
 		$d = new TicketData($ticket);
 		file_put_contents($tmpdir . '/ticket.json', json_encode($d->getData()));
