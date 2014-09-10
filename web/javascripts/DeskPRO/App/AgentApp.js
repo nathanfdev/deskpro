@@ -1,5 +1,5 @@
-define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions', 'DeskPRO/Util/Strings'], function(angular, x1, x2, Functions, Strings) {
-	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap']);
+define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions', 'DeskPRO/Util/Strings', 'ngContextMenu'], function(angular, x1, x2, Functions, Strings, ngContextMenu) {
+	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu']);
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor
