@@ -51,7 +51,7 @@ class SnippetFormatter implements PersonContextInterface
 	protected $person_context;
 
 	/**
-	 * @var arary
+	 * @var array
 	 */
 	protected $extra_vars;
 

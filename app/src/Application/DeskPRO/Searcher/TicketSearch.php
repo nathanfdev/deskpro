@@ -983,7 +983,7 @@ class TicketSearch extends SearcherAbstract
 					case 'input':
 					case 'value':
 						$this->add_raw_selects[] = "sort_table.$search_type AS status_order";
-						$order_by = arary(
+						$order_by = array(
 							"INNER JOIN custom_data_ticket AS sort_table ON (sort_table.ticket_id = tickets.id AND sort_table.id = $term_id)",
 							"ORDER BY status_order $dir, id DESC"
 						);
