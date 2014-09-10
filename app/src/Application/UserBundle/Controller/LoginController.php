@@ -338,11 +338,6 @@ HTML;
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
 
-		$res = $this->handleIpSecurityCheck($person);
-		if ($res) {
-			return $res;
-		}
-		
 		if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
 			$person->setLastLoginAt();
 		}
@@ -592,11 +587,6 @@ HTML;
 					return $this->redirect($return);
 				}
 
-				$res = $this->handleIpSecurityCheck($person);
-				if ($res) {
-					return $res;
-				}
-
 				if ($this->session->get('auth_return')) {
 					$return = $this->session->get('auth_return');
 					$this->session->remove('auth_return');
@@ -646,11 +636,6 @@ HTML;
 
 				$this->_setupUsersourceSession($usersource, $person, $result);
 
-				$res = $this->handleIpSecurityCheck($person);
-				if ($res) {
-					return $res;
-				}
-
 				$return = $this->in->getString('return');
 				if ($return) {
 					return $this->redirect($return);
@@ -694,11 +679,6 @@ HTML;
 			$person = $login_processor->getPerson();
 
 			$this->_setupUsersourceSession($usersource, $person, $result);
-
-			$res = $this->handleIpSecurityCheck($person);
-			if ($res) {
-				return $res;
-			}
 
 			if ($this->session->get('auth_return')) {
 				$return = $this->session->get('auth_return');
