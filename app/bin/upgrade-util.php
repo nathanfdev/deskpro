@@ -1230,7 +1230,7 @@ class Upgrade
 			apc_clear_cache('user');
 			$touch_trigger = true;
 		}
-		if (function_exists('wincache_ucache_clear')) {
+		if (extension_loaded('wincache')) {
 			wincache_ucache_clear();
 			wincache_refresh_if_changed();
 			$touch_trigger = true;

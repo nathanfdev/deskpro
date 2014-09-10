@@ -23,7 +23,7 @@ if (!defined('DPC_IS_CLOUD') && file_exists(dp_get_tmp_dir() . '/apc-clear.trigg
 		apc_clear_cache();
 		apc_clear_cache('user');
 	}
-	if (function_exists('wincache_ucache_clear')) {
+	if (extension_loaded('wincache')) {
 		wincache_ucache_clear();
 		wincache_refresh_if_changed();
 	}
