@@ -675,7 +675,7 @@ class Ticket extends AbstractEntityRepository
 		", array($validating_email));
 	}
 
-	public function getTicketIdsWithEmail($email)
+	public function getTicketIdsWithEmail($email, $for_validation = false)
 	{
 		if (is_object($email)) {
 			$email = $email->getId();
@@ -683,14 +683,22 @@ class Ticket extends AbstractEntityRepository
 
 		$email = (int)$email;
 
-		return $this->getEntityManager()->getConnection()->fetchAllCol("
-			SELECT id
-			FROM tickets
-			WHERE person_email_id = ?
-			ORDER BY id DESC
-		", array($email));
+		if ($for_validation) {
+			return $this->getEntityManager()->getConnection()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE (person_email_id = ? OR person_email_id IS null) AND status = 'hidden' AND hidden_status = 'validating'
+				ORDER BY id DESC
+			", array($email));
+		} else {
+			return $this->getEntityManager()->getConnection()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE person_email_id = ?
+				ORDER BY id DESC
+			", array($email));
+		}
 	}
-
 
 	public function getTicketCountsForPeople(array $people)
 	{
