@@ -2558,6 +2558,35 @@ class Person extends DomainObject implements HighlightableModelInterface
 		return $data;
 	}
 
+	public function toBasicApiData()
+	{
+		$agent_data = array(
+			'id'             => $this->id,
+			'name'           => $this->name,
+			'first_name'     => $this->first_name,
+			'last_name'      => $this->last_name,
+			'display_name'   => $this->getDisplayName(),
+			'is_agent'       => $this->is_agent,
+			'can_agent'      => $this->can_agent,
+			'can_admin'      => $this->can_admin,
+			'can_billing'    => $this->can_billing,
+			'can_reports'    => $this->can_reports,
+			'is_deleted'     => $this->is_deleted,
+			'is_disabled'    => $this->is_disabled,
+			'primary_email'  => array('id' => $this->primary_email->id, 'email' => $this->primary_email->email),
+			'picture_url'    => $this->getPictureUrl(),
+			'picture_url_80' => $this->getPictureUrl(80),
+			'picture_url_64' => $this->getPictureUrl(64),
+			'picture_url_50' => $this->getPictureUrl(50),
+			'picture_url_45' => $this->getPictureUrl(45),
+			'picture_url_32' => $this->getPictureUrl(32),
+			'picture_url_22' => $this->getPictureUrl(22),
+			'picture_url_16' => $this->getPictureUrl(16),
+		);
+		
+		return $agent_data;
+	}
+
     /**
      * Set ElasticSearch highlight data.
      *
