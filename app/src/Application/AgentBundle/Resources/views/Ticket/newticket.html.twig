@@ -368,9 +368,7 @@ pageMeta.baseId = '{{ baseId }}';
 							<div style="margin-left: 65px;">
 								<select name="add_followers[]" id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="{{ phrase('agent.tickets.add_follower') }}">
 									{% for agent in app.agents.getAgents() %}
-										{% if agent.id != app.user.id %}
-											<option data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
-										{% endif %}
+										<option data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 									{% endfor %}
 								</select>
 							</div>
