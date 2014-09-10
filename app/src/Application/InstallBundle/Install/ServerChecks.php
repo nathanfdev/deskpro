@@ -537,7 +537,7 @@ class ServerChecks
 
 		if ($type == 'apc_check' || $type == 'all') {
 			$enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
-			$enabledWincache = function_exists('wincache_ucache_clear') && (int) ini_get('wincache.ocenabled');
+			$enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
 			$enabledOpcache = (int) ini_get('opcache.enable') || extension_loaded('Zend OPcache');
 
 			$this->getLogger()->log("[CHECK] Checking if any opcode cache is enabled", Logger::DEBUG);
