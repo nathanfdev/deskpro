@@ -253,8 +253,16 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		visibleLeft += 270;
 		visibleLeft += listWidth;
 
-		$('#dp_header_listpane_aligned').width(listWidth);
-		$('#dp_header_contentpane_aligned').css('left', visibleLeft);
+		if (!paneVis.list || !paneVis.tabs || !paneVis.source) {
+			var listAlignedW = 0.8 * ($(window).width() - 600);
+			if (listAlignedW < 400) listAlignedW = 400;
+			if (listAlignedW > 700) listAlignedW = 700;
+			$('#dp_header_listpane_aligned').width(listAlignedW);
+			$('#dp_header_contentpane_aligned').css('left', listAlignedW + 264);
+		} else {
+			$('#dp_header_listpane_aligned').width(listWidth);
+			$('#dp_header_contentpane_aligned').css('left', visibleLeft);
+		}
 
 		if (paneVis.tabs) {
 			if (paneVis.list) {
