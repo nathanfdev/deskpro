@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
     var Admin_RoundRobin_Ctrl_Edit;
     Admin_RoundRobin_Ctrl_Edit = (function(_super) {
       __extends(Admin_RoundRobin_Ctrl_Edit, _super);
@@ -122,99 +122,77 @@
       };
 
       Admin_RoundRobin_Ctrl_Edit.prototype.handleBulk = function() {
-        var add, params;
+        var findAgent, params;
         if (this.bulk == null) {
           return;
         }
         params = this.bulk.split('.');
-        add = {};
+        findAgent = (function(_this) {
+          return function(id) {
+            return Arrays.find(_this.agents, function(a) {
+              return a.id === id;
+            });
+          };
+        })(this);
         switch (params[0]) {
           case 'd':
-            return this.serviceDeps.get(params[1]).then((function(_this) {
-              return function(dep) {
-                var agent, agentData, agentGroupId, agentgroup, id, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3;
-                _ref = _this.agents;
+            return this.Api.sendGet("/ticket_deps/" + params[1] + "?with_agents_list=1").success((function(_this) {
+              return function(data) {
+                var a, agent, _i, _len, _ref, _results;
+                if (!data || !data.agents_list) {
+                  return;
+                }
+                _ref = data.agents_list;
+                _results = [];
                 for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                  agent = _ref[_i];
-                  if (!(_this.robin.agents.indexOf(agent) === -1)) {
-                    continue;
+                  a = _ref[_i];
+                  agent = findAgent(a.id);
+                  if (agent) {
+                    _this.handleAgent(agent);
                   }
-                  _ref1 = dep.permissions.users;
-                  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                    agentData = _ref1[_j];
-                    if ('full' === agentData.name && agent.id === agentData.id) {
-                      add[agent.id] = agent;
-                    }
-                  }
-                  _ref2 = dep.permissions.agentgroups;
-                  for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
-                    agentgroup = _ref2[_k];
-                    if (agentgroup.name === 'full') {
-                      _ref3 = agent.agentgroup_ids;
-                      for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
-                        agentGroupId = _ref3[_l];
-                        if (!(agentGroupId === agentgroup.id)) {
-                          continue;
-                        }
-                        add[agent.id] = agent;
-                        break;
-                      }
-                    }
-                  }
+                  _results.push(_this.sortAgents());
                 }
-                for (id in add) {
-                  agent = add[id];
-                  _this.handleAgent(agent);
-                }
-                return _this.sortAgents();
+                return _results;
               };
             })(this));
           case 'g':
-            return this.serviceGroups.get(params[1]).then((function(_this) {
-              return function(group) {
-                var agent, agentGroupId, id, _i, _j, _len, _len1, _ref, _ref1;
-                _ref = _this.agents;
+            return this.Api.sendGet("/agent_groups/" + params[1]).success((function(_this) {
+              return function(data) {
+                var a, agent, _i, _len, _ref, _results;
+                if (!data || !data.group.members) {
+                  return;
+                }
+                _ref = data.team.members;
+                _results = [];
                 for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                  agent = _ref[_i];
-                  if (_this.robin.agents.indexOf(agent) === -1) {
-                    _ref1 = agent.agentgroup_ids;
-                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                      agentGroupId = _ref1[_j];
-                      if (agentGroupId === group.id) {
-                        add[agent.id] = agent;
-                      }
-                    }
+                  a = _ref[_i];
+                  agent = findAgent(a.id);
+                  if (agent) {
+                    _this.handleAgent(agent);
                   }
+                  _results.push(_this.sortAgents());
                 }
-                for (id in add) {
-                  agent = add[id];
-                  _this.handleAgent(agent);
-                }
-                return _this.sortAgents();
+                return _results;
               };
             })(this));
           case 't':
-            return this.serviceTeams.get(params[1]).then((function(_this) {
-              return function(team) {
-                var agent, agentTeam, id, _i, _j, _len, _len1, _ref, _ref1;
-                _ref = _this.agents;
+            return this.Api.sendGet("/agent_teams/" + params[1]).success((function(_this) {
+              return function(data) {
+                var a, agent, _i, _len, _ref, _results;
+                if (!data || !data.team.members) {
+                  return;
+                }
+                _ref = data.team.members;
+                _results = [];
                 for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                  agent = _ref[_i];
-                  if (_this.robin.agents.indexOf(agent) === -1) {
-                    _ref1 = agent.teams;
-                    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                      agentTeam = _ref1[_j];
-                      if (agentTeam.id === team.id) {
-                        add[agent.id] = agent;
-                      }
-                    }
+                  a = _ref[_i];
+                  agent = findAgent(a.id);
+                  if (agent) {
+                    _this.handleAgent(agent);
                   }
+                  _results.push(_this.sortAgents());
                 }
-                for (id in add) {
-                  agent = add[id];
-                  _this.handleAgent(agent);
-                }
-                return _this.sortAgents();
+                return _results;
               };
             })(this));
         }

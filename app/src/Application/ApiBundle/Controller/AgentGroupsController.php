@@ -121,7 +121,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 			foreach ($member_ids as $pid) {
 				$agent = $this->container->getAgentData()->get($pid);
 				if ($agent) {
-					$data['members'][] = $agent->toApiData(false, false);
+					$data['members'][] = $agent->toBasicApiData();
 				}
 			}
 		}
