@@ -96,6 +96,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			}
 		}
 
+		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+				'ip' => dp_get_user_ip_address()
+			));
+		}
+
 		return null;
 	}
 
