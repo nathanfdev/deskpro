@@ -138,9 +138,9 @@ class AuthenticationManager
 			return false;
 		}
 
-		// if this interface has auto sso, and this is not the usersource, then no
+		// if this interface has auto sso, and this is not the sso usersource, then no
 		if ($this->settings->isAutoSsoEnabled()) {
-			if ($this->settings->getSsoUsersource()->id == $usersource->id) {
+			if ($this->settings->getSsoUsersource()->id != $usersource->id) {
 				return false;
 			}
 		}
