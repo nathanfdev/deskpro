@@ -273,7 +273,7 @@ class ProcessNew extends ProcessAbstract
 		}
 
 		// Set the proper email address on the ticket from the users account
-		if ($this->reader->getFromAddress()->email != $this->person->getPrimaryEmailAddress()) {
+		if (strtolower($this->reader->getFromAddress()->email) != $this->person->getPrimaryEmailAddress()) {
 			$email_rec = $this->person->findEmailAddress($this->reader->getFromAddress()->getEmail());
 			if ($email_rec) {
 				$ticket->person_email = $email_rec;
