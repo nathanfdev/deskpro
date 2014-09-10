@@ -454,6 +454,27 @@
 		Old Comment: {{ log.details.old_comment }} <br/>
 		New Comment: {{ log.details.new_comment }} <br/>
 	{% endif %}
-{% elseif hide_unknow%}
+{% elseif log.action_type == 'changed_participants' or log.action_type == 'changed_agent_participants' or log.action_type == 'changed_user_participants' %}
+	<span class="new-val expand" data-set=".set-detail">
+		{% if log.action_type == 'changed_agent_participants' %}
+			Changed agent followers
+		{% elseif log.action_type == 'changed_participants' %}
+			Changed user CC's
+		{% else %}
+			Changed participants
+		{% endif %}
+		({% if log.details.added|length %}{{ log.details.added|length }} added{% endif %}{% if log.details.added|length and log.details.removed|length %} &middot; {% endif %}{% if log.details.removed|length %}{{ log.details.removed|length }} removed{% endif %})
+	</span>
+	<div class="expand-set set-detail" style="display: none">
+		<ul>
+			{% for part in log.details.added %}
+				<li>Added: {{ part.name }} &lt;{{ part.email }}&gt;</li>
+			{% endfor %}
+			{% for part in log.details.removed %}
+				<li>Removed: {{ part.name }} &lt;{{ part.email }}&gt;</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}
