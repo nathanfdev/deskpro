@@ -163,6 +163,31 @@ class Arrays
 	}
 
 
+	/**
+	 * Gets the value of the array at $key if it exists. If the value is an array,
+	 * it just returns the first value of that array.
+	 *
+	 * @param array $array
+	 * @param       $key
+	 * @param null  $default
+	 * @return mixed|null
+	 */
+	public static function reachForFirstValueInKey(array $array, $key, $default = null)
+	{
+		if (!array_key_exists($key, $array)) {
+			return $default;
+		}
+
+		$val = $array[$key];
+
+		if (is_array($val)) {
+			return array_shift(array_values($val));
+		}
+
+		return $val ?: $default;
+	}
+
+
 
 	/**
 	 * Run a function on all items of an array recursively. This is a more powerful version of

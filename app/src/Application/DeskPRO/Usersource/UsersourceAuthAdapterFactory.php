@@ -39,6 +39,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\HttpFoundation\Session;
+use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -146,6 +147,11 @@ class UsersourceAuthAdapterFactory
 			}
 
 			$adapter->setLogoutRedirectUrl($logout_url);
+		}
+
+		if ($adapter instanceof SamlAdapterInterface) {
+			$adapter->setMetadataXmlUrl('http://google.com');
+			$adapter->setSingleLogoutServiceUrl('http://google.com');
 		}
 
 		return $adapter;

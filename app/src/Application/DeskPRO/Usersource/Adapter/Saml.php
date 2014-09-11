@@ -29,39 +29,74 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage Usersource
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Usersource\Adapter;
 
+use Application\DeskPRO\Usersource\UsersourceInfo;
+use Orb\Auth\Identity;
 use Application\DeskPRO\App;
-use Application\DeskPRO\Auth\AuthInterfaceSettings;
-use Application\DeskPRO\Auth\AuthSettings;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-
-class AuthSettingsService
+class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 {
-	public static function create(DeskproContainer $container, array $options = array())
+	public function getFieldsFromIdentity(Identity $identity)
 	{
-		$adapterFactory = $container->getSystemService('usersource_auth_adapter_factory');
-		$samlSource = $container->getEm()->getRepository('DeskPRO:Usersource')->find(8);
+		$info = $identity->getRawData();
 
-		////////////////////////////////////////////////
-		// User Interface Auth Settings
-		$userAuthSettings = new AuthInterfaceSettings($adapterFactory);
-		$userAuthSettings->setAutoSsoEnabled(true);
-		$userAuthSettings->setSsoUsersource($samlSource);
+		return array(
+			'name'            => isset($info['name']) ? $info['name'] : '',
+			'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
+			'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
+			'email'           => isset($info['email']) ? $info['email'] : '',
+			'email_confirmed' => true,
+		);
+	}
 
-		////////////////////////////////////////////////
-		// Agent Interface Auth Settings
-		$agentAuthSettings = new AuthInterfaceSettings($adapterFactory);
-		$agentAuthSettings->setAutoSsoEnabled(true);
-		$agentAuthSettings->setSsoUsersource($samlSource);
-		//$agentAuthSettings->setLogoutRedirectUrl('http://google.com');
 
-		////////////////////////////////////////////////
-		// App Auth Settings
-		return new AuthSettings($userAuthSettings, $agentAuthSettings);
+	/**
+	 * @return \deskpro_magento\Usersource\Auth\Magento
+	 */
+	protected function _createAuthAdapterObject()
+	{
+		$options = $this->usersource->options;
+
+		$options['sso_url']          = 'https://app.onelogin.com/trust/saml2/http-post/sso/395333';
+		$options['slo_url']          = 'https://app.onelogin.com/trust/saml2/http-redirect/slo/395333';
+		$options['issuer_id']          = 'https://app.onelogin.com/saml/metadata/395333';
+		$options['cert_fingerprint'] = 'B0:11:A8:CC:CD:25:0D:80:20:6D:AA:FA:01:5D:A1:3F:8B:D3:52:99';
+
+		return new \Orb\Auth\Adapter\Saml($options);
+	}
+
+
+	public function getAgentLogoutRedirectUrl()
+	{
+		return '';
+	}
+
+
+	public function getUserLogoutRedirectUrl()
+	{
+		return '';
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getCapabilities()
+	{
+		$capabilities = array(
+			UsersourceInfo::CAPABILITY_SSO,
+			UsersourceInfo::CAPABILITY_SSO_JS
+		);
+
+		if (isset($this->usersource->options['login_custom_text']) && $custom_button_text = $this->usersource->options['login_custom_text']) {
+			$capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_BTN;
+			$capabilities[] = UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN;
+		}
+
+		return $capabilities;
 	}
 }
