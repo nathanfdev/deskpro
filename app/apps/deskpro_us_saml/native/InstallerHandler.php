@@ -29,69 +29,78 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Usersource
+ * @category Apps
  */
 
-namespace Application\DeskPRO\Usersource\Adapter;
+namespace deskpro_us_saml;
 
-use Application\DeskPRO\Usersource\UsersourceInfo;
-use Orb\Auth\Identity;
-use Application\DeskPRO\App;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
-class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
+class InstallerHandler extends AbstractInstallerHandler
 {
-	public function getFieldsFromIdentity(Identity $identity)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function install(InstallerContext $context)
 	{
-		$info = $identity->getRawData();
+		$usersourceData = $this->getUsersourceData($context);
+		$context->getDb()->insert('usersources', $usersourceData);
+	}
 
-		return array(
-			'name'            => isset($info['name']) ? $info['name'] : '',
-			'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
-			'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
-			'email'           => isset($info['email']) ? $info['email'] : '',
-			'email_confirmed' => true,
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function uninstall(InstallerContext $context)
+	{
+		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function updateSettings(InstallerContext $context)
+	{
+		$usersourceData = $this->getUsersourceData($context);
+		$context->getDb()->update(
+			'usersources',
+			$usersourceData,
+			array('app_id' => $context->getApp()->id)
 		);
 	}
 
 
 	/**
-	 * @return \deskpro_magento\Usersource\Auth\Magento
+	 * {@inheritDoc}
 	 */
-	protected function _createAuthAdapterObject()
+	public function updatePackage(InstallerContext $context)
 	{
-		$options = $this->usersource->options;
-
-		return new \Orb\Auth\Adapter\Saml($options);
-	}
-
-
-	public function getAgentLogoutRedirectUrl()
-	{
-		return '';
-	}
-
-
-	public function getUserLogoutRedirectUrl()
-	{
-		return '';
+		// Nothing
 	}
 
 
 	/**
+	 * @param InstallerContext $context
 	 * @return array
 	 */
-	public function getCapabilities()
+	protected function getUsersourceData(InstallerContext $context)
 	{
-		$capabilities = array(
-			UsersourceInfo::CAPABILITY_SSO,
-			UsersourceInfo::CAPABILITY_SSO_JS
+		return array(
+			'app_id'            => $context->getApp()->id,
+			'title'             => $context->getApp()->title,
+			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Saml',
+			'lost_password_url' => '',
+			'options'           => json_encode(
+				array(
+					'sso_url'           => $context->getApp()->getSetting('sso_url'),
+					'slo_url'           => $context->getApp()->getSetting('slo_url'),
+					'issuer_id'         => $context->getApp()->getSetting('issuer_id'),
+					'cert_fingerprint'  => $context->getApp()->getSetting('cert_fingerprint'),
+					'login_custom_text' => $context->getApp()->getSetting('login_custom_text'),
+				)
+			)
 		);
-
-		if (isset($this->usersource->options['login_custom_text']) && $custom_button_text = $this->usersource->options['login_custom_text']) {
-			$capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_BTN;
-			$capabilities[] = UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN;
-		}
-
-		return $capabilities;
 	}
 }

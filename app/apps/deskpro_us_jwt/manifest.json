@@ -32,7 +32,7 @@
 			"name": "login_custom_text",
 			"type": "text",
 			"label": "Login Button Text",
-			"description": "The text that appears on the button on the login page. This is optional - leave blank to show no button.",
+			"description": "The text that appears on the button on the login page. Only useful if your settings are for background SSO. This is also optional - leave blank to show no button.",
 			"native_only": true
 		},
 		{
