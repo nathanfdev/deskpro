@@ -100,8 +100,7 @@ class InstallerHandler extends AbstractInstallerHandler
 					'logout_agent_url' => $context->getApp()->getSetting('logout_agent_url'),
 					'logout_user_url' => $context->getApp()->getSetting('logout_user_url'),
 				)
-			),
-			'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? '1' : '0'
+			)
 		);
 	}
 }

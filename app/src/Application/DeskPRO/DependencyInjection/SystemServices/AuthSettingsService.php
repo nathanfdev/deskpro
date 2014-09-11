@@ -45,7 +45,7 @@ class AuthSettingsService
 	public static function create(DeskproContainer $container, array $options = array())
 	{
 		$adapterFactory = $container->getSystemService('usersource_auth_adapter_factory');
-		$samlSource = $container->getEm()->getRepository('DeskPRO:Usersource')->find(8);
+		$samlSource = $container->getEm()->getRepository('DeskPRO:Usersource')->find(9);
 
 		////////////////////////////////////////////////
 		// User Interface Auth Settings

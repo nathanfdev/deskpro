@@ -48,13 +48,6 @@
 			"label": "User Logout Redirect",
 			"description": "The URL we redirect to after a user logs out (only applies if automatic SSO is enabled)",
 			"native_only": true
-		},
-		{
-			"name": "enable_usersource",
-			"type": "checkbox",
-			"label": "Enable User Source",
-			"description": "Enable",
-			"native_only": true
 		}
 	]
 }
