@@ -150,8 +150,15 @@ class UsersourceAuthAdapterFactory
 		}
 
 		if ($adapter instanceof SamlAdapterInterface) {
-			$adapter->setMetadataXmlUrl('http://google.com');
-			$adapter->setSingleLogoutServiceUrl($this->router->generate('user_saml_sls', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL));
+			$adapter->setMetadataXmlUrl(
+				$this->router->generate(
+					'user_saml_metadata', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
+				));
+			$adapter->setSingleLogoutServiceUrl(
+				$this->router->generate(
+					'user_saml_sls', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
+				)
+			);
 		}
 
 		return $adapter;

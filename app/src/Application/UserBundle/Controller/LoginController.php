@@ -330,6 +330,31 @@ HTML;
 	}
 
 
+	/**
+	 * @param $usersource_id
+	 * @return Response
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	public function samlMetadataAction($usersource_id)
+	{
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+		if (!$usersource) {
+			throw $this->createNotFoundException();
+		}
+		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
+
+		if (!$this->auth_manager->isUsableUsersource($usersource)) {
+			throw $this->createNotFoundException('usersource / adapter not enabled for this scenario');
+		}
+
+		if ($adapter instanceof SamlAdapterInterface) {
+			return $adapter->getMetadataXmlResponse();
+		}
+
+		throw $this->createNotFoundException('usersource / adapter not suitable for SLS');
+	}
+
+
 	public function authenticateLocalAction(Request $request, $usersource_id)
 	{
 		if ($this->request->getMethod() != 'POST') {

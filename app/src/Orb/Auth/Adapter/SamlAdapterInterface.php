@@ -48,9 +48,17 @@ interface SamlAdapterInterface
 
 
 	/**
-	 * Return a response OR do the redirect yourself inside the method
+	 * Return a response to send to browser OR do the redirect yourself inside the method (and exit).
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function performSingleLogOutService();
+
+
+	/**
+	 * Return a response to send to browser OR display the metadata yourself inside this method (and exit).
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function getMetadataXmlResponse();
 }

@@ -40,6 +40,7 @@ use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Util\Arrays;
+use Symfony\Component\HttpFoundation\Response;
 
 class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface, Adapter\IframeSsoInterface, SamlAdapterInterface
 {
@@ -284,5 +285,24 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 		$saml->setStrict(false);
 
 		return $saml;
+	}
+
+
+	/**
+	 * Return a response to send to browser OR display the metadata yourself inside this method (and exit).
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function getMetadataXmlResponse()
+	{
+		$saml = $this->createSamlProcessor();
+		$sp = $saml->getSettings()->getSPData();
+
+		$saml_metadata = \OneLogin_Saml2_Metadata::builder($sp);
+
+		$response = new Response($saml_metadata, 200);
+		$response->headers->set('Content-Type', 'text/xml');
+
+		return $response;
 	}
 }
