@@ -220,8 +220,6 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 	 */
 	public function getIframeTemplateParams($is_first_page_load)
 	{
-		// wrong. you need to set the iframe to goto the same url as the normal authenticate url, except it has
-		// to use the sso callback. sent us there with a "saml" GET param!
 		return array(
 			'iframe_url' => $this->getCallbackUrl(),
 			'render'     => true

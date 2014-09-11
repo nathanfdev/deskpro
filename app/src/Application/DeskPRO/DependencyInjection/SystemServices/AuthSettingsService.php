@@ -50,13 +50,13 @@ class AuthSettingsService
 		////////////////////////////////////////////////
 		// User Interface Auth Settings
 		$userAuthSettings = new AuthInterfaceSettings($adapterFactory);
-		$userAuthSettings->setAutoSsoEnabled(true);
+		$userAuthSettings->setBackgroundSsoEnabled(true);
 		$userAuthSettings->setSsoUsersource($samlSource);
 
 		////////////////////////////////////////////////
 		// Agent Interface Auth Settings
 		$agentAuthSettings = new AuthInterfaceSettings($adapterFactory);
-		$agentAuthSettings->setAutoSsoEnabled(true);
+		$agentAuthSettings->setBackgroundSsoEnabled(true);
 		$agentAuthSettings->setSsoUsersource($samlSource);
 		//$agentAuthSettings->setLogoutRedirectUrl('http://google.com');
 

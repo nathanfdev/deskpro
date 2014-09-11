@@ -40,6 +40,8 @@ namespace Orb\Auth\Adapter;
  */
 interface SamlAdapterInterface
 {
+	const CONTEXT_SAML_REDIRECT_BACKGROUND = 'auth-to-iframe';
+
 	public function setMetadataXmlUrl($url);
 	public function getMetadataXmlUrl();
 

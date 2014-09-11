@@ -115,16 +115,26 @@ class UsersourceAuthAdapterFactory
 				$route_type = 'agent';
 			}
 
-			if ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
+			if ($adapter instanceof SamlAdapterInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
 				$url = $this->router->generate(
-						$route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
-						RouterInterface::ABSOLUTE_URL
-					);
+					$route_type . '_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
+					RouterInterface::ABSOLUTE_URL
+				);
+			} elseif ($adapter instanceof SamlAdapterInterface && $displayContext == SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND) {
+				$url = $this->router->generate(
+					$route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
+					RouterInterface::ABSOLUTE_URL
+				);
+			} elseif ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
+				$url = $this->router->generate(
+					$route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
+					RouterInterface::ABSOLUTE_URL
+				);
 			} else {
 				$url = $this->router->generate(
-						$route_type . '_login_callback', array('usersource_id' => $usersource['id']),
-						RouterInterface::ABSOLUTE_URL
-					);
+					$route_type . '_login_callback', array('usersource_id' => $usersource['id']),
+					RouterInterface::ABSOLUTE_URL
+				);
 			}
 
 			$adapter->setCallbackUrl(
