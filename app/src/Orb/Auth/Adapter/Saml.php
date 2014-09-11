@@ -35,7 +35,6 @@
 namespace Orb\Auth\Adapter;
 
 use Application\DeskPRO\App;
-use League\Url\Url;
 use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
@@ -69,15 +68,9 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 	 */
 	protected $sls_url;
 
-	/**
-	 * @var string
-	 */
-	protected $logout_url;
-
 
 	public function __construct(array $options)
 	{
-		$this->logout_url = ''; // make sure you have a sso url made that this will always goto on logout look at ssocapable interface
 		$this->initOptions();
 		$this->options->setArray($options);
 	}
@@ -89,31 +82,8 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 	 */
 	protected function createSamlProcessor()
 	{
-		$options = $this->options;
 		$saml    = new \OneLogin_Saml2_Auth(
-			$settings = array(
-				'sp'  => array(
-					'entityId'                 => $this->getMetadataXmlUrl(),
-					'assertionConsumerService' => array(
-						'url' => $this->getCallbackUrl(),
-					),
-					'singleLogoutService'      => array(
-						'url' => $this->getSingleLogoutServiceUrl(),
-					),
-					// enforce a persistent ID for person association
-					'NameIDFormat'             => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
-				),
-				'idp' => array(
-					'entityId'            => $options['issuer_id'],
-					'singleSignOnService' => array(
-						'url' => $options['sso_url'],
-					),
-					'singleLogoutService' => array(
-						'url' => $options['slo_url'],
-					),
-					'certFingerprint'     => $options['cert_fingerprint'],
-				)
-			)
+			$this->getSamlSettings()
 		);
 		$saml->setStrict(false);
 
@@ -188,7 +158,6 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 		$user_info['last_name'] = Arrays::reachForFirstValueInKey($attrs, 'last_name');
 		$user_info['name'] = Arrays::reachForFirstValueInKey($attrs, 'name');
 
-
 		$id = new Identity($saml->getNameId(), $user_info);
 
 		return new Result(Result::SUCCESS, $id);
@@ -198,16 +167,24 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 	/**
 	 * URL we send the deskpro user to after they log out of our system
 	 * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation
-	 *
-	 * @return string
 	 */
 	public function getLogoutRedirectUrl()
 	{
-		if (!$this->logout_url) {
-			throw new \RuntimeException('no logout url defined for this SSO adapter in this context');
+		$saml = $this->createSamlProcessor();
+		$saml_settings = $saml->getSettings();
+		$idpData = $saml_settings->getIdPData();
+		if (isset($idpData['singleLogoutService']) && isset($idpData['singleLogoutService']['url'])) {
+			$sloUrl = $idpData['singleLogoutService']['url'];
+		} else {
+			throw new \Exception("The IdP does not support Single Log Out");
 		}
 
-		return $this->logout_url;
+		$logoutRequest = new \OneLogin_Saml2_LogoutRequest($saml_settings);
+		$samlRequest   = $logoutRequest->getRequest();
+		$parameters = array('SAMLRequest' => $samlRequest);
+		$url = \OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
+
+		return $url;
 	}
 
 
@@ -217,7 +194,7 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 	 */
 	public function setLogoutRedirectUrl($url)
 	{
-		$this->logout_url = $url;
+		return null;
 	}
 
 
@@ -264,5 +241,35 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 	public function getSingleLogoutServiceUrl()
 	{
 		return $this->sls_url;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getSamlSettings()
+	{
+		return array(
+			'sp'  => array(
+				'entityId'                 => $this->getMetadataXmlUrl(),
+				'assertionConsumerService' => array(
+					'url' => $this->getCallbackUrl(),
+				),
+				'singleLogoutService'      => array(
+					'url' => $this->getSingleLogoutServiceUrl(),
+				),
+				// enforce a persistent ID for person association
+				'NameIDFormat'             => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
+			),
+			'idp' => array(
+				'entityId'            => $this->options['issuer_id'],
+				'singleSignOnService' => array(
+					'url' => $this->options['sso_url'],
+				),
+				'singleLogoutService' => array(
+					'url' => $this->options['slo_url'],
+				),
+				'certFingerprint'     => $this->options['cert_fingerprint'],
+			)
+		);
 	}
 }
