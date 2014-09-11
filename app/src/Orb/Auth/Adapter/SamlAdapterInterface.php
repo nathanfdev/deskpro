@@ -45,4 +45,12 @@ interface SamlAdapterInterface
 
 	public function setSingleLogoutServiceUrl($url);
 	public function getSingleLogoutServiceUrl();
+
+
+	/**
+	 * Return a response OR do the redirect yourself inside the method
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function performSingleLogOutService();
 }

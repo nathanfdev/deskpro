@@ -80,6 +80,11 @@ $collection->create('user_logout', array(
 	'controller'  => 'UserBundle:Login:logout',
 ));
 
+$collection->create('user_saml_sls', array(
+	'path'        => '/saml/sls/{usersource_id}',
+	'controller'  => 'UserBundle:Login:samlSingleLogoutService',
+));
+
 $collection->create('user_login_authenticate_local', array(
 	'path'        => '/login/authenticate-password',
 	'controller'  => 'UserBundle:Login:authenticateLocal',

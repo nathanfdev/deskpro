@@ -44,6 +44,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\UsersourceCollection;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\Result;
@@ -300,6 +301,34 @@ HTML;
 			return $this->redirectRoute('user');
 		}
 	}
+
+
+	/**
+	 * @param $usersource_id
+	 * @return Response
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	public function samlSingleLogoutServiceAction($usersource_id)
+	{
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+		if (!$usersource) {
+			throw $this->createNotFoundException();
+		}
+		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
+
+		if (!$this->auth_manager->isUsableUsersource($usersource)) {
+			throw $this->createNotFoundException('usersource / adapter not enabled for this scenario');
+		}
+
+		if ($adapter instanceof SamlAdapterInterface) {
+			$this->_logoutPerson();
+
+			return $adapter->performSingleLogOutService();
+		}
+
+		throw $this->createNotFoundException('usersource / adapter not suitable for SLS');
+	}
+
 
 	public function authenticateLocalAction(Request $request, $usersource_id)
 	{

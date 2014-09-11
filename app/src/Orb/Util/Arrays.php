@@ -180,13 +180,13 @@ class Arrays
 
 		$val = $array[$key];
 
-		if (is_array($val)) {
-			return array_shift(array_values($val));
+		if (is_array($val) && count($val) > 0) {
+			$values = array_values($val);
+			return array_shift($values);
 		}
 
 		return $val ?: $default;
 	}
-
 
 
 	/**

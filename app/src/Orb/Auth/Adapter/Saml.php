@@ -75,21 +75,6 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 		$this->options->setArray($options);
 	}
 
-	/**
-	 * Only create this directly before using it, as we need the callback URL to be set first.
-	 *
-	 * @return \OneLogin_Saml2_Auth
-	 */
-	protected function createSamlProcessor()
-	{
-		$saml    = new \OneLogin_Saml2_Auth(
-			$this->getSamlSettings()
-		);
-		$saml->setStrict(false);
-
-		return $saml;
-	}
-
 
 	protected function initOptions()
 	{
@@ -99,6 +84,37 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 				'slo_url' => '',
 				'cert_fingerprint' => '',
 				'login_custom_text' => ''
+			)
+		);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	protected function getSamlSettings()
+	{
+		return array(
+			'sp'  => array(
+				'entityId'                 => $this->getMetadataXmlUrl(),
+				'assertionConsumerService' => array(
+					'url' => $this->getCallbackUrl(),
+				),
+				'singleLogoutService'      => array(
+					'url' => $this->getSingleLogoutServiceUrl(),
+				),
+				// enforce a persistent ID for person association
+				'NameIDFormat'             => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
+			),
+			'idp' => array(
+				'entityId'            => $this->options['issuer_id'],
+				'singleSignOnService' => array(
+					'url' => $this->options['sso_url'],
+				),
+				'singleLogoutService' => array(
+					'url' => $this->options['slo_url'],
+				),
+				'certFingerprint'     => $this->options['cert_fingerprint'],
 			)
 		);
 	}
@@ -232,6 +248,18 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 	}
 
 
+	/**
+	 * Return a response OR do the redirect yourself inside the method
+	 *
+	 * @return \Application\Deskpro\HttpFoundation\Request
+	 */
+	public function performSingleLogOutService()
+	{
+		$saml = $this->createSamlProcessor();
+		$saml->logout();
+	}
+
+
 	public function setSingleLogoutServiceUrl($url)
 	{
 		$this->sls_url = $url;
@@ -244,32 +272,17 @@ class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterfac
 	}
 
 	/**
-	 * @return array
+	 * Only create this directly before using it, as we need the callback URL to be set first.
+	 *
+	 * @return \OneLogin_Saml2_Auth
 	 */
-	protected function getSamlSettings()
+	protected function createSamlProcessor()
 	{
-		return array(
-			'sp'  => array(
-				'entityId'                 => $this->getMetadataXmlUrl(),
-				'assertionConsumerService' => array(
-					'url' => $this->getCallbackUrl(),
-				),
-				'singleLogoutService'      => array(
-					'url' => $this->getSingleLogoutServiceUrl(),
-				),
-				// enforce a persistent ID for person association
-				'NameIDFormat'             => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
-			),
-			'idp' => array(
-				'entityId'            => $this->options['issuer_id'],
-				'singleSignOnService' => array(
-					'url' => $this->options['sso_url'],
-				),
-				'singleLogoutService' => array(
-					'url' => $this->options['slo_url'],
-				),
-				'certFingerprint'     => $this->options['cert_fingerprint'],
-			)
+		$saml = new \OneLogin_Saml2_Auth(
+			$this->getSamlSettings()
 		);
+		$saml->setStrict(false);
+
+		return $saml;
 	}
 }
