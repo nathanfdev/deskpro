@@ -8,6 +8,7 @@ pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'l
 pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
 pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_id': person.id }) }}';
 pageMeta.org_id = {{ person.organization.id|default(0) }};
+pageMeta.tabClassId    = 'person-{{ person.id }}';
 
 {% if person.picture_blob %}
 pageMeta.personPicIcon = '{{ person.picture_blob.getThumbnailUrl(13) }}';

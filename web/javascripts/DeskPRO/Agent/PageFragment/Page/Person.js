@@ -530,6 +530,25 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 						}
 					});
 				});
+			},
+			onMenuItemMouseover: function(info){
+				var el = $(info.itemEl);
+				if (el.hasClass('elm')) {
+					return false;
+				}
+
+				var otherId = el.data('merge-id');
+				if (!otherId) {
+					return;
+				}
+
+				if (!DeskPRO_Window.sections.people_section || !DeskPRO_Window.sections.people_section.isVisible()) {
+					return;
+				}
+
+				var searchListEl = DeskPRO_Window.sections.people_section.getListElement();
+				searchListEl.find('.row-item.person-' + otherId).addClass('item-hover-over');
+				$('#tabNavigationPane').find('.person-' + otherId).addClass('item-hover-over');
 			}
 		});
 		this.ownObject(this.merge);
