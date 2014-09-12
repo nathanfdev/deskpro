@@ -837,6 +837,10 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 							return sortOrder[a.type] < sortOrder[b.type] ? -1 : 1;
 						});
 
+						if (!scope.resultGroups.length && !scope.searchQuery.length) {
+							scope.clearSearch();
+						}
+
 					}).error(function() {
 						scope.isMainLoading = false;
 					});
