@@ -586,6 +586,20 @@ class TicketLogGenerator
 
 				return $log_set;
 
+			case 'feedback_rating':
+				$log_data = array();
+				$log_data['action_type'] = 'feedback_rating';
+				$log_data['id_before']   = $old;
+				$log_data['id_after']    = $new;
+
+				switch ($new) {
+					case -1: $log_data['rating'] = 'negative'; break;
+					case 0:  $log_data['rating'] = 'neutral';  break;
+					case 1:  $log_data['rating'] = 'positive'; break;
+				}
+
+				return $log_data;
+
 			default:
 				return array();
 		}

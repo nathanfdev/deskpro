@@ -475,6 +475,8 @@
 			{% endfor %}
 		</ul>
 	</div>
+{% elseif log.action_type == 'feedback_rating' %}
+	User set feedback rating to {{ log.details.rating }}
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

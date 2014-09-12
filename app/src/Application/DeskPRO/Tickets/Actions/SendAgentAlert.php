@@ -118,9 +118,9 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 					// dont send to self
 					if ($person_context && $person_context === $n['agent']) {
 						$override = false;
-						if ($person_context->getPref('agent_notify_override.all.email')) {
+						if ($person_context->getPref('agent_notify_override.all.alert')) {
 							$override = true;
-						} else if ($person_context->getPref('agent_notify_override.forward.email') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+						} else if ($person_context->getPref('agent_notify_override.forward.alert') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
 							$override = true;
 						}
 
