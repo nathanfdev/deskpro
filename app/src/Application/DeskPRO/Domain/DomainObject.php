@@ -138,8 +138,14 @@ abstract class DomainObject extends BasicDomainObject
 		if (is_null($value) && is_null($old)) {
 			return;
 		} elseif (is_scalar($value)) {
-			if ($value == $old) {
-				return;
+			if (is_numeric($value) && is_numeric($old)) {
+				if ($value == $old) {
+					return;
+				}
+			} else {
+				if ($value === $old) {
+					return;
+				}
 			}
 		} elseif ($value instanceof \DateTime) {
 			if ($old instanceof \DateTime && $value->getTimestamp() == $old->getTimestamp()) {
