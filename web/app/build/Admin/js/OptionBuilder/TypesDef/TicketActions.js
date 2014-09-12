@@ -1212,7 +1212,7 @@
                 }
                 return {
                   template: options.template || '',
-                  do_cc_users: !!options.do_cc_users,
+                  do_cc_users: options.do_cc_users ? "all" : "owner",
                   from_name: from_name,
                   from_name_custom: from_name_custom,
                   from_account: (parseInt(options.from_account || 0) || 0) + ''
@@ -1225,7 +1225,7 @@
                 }
                 options = {
                   template: model.template || '',
-                  do_cc_users: !!model.do_cc_users,
+                  do_cc_users: model.do_cc_users && model.do_cc_users === "all",
                   from_name: '',
                   from_account: parseInt(model.from_account || 0)
                 };
