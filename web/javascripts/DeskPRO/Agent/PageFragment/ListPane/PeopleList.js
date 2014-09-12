@@ -23,27 +23,14 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		this.contentWrapper = $('div.content:first', this.wrapper);
         this.fixed_fields = ['id', 'name_with_title'];
 
-		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', '$http', function($compile, $rootScope, $q, $timeout, $http) {
-			self.$scope = $rootScope.$new();
+		self.$scope = DeskPRO_Window.$scope.$new();
+		self.$q = DeskPRO_Window.$q;
+		self.$timeout = DeskPRO_Window.$timeout;
+		self.$http = DeskPRO_Window.$http;
 
-			self.$scope.$safeApply = function(fn) {
-				var phase = this.$root.$$phase;
-				if(phase == '$apply' || phase == '$digest') {
-					if(fn && (typeof(fn) === 'function')) {
-						fn();
-					}
-				} else {
-					this.$apply(fn);
-				}
-			};
-
-			self.$q = $q;
-			self.$timeout = $timeout;
-			self.$http = $http;
-
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			self.wrapper.data('$ngControllerController', self);
 			$compile(self.wrapper.contents())(self.$scope);
-
 			self.initScope();
 		}]);
 
@@ -273,13 +260,13 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
         };
 
 		$scope.$watch('persons', function(newVal, oldVal){
-			$scope.$parent.listItems.length = 0;
+			$scope.listItems.length = 0;
             if (!newVal || !newVal.length) {
                 return;
             }
-			var routeTemplate = $scope.$parent.routes.person;
+			var routeTemplate = $scope.routes.person;
 			newVal.each(function(person){
-				$scope.$parent.addListItem('person', 'person:'+person.id, person.name_with_title, routeTemplate.replace('0000', person.id));
+				$scope.addListItem('person', 'person:'+person.id, person.name_with_title, routeTemplate.replace('0000', person.id));
 			});
 		});
 

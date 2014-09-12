@@ -3,6 +3,44 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
+	initScope: function() {
+		var self = this;
+		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
+		this.$q = DeskPRO_Window.$q;
+		this.$timeout = DeskPRO_Window.$timeout;
+
+		$scope.mergeItems = {
+			open: [],
+			filter: []
+		};
+
+		$scope.merge = function(id){
+			$scope.removeHighlight();
+			id ? self.merge.openWithId(id) : self.merge.open();
+		};
+
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
+			self.wrapper.data('$ngControllerController', self);
+			$compile(self.wrapper.contents())(self.$scope);
+		}]);
+	},
+
+	initMergeItems: function() {
+		var $scope = this.$scope,
+			self = this;
+
+		for (var i in $scope.mergeItems) {
+			$scope.mergeItems[i].length = 0;
+		}
+		$scope.listItems.each(function(item){
+			if ('person' !== item.type) return;
+			if (item.identity === self.meta.pageIdentity) return;
+			var _item = angular.copy(item);
+			_item.id = _item.identity.replace('person:', '');
+			$scope.mergeItems[(item.open ? 'open' : 'filter')].push(_item);
+		});
+	},
+
 	initializeProperties: function() {
 		var self = this;
 		this.parent();
@@ -29,6 +67,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
+		this.initScope();
 
 		try {
 			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
@@ -508,50 +547,31 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 		this.ownObject(this.moreactionsMenu);
 
-		this.merge = new DeskPRO.Agent.Widget.Merge({
-			tabType: 'person',
-			metaId: self.meta.person_id,
-			metaIdName: 'person_id',
-			menu: this.getEl('merge_menu'),
-			trigger: $('.merge', this.getEl('action_buttons')),
-			overlayUrl: BASE_URL + 'agent/people/{id}/merge-overlay/{other}',
-			mergeUrl: BASE_URL + 'agent/people/{id}/merge/{other}',
-			loadRoute: 'person:' + BASE_URL + 'agent/people/{id}',
-			overlayLoaded: function(overlay, merge) {
-				overlay.getWrapper().find('.person-finder').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
-					sb.close();
+		if (this.meta.perms.merge) {
+			this.merge = new DeskPRO.Agent.Widget.Merge({
+				tabType: 'person',
+				metaId: self.meta.person_id,
+				metaIdName: 'person_id',
+				overlayUrl: BASE_URL + 'agent/people/{id}/merge-overlay/{other}',
+				mergeUrl: BASE_URL + 'agent/people/{id}/merge/{other}',
+				loadRoute: 'person:' + BASE_URL + 'agent/people/{id}',
+				overlayLoaded: function(overlay, merge) {
+					overlay.getWrapper().find('.person-finder').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+						sb.close();
 
-					$.ajax({
-						url: merge._getOverlayUrl(merge.options.metaId, personId),
-						type: 'get',
-						dataType: 'html',
-						success: function(html) {
-							merge.resetOverlay(html);
-						}
+						$.ajax({
+							url: merge._getOverlayUrl(merge.options.metaId, personId),
+							type: 'get',
+							dataType: 'html',
+							success: function(html) {
+								merge.resetOverlay(html);
+							}
+						});
 					});
-				});
-			},
-			onMenuItemMouseover: function(info){
-				var el = $(info.itemEl);
-				if (el.hasClass('elm')) {
-					return false;
 				}
-
-				var otherId = el.data('merge-id');
-				if (!otherId) {
-					return;
-				}
-
-				if (!DeskPRO_Window.sections.people_section || !DeskPRO_Window.sections.people_section.isVisible()) {
-					return;
-				}
-
-				var searchListEl = DeskPRO_Window.sections.people_section.getListElement();
-				searchListEl.find('.row-item.person-' + otherId).addClass('item-hover-over');
-				$('#tabNavigationPane').find('.person-' + otherId).addClass('item-hover-over');
-			}
-		});
-		this.ownObject(this.merge);
+			});
+			this.ownObject(this.merge);
+		}
 
 		this._initLabels();
 

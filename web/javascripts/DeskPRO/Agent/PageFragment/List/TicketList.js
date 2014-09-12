@@ -16,26 +16,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.filterId = parseInt(this.meta.filter_id) || 0;
 		this.fixed_fields = ['subject'];
 
-		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
-			self.$scope = $rootScope.$new();
+		self.$scope = DeskPRO_Window.$scope.$new();
+		self.$q = DeskPRO_Window.$q;
+		self.$timeout = DeskPRO_Window.$timeout;
 
-			self.$scope.$safeApply = function(fn) {
-				var phase = this.$root.$$phase;
-				if(phase == '$apply' || phase == '$digest') {
-					if(fn && (typeof(fn) === 'function')) {
-						fn();
-					}
-				} else {
-					this.$apply(fn);
-				}
-			};
-
-			self.$q = $q;
-			self.$timeout = $timeout;
-
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			attachPoint.data('$ngControllerController', self);
 			$compile(attachPoint.contents())(self.$scope);
-
 			self.initScope();
 		}]);
 
@@ -150,10 +137,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 
 		$scope.$watch('tickets', function(newVal, oldVal){
-			$scope.$parent.listItems.length = 0;
-			var routeTemplate = $scope.$parent.routes.ticket;
+			$scope.listItems.length = 0;
+			var routeTemplate = $scope.routes.ticket;
 			newVal.each(function(ticket){
-				$scope.$parent.addListItem('ticket', 'ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
+				$scope.addListItem('ticket', 'ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
 			});
 		});
 	},
