@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
 
@@ -164,6 +165,7 @@ class IncomingAccountTester
 		} catch (\Exception $e) {
 			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
 			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+			$this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
 			$this->is_success = false;
 		}
 	}
@@ -204,6 +206,7 @@ class IncomingAccountTester
 		} catch (\Exception $e) {
 			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
 			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+			$this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
 			$this->is_success = false;
 		}
 	}
@@ -248,6 +251,7 @@ class IncomingAccountTester
 		} catch (\Exception $e) {
 			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
 			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+			$this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
 			$this->is_success = false;
 		}
 	}
@@ -281,6 +285,7 @@ class IncomingAccountTester
 			$this->exception = $e;
 			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
 			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+			$this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
 			$this->is_success = false;
 		}
 	}
