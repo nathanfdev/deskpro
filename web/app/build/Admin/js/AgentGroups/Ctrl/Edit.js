@@ -37,19 +37,13 @@
         };
         this.$scope.toggleAgent = (function(_this) {
           return function(agent) {
-            var groupIndex, index;
+            var index;
+            console.log(_this.group);
             index = _this.group.person_ids.indexOf(agent.id);
-            groupIndex = agent.agentgroup_ids.indexOf(_this.group);
             if (index !== -1) {
-              _this.group.person_ids.splice(index, 1);
-              if (groupIndex !== -1) {
-                return agent.agentgroup_ids.splice(groupIndex, 1);
-              }
+              return _this.group.person_ids.splice(index, 1);
             } else {
-              _this.group.person_ids.push(agent.id);
-              if (groupIndex === -1) {
-                return agent.agentgroup_ids.push(_this.group.id);
-              }
+              return _this.group.person_ids.push(agent.id);
             }
           };
         })(this);
