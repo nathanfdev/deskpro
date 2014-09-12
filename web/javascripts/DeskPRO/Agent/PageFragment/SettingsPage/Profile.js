@@ -133,7 +133,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 		});
 
 		var notification = new Notify('DeskPRO', { body: "This is a test notification." });
-		if (notification.isSupported()) {
+		if (Notify.isSupported) {
 			var notificationsRow = el.find('.dp-desktop-notifications');
 			notificationsRow.show();
 
@@ -145,8 +145,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 				if (didChange) {
 					perm = didChange;
 				} else {
-					perm = !notification.needsPermission();
-					if (notification.needsPermission()) {
+					if (Notify.needsPermission) {
 						perm = 'none';
 					} else {
 						perm = 'granted';
@@ -188,7 +187,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			notificationsRow.find('.generate-test-notification').click(function(e){
 				e.preventDefault();
 
-				if (notification.needsPermission()) {
+				if (Notify.needsPermission) {
 					return;
 				}
 
