@@ -18,8 +18,7 @@
 				<ul class="checkbox-list" style="min-width: 250px">
 					<li ng-repeat="agent in EditCtrl.agents">
 						<label>
-							<input type="checkbox" ng-checked="EditCtrl.group.person_ids.indexOf(agent.id) > -1"
-                                   dp-change="toggleAgent(agent)" />
+							<input type="checkbox" ng-checked="EditCtrl.group.person_ids.indexOf(agent.id) > -1" dp-change="toggleAgent(agent)" />
 							<span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
 							<span>{{ ng_var('agent.display_name') }}</span>
 							<a class="inline-edit-link" href="{{ ng_href('agents.agents.edit', '{id: agent.id}') }}"><i class="fa fa-pencil"></i><em>edit agent</em></a>

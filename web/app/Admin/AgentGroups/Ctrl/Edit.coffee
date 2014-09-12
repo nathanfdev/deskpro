@@ -19,15 +19,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					chat: {full: true}
 
 			@$scope.toggleAgent = (agent) =>
+				console.log(@group)
 				index = @group.person_ids.indexOf(agent.id)
-				groupIndex = agent.agentgroup_ids.indexOf @group
-
 				if index != -1
 					@group.person_ids.splice(index, 1)
-					agent.agentgroup_ids.splice(groupIndex, 1) if groupIndex != -1
 				else
 					@group.person_ids.push agent.id
-					agent.agentgroup_ids.push @group.id if groupIndex == -1
 
 			return
 
