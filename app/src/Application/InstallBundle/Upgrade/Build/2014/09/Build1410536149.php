@@ -35,46 +35,47 @@
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\ORM\EntityManager;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class Build1409758642 extends AbstractBuild
+class Build1410536149 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Upgrade usersources to new auth settings");
-
-		$userType = Usersource::TYPE_USER;
-
-		$this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL");
-		$this->execMutateSql("UPDATE usersources SET type = '$userType'");
-		$this->execMutateSql("UPDATE usersources SET display_order = display_order + 1");
-
+		$this->out("Creates needed agent usersources and changes associations where necessary");
 		$em = $this->container->getEm();
 
-		$this->setupDeskProUsersource($userType, $em);
+		/** @var \Application\DeskPRO\Usersource\UsersourceManager $usersourceManager */
+		$usersourceManager = $this->container->getSystemService('usersource_manager');
+		$userUsersources   = $usersourceManager->getAll()->configuredForUsers();
+
+		/** @var \Application\DeskPRO\Entity\Usersource $userUsersource */
+		foreach ($userUsersources as $userUsersource) {
+			$agentDuplication                    = new Usersource();
+			$agentDuplication->type              = Usersource::TYPE_AGENT;
+			$agentDuplication->display_order     = $userUsersource->display_order;
+			$agentDuplication->app               = $userUsersource->app;
+			$agentDuplication->is_enabled        = $userUsersource->is_enabled;
+			$agentDuplication->lost_password_url = $userUsersource->lost_password_url;
+			$agentDuplication->source_type       = $userUsersource->source_type;
+			$agentDuplication->title             = $userUsersource->title;
+			$agentDuplication->options           = $userUsersource->options;
+			$em->persist($agentDuplication);
+			$em->flush($agentDuplication);
+
+			$this->changeUsersourcesFromUserToAgent($userUsersource, $agentDuplication);
+		}
 	}
 
 
-	private function setupDeskProUsersource($type, EntityManager $em)
+	private function changeUsersourcesFromUserToAgent(Usersource $userUsersource, Usersource $agentDuplication)
 	{
-		$enabled = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
-		$forgot_password_url = $this->container->getRouter()->generate(
-			'user_login_resetpass', array(), UrlGeneratorInterface::ABSOLUTE_URL
-		);
+		$userUsersourceId  = $userUsersource->id;
+		$agentUsersourceId = $agentDuplication->id;
 
-		$deskProUsers = new Usersource();
-		$deskProUsers->type = $type;
-		$deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
-		$deskProUsers->is_enabled = $enabled;
-		$deskProUsers->display_order = 0;
-		$deskProUsers->lost_password_url = $forgot_password_url;
-		$deskProUsers->title = 'DeskPRO';
-		$deskProUsers->options = array();
-
-		$em->persist($deskProUsers);
-		$em->flush($deskProUsers);
-
-		return $deskProUsers;
+		$this->execMutateSql("
+			UPDATE person_usersource_assoc pua
+			LEFT JOIN people ON pua.person_id = people.id
+			SET pua.usersource_id = $agentUsersourceId
+			WHERE people.is_agent = 1 AND pua.usersource_id = $userUsersourceId
+		");
 	}
 }
