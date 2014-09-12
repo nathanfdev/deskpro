@@ -477,6 +477,13 @@
 	</div>
 {% elseif log.action_type == 'feedback_rating' %}
 	User set feedback rating to {{ log.details.rating }}
+{% elseif log.action_type == 'person_email_changed' %}
+	User email address preference changed:
+	{% if log.details.new %}
+		default (primary email)
+	{% else %}
+		{{ log.details.new_email }}
+	{% endif %}
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}
