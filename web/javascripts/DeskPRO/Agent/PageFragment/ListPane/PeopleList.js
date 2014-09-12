@@ -214,6 +214,8 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 			row.find('.validation-row').remove();
 			self.updateUi();
 		});
+
+		this.addEvent('activate', this.fillListItems, this);
 	},
 
 	initScope: function(){
@@ -259,19 +261,23 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
             return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
         };
 
-		$scope.$watch('persons', function(newVal, oldVal){
-			$scope.listItems.length = 0;
-            if (!newVal || !newVal.length) {
-                return;
-            }
-			var routeTemplate = $scope.routes.person;
-			newVal.each(function(person){
-				$scope.addListItem('person', 'person:'+person.id, person.name_with_title, routeTemplate.replace('0000', person.id));
-			});
-		});
+		$scope.$watch('persons', this.fillListItems.bind(this));
 
 		// sometimes $scope.persons won't apply (as we're working outside of digest loop most of time), so force it
 		$scope.$safeApply();
+	},
+
+	fillListItems: function() {
+		var self = this,
+			$scope = this.$scope,
+			routeTemplate = $scope.routes.person;
+
+		if (!self.IS_ACTIVE) return;
+		$scope.listItems.length = 0;
+
+		$scope.persons.each(function(person){
+			$scope.addListItem('person', 'person:'+person.id, person.name_with_title, routeTemplate.replace('0000', person.id));
+		});
 	},
 
 	destroyPage: function() {

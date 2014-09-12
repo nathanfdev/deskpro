@@ -43,6 +43,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				this.meta.topGroupingOption || this.meta.topGroupingOption === 0 ? this.meta.topGroupingOption : null
 			);
 		}
+
+		this.addEvent('activate', this.fillListItems, this);
 	},
 
 	updateSlaListForTicket: function(info) {
@@ -136,12 +138,19 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}, 10);
 
 
-		$scope.$watch('tickets', function(newVal, oldVal){
-			$scope.listItems.length = 0;
-			var routeTemplate = $scope.routes.ticket;
-			newVal.each(function(ticket){
-				$scope.addListItem('ticket', 'ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
-			});
+		$scope.$watch('tickets', this.fillListItems.bind(this));
+	},
+
+	fillListItems: function() {
+		var self = this,
+			$scope = this.$scope,
+			routeTemplate = $scope.routes.ticket;
+
+		if (!self.IS_ACTIVE) return;
+		$scope.listItems.length = 0;
+
+		$scope.tickets.each(function(ticket){
+			$scope.addListItem('ticket', 'ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
 		});
 	},
 
