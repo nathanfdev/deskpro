@@ -32,11 +32,14 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Include CC's:</td>
+							<td>To:</td>
 							<td>
 								<label>
-									<input type="checkbox" ng-model="model.do_cc_users" />
-									CC in all additional user participants.
+									<input type="radio" ng-model="model.do_cc_users" value="owner" /> Email only the ticket owner
+								</label>
+								<br/>
+								<label>
+									<input type="radio" ng-model="model.do_cc_users" value="all" /> Email everyone on the ticket (owner and all CC's)
 								</label>
 							</td>
 						</tr>
