@@ -34,13 +34,14 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
 
 class Build1410536149 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Creates needed agent usersources and changes associations where necessary");
+		$this->out("Creates needed agent app instances and usersources and changes associations where necessary");
 		$em = $this->container->getEm();
 
 		/** @var \Application\DeskPRO\Usersource\UsersourceManager $usersourceManager */
@@ -49,10 +50,18 @@ class Build1410536149 extends AbstractBuild
 
 		/** @var \Application\DeskPRO\Entity\Usersource $userUsersource */
 		foreach ($userUsersources as $userUsersource) {
+
+			$agentApp = null;
+			if ($userUsersource->app) {
+				$agentApp = $this->copyAppInstance($userUsersource->app);
+				$em->persist($agentApp);
+				$em->flush($agentApp);
+			}
+
 			$agentDuplication                    = new Usersource();
 			$agentDuplication->type              = Usersource::TYPE_AGENT;
 			$agentDuplication->display_order     = $userUsersource->display_order;
-			$agentDuplication->app               = $userUsersource->app;
+			$agentDuplication->app               = $agentApp;
 			$agentDuplication->is_enabled        = $userUsersource->is_enabled;
 			$agentDuplication->lost_password_url = $userUsersource->lost_password_url;
 			$agentDuplication->source_type       = $userUsersource->source_type;
@@ -77,5 +86,16 @@ class Build1410536149 extends AbstractBuild
 			SET pua.usersource_id = $agentUsersourceId
 			WHERE people.is_agent = 1 AND pua.usersource_id = $userUsersourceId
 		");
+	}
+
+
+	private function copyAppInstance(AppInstance $originApp)
+	{
+		$app = new AppInstance();
+		$app->setSettings($originApp->getSettings());
+		$app->title = $originApp->title;
+		$app->package = $originApp->package;
+
+		return $app;
 	}
 }
