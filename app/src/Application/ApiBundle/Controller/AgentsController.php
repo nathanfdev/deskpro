@@ -78,14 +78,28 @@ class AgentsController extends AbstractController implements ProtectedController
 		$online_agents_userchat = $this->em->getRepository('DeskPRO:Person')->getActiveAgentIdsForUserChat();
 		$online_agents_userchat = array_fill_keys($online_agents_userchat, true);
 
-		foreach ($this->container->getAgentData()->getAgents() as $agent) {
+		$mode = 'normal';
 
-			if ($this->in->getBool('full')) {
-				$agent_data = $this->getFullAgentData($agent['id']);
-			} else {
-				$agent_data = $agent->toApiData();
-				$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
-				$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
+		if ($this->in->getBool('full')) {
+			$mode = 'full';
+		} else if ($this->in->getBool('basic')) {
+			$mode = 'basic';
+		}
+
+		foreach ($this->container->getAgentData()->getAgents() as $agent) {
+			switch ($mode) {
+				case 'full':
+					$agent_data = $this->getFullAgentData($agent['id']);
+					break;
+
+				case 'basic':
+					$agent_data = $agent->toBasicApiData();
+					break;
+
+				default:
+					$agent_data = $agent->toApiData();
+					$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+					$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
 			}
 
 			if ($this->in->getBool('with_perms')) {

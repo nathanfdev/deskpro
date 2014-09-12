@@ -511,7 +511,7 @@ class AgentDataService
 			return array();
 		}
 
-		$agents = arary();
+		$agents = array();
 		foreach ($this->team_to_agents[$team->id] as $tid) {
 			$t = $this->get($tid);
 			if ($t) {

@@ -23,7 +23,7 @@ if (!defined('DPC_IS_CLOUD') && file_exists(dp_get_tmp_dir() . '/apc-clear.trigg
 		apc_clear_cache();
 		apc_clear_cache('user');
 	}
-	if (function_exists('wincache_ucache_clear')) {
+	if (extension_loaded('wincache')) {
 		wincache_ucache_clear();
 		wincache_refresh_if_changed();
 	}
@@ -111,7 +111,9 @@ if (!defined('DP_BOOT_MODE') || (DP_BOOT_MODE != 'cli' && DP_BOOT_MODE != 'upgra
 		|| (file_exists(dp_get_tmp_dir() . '/auto-upgrade-started') && intval(trim(file_get_contents(dp_get_tmp_dir() . '/auto-upgrade-started'))) > time() - 600)
 	) {
 		if (php_sapi_name() == 'cli') {
-			echo "Currently installing updates";
+			if (DP_BOOT_MODE == 'cron' && !in_array('-v', $_SERVER['argv']) && !in_array('--verbose', $_SERVER['argv'])) {
+				echo "Currently installing updates";
+			}
 			die(0);
 		} else {
 			// The upgrade watcher check-started. We dont want to boot into full system to serve it from the UpgradeController::checkStartedAction

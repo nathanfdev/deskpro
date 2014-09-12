@@ -29,90 +29,29 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Twig\Environment as Twig_Environment;
-
-class SnippetFormatter implements PersonContextInterface
+class Build1410361094 extends AbstractBuild
 {
-	/**
-	 * @var \Application\DeskPRO\Twig\Environment
-	 */
-	protected $twig;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
-
-	/**
-	 * @var array
-	 */
-	protected $extra_vars;
-
-	public function __construct(Twig_Environment $twig)
+	public function run()
 	{
-		$this->twig = $twig;
-	}
+		$this->out("Correct status on tickets where user has validated themselves");
+		$this->execMutateSql("
+			UPDATE tickets
+				LEFT JOIN people ON (people.id = tickets.person_id)
+				LEFT JOIN people_emails ON (people_emails.id = people.primary_email_id)
+			SET tickets.status = 'awaiting_agent', tickets.hidden_status = NULL
+			WHERE
+				tickets.status = 'hidden'
+				AND tickets.hidden_status = 'validating'
+				AND tickets.person_email_id IS NULL
+				AND people_emails.is_validated = 1
+		");
 
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
-
-	public function getVars(Ticket $ticket)
-	{
-		$data = $this->extra_vars;
-		$data['ticket'] = $ticket->toApiData();
-
-		if (isset($data['ticket']['person'])) {
-			$data['user'] = $data['ticket']['person'];
-		}
-
-		if (isset($data['ticket']['agent'])) {
-			$data['agent'] = $data['ticket']['agent'];
-		}
-
-		if (isset($data['ticket']['agent_team'])) {
-			$data['agent_team'] = $data['ticket']['agent_team'];
-		}
-
-		if ($this->person_context) {
-			$data['me'] = $this->person_context->toApiData();
-		}
-
-		return $data;
-	}
-
-	public function addVar($name, $value)
-	{
-		$this->extra_vars[$name] = $value;
-	}
-
-	public function formatSnippet($snippet, Ticket $ticket)
-	{
-		$data = $this->getVars($ticket);
-
-		try {
-			return $this->twig->renderStringTemplate($snippet->snippet, $data);
-		} catch (\Exception $e) {
-			return $snippet->snippet;
-		}
-	}
-
-	public function formatText($text, Ticket $ticket)
-	{
-		$data = $this->getVars($ticket);
-
-		try {
-			return $this->twig->renderStringTemplate($text, $data);
-		} catch (\Exception $e) {
-			return $text;
-		}
+		$this->out("Refill search tables");
+		$this->container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
 	}
 }

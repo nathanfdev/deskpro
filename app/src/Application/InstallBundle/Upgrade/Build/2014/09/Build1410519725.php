@@ -29,90 +29,41 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Tickets;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Twig\Environment as Twig_Environment;
+use Orb\Util\Strings;
 
-class SnippetFormatter implements PersonContextInterface
+class Build1410519725 extends AbstractBuild
 {
-	/**
-	 * @var \Application\DeskPRO\Twig\Environment
-	 */
-	protected $twig;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
-
-	/**
-	 * @var array
-	 */
-	protected $extra_vars;
-
-	public function __construct(Twig_Environment $twig)
+	public function run()
 	{
-		$this->twig = $twig;
-	}
+		$this->out("Fix multiple sys.install.default_data records");
 
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
+		$recs = $this->container->getDb()->fetchAllCol("SELECT data FROM datastore WHERE name = 'sys.install.default_data'");
+		if ($recs) {
+			$installed_list = array();
 
-	public function getVars(Ticket $ticket)
-	{
-		$data = $this->extra_vars;
-		$data['ticket'] = $ticket->toApiData();
+			foreach ($recs as $r) {
+				$r = @unserialize($r);
+				if (!$r || !is_array($r['installed']) || empty($r['installed'])) {
+					continue;
+				}
 
-		if (isset($data['ticket']['person'])) {
-			$data['user'] = $data['ticket']['person'];
-		}
+				$installed_list = array_merge($installed_list, $r['installed']);
+			}
 
-		if (isset($data['ticket']['agent'])) {
-			$data['agent'] = $data['ticket']['agent'];
-		}
+			$installed_list = array_unique($installed_list);
+			$installed_list = array_values($installed_list);
 
-		if (isset($data['ticket']['agent_team'])) {
-			$data['agent_team'] = $data['ticket']['agent_team'];
-		}
-
-		if ($this->person_context) {
-			$data['me'] = $this->person_context->toApiData();
-		}
-
-		return $data;
-	}
-
-	public function addVar($name, $value)
-	{
-		$this->extra_vars[$name] = $value;
-	}
-
-	public function formatSnippet($snippet, Ticket $ticket)
-	{
-		$data = $this->getVars($ticket);
-
-		try {
-			return $this->twig->renderStringTemplate($snippet->snippet, $data);
-		} catch (\Exception $e) {
-			return $snippet->snippet;
-		}
-	}
-
-	public function formatText($text, Ticket $ticket)
-	{
-		$data = $this->getVars($ticket);
-
-		try {
-			return $this->twig->renderStringTemplate($text, $data);
-		} catch (\Exception $e) {
-			return $text;
+			$this->container->getDb()->delete('datastore', array('name' => 'sys.install.default_data'));
+			$this->container->getDb()->insert('datastore', array(
+				'name' => 'sys.install.default_data',
+				'auth' => Strings::random(15),
+				'data' => serialize(array('installed' => $installed_list))
+			));
 		}
 	}
 }

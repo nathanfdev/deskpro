@@ -59,7 +59,7 @@
 				<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>add</span></li>
 
 				<li ng-repeat="tab in tabs track by tab.id" id="{{ ng_var('tab.tabBtnId') }}"
-					ng-click="tabClick($event, tab)"
+					ng-mousedown="tabClick($event, tab)"
 					data-tab-id="{{ ng_var('tab.id') }}"
 					ng-class="{'activeTabList': tab.isActive && paneVis.tabs, 'is-alerting': tab.isAlerting}"
 					class="{{ ng_var('tab.classId') }}"

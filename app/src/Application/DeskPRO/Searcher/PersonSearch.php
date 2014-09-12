@@ -253,7 +253,7 @@ class PersonSearch extends SearcherAbstract
 				switch ($search_type) {
 					case 'input':
 					case 'value':
-						$order_by = arary(
+						$order_by = array(
 							"INNER JOIN custom_data_person AS sort_table ON (sort_table.person_id = people.id AND sort_table.id = $term_id)",
 							"sort_table.$search_type $dir"
 						);

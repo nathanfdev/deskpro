@@ -31,88 +31,29 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Tickets;
+namespace Application\DeskPRO\Debug\Data;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\People\PersonContextInterface;
-use Application\DeskPRO\Twig\Environment as Twig_Environment;
+use Application\DeskPRO\App;
 
-class SnippetFormatter implements PersonContextInterface
+class TicketContextData implements DataInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Twig\Environment
-	 */
-	protected $twig;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
-
-	/**
-	 * @var array
-	 */
-	protected $extra_vars;
-
-	public function __construct(Twig_Environment $twig)
+	public function getData()
 	{
-		$this->twig = $twig;
-	}
-
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
-
-	public function getVars(Ticket $ticket)
-	{
-		$data = $this->extra_vars;
-		$data['ticket'] = $ticket->toApiData();
-
-		if (isset($data['ticket']['person'])) {
-			$data['user'] = $data['ticket']['person'];
+		$deps = App::getDb()->fetchAll("SELECT * FROM departments ORDER BY id ASC");
+		$teams = App::getDb()->fetchAll("SELECT * FROM agent_teams ORDER BY id ASC");
+		$groups = App::getDb()->fetchAll("SELECT * FROM usergroups ORDER BY id ASC");
+		$agents = array();
+		foreach (App::$container->getAgentData()->getAgents() as $a) {
+			$agents[] = $a->toBasicApiData();
 		}
 
-		if (isset($data['ticket']['agent'])) {
-			$data['agent'] = $data['ticket']['agent'];
-		}
-
-		if (isset($data['ticket']['agent_team'])) {
-			$data['agent_team'] = $data['ticket']['agent_team'];
-		}
-
-		if ($this->person_context) {
-			$data['me'] = $this->person_context->toApiData();
-		}
+		$data = array();
+		$data['departments'] = $deps;
+		$data['agents']      = $agents;
+		$data['agent_teams'] = $teams;
+		$data['usergroups']  = $groups;
+		$data['usergroups']  = $groups;
 
 		return $data;
-	}
-
-	public function addVar($name, $value)
-	{
-		$this->extra_vars[$name] = $value;
-	}
-
-	public function formatSnippet($snippet, Ticket $ticket)
-	{
-		$data = $this->getVars($ticket);
-
-		try {
-			return $this->twig->renderStringTemplate($snippet->snippet, $data);
-		} catch (\Exception $e) {
-			return $snippet->snippet;
-		}
-	}
-
-	public function formatText($text, Ticket $ticket)
-	{
-		$data = $this->getVars($ticket);
-
-		try {
-			return $this->twig->renderStringTemplate($text, $data);
-		} catch (\Exception $e) {
-			return $text;
-		}
 	}
 }
