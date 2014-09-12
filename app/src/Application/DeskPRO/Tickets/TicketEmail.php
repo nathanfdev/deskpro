@@ -440,6 +440,11 @@ class TicketEmail
 						continue;
 					}
 
+					if ($this->is_auto && $p->disable_autoresponses) {
+						$this->logger->info(sprintf("[TicketEmail] CC skipped because autoresponder: %s -- Name: %s", $cc_email, $cc_name));
+						continue;
+					}
+
 					$this->sent_with_ccs[] = $cc_email;
 
 					$message->addCc($cc_email, $cc_name);

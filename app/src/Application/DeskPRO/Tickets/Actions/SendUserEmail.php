@@ -106,6 +106,17 @@ class SendUserEmail extends AbstractEmailAction
 			$build->enableUserCc();
 		}
 
+		// If this is from a user reply, then mark the email as auto and handle disable auto setting
+		if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
+			$context->getLogger()->info("[SendUserEmail] Identified as an automatic email");
+			$build->setIsAuto();
+
+			if ($ticket->person->disable_autoresponses) {
+				$context->getLogger()->info("Skipping email because user is marked as an auto-responder");
+				return;
+			}
+		}
+
 		$ticket_email = $build->buildTicketEmail();
 
 		try {
