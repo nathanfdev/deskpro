@@ -86,6 +86,4 @@
 	User set feedback rating to {{ log.details.rating }}
 {% elseif log.action_type == 'changed_custom_field' %}
 	{{ phrase('agent.tickets.lc_created') }}: {{ log.details.field_name }}
-{% else %}
-	{{ log.action_type }}
 {% endif %}
