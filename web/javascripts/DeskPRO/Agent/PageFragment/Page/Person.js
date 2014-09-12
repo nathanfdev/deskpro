@@ -19,26 +19,23 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			id ? self.merge.openWithId(id) : self.merge.open();
 		};
 
+		$scope.$on('dp-menu.opened', function(){
+			for (var i in $scope.mergeItems) {
+				$scope.mergeItems[i].length = 0;
+			}
+			$scope.listItems.each(function(item){
+				if ('person' !== item.type) return;
+				if (item.identity === self.meta.pageIdentity) return;
+				var _item = angular.copy(item);
+				_item.id = _item.identity.replace('person:', '');
+				$scope.mergeItems[(item.open ? 'open' : 'filter')].push(_item);
+			});
+		});
+
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			self.wrapper.data('$ngControllerController', self);
 			$compile(self.wrapper.contents())(self.$scope);
 		}]);
-	},
-
-	initMergeItems: function() {
-		var $scope = this.$scope,
-			self = this;
-
-		for (var i in $scope.mergeItems) {
-			$scope.mergeItems[i].length = 0;
-		}
-		$scope.listItems.each(function(item){
-			if ('person' !== item.type) return;
-			if (item.identity === self.meta.pageIdentity) return;
-			var _item = angular.copy(item);
-			_item.id = _item.identity.replace('person:', '');
-			$scope.mergeItems[(item.open ? 'open' : 'filter')].push(_item);
-		});
 	},
 
 	initializeProperties: function() {
