@@ -55,6 +55,16 @@ use Orb\Util\Util;
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * $this->type === TYPE_USER if it is a user interface usersource
+	 */
+	const TYPE_USER = 'user';
+
+	/**
+	 * $this->type === TYPE_AGENT if it is an agent (including admin/reporting/billing etc) interface usersource
+	 */
+	const TYPE_AGENT = 'agent';
+
+	/**
 	 * The unique ID.
 	 *
 	 * @var int

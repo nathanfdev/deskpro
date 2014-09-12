@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Usersource;
 /**
  * Used to filter results down to what you want
  * UsersourceManager returns instances of this offering you a flexible filtering API
+ * Instead of doing direct queries for usersources, we can centralize and keep dynamic the logic of usersource selection
  */
 class UsersourceCollection extends \ArrayObject
 {
@@ -86,17 +87,17 @@ class UsersourceCollection extends \ArrayObject
 		// select only agent enabled usersources
 		$filtered = array_filter(
 			(array) $this, function (Usersource $us) {
-				return $us->is_enabled_agent;
+				return $us->type == Usersource::TYPE_AGENT && $us->is_enabled;
 			}
 		);
 
-		// order them for the agents
+		// order them
 		usort($filtered, function ($us1, $us2) {
-			if ($us1->display_order_agent == $us2->display_order_agent) {
+			if ($us1->display_order == $us2->display_order) {
 				return 0;
 			}
 
-			if ($us1->display_order_agent > $us2->display_order_agent) {
+			if ($us1->display_order > $us2->display_order) {
 				return -1;
 			}
 
@@ -114,17 +115,17 @@ class UsersourceCollection extends \ArrayObject
 		// select only user enabled usersources
 		$filtered = array_filter(
 			(array) $this, function (Usersource $us) {
-				return $us->is_enabled_user;
+				return $us->type === Usersource::TYPE_USER && $us->is_enabled;
 			}
 		);
 
-		// order them for the user
+		// order them
 		usort($filtered, function ($us1, $us2) {
-			if ($us1->display_order_user == $us2->display_order_user) {
+			if ($us1->display_order == $us2->display_order) {
 				return 0;
 			}
 
-			if ($us1->display_order_user > $us2->display_order_user) {
+			if ($us1->display_order > $us2->display_order) {
 				return -1;
 			}
 

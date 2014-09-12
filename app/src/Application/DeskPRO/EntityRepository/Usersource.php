@@ -83,7 +83,6 @@ class Usersource extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT u
 			FROM DeskPRO:Usersource u
-			INDEX BY u.id
 		")->execute();
 	}
 

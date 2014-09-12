@@ -50,11 +50,6 @@ class UsersourceManager
 	 */
 	protected $usersources = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Usersource[]|\Application\DeskPRO\Usersource\UsersourceCollection
-	 */
-	protected $agentUsersources;
-
 
 	/**
 	 * @param \Doctrine\ORM\EntityManager $em
