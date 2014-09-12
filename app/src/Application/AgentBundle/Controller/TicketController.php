@@ -2681,6 +2681,26 @@ class TicketController extends AbstractController
 			}
 		}
 
+		if ($new_person->getId() == $ticket->person->getId()) {
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'ticket_id' => $ticket['id'],
+				'old_person_id' => $old_person->getId(),
+				'new_person_id' => $new_person->getId()
+			));
+		}
+
+		if ($new_person->getId()) {
+			$part = $this->em->createQuery("
+					SELECT part
+					FROM DeskPRO:TicketParticipant part
+					WHERE part.ticket = ?0 AND part.person = ?1
+				")->setParameters(array($ticket, $new_person))->setMaxResults(1)->getOneOrNullResult();
+			if ($part) {
+				$this->em->remove($part);
+			}
+		}
+
 		$ticket->person = $new_person;
 
 		$this->db->beginTransaction();
