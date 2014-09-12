@@ -238,7 +238,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 				timeout: DESKPRO_PERSON_NOTIFICATION_DISMISS || null
 			});
 
-			if (notification.isSupported() && !notification.needsPermission()) {
+			if (Notify.isSupported && !Notify.needsPermission) {
 				notification.show();
 				row.data('notification', notification);
 			}
