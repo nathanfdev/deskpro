@@ -43,13 +43,12 @@ use Orb\Util\Util;
 /**
  * Defines information about an external user source
  * @property $title
+ * @property $type
  * @property $source_type
  * @property $lost_password_url
  * @property $options
- * @property $display_order_user
- * @property $display_order_agent
- * @property $is_enabled_user
- * @property $is_enabled_agent
+ * @property $display_order
+ * @property $is_enabled
  * @property $app
  * @property $id
  */
@@ -68,6 +67,15 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $title = '';
+
+	/**
+	 * "user" or "agent" for now
+	 *
+	 * the interface this usersource applies to
+	 *
+	 * @var string
+	 */
+	protected $type;
 
 	/**
 	 * The type of usersource this is. This maps to an adapter class.
@@ -95,37 +103,11 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $display_order = 0;
 
 	/**
-	 * The order in which to display this source in UserBundle
-	 * @var int
-	 */
-	protected $display_order_user = 0;
-
-	/**
-	 * The order in which to display this source in AgentBundle
-	 * @var int
-	 */
-	protected $display_order_agent = 0;
-
-	/**
 	 * True if this usersource is enabled/usable
 	 *
 	 * @var bool
 	 */
 	protected $is_enabled = true;
-
-	/**
-	 * True if this usersource is enabled/usable in UserBundle
-	 *
-	 * @var bool
-	 */
-	protected $is_enabled_user = true;
-
-	/**
-	 * True if this usersource is enabled/usable in AgentBundle
-	 *
-	 * @var bool
-	 */
-	protected $is_enabled_agent = true;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\AppInstance|null
@@ -223,15 +205,12 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+		$metadata->mapField(array( 'fieldName' => 'type', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'type', ));
 		$metadata->mapField(array( 'fieldName' => 'source_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'source_type', ));
 		$metadata->mapField(array( 'fieldName' => 'lost_password_url', 'type' => 'string', 'length' => 1000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lost_password_url', ));
 		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'json_array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));
 		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
-		$metadata->mapField(array( 'fieldName' => 'display_order_user', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order_user', ));
-		$metadata->mapField(array( 'fieldName' => 'display_order_agent', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order_agent', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
-		$metadata->mapField(array( 'fieldName' => 'is_enabled_user', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled_user', ));
-		$metadata->mapField(array( 'fieldName' => 'is_enabled_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled_agent', ));
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

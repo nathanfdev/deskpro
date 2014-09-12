@@ -34,23 +34,44 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\ORM\EntityManager;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 class Build1409758642 extends AbstractBuild
 {
 	public function run()
 	{
 		$this->out("Upgrade usersources to new auth settings");
-		$this->execMutateSql("ALTER TABLE usersources ADD display_order_user INT NOT NULL, ADD display_order_agent INT NOT NULL, ADD is_enabled_user TINYINT(1) NOT NULL, ADD is_enabled_agent TINYINT(1) NOT NULL");
-		$this->execMutateSql("
-			UPDATE usersources
-			SET display_order_user = display_order + 1,
-				display_order_agent = display_order + 1,
-				is_enabled_user = is_enabled,
-				is_enabled_agent = is_enabled
- 		");
+		$this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL");
+		$this->execMutateSql("UPDATE usersources SET type = 'user'");
+		$this->execMutateSql("UPDATE usersources SET display_order = display_order + 1");
 
-		$enable = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
-		$this->execMutateSql(
-			"INSERT INTO usersources (title, source_type, lost_password_url, `options`, display_order, is_enabled, display_order_user, display_order_agent, is_enabled_user, is_enabled_agent) VALUES ('DeskPRO', 'Application\\\\DeskPRO\\\\Usersource\\\\Adapter\\\\DeskPRO', '/login/reset-password', '', 0, $enable, 0, 0, $enable, $enable)"
+		$em = $this->container->getEm();
+
+		$this->setupDeskProUsersource('user', $em);
+	}
+
+
+	private function setupDeskProUsersource($type, EntityManager $em)
+	{
+		$enabled = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
+		$forgot_password_url = $this->container->getRouter()->generate(
+			'user_login_resetpass', array(), UrlGeneratorInterface::ABSOLUTE_URL
 		);
+
+		$deskProUsers = new Usersource();
+		$deskProUsers->type = $type;
+		$deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+		$deskProUsers->is_enabled = $enabled;
+		$deskProUsers->display_order = 0;
+		$deskProUsers->lost_password_url = $forgot_password_url;
+		$deskProUsers->title = 'DeskPRO';
+		$deskProUsers->options = array();
+
+		$em->persist($deskProUsers);
+		$em->flush($deskProUsers);
+
+		return $deskProUsers;
 	}
 }
