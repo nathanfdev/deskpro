@@ -600,6 +600,21 @@ class TicketLogGenerator
 
 				return $log_data;
 
+			case 'person_email':
+				$log_data = array();
+				$log_data['action_type'] = 'person_email_changed';
+				$log_data['id_before']   = $old ? $old->id : null;
+				$log_data['id_after']    = $new ? $new->id : null;
+
+				if ($old) {
+					$log_data['old_email'] = $old->email;
+				}
+				if ($new) {
+					$log_data['new_email'] = $new->email;
+				}
+
+				return $log_data;
+
 			default:
 				return array();
 		}
