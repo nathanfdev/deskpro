@@ -3201,6 +3201,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/tasks/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/tasks/new',
 			autostart: autostart
 		});
 		$('#create_task_btn').on('click', function() { $('form#newTaskForm input, form#newTaskForm select').val(''); DeskPRO_Window.newTaskLoader.toggle(); });
