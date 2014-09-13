@@ -267,7 +267,7 @@ class TaskController extends AbstractController
     {
         $task_type = false;
 
-		$per_page         = 100;
+		$per_page         = 5;
 		$page             = $this->in->getUInt('page') ?: 1;
 		$completed_page   = $this->in->getUInt('completed_page') ?: 1;
 		$offset           = ($page - 1) * $per_page;
@@ -440,6 +440,11 @@ class TaskController extends AbstractController
 			}
 		}
 
+	    $tasks_arr = array();
+//	    foreach ($tasks as $task) {
+//		    $tasks_arr[] = $task->toApiData();
+//        }
+
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
 			'agents'          => $agents,
@@ -457,7 +462,9 @@ class TaskController extends AbstractController
 			'has_prev'           => $has_prev,
 			'completed_page'     => $completed_page,
 			'has_next_completed' => $has_next_completed,
-			'has_prev_completed' => $has_prev_completed
+			'has_prev_completed' => $has_prev_completed,
+
+	        'tasks_arr'          => $tasks_arr,
         ));
     }
 

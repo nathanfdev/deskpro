@@ -8,8 +8,21 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 		this.TYPENAME = 'task-list';
 	},
 
+	initScope: function() {
+		var self = this;
+		var $scope = self.$scope = DeskPRO_Window.$scope.$new();
+		self.$q = DeskPRO_Window.$q;
+		self.$timeout = DeskPRO_Window.$timeout;
+
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
+			self.wrapper.data('$ngControllerController', self);
+			$compile(self.wrapper.contents())(self.$scope);
+		}]);
+	},
+
 	initPage: function(el) {
 		var self = this;
+		this.wrapper = el;
 
 		if (DeskPRO_Window.sections.tasks_section) {
 			DeskPRO_Window.sections.tasks_section.doRelaodPage = false;
