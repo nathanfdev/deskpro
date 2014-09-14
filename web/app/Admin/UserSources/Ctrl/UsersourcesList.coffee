@@ -1,6 +1,6 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-	class Admin_UserReg_Ctrl_UsersourceList extends Admin_Ctrl_Base
-		@CTRL_ID = 'Admin_UserReg_Ctrl_UsersourceList'
+	class Admin_Usersources_Ctrl_UsersourcesList extends Admin_Ctrl_Base
+		@CTRL_ID = 'Admin_Usersources_Ctrl_UsersourcesList'
 		@CTRL_AS = 'ListCtrl'
 		@DEPS = []
 
@@ -13,4 +13,4 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			)
 			return promise
 
-	Admin_UserReg_Ctrl_UsersourceList.EXPORT_CTRL()
+	Admin_Usersources_Ctrl_UsersourcesList.EXPORT_CTRL()

@@ -968,20 +968,13 @@ define(function() {
 		id: 'crm.usersources',
 		url: '/usersources',
 		templateName: 'Usersources/list.html',
-		controller: 'Admin_UserReg_Ctrl_UsersourceList'
+		controller: 'Admin_Usersources_Ctrl_UsersourcesList'
 	});
 
 	routes.push({
 		id: 'crm.usersources.newtype',
 		url: '/new',
 		templateName: 'UserReg/usersources-newtype.html',
-		controller: 'Admin_Main_Ctrl_Bare'
-	});
-
-	routes.push({
-		id: 'crm.usersources.deskpro',
-		url: '/deskpro',
-		templateName: 'UserReg/usersources-deskpro.html',
 		controller: 'Admin_Main_Ctrl_Bare'
 	});
 

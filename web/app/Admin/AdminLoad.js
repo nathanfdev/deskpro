@@ -177,7 +177,7 @@ define([
 	'Admin/Settings/Ctrl/ServerSettings',
 	'Admin/UserGroups/Ctrl/List',
 	'Admin/UserGroups/Ctrl/Edit',
-	'Admin/UserReg/Ctrl/UsersourceList',
+	'Admin/Usersources/Ctrl/UsersourcesList',
 	'Admin/ChatFields/Ctrl/List',
 	'Admin/ChatSetup/Ctrl/ChatSetup',
 	'Admin/ChatDeps/Ctrl/List',
