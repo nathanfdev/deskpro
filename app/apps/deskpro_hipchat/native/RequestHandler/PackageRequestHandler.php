@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace deskpro_jira\RequestHandler;
+namespace deskpro_hipchat\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
@@ -45,15 +45,14 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 	public function handleApiPackageRequest(ApiPackageRequestContext $context)
 	{
 		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
 			case 'check-requirements':
 				return $this->checkRequirementsAction($context);
+			case 'test-settings':
+				return $this->testSettingsAction($context);
 			default:
 				throw $context->createNotFoundException();
 		}
 	}
-
 
 	/**
 	 * @param ApiPackageRequestContext $context
@@ -70,39 +69,25 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 	 */
 	public function testSettingsAction(ApiPackageRequestContext $context)
 	{
-		$user = $context->getIn()->getString('jira_username');
-		$password = $context->getIn()->getString('jira_password');
-		$url = $context->getIn()->getString('jira_url');
-		$em = $context->getEm();
-		$regEnabled = $context->getContainer()->getSetting('core.reg_enabled');
+		$token = $context->getIn()->getString('api_token');
 
 		$error = false;
 		$client = null;
 
 		$log = array();
-		$log[] = 'username: ' . $user;
-		$log[] = 'password: ' . $password;
-		$log[] = 'url: ' . $url;
-
+		$log[] = 'token: ' . $token;
 
 		$tests = array();
-		$tests[] = function() use (&$log, $url, $user, $password, $em, $regEnabled) {
+		$tests[] = function() use (&$log, $token) {
+			$log[] = 'Verifying HipChat API is accessible...';
 
-			$log[] = "Verifying JIRA API...";
-
-			$service = new \Orb\Jira\Service($url, array(
-				'username'	=> $user,
-				'password'	=> $password,
-				'debug'		=> DP_DEBUG,
-				'reg_enabled' => $regEnabled,
-			), $em);
-
+			$api = new \HipChatApi($token);
 			try {
-				$meta = $service->getCreateMeta();
+				$api->get_rooms();
 				$log[] = 'Everything is ok';
 			} catch (\Exception $e) {
 				$log[] = $e->getMessage();
-				return array($e->getCode(), 'API Exception');
+				return array((string) $e->getCode(), 'API Exception');
 			}
 		};
 

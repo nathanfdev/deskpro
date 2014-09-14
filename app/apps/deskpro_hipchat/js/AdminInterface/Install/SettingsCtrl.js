@@ -8,7 +8,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 		$scope.errors = {};
 
 		// do a bg check for curl support
-		Api.sendGet('/apps/packages/deskpro_jira/check-requirements').then(function(res) {
+		Api.sendGet('/apps/packages/deskpro_hipchat/check-requirements').then(function(res) {
 			if (!res.data.curl_support) {
 				$scope.no_curl_support = true;
 			}
@@ -18,7 +18,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 		//# Form validation / errors
 		//##############################################################################################################
 
-		['jira_url', 'jira_username', 'jira_password'].forEach(function(field) {
+		['api_token'].forEach(function(field) {
 			$scope.$watch('setting_values.' + field, function() {
 				if (touched[field] || touched.always || $scope.errors[field]) {
 					updateFormErrors();
@@ -77,14 +77,13 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			var deferred, postData;
 
 			postData = {
-				jira_url: Strings.trim($scope.setting_values.jira_url || ''),
-				jira_username: Strings.trim($scope.setting_values.jira_username || ''),
-				jira_password: Strings.trim($scope.setting_values.jira_password || '')
+				api_token: Strings.trim($scope.setting_values.api_token || ''),
+				notify: Strings.trim($scope.setting_values.notify || '')
 			};
 
 			deferred = $q.defer();
 
-			Api.sendPostJson('/apps/packages/deskpro_jira/test-settings', postData).then(function(res) {
+			Api.sendPostJson('/apps/packages/deskpro_hipchat/test-settings', postData).then(function(res) {
 				deferred.resolve({
 					log: res.data.log || '',
 					error: res.data.error || false,
@@ -107,7 +106,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			}
 
 			var inst = $modal.open({
-				templateUrl: 'deskpro_jira/Install/test-settings-modal.html',
+				templateUrl: 'deskpro_hipchat/Install/test-settings-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
 					function setResults(results) {
