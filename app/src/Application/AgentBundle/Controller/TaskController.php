@@ -526,6 +526,17 @@ class TaskController extends AbstractController
 		$task = $this->getTaskOr404($task_id);
 
 		switch ($this->in->getString('action')) {
+			case 'title':
+				$val = $this->in->getString('value');
+				if (!$val || $task->getPersonId() !== $this->person->id) {
+					break;
+				}
+
+				// todo? enquote
+				$task['title'] = trim($val);
+				$this->em->flush();
+
+				break;
 			case 'date_due':
 				if ($this->in->getString('value')) {
 					try {

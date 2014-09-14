@@ -360,5 +360,25 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				});
 			}
 		});
+
+
+		var saveTitle = function($input){
+			$input.addClass('disabled').attr('readonly', 'readonly');
+			var row = $input.closest('article.task'),
+				value = $.trim($input.val());
+
+			value && value.length && $input.val(value) && sendUpdate(row, 'title', value);
+		};
+		el.on('keyup', '.task-title h5.editable input', function(e){
+			if (13 !== e.keyCode) return;
+			saveTitle($(this));
+		});
+		el.on('blur', '.task-title h5.editable input', function(){
+			$(this).addClass('disabled').attr('readonly', 'readonly');
+			saveTitle($(this));
+		});
+		el.on('dblclick', '.task-title h5.editable input', function(){
+			$(this).removeClass('disabled').attr('readonly', false);
+		});
 	}
 });
