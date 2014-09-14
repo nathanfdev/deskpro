@@ -21,11 +21,9 @@
 
       Admin_UserReg_Ctrl_UsersourceList.prototype.initialLoad = function() {
         var promise;
-        promise = this.Api.sendGet('/apps?tags=usersources').then((function(_this) {
+        promise = this.Api.sendGet('/usersources/user').then((function(_this) {
           return function(result) {
-            return _this.apps = result.data.apps.filter(function(x) {
-              return !x["package"].is_custom;
-            });
+            return _this.usersources = result.data.usersources;
           };
         })(this));
         return promise;

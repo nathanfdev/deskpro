@@ -2418,8 +2418,17 @@ $collection->create('api_general_settings_save', array(
 ));
 
 ########################################################################################################################
-# Registration Settings
+# Usersources
 ########################################################################################################################
+
+$collection->create('api_usersources_list', array(
+	'path'        => '/usersources/{type}',
+	'controller'  => 'ApiBundle:Usersources:listByType',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Registration Settings
 
 $collection->create('api_reg_settings', array(
 	'path'        => '/registration_settings',

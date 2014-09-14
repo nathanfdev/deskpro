@@ -8,8 +8,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			return
 
 		initialLoad: ->
-			promise = @Api.sendGet('/apps?tags=usersources').then( (result) =>
-				@apps = result.data.apps.filter((x) -> !x.package.is_custom)
+			promise = @Api.sendGet('/usersources/user').then( (result) =>
+				@usersources = result.data.usersources
 			)
 			return promise
 

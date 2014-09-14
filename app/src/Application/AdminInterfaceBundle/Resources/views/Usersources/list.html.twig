@@ -1,0 +1,59 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Authentication and SSO</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="source in ListCtrl.usersources"
+					dp-state-mark="crm.usersources.id.{{ ng_var('source.usersource.id') }}"
+					class="with-drag-handle"
+					data-id="{{ ng_var('source.usersource.id') }}">
+					<a href="{{ ng_href('crm.usersources.id', '{id: source.usersource.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!source.usersource.is_enabled">Disabled</em>
+						</div>
+
+						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>
+							<span class="title-text">{{ ng_var('source.usersource.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('crm.usersources.newtype') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Add authentication apps to enable users to sign in with existing accounts from other services</h1>
+		<p>Install authentication apps from the Apps section. Supported services include Microsoft Active Directory, LDAP, and social media accounts.</p>
+	</header>
+	<article>
+		<section>
+			{# <p>Change the order of authentication apps here to change the order in which DeskPRO checks them.</p> #}
+			<p>Supported authentication services are:</p>
+			{# should auto-generate this #}
+					<ul>
+						<li>Active Directory</li>
+						<li>Database Authentication (using an existing MySQL, PostgreSQL, SQLite, MsSQL or Oracle database)</li>
+						<li>LDAP</li>
+						<li>Facebook</li>
+						<li>Google</li>
+						<li>Twitter</li>
+						<li>Magento</li>
+						<li>Joomla</li>
+						<li>ez Publish</li>
+						<li>phpBB</li>
+						<li>vBulletin</li>
+						<li>XenForo</li>
+					</ul>
+		</section>
+	</article>
+{% endblock %}

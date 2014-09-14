@@ -110,12 +110,12 @@ class UsersourceCollection extends \ArrayObject
 	/**
 	 * @return UsersourceCollection
 	 */
-	public function configuredForUsers()
+	public function configuredForUsers($includeDisabled = false)
 	{
 		// select only user enabled usersources
 		$filtered = array_filter(
-			(array) $this, function (Usersource $us) {
-				return $us->type === Usersource::TYPE_USER && $us->is_enabled;
+			(array) $this, function (Usersource $us) use ($includeDisabled) {
+				return $us->type === Usersource::TYPE_USER && ($includeDisabled ?: $us->is_enabled);
 			}
 		);
 

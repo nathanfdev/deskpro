@@ -967,7 +967,7 @@ define(function() {
 	routes.push({
 		id: 'crm.usersources',
 		url: '/usersources',
-		templateName: 'UserReg/usersources.html',
+		templateName: 'Usersources/list.html',
 		controller: 'Admin_UserReg_Ctrl_UsersourceList'
 	});
 
@@ -986,7 +986,7 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'crm.usersources.app',
+		id: 'crm.usersources.id',
 		url: '/{id:\\d+}',
 		templateName: 'Apps/instance.html',
 		controller: 'Admin_Apps_Ctrl_EditInstance'
