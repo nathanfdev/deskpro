@@ -15,20 +15,22 @@
 	{% if task.person.id == app.user.id and task.assigned_agent_team or (task.assigned_agent and task.assigned_agent.id != app.user.id) %}data-in-delegated="1"{% endif %}
 >
     <style>
-        .task-title h5 input {
+        .task-title h5 input, .message-text textarea {
             width: 90%;
             padding: 1px;
+            height: auto;
         }
-        .task-title h5 input.disabled {
-            background: none;border:none;outline:none;box-shadow: none;padding: 0px;
+        .task-title h5 input.disabled, .message-text textarea.disabled {
+            background: none;border:none !important;outline:none;box-shadow: none;padding: 0px;
         }
     </style>
 	<div class="task-title">
 		<span class="expand-collapse-icon"></span>
 		{% if task.person.id == app.user.id %}<i class="delete-task" data-confirm="{{ phrase('agent.tasks.delete_confirm') }}"></i>{% endif %}
 		<input type="checkbox" class="item-select" value="{{ task.id }}" {% if task.is_completed %}checked="checked"{% endif %} />
-		<h5 class="{% if task.person.id == app.user.id %}editable{% endif %}">
-            <input class="disabled" type="text" value="{{ task.title }}" readonly />
+		<h5>
+            <input class="{% if task.person.id == app.user.id %}editable {% endif %}disabled" type="text"
+                   value="{{ task.title }}" readonly />
         </h5>
 	</div>
 	<div class="task-sub-wrap">

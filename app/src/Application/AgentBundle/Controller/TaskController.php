@@ -528,12 +528,29 @@ class TaskController extends AbstractController
 		switch ($this->in->getString('action')) {
 			case 'title':
 				$val = $this->in->getString('value');
-				if (!$val || $task->getPersonId() !== $this->person->id) {
+				if (!$val || $task->getPersonId() !== $this->person['id']) {
 					break;
 				}
 
-				// todo? enquote
 				$task['title'] = trim($val);
+				$this->em->flush();
+
+				break;
+			case 'comment':
+				if (!$arr = json_decode($this->in->getString('value'), 1)) {
+					break;
+				}
+				if (empty($arr['value']) || empty($arr['id'])) {
+					break;
+				}
+				if (!$comment = $this->em->find('DeskPRO:TaskComment', $arr['id'])) {
+					break;
+				}
+				if ($comment->getPersonId() !== $this->person['id']) {
+					break;
+				}
+
+				$comment['content'] = trim($arr['value']);
 				$this->em->flush();
 
 				break;
