@@ -48,7 +48,6 @@ class Build1409758642 extends AbstractBuild
 
 		$this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL");
 		$this->execMutateSql("UPDATE usersources SET type = '$userType'");
-		$this->execMutateSql("UPDATE usersources SET display_order = display_order + 1");
 
 		$em = $this->container->getEm();
 
@@ -67,7 +66,7 @@ class Build1409758642 extends AbstractBuild
 		$deskProUsers->type = $type;
 		$deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
 		$deskProUsers->is_enabled = $enabled;
-		$deskProUsers->display_order = 0;
+		$deskProUsers->display_order = 500; // just a really high number to make sure its the highest priority by default on form logins (initially!)
 		$deskProUsers->lost_password_url = $forgot_password_url;
 		$deskProUsers->title = 'DeskPRO';
 		$deskProUsers->options = array();
