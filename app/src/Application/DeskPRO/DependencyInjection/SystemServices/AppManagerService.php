@@ -49,6 +49,7 @@ class AppManagerService
 			SELECT package, asset
 			FROM DeskPRO:AppPackage package
 			LEFT JOIN package.assets asset
+			ORDER BY package.title
 		")->execute();
 
 		$apps = $em->createQuery("

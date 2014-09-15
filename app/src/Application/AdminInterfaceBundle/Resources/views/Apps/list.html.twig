@@ -71,17 +71,7 @@
 			<button class="btn btn-default btn-xs" ng-click="ListCtrl.showUploadApp()"><i class="fa fa-upload"></i> Upload App</button>
 		</div>
 		<ul class="dp-item-list dp-icon-list">
-			<li ng-repeat="package in ListCtrl.general_packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
-				{{ _self.package_row() }}
-			</li>
-		</ul>
-	</article>
-	<header>
-		<h3>Authentication Apps</h3>
-	</header>
-	<article>
-		<ul class="dp-item-list dp-icon-list">
-			<li ng-repeat="package in ListCtrl.auth_packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.install.{{ ng_var('package.name') }}">
+			<li ng-repeat="package in ListCtrl.packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
 				{{ _self.package_row() }}
 			</li>
 		</ul>
