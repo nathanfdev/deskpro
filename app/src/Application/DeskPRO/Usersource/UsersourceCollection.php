@@ -178,7 +178,7 @@ class UsersourceCollection extends \ArrayObject
 
 
 	/**
-	 * @return \Orb\Auth\Adapter\AdapterInterface|null
+	 * @return \Application\DeskPRO\Entity\Usersource|null
 	 */
 	public function getFirstOrNull()
 	{

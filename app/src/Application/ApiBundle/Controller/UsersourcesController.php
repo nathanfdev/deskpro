@@ -58,6 +58,31 @@ class UsersourcesController extends AbstractController
 	}
 
 
+	public function getUsersourceAction($type, $id)
+	{
+		$sources = $this->getUsersourceManager()->getAll()->mustHaveId($id);
+
+		if ($type === Usersource::TYPE_USER) {
+			$sources = $sources->configuredForUsers(true);
+		} else {
+			$sources = $sources->configuredForAgents(true);
+		}
+
+		$source = $sources->getFirstOrNull();
+
+		if (!$source) {
+			throw $this->createNotFoundException('usersource id=' . $id . ' not found for type=' . $type);
+		}
+
+		return $this->createApiResponse(
+			array(
+				'usersource' => $source->toApiData(),
+				'app'        => $source->app ? $source->app->toApiData() : null
+			)
+		);
+	}
+
+
 	public function updateDisplayOrderAction()
 	{
 		$inputOrders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
