@@ -60,6 +60,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class AppPackage extends DomainObject
 {
 	const SCOPE_AGENT = 'agent';
+	const TAG_USERSOURCES = 'usersources';
 
 	/**
 	 * @var string
@@ -152,6 +153,23 @@ class AppPackage extends DomainObject
 	}
 
 
+	public function getTags()
+	{
+		return $this->tags;
+	}
+
+
+	public function hasTag($tag)
+	{
+		return in_array($tag, $this->tags);
+	}
+
+
+	public function isUsersource()
+	{
+		return $this->hasTag(self::TAG_USERSOURCES);
+	}
+
 	/**
 	 * @param AppAsset $asset
 	 */
@@ -240,22 +258,23 @@ class AppPackage extends DomainObject
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
-		$data = array();
-		$data['name']         = $this->name;
-		$data['native_name']  = $this->native_name;
-		$data['title']        = $this->title;
-		$data['description']  = $this->description;
-		$data['author_name']  = $this->author_name;
-		$data['author_email'] = $this->author_email;
-		$data['author_link']  = $this->author_link;
-		$data['version']      = $this->version;
-		$data['version_name'] = $this->version_name;
-		$data['settings_def'] = $this->settings_def;
-		$data['api_version']  = $this->api_version;
-		$data['is_single']    = $this->is_single;
-		$data['is_custom']    = $this->is_custom;
-		$data['tags']         = $this->tags;
-		$data['scopes']       = $this->scopes;
+		$data                      = array();
+		$data['name']              = $this->name;
+		$data['native_name']       = $this->native_name;
+		$data['title']             = $this->title;
+		$data['description']       = $this->description;
+		$data['author_name']       = $this->author_name;
+		$data['author_email']      = $this->author_email;
+		$data['author_link']       = $this->author_link;
+		$data['version']           = $this->version;
+		$data['version_name']      = $this->version_name;
+		$data['settings_def']      = $this->settings_def;
+		$data['api_version']       = $this->api_version;
+		$data['is_single']         = $this->is_single;
+		$data['is_custom']         = $this->is_custom;
+		$data['tags']              = $this->tags;
+		$data['scopes']            = $this->scopes;
+		$data['is_usersource_app'] = $this->isUsersource();
 
 		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
 		foreach ($sizes as $size) {

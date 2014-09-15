@@ -23,12 +23,27 @@
 	<article>
 		<ul class="dp-item-list dp-icon-list compact">
 			<li ng-repeat="app in ListCtrl.apps" dp-state-mark="apps.apps.instance.{{ ng_var('app.id') }}">
-				<aside>
+				<aside ng-if="!app.package.is_usersource_app">
 					<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}"><img ng-src="{{ ng_var('app.package.icon_32') }}" alt="Icon" /></a>
 				</aside>
-				<div class="content">
+				<div class="content" ng-if="!app.package.is_usersource_app">
 					<h4>
 						<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}">
+							<span class="title-text">{{ ng_var('app.title') }}</span>
+							<span class="title-alt" ng-if="app.package.title != app.title">({{ ng_var('app.package.title') }})</span>
+						</a>
+					</h4>
+					<p class="info">
+						by {{ ng_var('app.package.author_name') }} &bull; <a ng-href="{{ ng_var('app.package.author_link') }}">Website</a>
+					</p>
+				</div>
+
+				<aside ng-if="app.package.is_usersource_app">
+					<a href="{{ ng_href('apps.apps.package', '{name: app.package.name}') }}"><img ng-src="{{ ng_var('app.package.icon_32') }}" alt="Icon" /></a>
+				</aside>
+				<div class="content" ng-if="app.package.is_usersource_app">
+					<h4>
+						<a href="{{ ng_href('apps.apps.package', '{name: app.package.name}') }}">
 							<span class="title-text">{{ ng_var('app.title') }}</span>
 							<span class="title-alt" ng-if="app.package.title != app.title">({{ ng_var('app.package.title') }})</span>
 						</a>

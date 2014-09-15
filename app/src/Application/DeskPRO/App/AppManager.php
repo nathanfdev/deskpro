@@ -79,6 +79,11 @@ class AppManager implements AppManagerInterface
 	 */
 	private $app_paths = array();
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Usersource[]
+	 */
+	private $usersources;
+
 
 	/**
 	 * @param AppPackage[] $packages
@@ -86,7 +91,7 @@ class AppManager implements AppManagerInterface
 	 * @param AppInstance[] $apps
 	 * @param AppServiceContainer $app_service_container
 	 */
-	public function __construct(array $packages, array $apps, array $app_paths, AppServiceContainer $app_service_container)
+	public function __construct(array $packages, array $apps, array $app_paths, AppServiceContainer $app_service_container, array $usersources = array())
 	{
 		$this->app_service_container = $app_service_container;
 
@@ -114,6 +119,8 @@ class AppManager implements AppManagerInterface
 				$this->getNativeApp($app);
 			}
 		}
+
+		$this->usersources = $usersources;
 	}
 
 
@@ -371,6 +378,20 @@ class AppManager implements AppManagerInterface
 		return null;
 	}
 
+
+	/**
+	 * @param AppInstance $appId
+	 * @return \Application\DeskPRO\Entity\Usersource
+	 */
+	public function getUsersourceForApp($appId, $type)
+	{
+		foreach ($this->usersources as $usersource) {
+			if ($usersource->app && $usersource->app->id === $appId && $usersource->type == $type) {
+				return $usersource;
+			}
+		}
+
+	}
 
 	/**
 	 * @return string[]

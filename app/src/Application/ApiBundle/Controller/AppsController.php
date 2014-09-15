@@ -35,6 +35,7 @@ use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Imagine\Image\Box as ImageBox;
@@ -164,9 +165,15 @@ class AppsController extends AbstractController
 		# Get installed app instances
 		#------------------------------
 
+		$appManager = $this->container->getAppManager();
 		$data['apps'] = array();
 		foreach ($manager->getPackageApps($package->name) as $app) {
-			$data['apps'][] = $app->toApiData(false);
+			$app = $app->toApiData(false);
+			if ($package->isUsersource()) {
+				$app['user_usersource'] = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_USER);
+				$app['agent_usersource'] = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_AGENT);
+			}
+			$data['apps'][] = $app;
 		}
 
 		if ($data['apps']) {

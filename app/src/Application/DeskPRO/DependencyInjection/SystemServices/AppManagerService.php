@@ -59,8 +59,15 @@ class AppManagerService
 			LEFT JOIN package.assets asset
 		")->execute();
 
+		$usersources = $em->createQuery("
+			SELECT usersource
+			FROM DeskPRO:Usersource usersource
+			LEFT JOIN usersource.app app
+		")->execute();
+
 		if ($apps instanceof ArrayCollection) $apps = $apps->toArray();
 		if ($packages instanceof ArrayCollection) $packages = $packages->toArray();
+		if ($usersources instanceof ArrayCollection) $usersources = $usersources->toArray();
 
 		$app_service_container = new AppServiceContainer($container);
 
@@ -74,7 +81,7 @@ class AppManagerService
 			}
 		}
 
-		$app_manager = new AppManager($packages, $apps, $app_paths, $app_service_container);
+		$app_manager = new AppManager($packages, $apps, $app_paths, $app_service_container, $usersources);
 		return $app_manager;
 	}
 }
