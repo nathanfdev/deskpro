@@ -58,6 +58,14 @@ class UsersourcesController extends AbstractController
 	}
 
 
+	public function updateDisplayOrderAction()
+	{
+		$inputOrders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
+		$this->em->getRepository('DeskPRO:Usersource')->updateDisplayOrders($inputOrders);
+		return $this->createApiSuccessResponse();
+	}
+
+
 	/**
 	 * @return \Application\DeskPRO\Usersource\UsersourceManager
 	 */

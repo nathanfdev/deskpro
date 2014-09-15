@@ -17,7 +17,25 @@
 
       Admin_Usersources_Ctrl_UsersourcesList.DEPS = [];
 
-      Admin_Usersources_Ctrl_UsersourcesList.prototype.init = function() {};
+      Admin_Usersources_Ctrl_UsersourcesList.prototype.init = function() {
+        this.usersourcesDataService = this.DataService.get('Usersources');
+        return this.sortedListOptions = {
+          axis: 'y',
+          handle: '.drag-handle',
+          update: (function(_this) {
+            return function(ev, data) {
+              var $list, displayOrders;
+              $list = data.item.closest('ul');
+              displayOrders = [];
+              $list.find('li').each(function() {
+                return displayOrders.push(parseInt($(this).data('id')));
+              });
+              _this.usersourcesDataService.saveDisplayOrder(displayOrders);
+              return _this.pingElement('display_orders');
+            };
+          })(this)
+        };
+      };
 
       Admin_Usersources_Ctrl_UsersourcesList.prototype.initialLoad = function() {
         var promise;

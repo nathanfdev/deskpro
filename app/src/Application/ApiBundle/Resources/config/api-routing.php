@@ -2427,6 +2427,12 @@ $collection->create('api_usersources_list', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_usersources_display_order', array(
+	'path'        => '/usersources/display-order',
+	'controller'  => 'ApiBundle:Usersources:updateDisplayOrder',
+	'methods'     => array('POST'),
+));
+
 ########################################################################################################################
 # Registration Settings
 
