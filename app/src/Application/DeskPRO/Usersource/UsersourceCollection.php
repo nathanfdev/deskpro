@@ -98,10 +98,10 @@ class UsersourceCollection extends \ArrayObject
 			}
 
 			if ($us1->display_order > $us2->display_order) {
-				return -1;
+				return 1;
 			}
 
-			return 1;
+			return -1;
 		});
 
 		return new static($filtered);
@@ -126,10 +126,10 @@ class UsersourceCollection extends \ArrayObject
 			}
 
 			if ($us1->display_order > $us2->display_order) {
-				return -1;
+				return 1;
 			}
 
-			return 1;
+			return -1;
 		});
 
 		return new static($filtered);
