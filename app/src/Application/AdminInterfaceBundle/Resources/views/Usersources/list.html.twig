@@ -13,11 +13,14 @@
 					<a href="{{ ng_href('crm.usersources.id', '{id: source.usersource.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 
+
 						<div class="pull-right">
 							<em class="tag tag-warn" ng-show="!source.usersource.is_enabled">Disabled</em>
 						</div>
 
 						<h4>
+							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}" alt="{{ ng_var('source.usersource.title') }}" />
+							<img ng-if="!source.app" ng-src="{{ asset_full('/images/dp-logo-16.png') }}" alt="{{ ng_var('source.usersource.title') }}" />
 							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>
 							<span class="title-text">{{ ng_var('source.usersource.title') }}</span>
 						</h4>
