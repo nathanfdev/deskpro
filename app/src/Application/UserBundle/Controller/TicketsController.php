@@ -35,6 +35,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
 use Application\UserBundle\Form\NewTicketParticipantType;
 use Application\UserBundle\Form\NewTicketReplyType;
@@ -166,26 +167,24 @@ class TicketsController extends AbstractController
 			}
 		}
 
-		$ticket_ids = implode(',', $ticket_ids);
-
 		$last_messages = array();
 		if ($tickets) {
 			$last_mesasge_ids = App::getDb()->fetchAllCol("
 				SELECT MAX(id)
 				FROM tickets_messages
-				WHERE ticket_id IN ($ticket_ids)
+				WHERE ticket_id IN (?)
 				GROUP BY ticket_id
-			");
-			$last_mesasge_ids = implode(',', $last_mesasge_ids);
+			", array($ticket_ids), array(Connection::PARAM_INT_ARRAY));
+
 			if ($last_mesasge_ids) {
 				$last_messages = $this->em->createQuery("
 					SELECT m, p
 					FROM DeskPRO:TicketMessage m
-					LEFT JOIN m.person p
-					WHERE m.id IN ($last_mesasge_ids)
+					JOIN m.person p
+					WHERE m.id IN (?)
 					GROUP BY m.ticket
 					ORDER BY m.id DESC
-				")->execute();
+				")->execute(array($last_mesasge_ids));
 			}
 
 			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');
@@ -281,26 +280,25 @@ class TicketsController extends AbstractController
 		}
 
 		$pageinfo = Numbers::getPaginationPages($count, $page, $per_page, 3);
-		$ticket_ids = implode(',', $ticket_ids);
 
 		$last_messages = array();
 		if ($tickets) {
 			$last_mesasge_ids = App::getDb()->fetchAllCol("
 				SELECT MAX(id)
 				FROM tickets_messages
-				WHERE ticket_id IN ($ticket_ids)
+				WHERE ticket_id IN (?)
 				GROUP BY ticket_id
-			");
-			$last_mesasge_ids = implode(',', $last_mesasge_ids);
+			", array($ticket_ids), array(Connection::PARAM_INT_ARRAY));
+
 			if ($last_mesasge_ids) {
 				$last_messages = $this->em->createQuery("
 					SELECT m, p
 					FROM DeskPRO:TicketMessage m
 					LEFT JOIN m.person p
-					WHERE m.id IN ($last_mesasge_ids)
+					WHERE m.id IN (?)
 					GROUP BY m.ticket
 					ORDER BY m.id DESC
-				")->execute();
+				")->execute(array($last_mesasge_ids));
 			}
 
 			$last_messages = Arrays::keyFromData($last_messages, 'ticket_id');

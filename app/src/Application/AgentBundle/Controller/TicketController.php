@@ -547,12 +547,12 @@ class TicketController extends AbstractController
 			$per_page = 500;
 		}
 
-		$all_message_ids = $this->db->fetchAllCol("
+		$all_message_ids = $this->db->fetchAllCol('
 			SELECT id
 			FROM tickets_messages
 			WHERE ticket_id = ?
 			ORDER BY date_created DESC
-		", array($ticket->getId()));
+		', array($ticket->getId()));
 
 		$message_numbers = array();
 		if ($all_message_ids) {

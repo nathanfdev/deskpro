@@ -34,6 +34,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\DBAL\Connection;
+
 class Build1361377744 extends AbstractBuild
 {
 	public function run()
@@ -45,18 +47,16 @@ class Build1361377744 extends AbstractBuild
 			WHERE is_agent = 1
 		");
 
-		$agent_ids = implode(',', $agent_ids);
-
 		$this->execMutateSql("
 			UPDATE chat_messages
 			SET origin = 'agent'
-			WHERE author_id IN ($agent_ids)
-		");
+			WHERE author_id IN (?)
+		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 
 		$this->execMutateSql("
 			UPDATE chat_messages
 			SET origin = 'user'
-			WHERE (author_id IS NULL OR author_id NOT IN ($agent_ids)) AND is_sys = 0
-		");
+			WHERE (author_id IS NULL OR author_id NOT IN (?)) AND is_sys = 0
+		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 	}
 }

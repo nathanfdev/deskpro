@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
@@ -584,12 +585,12 @@ class PersonController extends AbstractController
 					$usergroup_ids = array_unique($usergroup_ids);
 
 					// Make sure only valid ones are set
-					$usergroup_ids = $this->db->fetchAllCol("
+					$usergroup_ids = $this->db->fetchAllCol('
 						SELECT id
 						FROM usergroups
-						WHERE id IN (" . implode(',', $usergroup_ids).")
+						WHERE id IN (?)
 							AND sys_name IS NULL
-					");
+					', array($usergroup_ids), array(Connection::PARAM_INT_ARRAY));
 				}
 
 				$this->container->getDb()->executeUpdate("

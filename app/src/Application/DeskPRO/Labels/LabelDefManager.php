@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Labels;
 
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
@@ -134,14 +135,22 @@ class LabelDefManager
 			throw new \InvalidArgumentException();
 		}
 
-		$parts = array();
-		$parts[] = "SELECT DISTINCT(label) FROM label_defs " . (count($types) < 8 ? "WHERE label_type IN ('" . implode("','", $types) . "')" : '');
+		$parts = array('SELECT DISTINCT(label) FROM label_defs ');
+		$params = array();
+		$qtypes = array();
+
+		if (count($types) < 8) {
+			$parts[0] .= ' WHERE label_type IN (?)';
+			$params[] = $types;
+			$qtypes[] = Connection::PARAM_STR_ARRAY;
+		}
+
 		foreach ($types as $t) {
-			$parts[] = "SELECT DISTINCT(label) FROM labels_$t";
+			$parts[] = 'SELECT DISTINCT(label) FROM ' . $this->db->quoteIdentifier('labels_' . $t);
 		}
 
 		$q = '(' . implode(') UNION (', $parts) . ')';
-		$labels = $this->db->fetchAllCol($q);
+		$labels = $this->db->fetchAllCol($q, $params, $qtypes);
 
 		return $labels;
 	}

@@ -135,10 +135,10 @@ class ChatConversation extends AbstractEntityRepository
 		$agent_ids = App::getDb()->fetchAllCol("
 			SELECT people.id
 			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
-			LEFT JOIN people ON (people.id = convo2.person_id)
-			WHERE convo.person_id = {$agent['id']} AND people.is_agent = 1 AND people.id != {$agent['id']}
-		");
+			JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			JOIN people ON (people.id = convo2.person_id)
+			WHERE convo.person_id = :aid AND people.is_agent = 1 AND people.id != :aid
+		", array('aid' => $agent['id']));
 
 		return $this->getEntityManager()->getRepository('DeskPRO:Person')->getPeopleFromIds($agent_ids);
 	}
@@ -148,7 +148,7 @@ class ChatConversation extends AbstractEntityRepository
 		$agent_team_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
 			SELECT c.agent_team_id
 			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
+			JOIN chat_conversations c ON (c.id = convo.conversation_id)
 			WHERE convo.person_id = ? AND c.agent_team_id IS NOT NULL
 		', array($agent['id']));
 
@@ -160,8 +160,8 @@ class ChatConversation extends AbstractEntityRepository
 		$convo_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
 			SELECT convo.conversation_id
 			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
-			LEFT JOIN people ON (people.id = convo2.person_id)
+			JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			JOIN people ON (people.id = convo2.person_id)
 			WHERE convo.person_id = ? AND people.is_agent = 1 AND people.id != ?
 			ORDER BY convo.conversation_id DESC
 		', array($agent['id'], $agent['id']));
@@ -183,8 +183,8 @@ class ChatConversation extends AbstractEntityRepository
 		$sql = "
 			SELECT convo.conversation_id
 			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
-			LEFT JOIN people ON (people.id = convo2.person_id)
+			JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			JOIN people ON (people.id = convo2.person_id)
 			WHERE convo.person_id = ? AND convo2.person_id = ?
 		";
 

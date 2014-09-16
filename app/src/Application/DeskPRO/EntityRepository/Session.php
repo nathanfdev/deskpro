@@ -69,7 +69,7 @@ class Session extends AbstractEntityRepository
 	{
 		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
-		$ids = App::getDb()->fetchAllCol("
+		$ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 			SELECT DISTINCT(sessions.person_id)
 			FROM sessions
 			LEFT JOIN people ON (people.id = sessions.person_id)

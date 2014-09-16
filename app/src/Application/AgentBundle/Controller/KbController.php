@@ -116,7 +116,7 @@ class KbController extends AbstractController
 		", array($article->id));
 
 		// Existing translations
-		$trans_langs = $this->db->fetchAllCol("SELECT language_id FROM object_lang WHERE ref = 'articles.{$article->getId()}'");
+		$trans_langs = $this->db->fetchAllCol('SELECT language_id FROM object_lang WHERE ref = ?', array('articles.'.$article['id']));
 		$trans_langs[] = $article->language->getId();
 		$trans_langs = array_combine($trans_langs,$trans_langs);
 

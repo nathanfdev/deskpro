@@ -65,8 +65,8 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
 		$this->_agent_team_ids = App::getDb()->fetchAllCol("
 			SELECT team_id
 			FROM agent_team_members
-			WHERE person_id = {$this->person['id']}
-		");
+			WHERE person_id = ?
+		", array($this->person['id']));
 
 		return $this->_agent_team_ids;
 	}

@@ -141,7 +141,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 			$this->org_usergroup_ids = App::getDb()->fetchAllCol("
 				SELECT organization2usergroups.usergroup_id
 				FROM organization2usergroups
-				LEFT JOIN usergroups ON usergroups.id = organization2usergroups.usergroup_id
+				JOIN usergroups ON usergroups.id = organization2usergroups.usergroup_id
 				WHERE organization2usergroups.organization_id = ? AND usergroups.is_enabled = 1
 			", array($this->person->organization['id']));
 

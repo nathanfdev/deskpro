@@ -237,7 +237,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
 										SELECT people.id
 										FROM people
-										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+										JOIN people_emails ON (people_emails.person_id = people.id)
 										WHERE people_emails.email_domain LIKE ?
 										ORDER BY people.id DESC
 										LIMIT 15
@@ -246,8 +246,8 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
 										SELECT people.id
 										FROM people
-										LEFT JOIN tickets ON (tickets.person_id = people.id)
-										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+										JOIN tickets ON (tickets.person_id = people.id)
+										JOIN people_emails ON (people_emails.person_id = people.id)
 										WHERE
 											tickets.id > ?
 											AND people_emails.email_domain LIKE ?
@@ -262,7 +262,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
 										SELECT people.id
 										FROM people
-										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+										JOIN people_emails ON (people_emails.person_id = people.id)
 										WHERE people_emails.email LIKE ?
 										ORDER BY people.id DESC
 										LIMIT 15
@@ -271,8 +271,8 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                                     $people_ids = $this->container->getDbRead()->fetchAllCol("
 										SELECT people.id
 										FROM people
-										LEFT JOIN tickets ON (tickets.person_id = people.id)
-										LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+										JOIN tickets ON (tickets.person_id = people.id)
+										JOIN people_emails ON (people_emails.person_id = people.id)
 										WHERE
 											tickets.id > ?
 											AND people_emails.email LIKE ?
@@ -309,8 +309,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                             $people_ids = $this->container->getDbRead()->fetchAllCol("
 								SELECT people.id
 								FROM people
-								LEFT JOIN tickets ON (tickets.person_id = people.id)
-								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+								JOIN people_emails ON (people_emails.person_id = people.id)
 								WHERE
 									people.name LIKE ?
 									OR people.first_name LIKE ?
@@ -324,9 +323,9 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
                             $people_ids = $this->container->getDbRead()->fetchAllCol("
 								SELECT people.id
 								FROM people
-								LEFT JOIN tickets ON (tickets.person_id = people.id)
-								LEFT JOIN tickets_participants ON (tickets_participants.person_id = people.id)
-								LEFT JOIN people_emails ON (people_emails.person_id = people.id)
+								JOIN tickets ON (tickets.person_id = people.id)
+								JOIN tickets_participants ON (tickets_participants.person_id = people.id)
+								JOIN people_emails ON (people_emails.person_id = people.id)
 								WHERE
 									(tickets.id > ? OR tickets_participants.ticket_id > ?)
 									AND (

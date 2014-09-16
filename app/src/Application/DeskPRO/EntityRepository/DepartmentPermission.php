@@ -63,7 +63,7 @@ class DepartmentPermission extends AbstractEntityRepository
 			WHERE $wheres
 		";
 
-		return $this->getEntityManager()->getConnection()->fetchAllCol($sql);
+		return $this->getEntityManager()->getConnection()->fetchAllCol($sql, $params);
 	}
 
 	/**

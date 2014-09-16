@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\Languages;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Language;
 use Doctrine\ORM\EntityManager;
 
@@ -143,12 +144,11 @@ class LanguageInstaller
 				}
 
 				if ($delete_ids) {
-					$delete_ids = '"' . implode('","', $delete_ids) . '"';
 
-					$this->em->getConnection()->executeUpdate("
+					$this->em->getConnection()->executeUpdate('
 						DELETE FROM phrases
-						WHERE language_id = ? AND name IN ($delete_ids)
-					", $lang->getId());
+						WHERE language_id = ? AND name IN (?)
+					', array($lang->getId(), $delete_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 				}
 
 			} else {

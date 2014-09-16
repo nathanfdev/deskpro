@@ -57,11 +57,11 @@ class OrganizationEmailDomain extends AbstractEntityRepository
 
 	public function getDomainsForOrganization(OrganizationEntity $org)
 	{
-		$domains = App::getDb()->fetchAllCol("
+		$domains = $this->getEntityManager()->getConnection()->fetchAllCol("
 			SELECT domain
 			FROM organization_email_domains
 			WHERE organization_id = ?
-		", array($org->id));
+		", array($org['id']));
 
 		return $domains;
 	}

@@ -48,12 +48,12 @@ class ApiKeyLog extends AbstractEntityRepository
 	{
 		$limit = self::LIMIT;
 
-		$key_ids = App::$container->getDb()->fetchAllCol("
+		$key_ids = App::$container->getDb()->fetchAllCol('
 			SELECT key_id
 			FROM api_key_log
 			GROUP BY key_id
-			HAVING COUNT(*) > $limit
-		");
+			HAVING COUNT(*) > ?
+		', array($limit), array(\PDO::PARAM_INT));
 
 		if (!$key_ids) {
 			return 0;

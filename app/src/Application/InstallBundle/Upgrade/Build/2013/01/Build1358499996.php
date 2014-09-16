@@ -34,6 +34,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\DBAL\Connection;
+
 class Build1358499996 extends AbstractBuild
 {
 	public function run()
@@ -44,7 +46,6 @@ class Build1358499996 extends AbstractBuild
 			SELECT id FROM people
 			WHERE is_agent = 1
 		");
-		$agent_ids_in = implode(',', $agent_ids);
 
 		$this->out('Populating tickets.count_agent_replies');
 		$t = microtime(true);
@@ -53,11 +54,11 @@ class Build1358499996 extends AbstractBuild
 			LEFT JOIN (
 				SELECT COUNT(*) AS count, ticket_id
 				FROM tickets_messages
-				WHERE person_id IN ($agent_ids_in) AND is_agent_note = 0
+				WHERE person_id IN (?) AND is_agent_note = 0
 				GROUP BY ticket_id
 			) AS t ON tickets.id = t.ticket_id
 			SET tickets.count_agent_replies = COALESCE(t.count, 0);
-		");
+		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 		$this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
 
 		$this->out('Populating tickets.count_user_replies');
@@ -67,11 +68,11 @@ class Build1358499996 extends AbstractBuild
 			LEFT JOIN (
 				SELECT COUNT(*) AS count, ticket_id
 				FROM tickets_messages
-				WHERE person_id NOT IN ($agent_ids_in)
+				WHERE person_id NOT IN (?)
 				GROUP BY ticket_id
 			) AS t ON tickets.id = t.ticket_id
 			SET tickets.count_user_replies = COALESCE(t.count, 0);
-		");
+		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 		$this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
 	}
 }

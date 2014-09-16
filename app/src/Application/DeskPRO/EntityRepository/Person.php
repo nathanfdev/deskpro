@@ -250,7 +250,7 @@ class Person extends AbstractEntityRepository
 	{
 		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
-		$agent_ids = App::getDb()->fetchAllCol("
+		$agent_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 			SELECT DISTINCT(person_id)
 			FROM sessions
 			WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1

@@ -144,13 +144,13 @@ class Ticket extends AbstractEntityRepository
 			ORDER BY t.id DESC
 		")->setParameters(array($ref."%"))->setMaxResults(10)->execute();
 
-		$new_ticket_ids = App::getDb()->fetchAll("
+		$new_ticket_ids = $this->getEntityManager()->getConnection()->fetchAll("
 			SELECT new_ticket_id
 			FROM tickets_deleted
 			WHERE old_ref LIKE ?
 		", array($ref));
 		if ($new_ticket_ids) {
-			$other_tickets = $this->_em->getRepository('DeskPRO:Ticket')->getByIds($new_ticket_ids);
+			$other_tickets = $this->getByIds($new_ticket_ids);
 			if (count($other_tickets)) {
 				$ret = array();
 				foreach ($tickets as $t) { $ret[$t->getId()] = $t; }
@@ -249,7 +249,7 @@ class Ticket extends AbstractEntityRepository
 	public function getPersonTickets(Entity\Person $person, $limit = null, $sort_by = null, $sort_order = 'DESC')
 	{
 		if ($person->is_agent) {
-			$ids = App::getDb()->fetchAllCol("
+			$ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id
 				FROM tickets
 				WHERE person_id = ?
@@ -257,7 +257,7 @@ class Ticket extends AbstractEntityRepository
 				LIMIT 2000
 			", array($person->id));
 		} else {
-			$ids = App::getDb()->fetchAllCol("
+			$ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id FROM tickets WHERE person_id = ?
 				UNION
 				SELECT ticket_id FROM tickets_participants WHERE person_id = ?
@@ -269,36 +269,37 @@ class Ticket extends AbstractEntityRepository
 		}
 		
 		if ($sort_by === 'date_last_reply') {
-			$ids = App::getDb()->fetchAllCol(
-				"
+			$ids = $this->getEntityManager()->getConnection()->fetchAllCol(
+				'
 								SELECT id
 								FROM tickets
-								WHERE id IN (" . implode(',', $ids) . ")
+								WHERE id IN (?)
 				ORDER BY GREATEST(
 +					COALESCE(date_last_user_reply,0),
 +					COALESCE(date_last_agent_reply,0)
 +				) DESC
-			"
-			);
+			',
+			array($ids), array(Connection::PARAM_INT_ARRAY));
+
 		} elseif ($sort_by == 'status') {
 			$ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE id IN (" . implode(',', $ids) . ")
+				WHERE id IN (?)
 				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, IF(tickets.status = 'awaiting_agent', tickets.urgency, 0) DESC, tickets.id DESC
-			");
+			", array($ids), array(Connection::PARAM_INT_ARRAY));
 		} elseif ($sort_by && in_array(strtolower($sort_by), $this->_em->getClassMetadata('DeskPRO:Ticket')->getFieldNames())) {
 			$sort_by = strtolower($sort_by);
 
 			$sort_order = strtolower($sort_order);
 			$sort_order = in_array($sort_order, array('asc', 'desc')) ? $sort_order : 'DESC';
 
-			$ids = App::getDb()->fetchAllCol("
+			$ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE id IN (" . implode(',', $ids) . ")
+				WHERE id IN (?)
 				ORDER BY $sort_by $sort_order
-			"
+			", array($ids), array(Connection::PARAM_INT_ARRAY)
 			);
 		} else {
 			sort($ids, \SORT_NUMERIC);
@@ -337,9 +338,7 @@ class Ticket extends AbstractEntityRepository
 			return array();
 		}
 
-		$ids_str = implode(',', $ids);
-
-		$ticket_ids = App::getDb()->fetchAllCol("
+		$ticket_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 			SELECT
 				tickets.id,
 					CASE WHEN tickets.status =  'awaiting_agent' THEN 1
@@ -350,9 +349,9 @@ class Ticket extends AbstractEntityRepository
 					END AS status_order
 			FROM tickets
 			LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-			WHERE tickets.person_id IN ($ids_str) OR tickets_participants.person_id IN ($ids_str)
+			WHERE tickets.person_id IN (?0) OR tickets_participants.person_id IN (?0)
 			ORDER BY status_order ASC, tickets.date_status DESC
-		");
+		", array($ids), array(Connection::PARAM_INT_ARRAY));
 
 		if (!$ticket_ids) {
 			return array();

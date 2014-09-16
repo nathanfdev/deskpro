@@ -60,9 +60,9 @@ class ChatPingTimeout extends AbstractJob
 		$agent_ids = App::getDb()->fetchAllCol("
 			SELECT sessions.person_id
 			FROM sessions
-			LEFT JOIN people ON people.id = sessions.person_id
-			WHERE people.is_agent = 1 AND sessions.date_last > '$cutoff'
-		");
+			JOIN people ON people.id = sessions.person_id
+			WHERE people.is_agent = 1 AND sessions.date_last > ?
+		", array($cutoff));
 
 		$agent_ids[] = 0;
 
@@ -94,9 +94,9 @@ class ChatPingTimeout extends AbstractJob
 		$chat_ids = App::getDb()->fetchAllCol("
 			SELECT DISTINCT c.id
 			FROM chat_conversations c
-			LEFT JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > $cutoff)
+			JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > ?)
 			WHERE c.status = 'open' AND c.is_agent = 0 AND p.id IS NULL
-		");
+		", array($cutoff));
 
 		$count_users = 0;
 		while ($chat_id = array_pop($chat_ids)) {
