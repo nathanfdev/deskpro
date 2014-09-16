@@ -46,7 +46,6 @@
         }).then((function(_this) {
           return function(result) {
             _this.app = result.data.app.app;
-            console.log(_this.app);
             return _this.Api.sendDataGet({
               pack: '/apps/packages/' + _this.app.package_name
             }).then(function(result) {
