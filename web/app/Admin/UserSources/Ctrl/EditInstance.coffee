@@ -146,7 +146,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 						@$scope.$parent?.ListCtrl?.refresh()
 
 					# close this view
-					@$state.go('apps.apps')
+					@$state.go('^')
 				)
 
 			@$modal.open({

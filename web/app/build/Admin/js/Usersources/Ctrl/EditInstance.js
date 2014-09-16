@@ -211,7 +211,7 @@
                   }
                 }
               }
-              return _this.$state.go('apps.apps');
+              return _this.$state.go('^');
             });
           };
         })(this);
