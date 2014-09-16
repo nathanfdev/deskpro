@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
@@ -57,11 +58,11 @@ class TicketFlagged extends AbstractEntityRepository
 
 		if (!$ids) return array();
 
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT ticket_id, color
 			FROM tickets_flagged
-			WHERE ticket_id IN(" . implode(',', $ids) . ") AND person_id = ?
-		", array($person['id']));
+			WHERE ticket_id IN(?) AND person_id = ?
+		", array($ids, $person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
 	}
 
 	public function getCountsForPerson(Entity\Person $person)

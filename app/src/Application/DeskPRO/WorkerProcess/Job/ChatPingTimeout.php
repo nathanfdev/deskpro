@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Log\Logger;
 
 /**
@@ -69,8 +70,8 @@ class ChatPingTimeout extends AbstractJob
 		$timeouts = App::getDb()->fetchAllKeyValue("
 			SELECT c.id, c.agent_id
 			FROM chat_conversations c
-			WHERE c.status = 'open' AND c.agent_id NOT IN (" . implode(',', $agent_ids) . ")
-		");
+			WHERE c.status = 'open' AND c.agent_id NOT IN (?)
+		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 
 		$count_agents = 0;
 		foreach ($timeouts as $chat_id => $agent_id) {

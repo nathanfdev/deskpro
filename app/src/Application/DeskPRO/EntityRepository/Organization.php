@@ -60,7 +60,7 @@ class Organization extends AbstractEntityRepository
 	public function getOrganizationNames($for_ids = null)
 	{
 		if ($this->_organization_names == null) {
-			$db = App::getDb();
+			$db = $this->getEntityManager()->getConnection();
 			$this->_organization_names = $db->fetchAllKeyValue("
 				SELECT id, name
 				FROM organizations

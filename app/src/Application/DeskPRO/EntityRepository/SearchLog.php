@@ -41,7 +41,7 @@ class SearchLog extends AbstractEntityRepository
 {
 	public function getRatedSearchesFor($object_type, $object_id, $structure = 'all')
 	{
-		$search_ids_to_rating = APp::getDb()->fetchAllKeyValue("
+		$search_ids_to_rating = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT searchlog_id, rating
 			FROM ratings
 			WHERE object_type = ? AND object_id = ? AND searchlog_id IS NOT NULL

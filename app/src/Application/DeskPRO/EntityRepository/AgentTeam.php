@@ -128,7 +128,7 @@ class AgentTeam extends AbstractEntityRepository
 
 	public function getTeamCounts()
 	{
-		$counts = App::getDb()->fetchAllKeyValue("
+		$counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT team_id, COUNT(*)
 			FROM agent_team_members
 			LEFT JOIN people ON (people.id = agent_team_members.person_id)

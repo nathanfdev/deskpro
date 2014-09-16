@@ -34,6 +34,7 @@
 
 namespace deskpro_magento\Usersource\Auth;
 
+use Doctrine\DBAL\DriverManager;
 use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
@@ -363,11 +364,18 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 				}
 
 				try {
-					$pdo = new \PDO('mysql:host=' . $parts['host'] . ';dbname=' . $parts['dbname'], $parts['username'], $parts['password']);
-					$session_data = $pdo->query('
+					$conn = DriverManager::getConnection(array(
+						'dbname' => $parts['dbname'],
+						'user' => $parts['username'],
+						'password' => $parts['password'],
+						'host' => $parts['host'],
+						'driver' => 'pdo_mysql',
+					));
+
+					$session_data = $conn->query('
 						SELECT session_data
-						FROM ' . $parts['table_prefix'] . 'core_session
-						WHERE session_id = ' . $pdo->quote($session)
+						FROM ' . $conn->quoteIdentifier($parts['table_prefix'] . 'core_session')  . '
+						WHERE session_id = ' . $conn->quote($session)
 					)->fetchColumn();
 				} catch (\Exception $e) {}
 			}

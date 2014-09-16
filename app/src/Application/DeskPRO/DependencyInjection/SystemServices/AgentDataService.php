@@ -334,7 +334,7 @@ class AgentDataService
 			FROM sessions s
 			INNER JOIN people p ON (s.person_id = p.id)
 			WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
-		", array($cutoff), 0, 0);
+		", array($cutoff), array(), 0, 0);
 
 		return $this->online_agent_ids;
 	}

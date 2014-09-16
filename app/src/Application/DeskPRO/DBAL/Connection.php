@@ -248,21 +248,20 @@ class Connection extends \Doctrine\DBAL\Connection
 		return $array;
 	}
 
-
-
 	/**
 	 * Execute a query and return a key=>value pair.
-	 *
-	 * @param string $statement
+	 * @param $statement
 	 * @param array $params
-	 * @param string $key_index
-	 * @param string $val_index
+	 * @param array $types
+	 * @param int $key_index
+	 * @param int $val_index
 	 * @param int $mode Change to PDO::FETCH_ASSOC if you want to specify a string indexes
+	 * @param int $nullkey
 	 * @return array
 	 */
-	public function fetchAllKeyValue($statement, array $params = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
+	public function fetchAllKeyValue($statement, array $params = array(), $types = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
 	{
-		$statement = $this->executeQuery($statement, $params);
+		$statement = $this->executeQuery($statement, $params, $types);
 		$array = array();
 
 		while ($row = $statement->fetch($mode)) {
@@ -489,7 +488,10 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $query
 	 * @param array $params
 	 * @param array $types
-	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile|null $qcp
+	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile $qcp
+	 * @param int $is_retry
+	 * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
+	 * @throws \Exception
 	 */
 	public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
 	{

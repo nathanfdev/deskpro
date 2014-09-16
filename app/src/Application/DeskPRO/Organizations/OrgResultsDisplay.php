@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Organizations;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Organization;
 use Orb\Util\Arrays;
 
@@ -166,14 +167,12 @@ class OrgResultsDisplay
 	{
 		if ($this->org_member_counts !== null) return $this->org_member_counts;
 
-		$org_ids = implode(',', $this->org_ids);
-
-		$this->org_member_counts = $this->db->fetchAllKeyValue("
+		$this->org_member_counts = $this->db->fetchAllKeyValue('
 			SELECT organization_id, COUNT(*)
 			FROM people
-			WHERE organization_id IN($org_ids) AND is_deleted = 0
+			WHERE organization_id IN(?) AND is_deleted = 0
 			GROUP BY organization_id
-		");
+		', array($this->org_ids), array(Connection::PARAM_INT_ARRAY));
 
 		return $this->org_member_counts;
 	}

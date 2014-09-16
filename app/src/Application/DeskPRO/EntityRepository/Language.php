@@ -48,7 +48,7 @@ class Language extends AbstractEntityRepository
 	public function getTitles($for_ids = null)
 	{
 		if ($this->lang_titles === null) {
-            $db = App::getDb();
+            $db = $this->getEntityManager()->getConnection();
             $this->lang_titles = $db->fetchAllKeyValue("
                 SELECT id, title
                 FROM languages

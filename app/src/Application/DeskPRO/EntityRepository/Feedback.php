@@ -52,7 +52,7 @@ class Feedback extends AbstractEntityRepository
 	 */
 	public function countAwaitingValidation()
 	{
-		return App::getDb()->fetchColumn("
+		return $this->getEntityManager()->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM feedback
 			WHERE hidden_status = 'validating'
@@ -68,7 +68,7 @@ class Feedback extends AbstractEntityRepository
 	 */
 	public function countActiveGrouped()
 	{
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT IFNULL(status_category_id, 0), COUNT(*) as count
 			FROM feedback
 			WHERE status = 'active'
@@ -84,7 +84,7 @@ class Feedback extends AbstractEntityRepository
 	 */
 	public function countClosedGrouped()
 	{
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT IFNULL(status_category_id, 0), COUNT(*) as count
 			FROM feedback
 			WHERE status = 'closed'
@@ -104,7 +104,7 @@ class Feedback extends AbstractEntityRepository
 		// We dont count validating with this number because
 		// in the UI we generally show validating separately
 
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
 			FROM feedback
 			WHERE status = ? AND hidden_status != ? AND hidden_status != ?
@@ -120,7 +120,7 @@ class Feedback extends AbstractEntityRepository
 	 */
 	public function countNew()
 	{
-		return App::getDb()->fetchColumn("
+		return $this->getEntityManager()->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM feedback
 			WHERE status = 'new'
@@ -143,7 +143,7 @@ class Feedback extends AbstractEntityRepository
 		 * (Could just make a 2nd new array using 1st as a lookup, but this solution is easy enough)
 		 */
 
-		$counts = App::getDb()->fetchAllKeyValue("
+		$counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT category_id, COUNT(*)
 			FROM feedback
 			WHERE status != 'hidden'
@@ -174,7 +174,7 @@ class Feedback extends AbstractEntityRepository
 	 */
 	public function countInCategory($category)
 	{
-		return App::getDb()->fetchColumn("
+		return $this->getEntityManager()->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM feedback
 			WHERE category_id = ?
@@ -190,7 +190,7 @@ class Feedback extends AbstractEntityRepository
 	 */
 	public function countInStatusCategory($category)
 	{
-		return App::getDb()->fetchColumn("
+		return $this->getEntityManager()->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM feedback
 			WHERE status_category_id = ?
@@ -246,9 +246,9 @@ class Feedback extends AbstractEntityRepository
 		$unsorted_feedback = $this->getEntityManager()->createQuery("
 			SELECT i
 			FROM DeskPRO:Feedback i INDEX BY i.id
-			WHERE i.id IN (" . implode(',', $ids) . ")
+			WHERE i.id IN (?)
 			ORDER BY i.id DESC
-		")->execute();
+		")->execute(array($ids));
 
 		$feedback = array();
 

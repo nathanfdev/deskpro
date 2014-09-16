@@ -43,7 +43,7 @@ class GlossaryWord extends AbstractEntityRepository
 	 */
 	public function getWords()
 	{
-		$words = App::getDb()->fetchAllKeyValue("
+		$words = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT id, word
 			FROM glossary_words
 			ORDER BY word ASC
@@ -57,7 +57,7 @@ class GlossaryWord extends AbstractEntityRepository
 	 */
 	public function getWordsContaining($string)
 	{
-		$words = App::getDb()->fetchAllKeyValue("
+		$words = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT id, word
 			FROM glossary_words
 			WHERE word LIKE ?

@@ -75,7 +75,7 @@ class ServerMysqlStatus
 
 		try {
 
-			$mysql_status = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), 0, 1);
+			$mysql_status = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), array(), 0, 1);
 
 		} catch(\Exception $e) {
 

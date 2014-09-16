@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Doctrine\DBAL\Connection;
 
 class LabelDef extends AbstractEntityRepository
 {
@@ -120,14 +121,23 @@ class LabelDef extends AbstractEntityRepository
 				throw new \InvalidArgumentException("`$type` is an invalid label type");
 				break;
 		}
-
-		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+		$conn = $this->getEntityManager()->getConnection();
+		$sql = '
 			SELECT label, total
 			FROM label_defs
 			WHERE label_type = ?
 			ORDER BY total DESC
-			" . ($limit ? "LIMIT $limit" : '') . "
-		", array($label_type));
+		';
+		$params = array($label_type);
+		$types = array(\PDO::PARAM_STR);
+
+		if ($limit) {
+			$sql .= ' LIMIT ?';
+			$params[] = $limit;
+			$types[] = \PDO::PARAM_INT;
+		}
+
+		return $conn->fetchAllKeyValue($sql, $params, $types);
 	}
 
 	/**

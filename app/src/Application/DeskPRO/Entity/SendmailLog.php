@@ -224,21 +224,14 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		$tos_in = array();
-		foreach ($to_addresses as $to) {
-			$tos_in[] = App::getDb()->quote($to);
-		}
-		$tos_in = implode(',', $tos_in);
-
 		$now = date('Y-m-d H:i:s');
-
 		$batch = array();
 
-		$people_ids = App::getDb()->fetchAllKeyValue("
+		$people_ids = App::getDb()->fetchAllKeyValue('
 			SELECT email, person_id
 			FROM people_emails
-			WHERE email IN ($tos_in)
-		");
+			WHERE email IN (?)
+		', array($to_addresses));
 
 		foreach ($to_addresses as $to) {
 			$batch[] = array(
@@ -278,21 +271,14 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		$tos_in = array();
-		foreach ($to_addresses as $to) {
-			$tos_in[] = App::getDb()->quote($to);
-		}
-		$tos_in = implode(',', $tos_in);
-
 		$now = date('Y-m-d H:i:s');
-
 		$batch = array();
 
-		$people_ids = App::getDb()->fetchAllKeyValue("
+		$people_ids = App::getDb()->fetchAllKeyValue('
 			SELECT email, person_id
 			FROM people_emails
-			WHERE email IN ($tos_in)
-		");
+			WHERE email IN (?)
+		', array($to_addresses));
 
 		foreach ($to_addresses as $to) {
 			$batch[] = array(
@@ -332,20 +318,14 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		$tos_in = array();
-		foreach ($to_addresses as $to) {
-			$tos_in[] = App::getDb()->quote($to);
-		}
-
 		$now = date('Y-m-d H:i:s');
-
 		$batch = array();
 
-		$people_ids = App::getDb()->fetchAllKeyValue("
+		$people_ids = App::getDb()->fetchAllKeyValue('
 			SELECT email, person_id
 			FROM people_emails
-			WHERE email IN ($tos_in)
-		");
+			WHERE email IN (?)
+		', array($to_addresses));
 
 		foreach ($to_addresses as $to) {
 			$batch[] = array(

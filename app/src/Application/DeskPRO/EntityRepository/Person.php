@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -185,14 +186,12 @@ class Person extends AbstractEntityRepository
 			return array();
 		}
 
-		$for_ids = array_map('intval', $for_ids);
-
-		return App::getDb()->fetchAllKeyValue('
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
 			SELECT id, name
 			FROM people
-			WHERE id IN (' . implode(',', $for_ids) . ')
+			WHERE id IN (?)
 			ORDER BY name
-		');
+		', array($for_ids), array(Connection::PARAM_INT_ARRAY));
 	}
 
 

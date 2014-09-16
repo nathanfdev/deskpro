@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
@@ -649,7 +650,7 @@ class Ticket extends AbstractEntityRepository
 	 */
 	public function getArchiveCounts()
 	{
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT IF(status = 'hidden', CONCAT('hidden', '.', hidden_status), status) AS status_code, COUNT(*)
 			FROM tickets
 			WHERE
@@ -711,14 +712,12 @@ class Ticket extends AbstractEntityRepository
 			return array();
 		}
 
-		$ids = implode(',', $ids);
-
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
 			SELECT person_id, COUNT(*)
 			FROM tickets
-			WHERE person_id IN ($ids)
+			WHERE person_id IN (?)
 			GROUP BY person_id
-		");
+		', array($ids), array(Connection::PARAM_INT_ARRAY));
 	}
 
 
@@ -799,7 +798,7 @@ class Ticket extends AbstractEntityRepository
 	 */
 	public function countTicketsByUrgency()
 	{
-		$counts = App::getDb()->fetchAllKeyValue("
+		$counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT urgency, COUNT(*) AS count
 			FROM tickets
 			WHERE status = 'awaiting_agent'

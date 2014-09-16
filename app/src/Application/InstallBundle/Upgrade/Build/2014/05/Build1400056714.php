@@ -34,6 +34,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\DBAL\Connection;
+
 class Build1400056714 extends AbstractBuild
 {
 	public function run()
@@ -41,15 +43,14 @@ class Build1400056714 extends AbstractBuild
 		$db = $this->container->getDb();
 
 		$this->out("Set tickets.email_account_id");
-		$valid_account_ids = $db->fetchAllKeyValue("SELECT id FROM email_accounts", array(), 0, 0);
+		$valid_account_ids = $db->fetchAllKeyValue("SELECT id FROM email_accounts", array(), array(), 0, 0);
 
 		if ($valid_account_ids) {
-			$valid_account_ids = implode(', ', $valid_account_ids);
 			$db->executeUpdate("
 				UPDATE tickets
 				SET email_account_id = email_gateway_id
-				WHERE email_gateway_id IN ($valid_account_ids)
-			");
+				WHERE email_gateway_id IN (?)
+			", array($valid_account_ids), array(Connection::PARAM_INT_ARRAY));
 		}
 	}
 }

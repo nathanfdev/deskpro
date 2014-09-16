@@ -40,6 +40,7 @@ use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Web;
@@ -401,11 +402,11 @@ class DownloadsController extends AbstractController
 		$comment_counts = array();
 		if ($results) {
 			$comment_counts = $this->db->fetchAllKeyValue("
-				SELECT article_id, COUNT(*)
-				FROM article_comments
-				WHERE article_id IN (" . implode(',', array_keys($results)) . ")
-				GROUP BY article_id
-			");
+				SELECT download_id, COUNT(*)
+				FROM download_comments
+				WHERE download_id IN (?)
+				GROUP BY download_id
+			", array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
 		}
 
 		$cat_usergroups = array();

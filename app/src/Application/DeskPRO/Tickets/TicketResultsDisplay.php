@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -523,8 +524,8 @@ class TicketResultsDisplay implements PersonContextInterface
 			$this->person_flagged = App::getDb()->fetchAllKeyValue("
 				SELECT ticket_id, color
 				FROM tickets_flagged
-				WHERE person_id = ? AND ticket_id IN (" . implode(',',$this->ticket_ids) . ")"
-			, array($this->person_context->getId()));
+				WHERE person_id = ? AND ticket_id IN (?)"
+			, array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 		}
 
 		$ticket_id = is_object($ticket) ? $ticket->getId() : $ticket;

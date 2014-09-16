@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 
 class OrganizationEmailDomain extends AbstractEntityRepository
@@ -112,22 +113,23 @@ class OrganizationEmailDomain extends AbstractEntityRepository
 		$results = array_combine($domains, array_fill(0, count($domains), 0));
 
 		if (!$domains) {
-			if ($is_single) {
+			if ($single) {
 				return 0;
 			} else {
 				return $results;
 			}
 		}
 
-		$domains = App::getDb()->quoteIn($domains);
+		/** @var Connection $conn */
+		$conn = $this->getEntityManager()->getConnection();
 
-		$results = array_merge($results, App::getDb()->fetchAllKeyValue("
+		$results = array_merge($results, $conn->fetchAllKeyValue("
 			SELECT people_emails.email_domain, COUNT(DISTINCT people.id) as count
 			FROM people_emails
-			LEFT JOIN people ON (people.id = people_emails.person_id)
-			WHERE people_emails.email_domain IN ($domains) AND people.organization_id $op ?
+			JOIN people ON (people.id = people_emails.person_id)
+			WHERE people_emails.email_domain IN (?) AND people.organization_id $op ?
 			GROUP BY people_emails.email_domain
-		", array($org_id)));
+		", array($domains, $org_id), array(Connection::PARAM_STR_ARRAY, \PDO::PARAM_INT)));
 
 		if ($single) {
 			return array_pop($results);
