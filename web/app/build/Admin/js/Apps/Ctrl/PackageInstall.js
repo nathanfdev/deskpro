@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['require', 'Admin/Main/Ctrl/Base'], function(require, Admin_Ctrl_Base) {
+  define(['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceTypeDecider'], function(require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourcesTypeDecider) {
     var Admin_Apps_Ctrl_PackageInstall;
     Admin_Apps_Ctrl_PackageInstall = (function(_super) {
       __extends(Admin_Apps_Ctrl_PackageInstall, _super);
@@ -15,11 +15,11 @@
 
       Admin_Apps_Ctrl_PackageInstall.CTRL_AS = 'Ctrl';
 
-      Admin_Apps_Ctrl_PackageInstall.DEPS = ['$http', 'dpTemplateManager'];
+      Admin_Apps_Ctrl_PackageInstall.DEPS = ['$state', '$http', 'dpTemplateManager'];
 
       Admin_Apps_Ctrl_PackageInstall.prototype.init = function() {
         this.packageName = this.$stateParams.name.replace(/\.install$/, '');
-        this.usersourceType = this.$stateParams.usersource_type;
+        this.usersourceType = Admin_Usersources_Helper_UsersourcesTypeDecider.decide(this.$state);
         this.$scope.getController = (function(_this) {
           return function() {
             return _this;
@@ -143,7 +143,7 @@
         if (this.usersourceType === 'user') {
           return this.$state.go('crm.usersources');
         } else if (this.usersourceType === 'agent') {
-          return this.$state.go('crm.usersources');
+          return this.$state.go('agents.usersources');
         } else {
           return this.$state.go('apps.apps.package', {
             name: this.pack.name
@@ -191,7 +191,7 @@
                   _ref4.refresh();
                 }
               }
-              return _this.$state.go('crm.usersources.id', {
+              return _this.$state.go('agents.usersources.id', {
                 id: info.id
               });
             } else {

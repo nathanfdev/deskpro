@@ -147,6 +147,7 @@ class TemplatingExtension extends \Twig_Extension
 			'ng_plural_phrase'                 => new \Twig_Function_Method($this, 'ngPluralPhrase', array()),
 			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 			'ng_href'                          => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
+			'ng_href_var'                      => new \Twig_Function_Method($this, 'ngHrefVar', array('is_safe' => array('html'))),
 
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
 			'ng_bind'                          => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
@@ -1674,6 +1675,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function ngHref($route, $params = '{}')
 	{
 		return '{{ state_path(\'' . addslashes($route) . '\', ' . str_replace(array("'", '"'), array('&apos;', '&quot;'), $params) . ') }}';
+	}
+
+	public function ngHrefVar($route_var, $params = '{}')
+	{
+		return '{{ state_path(' . $route_var . ', ' . str_replace(array("'", '"'), array('&apos;', '&quot;'), $params) . ') }}';
 	}
 
 	public function smartWrap($string, $len = 50, $break = null)

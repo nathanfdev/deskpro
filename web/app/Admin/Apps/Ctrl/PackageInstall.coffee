@@ -1,12 +1,14 @@
-define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
+define ['require', 'Admin/Main/Ctrl/Base',
+	'Admin/Usersources/Helper/UsersourceTypeDecider'
+], (require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourcesTypeDecider) ->
 	class Admin_Apps_Ctrl_PackageInstall extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_PackageInstall'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = ['$http', 'dpTemplateManager']
+		@DEPS      = ['$state', '$http', 'dpTemplateManager']
 
 		init: ->
 			@packageName = @$stateParams.name.replace(/\.install$/, '');
-			@usersourceType = @$stateParams.usersource_type;
+			@usersourceType = Admin_Usersources_Helper_UsersourcesTypeDecider.decide(@$state);
 			@$scope.getController = => return this
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
 			@$scope.enableCustomFooter = => @$scope.has_own_footer = true
@@ -93,7 +95,7 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 			if @usersourceType == 'user'
 				@$state.go('crm.usersources')
 			else if @usersourceType == 'agent'
-				@$state.go('crm.usersources')
+				@$state.go('agents.usersources')
 			else
 				@$state.go('apps.apps.package', {name: @pack.name});
 
@@ -121,7 +123,7 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 					@$state.go('crm.usersources.id', {id: info.id})
 				else if @usersourceType == 'agent'
 					@$scope.$parent?.ListCtrl?.refresh()
-					@$state.go('crm.usersources.id', {id: info.id})
+					@$state.go('agents.usersources.id', {id: info.id})
 				else
 					@$state.go('apps.apps.instance', {id: info.id});
 			);

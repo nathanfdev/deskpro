@@ -1,15 +1,20 @@
 define [
-	'Admin/Main/Ctrl/Base'
+	'Admin/Main/Ctrl/Base',
+	'Admin/Usersources/Helper/UsersourceTypeDecider'
 ], (
-	Admin_Ctrl_Base
+	Admin_Ctrl_Base,
+	Admin_Usersources_Helper_UsersourceTypeDecider
 ) ->
 	class Admin_Usersources_Ctrl_UsersourcesList extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_Usersources_Ctrl_UsersourcesList'
 		@CTRL_AS = 'ListCtrl'
-		@DEPS = []
+		@DEPS = ['$state']
 
 		init: ->
+			@usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
 			@usersourcesDataService = @DataService.get('Usersources')
+			@show_url = if @usersourceType == 'user' then 'crm.usersources.id' else 'agents.usersources.id'
+			@new_url = if @usersourceType == 'user' then 'crm.usersources.new' else 'agents.usersources.new'
 			@sortedListOptions = {
 				axis: 'y',
 				handle: '.drag-handle',
@@ -33,7 +38,7 @@ define [
 			@refresh()
 
 		refresh: ->
-			@Api.sendGet('/usersources/user').then((result) =>
+			@Api.sendGet('/usersources/' + @usersourceType).then((result) =>
 				@usersources = result.data.usersources
 			)
 

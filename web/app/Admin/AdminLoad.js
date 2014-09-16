@@ -181,6 +181,7 @@ define([
 	'Admin/Usersources/Ctrl/Edit',
 	'Admin/Usersources/Ctrl/New',
 	'Admin/Usersources/Ctrl/EditInstance',
+	'Admin/Usersources/Helper/UsersourceTypeDecider',
 	'Admin/ChatFields/Ctrl/List',
 	'Admin/ChatSetup/Ctrl/ChatSetup',
 	'Admin/ChatDeps/Ctrl/List',

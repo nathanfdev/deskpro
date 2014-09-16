@@ -10,7 +10,7 @@
 					dp-state-mark="crm.usersources.id.{{ ng_var('source.app ? source.app.id : "deskpro"') }}"
 					class="with-drag-handle"
 					data-id="{{ ng_var('source.usersource.id') }}">
-					<a href="{{ ng_href('crm.usersources.id', '{id: source.app ? source.app.id : "deskpro" }') }}">
+					<a ng-href="{{ ng_href_var('ListCtrl.show_url', '{id: source.app ? source.app.id : "deskpro" }') }}">
 						<i class="fa fa-bars drag-handle"></i>
 
 						<div class="pull-right">
@@ -27,7 +27,7 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('crm.usersources.go-new') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+				<a class="btn btn-default" ng-href="{{ ng_href_var('ListCtrl.new_url') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
 		</article>
 	</section>

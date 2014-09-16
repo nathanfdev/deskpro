@@ -294,6 +294,39 @@ define(function() {
 	});
 
 	//###
+	//# User Sources
+	//###
+	routes.push({
+		id: 'agents.usersources',
+		url: '/usersources',
+		templateName: 'Usersources/list.html',
+		controller: 'Admin_Usersources_Ctrl_UsersourcesList'
+	});
+
+	routes.push({
+		id: 'agents.usersources.new',
+		url: '/new',
+		templateName: 'Usersources/new.html',
+		controller: 'Admin_Usersources_Ctrl_New'
+	});
+
+	routes.push({
+		id: 'agents.usersources.id',
+		url: '/{id:[\\d\\w]+}',
+		templateName: 'Usersources/edit-instance.html',
+		controller: 'Admin_Usersources_Ctrl_EditInstance'
+	});
+
+	routes.push({
+		id: 'agents.usersources.install',
+		url: '/install/{name:\\w+}'
+		,
+		templateName: 'Apps/package-install.html',
+		controller: 'Admin_Apps_Ctrl_PackageInstall'
+	});
+
+
+	//###
 	//# Agent Login Log
 	//###
 	routes.push({
@@ -973,21 +1006,9 @@ define(function() {
 
 	routes.push({
 		id: 'crm.usersources.new',
-		url: '/new/{usersource_type:\\w+}',
+		url: '/new',
 		templateName: 'Usersources/new.html',
 		controller: 'Admin_Usersources_Ctrl_New'
-	});
-
-	routes.push({
-		id: 'crm.usersources.go-new',
-		url: '/go-new',
-		templateName: 'Usersources/new.html',
-		controller: [
-			'$state', '$stateParams', function ($state, $stateParams) {
-				$stateParams.usersource_type = 'user';
-				$state.go('crm.usersources.new', $stateParams);
-			}
-		]
 	});
 
 	routes.push({
@@ -999,21 +1020,9 @@ define(function() {
 
 	routes.push({
 		id: 'crm.usersources.install',
-		url: '/install/{name:\\w+}/{usersource_type:\\w+}',
+		url: '/install/{name:\\w+}',
 		templateName: 'Apps/package-install.html',
 		controller: 'Admin_Apps_Ctrl_PackageInstall'
-	});
-
-	routes.push({
-		id: 'crm.usersources.go-install',
-		url: '/go-install/{name:\\w+}',
-		params: ['usersource_type'],
-		controller: [
-			'$state', '$stateParams', function($state, $stateParams) {
-				$stateParams.usersource_type = 'user';
-				$state.go('crm.usersources.install', $stateParams);
-			}
-		]
 	});
 
 	//###

@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceTypeDecider'], function(Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourceTypeDecider) {
     var Admin_Usersources_Ctrl_UsersourcesList;
     Admin_Usersources_Ctrl_UsersourcesList = (function(_super) {
       __extends(Admin_Usersources_Ctrl_UsersourcesList, _super);
@@ -15,10 +15,13 @@
 
       Admin_Usersources_Ctrl_UsersourcesList.CTRL_AS = 'ListCtrl';
 
-      Admin_Usersources_Ctrl_UsersourcesList.DEPS = [];
+      Admin_Usersources_Ctrl_UsersourcesList.DEPS = ['$state'];
 
       Admin_Usersources_Ctrl_UsersourcesList.prototype.init = function() {
+        this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
         this.usersourcesDataService = this.DataService.get('Usersources');
+        this.show_url = this.usersourceType === 'user' ? 'crm.usersources.id' : 'agents.usersources.id';
+        this.new_url = this.usersourceType === 'user' ? 'crm.usersources.new' : 'agents.usersources.new';
         return this.sortedListOptions = {
           axis: 'y',
           handle: '.drag-handle',
@@ -54,7 +57,7 @@
       };
 
       Admin_Usersources_Ctrl_UsersourcesList.prototype.refresh = function() {
-        return this.Api.sendGet('/usersources/user').then((function(_this) {
+        return this.Api.sendGet('/usersources/' + this.usersourceType).then((function(_this) {
           return function(result) {
             return _this.usersources = result.data.usersources;
           };

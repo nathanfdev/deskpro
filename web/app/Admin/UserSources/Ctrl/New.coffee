@@ -1,15 +1,18 @@
 define [
-	'Admin/Main/Ctrl/Base'
+	'Admin/Main/Ctrl/Base',
+	'Admin/Usersources/Helper/UsersourceTypeDecider'
 ], (
-	Admin_Ctrl_Base
+	Admin_Ctrl_Base,
+	Admin_Usersources_Helper_UsersourcesTypeDecider
 ) ->
 	class Admin_Usersources_Ctrl_New extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_Usersources_Ctrl_New'
 		@CTRL_AS = 'NewCtrl'
-		@DEPS = ['$stateParams']
+		@DEPS = ['$state']
 
 		init: ->
-			@usersourceType = @$stateParams.usersource_type
+			@usersourceType = Admin_Usersources_Helper_UsersourcesTypeDecider.decide(@$state);
+			@$scope.install_url = if @usersourceType == 'user' then 'crm.usersources.install' else 'agents.usersources.install'
 
 		initialLoad: ->
 			url = '/usersources/available/app-packages/' + @usersourceType

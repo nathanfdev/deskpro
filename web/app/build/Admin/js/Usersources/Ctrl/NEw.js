@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceTypeDecider'], function(Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourcesTypeDecider) {
     var Admin_Usersources_Ctrl_New;
     Admin_Usersources_Ctrl_New = (function(_super) {
       __extends(Admin_Usersources_Ctrl_New, _super);
@@ -15,10 +15,11 @@
 
       Admin_Usersources_Ctrl_New.CTRL_AS = 'NewCtrl';
 
-      Admin_Usersources_Ctrl_New.DEPS = ['$stateParams'];
+      Admin_Usersources_Ctrl_New.DEPS = ['$state'];
 
       Admin_Usersources_Ctrl_New.prototype.init = function() {
-        return this.usersourceType = this.$stateParams.usersource_type;
+        this.usersourceType = Admin_Usersources_Helper_UsersourcesTypeDecider.decide(this.$state);
+        return this.$scope.install_url = this.usersourceType === 'user' ? 'crm.usersources.install' : 'agents.usersources.install';
       };
 
       Admin_Usersources_Ctrl_New.prototype.initialLoad = function() {

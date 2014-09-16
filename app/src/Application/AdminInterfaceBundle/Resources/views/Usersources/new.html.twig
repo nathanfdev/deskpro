@@ -5,11 +5,11 @@
 			<li ng-repeat="package in NewCtrl.packages">
 
 				<aside>
-					<a href="{{ ng_href('crm.usersources.go-install', '{name: package.name}') }}"><img
+					<a href="{{ ng_href_var('install_url', '{name: package.name}') }}"><img
 							ng-src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
 				</aside>
 				<div class="content">
-					<h4><a href="{{ ng_href('crm.usersources.go-install', '{name: package.name}') }}"><span
+					<h4><a href="{{ ng_href_var('install_url', '{name: package.name}') }}"><span
 								class="title-text">{{ ng_var('package.title') }}</span></a></h4>
 
 					<p class="info">
