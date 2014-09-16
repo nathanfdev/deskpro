@@ -7,8 +7,6 @@
       }
 
       Admin_Usersources_Helper_UsersourceTypeDecider.prototype.decide = function($state) {
-        console.log("inside it");
-        console.log($state);
         if ($state.includes('crm')) {
           return 'user';
         } else if ($state.includes('agents')) {
