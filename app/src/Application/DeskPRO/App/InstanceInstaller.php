@@ -76,7 +76,7 @@ class InstanceInstaller
 	 * @param DeskproContainer $container
 	 * @return AppInstance
 	 */
-	public function install($title, array $settings, DeskproContainer $container)
+	public function install($title, array $settings, DeskproContainer $container, $usersource_type = '')
 	{
 		$app = new AppInstance();
 		$app->package = $this->package;
@@ -94,7 +94,7 @@ class InstanceInstaller
 			$native_app = $this->manager->getNativeApp($app);
 			$class = $native_app->getConfig()->getInstallerHandlerClass();
 			if ($class) {
-				$context = new InstallerContext($container, $native_app, $settings);
+				$context = new InstallerContext($container, $native_app, $settings, $usersource_type);
 				$handler = new $class($this->package['settings_def']);
 			}
 		}

@@ -232,6 +232,7 @@ class AppsController extends AbstractController
 		if (!$manager->getPackage($name)) {
 			throw $this->createNotFoundException();
 		}
+		$usersource_type = $this->in->getString('usersource_type');
 
 		$package = $manager->getPackage($name);
 
@@ -239,11 +240,12 @@ class AppsController extends AbstractController
 			return $this->createApiErrorResponse('already_installed', "$name is already installed and the app has is_single=true");
 		}
 
-		$instance_installer = new InstanceInstaller($manager, $package, $this->em);
+		$instance_installer = new InstanceInstaller($manager, $package, $this->em, $usersource_type);
 		$app = $instance_installer->install(
 			$this->in->getString('settings.dp_app.title'),
 			$this->in->getCleanValueArray('settings'),
-			$this->container
+			$this->container,
+			$usersource_type
 		);
 
 		return $this->createApiCreateResponse(

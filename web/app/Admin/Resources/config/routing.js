@@ -987,9 +987,21 @@ define(function() {
 
 	routes.push({
 		id: 'crm.usersources.install',
-		url: '/install/{name:\\w+}',
+		url: '/install/{name:\\w+}/{usersource_type:\\w+}',
 		templateName: 'Apps/package-install.html',
 		controller: 'Admin_Apps_Ctrl_PackageInstall'
+	});
+
+	routes.push({
+		id: 'crm.usersources.go-install',
+		url: '/go-install/{name:\\w+}',
+		params: ['usersource_type'],
+		controller: [
+			'$state', '$stateParams', function($state, $stateParams) {
+				$stateParams.usersource_type = 'user';
+				$state.go('crm.usersources.install', $stateParams);
+			}
+		]
 	});
 
 	//###

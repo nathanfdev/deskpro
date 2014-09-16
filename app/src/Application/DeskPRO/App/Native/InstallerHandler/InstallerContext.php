@@ -55,16 +55,24 @@ class InstallerContext
 	 */
 	private $raw_form;
 
+	/**
+	 * @var string|null optional, only used if the app is an auth app. can be user or agent.
+	 */
+	private $usersource_type;
+
 
 	/**
 	 * @param DeskproContainer $container
-	 * @param NativeApp $native_app
+	 * @param NativeApp        $native_app
+	 * @param array            $raw_form
+	 * @param                  $usersource_type
 	 */
-	public function __construct(DeskproContainer $container, NativeApp $native_app, array $raw_form = array())
+	public function __construct(DeskproContainer $container, NativeApp $native_app, array $raw_form = array(), $usersource_type = null)
 	{
-		$this->container  = $container;
-		$this->native_app = $native_app;
-		$this->raw_form   = $raw_form;
+		$this->container       = $container;
+		$this->native_app      = $native_app;
+		$this->raw_form        = $raw_form;
+		$this->usersource_type = $usersource_type;
 	}
 
 
@@ -121,6 +129,16 @@ class InstallerContext
 	{
 		return $this->container;
 	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getUsersourceType()
+	{
+		return $this->usersource_type;
+	}
+
 
 
 	/**

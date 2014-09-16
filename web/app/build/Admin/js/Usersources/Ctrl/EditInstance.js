@@ -155,7 +155,12 @@
         return this.Api.sendPostJson("/apps/instances/" + this.instanceId, postData).then((function(_this) {
           return function() {
             return _this.stopSpinner('saving_settings').then(function() {
-              _this.$scope.$parent.ListCtrl.updateAppTitle(_this.instanceId, _this.$scope.setting_values.dp_app.title);
+              var _ref, _ref1;
+              if ((_ref = _this.$scope.$parent) != null) {
+                if ((_ref1 = _ref.ListCtrl) != null) {
+                  _ref1.refresh();
+                }
+              }
               return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
             });
           };
@@ -198,10 +203,12 @@
         doDelete = (function(_this) {
           return function() {
             return _this.Api.sendDelete('/apps/instances/' + _this.app.id).success(function() {
-              var _ref, _ref1;
+              var _ref, _ref1, _ref2;
               if (((_ref = _this.$scope.$parent) != null ? _ref.ListCtrl : void 0) != null) {
                 if ((_ref1 = _this.$scope.$parent) != null) {
-                  _ref1.ListCtrl.removeAppInstance(_this.app.id);
+                  if ((_ref2 = _ref1.ListCtrl) != null) {
+                    _ref2.refresh();
+                  }
                 }
               }
               return _this.$state.go('apps.apps');

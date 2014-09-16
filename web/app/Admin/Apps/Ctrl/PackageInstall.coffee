@@ -6,6 +6,7 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 
 		init: ->
 			@packageName = @$stateParams.name.replace(/\.install$/, '');
+			@usersourceType = @$stateParams.usersource_type;
 			@$scope.getController = => return this
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
 			@$scope.enableCustomFooter = => @$scope.has_own_footer = true
@@ -89,7 +90,12 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 				)
 
 		cancelInstall: ->
-			@$state.go('apps.apps.package', {name: @pack.name});
+			if @usersourceType == 'user'
+				@$state.go('crm.usersources')
+			else if @usersourceType == 'agent'
+				@$state.go('crm.usersources')
+			else
+				@$state.go('apps.apps.package', {name: @pack.name});
 
 		doInstall: ->
 			listCtrl = null
@@ -98,7 +104,9 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 
 			setting_values = @$scope.setting_values
 
-			return @Api.sendPutJson("/apps/packages/#{@packageName}", {settings: setting_values}).success( (info) =>
+			url = "/apps/packages/#{@packageName}"
+			if @usersourceType then url += '?usersource_type=' + @usersourceType
+			return @Api.sendPutJson(url, {settings: setting_values}).success( (info) =>
 				if listCtrl
 					instanceInfo = {
 						id: info.id,
@@ -108,7 +116,14 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 					}
 					listCtrl.addAppInstance(instanceInfo)
 
-				@$state.go('apps.apps.instance', {id: info.id});
+				if @usersourceType == 'user'
+					@$scope.$parent?.ListCtrl?.refresh()
+					@$state.go('crm.usersources.id', {id: info.id})
+				else if @usersourceType == 'agent'
+					@$scope.$parent?.ListCtrl?.refresh()
+					@$state.go('crm.usersources.id', {id: info.id})
+				else
+					@$state.go('apps.apps.instance', {id: info.id});
 			);
 
 	Admin_Apps_Ctrl_PackageInstall.EXPORT_CTRL()

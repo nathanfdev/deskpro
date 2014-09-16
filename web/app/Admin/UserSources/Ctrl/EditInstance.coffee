@@ -109,7 +109,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
 			@Api.sendPostJson("/apps/instances/#{@instanceId}", postData).then(=>
 				@stopSpinner('saving_settings').then(=>
-					@$scope.$parent.ListCtrl.updateAppTitle(@instanceId, @$scope.setting_values.dp_app.title)
+					@$scope.$parent?.ListCtrl?.refresh()
 					@Growl.success(@getRegisteredMessage('saved_settings'))
 				)
 			)
@@ -143,7 +143,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 					# If we are viewing with the parent list, we need to remove this
 					# app from the list
 					if @$scope.$parent?.ListCtrl?
-						@$scope.$parent?.ListCtrl.removeAppInstance(@app.id)
+						@$scope.$parent?.ListCtrl?.refresh()
 
 					# close this view
 					@$state.go('apps.apps')

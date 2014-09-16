@@ -19,6 +19,7 @@
 
       Admin_Apps_Ctrl_PackageInstall.prototype.init = function() {
         this.packageName = this.$stateParams.name.replace(/\.install$/, '');
+        this.usersourceType = this.$stateParams.usersource_type;
         this.$scope.getController = (function(_this) {
           return function() {
             return _this;
@@ -139,23 +140,33 @@
       };
 
       Admin_Apps_Ctrl_PackageInstall.prototype.cancelInstall = function() {
-        return this.$state.go('apps.apps.package', {
-          name: this.pack.name
-        });
+        if (this.usersourceType === 'user') {
+          return this.$state.go('crm.usersources');
+        } else if (this.usersourceType === 'agent') {
+          return this.$state.go('crm.usersources');
+        } else {
+          return this.$state.go('apps.apps.package', {
+            name: this.pack.name
+          });
+        }
       };
 
       Admin_Apps_Ctrl_PackageInstall.prototype.doInstall = function() {
-        var listCtrl, setting_values, _ref;
+        var listCtrl, setting_values, url, _ref;
         listCtrl = null;
         if (((_ref = this.$scope.$parent.ListCtrl) != null ? _ref.addAppInstance : void 0) != null) {
           listCtrl = this.$scope.$parent.ListCtrl;
         }
         setting_values = this.$scope.setting_values;
-        return this.Api.sendPutJson("/apps/packages/" + this.packageName, {
+        url = "/apps/packages/" + this.packageName;
+        if (this.usersourceType) {
+          url += '?usersource_type=' + this.usersourceType;
+        }
+        return this.Api.sendPutJson(url, {
           settings: setting_values
         }).success((function(_this) {
           return function(info) {
-            var instanceInfo;
+            var instanceInfo, _ref1, _ref2, _ref3, _ref4;
             if (listCtrl) {
               instanceInfo = {
                 id: info.id,
@@ -165,9 +176,29 @@
               };
               listCtrl.addAppInstance(instanceInfo);
             }
-            return _this.$state.go('apps.apps.instance', {
-              id: info.id
-            });
+            if (_this.usersourceType === 'user') {
+              if ((_ref1 = _this.$scope.$parent) != null) {
+                if ((_ref2 = _ref1.ListCtrl) != null) {
+                  _ref2.refresh();
+                }
+              }
+              return _this.$state.go('crm.usersources.id', {
+                id: info.id
+              });
+            } else if (_this.usersourceType === 'agent') {
+              if ((_ref3 = _this.$scope.$parent) != null) {
+                if ((_ref4 = _ref3.ListCtrl) != null) {
+                  _ref4.refresh();
+                }
+              }
+              return _this.$state.go('crm.usersources.id', {
+                id: info.id
+              });
+            } else {
+              return _this.$state.go('apps.apps.instance', {
+                id: info.id
+              });
+            }
           };
         })(this));
       };
