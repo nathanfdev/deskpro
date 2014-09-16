@@ -391,8 +391,10 @@ class Runner
 		App::getOrm()->flush();
 
 		$allow_retry = $this->enable_retry_scheduling;
+		$this->logger->logInfo("Retrying is " . ($allow_retry ? "on" : "off"));
 		if ($allow_retry && $source->exec_count >= $this->max_retry_attempts) {
 			$allow_retry = false;
+			$this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempt}");
 		}
 
 		$this->logger->logDebug("Running processors");
@@ -429,7 +431,7 @@ class Runner
 					KernelErrorHandler::logException($e, true);
 				}
 			} else {
-				$this->logger->logWarn("Not trying because we have reached the retry limit of {$this->max_retry_attempts}");
+				$this->logger->logWarn("Not trying again (allow_retry is false)");
 				KernelErrorHandler::logException($e, true);
 			}
 
@@ -454,6 +456,12 @@ class Runner
 				));
 
 				$result = $new_result;
+
+				if ($allow_retry) {
+					$do_retry = true;
+				} else {
+					$this->logger->logWarn("Not trying again (allow_retry is false)");
+				}
 			}
 		}
 
