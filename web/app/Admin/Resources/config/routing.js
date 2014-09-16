@@ -972,10 +972,22 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'crm.usersources.newtype',
-		url: '/new',
-		templateName: 'UserReg/usersources-newtype.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		id: 'crm.usersources.new',
+		url: '/new/{usersource_type:\\w+}',
+		templateName: 'Usersources/new.html',
+		controller: 'Admin_Usersources_Ctrl_New'
+	});
+
+	routes.push({
+		id: 'crm.usersources.go-new',
+		url: '/go-new',
+		templateName: 'Usersources/new.html',
+		controller: [
+			'$state', '$stateParams', function ($state, $stateParams) {
+				$stateParams.usersource_type = 'user';
+				$state.go('crm.usersources.new', $stateParams);
+			}
+		]
 	});
 
 	routes.push({

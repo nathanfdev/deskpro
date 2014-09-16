@@ -46,16 +46,16 @@ class UsersourceCollection extends \ArrayObject
 	/**
 	 * @return UsersourceCollection
 	 */
-	public function forInterface($interface)
+	public function forInterface($interface, $includeDisabled = false)
 	{
 		switch ($interface) {
 			case 'user':
-				return $this->configuredForUsers();
+				return $this->configuredForUsers($includeDisabled);
 			case 'agent':
 			case 'admin':
 			case 'reports':
 			case 'billing':
-				return $this->configuredForAgents();
+				return $this->configuredForAgents($includeDisabled);
 		}
 
 		throw new \InvalidArgumentException("Unknown interface '$interface'");
@@ -82,12 +82,12 @@ class UsersourceCollection extends \ArrayObject
 	/**
 	 * @return UsersourceCollection
 	 */
-	public function configuredForAgents()
+	public function configuredForAgents($includeDisabled = false)
 	{
 		// select only agent enabled usersources
 		$filtered = array_filter(
-			(array) $this, function (Usersource $us) {
-				return $us->type == Usersource::TYPE_AGENT && $us->is_enabled;
+			(array) $this, function (Usersource $us) use ($includeDisabled) {
+				return $us->type == Usersource::TYPE_AGENT && ($includeDisabled ?: $us->is_enabled);
 			}
 		);
 

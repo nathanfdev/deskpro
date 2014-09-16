@@ -1,0 +1,25 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock dp-editpane">
+		<ul class="dp-item-list dp-icon-list compact">
+			<li ng-repeat="package in NewCtrl.packages">
+
+				<aside>
+					<a href="{{ ng_href('crm.usersources.go-install', '{name: package.name}') }}"><img
+							ng-src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
+				</aside>
+				<div class="content">
+					<h4><a href="{{ ng_href('crm.usersources.go-install', '{name: package.name}') }}"><span
+								class="title-text">{{ ng_var('package.title') }}</span></a></h4>
+
+					<p class="info">
+						by {{ ng_var('package.author_name') }} &middot; <a
+							ng-href="{{ ng_var('package.author_link') }}">Website</a>
+					</p>
+
+					<p ng-bind-html="package.description"></p>
+				</div>
+			</li>
+		</ul>
+	</section>
+{% endblock %}

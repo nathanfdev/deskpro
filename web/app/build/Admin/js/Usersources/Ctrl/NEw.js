@@ -1,0 +1,42 @@
+(function() {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+    var Admin_Usersources_Ctrl_New;
+    Admin_Usersources_Ctrl_New = (function(_super) {
+      __extends(Admin_Usersources_Ctrl_New, _super);
+
+      function Admin_Usersources_Ctrl_New() {
+        return Admin_Usersources_Ctrl_New.__super__.constructor.apply(this, arguments);
+      }
+
+      Admin_Usersources_Ctrl_New.CTRL_ID = 'Admin_Usersources_Ctrl_New';
+
+      Admin_Usersources_Ctrl_New.CTRL_AS = 'NewCtrl';
+
+      Admin_Usersources_Ctrl_New.DEPS = ['$stateParams'];
+
+      Admin_Usersources_Ctrl_New.prototype.init = function() {
+        return this.usersourceType = this.$stateParams.usersource_type;
+      };
+
+      Admin_Usersources_Ctrl_New.prototype.initialLoad = function() {
+        var url;
+        url = '/usersources/available/app-packages/' + this.usersourceType;
+        return this.Api.sendGet(url).then((function(_this) {
+          return function(res) {
+            return _this.packages = res.data;
+          };
+        })(this));
+      };
+
+      return Admin_Usersources_Ctrl_New;
+
+    })(Admin_Ctrl_Base);
+    return Admin_Usersources_Ctrl_New.EXPORT_CTRL();
+  });
+
+}).call(this);
+
+//# sourceMappingURL=New.js.map

@@ -2439,6 +2439,12 @@ $collection->create('api_usersources_display_order', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_usersources_available_apps', array(
+	'path'        => '/usersources/available/app-packages/{interface}',
+	'controller'  => 'ApiBundle:Usersources:availableAppPackages',
+	'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Registration Settings
 

@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 
+use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Usersource;
 
 class UsersourcesController extends AbstractController
@@ -55,6 +56,44 @@ class UsersourcesController extends AbstractController
 		);
 
 		return $this->createApiResponse(array('usersources' => $usersources));
+	}
+
+
+	public function availableAppPackagesAction($interface)
+	{
+		$sources = $this->getUsersourceManager()->getAll()->forInterface($interface, true);
+		$packages = $this->container->getAppManager()->getAllPackages();
+
+		// available packages are packages that are usersources, but have no usersource with an app instance
+		// of that package.
+		// TODO: support auth apps that are not single only
+		$available_packages = array_filter($packages, function(AppPackage $package) use ($sources) {
+				if ($package->isUsersource()) {
+					/** @var \Application\DeskPRO\Entity\Usersource $source */
+					foreach ($sources as $source) {
+						/** @var \Application\DeskPRO\Entity\AppInstance $app */
+						if ($app = $source->app) {
+							if ($app->package->name === $package->name) {
+								return false;
+							}
+						}
+					}
+
+					return true;
+				}
+
+				return false;
+			}
+		);
+
+		$available_packages = array_map(
+			function(AppPackage $package) {
+				return $package->toApiData();
+			},
+			$available_packages
+		);
+
+		return $this->createApiResponse($available_packages);
 	}
 
 
