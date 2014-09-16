@@ -45,17 +45,20 @@ class InstallerHandler extends AbstractInstallerHandler
 	public function install(InstallerContext $context)
 	{
 		$context->getDb()->insert('usersources', array(
-			'app_id'            => $context->getApp()->id,
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array(
-				'app_key'    => $context->getApp()->getSetting('app_key'),
-				'app_secret' => $context->getApp()->getSetting('app_secret'),
-			)),
-			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook',
-			'is_enabled'        => '1'
-		));
+				'app_id'            => $context->getApp()->id,
+				'title'             => $context->getApp()->title,
+				'type'              => $context->getUsersourceType(),
+				'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ? : '',
+				'options'           => json_encode(
+					array(
+						'app_key'    => $context->getApp()->getSetting('app_key'),
+						'app_secret' => $context->getApp()->getSetting('app_secret'),
+					)
+				),
+				'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook',
+				'is_enabled'        => $context->getApp()->getSetting('enable_usersource') ? 1 : 0,
+			)
+		);
 	}
 
 
@@ -74,16 +77,19 @@ class InstallerHandler extends AbstractInstallerHandler
 	public function updateSettings(InstallerContext $context)
 	{
 		$context->getDb()->update('usersources', array(
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url'),
-			'options'           => json_encode(array(
-				'app_key'    => $context->getApp()->getSetting('app_key'),
-				'app_secret' => $context->getApp()->getSetting('app_secret'),
-			)),
-			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook',
-			'is_enabled'        => '1'
-		), array('app_id' => $context->getApp()->id));
+				'title'             => $context->getApp()->title,
+				'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url'),
+				'options'           => json_encode(
+					array(
+						'app_key'    => $context->getApp()->getSetting('app_key'),
+						'app_secret' => $context->getApp()->getSetting('app_secret'),
+					)
+				),
+				'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook',
+				'is_enabled' => $context->getApp()->getSetting('enable_usersource') ? 1 : 0,
+			),
+			array('app_id' => $context->getApp()->id)
+		);
 	}
 
 
