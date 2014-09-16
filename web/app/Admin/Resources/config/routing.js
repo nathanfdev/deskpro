@@ -980,9 +980,16 @@ define(function() {
 
 	routes.push({
 		id: 'crm.usersources.id',
-		url: '/{id:\\d+}',
-		templateName: 'Usersources/edit.html',
-		controller: 'Admin_Usersources_Ctrl_Edit'
+		url: '/{id:[\\d\\w]+}',
+		templateName: 'Usersources/edit-instance.html',
+		controller: 'Admin_Usersources_Ctrl_EditInstance'
+	});
+
+	routes.push({
+		id: 'crm.usersources.install',
+		url: '/install/{name:\\w+}',
+		templateName: 'Apps/package-install.html',
+		controller: 'Admin_Apps_Ctrl_PackageInstall'
 	});
 
 	//###

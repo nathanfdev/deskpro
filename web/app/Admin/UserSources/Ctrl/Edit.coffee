@@ -1,9 +1,10 @@
 define [
-	'Admin/Main/Ctrl/Base'
+	'Admin/Main/Ctrl/Base',
+	'Admin/Apps/Ctrl/EditInstance'
 ], (
-	Admin_Ctrl_Base
+	Admin_Ctrl_Base, Admin_Apps_Ctrl_EditInstance
 ) ->
-	class Admin_Usersources_Ctrl_Edit extends Admin_Ctrl_Base
+	class Admin_Usersources_Ctrl_Edit extends Admin_Apps_Ctrl_EditInstance
 		@CTRL_ID = 'Admin_Usersources_Ctrl_Edit'
 		@CTRL_AS = 'EditCtrl'
 		@DEPS = ['$stateParams']

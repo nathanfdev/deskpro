@@ -1,0 +1,60 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock dp-editpane">
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="form-group">
+						<div style="float: left;">
+							<img ng-src="{{ ng_var('Ctrl.pack.icon_48') }}" alt="Icon" />
+						</div>
+						<div style="float:right">
+							<button ng-if="Ctrl.pack.readme" class="btn btn-default" ng-click="Ctrl.showReadme();"><i class="fa fa-file-text-o"></i> View README</button>
+							<a class="btn btn-default" href="{{ ng_href('apps.apps.package', '{name: Ctrl.pack.name}') }}"><i class="fa fa-dropbox"></i> View App</a>
+						</div>
+						<div style="margin-left: 52px;">
+							<input type="text" class="form-control camo-input" ng-model="setting_values.dp_app.title" style="font-size: 22px; width: 75%; max-width: 350px; height: auto;" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article ng-if="default_form" class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body" ng-show="!has_display_settings">
+					<p>
+						This app does not require any configuration.
+					</p>
+				</div>
+				<div class="panel-body" ng-show="has_display_settings">
+					<div class="form-group" ng-repeat="setting in pack.settings_def" ng-switch="setting.type" ng-if="setting.type != 'hidden'">
+						{% include 'AdminInterfaceBundle:Apps:package-setting.html.twig' %}
+					</div>
+				</div>
+			</div>
+		</article>
+		<div ng-if="!default_form && form_template && install_ctrl" class="dp-sep-top">
+			<div ng-include="form_template" ng-controller="install_ctrl"></div>
+		</div>
+		<footer ng-hide="has_own_footer">
+			<div class="dp-content">
+				<div class="dp-delete-control">
+					<button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>
+				</div>
+
+				<div class="dp-btn-controls">
+					<div dp-hide-spinning="saving_settings">
+						<button class="btn btn-primary" ng-click="Ctrl.saveSettings();">{{ phrase('agent.general.save') }}</button>
+					</div>
+					<div dp-show-spinning="saving_settings">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+	<div dp-register-message="saved_settings">Settings were saved successfully</div>
+
+	{{ ng_tpl('AdminInterfaceBundle:Apps:readme-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:Apps:instance-delete-modal.html.twig') }}
+{% endblock %}

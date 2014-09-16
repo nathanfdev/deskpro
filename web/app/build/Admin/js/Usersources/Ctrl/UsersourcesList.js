@@ -39,12 +39,26 @@
 
       Admin_Usersources_Ctrl_UsersourcesList.prototype.initialLoad = function() {
         var promise;
-        promise = this.Api.sendGet('/usersources/user').then((function(_this) {
+        promise = this.refresh();
+        return promise;
+      };
+
+      Admin_Usersources_Ctrl_UsersourcesList.prototype.updateAppTitle = function(id, title) {
+        this.usersources.filter(function(x) {
+          var _ref;
+          return ((_ref = x.app) != null ? _ref.id : void 0) === id;
+        }).map(function(x) {
+          return x.usersource.title = title;
+        });
+        return this.refresh();
+      };
+
+      Admin_Usersources_Ctrl_UsersourcesList.prototype.refresh = function() {
+        return this.Api.sendGet('/usersources/user').then((function(_this) {
           return function(result) {
             return _this.usersources = result.data.usersources;
           };
         })(this));
-        return promise;
       };
 
       return Admin_Usersources_Ctrl_UsersourcesList;

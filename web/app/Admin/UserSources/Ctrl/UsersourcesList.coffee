@@ -24,9 +24,17 @@ define [
 			}
 
 		initialLoad: ->
-			promise = @Api.sendGet('/usersources/user').then( (result) =>
+			promise = @refresh()
+
+			return promise
+
+		updateAppTitle: (id, title) ->
+			@usersources.filter((x) -> x.app?.id == id).map((x) -> x.usersource.title = title)
+			@refresh()
+
+		refresh: ->
+			@Api.sendGet('/usersources/user').then((result) =>
 				@usersources = result.data.usersources
 			)
-			return promise
 
 	Admin_Usersources_Ctrl_UsersourcesList.EXPORT_CTRL()

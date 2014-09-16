@@ -179,6 +179,7 @@ define([
 	'Admin/UserGroups/Ctrl/Edit',
 	'Admin/Usersources/Ctrl/UsersourcesList',
 	'Admin/Usersources/Ctrl/Edit',
+	'Admin/Usersources/Ctrl/EditInstance',
 	'Admin/ChatFields/Ctrl/List',
 	'Admin/ChatSetup/Ctrl/ChatSetup',
 	'Admin/ChatDeps/Ctrl/List',
