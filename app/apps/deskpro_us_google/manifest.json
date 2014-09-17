@@ -14,6 +14,14 @@
 		"link": "https://www.deskpro.com/"
 	},
 	"settings_def": [
+
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enable User Source",
+			"description": "Enable this usersource?",
+			"native_only": true
+		},
 		{
 			"name": "google_apps_domain",
 			"type": "text",

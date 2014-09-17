@@ -46,6 +46,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 	 */
 	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
 	{
+		$us->title = $app->title;
 		$us->options           = array(
 			'url'      => $app->getSetting('url'),
 			'api_user' => $app->getSetting('api_user'),

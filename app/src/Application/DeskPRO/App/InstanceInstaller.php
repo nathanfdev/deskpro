@@ -121,6 +121,7 @@ class InstanceInstaller
 			if ($package->isUsersource()) {
 				$usersource = new Usersource(); // this method only creates the installcontext for NEW app instances
 				$usersource->app = $app;
+				$usersource->title = $app->title;
 				$usersource->type = $usersource_type;
 			}
 
