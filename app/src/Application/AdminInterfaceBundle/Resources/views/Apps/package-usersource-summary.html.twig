@@ -16,13 +16,13 @@
 					This is a usersource app, which alters the way your users and/or agents register and log into the system. Users and Agents have different authentication configurations. Select the place you'd like this authentication to be configured for.
 				</p>
 					<a class="btn btn-primary" ng-if="!Ctrl.pack.user_usersource_app"
-						href="{{ ng_href('crm.usersources.go-install', '{name: Ctrl.pack.name}') }}">User Portal</a>
+						href="{{ ng_href('crm.usersources.install', '{name: Ctrl.pack.name}') }}">User Portal</a>
 				<a class="btn btn-primary" ng-if="Ctrl.pack.user_usersource_app"
 						href="{{ ng_href('crm.usersources.id', '{id: Ctrl.pack.user_usersource_app.id}') }}">User Portal</a>
 					<a class="btn btn-primary" ng-if="!Ctrl.pack.agent_usersource_app"
-						href="{{ ng_href('crm.usersources.go-install', '{name: Ctrl.pack.name}') }}">Agent Interface</a>
+						href="{{ ng_href('agents.usersources.install', '{name: Ctrl.pack.name}') }}">Agent Interface</a>
 				<a class="btn btn-primary" ng-if="Ctrl.pack.agent_usersource_app"
-						href="{{ ng_href('crm.usersources.id', '{id: Ctrl.pack.agent_usersource_app.id}') }}">Agent Interface</a>
+						href="{{ ng_href('agents.usersources.id', '{id: Ctrl.pack.agent_usersource_app.id}') }}">Agent Interface</a>
 			</div>
 		</div>
 	</div>
