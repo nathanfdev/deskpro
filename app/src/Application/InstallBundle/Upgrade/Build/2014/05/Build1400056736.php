@@ -34,14 +34,6 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Sla;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckOrgName;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckPriority;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserEmail;
-use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
-use Application\DeskPRO\Tickets\Triggers\TriggerActions;
-use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
-use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerActionConverter;
 use Orb\Util\Arrays;
 
 class Build1400056736 extends AbstractBuild

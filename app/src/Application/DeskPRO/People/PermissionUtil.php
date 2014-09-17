@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 
 class PermissionUtil
 {
@@ -106,8 +107,8 @@ class PermissionUtil
 			foreach ($corrections as $usergroup_id => $bad_perms) {
 				App::getDb()->executeUpdate("
 					DELETE FROM permissions
-					WHERE usergroup_id = ? AND name IN (" . App::getDb()->quoteIn($bad_perms) . ")
-				", array($usergroup_id));
+					WHERE usergroup_id = ? AND name IN (?)
+				", array($usergroup_id, $bad_perms), array(\PDO::PARAM_INT, Connection::PARAM_STR_ARRAY));
 			}
 		}
 

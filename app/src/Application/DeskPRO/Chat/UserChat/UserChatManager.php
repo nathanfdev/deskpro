@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
@@ -1140,9 +1141,12 @@ class UserChatManager
 				UPDATE chat_messages
 				SET date_received = ?
 				WHERE
-					id IN (" . implode(', ', $message_ids) . ")
+					id IN (?)
 					AND conversation_id = ?
-			", array($d, $convo->getId()));
+			",
+				array($d, $message_ids, $convo->getId()),
+				array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT)
+			);
 
 			$cm = new ClientMessage();
 			$cm->fromArray(array(

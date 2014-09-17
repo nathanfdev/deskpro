@@ -34,10 +34,7 @@
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\Adapter\SessionStateInterface;
-use \Orb\Auth\Adapter\CallbackInterface;
 use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
 
 
 /**

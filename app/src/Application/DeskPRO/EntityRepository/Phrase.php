@@ -51,7 +51,7 @@ class Phrase extends AbstractEntityRepository
 				SELECT p
 				FROM DeskPRO:Phrase p
 				WHERE p.language = ?1 AND p.name = ?2
-			")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();;
+			")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
 		}
 	}
 

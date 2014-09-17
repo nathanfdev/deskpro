@@ -34,7 +34,6 @@ namespace Application\ImportBundle\ValueImporter;
 use Application\ImportBundle\Value\AttachmentValue;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
-use Orb\Validator\StringEmail;
 
 class AttachmentValueImporter extends AbstractValueImporter
 {

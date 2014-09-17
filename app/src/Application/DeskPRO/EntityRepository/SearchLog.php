@@ -132,7 +132,6 @@ class SearchLog extends AbstractEntityRepository
 
 	public function getByIds(array $ids, $keep_order = false)
 	{
-		$ids = Arrays::castToType($ids, 'int');
 		if (!$ids) {
 			return array();
 		}
@@ -140,8 +139,8 @@ class SearchLog extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT l
 			FROM DeskPRO:SearchLog l
-			WHERE l.id IN (" . implode(',', $ids) . ")
+			WHERE l.id IN (?)
 			ORDER BY l.id DESC
-		")->execute();
+		")->execute(array($ids));
 	}
 }

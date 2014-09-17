@@ -192,8 +192,6 @@ class TicketEmailBuilder
 	public function setToPeople(array $people)
 	{
 		throw new \RuntimeException();
-		$this->options->set('to_people', $people);
-		return $this;
 	}
 
 	/**

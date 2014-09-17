@@ -106,8 +106,6 @@ class UserTemplatingExtension extends \Twig_Extension
 			default:
 				return '';
 		}
-
-		return $options[$name];
 	}
 
 	public function getFilters()

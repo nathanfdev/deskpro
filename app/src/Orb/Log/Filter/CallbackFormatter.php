@@ -34,9 +34,6 @@
 
 namespace Orb\Log\Filter;
 
-use Orb\Log\LogItem;
-use Orb\Log\Logger;
-
 
 /**
  * This wraps up a function callback

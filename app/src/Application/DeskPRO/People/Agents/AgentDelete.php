@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\Agents;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
@@ -102,8 +103,8 @@ class AgentDelete
 				$agent_group_ids = Arrays::flattenToIndex($agent_groups, 'id');
 				$this->db->executeUpdate("
 					DELETE FROM person2usergroups
-					WHERE person_id = ? AND usergroup_id IN (" . implode(',', $agent_group_ids) . ")
-				", array($this->agent->id));
+					WHERE person_id = ? AND usergroup_id IN (?)
+				", array($this->agent->id, $agent_group_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 			}
 
 			// Assigned tickets

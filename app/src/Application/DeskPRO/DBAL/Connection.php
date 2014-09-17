@@ -215,19 +215,21 @@ class Connection extends \Doctrine\DBAL\Connection
 	}
 
 
-
 	/**
 	 * Execute a query and return all results grouped into a multi-dimentional array by $group_key.
 	 * Optionally, the sub-array can be indexed by $index_key.
 	 *
-	 * @param string $statement
+	 * @param $statement
 	 * @param array $params
-	 * @param string $group_key
-	 * @param string $index_key
+	 * @param $group_key
+	 * @param null $index_key
+	 * @param null $col_key
+	 * @param array $types
+	 * @return array
 	 */
-	public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null)
+	public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null, $types = array())
 	{
-		$statement = $this->executeQuery($statement, $params);
+		$statement = $this->executeQuery($statement, $params, $types);
 		$array = array();
 
 		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -449,28 +451,22 @@ class Connection extends \Doctrine\DBAL\Connection
 	 */
 	public function count($tableName, $where = null)
 	{
-		$this->connect();
-
-		$sql = "SELECT COUNT(*) FROM `$tableName`";
-
-		$params = array();
+		$qb = $this->createQueryBuilder()
+			->select('COUNT(*)')
+			->from($tableName, 't');
+		$eb = $qb->expr();
 
 		if ($where) {
 			if (is_array($where)) {
-				$placeholders = array();
-
 				foreach ($where as $columnName => $value) {
-					$params[] = $value;
-					$placeholders[] = $columnName . ' = ?';
+					$qb->andWhere($eb->eq($columnName, $value));
 				}
-
-				$sql .= " WHERE " . implode(" AND ", $placeholders);
 			} else {
-				$sql .= " WHERE $where";
+				$qb->where($where);
 			}
 		}
 
-		return $this->fetchColumn($sql, $params);
+		return $qb->execute()->fetchColumn();
 	}
 
 	public function countWithPlaceholders($tableName, $where = null, array $params = array())

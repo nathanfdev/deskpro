@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\UserPermissions;
 
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 class GroupsDbLoader
@@ -110,9 +111,9 @@ class GroupsDbLoader
 		$perm_recs = $this->db->fetchAll("
 			SELECT name, usergroup_id
 			FROM permissions
-			WHERE usergroup_id IN (" . implode(',', $this->group_ids) . ")
+			WHERE usergroup_id IN (?)
 				AND value = 1
-		");
+		", array($this->group_ids), array(Connection::PARAM_INT_ARRAY));
 
 		$this->group_perms = array();
 

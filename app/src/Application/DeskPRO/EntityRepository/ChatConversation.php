@@ -410,8 +410,6 @@ class ChatConversation extends AbstractEntityRepository
 			LEFT JOIN people ON chat_conversations.person_id = people.id
 			WHERE people.organization_id = ? AND chat_conversations.is_agent = 0
 		", array($org->getId()));
-
-		return $chats;
 	}
 
 	public function getCountForPerson(PersonEntity $person)

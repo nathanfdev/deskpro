@@ -49,17 +49,16 @@ class LogItem extends AbstractEntityRepository
 
 	public function getCronLogs($job_id, $priority, $from = 0, $limit = 100)
 	{
-		// For some reason parameter binding is not working for LIMIT here..
-
-		return App::getDb()->fetchAll(
+		return $this->getEntityManager()->getConnection()->fetchAll(
 			"
 			SELECT log_name, session_name, message, priority, UNIX_TIMESTAMP(date_created) AS date_created
 			FROM log_items
 			WHERE log_name LIKE ? AND priority <= ?
 			ORDER BY id DESC
-			LIMIT " . $from . ", " . $limit . "
+			LIMIT ?, ?
 			",
-			array($job_id, $priority)
+			array($job_id, $priority, $from, $limit),
+			array(\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT)
 		);
 	}
 

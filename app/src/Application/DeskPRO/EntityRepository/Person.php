@@ -466,19 +466,19 @@ class Person extends AbstractEntityRepository
 
 		// Only one person
 		if (count($bottom_group) == 1) {
-			return App::findEntity('DeskPRO:Person', $bottom_group[0]);
+			return $this->find($bottom_group[0]);
 		}
 
 		// Otherwise, we'll fetch the person who hasnt had a chat in a while
-		$id = App::getDb()->fetchColumn("
+		$id = $this->getEntityManager()->getConnection()->fetchColumn("
 			SELECT agent_id
 			FROM chat_conversations
-			WHERE agent_id IN (" . implode(',', $bottom_group) . ") AND status = ?
+			WHERE agent_id IN (?) AND status = 'ended'
 			ORDER BY date_ended DESC
 			LIMIT 1
-		", array('ended'));
+		", array($bottom_group), 0, array(Connection::PARAM_INT_ARRAY));
 
-		return App::findEntity('DeskPRO:Person', $id);
+		return $this->find($id);
 	}
 
 	/**

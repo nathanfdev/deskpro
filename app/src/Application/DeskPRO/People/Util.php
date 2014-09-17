@@ -200,8 +200,8 @@ class Util
 				SELECT usergroup_id, name, value
 				FROM permissions
 				LEFT JOIN usergroups ON (usergroups.id = permissions.id)
-				WHERE usergroup_id IN (" . implode(',', $ug_ids) . ")
-			", array(), 'usergroup_id', 'name', 'value');
+				WHERE usergroup_id IN (?)
+			", array($ug_ids), 'usergroup_id', 'name', 'value', array(Connection::PARAM_INT_ARRAY));
 		} else {
 			$all_ug_perms = array();
 			$usergroups = array();

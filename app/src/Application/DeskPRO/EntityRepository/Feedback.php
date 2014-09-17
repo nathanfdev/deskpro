@@ -224,16 +224,16 @@ class Feedback extends AbstractEntityRepository
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Feedback i INDEX BY i.id
-				WHERE i.id IN (" . implode(',', $ids) . ") AND i.status != 'hidden'
+				WHERE i.id IN (?) AND i.status != 'hidden'
 				ORDER BY i.id DESC
-			")->execute();
+			")->execute(array($ids));
 		} else {
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Feedback i INDEX BY i.id
-				WHERE i.id IN (" . implode(',', $ids) . ")
+				WHERE i.id IN (?)
 				ORDER BY i.id DESC
-			")->execute();
+			")->execute(array($ids));
 		}
 
 		return $feedback;
@@ -272,16 +272,16 @@ class Feedback extends AbstractEntityRepository
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Feedback i
-				WHERE i.category IN (".implode(',', $node_ids).") AND i.status = ?1
+				WHERE i.category IN (?) AND i.status = ?
 				ORDER BY i.$sort DESC
-			")->setParameter(1, $status)->setMaxResults($num)->execute();
+			")->setMaxResults($num)->execute(array($node_ids, $status));
 		} else {
 			$feedback = $this->getEntityManager()->createQuery("
 				SELECT i
 				FROM DeskPRO:Feedback i
-				WHERE i.status = ?1
+				WHERE i.status = ?
 				ORDER BY i.$sort DESC
-			")->setParameter(1, $status)->setMaxResults($num)->execute();
+			")->setMaxResults($num)->execute(array($status));
 		}
 
 		return $feedback;
@@ -306,16 +306,16 @@ class Feedback extends AbstractEntityRepository
 				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
 					FROM DeskPRO:Feedback i INDEX BY i.id
-					WHERE i.status_category = ?1 AND i.category IN (" . implode(',',$cat_ids) . ")
+					WHERE i.status_category = ? AND i.category IN (?)
 					ORDER BY i.id DESC
-				")->setParameter(1, $status)->setMaxResults($num)->execute();
+				")->setMaxResults($num)->execute(array($status, $cat_ids));
 			} else {
 				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
 					FROM DeskPRO:Feedback i INDEX BY i.id
-					WHERE i.status_category = ?1
+					WHERE i.status_category = ?
 					ORDER BY i.id DESC
-				")->setParameter(1, $status)->setMaxResults($num)->execute();
+				")->setMaxResults($num)->execute(array($status));
 			}
 		} else {
 			if ($node) {
@@ -323,16 +323,16 @@ class Feedback extends AbstractEntityRepository
 				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
 					FROM DeskPRO:Feedback i INDEX BY i.id
-					WHERE i.status = ?1 AND i.category IN (" . implode(',',$cat_ids) . ")
+					WHERE i.status = ? AND i.category IN (?)
 					ORDER BY i.id DESC
-				")->setParameter(1, $status)->setMaxResults($num)->execute();
+				")->setMaxResults($num)->execute(array($status, $cat_ids));
 			} else {
 				$feedback = $this->getEntityManager()->createQuery("
 					SELECT i
 					FROM DeskPRO:Feedback i INDEX BY i.id
-					WHERE i.status = ?1
+					WHERE i.status = ?
 					ORDER BY i.id DESC
-				")->setParameter(1, $status)->setMaxResults($num)->execute();
+				")->setMaxResults($num)->execute(array($status));
 			}
 		}
 

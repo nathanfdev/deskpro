@@ -372,11 +372,13 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 						'driver' => 'pdo_mysql',
 					));
 
-					$session_data = $conn->query('
-						SELECT session_data
-						FROM ' . $conn->quoteIdentifier($parts['table_prefix'] . 'core_session')  . '
-						WHERE session_id = ' . $conn->quote($session)
-					)->fetchColumn();
+					$qb = $conn->createQueryBuilder()
+						->select('s.session_date')
+						->from($parts['table_prefix'] . 'core_session', 's')
+						->where('s.session_id = ?')
+						->setParameter(0, $session);
+
+					$session_data = $qb->execute()->fetchColumn();
 				} catch (\Exception $e) {}
 			}
 		}

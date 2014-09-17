@@ -131,7 +131,7 @@ class RequestAuth
 			return null;
 		}
 
-		return $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);;
+		return $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
 	}
 
 
@@ -145,7 +145,7 @@ class RequestAuth
 			return null;
 		}
 
-		return $this->em->getRepository('DeskPRO:ApiToken')->findByTokenString($token_str);;
+		return $this->em->getRepository('DeskPRO:ApiToken')->findByTokenString($token_str);
 	}
 
 

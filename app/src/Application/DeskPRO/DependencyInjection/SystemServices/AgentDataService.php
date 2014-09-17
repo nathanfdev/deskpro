@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -155,8 +156,8 @@ class AgentDataService
 			$this->agent_to_groups = $this->db->fetchAllGrouped("
 				SELECT person_id, usergroup_id
 				FROM person2usergroups
-				WHERE person_id IN (" . implode(',', $this->ids) . ")
-			", array(), 'person_id', null, 'usergroup_id');
+				WHERE person_id IN (?)
+			", array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
 		}
 	}
 
