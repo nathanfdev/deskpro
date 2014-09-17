@@ -32,31 +32,82 @@
  * @category Entities
  */
 
-namespace deskpro_us_facebook;
+namespace Application\DeskPRO\App\Native\InstallerHandler;
 
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\ORM\EntityManager;
 
-class InstallerHandler extends AbstractUsersourceInstallerHandler
+abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandler
 {
+	protected $settingsDef;
+
+	public function __construct($settingsDef = array())
+	{
+		$this->settingsDef = $settingsDef;
+	}
+
+
+	/**
+	 * This is run during every install and update
+	 *
+	 * @param AppInstance   $app
+	 * @param Usersource    $usersource
+	 * @param EntityManager $em
+	 * @return mixed
+	 */
+	protected abstract function applyAppToUsersource(AppInstance $app, Usersource $usersource, EntityManager $em);
+
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+	public function install(InstallerContext $context)
 	{
-		$us->options           = array(
-			'app_key'    => $app->getSetting('app_key'),
-			'app_secret' => $app->getSetting('app_secret'),
-		);
-		$us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
-		$us->title             = $app->title;
-		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';
+		$this->applyAppToUsersource($context->getApp(), $context->getUsersource(), $context->getEm());
+	}
 
-		$em->persist($app);
-		$em->persist($us);
-		$em->flush();
+	/**
+	 * {@inheritDoc}
+	 */
+	public function updateSettings(InstallerContext $context)
+	{
+		$this->applyAppToUsersource($context->getApp(), $context->getUsersource(), $context->getEm());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function uninstall(InstallerContext $context)
+	{
+		$context->getEm()->remove($context->getUsersource());
+		$context->getEm()->flush();
+	}
+
+	/**
+	 * @param InstallerContext $context
+	 * @param array $settings
+	 * @return array
+	 */
+	public function processSettings(InstallerContext $context, array $settings)
+	{
+		return $settings;
+	}
+
+	/**
+	 * @param InstallerContext $context
+	 * @param array $settings
+	 * @return array
+	 */
+	public function validateSettings(InstallerContext $context, array $settings)
+	{
+		return $settings;
+	}
+
+	/**
+	 * @param InstallerContext $context
+	 * @return void
+	 */
+	public function updatePackage(InstallerContext $context)
+	{
 	}
 }
