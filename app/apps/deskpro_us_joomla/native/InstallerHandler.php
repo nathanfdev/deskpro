@@ -34,58 +34,29 @@
 
 namespace deskpro_us_joomla;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
+use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\ORM\EntityManager;
 
-class InstallerHandler extends AbstractInstallerHandler
+class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function install(InstallerContext $context)
+	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
 	{
-		$context->getDb()->insert('usersources', array(
-			'app_id'            => $context->getApp()->id,
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
-			'source_type'       => 'deskpro_us_joomla\\Usersource\\Adapter\\Joomla',
-			'is_enabled'        => '1'
-		));
-	}
+		$us->title             = $app->title;
+		$us->options           = array(
+			'joomla_url' => $app->getSetting('joomla_url'),
+			'joomla_secret' => $app->getSetting('joomla_secret')
+		);
+		$us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
+		$us->source_type       = 'deskpro_us_joomla\\Usersource\\Adapter\\Joomla';
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$context->getDb()->update('usersources', array(
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url'),
-			'options'           => json_encode(array('joomla_url' => $context->getApp()->getSetting('joomla_url'), 'joomla_secret' => $context->getApp()->getSetting('joomla_secret'))),
-			'source_type'       => 'deskpro_us_joomla\\Usersource\\Adapter\\Joomla',
-			'is_enabled'        => '1'
-		), array('app_id' => $context->getApp()->id));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		// Nothing
+		$em->persist($app);
+		$em->persist($us);
+		$em->flush();
 	}
 }
