@@ -29,132 +29,128 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\App\Native\InstallerHandler;
+namespace Application\DeskPRO\App;
 
-use Application\DeskPRO\App\Native\NativeApp;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Usersource;
-use Orb\Util\Arrays;
-
-class InstallerContext
+/**
+ * Acts as a data structure used as an argument to the methods of the AppManipulator
+ * when installing/updating/uninstalling app instances.
+ */
+class AppManipulatorContext
 {
 	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 * an array with the settings (keys are to be as defined in manifest.json)
+	 *
+	 * @var array|null
 	 */
-	private $container;
+	private $settings;
 
 	/**
-	 * @var \Application\DeskPRO\App\Native\NativeApp
+	 * a new title to give the app instance, otherwise the app package name is used
+	 *
+	 * @var string|null
 	 */
-	private $native_app;
+	private $inputTitle;
 
 	/**
-	 * @var array
+	 * should be provided during an update manipulation
+	 *
+	 * @var array|null
 	 */
-	private $raw_form;
+	private $saveAssets;
 
 	/**
-	 * @var Usersource|null must be preset for "usersources" apps. null otherwise.
+	 * if relevant (if app package is a usersource app) then this must be the
+	 * usersource interface the app applies to ("user" or "agent")
+	 *
+	 * @var string|null
 	 */
-	private $usersource;
+	private $usersourceType;
 
-
-	/**
-	 * @param DeskproContainer $container
-	 * @param NativeApp        $native_app
-	 * @param array            $raw_form
-	 * @param                  $usersource_type
-	 */
-	public function __construct(DeskproContainer $container, NativeApp $native_app, array $raw_form = array(), Usersource $usersource = null)
+	public function __construct(array $settings, $inputTitle)
 	{
-		$this->container       = $container;
-		$this->native_app      = $native_app;
-		$this->raw_form        = $raw_form;
-		$this->usersource      = $usersource;
+		$this->settings = $settings;
+		$this->inputTitle = $inputTitle;
+	}
+
+
+	public function isUsersource()
+	{
+		return $this->usersourceType !== null;
 	}
 
 
 	/**
-	 * @return array
+	 * @return array|null
 	 */
-	public function getRawForm()
+	public function getSettings()
 	{
-		return $this->raw_form;
+		return $this->settings;
 	}
 
 
 	/**
-	 * @param string $name
-	 * @return mixed
+	 * @param array $settings
 	 */
-	public function getRawFormData($name)
+	public function setSettings(array $settings)
 	{
-		return Arrays::getValue($this->raw_form, $name);
+		$this->settings = $settings;
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\AppInstance
+	 * @return null|string
 	 */
-	public function getNativeApp()
+	public function getInputTitle()
 	{
-		return $this->native_app;
+		return $this->inputTitle;
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\AppInstance
+	 * @param null|string $inputTitle
 	 */
-	public function getApp()
+	public function setInputTitle($inputTitle)
 	{
-		return $this->native_app->getApp();
+		$this->inputTitle = $inputTitle;
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\AppPackage
+	 * @return array|null
 	 */
-	public function getPackage()
+	public function getSaveAssets()
 	{
-		return $this->native_app->getPackage();
+		return $this->saveAssets;
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+	 * @param array|null $saveAssets
 	 */
-	public function getContainer()
+	public function setSaveAssets($saveAssets)
 	{
-		return $this->container;
+		$this->saveAssets = $saveAssets;
 	}
 
 
 	/**
-	 * @return Usersource|null
+	 * @return null|string
 	 */
-	public function getUsersource()
+	public function getUsersourceType()
 	{
-		return $this->usersource;
+		return $this->usersourceType;
 	}
 
 
 	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
+	 * @param null|string $usersourceType
 	 */
-	public function getDb()
+	public function setUsersourceType($usersourceType)
 	{
-		return $this->container->getDb();
-	}
-
-
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	public function getEm()
-	{
-		return $this->container->getEm();
+		$this->usersourceType = $usersourceType;
 	}
 }
+ 

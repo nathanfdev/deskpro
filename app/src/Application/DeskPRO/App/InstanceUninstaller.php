@@ -42,7 +42,7 @@ use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Usersource;
 use Doctrine\ORM\EntityManager;
 
-class InstanceInstaller
+class InstanceUninstaller
 {
 	/**
 	 * @var AppManager
@@ -50,9 +50,9 @@ class InstanceInstaller
 	private $manager;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\AppPackage
+	 * @var \Application\DeskPRO\Entity\AppInstance
 	 */
-	private $package;
+	private $app;
 
 	/**
 	 * @var \Doctrine\ORM\EntityManager
@@ -64,43 +64,27 @@ class InstanceInstaller
 	 * @param AppPackage $package
 	 * @param EntityManager $em
 	 */
-	public function __construct(AppManager $manager, AppPackage $package, EntityManager $em)
+	public function __construct(AppManager $manager, AppInstance $app, EntityManager $em)
 	{
 		$this->manager = $manager;
-		$this->package = $package;
+		$this->app     = $app;
 		$this->em      = $em;
 	}
 
 
 	/**
-	 * @param string $title
-	 * @param array $settings
 	 * @param DeskproContainer $container
-	 * @return AppInstance
 	 */
-	public function install($title, array $settings, DeskproContainer $container, $usersource_type = '')
+	public function uninstall(DeskproContainer $container)
 	{
-		$app = new AppInstance();
-		$app->title = $title ?: $this->package->title;
-		$app->package = $this->package;
+		$handler = $this->createInstallHandler();
+		$context = $this->createInstallContext($this->app->package, $this->app, array(), $container);
 
-		// Need to persist now so we have an actual app record
-		// (the id may be used in the installer)
-		$this->em->persist($app);
+		$handler->uninstall($context);
+
+		$this->em->remove($this->app);
 		$this->em->flush();
 
-		$settings = self::readAppSettings($this->package, $settings);
-		$context = $this->createInstallContext($this->package, $app, $settings, $container, $usersource_type);
-		$handler = $this->createInstallHandler($this->package, $app);
-
-		$settings = $handler->processSettings($context, $settings);
-		$app->setSettings($settings ?: array());
-		$this->em->persist($app);
-		$this->em->flush();
-
-		$handler->install($context);
-
-		return $app;
 	}
 
 
@@ -109,19 +93,27 @@ class InstanceInstaller
 	 * @param AppInstance      $app
 	 * @param array            $settings
 	 * @param DeskproContainer $container
-	 * @param null             $usersource_type
 	 * @return InstallerContext
+	 * @throws \UnexpectedValueException
 	 */
-	protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container, $usersource_type = null)
+	protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container)
 	{
 		if ($package->native_name) {
 			$native_app = $this->manager->getNativeApp($app);
 			$usersource = null;
 
 			if ($package->isUsersource()) {
-				$usersource = new Usersource(); // this method only creates the installcontext for NEW app instances
-				$usersource->app = $app;
-				$usersource->type = $usersource_type;
+				$q = $this->em->createQuery('
+				SELECT us
+				FROM DeskPRO:Usersource us
+				WHERE us.app = :app
+				');
+				$q->setParameter('app', $app);
+				$usersource = $q->getOneOrNullResult();
+
+				if (!$usersource) {
+					throw new \UnexpectedValueException('a usersource app instance MUST have a usersource pointing to it, app.id=' . $app->id . ' does not!');
+				}
 			}
 
 			return new InstallerContext($container, $native_app, $settings, $usersource);
@@ -134,73 +126,17 @@ class InstanceInstaller
 	/**
 	 * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
 	 *
-	 * @param AppPackage  $package
-	 * @param AppInstance $app
-	 * @return \Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface
+	 * @return Native\InstallerHandler\InstallerHandlerInterface
 	 */
-	protected function createInstallHandler(AppPackage $package, AppInstance $app)
+	protected function createInstallHandler()
 	{
-		if ($package->native_name) {
-			$native_app = $this->manager->getNativeApp($app);
+		if ($this->app->package->native_name) {
+			$native_app = $this->manager->getNativeApp($this->app);
 			if ($class = $native_app->getConfig()->getInstallerHandlerClass()) {
-				return new $class($this->package['settings_def']);
+				return new $class($this->app->package['settings_def']);
 			}
 		}
 
 		return new NoopInstallerHandler();
-	}
-
-
-	/**
-	 * @param AppPackage $package
-	 * @param array $settings_form
-	 * @return array
-	 */
-	public static function readAppSettings(AppPackage $package, array $settings_form)
-	{
-		$settings = array();
-		foreach ($package->settings_def as $setting_def) {
-			$value = isset($settings_form[$setting_def['name']]) ? $settings_form[$setting_def['name']] : null;
-			if (!is_scalar($value)) {
-				$value = null;
-			}
-
-			if ($value !== null) {
-				switch ($setting_def) {
-					case 'choice':
-						$found = false;
-						if (isset($setting_def['options'])) {
-							foreach ($setting_def['options'] as $opt) {
-								if ($opt['value'] == $value) {
-									$found = true;
-									break;
-								}
-							}
-						}
-						if (!$found) {
-							$value = null;
-						}
-						break;
-
-					case 'checkbox':
-						if ($value === true || $value === 1 || $value === "1" || $value === "true") {
-							$value = true;
-						} else {
-							$value = false;
-						}
-						break;
-				}
-			}
-
-			if ($value === null && isset($setting_def['default_value'])) {
-				$value = $setting_def['default_value'];
-			}
-
-			if ($value !== null) {
-				$settings[$setting_def['name']] = $value;
-			}
-		}
-
-		return $settings;
 	}
 }
