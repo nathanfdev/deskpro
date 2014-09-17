@@ -34,73 +34,32 @@
 
 namespace deskpro_us_jwt;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
+use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\ORM\EntityManager;
 
-class InstallerHandler extends AbstractInstallerHandler
+class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function install(InstallerContext $context)
+	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
 	{
-		$usersourceData = $this->getUsersourceData($context);
-		$context->getDb()->insert('usersources', $usersourceData);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$usersourceData = $this->getUsersourceData($context);
-		$context->getDb()->update(
-			'usersources',
-			$usersourceData,
-			array('app_id' => $context->getApp()->id)
+		$us->title = $app->title;
+		$us->options = array(
+			'url'               => $app->getSetting('url'),
+			'secret'            => $app->getSetting('secret'),
+			'login_custom_text' => $app->getSetting('login_custom_text'),
+			'logout_agent_url'  => $app->getSetting('logout_agent_url'),
+			'logout_user_url'   => $app->getSetting('logout_user_url'),
 		);
-	}
+		$us->is_enabled = $app->getSetting('enable_usersource') ? 1 : 0;
+		$us->lost_password_url = $app->getSetting('url') ?: '';
+		$us->source_type = 'deskpro_us_jwt\\Usersource\\Adapter\\Jwt';
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		// Nothing
-	}
-
-
-	/**
-	 * @param InstallerContext $context
-	 * @return array
-	 */
-	protected function getUsersourceData(InstallerContext $context)
-	{
-		return array(
-			'app_id'            => $context->getApp()->id,
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'deskpro_us_jwt\\Usersource\\Adapter\\Jwt',
-			'lost_password_url' => $context->getApp()->getSetting('url') ?: '',
-			'options'           => json_encode(
-				array(
-					'url'               => $context->getApp()->getSetting('url'),
-					'secret'            => $context->getApp()->getSetting('secret'),
-					'login_custom_text' => $context->getApp()->getSetting('login_custom_text'),
-					'logout_agent_url' => $context->getApp()->getSetting('logout_agent_url'),
-					'logout_user_url' => $context->getApp()->getSetting('logout_user_url'),
-				)
-			)
-		);
+		$em->persist($us);
+		$em->persist($app);
+		$em->flush();
 	}
 }
