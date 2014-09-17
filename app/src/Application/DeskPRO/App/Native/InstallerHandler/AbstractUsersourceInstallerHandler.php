@@ -56,7 +56,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 	 * @param EntityManager $em
 	 * @return mixed
 	 */
-	protected abstract function applyAppToUsersource(AppInstance $app, Usersource $usersource, EntityManager $em);
+	protected abstract function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em);
 
 	/**
 	 * {@inheritDoc}
