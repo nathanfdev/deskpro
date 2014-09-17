@@ -99,7 +99,11 @@ class UsersourcesController extends AbstractController
 
 	public function getUsersourceAction($type, $id)
 	{
-		$sources = $this->getUsersourceManager()->getAll()->mustHaveId($id);
+		if ($id === 'deskpro') {
+			$sources = $this->getUsersourceManager()->getAll()->withNoApp();
+		} else {
+			$sources = $this->getUsersourceManager()->getAll()->mustHaveId($id);
+		}
 
 		if ($type === Usersource::TYPE_USER) {
 			$sources = $sources->configuredForUsers(true);
@@ -112,6 +116,40 @@ class UsersourcesController extends AbstractController
 		if (!$source) {
 			throw $this->createNotFoundException('usersource id=' . $id . ' not found for type=' . $type);
 		}
+
+		return $this->createApiResponse(
+			array(
+				'usersource' => $source->toApiData(),
+				'app'        => $source->app ? $source->app->toApiData() : null
+			)
+		);
+	}
+
+
+	public function postUsersourceAction($type, $id)
+	{
+		if ($id === 'deskpro') {
+			$sources = $this->getUsersourceManager()->getAll()->withNoApp();
+		} else {
+			$sources = $this->getUsersourceManager()->getAll()->mustHaveId($id);
+		}
+
+		if ($type === Usersource::TYPE_USER) {
+			$sources = $sources->configuredForUsers(true);
+		} else {
+			$sources = $sources->configuredForAgents(true);
+		}
+
+		$source = $sources->getFirstOrNull();
+
+		if (!$source) {
+			throw $this->createNotFoundException('usersource id=' . $id . ' not found for type=' . $type);
+		}
+
+		$source->title = $this->in->getString('title');
+		$source->is_enabled = $this->in->getBool('is_enabled');
+		$this->container->getEm()->persist($source);
+		$this->container->getEm()->flush();
 
 		return $this->createApiResponse(
 			array(

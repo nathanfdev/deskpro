@@ -1,6 +1,6 @@
 define ['require', 'Admin/Main/Ctrl/Base',
 	'Admin/Usersources/Helper/UsersourceTypeDecider'
-], (require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourcesTypeDecider) ->
+], (require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourceTypeDecider) ->
 	class Admin_Apps_Ctrl_PackageInstall extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_PackageInstall'
 		@CTRL_AS   = 'Ctrl'
@@ -8,7 +8,7 @@ define ['require', 'Admin/Main/Ctrl/Base',
 
 		init: ->
 			@packageName = @$stateParams.name.replace(/\.install$/, '');
-			@usersourceType = Admin_Usersources_Helper_UsersourcesTypeDecider.decide(@$state);
+			@usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
 			@$scope.getController = => return this
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
 			@$scope.enableCustomFooter = => @$scope.has_own_footer = true

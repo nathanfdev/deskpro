@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<section class="dp-paneblock dp-editpane">
+	<section class="dp-paneblock dp-editpane" ng-if="Ctrl.app">
 		<article class="form-horizontal dp-form">
 			<div class="panel panel-fill indent">
 				<div class="panel-body">
@@ -45,6 +45,58 @@
 				<div class="dp-btn-controls">
 					<div dp-hide-spinning="saving_settings">
 						<button class="btn btn-primary" ng-click="Ctrl.saveSettings();">{{ phrase('agent.general.save') }}</button>
+					</div>
+					<div dp-show-spinning="saving_settings">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+	<section class="dp-paneblock dp-editpane" ng-if="!Ctrl.app">
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="form-group">
+						<div style="float: left;">
+							<img ng-src="{{ asset_full('/images/dp-logo-24.png') }}" alt="DeskPRO" />
+						</div>
+						<div style="margin-left: 52px;">
+							<input type="text" class="form-control camo-input" ng-model="Ctrl.usersource.title"
+								style="font-size: 22px; width: 75%; max-width: 350px; height: auto;" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-lg-4">
+							<h3>Enabled</h3>
+						</div>
+						<div class="col-lg-8">
+							<label>
+								<input type="checkbox" ng-model="Ctrl.usersource.is_enabled" class="ng-pristine ng-valid">
+								Enable DeskPRO Authentication
+							</label>
+							<span class="help-block">The DeskPRO usersource is the built-in usersource of DeskPRO by default. You can disable it by unchecking this box.</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<footer>
+			<div class="dp-content">
+				<div class="dp-delete-control">
+					<button class="btn btn-danger" ng-click="Ctrl.cannotDeleteUsersource();">Uninstall App</button>
+				</div>
+
+				<div class="dp-btn-controls">
+					<div dp-hide-spinning="saving_settings">
+						<button class="btn btn-primary"
+							ng-click="Ctrl.saveUsersource();">{{ phrase('agent.general.save') }}</button>
 					</div>
 					<div dp-show-spinning="saving_settings">
 						<i class="spinner-flat"></i>

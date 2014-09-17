@@ -176,6 +176,20 @@ class UsersourceCollection extends \ArrayObject
 		return new static($filtered);
 	}
 
+	/**
+	 * @return UsersourceCollection
+	 */
+	public function withNoApp()
+	{
+		$filtered = array_filter(
+			(array) $this, function (Usersource $us) {
+				return !$us->app;
+			}
+		);
+
+		return new static($filtered);
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Entity\Usersource|null

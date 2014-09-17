@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
+  define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/UsersourceTypeDecider'], function(Admin_Ctrl_Base, Util, Admin_Usersources_Helper_UsersourceTypeDecider) {
     var Admin_Usersources_Ctrl_EditInstance;
     Admin_Usersources_Ctrl_EditInstance = (function(_super) {
       __extends(Admin_Usersources_Ctrl_EditInstance, _super);
@@ -18,7 +18,7 @@
       Admin_Usersources_Ctrl_EditInstance.DEPS = ['$http', 'dpTemplateManager'];
 
       Admin_Usersources_Ctrl_EditInstance.prototype.init = function() {
-        this.instanceId = parseInt(this.$stateParams.id);
+        this.instanceId = this.$stateParams.id;
         this.$scope.getController = (function(_this) {
           return function() {
             return _this;
@@ -34,7 +34,9 @@
             return _this.$scope.has_own_footer = true;
           };
         })(this);
+        this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
         this.presaveCallback = null;
+        this.app = null;
       };
 
       Admin_Usersources_Ctrl_EditInstance.prototype.initialLoad = function() {
@@ -45,78 +47,94 @@
           app: '/apps/instances/' + this.instanceId
         }).then((function(_this) {
           return function(result) {
-            _this.app = result.data.app.app;
-            return _this.Api.sendDataGet({
-              pack: '/apps/packages/' + _this.app.package_name
-            }).then(function(result) {
-              _this.pack = result.data.pack['package'];
-              _this.packageName = _this.pack.name;
-              return d.resolve();
-            });
+            var _ref;
+            _this.app = (_ref = result.data.app) != null ? _ref.app : void 0;
+            if (_this.app) {
+              return _this.Api.sendDataGet({
+                pack: '/apps/packages/' + _this.app.package_name
+              }).then(function(result) {
+                _this.pack = result.data.pack['package'];
+                _this.packageName = _this.pack.name;
+                return d.resolve();
+              });
+            } else {
+              _this.usersourceId = _this.instanceId;
+              console.log(_this.usersourceId);
+              return _this.Api.sendGet('/usersources/' + _this.usersourceType + '/' + _this.usersourceId).then(function(result) {
+                _this.usersource = result.data.usersource;
+                console.log(_this.usersource);
+                return d.resolve();
+              });
+            }
           };
         })(this));
         d.promise.then((function(_this) {
           return function() {
             var form_template, getResourcePath, installCtrl, jsDeferred, loadingAssets, path;
-            _this.$scope.pack = _this.pack;
-            _this.$scope.setting_values = _this.app.settings;
-            if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
-              _this.$scope.setting_values = {};
-            }
-            _this.$scope.setting_values.dp_app = {
-              title: _this.app.title
-            };
-            _this.$scope.has_display_settings = _this.pack.settings_def.filter(function(x) {
-              return x.type !== 'hidden';
-            }).length > 0;
-            form_template = _this.packageName + '/AdminInterface/Install/settings.html';
-            installCtrl = null;
-            loadingAssets = [];
-            getResourcePath = function(tag, name) {
-              var asset, cachebust;
-              asset = _this.pack.assets.filter(function(x) {
-                return x.tag === tag && x.name === name;
-              })[0];
-              if (asset) {
-                cachebust = window.DP_BUILD_TIME;
-                return asset.blob.relative_url + '?' + cachebust;
-              } else {
-                return null;
-              }
-            };
-            if (path = getResourcePath('html', 'AdminInterface/Install/settings.html')) {
-              loadingAssets.push(_this.$http.get(path, {
-                responseType: "text"
-              }).success(function(data) {
-                return _this.dpTemplateManager.setTemplate(form_template, data);
-              }));
-            }
-            if (path = getResourcePath('js', 'AdminInterface/Install/settings.js')) {
-              jsDeferred = _this.$q.defer();
-              require([path], function(c) {
-                installCtrl = c;
-                return jsDeferred.resolve();
-              });
-              loadingAssets.push(jsDeferred.promise);
-            }
-            if (loadingAssets.length) {
-              return _this.$q.all(loadingAssets).then(function() {
-                if (installCtrl) {
-                  _this.$scope.install_ctrl = installCtrl;
-                } else {
-                  _this.$scope.install_ctrl = [function() {}];
-                }
-                if (form_template) {
-                  _this.$scope.form_template = form_template;
-                  _this.$scope.default_form = false;
-                } else {
-                  _this.$scope.default_form = true;
-                }
-                return d2.resolve();
-              });
-            } else {
-              _this.$scope.default_form = true;
+            if (!_this.app) {
               return d2.resolve();
+            } else {
+              console.log("this is an app instance");
+              _this.$scope.pack = _this.pack;
+              _this.$scope.setting_values = _this.app.settings;
+              if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
+                _this.$scope.setting_values = {};
+              }
+              _this.$scope.setting_values.dp_app = {
+                title: _this.app.title
+              };
+              _this.$scope.has_display_settings = _this.pack.settings_def.filter(function(x) {
+                return x.type !== 'hidden';
+              }).length > 0;
+              form_template = _this.packageName + '/AdminInterface/Install/settings.html';
+              installCtrl = null;
+              loadingAssets = [];
+              getResourcePath = function(tag, name) {
+                var asset, cachebust;
+                asset = _this.pack.assets.filter(function(x) {
+                  return x.tag === tag && x.name === name;
+                })[0];
+                if (asset) {
+                  cachebust = window.DP_BUILD_TIME;
+                  return asset.blob.relative_url + '?' + cachebust;
+                } else {
+                  return null;
+                }
+              };
+              if (path = getResourcePath('html', 'AdminInterface/Install/settings.html')) {
+                loadingAssets.push(_this.$http.get(path, {
+                  responseType: "text"
+                }).success(function(data) {
+                  return _this.dpTemplateManager.setTemplate(form_template, data);
+                }));
+              }
+              if (path = getResourcePath('js', 'AdminInterface/Install/settings.js')) {
+                jsDeferred = _this.$q.defer();
+                require([path], function(c) {
+                  installCtrl = c;
+                  return jsDeferred.resolve();
+                });
+                loadingAssets.push(jsDeferred.promise);
+              }
+              if (loadingAssets.length) {
+                return _this.$q.all(loadingAssets).then(function() {
+                  if (installCtrl) {
+                    _this.$scope.install_ctrl = installCtrl;
+                  } else {
+                    _this.$scope.install_ctrl = [function() {}];
+                  }
+                  if (form_template) {
+                    _this.$scope.form_template = form_template;
+                    _this.$scope.default_form = false;
+                  } else {
+                    _this.$scope.default_form = true;
+                  }
+                  return d2.resolve();
+                });
+              } else {
+                _this.$scope.default_form = true;
+                return d2.resolve();
+              }
             }
           };
         })(this));
@@ -164,6 +182,32 @@
             });
           };
         })(this));
+      };
+
+      Admin_Usersources_Ctrl_EditInstance.prototype.saveUsersource = function() {
+        var postData;
+        this.startSpinner('saving_settings');
+        postData = {
+          title: this.usersource.title,
+          is_enabled: this.usersource.is_enabled
+        };
+        return this.Api.sendPostJson('/usersources/' + this.usersourceType + '/' + this.usersourceId, postData).then((function(_this) {
+          return function() {
+            return _this.stopSpinner('saving_settings').then(function() {
+              var _ref, _ref1;
+              if ((_ref = _this.$scope.$parent) != null) {
+                if ((_ref1 = _ref.ListCtrl) != null) {
+                  _ref1.refresh();
+                }
+              }
+              return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
+            });
+          };
+        })(this));
+      };
+
+      Admin_Usersources_Ctrl_EditInstance.prototype.cannotDeleteUsersource = function() {
+        return alert("The DeskPRO usersource cannot be uninstalled. However, you can disable it by unchecking the box on the form and saving.");
       };
 
 

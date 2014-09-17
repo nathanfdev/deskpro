@@ -2433,6 +2433,12 @@ $collection->create('api_usersources_get', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_usersources_post', array(
+	'path'        => '/usersources/{type}/{id}',
+	'controller'  => 'ApiBundle:Usersources:postUsersource',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_usersources_display_order', array(
 	'path'        => '/usersources/display-order',
 	'controller'  => 'ApiBundle:Usersources:updateDisplayOrder',
