@@ -73,7 +73,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TicketController extends AbstractController
 {
-	public function requireRequestToken($action, $arguments = null)
+	protected function requireRequestToken($action, $arguments = null)
 	{
 		if ($action == 'viewRawMessageAction') {
 			return false;
@@ -3933,7 +3933,7 @@ class TicketController extends AbstractController
 
 	############################################################################
 
-	public function checkPerm($ticket, $check_perm)
+	protected function checkPerm($ticket, $check_perm)
 	{
 		$fail = false;
 		if (strpos($check_perm, 'modify_') === 0) {
@@ -3958,16 +3958,19 @@ class TicketController extends AbstractController
 		return true;
 	}
 
-	public function permCheckArray($tickets, $check_perm)
+	protected function permCheckArray($tickets, $check_perm)
 	{
 		if ($tickets instanceof ArrayCollection) {
 			$tickets = $tickets->toArray();
 		}
 
-		$self = $this;
-		return array_filter($tickets, function($t) use ($self, $check_perm) {
-			return $self->checkPerm($t, $check_perm);
-		});
+		$ret = array();
+		foreach ($tickets as $k => $ticket) {
+			if ($this->checkPerm($ticket, $check_perm)) {
+				$ret[$k] = $ticket;
+			}
+		}
+		return $ret;
 	}
 
 	/**

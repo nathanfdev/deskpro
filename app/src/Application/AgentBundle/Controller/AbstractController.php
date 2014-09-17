@@ -59,7 +59,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	/**
 	 * Check if the global request token check is required for the request
 	 */
-	public function requireRequestToken($action, $arguments = null)
+	protected function requireRequestToken($action, $arguments = null)
 	{
 		return true;
 	}
