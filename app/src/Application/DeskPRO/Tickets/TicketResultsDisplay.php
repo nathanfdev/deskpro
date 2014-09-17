@@ -433,9 +433,9 @@ class TicketResultsDisplay implements PersonContextInterface
 				people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent
 			FROM tickets_messages
 			LEFT JOIN people ON (people.id = tickets_messages.person_id)
-			WHERE tickets_messages.ticket_id IN (" . implode(',', $this->ticket_ids) . ")
+			WHERE tickets_messages.ticket_id IN (?)
 			ORDER BY tickets_messages.id DESC
-		", array(), 'id');
+		", array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
 
 		$this->all_previews = array();
 		foreach ($message_data as $m) {

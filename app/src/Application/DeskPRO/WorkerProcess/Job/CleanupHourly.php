@@ -126,8 +126,8 @@ class CleanupHourly extends AbstractJob
 			foreach ($batch_ids as $ids) {
 				$num = App::getDb()->executeUpdate("
 					DELETE FROM visitors
-					WHERE id IN (" . implode(',', $ids) . ")
-				");
+					WHERE id IN (?)
+				", array($ids), array(Connection::PARAM_INT_ARRAY));
 
 				if ($num) {
 					$this->logStatus("Cleaned up $num stale visitors");

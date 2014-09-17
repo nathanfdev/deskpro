@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
 
 /**
@@ -53,18 +54,16 @@ class SimpleGroupingCounter extends GroupingCounter
 	public function getCounts()
 	{
 		$group_by = 'GROUP BY field1';
+		$db = App::getDb();
 
-		$select_fields[] = 'tickets.' . $this->grouping1 . ' AS field1';
+		$select_fields[] = $db->quoteIdentifier('tickets.' . $this->grouping1) . ' AS field1';
 		if ($this->grouping2) {
-			$select_fields[] = 'tickets.' . $this->grouping2 . ' AS field2';
+			$select_fields[] = $db->quoteIdentifier('tickets.' . $this->grouping2) . ' AS field2';
 			$group_by .= ', field2';
 		}
 		$select_fields[] = 'COUNT(*) AS total';
 
-		$params = array();
-		$wheres = array(
-			'tickets.id IN (' . implode(',', $this->_ticket_ids) . ')'
-		);
+		$wheres = array('tickets.id IN (?)');
 
 		$sql = "
 			SELECT " . implode(', ', $select_fields) . "
@@ -73,9 +72,7 @@ class SimpleGroupingCounter extends GroupingCounter
 			$group_by WITH ROLLUP
 		";
 
-		$db = App::getDb();
-
-		$counts = $db->fetchAll($sql, $params);
+		$counts = $db->fetchAll($sql, array($this->_ticket_ids), array(Connection::PARAM_INT_ARRAY));
 
 		return $counts;
 	}

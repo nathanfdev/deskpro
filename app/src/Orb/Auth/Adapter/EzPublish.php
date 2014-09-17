@@ -53,29 +53,28 @@ class EzPublish extends DbTable
 
 			// EZ_USER_PASSWORD_HASH_MD5_PASSWORD
 			case 2:
-				$password_check = md5("{$userinfo['login']}\n{$password_check}");
+				$password_check = md5("{$userinfo['login']}\n{$password_input}");
 				break;
 
 			// EZ_USER_PASSWORD_HASH_MYSQL
 			case 4:
-				global $db;
-				$password_check = $db->query_return_first("SELECT PASSWORD('" . $db->escape($password_check) . "')");
+				$password_check = $this->getDb()->executeQuery('SELECT PASSWORD(?)', array($password_input))->fetchColumn();
 				break;
 
 			// EZ_USER_PASSWORD_HASH_PLAINTEXT
 			case 5:
-				$password_check = $password_check;
+				$password_check = $password_input;
 				break;
 
 			// EZ_USER_PASSWORD_HASH_CRYPT
 			case 6:
-				$password_check = crypt($password_check);
+				$password_check = crypt($password_input);
 				break;
 
 			// EZ_USER_PASSWORD_HASH_MD5_PASSWORD
 			case 1:
 			default:
-				$password_check = md5($password_check);
+				$password_check = md5($password_input);
 		}
 
 		if ($userinfo[$this->options[self::OPT_FIELD_PASSWORD]] == $password_check) {

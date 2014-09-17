@@ -34,6 +34,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Templating\Templates\TemplateSet;
 
 class Build1400056732 extends AbstractBuild
@@ -140,7 +141,7 @@ class Build1400056732 extends AbstractBuild
 
 		if ($failed) {
 			$this->saveUpgradeData('201404', 'bad-templates', $failed_data);
-			$db->executeUpdate("DELETE FROM templates WHERE id IN (" . implode(',', $failed) . ")");
+			$db->executeUpdate("DELETE FROM templates WHERE id IN (?)", array($failed), array(Connection::PARAM_INT_ARRAY));
 		}
 
 		#------------------------------

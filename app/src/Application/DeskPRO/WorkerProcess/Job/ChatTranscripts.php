@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Orb\Log\Logger;
 
 class ChatTranscripts extends AbstractJob
@@ -55,9 +56,9 @@ class ChatTranscripts extends AbstractJob
 
 		App::getDb()->executeUpdate("
 			UPDATE chat_conversations
-			SET should_send_transcript = 0, date_transcript_sent = '" . date('Y-m-d H:i:s') . "'
-			WHERE id IN (" . implode(',', $chat_ids) . ")
-		");
+			SET should_send_transcript = 0, date_transcript_sent = ?
+			WHERE id IN (?)
+		", array(date('Y-m-d H:i:s'), $chat_ids), array(\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
 
 		foreach ($chat_ids as $chat_id) {
 			$chat = App::getOrm()->find('DeskPRO:ChatConversation', $chat_id);

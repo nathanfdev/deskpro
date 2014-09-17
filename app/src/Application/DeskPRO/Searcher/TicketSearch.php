@@ -242,7 +242,7 @@ class TicketSearch extends SearcherAbstract
      */
     public function setLimit($limit)
     {
-        $this->limit = $limit;
+        $this->limit = (int) $limit;
     }
 
 

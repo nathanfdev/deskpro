@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Arrays;
 
 /**
@@ -130,16 +131,16 @@ class KbSubscriptions extends AbstractJob
 			$cat_subs = App::getDb()->fetchAllGrouped("
 				SELECT person_id, category_id
 				FROM kb_subscriptions
-				WHERE category_id IN (" . implode(',', $category_ids) . ")
-			", array(), 'person_id', null, 'category_id');
+				WHERE category_id IN (?)
+			", array($category_ids), 'person_id', null, 'category_id', array(Connection::PARAM_INT_ARRAY));
 		}
 
 		if ($article_ids) {
 			$article_subs = App::getDb()->fetchAllGrouped("
 				SELECT person_id, article_id
 				FROM kb_subscriptions
-				WHERE article_id IN (" . implode(',', $article_ids) . ")
-			", array(), 'person_id', null, 'article_id');
+				WHERE article_id IN (?)
+			", array($article_ids), 'person_id', null, 'article_id', array(Connection::PARAM_INT_ARRAY));
 		}
 
 		#------------------------------
@@ -182,8 +183,8 @@ class KbSubscriptions extends AbstractJob
 		$user_groupmembers = App::getDb()->fetchAllGrouped("
 			SELECT person_id, usergroup_id
 			FROM person2usergroups
-			WHERE person_id IN (" . implode(',', array_keys($user_to_articles)) . ")
-		", array(), 'person_id', null, 'usergroup_id');
+			WHERE person_id IN (?)
+		", array(array_keys($user_to_articles)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
 
 		$cat_groups = App::getDb()->fetchAllGrouped("
 			SELECT category_id, usergroup_id

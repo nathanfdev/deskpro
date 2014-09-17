@@ -201,9 +201,9 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $index
 	 * @return array
 	 */
-	public function fetchAllKeyed($statement, array $params = array(), $index = 'id')
+	public function fetchAllKeyed($statement, array $params = array(), $index = 'id', $types = array())
 	{
-		$statement = $this->executeQuery($statement, $params);
+		$statement = $this->executeQuery($statement, $params, $types);
 		$array = array();
 
 		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {

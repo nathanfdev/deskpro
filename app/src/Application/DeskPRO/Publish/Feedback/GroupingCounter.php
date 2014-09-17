@@ -55,7 +55,7 @@ class GroupingCounter
 	 */
 	public function setIds(array $ids)
 	{
-		$this->ids = $ids;
+		$this->ids = array_map('intval', $ids);
 	}
 
 	/**
@@ -224,17 +224,18 @@ class GroupingCounter
 
 		$grouping1 = $this->grouping1;
 		$grouping2 = $this->grouping2;
+		$db = App::getDb();
 
 		if ($grouping1 == 'status') {
 			$grouping1 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
 		} else {
-			$grouping1 = "feedback.$grouping1";
+			$grouping1 = $db->quoteIdentifier('feedback.' . $grouping1);
 		}
 
 		if ($grouping2 == 'status') {
 			$grouping2 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
 		} else {
-			$grouping2 = "feedback.$grouping2";
+			$grouping2 = $db->quoteIdentifier('feedback.' . $grouping2);
 		}
 
 		$select_fields[] = "COALESCE($grouping1, 0) AS field1";
@@ -259,8 +260,6 @@ class GroupingCounter
 			$where
 			$group_by WITH ROLLUP
 		";
-
-		$db = App::getDb();
 
 		$counts = $db->fetchAll($sql);
 
