@@ -46,8 +46,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 	protected function init()
 	{
-		var_dump($this->em->getConnection()->executeQuery('SELECT PASSWORD(?)', array('test'))->fetchColumn());
-		die();
 		parent::init();
 
 		$this->person = $this->session->getPerson();
