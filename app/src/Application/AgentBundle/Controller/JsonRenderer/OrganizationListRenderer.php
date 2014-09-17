@@ -36,9 +36,7 @@ namespace Application\AgentBundle\Controller\JsonRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Organizations\OrgResultsDisplay;
-use Application\DeskPRO\People\PeopleResultsDisplay;
 use Application\DeskPRO\Util;
 use Orb\Util\Arrays;
 

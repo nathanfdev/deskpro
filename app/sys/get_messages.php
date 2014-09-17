@@ -420,7 +420,7 @@ class AgentMessagesLoader extends LoaderAbstract
 			$all_messages = $this->getMessagesForClient($session_id, $person_id, $since);
 		}
 
-		if (is_array($all_messages) && $with_last_since !== null) {
+		if (is_array($all_messages) and $with_last_since !== null) {
 			$all_messages = array_merge($all_messages, $this->getInitialMessagesForPerson($person_id, $with_last_since));
 		}
 

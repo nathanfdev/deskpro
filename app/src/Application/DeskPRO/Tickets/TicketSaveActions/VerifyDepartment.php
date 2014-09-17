@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
 use Application\DeskPRO\Departments\TicketDepartments;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\TicketManager;
 
 class VerifyDepartment implements TicketSaveActionInterface
 {

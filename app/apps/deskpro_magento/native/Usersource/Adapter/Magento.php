@@ -35,7 +35,6 @@
 namespace deskpro_magento\Usersource\Adapter;
 
 use Orb\Auth\Identity;
-use Orb\Auth\Result;
 use Application\DeskPRO\App;
 
 class Magento extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter

@@ -34,14 +34,8 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
-use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
-use Application\DeskPRO\Entity\Ticket;
-use Orb\Log\Loggable;
-use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
-use Orb\Validator\StringEmail;
 
 class ReplyActionsContext
 {

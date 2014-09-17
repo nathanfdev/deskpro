@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 

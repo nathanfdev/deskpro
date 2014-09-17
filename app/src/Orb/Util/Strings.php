@@ -34,7 +34,6 @@
 
 namespace Orb\Util;
 
-use Orb\Util\DOMDocument;
 
 /**
  * String utility functions.

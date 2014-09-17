@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketSearchActive;
 
 /**
  * Updates the archive tables

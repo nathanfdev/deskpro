@@ -38,7 +38,6 @@ use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Entity\RoundRobin;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
-use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface

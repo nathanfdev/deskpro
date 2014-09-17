@@ -35,7 +35,6 @@ namespace Application\DeskPRO;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 
 /**

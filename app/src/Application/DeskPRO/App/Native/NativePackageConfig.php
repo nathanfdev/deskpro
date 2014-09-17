@@ -36,7 +36,6 @@ namespace Application\DeskPRO\App\Native;
 
 use Application\DeskPRO\Entity\AppPackage;
 use Orb\Util\Arrays;
-use Orb\Util\OptionsArray;
 
 class NativePackageConfig
 {

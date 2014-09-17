@@ -8,7 +8,6 @@ use Doctrine\Common\Proxy\ProxyDefinition;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Common\Proxy\Proxy as BaseProxy;
 use Application\DeskPRO\ORM\Proxy\ProxyGenerator;
-use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\ORM\Persisters\BasicEntityPersister;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;

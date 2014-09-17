@@ -35,12 +35,10 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 
 /**
  * Article

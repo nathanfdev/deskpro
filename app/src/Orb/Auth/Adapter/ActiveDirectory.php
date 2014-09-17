@@ -42,8 +42,6 @@ use Orb\Util\Arrays;
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
 use Orb\Util\Strings;
-use Zend\Config\Processor\Filter;
-use Zend\Ldap\Ldap;
 
 class ActiveDirectory implements FormLoginInterface, Loggable
 {

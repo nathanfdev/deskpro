@@ -35,7 +35,6 @@
 namespace deskpro_us_joomla\Usersource\Adapter;
 
 use Orb\Auth\Identity;
-use Orb\Auth\Result;
 use \Application\DeskPRO\App;
 
 class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter

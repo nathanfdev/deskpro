@@ -44,7 +44,6 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
-use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 

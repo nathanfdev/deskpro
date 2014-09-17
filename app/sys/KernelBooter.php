@@ -1666,7 +1666,7 @@ HTML;
 		self::DeskPRO_Done_MarkerCheck();
 		xdebug_stop_trace();
 
-		if (isset($GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) && $GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) {
+		if (isset($GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) AND $GLOBALS['DP_CONFIG']['debug']['enable_debug_trace_keep']) {
 			return;
 		}
 

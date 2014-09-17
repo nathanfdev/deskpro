@@ -35,7 +35,6 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use DeskPRO\Kernel\KernelErrorHandler;
 
 class Noop extends AbstractFetcher
 {

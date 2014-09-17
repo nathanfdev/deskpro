@@ -36,7 +36,6 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\ApiKeys\ApiKeyEdit;
 use Application\DeskPRO\ApiKeys\Form\Type\ApiKeyType;
-use Application\DeskPRO\Entity\ApiKeyLog;
 use Application\DeskPRO\Exception\ValidationException;
 
 /**

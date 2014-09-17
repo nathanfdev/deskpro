@@ -37,8 +37,6 @@ namespace Orb\Auth;
 use \Symfony\Component\EventDispatcher\Event;
 use \Symfony\Component\EventDispatcher\EventDispatcher;
 
-use \Orb\Auth\Result;
-
 /**
  * Authenticates a user using one of any compatible adapters.
  *

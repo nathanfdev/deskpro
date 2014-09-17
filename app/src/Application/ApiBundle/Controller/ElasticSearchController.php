@@ -36,9 +36,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Monolog\Logger;
-use DeskPRO\Kernel\KernelErrorHandler;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
-use Monolog\Handler\NullHandler;
 use Orb\Util\Numbers;
 
 class ElasticSearchController extends AbstractController implements ProtectedControllerInterface

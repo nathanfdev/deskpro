@@ -37,8 +37,6 @@ namespace Orb\Templating\Engine;
 use \Symfony\Component\Templating\Storage\Storage;
 use \Symfony\Component\Templating\Storage\FileStorage;
 use \Symfony\Component\Templating\Storage\StringStorage;
-use \Symfony\Component\Templating\Helper\HelperInterface;
-use \Symfony\Component\Templating\Loader\LoaderInterface;
 
 /**
  * This renderer is like a normal PHP renderer except that the value is taken from
