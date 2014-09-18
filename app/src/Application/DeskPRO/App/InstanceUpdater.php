@@ -92,6 +92,11 @@ class InstanceUpdater
 		$this->em->flush();
 
 		$handler->updateSettings($context);
+
+		// if this package is a usersource package, we should always check with the manager to avoid invalid SSO configurations
+		if ($context->getPackage()->isUsersource()) {
+			$container->getSystemService('usersource_manager')->ensureSsoSettings($context->getUsersource());
+		}
 	}
 
 

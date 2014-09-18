@@ -81,8 +81,6 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 			$us->disableSso();
 		}
 
-		$this->context->getUsersourceManager()->ensureSsoSettings($us);
-
 		$em->persist($us);
 		$em->persist($app);
 		$em->flush();
