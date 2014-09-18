@@ -181,6 +181,7 @@
             var defer;
             if (options.options) {
               return {
+                fieldOptions: options,
                 operators: operators,
                 options: options_formatter ? options_formatter(options.options) : options.options,
                 multiselect: !options.single
@@ -191,6 +192,7 @@
                 return function() {
                   return defer.resolve({
                     operators: operators,
+                    fieldOptions: options,
                     options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
                     multiselect: !options.single
                   });
@@ -199,7 +201,8 @@
               return defer.promise;
             } else {
               return {
-                operators: operators
+                operators: operators,
+                fieldOptions: options
               };
             }
           },
