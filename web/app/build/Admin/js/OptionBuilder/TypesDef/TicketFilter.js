@@ -57,10 +57,11 @@
         options.push({
           title: 'Workflow',
           value: 'FilterWorkflow'
-        }, options.push({
+        });
+        options.push({
           title: 'Labels',
           value: 'FilterLabels'
-        }));
+        });
         options.push({
           title: 'Email Account',
           value: 'FilterEmailAccount'
