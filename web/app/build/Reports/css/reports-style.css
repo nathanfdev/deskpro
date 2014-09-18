@@ -8887,13 +8887,15 @@ div.info-message.well {
 
 .agent-interface-hover .app-icon.app-icon-admin-ifce,
 .reports-interface-hover .app-icon.app-icon-admin-ifce,
-.lic-interface-hover .app-icon.app-icon-admin-ifce {
+.lic-interface-hover .app-icon.app-icon-admin-ifce,
+.user-interface-hover .app-icon.app-icon-admin-ifce {
   background-image: url('../../../../images/app-icons/1x/Admin.png');
 }
 
 .agent-interface-hover ul.btm .section-on,
 .reports-interface-hover ul.btm .section-on,
-.lic-interface-hover ul.btm .section-on {
+.lic-interface-hover ul.btm .section-on,
+.user-interface-hover ul.btm .section-on {
   background-color: transparent;
   border-top-color: transparent;
   border-bottom-color: transparent;
@@ -8905,6 +8907,17 @@ div.info-message.well {
 }
 
 .agent-interface-hover .agent-ifce-btn {
+  background: #000;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  box-shadow: 0 0 19px 12px rgba(255, 255, 255, 0.3);
+}
+
+.user-interface-hover .app-icon.app-icon-user-ifce {
+  background-image: url('../../../../images/app-icons/1x_active/User-Portal.png');
+}
+
+.user-interface-hover .user-ifce-btn {
   background: #000;
   border-top: 1px solid #fff;
   border-bottom: 1px solid #fff;
@@ -8943,6 +8956,9 @@ div.info-message.well {
   .agent-interface-hover .app-icon.app-icon-agent-ifce {
     background-image: url('../../../../images/app-icons/2x_active/Agent-Interface.png');
     background-size: 40px 40px;
+  }
+  .user-interface-hover .app-icon.app-icon-user-ifce {
+    background-image: url('../../../../images/app-icons/2x_active/User-Portal.png');
   }
   .reports-interface-hover .app-icon.app-icon-reports-ifce {
     background-image: url('../../../../images/app-icons/2x_active/Reports.png');
