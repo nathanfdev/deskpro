@@ -93,11 +93,13 @@ class TicketIncomingEmailMessage
 	 */
 	private $logger;
 
+
 	/**
-	 * @param Ticket $ticket
+	 * @param Ticket              $ticket
 	 * @param TicketIncomingEmail $ticket_email
-	 * @param Cleaner $cleaner
-	 * @param null $token_replace_callback
+	 * @param Cleaner             $cleaner
+	 * @param null                $token_replace_callback
+	 * @param Logger              $logger
 	 */
 	public function __construct(Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, $token_replace_callback = null, Logger $logger = null)
 	{
