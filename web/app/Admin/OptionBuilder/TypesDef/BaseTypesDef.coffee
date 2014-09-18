@@ -33,21 +33,22 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 
 			addTree = (options, parent_id, toOpts, parentTitleSegs = []) ->
 				parent_id = parseInt(parent_id)
-				for opt in options
-					if (parent_id != 0 and parseInt(opt.parent_id) == parent_id) or (parent_id == 0 and (not opt.parent_id or not parseInt(opt.parent_id)))
-						o = getRenderOpt(opt, parentTitleSegs)
+				if options
+					for opt in options
+						if (parent_id != 0 and parseInt(opt.parent_id) == parent_id) or (parent_id == 0 and (not opt.parent_id or not parseInt(opt.parent_id)))
+							o = getRenderOpt(opt, parentTitleSegs)
 
-						if o then parentTitleSegs.push(o.title)
+							if o then parentTitleSegs.push(o.title)
 
-						childOps = []
-						addTree(options, opt.id, childOps, parentTitleSegs)
+							childOps = []
+							addTree(options, opt.id, childOps, parentTitleSegs)
 
-						if o then parentTitleSegs.pop()
+							if o then parentTitleSegs.pop()
 
-						if childOps.length
-							Arrays.append(toOpts, childOps)
-						else
-							if o then toOpts.push(o)
+							if childOps.length
+								Arrays.append(toOpts, childOps)
+							else
+								if o then toOpts.push(o)
 
 			opts = []
 
