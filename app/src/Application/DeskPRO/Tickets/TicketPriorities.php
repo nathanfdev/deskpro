@@ -49,7 +49,7 @@ class TicketPriorities extends LazyCollection
 	 */
 	protected function loadRecords()
 	{
-		$recs = $this->em->getRepository('DeskPRO:TicketPriority')->findAll();
+		$recs = $this->em->getRepository('DeskPRO:TicketPriority')->getAll();
 		$recs = Arrays::keyFromData($recs, 'id');
 		return $recs;
 	}
