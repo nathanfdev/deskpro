@@ -394,6 +394,11 @@ define [
 				value: 'CheckPerformer'
 			})
 
+			options.push({
+				title: 'Check Performer Email',
+				value: 'CheckPerformerEmail'
+			})
+
 			set_options.push({
 				title: 'Trigger Control',
 				subOptions: options
@@ -521,6 +526,12 @@ define [
 			options.operators = ['contains', 'notcontains']
 			options.template = 'OptionBuilder/type-criteria-performer.html';
 			def = @getStandardSelect(options)
+			return def
+
+		getCheckPerformerEmail: (options = {}) ->
+			options.propName = 'email'
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
+			def = @getStandardInput(options)
 			return def
 
 		getCheckAgentTeam: (options = {}) ->
