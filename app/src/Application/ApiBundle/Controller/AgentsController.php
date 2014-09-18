@@ -311,7 +311,6 @@ class AgentsController extends AbstractController implements ProtectedController
 				}
 			} else {
 				$agent = new Person();
-				$agent->setPassword(Strings::randomPronounceable(20, 4));
 			}
 		}
 
@@ -319,6 +318,11 @@ class AgentsController extends AbstractController implements ProtectedController
 		if (!$agent['is_agent']) {
 			$r = $this->preNewAgent(1);
 			if ($r) return $r;
+		}
+
+		// If the record isnt a user yet, then we need to set an initial password
+		if (!$agent->is_user) {
+			$agent->setPassword(Strings::randomPronounceable(20, 4));
 		}
 
 		$edit_agent = new EditAgent($agent);
