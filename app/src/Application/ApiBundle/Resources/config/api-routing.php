@@ -3037,6 +3037,13 @@ $collection->create('api_emailstatus_sendmaillist', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_emailstatus_sendmail_massactions', array(
+	'path'         => '/email_status/sendmail/mass-actions/{action}',
+	'controller'   => 'ApiBundle:EmailStatus:massActions',
+	'requirements' => array('action' => '[a-z]+'),
+	'methods'      => array('POST'),
+));
+
 $collection->create('api_emailstatus_sendmail_delete', array(
 	'path'         => '/email_status/sendmail/{id}',
 	'controller'   => 'ApiBundle:EmailStatus:deleteSendmail',
