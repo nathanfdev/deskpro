@@ -2176,17 +2176,28 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.replaceTab = true;
 		}
 
-		if (el.data('route-newtab')) {
+		var isShiftClick = false;
+		if (extraData.event && extraData.event.shiftKey) {
+			isShiftClick = true;
+		}
+
+		if (el.data('route-newtab') || isShiftClick) {
 			extraData.replaceTab = false;
 			extraData.focus = false;
+
+			if (isShiftClick) {
+				extraData.noToggle = true;
+			}
 		}
 
 
-		// this should be handled only when click event occurs
-		if (0 === el.data('route').indexOf('listpane:')) {
-			this.$scope.showList();
-		} else {
-			this.$scope.showTabs();
+		if (!isShiftClick) {
+			// this should be handled only when click event occurs
+			if (0 === el.data('route').indexOf('listpane:')) {
+				this.$scope.showList();
+			} else {
+				this.$scope.showTabs();
+			}
 		}
 
 		var popoverEl = el.closest('.popover-wrapper');
@@ -3644,9 +3655,24 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		$(context).addClass('dp-interface-layer');
+		var cancelRouteSelection = function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			// This is because shift-clicking a non-link can result
+			// in text selection
+			if (ev.shiftKey) {
+				if (document.getSelection) {
+					document.getSelection().removeAllRanges();
+				}
+			}
+		};
 
 		window.setTimeout(function() {
 			// Accept clicks on routes
+			$(context).on('mousedown', '[data-route]', function(ev) {
+				cancelRouteSelection(ev);
+			});
 			$(context).on('click', '[data-route]', function(ev) {
 				if ($(this).is('.as-popover')) {
 					return;
@@ -3656,10 +3682,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 					return;
 				}
 
-				ev.preventDefault();
-				ev.stopPropagation();
+				cancelRouteSelection(ev);
 
-				self.runPageRouteFromElement($(this));
+				self.runPageRouteFromElement($(this), { event: ev });
 
 				// If this was a list-pane and we have an open popover,
 				// we need to close the popover so the listpane can actually load
