@@ -174,9 +174,10 @@ class Strings
 	 * - swuclew
 	 *
 	 * @param   int     $len The maximum length of the string
+	 * @param   int     $dash_len Insert dashes after this many chars
 	 * @return  string
 	 */
-	public static function randomPronounceable($len = 10)
+	public static function randomPronounceable($len = 10, $dash_len = 0)
 	{
 		static $vowels, $cons, $num_vowels, $num_cons;
 
@@ -185,18 +186,28 @@ class Strings
 			$cons = array(
 				'b', 'c', 'd', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'u', 'v', 'w', 'tr',
 				'cr', 'br', 'fr', 'th', 'dr', 'ch', 'ph', 'wr', 'st', 'sp', 'sw', 'pr', 'sl', 'cl'
-				);
+			);
 
-				$num_vowels = count($vowels);
-				$num_cons = count($cons);
+			$num_vowels = count($vowels);
+			$num_cons   = count($cons);
 		}
 
 		$string = '';
-		for($i = 0; $i < $len; $i++){
+		for($i = -1; $i < $len; $i++){
 			$string .= $cons[mt_rand(0, $num_cons - 1)] . $vowels[mt_rand(0, $num_vowels - 1)];
 		}
 
-		return substr($string, 0, $len);
+		if ($dash_len) {
+			$string = implode('-', str_split($string, $dash_len));
+		}
+
+		$string = substr($string, 0, $len);
+
+		if ($dash_len) {
+			$string = trim($string, '-');
+		}
+
+		return $string;
 	}
 
 
