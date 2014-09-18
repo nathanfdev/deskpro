@@ -44,11 +44,23 @@ use Orb\Auth\Identity;
  *
  * @package Application\DeskPRO\Usersource\Adapter
  */
-class DeskPRO extends AbstractAdapter
+class DeskPRO extends AbstractAdapter implements IdentityFinderInterface
 {
 	public function getFieldsFromIdentity(Identity $identity)
 	{
 		return $identity->getRawData();
+	}
+
+
+	public function findIdentityByInput($input)
+	{
+		/** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+		$personRepo = App::getOrm()->getRepository('DeskPRO:Person');
+		if ($person = $personRepo->findOneByEmail($input)) {
+			return $person;
+		}
+
+		return null;
 	}
 
 
@@ -68,6 +80,7 @@ class DeskPRO extends AbstractAdapter
 	{
 		return array(
 			UsersourceInfo::CAPABILITY_FORM_LOGIN,
+			UsersourceInfo::CAPABILITY_FIND_IDENTITY
 		);
 	}
 

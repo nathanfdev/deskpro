@@ -65,39 +65,18 @@ class PersonFromEmailProcessor
 	/**
 	 * Finds a person based on the From in the email address.
 	 *
-	 * @return \Application\DeskPRO\Entity\Person
+	 * @param EmailAddress $from
+	 * @return \Application\DeskPRO\Entity\Person|null
 	 */
 	public function findPerson(EmailAddress $from)
 	{
-		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail());
-		if ($person) {
+		/** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
+		$um = App::getSystemService('usersource_manager');
+
+		if ($person = $um->findPersonByEmail($from->getEmail())) {
 			$this->passPerson($from, $person);
+
 			return $person;
-		} else {
-			foreach (App::getDataService('Usersource')->getAllUsersources() as $us) {
-				try {
-					/** @var $adapter \Application\DeskPRO\Usersource\Adapter\AbstractAdapter */
-					$adapter = $us->getAdapter();
-
-					if (!$adapter->isCapable(UsersourceInfo::CAPABILITY_FIND_IDENTITY)) {
-						continue;
-					}
-
-					$identity = $adapter->findIdentityByInput($from->getEmail());
-					if (!$identity) {
-						continue;
-					}
-
-					$login_processor = new \Application\DeskPRO\Auth\LoginProcessor($us, $identity);
-					$person = $login_processor->getPerson();
-
-					$this->passPerson($from, $person);
-
-					return $person;
-				} catch (\Exception $e) {
-					KernelErrorHandler::logException($e, false, 'gateway_usersource_error');
-				}
-			}
 		}
 
 		return null;

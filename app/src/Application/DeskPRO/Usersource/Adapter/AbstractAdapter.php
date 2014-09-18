@@ -39,7 +39,7 @@ use Orb\Auth\Identity;
 use Orb\Util\CapabilityInformerInterface;
 use Orb\Util\Util;
 
-abstract class AbstractAdapter implements CapabilityInformerInterface
+abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityFinderInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Usersource

@@ -35,7 +35,10 @@
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\EntityRepository\Person;
+use Application\DeskPRO\Usersource\Adapter\IdentityFinderInterface;
 use Doctrine\ORM\EntityManager;
 
 class UsersourceManager
@@ -91,34 +94,36 @@ class UsersourceManager
 
 
 	/**
-	 * Find a person in a usersource based on an email address.
+	 * Find a person in a USER usersource based on an email address.
 	 *
+	 * @param string $input this can actually be any input (but is usually email)
 	 * @return \Application\DeskPRO\Entity\Person
 	 */
-	public function findPersonByEmail($email)
+	public function findPersonByEmail($input)
 	{
-		$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-		if ($person) {
-			return $person;
-		}
+		$identityUsersources = $this->getAll()->configuredForUsers()->withCapability(UsersourceInfo::CAPABILITY_FIND_IDENTITY);
 
-		foreach ($this->getWithCapability(UsersourceInfo::CAPABILITY_FIND_IDENTITY) as $us) {
-			/** @var $adapter \Application\DeskPRO\Usersource\Adapter\AbstractAdapter */
-			$adapter = $us->getAdapter();
+		/** @var \Application\DeskPRO\Entity\Usersource $usersource */
+		foreach ($identityUsersources as $usersource) {
+			$adapter = $usersource->getAdapter();
 
-			try {
-				$identity = $adapter->findIdentityByInput($email);
-			} catch (\Exception $e) {
-				$identity = null;
+			if ($adapter instanceof IdentityFinderInterface) {
+				try {
+					if ($identity = $adapter->findIdentityByInput($input)) {
+
+						// if the usersource can return a person directly, return that now
+						if ($identity instanceof Person) {
+							return $identity;
+						}
+
+						// otherwise it must be an identity, lets get the person:
+						$login_processor = new LoginProcessor($usersource, $identity);
+
+						return $login_processor->getPerson();
+					}
+				} catch (\Exception $e) {
+				}
 			}
-			if (!$identity) {
-				continue;
-			}
-
-			$login_processor = new \Application\DeskPRO\Auth\LoginProcessor($us, $identity);
-			$person = $login_processor->getPerson();
-
-			return $person;
 		}
 
 		return null;

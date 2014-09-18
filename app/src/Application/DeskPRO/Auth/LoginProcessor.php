@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 
 class LoginProcessor
 {
@@ -85,6 +86,7 @@ class LoginProcessor
 		#------------------------------
 
 		$em = App::getOrm();
+		/** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repos */
 		$assoc_repos = $em->getRepository('DeskPRO:PersonUsersourceAssoc');
 
 		$em->beginTransaction();
@@ -94,9 +96,9 @@ class LoginProcessor
 			$this->identity->getIdentity()
 		);
 
-		$mapped_fields = $this->usersource->getFieldsFromIdentity($this->identity);
+		$mapped_fields = $this->usersource->getAdapter()->getFieldsFromIdentity($this->identity);
 		$mapped_fields = Arrays::removeEmptyString($mapped_fields);
-		$mapped_fields = new \Orb\Util\OptionsArray($mapped_fields);
+		$mapped_fields = new OptionsArray($mapped_fields);
 
 		#------------------------------
 		# If we dont have one yet, we're have to create the assoc and maybe a new user too
