@@ -34,10 +34,7 @@
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\Adapter\SessionStateInterface;
-use \Orb\Auth\Adapter\CallbackInterface;
-use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
 
 
 /**
@@ -57,7 +54,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 
 	/**
 	 * State handler to store session data
-	 * @var Orb\Auth\StateHandler\StateHandlerInterface;
+	 * @var \Orb\Auth\StateHandler\StateHandlerInterface;
 	 */
 	protected $state;
 
@@ -100,7 +97,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	/**
 	 * Get the callback URL
 	 *
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 * @return string
 	 */
 	public function getCallbackUrl()
@@ -128,7 +125,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	/**
 	 * Authenticate a user.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	public function authenticate()
 	{
@@ -144,7 +141,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	/**
 	 * Process the callback and return a final result.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	abstract protected function authenticateCallback(array $callback_data, StateHandlerInterface $state);
 
@@ -153,7 +150,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	/**
 	 * Initialize the auth process by setting state, and returning a redirect result.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	abstract protected function authenticateInitialize(StateHandlerInterface $state);
 
@@ -162,7 +159,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	/**
 	 * Set the state handler.
 	 *
-	 * @param Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
+	 * @param \Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
 	 * @return void
 	 */
 	public function setStateHandler(StateHandlerInterface $state)
@@ -175,7 +172,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	/**
 	 * Get the state handler.
 	 *
-	 * @return Orb\Auth\StateHandler\StateHandlerInterface
+	 * @return \Orb\Auth\StateHandler\StateHandlerInterface
 	 */
 	public function getStateHandler()
 	{

@@ -34,11 +34,12 @@
 
 namespace deskpro_us_jwt\Usersource\Adapter;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Usersource\Adapter\AbstractAdapter;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
-use Application\DeskPRO\App;
 
-class Jwt extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
+class Jwt extends AbstractAdapter
 {
 	public function getFieldsFromIdentity(Identity $identity)
 	{

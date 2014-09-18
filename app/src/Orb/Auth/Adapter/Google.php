@@ -34,12 +34,9 @@
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\Adapter\SessionStateInterface;
-use \Orb\Auth\Adapter\CallbackInterface;
-use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
-
-use \LightOpenID;
+use LightOpenID;
+use Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
@@ -47,7 +44,7 @@ use Orb\Validator\StringEmail;
  * Requirements:
  * - GoogleOpenID: http://andrewpeace.com/php-google-login-class.html
  */
-class Google extends AbstractCallbackAdatper implements DisplayContextInterface
+class Google extends AbstractCallbackAdatper implements DisplayContextInterface, AdapterInterface
 {
 	protected $display = 'page';
 

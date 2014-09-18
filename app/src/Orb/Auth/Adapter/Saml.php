@@ -35,14 +35,13 @@
 namespace Orb\Auth\Adapter;
 
 use Application\DeskPRO\App;
-use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Response;
 
-class Saml extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface, Adapter\IframeSsoInterface, SamlAdapterInterface
+class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, IframeSsoInterface, SamlAdapterInterface, AdapterInterface
 {
 	/**
 	 * @var \Orb\Log\Logger

@@ -34,16 +34,14 @@
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\Adapter\SessionStateInterface;
-use \Orb\Auth\Adapter\CallbackInterface;
-use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
+use Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
 
 /**
  * Requirements:
  * - Facebook SDK: https://github.com/facebook/php-sdk
  */
-class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface
+class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface, AdapterInterface
 {
 	protected $app_id;
 	protected $app_secret;

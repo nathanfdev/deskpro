@@ -37,15 +37,11 @@ namespace Orb\Auth\Adapter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
-use Orb\Util\Arrays;
-
-use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Util\Strings;
-use Zend\Config\Processor\Filter;
-use Zend\Ldap\Ldap;
 
-class ActiveDirectory implements FormLoginInterface, Loggable
+class ActiveDirectory implements FormLoginInterface, Loggable, AdapterInterface
 {
 	const OPT_HOST               = 'host';
 	const OPT_PORT               = 'port';
@@ -132,7 +128,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	 *
 	 * @return Result
 	 */
-	public function Authenticate()
+	public function authenticate()
 	{
 		$res = $this->doAuthenticate();
 

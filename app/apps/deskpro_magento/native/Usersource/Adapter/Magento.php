@@ -34,12 +34,12 @@
 
 namespace deskpro_magento\Usersource\Adapter;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Usersource\Adapter\AbstractAdapter;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
-use Orb\Auth\Result;
-use Application\DeskPRO\App;
 
-class Magento extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
+class Magento extends AbstractAdapter
 {
 	public function getFieldsFromIdentity(Identity $identity)
 	{
