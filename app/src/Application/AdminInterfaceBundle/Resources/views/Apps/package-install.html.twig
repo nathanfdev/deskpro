@@ -36,7 +36,7 @@
 			<div class="dp-content">
 				<div class="dp-btn-controls">
 					<div dp-hide-spinning="saving_settings">
-						<a class="btn btn-default" href="{{ ng_href('apps.apps.package', '{name: Ctrl.pack.name}') }}"><i class="fa fa-arrow-left"></i> {{ phrase('agent.general.cancel') }}</a>
+						<button class="btn btn-default" ng-click="Ctrl.cancelInstall()"><i class="fa fa-arrow-left"></i> {{ phrase('agent.general.cancel') }}</button>
 						<button class="btn btn-success" ng-click="Ctrl.installApp()">Install App <i class="fa fa-arrow-right"></i></button>
 					</div>
 					<div dp-show-spinning="saving_settings">
