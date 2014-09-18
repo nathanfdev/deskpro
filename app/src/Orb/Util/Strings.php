@@ -1259,6 +1259,9 @@ class Strings
 		// Counter used to make sure theres not an infinite loop
 		$x = 0;
 
+		// Timer to make sure it doesnt take too long (regex can be slow on large/complex html)
+		$time_start = time();
+
 		// Handle HTML whitespace
 		do {
 			$old_string = $string;
@@ -1273,12 +1276,16 @@ class Strings
 			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
 			$string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)$#i', '', $string);
 
+			// Trailing empty containers
+			$string = preg_replace('#<div>\s*</div>\s*$#iu', '', $string);
+			$string = preg_replace('#<p>\s*</p>\s*$#iu', '', $string);
+
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
 
 			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
 			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
-		} while ($string != $old_string && $x++ < 1000);
+		} while ($string != $old_string && $x++ < 1000 && (time()-$time_start) < 10);
 
 		return $string;
 	}
