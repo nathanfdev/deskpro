@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
     var Admin_Templates_Ctrl_EmailTemplateEditor;
     Admin_Templates_Ctrl_EmailTemplateEditor = (function(_super) {
       __extends(Admin_Templates_Ctrl_EmailTemplateEditor, _super);
@@ -46,6 +46,13 @@
                 body: _this.editorMessage.getValue()
               }
             };
+            if (!_this.$scope.email.email_name || Strings.trim(_this.$scope.email.email_name) === "") {
+              _this.$scope.saving_template = false;
+              _this.$scope.is_error = true;
+              _this.$scope.syntax_error = false;
+              _this.$scope.error_message = 'You must specify a template name';
+              return;
+            }
             if (_this.$scope.is_new_email) {
               url = "/templates/" + 'DeskPRO:emails_custom:' + _this.$scope.email.email_name + '.html.twig';
               postData.create_new = true;
