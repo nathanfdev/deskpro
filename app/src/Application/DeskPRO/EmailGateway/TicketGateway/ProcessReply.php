@@ -128,8 +128,16 @@ class ProcessReply extends ProcessAbstract
 		}
 
 		if ($this->ticket_email->is_dp3_reply) {
-			$email_info = new TicketIncomingEmailMessageV3($this->ticket, $this->ticket_email, $this->cleaner, null);
+			$this->logMessage("doNewReply message class: TicketIncomingEmailMessageV3");
+			$email_info = new TicketIncomingEmailMessageV3(
+				$this->ticket,
+				$this->ticket_email,
+				$this->cleaner,
+				array($this, 'replaceInlineAttachTokens'),
+				$this->getLogger()
+			);
 		} else {
+			$this->logMessage("doNewReply message class: TicketIncomingEmailMessage");
 			$email_info = new TicketIncomingEmailMessage(
 				$this->ticket,
 				$this->ticket_email,
