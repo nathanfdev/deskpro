@@ -85,7 +85,7 @@ class TicketPriority extends AbstractEntityRepository
 		$pris = $this->getEntityManager()->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketPriority p
-			ORDER BY p.priority
+			ORDER BY p.priority ASC
 		")->execute();
 
 		return $pris;

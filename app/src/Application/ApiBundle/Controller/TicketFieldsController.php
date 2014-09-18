@@ -423,7 +423,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 		# Save structure
 		#------------------------------
 
-		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketPriority');
+		$proc = new HierarchyStructureProcessor($this->em, 'DeskPRO:TicketPriority', array('priority'));
 		$proc->disableHierarchy();
 
 		$recs = $proc->getRecords($structure);
