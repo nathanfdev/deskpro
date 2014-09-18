@@ -384,6 +384,7 @@
         }
         options.propName = 'status';
         options.template = 'OptionBuilder/type-filter-status.html';
+        options.noArchive = true;
         def = this.getStandardSelect(options);
         return def;
       };

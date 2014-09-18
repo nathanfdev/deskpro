@@ -119,6 +119,7 @@ define [
 				getData: ->
 					if options.options
 						return {
+							fieldOptions: options,
 							operators: operators,
 							options: if options_formatter then options_formatter(options.options) else options.options,
 							multiselect: !options.single
@@ -128,6 +129,7 @@ define [
 						me.loadDataOptions().then(=>
 							defer.resolve({
 								operators: operators,
+								fieldOptions: options,
 								options: if options_formatter then options_formatter(me.options_data[data_name]) else me.options_data[data_name],
 								multiselect: !options.single
 							})
@@ -136,7 +138,8 @@ define [
 						return defer.promise
 					else
 						return {
-							operators: operators
+							operators: operators,
+							fieldOptions: options
 						}
 
 				getDataFormatter: ->
