@@ -3024,6 +3024,13 @@ $collection->create('api_emailstatus_source_reprocess', array(
 	'methods'      => array('POST'),
 ));
 
+$collection->create('api_emailstatus_source_massactions', array(
+	'path'         => '/email_status/sources/mass-actions/{action}',
+	'controller'   => 'ApiBundle:EmailStatus:emailSourceMassActions',
+	'requirements' => array('action' => '[a-z]+'),
+	'methods'      => array('POST'),
+));
+
 $collection->create('api_emailstatus_source_delete', array(
 	'path'         => '/email_status/sources/{id}',
 	'controller'   => 'ApiBundle:EmailStatus:deleteEmailSource',
@@ -3039,7 +3046,7 @@ $collection->create('api_emailstatus_sendmaillist', array(
 
 $collection->create('api_emailstatus_sendmail_massactions', array(
 	'path'         => '/email_status/sendmail/mass-actions/{action}',
-	'controller'   => 'ApiBundle:EmailStatus:massActions',
+	'controller'   => 'ApiBundle:EmailStatus:sendmailMassActions',
 	'requirements' => array('action' => '[a-z]+'),
 	'methods'      => array('POST'),
 ));
