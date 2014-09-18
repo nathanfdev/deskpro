@@ -311,7 +311,7 @@ class AgentsController extends AbstractController implements ProtectedController
 				}
 			} else {
 				$agent = new Person();
-				$agent->setPassword(Strings::random(20));
+				$agent->setPassword(Strings::randomPronounceable(20, 4));
 			}
 		}
 
@@ -602,7 +602,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			}
 		}
 		if (!$password) {
-			$password = Strings::randomPronounceable(20);
+			$password = Strings::randomPronounceable(20, 4);
 		}
 
 		if ($agent->password && $agent->password_scheme == 'bcrypt') {
