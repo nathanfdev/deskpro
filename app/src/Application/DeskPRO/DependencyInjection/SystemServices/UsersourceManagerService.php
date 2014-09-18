@@ -41,7 +41,7 @@ class UsersourceManagerService
 {
 	public static function create(DeskproContainer $container)
 	{
-		$usm = new UsersourceManager($container->getEm());
+		$usm = new UsersourceManager($container->getEm(), $container->getSystemService('app_manipulator'));
 
 		return $usm;
 	}

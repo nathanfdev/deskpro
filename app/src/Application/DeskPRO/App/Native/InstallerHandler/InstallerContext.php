@@ -157,4 +157,13 @@ class InstallerContext
 	{
 		return $this->container->getEm();
 	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Usersource\UsersourceManager
+	 */
+	public function getUsersourceManager()
+	{
+		return $this->container->getSystemService('usersource_manager');
+	}
 }

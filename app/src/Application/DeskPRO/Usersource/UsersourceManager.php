@@ -50,13 +50,43 @@ class UsersourceManager
 	 */
 	protected $usersources = null;
 
+	/**
+	 * @var \Application\DeskPRO\App\AppManipulator
+	 */
+	private $app_manipulator;
+
 
 	/**
-	 * @param \Doctrine\ORM\EntityManager $em
+	 * @param EntityManager      $em
+	 * @param App\AppManipulator $app_manipulator
 	 */
-	public function __construct(EntityManager $em)
+	public function __construct(EntityManager $em, App\AppManipulator $app_manipulator)
 	{
 		$this->em = $em;
+		$this->app_manipulator = $app_manipulator;
+	}
+
+	public function ensureSsoSettings(Usersource $usersource)
+	{
+		if ($usersource->is_sso_auto || $usersource->is_sso_background) {
+			if ($usersource->type === Usersource::TYPE_USER) {
+				$sources = $this->getAll()->configuredForUsers(true);
+			} else {
+				$sources = $this->getAll()->configuredForAgents(true);
+			}
+
+			/** @var \Application\DeskPRO\Entity\Usersource $source */
+			foreach ($sources as $source) {
+				if ($source->id != $usersource->id) {
+					$source->disableSso();
+					if ($source->app) {
+						$this->app_manipulator->disableSso($source->app);
+					}
+				}
+			}
+
+			$this->em->flush();
+		}
 	}
 
 

@@ -56,6 +56,31 @@
 			"label": "Login Button Text",
 			"description": "The text that appears on the button on the login page. Only useful if your settings are for background SSO. This is also optional - leave blank to show no button.",
 			"native_only": true
+		},
+		{
+			"name": "enable_sso",
+			"type": "checkbox",
+			"label": "Enable SSO",
+			"description": "When SSO is enabled, users will be automatically logged-in when they visit DeskPRO.",
+			"native_only": true
+		},
+		{
+			"name": "sso_type",
+			"type": "choice",
+			"label": "SSO Method",
+			"description": "SSO can take place in one of two methods: automatic, or background. The automatic method will immediately redirect your users away from your helpdesk if they are not logged in and ask them to login to your website. Alternatively, the background method will only log the user in in they are already authenticated on your website, but will never redirect them.",
+			"native_only": true,
+			"default_value": "auto",
+			"options": [
+				{
+					"label": "Automatic",
+					"value": "auto"
+				},
+				{
+					"label": "Background",
+					"value": "background"
+				}
+			]
 		}
 	]
 }

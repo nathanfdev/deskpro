@@ -34,12 +34,12 @@
 
 namespace Application\DeskPRO\App;
 
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\NoopInstallerHandler;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
-use Application\DeskPRO\Entity\Usersource;
 use Doctrine\ORM\EntityManager;
 
 class InstanceUpdater
@@ -145,5 +145,15 @@ class InstanceUpdater
 		}
 
 		return new NoopInstallerHandler();
+	}
+
+
+	public function disableSso()
+	{
+		$handler = $this->createInstallHandler();
+
+		if ($handler instanceof AbstractUsersourceInstallerHandler) {
+			$handler->disableSsoSettings($this->app, $this->em);
+		}
 	}
 }

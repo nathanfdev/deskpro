@@ -42,6 +42,11 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 {
 	protected $settingsDef;
 
+	/**
+	 * @var InstallerContext
+	 */
+	protected $context;
+
 	public function __construct($settingsDef = array())
 	{
 		$this->settingsDef = $settingsDef;
@@ -58,11 +63,27 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 	 */
 	protected abstract function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em);
 
+
+	/**
+	 * Called after another app has enabled SSO. The underlying usersource is already cleared of its SSO status, but
+	 * you probably need to change your settings back to "off" mode (for exmaple, you need to manually "uncheck" the
+	 * "enable sso" checkbox here).
+	 *
+	 * @param AppInstance   $app
+	 * @param EntityManager $em
+	 * @return void
+	 */
+	public function disableSsoSettings(AppInstance $app, EntityManager $em)
+	{
+		return null;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public function install(InstallerContext $context)
 	{
+		$this->context = $context;
 		$this->applyAppToUsersource($context->getApp(), $context->getUsersource(), $context->getEm());
 	}
 
@@ -71,6 +92,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 	 */
 	public function updateSettings(InstallerContext $context)
 	{
+		$this->context = $context;
 		$this->applyAppToUsersource($context->getApp(), $context->getUsersource(), $context->getEm());
 	}
 
@@ -79,6 +101,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 	 */
 	public function uninstall(InstallerContext $context)
 	{
+		$this->context = $context;
 		$context->getEm()->remove($context->getUsersource());
 		$context->getEm()->flush();
 	}
@@ -90,6 +113,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 	 */
 	public function processSettings(InstallerContext $context, array $settings)
 	{
+		$this->context = $context;
 		return $settings;
 	}
 
@@ -100,6 +124,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 	 */
 	public function validateSettings(InstallerContext $context, array $settings)
 	{
+		$this->context = $context;
 		return $settings;
 	}
 
@@ -109,5 +134,6 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 	 */
 	public function updatePackage(InstallerContext $context)
 	{
+		$this->context = $context;
 	}
 }

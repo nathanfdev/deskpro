@@ -42,6 +42,20 @@ use Application\DeskPRO\ORM\EntityManager;
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
 	/**
+	 * {@inheritDoc}
+	 */
+	public function disableSsoSettings(AppInstance $app, EntityManager $em)
+	{
+		$settings               = $app->getSettings();
+		$settings['enable_sso'] = false;
+		$settings['sso_type']   = null;
+		$app->setSettings($settings);
+
+		$em->persist($app);
+		$em->flush($app);
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
@@ -57,6 +71,18 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
 		$us->lost_password_url = '';
 		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Saml';
+
+		if ($app->getSetting('enable_sso')) {
+			if ('auto' == $app->getSetting('sso_type')) {
+				$us->makeSsoAutoOnly();
+			} else {
+				$us->makeSsoBackgroundOnly();
+			}
+		} else {
+			$us->disableSso();
+		}
+
+		$this->context->getUsersourceManager()->ensureSsoSettings($us);
 
 		$em->persist($us);
 		$em->persist($app);

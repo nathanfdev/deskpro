@@ -159,5 +159,12 @@ class AppManipulator
 			$this->em->flush();
 		}
 	}
+
+
+	public function disableSso(AppInstance $app)
+	{
+		$instance_updater = new InstanceUpdater($this->manager, $app, $this->em);
+		$instance_updater->disableSso();
+	}
 }
  
