@@ -168,8 +168,36 @@ class UsersourceCollection extends \ArrayObject
 		$type = strtolower($type);
 
 		$filtered = array_filter(
-			(array) $this, function (Usersource $us) use ($type) {
+			(array)$this, function (Usersource $us) use ($type) {
 				return strtolower($us->source_type) == $type;
+			}
+		);
+
+		return new static($filtered);
+	}
+
+	/**
+	 * @return UsersourceCollection
+	 */
+	public function withBackgroundSso()
+	{
+		$filtered = array_filter(
+			(array)$this, function (Usersource $us) {
+				return $us->is_sso_background;
+			}
+		);
+
+		return new static($filtered);
+	}
+
+	/**
+	 * @return UsersourceCollection
+	 */
+	public function withAutoSso()
+	{
+		$filtered = array_filter(
+			(array)$this, function (Usersource $us) {
+				return $us->is_sso_auto;
 			}
 		);
 

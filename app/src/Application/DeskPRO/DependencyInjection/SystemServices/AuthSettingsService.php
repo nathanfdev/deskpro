@@ -45,20 +45,41 @@ class AuthSettingsService
 	public static function create(DeskproContainer $container, array $options = array())
 	{
 		$adapterFactory = $container->getSystemService('usersource_auth_adapter_factory');
-		$samlSource = $container->getEm()->getRepository('DeskPRO:Usersource')->find(9);
+
+		/** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
+		$um = $container->getSystemService('usersource_manager');
+
 
 		////////////////////////////////////////////////
 		// User Interface Auth Settings
 		$userAuthSettings = new AuthInterfaceSettings($adapterFactory);
-		$userAuthSettings->setBackgroundSsoEnabled(true);
-		$userAuthSettings->setSsoUsersource($samlSource);
+
+
+		if ($usSsoBackground = $um->getAll()->configuredForUsers()->withBackgroundSso()->getFirstOrNull()) {
+			$userAuthSettings->setBackgroundSsoEnabled(true);
+			$userAuthSettings->setSsoUsersource($usSsoBackground);
+		}
+
+		if ($usSsoAuto = $um->getAll()->configuredForUsers()->withAutoSso()->getFirstOrNull()) {
+			$userAuthSettings->setAutoSsoEnabled(true);
+			$userAuthSettings->setSsoUsersource($usSsoAuto);
+		}
+
 
 		////////////////////////////////////////////////
 		// Agent Interface Auth Settings
 		$agentAuthSettings = new AuthInterfaceSettings($adapterFactory);
-		$agentAuthSettings->setBackgroundSsoEnabled(true);
-		$agentAuthSettings->setSsoUsersource($samlSource);
-		//$agentAuthSettings->setLogoutRedirectUrl('http://google.com');
+
+		if ($usSsoBackground = $um->getAll()->configuredForAgents()->withBackgroundSso()->getFirstOrNull()) {
+			$agentAuthSettings->setBackgroundSsoEnabled(true);
+			$agentAuthSettings->setSsoUsersource($usSsoBackground);
+		}
+
+		if ($usSsoAuto = $um->getAll()->configuredForAgents()->withAutoSso()->getFirstOrNull()) {
+			$agentAuthSettings->setAutoSsoEnabled(true);
+			$agentAuthSettings->setSsoUsersource($usSsoAuto);
+		}
+
 
 		////////////////////////////////////////////////
 		// App Auth Settings
