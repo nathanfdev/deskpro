@@ -43,7 +43,7 @@ use Orb\Log\Loggable;
 
 use Doctrine\DBAL\Connection;
 
-class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggable, AdapterInterface
+class DbTable implements FormLoginInterface, UserInfoFetchableInterface, Loggable
 {
 	const OPT_TABLE              = 'table';
 	const OPT_FIELD_ID           = 'field_id';

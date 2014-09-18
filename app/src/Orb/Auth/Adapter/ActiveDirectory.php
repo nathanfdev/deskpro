@@ -41,7 +41,7 @@ use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 
-class ActiveDirectory implements FormLoginInterface, Loggable, AdapterInterface
+class ActiveDirectory implements FormLoginInterface, Loggable
 {
 	const OPT_HOST               = 'host';
 	const OPT_PORT               = 'port';

@@ -44,7 +44,7 @@ use Orb\Validator\StringEmail;
  * Requirements:
  * - GoogleOpenID: http://andrewpeace.com/php-google-login-class.html
  */
-class Google extends AbstractCallbackAdatper implements DisplayContextInterface, AdapterInterface
+class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 {
 	protected $display = 'page';
 

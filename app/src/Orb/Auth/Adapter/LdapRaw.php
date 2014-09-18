@@ -41,7 +41,7 @@ use Orb\Util\Arrays;
 use Orb\Log\Logger;
 use Orb\Log\Loggable;
 
-class LdapRaw implements FormLoginInterface, Loggable, AdapterInterface
+class LdapRaw implements FormLoginInterface, Loggable
 {
 	const OPT_HOST               = 'host';
 	const OPT_PORT               = 'port';

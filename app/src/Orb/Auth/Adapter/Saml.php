@@ -41,7 +41,7 @@ use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Response;
 
-class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, IframeSsoInterface, SamlAdapterInterface, AdapterInterface
+class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, IframeSsoInterface, SamlAdapterInterface
 {
 	/**
 	 * @var \Orb\Log\Logger

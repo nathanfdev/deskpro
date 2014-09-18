@@ -41,7 +41,7 @@ use Orb\Auth\StateHandler\StateHandlerInterface;
  * Requirements:
  * - Facebook SDK: https://github.com/facebook/php-sdk
  */
-class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface, AdapterInterface
+class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface
 {
 	protected $app_id;
 	protected $app_secret;
