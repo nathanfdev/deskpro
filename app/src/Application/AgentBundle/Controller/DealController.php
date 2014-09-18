@@ -51,10 +51,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DealController extends AbstractController
 {
-    public function newAction()
+	/**
+	 * @deprecated
+	 * @return Response
+	 */
+	public function newAction()
     {
-
-        $deal = new Deal();
+//      trying to instantiate abstract class
+//        $deal = new Deal();
         $deal_type = $this->em->getRepository('DeskPRO:DealType')->findAll();
         $deal_stage = $this->em->getRepository('DeskPRO:DealStage')->getDealStagesByDealType(0);
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -70,8 +74,11 @@ class DealController extends AbstractController
         ));
     }
 
-
-    public function newSaveAction() {
+	/**
+	 * @deprecated
+	 * @return Response
+	 */
+	public function newSaveAction() {
         $success = false;
         $newdeal = new \Application\AgentBundle\Form\Model\NewDeal($this->person);
 
@@ -94,9 +101,9 @@ class DealController extends AbstractController
 
     /**
      * Generate the category wise list gor task.
+     * @deprecated
      * @return html
      */
-
     public function getSectionDataAction()
     {
 
@@ -105,22 +112,12 @@ class DealController extends AbstractController
 
         $my_open_deals = $deal_repository->findDealsForPerson($person);
         $my_total_opendeals = $deal_repository->countDealsForPerson($person);
-
-        $my_won_deals = $deal_repository->findDealsForPerson($person, 1);
         $my_total_wondeals = $deal_repository->countDealsForPerson($person, 1);
-
-        $my_lost_deals = $deal_repository->findDealsForPerson($person, 2);
         $my_total_lostdeals = $deal_repository->countDealsForPerson($person, 2);
-
         $other_open_deals = $deal_repository->findDealsForOther($person);
         $other_total_opendeals = $deal_repository->countDealsForOther($person);
-
-        $other_won_deals = $deal_repository->findDealsForOther($person, 1);
         $other_total_wondeals = $deal_repository->countDealsForOther($person, 1);
-
-        $other_lost_deals = $deal_repository->findDealsForOther($person, 2);
         $other_total_lostdeals = $deal_repository->countDealsForOther($person, 2);
-
 
         $section_html = $this->renderView('AgentBundle:Deal:window-section.html.twig',array(
             'myopendeals' => $my_open_deals,
@@ -141,8 +138,14 @@ class DealController extends AbstractController
         ));
     }
 
-
-    public function dealListAction($owner_type = null, $deal_status = null, $deal_type_id = null)
+	/**
+	 * @deprecated
+	 * @param null $owner_type
+	 * @param null $deal_status
+	 * @param null $deal_type_id
+	 * @return Response
+	 */
+	public function dealListAction($owner_type = null, $deal_status = null, $deal_type_id = null)
     {
         $deal_repository = $this->em->getRepository('DeskPRO:Deal');
         $person = $this->person;
@@ -201,7 +204,12 @@ class DealController extends AbstractController
         ));
     }
 
-    protected function _getTotalGroupCount($deal_group_info)
+	/**
+	 * @deprecated
+	 * @param $deal_group_info
+	 * @return int
+	 */
+	protected function _getTotalGroupCount($deal_group_info)
     {
         $total = 0;
         if(\is_array($deal_group_info)){
@@ -212,13 +220,19 @@ class DealController extends AbstractController
         return $total;
     }
 
-    public function viewAction($deal_id = null)
+	/**
+	 * @deprecated
+	 * @param null $deal_id
+	 * @return Response
+	 */
+	public function viewAction($deal_id = null)
     {
         if($deal_id)
         {
             $deal = $this->getDealOr404($deal_id);
         } else{
-            $deal = new Deal();
+//      trying to instantiate abstract class
+//            $deal = new Deal();
         }
 
         $notes = $this->em->getRepository('DeskPRO:DealNote')->getNotesForDeal($deal);
@@ -232,8 +246,6 @@ class DealController extends AbstractController
 
         $related_finder = new RelatedContentFinder($this->person, $deal);
         $related_content = $related_finder->getRelatedEntities();
-//        if(!empty($related_content)){
-//        print \Doctrine\Common\Util\Debug::dump($related_content);exit;}
 
         $field_manager = $this->container->getSystemService('deal_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($deal);
@@ -270,21 +282,26 @@ class DealController extends AbstractController
         ));
     }
 
-    // TODO error checking
+	/**
+	 * @deprecated
+	 * @param $deal_id
+	 * @return Response
+	 */
 	public function ajaxSaveNoteAction($deal_id)
 	{
 		if($deal_id)
                 {
                     $deal = $this->getDealOr404($deal_id);
                 } else{
-                    $deal = new Deal();
+//      trying to instantiate abstract class
+//                    $deal = new Deal();
                 }
 
 		$note_txt = $this->in->getString('note');
 
 		$em = $this->em;
-
-		$note = new DealNote();
+//      trying to instantiate abstract class
+//		$note = new DealNote();
 		$note['agent'] = $this->person;
 		$note['deal'] = $deal;
 		$note['note'] = $note_txt;
@@ -303,13 +320,19 @@ class DealController extends AbstractController
 	# ajax-save-labels
 	############################################################################
 
+	/**
+	 * @deprecated
+	 * @param $deal_id
+	 * @return Response
+	 */
 	public function ajaxSaveLabelsAction($deal_id)
 	{
 		if($deal_id)
                 {
                     $deal = $this->getDealOr404($deal_id);
                 } else{
-                    $deal = new Deal();
+//      trying to instantiate abstract class
+//                    $deal = new Deal();
                 }
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
@@ -322,8 +345,13 @@ class DealController extends AbstractController
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
-
-        public function ajaxSaveCustomFieldsAction($deal_id)
+	/**
+	 * @deprecated
+	 * @param $deal_id
+	 * @return Response
+	 * @throws \Exception
+	 */
+	public function ajaxSaveCustomFieldsAction($deal_id)
 	{
 		$deal = $this->getDealOr404($deal_id);
 
@@ -351,8 +379,14 @@ class DealController extends AbstractController
 		));
 	}
 
-
-        public function setAgentParticipantsAction($deal_id, $agent_id)
+	/**
+	 * @deprecated
+	 * @param $deal_id
+	 * @param $agent_id
+	 * @return Response
+	 * @throws \Exception
+	 */
+	public function setAgentParticipantsAction($deal_id, $agent_id)
 	{
 		$deal = $this->getDealOr404($deal_id);
                 $agent_id = ($agent_id == 0) ? null : $agent_id;
@@ -372,7 +406,12 @@ class DealController extends AbstractController
 		return $this->createJsonResponse(array('sucess' => true));
 	}
 
-        public function ajaxSaveAction($deal_id) {
+	/**
+	 * @deprecated
+	 * @param $deal_id
+	 * @return Response
+	 */
+	public function ajaxSaveAction($deal_id) {
 
             $deal = $this->getDealOr404($deal_id);
             $this->em->beginTransaction();
@@ -473,7 +512,12 @@ class DealController extends AbstractController
             return $this->createJsonResponse($data);
         }
 
-        public function newdealGetPersonRowAction($person_id)
+	/**
+	 * @deprecated
+	 * @param $person_id
+	 * @return Response
+	 */
+	public function newdealGetPersonRowAction($person_id)
 	{
 		if (!$person_id && $this->in->getUint('person_id')) {
 			$person_id = $this->in->getUint('person_id');
@@ -510,7 +554,12 @@ class DealController extends AbstractController
 		));
 	}
 
-        public function newdealGetOrganizationRowAction($org_id)
+	/**
+	 * @deprecated
+	 * @param $org_id
+	 * @return Response
+	 */
+	public function newdealGetOrganizationRowAction($org_id)
 	{
 		$organization = false;
 		if ($org_id) {
@@ -536,7 +585,12 @@ class DealController extends AbstractController
 		));
         }
 
-        public function newdealSetPersonRowAction($person_id)
+	/**
+	 * @deprecated
+	 * @param $person_id
+	 * @return Response
+	 */
+	public function newdealSetPersonRowAction($person_id)
 	{
                 $deal_repository = $this->em->getRepository('DeskPRO:Deal');
                 $deal = $this->getDealOr404($this->in->getString('deal_id'));
@@ -578,19 +632,29 @@ class DealController extends AbstractController
               }
         }
 
-        public function newdealCreateOrganizationRowAction($org_id)
-        {
-            $organization = false;
-            if ($org_id) {
-                    $organization = $this->em->find('DeskPRO:Organization', $org_id);
-            }
-
-            return $this->render('AgentBundle:Deal:create-organization-row.html.twig', array(
-                    'organization' => $organization
-            ));
+	/**
+	 * @deprecated
+	 * @param $org_id
+	 * @return Response
+	 */
+	public function newdealCreateOrganizationRowAction($org_id)
+    {
+        $organization = false;
+        if ($org_id) {
+                $organization = $this->em->find('DeskPRO:Organization', $org_id);
         }
 
-        public function newdealSetOrganizationRowAction($org_id)
+        return $this->render('AgentBundle:Deal:create-organization-row.html.twig', array(
+                'organization' => $organization
+        ));
+    }
+
+	/**
+	 * @deprecated
+	 * @param $org_id
+	 * @return Response
+	 */
+	public function newdealSetOrganizationRowAction($org_id)
 	{
 		$deal_repository = $this->em->getRepository('DeskPRO:Deal');
                 $deal = $this->getDealOr404($this->in->getString('deal_id'));
@@ -628,8 +692,11 @@ class DealController extends AbstractController
         }
 
 
-        /**
-	 * @return Application\DeskPRO\Entity\Deal
+	/**
+	 * @deprecated
+	 * @param $deal_id
+	 * @return null|object
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
 	protected function getDealOr404($deal_id)
 	{
