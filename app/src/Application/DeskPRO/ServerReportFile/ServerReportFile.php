@@ -689,7 +689,6 @@ class ServerReportFile
 		try {
 			$content = Files::readFromEnd($file_name, $this->max_file_size);
 		} catch (\Exception $e) {
-			dp_log($e->getMessage());
 			$content = false;
 		}
 

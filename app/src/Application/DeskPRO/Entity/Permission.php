@@ -134,9 +134,6 @@ class Permission extends DomainObject
 		foreach ($perms as $perm) {
 
 			if (is_array($perm)) {
-				if (!isset($perm['name'])) {
-					dp_log($perm);
-				}
 				$k = $perm['name'];
 				$v = $perm['value'];
 			} else {
