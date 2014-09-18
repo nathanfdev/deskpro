@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Usersource;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\EntityRepository\Person;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Usersource\Adapter\IdentityFinderInterface;
 use Doctrine\ORM\EntityManager;
 
