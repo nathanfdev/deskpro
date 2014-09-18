@@ -24,6 +24,7 @@
 	'dp.kb.install.error_db_no_innodb'       => 'https://support.deskpro.com/kb/articles/123',
 	'dp.kb.install.error_db_not_empty'       => 'https://support.deskpro.com/kb/articles/123',
 	'dp.kb.install.cron'                     => 'https://support.deskpro.com/kb/articles/124',
+	'dp.kb.install.cron_windows'             => 'https://support.deskpro.com/kb/articles/148',
 	'dp.kb.editing_php_ini'                  => 'https://support.deskpro.com/kb/articles/122',
 	'dp.kb.install.error_disabled_functions' => 'https://support.deskpro.com/kb/articles/122',
 	'dp.kb.install.error_upload_tmp_dir'     => 'https://support.deskpro.com/kb/articles/122',
