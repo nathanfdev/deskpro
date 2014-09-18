@@ -49,6 +49,8 @@ use Orb\Util\Util;
  * @property $options
  * @property $display_order
  * @property $is_enabled
+ * @property $is_sso_auto
+ * @property $is_sso_background
  * @property $app
  * @property $id
  */
@@ -120,6 +122,20 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
+	 * True if this usersource is setup to be sso automatic
+	 *
+	 * @var bool
+	 */
+	protected $is_sso_auto = false;
+
+	/**
+	 * True if this usersource is setup to be sso background
+	 *
+	 * @var bool
+	 */
+	protected $is_sso_background = false;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\AppInstance|null
 	 */
 	protected $app = null;
@@ -135,6 +151,44 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	public function getId()
 	{
 		return $this->id;
+	}
+
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['is_sso'] = $this->is_sso_background || $this->is_sso_auto;
+
+		return $data;
+	}
+
+
+
+	public function makeSsoAutoOnly()
+	{
+		$this->setModelField('is_sso_background', false);
+		$this->setModelField('is_sso_auto', true);
+	}
+
+
+	public function makeSsoBackgroundOnly()
+	{
+		$this->setModelField('is_sso_background', true);
+		$this->setModelField('is_sso_auto', false);
+	}
+
+
+	public function disableSso()
+	{
+		$this->setModelField('is_sso_background', false);
+		$this->setModelField('is_sso_auto', false);
+	}
+
+
+	public function makeSsoAutoAndBackground()
+	{
+		$this->setModelField('is_sso_background', true);
+		$this->setModelField('is_sso_auto', true);
 	}
 
 	/**
@@ -221,6 +275,8 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'json_array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));
 		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
 		$metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
+		$metadata->mapField(array( 'fieldName' => 'is_sso_auto', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_auto', ));
+		$metadata->mapField(array( 'fieldName' => 'is_sso_background', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_background', ));
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
