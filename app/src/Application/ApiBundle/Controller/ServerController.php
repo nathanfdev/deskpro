@@ -500,7 +500,7 @@ class ServerController extends AbstractController implements ProtectedController
 		$error_count = $err_reader->quickCount();
 
 		$gateway_error_count = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(array('ticket', 'ticketmessage'));
-		$sendmail_error_count = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_queue WHERE date_next_attempt IS NULL");
+		$sendmail_error_count = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_queue WHERE status = 'error'");
 
 		return $this->createJsonResponse(array(
 			'error_count'          => $error_count,

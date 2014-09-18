@@ -353,4 +353,48 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 			'date_next_attempt' => $sendmail->date_next_attempt
 		));
 	}
+
+	####################################################################################################################
+	# mass-actions
+	####################################################################################################################
+
+	public function massActionsAction($action)
+	{
+		$ids = $this->in->getArrayOfUInts('ids');
+		if (!$ids) {
+			return $this->createApiSuccessResponse();
+		}
+
+		switch ($action) {
+			case 'resend':
+				$this->db->updateIn('sendmail_queue', array(
+					'status'            => 'pending',
+					'date_next_attempt' => date('Y-m-d H:i:s')
+				), $ids);
+				break;
+
+			case 'delete':
+				$bs = $this->container->getBlobStorage();
+				$recs = $this->db->fetchAll("
+					SELECT sendmail_queue.id AS sendmail_queue_id, blobs.*
+					FROM sendmail_queue
+					LEFT JOIN blobs ON blobs.id = sendmail_queue.blob_id
+					WHERE sendmail_queue.id IN (" . implode(',', $ids) . ")
+				");
+
+				foreach ($recs as $r) {
+					if ($r['id']) {
+						$bs->deleteBlobRow($r);
+					}
+
+					$this->db->delete('sendmail_queue', array('id' => $r['sendmail_queue_id']));
+				}
+				break;
+
+			default:
+				throw $this->createNotFoundException();
+		}
+
+		return $this->createApiSuccessResponse();
+	}
 }
