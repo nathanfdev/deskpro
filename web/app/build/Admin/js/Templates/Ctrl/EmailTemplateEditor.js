@@ -106,8 +106,8 @@
               if (newHeight > maxH) {
                 newHeight = maxH;
               }
-              if (newHeight < 10) {
-                newHeight = 10;
+              if (newHeight < 18) {
+                newHeight = 18;
               }
               $(editor.container).height(newHeight);
               return editor.resize();
@@ -128,8 +128,8 @@
               if (newHeight > maxH) {
                 newHeight = maxH;
               }
-              if (newHeight < 10) {
-                newHeight = 10;
+              if (newHeight < 85) {
+                newHeight = 85;
               }
               $(editor.container).height(newHeight);
               return editor.resize();
