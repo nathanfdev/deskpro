@@ -18,6 +18,9 @@ define [
 			@actionsTypeDef    = @dpObTypesDefTicketActions
 			@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
 
+			@criteriaTypeDef.setVar('object_type', 'escalation');
+			@actionsTypeDef.setVar('object_type', 'escalation');
+
 		initialLoad: ->
 			promise = @escData.loadEditEscalationData(@$stateParams.id || null).then( (data) =>
 				@esc  = data.escalation

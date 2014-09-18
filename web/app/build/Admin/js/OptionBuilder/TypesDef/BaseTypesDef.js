@@ -87,6 +87,17 @@
         return opts;
       };
 
+      Admin_OptionBuilder_TypesDef_BaseTypesDef.prototype.getVars = function() {
+        return this.vars || {};
+      };
+
+      Admin_OptionBuilder_TypesDef_BaseTypesDef.prototype.setVar = function(k, v) {
+        if (!this.vars) {
+          this.vars = {};
+        }
+        return this.vars[k] = v;
+      };
+
       return Admin_OptionBuilder_TypesDef_BaseTypesDef;
 
     })();
