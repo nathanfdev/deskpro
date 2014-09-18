@@ -41,6 +41,8 @@
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.criteriaOptionTypes = [];
         this.$scope.actionOptionTypes = [];
+        this.criteraTypeDef.setVar('object_type', 'trigger');
+        this.actionsTypeDef.setVar('object_type', 'trigger');
         this.customInit();
       };
 

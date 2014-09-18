@@ -23,7 +23,9 @@
         this.criteriaTypeDef = this.dpObTypesDefTicketFilter;
         this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
-        return this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
+        this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
+        this.criteriaTypeDef.setVar('object_type', 'escalation');
+        return this.actionsTypeDef.setVar('object_type', 'escalation');
       };
 
       Admin_TicketEscalations_Ctrl_Edit.prototype.initialLoad = function() {

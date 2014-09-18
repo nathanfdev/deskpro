@@ -59,3 +59,8 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 			addTree(options, 0, opts, [])
 
 			return opts
+
+		getVars: -> @vars || {}
+		setVar: (k, v) ->
+			if not @vars then @vars = {}
+			@vars[k] = v

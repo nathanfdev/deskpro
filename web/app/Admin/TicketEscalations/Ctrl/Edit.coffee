@@ -19,6 +19,9 @@ define [
 
 
 
+			@criteriaTypeDef.setVar('object_type', 'escalation');
+			@actionsTypeDef.setVar('object_type', 'escalation');
+
 		initialLoad: ->
 			@criteriaTypeDef.loadDataOptions().then =>
 				@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
