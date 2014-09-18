@@ -112,8 +112,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	{
 		$this->person = $person;
 
-		if ($person->is_agent) {
-			$this->usergroup_ids = App::$container->getAgentData()->getGroupIdsForAgent($person);
+		$agent_data = App::$container->getAgentData();
+
+		if ($agent_data->has($person->id)) {
+			$this->usergroup_ids = $agent_data->getGroupIdsForAgent($person);
 		} else {
 			$this->usergroup_ids = App::getDb()->fetchAllCol("
 				SELECT person2usergroups.usergroup_id
