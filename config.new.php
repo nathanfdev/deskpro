@@ -9,9 +9,14 @@
 # Your mySQL Database Configuration                  #
 ######################################################
 
-// The database server. If you are using windows and your
-// mysql server is on the same machine; it is important not
-// to specify localhost, specify 127.0.0.1 instead.
+// The database server. Three formats are accepted:
+// - Host/IP: localhost, db.myhost.com, 192.168.1.1
+// - Host/IP with port: db.myhost.com:10086
+// - Socket: unix_socket:/var/run/mysqld/mysqld.sock
+//
+// Note: If you are using Windows and your MySQL
+// server is on the same machine, it it important
+// to specify 127.0.0.1 instead of localhost.
 define('DP_DATABASE_HOST', 'localhost');
 
 // The database username
