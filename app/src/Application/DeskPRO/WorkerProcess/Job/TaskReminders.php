@@ -115,10 +115,12 @@ class TaskReminders extends AbstractJob
 				LEFT JOIN task_reminder_logs ON (task_reminder_logs.task_id = tasks.id)
 				WHERE
 					tasks.is_completed = 0
-					AND (tasks.assigned_agent_id = ?0 OR tasks.assigned_agent_team_id IN (?1) OR (tasks.assigned_agent_id IS NULL AND tasks.person_id = ?0)
-					AND tasks.date_due >= ?2 AND tasks.date_due <= ?2'
+					AND (tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?) OR (tasks.assigned_agent_id IS NULL AND tasks.person_id = ?)
+					AND tasks.date_due >= ? AND tasks.date_due <= ?'
 					AND task_reminder_logs.id IS NULL
-			", array($agent['id'], $team_ids, $today_utc->format('Y-m-d H:i:s')), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_STR));
+			",
+				array($agent['id'], $team_ids, $agent['id'], $today_utc->format('Y-m-d H:i:s'), $today_utc->format('Y-m-d H:i:s')),
+				array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT, \PDO::PARAM_STR, \PDO::PARAM_STR));
 
 			if (!$task_ids) {
 				continue;

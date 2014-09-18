@@ -77,11 +77,13 @@ class CleanupAlways extends AbstractJob
 		$ids = App::getDb()->fetchAllCol("
 			SELECT id FROM client_messages
 			WHERE (
-				date_created < ?0 AND channel NOT IN (?2)
+				date_created < ? AND channel NOT IN (?)
 			) OR (
-				date_created < ?1 AND channel IN (?2)
+				date_created < ? AND channel IN (?)
 			)
-		", array($datetime, $datetime2, $long_lived_channels), array(\PDO::PARAM_STR, \PDO::PARAM_STR, Connection::PARAM_STR_ARRAY));
+		",
+			array($datetime, $long_lived_channels, $datetime2, $long_lived_channels),
+			array(\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY, \PDO::PARAM_STR, Connection::PARAM_STR_ARRAY));
 		if ($ids) {
 			$batch_ids = array_chunk($ids, 50, false);
 			foreach ($batch_ids as $ids) {
