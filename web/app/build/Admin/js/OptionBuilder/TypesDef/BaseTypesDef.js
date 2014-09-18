@@ -46,33 +46,35 @@
             parentTitleSegs = [];
           }
           parent_id = parseInt(parent_id);
-          _results = [];
-          for (_i = 0, _len = options.length; _i < _len; _i++) {
-            opt = options[_i];
-            if ((parent_id !== 0 && parseInt(opt.parent_id) === parent_id) || (parent_id === 0 && (!opt.parent_id || !parseInt(opt.parent_id)))) {
-              o = getRenderOpt(opt, parentTitleSegs);
-              if (o) {
-                parentTitleSegs.push(o.title);
-              }
-              childOps = [];
-              addTree(options, opt.id, childOps, parentTitleSegs);
-              if (o) {
-                parentTitleSegs.pop();
-              }
-              if (childOps.length) {
-                _results.push(Arrays.append(toOpts, childOps));
-              } else {
+          if (options) {
+            _results = [];
+            for (_i = 0, _len = options.length; _i < _len; _i++) {
+              opt = options[_i];
+              if ((parent_id !== 0 && parseInt(opt.parent_id) === parent_id) || (parent_id === 0 && (!opt.parent_id || !parseInt(opt.parent_id)))) {
+                o = getRenderOpt(opt, parentTitleSegs);
                 if (o) {
-                  _results.push(toOpts.push(o));
-                } else {
-                  _results.push(void 0);
+                  parentTitleSegs.push(o.title);
                 }
+                childOps = [];
+                addTree(options, opt.id, childOps, parentTitleSegs);
+                if (o) {
+                  parentTitleSegs.pop();
+                }
+                if (childOps.length) {
+                  _results.push(Arrays.append(toOpts, childOps));
+                } else {
+                  if (o) {
+                    _results.push(toOpts.push(o));
+                  } else {
+                    _results.push(void 0);
+                  }
+                }
+              } else {
+                _results.push(void 0);
               }
-            } else {
-              _results.push(void 0);
             }
+            return _results;
           }
-          return _results;
         };
         opts = [];
         if (extraOptions) {

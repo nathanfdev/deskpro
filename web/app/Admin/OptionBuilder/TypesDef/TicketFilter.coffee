@@ -346,6 +346,12 @@ define [
 			def = @getStandardInput(options)
 			return def
 
+		getFilterUrgency: (options = {}) ->
+			options.propName = 'urgency'
+			options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+			def = @getStandardInput(options)
+			return def
+
 		getFilterPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
