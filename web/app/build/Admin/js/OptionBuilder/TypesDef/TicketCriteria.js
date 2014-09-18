@@ -317,6 +317,10 @@
           title: 'Check Current Agent',
           value: 'CheckPerformer'
         });
+        options.push({
+          title: 'Check Performer Email',
+          value: 'CheckPerformerEmail'
+        });
         set_options.push({
           title: 'Trigger Control',
           subOptions: options
@@ -512,6 +516,17 @@
         options.operators = ['contains', 'notcontains'];
         options.template = 'OptionBuilder/type-criteria-performer.html';
         def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckPerformerEmail = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'email';
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
         return def;
       };
 
