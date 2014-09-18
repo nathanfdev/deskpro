@@ -34,10 +34,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 					)
 				else
 					@usersourceId = @instanceId
-					console.log @usersourceId
 					@Api.sendGet('/usersources/' + @usersourceType + '/' + @usersourceId).then((result) =>
 						@usersource = result.data.usersource
-						console.log @usersource
 						d.resolve()
 					)
 			)
@@ -48,7 +46,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 					d2.resolve()
 				else
 					# this is an app instance
-					console.log "this is an app instance"
 					@$scope.pack = @pack
 					@$scope.setting_values = @app.settings
 					if not @$scope.setting_values || Util.isArray(@$scope.setting_values)

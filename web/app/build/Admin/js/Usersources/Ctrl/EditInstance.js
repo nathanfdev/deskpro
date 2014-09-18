@@ -59,10 +59,8 @@
               });
             } else {
               _this.usersourceId = _this.instanceId;
-              console.log(_this.usersourceId);
               return _this.Api.sendGet('/usersources/' + _this.usersourceType + '/' + _this.usersourceId).then(function(result) {
                 _this.usersource = result.data.usersource;
-                console.log(_this.usersource);
                 return d.resolve();
               });
             }
@@ -74,7 +72,6 @@
             if (!_this.app) {
               return d2.resolve();
             } else {
-              console.log("this is an app instance");
               _this.$scope.pack = _this.pack;
               _this.$scope.setting_values = _this.app.settings;
               if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {
