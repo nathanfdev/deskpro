@@ -11,19 +11,23 @@
 					class="with-drag-handle"
 					data-id="{{ ng_var('source.usersource.id') }}">
 					<a ng-href="{{ ng_href_var('ListCtrl.show_url', '{id: source.app ? source.app.id : "deskpro" }') }}">
-						<i class="fa fa-bars drag-handle"></i>
+						<aside style="display: inline-block">
+							<i class="fa fa-bars drag-handle"></i>
+							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}"
+								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
+							<img ng-if="!source.app" ng-src="{{ asset_full('/images/dp-logo-16.png') }}"
+								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
+						</aside>
+
+						<h4 style="line-height: normal; display: inline-block;">
+							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>
+							<span class="title-text">{{ ng_var('source.usersource.title') }}</span>
+						</h4>
 
 						<div class="pull-right">
 							<em class="tag tag-warn" ng-show="source.usersource.is_sso">SSO</em>
 							<em class="tag tag-warn" ng-show="!source.usersource.is_enabled">Disabled</em>
 						</div>
-
-						<h4>
-							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}" alt="{{ ng_var('source.usersource.title') }}" />
-							<img ng-if="!source.app" ng-src="{{ asset_full('/images/dp-logo-16.png') }}" alt="{{ ng_var('source.usersource.title') }}" />
-							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>
-							<span class="title-text">{{ ng_var('source.usersource.title') }}</span>
-						</h4>
 					</a>
 				</li>
 			</ul>
