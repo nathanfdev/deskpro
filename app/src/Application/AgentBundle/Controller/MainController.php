@@ -388,7 +388,7 @@ class MainController extends AbstractController
 
 				$return_results[] = array(
 					'type'    => $type,
-					'title'   => $type,
+					'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
 					'results' => $rows
 				);
 			}
@@ -432,7 +432,7 @@ class MainController extends AbstractController
 
 				$return_results[] = array(
 					'type'    => $type,
-					'title'   => $type,
+					'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
 					'results' => $rows
 				);
 			}
@@ -497,7 +497,7 @@ class MainController extends AbstractController
 						'agent'   => null
 					);
 
-					$agent= $ticket_display->getAgent($r);
+					$agent = $ticket_display->getAgent($r);
 					if ($agent) {
 						$ticket_info['agent'] = $render_person($agent);
 					}
@@ -514,6 +514,29 @@ class MainController extends AbstractController
 			case 'person':
 				foreach ($results as $r) {
 					$rows[] = $render_person($r);
+				}
+				break;
+
+			case 'chat_conversation':
+				foreach ($results as $r) {
+					$chat_info = array(
+						'id'      => $r->id,
+						'subject' => $r->subject,
+						'person'  => null,
+						'agent'   => null
+					);
+
+					$agent = $r->agent;
+					if ($agent) {
+						$chat_info['agent'] = $render_person($agent);
+					}
+
+					$person = $r->person;
+					if ($person) {
+						$chat_info['person'] = $render_person($person);
+					}
+
+					$rows[] = $chat_info;
 				}
 				break;
 
