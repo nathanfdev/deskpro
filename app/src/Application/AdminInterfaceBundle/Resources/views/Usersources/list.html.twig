@@ -2,6 +2,11 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
+				<nav>
+					<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i
+							class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+					{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+				</nav>
 			<h3>Authentication and SSO</h3>
 		</header>
 		<article>
@@ -13,6 +18,7 @@
 					<a ng-href="{{ ng_href_var('ListCtrl.show_url', '{id: source.app ? source.app.id : "deskpro" }') }}">
 						<aside style="display: inline-block">
 							<i class="fa fa-bars drag-handle"></i>
+							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>
 							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}"
 								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
 							<img ng-if="!source.app" ng-src="{{ asset_full('/images/dp-logo-16.png') }}"
@@ -20,7 +26,6 @@
 						</aside>
 
 						<h4 style="line-height: normal; display: inline-block;">
-							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>
 							<span class="title-text">{{ ng_var('source.usersource.title') }}</span>
 						</h4>
 
