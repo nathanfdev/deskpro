@@ -197,6 +197,31 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\OrgToElasticaTransformer');
 $container->setDefinition('deskpro.search.org_to_elastica_transformer', $definition);
 
+// deskpro.search.chat_conversation_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\ChatToElasticaTransformer');
+$container->setDefinition('deskpro.search.chat_conversation_to_elastica_transformer', $definition);
+
+// deskpro.search.article_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\ArticleToElasticaTransformer');
+$container->setDefinition('deskpro.search.article_to_elastica_transformer', $definition);
+
+// deskpro.search.news_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\NewsToElasticaTransformer');
+$container->setDefinition('deskpro.search.news_to_elastica_transformer', $definition);
+
+// deskpro.search.download_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\DownloadToElasticaTransformer');
+$container->setDefinition('deskpro.search.download_to_elastica_transformer', $definition);
+
+// deskpro.search.feedback_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\FeedbackToElasticaTransformer');
+$container->setDefinition('deskpro.search.feedback_to_elastica_transformer', $definition);
+
 // fos_elastica.provider.prototype.orm
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Provider\\Doctrine');
@@ -418,6 +443,7 @@ $container->loadFromExtension('fos_elastica', array(
                         'provider' => array(),
                         'finder'   => array(),
 						'elastica_to_model_transformer' => array('ignore_missing' => true),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.article_to_elastica_transformer'),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository'
                     )
                 ),
@@ -432,6 +458,7 @@ $container->loadFromExtension('fos_elastica', array(
 						'provider' => array(),
 						'finder'   => array(),
 						'elastica_to_model_transformer' => array('ignore_missing' => true),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.news_to_elastica_transformer'),
 						'repository' => 'Application\DeskPRO\NewSearch\Repository\NewsRepository'
 					)
 				),
@@ -446,6 +473,7 @@ $container->loadFromExtension('fos_elastica', array(
                         'provider' => array(),
                         'finder'   => array(),
 						'elastica_to_model_transformer' => array('ignore_missing' => true),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.download_to_elastica_transformer'),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\DownloadRepository'
                     )
                 ),
@@ -460,6 +488,7 @@ $container->loadFromExtension('fos_elastica', array(
                         'provider' => array(),
                         'finder'   => array(),
 						'elastica_to_model_transformer' => array('ignore_missing' => true),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.feedback_to_elastica_transformer'),
                         'repository' => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository'
                     )
                 ),
@@ -477,6 +506,24 @@ $container->loadFromExtension('fos_elastica', array(
 						'elastica_to_model_transformer' => array('ignore_missing' => true),
 						'model_to_elastica_transformer' => array('service' => 'deskpro.search.org_to_elastica_transformer'),
 						'repository' => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository'
+					)
+				),
+				'chat_conversation'   => array(
+					'mappings'    => array(
+						'subject' => array(),
+						'labels'  => array(),
+						'department_id' => array(),
+						'agent_id'      => array(),
+						'messages'      => array()
+					),
+					'persistence' => array(
+						'driver'   => 'orm',
+						'model'    => 'Application\DeskPRO\Entity\ChatConversation',
+						'provider' => array(),
+						'finder'   => array(),
+						'elastica_to_model_transformer' => array('ignore_missing' => true),
+						'model_to_elastica_transformer' => array('service' => 'deskpro.search.chat_conversation_to_elastica_transformer'),
+						'repository' => 'Application\DeskPRO\NewSearch\Repository\ChatConversationRepository'
 					)
 				),
                 'person'   => array(
