@@ -28,8 +28,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		notifyBox.on('click', '.trigger-dismiss', function(ev) {
 			Orb.cancelEvent(ev);
-			self.dismissAll();
 			$('#dp_header_notify_wrap').trigger('dpClose');
+			self.dismissAll();
 		}).on('click', '.dismiss', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
@@ -37,6 +37,10 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			var ul = $(this).closest('ul');
 			var row = $(this).closest('li');
 
+			if (!ul.find('li')[0] || !ul.find('li')[1]) {
+				$('#dp_header_notify_wrap').trigger('dpClose');
+			}
+
 			if (row.data('alert-id')) {
 				self.dismissAlertId(row.data('alert-id'));
 				DeskPRO_Window.getMessageChanneler().poller.send();
@@ -44,23 +48,23 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			self.removeRow(row);
 
-			if (!ul.find('li')[0]) {
-				$('#dp_header_notify_wrap').trigger('dpClose');
-			}
 		}).on('click', 'li.inside', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
 
-			DeskPRO_Window.runPageRouteFromElement($(this));
-
 			var row = $(this).closest('li');
 
 			if (row.hasClass('is-dismissed')) {
+				DeskPRO_Window.runPageRouteFromElement($(this));
 				return;
 			}
 
 			var ul = $(this).closest('ul');
 
+			if (!ul.find('li')[0] || !ul.find('li')[1]) {
+				$('#dp_header_notify_wrap').trigger('dpClose');
+			}
+
 			if (row.data('alert-id')) {
 				self.dismissAlertId(row.data('alert-id'));
 				DeskPRO_Window.getMessageChanneler().poller.send();
@@ -68,9 +72,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			self.removeRow(row);
 
-			if (!ul.find('li')[0]) {
-				$('#dp_header_notify_wrap').trigger('dpClose');
-			}
+			DeskPRO_Window.runPageRouteFromElement($(this));
+
 		}).on('click', '.trigger-notify-prefs', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
