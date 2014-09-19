@@ -388,6 +388,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			$('#dp_notify_list_' + listType).show();
 		}
 
+		$('#dp_header_notify_wrap').find('.notify-count').text(newcount);
+
 		this.fireEvent('modCount', ev);
 	}
 });
