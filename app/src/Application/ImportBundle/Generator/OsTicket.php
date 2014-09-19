@@ -86,7 +86,7 @@ class OsTicket implements GeneratorInterface
 		
 		$stmt   = $this->db->prepare($query);
 		
-		$result = $stmt->execute();
+		$stmt->execute();
 		
 		return $stmt->fetchColumn();
 	}

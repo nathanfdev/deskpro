@@ -48,7 +48,6 @@ class WidgetController extends AbstractController
 	public function proxyAction($key)
 	{
 		if (!$this->container->isDebug() OR $key != 'DBEUG') {
-			$session = $this->session;
 			$check_key = $this->session->getSessionSecret('proxy_key');
 
 			if ($check_key != $key)  {

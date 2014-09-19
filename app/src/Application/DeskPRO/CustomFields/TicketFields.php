@@ -54,16 +54,6 @@ class TicketFields extends AbstractFields
 		$this->fm = App::getContainer()->getSystemService('TicketFieldsManager');
 	}
 
-	public function userDisplayRuleFilter($ticket_fields)
-	{
-		$display_elements = App::getOrm()->createQuery("
-			SELECT d
-			FROM DeskPRO:DepartmentTicketDisplay d
-			WHERE d.is_agent_only = ?1
-			ORDER BY d.display_order ASC
-		")->execute(array(1=>false));
-	}
-
 	public function getFieldsDisplayArray($field_defs, $data_structured = array(), $field_group = null)
 	{
 		return $this->fm->getDisplayArray($data_structured, $field_group);

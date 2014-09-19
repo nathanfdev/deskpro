@@ -47,7 +47,7 @@ class TwitterFeed
 	{
 		$twitter_url = 'http://twitter.com/statuses/user_timeline/' . $user_id . '.json';
 
-		$data = file_get_contents($url);
+		$data = file_get_contents($twitter_url);
 		$data = json_decode($data, true);
 
 		$userinfo = null;

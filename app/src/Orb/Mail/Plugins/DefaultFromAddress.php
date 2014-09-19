@@ -74,7 +74,7 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 			$from = $message->getFrom();
 
 			if (is_array($from)) {
-				foreach ($from as $k => &$v) {
+				foreach ($from as &$v) {
 					if (!$v) {
 						if ($this->logger) $this->logger->logInfo("[DefaultFromAddress] Setting name");
 						$v = $this->name;

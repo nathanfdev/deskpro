@@ -77,7 +77,6 @@ class PersonValueImporter extends AbstractValueImporter
 
 		if ($pval->name) {
 			$name = preg_replace('# {2,}#', ' ', $pval->name);
-			$parts = Strings::rexplode(' ', $name, 2);
 			if (!$pval->first_name) {
 				$pval->first_name = $name[0];
 			}

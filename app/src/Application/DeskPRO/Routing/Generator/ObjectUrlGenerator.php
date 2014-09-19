@@ -53,8 +53,6 @@ class ObjectUrlGenerator
 
 	public function generateObjectUrl($object, array $params = array(), $context = null)
 	{
-		$typename = get_class($object);
-
 		if ($object instanceof \Application\DeskPRO\Entity\Article) {
 			if ($context == 'agent') {
 				$params['article_id'] = $object['id'];

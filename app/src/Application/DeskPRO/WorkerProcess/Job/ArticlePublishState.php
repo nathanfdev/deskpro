@@ -47,9 +47,6 @@ class ArticlePublishState extends AbstractJob
 
 	public function run()
 	{
-		$count_publish = 0;
-		$count_unpublish = 0;
-
 		$article_ids = App::getDb()->fetchAllCol("
 			SELECT articles.id
 			FROM articles

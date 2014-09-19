@@ -77,15 +77,12 @@ class NewReply extends \ArrayObject
 		$ticket_message->ip_address = dp_get_user_ip_address();
 		$ticket_message->visitor = App::getSession()->getVisitor();
 
-		$attach = false;
 		if ($this->new_upload) {
 			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
 				$this->new_upload->getRealPath(),
 				$this->new_upload->getClientOriginalName(),
 				$this->new_upload->getClientMimeType()
 			);
-			$blob_id = $blob->getId();
-
 			$attach = new \Application\DeskPRO\Entity\TicketAttachment();
 			$attach['blob'] = $blob;
 			$attach['person'] = $this->person;
@@ -115,8 +112,9 @@ class NewReply extends \ArrayObject
 		}
 
 		if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-			$ticket_message = $dupe_message;
-		} else {
+			return null;
+		}
+
 			$this->ticket->addMessage($ticket_message);
 
 			if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
@@ -139,7 +137,6 @@ class NewReply extends \ArrayObject
 			App::getOrm()->persist($this->ticket);
 			App::getOrm()->flush();
 			App::getOrm()->commit();
-		}
 	}
 
 	public function getNewMessage()

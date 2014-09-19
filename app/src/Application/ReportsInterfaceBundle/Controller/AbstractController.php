@@ -66,14 +66,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
-		if (!$this->person['id']) {
-			if ($this->isPostRequest()) {
-				$return = $this->get('router')->generate('reports');
-			} else {
-				$return = $this->request->getRequestUri();
-			}
-		}
-
 		if (!$this->_userHasPermissions()) {
 			if ($this->request->isXmlHttpRequest()) {
 				$data = array('error' => 'session_expired');

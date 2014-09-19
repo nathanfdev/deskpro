@@ -83,7 +83,7 @@ class NewParticipant implements \ArrayAccess
 
 		$ticket->addParticipant($part_person);
 
-		App::getOrm()->transactional(function($em) use ($part_person, $part, $ticket) {
+		App::getOrm()->transactional(function($em) use ($part_person, $part_email, $ticket) {
 			$em->persist($part_person);
 			$em->persist($ticket);
 			$em->flush();

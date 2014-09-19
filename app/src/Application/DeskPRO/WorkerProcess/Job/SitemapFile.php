@@ -66,6 +66,8 @@ class SitemapFile extends AbstractJob
 			'text/xml',
 			array('sys_name' => 'sitemap_xml')
 		);
+
+		// @TOASK
 		$blob_id = $blob->getId();
 	}
 }

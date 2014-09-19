@@ -64,7 +64,6 @@ class NewsController extends AbstractController
 		$search_options = array();
 		$search_options['order_by'] = $this->in->getString('order_by');
 
-		$category_id = 0;
 		$category = null;
 
 		if ($slug) {

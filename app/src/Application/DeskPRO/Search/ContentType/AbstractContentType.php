@@ -62,15 +62,11 @@ abstract class AbstractContentType implements ContentTypeInterface
 	 */
 	public function resultsToObjects(array $results)
 	{
-		$objects = array();
-
 		$ids = array();
 		foreach ($results as $r) {
 			$ids[] = $r->getId();
 		}
 
-		$objects = App::getEntityRepository(static::ENTITY_NAME)->getByids($ids, true);
-
-		return $objects;
+		return App::getEntityRepository(static::ENTITY_NAME)->getByids($ids, true);
 	}
 }

@@ -52,8 +52,6 @@ class Ever extends AbstractDateRange
 		$tz = App::getCurrentPerson()->getTimezone();
 		$date = new \DateTime('now', new \DateTimeZone($tz));
 
-		$year = $date->format('Y') - 1;
-
 		return array('ever');
 	}
 }

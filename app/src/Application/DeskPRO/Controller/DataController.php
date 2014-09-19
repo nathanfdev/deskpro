@@ -40,8 +40,6 @@ class DataController extends AbstractController
 {
 	public function interfaceDataAction()
 	{
-		$what = $this->in->getCleanValueArray('types', 'string', 'discard');
-
 		$js = array();
 
 

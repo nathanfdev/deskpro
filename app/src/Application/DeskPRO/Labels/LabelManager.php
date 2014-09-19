@@ -75,11 +75,6 @@ class LabelManager
 					$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_removed', $label, null);
 				}
 
-				$type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
-				if ($type_name == 'chatconversations') {
-					$type_name = 'chat_conversations';
-				}
-
 				return $labelobj;
 			}
 		}

@@ -37,6 +37,11 @@ namespace Application\DeskPRO\Feedback;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
+/**
+ * @TOASK why this tracker is not used
+ * Class ChangeTracker
+ * @package Application\DeskPRO\Feedback
+ */
 class ChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 {
 	public function done()
@@ -60,7 +65,6 @@ class ChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		}
 
 		$old_status = isset($changed_status['old']) ? $changed_status['old'] : null;
-		$old_status_cat = isset($changed_status_cat['old']) ? $changed_status_cat['old'] : null;
 
 		$show = null;
 		if ($old_status == 'hidden' AND $this->entity['status'] != 'hidden') {
@@ -75,7 +79,7 @@ class ChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 			$message = App::getMailer()->createMessage();
 			$message->setTo($this->entity['user_email'], $this->entity['user_email']);
 			$message->setTemplate('DeskPRO:emails_user:feedback-updated.html.twig', array(
-				'feedback' => $feedback,
+				'feedback' => $this->entity,
 				'changed_status' => $changed_status,
 				'changed_status_cat' => $changed_status_cat,
 				'show' => $show

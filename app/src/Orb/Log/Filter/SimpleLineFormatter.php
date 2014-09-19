@@ -63,7 +63,6 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 	{
 		if (!$log_item) return null;
 
-		$message = $log_item[LogItem::MESSAGE];
 		$message_line = $this->_format;
 
 		foreach ($log_item as $k => $v) {
