@@ -89,7 +89,7 @@ class DbLoader implements LoaderInterface
 		if ($language) {
 			$specific_lang_ids[] = $language->getId();
 		}
-		$langs = array_merge($langs, implode(',', $specific_lang_ids));
+		$langs = array_merge($langs, $specific_lang_ids);
 		$langs = array_unique($langs, \SORT_STRING);
 
 		$lang_in = implode(',', $langs);
