@@ -148,7 +148,7 @@ class GroupingCounter
 		$sql = "CASE ";
 
 		$parts = array();
-		foreach ($times as $k => $t) {
+		foreach ($times as $t) {
 			$parts[] = " WHEN chat_conversations.total_to_ended < $t THEN $t ";
 		}
 

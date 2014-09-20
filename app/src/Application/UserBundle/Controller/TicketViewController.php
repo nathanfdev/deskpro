@@ -271,9 +271,6 @@ class TicketViewController extends AbstractController
 			$newticket_formtype = new \Application\UserBundle\Form\EditTicketType($this->person);
 			$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
-			$errors = array();
-			$error_fields = array();
-
 			$layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
 			$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
 

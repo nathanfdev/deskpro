@@ -116,11 +116,6 @@ class Web
 			$filename = 'file';
 		}
 
-		$disp = 'inline';
-		if (!$is_inline) {
-			$disp = 'attachment';
-		}
-
 		$headers['Content-Disposition'] = 'inline; filename="' . str_replace('"', '\\"', $filename) . '"';
 
 		if ($mimetype !== null) {

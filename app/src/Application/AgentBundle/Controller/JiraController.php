@@ -582,8 +582,6 @@ class JiraController extends AbstractController
 	
 	protected function _getAssociatedIssues($ticket_id)
 	{
-		$service = $this->_getService();
-		
 		$ticket	 = $this->_getTicketById($ticket_id);
 		
 		$repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');

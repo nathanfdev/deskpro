@@ -94,19 +94,13 @@ class OsTicket implements GeneratorInterface
 	public function getPeopleCount()
 	{
 		$query = 'SELECT count(staff_id) FROM ost_staff';
-		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute();
-		
+		$stmt->execute();
 		$staff_count = $stmt->fetchColumn();
 		
 		$query = 'SELECT count(id) FROM ost_user';
-		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute();
-		
+		$stmt->execute();
 		$user_count = $stmt->fetchColumn();
 		
 		return $staff_count + $user_count;
@@ -121,9 +115,8 @@ class OsTicket implements GeneratorInterface
 		$stmt   = $this->db->prepare($query);
 		
 		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
-		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
-		
-		$result = $stmt->execute();
+		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
+		$stmt->execute();
 		
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
@@ -137,8 +130,7 @@ class OsTicket implements GeneratorInterface
 		. ' WHERE ticket_id = ?';
 		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute(array($ticket_id));
+		$stmt->execute(array($ticket_id));
 		
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
@@ -151,8 +143,7 @@ class OsTicket implements GeneratorInterface
 		
 		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
 		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
-		
-		$result = $stmt->execute();
+		$stmt->execute();
 		
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
@@ -167,8 +158,7 @@ class OsTicket implements GeneratorInterface
 		
 		$stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT); 
 		$stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT); 
-		
-		$result = $stmt->execute();
+		$stmt->execute();
 		
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
@@ -178,8 +168,7 @@ class OsTicket implements GeneratorInterface
 		$query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
 		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute(array($id));
+		$stmt->execute(array($id));
 		
 		return $stmt->fetchColumn();
 	}
@@ -192,8 +181,7 @@ class OsTicket implements GeneratorInterface
 		. ' WHERE u.id = ?';
 		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute(array($id));
+		$stmt->execute(array($id));
 		
 		return $stmt->fetchColumn();
 	}
@@ -203,8 +191,7 @@ class OsTicket implements GeneratorInterface
 		$query = 'SELECT email FROM ost_staff WHERE id = ?';
 		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute(array($id));
+		$stmt->execute(array($id));
 		
 		return $stmt->fetchColumn();
 	}
@@ -214,8 +201,7 @@ class OsTicket implements GeneratorInterface
 		$query = 'SELECT name FROM ost_team WHERE id = ?';
 		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute(array($id));
+		$stmt->execute(array($id));
 		
 		return $stmt->fetchColumn();
 	}
@@ -225,8 +211,7 @@ class OsTicket implements GeneratorInterface
 		$query = 'SELECT thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
 		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute(array($ticket_id));
+		$stmt->execute(array($ticket_id));
 		
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
@@ -236,8 +221,7 @@ class OsTicket implements GeneratorInterface
 		$query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
 		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute(array($id));
+		$stmt->execute(array($id));
 		
 		return $stmt->fetchColumn();
 	}
@@ -249,8 +233,7 @@ class OsTicket implements GeneratorInterface
 		$query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = ?';
 		
 		$stmt   = $this->db->prepare($query);
-		
-		$result = $stmt->execute(array($file_id));
+		$stmt->execute(array($file_id));
 		
 		$rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 		

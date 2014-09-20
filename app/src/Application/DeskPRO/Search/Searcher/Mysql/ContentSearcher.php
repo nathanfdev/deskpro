@@ -249,7 +249,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 	public function omnisearch($query_text, array $limit_types = null, $per_page = 25, $page = 1)
 	{
-		$per_page = 25; $page = 1; $top = false;
+		$per_page = 25; $page = 1;
 
 		// Fulltext matches
 		$r = $this->query($query_text, $per_page, $page, $limit_types, true);
@@ -344,7 +344,6 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			}
 		} else {
 			$total       = 0;
-			$results_raw = array();
 			$results     = array();
 		}
 

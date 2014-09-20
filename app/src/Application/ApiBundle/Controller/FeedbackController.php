@@ -895,8 +895,6 @@ class FeedbackController extends AbstractController
 			$file = reset($file);
 		}
 
-		$blob = false;
-
 		if ($file) {
 			$accept = $this->container->getAttachmentAccepter();
 

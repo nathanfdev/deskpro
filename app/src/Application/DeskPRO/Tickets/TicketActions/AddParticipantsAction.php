@@ -117,8 +117,7 @@ class AddParticipantsAction extends AbstractAction
 		$agents = array();
 		$users = array();
 
-        $tr = App::getTranslator();
-		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
+        $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
 
 		foreach ($people as $p) {
 			$n = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();

@@ -131,9 +131,15 @@ class SetSlaStatusAction extends AbstractAction
 
 		// todo: phrase
 		switch ($this->sla_status) {
-			case 'ok': $value = 'OK';
-			case 'warning': $value = 'Warning';
-			case 'fail': $value = 'Failed';
+			case 'ok':
+				$value = 'OK';
+				break;
+			case 'warning':
+				$value = 'Warning';
+				break;
+			case 'fail':
+				$value = 'Failed';
+				break;
 			default: $value = '';
 		}
 

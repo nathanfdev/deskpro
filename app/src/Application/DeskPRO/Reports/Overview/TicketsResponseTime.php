@@ -103,7 +103,7 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 		}
 
 		$collect = array();
-		foreach ($this->getValues() as $time_group => $sub_groups) {
+		foreach ($this->getValues() as $sub_groups) {
 			foreach ($sub_groups as $group_id => $count) {
 				$collect[$group_id] = $group_id;
 			}

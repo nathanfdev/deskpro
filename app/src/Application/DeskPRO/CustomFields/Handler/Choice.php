@@ -110,7 +110,6 @@ class Choice extends HandlerAbstract
 	public function getFormField($data = null)
 	{
 		$options = array();
-		$has_other = false;
 
 		$selected_options = array();
 
@@ -147,9 +146,7 @@ class Choice extends HandlerAbstract
 
 		foreach ($children as $child) {
 			$id = $child['id'];
-			if ($child['handler_class']) {
-				$has_other = $id;
-			} else {
+			if (!$child['handler_class']) {
 				if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
 					$selected_options[] = $id;
 				}

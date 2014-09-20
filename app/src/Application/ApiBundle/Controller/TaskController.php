@@ -623,7 +623,6 @@ class TaskController extends AbstractController
 		$task = $this->_getTaskOr404($task_id);
 
 		$ticket_id = $this->in->getUint('ticket_id');
-		$ticket = false;
 		$assoc = false;
 		if (!empty($ticket_id)) {
 			$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);

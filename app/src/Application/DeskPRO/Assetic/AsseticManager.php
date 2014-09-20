@@ -146,7 +146,6 @@ class AsseticManager
 	 */
 	public function getBuildAsset($name)
 	{
-		$info = $this->getBundleConfig($name);
 		$this->getAssetBundle($name);
 
 		$factory = new \Assetic\Factory\AssetFactory($this->write_path);
@@ -192,9 +191,6 @@ class AsseticManager
 		}
 
 		if (isset($info['post_filters'])) {
-			$bundle_asset = $this->getAssetBundle($name);
-			$first = Arrays::getFirstItem($bundle_asset->all());
-
 			$ext = Strings::getExtension($file);
 			$hash = substr(sha1(time().rand(11111, 99999)), 0, 7);
 			$new_file = dirname($file) . '/' . $hash . '.' . $ext;
@@ -226,13 +222,6 @@ class AsseticManager
 		}
 
 		file_put_contents($file,  $content);
-
-		// Also need to update any that use this
-		if (isset($this->dep_map[$name])) {
-			foreach ($this->dep_map[$name] as $parent_name) {
-				//$this->writeBuildFile($parent_name);
-			}
-		}
 	}
 
 

@@ -303,7 +303,6 @@ class TwitterStream extends AbstractJob
 		$target = $data->target;
 
 		$eventType = $data->event;
-		$createdAt = $data->created_at;
 
 		// Check source user exists
 		$sourceUser = $this->findUser($source->id_str);

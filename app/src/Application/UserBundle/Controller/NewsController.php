@@ -94,10 +94,6 @@ class NewsController extends AbstractController
 			if ($category_id && $structure->hasNewsCategory($category_id)) {
 				$category = $structure->getNewsCategory($category_id);
 			}
-
-			if (!$category) {
-				$category_id = 0;
-			}
 		}
 
 		if ($category) {

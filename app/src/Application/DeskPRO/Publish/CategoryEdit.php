@@ -356,7 +356,6 @@ class CategoryEdit
 				", array($category_id));
 				break;
 			default:
-				$count = 0;
 				break;
 		}
 

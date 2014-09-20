@@ -104,8 +104,6 @@ class FeedbackController extends AbstractController
 				return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
 			}
 
-			$cat_id = $category['id'];
-
 			// Auto-correct URL
 			if ($slug != $category->getUrlSlug()) {
 				return $this->redirectRoute('user_feedback', array('slug' => $category->getUrlSlug()), 301);
@@ -115,7 +113,6 @@ class FeedbackController extends AbstractController
 
 		} else {
 			$category = null;
-			$cat_id = 0;
 			$category_path = array();
 		}
 

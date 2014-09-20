@@ -284,7 +284,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 	 */
 	public function read($id)
 	{
-		$sid = self::getIdFromCode($id);
 		if ($this->session && $this->session->getSessionCode() == $id) {
 			$session = $this->session;
 		} else {

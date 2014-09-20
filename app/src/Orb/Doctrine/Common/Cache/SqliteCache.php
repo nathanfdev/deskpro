@@ -229,14 +229,6 @@ class SqliteCache extends \Doctrine\Common\Cache\CacheProvider
 			return isset($this->_cached_ids[$id]);
 		}
 
-		if ($this->_no_expire) {
-			$sql = "SELECT data FROM {$this->_cache_name} WHERE id = ?";
-			$params = array($id);
-		} else {
-			$sql = "SELECT data FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)";
-			$params = array($id, time());
-		}
-
         $exists = $this->getDbConnection()->fetchColumn("SELECT id FROM {$this->_cache_name} WHERE id = ? AND (expire = 0 OR expire > ?)", array($id, time()));
 
 		return (bool)$exists;

@@ -100,7 +100,6 @@ class HtmlPattern
 				// Split up tags into groups of tags, optional tags and closing tags
 				$tag_segments = preg_split('/ (\??\\/?(?:[a-zA-Z:]+)) /', $segment, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
-				$token_bunch = array();
 				foreach ($tag_segments as $tag) {
 					$tag = trim($tag);
 					if (!$tag) {

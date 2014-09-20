@@ -174,9 +174,7 @@ class Csv implements GeneratorInterface
 	public function exportTicketMessages()
 	{
 		$output_file_path = $this->output_path . 'tickets/';
-		
-		$input_file = $this->getFile('messages');
-		
+
 		$index = 0;
 		
 		foreach ($this->getData('messages') as $ticket_message) {

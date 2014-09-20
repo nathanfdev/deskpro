@@ -126,7 +126,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 					if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
 						$person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
 						if ($person && $person->is_agent) {
-							$person_id = $person->id;
 							$this->_setCurrentPerson($person);
 						}
 					}

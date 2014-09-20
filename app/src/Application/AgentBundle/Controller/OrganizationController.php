@@ -642,7 +642,7 @@ class OrganizationController extends AbstractController
 		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
 		if ($orgdomain) {
-			$count = $org_domain_manager->moveNonCompanyUsers($orgdomain);
+			$org_domain_manager->moveNonCompanyUsers($orgdomain);
 		}
 
 		$data = $this->getOrgEmailDisplayData($org);
@@ -666,7 +666,7 @@ class OrganizationController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$count = $org_domain_manager->moveOtherCompanyUsers($orgdomain);
+		$org_domain_manager->moveOtherCompanyUsers($orgdomain);
 
 		$data = $this->getOrgEmailDisplayData($org);
 		return $this->render('AgentBundle:Organization:orgemail-display.html.twig', $data);

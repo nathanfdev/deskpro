@@ -157,7 +157,7 @@ class PersonPref extends AbstractEntityRepository
 	 */
 	public function deletePrefForPersonId($pref_name, $person_id)
 	{
-		$pref = $this->getEntityManager()->getConnection()->executeUpdate("
+		$this->getEntityManager()->getConnection()->executeUpdate("
 			DELETE FROM people_prefs
 			WHERE person_id = ? AND name LIKE ? LIMIT 1
 		", array($person_id, $pref_name.'%'));

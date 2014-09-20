@@ -195,8 +195,6 @@ class LoginHelper
 
 	protected function _processUsersourceLogin($usersource_id)
 	{
-		$return = $this->controller->in->getString('return');
-
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
 		$adapter = $this->_initUserSourceAdapter($usersource);

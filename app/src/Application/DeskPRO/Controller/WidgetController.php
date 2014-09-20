@@ -118,7 +118,6 @@ class WidgetController extends AbstractController
 			}
 		}
 
-		$widget = $this->em->getRepository('DeskPRO:Widget')->find($widget_id);
 		$pref_prefix = 'widget.' . $widget_id['name_id'] . '.';
 
 		$person = $session->getPerson();

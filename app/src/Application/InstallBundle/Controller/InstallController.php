@@ -891,8 +891,6 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			throw $e;
 		}
 
-		$agent = $this->getDb()->fetchAssoc("SELECT * FROM people LIMIT 1");
-
 		$base_url = $this->get('request')->getBaseUrl();
 
 		$this->sendInstallReport();

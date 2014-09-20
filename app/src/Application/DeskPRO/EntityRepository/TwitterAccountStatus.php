@@ -210,7 +210,6 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		if (empty($conditions['include_self'])) {
 			$where[] = "(s.status_type <> 'direct' OR t.user <> ?$i)";
 			$params[] = $account->user->getId();
-			$i++;
 
 			if ($where) {
 				$query .= " AND " . implode(' AND ', $where);
@@ -218,7 +217,6 @@ class TwitterAccountStatus extends AbstractEntityRepository
 		} else {
 			$sent_condition = "(s.status_type = 'sent' OR (s.status_type = 'direct' AND t.user = ?$i))";
 			$params[] = $account->user->getId();
-			$i++;
 
 			if ($where) {
 				$query .= " AND ((" . implode(' AND ', $where) . ") OR $sent_condition)";

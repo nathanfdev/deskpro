@@ -330,11 +330,9 @@ EOT;
         $reflectionClass      = $class->getReflectionClass();
         $hasParentGet         = false;
         $returnReference      = '';
-        $inheritDoc           = '';
 
         if ($reflectionClass->hasMethod('__get')) {
             $hasParentGet = true;
-            $inheritDoc   = '{@inheritDoc}';
 
             if ($reflectionClass->getMethod('__get')->returnsReference()) {
                 $returnReference = '& ';
@@ -398,7 +396,6 @@ EOT;
             return '';
         }
 
-        $inheritDoc = $hasParentSet ? '{@inheritDoc}' : '';
         $magicSet   = <<<EOT
     public function __set(\$name, \$value)
     {
@@ -450,7 +447,6 @@ EOT;
             return '';
         }
 
-        $inheritDoc = $hasParentIsset ? '{@inheritDoc}' : '';
         $magicIsset = <<<EOT
     public function __isset(\$name)
     {

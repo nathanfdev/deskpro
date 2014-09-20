@@ -119,9 +119,6 @@ class GroupingCounter
 			$items[$field1_id] = $row;
 		}
 
-		$group1_has = array_unique($group1_has);
-		$group2_has = array_unique($group2_has);
-
 		#------------------------------
 		# Now fetch hierarchy which might be used
 		#------------------------------

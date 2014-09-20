@@ -256,16 +256,14 @@ class WidgetController extends AbstractController
 
 		if ($validator->isValid($newticket)) {
 			$ticket = $newticket->save();
-			$person = $ticket['person'];
 
 			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
 			return $this->createJsonResponse(array(
 				'ticket_id' => $ticket->id,
-				'email' => $newticket->person->email
+				'email' => $ticket->person->email
 			));
 		} else {
-			$errors = $validator->getErrors(true);
 			$error_fields = $validator->getErrorGroups(true);
 
 			return $this->createJsonResponse(array(
@@ -330,7 +328,6 @@ class WidgetController extends AbstractController
 				'feedback_id' => $feedback_id
 			));
 		} else {
-			$errors = $validator->getErrors(true);
 			$error_fields = $validator->getErrorGroups(true);
 
 			return $this->createJsonResponse(array(

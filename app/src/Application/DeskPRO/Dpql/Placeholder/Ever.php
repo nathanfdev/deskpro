@@ -49,9 +49,6 @@ class Ever extends AbstractDateRange
 	 */
 	protected function _getDateRange()
 	{
-		$tz = App::getCurrentPerson()->getTimezone();
-		$date = new \DateTime('now', new \DateTimeZone($tz));
-
 		return array('ever');
 	}
 }

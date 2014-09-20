@@ -119,7 +119,7 @@ class TaskReminders extends AbstractJob
 					AND tasks.date_due >= ? AND tasks.date_due <= ?'
 					AND task_reminder_logs.id IS NULL
 			",
-				array($agent['id'], $team_ids, $agent['id'], $today_utc->format('Y-m-d H:i:s'), $today_utc->format('Y-m-d H:i:s')),
+				array($agent['id'], $team_ids, $agent['id'], $today_utc->format('Y-m-d H:i:s'), $today_end_utc->format('Y-m-d H:i:s')),
 				array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT, \PDO::PARAM_STR, \PDO::PARAM_STR));
 
 			if (!$task_ids) {

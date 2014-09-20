@@ -433,7 +433,6 @@ class Column extends AbstractPart
 			} else if (isset(self::$_tableResolver[$assocTable])) {
 				$resolver = self::$_tableResolver[$assocTable];
 
-				$parent = reset($stack);
 				if ($stack || in_array($section, array('order'))) {
 					// if we have a parent of any sort, act on the printed value
 					$sql = "`$sqlTable`.`$resolver[1]`";

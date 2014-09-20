@@ -147,7 +147,6 @@ class FeedbackSearch extends SearcherAbstract
 			list ($order_join, $real_order_by) = $order_by;
 
 			$sql .= " $order_join ";
-			$order_by = $real_order_by;
 		}
 
 		#------------------------------

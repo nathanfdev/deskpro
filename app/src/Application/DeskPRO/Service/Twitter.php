@@ -485,8 +485,6 @@ class Twitter
 		$new_account_statuses = array();
 
 		$api = $account->getTwitterApi();
-		$em = App::getOrm();
-
 		$text = trim(str_replace("\r", '', $text));
 		$text = str_replace("\t", ' ', $text);
 

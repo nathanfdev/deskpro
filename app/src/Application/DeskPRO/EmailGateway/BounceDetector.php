@@ -131,7 +131,7 @@ class BounceDetector
 
 		$from = $this->reader->getFromAddress();
 		$postmaster_config = new \Application\DeskPRO\Config\UserFileConfig('postmaster-emails');
-		foreach ($postmaster_config as $k => $pattern) {
+		foreach ($postmaster_config as $pattern) {
 			if (preg_match($pattern, $from->email)) {
 				if ($this->logger) $this->logger->logDebug('Is bounced based on postmaster pattern #$k $pattern matching from address ' . $from->email);
 				return true;

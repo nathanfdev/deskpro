@@ -145,7 +145,6 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// Could be a guest, in which case we dont care
 		if ($author && $author->id) {
-			$old = $this->author;
 			$this->setModelField('author', $author);
 			if ($author && !$this->person_name) {
 				$this['person_name'] = $author->getDisplayNameUser();

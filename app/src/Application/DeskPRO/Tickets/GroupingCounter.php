@@ -89,16 +89,11 @@ class GroupingCounter
 
 		$items = array();
 
-		$group1_has = array();
-		$group2_has = array();
-
 		foreach ($titles1 as $field1 => $field1_title) {
 
 			if (!isset($counts[$field1])) continue;
 
 			$countinfo = $counts[$field1];
-
-			$group1_has[] = $field1;
 
 			$row = array();
 			$row['id'] = $field1;
@@ -113,8 +108,6 @@ class GroupingCounter
 					if (!isset($countinfo['sub'][$field2])) continue;
 					$countinfo2 = $countinfo['sub'][$field2];
 
-					$group2_has[] = $field2;
-
 					$row2 = array();
 					$row2['id'] = $field2;
 					$row2['title'] = $field2_title;
@@ -127,16 +120,11 @@ class GroupingCounter
 			$items[$field1] = $row;
 		}
 
-		$group1_has = array_unique($group1_has);
-		$group2_has = array_unique($group2_has);
-
 		#------------------------------
 		# Now fetch hierarchy which might be used
 		#------------------------------
 
-		$group1_structure = array();
 		$group2_structure = array();
-
 		$group1_structure = $this->getFieldStructure($this->grouping1, $titles1, $display_elements['ids1']);
 
 		if ($this->grouping2) {

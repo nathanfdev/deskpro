@@ -821,8 +821,6 @@ class PersonController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$old_person_id = $other_person['id'];
-
 		$merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
 		$merge->merge();
 

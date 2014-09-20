@@ -356,8 +356,6 @@ class TicketsController extends AbstractController
 		if ($validator->isValid($newreply)) {
 			$newreply->save();
 
-			$ticket_message = $newreply->getNewMessage();
-
 			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 		} else {
 			$errors = $validator->getErrors(true);
@@ -454,9 +452,6 @@ class TicketsController extends AbstractController
 		// Smart load last agent reply when message_id is 0
 		if (!$message_id) {
 			$message = $this->em->getRepository('DeskPRO:TicketMessage')->getLastAgentReply($ticket);
-			if ($message) {
-				$message_id = $message->id;
-			}
 		} else {
 			$message = $this->em->find('DeskPRO:TicketMessage', $message_id);
 		}

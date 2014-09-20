@@ -103,15 +103,6 @@ class LabelManager
 		$labelobj['label'] = $label;
 		$this->entity->addLabel($labelobj);
 
-		$type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
-		if ($type_name == 'chatconversations') {
-			$type_name = 'chat_conversations';
-		}
-
-		if ($type_name == 'persons') {
-			$type_name = 'people';
-		}
-
 		if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
 			$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_added', null, $label);
 		}

@@ -1051,8 +1051,6 @@ class NewsController extends AbstractController
 	 */
 	public function deleteCategoryAction($category_id)
 	{
-		$category = $this->_getCategoryOr404($category_id);
-
 		try {
 			\Application\DeskPRO\Publish\CategoryEdit::deleteCategory('news', $category_id);
 		} catch (\OutOfBoundsException $e) {

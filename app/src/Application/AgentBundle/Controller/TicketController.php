@@ -825,7 +825,6 @@ class TicketController extends AbstractController
 	public function addParticipantAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
-        $ticket_perms = $this->_getTicketPerms($ticket);
 
 		$person = null;
 		if ($this->in->getUint('person_id')) {
@@ -1243,8 +1242,6 @@ class TicketController extends AbstractController
 		$add_parts = array();
 		$new_user_ids = array();
 		$rem_parts = array();
-		$changed_parts = false;
-
 		$email_validator = new \Orb\Validator\StringEmail();
 
 		$del_cc_emails = $this->container->getIn()->getCleanValueArray('delcc', 'string', 'discard');
@@ -1273,7 +1270,6 @@ class TicketController extends AbstractController
 					$new_user_ids[] = $person->id;
 				}
 
-				$changed_parts = true;
 				$add_parts[] = $person;
 			}
 		}
@@ -1287,7 +1283,6 @@ class TicketController extends AbstractController
 				$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
 				if ($person) {
-					$changed_parts = true;
 					$rem_parts[] = $person;
 				}
 			}
@@ -1843,7 +1838,6 @@ class TicketController extends AbstractController
 		$language = $ticket->language;
 
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
-		$error_messages = array();
 
 		$perms_before = $this->_getTicketPerms($ticket);
 
@@ -3810,7 +3804,7 @@ class TicketController extends AbstractController
 		$output = array();
 
 		unset($drafts[$this->person->id]);
-		foreach ($drafts AS $id => $draft) {
+		foreach ($drafts AS $draft) {
 			$output[] = $this->renderView('AgentBundle:Ticket:ticket-message-draft.html.twig', array(
 				'draft' => $draft,
 				'ticket' => $ticket
@@ -4068,7 +4062,7 @@ class TicketController extends AbstractController
 	public function linkExistingOverlayAction($ticket_id)
 	{
 		try	{
-			$ticket = $this->getTicketOr404($ticket_id);
+			$this->getTicketOr404($ticket_id);
 		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
 			// try to find a delete log
 			$delete_log = $this->em->getRepository('DeskPRO:TicketDeleted')->findOneBy(array('ticket_id' => $ticket_id));

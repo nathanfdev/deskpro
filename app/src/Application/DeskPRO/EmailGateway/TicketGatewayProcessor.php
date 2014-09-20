@@ -412,9 +412,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	private function runNew(TicketIncomingEmail $ticket_email, $reply_as_new = false)
 	{
-		$ticket = $ticket_email->ticket;
-		$person = $ticket_email->person;
-
 		$this->logMessage('[TicketGatewayProcessor] Creating new ticket');
 
 		$person_processor = new PersonFromEmailProcessor();

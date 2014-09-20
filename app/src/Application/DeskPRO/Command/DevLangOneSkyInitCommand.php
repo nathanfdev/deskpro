@@ -139,7 +139,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 
 						if (count($requests) == 100) {
 							echo "Sending ...";
-							$r = $this->_getHttpClient()->send($requests);
+							$this->_getHttpClient()->send($requests);
 							$requests = array();
 							echo "Done\n";
 						}
@@ -147,8 +147,7 @@ class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 
 					if (count($requests)) {
 						echo "Sending ...";
-						$r = $this->_getHttpClient()->send($requests);
-						$requests = array();
+						$this->_getHttpClient()->send($requests);
 						echo "Done\n";
 					}
 				}

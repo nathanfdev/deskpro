@@ -206,7 +206,7 @@ class EditAgent
 		if ($this->agent_groups instanceof ArrayCollection) {
 			$this->agent_groups = $this->agent_groups->toArray();
 		}
-		$set = $group_coll_helper->setCollection($this->agent_groups);
+		$group_coll_helper->setCollection($this->agent_groups);
 
 		#------------------------------
 		# Email addresses

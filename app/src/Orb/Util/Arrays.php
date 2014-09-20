@@ -345,7 +345,7 @@ class Arrays
 			}
 		}
 
-		$array = array_unique($array);
+		return array_unique($array);
 	}
 
 

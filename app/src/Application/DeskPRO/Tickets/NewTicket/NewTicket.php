@@ -362,8 +362,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 					$this->ticket->new_upload->getClientOriginalName(),
 					$this->ticket->new_upload->getClientMimeType()
 				);
-				$blob_id = $blob->getId();
-
 				$attach = new \Application\DeskPRO\Entity\TicketAttachment();
 				$attach['blob'] = $blob;
 				$attach['person'] = $person;

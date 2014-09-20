@@ -1213,8 +1213,6 @@ class DownloadController extends AbstractController
 	 */
 	public function deleteCategoryAction($category_id)
 	{
-		$category = $this->_getCategoryOr404($category_id);
-
 		try {
 			\Application\DeskPRO\Publish\CategoryEdit::deleteCategory('downloads', $category_id);
 		} catch (\OutOfBoundsException $e) {

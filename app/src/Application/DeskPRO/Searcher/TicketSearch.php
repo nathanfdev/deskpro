@@ -1007,10 +1007,8 @@ class TicketSearch extends SearcherAbstract
 
 		$tickets_table = 'tickets';
 
-		$db = App::getDb();
 		$tr = App::getTranslator();
 
-		$wheres = array();
 		$joins = array();
 
 		$wheres_all = array();

@@ -127,8 +127,6 @@ class Register implements \ArrayAccess
 			$this->em->getConnection()->commit();
 
 			if ($email_validating) {
-				$tr = App::getTranslator();
-
 				$message = App::getMailer()->createMessage();
 				$message->setTo($email_validating->email, $this->name);
 				$message->setTemplate('DeskPRO:emails_user:register-validate.html.twig', array(
@@ -136,8 +134,6 @@ class Register implements \ArrayAccess
 				));
 				App::getMailer()->send($message);
 			} else {
-				$tr = App::getTranslator();
-
 				$message = App::getMailer()->createMessage();
 				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 				$message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(

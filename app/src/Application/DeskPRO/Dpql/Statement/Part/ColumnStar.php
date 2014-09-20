@@ -92,7 +92,6 @@ class ColumnStar extends AbstractPart
 		$repository = $statement->getFromEntityRepository();
 
 		$partsSoFar = array($table);
-		$partsString = $table;
 
 		foreach ($parts AS $partKey => $part) {
 			$partsSoFar[] = $part;

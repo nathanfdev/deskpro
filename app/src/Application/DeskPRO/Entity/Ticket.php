@@ -2177,7 +2177,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this['date_status'] = new \DateTime();
 
 		$old_status  = $this->status;
-		$old_hstatus = $this->hidden_status;
 		$old_status_code = $this->getStatusCode();
 
 		if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {

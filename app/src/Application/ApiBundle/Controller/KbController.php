@@ -311,15 +311,6 @@ class KbController extends AbstractController
 		$errors = array();
 		$article = new Article();
 
-		$lang_id = $this->in->getUint('language_id');
-		$lang = null;
-		if ($lang_id) {
-			$lang = $this->container->getLanguageData()->get($lang_id);
-		}
-		if (!$lang) {
-			$lang = $this->container->getLanguageData()->getDefault();
-		}
-
 		$set_title    = null;
 		$set_content  = null;
 		$title_lang   = array();
@@ -1120,8 +1111,6 @@ class KbController extends AbstractController
 		if (is_array($file)) {
 			$file = reset($file);
 		}
-
-		$blob = false;
 
 		if ($file) {
 			$accept = $this->container->getAttachmentAccepter();

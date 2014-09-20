@@ -356,7 +356,7 @@ class LabelDefManager
 				$table = $this->types[$t]['table'];
 
 				$this->db->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $old_label));
-				$adjusted = $this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
+				$this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
 				$this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($old_label));
 			}
 
@@ -438,9 +438,9 @@ class LabelDefManager
 					}
 
 					$terms_any_new = $r['terms_any'];
-					if ($t == 'tickets') $terms_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
-					if ($t == 'persons') $terms_new = $replace_label_arr($terms_any_new, array('person_label'));
-					if ($t == 'organizations') $terms_new = $replace_label_arr($terms_any_new, array('org_label'));
+					if ($t == 'tickets') $terms_any_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
+					if ($t == 'persons') $terms_any_new = $replace_label_arr($terms_any_new, array('person_label'));
+					if ($t == 'organizations') $terms_any_new = $replace_label_arr($terms_any_new, array('org_label'));
 					if ($terms_any_new != $r['terms']) {
 						$changes['terms_any'] = $terms_any_new;
 					}

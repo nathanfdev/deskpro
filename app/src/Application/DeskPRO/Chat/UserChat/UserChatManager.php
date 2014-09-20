@@ -600,8 +600,6 @@ class UserChatManager
 			return;
 		}
 		$old_agent_id = $convo->agent_id;
-		$old_agent_name = '';
-
 		$old_agent_name = $convo->agent->getDisplayNameUser();
 
 		$convo->agent = null;

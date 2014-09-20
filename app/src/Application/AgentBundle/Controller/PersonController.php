@@ -345,7 +345,7 @@ class PersonController extends AbstractController
 			return $this->createJsonResponse(array('error' => true, 'message' => 'Email already exists on another account'));
 		}
 
-		$email = $validator->validate();
+		$validator->validate();
 
 		return $this->createJsonResponse(array('success' => true));
 	}

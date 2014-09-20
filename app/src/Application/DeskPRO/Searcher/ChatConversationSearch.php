@@ -190,8 +190,6 @@ class ChatConversationSearch extends SearcherAbstract
 			$dir = self::ORDER_DESC;
 		}
 
-		$order_by = '';
-
 		switch ($type) {
 			default:
 				$order_by = " ORDER BY $type $dir";
@@ -210,8 +208,6 @@ class ChatConversationSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
-		$org_table = 'chat_conversations';
-
 		$db = App::getDbRead('search.filter.chat');
 		$tr = App::getTranslator();
 
@@ -226,7 +222,6 @@ class ChatConversationSearch extends SearcherAbstract
 			$m = null;
 			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
 				$term = $m[1];
-				$term_id = $m[2];
 			}
 
 			switch ($term) {

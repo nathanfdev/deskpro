@@ -192,8 +192,6 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
 			'data'  => $message,
 		);
 		$classname = $queue->getMessageClass();
-
-		$classname = $queue->getMessageClass();
 		return new $classname($options);
 	}
 
@@ -213,9 +211,6 @@ class QueueItemEntity extends \ZendQueue\Adapter\AbstractAdapter
 			$maxMessages = 1;
 		}
 
-		if ($timeout === null) {
-			$timeout = self::RECEIVE_TIMEOUT_DEFAULT;
-		}
 		if ($queue === null) {
 			$queue = $this->_queue;
 		}

@@ -239,7 +239,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	public function getResultObject(ResultInterface $result)
 	{
 		$type_name = $result->getContentType();
-		$type = $this->getContentTypeName($type);
+		$type = $this->getContentType($type_name);
 
 		$object = $type->resultToObject($result);
 

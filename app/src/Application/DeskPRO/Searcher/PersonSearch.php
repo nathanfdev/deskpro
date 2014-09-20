@@ -984,7 +984,7 @@ class PersonSearch extends SearcherAbstract
 					if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
 
 					$any = false;
-					foreach ($person->getContactData('address') as $cd) {
+					foreach ($person->getContactData($field) as $cd) {
 						if ($cd->checkStringMatch($choice)) {
 							$any = true;
 							if ($op == self::OP_NOTCONTAINS) {

@@ -280,8 +280,8 @@ class ObjectTranslatable
 		}
 
 		if ($this->entity->getId()) {
-			foreach ($this->getObjLangRepos()->getLoadedRecs($this->entity) as $lang => $prop_recs) {
-				foreach ($prop_recs as $prop => $rec) {
+			foreach ($this->getObjLangRepos()->getLoadedRecs($this->entity) as $prop_recs) {
+				foreach ($prop_recs as $rec) {
 					$this->getEm()->persist($rec);
 				}
 			}

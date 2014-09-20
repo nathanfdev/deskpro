@@ -591,7 +591,6 @@ class PortalEditorController extends AbstractController
 			$file->getClientOriginalName(),
 			$file->getClientMimeType()
 		);
-		$blob_id = $blob->getId();
 
 		if ($this->in->getString('attach_to_object')) {
 			switch ($this->in->getString('attach_to_object')) {

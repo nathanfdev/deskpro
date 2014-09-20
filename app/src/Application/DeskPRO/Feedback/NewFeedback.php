@@ -130,7 +130,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 			# Handle the person first
 			#------------------------------
 
-			$status = 'visible';
 			$validating = null;
 
 			$person = null;

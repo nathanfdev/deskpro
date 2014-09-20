@@ -253,8 +253,6 @@ class NewTicket
 				$add_cc_people[] = $check_exist;
 			} else {
 				// New person, coming right up
-				$added_new = true;
-
 				$new_cc_person = Person::newContactPerson(array(
 					'email' => $info['email'],
 					'name' => !empty($info['name']) ? $info['name'] : ''

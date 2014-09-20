@@ -68,7 +68,7 @@ class RecycleBinController extends AbstractController
 			'no_more_results' => $res['no_more_results']
 		);
 
-		return $this->createJsonResponse($res);
+		return $this->createJsonResponse($return_res);
 	}
 
 

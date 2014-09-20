@@ -124,8 +124,7 @@ class NewPerson
 			$user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 			foreach ($user_field_defs as $field_def) {
 				foreach ($field_def->getHandler()->getDataFromForm($this->custom_fields) as $info) {
-					$d = $person->setCustomData($info[0], $info[1], $info[2]);
-					//$this->_em->persist($d);
+					$person->setCustomData($info[0], $info[1], $info[2]);
 				}
 			}
 		}

@@ -122,8 +122,6 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 			$url_type = 'raw';
 		}
 
-		$url_field = '';
-
 		switch ($url_type) {
 			case 'raw': $url_field = 'url'; break;
 			case 'noparams': $url_field = 'url_noparams'; break;
@@ -138,8 +136,6 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 		if (!$group_var) {
 			$group_var = 'time';
 		}
-
-		$group_field = '';
 
 		switch ($group_var) {
 			case 'time': $group_field = 'time_total'; break;

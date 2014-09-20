@@ -386,8 +386,6 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	protected function _dateMatch($field, $op, $choice)
 	{
-		$where = '';
-
 		if (!is_array($choice)) {
 			$choice = array($choice);
 		}
@@ -633,8 +631,6 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	protected function _rangeSummary($field, $op, $choice)
 	{
-		$summary = '';
-
 		$choice = (array)$choice;
 		$choice = array_values($choice);
 
@@ -696,8 +692,6 @@ abstract class SearcherAbstract implements PersonContextInterface
 	 */
 	public function _dateRangeSummary($field, $op, $choice)
 	{
-		$summary = '';
-
 		$choice = (array)$choice;
 
 		$date1 = null;

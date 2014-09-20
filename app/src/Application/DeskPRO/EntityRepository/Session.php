@@ -94,24 +94,6 @@ class Session extends AbstractEntityRepository
 			return null;
 		}
 
-		$session = $this->getEntityManager()->createQuery("
-			SELECT session, person, pic, email, vis, org, org_pic, lang
-			FROM DeskPRO:Session session
-
-			LEFT JOIN session.person person
-			LEFT JOIN session.visitor vis
-
-			LEFT JOIN person.picture_blob pic
-			LEFT JOIN person.primary_email email
-
-			LEFT JOIN person.organization org
-			LEFT JOIN org.picture_blob org_pic
-
-			LEFT JOIN person.language lang
-
-			WHERE session.id = :id
-		")->setParameters(array('id' => $session_id))->getOneOrNullResult();
-
 		$session = $this->find($session_id);
 		if (!$session OR !$session->checkSessionCode($sess_code)) {
 			return null;

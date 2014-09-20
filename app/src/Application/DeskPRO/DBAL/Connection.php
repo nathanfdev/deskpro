@@ -122,8 +122,6 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		parent::__construct($params, $driver, $config, $eventManager);
 
-		$db = $this;
-
 		if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
 			$this->transaction_logger = new Logger();
 			if ($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log'] == 'separate_files') {

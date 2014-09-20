@@ -560,11 +560,7 @@ class FeedbackController extends AbstractController
 	 */
 	public function filterListAction()
 	{
-		$vars = array('list_type' => 'filter');
-
 		$result_helper = FeedbackResults::newFromRequest($this);
-
-		$result_cache = $result_helper->getResultCache();
 
 		return $this->renderList(
 			$result_helper,

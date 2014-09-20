@@ -294,6 +294,8 @@ class TicketFilter extends AbstractEntityRepository
 				")->execute();
 				break;
 		}
+
+		return $filters;
 	}
 
 	public function getSystemFilters($person_id)

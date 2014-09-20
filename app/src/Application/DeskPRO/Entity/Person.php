@@ -877,7 +877,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$shortest = null;
 		$shortest_len = null;
 
-		foreach ($try as $k => $elements) {
+		foreach ($try as $elements) {
 
 			$display = array();
 

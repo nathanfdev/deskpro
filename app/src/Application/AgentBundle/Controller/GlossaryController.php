@@ -144,8 +144,6 @@ class GlossaryController extends AbstractController
 
 	public function tipAction($word)
 	{
-		$def = '';
-
 		try {
 			$word = $this->em->getRepository('DeskPRO:GlossaryWord')->findOneByWord($word);
 			$def = $word->definition->definition;

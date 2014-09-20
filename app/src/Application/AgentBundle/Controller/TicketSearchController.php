@@ -1716,7 +1716,6 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
-		$is_partial = true;
 		$tpl = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
 
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay(array($ticket->id => $ticket));
@@ -1816,12 +1815,6 @@ class TicketSearchController extends AbstractController
 	{
 		$macro_id = $this->in->getUint('macro_id');
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
-
-		$tickets = null;
-		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-		if ($ticket_ids) {
-			$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-		}
 
 		$data = array();
 		$data['raw_actions'] = array();
