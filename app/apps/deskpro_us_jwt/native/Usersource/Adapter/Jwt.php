@@ -84,7 +84,7 @@ class Jwt extends AbstractAdapter
 		);
 
 		if ($custom_button_text = $this->usersource->options['login_custom_text']) {
-			$capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN;
+			$capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;
 			$capabilities[] = UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN;
 		}
 

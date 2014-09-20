@@ -78,61 +78,104 @@
 	<div class="content">
 		{# FORM LOGIN #}
 		{% if authManager.isLoginFormVisible %}
-		<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
-				{{ form_token('user_login') }}
-				<input type="hidden" name="agent_login" value="1" />
-				{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
-				{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
-				{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
-				{% if failed_login_name %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
-				{% if has_done_reset %}<div class="successa>{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
-				{% if has_logged_out %}<div class="success">{{ phrase('agent.login.has_logged_out') }}</div>{% endif %}
+			<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
+					{{ form_token('user_login') }}
+					<input type="hidden" name="agent_login" value="1" />
+					{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
+					{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
+					{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
+					{% if failed_login_name %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
+					{% if has_done_reset %}<div class="successa>{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
+					{% if has_logged_out %}<div class="success">{{ phrase('agent.login.has_logged_out') }}</div>{% endif %}
 
-				{% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
+					{% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
 
-				<fieldset>
-					<p>
-						<i class="icon-envelope-alt"></i>
-						<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}" tabindex="1" />
-					</p>
-					<p>
-						<i class="icon-lock"></i>
-						<input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"  tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
-					</p>
-					<p>
+					<fieldset>
+						<p>
+							<i class="icon-envelope-alt"></i>
+							<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}" tabindex="1" />
+						</p>
+						<p>
+							<i class="icon-lock"></i>
+							<input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"  tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
+						</p>
+						<ul style="margin:0;padding:0; line-height:20px;">
+							<li style="float:left; list-style-type:none;">
+								<input type="checkbox"
+									name="remember_me" id="rem_cb" value="1" tabindex="3" />
+							</li>
+							<li style="float:left; list-style-type:none;">
+								<label for="rem_cb">
+									{{ phrase('agent.login.remember_me') }}
+								</label>
+							</li>
+							<li style="float:none; list-style-type:none; overflow: hidden; text-align: right;">
+								<a href="#"
+									class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a>
+							</li>
+						</ul>
 						<table cellspacing="0" cellpadding="0" border="0">
 							<tr>
-								<td width="10" valign="middle" style="vertical-align: middle;"><input type="checkbox" name="remember_me" id="rem_cb" value="1" tabindex="3" /></td>
+								<td width="10" valign="middle" style="vertical-align: middle;"></td>
 								<td valign="middle" style="vertical-align: middle;">
 									&nbsp;
-									<label for="rem_cb">
-										{{ phrase('agent.login.remember_me') }}
-									</label>
+
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3" valign="middle" style="vertical-align: middle;" align="right">
+									<p style="margin: 5px;">
+
+									</p>
 								</td>
 							</tr>
 						</table>
-					</p>
-				</fieldset>
-		<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
-		<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>
+					</fieldset>
+			<input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" style="margin-bottom: 10px;" />
 
-		{% if authManager.hasLoginButtonUsersources %}
-			<div class="dp-usersource-list">
-				Or log in with &nbsp;
-				{% for usersource in authManager.getLoginButtonUsersources %}
-					{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
-				{% endfor %}
-			</div>
-		{% endif %}
-	</form>
+			{% if authManager.hasLoginTextButtonUsersources %}
+				<div class="dp-usersource-list">
+					<ul>
+						{% for usersource in authManager.getLoginTextButtonUsersources %}
+							<li>{{ render_usersource(usersource, 'login_text_btn', {return: return, type: 'agent'}) }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+			{% if authManager.hasLoginIconUsersources %}
+				<div class="dp-usersource-list">
+					{{ phrase('user.profile.or_connect_with') }}
+					{% for usersource in authManager.getLoginIconUsersources %}
+						{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
+					{% endfor %}
+				</div>
+			{% endif %}
+		</form>
 	{# END FORM LOGIN #}
 	{% else %}
-		{% if authManager.hasLoginButtonUsersources %}
+		{% if authManager.hasLoginTextButtonUsersources %}
 			<ul>
-				{% for usersource in authManager.getLoginButtonUsersources %}
-					<li>{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}</li>
+				{% for usersource in authManager.getLoginTextButtonUsersources %}
+					<li>{{ render_usersource(usersource, 'login_text_btn', {return: return, type: 'agent'}) }}</li>
 				{% endfor %}
 			</ul>
+			{% if authManager.hasLoginIconUsersources %}
+				<ul class="dp-usersource-list">
+					<li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>
+					{% for usersource in authManager.getLoginIconUsersources %}
+						<li style="display: inline-block;">{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% else %}
+			{% if authManager.hasLoginIconUsersources %}
+				<ul>
+					<li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>
+					{% for usersource in authManager.getLoginIconUsersources %}
+						<li style="display: inline-block;">{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
 		{% endif %}
 	{% endif %}
 	</div>

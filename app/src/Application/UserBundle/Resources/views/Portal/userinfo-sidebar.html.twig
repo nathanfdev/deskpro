@@ -88,10 +88,20 @@
 								<label class="dp-remember-me-row"><input type="checkbox" name="remember_me" value="1" tabindex="53" /> {{ phrase('user.general.remember_me') }}</label>
 								<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" tabindex="52" />
 							</div>
-							{% if authManager.hasLoginButtonUsersources %}
+
+							{% if authManager.hasLoginTextButtonUsersources %}
+								<ul class="dp-unstyled"
+									style="border-top: 1px solid #ccc;font-size: 11px;margin-top: 12px;padding-top: 7px;">
+									{% for usersource in authManager.getLoginTextButtonUsersources %}
+										<li style="margin-bottom: 5px">{{ render_usersource(usersource, 'login_text_btn') }}</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+
+							{% if authManager.hasLoginIconUsersources %}
 								<div class="dp-usersource-list">
 									{{ phrase('user.profile.or_connect_with') }}
-									{% for usersource in authManager.getLoginButtonUsersources %}
+									{% for usersource in authManager.getLoginIconUsersources %}
 										{{ render_usersource(usersource, 'login_pull_btn') }}
 									{% endfor %}
 								</div>
@@ -119,12 +129,34 @@
 					</div>
 				</form>
 			</div>
-			{% elseif authManager.hasLoginButtonUsersources %}
-				<ul>
-					{% for usersource in authManager.getLoginButtonUsersources %}
-						<li>{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }} {{ usersource.title }}</li>
-					{% endfor %}
-				</ul>
+			{% else %}
+				<div class="dp-login-section">
+				{% if authManager.hasLoginTextButtonUsersources %}
+					<ul class="dp-unstyled">
+						{% for usersource in authManager.getLoginTextButtonUsersources %}
+							<li style="margin-bottom: 5px">{{ render_usersource(usersource, 'login_text_btn') }}</li>
+						{% endfor %}
+					</ul>
+					{% if authManager.hasLoginIconUsersources %}
+						<div class="dp-usersource-list"
+							style="border-top: 1px solid #ccc;font-size: 11px;margin-top: 12px;padding-top: 7px; text-align: right;">
+							{{ phrase('user.profile.or_connect_with') }}
+							{% for usersource in authManager.getLoginIconUsersources %}
+								{{ render_usersource(usersource, 'login_pull_btn') }}
+							{% endfor %}
+						</div>
+					{% endif %}
+				{% else %}
+					{% if authManager.hasLoginIconUsersources %}
+						<div class="dp-usersource-list">
+							{{ phrase('user.profile.connect_with') }}
+							{% for usersource in authManager.getLoginIconUsersources %}
+								{{ render_usersource(usersource, 'login_pull_btn') }}
+							{% endfor %}
+						</div>
+					{% endif %}
+				{% endif %}
+				</div>
 			{% endif %}
 		</article>
 	</section>

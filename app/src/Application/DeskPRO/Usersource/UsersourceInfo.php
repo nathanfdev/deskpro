@@ -79,6 +79,11 @@ class UsersourceInfo
 	const CAPABILITY_LOGIN_PULL_BTN = 'tpl_login_pull_btn';
 
 	/**
+	 * Create a block size text button
+	 */
+	const CAPABILITY_LOGIN_TEXT_BTN = 'tpl_login_text_btn';
+
+	/**
 	 * Capable of logging in using a locally-available cookie (see the Session class for usage of EntityRepository
 	 * Usersource::getCookieInputUsersources)
 	 */

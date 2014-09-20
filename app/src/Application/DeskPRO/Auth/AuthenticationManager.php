@@ -210,21 +210,6 @@ class AuthenticationManager
 	public function authenticateFormLogin($identifier, $password)
 	{
 		#------------------------------
-		# Auth local
-		#------------------------------
-
-		// local deskpro auth is now a usersource (in the db) like all others
-		//if ($this->container->getSetting('core.deskpro_source_enabled') || DP_INTERFACE != 'user') {
-		//	$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
-		//	$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
-		//	$result = $adapter->authenticate();
-		//
-		//	if ($result->isValid()) {
-		//		return $result;
-		//	}
-		//}
-
-		#------------------------------
 		# Auth usersources that accept local input
 		#------------------------------
 
@@ -275,14 +260,46 @@ class AuthenticationManager
 
 
 	/**
+	 * Are we displaying any extra login icons?
+	 *
+	 * @return bool
+	 */
+	public function hasLoginIconUsersources()
+	{
+		return count($this->getLoginIconUsersources()) > 0;
+	}
+
+	/**
+	 * Usersources that have an icon to display to login
+	 *
+	 * @return \Application\DeskPRO\Usersource\UsersourceCollection
+	 */
+	public function getLoginIconUsersources()
+	{
+		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN);
+	}
+
+
+	/**
+	 * Are we displaying any extra login buttons?
+	 *
+	 * @return bool
+	 */
+	public function hasLoginTextButtonUsersources()
+	{
+		return count($this->getLoginTextButtonUsersources()) > 0;
+	}
+
+	/**
 	 * Usersources that have a button to display to login
 	 *
 	 * @return \Application\DeskPRO\Usersource\UsersourceCollection
 	 */
-	public function getLoginButtonUsersources()
+	public function getLoginTextButtonUsersources()
 	{
-		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN);
+		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN);
 	}
+
 
 	/**
 	 * This was a VERY confusing capability to decipher. The method in LoginController had an algorithm
@@ -293,17 +310,6 @@ class AuthenticationManager
 	public function getForgotPasswordUsersources()
 	{
 		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN);
-	}
-
-
-	/**
-	 * Are we displaying any extra login buttons/icons?
-	 *
-	 * @return bool
-	 */
-	public function hasLoginButtonUsersources()
-	{
-		return count($this->getLoginButtonUsersources()) > 0;
 	}
 
 
@@ -343,6 +349,7 @@ class AuthenticationManager
 				$this->usersourcesForInterface->withCapability(
 					array(
 						UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
+						UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN,
 						UsersourceInfo::CAPABILITY_FORM_LOGIN,
 						UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
 						UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB

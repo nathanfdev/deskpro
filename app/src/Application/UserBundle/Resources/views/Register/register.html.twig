@@ -60,14 +60,14 @@
 	{% if authManager.isAuthVisible %}
 	<section class="dp-well">
 		<header>
-			{% if authManager.hasLoginButtonUsersources %}
+			{% if authManager.hasLoginIconUsersources %}
 				<div class="dp-connect-with">
 					{% if authManager.isLoginFormVisible %}
 						{{ phrase('user.profile.or_connect_with') }}
 					{% else %}
 						{{ phrase('user.profile.connect_with') }}
 					{% endif %}
-					{% for usersource in authManager.getLoginButtonUsersources %}
+					{% for usersource in authManager.getLoginIconUsersources %}
 						{{ render_usersource(usersource, 'login_pull_btn') }}
 					{% endfor %}
 				</div>
@@ -132,6 +132,14 @@
 					</tr>
 				</table>
 			</form>
+			{%  if authManager.hasLoginTextButtonUsersources %}
+				<hr>
+				<ul class="dp-unstyled">
+					{% for usersource in authManager.getLoginTextButtonUsersources %}
+						<li style="margin-bottom: 5px">{{ render_usersource(usersource, 'login_text_btn') }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
 		</article>
 		{% endif %}
 	</section>
