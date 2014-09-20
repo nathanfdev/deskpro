@@ -281,7 +281,7 @@ class AuthenticationManager
 	 */
 	public function getLoginButtonUsersources()
 	{
-		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_LOGIN_BTN);
+		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN);
 	}
 
 	/**
@@ -342,7 +342,7 @@ class AuthenticationManager
 		return count(
 				$this->usersourcesForInterface->withCapability(
 					array(
-						UsersourceInfo::CAPABILITY_LOGIN_BTN,
+						UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
 						UsersourceInfo::CAPABILITY_FORM_LOGIN,
 						UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
 						UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB

@@ -76,7 +76,7 @@ class UsersourceInfo
 	/**
 	 * A logo appears on the login screen, allowing you to click and login with that source (google/fb,etc)
 	 */
-	const CAPABILITY_LOGIN_BTN = 'tpl_login_pull_btn';
+	const CAPABILITY_LOGIN_PULL_BTN = 'tpl_login_pull_btn';
 
 	/**
 	 * Capable of logging in using a locally-available cookie (see the Session class for usage of EntityRepository

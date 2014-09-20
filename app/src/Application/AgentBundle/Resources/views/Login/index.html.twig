@@ -130,7 +130,7 @@
 		{% if authManager.hasLoginButtonUsersources %}
 			<ul>
 				{% for usersource in authManager.getLoginButtonUsersources %}
-					<li>{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }} {{  usersource.title }}</li>
+					<li>{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}</li>
 				{% endfor %}
 			</ul>
 		{% endif %}

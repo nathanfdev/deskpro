@@ -65,7 +65,7 @@ class Google extends AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			UsersourceInfo::CAPABILITY_LOGIN_BTN,
+			UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
 			UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN
 		);
 	}
