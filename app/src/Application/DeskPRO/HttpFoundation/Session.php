@@ -353,29 +353,23 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 				App::getDb()->insert('visitor_tracks' , $track);
 				$track['id'] = App::getDb()->lastInsertId();
 
-				$params = array();
-				$params['date_last'] = date('Y-m-d H:i:s');
-
-				if ($vis->user_token) {
-					$params['user_token'] = $vis->user_token;
-				}
+				$trackRef = App::getContainer()->getEm()->getReference('DeskPRO:VisitorTrack', $track['id']);
+				$vis->date_last = new \DateTime();
+				$vis->last_track = $trackRef;
 
 				if (!$vis->initial_track) {
-					$params['initial_track_id'] = $track['id'];
+					$vis->initial_track = $trackRef;
 				}
 
 				if ($track['is_new_visit']) {
-					$params['visit_track_id'] = $track['id'];
+					$vis->visit_track = $trackRef;
 				}
-
-				$params['last_track_id'] = $track['id'];
 
 				if (!$vis->hint_hidden) {
-					$params['hint_hidden'] = 0;
-					$params['last_track_id_soft'] = null;
+					$vis->last_track_soft = null;
 				}
 
-				$params['page_count'] = 'page_count + 1';
+				$vis['page_count'] = (int) $vis['page_count'] + 1;
 
 				foreach (array(
 					'page_title',
@@ -387,16 +381,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 					'geo_country'
 				) as $field) {
 					if (isset($track[$field])) {
+						$vis[$field] = $track[$field];
 						$params[$field] = $track[$field];
 					}
 				}
-
-				$qb = App::getDb()->createQueryBuilder()->update('visitors');
-				foreach ($params as $k => $v ) {
-					$qb->set($k, $v);
-				}
-				$qb->where($qb->expr()->eq('id', $vis->getId()));
-				$qb->execute();
+				App::getContainer()->getEm()->flush();
 
 				$vis->new_track_id = $track['id'];
 			}
