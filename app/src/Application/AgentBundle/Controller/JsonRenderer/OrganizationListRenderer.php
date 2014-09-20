@@ -57,11 +57,6 @@ class OrganizationListRenderer
 	 */
 	private $db;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Organization[]
-	 */
-	private $cache_orgs;
-
 
 	public function __construct(DeskproContainer $container)
 	{
