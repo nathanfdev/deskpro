@@ -43,8 +43,11 @@ use Orb\Util\Util;
  */
 class DefaultFromAddress implements \Swift_Events_SendListener
 {
+	/** @var string */
 	protected $from;
+	/** @var string */
 	protected $name = '';
+	/** @var \Orb\Log\Logger */
 	protected $logger;
 
 	public function __construct($from, $name = '', Logger $logger = null)

@@ -61,7 +61,6 @@ class RecycleBinController extends AbstractController
 		$method = '_get' . ucfirst($type);
 		$res = $this->$method($page);
 
-		// @TOASK
 		$return_res = array(
 			'html' => $res['html'],
 			'count' => $res['count'],

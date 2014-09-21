@@ -219,10 +219,6 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		if (this.isPaused || this.hasModalOpen('newTweetLoader')) return;
 		DeskPRO_Window.newTweetLoader.toggle();
 	},
-	showNewDeal: function(ev) {
-		if (this.isPaused || this.hasModalOpen()) return;
-		DeskPRO_Window.newDealLoader.toggle();
-	},
 
 	/**
 	 * Saves content by looking for the 'submit-trigger' in the open fragment. Popovers

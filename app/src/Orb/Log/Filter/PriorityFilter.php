@@ -44,6 +44,7 @@ use \Orb\Log\LogItem;
  */
 class PriorityFilter extends \Orb\Filter\AbstractFilter
 {
+	/** @var int */
 	protected $min_level = Logger::WARN;
 
 	public function __construct($min_level)

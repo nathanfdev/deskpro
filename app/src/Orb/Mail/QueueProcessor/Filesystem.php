@@ -42,6 +42,7 @@ use Orb\Util\Util;
  */
 class Filesystem implements QueueProcessorInterface
 {
+	/** @var string */
 	protected $filepath;
 
 	public function __construct($path)

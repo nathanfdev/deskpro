@@ -43,7 +43,9 @@ use Orb\Util\Arrays;
  */
 class AgentTeam implements \Orb\Helper\ShortCallableInterface
 {
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
+	/** @var array|null */
 	protected $_agent_team_ids = null;
 
 	public function __construct(Entity\Person $person)

@@ -44,6 +44,7 @@ use Orb\Util\Arrays;
  */
 class AddLabelsAction extends AbstractAction implements PermissionableAction
 {
+	/** @var array */
 	protected $add_labels;
 
 	public static function newFromString($add_labels)

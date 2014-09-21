@@ -42,7 +42,9 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class RemoveSlaAction extends AbstractAction
 {
+	/** @var array */
 	protected $sla_ids = array();
+	/** @var bool */
 	protected $remove_all = false;
 
 	public function __construct($sla_id)

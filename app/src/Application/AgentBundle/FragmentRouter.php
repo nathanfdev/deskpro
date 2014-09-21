@@ -35,18 +35,22 @@
 namespace Application\AgentBundle;
 
 use Application\DeskPRO\App;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * This generates JS hash router
  */
 class FragmentRouter
 {
+	/** @var array */
 	protected $paths = array();
+	/** @var array */
 	protected $non_unique = array();
 
+	/** @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface */
 	protected $generator;
 	
-	public function __construct($generator)
+	public function __construct(UrlGeneratorInterface $generator)
 	{
 		$this->generator = $generator;
 	}

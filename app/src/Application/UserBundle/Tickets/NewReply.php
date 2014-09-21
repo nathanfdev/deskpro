@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 
 class NewReply extends \ArrayObject
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'message' => 1, 'new_upload' => 1, 'attach_ids' => 1,
 		'attach_ids_authed' => 1

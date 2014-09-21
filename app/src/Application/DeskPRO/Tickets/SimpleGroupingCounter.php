@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity;
  */
 class SimpleGroupingCounter extends GroupingCounter
 {
+	/** @var array */
 	protected $_ticket_ids = array();
 
 	public function __construct(array $ticket_ids, $group_by)

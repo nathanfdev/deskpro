@@ -29,7 +29,6 @@ pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
 			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="1" />
 			<input type="hidden" class="input-ticket-id" name="newtask[%baseId%][ticket_id]" value="0" />
-                        <input type="hidden" class="input-deal-id" name="newtask[%baseId%][deal_id]" value="0" />
 		</div>
 		<div class="task-info">
 			<ul>
@@ -59,12 +58,6 @@ pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat
 					<span class="btn-small-delete remove-link-trigger"></span>
                     {% set phrase_part %}<label></label>{% endset %}
                     {{ phrase('agent.tasks.task_has_ticket_x', {'label':phrase_part}, true) }}
-				</span>
-
-				 <span class="linked-deal" style="display:none">
-					<span class="btn-small-delete remove-link-trigger"></span>
-                     {% set phrase_part %}<label></label>{% endset %}
-                    {{ phrase('agent.tasks.task_has_deal_x', {'label':phrase_part}, true) }}
 				</span>
 			</div>
 		</div>

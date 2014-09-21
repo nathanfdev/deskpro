@@ -44,7 +44,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class TemplatingExtension extends \Twig_Extension
 {
+	/** @var \Symfony\Component\DependencyInjection\ContainerInterface */
     protected $container;
+	/** @var array */
 	protected $counter_registry;
 
     public function __construct(ContainerInterface $container)

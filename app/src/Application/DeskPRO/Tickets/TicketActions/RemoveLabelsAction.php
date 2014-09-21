@@ -44,6 +44,7 @@ use Orb\Util\Arrays;
  */
 class RemoveLabelsAction extends AbstractAction implements PermissionableAction
 {
+	/** @var array */
 	protected $remove_labels;
 
 	public static function newFromString($remove_labels)

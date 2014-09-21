@@ -43,6 +43,7 @@ use Doctrine\ORM\Events;
  */
 class SetContainerListener implements EventSubscriber
 {
+	/** @var \Symfony\Component\DependencyInjection\Container */
 	protected $container;
 
 	public function __construct(\Symfony\Component\DependencyInjection\Container $container)

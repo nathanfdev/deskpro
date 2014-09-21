@@ -43,7 +43,9 @@ use Orb\Util\Arrays;
  */
 class Choice extends HandlerAbstract
 {
+	/** @var bool */
 	protected $multiple = false;
+	/** @var bool */
 	protected $expanded = false;
 
 	public function init()

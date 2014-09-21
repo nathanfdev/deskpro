@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class AddParticipantsAction extends AbstractAction
 {
+	/** @var array */
 	protected $add_people_ids;
 
 	public function __construct(array $add_participants)

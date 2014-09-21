@@ -42,7 +42,9 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
 {
+	/** @var \Exception|null */
 	protected $last_exception = null;
+	/** @var bool */
 	private $handling_exception = false;
 
 	public function getLastException()

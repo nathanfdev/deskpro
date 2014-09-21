@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class UrgencyAction extends AbstractAction implements PermissionableAction
 {
+	/** @var int */
 	protected $num;
 
 	public function __construct($num)

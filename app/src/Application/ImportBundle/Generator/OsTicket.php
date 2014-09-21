@@ -42,15 +42,16 @@ use Application\ImportBundle\GeneratorConfig;
  */
 class OsTicket implements GeneratorInterface
 {
+	/** @var \PDO */
 	protected $db;
-	
+	/** @var string */
 	protected $output_path;
-	
+	/** @var int|null */
 	protected $ticket_offset;
-	
+	/** @var int */
 	protected $batch_size;
 	
-	/** @var Psr\Log\LoggerInterface */
+	/** @var \Psr\Log\LoggerInterface */
 	protected $logger;
 	
 	/** @var GeneratorConfig */

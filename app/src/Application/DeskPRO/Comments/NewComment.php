@@ -42,15 +42,22 @@ use Symfony\Component\Form;
 
 class NewComment implements \Application\DeskPRO\People\PersonContextInterface
 {
+	/** @var string */
 	protected $class;
+	/** @var array */
 	protected $assignments;
 
+	/** @var string */
 	public $name = '';
+	/** @var string */
 	public $email = '';
+	/** @var string */
 	public $content = '';
 
+	/** @var \Application\DeskPRO\Entity\Person|null */
 	protected $person_context = null;
 
+	/** @var bool */
 	public $require_login = false;
 
 	public function __construct($class, Person $person, array $assignments)

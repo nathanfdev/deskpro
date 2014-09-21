@@ -44,11 +44,17 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 
 class ReplyAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
+	/** @var string */
 	protected $reply_text;
+	/** @var string|null */
 	protected $reply_pos;
+	/** @var array */
 	protected $attach_ids = array();
+	/** @var Person */
 	protected $person_context;
+	/** @var bool */
 	protected $is_html = false;
+	/** @var int|null */
 	protected $person_id = null;
 
 	public function __construct($reply_text, array $attach_ids = array(), $reply_pos = null, $is_html = false, $person_id = null)

@@ -43,6 +43,7 @@ use \Orb\Util\Util;
  */
 class QueueTransport implements \Swift_Transport
 {
+	/** @var \Swift_Events_EventDispatcher */
 	protected $_event_dispatcher;
 
 	public function __construct(\Swift_Events_EventDispatcher $event_dispatcher)

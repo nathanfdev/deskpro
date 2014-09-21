@@ -44,8 +44,11 @@ use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
  */
 class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface
 {
+	/** @var bool */
 	public $noSave = false;
+	/** @var bool */
 	protected $started = false;
+	/** @var bool */
 	protected $closed = false;
 
 	/**

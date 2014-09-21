@@ -38,14 +38,18 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
 
 /**
  * Sets agent
  */
 class AgentAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
+	/** @var int */
 	protected $agent_id;
+	/** @var Person */
 	protected $person_context;
+	/** @var TicketChangeTracker */
 	protected $tracker;
 
 	public function __construct($agent, \Application\DeskPRO\Tickets\TicketChangeTracker $tracker = null)

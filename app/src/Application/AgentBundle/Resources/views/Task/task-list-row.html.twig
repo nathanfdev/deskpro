@@ -58,9 +58,6 @@
 					<span class="assoc">
 						{% if assoc['ticket'] is defined %}{{ phrase('agent.tasks.linked_ticket') }}: <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': assoc.ticket.id}) }}">{{ assoc.ticket.subject }}</a>{% endif %}
 					</span>
-					<span class="assoc">
-						{% if assoc['deal'] is defined %}{{ phrase('agent.tasks.linked_deal') }}: <a data-route="ticket:{{ path('agent_deal_view', {'deal_id': assoc.deal.id}) }}">{{ assoc.deal.title }}</a>{% endif %}
-					</span>
 				{% endfor %}
 			</div>
 		{% endif %}

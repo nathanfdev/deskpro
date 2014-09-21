@@ -44,6 +44,7 @@ class ObjectUrlGenerator
 	const CONTEXT_AGENT = 'agent';
 	const CONTEXT_USER  = 'user';
 
+	/** @var \Symfony\Component\Routing\Generator\UrlGenerator */
 	protected $generator;
 
 	public function __construct(BaseUrlGenerator $generator)

@@ -42,7 +42,9 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class SetSlaStatusAction extends AbstractAction
 {
+	/** @var string */
 	protected $sla_status;
+	/** @var int */
 	protected $sla_id;
 
 	public function __construct($sla_status, $sla_id)

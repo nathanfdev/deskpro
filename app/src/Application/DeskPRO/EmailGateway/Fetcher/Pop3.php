@@ -42,6 +42,9 @@ use DeskPRO\Kernel\KernelErrorHandler;
  */
 class Pop3 extends AbstractFetcher
 {
+	/**
+	 * @var int
+	 */
 	protected $read_count = 0;
 
 	/**

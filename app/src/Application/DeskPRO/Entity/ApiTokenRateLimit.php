@@ -44,8 +44,11 @@ class ApiTokenRateLimit extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $api_token = null;
 
+	/** @var int */
 	protected $hits = 0;
+	/** @var int */
 	protected $created_stamp;
+	/** @var int */
 	protected $reset_stamp;
 
 	public function __construct()

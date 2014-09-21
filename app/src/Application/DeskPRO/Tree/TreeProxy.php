@@ -44,8 +44,11 @@ namespace Application\DeskPRO\Tree;
  */
 class TreeProxy implements \ArrayAccess
 {
+	/** @var mixed */
 	protected $__obj;
+	/** @var callable */
 	protected $__filter;
+	/** @var array */
 	protected $__child_cache;
 
 	/**

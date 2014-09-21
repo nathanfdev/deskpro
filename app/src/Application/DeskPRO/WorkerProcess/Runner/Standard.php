@@ -43,6 +43,7 @@ use Application\DeskPRO\Log\Logger;
  */
 class Standard extends AbstractRunner
 {
+	/** @var bool */
 	protected $is_verbose = false;
 	public function setVerbose()
 	{

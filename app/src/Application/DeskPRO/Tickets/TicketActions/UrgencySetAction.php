@@ -43,7 +43,9 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class UrgencySetAction extends AbstractAction implements PermissionableAction
 {
+	/** @var int */
 	protected $num;
+	/** @var bool|null */
 	protected $allow_lower;
 
 	public function __construct($num, $allow_lower = null)

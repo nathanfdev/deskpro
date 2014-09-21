@@ -38,7 +38,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Deal entity definition
+ * Currency entity definition
  *
  */
 abstract class Currency extends \Application\DeskPRO\Domain\DomainObject
@@ -52,7 +52,7 @@ abstract class Currency extends \Application\DeskPRO\Domain\DomainObject
     protected $id = null;
 
     /**
-     * The Deal Type's name
+     * The Currency Type's name
      *
      * @var string
      */

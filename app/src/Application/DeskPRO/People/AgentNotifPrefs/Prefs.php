@@ -43,11 +43,16 @@ class Prefs
 	const ALWAYS_SEND = 'always_send';
 	const SMART_SEND  = 'smart_send';
 
+	/** @var array */
 	private $filter_subs         = array();
+	/** @var array */
 	private $filter_notify_prefs = array();
+	/** @var array */
 	private $app_subs            = array();
+	/** @var string */
 	private $email_mention_mode  = self::ALWAYS_SEND;
 
+	/** @var array */
 	static public $apps = array(
 		'chat' => 1,
 		'task' => 1,

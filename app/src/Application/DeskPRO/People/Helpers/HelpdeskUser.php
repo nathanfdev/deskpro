@@ -36,14 +36,18 @@ namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\HttpFoundation\Session;
 
 /**
  * Helper added to People who are using the user interface
  */
 class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Helper\ShortCallableInterface
 {
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
+	/** @var Session */
 	protected $session;
+	/** @var \Application\DeskPRO\Entity\Visitor */
 	protected $visitor;
 
 	protected $ticket_count = null;

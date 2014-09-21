@@ -43,7 +43,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevLangOneSkyInitCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+	/** @var string */
 	protected $api_key;
+	/** @var string */
 	protected $secret_key;
 
 	protected function configure()

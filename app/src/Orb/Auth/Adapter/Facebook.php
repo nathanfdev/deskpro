@@ -43,8 +43,11 @@ use \Orb\Auth\Result;
  */
 class Facebook extends AbstractCallbackAdatper implements DisplayContextInterface
 {
+	/** @var string */
 	protected $app_id;
+	/** @var string */
 	protected $app_secret;
+	/** @var string */
 	protected $display = 'page';
 
 	/**

@@ -42,8 +42,11 @@ class GroupingCounter
 {
 	const LAST_TIME_MARKER   = 1893456000;
 
+	/** @var string */
 	protected $group_by;
+	/** @var ChatConversationSearch */
 	protected $searcher;
+	/** @var array */
 	protected $groups = array(
 		'none' => '',
 		'department' => 'department_id',

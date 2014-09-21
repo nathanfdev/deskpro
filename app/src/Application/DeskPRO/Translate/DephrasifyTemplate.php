@@ -42,6 +42,7 @@ use Orb\Util\Strings;
  */
 class DephrasifyTemplate
 {
+	/** @var \Application\DeskPRO\Translate\Translate */
 	protected $translate;
 
 	public function __construct(Translate $translate)
