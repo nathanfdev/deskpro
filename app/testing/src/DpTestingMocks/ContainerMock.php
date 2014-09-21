@@ -140,6 +140,7 @@ class ContainerMock
 
 			$repos = m::mock();
 			$repos->shouldReceive('findAll')->andReturn($cats);
+			$repos->shouldReceive('getAll')->andReturn($cats);
 
 			$em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
 			$em->shouldIgnoreMissing();
@@ -165,6 +166,7 @@ class ContainerMock
 
 			$repos = m::mock();
 			$repos->shouldReceive('findAll')->andReturn($cats);
+			$repos->shouldReceive('getAll')->andReturn($cats);
 
 			$em = m::mock('Application\\DeskPRO\\ORM\\EntityManager');
 			$em->shouldIgnoreMissing();
