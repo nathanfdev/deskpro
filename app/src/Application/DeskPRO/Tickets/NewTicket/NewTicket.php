@@ -48,6 +48,7 @@ use Application\DeskPRO\Input\Parser\CcListParser;
  */
 class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'person' => 1, 'ticket' => 1, 'language' => 1,
 		'custom_ticket_fields' => 1, 'custom_user_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),

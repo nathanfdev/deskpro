@@ -60,8 +60,17 @@ class Stream extends AbstractWriter
 	 */
 	protected $chmod_mode = 0777;
 
+	/**
+	 * @var string|null
+	 */
 	protected $stream_url = null;
+	/**
+	 * @var null|string
+	 */
 	protected $stream_mode = 'a';
+	/**
+	 * @var bool
+	 */
 	protected $close_after_write = false;
 
 	public function enableNewStreamPerWrite()

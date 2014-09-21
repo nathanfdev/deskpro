@@ -74,11 +74,29 @@ class CategoryHierarchy
 	 */
 	protected $cache_tag = null;
 
+	/**
+	 * @var null|array
+	 */
 	protected $_cats = null;
+	/**
+	 * @var null|array
+	 */
 	protected $_cat_hierarchy = null;
+	/**
+	 * @var null|array
+	 */
 	protected $_cat_hierarchy_flat = null;
+	/**
+	 * @var null|array
+	 */
 	protected $_cat_names = null;
+	/**
+	 * @var array
+	 */
 	protected $_cat_ids = array();
+	/**
+	 * @var array
+	 */
 	protected $_cat_parent_map = array();
 
 	public function __construct(EntityManager $em, AbstractEntityRepository $repos, $entity_name, ClassMetadata $class, $cache_tag = null)

@@ -65,7 +65,13 @@ class TwitterStream extends AbstractJob
 	 */
 	protected $twitter_service;
 
+	/**
+	 * @var array
+	 */
 	protected $accounts = array();
+	/**
+	 * @var array
+	 */
 	protected $twitter = array();
 
 	public function run()

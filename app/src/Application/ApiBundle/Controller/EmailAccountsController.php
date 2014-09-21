@@ -49,6 +49,7 @@ use Orb\Validator\StringEmail;
 
 class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
+	/** @var array|null */
 	protected $emailSettings = null;
 
 	/**

@@ -50,6 +50,7 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
+	/** @var RoundRobinHandler */
 	protected $logHandler;
 
 	/**

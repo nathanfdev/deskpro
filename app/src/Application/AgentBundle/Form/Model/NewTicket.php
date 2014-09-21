@@ -45,32 +45,56 @@ use Doctrine\ORM\EntityManager;
 
 class NewTicket
 {
+	/** @var \Application\AgentBundle\Form\Model\NewTicketPerson */
 	public $person;
 
+	/** @var string */
 	public $subject;
+	/** @var string */
 	public $notify_template = '';
+	/** @var string */
 	public $message;
+	/** @var bool */
 	public $is_html_reply;
+	/** @var int */
 	public $department_id;
+	/** @var string */
 	public $status;
+	/** @var int */
 	public $agent_id;
+	/** @var int */
 	public $agent_team_id;
+	/** @var int */
 	public $category_id = 0;
+	/** @var int */
 	public $priority_id = 0;
+	/** @var int */
 	public $workflow_id = 0;
+	/** @var int */
 	public $product_id = 0;
 
+	/** @var string */
 	public $billing_type = '';
+	/** @var int */
 	public $billing_amount = 0;
+	/** @var int */
 	public $billing_hours = 0;
+	/** @var int */
 	public $billing_minutes = 0;
+	/** @var int */
 	public $billing_seconds = 0;
+	/** @var string */
 	public $billing_comment = '';
 
+	/** @var array */
 	public $add_cc_person = array();
+	/** @var array */
 	public $add_cc_newpeople = array();
+	/** @var array */
 	public $add_cc_newperson = array();
+	/** @var array */
 	public $attach = array();
+	/** @var array */
 	public $ticket_fields = array();
 
 	/**

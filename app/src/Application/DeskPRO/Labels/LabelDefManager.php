@@ -50,6 +50,9 @@ class LabelDefManager
 	 */
 	protected $em;
 
+	/**
+	 * @var array
+	 */
 	protected $types = array(
 		'articles'             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
 		'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),

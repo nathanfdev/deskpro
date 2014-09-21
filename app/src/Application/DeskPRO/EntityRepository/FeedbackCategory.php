@@ -45,6 +45,7 @@ use Orb\Util\Strings;
 
 class FeedbackCategory extends AbstractCategoryRepository
 {
+	/** @var array|null */
 	protected $all_cats = null;
 
 	/**

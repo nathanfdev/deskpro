@@ -224,6 +224,9 @@ class CloudSiteStream extends \UserstreamPhirehose
 	 */
 	protected $log = array();
 
+	/**
+	 * @var \Closure
+	 */
 	protected $log_callback;
 
 	public function __construct($username, $password)

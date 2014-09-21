@@ -51,6 +51,9 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
      */
 	protected $_format;
 
+	/**
+	 * @var string
+	 */
 	protected $_time_format;
 
 	public function __construct($format = self::DEFAULT_FORMAT, $time_format = self::DEFAULT_TIME_FORMAT)

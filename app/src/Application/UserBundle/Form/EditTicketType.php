@@ -45,8 +45,11 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class EditTicketType extends AbstractType
 {
+	/** @var Entity\Person */
 	protected $person;
+	/** @var array */
 	protected $ticket_options;
+	/** @var array */
 	protected $ticket_fields = array();
 
 	public function __construct($person)

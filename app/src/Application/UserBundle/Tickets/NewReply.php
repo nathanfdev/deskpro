@@ -47,6 +47,7 @@ class NewReply extends \ArrayObject
 		'attach_ids_authed' => 1
 	);
 
+	/** @var string */
 	public $message;
 
 	/**
@@ -54,12 +55,17 @@ class NewReply extends \ArrayObject
 	 */
 	public $new_upload = null;
 
+	/** @var array */
 	public $attach_ids = array();
+	/** @var bool */
 	public $attach_ids_authed = false;
 
+	/** @var \Application\DeskPRO\Entity\Ticket */
 	protected $ticket;
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
 
+	/** @var TicketMessage */
 	protected $ticket_message;
 
 	public function __construct(Ticket $ticket, Person $person)

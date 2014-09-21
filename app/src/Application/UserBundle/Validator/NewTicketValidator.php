@@ -44,6 +44,7 @@ use Orb\Validator\AbstractValidator;
 
 class NewTicketValidator extends AbstractValidator
 {
+	/** @var array */
 	protected $run_validators = array();
 
 	/**

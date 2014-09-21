@@ -485,6 +485,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	protected $_sent_to_addresses;
 
+	/**
+	 * @var null|\Application\DeskPRO\Labels\LabelManager
+	 */
 	protected $_label_manager = null;
 
 	/**

@@ -46,6 +46,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public $person;
 
+	/** @var string */
 	protected $search_query = '';
 
 	protected function init()

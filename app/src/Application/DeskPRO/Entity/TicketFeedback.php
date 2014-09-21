@@ -82,6 +82,9 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
+	/**
+	 * @var bool
+	 */
 	protected $_is_new = false;
 
 	public function __construct()

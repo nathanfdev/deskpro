@@ -45,16 +45,23 @@ class NewFeedback
 	 */
 	protected $em;
 
+	/** @var string */
 	public $title;
+	/** @var int */
 	public $category_id;
+	/** @var string */
 	public $status_code;
+	/** @var string */
 	public $content;
 
+	/** @var string */
 	public $slug;
+	/** @var array */
 	public $labels = array();
-
+	/** @var array */
 	public $attach_ids;
 
+	/** @var Feedback */
 	protected $_feedback;
 
 	public function __construct(Person $person_context)

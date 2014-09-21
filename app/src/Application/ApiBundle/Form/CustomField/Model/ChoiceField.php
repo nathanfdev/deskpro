@@ -58,7 +58,7 @@ class ChoiceField extends CustomFieldAbstract
 	public $choices_structure = '';
 	/** @var string */
 	public $choices_removed_structure = '';
-
+	/** @var mixed */
 	public $default_value = null;
 
 	protected function init()

@@ -48,14 +48,23 @@ class TaskQueue extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
+	/** @var string */
 	protected $runner_class;
+	/** @var array */
 	protected $task_data = array();
+	/** @var \DateTime */
 	protected $date_runnable;
+	/** @var string */
 	protected $task_group;
+	/** @var string */
 	protected $status = 'queued';
+	/** @var \DateTime */
 	protected $date_started;
+	/** @var \DateTime */
 	protected $date_completed;
+	/** @var string */
 	protected $error_text = '';
+	/** @var string */
 	protected $run_status = '';
 
 	public function __construct()

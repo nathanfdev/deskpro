@@ -67,6 +67,9 @@ class UnaryOperator extends AbstractPart
 		Parser::T_OP_NOT => 'NOT ', // space after is important
 	);
 
+	/**
+	 * @var array
+	 */
 	protected static $_operatorTypeMap = array(
 		Parser::T_OP_BANG => 'boolean',
 		Parser::T_OP_U_MINUS => 'number',

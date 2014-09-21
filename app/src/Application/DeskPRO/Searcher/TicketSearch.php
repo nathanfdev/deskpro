@@ -169,6 +169,9 @@ class TicketSearch extends SearcherAbstract
 	 */
 	protected $is_filter_search = false;
 
+	/**
+	 * @var null|string
+	 */
 	public $_last_sql = null;
 
 	/**

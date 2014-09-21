@@ -61,6 +61,9 @@ class GlossaryHandler
 	 */
 	protected $_words = null;
 
+	/**
+	 * @var array
+	 */
 	protected $_defs = array();
 
 	public function __construct(EntityManager $em)

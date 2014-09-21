@@ -60,6 +60,9 @@ class InstallSchema
 	 */
 	protected $build = 'default';
 
+	/**
+	 * @var null|array
+	 */
 	protected $done_steps = null;
 
 	/**

@@ -50,25 +50,58 @@ class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 	const TYPE_ALL    = 63;
 
 	/**
-	 * @var Orb\Log\Logger
+	 * @var \Orb\Log\Logger
 	 */
 	protected $_logger = null;
 
+	/**
+	 * @var bool
+	 */
 	protected $_is_enabled = true;
+	/**
+	 * @var array
+	 */
 	protected $_slowlog_rules = array();
 
+	/**
+	 * @var array
+	 */
 	protected $_queries = array();
+	/**
+	 * @var int
+	 */
 	protected $_last_query = -1;
 
+	/**
+	 * @var int
+	 */
 	protected $_query_counter = 0;
+	/**
+	 * @var float
+	 */
 	protected $_query_total_time = 0.0;
 
+	/**
+	 * @var bool
+	 */
 	protected $disable_trace = true;
 
+	/**
+	 * @var bool
+	 */
 	protected $keep_queries = false;
 
+	/**
+	 * @var int
+	 */
 	public $query_count = 0;
+	/**
+	 * @var float
+	 */
 	public $total_time = 0.0;
+	/**
+	 * @var string
+	 */
 	public $tag = '';
 
 	public $ignore_triggers = array();

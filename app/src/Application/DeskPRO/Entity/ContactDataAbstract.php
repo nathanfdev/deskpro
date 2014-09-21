@@ -124,6 +124,9 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 */
 	protected $_handler = null;
 
+	/**
+	 * @var array
+	 */
 	protected $_save_callbacks = array();
 
 	/**

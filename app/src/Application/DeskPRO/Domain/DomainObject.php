@@ -45,6 +45,7 @@ abstract class DomainObject extends BasicDomainObject
 	const API_MODE_OPT_OUT = 1;
 	const API_MODE_OPT_IN = 2;
 
+	/** @var int */
 	protected $_api_mode = self::API_MODE_OPT_OUT;
 
 	/**
@@ -54,6 +55,9 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	private $_no_persist = false;
 
+	/**
+	 * @var array
+	 */
 	public $_presave_state = array();
 
 

@@ -45,7 +45,9 @@ namespace Application\DeskPRO\Dpql;
  */
 class ParseyyToken implements \ArrayAccess
 {
+	/** @var string */
     public $string = '';
+	/** @var array */
     public $metadata = array();
 
     function __construct($s, $m = array())

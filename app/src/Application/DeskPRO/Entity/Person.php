@@ -482,6 +482,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 */
 	public $email_validating;
 
+	/**
+	 * @var bool
+	 */
 	protected $_updated_org = false;
 	
 	/** @var string */

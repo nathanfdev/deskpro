@@ -48,7 +48,9 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 	 */
 	protected $em;
 
+	/** @var string */
 	protected $email = '';
+	/** @var string */
 	protected $password = '';
 
 	public function __construct(\Doctrine\ORM\EntityManager $em)

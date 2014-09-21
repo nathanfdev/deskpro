@@ -70,8 +70,14 @@ use EWSType_NonEmptyArrayOfItemChangeDescriptionsType;
 
 class Exchange
 {
+	/**
+	 * @var \ExchangeWebServices
+	 */
 	protected $service;
 
+	/**
+	 * @var array
+	 */
 	protected $folders;
 
 

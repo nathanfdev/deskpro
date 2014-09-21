@@ -60,6 +60,9 @@ class TwitterUserFollower extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $follower_user;
 
+	/**
+	 * @var int
+	 */
 	protected $display_order = 0;
 
 

@@ -60,9 +60,18 @@ class NewTicketType extends AbstractType
 	 */
 	protected $mock_person;
 
+	/**
+	 * @var array
+	 */
 	protected $ticket_options;
+	/**
+	 * @var array
+	 */
 	protected $ticket_fields = array();
 
+	/**
+	 * @var string
+	 */
 	protected $mode;
 
 	public function __construct($person, $mode = self::MODE_NORMAL)

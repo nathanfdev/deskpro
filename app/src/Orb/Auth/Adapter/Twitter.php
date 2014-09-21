@@ -46,7 +46,9 @@ class Twitter extends AbstractCallbackAdatper implements Loggable
 	 */
 	protected $logger;
 
+	/** @var string */
 	protected $consumer_key;
+	/** @var string */
 	protected $consumer_secret;
 
 	/**

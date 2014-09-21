@@ -48,6 +48,7 @@ use Application\DeskPRO\Entity\Visitor;
  */
 class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 {
+	/** @var string */
 	protected $mode = 'default';
 
 	/**
@@ -60,13 +61,21 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 	 */
 	protected $person_context;
 
+	/** @var bool */
 	public $require_login = false;
+	/** @var string */
 	public $person_name = '';
+	/** @var string */
 	public $person_email = '';
+	/** @var int */
 	public $category_id = 0;
+	/** @var string */
 	public $title = '';
+	/** @var string */
 	public $content = '';
+	/** @var array */
 	public $attach_blobs = array();
+	/** @var array */
 	public $custom_fields = array();
 
 	public function __construct(Visitor $visitor = null, Person $person = null)

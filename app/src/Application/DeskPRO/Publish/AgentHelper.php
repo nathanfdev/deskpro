@@ -49,6 +49,7 @@ class AgentHelper implements PersonContextInterface
 	const NEWS      = 'news';
 	const FEEDBACK  = 'feedback';
 
+	/** @var array */
 	protected $enabled_types = array('articles', 'downloads', 'news');
 
 	public function setEnabledTypes(array $types)

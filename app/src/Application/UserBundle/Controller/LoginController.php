@@ -47,7 +47,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
+	/** @var string  */
 	protected $tpl_prefix = 'UserBundle:Login';
+	/** @var string */
 	protected $route_prefix = 'user';
 
 	/**

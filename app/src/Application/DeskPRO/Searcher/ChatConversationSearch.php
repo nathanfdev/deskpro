@@ -49,9 +49,13 @@ class ChatConversationSearch extends SearcherAbstract
 	const TERM_TOTAL_TO_ENDED       = 'total_to_ended';
 	const TERM_LABEL                = 'chat_label';
 
+	/** @var string */
 	protected $columns = 'chat_conversations.id';
+	/** @var string|null */
 	protected $groupBy = null;
+	/** @var array */
 	protected $limit = array('start' => null, 'limit' => null);
+	/** @var array */
 	protected $joins = array();
 
 

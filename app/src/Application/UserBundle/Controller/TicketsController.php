@@ -44,8 +44,10 @@ use Orb\Util\Numbers;
 
 class TicketsController extends AbstractController
 {
+	/** @var Entity\Person */
 	protected $limited_person = null;
 
+	/** @var array */
 	protected $session_allowed = array();
 
 	protected function init()

@@ -52,13 +52,21 @@ class PasswordSettings
 	 */
 	private $agent_policy;
 
+	/** @var int */
 	public $sessions_lifetime = 3600;
+	/** @var bool */
 	public $session_keepalive_require_page = false;
+	/** @var bool */
 	public $ip_security_enabled = false;
+	/** @var string */
 	public $ip_security_mode = 'admins';
+	/** @var int */
 	public $ip_security_whitelist_lifetime = 1814400;
+	/** @var bool */
 	public $disable_notifications;
+	/** @var bool */
 	public $enable_agent_rememberme;
+	/** @var bool */
 	public $enable_user_rememberme;
 
 

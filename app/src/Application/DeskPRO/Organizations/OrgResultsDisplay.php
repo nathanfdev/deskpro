@@ -75,6 +75,9 @@ class OrgResultsDisplay
 	 */
 	protected $org_member_counts;
 
+	/**
+	 * @var array
+	 */
 	protected $all_fields_data;
 
 	/**

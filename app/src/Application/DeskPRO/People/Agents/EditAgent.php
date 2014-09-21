@@ -88,6 +88,9 @@ class EditAgent
 	 */
 	public $agent_groups;
 
+	/**
+	 * @var array
+	 */
 	public $notification_settings;
 
 

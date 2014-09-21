@@ -46,6 +46,7 @@ use Orb\Util\Strings;
  */
 class BasicXss implements CleanerPlugin
 {
+	/** @var array */
 	protected $_never_allowed_str = array(
 		'document.cookie'	=> '[removed]',
 		'document.write'	=> '[removed]',
@@ -59,6 +60,7 @@ class BasicXss implements CleanerPlugin
 		'<comment>'			=> '&lt;comment&gt;'
 	);
 
+	/** @var array */
 	protected $_never_allowed_regex = array(
 		"javascript\s*:"			=> '[removed]',
 		"expression\s*(\(|&\#40;)"	=> '[removed]',

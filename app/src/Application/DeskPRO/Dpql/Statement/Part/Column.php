@@ -81,6 +81,9 @@ class Column extends AbstractPart
 		'ticket_workflows' => array('id', 'title')
 	);
 
+	/**
+	 * @var array
+	 */
 	protected static $_autoLink = array(
 		'tickets.id' => array('ticket')
 	);

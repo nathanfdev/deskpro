@@ -110,6 +110,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public $settings;
 
+	/**
+	 * @var null|array
+	 */
 	public $rate_info = null;
 
 

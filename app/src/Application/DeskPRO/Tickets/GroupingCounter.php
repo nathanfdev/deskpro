@@ -49,15 +49,20 @@ class GroupingCounter
 	const MODE_ALL           = 'all';
 	const MODE_SPECIFY       = 'specify';
 
+	/** @var string */
 	protected $grouping1 = 'department';
+	/** @var string|null */
 	protected $grouping2 = null;
 
+	/** @var string */
 	protected $mode = 'unassigned';
+	/** @var array */
 	protected $tickets = array();
+	/** @var int|null */
 	protected $this_person = null;
-
+	/** @var array */
 	protected $terms = array();
-
+	/** @var string */
 	protected $grouping_summary = '';
 
 	public function getGroupingSummary()

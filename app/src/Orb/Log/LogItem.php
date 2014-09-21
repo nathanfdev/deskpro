@@ -48,6 +48,9 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 	const SESSION_NAME   = 'session_name';
 	/**@#-*/
 
+	/**
+	 * @var array
+	 */
 	protected $_standard_fields = array(
 		self::PRIORITY,
 		self::PRIORITY_NAME,
@@ -57,6 +60,9 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 		self::SESSION_NAME
 	);
 
+	/**
+	 * @var array
+	 */
 	protected $info = array();
 
 	public function __construct(array $info)

@@ -60,6 +60,9 @@ class TwitterUserFriend extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $friend_user;
 
+	/**
+	 * @var int
+	 */
 	protected $display_order = 0;
 
 

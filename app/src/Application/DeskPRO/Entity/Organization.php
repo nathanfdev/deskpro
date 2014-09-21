@@ -135,6 +135,9 @@ class Organization extends DomainObject implements HighlightableModelInterface
 	 */
 	protected $twitter_users;
 
+	/**
+	 * @var null|\Application\DeskPRO\Labels\LabelManager
+	 */
 	protected $_label_manager = null;
 
     /**

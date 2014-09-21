@@ -133,9 +133,14 @@ class Lexer
 		$this->line = 1;
 	}
 
-
-    private $_yy_state = 1;
-    private $_yy_stack = array();
+	/**
+	 * @var int
+	 */
+	private $_yy_state = 1;
+	/**
+	 * @var array
+	 */
+	private $_yy_stack = array();
 
     function yylex()
     {

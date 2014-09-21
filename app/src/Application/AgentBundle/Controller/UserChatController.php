@@ -47,7 +47,9 @@ use Orb\Util\Strings;
 
 class UserChatController extends AbstractController
 {
+	/** @var array */
 	protected $filters  = array('mine', 'assigned', 'missed');
+	/** @var array */
 	protected $groups = array('none', 'department', 'agent', 'date_created', 'total_to_ended');
 
 	public function viewAction($conversation_id)

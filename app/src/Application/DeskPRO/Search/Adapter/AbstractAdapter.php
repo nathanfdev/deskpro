@@ -47,6 +47,7 @@ use Orb\Util\CapabilityInformerInterface;
  */
 abstract class AbstractAdapter implements CapabilityInformerInterface, PersonContextInterface
 {
+	/** @var array */
 	public static $capabilities = array();
 
 	/**#@+

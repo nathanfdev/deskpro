@@ -45,7 +45,9 @@ use Application\DeskPRO\Entity\TwitterUser;
 
 class Twitter
 {
+	/** @var array */
 	protected $_user_cache = array();
+	/** @var array */
 	protected $_tweet_cache = array();
 
 	/**
