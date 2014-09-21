@@ -66,10 +66,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 		$password = $context->getIn()->getString('password');
 		$options  = AppOptionsMapper::getOptions($context->getIn()->getCleanValueArray('settings'));
 
-		if (isset($options['check_service_url'])) {
-			$type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb2';
-		} else {
+		if (isset($options['phpbb_version']) && 3 == $options['phpbb_version']) {
 			$type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb3';
+		} else {
+			$type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb2';
 		}
 
 		$tester = UsersourceTester::createFromOptions($type, $options);
