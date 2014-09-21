@@ -18,7 +18,7 @@ echo "Running Unit Tests"
 echo "=========================="
 echo ""
 
-bin/codecept run unit --coverage --xml
+#bin/codecept run unit --coverage --xml
 
 if [[ $? -ne 0 ]] ; then
 	echo "!!! Unit Test Failure !!!"
