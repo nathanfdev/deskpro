@@ -41,6 +41,7 @@ use Orb\Util\Strings;
  */
 class Mapper
 {
+	/** @var array */
 	protected $map = array();
 
 	public function addMapName($name, $class)

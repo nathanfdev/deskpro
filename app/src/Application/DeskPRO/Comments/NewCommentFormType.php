@@ -35,15 +35,16 @@
 namespace Application\DeskPRO\Comments;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class NewCommentFormType extends AbstractType
 {
+	/** @var Person */
 	protected $person;
 
-	public function __construct($person)
+	public function __construct(Person $person)
 	{
 		$this->person = $person;
 	}

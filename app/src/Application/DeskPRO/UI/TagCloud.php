@@ -41,11 +41,17 @@ use Orb\Util\Arrays;
  */
 class TagCloud
 {
+	/** @var array */
 	protected $_tag_counts = array();
+	/** @var int */
 	protected $_min_count = 0;
+	/** @var int */
 	protected $_max_count = 0;
+	/** @var int */
 	protected $_spread = 1;
+	/** @var int */
 	protected $_max_size = 10;
+	/** @var string */
 	protected $_class_prefix = 'tag-size';
 
 	/**

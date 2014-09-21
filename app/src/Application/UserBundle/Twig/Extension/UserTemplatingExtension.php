@@ -39,6 +39,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class UserTemplatingExtension extends \Twig_Extension
 {
+	/** @var \Symfony\Component\DependencyInjection\ContainerInterface  */
     protected $container;
 
     public function __construct(ContainerInterface $container)

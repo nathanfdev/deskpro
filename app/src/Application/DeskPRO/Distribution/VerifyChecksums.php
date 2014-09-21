@@ -36,7 +36,9 @@ namespace Application\DeskPRO\Distribution;
 
 class VerifyChecksums
 {
+	/** @var array  */
 	protected $standard_hashes;
+	/** @var int  */
 	protected $count_all;
 
 	public function __construct($chunk_size = 350)

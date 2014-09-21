@@ -38,7 +38,9 @@ use Application\DeskPRO\App;
 
 class FeedbackStatusCategory extends AbstractEntityRepository
 {
+	/** @var array|null */
 	protected $active_cats = null;
+	/** @var array|null */
 	protected $closed_cats = null;
 
 	public function reload()

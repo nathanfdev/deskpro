@@ -39,7 +39,9 @@ abstract class DBHandler extends AbstractProcessingHandler
 {
 	/** @var \Doctrine\ORM\EntityManager  */
 	protected $em;
+	/** @var array */
 	protected $statements = array();
+	/** @var array */
 	protected $meta = array();
 
 	public function __construct(EntityManager $em, $level = Logger::DEBUG, $bubble = true)

@@ -35,12 +35,17 @@
 namespace Application\UserBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Application\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments;
 
 class Comments
 {
+	/** @var string ? **/
 	protected $entity;
+	/** @var string */
 	protected $page_url;
+	/** @var \Application\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
 	protected $adapter;
 
 	/**

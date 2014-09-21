@@ -41,6 +41,7 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
  */
 class ReservedWords
 {
+	/** @var array */
 	public static $reserved_words = array(
 		'ACCESSIBLE' => 1, 'ADD' => 1, 'ALL' => 1, 'ALTER' => 1, 'ANALYZE' => 1, 'AND' => 1, 'AS' => 1, 'ASC' => 1, 'ASENSITIVE' => 1, 'BEFORE' => 1, 'BETWEEN' => 1, 'BIGINT' => 1,
 		'BINARY' => 1, 'BLOB' => 1, 'BOTH' => 1, 'BY' => 1, 'CALL' => 1, 'CASCADE' => 1, 'CASE' => 1, 'CHANGE' => 1, 'CHAR' => 1, 'CHARACTER' => 1, 'CHECK' => 1, 'COLLATE' => 1,

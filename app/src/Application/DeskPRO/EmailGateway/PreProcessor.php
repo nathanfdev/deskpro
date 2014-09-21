@@ -38,8 +38,11 @@ use Application\DeskPRO\Entity\EmailSource;
 
 class PreProcessor extends AbstractGatewayProcessor
 {
+	/** @var string|null */
 	protected $error = null;
+	/** @var string */
 	protected $error_type = 'rejected';
+	/** @var array|null */
 	protected $source_info = null;
 
 	public function run()

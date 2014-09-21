@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity;
 
 class Sla extends AbstractEntityRepository
 {
+	/** @var array|null */
 	protected $_all_slas = null;
 
 	/**

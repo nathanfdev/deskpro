@@ -40,6 +40,7 @@ use Symfony\Component\Process\ProcessBuilder;
 
 class SmartSprites implements FilterInterface
 {
+	/** @var string */
 	protected $smartsprites_bin;
 
 	/**

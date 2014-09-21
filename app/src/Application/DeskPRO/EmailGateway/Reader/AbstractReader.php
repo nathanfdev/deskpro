@@ -39,10 +39,15 @@ use Orb\Util\Strings;
 
 abstract class AbstractReader
 {
+	/** @var array */
 	protected $vals = array();
+	/** @var array */
 	protected $properties = array();
+	/** @var string */
 	protected $raw_source;
+	/** @var string */
 	protected $raw_headers;
+	/** @var array */
 	protected $from_headers = array('from');
 
 	public function _kill()

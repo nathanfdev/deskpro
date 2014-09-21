@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 
 class DbErrorLoggerQueue
 {
+	/** @var array */
 	protected $waiting = array();
 
 	private function __construct() { }

@@ -39,6 +39,7 @@ namespace Application\DeskPRO\Translate\Loader;
  */
 class BundleLoader implements LoaderInterface
 {
+	/** @var array */
 	protected $bundle_paths;
 
 	/**

@@ -40,7 +40,9 @@ use Orb\Util\Arrays;
 
 class Usergroup extends AbstractEntityRepository
 {
+	/** @var array|null */
 	protected $_usergroup_names = null;
+	/** @var array|null */
 	protected $_agent_usergroup_names = null;
 
 

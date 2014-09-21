@@ -41,6 +41,7 @@ use Application\DeskPRO\App;
  */
 class TicketProps implements \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'subject' => 1, 'message_is_html' => 1, 'message' => 1,
 		'message_raw' => 1, 'notify_email' => 1, 'cc_emails' => 1,
@@ -49,11 +50,17 @@ class TicketProps implements \ArrayAccess
 		'workflow_id' => 1
 	);
 
+	/** @var string */
 	public $subject = '';
+	/** @var bool */
 	public $message_is_html = false;
+	/** @var string */
 	public $message = '';
+	/** @var string|null */
 	public $message_raw = null;
+	/** @var string */
 	public $notify_email = '';
+	/** @var string */
 	public $cc_emails = '';
 
 	/**
@@ -61,13 +68,20 @@ class TicketProps implements \ArrayAccess
 	 */
 	public $new_upload = null;
 
+	/** @var array */
 	public $attach_ids = array();
+	/** @var bool */
 	public $attach_ids_authed = false;
 
+	/** @var int */
 	public $department_id = 0;
+	/** @var int */
 	public $category_id   = 0;
+	/** @var int */
 	public $priority_id   = 0;
+	/** @var int */
 	public $product_id    = 0;
+	/** @var int */
 	public $workflow_id   = 0;
 
 	public function __construct()

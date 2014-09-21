@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Form\CustomField\Model;
 
 class DisplayField extends TextField
 {
+	/** @var string  */
 	public $html = '';
 
 	public function init()

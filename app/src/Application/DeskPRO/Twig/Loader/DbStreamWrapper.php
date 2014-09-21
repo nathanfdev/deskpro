@@ -41,10 +41,15 @@ use Application\DeskPRO\App;
  */
 class DbStreamWrapper
 {
+	/** @var int */
 	protected $position;
+	/** @var string */
 	protected $name;
+	/** @var string */
 	protected $php_code;
+	/** @var int */
 	protected $size = 0;
+	/** @var int */
 	protected $date_updated;
 
 	public static function getTemplateInfo($name)

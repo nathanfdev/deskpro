@@ -40,12 +40,15 @@ use Orb\Util\Arrays;
 
 class GroupingCounter
 {
+	/** @var string */
 	protected $grouping1 = 'status';
+	/** @var string */
 	protected $grouping2 = 'category_id';
-
+	/** @var int|null */
 	protected $this_person_id = null;
-
+	/** @var array */
 	protected $terms = array();
+	/** @var array|null */
 	protected $ids = null;
 
 	/**

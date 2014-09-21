@@ -39,7 +39,9 @@ use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
+	/** @var string */
 	protected $tpl_prefix = 'AgentBundle:Login';
+	/** @var string */
 	protected $route_prefix = 'agent';
 
 	/**

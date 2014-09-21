@@ -38,8 +38,9 @@ use Application\DeskPRO\App;
 
 class QueryListener
 {
+	/** @var bool  */
 	protected $is_executing = false;
-
+	/** @var array */
 	protected $updates = array();
 
 	public function __construct()

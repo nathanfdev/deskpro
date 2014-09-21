@@ -36,9 +36,13 @@ namespace Application\DeskPRO\ORM;
 
 class QueryPartial
 {
+	/** @var string|null  */
 	protected $order_by = null;
+	/** @var string  */
 	protected $order_dir = 'ASC';
+	/** @var int|null  */
 	protected $first_result = null;
+	/** @var int|null  */
 	protected $max_results = null;
 
 	public function __construct() {}

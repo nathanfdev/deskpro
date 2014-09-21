@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 
 class NewTicket extends ActionTypeAbstract
 {
+	/** @var \Application\DeskPRO\Entity\Ticket */
 	protected $ticket;
 
 

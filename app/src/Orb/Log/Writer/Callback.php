@@ -41,6 +41,7 @@ use \Orb\Log\LogItem;
  */
 class Callback extends AbstractWriter
 {
+	/** @var Callable */
 	protected $callback;
 
 	public function __construct($callback)

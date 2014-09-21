@@ -40,6 +40,7 @@ use Orb\Util\Numbers;
 
 class Organization extends AbstractEntityRepository
 {
+	/** @var array|null */
 	protected $_organization_names = null;
 
 	public function findOneByName($name)

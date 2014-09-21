@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 
 class CategoryAction extends AbstractAction implements PermissionableAction
 {
+	/** @var int */
 	protected $category_id;
 
 	public function __construct($category)

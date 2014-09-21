@@ -40,9 +40,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RefillTicketActiveCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+	/** @var bool */
 	protected $set_verbose = false;
+	/** @var bool */
 	protected $ignore_interval = false;
-	protected $output;
 
 	protected function configure()
 	{
@@ -55,6 +56,6 @@ class RefillTicketActiveCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 		App::getEntityRepository('DeskPRO:Ticket')->fillSearchTable();
 		$time_end = microtime(true);
 
-		echo sprintf("Done in %.4f seconds\n", $time_end-$time_start);
+		$output->writeln(sprintf('Done in %.4f seconds', $time_end-$time_start));
 	}
 }

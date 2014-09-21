@@ -40,6 +40,7 @@ use Symfony\Component\Process\ProcessBuilder;
 
 class Lessc implements FilterInterface
 {
+	/** @var string */
 	protected $lessc_bin;
 
 	public function __construct($lessc_bin)

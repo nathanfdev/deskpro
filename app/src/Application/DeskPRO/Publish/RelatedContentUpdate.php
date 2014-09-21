@@ -35,12 +35,15 @@
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 
 class RelatedContentUpdate
 {
+	/** @var DomainObject */
 	protected $entity;
+	/** @var string */
 	protected $type;
-
+	/** @var \Application\DeskPRO\DBAL\Connection */
 	protected $db;
 
 	public function __construct($entity)

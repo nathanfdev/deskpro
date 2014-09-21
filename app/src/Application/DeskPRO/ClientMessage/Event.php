@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 
 class Event extends \Symfony\Component\EventDispatcher\Event
 {
+	/** @var ClientMessage */
 	protected $client_message;
 
 	public function construct(ClientMessage $client_message)

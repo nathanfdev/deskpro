@@ -39,6 +39,7 @@ use Orb\Util\Strings;
 
 class ContactData
 {
+	/** @var array */
 	protected static $instances = array();
 
 	public static function getHandler($typename)

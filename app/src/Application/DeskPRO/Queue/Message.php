@@ -39,6 +39,7 @@ namespace Application\DeskPRO\Queue;
  */
 class Message extends \ZendQueue\Message
 {
+	/** @var bool */
 	protected $_has_init_qi = false;
 
 	public function __get($key)

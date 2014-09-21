@@ -38,7 +38,9 @@ use Application\DeskPRO\Entity\Language;
 
 class DelegatePhrase implements DelegatePhraseInterface
 {
+	/** @var string */
 	protected $phrase_name;
+	/** @var array */
 	protected $phrase_vars = array();
 
 	public function __construct($phrase_name, array $phrase_vars = array())

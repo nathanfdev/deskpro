@@ -37,6 +37,7 @@ use Orb\Util\Strings;
 
 class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
 {
+	/** @var bool|null  */
 	protected $got_locale = null;
 
 	public function match($pathinfo)

@@ -41,6 +41,7 @@ use \Orb\Auth\Result;
 
 class OpenId extends AbstractCallbackAdatper
 {
+	/** @var string */
 	protected $openid_identifier = '';
 
 

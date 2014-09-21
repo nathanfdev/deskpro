@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
  */
 abstract class AbstractPropertyAction extends AbstractAction
 {
+	/** @var mixed */
 	protected $value;
 
 	public function __construct($value = 0)

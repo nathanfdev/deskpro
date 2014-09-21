@@ -40,6 +40,7 @@ namespace Orb\Log\Filter;
  */
 class CallbackFormatter extends \Orb\Filter\AbstractFilter
 {
+	/** @var Callable */
 	protected $callback;
 
 	public function __construct($callback)

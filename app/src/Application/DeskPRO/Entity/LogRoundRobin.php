@@ -41,16 +41,17 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class LogRoundRobin extends DomainObject implements Loggable
 {
+	/** @var int */
 	protected $id;
-
+	/** @var int */
 	protected $timestamp;
-
+	/** @var int */
 	protected $roundRobinId;
-
+	/** @var int */
 	protected $agentId;
-
+	/** @var int */
 	protected $ticketId;
-
+	/** @var int */
 	protected $triggerId;
 
 	public function __construct($robinId, $agentId, $ticketId, $triggerId)

@@ -40,20 +40,30 @@ use Application\DeskPRO\Entity\Person;
 
 class NewPerson
 {
+	/** @var string */
 	public $name;
+	/** @var string */
 	public $email;
 
+	/** @var int */
 	public $organization_id;
+	/** @var string */
 	public $organization_position;
 
+	/** @var string */
 	public $new_organization;
 
+	/** @var array */
 	public $labels = array();
+	/** @var array */
 	public $usergroup_ids = array();
+	/** @var array */
 	public $custom_fields = array();
 
+	/** @var string */
 	public $timezone;
 
+	/** @var Person */
 	protected $_person;
 
 	/**

@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Person;
 
 class NewChat extends ActionTypeAbstract
 {
+	/** @var \Application\DeskPRO\Entity\ChatConversation */
 	protected $convo;
 
 

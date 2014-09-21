@@ -9,6 +9,7 @@ namespace Application\AgentBundle\Controller;
  */
 class JiraController extends AbstractController
 {
+	/** @var array */
 	protected $meta;
 
 	public function preAction($action, $arguments = null)

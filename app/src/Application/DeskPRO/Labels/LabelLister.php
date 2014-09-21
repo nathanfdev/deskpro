@@ -39,6 +39,7 @@ use Orb\Util\Strings;
 
 class LabelLister
 {
+	/** @var string */
 	protected $label_type;
 
 	/**

@@ -40,6 +40,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 
 class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {
+	/** @var array */
 	public static $watched_entities = array(
 		'Application\\DeskPRO\\Entity\\Article' => 1,
 		'Application\\DeskPRO\\Entity\\LabelArticle' => 1,

@@ -40,18 +40,26 @@ use Application\DeskPRO\Entity\PersonEmailValidating;
 
 class Register implements \ArrayAccess
 {
+	/** @var array  */
 	protected static $prop_names = array(
 		'name' => 1, 'email' => 1, 'password' => 1, 'password2' => 1,
 		'language_id' => 1, 'no_validation' => 1, 'custom_fields' => 1,
 	);
 
+	/** @var string */
 	public $name;
+	/** @var string */
 	public $email;
+	/** @var string */
 	public $password;
+	/** @var string */
 	public $password2;
+	/** @var int */
 	public $language_id = 1;
 
+	/** @var bool */
 	public $no_validation;
+	/** @var array */
 	public $custom_fields = array();
 
 	/**

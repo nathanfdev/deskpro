@@ -36,6 +36,7 @@ namespace Orb\GeoIp;
 
 class GeoIpExtension extends AbstractGeoIp
 {
+	/** @var array|null  */
 	private $last = null;
 
 	/**

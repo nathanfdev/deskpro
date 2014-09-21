@@ -39,6 +39,7 @@ use Orb\Util\Strings;
 
 class CustomRef implements RefGeneratorInterface
 {
+	/** @var array */
 	public static $keywords = array(
 		'A'          => true,
 		'#'          => true,

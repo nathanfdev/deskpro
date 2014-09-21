@@ -13,8 +13,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
 class UnprivateProxyFactory extends AbstractProxyFactory
 {
+	/** @var \Doctrine\ORM\EntityManager  */
     protected $em;
+	/** @var \Doctrine\ORM\UnitOfWork  */
     protected $uow;
+	/** @var string  */
     protected $proxyNs;
     public function __construct(EntityManager $em, $proxyDir, $proxyNs, $autoGenerate = false)
     {

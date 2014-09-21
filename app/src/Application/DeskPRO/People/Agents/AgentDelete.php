@@ -41,6 +41,7 @@ use Orb\Util\Arrays;
 
 class AgentDelete
 {
+	/** @var \Application\DeskPRO\Entity\Person  */
 	private $agent;
 
 	/**

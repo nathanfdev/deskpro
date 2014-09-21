@@ -36,9 +36,13 @@ namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 class PublishPermissions implements PermissionValueInterface
 {
+	/** @var bool  */
 	public $create        = false;
+	/** @var bool  */
 	public $delete        = false;
+	/** @var bool  */
 	public $edit          = false;
+	/** @var bool  */
 	public $validate      = false;
 
 	public function getNames()

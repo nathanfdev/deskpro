@@ -39,6 +39,7 @@ use Orb\Util\Arrays;
 
 class AbstractCategoryRepository extends AbstractEntityRepository
 {
+	/** @var CategoryHierarchy|null */
 	protected $_cat_helper = null;
 
 	/**

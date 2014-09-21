@@ -35,14 +35,18 @@
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\LabelDef;
 use Application\DeskPRO\ORM\EntityManager;
 
 class LabelManager
 {
+	/** @var DomainObject */
 	protected $entity;
+	/** @var string */
 	protected $label_entity_name;
+	/** @var string */
 	protected $labels_property;
 
 	public function __construct($entity, $label_entity_name, $labels_property = 'labels')

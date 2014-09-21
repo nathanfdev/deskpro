@@ -36,7 +36,9 @@ namespace Application\ApiBundle\Form\CustomField\Model;
 
 class ToggleField extends CustomFieldAbstract
 {
+	/** @var string  */
 	public $default_value = '';
+	/** @var string  */
 	public $label_text = '';
 
 	public function init()

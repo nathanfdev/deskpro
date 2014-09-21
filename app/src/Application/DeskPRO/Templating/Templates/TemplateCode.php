@@ -40,6 +40,7 @@ namespace Application\DeskPRO\Templating\Templates;
  */
 class TemplateCode
 {
+	/** @var string */
 	private $code;
 
 	public function __construct($code = null)

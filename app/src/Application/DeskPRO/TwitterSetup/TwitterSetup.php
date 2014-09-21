@@ -41,10 +41,15 @@ class TwitterSetup
 
 	private $settings;
 
+	/** @var string */
 	public $twitter_agent_consumer_key = '';
+	/** @var string */
 	public $twitter_agent_consumer_secret = '';
+	/** @var string */
 	public $twitter_user_consumer_key = '';
+	/** @var string */
 	public $twitter_user_consumer_secret = '';
+	/** @var int */
 	public $twitter_auto_remove_time = 1209600;
 
 	/**

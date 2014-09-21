@@ -39,8 +39,9 @@ use Orb\Validator\StringEmail;
 
 class PersonValueImporter extends AbstractValueImporter
 {
+	/** @var array */
 	protected $custom_fields_array = array();
-	
+	/** @var array */
 	protected $supported_custom_field_types = array(
 		'Application\DeskPRO\CustomFields\Handler\Text'
 	);

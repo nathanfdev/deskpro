@@ -39,23 +39,38 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 
 abstract class CustomFieldAbstract
 {
+	/** @var string */
 	public $title;
+	/** @var string */
 	public $description = '';
+	/** @var string */
 	public $handler_class;
+	/** @var string */
 	public $default_value;
 
+	/** @var bool */
 	public $required = false;
+	/** @var bool */
 	public $agent_required = false;
 
+	/** @var null|string */
 	public $custom_css_classname = '';
+	/** @var string */
 	public $custom_css = '';
+	/** @var string */
 	public $validation_type = '';
+	/** @var string */
 	public $agent_validation_type = '';
+	/** @var bool */
 	public $is_enabled = false;
+	/** @var bool */
 	public $is_agent_field = false;
+	/** @var bool */
 	public $agent_validation_resolve = false;
 
+	/** @var \Application\DeskPRO\Entity\CustomDefAbstract|null */
 	protected $_field = null;
+	/** @var bool */
 	protected $_is_new = false;
 
 	/**

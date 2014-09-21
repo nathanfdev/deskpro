@@ -39,7 +39,9 @@ use Application\DeskPRO\Languages\LangPackInfo;
 
 class Language extends AbstractEntityRepository
 {
+	/** @var string|null */
 	protected $lang_titles = null;
+	/** @var \Application\DeskPRO\Entity\Language|null */
 	protected $default_lang = null;
 
 	/**

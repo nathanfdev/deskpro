@@ -39,13 +39,21 @@ use Orb\Util\Arrays;
 
 class DepartmentDataService extends BaseRepositoryService
 {
+	/** @var bool */
 	protected $has_init = false;
+	/** @var array */
 	protected $cats;
+	/** @var array */
 	protected $cat_ids = array();
+	/** @var array */
 	protected $root_node_ids = array();
+	/** @var array */
 	protected $leaf_node_ids = array();
+	/** @var array */
 	protected $nodes_with_children = array();
+	/** @var array */
 	protected $filtered_nodes = array();
+	/** @var array */
 	protected $filtered_chat_nodes = array();
 
 	/**

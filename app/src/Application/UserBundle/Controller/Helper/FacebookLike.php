@@ -40,6 +40,7 @@ use Orb\Util\Util;
 
 class FacebookLike
 {
+	/** @var string ? */
 	protected $entity;
 
 	/**

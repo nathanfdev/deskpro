@@ -35,20 +35,25 @@ namespace Application\InstallBundle\Install;
 
 class InstallDataReader implements \IteratorAggregate, \Countable
 {
+	/** @var  string */
 	protected $filename;
+	/** @var  string */
 	protected $filepath;
+	/** @var string */
 	protected $filetype;
 
+	/** @var array  */
 	protected $tags = array();
+	/** @var array|null */
 	protected $data = null;
 
 	public function __construct($filepath)
 	{
 		$this->filepath = $filepath;
-		$this->filetype = pathinfo($this->filename, \PATHINFO_EXTENSION);
+		$this->filetype = pathinfo($this->filepath, \PATHINFO_EXTENSION);
 
 		if (!is_file($this->filepath)) {
-			throw new \InvalidArgumentException("Invalid file `$filename`");
+			throw new \InvalidArgumentException("Invalid file `{$this->filepath}`");
 		}
 	}
 

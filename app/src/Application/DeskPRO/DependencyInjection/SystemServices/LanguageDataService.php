@@ -39,6 +39,9 @@ use Orb\Util\Arrays;
 
 class LanguageDataService extends BaseRepositoryService
 {
+	/**
+	 * @var bool
+	 */
 	protected $has_init = false;
 
 	/**

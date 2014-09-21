@@ -25,27 +25,49 @@ class UnprivateUnitOfWork extends \Doctrine\ORM\UnitOfWork
     const STATE_DETACHED = 3;
     const STATE_REMOVED = 4;
     const HINT_DEFEREAGERLOAD = 'deferEagerLoad';
+	/** @var array  */
     protected $identityMap = array();
+	/** @var array  */
     protected $entityIdentifiers = array();
+	/** @var array  */
     protected $originalEntityData = array();
+	/** @var array  */
     protected $entityChangeSets = array();
+	/** @var array  */
     protected $entityStates = array();
+	/** @var array  */
     protected $scheduledForDirtyCheck = array();
+	/** @var array  */
     protected $entityInsertions = array();
+	/** @var array  */
     protected $entityUpdates = array();
+	/** @var array  */
     protected $extraUpdates = array();
+	/** @var array  */
     protected $entityDeletions = array();
+	/** @var array  */
     protected $collectionDeletions = array();
+	/** @var array  */
     protected $collectionUpdates = array();
+	/** @var array  */
     protected $visitedCollections = array();
+	/** @var \Doctrine\ORM\EntityManager  */
     protected $em;
+	/** @var Internal\CommitOrderCalculator  */
     protected $commitOrderCalculator;
+	/** @var array  */
     protected $persisters = array();
+	/** @var array  */
     protected $collectionPersisters = array();
+	/** @var \Doctrine\Common\EventManager  */
     protected $evm;
+	/** @var \Doctrine\ORM\Event\ListenersInvoker  */
     protected $listenersInvoker;
+	/** @var array  */
     protected $orphanRemovals = array();
+	/** @var array  */
     protected $readOnlyObjects = array();
+	/** @var array  */
     protected $eagerLoadingEntities = array();
     public function __construct(EntityManager $em)
     {

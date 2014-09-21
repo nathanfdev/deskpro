@@ -40,14 +40,19 @@ use Application\DeskPRO\Entity\Ticket;
 
 class NewParticipant implements \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'first_name' => 1, 'last_name' => 1, 'email' => 1,
 	);
 
+	/** @var string */
 	public $first_name;
+	/** @var string */
 	public $last_name;
+	/** @var string */
 	public $email;
 
+	/** @var \Application\DeskPRO\Entity\Ticket */
 	protected $ticket;
 
 	public function __construct(Ticket $ticket)

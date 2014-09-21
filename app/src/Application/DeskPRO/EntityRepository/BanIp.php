@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 
 class BanIp extends AbstractEntityRepository
 {
+	/** @var array */
 	protected $counts = array();
 
 	/**

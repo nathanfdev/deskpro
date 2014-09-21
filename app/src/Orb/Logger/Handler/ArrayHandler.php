@@ -39,8 +39,11 @@ use Monolog\Logger;
 
 class ArrayHandler extends AbstractHandler
 {
+	/** @var int */
 	protected $max_size = 5000;
+	/** @var array */
 	protected $messages = array();
+	/** @var int */
 	protected $count    = 0;
 
 	public function __construct($max_size = 0, $level = Logger::DEBUG, $bubble = true)

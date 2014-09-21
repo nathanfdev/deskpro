@@ -39,8 +39,11 @@ use Application\DeskPRO\Entity;
 
 abstract class AbstractComments
 {
+	/** @var string ? */
 	protected $entity;
+	/** @var string */
 	protected $page_id;
+	/** @var \Application\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
 	protected $page_url;
 
 	/**

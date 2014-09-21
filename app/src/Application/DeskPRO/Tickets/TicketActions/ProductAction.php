@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 
 class ProductAction extends AbstractAction implements PermissionableAction
 {
+	/** @var int */
 	protected $product_id;
 
 	public function __construct($product)

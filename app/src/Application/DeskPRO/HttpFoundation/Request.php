@@ -39,6 +39,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 {
 	const PARTIAL_REQUEST_KEY = '_partial';
 
+	/** @var null */
 	protected $url_locale = null;
 
 	/**

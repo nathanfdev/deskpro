@@ -38,7 +38,9 @@ use Orb\Util\Strings;
 
 class StringLength extends AbstractValidator
 {
+	/** @var int */
 	protected $min;
+	/** @var int */
 	protected $max;
 
 	public function init()

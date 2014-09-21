@@ -36,9 +36,13 @@ namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 class OrgPermissions implements PermissionValueInterface
 {
+	/** @var bool  */
 	public $create = false;
+	/** @var bool  */
 	public $edit   = false;
+	/** @var bool  */
 	public $notes  = false;
+	/** @var bool  */
 	public $delete = false;
 
 	public function getNames()

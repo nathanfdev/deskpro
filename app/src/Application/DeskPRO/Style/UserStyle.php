@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 
 class UserStyle
 {
+	/** @var string */
 	protected $raw;
 
 	public function __construct($raw_css)

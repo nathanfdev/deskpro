@@ -40,12 +40,15 @@ use Application\DeskPRO\Entity\Person;
 
 class NewOrganization
 {
+	/** @var string */
 	public $name;
-
+	/** @var array */
 	public $labels = array();
+	/** @var array */
 	public $usergroup_ids = array();
+	/** @var array */
 	public $custom_fields = array();
-
+	/** @var Organization */
 	protected $_org;
 
 	/**

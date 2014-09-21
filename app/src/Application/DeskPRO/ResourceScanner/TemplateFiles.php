@@ -41,6 +41,7 @@ use Application\DeskPRO\App;
  */
 class TemplateFiles
 {
+	/** @var bool */
 	protected $use_map_file = true;
 
 

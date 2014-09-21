@@ -39,6 +39,7 @@ use Application\DeskPRO\EventDispatcher\FilterPluginInterface;
 
 class DisplayEvent extends DataEvent implements FilterPluginInterface
 {
+	/** @var array */
 	protected $field_def;
 
 	public function __construct($field_def, $data = array())

@@ -41,6 +41,7 @@ use Orb\Util\Util;
  */
 class Markdown extends \Markdown_Parser
 {
+	/** @var array */
 	protected $attach_tokens = array();
 
 	/**

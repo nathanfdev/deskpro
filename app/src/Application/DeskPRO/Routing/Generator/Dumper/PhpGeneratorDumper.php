@@ -39,6 +39,7 @@ use Symfony\Component\Routing\Generator\Dumper\PhpGeneratorDumper as BasePhpGene
 
 class PhpGeneratorDumper extends BasePhpGeneratorDumper
 {
+	/** @var string */
 	private $className;
 
     public function dump(array $options = array())

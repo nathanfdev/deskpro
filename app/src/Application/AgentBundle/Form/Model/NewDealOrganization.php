@@ -36,6 +36,8 @@ namespace Application\AgentBundle\Form\Model;
 
 class NewDealOrganization
 {
+	/** @var  int */
 	public $id;
+	/** @var  string */
 	public $name;
 }

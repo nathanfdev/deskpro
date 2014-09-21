@@ -37,9 +37,13 @@ use Application\DeskPRO\App;
 
 class BodyText
 {
+	/** @var array  */
 	public $raw_parts = array();
+	/** @var string */
 	public $body;
+	/** @var string */
 	public $body_utf8;
+	/** @var string */
 	public $original_charset;
 
 	public function getRawParts()

@@ -39,6 +39,7 @@ use Doctrine\ORM\EntityManager;
 
 class AgentTeamDataService
 {
+	/** @var bool */
 	protected $has_init = false;
 
 	/**

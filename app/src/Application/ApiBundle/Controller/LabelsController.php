@@ -37,6 +37,7 @@ use Application\ApiBundle\PermissionStrategy\UserTypePermission;
 
 class LabelsController extends AbstractController implements ProtectedControllerInterface
 {
+	/** @var array  */
 	static public $allowed = array(
 		'chat', 'downloads', 'feedback', 'articles', 'news', 'organizations', 'people', 'tickets',
 	);
