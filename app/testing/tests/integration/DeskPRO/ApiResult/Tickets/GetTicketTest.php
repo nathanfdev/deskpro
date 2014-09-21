@@ -69,7 +69,7 @@ class GetTicketTest extends AbstractApiResultTest
 			unset($expectedTicketArray[$key]);
 		}
 
-		throw new \Exception(print_r($retrievedTicketArray, 1) . print_r($expectedTicketArray));
+		throw new \Exception(print_r($retrievedTicketArray, 1) . print_r($expectedTicketArray, 1));
 		$this->assertEquals($retrievedTicketArray, $expectedTicketArray);
 	}
 
