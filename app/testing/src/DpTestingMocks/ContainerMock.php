@@ -201,6 +201,7 @@ class ContainerMock
             $obj->shouldReceive('getRepository')->with('DeskPRO:News')->andReturn($commonRepository);
             $obj->shouldReceive('getRepository')->with('DeskPRO:Person')->andReturn($commonRepository);
             $obj->shouldReceive('getRepository')->with('DeskPRO:Organization')->andReturn($commonRepository);
+	        $obj->shouldReceive('getRepository')->with('DeskPRO:ChatConversation')->andReturn($commonRepository);
 
             $ticketRepository = m::mock('Application\\DeskPRO\\NewSearch\\Repository\\TicketRepository');
             $ticketRepository->shouldReceive('find')->withAnyArgs()->andReturn(array());
