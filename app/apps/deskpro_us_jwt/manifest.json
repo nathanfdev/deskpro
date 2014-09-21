@@ -27,14 +27,16 @@
 			"type": "text",
 			"label": "Remote Login URL",
 			"description": "This is the URL to the page that will generate the JWT token. A user is also sent here if they forgot their password.",
-			"native_only": true
+			"native_only": true,
+			"is_required": true
 		},
 		{
 			"name": "secret",
 			"type": "text",
 			"label": "JWT Secret Code",
 			"description": "This secret code is used by your programmer to create the JWT tokens.",
-			"native_only": true
+			"native_only": true,
+			"is_required": true
 		},
 		{
 			"name": "login_custom_text",

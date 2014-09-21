@@ -1,4 +1,3 @@
-
 <div class="form-group" ng-repeat="setting in pack.settings_def" ng-switch="setting.type"
 	ng-if="setting.type != 'hidden' && (!setting.usersource_display || setting.usersource_display == Ctrl.usersourceType)">
 	<div class="col-lg-4">
@@ -43,7 +42,6 @@
 			</select>
 		</div>
 		<span class="help-block" ng-show="setting.description" ng-bind-html="setting.description"></span>
-
 		<p ng-show="errors[setting.name]" class="text-danger">This field is required and cannot be empty.</p>
 	</div>
 </div>

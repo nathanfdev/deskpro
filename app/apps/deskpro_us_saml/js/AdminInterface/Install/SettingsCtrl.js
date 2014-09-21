@@ -11,7 +11,7 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 		//# Form validation / errors
 		//##############################################################################################################
 
-		['secret', 'url'].forEach(function (field) {
+		['cert_fingerprint', 'sso_url'].forEach(function (field) {
 			$scope.$watch('setting_values.' + field, function () {
 				if (touched[field] || touched.always || $scope.errors[field]) {
 					updateFormErrors();
@@ -49,5 +49,6 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 
 			return deferred.promise;
 		});
+
 	}];
 });
