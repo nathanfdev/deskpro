@@ -39,6 +39,12 @@ use Application\DeskPRO\Entity\Usersource;
 
 class UsersourcesData extends AbstractDefaultData
 {
+	public function runInstallViaUpgrade()
+	{
+		// do nothing because the db upgrade script will do this (along with other things) for us
+	}
+
+
 	public function runInstall()
 	{
 		$this->installDeskproUsersource();

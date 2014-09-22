@@ -36,17 +36,55 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\ORM\EntityManager;
 
-class Build1410536149 extends AbstractBuild
+class Build1411355749 extends AbstractBuild
 {
 	public function run()
+	{
+		$this->out("Upgrade usersources to new auth settings");
+
+		$userType = Usersource::TYPE_USER;
+
+		$this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL, ADD is_sso_auto TINYINT(1) NOT NULL, ADD is_sso_background TINYINT(1) NOT NULL"
+		);
+		$this->execMutateSql("UPDATE usersources SET type = '$userType'");
+
+		$em = $this->container->getEm();
+
+		$this->setupDeskProUsersource($userType, $em);
+	}
+
+
+	private function setupDeskProUsersource($type, EntityManager $em)
+	{
+		$enabled = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
+
+		$deskProUsers = new Usersource();
+		$deskProUsers->type = $type;
+		$deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+		$deskProUsers->is_enabled = $enabled;
+		$deskProUsers->display_order = -10; // ensure #1 order (initially!)
+		$deskProUsers->title = 'DeskPRO';
+		$deskProUsers->options = array();
+
+		$em->persist($deskProUsers);
+		$em->flush($deskProUsers);
+		$em->clear();
+		$this->runNext();
+
+		return $deskProUsers;
+	}
+
+
+	public function runNext()
 	{
 		$this->out("Creates needed agent app instances and usersources and changes associations where necessary");
 		$em = $this->container->getEm();
 
 		/** @var \Application\DeskPRO\Usersource\UsersourceManager $usersourceManager */
 		$usersourceManager = $this->container->getSystemService('usersource_manager');
-		$userUsersources   = $usersourceManager->getAll()->configuredForUsers();
+		$userUsersources   = $usersourceManager->getAll()->configuredForUsers(true);
 
 		/** @var \Application\DeskPRO\Entity\Usersource $userUsersource */
 		foreach ($userUsersources as $userUsersource) {
@@ -80,12 +118,14 @@ class Build1410536149 extends AbstractBuild
 		$userUsersourceId  = $userUsersource->id;
 		$agentUsersourceId = $agentDuplication->id;
 
-		$this->execMutateSql("
+		$this->execMutateSql(
+			"
 			UPDATE person_usersource_assoc pua
 			LEFT JOIN people ON pua.person_id = people.id
 			SET pua.usersource_id = $agentUsersourceId
 			WHERE people.is_agent = 1 AND pua.usersource_id = $userUsersourceId
-		");
+		"
+		);
 	}
 
 
@@ -93,7 +133,7 @@ class Build1410536149 extends AbstractBuild
 	{
 		$app = new AppInstance();
 		$app->setSettings($originApp->getSettings());
-		$app->title = $originApp->title;
+		$app->title   = $originApp->title;
 		$app->package = $originApp->package;
 
 		return $app;
