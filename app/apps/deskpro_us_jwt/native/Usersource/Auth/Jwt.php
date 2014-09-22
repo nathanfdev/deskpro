@@ -41,6 +41,7 @@ use Orb\Auth\Adapter\AbstractCallbackAdatper;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
+use Orb\Log\Logger;
 use Orb\Util\Arrays;
 
 class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface, Adapter\IframeSsoInterface
@@ -87,12 +88,22 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	 */
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
+		if ($this->logger) {
+			$this->logger->log(
+				"Attempting Callback Authentication", Logger::DEBUG
+			);
+		}
         return $this->tryJwtAuth($callback_data);
 	}
 
 
 	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller)
 	{
+		if ($this->logger) {
+			$this->logger->log(
+				"Attempting SSO Authentication", Logger::DEBUG
+			);
+		}
 		return $this->tryJwtAuth($_REQUEST);
 	}
 
@@ -105,6 +116,15 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
         $redirect = $this->getFullRedirectUrl();
+
+		if ($this->logger) {
+			$this->logger->log(
+				"Initializing Callback Authentication", Logger::DEBUG
+			);
+			$this->logger->log(
+				"Redirecting to: $redirect", Logger::DEBUG
+			);
+		}
 
 		// return a success result if we detect they are already logged in
 		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect));
@@ -161,10 +181,32 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
             $payload       = \JWT::decode($jwt, $secret, true);
             $payload_array = Arrays::fromStdClass($payload);
 
+	        if ($this->logger) {
+		        $op['jwt'] = $jwt;
+		        $op['secret'] = $secret;
+		        $this->logger->log(
+			        "Given JWT (Token): $jwt", Logger::DEBUG
+		        );
+		        $this->logger->log(
+			        "Decoding with secret: $secret", Logger::DEBUG
+		        );
+		        $this->logger->log(
+			        "Payload contents: \n" . trim(Arrays::implodeTemplate($payload_array, "{KEY}: {VAL}\n")), Logger::DEBUG
+		        );
+		        $this->logger->log(
+			        "Identity: " . $payload_array['id'], Logger::DEBUG
+		        );
+	        }
+
             $identity = new Identity($payload_array['id'], $payload_array);
             $identity->setFriendlyIdentity($payload_array['email']);
             $result = new Result(Result::SUCCESS, $identity);
         } catch (\Exception $e) {
+	        if ($this->logger) {
+		        $this->logger->log(
+			        "Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR
+		        );
+	        }
             $result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
         }
 
