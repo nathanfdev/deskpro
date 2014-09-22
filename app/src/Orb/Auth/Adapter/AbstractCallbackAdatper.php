@@ -35,6 +35,7 @@
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\StateHandler\StateHandlerInterface;
+use Orb\Log\Logger;
 
 
 /**
@@ -57,6 +58,11 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	 * @var \Orb\Auth\StateHandler\StateHandlerInterface;
 	 */
 	protected $state;
+
+	/**
+	 * @var Logger
+	 */
+	protected $logger;
 
 	/**
 	 * The callback URL
@@ -129,9 +135,21 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	 */
 	public function authenticate()
 	{
+		if ($this->logger) {
+			$this->logger->log("START ".get_class($this)."::authenticate", Logger::DEBUG);
+		}
+
 		if ($this->isCallbackMode()) {
+			if ($this->logger) {
+				$this->logger->log("Entering Callback Mode: " . get_class($this) . "::authenticateCallback", Logger::DEBUG);
+			}
 			return $this->authenticateCallback($this->callback_data, $this->getStateHandler());
 		} else {
+			if ($this->logger) {
+				$this->logger->log(
+					"Entering Initialize Mode: " . get_class($this) . "::authenticateInitialize", Logger::DEBUG
+				);
+			}
 			return $this->authenticateInitialize($this->getStateHandler());
 		}
 	}
@@ -180,5 +198,25 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 			throw new \RuntimeException('No state handler was set. Set one with setStateHandler');
 		}
 		return $this->state;
+	}
+
+
+	/**
+	 * Set the logger
+	 *
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		return $this->logger;
 	}
 }
