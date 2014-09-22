@@ -203,6 +203,14 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 		}
 
 		$attrs = $saml->getAttributes();
+
+		if ($this->logger) {
+			$this->logger->log(
+				"SAML Returned Attributes: \n" . trim(Arrays::implodeTemplate($attrs, "{KEY}: {VAL}\n")),
+				Logger::DEBUG
+			);
+		}
+
 		$user_info = array();
 
 		$user_info['email'] = Arrays::reachForFirstValueInKey($attrs, 'email');

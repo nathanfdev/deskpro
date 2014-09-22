@@ -47,8 +47,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 	public function disableSsoSettings(AppInstance $app, EntityManager $em)
 	{
 		$settings               = $app->getSettings();
-		$settings['enable_sso'] = false;
-		$settings['sso_type']   = null;
+		$settings['sso_type']   = 'none';
 		$app->setSettings($settings);
 
 		$em->persist($app);
@@ -72,12 +71,10 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 		$us->lost_password_url = '';
 		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Saml';
 
-		if ($app->getSetting('enable_sso')) {
-			if ('auto' == $app->getSetting('sso_type')) {
-				$us->makeSsoAutoOnly();
-			} else {
-				$us->makeSsoBackgroundOnly();
-			}
+		if ('auto' == $app->getSetting('sso_type')) {
+			$us->makeSsoAutoOnly();
+		} elseif ('background' == $app->getSetting('sso_type')) {
+			$us->makeSsoBackgroundOnly();
 		} else {
 			$us->disableSso();
 		}

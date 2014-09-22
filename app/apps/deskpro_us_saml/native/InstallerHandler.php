@@ -47,8 +47,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 	public function disableSsoSettings(AppInstance $app, EntityManager $em)
 	{
 		$settings               = $app->getSettings();
-		$settings['enable_sso'] = false;
-		$settings['sso_type']   = null;
+		$settings['sso_type']   = 'none';
 		$app->setSettings($settings);
 
 		$em->persist($app);

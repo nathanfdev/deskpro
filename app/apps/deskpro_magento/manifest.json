@@ -61,7 +61,7 @@
 		{
 			"name": "enable_sso",
 			"type": "checkbox",
-			"label": "Enable SSO",
+			"label": "Enable Background SSO",
 			"description": "When SSO is enabled, users will be automatically logged-in if they visit DeskPRO while they have an active Magento session.",
 			"native_only": true
 		}

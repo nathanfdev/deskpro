@@ -58,20 +58,17 @@
 			"native_only": true
 		},
 		{
-			"name": "enable_sso",
-			"type": "checkbox",
-			"label": "Enable SSO",
-			"description": "When SSO is enabled, users will be automatically logged-in when they visit DeskPRO.",
-			"native_only": true
-		},
-		{
 			"name": "sso_type",
 			"type": "choice",
 			"label": "SSO Method",
-			"description": "SSO can take place in one of two methods: automatic, or background. The automatic method will immediately redirect your users away from your helpdesk if they are not logged in and ask them to login to your website. Alternatively, the background method will only log the user in in they are already authenticated on your website, but will never redirect them.",
+			"description": "When SSO is enabled, users will be automatically logged-in when they visit DeskPRO.",
 			"native_only": true,
-			"default_value": "auto",
+			"default_value": "none",
 			"options": [
+				{
+					"label": "Disabled",
+					"value": "none"
+				},
 				{
 					"label": "Automatic",
 					"value": "auto"
