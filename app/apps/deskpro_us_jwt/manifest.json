@@ -49,7 +49,7 @@
 			"name": "logout_agent_url",
 			"type": "text",
 			"label": "Agent Logout Redirect",
-			"description": "The URL we redirect to after an agent logs out (only applies if automatic SSO is enabled)",
+			"description": "The URL we redirect to after an agent logs out (only applies if SSO is enabled)",
 			"native_only": true,
 			"usersource_display": "agent"
 		},
@@ -57,7 +57,7 @@
 			"name": "logout_user_url",
 			"type": "text",
 			"label": "User Logout Redirect",
-			"description": "The URL we redirect to after a user logs out (only applies if automatic SSO is enabled)",
+			"description": "The URL we redirect to after a user logs out (only applies if SSO is enabled)",
 			"native_only": true,
 			"usersource_display": "user"
 		},

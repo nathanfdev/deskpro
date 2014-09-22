@@ -35,6 +35,7 @@
 		<div ng-switch-when="choice">
 			<select
 				ng-model="setting_values[setting.name]" ng-required="setting.is_required"
+				ui-select2="{dropdownAutoWidth: true}"
 				>
 				<option ng-repeat="opt in setting.options"
 					value="{{ opt.value }}">{{ opt.label }}
