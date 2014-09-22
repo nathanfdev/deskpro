@@ -55,6 +55,8 @@ class TicketActionsTest extends AbstractApiResultTest
 		
 		$expectedTicketMessage = $this->_getExpectedTicketMessage();
 
+		throw new \Exception(print_r($retrievedTicketMessageArray, 1) . print_r($expectedTicketMessage, 1));
+
 		$this->assertMessagesAreEqual($retrievedTicketMessageArray, $expectedTicketMessage);
 	}
 	
