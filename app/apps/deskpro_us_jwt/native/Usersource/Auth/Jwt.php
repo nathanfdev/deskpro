@@ -175,6 +175,11 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
      */
     protected function tryJwtAuth(array $callback_data)
     {
+	    $time_start = microtime(true);
+	    if ($this->logger) {
+		    $this->logger->log("START Jwt::tryJwtAuth", Logger::DEBUG);
+	    }
+
         try {
             $jwt           = $callback_data['jwt'];
             $secret        = $this->options->get('secret');
@@ -209,6 +214,12 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	        }
             $result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
         }
+
+	   if ($this->logger) {
+		   $this->logger->log(
+			   sprintf("END Jwt::tryJwtAuth (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
+		   );
+	   }
 
         return $result;
     }

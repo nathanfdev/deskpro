@@ -181,6 +181,11 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 	 */
 	protected function processAcs(array $callback_data)
 	{
+		$time_start = microtime(true);
+		if ($this->logger) {
+			$this->logger->log("START Saml::processAcs", Logger::DEBUG);
+		}
+
 		$saml = $this->createSamlProcessor();
 		$saml->processResponse();
 
@@ -213,6 +218,13 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 			$this->logger->log(
 				"SAML Success: \n" . trim(Arrays::implodeTemplate($user_info_extra, "{KEY}: {VAL}\n")),
 				Logger::DEBUG
+			);
+		}
+
+
+		if ($this->logger) {
+			$this->logger->log(
+				sprintf("END Saml::processAcs (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
 			);
 		}
 
