@@ -78,7 +78,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			if (!$this->person->hasPerm('articles.use')) unset($limit_types['article']);
 			if (!$this->person->hasPerm('feedback.use')) unset($limit_types['feedback']);
 			if (!$this->person->hasPerm('news.use')) unset($limit_types['news']);
-			if (!$this->person->hasPerm('download.use')) unset($limit_types['download']);
+			if (!$this->person->hasPerm('downloads.use')) unset($limit_types['download']);
 		}
 
 		return array_values($limit_types);
