@@ -55,34 +55,6 @@ class TicketActionsTest extends AbstractApiResultTest
 		
 		$expectedTicketMessage = $this->_getExpectedTicketMessage();
 
-		foreach ($this->getDateTimeFields('ticket_message') as $field) {
-			$this->assertIsValidDateTime($retrievedTicketMessageArray[$field]);
-		}
-
-		foreach ($this->getDateTimeFields('person') as $field) {
-			$this->assertIsValidDateTime($retrievedTicketMessageArray['person'][$field]);
-		}
-
-		foreach ($this->getTimestampFields('ticket_message') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketMessageArray[$field], "$field");
-		}
-
-		foreach ($this->getTimestampFields('person') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketMessageArray['person'][$field], "person.$field");
-		}
-
-		foreach($this->_getIgnoreKeys('person') as $key) {
-			$this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
-			unset($retrievedTicketMessageArray['person'][$key]);
-			unset($expectedTicketMessage['person'][$key]);
-		}
-
-		foreach ($this->_getIgnoreKeys('ticket_message') as $key) {
-			$this->assertArrayHasKey($key, $retrievedTicketMessageArray);
-			unset($retrievedTicketMessageArray[$key]);
-			unset($expectedTicketMessage[$key]);
-		}
-
 		$this->assertMessagesAreEqual($retrievedTicketMessageArray, $expectedTicketMessage);
 	}
 	
@@ -167,22 +139,19 @@ class TicketActionsTest extends AbstractApiResultTest
 		}
 
 		foreach ($this->getDateTimeFields('person') as $field) {
-			if (preg_match('#^date_password_set#', $field)) continue; // is not included on messages
 			$this->assertIsValidDateTime($retrievedTicketMessageArray['person'][$field]);
 		}
 
 		foreach ($this->getTimestampFields('ticket_message') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketMessageArray[$field]);
+			$this->assertIsValidTimestamp($retrievedTicketMessageArray[$field], "$field");
 		}
 
 		foreach ($this->getTimestampFields('person') as $field) {
-			if (preg_match('#^date_password_set#', $field)) continue; // is not included on messages
-			$this->assertIsValidTimestamp($retrievedTicketMessageArray['person'][$field]);
+			$this->assertIsValidTimestamp($retrievedTicketMessageArray['person'][$field], "person.$field");
 		}
 
 		foreach($this->_getIgnoreKeys('person') as $key) {
-			if (preg_match('#^date_password_set#', $field)) {} // is not included on messages
-			else $this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
+			$this->assertArrayHasKey($key, $retrievedTicketMessageArray['person']);
 			unset($retrievedTicketMessageArray['person'][$key]);
 			unset($expectedTicketMessage['person'][$key]);
 		}
