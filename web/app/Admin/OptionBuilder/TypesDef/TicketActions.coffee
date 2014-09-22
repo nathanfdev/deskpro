@@ -955,6 +955,16 @@ define [
 					return me.loadDataOptions()
 
 				scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+
+					$scope.$watch(
+						() -> $scope.model.agent_ids.all_agents
+						(newVal, oldVal) =>
+							return if !newVal
+							for own k, v of $scope.model.agent_ids
+								continue if 'all_agents' == k
+								$scope.model.agent_ids[k] = false
+					)
+
 					$scope.handleTemplateChange = ->
 						if $scope.model.template == 'CREATE'
 							$scope.model.template = null
