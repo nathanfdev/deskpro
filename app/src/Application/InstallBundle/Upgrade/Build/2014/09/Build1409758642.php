@@ -47,6 +47,9 @@ class Build1409758642 extends AbstractBuild
 		$userType = Usersource::TYPE_USER;
 
 		$this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL");
+		$this->execMutateSql(
+			"ALTER TABLE usersources ADD is_sso_auto TINYINT(1) NOT NULL, ADD is_sso_background TINYINT(1) NOT NULL"
+		);
 		$this->execMutateSql("UPDATE usersources SET type = '$userType'");
 
 		$em = $this->container->getEm();
@@ -58,16 +61,12 @@ class Build1409758642 extends AbstractBuild
 	private function setupDeskProUsersource($type, EntityManager $em)
 	{
 		$enabled = $this->container->getSetting('core.deskpro_source_enabled') ? 1 : 0;
-		$forgot_password_url = $this->container->getRouter()->generate(
-			'user_login_resetpass', array(), UrlGeneratorInterface::ABSOLUTE_URL
-		);
 
 		$deskProUsers = new Usersource();
 		$deskProUsers->type = $type;
 		$deskProUsers->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
 		$deskProUsers->is_enabled = $enabled;
-		$deskProUsers->display_order = 500; // just a really high number to make sure its the highest priority by default on form logins (initially!)
-		$deskProUsers->lost_password_url = $forgot_password_url;
+		$deskProUsers->display_order = -10; // ensure #1 order (initially!)
 		$deskProUsers->title = 'DeskPRO';
 		$deskProUsers->options = array();
 
