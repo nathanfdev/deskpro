@@ -265,7 +265,13 @@ class LoginProcessor
 			$this->usersource
 		);
 
-		$this->person['is_user'] = true;
+		if ($mapped_fields->get('is_agent') && $mapped_fields->get('is_agent') !== 'false') {
+			$this->person['is_agent'] = true;
+			$this->person['can_agent'] = true;
+		} else {
+			$this->person['is_user'] = true;
+		}
+
 		$this->person->setLastLoginAt();
 
 		$em->persist($this->person);
