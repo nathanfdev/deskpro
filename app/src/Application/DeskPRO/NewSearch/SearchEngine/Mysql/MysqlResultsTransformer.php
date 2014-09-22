@@ -58,12 +58,12 @@ class MysqlResultsTransformer
 
 		$ent_ids = array();
 		foreach ($results as $hit) {
-			$ent = $this->getEntityFromType($hit['type']);
+			$ent = $this->getEntityFromType($hit['object_type']);
 			if (!isset($ent_ids[$ent])) {
 				$ent_ids[$ent] = array();
 			}
 
-			$ent_ids[$ent][] = $hit['id'];
+			$ent_ids[$ent][] = $hit['object_id'];
 		}
 
 		#------------------------------
@@ -87,8 +87,8 @@ class MysqlResultsTransformer
 
 		$sorted_objects = array();
 		foreach ($results as $hit) {
-			$ent = $this->getEntityFromType($hit['type']);
-			$key = $ent . ':' . $hit['id'];
+			$ent = $this->getEntityFromType($hit['object_type']);
+			$key = $ent . ':' . $hit['object_id'];
 			if (isset($objects[$key])) {
 				$sorted_objects[] = $objects[$key];
 			}

@@ -29,8 +29,10 @@ namespace Application\DeskPRO\NewSearch\SearchEngine\Mysql;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
+use Application\DeskPRO\NewSearch\SearchEngine\SearchContext;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Elastica\Filter;
 use Elastica\Query;
 use Orb\Util\OptionsArray;
@@ -74,68 +76,43 @@ class UserSearch implements UserSearchInterface
 
 		$types = array('article', 'download', 'feedback', 'news');
 
-		$limit_type_names = $types;
-		$limit_types = "'" . implode('\',\'', $types) . "'";
-
 		$query_words = explode(' ', $query);
 		if (!$query_words) {
 			return new ResultSet();
 		}
 
-		$params = array();
-		$likes = array();
-		foreach ($query_words as $w) {
+		$qb = $this->db->createQueryBuilder()
+			->from('content_search', 'cs')
+			->where('cs.object_type IN (:types)')
+			->setParameter(':types', $types, Connection::PARAM_STR_ARRAY);
+
+		foreach ($query_words as $k => $w) {
 			if (strlen($w) <= 2) {
 				continue;
 			}
 
-			$likes[] = "content_search.content LIKE ?";
-			$params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+			$key = ':where' . $k;
+			$val = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+			$qb
+				->andWhere('cs.content LIKE ' . $key)
+				->setParameter($key, $val);
 		}
-		if ($likes) {
-			$where = "
-				content_search.object_type IN ($limit_types)
-				AND (" . implode(' OR ', $likes) . ")
-			";
+
+		// the first parameter is :types
+		if (count($qb->getParameters()) > 1) {
 
 			if (!$ignore_perms) {
-				$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
-				$permfilter->setPersonContext($this->person);
-
-				if ($limit_type_names) {
-					$permfilter->setTypes($limit_type_names);
-				}
-
-				$perm_join  = $permfilter->getJoin();
-				$perm_where = $permfilter->getWhere();
-				if (!$perm_where) {
-					$perm_where = '1';
-				}
-			} else {
-				$perm_join = '';
-				$perm_where = '1';
+				$this->buildPermsQuery($context, $qb, $types);
 			}
 
-			$count_query = "
-				SELECT COUNT(*)
-				FROM content_search
-				$perm_join
-				WHERE $perm_where AND $where
-				LIMIT $per_page
-			";
+			$per_page && $qb->setMaxResults($per_page);
+			$total = $qb->select('COUNT(*)')->execute()->fetchColumn();
+			$a = $qb->getSQL();
 
-			$start = ($page - 1) * $per_page;
-			$select_query = "
-				SELECT content_search.object_type, content_search.object_id
-				FROM content_search
-				$perm_join
-				WHERE $perm_where AND $where
-				ORDER BY content_search.object_id DESC
-				LIMIT $start, $per_page
-			";
+			$page > 0 && $per_page && $qb->setFirstResult(($page - 1) * $per_page);
+			$qb->orderBy('cs.object_id', 'DESC');
+			$results = $qb->select('cs.object_type, cs.object_id')->execute()->fetchAll();
 
-			$total = $this->db->fetchColumn($count_query, $params);
-			$results  = $this->db->fetchAll($select_query, $params);
 		} else {
 			$total       = 0;
 			$results     = array();
@@ -148,5 +125,33 @@ class UserSearch implements UserSearchInterface
 		$objects = $this->transformer->transform($results);
 
 		return new ResultSet($objects, $total);
+	}
+
+	/**
+	 * add permissions part to query
+	 * @param SearchContext $context
+	 * @param QueryBuilder $qb
+	 * @param array $types
+	 */
+	protected function buildPermsQuery(SearchContext $context, QueryBuilder $qb, array $types)
+	{
+		$qb->join('cs', 'content_search_attribute', 'csa', '
+			csa.object_type = cs.object_type
+			AND csa.object_id = cs.object_id
+			AND csa.attribute_id LIKE "category_id%"
+		');
+
+		$joinWhere = array();
+		foreach ($types as $type) {
+			$method = 'get' . ucfirst($type) . 'CategoryIds';
+
+			if (!is_callable(array($context, $method))) continue;
+			if (!$allowed = $context->$method()) continue;
+
+			$joinWhere[] = "(csa.object_type = '$type' AND csa.content IN (:allowed_$type))";
+			$qb->setParameter('allowed_' . $type, $allowed, Connection::PARAM_INT_ARRAY);
+		}
+
+		$qb->andWhere('(' . implode(' OR ', $joinWhere) . ')');
 	}
 }
