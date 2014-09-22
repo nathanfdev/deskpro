@@ -82,9 +82,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 
 
 	/**
-	 * Process the callback and return a final result.
-	 *
-	 * @return \Orb\Auth\Result
+	 * {@inheritdoc}
 	 */
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
@@ -97,6 +95,9 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	}
 
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller)
 	{
 		if ($this->logger) {
@@ -109,9 +110,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 
 
 	/**
-	 * Initialize the auth process by setting state, and returning a redirect result.
-	 *
-	 * @return \Orb\Auth\Result
+	 * {@inheritdoc}
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
@@ -140,11 +139,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	 */
 	public function getLogoutRedirectUrl()
 	{
-		if (!$this->logout_url) {
-			throw new \RuntimeException('no logout url defined for this SSO adapter in this context');
-		}
-
-		return $this->logout_url;
+		return $this->logout_url ?: '';
 	}
 
 

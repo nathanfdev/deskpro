@@ -39,13 +39,14 @@ use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
+use Orb\Log\Loggable;
 use Orb\Log\Logger;
 
 
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
-class Local implements AdapterInterface, FormLoginInterface
+class Local implements AdapterInterface, FormLoginInterface, Loggable
 {
 	/**
 	 * Entity manager

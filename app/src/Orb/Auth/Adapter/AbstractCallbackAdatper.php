@@ -35,6 +35,7 @@
 namespace Orb\Auth\Adapter;
 
 use Orb\Auth\StateHandler\StateHandlerInterface;
+use Orb\Log\Loggable;
 use Orb\Log\Logger;
 
 
@@ -42,7 +43,7 @@ use Orb\Log\Logger;
  * A shell abstract adapter useful for all types that follow the two(or more)-step process of redirecting
  * the user offsite and back.
  */
-abstract class AbstractCallbackAdatper implements AdapterInterface, SessionStateInterface, CallbackInterface
+abstract class AbstractCallbackAdatper implements AdapterInterface, SessionStateInterface, CallbackInterface, Loggable
 {
 	const DISLPAY_CONTEXT_PAGE = 'page';
 	const DISLPAY_CONTEXT_POPUP = 'popup';
