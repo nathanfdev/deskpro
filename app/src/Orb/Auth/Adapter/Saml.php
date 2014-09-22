@@ -35,6 +35,7 @@
 namespace Orb\Auth\Adapter;
 
 use Application\DeskPRO\App;
+use Orb\Log\Logger;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
@@ -43,11 +44,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, IframeSsoInterface, SamlAdapterInterface
 {
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	protected $logger;
-
 	/**
 	 * @var \Orb\Util\OptionsArray
 	 */
@@ -121,30 +117,58 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
 
 	/**
-	 * Process the callback and return a final result.
-	 *
-	 * @return \Orb\Auth\Result
+	 * {@inheritdoc}
 	 */
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
+		if ($this->logger) {
+			$this->logger->log(
+				"Attempting SAML Callback", Logger::DEBUG
+			);
+			$this->logger->log(
+				"Using SAML settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+				Logger::DEBUG
+			);
+		}
 		return $this->processAcs($callback_data);
 	}
 
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller)
 	{
+		if ($this->logger) {
+			$this->logger->log(
+				"Attampting SAML SSO Result", Logger::DEBUG
+			);
+			$this->logger->log(
+				"Using SAML settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+				Logger::DEBUG
+			);
+		}
 		return $this->processAcs($_REQUEST);
 	}
 
 
 	/**
-	 * Initialize the auth process by forwarding the user to the IdP to start the process.
-	 *
-	 * @return \Orb\Auth\Result
+	 * {@inheritdoc}
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
 		$saml = $this->createSamlProcessor();
+
+		if ($this->logger) {
+			$this->logger->log(
+				"Initializing SAML Authentication", Logger::DEBUG
+			);
+			$this->logger->log(
+				"Using SAML settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+				Logger::DEBUG
+			);
+		}
+
 		$saml->login();
 	}
 
@@ -163,6 +187,13 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 		$errors = $saml->getErrors();
 
 		if (!(empty($errors) && $saml->isAuthenticated())) {
+			if ($this->logger) {
+				$this->logger->log(
+					"SAML Errors: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+					Logger::DEBUG
+				);
+			}
+
 			return new Result(Result::FAILURE, null, array('saml_errors' => $errors));
 		}
 
@@ -175,6 +206,15 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 		$user_info['name'] = Arrays::reachForFirstValueInKey($attrs, 'name');
 
 		$id = new Identity($saml->getNameId(), $user_info);
+
+		if ($this->logger) {
+			$user_info_extra = $user_info;
+			$user_info_extra['identity'] = $id->getIdentity();
+			$this->logger->log(
+				"SAML Success: \n" . trim(Arrays::implodeTemplate($user_info_extra, "{KEY}: {VAL}\n")),
+				Logger::DEBUG
+			);
+		}
 
 		return new Result(Result::SUCCESS, $id);
 	}

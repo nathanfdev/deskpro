@@ -90,7 +90,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	{
 		if ($this->logger) {
 			$this->logger->log(
-				"Attempting Callback Authentication", Logger::DEBUG
+				"Attempting JWT Callback", Logger::DEBUG
 			);
 		}
         return $this->tryJwtAuth($callback_data);
@@ -101,7 +101,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	{
 		if ($this->logger) {
 			$this->logger->log(
-				"Attempting SSO Authentication", Logger::DEBUG
+				"Attempting SSO Action", Logger::DEBUG
 			);
 		}
 		return $this->tryJwtAuth($_REQUEST);
