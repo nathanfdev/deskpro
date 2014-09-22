@@ -39,6 +39,7 @@ use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
+use Orb\Log\Logger;
 
 
 /**
@@ -51,6 +52,11 @@ class Local implements AdapterInterface, FormLoginInterface
 	 * @var \Doctrine\ORM\EntityManager
 	 */
 	protected $em;
+
+	/**
+	 * @var Logger
+	 */
+	protected $logger;
 
 	protected $email = '';
 	protected $password = '';
@@ -82,6 +88,12 @@ class Local implements AdapterInterface, FormLoginInterface
 	 */
 	public function authenticate()
 	{
+		$time_start = microtime(true);
+		if ($this->logger) {
+			$this->logger->log("START Local::authenticate", Logger::DEBUG);
+			$this->logger->log("Request: {$this->email}:{$this->password}", Logger::DEBUG);
+		}
+
 		$qb = $this->em->createQueryBuilder();
 		$qb->select('p')
 			->from('DeskPRO:Person', 'p')
@@ -99,6 +111,19 @@ class Local implements AdapterInterface, FormLoginInterface
 			$person = $qb->getQuery()->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {}
 
+		if ($this->logger) {
+
+			if ($person) {
+				$this->logger->log("Found user " . $person->getId(), Logger::DEBUG);
+			} else {
+				$this->logger->log("No user found", Logger::DEBUG);
+			}
+
+			$this->logger->log(
+				sprintf("END Local::authenticate (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
+			);
+		}
+
 		if (!$person OR !$person->checkPassword($this->password)) {
 			return new Result(Result::FAILURE_INVALID_CREDS);
 		}
@@ -114,5 +139,25 @@ class Local implements AdapterInterface, FormLoginInterface
 		$result = new Result(Result::SUCCESS, $identity);
 
 		return $result;
+	}
+
+
+	/**
+	 * Set the logger
+	 *
+	 * @param \Orb\Log\Logger $logger
+	 */
+	public function setLogger(Logger $logger)
+	{
+		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @return \Orb\Log\Logger
+	 */
+	public function getLogger()
+	{
+		return $this->logger;
 	}
 }
