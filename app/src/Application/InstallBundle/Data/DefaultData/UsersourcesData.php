@@ -32,13 +32,46 @@
  * @subpackage
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\InstallBundle\Data\DefaultData;
 
-class Build1411009515 extends AbstractBuild
+
+use Application\DeskPRO\Entity\Usersource;
+
+class UsersourcesData extends AbstractDefaultData
 {
-	public function run()
+	public function runInstall()
 	{
-		$this->out("Update usersources for SSO");
-		$this->execMutateSql("ALTER TABLE usersources ADD is_sso_auto TINYINT(1) NOT NULL, ADD is_sso_background TINYINT(1) NOT NULL");
+		$this->installDeskproUsersource();
+	}
+
+
+	public function runReset()
+	{
+	}
+
+
+	public function runSync()
+	{
+	}
+
+
+	private function installDeskproUsersource()
+	{
+		$enabled = $this->getContainer()->getSetting('core.deskpro_source_enabled') ? 1 : 0;
+
+		$types = array('user', 'agent');
+		foreach($types as $type) {
+			$deskProUsers                = new Usersource();
+			$deskProUsers->type          = $type;
+			$deskProUsers->source_type   = 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO';
+			$deskProUsers->is_enabled    = $enabled;
+			$deskProUsers->display_order = -10; // ensure #1 order (initially!)
+			$deskProUsers->title         = 'DeskPRO';
+			$deskProUsers->options       = array();
+			$this->getEm()->persist($deskProUsers);
+		}
+
+		$this->getEm()->flush();
 	}
 }
+ 
