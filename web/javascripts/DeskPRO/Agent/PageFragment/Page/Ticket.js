@@ -819,6 +819,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				baseId: self.meta.baseId,
 				defaultProject: self.meta.jiraDefaultProject
 			});
+			this.addEvent('destroy', function() {
+				if (jiraWidget) {
+					jiraWidget.destroy();
+				}
+			});
 		}
 	},
 

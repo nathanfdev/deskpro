@@ -16,7 +16,9 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 		
 		this.fetchAssociatedJiraIssues();
 		
-		this.fetchJiraComments();
+		this.loadTimeout = setInterval(function () {
+			$.get(BASE_URL + 'agent/jira/issue/' + options.ticketId + '/fetchcomments?dp_no_activity=1');
+		}, 60000);
 		
 		this.bindJiraTab();
 	},
@@ -297,16 +299,6 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 			current.text(day.fromNow());
 		});
 	},
-
-	fetchJiraComments: function() {
-		var self = this;
-
-		$.get(BASE_URL + 'agent/jira/issue/' + self.ticketId + '/fetchcomments', function(){
-			setTimeout(function () {
-				self.fetchJiraComments();
-			}, 60000);
-		});
-	},
 	
 	bindCommentFormSubmit: function() {
 		$(document).off('submit', 'form.post-comment').on('submit', 'form.post-comment', function(event){
@@ -379,5 +371,12 @@ DeskPRO.Agent.Jira.Widget = new Orb.Class({
 
 			return false;
 		});
+	},
+
+	destroy: function() {
+		if (this.loadTimeout) {
+			window.clearTimeout(this.loadTimeout);
+			this.loadTimeout = null;
+		}
 	}
 });
