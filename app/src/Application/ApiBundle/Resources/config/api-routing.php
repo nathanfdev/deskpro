@@ -3960,7 +3960,7 @@ $collection->create('api_org_fields_delete', array(
 	'path'         => '/org_fields/{id}',
 	'controller'   => 'ApiBundle:OrgFields:deleteCustomField',
 	'requirements' => array('id' => '\\d+'),
-	'methods'      => array('DELTE'),
+	'methods'      => array('DELETE'),
 ));
 
 $collection->create('api_org_fields', array(
