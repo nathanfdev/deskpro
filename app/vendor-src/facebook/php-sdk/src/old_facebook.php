@@ -15,6 +15,13 @@
  * under the License.
  */
 
+/***********************************************************************************************************
+ * WARNING:
+ *
+ * We use our own version of this in DeskPRO. This is kept for reference. Do not use this file directly.
+ * The session_start() function call in the constructor of this object is the main reason we don't use it.
+ */
+
 require_once "base_facebook.php";
 
 /**

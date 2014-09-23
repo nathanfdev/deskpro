@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'BaseFacebook' => $vendorDir . '/facebook/php-sdk/src/base_facebook.php',
     'Collator' => $vendorDir . '/symfony/symfony/src/Symfony/Component/Intl/Resources/stubs/Collator.php',
     'ElementNotSelectableException' => $vendorDir . '/facebook/webdriver/lib/WebDriverExceptions.php',
     'ElementNotVisibleException' => $vendorDir . '/facebook/webdriver/lib/WebDriverExceptions.php',
@@ -14,8 +13,6 @@ return array(
     'EventFiringWebDriverNavigation' => $vendorDir . '/facebook/webdriver/lib/support/events/EventFiringWebDriverNavigation.php',
     'EventFiringWebElement' => $vendorDir . '/facebook/webdriver/lib/support/events/EventFiringWebElement.php',
     'ExpectedException' => $vendorDir . '/facebook/webdriver/lib/WebDriverExceptions.php',
-    'Facebook' => $vendorDir . '/facebook/php-sdk/src/facebook.php',
-    'FacebookApiException' => $vendorDir . '/facebook/php-sdk/src/base_facebook.php',
     'FileDetector' => $vendorDir . '/facebook/webdriver/lib/remote/FileDetector.php',
     'File_Iterator' => $vendorDir . '/phpunit/php-file-iterator/File/Iterator.php',
     'File_Iterator_Facade' => $vendorDir . '/phpunit/php-file-iterator/File/Iterator/Facade.php',
