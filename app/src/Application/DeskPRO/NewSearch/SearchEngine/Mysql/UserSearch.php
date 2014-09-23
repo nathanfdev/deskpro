@@ -107,7 +107,6 @@ class UserSearch implements UserSearchInterface
 
 			$per_page && $qb->setMaxResults($per_page);
 			$total = $qb->select('COUNT(*)')->execute()->fetchColumn();
-			$a = $qb->getSQL();
 
 			$page > 0 && $per_page && $qb->setFirstResult(($page - 1) * $per_page);
 			$qb->orderBy('cs.object_id', 'DESC');
