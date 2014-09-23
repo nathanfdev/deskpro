@@ -67,6 +67,9 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			});
 
 			self.filterAgents();
+			$('#agent_online_list li[class^="agent-"]').sort(function(a,b){
+				return $.trim($(a).text()).toLowerCase() > $.trim($(b).text()).toLowerCase() ? 1 : -1;
+			}).appendTo('#agent_online_list');
 		}, this);
 	},
 
@@ -81,6 +84,9 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var self = this;
 
 		$('#im-agents-filter').on('keyup', this.filterAgents.bind(this));
+		$('li[class^="agent-"]', this.offlineListEl).sort(function(a,b){
+			return $.trim($(a).text()).toLowerCase() > $.trim($(b).text()).toLowerCase() ? 1 : -1;
+		}).appendTo(this.offlineListEl);
 
 		$('.show-offline-opt', this.panelEl).on('click', function() {
 			if ($(this).is(':checked')) {
