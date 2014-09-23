@@ -429,7 +429,7 @@
                     date1 = new Date(value.options.date1 * 1000);
                   }
                   if (value.options.date2) {
-                    date2 = new Date(value.options.date1 * 1000);
+                    date2 = new Date(value.options.date2 * 1000);
                   }
                 } else {
                   use_relative = true;
