@@ -217,7 +217,6 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 		$user_info['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'first_name');
 		$user_info['last_name'] = Arrays::reachForFirstValueInKey($attrs, 'last_name');
 		$user_info['name'] = Arrays::reachForFirstValueInKey($attrs, 'name');
-		$user_info['is_agent'] = Arrays::reachForFirstValueInKey($attrs, 'is_agent');
 
 		$id = new Identity($saml->getNameId(), $user_info);
 

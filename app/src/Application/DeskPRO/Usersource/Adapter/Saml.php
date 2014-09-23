@@ -49,7 +49,6 @@ class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 			'first_name'      => isset($info['first_name']) ? $info['first_name'] : '',
 			'last_name'       => isset($info['last_name']) ? $info['last_name'] : '',
 			'email'           => isset($info['email']) ? $info['email'] : '',
-			'is_agent'        => isset($info['is_agent']) ? $info['is_agent'] : '',
 			'email_confirmed' => true,
 		);
 	}
