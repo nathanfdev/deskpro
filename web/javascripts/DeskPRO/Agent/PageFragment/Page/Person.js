@@ -369,7 +369,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				var itemEl = $(info.itemEl), sort_by = itemEl.data('sort-by');
 				
 				$.ajax({
-					url: '/agent/person/' + person_id + '/tickets',
+					url: BASE_URL + 'agent/person/' + person_id + '/tickets',
 					data: {sort_by: sort_by},
 					type: 'get',
 					dataType: 'html',
