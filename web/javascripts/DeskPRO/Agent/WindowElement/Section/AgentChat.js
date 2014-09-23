@@ -65,6 +65,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			Array.each(info.online_agents, function(agent_id) {
 				self.addOnlineAgent(agent_id);
 			});
+
+			self.filterAgents();
 		}, this);
 	},
 
@@ -76,6 +78,9 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.onlineCountEl = $('#chat_online_count');
 		this.agentTeamList = $('#agent_team_list');
 		this.everyone      = $('#everyone_list');
+		var self = this;
+
+		$('#im-agents-filter').on('keyup', this.filterAgents.bind(this));
 
 		$('.show-offline-opt', this.panelEl).on('click', function() {
 			if ($(this).is(':checked')) {
@@ -107,8 +112,6 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.chatsWrapper.on('click', function(ev) {
 			ev.stopPropagation();
 		});
-
-		var self = this;
 
 		var openChatFn = function (ev) {
 			ev.stopPropagation();
@@ -172,6 +175,31 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.panelEl.on('click', function() {
 
 		});
+	},
+
+	filterAgents: function(){
+		var search = $('#im-agents-filter').val().toLowerCase(),
+			self = this;
+
+		if (!search.length) {
+			$('li[class^="agent-"]', self.onlineListEl).show();
+			return $('li[class^="agent-"]', self.offlineListEl).each(function(i, e){
+				if (!$('li.agent-' + $(e).data('agent-id'), self.onlineListEl).length) {
+					$(e).show();
+				}
+			});
+		} else {
+			$('li[class^="agent-"]', self.onlineListEl).hide();
+			$('li[class^="agent-"]', self.offlineListEl).hide();
+		}
+
+		$('li[class^="agent-"]', self.onlineListEl).filter(function(i, e){
+			return $.trim($(e).text()).toLowerCase().indexOf(search) > -1;
+		}).show();
+		$('li[class^="agent-"]', self.offlineListEl).filter(function(i, e){
+			if ($('li.agent-' + $(e).data('agent-id'), self.onlineListEl).length) return false;
+			return $.trim($(e).text()).toLowerCase().indexOf(search) > -1;
+		}).show();
 	},
 
 	close: function() {
