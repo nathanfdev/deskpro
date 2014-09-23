@@ -938,7 +938,7 @@ class PeopleSearchController extends AbstractController
 		try {
 			$ids = array();
 			foreach ($people as $person) {
-				if (!$person->is_agent && !$person->is_agent_confirmed) {
+				if (!$person->is_agent && (!$person->is_agent_confirmed || !$person->is_confirmed)) {
 					$ids[] = $person->getId();
 
 					foreach ($person->emails as $email) {
