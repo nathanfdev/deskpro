@@ -48,6 +48,8 @@ use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\Result;
+use Orb\Log\Loggable;
+use Orb\Log\Writer\ArrayWriter;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
@@ -60,6 +62,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
 	protected $tpl_prefix = 'UserBundle:Login';
 	protected $route_prefix = 'user';
+	const USERSOURCE_TEST = 'usersource_test';
 
 	/**
 	 * @var \Application\DeskPRO\Controller\Helper\LoginHelper
@@ -638,6 +641,10 @@ HTML;
 	public function authenticateAction($usersource_id)
 	{
 		$return = $this->in->getString('return');
+
+		if ($usersource_test = $this->in->getBool(self::USERSOURCE_TEST)) {
+			$this->session->setFlash(self::USERSOURCE_TEST, 1);
+		}
 
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 		if (!$usersource) {
@@ -1220,16 +1227,47 @@ HTML;
 			return new NotFoundHttpException();
 		}
 
+		$arr_writer = new ArrayWriter();
+		$usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, array());
+		if ($usersource_test && $adapter instanceof Loggable) {
+			$adapter->getLogger()->addWriter($arr_writer);
+		}
+
 		$result = $adapter->getSsoLoginActionResult($this);
 
 		if ($result->isValid()) {
 			$login_processor = new LoginProcessor($source, $result->getIdentity());
 			$person = $login_processor->getPerson();
 
+
+			if ($usersource_test) {
+				//--------------------------------------
+				// test result
+				//--------------------------------------
+				return $this->render('DeskPRO:Auth:_sso_test_verified.html.twig', array(
+						'person' => $person,
+						'log' => $arr_writer->getMessagesAsString()
+					)
+				);
+			}
+
+			//-----------------------------------
+			// log the user in. if background sso, refresh the page.
+			//-----------------------------------
 			$this->_setupUsersourceSession($source, $person, $result);
 
 			if ($adapter->isBackgroundSsoSimpleRefresh()) {
 				return $this->render('DeskPRO:Auth:_sso_refresh.html.twig');
+			}
+		} else {
+			//--------------------------------------
+			// test result
+			//--------------------------------------
+			if ($usersource_test) {
+				return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', array(
+						'log' => implode("\n", $arr_writer->getMessages())
+					)
+				);
 			}
 		}
 

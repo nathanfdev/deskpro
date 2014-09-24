@@ -37,6 +37,11 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Usersource;
+use League\Url\Url;
+use Orb\Auth\Adapter\CallbackInterface;
+use Orb\Auth\Adapter\IframeSsoInterface;
+use Orb\Auth\Adapter\SsoCapableInterface;
+use Orb\Auth\Adapter\SsoLoginActionInterface;
 
 class UsersourcesController extends AbstractController
 {
@@ -128,19 +133,7 @@ class UsersourcesController extends AbstractController
 
 	public function postUsersourceAction($type, $id)
 	{
-		if ($id === 'deskpro') {
-			$sources = $this->getUsersourceManager()->getAll()->withNoApp();
-		} else {
-			$sources = $this->getUsersourceManager()->getAll()->mustHaveId($id);
-		}
-
-		if ($type === Usersource::TYPE_USER) {
-			$sources = $sources->configuredForUsers(true);
-		} else {
-			$sources = $sources->configuredForAgents(true);
-		}
-
-		$source = $sources->getFirstOrNull();
+		$source = $this->findUsersourceOfType($id, $type);
 
 		if (!$source) {
 			throw $this->createNotFoundException('usersource id=' . $id . ' not found for type=' . $type);
@@ -160,6 +153,65 @@ class UsersourcesController extends AbstractController
 	}
 
 
+	public function getIframeAction($app_id, $interface)
+	{
+		$sources = $this->getUsersourceManager()->getAll();
+
+		if ($interface === Usersource::TYPE_USER) {
+			$sources = $sources->configuredForUsers(true);
+		} else {
+			$sources = $sources->configuredForAgents(true);
+		}
+
+		$source = null;
+		foreach ($sources as $usersource) {
+			if ($usersource->app && $usersource->app->id == $app_id) {
+				$source = $usersource;
+				break;
+			}
+		}
+
+	    if (!$source) {
+		    return $this->createApiErrorResponse(
+
+			    'not found',
+			    'could not find usersource for "' . $interface . '" interface with app id "'.$app_id.'"'
+		    );
+	    }
+
+		/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
+		$factory = $this->container->getSystemService('usersource_auth_adapter_factory');
+		$adapter = $factory->getAuthAdapter($source, SsoLoginActionInterface::CONTEXT_BACKGROUND);
+
+		if ($adapter instanceof CallbackInterface) {
+			// append noredirect so that the callback url knows not to refresh the page on success
+			$url = Url::createFromUrl($adapter->getCallbackUrl());
+			$query = $url->getQuery();
+			$query['usersource_test'] = true;
+			$adapter->setCallbackUrl((string) $url);
+		}
+
+		if ($adapter instanceof IframeSsoInterface) {
+			$vars = array_merge(
+				array(
+					'iframe_url' => '',
+					'render'     => true
+				),
+				$adapter->getIframeTemplateParams(false)
+			);
+
+			return $this->createApiSuccessResponse(
+				array(
+					'iframe_html' => $this->renderView(
+							'DeskPRO:Auth:_sso_iframe_for_test.html.twig',
+							$vars
+						)
+				)
+			);
+		}
+	}
+
+
 	public function updateDisplayOrderAction()
 	{
 		$inputOrders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
@@ -174,6 +226,31 @@ class UsersourcesController extends AbstractController
 	protected function getUsersourceManager()
 	{
 		return $this->container->getSystemService('usersource_manager');
+	}
+
+
+	/**
+	 * @param $id
+	 * @param $type
+	 * @return Usersource|null
+	 */
+	protected function findUsersourceOfType($id, $type)
+	{
+		if ($id === 'deskpro') {
+			$sources = $this->getUsersourceManager()->getAll()->withNoApp();
+		} else {
+			$sources = $this->getUsersourceManager()->getAll()->mustHaveId($id);
+		}
+
+		if ($type === Usersource::TYPE_USER) {
+			$sources = $sources->configuredForUsers(true);
+		} else {
+			$sources = $sources->configuredForAgents(true);
+		}
+
+		$source = $sources->getFirstOrNull();
+
+		return $source;
 	}
 }
  

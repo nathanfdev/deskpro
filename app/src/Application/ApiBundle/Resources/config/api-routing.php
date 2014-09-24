@@ -2439,6 +2439,12 @@ $collection->create('api_usersources_post', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_usersources_iframe', array(
+	'path'        => '/usersources/iframe/code/{interface}/{app_id}',
+	'controller'  => 'ApiBundle:Usersources:getIframe',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_usersources_display_order', array(
 	'path'        => '/usersources/display-order',
 	'controller'  => 'ApiBundle:Usersources:updateDisplayOrder',
