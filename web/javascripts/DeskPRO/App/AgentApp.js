@@ -1,5 +1,23 @@
-define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions', 'DeskPRO/Util/Strings'], function(angular, x1, x2, Functions, Strings) {
-	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap']);
+define([
+	'angular',
+	'angularAnimate',
+	'angularBootstrap',
+	'DeskPRO/Util/Functions',
+	'DeskPRO/Util/Strings',
+	'DeskPRO/Directive/DpLabel',
+	'DeskPRO/Service/LabelDefinition',
+	'ngContextMenu'
+], function(
+	angular,
+	x1,
+	x2,
+	Functions,
+	Strings,
+	DeskPRO_Directive_DpLabel,
+    DeskPRO_Service_LabelDefinition,
+    ngContextMenu
+	) {
+	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu']);
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor
@@ -919,6 +937,57 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 			});
 		};
 	}]);
+
+	AgentApp.directive('dpMenu', ['$compile', function($compile) {
+		return {
+			restrict: 'A',
+			link: function(scope, $el, attr) {
+
+				var $backdrop = $('#dp-menu-backdrop'),
+					$popover = $('#dp-menu-popover'),
+					$inner = $popover.children(),
+					$tpl = $('#' + attr.dpMenu);
+
+				if (!$backdrop.length) {
+					$backdrop = $('<div id="dp-menu-backdrop" class="dp-popover-backdrop"></div>')
+						.appendTo('body').hide()
+						.on('click', function(){
+							$backdrop.hide();
+							$popover.removeClass('open');
+							$inner.children().remove();
+						});
+				}
+				if (!$popover.length) {
+					$popover = $('<div id="dp-menu-popover" class="dp-popover"><div class="dp-popover-inner"></div></div>')
+						.appendTo($backdrop);
+					$inner = $popover.children();
+				}
+
+				$el.on('click', function(e){
+					scope.$broadcast('dp-menu.opened');
+					$inner.html($tpl.html());
+					$compile($inner.contents())(scope);
+
+					$popover.addClass('open');
+					$backdrop.show();
+					$inner.css('max-height', parseInt($(window).height() / 2 - 40));
+					$popover.position({
+						of: $el,
+						my: 'center top',
+						at: 'center bottom',
+						collision: 'flipfit'
+					});
+				});
+			}
+		};
+	}]);
+
+
+	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
+		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
+	}]);
+
+	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 
 	return AgentApp;
 });

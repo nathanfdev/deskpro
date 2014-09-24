@@ -49,7 +49,7 @@ class LabelDefManager
 	 */
 	protected $em;
 
-	protected $types = array(
+	static protected $types = array(
 		'articles'             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
 		'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
 		'downloads'            => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
@@ -110,10 +110,8 @@ class LabelDefManager
 	 */
 	public function getLabels($types = null)
 	{
-		static $valid = array('articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations');
-
 		if ($types === null) {
-			$types = $valid;
+			$types = self::valid();
 		}
 		if (is_string($types)) {
 			$types = explode(',', $types);
@@ -130,7 +128,7 @@ class LabelDefManager
 		}, $types);
 
 		// invalid type(s)
-		if (array_diff($types, $valid)) {
+		if (array_diff($types, self::valid())) {
 			throw new \InvalidArgumentException();
 		}
 
@@ -144,6 +142,11 @@ class LabelDefManager
 		$labels = $this->db->fetchAllCol($q);
 
 		return $labels;
+	}
+
+	public function getAllDefinitions()
+	{
+		return $this->db->fetchAll('SELECT * FROM label_defs');
 	}
 
 
@@ -194,13 +197,13 @@ class LabelDefManager
 		$query  = array();
 
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
 
 		foreach ($types as $t) {
-			$info = $this->types[$t];
+			$info = self::$types[$t];
 			$query[]  = "SELECT COUNT(*) AS count, label FROM {$info['table']} GROUP BY label";
 		}
 
@@ -235,13 +238,13 @@ class LabelDefManager
 		$params = array();
 
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
 
 		foreach ($types as $t) {
-			$info = $this->types[$t];
+			$info = self::$types[$t];
 
 			$query[]  = "SELECT COUNT(*) AS count FROM {$info['table']} WHERE label = ?";
 			$params[] = $label;
@@ -270,10 +273,10 @@ class LabelDefManager
 	 * @param $label
 	 * @param null $types
 	 */
-	public function createLabelDef($label, $types = null)
+	public function createLabelDef($label, $color, $types = null)
 	{
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
@@ -282,7 +285,10 @@ class LabelDefManager
 
 		try {
 			foreach ($types as $t) {
-				$this->db->executeUpdate("INSERT IGNORE INTO label_defs SET label_type = ?, label = ?, total = 0", array($t, $label));
+				$this->db->executeUpdate(
+					'INSERT IGNORE INTO label_defs SET label_type = ?, label = ?, color = ?, total = 0',
+					array($t, $label, $color)
+				);
 			}
 
 			$this->db->commit();
@@ -302,7 +308,7 @@ class LabelDefManager
 	public function deleteLabelDef($label, $types = null)
 	{
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
@@ -311,7 +317,7 @@ class LabelDefManager
 
 		try {
 			foreach ($types as $t) {
-				$table = $this->types[$t]['table'];
+				$table = self::$types[$t]['table'];
 
 				$this->db->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $label));
 				$this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($label));
@@ -336,7 +342,7 @@ class LabelDefManager
 	public function renameLabelDef($old_label, $new_label, $types = null)
 	{
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
@@ -344,7 +350,7 @@ class LabelDefManager
 		$this->db->beginTransaction();
 		try {
 			foreach ($types as $t) {
-				$table = $this->types[$t]['table'];
+				$table = self::$types[$t]['table'];
 
 				$this->db->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $old_label));
 				$adjusted = $this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
@@ -466,5 +472,10 @@ class LabelDefManager
 				}
 			}
 		}
+	}
+
+	static public function valid($type = null)
+	{
+		return null === $type ? array_keys(self::$types) : isset(self::$types[$type]);
 	}
 }

@@ -819,6 +819,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				baseId: self.meta.baseId,
 				defaultProject: self.meta.jiraDefaultProject
 			});
+			this.addEvent('destroy', function() {
+				if (jiraWidget) {
+					jiraWidget.destroy();
+				}
+			});
 		}
 	},
 
@@ -908,7 +913,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}
 				}
 
-				this.fireEvent('load', [data]);
+				this.fireEvent('load');
 			}
 		});
 	},

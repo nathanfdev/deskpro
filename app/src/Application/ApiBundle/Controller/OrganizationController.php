@@ -38,6 +38,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
 * @SWG\Resource(
@@ -2070,5 +2072,18 @@ class OrganizationController extends AbstractController
 		}
 
 		return $org;
+	}
+
+	/**
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function quickSearchAction(Request $request)
+	{
+		/** @var \Application\DeskPRO\EntityRepository\Organization $rep */
+		$rep = $this->em->getRepository('DeskPRO:Organization');
+		$res = $rep->search($request->get('query'), $request->get('limit'), false);
+
+		return $this->createApiResponse($res);
 	}
 }

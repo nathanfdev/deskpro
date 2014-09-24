@@ -459,7 +459,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 			\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
 		}
 
-        if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path)) {
+        if($this->getPerson() && $this->getPerson()->is_agent && !preg_match('#^/agent/(client-messages/|poller|.*/new)#', $path) && !preg_match('#\.json(\?.*?)?$#', $path) && empty($_GET['dp_no_activity'])) {
             $agent = $this->getPerson();
             $date_active = new \DateTime();
             list($hour, $minute) = explode(':', $date_active->format('H:i'));

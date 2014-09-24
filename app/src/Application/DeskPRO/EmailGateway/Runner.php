@@ -237,11 +237,16 @@ class Runner
 
 	/**
 	 * @param OptionsArray $result
+	 * @param bool         $is_retry
 	 * @return bool
 	 */
-	private function verifyCreatedObject(OptionsArray $result)
+	private function verifyCreatedObject(OptionsArray $result, $is_retry = false)
 	{
 		$this->logger->logDebug("Verifying created object...");
+
+		if ($is_retry) {
+			$this->logger->logDebug("-> Checking again");
+		}
 
 		$id = $result->created_object_id;
 		if (!$id) {
@@ -249,16 +254,18 @@ class Runner
 			return false;
 		}
 
+		$check_result = false;
+
 		switch ($result->created_object_type) {
 			case 'ticket':
 				$this->logger->logDebug("--> Verifying ticket {$id}");
 				$t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($id));
 				if ($t) {
 					$this->logger->logInfo("--> Ticket OKAY");
-					return true;
+					$check_result = true;
 				} else {
 					$this->logger->logWarn("--> Ticket DOES NOT exist");
-					return false;
+					$check_result = false;
 				}
 				break;
 
@@ -267,10 +274,10 @@ class Runner
 				$t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets_messages WHERE id = ?", array($id));
 				if ($t) {
 					$this->logger->logInfo("--> Ticket message OKAY");
-					return true;
+					$check_result = true;
 				} else {
 					$this->logger->logWarn("--> Ticket message DOES NOT exist");
-					return false;
+					$check_result = false;
 				}
 				break;
 
@@ -278,6 +285,13 @@ class Runner
 				$this->logger->logWarn("--> Unknown object type: {$result->created_object_type}");
 				return false;
 		}
+
+		if (!$check_result && !$is_retry) {
+			sleep(1);
+			return $this->verifyCreatedObject($result, true);
+		}
+
+		return $check_result;
 	}
 
 
@@ -354,6 +368,13 @@ class Runner
 			$this->logger->addWriter($this->log_messages);
 		}
 
+		$is_in_trans = App::getDb()->isTransactionActive();
+		if ($is_in_trans) {
+			$this->logger->logWarn('Note: Called within a transaction');
+		} else {
+			$this->logger->logDebug('Note: Not called within a transaction');
+		}
+
 		$this->log_messages->clear();
 
 		$previous_log_text = null;
@@ -412,6 +433,15 @@ class Runner
 			$result = $runner_exec->run();
 			App::$container->getEm()->flush();
 			$this->logger->logDebug("--> Processors complete");
+
+			if (!$is_in_trans && App::getDb()->isTransactionActive()) {
+				$this->logger->log("WARNING: Unclosed transaction!", 'info');
+				$e = new \RuntimeException("WARNING: Unclosed transaction");
+				KernelErrorHandler::logException($e);
+				while (App::getDb()->isTransactionActive()) {
+					App::getDb()->commit();
+				}
+			}
 		} catch (\Exception $e) {
 			$this->logger->logDebug("--> Processor exception: {$e->getCode()} {$e->getMessage()}");
 			$result = array(

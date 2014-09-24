@@ -158,8 +158,10 @@ class MainController extends AbstractController
 		$dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
 		$read_news = $this->person->getPref('agent.ui.dp_news', array());
 		$unread_dp_news = array();
+		$person_time = $this->person->date_created->getTimestamp();
 		foreach ($dp_news as $info) {
-			if (!in_array($info['id'], $read_news)) {
+			$d = @strtotime($info['date']);
+			if ($d && ($d > $person_time) && !in_array($info['id'], $read_news)) {
 				$unread_dp_news[] = $info;
 			}
 		}

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -550,5 +551,83 @@ class Person extends AbstractEntityRepository
 		);
 
 		return $counts;
+	}
+
+	/**
+	 * moved from AgentBundle/Controller/PeopleSearchController::performQuickSearch
+	 * @param null $q               search query
+	 * @param bool $startWith       ?
+	 * @param bool $withAgents      include agents
+	 * @param int $excludeOrg       exclude org
+	 * @param int $limit            limit
+	 * @return array
+	 */
+	public function quickSearch($q = null, $startWith = false, $withAgents = true, $excludeOrg = 0, $limit = 10)
+	{
+		$startWith = (bool) $startWith;
+		$withAgents = (bool) $withAgents;
+		$excludeOrg = abs($excludeOrg);
+		$limit = max(10, min($limit, 100));
+		$agent_sql = $withAgents ? '' : ' p.is_agent = 0 AND ';
+		$db = $this->getEntityManager()->getConnection();
+		$q = strtolower($q);
+
+		if (BigMode::isBigMode(BigMode::PERSON_AUTOCOMPLETE)) {
+
+			if (!strlen($q) && $startWith) {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					WHERE $agent_sql
+					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
+					ORDER BY p.id DESC
+					LIMIT $limit
+				");
+			} else {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					WHERE
+						$agent_sql
+						LOWER(e.email) LIKE ?
+						" . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
+					GROUP BY p.id
+					ORDER BY p.date_last_login DESC, p.id DESC
+					LIMIT $limit
+				", array("$q%"));
+			}
+		} else {
+			if (!strlen($q) && $startWith) {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					WHERE $agent_sql
+					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
+					ORDER BY p.name ASC
+					LIMIT $limit
+				");
+			} else {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					WHERE
+						$agent_sql
+						(LOWER(e.email) LIKE ?
+						OR LOWER(p.name) LIKE ?
+						OR LOWER(p.first_name) LIKE ?
+						OR LOWER(p.last_name) LIKE ?)
+						" . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
+					GROUP BY p.id
+					ORDER BY p.date_last_login DESC, p.id DESC
+					LIMIT $limit
+				", array("%$q%", "%$q%", "%$q%", "%$q%"));
+			}
+		}
+
+		return array();
 	}
 }

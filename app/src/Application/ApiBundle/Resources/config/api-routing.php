@@ -87,14 +87,38 @@ $collection->create('api_labels_settings_get', array(
 	'path'          => '/labels/{type}/settings',
 	'controller'    => 'ApiBundle:Labels:getSettings',
 	'methods'       => array('GET'),
-	'requirements'  => array('type' => implode('|', \Application\ApiBundle\Controller\LabelsController::$allowed)),
+	'requirements'  => array('type' => implode('|', \Application\DeskPRO\EntityRepository\LabelDef::valid())),
 ));
 
 $collection->create('api_labels_settings_set', array(
 	'path'          => '/labels/{type}/settings',
 	'controller'    => 'ApiBundle:Labels:setSettings',
 	'methods'       => array('PUT'),
-	'requirements'  => array('type' => implode('|', \Application\ApiBundle\Controller\LabelsController::$allowed)),
+	'requirements'  => array('type' => implode('|', \Application\DeskPRO\EntityRepository\LabelDef::valid())),
+));
+
+$collection->create('api_labels_definitions', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:listDefinitions',
+	'methods'       => array('GET'),
+));
+
+$collection->create('api_labels_definitions_create', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:createDefinition',
+	'methods'       => array('POST'),
+));
+
+$collection->create('api_labels_definitions_update', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:updateDefinition',
+	'methods'       => array('PUT'),
+));
+
+$collection->create('api_labels_definitions_delete', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:deleteDefinition',
+	'methods'       => array('DELETE'),
 ));
 
 $collection->create('api_misc_upload', array(
@@ -531,6 +555,12 @@ $collection->create('api_tickets_filter', array(
 $collection->create('api_people', array(
 	'path'        => '/people',
 	'controller'  => 'ApiBundle:Person:search',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_people_quick_search', array(
+	'path'        => '/people/quick_search',
+	'controller'  => 'ApiBundle:Person:quickSearch',
 	'methods'     => array('GET'),
 ));
 
@@ -997,6 +1027,12 @@ $collection->create('api_combiner', array(
 $collection->create('api_organizations', array(
 	'path'        => '/organizations',
 	'controller'  => 'ApiBundle:Organization:search',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_organizations_quick_search', array(
+	'path'        => '/organizations/quick_search',
+	'controller'  => 'ApiBundle:Organization:quickSearch',
 	'methods'     => array('GET'),
 ));
 
@@ -3960,7 +3996,7 @@ $collection->create('api_org_fields_delete', array(
 	'path'         => '/org_fields/{id}',
 	'controller'   => 'ApiBundle:OrgFields:deleteCustomField',
 	'requirements' => array('id' => '\\d+'),
-	'methods'      => array('DELTE'),
+	'methods'      => array('DELETE'),
 ));
 
 $collection->create('api_org_fields', array(

@@ -23,11 +23,11 @@
 $CONFIG = array();
 
 $CONFIG['OPTIONS'] = array(
-	'java_path'       => '/usr/bin/java',
-	'yui_compressor'  => '/usr/local/bin/yuicompressor.jar',
-	'nodejs'          => '/usr/local/bin/node',
-	'less'            => '/usr/local/lib/node_modules/less/bin/lessc',
-	'smartsprites'    => '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
+	'java_path'       => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
+	'yui_compressor'  => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
+	'nodejs'          => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/local/bin/node',
+	'less'            => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/lib/node_modules/less/bin/lessc',
+	'smartsprites'    => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
 );
 
 if (isset($GLOBALS['DP_CONFIG']['assetic_config'])) {
@@ -107,7 +107,9 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/momentjs/moment.min.js',
 
 		'app/bower_components/notify.js/notify.js',
-		'app/bower_components/intl-tel-input/build/js/intlTelInput.min.js'
+		'app/bower_components/intl-tel-input/build/js/intlTelInput.min.js',
+
+		'app/vendor-src/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js',
 	)
 );
 
@@ -661,6 +663,7 @@ $CONFIG['agent_interface_css1'] = array(
 		'stylesheets-less/agent/overlayCreateTicket.less',
 		'stylesheets-less/agent/dp-source-pane.less',
 		'stylesheets-less/agent/dp-list-pane.less',
+		'app/vendor-src/bootstrap-datetimepicker-master/build/build_standalone.less',
 	)
 );
 

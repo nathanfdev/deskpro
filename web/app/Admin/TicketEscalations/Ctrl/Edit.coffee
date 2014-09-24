@@ -13,20 +13,29 @@ define [
 			@esc = null
 
 			@criteriaTypeDef     = @dpObTypesDefTicketFilter
-			@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
+			@actionsTypeDef      = @dpObTypesDefTicketActions
+			@criteriaOptionTypes = []
+			@actionOptionTypes   = []
 
-			@actionsTypeDef    = @dpObTypesDefTicketActions
-			@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
+
+
+			@criteriaTypeDef.setVar('object_type', 'escalation');
+			@actionsTypeDef.setVar('object_type', 'escalation');
 
 			@criteriaTypeDef.setVar('object_type', 'escalation');
 			@actionsTypeDef.setVar('object_type', 'escalation');
 
 		initialLoad: ->
-			promise = @escData.loadEditEscalationData(@$stateParams.id || null).then( (data) =>
+			@criteriaTypeDef.loadDataOptions().then =>
+				@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
+			@actionsTypeDef.loadDataOptions().then =>
+				@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
+
+			@escData.loadEditEscalationData(@$stateParams.id || null).then (data) =>
 				@esc  = data.escalation
 				@form = data.form
-			)
-			return promise
+
+
 
 		saveForm: ->
 

@@ -15,6 +15,7 @@ define [
 			@timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html'
 			@selectTemplate      = 'OptionBuilder/type-criteria-select.html'
 			@isTemplate          = 'OptionBuilder/type-criteria-is.html'
+			@remoteTemplate      = 'OptionBuilder/type-criteria-remote.html'
 			@init()
 
 		init: ->
@@ -313,7 +314,7 @@ define [
 								if value.options.date1
 									date1 = new Date(value.options.date1 * 1000)
 								if value.options.date2
-									date2 = new Date(value.options.date1 * 1000)
+									date2 = new Date(value.options.date2 * 1000)
 							else
 								use_relative = true
 								if value.options.date1_relative

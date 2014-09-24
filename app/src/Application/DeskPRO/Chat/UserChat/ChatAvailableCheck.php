@@ -90,7 +90,7 @@ class ChatAvailableCheck
 		// Do query
 		if (self::$available_time === null) {
 			$sql  = "
-				SELECT UNIX_TIMESTAMP(sessions.date_last)
+				SELECT UNIX_TIMESTAMP(CONVERT_TZ(sessions.date_last, '+00:00', @@session.time_zone))
 				FROM sessions
 				LEFT JOIN people ON (people.id = sessions.person_id)
 				WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1

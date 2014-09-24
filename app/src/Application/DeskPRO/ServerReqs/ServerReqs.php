@@ -68,7 +68,9 @@ class ServerReqs
 		$this->server_check = new ServerChecks();
 		$this->server_check->checkServer();
 
-		$this->web_checks = $this->_generateMessages($this->server_check->getErrors());
+		$this->web_checks = $this->_generateMessages(array_merge(
+			$this->server_check->getErrors(), $this->server_check->getOptionals()
+		), true);
 
 		if (file_exists(dp_get_data_dir() . '/cli-server-reqs-check.dat')) {
 
@@ -99,13 +101,12 @@ class ServerReqs
 
 	/**
 	 * @param array $errors
-	 *
+	 * @param bool $includeOptionals
 	 * @return array
 	 */
-
-	protected function _generateMessages(array $errors)
+	protected function _generateMessages(array $errors, $includeOptionals = false)
 	{
-		$this->_generateCheckTable();
+		$this->_generateCheckTable($includeOptionals);
 
 		$result = array();
 
@@ -132,10 +133,9 @@ class ServerReqs
 	}
 
 	/**
-	 *
+	 * @param bool $includeOptionals
 	 */
-
-	protected function _generateCheckTable()
+	protected function _generateCheckTable($includeOptionals = false)
 	{
 		$ini_path = Env::getPhpIniPath();
 
@@ -271,5 +271,23 @@ class ServerReqs
 			'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_error_apc'),
 			'recommendation' => true,
 		);
+
+
+		if ($includeOptionals) {
+			$this->addOptionals();
+		}
+	}
+
+	/**
+	 * optional extensions
+	 */
+	protected function addOptionals()
+	{
+//		$this->checksTable['test'] = array(
+//			'description'    => 'Checking test',
+//			'error'          => 'We recommend test',
+//			'readMore'       => 'read more',
+//			'recommendation' => true,
+//		);
 	}
 }

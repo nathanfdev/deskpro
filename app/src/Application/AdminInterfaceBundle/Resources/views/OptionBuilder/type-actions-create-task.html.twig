@@ -1,0 +1,71 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" width="50"><label class="row-label">Create Task</label></td>
+				<td ng-show="rowOpts.rowEnabled">
+					<table class="display-table spaced" width="100%">
+						<tr>
+							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+                                Task Title:
+                            </td>
+							<td>
+								<input type="text" ng-model="model.title" class="form-control" />
+							</td>
+						</tr>
+                        <tr>
+                            <td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+                                Due Date:
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" style="width: 140px; display: inline-block;"
+                                       datepicker-popup="dd MMMM yyyy" ng-model="model.date_due"
+                                       datepicker-options="{'show-weeks': false}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+                                Public:
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="checkbox" ng-model="model.public" /> Yes
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+                                Creator:
+                            </td>
+                            <td>
+                                <select ui-select2="{dropdownAutoWidth:true}" ng-model="model.creator"
+                                        style="min-width: 200px;">
+                                    <option ng-repeat="agent in model.agents"
+                                            value="{{ ng_var('agent.id') }}">{{ ng_var('agent.display_name') }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+                                Assignee:
+                            </td>
+                            <td>
+                                <select ui-select2="{dropdownAutoWidth:true}" ng-model="model.assignee"
+                                        style="min-width: 200px;">
+                                    <optgroup label="Agents">
+                                        <option ng-repeat="agent in model.agents"
+                                                value="agent:{{ ng_var('agent.id') }}">{{ ng_var('agent.display_name') }}</option>
+                                    </optgroup>
+                                    <optgroup label="Teams">
+                                        <option ng-repeat="team in model.teams"
+                                                value="team:{{ ng_var('team.id') }}">{{ ng_var('team.name') }}</option>
+                                    </optgroup>
+                                </select>
+                            </td>
+                        </tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>
