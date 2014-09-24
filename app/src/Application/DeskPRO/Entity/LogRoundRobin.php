@@ -56,10 +56,10 @@ class LogRoundRobin extends DomainObject implements Loggable
 	public function __construct($robinId, $agentId, $ticketId, $triggerId)
 	{
 		$this['timestamp'] = time();
-		$this['roundRobinId'] = $robinId;
-		$this['agentId'] = $agentId;
-		$this['ticketId'] = $ticketId;
-		$this['triggerId'] = $triggerId;
+		$this['roundRobinId'] = (int) $robinId;
+		$this['agentId'] = (int) $agentId;
+		$this['ticketId'] = (int) $ticketId;
+		$this['triggerId'] = (int) $triggerId;
 	}
 
 	/**

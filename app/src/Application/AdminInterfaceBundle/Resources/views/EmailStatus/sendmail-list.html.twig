@@ -88,6 +88,7 @@
 				<colgroup>
 					<col width="1%" />
 					<col width="1%" />
+					<col width="1%" />
 					<col width="28%" />
 					<col width="28%" />
 					<col width="100%" />
@@ -95,6 +96,7 @@
 				</colgroup>
 				<thead>
 					<tr>
+						<th><input type="checkbox" ng-model="ListCtrl.massActionsAll" ng-change="ListCtrl.toggleMassActions()" /></th>
 						<th>ID</th>
 						<th>Date</th>
 						<th>From</th>
@@ -105,6 +107,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error'}">
+						<td class=""><input type="checkbox" ng-model="ListCtrl.massActions[result.id]" ng-change="" style="margin: 0;" /></td>
 						<td class="alt dp-id-col"><a href="{{ ng_href('tickets.ticket_accounts.sendmailqueueview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
 						<td nowrap><span am-time-ago="result.date_created"></span></td>
 						<td class="overflow-ellipsis">{{ ng_var('result.from_address') }}</td>
@@ -114,6 +117,28 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<div ng-show="ListCtrl.hasAnyMassActions()">
+				With selected: <select ng-model="ListCtrl.massActionsOp" ui-select2>
+					<option value="resend">Resend Messages</option>
+					<option value="delete">Delete Messages</option>
+				</select>
+				<button ng-hide="massActionsLoading" class="btn btn-primary" type="button" ng-click="ListCtrl.performMassActions()">Perform Actions &rarr;</button>
+				<span ng-show="massActionsLoading"><i class="spinner-flat"></i></span>
+
+				<div ng-switch="ListCtrl.massActionsOp" style="width: 400px;" class="help-block">
+					<div ng-switch-when="resend">
+						<i class="fa fa-question-circle"></i> Resend Messages: The system sends emails in the background.
+						By selecting this option, you will reschedule the selected emails which will mark them as pending.
+						The system will attempt to deliver the messages the next time the message queue is processed.
+					</div>
+					<div ng-switch-when="delete">
+						<i class="fa fa-question-circle"></i> Delete: By deleting the messages, all records of email
+						deliveries will be removed from the system. If the messages have not been delivered yet, they never
+						will be.
+					</div>
+				</div>
+			</div>
 
 			<div style="text-align: center;" dp-show-spinning="loading_page"><i class="spinner-flat"></i></div>
 
@@ -126,4 +151,6 @@
 			</div>
 		</article>
 	</section>
+	<div dp-register-message="resend_done">The selected messages have been scheduled for resend.</div>
+	<div dp-register-message="delete_done">The selected messages have been deleted.</div>
 {% endblock %}

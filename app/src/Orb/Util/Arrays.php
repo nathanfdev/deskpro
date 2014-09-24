@@ -318,7 +318,7 @@ class Arrays
 	/**
 	 * Goes through an array and makes sure each sub-array contains only unique items.
 	 *
-	 * @param arary $array
+	 * @param array $array
 	 * @return array
 	 */
 	public static function uniqueDeep(array $array, $sort_flags = SORT_STRING)
@@ -558,13 +558,13 @@ class Arrays
 	 * @param string $recursive_key  A string to recurse down only speciifc keys (eg, only reindex 'children').
 	 * @return array
 	 */
-	public static function assocToNumericArary(array $array, $recursive_key = null)
+	public static function assocToNumericArray(array $array, $recursive_key = null)
 	{
 		$new = array();
 
 		foreach ($array as $v) {
 			if ($recursive_key && isset($v[$recursive_key]) && is_array($v[$recursive_key])) {
-				$v[$recursive_key] = self::assocToNumericArary($v[$recursive_key], $recursive_key);
+				$v[$recursive_key] = self::assocToNumericArray($v[$recursive_key], $recursive_key);
 			}
 
 			$new[] = $v;
@@ -807,7 +807,7 @@ class Arrays
 	 * Get the value from a multidimentional array using a path-like syntax.
 	 *
 	 * <code>
-	 * $array = array('user1' => array('groups' => arary(1 => array('name' => 'Admin'))));
+	 * $array = array('user1' => array('groups' => array(1 => array('name' => 'Admin'))));
 	 * $group_name = Arrays::keyAsPath('/user1/groups/1/name/', $array);
 	 * echo $group_name; // Admin
 	 * </code>
@@ -819,6 +819,7 @@ class Arrays
 	 * @param    array    $array     The array to work with
 	 * @param    string   $path      The path
 	 * @param    string   $path_sep  The string to use as the path separator
+	 * @param    mixed    $default   Default value if the key doesnt eixst
 	 * @return   mixed    The value at the end of the path.
 	 */
 	public static function keyAsPath($array, $path, $path_sep = '/', $default = null)

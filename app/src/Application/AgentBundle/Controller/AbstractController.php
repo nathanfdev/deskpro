@@ -35,6 +35,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
+use Application\DeskPRO\Service\CheckWhitelistedIP;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -110,6 +111,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 			}
+		}
+
+		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+				'ip' => dp_get_user_ip_address()
+			));
 		}
 
 		$this->person->loadHelper('Agent');

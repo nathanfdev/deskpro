@@ -1499,9 +1499,29 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1409052752'
 	),
 
-	1409588589 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1409588589.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/n3b/projects/deskpro/app/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1409588589'
+	1410276758 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1410276758.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1410276758'
+	),
+
+	1410361094 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1410361094.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1410361094'
+	),
+
+	1410519725 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1410519725.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1410519725'
+	),
+
+	1411570086 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1411570086.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1411570086'
+	),
+
+	1411571972 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1411571972.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1411571972'
 	),
 
 );

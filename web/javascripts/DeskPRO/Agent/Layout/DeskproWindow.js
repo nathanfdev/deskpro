@@ -66,7 +66,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		this.openSourceOverlay = openSourceOverlay;
 
 		var closeSourceOverlay = function() {
+			if (window.DP_SOURCE_SEARCHFORM_PANEL_OPEN) return; //see SearchForm.js
 			if (DeskPRO_Window.paneVis.source) return;
+			if ($("#select2-drop")[0]) return;
 			isSourceClosing = true;
 			$('#dp_source').stop().animate({left: -self.SOURCE_WIDTH }, {
 				duration: 350,
@@ -143,13 +145,11 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 			startCloseSourceOverlayTimeout();
 		});
 
-		if (DeskPRO_Window.isMobile) {
-			$('body').on('touch click', function (ev) {
-				if (!($(ev.target).is('#dp_source') || $(ev.target).closest('#dp_source')[0])) {
-					closeSourceOverlay();
-				}
-			});
-		}
+		$('body').on('touch click', function (ev) {
+			if (!($(ev.target).is('#dp_source') || $(ev.target).closest('#dp_source')[0])) {
+				closeSourceOverlay();
+			}
+		});
 	},
 
 	doResize: function(widthCalc) {
@@ -173,8 +173,13 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				}
 			}
 		} else {
-			listWidth = parseInt(listSizer.css('left').replace(/px/, '')) - this.LEFT_START;
-			this.listWidthRatio = listWidth / totalWidth;
+			if (!paneVis.source) {
+				listWidth = parseInt(listSizer.css('left').replace(/px/, '')) - this.LEFT_START + this.SOURCE_WIDTH - this.SOURCE_PLACE_WIDTH;
+				this.listWidthRatio = (listWidth) / totalWidth;
+			} else {
+				listWidth = parseInt(listSizer.css('left').replace(/px/, '')) - this.LEFT_START;
+				this.listWidthRatio = listWidth / totalWidth;
+			}
 		}
 
 		$('#dp_list').width(listWidth);
@@ -248,8 +253,16 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		visibleLeft += 270;
 		visibleLeft += listWidth;
 
-		$('#dp_header_listpane_aligned').width(listWidth);
-		$('#dp_header_contentpane_aligned').css('left', visibleLeft);
+		if (!paneVis.list || !paneVis.tabs || !paneVis.source) {
+			var listAlignedW = 0.8 * ($(window).width() - 600);
+			if (listAlignedW < 400) listAlignedW = 400;
+			if (listAlignedW > 700) listAlignedW = 700;
+			$('#dp_header_listpane_aligned').width(listAlignedW);
+			$('#dp_header_contentpane_aligned').css('left', listAlignedW + 264);
+		} else {
+			$('#dp_header_listpane_aligned').width(listWidth);
+			$('#dp_header_contentpane_aligned').css('left', visibleLeft);
+		}
 
 		if (paneVis.tabs) {
 			if (paneVis.list) {

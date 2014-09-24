@@ -47,7 +47,8 @@ class PclZipAdapter implements ZipAdapterInterface
 	 */
 	public function compressPath($path, $to)
 	{
-		// TODO: Implement compressPath() method.
+		$z = new \PclZip($to);
+		$z->create($path, PCLZIP_OPT_REMOVE_PATH, $path);
 	}
 
 

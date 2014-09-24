@@ -112,7 +112,7 @@ class NativeAppsSync
 		$this->logger->debug("Updating {$package->native_name}");
 
 		// Updates the resources
-		$app_package = new Package($this->manager->getAppPath($package->name));
+		$app_package = new Package($this->manager->getAppPath($package->name, true));
 		$this->package_installer->installPackage($app_package, $package);
 		$this->logger->debug("... done install");
 

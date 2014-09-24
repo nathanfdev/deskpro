@@ -114,6 +114,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		});
 
+		$('.DateTime.customfield input', this.wrapper).each(function(){
+			$(this).datetimepicker({
+				format: 'yyyy-mm-dd hh:ii',
+				container: $(this).parent().css('position', 'relative'),
+				autoclose: true
+			});
+		});
+
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
 			ev.preventDefault();
 			self._resetForX();
@@ -677,7 +685,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		$('.error-message-on', this.wrapper).removeClass('error-message-on').hide();
 		this.getEl('error_section').hide();
 
-		this.wrapper.parent().addClass('loading');
+		this.wrapper.addClass('loading');
 		this.getEl('send_btn').hide();
 		this.getEl('send_loading').show();
 
@@ -688,7 +696,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				this.wrapper.parent().removeClass('loading');
+				this.wrapper.removeClass('loading');
 				this.getEl('send_btn').show();
 				this.getEl('send_loading').hide();
 			},

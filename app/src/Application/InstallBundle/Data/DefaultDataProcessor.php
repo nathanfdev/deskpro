@@ -63,11 +63,6 @@ class DefaultDataProcessor
 	private $data_info;
 
 	/**
-	 * @var int|null
-	 */
-	private $loaded_data_id = null;
-
-	/**
 	 * @var
 	 */
 	private $logger;
@@ -105,7 +100,6 @@ class DefaultDataProcessor
 		$data = null;
 		if ($row) {
 			$data = @unserialize($row['data']);
-			$this->loaded_data_id = $row['id'];
 		}
 		if (!$data) {
 			$data = array();
@@ -124,17 +118,12 @@ class DefaultDataProcessor
 	 */
 	private function flushDataInfo()
 	{
-		if ($this->loaded_data_id) {
-			$this->container->getDb()->update('datastore', array(
-				'data' => serialize($this->data_info)
-			), array('id' => $this->loaded_data_id));
-		} else {
-			$this->container->getDb()->insert('datastore', array(
-				'name' => 'sys.install.default_data',
-				'auth' => Strings::random(15),
-				'data' => serialize($this->data_info)
-			));
-		}
+		$this->container->getDb()->delete('datastore', array('name' => 'sys.install.default_data'));
+		$this->container->getDb()->insert('datastore', array(
+			'name' => 'sys.install.default_data',
+			'auth' => Strings::random(15),
+			'data' => serialize($this->data_info)
+		));
 	}
 
 

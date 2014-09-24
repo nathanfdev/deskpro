@@ -527,7 +527,7 @@ class TemplatingExtension extends \Twig_Extension
 						$options['media'] = 'screen,print';
 					}
 
-					if ($less_use_css) {
+					if ($less_use_css && strpos($url, '/stylesheets-less/') !== false) {
 						$url = str_replace('/stylesheets-less/', '/stylesheets/', $url);
 						$url = str_replace('.less', '.css', $url);
 						$html[] = '<link rel="stylesheet" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';

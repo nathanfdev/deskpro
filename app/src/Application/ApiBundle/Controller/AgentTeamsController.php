@@ -87,7 +87,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 		$data['members'] = array();
 
 		foreach ($team->members as $agent) {
-			$data['members'][] = $agent->toApiData(false, false);
+			$data['members'][] = $agent->toBasicApiData();
 		}
 
 		return $this->createApiResponse(array('team' => $data));

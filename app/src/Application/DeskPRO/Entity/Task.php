@@ -169,6 +169,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 		$this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this['date_created'] = new \DateTime();
+		$this['visibility'] = self::PUBLIC_VISIBILITY;
 	}
 
 	/**

@@ -34,6 +34,7 @@
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Util as DeskPRO_Util;
 use Orb\Util\Arrays;
@@ -359,6 +360,9 @@ class PortalEditorController extends AbstractController
 
 		$this->db->beginTransaction();
 		try {
+			// Delete existing ones with same name
+			$this->db->delete('templates', array('name' => $template->name));
+
 			$this->em->persist($template);
 			if ($block) {
 				$this->em->persist($block);
@@ -544,11 +548,8 @@ class PortalEditorController extends AbstractController
 			$widget_url = 'http://' . DPC_SITE_DOMAIN . '/';
 		}
 
-		$chat_online = false;
-		if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
-			$chat_online = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
-			$chat_online = (bool)$chat_online;
-		}
+		$chat_online = ChatAvailableCheck::getAvailableTime();
+		$chat_online = (bool)$chat_online;
 
 		return $this->render('AdminInterfaceBundle:PortalEditor:website-widgets.html.twig', array(
 			'articles'    => $articles,

@@ -281,7 +281,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$content = preg_replace("#<br\s*/?>?#", "\n", $content);
 		$content = preg_replace("#<p>\n?#", "\n", $content);
 		$content = preg_replace("#\n?</p>#", "\n", $content);
-		$content = html_entity_decode(strip_tags($content), \ENT_QUOTES, 'UTF-8');
+		$content = html_entity_decode(Strings::stripTags($content), \ENT_QUOTES, 'UTF-8');
 		$content = str_replace('&nbsp;', ' ', $content);
 		$content = trim($content);
 

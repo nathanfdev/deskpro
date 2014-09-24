@@ -98,26 +98,6 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\AgentAccess
-	 */
-	public function getAccess()
-	{
-		if ($this->_access !== null) return $this->_access;
-
-		$this->_access = App::getEntityRepository('DeskPRO:AgentAccess')->find($this->person['id']);
-
-		// The user has no access :o
-		if (!$this->_access) {
-			$this->_access = new Entity\AgentAccess();
-			$this->_access['person'] = $this->person;
-		}
-
-		return $this->_access;
-	}
-
-
-
-	/**
 	 * Get the permissions helper
 	 *
 	 * @return \Application\DeskPRO\People\Helpers\AgentPermissions
@@ -141,12 +121,11 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	{
 		if ($this->_agent_teams !== null) return $this->_agent_teams;
 
-		$this->_agent_teams = App::getOrm()->createQuery("
-			SELECT t
-			FROM DeskPRO:AgentTeam t INDEX BY t.id
-			LEFT JOIN t.members p
-			WHERE p.id = ?1
-		")->execute(array(1=>$this->person['id']));;
+		try {
+			$this->_agent_teams = App::$container->getAgentData()->getTeamsForAgent($this->person);
+		} catch (\InvalidArgumentException $e) {
+			$this->_agent_teams = array();
+		}
 
 		return $this->_agent_teams;
 	}

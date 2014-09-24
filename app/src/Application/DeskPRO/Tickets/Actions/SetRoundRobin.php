@@ -110,7 +110,7 @@ class SetRoundRobin extends AbstractContainerAwareAction implements ActionInterf
 			$this->getRep()->updateNextAgent($rr);
 			$ticket->agent = $agent;
 
-			$triggerId = $context->getVars()->get('trigger_id', 0);
+			$triggerId = (int) $context->getVars()->get('trigger_id', 0);
 			$entry = new LogRoundRobin($rr['id'], $agent['id'], $ticket['id'], $triggerId);
 			$context->getLogger()->info($entry);
 

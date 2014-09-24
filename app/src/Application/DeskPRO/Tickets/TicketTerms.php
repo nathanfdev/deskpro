@@ -1097,7 +1097,7 @@ class TicketTerms
 
 				$any = false;
 				foreach ($ticket->ticket_slas as $ticket_sla) {
-					if ($ticket_sla->sla_status == $sla_status && (!$sla_id || $ticket_sla->sla->id = $sla_id)) {
+					if ($ticket_sla->sla_status == $sla_status && (!$sla_id || $ticket_sla->sla->id == $sla_id)) {
 						$any = true;
 						if ($op == self::OP_NOTCONTAINS) {
 							return false;

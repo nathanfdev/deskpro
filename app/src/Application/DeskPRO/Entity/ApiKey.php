@@ -53,6 +53,7 @@ use Orb\Util\Strings;
 class ApiKey extends DomainObject
 {
 	const FLAG_ADMIN_MANAGE = 'admin_manage';
+	const FLAG_SUPER_KEY = 'super';
 
 	/**
 	 * @var int

@@ -532,6 +532,8 @@ class Overview
 					$sla_id = null;
 				}
 
+				$has_slas = $this->em->getConnection()->fetchColumn("SELECT COUNT(*) FROM slas LIMIT 1");
+
 				$stat = new TicketSlaStatus($sla_id, $date, $date2);
 				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
@@ -542,6 +544,7 @@ class Overview
 					'values'      => $stat->getValues(),
 					'max'         => $stat->getMax(),
 					'sum'         => $sum,
+					'has_slas'    => $has_slas,
 				);
 
 				break;

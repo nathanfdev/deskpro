@@ -606,6 +606,25 @@ DeskPRO.UI.Menu = new Orb.Class({
 	},
 
 
+	/**
+	 * Fired when a menu item is mouseout
+	 */
+	_menuItemMouseout: function(event) {
+
+		var eventData = { menu: this, event: event, itemEl: event.currentTarget };
+
+		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
+			this.openTriggerEvent.customEvents.fireEvent('itemMouseout', eventData);
+		}
+
+		if (!eventData.noFireEvent) {
+			this.fireEvent('itemMouseout', eventData);
+		}
+
+		event.stopPropagation();
+	},
+
+
 
 	/**
 	 * Close any open submenu
@@ -656,6 +675,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		$('li', this.elements.list[0]).live('click', this._menuItemClicked.bind(this));
 		$('li', this.elements.list[0]).live('mouseover', this._menuItemMouseover.bind(this));
+		$('li', this.elements.list[0]).live('mouseout', this._menuItemMouseout.bind(this));
 
 		// Copy referenced submenus into the source
 		$('> li[data-submenu-selector]', this.elements.list[0]).each((function(i,el) {
@@ -688,6 +708,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 				// Not using live because specific mouseover events are a bit snappier
 				el.on('mouseover', this._menuItemMouseover.bind(this));
+				el.on('mouseout', this._menuItemMouseout.bind(this));
 
 				subMenuEl.hide();
 

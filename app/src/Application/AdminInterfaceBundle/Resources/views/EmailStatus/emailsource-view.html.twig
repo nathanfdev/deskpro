@@ -36,7 +36,7 @@
 						</div>
 					</td>
 				</tr>
-				<tr ng-if="ViewSource.source.object_type">
+				<tr ng-if="ViewSource.source.object_type && ViewSource.source.object_id != 0">
 					<th>Created Object</th>
 					<td ng-switch="ViewSource.source.object_type">
 						<div ng-switch-when="ticket">

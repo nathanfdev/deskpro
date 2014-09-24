@@ -185,6 +185,8 @@ define [
 				return false
 			if @isNumber(obj) and isNaN(obj)
 				return true
+			if obj instanceof Date
+				return false
 
 			for own k, v of obj
 				return false

@@ -1,0 +1,19 @@
+<script>
+	pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.DpNews';
+	pageMeta.title         = {{ dp_news.title|json_encode|raw }};
+	pageMeta.dpNewsId      = {{ dp_news.id }};
+
+	{% set baseId = el_uid() %}
+	pageMeta.baseId = '{{ baseId }}';
+</script>
+<div class="layout-content page-dp-news">
+<div class="dp-page-content">
+	<div class="top-controls">
+		<div style="float:right;">
+			<button class="clean-white" id="{{ baseId }}_dismiss">Dismiss this article</button>
+		</div>
+		<a href="{{ dp_news.url }}" target="_blank">View this article on the DeskPRO website &rarr;</a>
+	</div>
+	<div class="frame-container"><iframe src="{{ dp_news.url }}?_partial=overlayWidget" width="100%" height="100%" frameborder="0"></iframe></div>
+</div>
+</div>

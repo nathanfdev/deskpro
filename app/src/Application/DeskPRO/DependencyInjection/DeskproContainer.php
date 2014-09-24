@@ -477,11 +477,22 @@ class DeskproContainer extends Container
 	/**
 	 * Get the searcher
 	 *
-	 * @return \Application\DeskPRO\Search\Adapter\AbstractAdapter
+	 * @return \Application\DeskPRO\NewSearch\SearchEngine\SearchEngine
 	 */
 	public function getSearchEngine()
 	{
-		return $this->get('deskpro.search_engine');
+		return $this->getSystemService('SearchEngine');
+	}
+
+
+	/**
+	 * Get the context factory
+	 *
+	 * @return \Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory
+	 */
+	public function getSearchContextFactory()
+	{
+		return $this->getSystemService('SearchContextFactory');
 	}
 
 

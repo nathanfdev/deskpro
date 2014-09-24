@@ -86,6 +86,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 			}
 		});
 		this.ownObject(this.sortingMenu);
+		this.addEvent('activate', this.fillListItems, this);
 	},
 
 	initScope: function(){
@@ -111,17 +112,6 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 			}
 		};
 
-		$scope.$watch('organizations', function(newVal, oldVal){
-			$scope.$parent.listItems.length = 0;
-            if (!newVal || !newVal.length) {
-                return;
-            }
-			var routeTemplate = $scope.$parent.routes.organization;
-			newVal.each(function(org){
-				$scope.$parent.addListItem('organization', 'organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
-			});
-		});
-
         $scope.getDisplayableFields = function() {
             var fields = [];
             self.fixed_fields.each(function(v){
@@ -138,7 +128,22 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
             return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
         };
 
+		$scope.$watch('organizations', this.fillListItems.bind(this));
+
 		// sometimes $scope.persons won't apply (as we're working outside of digest loop most of time), so force it
 		$scope.$safeApply();
-	}
+	},
+
+	fillListItems: function() {
+		var self = this,
+			$scope = this.$scope,
+			routeTemplate = $scope.routes.organization;
+
+		if (!self.IS_ACTIVE) return;
+		$scope.listItems.length = 0;
+
+		$scope.organizations.each(function(org){
+			$scope.addListItem('organization', 'organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
+		});
+	},
 });

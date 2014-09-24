@@ -112,7 +112,6 @@
             _this.notif_prefs = _this.agentNotifPrefsModel.prefsTable;
             _this.agentFormModel = new EditAgentModel(_this.agent, _this.groups, _this.teams, _this.primary_phone_number_region);
             _this.form = _this.agentFormModel.form;
-            console.info(_this.form);
             _this.$scope.$watch('EditCtrl.form.agent_groups', function() {
               _this.updateEffectiveUgPerms();
               return _this.updateAllPermsState();
@@ -159,7 +158,9 @@
                 full: full
               };
             }
-            return _this.updateHasPermOverridesStatus();
+            return _this.$timeout(function() {
+              return _this.updateHasPermOverridesStatus();
+            });
           };
         })(this));
         return promise;
@@ -367,7 +368,7 @@
                 if (!__hasProp.call(perms, permName)) continue;
                 value = perms[permName];
                 if (value) {
-                  if ((((_ref1 = _this.ugEffectivePerms[type]) != null ? _ref1[permName] : void 0) == null) || !_this.ugEffectivePerms[type][permName]) {
+                  if ((((_ref1 = _this.ugEffectivePerms[type]) != null ? _ref1[permName] : void 0) == null) || !_this.ugEffectivePerms[type][permName] || !_this.form.agent_groups.length) {
                     _this.hasPermOverrides = true;
                     return;
                   }
@@ -395,7 +396,7 @@
                   if (!__hasProp.call(perms, perm)) continue;
                   value = perms[perm];
                   if (value) {
-                    if (!_this.ugEffectiveDepPerms[app][depId][perm]) {
+                    if (!_this.ugEffectiveDepPerms[app][depId][perm] || !_this.form.agent_groups.length) {
                       _this.hasDepOverrides = true;
                       return;
                     }
@@ -836,9 +837,10 @@
         }
         promise.then((function(_this) {
           return function(res) {
-            _this.service.agents._addModel(res.data.agent);
             _this.agent.display_name = _this.form.name;
+            _this.service.agents.mergeDataModel(_this.agent);
             if (!_this.agentId) {
+              _this.service.agents.all(true);
               _this.$state.go('agents.agents.edit', {
                 id: res.data.person_id
               });

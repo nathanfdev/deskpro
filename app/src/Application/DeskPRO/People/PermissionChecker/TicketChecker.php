@@ -55,6 +55,7 @@ class TicketChecker extends AbstractChecker
 		'set_awaiting_user',
 		'set_awaiting_agent',
 		'set_resolved',
+		'set_unresolved',
 		'followed',
 	);
 
@@ -280,6 +281,11 @@ class TicketChecker extends AbstractChecker
 	public function canModify(Ticket $ticket, $op)
 	{
 		if (!$this->canView($ticket)) {
+			return false;
+		}
+
+		$isSetUnresolved = 'set_awaiting_user' === $op || 'set_awaiting_agent' === $op;
+		if ($isSetUnresolved && 'resolved' === $ticket['status'] && !$this->canModify($ticket, 'set_unresolved')) {
 			return false;
 		}
 

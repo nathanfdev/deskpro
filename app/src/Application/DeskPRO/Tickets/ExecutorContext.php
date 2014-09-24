@@ -198,7 +198,7 @@ class ExecutorContext implements ExecutorContextInterface
 
 
 	/**
-	 * @return string
+	 * @return string newticket, newreply, update
 	 */
 	public function getEventType()
 	{
@@ -220,7 +220,7 @@ class ExecutorContext implements ExecutorContextInterface
 
 
 	/**
-	 * @return string
+	 * @return string email, api or web
 	 */
 	public function getEventMethod()
 	{
@@ -257,7 +257,7 @@ class ExecutorContext implements ExecutorContextInterface
 
 
 	/**
-	 * @return string
+	 * @return string system, user or agent
 	 */
 	public function getEventPerformer()
 	{

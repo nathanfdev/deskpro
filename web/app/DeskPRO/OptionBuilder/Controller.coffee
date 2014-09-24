@@ -240,6 +240,9 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				rowScope.type = type
 				rowScope.type_title = option_title
 
+				for own k,v of @typesDef.getVars()
+					rowScope[k] = v
+
 				if existId
 					rowId = existId
 				else

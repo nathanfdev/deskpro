@@ -47,6 +47,7 @@
 
 <link rel="stylesheet" type="text/css" href="{{ asset('stylesheets/user/main-print.css') }}" media="print" />
 <!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
+{{ dp_asset_html('agent_vendor_out_css') }}
 
 <script type="text/javascript">
 	$.ajaxPrefilter(function(options, originalOptions, jqXHR) {

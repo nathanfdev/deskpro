@@ -250,7 +250,7 @@
         this.els.loadingOptionMessage.show().addClass('loading-on');
         run = (function(_this) {
           return function(tpl, data, isRetry) {
-            var element, k, option_title, rowId, rowScope, sb, v, _i, _j, _len, _len1, _ref, _ref1;
+            var element, k, option_title, rowId, rowScope, sb, v, _i, _j, _len, _len1, _ref, _ref1, _ref2;
             if (time < _this.resetTime) {
               return;
             }
@@ -285,6 +285,12 @@
             rowScope = _this.$scope.$new();
             rowScope.type = type;
             rowScope.type_title = option_title;
+            _ref2 = _this.typesDef.getVars();
+            for (k in _ref2) {
+              if (!__hasProp.call(_ref2, k)) continue;
+              v = _ref2[k];
+              rowScope[k] = v;
+            }
             if (existId) {
               rowId = existId;
             } else {

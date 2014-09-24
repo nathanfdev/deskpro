@@ -86,12 +86,13 @@ class AccountValidator
 	 */
 	public function validate()
 	{
-		$this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithEmail($this->email);
+		$this->ticket_ids = $this->em->getRepository('DeskPRO:Ticket')->getTicketIdsWithEmail($this->email, true);
 
 		$this->em->getConnection()->beginTransaction();
 
 		try {
 			$this->email->is_validated = true;
+			$this->email->is_own_validated = true;
 			$this->em->persist($this->email);
 			$this->em->flush();
 

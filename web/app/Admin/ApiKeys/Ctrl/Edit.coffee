@@ -38,14 +38,13 @@ define [
 			promise = @keyData.saveFormModel(@api_key, @form)
 
 			@startSpinner('saving')
-			promise.then( =>
-				@stopSpinner('saving', true).then(=>
-					@Growl.success("Saved")
-				)
-
-				@skipDirtyState()
-				if is_new
-					@$state.go('apps.api_keys.gocreate')
+			promise.then(
+				=>
+					@stopSpinner('saving', true).then => @Growl.success 'Saved'
+					@skipDirtyState()
+					if is_new then @$state.go('apps.api_keys.gocreate')
+				=>
+					@stopSpinner('saving', true).then => @Growl.error 'Error'
 			)
 
 		###

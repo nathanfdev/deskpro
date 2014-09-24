@@ -28,6 +28,12 @@ $collection->create('admin_lang_load', array(
 	'controller'  => 'AdminInterfaceBundle:Interface:loadLang',
 ));
 
+$collection->create('admin_apps_download_package', array(
+	'path'        => '/apps/download-package/{name}',
+	'controller'  => 'AdminInterfaceBundle:Apps:downloadPackage',
+	'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Portal
 ########################################################################################################################
