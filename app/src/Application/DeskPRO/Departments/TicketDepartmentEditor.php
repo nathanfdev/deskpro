@@ -77,11 +77,12 @@ class TicketDepartmentEditor
 		}
 
 		$old_id = $dep->id;
+
+		$this->db->executeUpdate("UPDATE tickets SET department_id = ? WHERE department_id = ?", array($move_to['id'], $old_id));
+		$this->db->executeUpdate("UPDATE tickets_search_active SET department_id = ? WHERE department_id = ?", array($move_to['id'], $old_id));
+
 		$this->em->remove($dep);
 		$this->em->flush();
-
-		$this->db->executeUpdate("UPDATE tickets SET department_id = ? WHERE department_id = ?", array($move_to, $old_id));
-		$this->db->executeUpdate("UPDATE tickets_search_active SET department_id = ? WHERE department_id = ?", array($move_to, $old_id));
 
 		return $old_id;
 	}

@@ -183,6 +183,12 @@ define [
 				value: 'CheckUserMessage'
 			})
 
+			if @options_data?.ticket_settings?.satisfaction_enabled
+				options.push({
+					title: 'Ticket Satisfaction',
+					value: 'CheckTicketSatisfaction'
+				})
+
 			set_options.push({
 				title: 'Ticket Criteria',
 				subOptions: options
@@ -454,7 +460,8 @@ define [
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
 						'email_tpls':      '/email-templates-info'
-						'api_keys':          '/api_keys'
+						'api_keys':        '/api_keys',
+						'ticket_settings': '/ticket_settings'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -474,6 +481,7 @@ define [
 						options_data['langs']            = data.langs?.languages
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
 						options_data['api_keys']         = data.api_keys.api_keys
+						options_data['ticket_settings']  = data.ticket_settings?.ticket_settings
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -1154,3 +1162,12 @@ define [
 				opts
 
 			@getStandardSelect(options)
+
+		getCheckTicketSatisfaction: (options = {}) ->
+			options.propName = 'feedback_rating'
+			options.dataName = 'feedback_rating'
+			options.operators = ['is', 'changed', 'changed_to']
+			options.single = true
+			options.optionsFormatter = (options) ->
+				return [{value: -1, title: 'Negative'}, {value: 0, title: 'Neutral'}, {value: 1, title: 'Positive'}]
+			@getStandardSelect options

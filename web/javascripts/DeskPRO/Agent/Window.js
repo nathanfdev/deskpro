@@ -1261,6 +1261,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 			self.paneVis.tabs = true;
 		};
 
+		$scope.highlightIdentity = function(identity) {
+			$scope.removeHighlight();
+			var identityClass = identity.replace(':', '-');
+			$('.row-item.' + identityClass).addClass('item-hover-over');
+			$('#tabNavigationPane .' + identityClass).addClass('item-hover-over');
+		};
+
+		$scope.removeHighlight = function() {
+			$('.item-hover-over').removeClass('item-hover-over');
+		};
+
 		$scope.showList = function() {
 			$scope.$safeApply(function(){
 				if (!(self.paneVis.list && self.paneVis.tabs)) { // if 1 column mode
@@ -3201,6 +3212,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/tasks/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/tasks/new',
 			autostart: autostart
 		});
 		$('#create_task_btn').on('click', function() { $('form#newTaskForm input, form#newTaskForm select').val(''); DeskPRO_Window.newTaskLoader.toggle(); });

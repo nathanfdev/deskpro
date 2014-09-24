@@ -63,6 +63,8 @@
 					data-tab-id="{{ ng_var('tab.id') }}"
 					ng-class="{'activeTabList': tab.isActive && paneVis.tabs, 'is-alerting': tab.isAlerting}"
 					class="{{ ng_var('tab.classId') }}"
+                    context-menu="context(tab)"
+                    data-target="tabContextMenu"
 					>
 					<div class="item-hover-over-indicator"></div>
 					<a>
@@ -111,4 +113,24 @@
 	<div id="tabNavSelectorRight">
 		<a class="tabSlideRight"></a>
 	</div>
+
+    <div class="dropdown" id="tabContextMenu" style="position: fixed;z-index: 3;">
+        <ul class="dropdown-menu" role="menu">
+            <li>
+                <a class="pointer" role="menuitem" tabindex="1" ng-click="closeCurrent()">
+                    Close this tab
+                </a>
+            </li>
+            <li>
+                <a class="pointer" role="menuitem" tabindex="2" ng-click="closeAll()">
+                    Close all tabs
+                </a>
+            </li>
+            <li>
+                <a class="pointer" role="menuitem" tabindex="3" ng-click="closeOthers()">
+                    Close all other tabs
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>

@@ -903,4 +903,20 @@ class ServerChecks
 
 		return false;
 	}
+
+	/**
+	 * check for optional extensions
+	 * @return array
+	 */
+	public function getOptionals()
+	{
+		$optionals = array();
+
+		$optionals['test'] = array(
+			'message' => 'err',
+			'level' => 'recommended',
+		);
+
+		return $optionals;
+	}
 }

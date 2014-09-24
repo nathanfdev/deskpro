@@ -16,7 +16,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
         if (types == null) {
           types = [];
         }
@@ -226,11 +226,22 @@
             });
           }
         }
+        if ((_ref6 = this.options_data) != null ? (_ref7 = _ref6.tasks) != null ? _ref7.enabled : void 0 : void 0) {
+          options = [];
+          options.push({
+            title: 'Create Task',
+            value: 'CreateTask'
+          });
+          set_options.push({
+            title: 'Tasks',
+            subOptions: options
+          });
+        }
         if ((typesData != null ? typesData.dynamicOptions : void 0) != null) {
           options = [];
-          _ref6 = typesData.dynamicOptions;
-          for (_k = 0, _len2 = _ref6.length; _k < _len2; _k++) {
-            opt = _ref6[_k];
+          _ref8 = typesData.dynamicOptions;
+          for (_k = 0, _len2 = _ref8.length; _k < _len2; _k++) {
+            opt = _ref8[_k];
             options.push({
               title: opt.action_title,
               value: opt.action_name
@@ -471,7 +482,8 @@
               'langs': '/langs',
               'email_tpls': '/email-templates-info',
               round_robin: '/round_robin/settings',
-              round_robins: '/round_robin'
+              round_robins: '/round_robin',
+              tasks: '/tasks/settings'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -494,6 +506,7 @@
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
                 options_data['round_robin'] = data.round_robin;
                 options_data['round_robins'] = data.round_robins;
+                options_data['tasks'] = data.tasks;
                 options_data['ticket_dep_options'] = _this.standardOptionsFormatter(options_data['ticket_deps']);
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
@@ -1766,6 +1779,73 @@
                   sla_status: model.sla_status || 'ok'
                 };
                 return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCreateTask = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-create-task.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var agents, _public;
+                if (value == null) {
+                  value = {};
+                }
+                options = value.options || {};
+                agents = [
+                  {
+                    id: -1,
+                    display_name: 'Current Agent'
+                  }
+                ];
+                data.tasks.agents.map(function(agent) {
+                  var _ref, _ref1;
+                  if ((_ref = agent.perms) != null ? (_ref1 = _ref.tasks) != null ? _ref1.use : void 0 : void 0) {
+                    return agents.push(agent);
+                  }
+                });
+                _public = options["public"];
+                if (_public == null) {
+                  _public = true;
+                }
+                return {
+                  agents: agents,
+                  teams: data.agent_teams,
+                  title: options.title,
+                  date_due: options.date_due,
+                  "public": _public,
+                  creator: options.creator,
+                  assignee: options.assignee
+                };
+              },
+              getValue: function(model, data) {
+                if (model == null) {
+                  model = {};
+                }
+                return {
+                  type: 'CreateTask',
+                  options: {
+                    title: model.title,
+                    date_due: model.date_due,
+                    "public": model["public"],
+                    creator: model.creator,
+                    assignee: model.assignee
+                  }
+                };
               }
             };
           }

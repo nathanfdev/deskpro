@@ -34,6 +34,7 @@
 namespace Application\ReportsInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Service\CheckWhitelistedIP;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -94,6 +95,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
 			}
+		}
+
+		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+				'ip' => dp_get_user_ip_address()
+			));
 		}
 
 		return null;

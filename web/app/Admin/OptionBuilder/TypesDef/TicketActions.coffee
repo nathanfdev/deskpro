@@ -287,6 +287,22 @@ define [
 					})
 
 			#------------------------------
+			# Tasks
+			#------------------------------
+
+			if @options_data?.tasks?.enabled
+				options = []
+
+				options.push
+					title: 'Create Task',
+					value: 'CreateTask'
+
+				set_options.push({
+					title: 'Tasks',
+					subOptions: options
+				})
+
+			#------------------------------
 			# Dynamic Options
 			#------------------------------
 
@@ -476,6 +492,7 @@ define [
 						'email_tpls':      '/email-templates-info',
 						round_robin:       '/round_robin/settings',
 						round_robins:      '/round_robin',
+						tasks:             '/tasks/settings'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -496,6 +513,7 @@ define [
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
 						options_data['round_robin']      = data.round_robin
 						options_data['round_robins']     = data.round_robins
+						options_data['tasks']            = data.tasks
 
 						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
@@ -1331,5 +1349,47 @@ define [
 								sla_status: model.sla_status || 'ok'
 							}
 							return value
+					}
+			}
+
+		getCreateTask: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-create-task.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value.options || {}
+							agents = [{id: -1, display_name: 'Current Agent'}]
+							data.tasks.agents.map (agent) -> agents.push agent if agent.perms?.tasks?.use
+							_public = options.public
+							_public = true if !_public?
+
+							return {
+								agents: agents
+								teams: data.agent_teams
+								title: options.title
+								date_due: options.date_due
+								public: _public
+								creator: options.creator
+								assignee: options.assignee
+							}
+
+						getValue: (model = {}, data) ->
+							return {
+								type: 'CreateTask'
+								options: {
+									title: model.title
+									date_due: model.date_due
+									public: model.public
+									creator: model.creator
+									assignee: model.assignee
+								}
+							}
 					}
 			}

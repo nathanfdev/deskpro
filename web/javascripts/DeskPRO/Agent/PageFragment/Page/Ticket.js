@@ -913,7 +913,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}
 				}
 
-				this.fireEvent('load', [data]);
+				this.fireEvent('load');
 			}
 		});
 	},

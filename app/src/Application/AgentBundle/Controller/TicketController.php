@@ -50,6 +50,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -442,7 +443,7 @@ class TicketController extends AbstractController
 		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
 		$ticket_perms['modify_set_closed'] = $this->person->PermissionsManager->TicketChecker->canSetClosed($ticket);
 
-		foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved') as $p) {
+		foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved', 'set_unresolved') as $p) {
 			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
 		}
 
@@ -743,6 +744,7 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'edit');
 
+		/** @var TicketChecker $tcheck */
 		$tcheck = $this->person->PermissionsManager->TicketChecker;
 
 		if ($this->in->checkIsset('department') && $tcheck->canModify($ticket, 'department')) {
@@ -1089,10 +1091,24 @@ class TicketController extends AbstractController
 		}
 
 		if ($set_status) {
+			/** @var TicketChecker $tcheck */
+			$tcheck = $this->person->PermissionsManager->TicketChecker;
 			switch ($set_status) {
-				case 'resolved':       if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) $set_status = $ticket['status']; break;
-				case 'awaiting_agent': if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) $set_status = $ticket['status']; break;
-				case 'awaiting_user':  if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) $set_status = $ticket['status']; break;
+				case 'resolved':
+					if (!$tcheck->canModify($ticket, 'set_resolved')) {
+						$set_status = $ticket['status'];
+					}
+					break;
+				case 'awaiting_agent':
+					if (!$tcheck->canModify($ticket, 'set_awaiting_agent')) {
+						$set_status = $ticket['status'];
+					}
+					break;
+				case 'awaiting_user':
+					if (!$tcheck->canModify($ticket, 'set_awaiting_user')) {
+						$set_status = $ticket['status'];
+					}
+					break;
 			}
 		}
 
@@ -1333,7 +1349,7 @@ class TicketController extends AbstractController
 
 			if (!$message['is_agent_note'] || $macro) {
 				if ($action_type != 'macro') {
-					$ticket['status'] = $action_type;
+					$ticket['status'] = $set_status;
 				}
 
 				if ($this->in->getBool('options.do_kbpending')) {

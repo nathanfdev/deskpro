@@ -44,7 +44,30 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.$scope = DeskPRO_Window.$scope;
 		this.$timeout = DeskPRO_Window.$timeout;
 		this.$scope.tabs = this._tabs;
+		this.$scope.contextMenuTab = null;
 		this.$scope.tabClick = function($event, tab){ self._tabStripClick($event, tab); };
+
+		this.$scope.context = function(tab) {
+			self.$scope.contextTab = tab;
+		};
+
+		this.$scope.closeAll = function(){
+			var tabs = [];
+			self._tabs.each(function(tab){ tabs.push(tab) });
+			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+		};
+
+		this.$scope.closeOthers = function(){
+			var tabs = [], active = self.getActiveTab();
+			self._tabs.each(function(tab){ tab !== active && tabs.push(tab) });
+			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+		};
+
+		this.$scope.closeCurrent = function(){
+			self.$timeout(function(){
+				self.$scope.contextTab && self.removeTab(self.$scope.contextTab);
+			}, 10);
+		};
 
 		this.$scope.$watch('listItems', function(){
 			self._checkOpenedItems();
@@ -499,6 +522,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			$('body').addClass('without-tabs').removeClass('with-tabs');
 		}
 		this._tabs.splice(this._tabs.indexOf(tab), 1);
+		if (tab === this.$scope.contextTab) {
+			this.$scope.contextTab = null;
+		}
 		this._checkOpenedItems();
 
 		if (data.callback_remove_content !== undefined) {

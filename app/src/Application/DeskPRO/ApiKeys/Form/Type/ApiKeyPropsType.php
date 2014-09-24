@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\ApiKeys\Form\Type;
 
+use Application\DeskPRO\Entity\ApiKey;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -58,6 +59,11 @@ class ApiKeyPropsType extends AbstractType
 				 }
 			)
 		);
+		$builder->add('flags', 'choice', array(
+			'choices' => array(ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY),
+			'multiple' => true, // an array
+			'required' => false,
+		));
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
