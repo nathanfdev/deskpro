@@ -1,9 +1,11 @@
 define [
 	'Admin/Main/Service/SessionPing',
-	'Admin/Cloud/App/CloudService'
+	'Admin/Cloud/App/CloudService',
+	'angular'
 ], (
 	Admin_Main_Service_SessionPing,
-	Admin_Cloud_App_CloudService
+	Admin_Cloud_App_CloudService,
+	angular
 ) ->
 	return (Module) ->
 		Module.service('SessionPing', ['Api', (Api) ->
@@ -41,3 +43,17 @@ define [
 					dpObTypesDefTicketFilter.resetData()
 			)
 		])
+
+		Module.filter('orderObjectBy', ->
+			(items, field, reverse) ->
+				filtered = []
+				angular.forEach(items, (item) ->
+					filtered.push item
+				)
+
+				filtered.sort (a, b) ->
+					if a[field] > b[field] then 1 else -1
+
+				reverse && filtered.reverse()
+				return filtered
+		)

@@ -6,7 +6,9 @@
 				<td class="labels">
 					<ul>
 						{% for label in labels %}
-							<li id="people_label_list_{{label|slugify}}" class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}"><span>{{label}}</span></li>
+							<li id="people_label_list_{{label|slugify}}" class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">
+                                <span dp-label="{{ label }}">{{label}}</span>
+                            </li>
 						{% endfor %}
 					</ul>
 				</td>

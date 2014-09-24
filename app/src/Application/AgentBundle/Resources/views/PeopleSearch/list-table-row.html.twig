@@ -22,7 +22,7 @@
 
     {# Labels #}
     <span ng-switch-when="labels">
-        <span class="listing-tag" ng-repeat="label in person.labels" style="margin-right: 5px;">
+        <span class="listing-tag" ng-repeat="label in person.labels" style="margin-right: 5px;" dp-label="label">
             {{ ng_var('label') }}
         </span>
     </span>

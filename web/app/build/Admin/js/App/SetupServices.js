@@ -1,5 +1,5 @@
 (function() {
-  define(['Admin/Main/Service/SessionPing', 'Admin/Cloud/App/CloudService'], function(Admin_Main_Service_SessionPing, Admin_Cloud_App_CloudService) {
+  define(['Admin/Main/Service/SessionPing', 'Admin/Cloud/App/CloudService', 'angular'], function(Admin_Main_Service_SessionPing, Admin_Cloud_App_CloudService, angular) {
     return function(Module) {
       Module.service('SessionPing', [
         'Api', function(Api) {
@@ -18,7 +18,7 @@
           }, 20000);
         }
       ]);
-      return Module.run([
+      Module.run([
         '$rootScope', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions', 'dpObTypesDefTicketFilter', function($rootScope, dpObTypesDefTicketCriteria, dpObTypesDefTicketActions, dpObTypesDefTicketFilter) {
           var getAppStateName;
           getAppStateName = function(name) {
@@ -44,6 +44,24 @@
           });
         }
       ]);
+      return Module.filter('orderObjectBy', function() {
+        return function(items, field, reverse) {
+          var filtered;
+          filtered = [];
+          angular.forEach(items, function(item) {
+            return filtered.push(item);
+          });
+          filtered.sort(function(a, b) {
+            if (a[field] > b[field]) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+          reverse && filtered.reverse();
+          return filtered;
+        };
+      });
     };
   });
 
