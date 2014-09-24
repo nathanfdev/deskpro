@@ -29,82 +29,26 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\People\Helpers;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Orb\Util\Arrays;
-
-/**
- * This helps working with agent teams on a person
- */
-class AgentTeam implements \Orb\Helper\ShortCallableInterface
+class Build1411571972 extends AbstractBuild
 {
-	protected $person;
-	protected $_agent_team_ids = null;
-
-	public function __construct(Entity\Person $person)
+	public function run()
 	{
-		$this->person = $person;
-	}
-
-	public function getShortCallableNames()
-	{
-		return array(
-			'getAgentTeamIds' => 'getAgentTeamIds',
+		$this->out("Primary Team upgrade");
+		$this->execMutateSql(
+			<<<SQL
+			ALTER TABLE agent_team_members DROP FOREIGN KEY FK_CC952C03217BBB47;
+ALTER TABLE agent_team_members DROP FOREIGN KEY FK_CC952C03296CD8AE;
+ALTER TABLE agent_team_members ADD CONSTRAINT FK_CC952C03217BBB47 FOREIGN KEY (person_id) REFERENCES people (id);
+ALTER TABLE agent_team_members ADD CONSTRAINT FK_CC952C03296CD8AE FOREIGN KEY (team_id) REFERENCES agent_teams (id);
+ALTER TABLE people ADD primary_team_id INT DEFAULT NULL;
+ALTER TABLE people ADD CONSTRAINT FK_28166A26E715BE01 FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id);
+CREATE INDEX IDX_28166A26E715BE01 ON people (primary_team_id);
+SQL
 		);
-	}
-
-	public function getAgentTeamIds()
-	{
-		if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
-
-		$this->_agent_team_ids = App::getDb()->fetchAllCol("
-			SELECT team_id
-			FROM agent_team_members
-			WHERE person_id = {$this->person['id']}
-		");
-
-		return $this->_agent_team_ids;
-	}
-
-	public function getAgentTeams()
-	{
-		$ids = $this->getAgentTeamIds();
-		if (!$ids) {
-			return array();
-		}
-
-		$agent_data = App::getContainer()->getAgentData();
-		$teams = array();
-
-		foreach ($ids as $id) {
-			$t = $agent_data->getTeam($id);
-			if ($t) {
-				$teams[] = $t;
-			}
-		}
-
-		return $teams;
-	}
-
-	public function getPrimaryTeamId()
-	{
-		return $this->person->primaryTeam
-			? $this->person->primaryTeam['id']
-			: Arrays::getFirstItem($this->getAgentTeamIds());
-	}
-
-	public function addToAgentTeam(Entity\AgentTeam $team)
-	{
-		return $team->addPerson($this);
-	}
-
-	public function reset()
-	{
-		$this->_agent_team_ids = null;
 	}
 }

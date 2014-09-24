@@ -147,16 +147,10 @@ class AgentsController extends AbstractController implements ProtectedController
 		/** @var PersonApiDataFactoryService $apiDataFactory */
 		$apiDataFactory = $this->getContainer()->getSystemService('person_api_data_factory');
 		$agent_data = $apiDataFactory->agentToApiData($agent);
-		$agent_data['teams'] = array();
 
 		$agent->loadHelper('Agent');
-		$agent->loadHelper('AgentTeam');
 		$agent->loadHelper('AgentPermissions');
 		$agent->loadHelper('PermissionsManager');
-
-		foreach ($this->container->getAgentData()->getTeamsByIds($agent->getHelper('AgentTeam')->getAgentTeamIds()) as $t) {
-			$agent_data['teams'][] = $t->toApiData();
-		}
 
 		$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 

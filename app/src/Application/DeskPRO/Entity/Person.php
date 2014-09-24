@@ -496,6 +496,16 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $_search_highlights;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $teams;
+
+	/**
+	 * @var AgentTeam
+	 */
+	protected $primary_team;
+
+	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
 	 *
@@ -566,6 +576,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->department_permissions = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->teams                  = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -2464,6 +2475,43 @@ class Person extends DomainObject implements HighlightableModelInterface
 		return $data;
 	}
 
+	public function addTeam(AgentTeam $team)
+	{
+		if (!$this->teams->contains($team)) {
+			if (!$this->primary_team) {
+				$this->setModelField('primary_team', $team);
+			}
+			$this->teams->add($team);
+			$this->_onPropertyChanged('teams', $this->teams, $this->teams);
+		}
+
+		$team->addPerson($this);
+	}
+
+	public function removeTeam(AgentTeam $team)
+	{
+		$this->teams->removeElement($team);
+		$this->_onPropertyChanged('teams', $this->teams, $this->teams);
+		$team->removePerson($this);
+
+		if ($this->primary_team === $team) {
+			$this->setModelField('primary_team', $this->teams->first() ?: null);
+		}
+	}
+
+	public function getPrimaryTeam()
+	{
+		if ($this->primary_team) {
+			return $this->primary_team;
+		}
+
+		if ($first = $this->teams->first()) {
+			return $first;
+		}
+
+		return null;
+	}
+
 
 	/**
 	 * @param bool  $primary
@@ -2699,6 +2747,25 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
 		                               'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
 		                               'mappedBy' => 'person'
+		));
+
+		$metadata->mapManyToMany(array(
+			'fieldName' => 'teams',
+			'mappedBy' => 'members',
+			'dpApi' => true,
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+			'joinTable' => array(
+				'name' => 'agent_team_members',
+				'joinColumns' => array(array( 'name' => 'person_id' )),
+				'inverseJoinColumns' => array(array( 'name' => 'team_id' )),
+			),
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'primary_team',
+			'dpApi' => true,
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+			'nullable' => true,
 		));
 	}
 }

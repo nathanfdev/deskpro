@@ -81,6 +81,12 @@ class EditAgentType extends AbstractType
 			'invalid_message' => 'Invalid Agent Group.',
 		));
 
+		$builder->add('primary_team', 'entity', array(
+			'class'         => 'DeskPRO:AgentTeam',
+			'required'      => false,
+			'invalid_message' => 'Invalid Agent Team.',
+		));
+
 		$builder->add('notification_settings', 'collection');
 	}
 
