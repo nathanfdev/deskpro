@@ -58,20 +58,22 @@
                             </h3>
                         </div>
 
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.min_length">
                             <label>
                                 <h4>Minimum password length:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.min_length" style="width: 100px; display: inline-block;" /> characters
+                            <input type="number" class="form-control" name="min_length" ng-model="agent.min_length"
+                                   style="width: 100px; display: inline-block;" required integer min="0" /> characters
 							<span class="help-block">
 								The minimum number of characters the password has to be.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.max_age">
                             <label>
                                 <h4>Maximum password age:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.max_age" style="width: 100px; display: inline-block;" /> days
+                            <input type="number" class="form-control" name="max_age" ng-model="agent.max_age"
+                                   style="width: 100px; display: inline-block;" required integer min="0" /> days
 							<span class="help-block">
 								How many days a password can remain unchanged until DeskPRO requires the agent to change it.
 							</span>
@@ -85,38 +87,46 @@
 								When enabled, agents will not be able to change their password to a password they have used in the past.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.require_num_lowercase">
                             <label>
                                 <h4>Require this many lower-case characters:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.require_num_lowercase" style="width: 100px; display: inline-block;" />
+                            <input type="number" class="form-control" name="require_num_lowercase"
+                                   ng-model="agent.require_num_lowercase" style="width: 100px; display: inline-block;"
+                                   required integer min="0" />
 							<span class="help-block">
 								Define the minimum number of lower-case (a-z) characters that must be used in the password.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.require_num_uppercase">
                             <label>
                                 <h4>Require this many upper-case characters:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.require_num_uppercase" style="width: 100px; display: inline-block;" />
+                            <input type="number" class="form-control" name="require_num_uppercase"
+                                   ng-model="agent.require_num_uppercase" style="width: 100px; display: inline-block;"
+                                   required integer min="0" />
 							<span class="help-block">
 								Define the minimum number of upper-case (A-Z) characters that must be used in the password.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.require_num_number">
                             <label>
                                 <h4>Require this many numbers:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.require_num_number" style="width: 100px; display: inline-block;" />
+                            <input type="number" class="form-control" name="require_num_number"
+                                   ng-model="agent.require_num_number" style="width: 100px; display: inline-block;"
+                                   required integer min="0" />
 							<span class="help-block">
 								Define the minimum number of numbers (0-9) that must be used in the password.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.require_num_symbol">
                             <label>
                                 <h4>Require this many symbols:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.require_num_symbol" style="width: 100px; display: inline-block;" />
+                            <input type="number" class="form-control" name="require_num_symbol"
+                                   ng-model="agent.require_num_symbol" style="width: 100px; display: inline-block;"
+                                   required integer min="0" />
 							<span class="help-block">
 								Define the minimum number of symbols (!, @, $, % etc) that must be used in the password.
 							</span>
