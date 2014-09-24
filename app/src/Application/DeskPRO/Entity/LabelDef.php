@@ -103,6 +103,24 @@ class LabelDef extends DomainObject
 		return $table;
 	}
 
+
+	/**
+	 * @param string $c
+	 */
+	public function setColor($c)
+	{
+		if (!$c) {
+			$this->setModelField('color', null);
+		} else {
+			$c = trim($c);
+			if ($c === '' || $c === '#') {
+				$this->setModelField('color', null);
+			} else {
+				$this->setModelField('color', $c);
+			}
+		}
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################

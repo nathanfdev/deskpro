@@ -4,8 +4,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 		@CTRL_AS = 'LabelsEdit'
 		@DEPS = ['em', '$stateParams', '$rootScope', 'LabelDefinition']
 
-
-
 		init: ->
 			@type = @$state.current.data.type
 			@endpoint = '/labels/definitions'
@@ -60,7 +58,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				sendData = @$scope.form
 				method = 'sendPostJson'
 
-			@Api[method] @endpoint, sendData
+			@Api[method](@endpoint, sendData)
 
 			.success (data) =>
 				@stopSpinner('saving_label', true).then =>

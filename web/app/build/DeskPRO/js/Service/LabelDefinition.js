@@ -4,13 +4,11 @@
   define(['angular'], function(angular) {
     var DeskPRO_Service_LabelDefinition;
     return DeskPRO_Service_LabelDefinition = (function() {
-      var defaultColor, loadDefinitions, updateColorForLabel;
+      var loadDefinitions, updateColorForLabel;
 
       loadDefinitions = null;
 
       updateColorForLabel = null;
-
-      defaultColor = '#d4d4d4';
 
       function DeskPRO_Service_LabelDefinition($q, definitionsPromise) {
         var loadPromise;
@@ -104,7 +102,7 @@
 
       DeskPRO_Service_LabelDefinition.prototype.update = function(_old, _new) {
         var label;
-        if (!_new.label || !_new.label_type || !_new.color) {
+        if (!_new.label || !_new.label_type) {
           return;
         }
         label = _new.label.toLowerCase();
@@ -135,7 +133,7 @@
         label = (label || '').toLowerCase();
         loadDefinitions().then((function(_this) {
           return function() {
-            return d.resolve(_this.colors[label] || defaultColor);
+            return d.resolve(_this.colors[label] || '');
           };
         })(this));
         return d.promise;

@@ -38,13 +38,22 @@
             if (data == null) {
               return;
             }
-            color = data.color || '#c8c8c8';
-            element.css({
-              backgroundColor: color,
-              color: getContrast(color.substr(1)),
-              textShadow: 'none',
-              backgroundImage: 'none'
-            });
+            color = data.color || null;
+            if (color) {
+              element.css({
+                backgroundColor: color,
+                color: getContrast(color.substr(1)),
+                textShadow: 'none',
+                backgroundImage: 'none'
+              });
+            } else {
+              element.css({
+                backgroundColor: '',
+                color: '',
+                textShadow: 'none',
+                backgroundImage: 'none'
+              });
+            }
             if (!data.r) {
               return element.text(data.label);
             }

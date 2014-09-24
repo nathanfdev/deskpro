@@ -34,12 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1409092464 extends AbstractBuild
+class Build1411570086 extends AbstractBuild
 {
 	public function run()
 	{
 		$this->out("Upgrade labels");
-		$this->execMutateSql("ALTER TABLE label_defs ADD color VARCHAR(255) NOT NULL");
-		$this->execMutateSql("UPDATE label_defs SET color = '#cccccc'");
+		$this->execMutateSql("ALTER TABLE label_defs ADD color VARCHAR(255) NULL");
 	}
 }
