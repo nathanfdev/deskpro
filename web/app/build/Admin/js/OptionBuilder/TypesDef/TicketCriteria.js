@@ -1573,7 +1573,7 @@
         }
         options.propName = 'feedback_rating';
         options.dataName = 'feedback_rating';
-        options.operators = ['is', 'changed', 'changed_to'];
+        options.operators = ['is', 'isset', 'not_isset', 'changed', 'changed_to'];
         options.single = true;
         options.optionsFormatter = function(options) {
           return [
