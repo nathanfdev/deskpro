@@ -191,6 +191,10 @@
         }
         options = [];
         options.push({
+          title: 'User',
+          value: 'CheckUserId'
+        });
+        options.push({
           title: 'User Name',
           value: 'CheckUserName'
         });
@@ -252,6 +256,10 @@
           }
         }
         options = [];
+        options.push({
+          title: 'Organization',
+          value: 'CheckOrgId'
+        });
         options.push({
           title: 'Organization Name',
           value: 'CheckOrgName'
@@ -968,15 +976,26 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserName = function(options) {
-        var format;
+        var def;
         if (options == null) {
           options = {};
         }
         options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserId = function(options) {
+        var format;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'id';
+        options.operators = ['is', 'not'];
         options.url = '/people/quick_search';
         format = function(item) {
-          return "" + item[options.propName] + " (" + (item.email || '') + ")";
+          return "" + item['name'] + " (" + (item.email || '') + ")";
         };
         options.inputOptions = {
           formatResult: format,
@@ -1187,15 +1206,26 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgName = function(options) {
-        var format;
+        var def;
         if (options == null) {
           options = {};
         }
         options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgId = function(options) {
+        var format;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'id';
+        options.operators = ['is', 'not'];
         options.url = '/organizations/quick_search';
         format = function(item) {
-          return item[options.propName];
+          return item['name'];
         };
         options.inputOptions = {
           formatResult: format,

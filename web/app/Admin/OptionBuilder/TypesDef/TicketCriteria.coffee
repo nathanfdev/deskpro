@@ -220,6 +220,11 @@ define [
 			options = []
 
 			options.push({
+				title: 'User',
+				value: 'CheckUserId'
+			})
+
+			options.push({
 				title: 'User Name',
 				value: 'CheckUserName'
 			})
@@ -298,6 +303,11 @@ define [
 			#------------------------------
 
 			options = []
+
+			options.push({
+				title: 'Organization',
+				value: 'CheckOrgId'
+			})
 
 			options.push({
 				title: 'Organization Name',
@@ -814,9 +824,15 @@ define [
 		getCheckUserName: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
+			def = @getStandardInput(options)
+			return def
+
+		getCheckUserId: (options = {}) ->
+			options.propName = 'id'
+			options.operators = ['is', 'not']
 			options.url = '/people/quick_search'
 			format = (item) ->
-				"#{item[options.propName]} (#{item.email || ''})"
+				"#{item['name']} (#{item.email || ''})"
 			options.inputOptions =
 				formatResult: format
 				formatSelection: format
@@ -933,8 +949,14 @@ define [
 		getCheckOrgName: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
+			def = @getStandardInput(options)
+			return def
+
+		getCheckOrgId: (options = {}) ->
+			options.propName = 'id'
+			options.operators = ['is', 'not']
 			options.url = '/organizations/quick_search'
-			format = (item) -> item[options.propName]
+			format = (item) -> item['name']
 			options.inputOptions =
 				formatResult: format
 				formatSelection: format
