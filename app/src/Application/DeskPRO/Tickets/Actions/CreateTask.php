@@ -114,6 +114,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
 					if (!$assigned_agent_team) {
 						$assigned_agent_team = null;
 					}
+					break;
 			}
 		}
 
