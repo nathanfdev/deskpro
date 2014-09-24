@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\Arrays;
@@ -58,6 +59,7 @@ class CheckWorkingHours extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
+		$options->addValidNames('set_name');
 		$options->addValidNames('working_hours');
 		return $options;
 	}
@@ -69,7 +71,20 @@ class CheckWorkingHours extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		if (!$working_hours = $options->get('working_hours')) {
+
+		if ($options->get('set_name') == 'default') {
+			$context->getLogger()->debug('[CheckWorkingHours] Default hours');
+			//todo refactor terms so they can get passed a container
+			$working_hours = App::getSetting('core_tickets.work_hours');
+			if ($working_hours && !is_array($working_hours)) {
+				$working_hours = @unserialize($working_hours);
+			}
+		} else {
+			$context->getLogger()->debug('[CheckWorkingHours] Custom hours');
+			$working_hours = $options->get('working_hours');
+		}
+
+		if (!$working_hours) {
 			return false;
 		}
 
@@ -82,15 +97,35 @@ class CheckWorkingHours extends AbstractTriggerTerm
 			$working_hours->get('start_hour', 9) * 3600 + $working_hours->get('start_minute', 0) * 60,
 			$working_hours->get('end_hour', 18) * 3600 + $working_hours->get('end_minute', 0) * 60,
 			$working_hours->get('work_days', array(false, true, true, true, true, true, false)),
-			$working_hours->get('timezone', 'UTC'),
+			$working_hours->get('timezone', $working_hours->get('timezone', 'UTC')),
 			$working_hours->get('holidays', array())
 		);
 
-		if ('is' === $this->getTermOperator() && $wh->isInWorkDay(new \DateTime())) {
+		$context->getLogger()->debug('[CheckWorkingHours] Config: ' . Arrays::implodeTemplate($working_hours->all(), '{KEY}: {VAL}, '));
+
+		try {
+			$tz = new \DateTimeZone($working_hours->get('timezone', 'UTC'));
+			if (!$tz) {
+				return false;
+			}
+		} catch (\Exception $e) {
+			return false;
+		}
+
+		$now = new \DateTime('now', $tz);
+
+		$is_in_workday = $wh->isInWorkDay($now);
+		if ($is_in_workday) {
+			$context->getLogger()->debug('[CheckWorkingHours] IS in working hours');
+		} else {
+			$context->getLogger()->debug('[CheckWorkingHours] IS NOT in working hours');
+		}
+
+		if ('is' === $this->getTermOperator() && $is_in_workday) {
 			return true;
 		}
 
-		if ('not' === $this->getTermOperator() && !$wh->isInWorkDay(new \DateTime())) {
+		if ('not' === $this->getTermOperator() && !$is_in_workday) {
 			return true;
 		}
 

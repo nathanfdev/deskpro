@@ -1390,12 +1390,14 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var _ref, _ref1;
                 if (value == null) {
                   value = {};
                 }
                 return {
                   op: value.op || 'is',
-                  working_hours: value.options.working_hours
+                  set_name: ((_ref = value.options) != null ? _ref.set_name : void 0) || 'default',
+                  working_hours: ((_ref1 = value.options) != null ? _ref1.working_hours : void 0) || {}
                 };
               },
               getValue: function(model, data) {
@@ -1406,6 +1408,7 @@
                   type: 'CheckWorkingHours',
                   op: model.op,
                   options: {
+                    set_name: model.set_name || 'default',
                     working_hours: model.working_hours
                   }
                 };

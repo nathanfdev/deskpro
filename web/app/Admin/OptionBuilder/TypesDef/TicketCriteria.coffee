@@ -1065,7 +1065,8 @@ define [
 						getViewValue: (value = {}, data) ->
 							return {
 								op: value.op || 'is'
-								working_hours: value.options.working_hours
+								set_name: value.options?.set_name || 'default'
+								working_hours: value.options?.working_hours || {}
 							}
 
 						getValue: (model = {}, data) ->
@@ -1073,6 +1074,7 @@ define [
 								type: 'CheckWorkingHours'
 								op: model.op
 								options:
+									set_name: model.set_name || 'default'
 									working_hours: model.working_hours
 							}
 					}
