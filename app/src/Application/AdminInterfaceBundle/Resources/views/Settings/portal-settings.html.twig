@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.save()">
 	<section class="dp-paneblock dp-listpane">
 	<header>
 		<h3>Portal Settings</h3>
@@ -17,13 +17,15 @@
 			</div>
 			<div class="form-group">
 				<div class="col-lg-12">
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.show_ratings">
 						<label>
 							<input type="checkbox" ng-model="show_ratings_opt" />
 							<h4>Show ratings publicly</h4>
 						</label>
 						<div ng-show="show_ratings_opt">
-							Show ratings publicly in the portal after there have been <input type="text" class="form-control" ng-model="settings.show_ratings" style="width: 80px;" /> votes.
+							Show ratings publicly in the portal after there have been
+                            <input type="number" name="show_ratings" class="form-control" ng-model="settings.show_ratings"
+                                   style="width: 80px;" required min="0" /> votes.
 						</div>
 					</div>
 					<div class="inner-group">

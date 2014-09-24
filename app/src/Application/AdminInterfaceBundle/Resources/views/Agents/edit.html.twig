@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveAgent()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveAgent()">
 		<section class="dp-paneblock dp-editpane">
 			<nav class="dp-blocktabs responsive">
 				<menu>
@@ -48,14 +48,25 @@
 					<div class="text-danger ng-hide" ng-show="(form_props.$attempted && form_props.$invalid) || EditCtrl.email_sysaccount_error || EditCtrl.invalid_phone_error">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
-							<li ng-show="form_props.name.$error.required || form_props.name.$error.not_blank">Please enter a name</li>
-							<li ng-show="form_props.email.$error.required || form_props.email.$error.emails_count || form_props.email.$error.email">Please enter a valid email address</li>
-							<li ng-show="EditCtrl.email_sysaccount_error">The email address you entered ({{ ng_var('EditCtrl.email_sysaccount_error') }}) belongs to a ticket account. You cannot re-use the same email address for agents and ticket accounts.</li>
-							<li ng-show="EditCtrl.invalid_phone_error">Invalid phone number: {{ ng_var('EditCtrl.invalid_phone_error') }}</li>
+							<li ng-show="form_props.name.$error.required || form_props.name.$error.not_blank">
+                                {{ phrase('adm.validation.required_name') }}
+                            </li>
+                            <li ng-show="form_props.override_name.$error.required || form_props.name.$error.not_blank">
+                                {{ phrase('adm.validation.required_name') }}
+                            </li>
+							<li ng-show="form_props.email.$error.required || form_props.email.$error.emails_count || form_props.email.$error.email">
+                                {{ phrase('adm.validation.email') }}
+                            </li>
+							<li ng-show="EditCtrl.email_sysaccount_error">
+                                The email address you entered ({{ ng_var('EditCtrl.email_sysaccount_error') }}) belongs to a ticket account. You cannot re-use the same email address for agents and ticket accounts.
+                            </li>
+							<li ng-show="EditCtrl.invalid_phone_error">
+                                Invalid phone number: {{ ng_var('EditCtrl.invalid_phone_error') }}
+                            </li>
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.agent.id">
+					<div class="dp-delete-control" ng-if="EditCtrl.agent.id" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
 					</div>
 

@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-    <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+    <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.saveSettings()">
 
     <section class="dp-paneblock dp-listpane">
         <header>
@@ -137,12 +137,14 @@
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.sessions_lifetime">
                             <label>
                                 <h4>Session Lifetime</h4>
                             </label>
                             <br/>
-                            <input type="text" class="form-control" ng-model="settings.sessions_lifetime" style="width: 150px" /> seconds
+                            <input type="number" name="sessions_lifetime" class="form-control"
+                                   ng-model="settings.sessions_lifetime" style="width: 150px"
+                                   required integer min="0" /> seconds
 							<span class="help-block">
 								Sessions that are not touched for this long will expire. This allows the system
 								to clean up old sessions after users have left the site or closed their browser window.
@@ -240,9 +242,23 @@
     <section class="dp-paneblock dp-listpane">
         <footer>
             <div class="dp-content">
-                <div class="dp-btn-controls">
+
+                <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+                    <p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+                    <ul>
+                        <li ng-show="form_props.sessions_lifetime.$error.required
+                            || form.sessions_lifetime.$error.min
+                            || form_props.sessions_lifetime.$error.integer">
+                            {{ phrase('adm.validation.time') }}
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
                     <div dp-hide-spinning="saving">
-                        <button class="btn btn-primary" ng-click="Settings.saveSettings()">{{ phrase('agent.general.save') }}</button>
+                        <button class="btn btn-primary" dp-submit-form>
+                            {{ phrase('agent.general.save') }}
+                        </button>
                     </div>
                     <div dp-show-spinning="saving">
                         <i class="spinner-flat"></i>

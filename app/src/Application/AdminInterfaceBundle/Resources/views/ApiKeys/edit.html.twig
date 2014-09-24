@@ -2,7 +2,7 @@
 
 {% block editpane_content %}
 
-	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 
             <nav class="dp-blocktabs responsive">

@@ -6,7 +6,7 @@
      ng-controller="Admin_Labels_Base_Ctrl_Settings">
     <div class="dp-pane">
 
-        <form class="form-horizontal dp-form" role="form" name="Form" ng-submit="Ctrl.save()">
+        <form class="form-horizontal dp-form" role="form" name="Form" ng-submit="form_props.$valid && Ctrl.save()">
             <section class="dp-paneblock dp-listpane">
                 <header>
                     <h3>

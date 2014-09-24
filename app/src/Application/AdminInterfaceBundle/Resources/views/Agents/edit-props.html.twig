@@ -5,17 +5,20 @@
 				<h3>Name</h3>
 			</div>
 			<div class="col-lg-9">
-				<div class="inner-group">
-					<input type="text" class="form-control" name="name" ng-model="EditCtrl.form.name" style="width: 50%;" required dp-server-validation="agent.name" />
+				<div class="inner-group" dp-error-class="form_props.name">
+					<input type="text" class="form-control" name="name" ng-model="EditCtrl.form.name"
+                           style="width: 50%;" required dp-server-validation="agent.name" />
 				</div>
 
-				<div class="inner-group">
+				<div class="inner-group" dp-error-class="form_props.override_name">
 					<label>
 						<input type="checkbox" ng-model="EditCtrl.form.enable_display_name" />
 						<h4>Display a different name to end-users</h4>
 					</label>
 					<div ng-show="EditCtrl.form.enable_display_name">
-						<input type="text" class="form-control" ng-model="EditCtrl.form.override_name" style="width: 50%;" />
+						<input type="text" name="override_name" class="form-control"
+                               ng-model="EditCtrl.form.override_name" style="width: 50%;"
+                               ng-required="EditCtrl.form.enable_display_name" />
 					</div>
 				</div>
 			</div>

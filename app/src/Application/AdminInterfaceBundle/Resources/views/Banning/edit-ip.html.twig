@@ -2,7 +2,7 @@
 
 {% block editpane_content %}
 
-	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
@@ -35,7 +35,7 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.ip_ban.banned_ip">
+					<div class="dp-delete-control" ng-if="EditCtrl.ip_ban.banned_ip" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger"
 								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.ip_ban.banned_ip);">
 							Delete

@@ -503,7 +503,7 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.field.id">
+					<div class="dp-delete-control" ng-if="EditCtrl.field.id" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger" type="button" ng-click="EditCtrl.startDelete();">Delete</button>
 					</div>
 

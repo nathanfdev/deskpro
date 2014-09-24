@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketSettings.save()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && TicketSettings.save()">
 		<section class="dp-paneblock dp-listpane">
 			<header>
 				<h3>{{ phrase('adm.ticket_settings.title') }}</h3>
@@ -61,7 +61,7 @@
 									by CC'ing them.
 								</span>
 							</div>
-							<div class="inner-group">
+							<div class="inner-group" dp-error-class="form_props.size_num">
 								<label>
 									<h4>Maximum email size</h4>
 								</label>
@@ -569,7 +569,9 @@
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-							<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+							<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">
+                                {{ phrase('agent.general.reset') }}
+                            </button>
 						</div>
 						<div dp-show-spinning="saving">
 							<i class="spinner-flat"></i>

@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-    <form role="form" name="Form" ng-submit="EditCtrl.save()">
+    <form role="form" name="Form" ng-submit="form_props.$valid && EditCtrl.save()">
         <section class="dp-paneblock dp-editpane">
             <article class="form-horizontal dp-form">
                 <div class="panel panel-fill indent">
@@ -81,11 +81,13 @@
                     <div class="text-danger ng-hide" ng-show="Form.$attempted && Form.$invalid">
                         <p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
                         <ul>
-                            <li ng-show="Form.label.$error.required">{{phrase('adm.general.label_edit_error')}}</li>
+                            <li ng-show="Form.title.$error.required">
+                                {{phrase('adm.validation.required_title')}}
+                            </li>
                         </ul>
                     </div>
 
-                    <div class="dp-delete-control" ng-if="EditCtrl.robin.id">
+                    <div class="dp-delete-control" ng-if="EditCtrl.robin.id" ng-hide="Form.$attempted && Form.$invalid">
                         <button type="button" class="btn btn-danger" ng-click="EditCtrl.delete()">Delete</button>
                     </div>
 

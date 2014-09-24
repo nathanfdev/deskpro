@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="LabelsEdit.saveLabel()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && LabelsEdit.saveLabel()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
