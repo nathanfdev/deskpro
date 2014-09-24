@@ -39,19 +39,24 @@
       Admin_Labels_Services_LabelManager.prototype.renameLabel = function(api_endpoint, old_label, new_label) {
         return this.loadLabels(api_endpoint).then((function(_this) {
           return function() {
-            var l, _i, _len, _ref, _results;
+            var dupe, key, l, oldIdx, _i, _len, _ref;
+            dupe = false;
+            oldIdx = null;
             _ref = _this.label_types[api_endpoint];
-            _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              l = _ref[_i];
+            for (key = _i = 0, _len = _ref.length; _i < _len; key = ++_i) {
+              l = _ref[key];
+              if (l.label === new_label) {
+                dupe = true;
+              }
               if (l.label === old_label) {
-                l.label = new_label;
-                break;
-              } else {
-                _results.push(void 0);
+                oldIdx = key;
               }
             }
-            return _results;
+            if (dupe) {
+              return _this.label_types[api_endpoint].splice(oldIdx, 1);
+            } else if (oldIdx) {
+              return _this.label_types[api_endpoint][oldIdx].label = new_label;
+            }
           };
         })(this));
       };

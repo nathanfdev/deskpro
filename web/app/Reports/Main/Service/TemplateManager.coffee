@@ -43,6 +43,7 @@ define ->
 			qs = []
 			for t in @pending
 				qs.push('views[]=' + encodeURIComponent(t))
+			qs.push('v=' + window.DP_BUILD_TIME)
 			qs = qs.join('&')
 
 			@pending = []

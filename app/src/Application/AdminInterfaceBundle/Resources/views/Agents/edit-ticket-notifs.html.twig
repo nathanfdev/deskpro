@@ -10,6 +10,14 @@
 	{# Email Alerts #}
 
 	<div class="dp-tabletabs-contentwrap" dp-tab-body="main.notifs.email">
+
+        <div class="panel panel-innertable">
+            <label>
+                <input type="checkbox" ng-model="EditCtrl.form.notification_settings.no_allow_set_email">
+                <span>Do not allow this agent to change these notification settings</span>
+            </label>
+        </div>
+
 		<table class="table table-hover notify-pref-table">
 			<thead>
 				<tr>
@@ -68,6 +76,14 @@
 	{# Browser Alerts #}
 
 	<div class="dp-tabletabs-contentwrap" dp-tab-body="main.notifs.alerts">
+
+        <div class="panel panel-innertable">
+            <label>
+                <input type="checkbox" ng-model="EditCtrl.form.notification_settings.no_allow_set_browser">
+                <span>Do not allow this agent to change these notification settings</span>
+            </label>
+        </div>
+
 		<table class="table table-hover notify-pref-table">
 			<thead>
 			<tr>

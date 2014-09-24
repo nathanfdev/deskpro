@@ -10,7 +10,7 @@ define [
 	class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['$templateCache', 'dpObTypesDefTicketActions', '$upload', '$http']
+		@DEPS      = ['$templateCache', 'dpObTypesDefTicketActions', '$location', '$upload', '$http']
 
 		init: ->
 			@actionsTypeDef = @dpObTypesDefTicketActions
@@ -123,6 +123,10 @@ define [
 
 			return @$q.all(promises).then(=>
 				@updateCriteriaOptionTypes()
+
+				search = @$location.search()
+				if search and search.tab
+					@$scope.dp_tab_ids.main = search.tab
 			)
 
 		isDirtyState: ->

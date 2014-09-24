@@ -360,5 +360,45 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				});
 			}
 		});
+
+
+// title
+		var saveTitle = function($input){
+			$input.addClass('disabled').attr('readonly', 'readonly');
+			var row = $input.closest('article.task'),
+				value = $.trim($input.val());
+
+			value && value.length && $input.val(value) && sendUpdate(row, 'title', value);
+		};
+		el.on('keyup', '.task-title h5 input.editable', function(e){
+			if (13 !== e.keyCode) return;
+			saveTitle($(this));
+		});
+		el.on('blur', '.task-title h5 input.editable', function(){
+			$(this).addClass('disabled').attr('readonly', 'readonly');
+			saveTitle($(this));
+		});
+		el.on('dblclick', '.task-title h5 input.editable', function(){
+			$(this).removeClass('disabled').attr('readonly', false);
+		});
+
+// comment
+		var saveComment = function($input){
+			var row = $input.closest('article.task'),
+				value = {
+					id: $input.closest('li').data('note-id'),
+					value: $.trim($input.val())
+				};
+			value.value && value.value.length && $input.prev().text(value.value) && sendUpdate(row, 'comment', JSON.stringify(value));
+		};
+		el.on('blur', '.message-text + textarea', function(){
+			$(this).hide();
+			$(this).prev().children().show();
+			saveComment($(this));
+		});
+		el.on('dblclick', '.message-text.editable', function(){
+			$(this).children().hide();
+			$(this).next().show().focus();
+		});
 	}
 });

@@ -209,7 +209,13 @@ class KbController extends AbstractController
 
 	public function ajaxSaveLabelsAction($article_id)
 	{
-		$article = $this->em->find('DeskPRO:Article', $article_id);
+		if (!$article = $this->em->find('DeskPRO:Article', $article_id)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+			return $this->createJsonResponse(array('success' => 0));
+		}
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
@@ -861,7 +867,7 @@ class KbController extends AbstractController
 			$cat_structure_data = $article_categories;
 			$cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
 			$cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
-			$cat_structure_data = Arrays::assocToNumericArary($cat_structure_data, 'children');
+			$cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
 		}
 
 		return $this->render($tpl, array(

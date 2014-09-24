@@ -71,7 +71,7 @@
               key = 0;
               params = $state.params.params.split(',');
               lastPiece = value;
-              regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g;
+              regex = /(.*?)(<(\d+:.+?)>)/g;
               while (match = regex.exec(value)) {
                 scope.texts.push(match[1]);
                 collected = collectSelectOptions(match[3]);

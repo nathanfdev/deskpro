@@ -43,6 +43,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		clearAll: ->
 			@Api.sendDelete('/server_error_logs/').success( =>
 				@$scope.server_error_logs.logs = null
+			).error(=>
+				@showAlert("Clearing the logs failed because the log file is not writable by the web server. You must make the data/logs/error.log file writable before you can clear it.")
 			)
 
 	Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.EXPORT_CTRL()

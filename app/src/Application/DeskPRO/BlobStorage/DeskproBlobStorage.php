@@ -98,7 +98,7 @@ class DeskproBlobStorage implements Loggable
 	 * The filepath is represented as a full path that a file will be written to. Include
 	 * any of these variables in the path: %ID%, %AUTH%, %BATCH%, %FILENAME%, %DATETIME%
 	 *
-	 * @param string $url
+	 * @param string $path
 	 */
 	public function setSaveCopyPath($path)
 	{
@@ -125,8 +125,9 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @param StorageAdapter\AbstractStorageAdapter $adapter
-	 * @param int $priority
+	 * @param                        $id
+	 * @param AbstractStorageAdapter $adapter
+	 * @param int                    $priority
 	 */
 	public function addAdapter($id, AbstractStorageAdapter $adapter, $priority = 0)
 	{
@@ -241,37 +242,44 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Blob
+	 * @param string $source_path
+	 * @param string $filename
+	 * @param string $content_type
+	 * @param array $props
+	 * @return int The blob ID that was created
+	 * @throws \RuntimeException
 	 */
-	public function createBlobRecordFromFile($source_path, $filename, $content_type, array $props = null)
+	public function createBlobRowFromFile($source_path, $filename, $content_type, array $props = null)
 	{
 		$this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromFile) From path: $source_path");
 
-		$blob_entity = $this->_createBlobEntity($filename, $content_type, $props);
-		$blob_entity->filesize     = filesize($source_path);
-		$blob_entity->blob_hash    = md5_file($source_path);
+		$blob_entity_tmp = $this->_createBlobEntity($filename, $content_type, $props);
+		$blob_entity_tmp->filesize     = filesize($source_path);
+		$blob_entity_tmp->blob_hash    = md5_file($source_path);
 
 		if (ContentTypes::isImageContentType($content_type)) {
 			$imageinfo = @getimagesize($source_path);
 			if ($imageinfo) {
-				$blob_entity->dim_w = $imageinfo[0];
-				$blob_entity->dim_h = $imageinfo[1];
+				$blob_entity_tmp->dim_w = $imageinfo[0];
+				$blob_entity_tmp->dim_h = $imageinfo[1];
 			}
 		}
 
-		$this->em->persist($blob_entity);
-		$this->em->flush();
+		$blob_array = $blob_entity_tmp->toDbArray();
+		$this->db->insert('blobs', $blob_array);
+		$blob_array['id'] = $this->db->lastInsertId();
+		$blob_entity_tmp->id = $blob_array['id'];
 
 		// We need the ID first to generate a proper unique filename/auth
-		$batch = (int)(($blob_entity->id-1) / 1000) + 1;
-		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Blob ID: {$blob_entity->id}");
+		$batch = (int)(($blob_entity_tmp->id-1) / 1000) + 1;
+		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Blob ID: {$blob_entity_tmp->id}");
 
 		// Now call the blob storages
 		$blob = new Blob(
-			$blob_entity->filename,
-			$blob_entity->content_type,
+			$blob_entity_tmp->filename,
+			$blob_entity_tmp->content_type,
 			array(
-				'blob_id' => $blob_entity->id
+				'blob_id' => $blob_entity_tmp->id
 			)
 		);
 
@@ -288,9 +296,9 @@ class DeskproBlobStorage implements Loggable
 			/** @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
 			try {
 				if ($adapter_id == 'fs') {
-					$authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity->getId() . $blob_entity->getNameHash();
+					$authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity_tmp->getId() . $blob_entity_tmp->getNameHash();
 				} else {
-					$authcode = $blob_entity->getId() . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+					$authcode = $blob_entity_tmp->getId() . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
 				}
 
 				$blob->setMeta('authcode', $authcode);
@@ -298,8 +306,8 @@ class DeskproBlobStorage implements Loggable
 				$blob->setPath($path);
 				$adapter->writeBlobFromFile($blob, $source_path);
 
-				$blob_entity->save_path = $path;
-				$blob_entity->storage_loc = $adapter_id;
+				$blob_entity_tmp->save_path = $path;
+				$blob_entity_tmp->storage_loc = $adapter_id;
 
 				// Success, dont try others
 				break;
@@ -311,37 +319,39 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		// None of the succeeded, try to delete this half-inserted blob and then throw an error
-		if (!$blob_entity->storage_loc) {
+		if (!$blob_entity_tmp->storage_loc) {
 			$this->logger->logError("[DeskproBlobStorage] (saveBlobRecordFromFile) All adapters failed");
 
-			$this->em->remove($blob_entity);
-			$this->em->flush();
+			$this->db->delete('blobs', $blob_array['id']);
 
 			throw new \RuntimeException("Failed to store blob, no adapters succeeded", 1, $prev_e);
 		}
 
-		$blob_entity->authcode  = $blob->getMeta('authcode');
+		$blob_entity_tmp->authcode  = $blob->getMeta('authcode');
 
 		if ($blob->getMeta('file_url')) {
-			$blob_entity->file_url = $blob->getMeta('file_url');
+			$blob_entity_tmp->file_url = $blob->getMeta('file_url');
 		}
 
-		if ($blob_entity->storage_loc != $this->preferred_adapter_id) {
-			$blob_entity->storage_loc_pref = $this->preferred_adapter_id;
+		if ($blob_entity_tmp->storage_loc != $this->preferred_adapter_id) {
+			$blob_entity_tmp->storage_loc_pref = $this->preferred_adapter_id;
 		}
 
-		$this->em->persist($blob_entity);
-		$this->em->flush();
+		$blob_array = array_merge($blob_array, $blob_entity_tmp->toDbArray());
+		$blob_update = $blob_array;
+		unset($blob_update['id']);
+
+		$this->db->update('blobs', $blob_update, array('id' => $blob_array['id']));
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Save success");
 
 		if ($this->save_copy_path) {
 			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Saving copy");
 
-			$batch = (int)(($blob_entity->id-1) / 1000) + 1;
+			$batch = (int)(($blob_entity_tmp->id-1) / 1000) + 1;
 			$copy_path = str_replace(
 				array('%ID%', '%AUTH%', '%DATETIME%', '%FILENAME%', '%BATCH%'),
-				array($blob_entity->id, $blob_entity->authcode, $blob_entity->date_created->format('YmdHis'), $blob_entity->filename, $batch),
+				array($blob_entity_tmp->id, $blob_entity_tmp->authcode, $blob_entity_tmp->date_created->format('YmdHis'), $blob_entity_tmp->filename, $batch),
 				$this->save_copy_path
 			);
 			$meta_path = $copy_path . '.meta';
@@ -363,7 +373,7 @@ class DeskproBlobStorage implements Loggable
 					error_log("Failed to write copy file: $copy_path");
 				}
 
-				if (@file_put_contents($meta_path, json_encode($blob_entity->toArray(BlobEntity::TOARRAY_ONLY_PRIMATIVES)))) {
+				if (@file_put_contents($meta_path, json_encode($blob_entity_tmp->toArray(BlobEntity::TOARRAY_ONLY_PRIMATIVES)))) {
 					@chmod($meta_path, 0777);
 					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Wrote metadata file: $meta_path");
 				} else {
@@ -373,47 +383,69 @@ class DeskproBlobStorage implements Loggable
 			}
 		}
 
-		return $blob_entity;
+		return $blob_array;
 	}
 
 
+	/**
+	 * @param string $source_path
+	 * @param string $filename
+	 * @param string $content_type
+	 * @param array $props
+	 * @return BlobEntity
+	 * @throws \RuntimeException
+	 */
+	public function createBlobRecordFromFile($source_path, $filename, $content_type, array $props = null)
+	{
+		$blob = $this->createBlobRowFromFile($source_path, $filename, $content_type, $props);
+		$blob = $this->em->find('DeskPRO:Blob', $blob['id']);
+		return $blob;
+	}
+
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Blob
+	 * @param string $source_data
+	 * @param string $filename
+	 * @param string $content_type
+	 * @param array $props
+	 * @return array
+	 * @throws \RuntimeException
 	 */
-	public function createBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
+	public function createBlobRowFromString($source_data, $filename, $content_type, array $props = null)
 	{
 		$this->logger->logDebug("[DeskproBlobStorage] BEGIN (saveBlobRecordFromString) From data string " . Numbers::filesizeDisplay(strlen($source_data)));
 
-		$blob_entity = $this->_createBlobEntity($filename, $content_type, $props);
-		$blob_entity->filesize  = strlen($source_data);
-		$blob_entity->blob_hash = md5($source_data);
+		$blob_entity_tmp = $this->_createBlobEntity($filename, $content_type, $props);
+		$blob_entity_tmp->filesize  = strlen($source_data);
+		$blob_entity_tmp->blob_hash = md5($source_data);
 
 		if (ContentTypes::isImageContentType($content_type)) {
 			$tmpfname = @tempnam(sys_get_temp_dir(), "dpblob_");
 			if ($tmpfname && @file_put_contents($tmpfname, $source_data)) {
 				$imageinfo = @getimagesize($tmpfname);
 				if ($imageinfo) {
-					$blob_entity->dim_w = $imageinfo[0];
-					$blob_entity->dim_h = $imageinfo[1];
+					$blob_entity_tmp->dim_w = $imageinfo[0];
+					$blob_entity_tmp->dim_h = $imageinfo[1];
 				}
 			}
 			@unlink($tmpfname);
 		}
 
-		$this->em->persist($blob_entity);
-		$this->em->flush();
+		$blob_array = $blob_entity_tmp->toDbArray();
+		$this->db->insert('blobs', $blob_array);
+		$blob_array['id'] = $this->db->lastInsertId();
+		$blob_entity_tmp->id = $blob_array['id'];
 
 		// We need the ID first to generate a proper unique filename/auth
-		$batch = (int)(($blob_entity->id-1) / 1000) + 1;
-		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Blob ID: {$blob_entity->id}");
+		$batch = (int)(($blob_entity_tmp->id-1) / 1000) + 1;
+		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Blob ID: {$blob_entity_tmp->id}");
 
 		// Now call the blob storages
 		$blob = new Blob(
-			$blob_entity->filename,
-			$blob_entity->content_type,
+			$blob_entity_tmp->filename,
+			$blob_entity_tmp->content_type,
 			array(
-				'blob_id' => $blob_entity->id
+				'blob_id' => $blob_entity_tmp->id
 			)
 		);
 
@@ -430,9 +462,9 @@ class DeskproBlobStorage implements Loggable
 			/** @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
 			try {
 				if ($adapter_id == 'fs') {
-					$authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity->getId() . $blob_entity->getNameHash();
+					$authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity_tmp->getId() . $blob_entity_tmp->getNameHash();
 				} else {
-					$authcode = $blob_entity->getId() . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+					$authcode = $blob_entity_tmp->getId() . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
 				}
 
 				$blob->setMeta('authcode', $authcode);
@@ -440,8 +472,8 @@ class DeskproBlobStorage implements Loggable
 				$blob->setPath($path);
 				$adapter->writeBlobString($blob, $source_data);
 
-				$blob_entity->save_path = $path;
-				$blob_entity->storage_loc = $adapter_id;
+				$blob_entity_tmp->save_path = $path;
+				$blob_entity_tmp->storage_loc = $adapter_id;
 
 				// Success, dont try others
 				break;
@@ -453,37 +485,39 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		// None of the succeeded, try to delete this half-inserted blob and then throw an error
-		if (!$blob_entity->storage_loc) {
+		if (!$blob_entity_tmp->storage_loc) {
 			$this->logger->logError("[DeskproBlobStorage] (saveBlobRecordFromString) All adapters failed");
 
-			$this->em->remove($blob_entity);
-			$this->em->flush();
+			$this->db->delete('blobs', $blob_array['id']);
 
 			throw new \RuntimeException("Failed to store blob, no adapters succeeded", 1, $prev_e);
 		}
 
-		$blob_entity->authcode  = $blob->getMeta('authcode');
+		$blob_entity_tmp->authcode  = $blob->getMeta('authcode');
 
 		if ($blob->getMeta('file_url')) {
-			$blob_entity->file_url = $blob->getMeta('file_url');
+			$blob_entity_tmp->file_url = $blob->getMeta('file_url');
 		}
 
-		if ($blob_entity->storage_loc != $this->preferred_adapter_id) {
-			$blob_entity->storage_loc_pref = $this->preferred_adapter_id;
+		if ($blob_entity_tmp->storage_loc != $this->preferred_adapter_id) {
+			$blob_entity_tmp->storage_loc_pref = $this->preferred_adapter_id;
 		}
 
-		$this->em->persist($blob_entity);
-		$this->em->flush();
+		$blob_array = array_merge($blob_array, $blob_entity_tmp->toDbArray());
+		$blob_update = $blob_array;
+		unset($blob_update['id']);
+
+		$this->db->update('blobs', $blob_update, array('id' => $blob_array['id']));
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Save success");
 
 		if ($this->save_copy_path) {
 			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Saving copy");
 
-			$batch = (int)(($blob_entity->id-1) / 1000) + 1;
+			$batch = (int)(($blob_entity_tmp->id-1) / 1000) + 1;
 			$copy_path = str_replace(
 				array('%ID%', '%AUTH%', '%DATETIME%', '%FILENAME%', '%BATCH%'),
-				array($blob_entity->id, $blob_entity->authcode, $blob_entity->date_created->format('YmdHis'), $blob_entity->filename, $batch),
+				array($blob_entity_tmp->id, $blob_entity_tmp->authcode, $blob_entity_tmp->date_created->format('YmdHis'), $blob_entity_tmp->filename, $batch),
 				$this->save_copy_path
 			);
 			$meta_path = $copy_path . '.meta';
@@ -505,7 +539,7 @@ class DeskproBlobStorage implements Loggable
 					error_log("Failed to write copy file: $copy_path");
 				}
 
-				if (@file_put_contents($meta_path, json_encode($blob_entity->toArray(BlobEntity::TOARRAY_ONLY_PRIMATIVES)))) {
+				if (@file_put_contents($meta_path, json_encode($blob_entity_tmp->toArray(BlobEntity::TOARRAY_ONLY_PRIMATIVES)))) {
 					@chmod($meta_path, 0777);
 					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Wrote metadata file: $meta_path");
 				} else {
@@ -515,7 +549,22 @@ class DeskproBlobStorage implements Loggable
 			}
 		}
 
-		return $blob_entity;
+		return $blob_array;
+	}
+
+
+	/**
+	 * @param       $source_data
+	 * @param       $filename
+	 * @param       $content_type
+	 * @param array $props
+	 * @return null|object
+	 */
+	public function createBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
+	{
+		$blob_id = $this->createBlobRowFromString($source_data, $filename, $content_type, $props);
+		$blob = $this->em->find('DeskPRO:Blob', $blob_id);
+		return $blob;
 	}
 
 
@@ -575,7 +624,8 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @param \Application\DeskPRO\Entity\Blob $blob_entity
+	 * @param BlobEntity $blob_entity
+	 * @return null|string
 	 */
 	public function copyBlobRecordToString(BlobEntity $blob_entity)
 	{
@@ -605,8 +655,9 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * @param $target_path
+	 * @param string $target_path
 	 * @param BlobEntity $blob_entity
+	 * @return int|null|string
 	 */
 	public function copyBlobRecordToFile($target_path, BlobEntity $blob_entity)
 	{
@@ -706,6 +757,36 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
+	 * @param array      $blob_row
+	 * @param bool       $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
+	 *                                Otherwise, you can still check error state based on the return value.
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function deleteBlobRow(array $blob_row, $ex_on_error = false)
+	{
+		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Deleting {$blob_row['id']} from {$blob_row['storage_loc']}");
+
+		$blob = $this->getBlobFromBlobRow($blob_row);
+
+		try {
+			$this->deleteBlob($blob, $blob_row['storage_loc']);
+			$this->db->delete('blobs', array('id' => $blob_row['id']));
+		} catch (\Exception $e) {
+			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Delete failed: {$e->getCode()} {$e->getMessage()}");
+			if ($ex_on_error) {
+				throw $e;
+			}
+			return false;
+		}
+
+		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Delete success");
+
+		return true;
+	}
+
+
+	/**
 	 * @param BlobEntity $blob_entity
 	 * @return Blob
 	 */
@@ -721,6 +802,29 @@ class DeskproBlobStorage implements Loggable
 		$blob->setPath($blob_entity->save_path);
 		if ($blob_entity->file_url) {
 			$blob->setMeta('file_url', $blob_entity->file_url);
+		}
+
+		return $blob;
+	}
+
+
+	/**
+	 * @param array $blob_row
+	 * @return Blob
+	 * @throws \InvalidArgumentException
+	 */
+	public function getBlobFromBlobRow(array $blob_row)
+	{
+		$blob = new Blob(
+			$blob_row['filename'],
+			$blob_row['content_type'],
+			array(
+				'blob_id' => $blob_row['id']
+			)
+		);
+		$blob->setPath($blob_row['save_path']);
+		if ($blob_row['file_url']) {
+			$blob->setMeta('file_url', $blob_row['file_url']);
 		}
 
 		return $blob;

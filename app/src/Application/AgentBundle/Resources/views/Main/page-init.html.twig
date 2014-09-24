@@ -113,6 +113,12 @@
 			desktopNotifications: {% if app.user.getPref('agent.ui.desktop_notifications') %}'{{ app.user.getPref('agent.ui.desktop_notifications') }}'{% else %}false{% endif %}
 		});
 
+		{% if unread_dp_news %}
+			window.DeskPRO_Window.openDpNews = {{ unread_dp_news|json_encode|raw }};
+		{% else %}
+			window.DeskPRO_Window.openDpNews = [];
+		{% endif %}
+
 		{% if app.user.getPref('agent.hide_claimed_chat', false) %}
 			DP_USERCHAT_HIDE_CLAIMED_CHAT = true;
 		{% else %}

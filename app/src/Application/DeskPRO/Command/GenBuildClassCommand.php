@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
+use Application\InstallBundle\Util\GenBuildManifest;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -137,30 +138,14 @@ CODE;
 			$build_file = DP_ROOT.'/sys/config/build-time.php';
 			file_put_contents($build_file, '<?php define("DP_BUILD_TIME", '.$time.'); ');
 
-			$manifest_file = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
-			$data = require($manifest_file);
-			$data[$time] = array(
-				'file' => DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/'. date('Y/m', $time) . '/Build' . $time . '.php',
-				'classname' => 'Application\\InstallBundle\\Upgrade\\Build\\Build' . $time
-			);
+			$manifest_path = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+			$builds_path   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
 
-			$exp = '<?php return array(';
-
-			foreach ($data as $time => $arr) {
-				$sub = str_replace(DP_ROOT, '', $arr['file']);
-				$classname = var_export($arr['classname'], 1);
-				$exp .= "
-					{$time} => array(
-						'file' => DP_ROOT . '{$sub}',
-						'classname' => {$classname}
-					),
-				";
-			}
-			$exp .= ');';
-			file_put_contents($manifest_file, $exp);
+			$gen = new GenBuildManifest($builds_path, array($path));
+			file_put_contents($manifest_path, $gen->getContents());
 
 			echo "Wrote file: $path\n";
-			echo "Updated: $manifest_file\n";
+			echo "Updated: $manifest_path\n";
 			echo "Updated: $build_file\n";
 		}
 

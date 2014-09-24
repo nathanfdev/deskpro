@@ -107,7 +107,7 @@ define [
     	# @return {promise}
 		###
 		saveAccount: ->
-			if not @account.id and not @new_is_confirmed
+			if not @account.id and not @new_is_confirmed and @$scope.form.account_type != 'outgoing'
 				@showNewAccountConfirm()
 				return
 

@@ -22,7 +22,9 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 				triggerElement: this.options.trigger,
 				menuElement: this.options.menu,
 				onBeforeMenuOpened: this._menuPopulate.bind(this),
-				onItemClicked: this._menuItemClick.bind(this)
+				onItemClicked: this._menuItemClick.bind(this),
+				onItemMouseover: options.onMenuItemMouseover || this._menuItemMouseover.bind(this),
+				onItemMouseout: options.onMenuItemMouseout || this._menuItemMouseout.bind(this)
 			});
 		}
 	},
@@ -91,6 +93,22 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
 		this.overlay.open();
+	},
+
+	_menuItemMouseover: function(info) {
+		var el = $(info.itemEl);
+		if (el.hasClass('elm')) {
+			return false;
+		}
+
+		var otherId = el.data('merge-id');
+		if (!otherId) {
+			otherId = 0;
+		}
+	},
+
+	_menuItemMouseout: function(info) {
+		$('.item-hover-over').removeClass('item-hover-over');
 	},
 
 	openWithId: function(otherId) {

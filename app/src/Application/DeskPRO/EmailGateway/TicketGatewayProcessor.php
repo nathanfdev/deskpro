@@ -147,6 +147,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if (!$person) {
 				$this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
+				$this->logMessage('[TicketGatewayProcessor] Person ID is ' . $person->id);
 			}
 
 			if ($person && !$person->is_agent) {
@@ -261,6 +262,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		if ($check_person && $check_person->is_agent) {
 			if ($email_body_html) {
+				$this->logMessage("Checking for agent reply codes in HTML body");
 				$rc = new AgentReplyCodes($email_body_html, true);
 				$rc->setCleaner($this->container->getInputCleaner());
 				$rc->setLogger($this->logger);
@@ -270,6 +272,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					$email_body_html = $rc->getNewBody();
 				}
 			} else {
+				$this->logMessage("Checking for agent reply codes in TEXT body");
 				$rc = new AgentReplyCodes($email_body_text, false);
 				$rc->setLogger($this->logger);
 
@@ -368,7 +371,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage('[TicketGatewayProcessor] NOT a reply to a DeskPRO email');
 		}
 
-		$reply_proc = new ProcessReply($ticket, $person, $ticket_email);
+		// todo injection
+		$translator = App::$container->getTranslator();
+		$reply_proc = new ProcessReply($ticket, $person, $ticket_email, $translator);
 		$reply_proc->setLogger($this->logger);
 
 		if (
@@ -443,8 +448,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				));
 				$message->setTo($this->reader->getFromAddress()->getEmail());
 				$this->container->getMailer()->send($message);
-				return null;
 			}
+			return null;
 		}
 
 		if ($person) {
@@ -507,7 +512,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 			$ticket_email->force_reply_cutter = $reply_as_new;
 
-			$new_proc = new ProcessNew($this->account, $person, $ticket_email);
+			// todo injection
+			$translator = App::$container->getTranslator();
+			$new_proc = new ProcessNew($this->account, $person, $ticket_email, $translator);
 			$new_proc->setLogger($this->logger);
 
 			$obj = $new_proc->run();

@@ -14,6 +14,7 @@ define [
 	'DeskPRO/Directive/DpShowSpinning',
 	'DeskPRO/Directive/DpSubmitForm',
 	'DeskPRO/Directive/DpErrorClass',
+	'DeskPRO/Directive/DpLabel',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -23,6 +24,7 @@ define [
 	'Admin/Main/Directive/DpInhelpBtn',
 	'Admin/Main/Directive/DpLiGroupSection',
 	'Admin/Main/Directive/DpListAutoload',
+	'Admin/Main/Directive/DpMaxHeight',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
 	'Admin/Main/Directive/DpOrderMenu',
 	'Admin/Main/Directive/DpPingFlash',
@@ -34,6 +36,8 @@ define [
 	'Admin/Main/Directive/DpTristateCheck',
 	'Admin/Main/Directive/DpWorkingHours',
 	'Admin/Main/Directive/DpChange',
+	'Admin/Main/Directive/DpPhoneNumber',
+	'Admin/Main/Directive/DpRedactor',
 
 	'Admin/Portal/Directive/PortalEditor',
 	'Admin/TicketDeps/Directive/LayoutEditor',
@@ -54,6 +58,7 @@ define [
 	DeskPRO_Directive_DpShowSpinning,
 	DeskPRO_Directive_DpSubmitForm,
 	DeskPRO_Directive_DpErrorClass,
+	DeskPRO_Directive_DpLabel,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -63,6 +68,7 @@ define [
 	Admin_Main_Directive_DpInhelpBtn,
 	Admin_Main_Directive_DpLiGroupSection,
 	Admin_Main_Directive_DpListAutoload,
+	Admin_Main_Directive_DpMaxHeight,
 	Admin_Main_Directive_DpOpenPhraseEditor,
 	Admin_Main_Directive_DpOrderMenu,
 	Admin_Main_Directive_DpPingFlash,
@@ -74,6 +80,8 @@ define [
 	Admin_Main_Directive_DpTristateCheck,
 	Admin_Main_Directive_DpWorkingHours,
 	Admin_Main_Directive_DpChange,
+	Admin_Main_Directive_DpPhoneNumber,
+	Admin_Main_Directive_DpRedactor,
 
 	Admin_Portal_Directive_PortalEditor,
 	Admin_TicketDeps_Directive_LayoutEditor,
@@ -95,6 +103,7 @@ define [
 		Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
 		Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm)
 		Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)
+		Module.directive('dpLabel',                        DeskPRO_Directive_DpLabel)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('dpLiGroupSection',               Admin_Main_Directive_DpLiGroupSection)
@@ -104,6 +113,7 @@ define [
 		Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody)
 		Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)
 		Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload)
+		Module.directive('dpMaxHeight',                    Admin_Main_Directive_DpMaxHeight)
 		Module.directive('dpOpenPhraseEditor',             Admin_Main_Directive_DpOpenPhraseEditor)
 		Module.directive('dpOrderMenu',                    Admin_Main_Directive_DpOrderMenu)
 		Module.directive('dpPingFlash',                    Admin_Main_Directive_DpPingFlash)
@@ -115,11 +125,67 @@ define [
 		Module.directive('dpTristateCheck',                Admin_Main_Directive_DpTristateCheck)
 		Module.directive('dpWorkingHours',                 Admin_Main_Directive_DpWorkingHours)
 		Module.directive('dpChange',                       Admin_Main_Directive_DpChange)
+		Module.directive('dpPhoneNumber',                  Admin_Main_Directive_DpPhoneNumber)
+		Module.directive('dpRedactor',                     Admin_Main_Directive_DpRedactor)
 
 		Module.directive('dpPortalEditor',                 Admin_Portal_Directive_PortalEditor)
 
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
+
+		Module.directive('dpToggleShowIds', [ ->
+			return {
+				restrict: 'A',
+				link: (scope, el, attrs) ->
+					window.DP_DO_SHOW_IDS = false;
+					scope.do_show_ids = false
+
+					update = ->
+						if window.DP_DO_SHOW_IDS
+							scope.do_show_ids = true
+							$('body').addClass('show-title-ids')
+						else
+							scope.do_show_ids = false
+							$('body').removeClass('show-title-ids')
+
+					update()
+
+					el.on('click', (ev) ->
+						ev.stopPropagation()
+						ev.preventDefault()
+						window.DP_DO_SHOW_IDS = !window.DP_DO_SHOW_IDS
+						scope.$apply(-> update())
+					)
+			}
+		])
+
+		Module.directive('dpGo', [ '$location', ($location) ->
+			return {
+				restrict: 'A',
+				link: (scope, el, attrs) ->
+					el.on('click', (ev) ->
+						ev.stopPropagation();
+						ev.preventDefault();
+
+						path = attrs.dpGo.replace(/^#/, '')
+						search = scope.$eval(attrs.dpGoParams)
+
+						scope.$apply(->
+							$location.path(path)
+							if search
+								$location.search(search)
+						)
+					)
+			}
+		])
+
+		Module.directive('dpNoDrag', [ ->
+			return {
+				restrict: 'AC',
+				link: (scope, el, attrs) ->
+					el.get(0).draggable = false
+			}
+		])
 
 		Module.directive('dpMoveListToPos', [ '$timeout', ($timeout) ->
 			return {

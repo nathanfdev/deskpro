@@ -62,7 +62,7 @@ class CustomDataTicket extends AbstractEntityRepository
 		}
 
 		if (!$ids) {
-			return arary();
+			return array();
 		}
 
 		$raw = $this->_em->createQuery("

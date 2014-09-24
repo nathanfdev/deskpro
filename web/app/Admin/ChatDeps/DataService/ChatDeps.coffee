@@ -12,10 +12,19 @@ define [
 	class ChatDeps extends BaseListEdit
 		@$inject = ['Api', '$q']
 
-		_doLoadList: ->
-			deferred = @$q.defer()
+		url: -> '/chat_deps'
 
-			@Api.sendGet('/chat_deps').success( (data) =>
+		resolveResponse: (response) -> response.departments
+
+		all: (reload) ->
+			super reload, {with_perms: 1}
+
+		_doLoadList:  (params) ->
+			deferred = @$q.defer()
+			params = params || {}
+
+			# maybe should init query params as method argument
+			@Api.sendGet(@url(), params).success( (data) =>
 				@deps = data.departments
 
 				proc = (parent) ->

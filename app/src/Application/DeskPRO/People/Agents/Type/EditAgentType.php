@@ -49,6 +49,8 @@ class EditAgentType extends AbstractType
 		$builder->add('name', 'text', array('required' => true));
 		$builder->add('override_name', 'text', array('required' => false));
 
+		$builder->add('primary_phone_number_text', 'text', array('required' => false));
+
 		$builder->add('emails', 'collection', array(
 			'type'         => 'email',
 			'allow_add'    => true,
@@ -78,6 +80,14 @@ class EditAgentType extends AbstractType
 			},
 			'invalid_message' => 'Invalid Agent Group.',
 		));
+
+		$builder->add('primary_team', 'entity', array(
+			'class'         => 'DeskPRO:AgentTeam',
+			'required'      => false,
+			'invalid_message' => 'Invalid Agent Team.',
+		));
+
+		$builder->add('notification_settings', 'collection');
 	}
 
 

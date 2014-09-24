@@ -15,15 +15,49 @@
 
       Admin_Settings_Ctrl_ElasticSearch.CTRL_AS = 'Settings';
 
-      Admin_Settings_Ctrl_ElasticSearch.prototype.init = function() {};
+      Admin_Settings_Ctrl_ElasticSearch.DEPS = ['$timeout'];
+
+      Admin_Settings_Ctrl_ElasticSearch.prototype.init = function() {
+        this.pollTimer = null;
+        this.hasInit = false;
+      };
 
       Admin_Settings_Ctrl_ElasticSearch.prototype.initialLoad = function() {
+        return this.updateStatus();
+      };
+
+      Admin_Settings_Ctrl_ElasticSearch.prototype.startStatusPoller = function() {
+        if (this.pollTimer) {
+          this.$timeout.cancel(this.pollTimer);
+          this.pollTimer = null;
+        }
+        return this.pollTimer = this.$timeout((function(_this) {
+          return function() {
+            return _this.updateStatus();
+          };
+        })(this), 1500);
+      };
+
+      Admin_Settings_Ctrl_ElasticSearch.prototype.updateStatus = function() {
         return this.Api.sendDataGet({
-          'settings': '/elastic-search/settings'
+          'settings': '/elastic-search/settings',
+          'status': '/elastic-search/index-status'
         }).then((function(_this) {
           return function(res) {
-            _this.$scope.settings = res.data.settings.elastic_settings;
-            return _this.$scope.was_on = _this.$scope.settings.enabled;
+            var _ref, _ref1, _ref2;
+            if (!_this.hasInit) {
+              _this.$scope.settings = res.data.settings.elastic_settings;
+              _this.$scope.was_on = _this.$scope.settings.enabled;
+              _this.hasInit = true;
+            }
+            _this.$scope.status = res.data.status;
+            _this.$scope.indexer_status = (_ref = res.data.status) != null ? _ref.indexer_status : void 0;
+            _this.$scope.indexer_log = (_ref1 = res.data.status) != null ? _ref1.indexer_log : void 0;
+            _this.$scope.info = (_ref2 = res.data.status) != null ? _ref2.info : void 0;
+            if (_this.$scope.status.is_indexing) {
+              _this.startStatusPoller();
+            }
+            return null;
           };
         })(this));
       };
@@ -37,16 +71,45 @@
         return this.Api.sendPostJson('/elastic-search/settings', postData).success((function(_this) {
           return function() {
             _this.settings = angular.copy(_this.$scope.settings);
-            return _this.stopSpinner('saving').then(function() {
-              if (_this.$scope.settings.enabled && !_this.$scope.was_on) {
-                _this.$scope.settings.requires_reset = true;
-              }
+            if (_this.$scope.settings.enabled && !_this.$scope.was_on) {
+              _this.$scope.was_on = true;
+              _this.$scope.status = {
+                is_indexing: true
+              };
+              _this.$scope.indexer_status = null;
+              _this.$scope.indexer_log = null;
+            }
+            return _this.updateStatus().then(function() {
+              _this.stopSpinner('saving', true);
               return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
             });
           };
         })(this)).error((function(_this) {
           return function(info, code) {
             return _this.stopSpinner('saving', true);
+          };
+        })(this));
+      };
+
+      Admin_Settings_Ctrl_ElasticSearch.prototype.startReindex = function() {
+        return this.showConfirm("Are you sure you want to reset your search index? This will wipe the index and search results will not work until the re-indexing has complete.").result.then((function(_this) {
+          return function() {
+            var postData;
+            postData = {
+              elastic_settings: _this.$scope.settings
+            };
+            postData.reindex = true;
+            return _this.Api.sendPostJson('/elastic-search/settings', postData).success(function() {
+              _this.settings = angular.copy(_this.$scope.settings);
+              _this.$scope.status = {
+                is_indexing: true
+              };
+              _this.$scope.indexer_status = null;
+              _this.$scope.indexer_log = null;
+              return _this.updateStatus();
+            }).error(function(info, code) {
+              return _this.stopSpinner('saving', true);
+            });
           };
         })(this));
       };
@@ -62,8 +125,7 @@
           return function() {
             var postData;
             postData = {
-              host: _this.$scope.settings.host,
-              port: _this.$scope.settings.port
+              url: _this.$scope.settings.url
             };
             return _this.Api.sendPostJson('/elastic-search/settings/test', postData);
           };

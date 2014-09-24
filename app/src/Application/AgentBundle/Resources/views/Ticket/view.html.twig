@@ -4,8 +4,10 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
 pageMeta.title         = {{ticket.subject|json_encode|raw}};
 pageMeta.ticket_id     = {{ticket.id}};
+pageMeta.tabClassId    = 'ticket-{{ ticket.id }}';
 pageMeta.alert_id      = 'ticket-{{ ticket.id }}';
 pageMeta.url_fragment  = '{{ url_fragment('agent_ticket_view', {'ticket_id': ticket.id}) }}';
+pageMeta.pageIdentity  = 'ticket:{{ticket.id}}';
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'tickets'}) }}';
 pageMeta.labelsSaveUrl                = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
@@ -180,7 +182,7 @@ pageMeta.lang = {{ {
 		{% endif %}
 
 		{% if ticket_perms.modify_cc and not user_parts|length %}
-			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
+			<a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn2"><i class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
 		{% endif %}
 
 		{% if ticket_perms.modify_cc or user_parts|length %}
@@ -222,6 +224,7 @@ pageMeta.lang = {{ {
 							class="clean-white small cc-saverow-trigger"
 							data-msg-invalid-email="{{ phrase('agent.general.error_email_address') }}"
 							data-msg-invalid-email-isaccount="{{ phrase('agent.tickets.email_is_ticket_account') }}"
+							data-msg-is-dupe="{{ phrase('agent.tickets.email_is_dupe') }}"
 							data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers') }}"
 						>{{ phrase('agent.general.add') }}</button>
 					</span>
@@ -346,7 +349,7 @@ pageMeta.lang = {{ {
 			<ul>
 				<li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
 				{% if linked_tickets.count %}<li data-tab-for="#{{ baseId }}_linked_wrap"><i class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span id="{{ baseId }}_linked_count" data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)</li>{% endif %}
-				<li data-tab-for="#{{ baseId }}_tasks_wrap">{{ phrase('agent.general.tasks') }} (<span id="{{ baseId }}_task_count">{{ tasks|length }}</span>)</li>
+				{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}<li data-tab-for="#{{ baseId }}_tasks_wrap">{{ phrase('agent.general.tasks') }} (<span id="{{ baseId }}_task_count">{{ tasks|length }}</span>)</li>{% endif %}
 				{% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
 					<li data-tab-for="#{{ baseId }}_sla_wrap">{{ phrase('agent.general.slas') }} {{ sla_pips|raw }}</li>
 				{% endif %}
@@ -379,7 +382,25 @@ pageMeta.lang = {{ {
 		<article id="{{baseId}}_fields_display_main_wrap" class="headerbox" style="position: relative;">
 			{% if ticket.isLocked(app.user) %}<div class="lock-overlay"></div>{% endif %}
 			<table cellspacing="0" cellpadding="0" width="100%"><tr><td style="padding-right: 5px;">
-					<label class="field-label-title">{{ phrase('agent.general.agent') }}</label>
+						<label class="field-label-title" style="white-space: nowrap">
+                        {{ phrase('agent.general.agent') }}
+                        {% if ticket_perms.modify_assign_agent or not ticket.agent %}
+							<span id="{{baseId}}_assign_me" class="assign-self-link-wrap" style="{% if app.user.id == ticket.agent.id %}display:none;{% endif %}" data-me="{{ app.user.id }}">
+								&middot;
+								<a class="assign-self-link">
+									{{ phrase('agent.general.assign_to_me') }}
+								</a>
+							</span>
+                        {% endif %}
+                        {% if ticket_perms.modify_assign_agent %}
+							<span id="{{baseId}}_unassign_agent" class="assign-self-link-wrap" {% if not ticket.agent %}style="display: none;" {% endif %}>
+								&middot;
+								<a class="assign-self-link">
+									{{ phrase('agent.general.unassign') }}
+								</a>
+							</span>
+                        {% endif %}
+                    </label>
 					<select id="{{baseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 						{% if ticket_perms.modify_assign_agent or not ticket.agent %}<option {% if not ticket.agent.id %}selected="selected"{% endif %} value="0">{{ phrase('agent.general.unassigned') }}</option>{% endif %}
 						{% if ticket_perms.modify_assign_self or ticket.agent.id == app.user.id %}
@@ -394,8 +415,30 @@ pageMeta.lang = {{ {
 			</td>
 			{% if agent_teams|length %}
 				<td style="padding-right: 5px;">
-					<label class="field-label-title">{{ phrase('agent.general.team') }}</label>
-					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" data-style-type="icons"  data-select-icon-size="22">
+					<label class="field-label-title" style="white-space: nowrap">
+                        {{ phrase('agent.general.team') }}
+                        {% if app.user.agent.primaryTeam and ticket_perms.modify_assign_self %}
+                            <span id="{{baseId}}_assign_team" class="assign-self-link-wrap"
+                                  style="{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}"
+                                  data-team="{{ app.user.agent.primaryTeam.id }}">
+								&middot;
+								<a class="assign-self-link">
+                                    {% if 1 == app.user.agent.teams|length %}
+									    {{ phrase('agent.general.assign_to_my_team') }}
+                                    {% else %}
+                                        {{ phrase('agent.general.assign_to_primary_team') }}
+                                    {% endif %}
+								</a>
+                            </span>
+                        {% endif %}
+                        <span id="{{baseId}}_unassign_team" class="assign-self-link-wrap" style="{% if not ticket.agent_team  %}display: none;{% endif %}">
+							&middot;
+                            <a class="assign-self-link">
+								{{ phrase('agent.general.unassign') }}
+                            </a>
+                        </span>
+                    </label>
+					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
 						{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
 							<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
 						{% endif %}
@@ -417,7 +460,19 @@ pageMeta.lang = {{ {
 				</td>
 			{% endif %}
 			<td width="100%">
-				<label class="field-label-title">{{ phrase('agent.general.followers') }}</label>
+				<label class="field-label-title">
+                    {{ phrase('agent.general.followers') }}
+                    {% set show = '' %}
+                    {% for a in agent_parts if a.person.id == app.user.id %}
+                        {% set show = 'display:none;' %}
+                    {% endfor %}
+                    <span id="{{baseId}}_follower_me" class="assign-self-link-wrap" style="{{ show }}" data-me="{{ app.user.id }}">
+						&middot;
+						<a class="assign-self-link">
+							{{ phrase('agent.general.add_me') }}
+						</a>
+                    </span>
+                </label>
 				<div class="followers-list">
 					<ul id="{{ baseId }}_followers_list">
 						{% for a in agent_parts %}
@@ -454,6 +509,7 @@ pageMeta.lang = {{ {
 											class="dpe_select dpe_select_noborder"
 											data-placeholder="Add a label"
 											value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
+                                            data-allow-new="{{ app.getSetting('labels.tickets.agent_can_create') }}"
 										/>
 									</div>
 								</td>
@@ -478,9 +534,11 @@ pageMeta.lang = {{ {
 		<article id="{{baseId}}_linked_wrap">
 			{% include 'AgentBundle:Ticket:linked-tickets.html.twig' %}
 		</article>
-		<article id="{{baseId}}_tasks_wrap">
-			{% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
-		</article>
+		{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}
+			<article id="{{baseId}}_tasks_wrap">
+				{% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
+			</article>
+		{% endif %}
 		{% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
 			<article id="{{baseId}}_sla_wrap">
 				{% include 'AgentBundle:Ticket:view-slas.html.twig' %}

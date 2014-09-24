@@ -15,7 +15,7 @@
 
       Admin_Settings_Ctrl_GeneralSettings.CTRL_AS = 'Settings';
 
-      Admin_Settings_Ctrl_GeneralSettings.DEPS = [];
+      Admin_Settings_Ctrl_GeneralSettings.DEPS = ['$http'];
 
       Admin_Settings_Ctrl_GeneralSettings.prototype.init = function() {
         this.settings = {
@@ -58,12 +58,13 @@
               _this.$scope.attach_user_exts_limitmode = 'any';
             }
             if (_this.settings.attach_agent_must_exts.length) {
-              return _this.$scope.attach_agent_exts_limitmode = 'allow';
+              _this.$scope.attach_agent_exts_limitmode = 'allow';
             } else if (_this.settings.attach_agent_not_exts.length) {
-              return _this.$scope.attach_agent_exts_limitmode = 'disallow';
+              _this.$scope.attach_agent_exts_limitmode = 'disallow';
             } else {
-              return _this.$scope.attach_agent_exts_limitmode = 'any';
+              _this.$scope.attach_agent_exts_limitmode = 'any';
             }
+            return _this.orig_url = _this.$scope.settings.deskpro_url || null;
           };
         })(this));
         return this.$q.all([data_promise]);
@@ -81,7 +82,27 @@
       };
 
       Admin_Settings_Ctrl_GeneralSettings.prototype.save = function() {
-        var postData, promise;
+        var pingUrl, postData, promise;
+        this.$scope.url_error = false;
+        this.startSpinner('saving');
+        if (this.orig_url && this.orig_url !== this.$scope.settings.deskpro_url) {
+          this.$scope.settings.deskpro_url = this.$scope.settings.deskpro_url.replace(/\/?index\.php$/, '').replace(/\/+$/, '');
+          this.$scope.settings.deskpro_url += '/';
+          pingUrl = this.$scope.settings.deskpro_url + 'index.php?_sys=ping&type=jsonp&callback=JSON_CALLBACK';
+          this.$http.jsonp(pingUrl).success((function(_this) {
+            return function() {
+              _this.orig_url = _this.$scope.settings.deskpro_url;
+              return _this.save();
+            };
+          })(this)).error((function(_this) {
+            return function() {
+              _this.$scope.url_error = true;
+              _this.stopSpinner('saving', true);
+              return _this.showAlert("We detected that the Helpdesk URL that you entered is invalid. Please double-check the URL and try again.");
+            };
+          })(this));
+          return;
+        }
         if (this.$scope.attach_user_exts_limitmode === 'allow') {
           this.$scope.settings.attach_user_not_exts = [];
         } else if (this.$scope.attach_user_exts_limitmode === 'disallow') {
@@ -101,7 +122,6 @@
         postData = {
           general_settings: this.$scope.settings
         };
-        this.startSpinner('saving');
         return promise = this.Api.sendPostJson('/general_settings', postData).success((function(_this) {
           return function() {
             _this.settings = angular.copy(_this.$scope.settings);

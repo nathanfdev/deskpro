@@ -4,6 +4,7 @@
 		<header>
 			<nav>
 				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="TicketAccountsList.accounts.length || 0" when="{{ ng_plural_phrase('adm.tickets.x_email_accounts') }}"></h3>
 		</header>
@@ -11,14 +12,17 @@
 			<p class="dp-empty-list-notice" ng-if="!TicketAccountsList.accounts.length">
 				{{ phrase('adm.tickets.no_email_accounts') }}
 			</p>
-			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length">
+			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length" dp-max-height>
 				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
 					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
 						<div class="pull-right">
 							<em class="tag tag-warn" ng-show="!acc.is_enabled">Disabled</em>
 						</div>
-
-						<span class="title-id" title="ID">#{{ ng_var('acc.id') }}</span> <span class="title-text">{{ ng_var('acc.address') }}</span></h4>
+						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('acc.id') }}</span>
+							<span class="title-text">{{ ng_var('acc.address') }}</span>
+							<span class="title-copy" clip-copy="acc.address" clip-click="Growl.success('The email addresswas copied to your clipboard');"><i class="fa fa-clipboard"></i></span>
+						</h4>
 					</a>
 				</li>
 			</ul>
@@ -31,16 +35,23 @@
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
-			<h3>Incoming Email Log</h3>
+            <h3>{{ phrase('adm.ticket_accounts.incoming_log') }}</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
-			<h3>Outgoing Email Log</h3>
+			<h3>{{ phrase('adm.ticket_accounts.outgoing_log') }}</h3>
 		</a>
 	</section>
+
+    <section class="dp-paneblock dp-panelink">
+        <a href="{{ ng_href('tickets.ticket_accounts.advancedsettings') }}">
+            <em><i class="fa fa-chevron-down"></i></em>
+            <h3>{{ phrase('adm.ticket_accounts.advanced_settings') }}</h3>
+        </a>
+    </section>
 
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
 	{{ ng_tpl('AdminInterface:TicketAccounts:delete-modal.html.twig') }}
@@ -81,10 +92,10 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#set-up-ticket-email-accounts" target="_blank">Set up ticket email accounts</a></li>
-				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#customizing-email-messages" target="_blank">Customizing email messages</a> </li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#email-accounts" target="_blank">Set up ticket email accounts</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#customizing-the-email-templates" target="_blank">Customizing the email message templates</a> </li>
 				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/157" target="_blank">Why can't users or agents use email addresses that are also ticket accounts?</a></li>
-				{#	refers to old admin, update then uncomment <li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/80" target="_blank">Using a custom email address</a></li> #}
+			 <li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/80" target="_blank">Using a custom email address</a></li>
 					<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/106" target="_blank">Agent ticket forwarding</a></li>
 				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/161" target="_blank">Email action codes</a></li>
 				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/149" target="_blank">Viewing the raw email source for a ticket message</a></li>

@@ -7,6 +7,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		{{ phrase('agent.general.error_form_correct') }}
 		<ul>
 			<li class="name_short">{{ phrase('agent.general.error_your_name') }}</li>
+			<li class="phone_number_invalid">{{ phrase('agent.general.error_invalid_phone_number') }}</li>
 			<li class="email_invalid">{{ phrase('agent.general.error_email_address') }}</li>
 			<li class="email_in_use">{{ phrase('agent.general.error_email_dupe_agent') }}</li>
 			<li class="password_invalid">Invalid password</li>
@@ -46,6 +47,13 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 					{% endfor %}
 					<li class="add-row">{{ phrase('agent.settings.add_another_email') }}: <input type="text" class="more_emails_txt" /> <a class="more_emails_trigger" href="#">{{ phrase('agent.general.add') }}</a></li>
 				</ul>
+			</div>
+		</div>
+
+		<div class="dp-form-row">
+			<div class="dp-form-label"><label>{{ phrase('agent.general.phone_number') }}</label></div>
+			<div class="dp-form-input">
+				{{ form_widget(form.primary_phone_number_text, {'attr': {'style': 'padding-left:44px;', 'default-country': edit_profile.primary_phone_number_region } }) }}
 			</div>
 		</div>
 

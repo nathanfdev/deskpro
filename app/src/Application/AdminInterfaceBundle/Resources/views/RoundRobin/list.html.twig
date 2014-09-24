@@ -1,0 +1,83 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+    <section class="dp-paneblock dp-listpane" style="padding: 10px;">
+        <button dp-toggle-switch ng-model="ListCtrl.settings.enabled" ng-click="ListCtrl.save($event)"></button>
+        <h4 style="display: inline-block; margin: 0 10px;">{{ phrase('adm.round_robins.enable') }}</h4>
+    </section>
+
+	<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.settings.enabled">
+        <header>
+			<nav>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.robins.length || 0" when="{{ ng_plural_phrase('adm.round_robins.count') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="robin in ListCtrl.robins" dp-state-mark="tickets.roundrobin.edit.{{ ng_var('robin.id') }}">
+					<a href="{{ ng_href('tickets.roundrobin.edit', '{id: robin.id}') }}">
+						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('robin.id') }}</span>
+							<span class="title-text">{{ng_var('robin.title')}}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('tickets.roundrobin.edit', '{id: \'create\'}') }}" ng-class="{'active': isStateActive('.edit', {id: 'create'}) }">
+                    <i class="fa fa-plus"></i>
+                    {{phrase('agent.general.add')}}
+                </a>
+			</div>
+		</article>
+	</section>
+
+    <div dp-register-message="modal_title">{{ phrase('adm.round_robins.disable_title') }}</div>
+    <div dp-register-message="modal_message" ng-pluralize count="ListCtrl.settings.active_triggers || 0" when="{{ ng_plural_phrase('adm.round_robins.disable_warn') }}"></div>
+{% endblock %}
+
+
+
+{% block listpane_help %}
+	<header>
+		<h1>Round robins enable you to assign tickets evenly to a queue of agents</h1>
+		<p>Specify a queue of agents, and whenever the round robin's action runs, the next agent in the queue is assigned the relevant ticket, looping back to the beginning when the end of the queue is reached.</p>
+	</header>
+	<article>
+		<section>
+		
+			<p>Use a round robin if you want to assign tickets individually to a list of agents, and have each agent receive an equal number of tickets, assigned in rotation.</p>
+            <p>Once you create a round robin, you must add the corresponding <strong>Set Assigned Agent from Round Robin</strong> action to a trigger, escalation or SLA. </p>
+            <p>
+            <ul>
+            	<li>The first time this action runs, the relevant ticket is assigned to the first agent in the queue.</li>
+            	<li>The next time the action runs, the ticket that caused it to run is assigned to the next agent in the queue.</li>
+            	<li> When the end of the queue is reached, assignment loops back to the first agent.</li>
+			</ul>
+			</p>
+            </section>
+
+            <section>
+            <h2><span>FAQ</span></h2>
+            <dl>
+                <dt><em>Q:</em>What if I call the action for the same round robin from multiple triggers/escalations/SLAs? Is there one queue or more than one?</dt>
+                <dd><em>A:</em>
+                    All the actions share the same queue.
+                </dd>
+                <dt><em>Q:</em>I've created a round robin but none of the agents is being assigned any tickets.</dt>
+                <dd><em>A:</em>
+                    Making a round robin just creates a queue. It does not automatically assign any tickets. You must hand out tickets to the agents in the queue using a trigger, escalation or SLA.
+                </dd>
+            </dl>
+        </section>
+
+        <section class="related-content">
+                <h2><span>Related Content</span></h2>
+                <ul>
+                    <li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#round-robins" target="_blank">Round robins</a></li>
+
+                </ul>
+        </section>
+    
+	</article>
+{% endblock %}

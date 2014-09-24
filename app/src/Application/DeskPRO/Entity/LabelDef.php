@@ -51,20 +51,31 @@ class LabelDef extends DomainObject
 	/**
 	 * @var string
 	 */
-
 	protected $label_type;
 
 	/**
 	 * @var string
 	 */
-
 	protected $label;
+
+	/**
+	 * @var string css color
+	 */
+	protected $color;
 
 	/**
 	 * @var int
 	 */
-
 	protected $total = 0;
+
+	public function __construct(array $data = array())
+	{
+		foreach ($data as $k => $v) {
+			if (property_exists($this, $k)) {
+				$this[$k] = trim($v);
+			}
+		}
+	}
 
 	/**
 	 * Get the name of the entity used to store label associations for this type.
@@ -90,6 +101,24 @@ class LabelDef extends DomainObject
 		$table = $class::getTableName();
 
 		return $table;
+	}
+
+
+	/**
+	 * @param string $c
+	 */
+	public function setColor($c)
+	{
+		if (!$c) {
+			$this->setModelField('color', null);
+		} else {
+			$c = trim($c);
+			if ($c === '' || $c === '#') {
+				$this->setModelField('color', null);
+			} else {
+				$this->setModelField('color', $c);
+			}
+		}
 	}
 
 	############################################################################
@@ -131,6 +160,14 @@ class LabelDef extends DomainObject
 				 'nullable'   => false,
 				 'columnName' => 'label',
 				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'color',
+				'type'       => 'string',
+				'nullable'   => false,
+				'columnName' => 'color'
 			)
 		);
 		$metadata->mapField(

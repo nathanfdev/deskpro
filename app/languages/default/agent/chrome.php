@@ -1,5 +1,6 @@
 <?php return array(
 	'agent.chrome.btn_create'                     => 'Create',
+	'agent.chrome.btn_add'                        => 'Add',
 	'agent.chrome.btn_recent'                     => 'Recent',
 	'agent.chrome.chat_list_agents-online'        => '<span class="userchat-online-agents-count">0</span> online agents:',
 	'agent.chrome.chat_list_by-department'        => 'By Department',

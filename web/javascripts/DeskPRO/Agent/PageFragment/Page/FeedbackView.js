@@ -8,6 +8,10 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		this.TYPENAME = 'feedback';
 	},
 
+	getAlertId: function() {
+		return 'feedback-row-' + this.meta.feedback_id;
+	},
+
 	initPage: function(el) {
 
 		var self = this;

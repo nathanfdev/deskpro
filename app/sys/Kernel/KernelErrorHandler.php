@@ -99,10 +99,12 @@ class KernelErrorHandler
 			}
 		}
 
-		$GLOBALS['DP_LAST_ERROR'] = array('type' => $errno, 'message' => $errstr, 'file' => $errfile, 'line' => $errline);
-
 		if (!(error_reporting() & $errno)) {
 			return;
+		}
+
+		if ($errno & E_WARNING || $errno & E_ERROR) {
+			$GLOBALS['DP_LAST_ERROR'] = array('type' => $errno, 'message' => $errstr, 'file' => $errfile, 'line' => $errline);
 		}
 
 		$errinfo = self::getErrorInfo($errno, $errstr, $errfile, $errline);
@@ -445,6 +447,7 @@ class KernelErrorHandler
 			}
 
 			@fclose($fh);
+			@chmod(dp_get_log_dir() . '/error.log', 0777);
 		}
 
 		$throttle_id = 'email_error';

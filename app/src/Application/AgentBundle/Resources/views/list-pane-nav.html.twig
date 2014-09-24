@@ -1,0 +1,31 @@
+<footer class="results-nav" ng-class="isLoading && 'loading'" ng-controller="ListPanePagination"
+        ng-init="listName = '{{ listName }}'; page = {{ page }}; perPage = {{ perPage }}; total = {{ total }}; ids = {{ ids|json_encode }}; displayFields = {{ displayFields|json_encode }}; url = '{{ url|raw }}'">
+
+    <div class="cursor">
+
+        {% set phrase_part1 %}
+            <span class="results-showing-count">
+                {{ ng_var('(page - 1) * perPage + 1') }}
+                -
+                {{ ng_var('Math.min(total, page * perPage)') }}
+            </span>
+        {% endset %}
+
+        {% set phrase_part2 %}
+            <span class="results-total-count">{{ ng_var('total') }}</span>
+        {% endset %}
+
+        {{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
+    </div>
+
+    <ul class="pagenav" ng-show="total > perPage"
+        ng-class="{
+                    'no-prev': page === 1,
+                    'no-next': page === Math.ceil(total / perPage)
+                    }">
+        <li class="prev" ng-click="fetchPage(page - 1)"></li>
+        <li class="next" ng-click="fetchPage(page + 1)"></li>
+    </ul>
+    <div class="loading"></div>
+
+</footer>

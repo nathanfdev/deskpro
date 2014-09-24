@@ -34,10 +34,12 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Monolog\Logger;
 use DeskPRO\Kernel\KernelErrorHandler;
 use FOS\ElasticaBundle\Logger\ElasticaLogger;
 use Monolog\Handler\NullHandler;
+use Orb\Util\Numbers;
 
 class ElasticSearchController extends AbstractController implements ProtectedControllerInterface
 {
@@ -58,8 +60,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 		$values = array(
 			'enabled'        => (bool)$this->settings->get('elastica.enabled'),
 			'requires_reset' => (bool)$this->settings->get('elastica.requires_reset'),
-			'host'           => $this->settings->get('elastica.clients.default.host') ? : '',
-			'port'           => (int)$this->settings->get('elastica.clients.default.port') ? : 9200
+			'url'            => $this->settings->get('elastica.clients.default.url'),
 		);
 
 		return $this->createApiResponse(array('elastic_settings' => $values));
@@ -74,12 +75,16 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 		$was_enabled = $this->settings->get('elastic_settings.enabled');
 
 		$this->settings->setSetting('elastica.enabled', $this->in->getBoolInt('elastic_settings.enabled'));
-		$this->settings->setSetting('elastica.clients.default.host', $this->in->getString('elastic_settings.host') ? : '');
-		$this->settings->setSetting('elastica.clients.default.port', $this->in->getUint('elastic_settings.port') ? : 9200);
+		$this->settings->setSetting('elastica.clients.default.url', $this->in->getString('elastic_settings.url') ? : '');
 
 		// Just turned on, we need to toggle the requires_reset flag
-		if (!$was_enabled && $this->in->getBool('elastic_settings.enabled')) {
+		if ((!$was_enabled || $this->in->getBool('reindex')) && $this->in->getBool('elastic_settings.enabled')) {
 			$this->settings->setSetting('elastica.requires_reset', 1);
+			$es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
+			if ($es_status) {
+				$this->em->remove($es_status);
+				$this->em->flush();
+			}
 		} else {
 			$this->settings->setSetting('elastica.requires_reset', null);
 		}
@@ -93,41 +98,27 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
 	public function testSettingsAction()
 	{
-		$config = array(
-			'host' => $this->in->getString('host'),
-			'port' => $this->in->getString('port')
-		);
-
 		#------------------------------
 		# Configure logger
 		#------------------------------
+
+		try {
+			$config = ClientFactory::createConfigFromUrl($this->in->getString('url'));
+		} catch (\Exception $e) {
+			return $this->createApiResponse(array('is_success' => false, 'log' => $e->getMessage()));
+		}
 
 		$logger = new Logger('elastic_test');
 		$logger->enableSavedMessages();
 
 		$elastica_logger = new ElasticaLogger($logger);
+		$elastica_logger->debug(sprintf("URL: %s", $this->in->getString('url')));
 		$elastica_logger->debug(sprintf("Host: %s", $config['host']));
 		$elastica_logger->debug(sprintf("Port: %s", $config['port']));
+		$elastica_logger->debug(sprintf("Path: %s", $config['path']));
+		$elastica_logger->debug(sprintf("Transport: %s", $config['transport']));
 
 		$config['logger'] = $elastica_logger;
-
-		#------------------------------
-		# Verify params
-		#------------------------------
-
-		$error = false;
-		if (!$config['host']) {
-			$elastica_logger->error("Missing host");
-			$error = true;
-		}
-		if (!$config['port']) {
-			$elastica_logger->error("Missing port");
-			$error = true;
-		}
-
-		if ($error) {
-			return $this->createApiResponse(array('is_success' => false, 'log' => $logger->getSavedMessages()));
-		}
 
 		#------------------------------
 		# Create client
@@ -143,6 +134,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 		#------------------------------
 
 		$ts_start = microtime(true);
+		$error = false;
 
 		try {
 			$elastica_logger->debug("Fetching status...");
@@ -153,6 +145,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 				$elastica_logger->info("Success. Response: " . json_encode($status->getResponse()->getData()));
 			} else {
 				$elastica_logger->error("Failed: " . $status->getResponse()->getError());
+				$error = true;
 			}
 		} catch (\Exception $e) {
 			$elastica_logger->error("Exception: {$e->getMessage()}");
@@ -162,6 +155,85 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 		return $this->createApiResponse(array(
 			'is_success' => !$error,
 			'log' => $logger->getSavedMessages()
+		));
+	}
+
+	####################################################################################################################
+	# index-status
+	####################################################################################################################
+
+	public function indexStatusAction()
+	{
+		$es_status = $this->em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', false);
+
+		$status_data = $es_status ? $es_status->data : array();
+
+		$log_path = dp_get_log_dir() . '/es-indexer.log';
+		$log = null;
+		if (file_exists($log_path)) {
+			$log = @file_get_contents($log_path);
+		}
+
+		$is_indexing = ($this->getContainer()->getSetting('elastica.requires_reset') || ($es_status && $es_status->getData('status') == 'running'));
+
+		if (($es_status && $es_status->getData('status') == 'running') && isset($status_data['date_last'])) {
+			if ($status_data['date_last']->getTimestamp() < (time() - 1200)) {
+				$status_data['status'] = 'crashed';
+			}
+		}
+
+		$info = null;
+		if (!$is_indexing) {
+			try {
+				/** @var \Elastica\Index $index */
+				$index = $this->getContainer()->get('fos_elastica.index.deskpro');
+				$index_name = $index->getName();
+
+				$stats = $index->request('_stats', 'GET')->getData();
+
+				if (!isset($stats['indices'][$index_name])) {
+					$info = array('error' => 'no_index');
+				} else {
+					$info = array(
+						'size'          => @$stats['indices'][$index_name]['total']['store']['size_in_bytes'],
+						'size_readable' => Numbers::filesizeDisplay(@$stats['indices'][$index_name]['total']['store']['size_in_bytes']),
+						'num_docs'      => @$stats['indices'][$index_name]['total']['docs']['count'],
+					);
+				}
+
+			} catch (\Exception $e) {
+				$info = array('error' => 'no_status');
+			}
+		}
+
+		if (empty($info['error']) && isset($index) && isset($index_name)) {
+			$types = array(
+				'feedback'     => 'feedback',
+				'organization' => 'organizations',
+				'person'       => 'people',
+				'article'      => 'articles',
+				'ticket'       => 'tickets',
+				'news'         => 'news',
+				'download'     => 'downloads',
+				'chat_conversation' => 'chat_conversations',
+			);
+
+			foreach ($types as $type => $table) {
+				try {
+					$count = $index->request("$type/_count", 'GET')->getData();
+					if (isset($count['count'])) {
+						$info["num_$type"]     = $count['count'];
+						$info["realnum_$type"] = $this->db->fetchColumn("SELECT COUNT(*) FROM $table");
+					}
+				} catch (\Exception $e) {}
+			}
+		}
+
+		return $this->createJsonResponse(array(
+			'is_indexing'    => $is_indexing,
+			'indexer_status' => $status_data ? $status_data : null,
+			'indexer_log'    => $log ?: null,
+			'info'           => $info
 		));
 	}
 }

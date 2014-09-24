@@ -14,6 +14,8 @@
 		pageMeta.url_fragment = '{{ url_fragment('agent_task_list', {'search_type': search_type, 'search_category':search_category}) }}';
 		{% set baseId = el_uid() %}
 		pageMeta.baseId = '{{ tplvars.baseId }}';
+        pageMeta.tasks = {{ tasks_arr|json_encode|raw }};
+        pageMeta.page = {{ page }};
 	</script>
 {% endblock top %}
 

@@ -1,4 +1,4 @@
-<li data-note-id="{{comment.id}}" class="note">
+<li data-note-id="{{ comment.id }}" class="note" xmlns="http://www.w3.org/1999/html">
 	<div class="message">
 		<div class="message-avatar">
 			<img src="{{ comment.person.getPictureUrl(25) }}" alt="" width="25" height="25" />
@@ -8,11 +8,10 @@
 				<time class="timeago" title="{{comment.date_created|date('c', 'UTC')}}">{{comment.date_created|date('day')}}</time>
 				<h4>{{comment.person.name}}:</h4>
 			</div>
-			<div class="message-text">
-				<p>
-					{{comment.content_html|raw}}
-				</p>
+			<div class="message-text{% if comment.person.id == app.user.id %} editable{% endif %}">
+				<p>{{ comment.content_html|raw }}</p>
 			</div>
+            <textarea style="width: 90%;display: none;">{{comment.content}}</textarea>
 		</div>
 	</div>
 </li>

@@ -1,7 +1,7 @@
 {% extends 'AgentBundle::source-pane-layout.html.twig' %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 {% block pane_main_tab %}
-	<li class="tab active"><i class="icon-dp-chat"></i> {{ phrase('agent.chrome.nav_userchat') }}</li>
+	<li class="tab active" data-tab-id="pane-content-main"><i class="icon-dp-chat"></i> {{ phrase('agent.chrome.nav_userchat') }}</li>
 {% endblock %}
 {% block pane_other_tabs %}{% endblock %}
 {% block pane_content %}
@@ -132,7 +132,9 @@
 								<td class="labels">
 									<ul>
 										{% for label in labels %}
-											<li class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}"><span>{{label}}</span></li>
+											<li class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}">
+                                                <span dp-label="{{ label }}">{{label}}</span>
+                                            </li>
 										{% endfor %}
 									</ul>
 								</td>
@@ -140,7 +142,7 @@
 						{% endfor %}
 					</table>
 				{% else %}
-				<aside class="source-info-explain">{{ phrase('agent.general.no_ticket_labels') }}</aside>
+				<aside class="source-info-explain">{{ phrase('agent.general.no_chat_labels') }}</aside>
 				{% endif %}
 			</section>
 			<section class="labels-cloud" id="userchat_labels_cloud" style="display: none; border-top:none;">

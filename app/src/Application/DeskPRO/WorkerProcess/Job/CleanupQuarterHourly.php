@@ -42,6 +42,12 @@ class CleanupQuarterHourly extends AbstractJob
 
 	public function run()
 	{
+		$this->doRun();
+		App::getDb()->setIsolationDefault();
+	}
+
+	private function doRun()
+	{
 		#------------------------------
 		# Page cache
 		#------------------------------
@@ -79,13 +85,19 @@ class CleanupQuarterHourly extends AbstractJob
 			$datetime = date('Y-m-d H:i:s', time() - $maxage);
 			$num = App::getDb()->executeUpdate("
 				DELETE FROM agent_alerts
-				WHERE date_created < ? OR is_dismissed = 1
+				WHERE date_created < ? AND is_dismissed = 1
 			", array($datetime));
 
 			if ($num) {
 				$this->logStatus("Cleaned up $num agent alerts");
 			}
 		}
+
+		#------------------------------
+		# Old API logs
+		#------------------------------
+
+		App::$container->getEm()->getRepository('DeskPRO:ApiKeyLog')->cleanup();
 
 		#------------------------------
 		# Update table counts

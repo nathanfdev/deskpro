@@ -154,36 +154,17 @@
 			</th>
 			<td>
 				<div class="custom-field content ticket_field_{{f.id}}" data-item-id="{{f.id}}">
-					{% if not ticket.hasCustomField(f.id) %}
-						{{ phrase('agent.general.none') }}
-					{% else %}
-						{{ render_custom_field(f) }}
-					{% endif %}
+					{{ render_custom_field(f) }}
 				</div>
 			</td>
 		</tr>
 		<tr class="mode-edit">
-			{% if f.field_def.isFormField() %}
-				<th width="80">{{ f.title }}:</th>
-				<td>
-					<div class="custom-field field-input ticket_field_{{f.id}}" data-item-id="{{f.id}}">
-						{{ render_custom_field_form(f) }}
-					</div>
-				</td>
-			{% else %}
-				<td>
-					<span class="custom-field edit-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
-				</td>
-				<td>
-					<div class="custom-field content ticket_field_{{f.id}}" data-item-id="{{f.id}}">
-						{% if not ticket.hasCustomField(f.id) %}
-							{{ phrase('agent.general.none') }}
-						{% else %}
-							{{ render_custom_field(f) }}
-						{% endif %}
-					</div>
-				</td>
-			{% endif %}
+			<th width="80">{{ f.title }}:</th>
+			<td>
+				<div class="custom-field field-input ticket_field_{{f.id}}" data-item-id="{{f.id}}">
+					{{ render_custom_field_form(f) }}
+				</div>
+			</td>
 		</tr>
 	</tbody>
 {% endfor %}

@@ -1,7 +1,7 @@
 ({
 	"baseUrl": ".",
 	"paths": {
-		"angular":                         "bower_components/angular/angular.min",
+		"angular":                         "bower_components/angular/angular",
 		"angularRoute":                    "bower_components/angular-route/angular-route.min",
 		"angularAnimate":                  "bower_components/angular-animate/angular-animate.min",
 		"angularBootstrap":                "bower_components/angular-bootstrap/ui-bootstrap-tpls.min",
@@ -13,8 +13,10 @@
 		"angularMoment":                   "bower_components/angular-moment/angular-moment",
 		"angularFileUpload":               "bower_components/blueimp-file-upload/js/jquery.fileupload-angular",
 		"angularSlider":                   "bower_components/angular-slider/angular-slider.min",
+		"angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
 		"angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
 		"ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
+		"ngContextMenu":                   "vendor-src/ng-context-menu/src/ng-context-menu",
 		"jquery":                          "bower_components/jquery/jquery.min",
 		"jqueryUi":                        "bower_components/jquery-ui/ui/minified/jquery-ui.min",
 		"jquery.ui.widget":                "bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget",
@@ -30,8 +32,8 @@
 		"load-image-exif":                 "bower_components/blueimp-load-image/js/load-image-exif",
 		"canvas-to-blob":                  "bower_components/blueimp-canvas-to-blob/js/canvas-to-blob.min",
 		"underscore":                      "bower_components/underscore/underscore-min",
-		"moment":                          "bower_components/moment/min/moment-with-langs.min",
 		"momentTimezone":                  "vendor-src/moment-timezone",
+		"moment":                          "bower_components/moment/min/moment-with-langs.min",
 		"aceEditor":                       "bower_components/ace-builds/src-min-noconflict/ace",
 		"stacktrace":                      "bower_components/stacktrace/stacktrace",
 		"bootstrapModal":                  "bower_components/bootstrap/js/modal",
@@ -40,6 +42,15 @@
 		"toastr":                          "bower_components/toastr/toastr",
 		"ColorPicker":                     "../vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "../vendor/detect_timezone",
+		"intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
+		"redactor":                        "../vendor/redactor/redactor.min",
+
+		"selectize":                       "bower_components/selectize/dist/js/selectize",
+		"sifter":                          "bower_components/sifter/sifter",
+		"microplugin":                     "bower_components/microplugin/src/microplugin",
+
+		"ZeroClipboard":                   "bower_components/zeroclipboard/dist/ZeroClipboard",
+		"ngClip":                          "bower_components/ng-clip/src/ngClip",
 
 		"AdminLoad":                       "Admin/AdminLoad",
 		"CloudAdminLoad":                  "Admin/Cloud/CloudAdminLoad",
@@ -64,11 +75,12 @@
 		"angularUiAce":                    ["angular"],
 		"angularUiRouter":                 ["angular"],
 		"angularUiSortable":               ["angular"],
-		"angularMoment":                   ["angular", "moment"],
+		"angular-moment":                   ["angular", "moment"],
 		"angularFileUpload":               ["jquery"],
 		"angularSlider":                   ["angular"],
 		"angularGrid":                     ["angular"],
 		"ngFileUpload":                    ["angular"],
+		"ngContextMenu":                   ["angular"],
 		"jquery":                          { "exports": "jquery" },
 		"jqueryUi":                        ["jquery"],
 		"bootstrapModal":                  ["jquery"],
@@ -78,7 +90,8 @@
 		"ColorPicker":                     ["jquery"],
 		"underscore":                      { "exports": "_" },
 		"stacktrace":                      { "exports": "printStackTrace"},
-		"trackjs":                         { "exports": "trackJs"}
+		"trackjs":                         { "exports": "trackJs"},
+		"intl-tel-input":                  ["jquery"]
 	},
 	"priority": [
 		"angular"

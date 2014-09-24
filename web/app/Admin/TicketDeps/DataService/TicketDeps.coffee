@@ -12,12 +12,20 @@ define [
 	class TicketDeps extends BaseListEdit
 		@$inject = ['Api', '$q']
 
-		_doLoadList: ->
+		url: -> '/ticket_deps'
+
+		resolveResponse: (response) -> response.departments
+
+		all: (reload) ->
+			super reload, {with_perms: 1}
+
+		_doLoadList: (params) ->
 			deferred = @$q.defer()
+			params = params || {}
 
-			@Api.sendGet('/ticket_deps').success( (data, status, headers, config) =>
+			# maybe should init query params as method argument
+			@Api.sendGet(@url(), params).success( (data, status, headers, config) =>
 				@deps = data.departments
-
 				proc = (parent) ->
 					list = []
 

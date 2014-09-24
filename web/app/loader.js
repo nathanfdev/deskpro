@@ -3,7 +3,7 @@ requirejs.config({
 	"waitSeconds": 60,
 	"urlArgs": ((DP_IS_DEBUG && !DP_USE_RJS_BUILD) ? "bust=" + (new Date()).getTime() : "v=" + (DP_BUILD_TIME || "0")),
 	"paths": {
-		"angular":                         "app/bower_components/angular/angular.min",
+		"angular":                         "app/bower_components/angular/angular",
 		"angularRoute":                    "app/bower_components/angular-route/angular-route.min",
 		"angularAnimate":                  "app/bower_components/angular-animate/angular-animate.min",
 		"angularBootstrap":                "app/bower_components/angular-bootstrap/ui-bootstrap-tpls.min",
@@ -15,7 +15,10 @@ requirejs.config({
 		"angularMoment":                   "app/bower_components/angular-moment/angular-moment",
 		"angularFileUpload":               "app/bower_components/blueimp-file-upload/js/jquery.fileupload-angular",
 		"angularSlider":                   "app/bower_components/angular-slider/angular-slider.min",
+		"angularSelectize":                "app/bower_components/angular-selectize.js/angular-selectize",
 		"angularGrid":                     "app/bower_components/angular-grid/build/ng-grid.min",
+		"angularUiDatetime":               "app/vendor-src/ui-datetime",
+
 		"ngFileUpload":                    "app/bower_components/ng-file-upload/angular-file-upload.min",
 		"jquery":                          "app/bower_components/jquery/jquery.min",
 		"jqueryUi":                        "app/bower_components/jquery-ui/ui/minified/jquery-ui.min",
@@ -42,6 +45,15 @@ requirejs.config({
 		"toastr":                          "app/bower_components/toastr/toastr",
 		"ColorPicker":                     "vendor/colorpicker/js/colorpicker.min",
 		"jstz":                            "vendor/detect_timezone",
+		"intl-tel-input":                  "app/bower_components/intl-tel-input/build/js/intlTelInput.min",
+		"redactor":                        "vendor/redactor/redactor.min",
+
+		"selectize":                       "app/bower_components/selectize/dist/js/selectize",
+		"sifter":                          "app/bower_components/sifter/sifter",
+		"microplugin":                     "app/bower_components/microplugin/src/microplugin",
+
+		"ZeroClipboard":                   "app/bower_components/zeroclipboard/dist/ZeroClipboard",
+		"ngClip":                          "app/bower_components/ng-clip/src/ngClip",
 
 		"AdminLoad":                       (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/AdminLoad"),
 		"CloudAdminLoad":                  (DP_USE_RJS_BUILD ? "app/build/Admin/js/build" : "app/Admin/Cloud/CloudAdminLoad"),
@@ -70,7 +82,12 @@ requirejs.config({
 		"angularMoment":                   ["angular", "moment"],
 		"angularFileUpload":               ["jquery"],
 		"angularSlider":                   ["angular"],
+		"angularSelectize":                ["angular"],
 		"angularGrid":                     ["angular"],
+		"angularUiDatetime":               ["angular"],
+
+		"ZeroClipboard":                   { "exports": "ZeroClipboard"},
+		"ngClip":                          ["angular", "ZeroClipboard"],
 		"ngFileUpload":                    ["angular"],
 		"jquery":                          { "exports": "jquery" },
 		"jqueryUi":                        ["jquery"],
@@ -82,7 +99,8 @@ requirejs.config({
 		"jstz":                            { "exports": "jstz" },
 		"underscore":                      { "exports": "_" },
 		"stacktrace":                      { "exports": "printStackTrace"},
-		"trackjs":                         { "exports": "trackJs"}
+		"trackjs":                         { "exports": "trackJs"},
+		"intl-tel-input":                  ["jquery"]
 	},
 	"priority": [
 		"jquery",

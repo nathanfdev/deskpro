@@ -42,6 +42,12 @@ class CleanupWeekly extends AbstractJob
 
 	public function run()
 	{
+		$this->doRun();
+		App::getDb()->setIsolationDefault();
+	}
+
+	private function doRun()
+	{
 		$date = date('Y-m-d H:i:s', strtotime('-1 year'));
 
 		$num = App::getDb()->executeUpdate("

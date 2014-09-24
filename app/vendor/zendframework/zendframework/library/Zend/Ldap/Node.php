@@ -141,10 +141,7 @@ class Node extends Node\AbstractNode implements Iterator, RecursiveIterator
      */
     public function attachLdap(Ldap $ldap)
     {
-        if (!Dn::isChildOf($this->_getDn(), $ldap->getBaseDn())) {
-            throw new Exception\LdapException(null, 'LDAP connection is not responsible for given node.',
-                Exception\LdapException::LDAP_OTHER);
-        }
+        /* DESKPRO EDIT: Removed isChildOf check */
 
         if ($ldap !== $this->ldap) {
             $this->ldap = $ldap;

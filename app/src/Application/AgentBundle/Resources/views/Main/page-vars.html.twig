@@ -7,6 +7,7 @@
 	var DESKPRO_PERSON_ID = {{ app.user.id }};
 	var DESKPRO_TEAM_IDS = {{ app.user.getAgent.getTeamIds()|json_encode }};
 	var DESKPRO_SESSION_ID = {{ app.session.getEntityId() }};
+	var DESKPRO_SESSION_CODE = '{{ app.session.getEntity().getSessionCode() }}';
 	var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
 	var DESKPRO_PERSON_TZ = '{{ app.user.timezone }}';
 	var DESKPRO_PERSON_NOTIFICATION_DISMISS = parseInt('{{ app.user.getPref('agent.ui.auto_dismiss_notification', 60) }}', 10);

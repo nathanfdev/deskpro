@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\PhoneNumbers;
 use Orb\Validator\AbstractValidator;
 
 class AgentProfileValidator extends AbstractValidator
@@ -52,6 +53,12 @@ class AgentProfileValidator extends AbstractValidator
 	protected function checkIsValid($profile)
 	{
 		$this->profile = $profile;
+
+		if (!PhoneNumbers::looksEmpty($this->profile->primary_phone_number_text)) {
+			if (!PhoneNumbers::isValid($this->profile->primary_phone_number_text)) {
+				$this->addError('phone_number.invalid');
+			}
+		}
 
 		$validator = new \Orb\Validator\StringLength(array('min' => 3));
 		if (!$validator->isValid($this->profile->name)) {

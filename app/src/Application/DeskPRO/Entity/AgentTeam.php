@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -79,10 +80,17 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id;
 	}
 
+	public function __construct()
+	{
+		$this->members = new ArrayCollection();
+	}
 
 
 	public function addPerson(Entity\Person $person)
 	{
+		if ($this->members->contains($person)) {
+			return;
+		}
 		$this->members->add($person);
 		$this->_onPropertyChanged('members', $this->members, $this->members);
 	}
@@ -132,8 +140,17 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToMany(array( 'fieldName' => 'members', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'agent_team_members', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'orderBy' => array( 'name' => 'ASC', ), ));
-
+		$metadata->mapManyToMany(array(
+			'fieldName' => 'members',
+			'mapedBy' => 'teams',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+			'joinTable' => array(
+				'name' => 'agent_team_members',
+				'joinColumns' => array(array( 'name' => 'team_id' )),
+				'inverseJoinColumns' => array(array( 'name' => 'person_id' )),
+			),
+			'orderBy' => array( 'name' => 'ASC', ),
+		));
 		$metadata->mapManyToOne(array(
 			'fieldName' => 'avatar',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',

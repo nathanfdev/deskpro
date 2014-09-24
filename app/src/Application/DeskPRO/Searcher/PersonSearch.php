@@ -102,7 +102,8 @@ class PersonSearch extends SearcherAbstract
 	{
 		$db = App::getDbRead('search.filter.people');
 
-		$people_ids = $db->fetchAllCol($this->getSql());
+		$sql = $this->getSql();
+		$people_ids = $db->fetchAllCol($sql);
 
 		return $people_ids;
 	}
@@ -252,7 +253,7 @@ class PersonSearch extends SearcherAbstract
 				switch ($search_type) {
 					case 'input':
 					case 'value':
-						$order_by = arary(
+						$order_by = array(
 							"INNER JOIN custom_data_person AS sort_table ON (sort_table.person_id = people.id AND sort_table.id = $term_id)",
 							"sort_table.$search_type $dir"
 						);
@@ -505,14 +506,14 @@ class PersonSearch extends SearcherAbstract
 				case self::TERM_DIRECTORY_NAME:
 
 					if ($choice == 'OTHER') {
-						$where[] = "people.last_name RLIKE '^[^A-Za-z]'";
+						$wheres[] = "people.last_name RLIKE '^[^A-Za-z]'";
 					} else {
 						$letter = $choice[0];
 						if (!preg_match('#^[a-zA-Z]#', $letter)) {
 							$letter = 'A';
 						}
 
-						$where[] = "people.last_name LIKE '%$letter'";
+						$wheres[] = "people.last_name LIKE '%$letter'";
 					}
 
 					break;
@@ -566,6 +567,7 @@ class PersonSearch extends SearcherAbstract
 							$choices_in[] = $db->quote($c);
 						}
 						$choices_in = implode(',', $choices_in);
+						if (!$choices_in) $choices_in = '';
 					}
 
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
@@ -670,7 +672,7 @@ class PersonSearch extends SearcherAbstract
 										$w = "($w OR $field IS NULL)";
 									}
 
-									$where[] = $w;
+									$wheres[] = $w;
 
 									break;
 								case self::OP_CONTAINS:
@@ -683,7 +685,7 @@ class PersonSearch extends SearcherAbstract
 										$w = "($w OR $field IS NULL)";
 									}
 
-									$where[] = $w;
+									$wheres[] = $w;
 									break;
 							}
 							break;

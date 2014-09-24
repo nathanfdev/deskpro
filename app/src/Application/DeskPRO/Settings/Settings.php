@@ -99,22 +99,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 		$this->virtual_settings['default_timezone'] = function($settings) {
 			return $settings->getDefaultTimezone();
 		};
-
-		$this->virtual_settings['tickets_enable_like_search'] = function($settings) {
-			if ($settings['core_tickets.enable_like_search_mode'] == 'auto') {
-				if ($settings['core_tickets.enable_like_search_auto']) {
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				if ($settings['core_tickets.enable_like_search_mode'] && $settings['core_tickets.enable_like_search_mode'] != 'off') {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		};
 	}
 
 
@@ -161,14 +145,13 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	/**
 	 * Get the value of a setting
 	 *
-	 * @param string $name
-	 * @return null|string
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
+	 * @param $name
+	 * @param null $default
+	 * @return mixed|null
 	 */
-	public function get($name)
+	public function get($name, $default = null)
 	{
-		if (!$name) return null;
+		if (!$name) return $default;
 
 		if ($this->settings === null) {
 			$this->_loadSettings();
@@ -178,7 +161,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 			return call_user_func($this->virtual_settings[$name], $this);
 		}
 
-		return isset($this->settings[$name]) ? $this->settings[$name] : null;
+		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
 	}
 
 

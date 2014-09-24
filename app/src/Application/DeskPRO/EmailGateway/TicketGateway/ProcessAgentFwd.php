@@ -197,7 +197,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
 		$ticket_message = new TicketMessage();
 		$ticket_message->person = $user;
-		$ticket_message->creation_system = 'gatway.agent';
+		$ticket_message->creation_system = 'gateway.agent';
 
 		$body = $fwd_cutter->getForwardedMessage();
 		$body = $this->cleanBodyText($body);
@@ -219,7 +219,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			$agent_ticket_message->date_created->modify('+1 second');
 			$agent_ticket_message->person = $this->person;
 			$agent_ticket_message->setMessageHtml($agent_reply);
-			$agent_ticket_message->creation_system = 'gatway.agent';
+			$agent_ticket_message->creation_system = 'gateway.agent';
 			$ticket->addMessage($agent_ticket_message);
 			$ticket->setStatus('awaiting_user');
 		}
@@ -429,7 +429,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
 		$ticket_message = new TicketMessage();
 		$ticket_message->person = $user;
-		$ticket_message->creation_system = 'gatway.agent';
+		$ticket_message->creation_system = 'gateway.agent';
 
 		if ($user_reader->getBodyHtml() && $user_reader->getBodyHtml()->body_utf8) {
 			$this->logMessage('[TicketGatewayProcessor] (User) Reading html');
@@ -461,7 +461,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			$agent_ticket_message->date_created->modify('+1 second');
 			$agent_ticket_message->person = $this->person;
 			$agent_ticket_message->setMessageHtml($agent_reply);
-			$agent_ticket_message->creation_system = 'gatway.agent';
+			$agent_ticket_message->creation_system = 'gateway.agent';
 			$ticket->addMessage($agent_ticket_message);
 			$ticket->setStatus('awaiting_user');
 		}

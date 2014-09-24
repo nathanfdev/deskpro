@@ -37,12 +37,15 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Service\CheckWhitelistedIP;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -324,11 +327,11 @@ HTML;
 			$this->session->save();
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
-
+		
 		$identity = $result->getIdentity();
 
 		$person = $identity['person'];
-
+		
 		if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
 			$this->session->set('account_disabled', $person->id);
 			$this->session->save();
@@ -338,6 +341,12 @@ HTML;
 		if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
 			$person->setLastLoginAt();
 		}
+
+		$browser = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		if (!$person->browser && $browser) {
+			$person->browser = $browser;
+		}
+		
 		$this->em->persist($person);
 		$this->em->flush();
 
@@ -440,6 +449,15 @@ HTML;
 			return $this->redirect($return);
 		} else {
 			return $this->redirectRoute($this->route_prefix);
+		}
+	}
+
+	protected function handleIpSecurityCheck(\Application\DeskPRO\Entity\Person $person)
+	{
+		if (!CheckWhitelistedIP::checkIP($this->container, $person)) {
+			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+				'ip' => dp_get_user_ip_address()
+			));
 		}
 	}
 
@@ -782,7 +800,11 @@ HTML;
 			if (!$is_invalid) {
 				$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
 				foreach ($usersources as $us) {
-					$found = $us->findIdentityByInput($email);
+					try {
+						$found = $us->findIdentityByInput($email);
+					} catch (\Exception $e) {
+						$found = null;
+					}
 					if ($found && $us->lost_password_url) {
 						return $this->redirect($us->lost_password_url);
 					}
@@ -1063,6 +1085,32 @@ HTML;
 		));
 
 		return $this->redirectRoute('user_profile');
+	}
+	
+	public function whitelistIpAction($code)
+	{
+		$tmp_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
+		if (!$tmp_data) {
+			throw $this->createNotFoundException();
+		}
+
+		$person = $this->em->find('DeskPRO:Person', $tmp_data->getData('person_id'));
+		if(!$person) {
+			throw $this->createNotFoundException();
+		}
+		
+		$data = $tmp_data->getData();
+
+		$whitelist_ip = new \Application\DeskPRO\Entity\WhiteListedIp();
+
+		$whitelist_ip['person']		= $person;
+		$whitelist_ip['ip_address']	= $data['ip'];
+
+		$this->em->persist($whitelist_ip);
+		$this->em->remove($tmp_data);
+		$this->em->flush();
+
+		return $this->redirectRoute('agent');
 	}
 
 	############################################################################

@@ -1372,6 +1372,17 @@ class FilestorageLoader extends LoaderAbstract
 			}
 		}
 
+		// Second path is doing dumb-check on every path
+		foreach ($paths as $prefix => $base_path) {
+			$path = $base_path . '/'. $appname . '/'. $type_f . $filename;
+			if (file_exists($path)) {
+				return array(
+					'filepath' => $path,
+					'basepath' => $base_path . '/'. $appname . '/'. $type_f
+				);
+			}
+		}
+
 		return null;
 	}
 }

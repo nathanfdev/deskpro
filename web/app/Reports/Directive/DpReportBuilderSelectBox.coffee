@@ -70,7 +70,7 @@ define ->
 				buildDirectiveVariables = (value) ->
 
 					lastPiece = value
-					regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g
+					regex = /(.*?)(<(\d+:.+?)>)/g
 
 					while match = regex.exec(value)
 						scope.texts.push(match[1])
@@ -129,9 +129,12 @@ define ->
 					for own key, value of choices
 						options.push({value: key, label: value[0]})
 
+					if !options.length
+						options.push {value: 0, label: 'invalid value'}
+
 					return {
 						options: options
-						selected: (if extras.default then extras.default else options[0].value)
+						selected: (if extras.default then extras.default else options[0]?.value)
 					}
 
 				updateLink = ->

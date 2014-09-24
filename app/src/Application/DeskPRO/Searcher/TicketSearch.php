@@ -411,7 +411,7 @@ class TicketSearch extends SearcherAbstract
 
 		try {
 			$ticket_ids = $db->fetchAllCol($sql);
-		} catch (\Doctrine\DBAL\DBALException $e) {
+		} catch (\PDOException $e) {
 			$ticket_ids = array();
 			KernelErrorHandler::logException($e, true);
 
@@ -983,7 +983,7 @@ class TicketSearch extends SearcherAbstract
 					case 'input':
 					case 'value':
 						$this->add_raw_selects[] = "sort_table.$search_type AS status_order";
-						$order_by = arary(
+						$order_by = array(
 							"INNER JOIN custom_data_ticket AS sort_table ON (sort_table.ticket_id = tickets.id AND sort_table.id = $term_id)",
 							"ORDER BY status_order $dir, id DESC"
 						);
@@ -1877,6 +1877,7 @@ class TicketSearch extends SearcherAbstract
 								$choices_in[] = $this->quoteDbValue($c);
 							}
 							$choices_in = implode(',', $choices_in);
+							if (!$choices_in) $choices_in = '';
 						}
 
 						if (!$this->is_testing) $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
@@ -1968,7 +1969,7 @@ class TicketSearch extends SearcherAbstract
 												$w = "($w OR $field IS NULL)";
 											}
 
-											$where[] = $w;
+											$wheres[] = $w;
 										}
 										break;
 									case self::OP_CONTAINS:
@@ -1981,7 +1982,7 @@ class TicketSearch extends SearcherAbstract
 											$w = "($w OR $field IS NULL)";
 										}
 
-										$where[] = $w;
+										$wheres[] = $w;
 
 										break;
 								}

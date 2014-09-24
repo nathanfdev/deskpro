@@ -127,6 +127,15 @@ class ChoiceField extends CustomFieldAbstract
 		}
 	}
 
+	public function save()
+	{
+		// need to map array to string before entity start listen for changes
+		if (is_array($this->default_value)) {
+			$this->default_value = implode(',', $this->default_value);
+		}
+		parent::save();
+	}
+
 	protected function setFieldProperties()
 	{
 		$field = $this->_field;

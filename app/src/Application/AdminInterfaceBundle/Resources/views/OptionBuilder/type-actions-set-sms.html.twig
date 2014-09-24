@@ -1,0 +1,102 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap">
+					<label class="row-label">Send SMS<br/>
+						<small ng-if="sms_app_name.length > 0">via {{ ng_var('sms_app_name') }} App</small>
+					</label>
+				</td>
+				<td ng-show="rowOpts.rowEnabled">
+					<table class="display-table spaced">
+						<tr>
+							<td>Message:</td>
+							<td>
+								<div style="padding-top: 3px; width: 80%;">
+									<textarea class="form-control" ng-model="model.message" ng-change="calculateCharacterLength()"></textarea>
+								</div>
+								<div style="padding-bottom: 3px; width: 80%;" ng-if="model.message.length > 0" ng-init="calculateCharacterLength()">
+									<span class="help-inline dp-help-content">
+										{{ ng_var('sms_num_characters') }}
+										characters
+										<span ng-repeat="sms_var in sms_vars"> + {{ ng_var('sms_var') }}</span>
+									</span>
+								</div>
+							</td>
+						</tr>
+						<!-- Keeping it simple for now -->
+						<tr>
+							<td>To Agent(s):</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
+									<li style="border-bottom: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.assigned"/>
+											Assigned Agent
+										</label>
+									</li>
+									<li style="border-bottom: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.followers"/>
+											Following Agents
+										</label>
+									</li>
+									<li ng-repeat="agent in agents">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids[agent.id]"/>
+											{{ ng_var('agent.display_name') }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>To Team(s):</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
+									<li style="border-bottom: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.agent_teams.assigned"/>
+											Assigned Team
+										</label>
+									</li>
+									<li ng-repeat="team in agent_teams">
+										<label>
+											<input type="checkbox" ng-model="model.agent_teams[team.id]"/>
+											{{ ng_var('team.name') }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>To Department(s):</td>
+							<td>
+								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
+									<li ng-repeat="dep in ticket_dep_options">
+										<label>
+											<input type="checkbox" ng-model="model.department_ids[dep.id]"/>
+											{{ ng_var('dep.title') }}
+										</label>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<td>To Number:</td>
+							<td>
+								<div style="min-width: 200px;">
+									<input style="min-width:200px;"
+										   type="tel"
+										   class="form-control"
+										   ng-model="model.to_number"
+										   dp-phone-number/>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

@@ -17,6 +17,17 @@
 			</div>
 		</div>
 		<div class="modal-footer">
+			<div ng-show="is_error" style="text-align: left; margin: 0 0 5px 0;" class="alert alert-danger">
+				<p>
+					There was a problem saving your template:
+				</p>
+				<p ng-if="syntax_error">
+					Syntax error on line {{ ng_var('syntax_line') }}
+				</p>
+				<p>
+					{{ ng_var('error_message') }}
+				</p>
+			</div>
 			<div ng-hide="saving_template">
 				<button class="btn btn-warning" ng-click="revert()" ng-show="tpl.is_custom"><i class="fa fa-step-backward"></i> Revert To Default</button>
 				<button class="btn btn-success" ng-click="save()"><i class="fa fa-save"></i> {{ phrase('agent.general.save') }}</button>

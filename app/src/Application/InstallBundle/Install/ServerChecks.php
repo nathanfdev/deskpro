@@ -536,14 +536,22 @@ class ServerChecks
 		#------------------------------
 
 		if ($type == 'apc_check' || $type == 'all') {
-			$this->getLogger()->log("[CHECK] Checking if APC is enabled", Logger::DEBUG);
-			if ((function_exists('apc_store') && ini_get('apc.enabled') || extension_loaded('wincache'))) {
-				$this->getLogger()->log("[OK] APC store installed", Logger::DEBUG);
+			$enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
+			$enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
+			$enabledOpcache = (int) ini_get('opcache.enable') || extension_loaded('Zend OPcache');
+
+			$this->getLogger()->log("[CHECK] Checking if any opcode cache is enabled", Logger::DEBUG);
+
+			if ($enabledApc || $enabledWincache || $enabledOpcache) {
+				$this->getLogger()->log("[OK] opcode cache store installed", Logger::DEBUG);
 			} else {
-				$msg = "We recommend installing the APC extension for PHP to dramatically improve performance";
-				$this->getLogger()->log("$msg", Logger::INFO);
+				$recommendOpcache = version_compare(phpversion(), '5.5.0', '<')
+					? (\Orb\Util\Env::isWindows() ? 'Wincache extension' : 'APC extension' )
+					: 'OPcache extension';
+
+				$msg = sprintf('We recommend installing the %s for PHP to dramatically improve performance', $recommendOpcache);
+				$this->getLogger()->log($msg, Logger::INFO);
 				$this->server_errors['apc_check'] = array(
-					'message' => $msg,
 					'level' => 'recommended'
 				);
 			}
@@ -566,6 +574,42 @@ class ServerChecks
 						'level' => 'recommended'
 					);
 				}
+			}
+		}
+
+		#------------------------------
+		# LDAP check
+		#------------------------------
+
+		if ($type == 'ldap_check' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking if LDAP is available", Logger::DEBUG);
+			if (function_exists('ldap_connect')) {
+				$this->getLogger()->log("[OK] LDAP is available", Logger::DEBUG);
+			} else {
+				$msg = "We recommend re-build PHP with LDAP support.";
+				$this->getLogger()->log("$msg", Logger::INFO);
+				$this->server_errors['ldap_check'] = array(
+					'message' => $msg,
+					'level' => 'recommended'
+				);
+			}
+		}
+
+		#------------------------------
+		# cURL check
+		#------------------------------
+
+		if ($type == 'curl_check' || $type == 'all') {
+			$this->getLogger()->log("[CHECK] Checking if cURL is available", Logger::DEBUG);
+			if (function_exists('curl_init')) {
+				$this->getLogger()->log("[OK] cURL is available", Logger::DEBUG);
+			} else {
+				$msg = "We recommend re-build PHP with cURL support.";
+				$this->getLogger()->log("$msg", Logger::INFO);
+				$this->server_errors['curl_check'] = array(
+					'message' => $msg,
+					'level' => 'recommended'
+				);
 			}
 		}
 
@@ -858,5 +902,21 @@ class ServerChecks
 		}
 
 		return false;
+	}
+
+	/**
+	 * check for optional extensions
+	 * @return array
+	 */
+	public function getOptionals()
+	{
+		$optionals = array();
+
+		$optionals['test'] = array(
+			'message' => 'err',
+			'level' => 'recommended',
+		);
+
+		return $optionals;
 	}
 }

@@ -160,8 +160,9 @@ class TicketEscalation extends DomainObject
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
-		$data['terms']   = $this->terms;
-		$data['actions'] = $this->actions->exportToArray();
+		$data['terms']     = $this->terms;
+		$data['terms_any'] = $this->terms_any;
+		$data['actions']   = $this->actions->exportToArray();
 		return $data;
 	}
 	

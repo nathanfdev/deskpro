@@ -22,6 +22,12 @@ define [
 				value: 'SetAgent'
 			})
 
+			if @options_data?.round_robin? and @options_data?.round_robin.enabled
+				options.push({
+					title: 'Set Assigned Agent from Round Robin',
+					value: 'SetRoundRobin'
+				})
+
 			options.push({
 				title: 'Set Assigned Team',
 				value: 'SetAgentTeam'
@@ -156,6 +162,11 @@ define [
 			})
 
 			options.push({
+				title: 'Add Agent Note',
+				value: 'AddAgentNote'
+			})
+
+			options.push({
 				title: 'Require User Email Validation',
 				value: 'SetRequireValidation'
 			})
@@ -189,6 +200,11 @@ define [
 			options.push({
 				title: 'Send Email To Agents',
 				value: 'SendAgentEmail'
+			})
+
+			options.push({
+				title: 'Send Email to a specific email address',
+				value: 'SendSpecificUserEmail'
 			})
 
 			set_options.push({
@@ -271,6 +287,22 @@ define [
 					})
 
 			#------------------------------
+			# Tasks
+			#------------------------------
+
+			if @options_data?.tasks?.enabled
+				options = []
+
+				options.push
+					title: 'Create Task',
+					value: 'CreateTask'
+
+				set_options.push({
+					title: 'Tasks',
+					subOptions: options
+				})
+
+			#------------------------------
 			# Dynamic Options
 			#------------------------------
 
@@ -285,24 +317,39 @@ define [
 					})
 
 					typeFunc = "get#{opt.action_name}"
-					@[typeFunc] = (options = {}) ->
-						me = @
-						return {
-							getTemplate: ->
-								return me.dpTemplateManager.get(opt.builder_template)
-							getData: ->
-								return {}
-							getDataFormatter: ->
-								return {
-									getViewValue: (value = {}, data) ->
-										return value.options || {}
-									getValue: (model = {}, data) ->
-										value = {}
-										value.type = opt.action_name
-										value.options = model || {}
-										return value
-								}
-						}
+
+					#------------------------------
+					# Abstract SMS Options - if your action begins with "Sms"
+					#------------------------------
+
+					if opt.action_name.indexOf('Sms') == 0
+						@[typeFunc] = @generateSmsAction(opt.app.title, opt)
+
+
+
+					#------------------------------
+					# Dynamic Options - All except for "SendSms" actions above
+					#------------------------------
+
+					else
+						@[typeFunc] = (options = {}) ->
+							me = @
+							return {
+								getTemplate: ->
+									return me.dpTemplateManager.get(opt.builder_template)
+								getData: ->
+									return {}
+								getDataFormatter: ->
+									return {
+										getViewValue: (value = {}, data) ->
+											return value.options || {}
+										getValue: (model = {}, data) ->
+											value = {}
+											value.type = opt.action_name
+											value.options = model || {}
+											return value
+									}
+							}
 
 				if options.length
 					set_options.push({
@@ -311,6 +358,110 @@ define [
 					})
 
 			return set_options
+
+		generateSmsAction: (app_title, opt) ->
+			(options = {}) ->
+				me = @
+				return {
+				scopeInit: [ '$scope', ($scope) ->
+					$scope.sms_num_characters = 0
+					$scope.sms_vars = []
+					$scope.sms_app_name = app_title
+
+					me = @
+					# TODO: Make this reusable in other areas of the admin area
+					$scope.calculateCharacterLength = ->
+						tmp_string = $scope.model.message
+
+						matches = tmp_string.match(/(\{\{.*?\}\})/gi);
+						countable_string = tmp_string.replace(/(\{\{.*?\}\})/gi, '!');
+
+						if (matches)
+							proposed_length = countable_string.length - matches.length
+						else
+							proposed_length = countable_string.length
+						if proposed_length < 0 then proposed_length = 0
+
+						$scope.sms_num_characters = proposed_length
+						$scope.sms_vars = matches || []
+				]
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-set-sms.html')
+				getData: ->
+					return me.loadDataOptions()
+				getDataFormatter: ->
+					return {
+					getViewValue: (value = {}, data) ->
+						options = value.options || {}
+
+						department_ids = {}
+						if options.department_ids
+							for did in options.department_ids
+								did = parseInt(did)
+								department_ids[did] = true
+
+						agent_ids = {}
+						if options.agent_ids
+							for aid in options.agent_ids
+								if aid != 'followers' and aid != 'assigned' then aid = parseInt(aid)
+								agent_ids[aid] = true
+						else
+							agent_ids['followers'] = false
+							agent_ids['assigned'] = false
+
+						team_ids = {}
+						if options.agent_teams
+							for tid in options.agent_teams
+								if tid != 'assigned' then tid = parseInt(tid)
+								team_ids[tid] = true
+						else
+							team_ids['assigned'] = false
+
+						return {
+						agents: options.agents || [],
+						agent_ids: agent_ids,
+						agent_teams: team_ids,
+						department_ids: department_ids
+						to_number: options.to_number || ''
+						message: options.message || ''
+						}
+					getValue: (model = {}, data) ->
+						options = {
+							agents: model.agents || []
+							agent_teams: []
+							department_ids: []
+							to_number: model.to_number || ''
+							message: model.message || ''
+							agent_ids: []
+						}
+
+						if model.department_ids
+							for own k, v of model.department_ids
+								if v
+									options.department_ids.push(parseInt(k))
+						if model.agent_ids
+							for own k, v of model.agent_ids
+								if v
+									if k == 'assigned'
+										options.agent_ids.push('assigned')
+									else if k == 'followers'
+										options.agent_ids.push('followers')
+									else
+										options.agent_ids.push(parseInt(k))
+						if model.agent_teams
+							for own k, v of model.agent_teams
+								if v
+									if k == 'assigned'
+										options.agent_teams.push('assigned')
+									else
+										options.agent_teams.push(parseInt(k))
+						value = {}
+						value.type = opt.action_name
+						value.options = options
+
+						return value
+					}
+				}
 
 		resetData: ->
 			@options_data = null
@@ -338,7 +489,10 @@ define [
 						'email_accounts':  '/email_accounts',
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
-						'email_tpls':      '/email-templates-info'
+						'email_tpls':      '/email-templates-info',
+						round_robin:       '/round_robin/settings',
+						round_robins:      '/round_robin',
+						tasks:             '/tasks/settings'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -357,6 +511,11 @@ define [
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+						options_data['round_robin']      = data.round_robin
+						options_data['round_robins']     = data.round_robins
+						options_data['tasks']            = data.tasks
+
+						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
 						@options_data = options_data
 
@@ -380,10 +539,19 @@ define [
 			def = @getStandardSelect(options)
 			return def
 
+		getSetRoundRobin: (options = {}) ->
+			options.propName = 'id'
+			options.dataName = 'round_robins'
+			def = @getStandardSelect(options)
+			return def
+
 		getSetAgentFollowers: (options = {}) ->
 			options.propName = 'add_agent_ids'
 			options.dataName = 'agents'
 			options.isMulti = true
+			options.extraOptions = [
+				{title: 'Current Agent', value: -1}
+			]
 			def = @getStandardSelect(options)
 			return def
 
@@ -448,13 +616,20 @@ define [
 				return {
 					getViewValue: (value = {}, data) ->
 						options = value?.options || {}
-						viewValue = {
-							add_labels:       (options.add_labels || []).join(', '),
-							remove_labels:    (options.remove_labels || []).join(', '),
-						}
+						viewValue =
+							add_labels:       options.add_labels || []
+							remove_labels:    options.remove_labels || []
+							select2_add:
+								multiple:     true
+								simple_tags:  true
+								tags: options.add_labels || []
+							select2_remove:
+								multiple:     true
+								simple_tags:  true
+								tags: options.remove_labels || []
 
-						viewValue.with_add    = !!viewValue.add_labels
-						viewValue.with_remove = !!viewValue.remove_labels
+						viewValue.with_add    = viewValue.add_labels.length > 0
+						viewValue.with_remove = viewValue.remove_labels.length > 0
 
 						return viewValue
 
@@ -462,8 +637,8 @@ define [
 						value = {}
 						value.type = 'SetLabels'
 						value.options = {}
-						value.options.add_labels    = if model.with_add then     (model.add_labels || '').split(',')    else ''
-						value.options.remove_labels = if model.with_remove then  (model.remove_labels || '').split(',') else ''
+						value.options.add_labels    = if model.with_add then model.add_labels else []
+						value.options.remove_labels = if model.with_remove then model.remove_labels else []
 						return value
 				}
 			}
@@ -783,17 +958,20 @@ define [
 
 							return {
 								template: options.template || '',
-								do_cc_users: !!options.do_cc_users,
+								do_cc_users: if options.do_cc_users then "all" else "owner",
 								from_name: from_name,
 								from_name_custom: from_name_custom,
 								from_account: (parseInt(options.from_account || 0) || 0)+''
+								headers: options.headers || []
 							}
 						getValue: (model = {}, data) ->
+
 							options = {
 								template: model.template || '',
-								do_cc_users: !!model.do_cc_users,
+								do_cc_users: model.do_cc_users && model.do_cc_users == "all",
 								from_name: '',
 								from_account: parseInt(model.from_account || 0)
+								headers: model.headers.filter (header) -> header.name
 							}
 
 							if model.from_name == 'custom'
@@ -876,6 +1054,7 @@ define [
 								from_name: from_name,
 								from_name_custom: from_name_custom,
 								from_account: (parseInt(options.from_account || 0) || 0)+''
+								headers: options.headers || []
 							}
 						getValue: (model = {}, data) ->
 							options = {
@@ -883,6 +1062,7 @@ define [
 								agent_ids: [],
 								from_name: '',
 								from_account: parseInt(model.from_account || 0)
+								headers: model.headers.filter (header) -> header.name
 							}
 
 							if model.from_name == 'custom'
@@ -903,6 +1083,91 @@ define [
 							value.options = options
 							return value
 					}
+			}
+
+		getSendSpecificUserEmail: (options = {}) ->
+			me = @
+			return {
+			getTemplate: ->
+				return me.dpTemplateManager.get('OptionBuilder/type-actions-sendemail.html')
+
+			getData: ->
+				return me.loadDataOptions()
+
+			scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+				$scope.handleTemplateChange = ->
+					if $scope.model.template == 'CREATE'
+						$scope.model.template = null
+						$scope.is_creating = true
+						$modal.open({
+							templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+							controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+							resolve: {
+								templateName: ->
+									return null
+							}
+						}).result.then( (info) =>
+							if info.templateName
+								title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+								tpl = {
+									name: info.templateName,
+									title: title
+								}
+
+								if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
+									me.options_data.custom_email_tpls.push(tpl)
+
+								$scope.model.template = info.templateName
+								$timeout(->
+									$scope.model.template = info.templateName
+									$scope.is_creating = false
+								, 100)
+							else
+								$scope.is_creating = false
+						, ->
+							$scope.is_creating = false
+						)
+			]
+
+			getDataFormatter: ->
+				return {
+				getViewValue: (value = {}, data) ->
+					options = value?.options || {}
+
+					emails = options.emails || []
+					from_name = options.from_name || 'helpdesk_name'
+					from_name_custom = null
+					if from_name not in ['performer', 'helpdesk_name', 'site_name']
+						from_name = 'custom'
+						from_name_custom = options.from_name
+
+					return {
+						emails: emails
+						template: options.template || ''
+						from_name: from_name
+						from_name_custom: from_name_custom
+						from_account: (parseInt(options.from_account || 0) || 0)+''
+						headers: options.headers || []
+					}
+				getValue: (model = {}, data) ->
+					options = {
+						emails: model.emails
+						template: model.template || '',
+						from_name: '',
+						from_account: parseInt(model.from_account || 0)
+						headers: model.headers.filter (header) -> header.name
+					}
+
+					if model.from_name == 'custom'
+						options.from_name = model.from_name_custom || ''
+					else
+						options.from_name = model.from_name || ''
+
+					value = {}
+					value.type = 'SendSpecificUserEmail'
+					value.options = options
+					return value
+				}
 			}
 
 		getWebHook: (options = {}) ->
@@ -988,20 +1253,59 @@ define [
 							by_agent_id = by_agent_id + ""
 
 							return {
-								reply_text: opt.reply_text || '',
+								text: opt.reply_text || '',
 								by_assigned_agent: opt.by_assigned_agent || false,
 								by_agent_id: by_agent_id
+								title: 'Reply Text'
 							}
 
 						getValue: (model = {}, data) ->
 							value = {}
 							value.type = 'AddAgentReply'
 							value.options = {}
-							value.options.reply_text = model.reply_text
+							value.options.reply_text = model.text
 							value.options.by_assigned_agent = model.by_assigned_agent || false
 							value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0
 							return value
 					}
+			}
+
+		getAddAgentNote: (options = {}) ->
+			me = @
+			return {
+			getTemplate: ->
+				return me.dpTemplateManager.get('OptionBuilder/type-actions-addagentreply.html')
+
+			getData: ->
+				return me.loadDataOptions()
+
+			getDataFormatter: ->
+				return {
+				getViewValue: (value = {}, data) ->
+					opt = value.options || {}
+
+					by_agent_id = opt.by_agent_id || null
+					if not by_agent_id
+						by_agent_id = data.agents[0].id
+
+					by_agent_id = by_agent_id + ""
+
+					return {
+						text: opt.note_text || '',
+						by_assigned_agent: opt.by_assigned_agent || false,
+						by_agent_id: by_agent_id
+						title: 'Note Text'
+					}
+
+				getValue: (model = {}, data) ->
+					value = {}
+					value.type = 'AddAgentNote'
+					value.options = {}
+					value.options.note_text = model.text
+					value.options.by_assigned_agent = model.by_assigned_agent || false
+					value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0
+					return value
+				}
 			}
 
 		getSetSlasComplete: (options = {}) ->
@@ -1045,5 +1349,47 @@ define [
 								sla_status: model.sla_status || 'ok'
 							}
 							return value
+					}
+			}
+
+		getCreateTask: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-actions-create-task.html')
+
+				getData: ->
+					return me.loadDataOptions()
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value.options || {}
+							agents = [{id: -1, display_name: 'Current Agent'}]
+							data.tasks.agents.map (agent) -> agents.push agent if agent.perms?.tasks?.use
+							_public = options.public
+							_public = true if !_public?
+
+							return {
+								agents: agents
+								teams: data.agent_teams
+								title: options.title
+								date_due: options.date_due
+								public: _public
+								creator: options.creator
+								assignee: options.assignee
+							}
+
+						getValue: (model = {}, data) ->
+							return {
+								type: 'CreateTask'
+								options: {
+									title: model.title
+									date_due: model.date_due
+									public: model.public
+									creator: model.creator
+									assignee: model.assignee
+								}
+							}
 					}
 			}

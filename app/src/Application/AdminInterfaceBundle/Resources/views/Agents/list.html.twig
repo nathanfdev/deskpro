@@ -2,10 +2,13 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
+			<nav>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+			</nav>
 			<h3>Agents</h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" dp-list-autoload>
+			<ul class="dp-item-list" dp-list-autoload dp-max-height>
 				<li ng-repeat="agent in ListCtrl.agents" dp-state-mark="agents.agents.edit.{{ ng_var('agent.id') }}">
 					<a href="{{ ng_href('agents.agents.edit', '{id: agent.id}') }}" title="{{ ng_var('agent.primary_email.email') }}">
 						<div style="float:right">
@@ -56,14 +59,13 @@
 	<article>
 		<section>
 			<p><strong>Zones</strong> control which agents can access this admin interface, or the reports interface which shows data on helpdesk usage.</p>
-			<p><strong>Teams</strong> enable a ticket to be assigned to a group of agents rather than a single agent. A team would normally contain agents who could all answer the same type of ticket.</strong></p>
 			<p>Use the <strong>Departments</strong> tab to control access to tickets in each department:</p>
 			<ul>
 				<li><strong>Full</strong> means the agent can view and work on tickets in that department</li>
 				<li><strong>Assign</strong> means the agent can assign tickets to the department, but nothing more (they can&#39;t view them afterwards)</li>
 			</ul>
-			<p>You can separately set <strong>chat</strong> access for each department.</p>
-			<p>Instead of deciding individual permissions for every agent, it&#39;s quicker to define <strong>permission groups</strong> which grant a set of permissions, then assign agents to one or more permission groups. You can grant extra permissions over and above those granted by an agent's permission groups - these are called <strong>permission overrides</strong>. </p>
+			<p>You can set <strong>chat</strong> using separate chat departments.</p>
+			<p>Instead of deciding individual permissions for every agent, it&#39;s quicker to define <strong>permission groups</strong> which grant a set of permissions, then assign agents to one or more permission groups. You can grant an agent extra permissions over and above those granted by their permission groups - these are called <strong>permission overrides</strong>. </p>
 			<p>You can also copy settings from another agent using the gear icon at top right.</p>
 			<p>Logging in as an agent can be useful for troubleshooting purposes. Do this from the gear icon.</p>
 		</section>
@@ -73,9 +75,9 @@
 			<ul>
 				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#creating-agents" target="_blank">Creating agents</a>
 				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#agent-permissions" target="_blank">Agent permissions</a>
-				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#managing-agents" target="_blank">Managing agents</a>
-				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/94" target="_blank">What is an agent?</a></li>
-				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/194" target="_blank">Automatically assign agents to tickets they reply to by email</a>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/194" target="_blank">Automatically assign agents to tickets they reply to by email</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/256" target="_blank">Limiting agent access to tickets by department</a>
+				</li>
 			</ul>
 		</section>
 	</article>

@@ -101,9 +101,14 @@ if ($has_failed) {
 
 if ($bad_size) {
 	echo "The following files are susceptible to the magic 4096 bug (https://bugs.php.net/bug.php?id=60998):\n";
-	echo "- " . implode("\n- ", $bad_size);
+	foreach ($bad_size as $f) {
+		$path = DP_ROOT.$f;
+		$b = file_get_contents($path);
+		$b = str_replace('<?php', "<?php\n\n// ...\n\n", $b);
+		file_put_contents($path, $b);
+	}
+	echo "They have been fixed automatically.";
 	echo "\n";
-	exit(1);
 }
 
 if (!$has_failed && !$bad_size) {

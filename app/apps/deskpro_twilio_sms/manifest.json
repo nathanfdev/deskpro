@@ -1,0 +1,39 @@
+{
+	"package_name": "deskpro_twilio_sms",
+	"is_native": true,
+	"title": "Twilio SMS",
+	"description": "Allows you to add ticket triggers that send an SMS text message to people you choose.",
+	"tags": ["notifications", "ticket-triggers"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "account_sid",
+			"type": "text",
+			"label": "Twilio Account SID",
+			"description": "This is the \"AccountSID\" for your Twilio account. You can find this value here: https://www.twilio.com/user/account/settings",
+			"native_only": true
+		},
+		{
+			"name": "auth_token",
+			"type": "text",
+			"label": "Twilio Auth Token",
+			"description": "This is the \"AuthToken\" for your Twilio account. You can find this value here: https://www.twilio.com/user/account/settings",
+			"native_only": true
+		},
+		{
+			"name": "from_number",
+			"type": "phone_number",
+			"label": "From Number",
+			"description": "This phone number must be registered with Twilio. Your numbers can be found here: https://www.twilio.com/user/account/phone-numbers/incoming",
+			"native_only": true
+		}
+	]
+}

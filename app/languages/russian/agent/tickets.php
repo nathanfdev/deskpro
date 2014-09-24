@@ -72,8 +72,6 @@
 	'agent.tickets.date_last_agent_reply'                                  => 'Дата последнего ответа агента',
 	'agent.tickets.date_last_reply'                                        => 'Дата последнего ответа',
 	'agent.tickets.date_last_user_reply'                                   => 'Дата последнего ответа пользователя',
-	'agent.tickets.date_opened_newerolder'                                 => 'Дата открытия (новые-старые)',
-	'agent.tickets.date_opened_oldernewer'                                 => 'Дата открытия (старые-новые)',
 	'agent.tickets.debug_file'                                             => 'Файл отладки',
 	'agent.tickets.debug_file_download'                                    => 'Скачать файл отладки',
 	'agent.tickets.debug_file_explain'                                     => 'Служба поддержки DeskPRO может попросить вас предоставить этот файл для диагностики проблемы.',

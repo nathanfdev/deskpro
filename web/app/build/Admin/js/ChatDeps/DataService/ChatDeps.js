@@ -13,10 +13,25 @@
 
       ChatDeps.$inject = ['Api', '$q'];
 
-      ChatDeps.prototype._doLoadList = function() {
+      ChatDeps.prototype.url = function() {
+        return '/chat_deps';
+      };
+
+      ChatDeps.prototype.resolveResponse = function(response) {
+        return response.departments;
+      };
+
+      ChatDeps.prototype.all = function(reload) {
+        return ChatDeps.__super__.all.call(this, reload, {
+          with_perms: 1
+        });
+      };
+
+      ChatDeps.prototype._doLoadList = function(params) {
         var deferred;
         deferred = this.$q.defer();
-        this.Api.sendGet('/chat_deps').success((function(_this) {
+        params = params || {};
+        this.Api.sendGet(this.url(), params).success((function(_this) {
           return function(data) {
             var models, proc;
             _this.deps = data.departments;

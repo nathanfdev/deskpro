@@ -50,6 +50,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<div style="display:none;" class="error-message free" id="{{ baseId }}_freemessage"></div>
 </div>
 
+{% if ticket.id %}
+	<div class="pending-info ticket">
+		{{ phrase('agent.tickets.linking_with_ticket') }} {{ ticket.subject }}
+	</div>
+{% endif %}
+
 <div class="pending-info chat" style="display: none; padding: 7px; background: #FFFEFE; border-bottom: 1px solid #9CA7B1; font-size: 11px;">
 	{{ phrase('agent.tickets.linking_with_chat') }} <span id="{{ baseId }}_chat_title"></span>
 </div>
@@ -258,6 +264,7 @@ pageMeta.baseId = '{{ baseId }}';
                                             data-placeholder="Add a label"
                                             name="labels"
                                             value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
+                                            data-allow-new="{{ app.getSetting('labels.tickets.agent_can_create') }}"
                                     />
                                 </div>
                             </td>
@@ -268,7 +275,7 @@ pageMeta.baseId = '{{ baseId }}';
         </section>
 </div>
 
-{% if app.getSetting('core_tickets.enable_billing') and app.getSetting('core_tickets.billing_on_new') %}
+{% if app.getSetting('core_tickets.enable_billing') %}
 <div class="profile-box-container reply-box-wrap" style="position: relative">
 	<header>
 		<h4>{{ phrase('agent.tickets.billing') }}</h4>
@@ -362,9 +369,7 @@ pageMeta.baseId = '{{ baseId }}';
 							<div style="margin-left: 65px;">
 								<select name="add_followers[]" id="{{baseId}}_followers_sel" class="dpe_select dpe_select_noborder" multiple="multiple" data-style-type="icons" data-select-width="auto" data-select-icon-size="16" data-placeholder="{{ phrase('agent.tickets.add_follower') }}">
 									{% for agent in app.agents.getAgents() %}
-										{% if agent.id != app.user.id %}
-											<option data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
-										{% endif %}
+										<option data-icon="{{ agent.getPictureUrl(16) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 									{% endfor %}
 								</select>
 							</div>
@@ -401,10 +406,22 @@ pageMeta.baseId = '{{ baseId }}';
 								<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="{% if ticket.id %}{{ ticket.subject }}{% endif %}" />
 							</div>
 						</li>
-						<li id="{{baseId}}_attach_row" class="attach-row is-hidden" style="display: none">
+						{% if attachments | length %}
+							<li id="{{baseId}}_attach_row" class="attach-row">
+						{% else %}
+							<li id="{{baseId}}_attach_row" class="attach-row is-hidden" style="display: none">
+						{% endif %}
 							<label><span>{{ phrase('agent.general.attachments') }}</span></label>
 							<div>
-								<ul class="files"></ul>
+								<ul class="files">
+									{% for attachment in attachments %}
+										<li class="in" style="height: 18px;">
+											<input type="hidden" name="newticket[attach][]" value="{{ attachment.blob.id }}">
+											<em class="remove-attach-trigger"></em>		
+											<label><a href="{{ attachment.url }}" target="_blank">{{ attachment.blob.filename }}</a><span>{{ attachment.blob.filesize }} KB</span></label>
+										</li>
+									{% endfor %}
+								</ul>
 								<br class="clear"/>
 							</div>
 						</li>

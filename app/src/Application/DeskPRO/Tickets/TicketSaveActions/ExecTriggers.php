@@ -164,6 +164,7 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
 	private function runTrigger(TicketTrigger $trigger, Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$state = $ticket->getStateChangeRecorder();
+		$context->getVars()->set('trigger_id', $trigger['id']);
 
 		$mode_var = null;
 		switch ($context->getEventPerformer()) {

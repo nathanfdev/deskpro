@@ -1,10 +1,24 @@
+<style>
+	.visible-edit-mode {
+		display: none;
+	}
+	
+	.edit-mode .visible-edit-mode {
+		display: inline-block;
+	}
+	
+	.edit-mode .hidden-edit-mode {
+		display: none;
+	}
+</style>
 <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la billing-table" {% if ticket.charges is empty %}style="display:none"{% endif %}>
 <thead>
 	<th>{{ phrase('agent.tickets.billing_chargetime') }}</th>
 	<th>{{ phrase('agent.general.agent') }}</th>
 	<th>{{ phrase('agent.general.date') }}</th>
 	<th>{{ phrase('agent.general.comment') }}</th>
-	<th style="min-width: 20px">&nbsp;</th>
+	<th style="min-width: 70px">&nbsp;</th>
+	<th style="max-width: 20px">&nbsp;</th>
 </thead>
 <tbody id="{{ baseId }}_billing_rows" data-delete-confirm="{{ phrase('agent.tickets.billing_delete_confirm') }}">
 {% for charge in ticket.charges %}
@@ -47,6 +61,7 @@
 			{% endif %}
 		</ul>
 		<input type="hidden" id="{{ baseId }}_billing_type_hidden" name="billing_type" value="time" />
+		<input type="hidden" id="{{ baseId }}_billing_id_hidden" name="billing_id" value="" />
 	</td>
 </tr>
 <tr>

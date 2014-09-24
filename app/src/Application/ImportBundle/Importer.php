@@ -229,7 +229,7 @@ class Importer
 	 * @param AbstractValueImporter $value_importer
 	 * @throws \Exception
 	 */
-	private function processDirectory($dir, AbstractValueImporter $value_importer, \callable $callback = null)
+	private function processDirectory($dir, AbstractValueImporter $value_importer, $callback = null)
 	{
 		if ($this->status_callback) $this->status_callback->preStep($this, $value_importer, $dir);
 		$step_start = microtime(true);

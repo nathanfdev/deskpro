@@ -115,6 +115,20 @@ $collection->create('agent_dismiss_version_notice', array(
 	'controller'  => 'AgentBundle:Main:dismissVersionNotice',
 ));
 
+$collection->create('agent_dpnews_view', array(
+	'path'         => '/misc/view-dp-news/{id}',
+	'controller'   => 'AgentBundle:Misc:viewDpNews',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('agent_dpnews_dismiss', array(
+	'path'         => '/misc/view-dp-news/{id}/dismiss',
+	'controller'   => 'AgentBundle:Misc:dismissDpNews',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('POST'),
+));
+
 $collection->create('agent_redirect_out', array(
 	'path'          => '/redirect-out/{url}',
 	'controller'    => 'AgentBundle:Misc:redirectExternal',
@@ -202,6 +216,12 @@ $collection->create('agent_send_lost', array(
 	'controller'  => 'AgentBundle:Login:sendResetPassword',
 	'defaults'    => array('_format' => 'json'),
 ));
+
+$collection->create('agent_whitelist_ip', array(
+	'path'        => '/whitelist-ip/{code}',
+	'controller'  => 'AgentBundle:Login:whitelistIp'
+));
+
 
 $collection->create('agent_settings', array(
 	'path'        => '/settings',
@@ -416,10 +436,22 @@ $collection->create('agent_people_ajaxsave_note', array(
 	'requirements'  => array('person_id' => '\\d+'),
 ));
 
+$collection->create('agent_people_ajaxsave_file', array(
+	'path'          => '/people/{person_id}/ajax-save-file',
+	'controller'    => 'AgentBundle:Person:ajaxSaveFile',
+	'requirements'  => array('person_id' => '\\d+'),
+));
+
 $collection->create('agent_people_ajaxsave_organization', array(
 	'path'          => '/people/{person_id}/ajax-save-organization',
 	'controller'    => 'AgentBundle:Person:ajaxSaveOrganization',
 	'requirements'  => array('person_id' => '\\d+'),
+));
+
+$collection->create('agent_person_get_tickets', array(
+	'path'          => '/person/{person_id}/tickets',
+	'controller'    => 'AgentBundle:Person:getPersonTickets',
+	'requirements'  => array('person_id' => '\\d+' ),
 ));
 
 $collection->create('agent_person_ajax_labels_save', array(
@@ -564,6 +596,12 @@ $collection->create('agent_org_delete', array(
 $collection->create('agent_org_ajaxsave_note', array(
 	'path'          => '/organizations/{organization_id}/ajax-save-note',
 	'controller'    => 'AgentBundle:Organization:ajaxSaveNote',
+	'requirements'  => array('organization_id' => '\\d+'),
+));
+
+$collection->create('agent_org_ajaxsave_file', array(
+	'path'          => '/organizations/{organization_id}/ajax-save-file',
+	'controller'    => 'AgentBundle:Organization:ajaxSaveFile',
 	'requirements'  => array('organization_id' => '\\d+'),
 ));
 
@@ -1007,6 +1045,12 @@ $collection->create('agent_ticket_addcharge', array(
 	'path'          => '/ticket/{ticket_id}/add-charge',
 	'controller'    => 'AgentBundle:Ticket:addCharge',
 	'requirements'  => array('ticket_id' => '\\d+'),
+));
+
+$collection->create('agent_ticket_editcharge', array(
+	'path'          => '/ticket/{ticket_id}/edit-charge/{charge_id}',
+	'controller'    => 'AgentBundle:Ticket:editCharge',
+	'requirements'  => array('ticket_id' => '\\d+', 'charge_id' => '\\d+'),
 ));
 
 $collection->create('agent_ticket_chargedelete', array(
@@ -2266,6 +2310,12 @@ $collection->create('jira_post_comment', array(
 	'controller'    => 'AgentBundle:Jira:postComment',
 	'defaults'		=> array('issue_id' => '-1'),
 	'requirements'  => array('issue_id' => '\\d+'),
+));
+
+$collection->create('agent_label_definitions_list', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'AgentBundle:Labels:listDefinitions',
+	'methods'       => array('GET'),
 ));
 
 return $collection;

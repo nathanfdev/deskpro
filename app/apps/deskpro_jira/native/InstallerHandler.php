@@ -91,5 +91,6 @@ class InstallerHandler extends AbstractInstallerHandler
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.password',       $context->getApp()->getSetting('jira_password'));
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultProject', $context->getApp()->getSetting('jira_default_project'));
 		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultTags',    $context->getApp()->getSetting('jira_default_tags'));
+		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultPriority',$context->getApp()->getSetting('jira_default_priority'));
 	}
 }

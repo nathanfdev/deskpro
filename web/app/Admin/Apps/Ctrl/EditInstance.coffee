@@ -20,6 +20,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 				app: '/apps/instances/' + @instanceId
 			}).then( (result) =>
 				@app = result.data.app.app;
+				@$scope.appId = @app.id
 
 				@Api.sendDataGet({
 					pack: '/apps/packages/' + @app.package_name

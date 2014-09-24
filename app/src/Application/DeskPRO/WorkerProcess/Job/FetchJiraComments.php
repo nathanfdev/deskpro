@@ -43,24 +43,34 @@ class FetchJiraComments extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 60; // 1 minute
 
+	const LIMIT = 25; // should be in config?
+	const TIMELIMIT = 30;
+
 	public function run()
 	{
 		if (!App::getSetting('core.apps_jira.enabled')) {
 			return true;
 		}
 		
-		$baseUrl  = App::getSetting('core.apps_jira.baseUrl');
-		$username = App::getSetting('core.apps_jira.username');
-		$password = App::getSetting('core.apps_jira.password');
+		$baseUrl	= App::getSetting('core.apps_jira.baseUrl');
+		
+		$username	= App::getSetting('core.apps_jira.username');
+		
+		$password	= App::getSetting('core.apps_jira.password');
 
+		$em = App::getOrm();
 		$service = new \Orb\Jira\Service($baseUrl, array(
 			'username'	=> $username,
 			'password'	=> $password,
-			'debug'		=> DP_DEBUG
+			'debug'		=> DP_DEBUG,
+			'reg_enabled' => App::getSetting('core.reg_enabled'),
 		), App::getOrm());
 
-		try {
-			$service->fetchAllComment();
-		} catch (\Exception $e) {}
+		$rep = $em->getRepository('DeskPRO:JiraIssue');
+		$start = time();
+		foreach ($rep->findBy(array(), array('lastSynced' => 'ASC'), self::LIMIT) as $issue) {
+			$service->_fetchCommentsByIssueId($issue->issue);
+			if (time() - $start > self::TIMELIMIT) break;
+		}
 	}
 }

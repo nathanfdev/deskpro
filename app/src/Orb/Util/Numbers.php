@@ -303,8 +303,9 @@ class Numbers
 
 		$val = (int)$val;
 
+		// Invalid values also means assume bytes
 		if ($last != 'G' && $last != 'M' && $last != 'K') {
-			throw new \InvalidArgumentException("Invalid size string `$val`");
+			return $val;
 		}
 
 		switch($last) {

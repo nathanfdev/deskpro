@@ -45,7 +45,6 @@ use \Orb\Util\Util;
  */
 class QueueTransport implements \Swift_Transport
 {
-	protected $_queue_processor;
 	protected $_event_dispatcher;
 
 	public function __construct(\Swift_Events_EventDispatcher $event_dispatcher)
@@ -53,25 +52,9 @@ class QueueTransport implements \Swift_Transport
 		$this->_event_dispatcher = $event_dispatcher;
 	}
 
-	public function getQueueProcessor()
-	{
-		return $this->_queue_processor;
-	}
-
-	public function isStarted()
-	{
-		return true;
-	}
-
-	public function start()
-	{
-		$this->_queue_processor->startQueue();
-	}
-
-	public function stop()
-	{
-		$this->_queue_processor->shutdownQueue();
-	}
+	public function isStarted() { return true; }
+	public function start() { }
+	public function stop() { }
 
 	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
@@ -88,32 +71,37 @@ class QueueTransport implements \Swift_Transport
 			$message->clearLogMessages();
 		}
 
-		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(serialize($message), 'sendmail.obj', 'plain/text');
-		$sendmail = new \Application\DeskPRO\Entity\SendmailQueue();
-		$sendmail->blob = $blob;
-		$sendmail->subject = $message->getSubject() ?: '(No Subject)';
-		$sendmail->date_next_attempt = new \DateTime();
-		$sendmail->priority = 10;
+		$blob = App::getContainer()->getBlobStorage()->createBlobRowFromString(serialize($message), 'sendmail.obj', 'plain/text');
+
+		$sendmail = array(
+			'date_created'        => date('Y-m-d H:i:s'),
+			'blob_id'             => $blob['id'],
+			'subject'             => $message->getSubject() ?: '(No Subject)',
+			'date_next_attempt'   => date('Y-m-d H:i:s'),
+			'priority'            => 10,
+			'log'                 => '',
+			'status'              => 'pending'
+		);
 
 		if ($message instanceof \Orb\Mail\Message) {
-			$sendmail->priority = $message->getQueuePriority();
+			$sendmail['priority'] = $message->getQueuePriority();
 		}
 
 		$tos = array();
 		foreach ($message->getTo() as $addr => $name) {
 			$tos[] = $addr;
 		}
-		$sendmail->to_address = implode(',', $tos);
+		$sendmail['to_address'] = implode(',', $tos);
+
 		foreach ($message->getFrom() as $addr => $name) {
-			$sendmail->from_address = $addr;
+			$sendmail['from_address'] = $addr;
 		}
 
 		if ($log) {
-			$sendmail->appendLog($log);
+			$sendmail['log'] = $log;
 		}
 
-		App::getOrm()->persist($sendmail);
-		App::getOrm()->flush();
+		App::getDb()->insert('sendmail_queue', $sendmail);
 
 		if ($evt) {
 			$evt->setResult(\Swift_Events_SendEvent::RESULT_SUCCESS);

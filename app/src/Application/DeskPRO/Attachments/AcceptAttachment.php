@@ -39,6 +39,7 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
 use Orb\Data\ContentTypes;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -101,18 +102,20 @@ class AcceptAttachment
 	 * @param $restriction_set_id
 	 * @return array|null
 	 */
-	public function getError(UploadedFile $file = null, $restriction_set_id = null, $skipValidation = false)
+	public function getError(UploadedFile $file = null, $restriction_set_id = null)
 	{
 		$restriction = null;
 		if ($restriction_set_id) {
 			$restriction = $this->getRestrictionSet($restriction_set_id);
 		}
 
+		$is_email = strpos($restriction_set_id, 'email') !== false;
+
 		$max_size = min(\Orb\Util\Env::getEffectiveMaxUploadSize(), $restriction->getMaxSize());
 
 		if ($file === null) {
 			// This means the file is too big and PHP basically rejected the whole request data
-			if (isset($_SERVER['CONTENT_LENGTH']) && empty($_POST) && empty($_FILES)) {
+			if (!$is_email && isset($_SERVER['CONTENT_LENGTH']) && empty($_POST) && empty($_FILES)) {
 				return array('error_code' => self::ERR_SIZE, 'error_detail' => Numbers::filesizeDisplay($max_size));
 			}
 
@@ -125,7 +128,7 @@ class AcceptAttachment
 			'error_detail' => null
 		);
 
-		if (!$skipValidation && !$file->isValid()) {
+		if (!$file->isValid()) {
 			switch ($file->getError()) {
 				case \UPLOAD_ERR_INI_SIZE:
 					$error['error_code'] = self::ERR_SIZE;
@@ -163,13 +166,13 @@ class AcceptAttachment
 				default:
 					$log_error = true;
 					$error['error_code'] = self::ERR_SERVER;
-					$error['error_detail'] = 'unknown';
+					$error['error_detail'] = $file->getError();
 					break;
 			}
 		}
 
 		if (!$error['error_code']) {
-			if (!file_exists($file->getRealPath())) {
+			if (!is_uploaded_file($file->getRealPath()) || !file_exists($file->getRealPath())) {
 				$error['error_code'] = self::ERR_NO_FILE;
 				$error['error_detail'] = '';
 			}
@@ -188,24 +191,18 @@ class AcceptAttachment
 		}
 
 		if ($log_error) {
-			// todo handle error params
-//			App::logErrorMessage('failed_upload', 'INFO', "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}", array(
-//				'error_code' => $error['error_code'],
-//				'error_detail' => $error['error_detail'],
-//				'filename' => $file->getClientOriginalName(),
-//				'type' => $file->getClientMimeType(),
-//				'size' => $file->getClientSize(),
-//				'file_err_code' => $file->getError()
-//			));
-			$params = array(
+			$info = "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}\n";
+			$info .= Arrays::implodeTemplate(array(
 				'error_code' => $error['error_code'],
 				'error_detail' => $error['error_detail'],
 				'filename' => $file->getClientOriginalName(),
 				'type' => $file->getClientMimeType(),
 				'size' => $file->getClientSize(),
-				'file_err_code' => $file->getError(),
-			);
-			KernelErrorHandler::logException(new \Exception("Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}" . implode(', ', $params)));
+				'file_err_code' => $file->getError()
+			), "{KEY}: {VAL}\n");
+
+			$e = new \Exception($info, 0);
+			KernelErrorHandler::logException($e, false);
 		}
 
 		return $error;

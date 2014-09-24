@@ -10,6 +10,9 @@
 						</div>
 						<div style="float:right">
 							<button ng-if="Ctrl.pack.readme" class="btn btn-default" ng-click="Ctrl.showReadme();"><i class="fa fa-file-text-o"></i> View README</button>
+                            <a ng-if="!Ctrl.pack.native_name" class="btn btn-default"
+                               href="{{ path('admin_apps_download_package', {name: 'example_crm_link'}) }}"
+                               download><i class="fa fa-download"></i>Download .zip</a>
 							<a class="btn btn-default" href="{{ ng_href('apps.apps.package', '{name: Ctrl.pack.name}') }}"><i class="fa fa-dropbox"></i> View App</a>
 						</div>
 						<div style="margin-left: 52px;">
@@ -41,6 +44,9 @@
 							<div ng-switch-when="password">
 								<input type="password" class="form-control" ng-model="setting_values[setting.name]" placeholder="{{ ng_var('setting.placeholder') }}" />
 							</div>
+							<div ng-switch-when="phone_number">
+								<input type="tel" dp-phone-number style="min-width:250px;" class="form-control" ng-model="setting_values[setting.name]" placeholder="{{ ng_var('setting.placeholder') }}" />
+							</div>
 							<div ng-switch-when="checkbox">
 								<label>
 									<input type="checkbox" ng-model="setting_values[setting.name]" />
@@ -55,7 +61,7 @@
 									<option ng-repeat="opt in setting.options" value="{{ ng_var('opt.value') }}">{{ ng_var('opt.label') }}</option>
 								</select>
 							</div>
-							<span class="help-block" ng-show="setting.description">{{ ng_var('setting.description') }}</span>
+							<span class="help-block" ng-show="setting.description" ng-bind-html="setting.description"></span>
 						</div>
 					</div>
 				</div>

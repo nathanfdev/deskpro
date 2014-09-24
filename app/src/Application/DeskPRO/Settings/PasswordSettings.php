@@ -54,6 +54,12 @@ class PasswordSettings
 
 	public $sessions_lifetime = 3600;
 	public $session_keepalive_require_page = false;
+	public $ip_security_enabled = false;
+	public $ip_security_mode = 'admins';
+	public $ip_security_whitelist_lifetime = 1814400;
+	public $disable_notifications;
+	public $enable_agent_rememberme;
+	public $enable_user_rememberme;
 
 
 	/**
@@ -111,8 +117,14 @@ class PasswordSettings
 			$type_obj->verify();
 		}
 
-		$this->sessions_lifetime = (int)$this->settings->get('core.sessions_lifetime');
+		$this->sessions_lifetime              = (int)$this->settings->get('core.sessions_lifetime');
 		$this->session_keepalive_require_page = (bool)$this->settings->get('core.session_keepalive_require_page');
+		$this->ip_security_enabled            = (bool)$this->settings->get('agent.ip_security.enabled');
+		$this->ip_security_mode               = $this->settings->get('agent.ip_security.mode');
+		$this->ip_security_whitelist_lifetime = (int)$this->settings->get('agent.ip_security.whitelist_lifetime');
+		$this->disable_notifications          = (bool)$this->settings->get('agent.disable_notifications');
+		$this->enable_agent_rememberme        = (bool)$this->settings->get('core.enable_agent_rememberme');
+		$this->enable_user_rememberme         = (bool)$this->settings->get('core.enable_user_rememberme');
 	}
 
 
@@ -126,6 +138,12 @@ class PasswordSettings
 			'agent' => $this->agent_policy->toArray(),
 			'sessions_lifetime'               => $this->sessions_lifetime,
 			'session_keepalive_require_page'  => $this->session_keepalive_require_page,
+			'ip_security_enabled'             => $this->ip_security_enabled,
+			'ip_security_mode'                => $this->ip_security_mode,
+			'ip_security_whitelist_lifetime'  => $this->ip_security_whitelist_lifetime,
+			'disable_notifications'           => $this->disable_notifications,
+			'enable_agent_rememberme'         => $this->enable_agent_rememberme,
+			'enable_user_rememberme'          => $this->enable_user_rememberme,
 		);
 	}
 
@@ -139,6 +157,13 @@ class PasswordSettings
 		$this->agent_policy->fromArray($set_settings['agent']);
 		$this->sessions_lifetime = $set_settings['sessions_lifetime'];
 		$this->session_keepalive_require_page = $set_settings['session_keepalive_require_page'];
+
+		$this->ip_security_enabled            = !empty($set_settings['ip_security_enabled']) && $set_settings['ip_security_enabled'];
+		$this->ip_security_mode               = $set_settings['ip_security_mode'] ?: 'admins';
+		$this->ip_security_whitelist_lifetime = ((int)$set_settings['ip_security_whitelist_lifetime']) ?: 1814400;
+		$this->disable_notifications          = (bool)$set_settings['disable_notifications'];
+		$this->enable_agent_rememberme        = (bool)$set_settings['enable_agent_rememberme'];
+		$this->enable_user_rememberme         = (bool)$set_settings['enable_user_rememberme'];
 	}
 
 
@@ -163,5 +188,12 @@ class PasswordSettings
 		} else {
 			$this->settings->setSetting('core.session_keepalive_require_page', null);
 		}
+
+		$this->settings->setSetting('agent.ip_security.enabled',            $this->ip_security_enabled ? 1 : 0);
+		$this->settings->setSetting('agent.ip_security.mode',               $this->ip_security_mode);
+		$this->settings->setSetting('agent.ip_security.whitelist_lifetime', $this->ip_security_whitelist_lifetime);
+		$this->settings->setSetting('agent.disable_notifications',          (bool)$this->disable_notifications);
+		$this->settings->setSetting('core.enable_agent_rememberme',         (bool)$this->enable_agent_rememberme);
+		$this->settings->setSetting('core.enable_user_rememberme',          (bool)$this->enable_user_rememberme);
 	}
 }

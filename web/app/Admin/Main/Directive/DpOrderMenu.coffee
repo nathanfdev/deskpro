@@ -28,7 +28,6 @@ define [
 				scope.options = []
 
 				orderPrefs = if attrs.orderDirPrefs then scope.$eval(attrs.orderDirPrefs) else {}
-				console.log(orderPrefs)
 
 				element.find('.orig').find('option').each(->
 					scope.options.push({

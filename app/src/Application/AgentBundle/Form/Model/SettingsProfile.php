@@ -37,10 +37,14 @@ namespace Application\AgentBundle\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PhoneNumber;
+use Orb\Util\PhoneNumbers;
 
 class SettingsProfile
 {
 	public $name;
+	public $primary_phone_number;
+	public $primary_phone_number_text;
 	public $override_display_name;
 	public $email;
 	public $timezone = 'UTC';
@@ -72,13 +76,21 @@ class SettingsProfile
 	 */
 	protected $em;
 
-	public function __construct(Person $person)
+	public function __construct(Person $person, $defaultCountryCode = 'US')
 	{
 		$this->em = App::getOrm();
 
 		$this->person = $person;
 
 		$this->name = $person->name;
+
+		// store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
+		// this is acting like a DataTransformer.
+		$this->primary_phone_number_text = $person->primary_phone_number ? $person->primary_phone_number->number : '';
+		$this->primary_phone_number = $person->primary_phone_number ?: new PhoneNumber();
+		$this->primary_phone_number_region = $person->primary_phone_number_region ?: $defaultCountryCode;
+		//
+
 		$this->override_display_name = $person->override_display_name;
 		$this->email = $person->getPrimaryEmailAddress();
 		$this->timezone = $person->timezone;
@@ -117,6 +129,15 @@ class SettingsProfile
 		$person = $this->person;
 
 		$person->name = $this->name;
+
+		if (PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
+			$person->setPrimaryPhoneNumber(null);
+		} else {
+			// just update the $primary->number text of the existing primary PhoneNumber object
+			$this->primary_phone_number->number = $this->primary_phone_number_text;
+			$person->setPrimaryPhoneNumber($this->primary_phone_number);
+		}
+
 		$person->override_display_name = $this->override_display_name;
 		$person->timezone = $this->timezone;
 
@@ -174,8 +195,9 @@ class SettingsProfile
 			|| App::getSetting('core_tickets.reply_assignteam_assigned') == 'assign'
 			|| App::getSetting('core_tickets.reply_assignteam_unassigned') == 'assign'
 		);
-		if (count($person->getAgent()->getTeams()) && $assign_team_setting) {
-			$person->setPreference('agent.ticket_default_team_id', intval($this->default_team_id));
+		$primaryTeam = $person->getPrimaryTeam();
+		if ($primaryTeam && $assign_team_setting) {
+			$person->setPreference('agent.ticket_default_team_id', (int) $primaryTeam['id']);
 		}
 
 		$person->setPreference('agent.ui.auto_dismiss_notification', intval($this->auto_dismiss_notifications));

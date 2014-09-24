@@ -594,7 +594,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 				// If we are currently viewing this filter that is out of date, we need to refresh it now
 				if (viewingFilterId == filterId && refreshUrl) {
-					DeskPRO_Window.runPageRoute('listpane:' + refreshUrl, {noChangePaneVis: true, isBackgroundLoad: true});
+					DeskPRO_Window.runPageRoute('listpane:' + refreshUrl, {isBackgroundLoad: true});
 				}
 			}
 		}, this);
@@ -615,7 +615,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 				// If we are currently viewing this filter that is out of date, we need to refresh it now
 				if (viewingFilterId == filterId && refreshUrl) {
-					DeskPRO_Window.runPageRoute('listpane:' + refreshUrl, {noChangePaneVis: true, isBackgroundLoad: true});
+					DeskPRO_Window.runPageRoute('listpane:' + refreshUrl, {isBackgroundLoad: true});
 				}
 			}
 		}, this);

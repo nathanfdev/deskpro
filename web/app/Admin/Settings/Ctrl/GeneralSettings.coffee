@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 	class Admin_Settings_Ctrl_GeneralSettings extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Settings_Ctrl_GeneralSettings'
 		@CTRL_AS   = 'Settings'
-		@DEPS      = []
+		@DEPS      = ['$http']
 
 		init: ->
 			@settings = {
@@ -44,6 +44,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					@$scope.attach_agent_exts_limitmode = 'disallow'
 				else
 					@$scope.attach_agent_exts_limitmode = 'any'
+
+				@orig_url = @$scope.settings.deskpro_url || null
 			)
 
 			return @$q.all([data_promise])
@@ -56,6 +58,26 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				return false
 
 		save: ->
+
+			@$scope.url_error = false
+			@startSpinner('saving')
+
+			# verify URL
+			if @orig_url and @orig_url != @$scope.settings.deskpro_url
+				@$scope.settings.deskpro_url = @$scope.settings.deskpro_url.replace(/\/?index\.php$/, '').replace(/\/+$/, '')
+				@$scope.settings.deskpro_url += '/'
+
+				pingUrl = @$scope.settings.deskpro_url + 'index.php?_sys=ping&type=jsonp&callback=JSON_CALLBACK'
+				@$http.jsonp(pingUrl).success(=>
+					@orig_url = @$scope.settings.deskpro_url
+					@save()
+				).error(=>
+					@$scope.url_error = true
+					@stopSpinner('saving', true)
+					@showAlert("We detected that the Helpdesk URL that you entered is invalid. Please double-check the URL and try again.")
+				)
+				return
+
 			if @$scope.attach_user_exts_limitmode == 'allow'
 				@$scope.settings.attach_user_not_exts = []
 			else if @$scope.attach_user_exts_limitmode == 'disallow'
@@ -76,7 +98,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				general_settings: @$scope.settings
 			}
 
-			@startSpinner('saving')
 			promise = @Api.sendPostJson('/general_settings', postData).success( =>
 				@settings = angular.copy(@$scope.settings)
 

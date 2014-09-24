@@ -36,22 +36,44 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
+use Orb\Util\Arrays;
 
 class TicketFilterChangeDetectorService
 {
 	public static function create(DeskproContainer $container)
 	{
-		$agents = $container->getAgentData()->getAgents();
+		$agent_data = $container->getAgentData();
+		$agents     = $agent_data->getAgents();
+
 		foreach ($agents as $a) {
 			$a->loadHelper('AgentPermissions');
 			$a->loadHelper('PermissionsManager');
 			$a->loadHelper('Agent');
 		}
 
+		$filters = $container->getEm()->getRepository('DeskPRO:TicketFilter')->getFilters();
+
 		$x = new FilterChangeDetector(
 			$container->getEm()->getRepository('DeskPRO:TicketFilter')->getFilters(),
 			$container->getAgentData()->getAgents()
 		);
+
+		$change_subs = $container->getEm()->getRepository('DeskPRO:TicketFilterSubscription')->getSimplePropertyChangeSubscriptions();
+
+		if ($change_subs) {
+			$filters = Arrays::keyFromData($filters, 'id');
+			foreach ($change_subs as $sub) {
+				if (!isset($filters[$sub['filter_id']]) || !$agent_data->has($sub['person_id'])) {
+					continue;
+				}
+
+				$x->addExplicitFilterScope(
+					$filters[$sub['filter_id']],
+					$agent_data->get($sub['person_id'])
+				);
+			}
+		}
+
 		return $x;
 	}
 }

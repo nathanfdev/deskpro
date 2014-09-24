@@ -17,6 +17,7 @@
         this.timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html';
         this.selectTemplate = 'OptionBuilder/type-criteria-select.html';
         this.isTemplate = 'OptionBuilder/type-criteria-is.html';
+        this.remoteTemplate = 'OptionBuilder/type-criteria-remote.html';
         this.init();
       }
 
@@ -181,6 +182,7 @@
             var defer;
             if (options.options) {
               return {
+                fieldOptions: options,
                 operators: operators,
                 options: options_formatter ? options_formatter(options.options) : options.options,
                 multiselect: !options.single
@@ -191,6 +193,7 @@
                 return function() {
                   return defer.resolve({
                     operators: operators,
+                    fieldOptions: options,
                     options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
                     multiselect: !options.single
                   });
@@ -199,7 +202,8 @@
               return defer.promise;
             } else {
               return {
-                operators: operators
+                operators: operators,
+                fieldOptions: options
               };
             }
           },
@@ -384,7 +388,7 @@
                 value.type = type;
                 value.op = model.op;
                 value.options = {};
-                valie.options[prop_name] = val;
+                value.options[prop_name] = val;
                 return value;
               }
             };
@@ -426,7 +430,7 @@
                     date1 = new Date(value.options.date1 * 1000);
                   }
                   if (value.options.date2) {
-                    date2 = new Date(value.options.date1 * 1000);
+                    date2 = new Date(value.options.date2 * 1000);
                   }
                 } else {
                   use_relative = true;
