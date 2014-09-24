@@ -29,54 +29,34 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the current context was submitted via the api with a given api key
+ * Send an email to the user
  *
- * @option int api_key_id
+ * @option bool     template          The template to send
+ * @option bool     from_name         Who to send the email from
+ * @option bool     from_account      The account to send from (falsey for ticket account)
+ * @option string[] emails            Email addresses to send to
+ * @option bool     send_org_managers True to send to all org managers
  */
-class CheckApiKey extends AbstractTriggerTerm
+class SendSpecificUserEmail extends SendArbitraryUserEmail
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getOptionsDef()
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('api_key_id');
-		return $options;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		$api_key = $context->getVars()->get('via_api_key');
-		$id = $options->get('api_key_id');
-
-		if (!$api_key || !$id) {
-			return false;
-		}
-
-		if ('not' === $this->getTermOperator() && (int) $id !== (int) $api_key) {
-			return true;
-		}
-		
-		if ('is' === $this->getTermOperator() && (int) $id === (int) $api_key) {
-			return true;
-		}
-
 		return false;
 	}
 }

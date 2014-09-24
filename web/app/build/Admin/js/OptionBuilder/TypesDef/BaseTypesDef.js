@@ -98,6 +98,97 @@
         return this.vars[k] = v;
       };
 
+
+      /*
+      		 * Constructs autocomplete with remote data
+       */
+
+      Admin_OptionBuilder_TypesDef_BaseTypesDef.prototype.getRemoteInput = function(options) {
+        var me, operators, prop_name, type;
+        type = options.type;
+        prop_name = options.propName;
+        operators = this.getOperators(options);
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get(me.remoteTemplate);
+          },
+          getData: function() {
+            return {
+              operators: operators,
+              options: options
+            };
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var info, inputOptions, _ref, _ref1;
+                if (value == null) {
+                  value = {};
+                }
+                if (value.op) {
+                  if (value.op === 'is' && operators.indexOf('is') === -1) {
+                    value.op = 'contains';
+                  } else if (value.op === 'not' && operators.indexOf('not') === -1) {
+                    value.op = 'notcontains';
+                  }
+                }
+                inputOptions = {
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 1,
+                  initSelection: function(item) {
+                    return item[prop_name];
+                  },
+                  ajax: {
+                    data: function(term, page) {
+                      return {
+                        query: term
+                      };
+                    },
+                    quietMillis: 200,
+                    transport: function(query) {
+                      return me.Api.sendGet(options.url, query.data).then(query.success);
+                    },
+                    results: function(data, page) {
+                      return {
+                        results: data.data
+                      };
+                    }
+                  }
+                };
+                $.extend(true, inputOptions, options.inputOptions || {});
+                if (!((_ref = value.options) != null ? _ref[prop_name] : void 0)) {
+                  info = null;
+                } else {
+                  info = ((_ref1 = value.options) != null ? _ref1.info : void 0) || {};
+                  if (!info[prop_name]) {
+                    info[prop_name] = value.options[prop_name];
+                  }
+                }
+                return {
+                  value: info,
+                  op: value.op || _.first(data.operators),
+                  inputOptions: inputOptions
+                };
+              },
+              getValue: function(model, data) {
+                var value, _ref;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = type;
+                value.op = model.op;
+                value.options = {};
+                value.options[prop_name] = ((_ref = model.value) != null ? _ref[prop_name] : void 0) || '';
+                value.options.info = model.value;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
       return Admin_OptionBuilder_TypesDef_BaseTypesDef;
 
     })();

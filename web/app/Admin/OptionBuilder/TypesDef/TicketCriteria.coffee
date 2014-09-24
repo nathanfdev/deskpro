@@ -358,6 +358,11 @@ define [
 				value: 'CheckDateCreated'
 			})
 
+			options.push({
+				title: 'During Working Hours',
+				value: 'CheckWorkingHours'
+			})
+
 			#options.push({
 			#	title: 'Within working hours',
 			#	value: 'CheckWorkingHours'
@@ -404,6 +409,22 @@ define [
 				subOptions: options
 			})
 
+			#------------------------------
+			# API Criteria
+			#------------------------------
+
+			options = []
+
+			options.push({
+				title: 'Check API key',
+				value: 'CheckApiKey'
+			})
+
+			set_options.push({
+				title: 'API Criteria',
+				subOptions: options
+			})
+
 			return set_options
 
 		resetData: ->
@@ -433,6 +454,7 @@ define [
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
 						'email_tpls':      '/email-templates-info'
+						'api_keys':          '/api_keys'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -451,6 +473,7 @@ define [
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+						options_data['api_keys']         = data.api_keys.api_keys
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -783,14 +806,28 @@ define [
 		getCheckUserName: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+			options.url = '/people/quick_search'
+			format = (item) ->
+				"#{item[options.propName]} (#{item.email || ''})"
+			options.inputOptions =
+				formatResult: format
+				formatSelection: format
+				ajax:
+					data: (term, page) -> { query: term, limit: 10, with_agents: false, start_with: true }
+			@getRemoteInput options
 
 		getCheckUserEmail: (options = {}) ->
 			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+			options.url = '/people/quick_search'
+			format = (item) ->
+				"#{item[options.propName]} (#{item.name || ''})"
+			options.inputOptions =
+				formatResult: format
+				formatSelection: format
+				ajax:
+					data: (term, page) -> { query: term, limit: 10, with_agents: false, start_with: true }
+			@getRemoteInput options
 
 		getCheckUserLabel: (options = {}) ->
 			options.propName = 'labels'
@@ -888,8 +925,14 @@ define [
 		getCheckOrgName: (options = {}) ->
 			options.propName = 'name'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+			options.url = '/organizations/quick_search'
+			format = (item) -> item[options.propName]
+			options.inputOptions =
+				formatResult: format
+				formatSelection: format
+				ajax:
+					data: (term, page) -> { query: term, limit: 10 }
+			@getRemoteInput options
 
 		getCheckOrgLabel: (options = {}) ->
 			options.propName = 'labels'
@@ -1007,20 +1050,23 @@ define [
 					return me.dpTemplateManager.get('OptionBuilder/type-criteria-workinghours.html')
 
 				getData: ->
-					return {
-
-					}
+					return {}
 
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
 							return {
 								op: value.op || 'is'
+								working_hours: value.options.working_hours
 							}
 
-					getValue: (model = {}, data) ->
-						value = {}
-						return value
+						getValue: (model = {}, data) ->
+							return {
+								type: 'CheckWorkingHours'
+								op: model.op
+								options:
+									working_hours: model.working_hours
+							}
 					}
 			}
 
@@ -1089,3 +1135,22 @@ define [
 
 		getCheckAgentIsEmailed: ->
 			return @getIsEmailed('CheckAgentIsEmailed', 'type-criteria-agentisemailed.html')
+
+		getCheckApiKey: (options = {}) ->
+			options.propName = 'api_key_id'
+			options.dataName = 'api_keys'
+			options.operators = ['is', 'not']
+			options.single = true
+			options.optionsFormatter = (options) ->
+				opts = []
+
+				for key in options
+					name = if key.person then key.person.display_name else 'Super User'
+					opts.push({
+						value: key.id,
+						title: [name, key.note].join ' | '
+					})
+
+				opts
+
+			@getStandardSelect(options)

@@ -36,14 +36,21 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
+use Orb\Util\OptionsArray;
+use Orb\Util\Util;
+use Orb\Util\WorkHoursSet;
 
 /**
- * Checks if the current context was submitted via the api with a given api key
+ * Checks when ticket was created.
  *
- * @option int api_key_id
+ * @option int date1
+ * @option int date2
+ * @option string date1_relative
+ * @option string date2_relative
  */
-class CheckApiKey extends AbstractTriggerTerm
+class CheckWorkingHours extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
@@ -51,7 +58,7 @@ class CheckApiKey extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('api_key_id');
+		$options->addValidNames('working_hours');
 		return $options;
 	}
 
@@ -62,18 +69,28 @@ class CheckApiKey extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		$api_key = $context->getVars()->get('via_api_key');
-		$id = $options->get('api_key_id');
-
-		if (!$api_key || !$id) {
+		if (!$working_hours = $options->get('working_hours')) {
 			return false;
 		}
 
-		if ('not' === $this->getTermOperator() && (int) $id !== (int) $api_key) {
+		$working_hours = Arrays::removeEmptyArray($working_hours);
+		$working_hours = Arrays::removeNull($working_hours);
+		$working_hours = Arrays::removeEmptyString($working_hours);
+
+		$working_hours = new OptionsArray($working_hours);
+		$wh = new WorkHoursSet(
+			$working_hours->get('start_hour', 9) * 3600 + $working_hours->get('start_minute', 0) * 60,
+			$working_hours->get('end_hour', 18) * 3600 + $working_hours->get('end_minute', 0) * 60,
+			$working_hours->get('work_days', array(false, true, true, true, true, true, false)),
+			$working_hours->get('timezone', 'UTC'),
+			$working_hours->get('holidays', array())
+		);
+
+		if ('is' === $this->getTermOperator() && $wh->isInWorkDay(new \DateTime())) {
 			return true;
 		}
-		
-		if ('is' === $this->getTermOperator() && (int) $id === (int) $api_key) {
+
+		if ('not' === $this->getTermOperator() && !$wh->isInWorkDay(new \DateTime())) {
 			return true;
 		}
 

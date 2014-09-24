@@ -147,6 +147,11 @@ class TicketEmail
 	private $logger;
 
 	/**
+	 * @var array
+	 */
+	private $headers;
+
+	/**
 	 * Use TicketEmailBuilder to build the options array easier.
 	 *
 	 * @param array $options
@@ -174,7 +179,8 @@ class TicketEmail
 			'cc_users',
 			'is_auto',
 			'max_attach_size',
-			'logger'
+			'logger',
+			'headers'
 		);
 		$opt->setAll($options);
 		$opt->ensureRequired();
@@ -198,6 +204,7 @@ class TicketEmail
 		$this->max_attach_size         = $opt->get('max_attach_size', 0);
 
 		$this->user_mode               = $opt->get('user_mode');
+		$this->headers                 = $opt->get('headers', array());
 
 		if ($opt->get('user_mode') == 'user') {
 			$this->user_mode = 'user';
@@ -485,6 +492,10 @@ class TicketEmail
 		$translator->setTemporaryLanguage($this->to_person->getLanguage(), function() use ($message) {
 			$message->prepare();
 		});
+
+		foreach ($this->headers as $header) {
+			$message->getHeaders()->addTextHeader($header['name'], $header['value']);
+		}
 
 		$mailer->send($message);
 

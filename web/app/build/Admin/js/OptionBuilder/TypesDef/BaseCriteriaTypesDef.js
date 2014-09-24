@@ -17,6 +17,7 @@
         this.timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html';
         this.selectTemplate = 'OptionBuilder/type-criteria-select.html';
         this.isTemplate = 'OptionBuilder/type-criteria-is.html';
+        this.remoteTemplate = 'OptionBuilder/type-criteria-remote.html';
         this.init();
       }
 

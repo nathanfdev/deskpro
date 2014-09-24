@@ -15,6 +15,7 @@ define [
 			@timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html'
 			@selectTemplate      = 'OptionBuilder/type-criteria-select.html'
 			@isTemplate          = 'OptionBuilder/type-criteria-is.html'
+			@remoteTemplate      = 'OptionBuilder/type-criteria-remote.html'
 			@init()
 
 		init: ->

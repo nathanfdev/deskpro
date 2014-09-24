@@ -29,21 +29,26 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\Tickets\Triggers\Terms;
+namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Checks if the current context was submitted via the api with a given api key
+ * Adds a reply to the ticket
  *
- * @option int api_key_id
+ * @option string note_text
+ * @option int    by_agent_id
+ * @option bool   by_assigned_agent
+ * @option bool   no_formatter
  */
-class CheckApiKey extends AbstractTriggerTerm
+class AddAgentNote extends AbstractContainerAwareAction implements ActionInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -51,32 +56,49 @@ class CheckApiKey extends AbstractTriggerTerm
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('api_key_id');
+		$options->addRequiredNames('by_agent_id');
+		$options->addRequiredNames('note_text');
+		$options->addValidNames('by_assigned_agent');
+		$options->addValidNames('no_formatter');
 		return $options;
 	}
-
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$options = $this->getTermOptions();
-		$api_key = $context->getVars()->get('via_api_key');
-		$id = $options->get('api_key_id');
-
-		if (!$api_key || !$id) {
-			return false;
+		$agent = null;
+		if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {
+			$agent = $ticket->agent;
+		}
+		if (!$agent) {
+			$agent = $this->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
 		}
 
-		if ('not' === $this->getTermOperator() && (int) $id !== (int) $api_key) {
-			return true;
-		}
-		
-		if ('is' === $this->getTermOperator() && (int) $id === (int) $api_key) {
-			return true;
+		if (!$agent) {
+			return;
 		}
 
-		return false;
+		$em = $this->getContainer()->getEm();
+
+		$message = new TicketMessage();
+		$message->person = $agent;
+		$message->date_created = new \DateTime('+1 second');
+		$message['is_agent_note'] = true;
+
+		$note_text = $this->getActionOption('note_text');
+
+		if (!$this->getActionOption('no_formatter')) {
+			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
+			$formatter->addVar('user_vars', $context->getUserVars());
+			$note_text = $formatter->formatText($note_text, $ticket);
+		}
+
+		$message->setMessage($note_text);
+
+		$ticket->addMessage($message);
+		$em->persist($message);
+		$em->flush($message);
 	}
 }

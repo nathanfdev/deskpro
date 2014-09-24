@@ -2,9 +2,15 @@
 	<div class="dp-ob-standard-row">
 		<table class="display-table">
 			<tr>
-				<td class="nowrap"><label class="row-label">Send User Email</label></td>
+				<td class="nowrap"><label class="row-label">Send Email</label></td>
 				<td ng-show="rowOpts.rowEnabled">
 					<table class="display-table spaced">
+                        <tr>
+                            <td>Email Address to Send to (separate multiple with commas):</td>
+                            <td>
+                                <input type="text" class="form-control" ng-model="model.emails" ng-list style="min-width: 50px;" />
+                            </td>
+                        </tr>
 						<tr>
 							<td>Template:</td>
 							<td>
@@ -29,18 +35,6 @@
 									</optgroup>
 								</select>
 								<span ng-if="is_creating">Creating a new template</span>
-							</td>
-						</tr>
-						<tr>
-							<td>To:</td>
-							<td>
-								<label>
-									<input type="radio" ng-model="model.do_cc_users" value="owner" /> Email only the ticket owner
-								</label>
-								<br/>
-								<label>
-									<input type="radio" ng-model="model.do_cc_users" value="all" /> Email everyone on the ticket (owner and all CC's)
-								</label>
 							</td>
 						</tr>
 						<tr>
