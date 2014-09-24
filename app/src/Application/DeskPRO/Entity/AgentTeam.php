@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -67,6 +68,11 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	protected $members = null;
 
 	/**
+	 * @var Blob
+	 */
+	protected $avatar;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
@@ -93,6 +99,21 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->members->removeElement($person);
 		$this->_onPropertyChanged('members', $this->members, $this->members);
+	}
+
+	public function getAvatarUrl($size = 50)
+	{
+		if ($this->avatar && $this->avatar->isImage()) {
+			$url = $this->avatar->getThumbnailUrl($size);
+		} else {
+			$url = App::get('router')->generate('serve_default_picture', array(
+				's' => $size,
+				'size-fit' => 1,
+				'is_team' => 1,
+			), true);
+		}
+
+		return $url;
 	}
 
 
@@ -129,6 +150,22 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 				'inverseJoinColumns' => array(array( 'name' => 'person_id' )),
 			),
 			'orderBy' => array( 'name' => 'ASC', ),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'avatar',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'mappedBy' => NULL,
+			'inversedBy' => NULL,
+			'joinColumns' => array(
+				0 => array(
+					'name' => 'avatar_blob_id',
+					'referencedColumnName' => 'id',
+					'nullable' => true,
+					'onDelete' => 'cascade',
+					'columnDefinition' => NULL,
+				),
+			),
+			'dpApi' => true
 		));
 	}
 }

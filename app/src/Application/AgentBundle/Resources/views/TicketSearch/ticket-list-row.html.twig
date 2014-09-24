@@ -113,8 +113,9 @@
 	<div class="extra-fields">
 		<ul>
 			<% for (var i = 0; i < displayable_fields.length; i++) { var field = displayable_fields[i]; %>
-				<li>
+				<li style="<% if((field == 'department') || field == 'agent_team' || field == 'agent') { %>position: relative;margin-left: 20px;<% } %>padding-top:3px;padding-bottom:3px;">
 					<% if (field == 'department') { %>
+                        <img style="position: absolute;left:-20px;top:0;" src="<%- ticket_display.department.avatar_url_16 %>" />
 						<span class="prop-title">{{ phrase('agent.general.department') }}:</span>
 						<span class="prop-val"><%- ticket_display.department.title_full %></span>
 					<% } %>
@@ -150,6 +151,7 @@
 					<% } %>
 
 					<% if (field == 'agent') { %>
+                        <img style="position: absolute;left:-20px;top:0;" src="<%- ticket_display.agent.picture_url_16 %>" />
 						<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
 						<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><%- ticket_display.agent.display_name %></span><% } %>
 						<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><%- ticket_display.agent.display_name %></a></span><% } %>
@@ -157,6 +159,7 @@
 					<% } %>
 
 					<% if (field == 'agent_team') { %>
+                        <img style="position: absolute;left:-20px;top:0;" src="<%- ticket_display.agent_team.avatar_url_16 %>" />
 						<span class="prop-title">{{ phrase('agent.general.agent_team') }}:</span>
 						<% if (ticket_display.agent_team) { %><span class="prop-val"><%- ticket_display.agent_team.name %></span><% } %>
 						<% if (!ticket_display.agent_team) { %><span class="prop-val">{{ phrase('agent.general.no_team') }}</span><% } %>

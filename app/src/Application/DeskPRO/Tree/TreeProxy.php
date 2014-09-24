@@ -169,8 +169,8 @@ class TreeProxy implements \ArrayAccess
 
 	function __call($name, $arguments)
 	{
-		if (is_callable(array($name, $this->__obj))) {
-			return call_user_func_array(array($name, $this->__obj), $arguments);
+		if (is_callable(array($this->__obj, $name))) {
+			return call_user_func_array(array($this->__obj, $name), $arguments);
 		} else {
 			return null;
 		}

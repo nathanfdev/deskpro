@@ -1,0 +1,38 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_attributes %}ng-controller="Admin_Icons_Ctrl_List"{% endblock %}
+{% block modal_controls %}<button type="button" class="close" ng-click="$dismiss()">&times;</button>{% endblock %}
+
+
+
+{% block modal_title %}
+    <h4 class="modal-title">Select icon</h4>
+{% endblock %}
+
+
+
+{% block modal_body %}
+
+    <div style="max-height: 400px;overflow-y: scroll;" class="iconpicker">
+        <div ng-repeat="(category, icons) in Ctrl.categories">
+            <h4>
+                {{ ng_var('category') }}
+            </h4>
+
+            <div class="glyph-icon icon" ng-repeat="icon in icons" ng-class="icon.class"
+                 style="display: inline-block"
+                 ng-click="Ctrl.selectIcon(icon.image);"
+                 ></div>
+            <br /><br />
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block modal_footer %}
+    <i class="spinner-flat" ng-show="Ctrl.busy"></i>
+    <button class="btn btn-default" ng-show="!Ctrl.busy" ng-click="$dismiss()">
+        {{ phrase('agent.general.cancel') }}
+    </button>
+{% endblock %}

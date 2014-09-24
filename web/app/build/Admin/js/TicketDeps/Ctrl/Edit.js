@@ -1,5 +1,6 @@
 (function() {
-  var __hasProp = {}.hasOwnProperty,
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(['Admin/Main/Ctrl/Base', 'Admin/Main/Model/DepAgentPermMatrix', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Admin_Main_Model_DepAgentPermMatrix, Util) {
@@ -8,6 +9,8 @@
       __extends(Admin_TicketDeps_Ctrl_Edit, _super);
 
       function Admin_TicketDeps_Ctrl_Edit() {
+        this.selectIcon = __bind(this.selectIcon, this);
+        this.setAvatar = __bind(this.setAvatar, this);
         return Admin_TicketDeps_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
@@ -15,13 +18,19 @@
 
       Admin_TicketDeps_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$templateCache', 'dpObTypesDefTicketActions', '$location'];
+      Admin_TicketDeps_Ctrl_Edit.DEPS = ['$templateCache', 'dpObTypesDefTicketActions', '$location', '$upload', '$http'];
 
       Admin_TicketDeps_Ctrl_Edit.prototype.init = function() {
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.actionOptionTypes = [];
         this.$scope.actions_form = {};
         this.$scope.actions_form2 = {};
+        this.$scope.icon_image = null;
+        this.$scope.$on('icon.selected', (function(_this) {
+          return function(e, path) {
+            return _this.selectIcon(path);
+          };
+        })(this));
         this.depId = parseInt(this.$stateParams.id);
         this.depData = this.DataService.get('TicketDeps');
         this.$scope.$watch('EditCtrl.form.parent_id', (function(_this) {
@@ -75,6 +84,7 @@
             _this.is_custom_layout = _this.form.use_custom_layout;
             _this.origForm = Util.clone(_this.form, true);
             _this.layout_info = data.layout_info;
+            _this.setAvatar(_this.dep.avatar);
             if (_this.depId) {
               _this.layout_info["default"] = _this.layout_info["default"].filter(function(x) {
                 return x.id !== _this.depId;
@@ -172,7 +182,7 @@
        */
 
       Admin_TicketDeps_Ctrl_Edit.prototype.saveAll = function() {
-        var deferred2, promise, triggerSaver;
+        var deferred2, promise, triggerSaver, _ref;
         if (!this.$scope.form_props.$valid) {
           return;
         }
@@ -219,6 +229,7 @@
             return _this.$q.all([p1, p2]);
           };
         })(this);
+        this.form.avatar = ((_ref = this.dep.avatar) != null ? _ref.id : void 0) || null;
         promise = this.depData.saveFormModel(this.dep, this.form);
         promise.then((function(_this) {
           return function() {
@@ -297,6 +308,58 @@
           }
         });
         return modalInstance;
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.setAvatar = function(blob) {
+        this.dep.avatar = blob;
+        if (blob == null) {
+          return this.$scope.icon_image = "/web/app/vendor-src/icons/webdev-seo/png/career.png";
+        } else {
+          return this.$scope.icon_image = blob.thumbnail_url_50;
+        }
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.onFileSelect = function(files) {
+        var file;
+        this.$scope.uploading = false;
+        file = files[0];
+        return this.$upload.upload({
+          url: this.$http.formatApiUrl('/misc/upload'),
+          data: {
+            is_image: true
+          },
+          file: file
+        }).success((function(_this) {
+          return function(data) {
+            _this.$scope.uploading = false;
+            return _this.setAvatar(data.blob);
+          };
+        })(this)).error((function(_this) {
+          return function(data) {
+            _this.$scope.uploading = false;
+            return _this.Growl.error((data != null ? data.error_message : void 0) || 'Error');
+          };
+        })(this));
+      };
+
+      Admin_TicketDeps_Ctrl_Edit.prototype.selectIcon = function(image) {
+        if (image == null) {
+          setAvatar(null);
+        }
+        this.$scope.uploading = true;
+        return this.Api.sendPostJson('/misc/upload', {
+          path: image,
+          is_image: true
+        }).then((function(_this) {
+          return function(data) {
+            _this.$scope.uploading = false;
+            return _this.setAvatar(data.data.blob);
+          };
+        })(this), (function(_this) {
+          return function() {
+            return _this.$scope.uploading = false;
+          };
+        })(this));
       };
 
       return Admin_TicketDeps_Ctrl_Edit;

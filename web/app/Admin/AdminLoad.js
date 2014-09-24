@@ -183,6 +183,7 @@ define([
 	'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
 	'Admin/RoundRobin/Ctrl/List',
 	'Admin/RoundRobin/Ctrl/Edit',
+	'Admin/Icons/Ctrl/List',
 
 	'CloudAdminLoad'
 

@@ -199,7 +199,15 @@ class TicketListRenderer
 				case 'department':
 					$dep = $this->container->getDataService('Department')->get($ticket->department->getId());
 					if ($dep) {
-						$data['department'] = array('id' => $dep->id, 'title' => $dep->title, 'title_full' => $dep->getFullTitle());
+						$data['department'] = array(
+							'id' => $dep->id,
+							'title' => $dep->title,
+							'title_full' => $dep->getFullTitle(),
+						);
+
+						foreach (array(80, 64, 50, 45, 32, 22, 16) as $size) {
+							$data['department']['avatar_url_'.$size] = $dep->getAvatarUrl($size);
+						}
 					}
 					break;
 
@@ -218,6 +226,18 @@ class TicketListRenderer
 
 				case 'agent':
 					$data['agent'] = $this->container->getAgentData()->has($ticket->agent->getId()) ? $this->renderPerson($this->container->getAgentData()->get($ticket->agent->getId())) : null;
+					break;
+
+				case 'agent_team':
+					$data['agent_team'] = array(
+						'id' => $ticket->agent_team['id'],
+						'name' => $ticket->agent_team['name'],
+					);
+
+					foreach (array(80, 64, 50, 45, 32, 22, 16) as $size) {
+						$data['agent_team']['avatar_url_'.$size] = $ticket->agent_team->getAvatarUrl($size);
+					}
+
 					break;
 
 				case 'locked_by_agent':
