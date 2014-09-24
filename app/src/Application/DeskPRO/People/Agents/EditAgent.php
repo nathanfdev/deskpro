@@ -186,9 +186,23 @@ class EditAgent
 			$team->removePerson($agent); // unidirectional
 		}
 
+		$found_primary = false;
+
 		foreach ($this->teams as $team) {
 			/** @var $team AgentTeam */
 			$agent->addTeam($team); // bidirectional
+
+			if ($team === $this->primary_team) {
+				$found_primary = true;
+			}
+		}
+
+		if (!$found_primary) {
+			if ($this->teams) {
+				$this->primary_team = Arrays::getFirstItem($this->teams);
+			} else {
+				$this->primary_team = null;
+			}
 		}
 
 		#------------------------------
@@ -246,6 +260,7 @@ class EditAgent
 			$em->persist($p);
 		}
 
+		$em->persist($agent);
 		$agent->primary_team = $this->primary_team;
 
 		$em->flush();

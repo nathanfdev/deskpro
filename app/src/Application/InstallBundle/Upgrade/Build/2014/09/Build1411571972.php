@@ -50,5 +50,19 @@ ALTER TABLE people ADD CONSTRAINT FK_28166A26E715BE01 FOREIGN KEY (primary_team_
 CREATE INDEX IDX_28166A26E715BE01 ON people (primary_team_id);
 SQL
 		);
+
+		$this->out("Initialize primary team");
+		$member_map = $this->container->getDb()->fetchAllKeyValue("
+			SELECT person_id, team_id
+			FROM agent_team_members
+			ORDER BY team_id ASC
+		");
+		foreach ($member_map as $agent_id => $team_id) {
+			$this->container->getDb()->update(
+				'people',
+				array('primary_team_id' => $team_id),
+				array('id' => $agent_id)
+			);
+		}
 	}
 }
