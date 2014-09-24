@@ -111,7 +111,7 @@
         me = this;
         return {
           getTemplate: function() {
-            return me.dpTemplateManager.get(this.remoteTemplate);
+            return me.dpTemplateManager.get(me.remoteTemplate);
           },
           getData: function() {
             return {
@@ -122,7 +122,7 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
-                var inputOptions, _ref;
+                var info, inputOptions, _ref, _ref1;
                 if (value == null) {
                   value = {};
                 }
@@ -137,7 +137,7 @@
                   dropdownAutoWidth: true,
                   minimumInputLength: 1,
                   initSelection: function(item) {
-                    return item.id;
+                    return item[prop_name];
                   },
                   ajax: {
                     data: function(term, page) {
@@ -157,14 +157,22 @@
                   }
                 };
                 $.extend(true, inputOptions, options.inputOptions || {});
+                if (!((_ref = value.options) != null ? _ref[prop_name] : void 0)) {
+                  info = null;
+                } else {
+                  info = ((_ref1 = value.options) != null ? _ref1.info : void 0) || {};
+                  if (!info[prop_name]) {
+                    info[prop_name] = value.options[prop_name];
+                  }
+                }
                 return {
-                  value: ((_ref = value.options) != null ? _ref[prop_name] : void 0) || '',
+                  value: info,
                   op: value.op || _.first(data.operators),
                   inputOptions: inputOptions
                 };
               },
               getValue: function(model, data) {
-                var value;
+                var value, _ref;
                 if (model == null) {
                   model = {};
                 }
@@ -172,7 +180,8 @@
                 value.type = type;
                 value.op = model.op;
                 value.options = {};
-                value.options[prop_name] = model.value || '';
+                value.options[prop_name] = ((_ref = model.value) != null ? _ref[prop_name] : void 0) || '';
+                value.options.info = model.value;
                 return value;
               }
             };

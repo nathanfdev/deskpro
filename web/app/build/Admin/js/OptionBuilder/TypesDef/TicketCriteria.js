@@ -960,14 +960,31 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserName = function(options) {
-        var def;
+        var format;
         if (options == null) {
           options = {};
         }
         options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        options.url = '/people/quick_search';
+        format = function(item) {
+          return "" + item[options.propName] + " (" + (item.email || '') + ")";
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10,
+                with_agents: false,
+                start_with: true
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserEmail = function(options) {
@@ -979,20 +996,18 @@
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         options.url = '/people/quick_search';
         format = function(item) {
-          return "" + item.email + " (" + item.first_name + " " + item.last_name + ")";
+          return "" + item[options.propName] + " (" + (item.name || '') + ")";
         };
         options.inputOptions = {
           formatResult: format,
           formatSelection: format,
-          initSelection: function(item) {
-            return item.email;
-          },
           ajax: {
             data: function(term, page) {
               return {
                 query: term,
                 limit: 10,
-                with_agents: false
+                with_agents: false,
+                start_with: true
               };
             }
           }
@@ -1164,14 +1179,29 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgName = function(options) {
-        var def;
+        var format;
         if (options == null) {
           options = {};
         }
         options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        options.url = '/organizations/quick_search';
+        format = function(item) {
+          return item[options.propName];
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgLabel = function(options) {
