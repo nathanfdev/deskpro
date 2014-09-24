@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Form\Type\TaskType;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
+use Orb\Util\Strings;
 
 /**
  * Set the status.
@@ -55,7 +56,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('title', 'creator');
-		$options->addValidNames('due_date', 'public', 'assignee');
+		$options->addValidNames('date_due', 'public', 'assignee');
 
 		return $options;
 	}
@@ -85,18 +86,50 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
 			$context->getLogger()->debug('[CreateTask] Wrong creator');
 		}
 
+		$due_date = $this->getActionOption('date_due', '');
+
+		$assigned_agent_team = null;
+		$assigned_agent = null;
+
+		$assignee = $this->getActionOption('assignee', '');
+		$context->getLogger()->debug('[CreateTask] assignee is ' . $assignee);
+		if ($assignee = Strings::extractRegexMatch('#^(?P<type>.*?):(?P<id>-?\d+)$#', $assignee, -1)) {
+			switch ($assignee['type']) {
+				case 'agent':
+					$assigned_agent = $assignee['id'];
+					if ($assigned_agent == -1) {
+						$context->getLogger()->debug('[CreateTask] assignee = current agent');
+						if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
+							$assigned_agent = $context->getPersonContext()->id;
+							$context->getLogger()->debug('[CreateTask] current agent is ' . $assigned_agent);
+						} else {
+							$assigned_agent = null;
+							$context->getLogger()->debug('[CreateTask] current agent is null');
+						}
+					}
+					break;
+
+				case 'team':
+					$assigned_agent_team = $assignee['id'];
+					if (!$assigned_agent_team) {
+						$assigned_agent_team = null;
+					}
+			}
+		}
+
 		$formData = array(
-			'title' => $this->getActionOption('title'),
-			'date_due' => $this->getActionOption('date_due'),
-			'visibility' => (int) $this->getActionOption('public'),
-			'person' => $person['id'],
-			'ticket' => $ticket['id'],
-			'assigned_agent' => $this->getActionOption('assignee'),
+			'title'               => $this->getActionOption('title'),
+			'date_due'            => $due_date,
+			'visibility'          => (int) $this->getActionOption('public'),
+			'person'              => $person['id'],
+			'ticket'              => $ticket['id'],
+			'assigned_agent'      => $assigned_agent,
+			'assigned_agent_team' => $assigned_agent_team
 		);
 
 		$form->submit($formData);
 		if (!$form->isValid()) {
-			$context->getLogger()->debug('[CreateTask] Validation error', $task['title']);
+			$context->getLogger()->debug('[CreateTask] Validation error: ' . (string)$form->getErrorsAsString());
 			return;
 		}
 
