@@ -808,4 +808,17 @@ class Ticket extends AbstractEntityRepository
 
 		return $counts;
 	}
+
+	/**
+	 * @param int $offlineOffset offset in seconds from now, when the agents considered as 'offline'
+	 */
+	public function unlockOfflineAgentsTickets($offlineOffset = 120)
+	{
+		$lockDate = new \DateTime(- (int) $offlineOffset . ' seconds');
+		$this->getEntityManager()->getConnection()->executeQuery('
+			UPDATE tickets t
+			JOIN sessions s ON t.locked_by_agent = s.person_id AND s.date_last IS NOT NULL AND s.date_last < :lockDate
+			SET t.locked_by_agent = NULL, t.date_locked = NULL
+		', array('lockDate' => $lockDate->format('Y-m-d H:i:s')));
+	}
 }

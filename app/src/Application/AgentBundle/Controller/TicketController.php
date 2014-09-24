@@ -3735,7 +3735,6 @@ class TicketController extends AbstractController
 		$this->em->persist($lock_cm);
 
 		$ticket->setLockedByAgent($this->person);
-		$this->em->persist($ticket);
 		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
@@ -3761,7 +3760,6 @@ class TicketController extends AbstractController
 		$this->em->persist($lock_cm);
 
 		$ticket->setLockedByAgent(null);
-		$this->em->persist($ticket);
 		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
