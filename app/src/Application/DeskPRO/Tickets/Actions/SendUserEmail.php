@@ -100,7 +100,7 @@ class SendUserEmail extends AbstractEmailAction
 			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
 			->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 			->setLogger($context->getLogger())
-			->setHeaders($this->getActionOption('headers', array()))
+			->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
 			->setFromEmailAccount($from_account);
 
 		if ($this->getActionOption('do_cc_users')) {

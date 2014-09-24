@@ -233,7 +233,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				->setTemplateName($template)
 				->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 				->setLogger($context->getLogger())
-				->setHeaders($this->getActionOption('headers', array()))
+				->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
 				->buildTicketEmail();
 
 			try {

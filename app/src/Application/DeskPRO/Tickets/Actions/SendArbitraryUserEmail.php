@@ -147,7 +147,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
 				->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
 				->setMaxAttachSize(0)
 				->setLogger($context->getLogger())
-				->setHeaders($this->getActionOption('headers', array()))
+				->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
 				->setFromEmailAccount($from_account);
 
 			$ticket_email = $build->buildTicketEmail();
