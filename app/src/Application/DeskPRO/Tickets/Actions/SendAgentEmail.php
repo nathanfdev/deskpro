@@ -59,7 +59,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('agent_ids');
-		$options->addValidNames('template', 'from_name', 'from_account');
+		$options->addValidNames('template', 'from_name', 'from_account', 'headers');
 		return $options;
 	}
 
@@ -233,6 +233,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				->setTemplateName($template)
 				->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 				->setLogger($context->getLogger())
+				->setHeaders($this->getActionOption('headers', array()))
 				->buildTicketEmail();
 
 			try {

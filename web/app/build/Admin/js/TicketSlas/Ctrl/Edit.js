@@ -65,7 +65,6 @@
           this.sla = {};
           this.form = this.getFormFromModel({});
           this.origForm = Util.clone(this.form, true);
-          return null;
         }
         proms.push(this.actionsTypeDef.loadDataOptions());
         proms.push(this.criteraTypeDef.loadDataOptions());

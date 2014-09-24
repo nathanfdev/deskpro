@@ -52,14 +52,20 @@ return array(
 		'date_last_login' => NULL,
 		'date_last_login_ts' => 0,
 		'date_last_login_ts_ms' => 0,
+		'date_password_set' => '2014-09-22 17:34:04',
+        'date_password_set_ts' => 1411407244,
+        'date_password_set_ts_ms' => 1411407244000,
 		'date_picture_check' => NULL,
 		'date_picture_check_ts' => 0,
 		'date_picture_check_ts_ms' => 0,
+		'browser' => null,
 		'display_name' => 'Admin Admin',
 		'primary_email' => array(
 			'id' => 1,
 			'email' => 'admin@example.com',
 		),
+		'primary_phone_number_text' => null,
+		'primary_phone_number_region' => null,
 		'emails' => array(
 			0 =>
 			array(
@@ -68,6 +74,7 @@ return array(
 			),
 		),
 		'usergroup_ids' => array(
+			0 => 2,
 		),
 		'agentgroup_ids' => array(
 			0 => 3,

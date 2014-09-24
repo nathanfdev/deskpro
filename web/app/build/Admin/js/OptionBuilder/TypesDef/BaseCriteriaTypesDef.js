@@ -17,6 +17,7 @@
         this.timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html';
         this.selectTemplate = 'OptionBuilder/type-criteria-select.html';
         this.isTemplate = 'OptionBuilder/type-criteria-is.html';
+        this.remoteTemplate = 'OptionBuilder/type-criteria-remote.html';
         this.init();
       }
 
@@ -429,7 +430,7 @@
                     date1 = new Date(value.options.date1 * 1000);
                   }
                   if (value.options.date2) {
-                    date2 = new Date(value.options.date1 * 1000);
+                    date2 = new Date(value.options.date2 * 1000);
                   }
                 } else {
                   use_relative = true;

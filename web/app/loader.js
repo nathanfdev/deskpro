@@ -17,6 +17,8 @@ requirejs.config({
 		"angularSlider":                   "app/bower_components/angular-slider/angular-slider.min",
 		"angularSelectize":                "app/bower_components/angular-selectize.js/angular-selectize",
 		"angularGrid":                     "app/bower_components/angular-grid/build/ng-grid.min",
+		"angularUiDatetime":               "app/vendor-src/ui-datetime",
+
 		"ngFileUpload":                    "app/bower_components/ng-file-upload/angular-file-upload.min",
 		"jquery":                          "app/bower_components/jquery/jquery.min",
 		"jqueryUi":                        "app/bower_components/jquery-ui/ui/minified/jquery-ui.min",
@@ -82,6 +84,8 @@ requirejs.config({
 		"angularSlider":                   ["angular"],
 		"angularSelectize":                ["angular"],
 		"angularGrid":                     ["angular"],
+		"angularUiDatetime":               ["angular"],
+
 		"ZeroClipboard":                   { "exports": "ZeroClipboard"},
 		"ngClip":                          ["angular", "ZeroClipboard"],
 		"ngFileUpload":                    ["angular"],

@@ -21,22 +21,32 @@
         this.escData = this.DataService.get('TicketEscalations');
         this.esc = null;
         this.criteriaTypeDef = this.dpObTypesDefTicketFilter;
-        this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
-        this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
+        this.criteriaOptionTypes = [];
+        this.actionOptionTypes = [];
+        this.criteriaTypeDef.setVar('object_type', 'escalation');
+        this.actionsTypeDef.setVar('object_type', 'escalation');
         this.criteriaTypeDef.setVar('object_type', 'escalation');
         return this.actionsTypeDef.setVar('object_type', 'escalation');
       };
 
       Admin_TicketEscalations_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise;
-        promise = this.escData.loadEditEscalationData(this.$stateParams.id || null).then((function(_this) {
+        this.criteriaTypeDef.loadDataOptions().then((function(_this) {
+          return function() {
+            return _this.criteriaOptionTypes = _this.criteriaTypeDef.getOptionsForTypes();
+          };
+        })(this));
+        this.actionsTypeDef.loadDataOptions().then((function(_this) {
+          return function() {
+            return _this.actionOptionTypes = _this.actionsTypeDef.getOptionsForTypes();
+          };
+        })(this));
+        return this.escData.loadEditEscalationData(this.$stateParams.id || null).then((function(_this) {
           return function(data) {
             _this.esc = data.escalation;
             return _this.form = data.form;
           };
         })(this));
-        return promise;
       };
 
       Admin_TicketEscalations_Ctrl_Edit.prototype.saveForm = function() {

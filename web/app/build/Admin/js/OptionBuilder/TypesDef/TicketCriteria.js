@@ -39,7 +39,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+        var f, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
         if (typesData == null) {
           typesData = null;
         }
@@ -162,15 +162,21 @@
           title: 'User Message',
           value: 'CheckUserMessage'
         });
+        if ((_ref = this.options_data) != null ? (_ref1 = _ref.ticket_settings) != null ? _ref1.satisfaction_enabled : void 0 : void 0) {
+          options.push({
+            title: 'Ticket Satisfaction',
+            value: 'CheckTicketSatisfaction'
+          });
+        }
         set_options.push({
           title: 'Ticket Criteria',
           subOptions: options
         });
-        if ((_ref = this.options_data) != null ? _ref.ticket_fields : void 0) {
+        if ((_ref2 = this.options_data) != null ? _ref2.ticket_fields : void 0) {
           options = [];
-          _ref1 = this.options_data.ticket_fields;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            f = _ref1[_i];
+          _ref3 = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+            f = _ref3[_i];
             options.push({
               title: f.title,
               value: this.initFieldGetter('CheckTicketField', f)
@@ -228,11 +234,11 @@
           title: 'User Criteria',
           subOptions: options
         });
-        if ((_ref2 = this.options_data) != null ? _ref2.user_fields : void 0) {
+        if ((_ref4 = this.options_data) != null ? _ref4.user_fields : void 0) {
           options = [];
-          _ref3 = this.options_data.user_fields;
-          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
-            f = _ref3[_j];
+          _ref5 = this.options_data.user_fields;
+          for (_j = 0, _len1 = _ref5.length; _j < _len1; _j++) {
+            f = _ref5[_j];
             options.push({
               title: f.title,
               value: this.initFieldGetter('CheckUserField', f)
@@ -266,11 +272,11 @@
           title: 'Organization Criteria',
           subOptions: options
         });
-        if ((_ref4 = this.options_data) != null ? _ref4.org_fields : void 0) {
+        if ((_ref6 = this.options_data) != null ? _ref6.org_fields : void 0) {
           options = [];
-          _ref5 = this.options_data.org_fields;
-          for (_k = 0, _len2 = _ref5.length; _k < _len2; _k++) {
-            f = _ref5[_k];
+          _ref7 = this.options_data.org_fields;
+          for (_k = 0, _len2 = _ref7.length; _k < _len2; _k++) {
+            f = _ref7[_k];
             options.push({
               title: f.title,
               value: this.initFieldGetter('OrgField', f)
@@ -295,6 +301,10 @@
         options.push({
           title: 'Ticket Created Date',
           value: 'CheckDateCreated'
+        });
+        options.push({
+          title: 'During Working Hours',
+          value: 'CheckWorkingHours'
         });
         set_options.push({
           title: 'Dates',
@@ -323,6 +333,15 @@
         });
         set_options.push({
           title: 'Trigger Control',
+          subOptions: options
+        });
+        options = [];
+        options.push({
+          title: 'Check API key',
+          value: 'CheckApiKey'
+        });
+        set_options.push({
+          title: 'API Criteria',
           subOptions: options
         });
         return set_options;
@@ -356,10 +375,12 @@
               'ticket_accounts': '/email_accounts',
               'usergroups': '/user_groups',
               'langs': '/langs',
-              'email_tpls': '/email-templates-info'
+              'email_tpls': '/email-templates-info',
+              'api_keys': '/api_keys',
+              'ticket_settings': '/ticket_settings'
             }).then((function(_this) {
               return function(result) {
-                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
                 data = result.data;
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
@@ -377,26 +398,28 @@
                 options_data['usergroups'] = data.usergroups.groups;
                 options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
+                options_data['api_keys'] = data.api_keys.api_keys;
+                options_data['ticket_settings'] = (_ref6 = data.ticket_settings) != null ? _ref6.ticket_settings : void 0;
                 _this.options_data = options_data;
-                if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
-                  _ref7 = _this.options_data.ticket_fields;
-                  for (_i = 0, _len = _ref7.length; _i < _len; _i++) {
-                    f = _ref7[_i];
+                if ((_ref7 = _this.options_data) != null ? _ref7.ticket_fields : void 0) {
+                  _ref8 = _this.options_data.ticket_fields;
+                  for (_i = 0, _len = _ref8.length; _i < _len; _i++) {
+                    f = _ref8[_i];
                     _this.initFieldGetter('CheckTicketField', f);
                   }
                 }
-                if ((_ref8 = _this.options_data) != null ? _ref8.user_fields : void 0) {
-                  _ref9 = _this.options_data.user_fields;
-                  for (_j = 0, _len1 = _ref9.length; _j < _len1; _j++) {
-                    f = _ref9[_j];
+                if ((_ref9 = _this.options_data) != null ? _ref9.user_fields : void 0) {
+                  _ref10 = _this.options_data.user_fields;
+                  for (_j = 0, _len1 = _ref10.length; _j < _len1; _j++) {
+                    f = _ref10[_j];
                     _this.initFieldGetter('CheckUserField', f);
                   }
                 }
-                if ((_ref10 = _this.options_data) != null ? _ref10.org_fields : void 0) {
-                  _ref11 = _this.options_data.org_fields;
+                if ((_ref11 = _this.options_data) != null ? _ref11.org_fields : void 0) {
+                  _ref12 = _this.options_data.org_fields;
                   _results = [];
-                  for (_k = 0, _len2 = _ref11.length; _k < _len2; _k++) {
-                    f = _ref11[_k];
+                  for (_k = 0, _len2 = _ref12.length; _k < _len2; _k++) {
+                    f = _ref12[_k];
                     _results.push(_this.initFieldGetter('CheckOrgField', f));
                   }
                   return _results;
@@ -945,25 +968,59 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserName = function(options) {
-        var def;
+        var format;
         if (options == null) {
           options = {};
         }
         options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        options.url = '/people/quick_search';
+        format = function(item) {
+          return "" + item[options.propName] + " (" + (item.email || '') + ")";
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10,
+                with_agents: false,
+                start_with: true
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserEmail = function(options) {
-        var def;
+        var format;
         if (options == null) {
           options = {};
         }
         options.propName = 'email';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        options.url = '/people/quick_search';
+        format = function(item) {
+          return "" + item[options.propName] + " (" + (item.name || '') + ")";
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10,
+                with_agents: false,
+                start_with: true
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabel = function(options) {
@@ -1130,14 +1187,29 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgName = function(options) {
-        var def;
+        var format;
         if (options == null) {
           options = {};
         }
         options.propName = 'name';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        options.url = '/organizations/quick_search';
+        format = function(item) {
+          return item[options.propName];
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgLabel = function(options) {
@@ -1322,16 +1394,21 @@
                   value = {};
                 }
                 return {
-                  op: value.op || 'is'
+                  op: value.op || 'is',
+                  working_hours: value.options.working_hours
                 };
               },
               getValue: function(model, data) {
-                var value;
                 if (model == null) {
                   model = {};
                 }
-                value = {};
-                return value;
+                return {
+                  type: 'CheckWorkingHours',
+                  op: model.op,
+                  options: {
+                    working_hours: model.working_hours
+                  }
+                };
               }
             };
           }
@@ -1431,6 +1508,55 @@
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckAgentIsEmailed = function() {
         return this.getIsEmailed('CheckAgentIsEmailed', 'type-criteria-agentisemailed.html');
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckApiKey = function(options) {
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'api_key_id';
+        options.dataName = 'api_keys';
+        options.operators = ['is', 'not'];
+        options.single = true;
+        options.optionsFormatter = function(options) {
+          var key, name, opts, _i, _len;
+          opts = [];
+          for (_i = 0, _len = options.length; _i < _len; _i++) {
+            key = options[_i];
+            name = key.person ? key.person.display_name : 'Super User';
+            opts.push({
+              value: key.id,
+              title: [name, key.note].join(' | ')
+            });
+          }
+          return opts;
+        };
+        return this.getStandardSelect(options);
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckTicketSatisfaction = function(options) {
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'feedback_rating';
+        options.dataName = 'feedback_rating';
+        options.operators = ['is', 'changed', 'changed_to'];
+        options.single = true;
+        options.optionsFormatter = function(options) {
+          return [
+            {
+              value: -1,
+              title: 'Negative'
+            }, {
+              value: 0,
+              title: 'Neutral'
+            }, {
+              value: 1,
+              title: 'Positive'
+            }
+          ];
+        };
+        return this.getStandardSelect(options);
       };
 
       return Admin_OptionBuilder_TypesDef_TicketCriteria;

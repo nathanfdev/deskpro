@@ -55,7 +55,7 @@ class SendUserEmail extends AbstractEmailAction
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users');
+		$options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users', 'headers');
 		return $options;
 	}
 
@@ -100,6 +100,7 @@ class SendUserEmail extends AbstractEmailAction
 			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
 			->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 			->setLogger($context->getLogger())
+			->setHeaders($this->getActionOption('headers', array()))
 			->setFromEmailAccount($from_account);
 
 		if ($this->getActionOption('do_cc_users')) {

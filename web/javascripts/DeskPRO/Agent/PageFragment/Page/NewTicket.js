@@ -114,6 +114,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		});
 
+		$('.DateTime.customfield input', this.wrapper).each(function(){
+			$(this).datetimepicker({
+				format: 'yyyy-mm-dd hh:ii',
+				container: $(this).parent().css('position', 'relative'),
+				autoclose: true
+			});
+		});
+
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
 			ev.preventDefault();
 			self._resetForX();

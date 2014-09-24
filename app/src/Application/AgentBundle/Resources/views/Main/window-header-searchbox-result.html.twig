@@ -104,6 +104,44 @@
 <% } %>
 
 {#########################################################################}
+{# Chat #}
+{#########################################################################}
+
+<% if (group.type == 'chat_conversation') { var chat = result; %>
+<article class="row-item no-check" data-route="ticket:{{ path('agent_userchat_view', {'conversation_id': '0000'})|replace({'0000': '<%- chat.id %>'})|raw }}">
+	<div class="top-row">
+		<div class="top-row-left">
+			<h3>
+				<span class="obj-id">#<%- chat.id %></span>
+				<a class="subject click-through">
+					<%- chat.subject %>
+				</a>
+			</h3>
+		</div>
+		<div class="top-row-right">
+			<div class="bound-fade"></div>
+
+			<% if (chat.agent) { %>
+			<span class="tipped agent-inline-icon" title="<%- chat.agent.display_name %>" style="background-image: url('<%- chat.agent.picture_url_16 %>'); width:16px; height: 16px;"></span>
+			<% } %>
+
+			<br class="clear" />
+		</div>
+	</div>
+	<div class="userinfo">
+		<% if (chat.person) { %>
+			<a class="name click-through" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= chat.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
+				<span class="with-icon" style="background-image: url('<%- chat.person.picture_url_16 %>');"><%- chat.person.display_name %></span></a>
+			<span class="email">&lt;<%- chat.person.primary_email.email %>&gt;</span>
+		<% } else { %>
+			Anonymous
+		<% } %>
+		<div class="bound-fade"></div>
+	</div>
+</article>
+<% } %>
+
+{#########################################################################}
 {# Article #}
 {#########################################################################}
 

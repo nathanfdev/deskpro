@@ -24,13 +24,14 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
      * @var array
      */
     protected $objects = array(
-        'article'      => 'DeskPRO:Article',
-        'download'     => 'DeskPRO:Download',
-        'feedback'     => 'DeskPRO:Feedback',
-        'news'         => 'DeskPRO:News',
-        'ticket'       => 'DeskPRO:Ticket',
-        'person'       => 'DeskPRO:Person',
-        'organization' => 'DeskPRO:Organization'
+        'article'           => 'DeskPRO:Article',
+        'download'          => 'DeskPRO:Download',
+        'feedback'          => 'DeskPRO:Feedback',
+        'news'              => 'DeskPRO:News',
+        'ticket'            => 'DeskPRO:Ticket',
+        'person'            => 'DeskPRO:Person',
+        'organization'      => 'DeskPRO:Organization',
+		'chat_conversation' => 'DeskPRO:ChatConversation',
     );
 
     /**

@@ -1,0 +1,26 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<label>{{ ng_var('type_title') }}</label>
+        <select
+                ui-select2="{dropdownAutoWidth:true}"
+                ng-model="model.op"
+                style="min-width: 50px;"
+                >
+            <option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
+            <option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
+            <option ng-if="operators.indexOf('contains') !== -1" value="contains">contains</option>
+            <option ng-if="operators.indexOf('notcontains') !== -1" value="notcontains">does not contain</option>
+            <option ng-if="operators.indexOf('is_regex') !== -1" value="is_regex">matches regex</option>
+            <option ng-if="operators.indexOf('not_regex') !== -1" value="not_regex">does not match regex</option>
+            <option ng-if="operators.indexOf('nottouched') !== -1" value="nottouched">no value set</option>
+            <option ng-if="operators.indexOf('changed') !== -1" value="changed">changed</option>
+            <option ng-if="operators.indexOf('changed_to') !== -1" value="changed_to">changed to</option>
+            <option ng-if="operators.indexOf('changed_from') !== -1" value="changed_from">changed from</option>
+            <option ng-if="operators.indexOf('gt') !== -1" value="gt">&gt;</option>
+            <option ng-if="operators.indexOf('gte') !== -1" value="gte">&gt;=</option>
+            <option ng-if="operators.indexOf('lt') !== -1" value="lt">&lt;</option>
+            <option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
+        </select>
+        <input ui-select2="model.inputOptions" ng-model="model.value" style="min-width: 140px;" />
+	</div>
+</dp-optionbuilder-row>

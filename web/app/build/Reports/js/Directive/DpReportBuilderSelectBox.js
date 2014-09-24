@@ -86,7 +86,7 @@
             				 * Returning select box options that was rendered according to 'input' parameter
              */
             collectSelectOptions = function(input) {
-              var choices, extras, extrasMatch, key, match, options, possibleValues, regex, type, value;
+              var choices, extras, extrasMatch, key, match, options, possibleValues, regex, type, value, _ref;
               possibleValues = scope.$eval(attrs.possibleValues);
               choices = {};
               extras = {};
@@ -127,9 +127,15 @@
                   label: value[0]
                 });
               }
+              if (!options.length) {
+                options.push({
+                  value: 0,
+                  label: 'invalid value'
+                });
+              }
               return {
                 options: options,
-                selected: (extras["default"] ? extras["default"] : options[0].value)
+                selected: (extras["default"] ? extras["default"] : (_ref = options[0]) != null ? _ref.value : void 0)
               };
             };
             updateLink = function() {

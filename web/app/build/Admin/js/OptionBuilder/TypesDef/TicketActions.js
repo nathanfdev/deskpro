@@ -16,7 +16,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6;
+        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
         if (types == null) {
           types = [];
         }
@@ -131,6 +131,10 @@
           value: 'AddAgentReply'
         });
         options.push({
+          title: 'Add Agent Note',
+          value: 'AddAgentNote'
+        });
+        options.push({
           title: 'Require User Email Validation',
           value: 'SetRequireValidation'
         });
@@ -154,6 +158,10 @@
         options.push({
           title: 'Send Email To Agents',
           value: 'SendAgentEmail'
+        });
+        options.push({
+          title: 'Send Email to a specific email address',
+          value: 'SendSpecificUserEmail'
         });
         set_options.push({
           title: 'Send Email',
@@ -218,11 +226,22 @@
             });
           }
         }
+        if ((_ref6 = this.options_data) != null ? (_ref7 = _ref6.tasks) != null ? _ref7.enabled : void 0 : void 0) {
+          options = [];
+          options.push({
+            title: 'Create Task',
+            value: 'CreateTask'
+          });
+          set_options.push({
+            title: 'Tasks',
+            subOptions: options
+          });
+        }
         if ((typesData != null ? typesData.dynamicOptions : void 0) != null) {
           options = [];
-          _ref6 = typesData.dynamicOptions;
-          for (_k = 0, _len2 = _ref6.length; _k < _len2; _k++) {
-            opt = _ref6[_k];
+          _ref8 = typesData.dynamicOptions;
+          for (_k = 0, _len2 = _ref8.length; _k < _len2; _k++) {
+            opt = _ref8[_k];
             options.push({
               title: opt.action_title,
               value: opt.action_name
@@ -463,7 +482,8 @@
               'langs': '/langs',
               'email_tpls': '/email-templates-info',
               round_robin: '/round_robin/settings',
-              round_robins: '/round_robin'
+              round_robins: '/round_robin',
+              tasks: '/tasks/settings'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -486,6 +506,7 @@
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
                 options_data['round_robin'] = data.round_robin;
                 options_data['round_robins'] = data.round_robins;
+                options_data['tasks'] = data.tasks;
                 options_data['ticket_dep_options'] = _this.standardOptionsFormatter(options_data['ticket_deps']);
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
@@ -550,6 +571,12 @@
         options.propName = 'add_agent_ids';
         options.dataName = 'agents';
         options.isMulti = true;
+        options.extraOptions = [
+          {
+            title: 'Current Agent',
+            value: -1
+          }
+        ];
         def = this.getStandardSelect(options);
         return def;
       };
@@ -677,11 +704,21 @@
                 }
                 options = (value != null ? value.options : void 0) || {};
                 viewValue = {
-                  add_labels: (options.add_labels || []).join(', '),
-                  remove_labels: (options.remove_labels || []).join(', ')
+                  add_labels: options.add_labels || [],
+                  remove_labels: options.remove_labels || [],
+                  select2_add: {
+                    multiple: true,
+                    simple_tags: true,
+                    tags: options.add_labels || []
+                  },
+                  select2_remove: {
+                    multiple: true,
+                    simple_tags: true,
+                    tags: options.remove_labels || []
+                  }
                 };
-                viewValue.with_add = !!viewValue.add_labels;
-                viewValue.with_remove = !!viewValue.remove_labels;
+                viewValue.with_add = viewValue.add_labels.length > 0;
+                viewValue.with_remove = viewValue.remove_labels.length > 0;
                 return viewValue;
               },
               getValue: function(model, data) {
@@ -692,8 +729,8 @@
                 value = {};
                 value.type = 'SetLabels';
                 value.options = {};
-                value.options.add_labels = model.with_add ? (model.add_labels || '').split(',') : '';
-                value.options.remove_labels = model.with_remove ? (model.remove_labels || '').split(',') : '';
+                value.options.add_labels = model.with_add ? model.add_labels : [];
+                value.options.remove_labels = model.with_remove ? model.remove_labels : [];
                 return value;
               }
             };
@@ -1215,7 +1252,8 @@
                   do_cc_users: options.do_cc_users ? "all" : "owner",
                   from_name: from_name,
                   from_name_custom: from_name_custom,
-                  from_account: (parseInt(options.from_account || 0) || 0) + ''
+                  from_account: (parseInt(options.from_account || 0) || 0) + '',
+                  headers: options.headers || []
                 };
               },
               getValue: function(model, data) {
@@ -1227,7 +1265,10 @@
                   template: model.template || '',
                   do_cc_users: model.do_cc_users && model.do_cc_users === "all",
                   from_name: '',
-                  from_account: parseInt(model.from_account || 0)
+                  from_account: parseInt(model.from_account || 0),
+                  headers: model.headers.filter(function(header) {
+                    return header.name;
+                  })
                 };
                 if (model.from_name === 'custom') {
                   options.from_name = model.from_name_custom || '';
@@ -1328,7 +1369,8 @@
                   agent_ids: agent_ids,
                   from_name: from_name,
                   from_name_custom: from_name_custom,
-                  from_account: (parseInt(options.from_account || 0) || 0) + ''
+                  from_account: (parseInt(options.from_account || 0) || 0) + '',
+                  headers: options.headers || []
                 };
               },
               getValue: function(model, data) {
@@ -1340,7 +1382,10 @@
                   template: model.template || '',
                   agent_ids: [],
                   from_name: '',
-                  from_account: parseInt(model.from_account || 0)
+                  from_account: parseInt(model.from_account || 0),
+                  headers: model.headers.filter(function(header) {
+                    return header.name;
+                  })
                 };
                 if (model.from_name === 'custom') {
                   options.from_name = model.from_name_custom || '';
@@ -1363,6 +1408,114 @@
                 }
                 value = {};
                 value.type = 'SendAgentEmail';
+                value.options = options;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendSpecificUserEmail = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-sendemail.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          scopeInit: [
+            '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
+              return $scope.handleTemplateChange = function() {
+                if ($scope.model.template === 'CREATE') {
+                  $scope.model.template = null;
+                  $scope.is_creating = true;
+                  return $modal.open({
+                    templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                    controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                    resolve: {
+                      templateName: function() {
+                        return null;
+                      }
+                    }
+                  }).result.then((function(_this) {
+                    return function(info) {
+                      var title, tpl, _ref;
+                      if (info.templateName) {
+                        title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
+                        tpl = {
+                          name: info.templateName,
+                          title: title
+                        };
+                        if ((((_ref = me.options_data) != null ? _ref.custom_email_tpls : void 0) != null) && me.options_data.custom_email_tpls.indexOf(tpl) === -1) {
+                          me.options_data.custom_email_tpls.push(tpl);
+                        }
+                        $scope.model.template = info.templateName;
+                        return $timeout(function() {
+                          $scope.model.template = info.templateName;
+                          return $scope.is_creating = false;
+                        }, 100);
+                      } else {
+                        return $scope.is_creating = false;
+                      }
+                    };
+                  })(this), function() {
+                    return $scope.is_creating = false;
+                  });
+                }
+              };
+            }
+          ],
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var emails, from_name, from_name_custom;
+                if (value == null) {
+                  value = {};
+                }
+                options = (value != null ? value.options : void 0) || {};
+                emails = options.emails || [];
+                from_name = options.from_name || 'helpdesk_name';
+                from_name_custom = null;
+                if (from_name !== 'performer' && from_name !== 'helpdesk_name' && from_name !== 'site_name') {
+                  from_name = 'custom';
+                  from_name_custom = options.from_name;
+                }
+                return {
+                  emails: emails,
+                  template: options.template || '',
+                  from_name: from_name,
+                  from_name_custom: from_name_custom,
+                  from_account: (parseInt(options.from_account || 0) || 0) + '',
+                  headers: options.headers || []
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                options = {
+                  emails: model.emails,
+                  template: model.template || '',
+                  from_name: '',
+                  from_account: parseInt(model.from_account || 0),
+                  headers: model.headers.filter(function(header) {
+                    return header.name;
+                  })
+                };
+                if (model.from_name === 'custom') {
+                  options.from_name = model.from_name_custom || '';
+                } else {
+                  options.from_name = model.from_name || '';
+                }
+                value = {};
+                value.type = 'SendSpecificUserEmail';
                 value.options = options;
                 return value;
               }
@@ -1495,9 +1648,10 @@
                 }
                 by_agent_id = by_agent_id + "";
                 return {
-                  reply_text: opt.reply_text || '',
+                  text: opt.reply_text || '',
                   by_assigned_agent: opt.by_assigned_agent || false,
-                  by_agent_id: by_agent_id
+                  by_agent_id: by_agent_id,
+                  title: 'Reply Text'
                 };
               },
               getValue: function(model, data) {
@@ -1508,7 +1662,58 @@
                 value = {};
                 value.type = 'AddAgentReply';
                 value.options = {};
-                value.options.reply_text = model.reply_text;
+                value.options.reply_text = model.text;
+                value.options.by_assigned_agent = model.by_assigned_agent || false;
+                value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0;
+                return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getAddAgentNote = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-addagentreply.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var by_agent_id, opt;
+                if (value == null) {
+                  value = {};
+                }
+                opt = value.options || {};
+                by_agent_id = opt.by_agent_id || null;
+                if (!by_agent_id) {
+                  by_agent_id = data.agents[0].id;
+                }
+                by_agent_id = by_agent_id + "";
+                return {
+                  text: opt.note_text || '',
+                  by_assigned_agent: opt.by_assigned_agent || false,
+                  by_agent_id: by_agent_id,
+                  title: 'Note Text'
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {};
+                value.type = 'AddAgentNote';
+                value.options = {};
+                value.options.note_text = model.text;
                 value.options.by_assigned_agent = model.by_assigned_agent || false;
                 value.options.by_agent_id = parseInt(model.by_agent_id || 0) || 0;
                 return value;
@@ -1574,6 +1779,73 @@
                   sla_status: model.sla_status || 'ok'
                 };
                 return value;
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCreateTask = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-create-task.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var agents, _public;
+                if (value == null) {
+                  value = {};
+                }
+                options = value.options || {};
+                agents = [
+                  {
+                    id: -1,
+                    display_name: 'Current Agent'
+                  }
+                ];
+                data.tasks.agents.map(function(agent) {
+                  var _ref, _ref1;
+                  if ((_ref = agent.perms) != null ? (_ref1 = _ref.tasks) != null ? _ref1.use : void 0 : void 0) {
+                    return agents.push(agent);
+                  }
+                });
+                _public = options["public"];
+                if (_public == null) {
+                  _public = true;
+                }
+                return {
+                  agents: agents,
+                  teams: data.agent_teams,
+                  title: options.title,
+                  date_due: options.date_due,
+                  "public": _public,
+                  creator: options.creator,
+                  assignee: options.assignee
+                };
+              },
+              getValue: function(model, data) {
+                if (model == null) {
+                  model = {};
+                }
+                return {
+                  type: 'CreateTask',
+                  options: {
+                    title: model.title,
+                    date_due: model.date_due,
+                    "public": model["public"],
+                    creator: model.creator,
+                    assignee: model.assignee
+                  }
+                };
               }
             };
           }

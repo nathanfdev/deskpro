@@ -155,7 +155,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
 		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$data = array();
@@ -218,7 +218,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 			$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
 			if (!$dep || !$dep->is_tickets_enabled) {
-				throw new $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		} else {
 			$dep = Department::createTicketDepartment();

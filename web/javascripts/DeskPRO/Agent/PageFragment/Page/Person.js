@@ -405,7 +405,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				var itemEl = $(info.itemEl), sort_by = itemEl.data('sort-by');
 				
 				$.ajax({
-					url: '/agent/person/' + person_id + '/tickets',
+					url: BASE_URL + 'agent/person/' + person_id + '/tickets',
 					data: {sort_by: sort_by},
 					type: 'get',
 					dataType: 'html',
@@ -628,6 +628,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 								$(input).datepicker("widget").css('z-index', 30001);
 							},1);
 						}
+					});
+
+					$('.DateTime.customfield input', fieldsForm).each(function(){
+						$(this).datetimepicker({
+							format: 'yyyy-mm-dd hh:ii',
+							container: $(this).parent().css('position', 'relative'),
+							autoclose: true
+						});
 					});
 				}
 

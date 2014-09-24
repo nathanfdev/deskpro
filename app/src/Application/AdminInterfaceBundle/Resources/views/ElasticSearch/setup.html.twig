@@ -132,6 +132,11 @@
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_total') }}</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_organization_done') }}</td>
 						</tr>
+						<tr ng-class="{'success': indexer_status.deskpro_chat_conversation_done >= indexer_status.deskpro_chat_conversation_total}">
+							<td>Chat Conversations</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_chat_conversation_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_chat_conversation_done') }}</td>
+						</tr>
 						<tr ng-class="{'success': indexer_status.deskpro_person_done >= indexer_status.deskpro_person_total}">
 							<td>People</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_person_total') }}</td>
@@ -196,7 +201,7 @@
 					</tr>
 				</table>
 
-				<table class="table table-bordered" ng-if="info && !info.error" width="520" style="width:520px;">
+				<table class="table table-bordered" ng-if="info && !info.error" width="560" style="width:560px;">
 					<tbody>
 						<tr>
 							<td><strong>Type</strong></td>
@@ -222,6 +227,11 @@
 							<td>Articles</td>
 							<td>{{ ng_var('info.num_article') }}</td>
 							<td>{{ ng_var('info.realnum_article') }}</td>
+						</tr>
+						<tr>
+							<td>Chat Conversations</td>
+							<td>{{ ng_var('info.num_chat_conversation') }}</td>
+							<td>{{ ng_var('info.realnum_chat_conversation') }}</td>
 						</tr>
 						<tr>
 							<td>Tickets</td>
