@@ -89,7 +89,7 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="!isNew">
+					<div class="dp-delete-control" ng-if="!isNew" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); startDelete();">Delete</button>
 					</div>
 
