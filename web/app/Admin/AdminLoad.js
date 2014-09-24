@@ -13,6 +13,7 @@ define([
 	'angularSelectize',
 	'angularGrid',
 	'ngFileUpload',
+	'angularUiDatetime',
 
 	'moment',
 	'momentTimezone',

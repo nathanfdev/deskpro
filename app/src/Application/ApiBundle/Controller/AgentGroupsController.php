@@ -121,7 +121,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 			foreach ($member_ids as $pid) {
 				$agent = $this->container->getAgentData()->get($pid);
 				if ($agent) {
-					$data['members'][] = $agent->toApiData(false, false);
+					$data['members'][] = $agent->toBasicApiData();
 				}
 			}
 		}
@@ -198,7 +198,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		$new_members = array_diff($new_members, $current_members);
 
 		if (!$is_new && $del_members) {
-			$this->db->deleteIn('person2usergroups', $del_members, 'person_id', "group_id = {$group->id}");
+			$this->db->deleteIn('person2usergroups', $del_members, 'person_id', false, "usergroup_id = {$group->id}");
 		}
 		if ($new_members) {
 			$ins = array();

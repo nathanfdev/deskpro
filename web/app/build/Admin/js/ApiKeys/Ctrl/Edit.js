@@ -54,12 +54,18 @@
         return promise.then((function(_this) {
           return function() {
             _this.stopSpinner('saving', true).then(function() {
-              return _this.Growl.success("Saved");
+              return _this.Growl.success('Saved');
             });
             _this.skipDirtyState();
             if (is_new) {
               return _this.$state.go('apps.api_keys.gocreate');
             }
+          };
+        })(this), (function(_this) {
+          return function() {
+            return _this.stopSpinner('saving', true).then(function() {
+              return _this.Growl.error('Error');
+            });
           };
         })(this));
       };

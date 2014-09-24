@@ -34,6 +34,7 @@
 namespace DeskPRO\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -466,6 +467,7 @@ class DpKernel extends AbstractKernel
 		if ($do_correction) {
 			$url = App::getSetting('core.deskpro_url') . ltrim($now_path, '/');
 			$response = new RedirectResponse($url, 301);
+			$response->headers->setCookie(new Cookie('dp_autocorrect_url', '1', 0, '/'));
 			return $response;
 		}
 

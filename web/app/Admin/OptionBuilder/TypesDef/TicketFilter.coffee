@@ -58,12 +58,12 @@ define [
 			options.push({
 				title: 'Workflow',
 				value: 'FilterWorkflow'
-			}
+			})
 
 			options.push({
 				title: 'Labels',
 				value: 'FilterLabels'
-			}))
+			})
 
 			options.push({
 				title: 'Email Account',
@@ -346,6 +346,12 @@ define [
 			def = @getStandardInput(options)
 			return def
 
+		getFilterUrgency: (options = {}) ->
+			options.propName = 'urgency'
+			options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+			def = @getStandardInput(options)
+			return def
+
 		getFilterPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
@@ -370,6 +376,7 @@ define [
 		getFilterStatus: (options = {}) ->
 			options.propName = 'status'
 			options.template = 'OptionBuilder/type-filter-status.html'
+			options.noArchive = true
 			def = @getStandardSelect(options)
 			return def
 

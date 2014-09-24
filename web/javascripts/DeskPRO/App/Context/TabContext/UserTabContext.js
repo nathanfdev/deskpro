@@ -7,6 +7,10 @@ define(['DeskPRO/App/Context/TabContext/TabContext'], function(TabContext) {
 				['$person', this.getFragment().meta.api_data],
 				['$user', this.getFragment().meta.api_data],  // alias
 			]
+		},
+
+		getPersonData: function() {
+			return this.getFragment().meta.api_data;
 		}
 	});
 });

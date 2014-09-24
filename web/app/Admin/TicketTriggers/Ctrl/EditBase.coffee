@@ -41,6 +41,9 @@ define [
 			@$scope.criteriaOptionTypes = []
 			@$scope.actionOptionTypes = []
 
+			@criteraTypeDef.setVar('object_type', 'trigger');
+			@actionsTypeDef.setVar('object_type', 'trigger');
+
 			@customInit()
 			return
 

@@ -243,7 +243,34 @@ class TicketListRenderer
 			}
 		}
 
-		$data['ticket_slas'] = $ticket->ticket_slas;
+		$data['ticket_slas'] = array();
+		foreach ($this->ticket_display->getTicketSlas($ticket) as $sla) {
+			$sla['sla'] = array(
+				'id' => $sla['sla_id'],
+				'title' => $sla['title']
+			);
+			if ($sla['warn_date']) {
+				$sla['warn_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['warn_date']);
+			} else {
+				$sla['warn_date_ts'] = 0;
+			}
+			if ($sla['fail_date']) {
+				$sla['fail_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['fail_date']);
+			} else {
+				$sla['fail_date_ts'] = 0;
+			}
+
+			$times = array();
+			if ($sla['warn_date_ts']) $times[] = $sla['warn_date_ts'];
+			if ($sla['fail_date_ts']) $times[] = $sla['fail_date_ts'];
+			if ($times) {
+				$sla['next_trigger_date_ts'] = min($times);
+			} else {
+				$sla['next_trigger_date_ts'] = 0;
+			}
+
+			$data['ticket_slas'][] = $sla;
+		}
 
 
 		$data['previews'] = array();

@@ -19,15 +19,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 					chat: {full: true}
 
 			@$scope.toggleAgent = (agent) =>
+				console.log(@group)
 				index = @group.person_ids.indexOf(agent.id)
-				groupIndex = agent.agentgroup_ids.indexOf @group
-
 				if index != -1
 					@group.person_ids.splice(index, 1)
-					agent.agentgroup_ids.splice(groupIndex, 1) if groupIndex != -1
 				else
 					@group.person_ids.push agent.id
-					agent.agentgroup_ids.push @group.id if groupIndex == -1
 
 			return
 
@@ -35,20 +32,34 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		initialLoad: ->
 
-			promises = [@service.groups.get(@groupId), @service.agents.all(), @service.ticketDeps.all(), @service.chatDeps.all()]
+			if @groupId
+				groupPromise = @Api.sendGet('/agent_groups/' + @groupId)
+			else
+				groupPromise = @service.groups.get(@groupId)
+
+			promises = [groupPromise, @service.agents.all(), @service.ticketDeps.all(), @service.chatDeps.all()]
 
 			@$q.all(promises).then (res) =>
-				@group = res[0] || {id: 0}
+				if res[0] and res[0].data?.group?
+					@group = res[0].data.group
+				else
+					@group = { id: 0 }
+
 				@agents = res[1]
-				@ticketDeps = res[2]
 				@chatDeps   = res[3]
 
-				@group.person_ids = []
+				# deps need to be flattened to show in the table
+				@ticketDeps = []
+				for dep in res[2]
+					@ticketDeps.push(dep)
+					if dep.children
+						for subdep in dep.children
+							subdep.depth = 1
+							@ticketDeps.push(subdep)
+
+				@group.person_ids = (@group.members || []).map( (a) -> a.id )
 				@assignDepsPerms @group
 				@updateAllPermsState()
-
-				@agents.map (agent) =>
-					@group.person_ids.push agent.id if -1 != agent.agentgroup_ids.indexOf @group.id
 
 				if @group.sys_name == 'agent_all_perms' or @group.sys_name == 'agent_all_safe_perms'
 					@$scope.all_locked_perms = true
@@ -177,8 +188,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
 		###
-    # Shows the copy settings modal
-    ###
+		# Shows the copy settings modal
+		###
 		showCopySettings: ->
 
 			groups = []

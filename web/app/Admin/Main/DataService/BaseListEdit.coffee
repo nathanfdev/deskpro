@@ -416,7 +416,7 @@ define [
 
 		# add new model to list/map
 		_addModel: (model) ->
-			return null if !model[@idProp]?
+			return null if !model || !model[@idProp]?
 			if @map[model[@idProp]]?
 				angular.copy model, @map[model[@idProp]] # update exist model
 				if @listModels.indexOf(@map[model[@idProp]]) == -1

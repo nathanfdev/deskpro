@@ -244,13 +244,12 @@ class EditAgent
 			}
 		}
 
-		foreach ($this->notification_settings as $k => $v) {
-			$agent->setPreference('agent_notif.'.$k, (int) $v);
-		}
+		$em->flush();
 
-		#------------------------------
-		# Save
-		#------------------------------
+		foreach ($this->notification_settings as $k => $v) {
+			$p = $agent->setPreference('agent_notif.'.$k, (int) $v);
+			$em->persist($p);
+		}
 
 		$em->flush();
 	}

@@ -230,6 +230,7 @@ class LabelManager
 	public static function normalizeLabel($label)
 	{
 		$label = strtolower(trim($label));
+		$label = str_replace(',', '', $label);
 
 		return $label;
 	}

@@ -25,7 +25,11 @@
 
 {{ phrase('agent.emails.newagent-login-link', { link: app.getSetting('core.deskpro_url') ~ 'agent/' }) }}<br/>
 {{ phrase('agent.emails.newagent-login-your-email', { email: agent.email_address }) }}<br/>
-{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}
+{%  if agent.getPlaintextPassword() %}
+	{{ phrase('agent.emails.newagent-login-initial-password', { password: agent.getPlaintextPassword() }) }}
+{% else %}
+	{{ phrase('agent.emails.newagent-login-your-password') }}
+{% endif %}
 
 <br/><br/>
 

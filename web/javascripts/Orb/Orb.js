@@ -576,6 +576,10 @@ Orb.shimClickCallback = function(callback, zIndex, opts) {
 Orb.shimClickCallbackPop = function(no_callback, args) {
 	var lvl = Orb.shimClickCallback_stack.pop();
 
+	if (!Orb.shimClickCallback_shim) {
+		return;
+	}
+
 	if (lvl && !no_callback) {
 		lvl[0].call(args);
 	}

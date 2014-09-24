@@ -54,7 +54,7 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 
 		// Touch the timer so we will search in a few seconds,
 		// or handle arrow and enter keys to select values in the list
-		this.termInput.on('keypress', function(ev) {
+		this.termInput.on('keydown', function(ev) {
 			if (ev.keyCode == 13 /* enter key */) {
 
 				ev.preventDefault();
@@ -99,6 +99,12 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 
 					next.addClass('on');
 				}
+			} else {
+				updateCaller.touch(self.getTerm());
+			}
+		}).on('keyup', function(ev) {
+			if (ev.keyCode == 13 /* enter key */) {
+			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
 			} else {
 				updateCaller.touch(self.getTerm());
 			}

@@ -1006,6 +1006,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			var wrap = $(this);
 			var btnMenu = $('#create-menu');
+			var isActive = false;
+			var isClosingTimeout = false;
 
 			// Bug in IE10 means the li's dont render properly
 			// until you force a repaint somehow while they are displayed
@@ -1018,6 +1020,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			wrap.addClass('active');
 			btnMenu.addClass('active');
+			isActive = true;
 			btnMenu.css({left:  wrap.offset().left + 1, top: wrap.offset().top + wrap.height() + 6});
 
 			Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
@@ -1032,19 +1035,52 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var closeFn = function() {
 				wrap.removeClass('active');
 				btnMenu.removeClass('active');
+				isActive = false;
 				$(document).off('mousemove.create-menu');
+				if (isClosingTimeout) {
+					window.clearTimeout(isClosingTimeout);
+				}
 			};
 
-			$(document).on('mousemove.create-menu', function(e){
-				if (!btnMenu.hasClass('active')) return;
-
-				var left = wrap.offset().left - 5,
-					top = wrap.offset().top,
-					right = left + btnMenu.width() + 10,
-					bottom = top + wrap.height() + btnMenu.height() + 10
+			var isOutCoords1 = function(e) {
+				var left = btnMenu.offset().left,
+					top = btnMenu.offset().top,
+					right = left + btnMenu.outerWidth(),
+					bottom = top + btnMenu.outerHeight()
 
 				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
-					$('.zindex-chrome0').trigger('click');
+					return true;
+				} else {
+					return false;
+				}
+			};
+
+			var isOutCoords2 = function(e) {
+				var left = wrap.offset().left,
+					top = wrap.offset().top,
+					right = left + wrap.outerWidth(),
+					bottom = top + wrap.outerHeight()
+
+				if (e.pageX < left || e.pageX > right || e.pageY < top || e.pageY > bottom) {
+					return true;
+				} else {
+					return false;
+				}
+			};
+			$(document).on('mousemove.create-menu', function(e){
+				if (!isActive) return;
+				if (isOutCoords1(e) && isOutCoords2(e)) {
+					if (!isClosingTimeout) {
+						isClosingTimeout = window.setTimeout(function () {
+							isClosingTimeout = null
+							$('.zindex-chrome0').trigger('click');
+						}, 350);
+					}
+				} else {
+					if (isClosingTimeout) {
+						window.clearTimeout(isClosingTimeout);
+						isClosingTimeout = null;
+					}
 				}
 			});
 
@@ -1146,7 +1182,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$(document).on('dragover', 'ul.dp-tab-list > li', function(e){
 			if (!$(this).hasClass('activeTabList')) {
-				$(this).trigger('mouseup');
+				$(this).trigger('click');
 			}
 		});
 
@@ -1223,6 +1259,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (this.paneVis.list && this.paneVis.tabs) return;
 			self.paneVis.list = true;
 			self.paneVis.tabs = true;
+		};
+
+		$scope.highlightIdentity = function(identity) {
+			$scope.removeHighlight();
+			var identityClass = identity.replace(':', '-');
+			$('.row-item.' + identityClass).addClass('item-hover-over');
+			$('#tabNavigationPane .' + identityClass).addClass('item-hover-over');
+		};
+
+		$scope.removeHighlight = function() {
+			$('.item-hover-over').removeClass('item-hover-over');
 		};
 
 		$scope.showList = function() {
@@ -2129,17 +2176,28 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.replaceTab = true;
 		}
 
-		if (el.data('route-newtab')) {
+		var isShiftClick = false;
+		if (extraData.event && extraData.event.shiftKey) {
+			isShiftClick = true;
+		}
+
+		if (el.data('route-newtab') || isShiftClick) {
 			extraData.replaceTab = false;
 			extraData.focus = false;
+
+			if (isShiftClick) {
+				extraData.noToggle = true;
+			}
 		}
 
 
-		// this should be handled only when click event occurs
-		if (0 === el.data('route').indexOf('listpane:')) {
-			this.$scope.showList();
-		} else {
-			this.$scope.showTabs();
+		if (!isShiftClick) {
+			// this should be handled only when click event occurs
+			if (0 === el.data('route').indexOf('listpane:')) {
+				this.$scope.showList();
+			} else {
+				this.$scope.showTabs();
+			}
 		}
 
 		var popoverEl = el.closest('.popover-wrapper');
@@ -2736,7 +2794,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 
 			if (data && data.error && data.error == 'not_allowed') {
-				this.showAlert($('<div>The action you attempted to execute is not allowed:<br />' + data.errorMessage + '</div>'));
+				var message = data.errorMessage || data.message;
+				this.showAlert($('<div>The action you attempted to execute is not allowed:<br />' + message + '</div>'));
 				return;
 			} else {
 				// All 403's should be json responses that are caught above,
@@ -2978,10 +3037,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.notifications.addEvent('modCount', function(data) {
-			var count = 0;
-			$('#dp_header_notify_wrap').find('.badge').not('.no-count').each(function() {
-				count += parseInt($(this).text().trim());
-			});
+			var count = data.count || 0;
 
 			var doanim = false;
 			if (!$('html').is('.window-active')) {
@@ -3139,7 +3195,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 			this.newDownloadLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/downloads/new',
-				tabRoute: 'page:' + BASE_URL + 'agent/news/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/downloads/new',
 				autostart: autostart
 			});
 			this.newFeedbackLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
@@ -3156,6 +3212,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/tasks/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/tasks/new',
 			autostart: autostart
 		});
 		$('#create_task_btn').on('click', function() { $('form#newTaskForm input, form#newTaskForm select').val(''); DeskPRO_Window.newTaskLoader.toggle(); });
@@ -3401,6 +3458,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		this.getSectionDataSendQueued();
+
+		if (this.openDpNews && this.openDpNews.length) {
+			$.ajax({
+				url: 'https://support.deskpro.com/?_sys=ping&type=jsonp',
+				dataType: 'jsonp',
+				success: function() {
+					var focus = true;
+					for (var i = 0; i < self.openDpNews.length; i++) {
+						self.loadPage(BASE_URL + 'agent/misc/view-dp-news/' + self.openDpNews[i].id, { noToggle: true, focus: focus });
+						focus = false;
+					}
+				}
+			});
+		}
 	},
 
 	switchToSection: function(section_id, no_load_list) {
@@ -3584,9 +3655,24 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		$(context).addClass('dp-interface-layer');
+		var cancelRouteSelection = function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			// This is because shift-clicking a non-link can result
+			// in text selection
+			if (ev.shiftKey) {
+				if (document.getSelection) {
+					document.getSelection().removeAllRanges();
+				}
+			}
+		};
 
 		window.setTimeout(function() {
 			// Accept clicks on routes
+			$(context).on('mousedown', '[data-route]', function(ev) {
+				cancelRouteSelection(ev);
+			});
 			$(context).on('click', '[data-route]', function(ev) {
 				if ($(this).is('.as-popover')) {
 					return;
@@ -3596,10 +3682,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 					return;
 				}
 
-				ev.preventDefault();
-				ev.stopPropagation();
+				cancelRouteSelection(ev);
 
-				self.runPageRouteFromElement($(this));
+				self.runPageRouteFromElement($(this), { event: ev });
 
 				// If this was a list-pane and we have an open popover,
 				// we need to close the popover so the listpane can actually load

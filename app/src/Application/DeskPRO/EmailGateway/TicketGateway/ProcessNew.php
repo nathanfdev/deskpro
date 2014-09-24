@@ -181,7 +181,11 @@ class ProcessNew extends ProcessAbstract
 
 		$use_lang = null;
 
-		if (!$this->person->getRealLanguage() && App::getDataService('Language')->isLangSystemEnabled()) {
+		if (!App::getDataService('Language')->isLangSystemEnabled()) {
+			$this->logMessage("Helpdesk is in single-language mode");
+		} else if ($this->person->getRealLanguage()) {
+			$this->logMessage("Person has language set: " . $this->person->getRealLanguage()->id . " " . $this->person->getRealLanguage()->title);
+		} else {
 			$detect_body = strip_tags($email_info->body);
 			if (strlen($detect_body) < 300) {
 				$this->logMessage('Message too short to attempt lang detection');
@@ -195,6 +199,10 @@ class ProcessNew extends ProcessAbstract
 					$this->logMessage("Detected language {$lang->title} (#{$lang->id})");
 					$use_lang = $lang;
 				}
+			}
+
+			if (!$use_lang) {
+				$this->logMessage('No language detected, no language will be set');
 			}
 		}
 
@@ -260,8 +268,12 @@ class ProcessNew extends ProcessAbstract
 		$ticket->email_account   = $this->account;
 		$ticket->creation_system = 'gateway.person';
 
+		if ($use_lang) {
+			$ticket->language = $use_lang;
+		}
+
 		// Set the proper email address on the ticket from the users account
-		if ($this->reader->getFromAddress()->email != $this->person->getPrimaryEmailAddress()) {
+		if (strtolower($this->reader->getFromAddress()->email) != $this->person->getPrimaryEmailAddress()) {
 			$email_rec = $this->person->findEmailAddress($this->reader->getFromAddress()->getEmail());
 			if ($email_rec) {
 				$ticket->person_email = $email_rec;
@@ -273,7 +285,7 @@ class ProcessNew extends ProcessAbstract
 		$ticket_message->message_raw = $email_info->body_raw;
 		$ticket_message->setMessageHtml($email_info->body);
 		$ticket_message->withNewSubject = $subject;
-		$ticket_message->creation_system = 'gatway.person';
+		$ticket_message->creation_system = 'gateway.person';
 
 		if ($this->reader->getProperty('email_source')) {
 			$ticket_message->email_source = $this->reader->getProperty('email_source');

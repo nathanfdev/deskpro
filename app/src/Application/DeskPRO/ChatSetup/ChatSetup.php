@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\ChatSetup;
 
+use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Application\DeskPRO\Settings\Settings;
 
 class ChatSetup
@@ -58,13 +59,8 @@ class ChatSetup
 
 	public function getChatInfo()
 	{
-		$chat_online = false;
-
-		if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
-
-			$chat_online = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
-			$chat_online = (bool) $chat_online;
-		}
+		$chat_online = ChatAvailableCheck::getAvailableTime();
+		$chat_online = (bool)$chat_online;
 
 		$chat_enabled = (bool) $this->settings->get('core.apps_chat');
 

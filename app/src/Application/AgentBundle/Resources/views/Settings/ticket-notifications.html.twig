@@ -15,7 +15,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifica
 	<div style="padding: 10px;">
 		<div id="settingswin_ticket_notifications_email">
 
-			{% if app.user.getPref('agent_notif.no_allow_set_email') %}
+			{% if app.user.getPref('agent_notif.no_allow_set_email') or app.getSetting('agent.disable_notifications') %}
 				<p>
 					{{ phrase('agent.settings.notif_contact_admin') }}
 				</p>

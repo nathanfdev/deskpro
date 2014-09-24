@@ -37,8 +37,10 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Debug\Data\TicketContextData;
 use Application\DeskPRO\Debug\Data\TicketData;
 use Application\DeskPRO\Debug\Data\TicketFilterData;
+use Application\DeskPRO\Debug\Data\TicketLayoutsData;
 use Application\DeskPRO\Debug\Data\TicketLogsData;
 use Application\DeskPRO\Debug\Data\TicketPersonData;
 use Application\DeskPRO\Debug\Data\TicketTriggerData;
@@ -48,6 +50,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -440,7 +443,7 @@ class TicketController extends AbstractController
 		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
 		$ticket_perms['modify_set_closed'] = $this->person->PermissionsManager->TicketChecker->canSetClosed($ticket);
 
-		foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved') as $p) {
+		foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved', 'set_unresolved') as $p) {
 			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
 		}
 
@@ -741,6 +744,7 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'edit');
 
+		/** @var TicketChecker $tcheck */
 		$tcheck = $this->person->PermissionsManager->TicketChecker;
 
 		if ($this->in->checkIsset('department') && $tcheck->canModify($ticket, 'department')) {
@@ -937,32 +941,35 @@ class TicketController extends AbstractController
 
 	public function removeParticipantAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id, 'modify_cc');
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		if (!$this->checkPerm($ticket, 'modify_cc')) {
+			return $this->createPermissionErrorResponse('You do not have permission to modify CCs');
+		}
+
 		$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 
-		if (!$person) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
+		if ($person) {
+			$part = $this->em->createQuery("
+				SELECT part
+				FROM DeskPRO:TicketParticipant part
+				WHERE part.ticket = ?0 AND part.person = ?1
+			")->setParameters(array($ticket, $person))->setMaxResults(1)->getOneOrNullResult();
 
-		$part = $this->em->createQuery("
-			SELECT part
-			FROM DeskPRO:TicketParticipant part
-			WHERE part.ticket = ?0 AND part.person = ?1
-		")->setParameters(array($ticket, $person))->setMaxResults(1)->getOneOrNullResult();
+			if (!$part) {
+				return $this->createJsonResponse(array('success' => false));
+			}
 
-		if (!$part) {
-			return $this->createJsonResponse(array('success' => false));
-		}
+			$this->db->beginTransaction();
 
-		$this->db->beginTransaction();
-
-		try {
-			$this->em->remove($part);
-			$this->em->flush();
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-            throw $e;
+			try {
+				$this->em->remove($part);
+				$this->em->flush();
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
 		}
 
 		return $this->createJsonResponse(array('success' => true, 'cc_list' => $this->_getTicketCcList($ticket)));
@@ -1084,10 +1091,24 @@ class TicketController extends AbstractController
 		}
 
 		if ($set_status) {
+			/** @var TicketChecker $tcheck */
+			$tcheck = $this->person->PermissionsManager->TicketChecker;
 			switch ($set_status) {
-				case 'resolved':       if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) $set_status = $ticket['status']; break;
-				case 'awaiting_agent': if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) $set_status = $ticket['status']; break;
-				case 'awaiting_user':  if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) $set_status = $ticket['status']; break;
+				case 'resolved':
+					if (!$tcheck->canModify($ticket, 'set_resolved')) {
+						$set_status = $ticket['status'];
+					}
+					break;
+				case 'awaiting_agent':
+					if (!$tcheck->canModify($ticket, 'set_awaiting_agent')) {
+						$set_status = $ticket['status'];
+					}
+					break;
+				case 'awaiting_user':
+					if (!$tcheck->canModify($ticket, 'set_awaiting_user')) {
+						$set_status = $ticket['status'];
+					}
+					break;
 			}
 		}
 
@@ -1328,7 +1349,7 @@ class TicketController extends AbstractController
 
 			if (!$message['is_agent_note'] || $macro) {
 				if ($action_type != 'macro') {
-					$ticket['status'] = $action_type;
+					$ticket['status'] = $set_status;
 				}
 
 				if ($this->in->getBool('options.do_kbpending')) {
@@ -2676,6 +2697,26 @@ class TicketController extends AbstractController
 			}
 		}
 
+		if ($new_person->getId() == $ticket->person->getId()) {
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'ticket_id' => $ticket['id'],
+				'old_person_id' => $old_person->getId(),
+				'new_person_id' => $new_person->getId()
+			));
+		}
+
+		if ($new_person->getId()) {
+			$part = $this->em->createQuery("
+					SELECT part
+					FROM DeskPRO:TicketParticipant part
+					WHERE part.ticket = ?0 AND part.person = ?1
+				")->setParameters(array($ticket, $new_person))->setMaxResults(1)->getOneOrNullResult();
+			if ($part) {
+				$this->em->remove($part);
+			}
+		}
+
 		$ticket->person = $new_person;
 
 		$this->db->beginTransaction();
@@ -3812,6 +3853,12 @@ class TicketController extends AbstractController
 
 		$d = new TicketFilterData();
 		file_put_contents($tmpdir . '/filters.json', json_encode($d->getData()));
+
+		$d = new TicketLayoutsData();
+		file_put_contents($tmpdir . '/ticket-layouts.json', json_encode($d->getData()));
+
+		$d = new TicketContextData();
+		file_put_contents($tmpdir . '/ticket-context.json', json_encode($d->getData()));
 
 		$d = new TicketData($ticket);
 		file_put_contents($tmpdir . '/ticket.json', json_encode($d->getData()));

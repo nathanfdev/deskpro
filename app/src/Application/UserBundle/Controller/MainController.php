@@ -62,7 +62,7 @@ class MainController extends AbstractController
 			$page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
 
 			if (!$page_display) {
-				throw new $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			if (strpos($page_display->type, '\\') === false) {
@@ -106,7 +106,7 @@ class MainController extends AbstractController
 			}
 
 			if (!$res) {
-				throw new $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		}
 

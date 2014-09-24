@@ -36,6 +36,7 @@ DeskPRO.Agent.PageFragment.Page.Content.StickyWords = new Orb.Class({
 			this.options.saveUrl = BASE_URL + 'agent/publish/save-sticky-search-words/' + this.options.contentType + '/' + this.options.contentId;
 		}
 
+		this.options.element.attr('allow-new', '1').data('allow-new', 1);
 		this.termsInput = new DeskPRO.UI.LabelsInput({
 			input: this.options.element,
 			placeholder: 'Enter a search word...'

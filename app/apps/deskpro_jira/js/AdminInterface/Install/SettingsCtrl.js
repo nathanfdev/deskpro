@@ -61,5 +61,92 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
 			return deferred.promise;
 		});
+
+
+
+
+
+
+
+
+		//##############################################################################################################
+		//# Test modal
+		//##############################################################################################################
+
+		function runTest() {
+			var deferred, postData;
+
+			postData = {
+				jira_url: Strings.trim($scope.setting_values.jira_url || ''),
+				jira_username: Strings.trim($scope.setting_values.jira_username || ''),
+				jira_password: Strings.trim($scope.setting_values.jira_password || '')
+			};
+
+			deferred = $q.defer();
+
+			Api.sendPostJson('/apps/packages/deskpro_jira/test-settings', postData).then(function(res) {
+				deferred.resolve({
+					log: res.data.log || '',
+					error: res.data.error || false,
+					error_code: res.data.error_code || false
+				});
+			}, function(res) {
+				deferred.resolve({
+					log: res.data.log || 'A server error occurred. Check the PHP error logs for more information. You should contact support@deskpro.com.',
+					error: res.data.error || 'There was a problem on the server that prevented the test from returning normally.',
+					error_code: res.data.error_code || 500
+				});
+			});
+
+			return deferred.promise;
+		};
+
+		$scope.openTestModal = function(existing_results) {
+			if (updateFormErrors()) {
+				return;
+			}
+
+			var inst = $modal.open({
+				templateUrl: 'deskpro_jira/Install/test-settings-modal.html',
+				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+
+					function setResults(results) {
+						$scope.loading     = false;
+						$scope.has_results = true;
+						$scope.log         = results.log;
+						$scope.error       = results.error || false;
+						$scope.error_code  = results.error_code;
+					};
+
+					$scope.test = {
+						username: '',
+						password: ''
+					};
+
+					$scope.resetTest = function() {
+						$scope.show_log    = false;
+						$scope.loading     = false;
+						$scope.has_results = false;
+						$scope.log         = null;
+						$scope.error       = null;
+						$scope.error_code  = null;
+					};
+
+					$scope.dismiss = function() { $modalInstance.dismiss(); }
+					$scope.doTest = function() {
+						$scope.loading = true;
+						runTest().then(function(results) {
+							setResults(results);
+						});
+					};
+
+					if (existing_results) {
+						setResults(existing_results);
+					}
+				}]
+			});
+
+			return inst;
+		};
 	}];
 });

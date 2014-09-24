@@ -94,7 +94,7 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 			$reply_text = $formatter->formatText($reply_text, $ticket);
 		}
 
-		$message->setMessageText($reply_text);
+		$message->setMessage($reply_text);
 
 		$ticket->addMessage($message);
 		$em->persist($message);

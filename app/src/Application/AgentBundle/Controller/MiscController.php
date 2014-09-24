@@ -333,21 +333,14 @@ JS;
 			$method = $originalMethod;
 		}
 
-		if ($originalMethod == 'GET' || $originalMethod == 'POST') {
-			if ($originalMethod == 'GET') {
-				$passData = $_GET;
-			} else {
-				$passData = $_POST;
-			}
-
+		if ($originalMethod == 'GET') {
+			$passData = $_GET;
 			if ($used_req_url) {
 				unset($passData['url']);
 			}
 		} else {
 			$passData = file_get_contents('php://input');
 		}
-
-		unset($passData['_rt']);
 
 		switch (strtolower($method)) {
 			case 'get': $method = 'GET'; break;
@@ -409,7 +402,9 @@ JS;
 		}
 
 		$headers = array();
-		if (!empty($_SERVER['CONTENT_TYPE'])) {
+		if ($this->request->headers->get('X-DeskPRO-Proxy-Content-Type')) {
+			$headers[] = 'Content-Type: ' . $this->request->headers->get('X-DeskPRO-Proxy-Content-Type');
+		} else if (!empty($_SERVER['CONTENT_TYPE'])) {
 			$headers[] = 'Content-Type: ' . $_SERVER['CONTENT_TYPE'];
 		}
 
@@ -422,8 +417,6 @@ JS;
 				}
 			}
 		}
-
-		dp_log($headers);
 
 		if ($headers) {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -984,11 +977,13 @@ JS;
 		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
 		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
 		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap"');
+		$rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/app/vendor-src/ng-context-menu/src/ng-context-menu"');
 
 		$rjs->addShim('angular', array('exports' => 'angular'));
 		$rjs->addShim('angularAnimate', array('angular'));
 		$rjs->addShim('angularSanitize', array('angular'));
 		$rjs->addShim('angularBootstrap', array('angular'));
+		$rjs->addShim('ngContextMenu', array('angular'));
 
 		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
 		$rjs->addPathsFromGenerator($rjs_apps);
@@ -1101,5 +1096,33 @@ JS;
 		$response->setContent($js);
 
 		return $response;
+	}
+
+	public function dismissDpNewsAction($id)
+	{
+		$dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+		if (!isset($dp_news[$id])) {
+			throw $this->createNotFoundException();
+		}
+
+		$read_news = $this->person->getPref('agent.ui.dp_news', array());
+		$read_news[] = $id;
+		$p = $this->person->setPreference('agent.ui.dp_news', $read_news);
+		$this->em->persist($p);
+		$this->em->flush();
+
+		return $this->createJsonResponse(array('success'=> true));
+	}
+
+	public function viewDpNewsAction($id)
+	{
+		$dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+		if (!isset($dp_news[$id])) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->render('AgentBundle:Misc:dp-news-view.html.twig', array(
+				'dp_news' => $dp_news[$id]
+			));
 	}
 }

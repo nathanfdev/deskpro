@@ -199,6 +199,16 @@
 	'core.use_gravatar' => 0,
 
 	/**
+	 * Enable remember-me for agents?
+	 */
+	'core.enable_agent_rememberme' => true,
+
+	/**
+	 * Enable remember-me for users?
+	 */
+	'core.enable_user_rememberme' => true,
+
+	/**
 	 * How long, in seconds, are sessions valid for?
 	 */
 	'core.sessions_lifetime' => 3600,
@@ -427,7 +437,7 @@
 	 */
 	'labels.downloads.agent_can_create'     => true,
 	'labels.feedback.agent_can_create'      => true,
-	'labels.kb.agent_can_create'            => true,
+	'labels.articles.agent_can_create'      => true,
 	'labels.news.agent_can_create'          => true,
 	'labels.organizations.agent_can_create' => true,
 	'labels.people.agent_can_create'        => true,

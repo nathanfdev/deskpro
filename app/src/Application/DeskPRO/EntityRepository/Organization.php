@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Doctrine\ORM\Query;
 use Orb\Util\Numbers;
 
 class Organization extends AbstractEntityRepository
@@ -181,15 +182,17 @@ class Organization extends AbstractEntityRepository
 	 * @param null $limit
 	 * @return mixed
 	 */
-	public function search($q, $limit = null)
+	public function search($q, $limit = null, $hydrate = true)
 	{
 		$q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+		$q = strtolower($q);
+		$mode = $hydrate ? null : Query::HYDRATE_ARRAY;
 
 		return $this->getEntityManager()->createQuery("
 			SELECT o
 			FROM DeskPRO:Organization o
-			WHERE o.name LIKE ?1
+			WHERE LOWER(o.name) LIKE ?1
 			ORDER BY o.name ASC
-		")->setParameters(array(1=> $q))->setMaxResults($limit)->execute();
+		")->setMaxResults($limit)->execute(array(1=> $q), $mode);
 	}
 }
