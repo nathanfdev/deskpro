@@ -18,8 +18,10 @@ define ['DeskPRO/Util/Functions'], (Functions) ->
 				min = if attrs.dpMinHeight then parseInt(attrs.dpMinHeight || 0) else 300
 				perc = parseInt(attrs.dpMaxHeight || 100)/100;
 
+				element.addClass('with-dp-max-height');
+
 				resize = ->
-					top = element.offset().top
+					top = element.offset().top + $('.dp-layout-appbody').scrollTop()
 					winH = $(window).height()
 					setH = (Math.ceil(winH * perc) - top) + add
 					if setH < min then setH = min

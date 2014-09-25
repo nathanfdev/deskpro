@@ -10,6 +10,9 @@
 						</div>
 						<div style="float:right">
 							<button ng-if="Ctrl.pack.readme" class="btn btn-default" ng-click="Ctrl.showReadme();"><i class="fa fa-file-text-o"></i> View README</button>
+                            <a ng-if="!Ctrl.pack.native_name" class="btn btn-default"
+                               href="{{ path('admin_apps_download_package', {name: 'example_crm_link'}) }}"
+                               download><i class="fa fa-download"></i>Download .zip</a>
 							<a class="btn btn-default" href="{{ ng_href('apps.apps.package', '{name: Ctrl.pack.name}') }}"><i class="fa fa-dropbox"></i> View App</a>
 						</div>
 						<div style="margin-left: 52px;">

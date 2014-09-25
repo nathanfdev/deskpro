@@ -62,16 +62,21 @@ class CheckApiKey extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
-		$api_key = $context->getVars('via_api_key');
+		$api_key = $context->getVars()->get('via_api_key');
+		$id = $options->get('api_key_id');
 
-		if (!$api_key && $this->getTermOperator() == 'not') {
+		if (!$api_key || !$id) {
+			return false;
+		}
+
+		if ('not' === $this->getTermOperator() && (int) $id !== (int) $api_key) {
+			return true;
+		}
+		
+		if ('is' === $this->getTermOperator() && (int) $id === (int) $api_key) {
 			return true;
 		}
 
-		if ($options->get('api_key_id') == $api_key->id) {
-			return $this->getTermOperator() == 'is';
-		} else {
-			return $this->getTermOperator() == 'not';
-		}
+		return false;
 	}
 }

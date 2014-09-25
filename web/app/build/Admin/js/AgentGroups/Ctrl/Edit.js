@@ -37,43 +37,57 @@
         };
         this.$scope.toggleAgent = (function(_this) {
           return function(agent) {
-            var groupIndex, index;
+            var index;
+            console.log(_this.group);
             index = _this.group.person_ids.indexOf(agent.id);
-            groupIndex = agent.agentgroup_ids.indexOf(_this.group);
             if (index !== -1) {
-              _this.group.person_ids.splice(index, 1);
-              if (groupIndex !== -1) {
-                return agent.agentgroup_ids.splice(groupIndex, 1);
-              }
+              return _this.group.person_ids.splice(index, 1);
             } else {
-              _this.group.person_ids.push(agent.id);
-              if (groupIndex === -1) {
-                return agent.agentgroup_ids.push(_this.group.id);
-              }
+              return _this.group.person_ids.push(agent.id);
             }
           };
         })(this);
       };
 
       Admin_AgentGroups_Ctrl_Edit.prototype.initialLoad = function() {
-        var promises;
-        promises = [this.service.groups.get(this.groupId), this.service.agents.all(), this.service.ticketDeps.all(), this.service.chatDeps.all()];
+        var groupPromise, promises;
+        if (this.groupId) {
+          groupPromise = this.Api.sendGet('/agent_groups/' + this.groupId);
+        } else {
+          groupPromise = this.service.groups.get(this.groupId);
+        }
+        promises = [groupPromise, this.service.agents.all(), this.service.ticketDeps.all(), this.service.chatDeps.all()];
         return this.$q.all(promises).then((function(_this) {
           return function(res) {
-            _this.group = res[0] || {
-              id: 0
-            };
+            var dep, subdep, _i, _j, _len, _len1, _ref, _ref1, _ref2;
+            if (res[0] && (((_ref = res[0].data) != null ? _ref.group : void 0) != null)) {
+              _this.group = res[0].data.group;
+            } else {
+              _this.group = {
+                id: 0
+              };
+            }
             _this.agents = res[1];
-            _this.ticketDeps = res[2];
             _this.chatDeps = res[3];
-            _this.group.person_ids = [];
+            _this.ticketDeps = [];
+            _ref1 = res[2];
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              dep = _ref1[_i];
+              _this.ticketDeps.push(dep);
+              if (dep.children) {
+                _ref2 = dep.children;
+                for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+                  subdep = _ref2[_j];
+                  subdep.depth = 1;
+                  _this.ticketDeps.push(subdep);
+                }
+              }
+            }
+            _this.group.person_ids = (_this.group.members || []).map(function(a) {
+              return a.id;
+            });
             _this.assignDepsPerms(_this.group);
             _this.updateAllPermsState();
-            _this.agents.map(function(agent) {
-              if (-1 !== agent.agentgroup_ids.indexOf(_this.group.id)) {
-                return _this.group.person_ids.push(agent.id);
-              }
-            });
             if (_this.group.sys_name === 'agent_all_perms' || _this.group.sys_name === 'agent_all_safe_perms') {
               return _this.$scope.all_locked_perms = true;
             }
@@ -258,7 +272,7 @@
 
 
       /*
-         * Shows the copy settings modal
+      		 * Shows the copy settings modal
        */
 
       Admin_AgentGroups_Ctrl_Edit.prototype.showCopySettings = function() {

@@ -355,6 +355,8 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		if (this._isOpen) return;
 		this._isOpen = true;
 
+		window.DP_SOURCE_SEARCHFORM_PANEL_OPEN = true;
+
 		// Actual panel events are lazy inited on first open
 		this.initPanel();
 
@@ -397,6 +399,7 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 	 * CLose the panel if its open
 	 */
 	close: function() {
+		window.DP_SOURCE_SEARCHFORM_PANEL_OPEN = false;
 		if (!this._isOpen) return;
 		this._isOpen = false;
 

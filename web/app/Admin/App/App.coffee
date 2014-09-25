@@ -1,4 +1,4 @@
-	define [
+define [
 	'angular',
 	'Admin/App/AdminModule',
 
@@ -9,7 +9,7 @@
 	'Admin/App/SetupRouting',
 	'DeskPRO/App/SetupServices',
 	'Admin/App/SetupServices',
-	'Admin/App/SetupTemplates',
+	'Admin/App/SetupTemplates'
 ], (
 	angular,
 	AdminModule,

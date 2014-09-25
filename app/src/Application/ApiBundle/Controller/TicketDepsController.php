@@ -155,7 +155,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
 		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$data = array();
@@ -194,6 +194,16 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
 		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
+		if ($this->in->getBool('with_agents_list')) {
+			$data['agents_list'] = array();
+			foreach ($this->container->getAgentData()->getAgents() as $agent) {
+				$agent->loadHelper('AgentPermissions');
+				if ($agent->getHelper('AgentPermissions')->isDepartmentAllowed($dep)) {
+					$data['agents_list'][] = $agent->toBasicApiData();
+				}
+			}
+		}
+
 		return $this->createApiResponse($data);
 	}
 
@@ -208,7 +218,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 			$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
 			if (!$dep || !$dep->is_tickets_enabled) {
-				throw new $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		} else {
 			$dep = Department::createTicketDepartment();

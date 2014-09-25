@@ -605,6 +605,10 @@ class FilestorageLoader extends LoaderAbstract
 		$name = 'picture-default';
 		if (isset($_GET['is_agent'])) {
 			$name = 'picture-default-agent';
+		} elseif (isset($_GET['is_team'])) {
+			$name = 'picture-default-team';
+		} elseif (isset($_GET['is_dep'])) {
+			$name = 'picture-default-dep';
 		}
 
 		$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
@@ -613,11 +617,18 @@ class FilestorageLoader extends LoaderAbstract
 
 		// The default avatar blob hasnt been inserted yet, default it from the resources dir now
 		if (!$blob) {
+			$file = DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg';
+			$mime = 'image/jpeg';
+			if (!file_exists($file)) {
+				$file = DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.png';
+				$mime = 'image/png';
+			}
+
 			$container = $this->bootFullSystem();
 			$blob_entity = $container->getBlobStorage()->createBlobRecordFromFile(
-				DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg',
-				$name . '.jpeg',
-				'image/jpeg',
+				$file,
+				pathinfo($file, PATHINFO_BASENAME),
+				$mime,
 				array('sys_name' => $name)
 			);
 
@@ -1358,6 +1369,17 @@ class FilestorageLoader extends LoaderAbstract
 						'basepath' => $base_path . '/'. $appname . '/'. $type_f
 					);
 				}
+			}
+		}
+
+		// Second path is doing dumb-check on every path
+		foreach ($paths as $prefix => $base_path) {
+			$path = $base_path . '/'. $appname . '/'. $type_f . $filename;
+			if (file_exists($path)) {
+				return array(
+					'filepath' => $path,
+					'basepath' => $base_path . '/'. $appname . '/'. $type_f
+				);
 			}
 		}
 

@@ -80,6 +80,16 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				}
 
 				return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+			},
+			formatSelection: function(data, container) {
+				var name = Orb.escapeHtml(data.text);
+
+				// todo angularize and change select2 to ui-select2
+				container.parent().attr('dp-label', name);
+				angular.element(document).injector().invoke(['$compile', function($compile) {
+					$compile(container.parent())(DeskPRO_Window.$scope);
+				}]);
+				return name;
 			}
 		});
 

@@ -46,6 +46,7 @@
         }).then((function(_this) {
           return function(result) {
             _this.app = result.data.app.app;
+            _this.$scope.appId = _this.app.id;
             return _this.Api.sendDataGet({
               pack: '/apps/packages/' + _this.app.package_name
             }).then(function(result) {

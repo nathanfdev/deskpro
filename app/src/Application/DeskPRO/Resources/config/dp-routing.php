@@ -88,6 +88,11 @@ $collection->create('sys_report_error', array(
 	'controller'  => 'DeskPRO:Data:sendErrorReport',
 ));
 
+$collection->create('sys_go_billing', array(
+	'path'        => '/billing',
+	'controller'  => 'DeskPRO:Misc:goToBilling',
+));
+
 $collection->create('data_interface_data', array(
 	'path'          => '/data/interface-data.{_format}',
 	'controller'    => 'DeskPRO:Data:interfaceData',

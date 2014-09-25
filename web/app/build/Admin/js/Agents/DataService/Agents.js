@@ -23,15 +23,14 @@
         _ref = response.agents;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           data = _ref[_i];
-          data.agent.permissions = data.perms;
-          models.push(data.agent);
+          models.push(data);
         }
         return models;
       };
 
       Admin_Agents_DataService_Agents.prototype.all = function(reload) {
         return Admin_Agents_DataService_Agents.__super__.all.call(this, reload, {
-          full: 1
+          basic: 1
         });
       };
 

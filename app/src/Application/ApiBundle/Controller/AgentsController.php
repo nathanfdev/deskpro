@@ -55,6 +55,7 @@ use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AgentsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -77,14 +78,28 @@ class AgentsController extends AbstractController implements ProtectedController
 		$online_agents_userchat = $this->em->getRepository('DeskPRO:Person')->getActiveAgentIdsForUserChat();
 		$online_agents_userchat = array_fill_keys($online_agents_userchat, true);
 
-		foreach ($this->container->getAgentData()->getAgents() as $agent) {
+		$mode = 'normal';
 
-			if ($this->in->getBool('full')) {
-				$agent_data = $this->getFullAgentData($agent['id']);
-			} else {
-				$agent_data = $agent->toApiData();
-				$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
-				$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
+		if ($this->in->getBool('full')) {
+			$mode = 'full';
+		} else if ($this->in->getBool('basic')) {
+			$mode = 'basic';
+		}
+
+		foreach ($this->container->getAgentData()->getAgents() as $agent) {
+			switch ($mode) {
+				case 'full':
+					$agent_data = $this->getFullAgentData($agent['id']);
+					break;
+
+				case 'basic':
+					$agent_data = $agent->toBasicApiData();
+					break;
+
+				default:
+					$agent_data = $agent->toApiData();
+					$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+					$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
 			}
 
 			if ($this->in->getBool('with_perms')) {
@@ -129,19 +144,13 @@ class AgentsController extends AbstractController implements ProtectedController
 			throw $this->createNotFoundException();
 		}
 
-		$serializer = $this->getContainer()->getSystemService('serializer');
-		$agent_data = $serializer->serialize($agent);
-
-		$agent_data['teams'] = array();
+		/** @var PersonApiDataFactoryService $apiDataFactory */
+		$apiDataFactory = $this->getContainer()->getSystemService('person_api_data_factory');
+		$agent_data = $apiDataFactory->agentToApiData($agent);
 
 		$agent->loadHelper('Agent');
-		$agent->loadHelper('AgentTeam');
 		$agent->loadHelper('AgentPermissions');
 		$agent->loadHelper('PermissionsManager');
-
-		foreach ($this->container->getAgentData()->getTeamsByIds($agent->getHelper('AgentTeam')->getAgentTeamIds()) as $t) {
-			$agent_data['teams'][] = $t->toApiData();
-		}
 
 		$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
@@ -296,7 +305,6 @@ class AgentsController extends AbstractController implements ProtectedController
 				}
 			} else {
 				$agent = new Person();
-				$agent->setPassword(Strings::random(20));
 			}
 		}
 
@@ -304,6 +312,11 @@ class AgentsController extends AbstractController implements ProtectedController
 		if (!$agent['is_agent']) {
 			$r = $this->preNewAgent(1);
 			if ($r) return $r;
+		}
+
+		// If the record isnt a user yet, then we need to set an initial password
+		if (!$agent->is_user) {
+			$agent->setPassword(Strings::randomPronounceable(20, 4));
 		}
 
 		$edit_agent = new EditAgent($agent);
@@ -442,7 +455,9 @@ class AgentsController extends AbstractController implements ProtectedController
 		# Return
 		#-------------------------
 
-		return $this->getAgentAction($agent['id']);
+		return $this->createApiCreateResponse(array(
+			'person_id' => $agent->id
+		), $this->generateUrl('api_agents_get', array('id' => $agent->id), UrlGeneratorInterface::ABSOLUTE_URL));
 	}
 
 	protected function sendWelcomeEmail(Person $agent)
@@ -585,7 +600,7 @@ class AgentsController extends AbstractController implements ProtectedController
 			}
 		}
 		if (!$password) {
-			$password = Strings::randomPronounceable(20);
+			$password = Strings::randomPronounceable(20, 4);
 		}
 
 		if ($agent->password && $agent->password_scheme == 'bcrypt') {

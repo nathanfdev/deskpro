@@ -243,6 +243,9 @@
         if (this.isNumber(obj) && isNaN(obj)) {
           return true;
         }
+        if (obj instanceof Date) {
+          return false;
+        }
         for (k in obj) {
           if (!__hasProp.call(obj, k)) continue;
           v = obj[k];

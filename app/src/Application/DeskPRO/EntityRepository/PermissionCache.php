@@ -38,15 +38,18 @@ use Application\DeskPRO\App;
 
 class PermissionCache extends AbstractEntityRepository
 {
-	public function loadPermissionTypes($usergroup_key, $person_id, array $types)
-	{
-		// A simple filter to make sure only valid names are included
-		$types = array_filter($types, function($var) {
-			return !preg_match('#[^a-zA-Z0-9_]#', $var);
-		});
+	/**
+	 * @var array
+	 */
+	private $cache;
 
-		if (!$types) {
-			return array();
+	public function loadPermissionTypes($usergroup_key, $person_id = null, array $types = null)
+	{
+		if ($this->cache === null) {
+			$this->cache = $this->_em->getConnection()->fetchAll("
+				SELECT name, usergroup_key, perms
+				FROM permissions_cache
+			");
 		}
 
 		$key = $usergroup_key;
@@ -55,16 +58,40 @@ class PermissionCache extends AbstractEntityRepository
 			$key .= ".$person_id";
 		}
 
-		$types = '\'' . implode('\',\'', $types) . '\'';
+		if ($types) {
+			// A simple filter to make sure only valid names are included
+			$types = array_filter($types, function($var) {
+				return !preg_match('#[^a-zA-Z0-9_]#', $var);
+			});
 
-		$caches = $this->getEntityManager()->createQuery("
-			SELECT c
-			FROM DeskPRO:PermissionCache c
-			WHERE c.name IN ($types) AND (c.usergroup_key = ?1 OR c.usergroup_key = ?2)
-		")->setParameter(1, $usergroup_key)
-		  ->setParameter(2, $key)
-		  ->getResult();
+			if (!$types) {
+				return array();
+			}
 
-		return $caches;
+			$types = array_fill_keys($types, true);
+
+			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $key, $types) {
+				return isset($types[$c['name']]) && ($c['usergroup_key'] == $usergroup_key || $c['usergroup_key'] == $key);
+			});
+		} else {
+			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $key) {
+				return ($c['usergroup_key'] == $usergroup_key || $c['usergroup_key'] == $key);
+			});
+		}
+
+		$loaders = array();
+
+		foreach ($recs as &$r) {
+			if (isset($r['perms_loader'])) {
+				$loaders[] = $r['perms_loader'];
+			} else {
+				$r['perms_loader'] = @unserialize($r['perms']);
+				if ($r['perms_loader']) {
+					$loaders[] = $r['perms_loader'];
+				}
+			}
+		}
+
+		return $loaders;
 	}
 }

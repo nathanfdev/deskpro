@@ -59,7 +59,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('agent_ids');
-		$options->addValidNames('template', 'from_name', 'from_account');
+		$options->addValidNames('template', 'from_name', 'from_account', 'headers');
 		return $options;
 	}
 
@@ -95,8 +95,19 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				foreach ($notify as $n) {
 					// dont send to self
 					if ($person_context && $person_context === $n['agent']) {
-						$context->getLogger()->debug("[SendAgentEmail] notify_list skipping self");
-						continue;
+						$override = false;
+						if ($person_context->getPref('agent_notify_override.all.email')) {
+							$override = true;
+						} else if ($person_context->getPref('agent_notify_override.forward.email') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+							$override = true;
+						}
+
+						if (!$override) {
+							$context->getLogger()->debug("[SendAgentEmail] notify_list skipping self");
+							continue;
+						} else {
+							$context->getLogger()->debug("[SendAgentEmail] notify_list sending to self because got override preference");
+						}
 					}
 					if (in_array('email', $n['types'])) {
 						$agents[] = $n['agent'];
@@ -222,6 +233,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				->setTemplateName($template)
 				->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 				->setLogger($context->getLogger())
+				->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
 				->buildTicketEmail();
 
 			try {

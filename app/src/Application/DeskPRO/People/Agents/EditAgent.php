@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\Agents;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PhoneNumber;
@@ -88,6 +89,11 @@ class EditAgent
 	 */
 	public $agent_groups;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\AgentTeam
+	 */
+	public $primary_team;
+
 	public $notification_settings;
 
 
@@ -132,6 +138,8 @@ class EditAgent
 			'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
 			'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
 		);
+
+		$this->primary_team = $person->primary_team;
 	}
 
 
@@ -173,26 +181,27 @@ class EditAgent
 		# Teams
 		#------------------------------
 
-		$current_teams = array();
-		if ($agent->id) {
-			$agent->loadHelper('AgentTeam');
-			$current_teams = $agent->getHelper('AgentTeam')->getAgentTeams();
+		foreach ($agent->teams as $team) {
+			/** @var $team AgentTeam */
+			$team->removePerson($agent); // unidirectional
 		}
 
-		if ($this->teams instanceof ArrayCollection) {
-			$this->teams = $this->teams->toArray();
-		}
-		$add_teams = array_diff($this->teams, $current_teams);
-		$del_teams = array_diff($current_teams, $this->teams);
+		$found_primary = false;
 
-		foreach ($add_teams as $team) {
-			$team->members->add($agent);
-			$em->persist($team);
+		foreach ($this->teams as $team) {
+			/** @var $team AgentTeam */
+			$agent->addTeam($team); // bidirectional
+
+			if ($team === $this->primary_team) {
+				$found_primary = true;
+			}
 		}
-		if ($agent->id) {
-			foreach ($del_teams as $team) {
-				$team->members->removeElement($agent);
-				$em->persist($team);
+
+		if (!$found_primary) {
+			if ($this->teams) {
+				$this->primary_team = Arrays::getFirstItem($this->teams);
+			} else {
+				$this->primary_team = null;
 			}
 		}
 
@@ -244,13 +253,15 @@ class EditAgent
 			}
 		}
 
+		$em->flush();
+
 		foreach ($this->notification_settings as $k => $v) {
-			$agent->setPreference('agent_notif.'.$k, (int) $v);
+			$p = $agent->setPreference('agent_notif.'.$k, (int) $v);
+			$em->persist($p);
 		}
 
-		#------------------------------
-		# Save
-		#------------------------------
+		$em->persist($agent);
+		$agent->primary_team = $this->primary_team;
 
 		$em->flush();
 	}

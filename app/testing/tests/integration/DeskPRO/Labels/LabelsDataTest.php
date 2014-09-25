@@ -2,57 +2,51 @@
 
 namespace DpIntegrationTests\DeskPRO\Labels;
 
+use Application\DeskPRO\EntityRepository\LabelDef as LabelDefRepository;
+
 class LabelsDataTest extends \DpIntegrationTestCase
 {
 	/**
-	 * @var \Application\DeskPRO\Labels\LabelDefManager
+	 * @var LabelDefRepository
 	 */
-
-	private $label_def_manager;
+	private $rep;
 
 	public function runBefore()
 	{
 		$this->helper->enableDatabaseSet('EmptyDb');
 		$this->helper->loadFixtures('General/SimpleLabelsData');
-
-		$this->label_def_manager = $this->helper->getSymfonyContainer()->getSystemService('label_def_manager');
+		$this->rep = $this->helper->getSymfonyContainer()->getEm()->getRepository('DeskPRO:LabelDef');
 	}
 
 	public function testGetLabelsAndCounts()
 	{
-		$feedback_labels = $this->label_def_manager->getLabelsAndCounts('feedback');
-		$this->assertEquals(2, sizeof($feedback_labels));
-		$this->assertArrayHasKey('feedback_label1', $feedback_labels);
-		$this->assertArrayHasKey('feedback_label2', $feedback_labels);
 
-		$chat_labels = $this->label_def_manager->getLabelsAndCounts('chat');
-		$this->assertEquals(1, sizeof($chat_labels));
-		$this->assertArrayHasKey('chat_label1', $chat_labels);
-
-		$tickets_labels = $this->label_def_manager->getLabelsAndCounts('tickets');
-		$this->assertEquals(1, sizeof($tickets_labels));
-		$this->assertArrayHasKey('tickets_label1', $tickets_labels);
+		$definitions = $this->rep->getAllDefinitions();
+		$check = array();
+		foreach ($definitions as $def) {
+			$check[$def['label']] = $def;
+		}
+		$this->assertEquals(4, sizeof($check));
+		$this->assertArrayHasKey('feedback_label1', $check);
+		$this->assertArrayHasKey('feedback_label2', $check);
+		$this->assertArrayHasKey('chat_label1', $check);
+		$this->assertArrayHasKey('tickets_label1', $check);
 	}
 
 	public function testRenameLabelDef()
 	{
-		$this->label_def_manager->renameLabelDef('tickets_label1', 'new ticket label', 'tickets');
+		$this->rep->renameLabelDef('tickets_label1', 'new ticket label', '#000000', 'tickets');
 
-		$tickets_labels = $this->label_def_manager->getLabelsAndCounts('tickets');
-		$this->assertArrayHasKey('new ticket label', $tickets_labels);
+		$this->assertNotNull($definition = $this->rep->getDefinition('tickets', 'new ticket label'));
+		$this->assertEquals(1, $definition['total']);
 	}
 
 	public function testDeleteLabelDef()
 	{
-		$this->label_def_manager->deleteLabelDef('feedback_label1', 'feedback');
+		$this->assertNotNull($definition = $this->rep->getDefinition('feedback', 'feedback_label1'));
+		$this->rep->deleteDefinition($definition);
 
-		$feedback_labels = $this->label_def_manager->getLabelsAndCounts('feedback');
-		$this->assertEquals(1, sizeof($feedback_labels));
-		$this->assertArrayNotHasKey('feedback_label1', $feedback_labels);
-
-		$this->label_def_manager->deleteLabelDef('incorrect label', 'feedback');
-
-		$feedback_labels = $this->label_def_manager->getLabelsAndCounts('feedback');
-		$this->assertEquals(1, sizeof($feedback_labels));
+		$this->assertNull($this->rep->getDefinition('feedback', 'feedback_label1'));
+		$this->assertNull($this->rep->getDefinition('feedback', 'incorrect label'));
 	}
 }

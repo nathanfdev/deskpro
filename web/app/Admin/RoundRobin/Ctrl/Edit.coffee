@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) ->
 	class Admin_RoundRobin_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_RoundRobin_Ctrl_Edit'
 		@CTRL_AS = 'EditCtrl'
@@ -82,51 +82,40 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		handleBulk: ->
 			return if !@bulk?
 			params = @bulk.split '.'
-			add = {}
+
+			findAgent = (id) =>
+				return Arrays.find(@agents, (a) -> a.id == id)
 
 			switch params[0]
 				when 'd'
-					@serviceDeps.get(params[1]).then (dep) =>
-						for agent in @agents when @robin.agents.indexOf(agent) == -1
-							# agents based on permission 'full' for agents
-							for agentData in dep.permissions.users
-								if 'full' == agentData.name and agent.id == agentData.id
-									add[agent.id] = agent
+					@Api.sendGet("/ticket_deps/#{params[1]}?with_agents_list=1").success( (data) =>
+						return if not data || not data.agents_list
 
-							# agents based on permission 'full' for agentgroups
-							# maybe better to call handleBulk with g.X argument recursively
-							for agentgroup in dep.permissions.agentgroups when agentgroup.name is 'full'
-								for agentGroupId in agent.agentgroup_ids when agentGroupId == agentgroup.id
-									add[agent.id] = agent
-									break
-
-
-						for id, agent of add
-							@handleAgent agent
-						@sortAgents()
+						for a in data.agents_list
+							agent = findAgent(a.id)
+							if agent then @handleAgent(agent)
+							@sortAgents()
+					)
 
 				when 'g'
-					@serviceGroups.get(params[1]).then (group) =>
-						# agents based on agentgroups
-						for agent in @agents when @robin.agents.indexOf(agent) == -1
-							for agentGroupId in agent.agentgroup_ids when agentGroupId == group.id
-								add[agent.id] = agent
+					@Api.sendGet("/agent_groups/#{params[1]}").success( (data) =>
+						return if not data || not data.group.members
 
-						for id, agent of add
-							@handleAgent agent
-						@sortAgents()
+						for a in data.team.members
+							agent = findAgent(a.id)
+							if agent then @handleAgent(agent)
+							@sortAgents()
+					)
 
 				when 't'
-					@serviceTeams.get(params[1]).then (team) =>
-						# agents based on agentteams
-						for agent in @agents when @robin.agents.indexOf(agent) == -1
-							for agentTeam in agent.teams when agentTeam.id == team.id
-								add[agent.id] = agent
+					@Api.sendGet("/agent_teams/#{params[1]}").success( (data) =>
+						return if not data || not data.team.members
 
-						for id, agent of add
-							@handleAgent agent
-						@sortAgents()
-
+						for a in data.team.members
+							agent = findAgent(a.id)
+							if agent then @handleAgent(agent)
+							@sortAgents()
+					)
 
 
 		save: ->

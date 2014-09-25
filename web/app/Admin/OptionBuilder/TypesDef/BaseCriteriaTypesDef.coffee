@@ -15,6 +15,7 @@ define [
 			@timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html'
 			@selectTemplate      = 'OptionBuilder/type-criteria-select.html'
 			@isTemplate          = 'OptionBuilder/type-criteria-is.html'
+			@remoteTemplate      = 'OptionBuilder/type-criteria-remote.html'
 			@init()
 
 		init: ->
@@ -119,6 +120,7 @@ define [
 				getData: ->
 					if options.options
 						return {
+							fieldOptions: options,
 							operators: operators,
 							options: if options_formatter then options_formatter(options.options) else options.options,
 							multiselect: !options.single
@@ -128,6 +130,7 @@ define [
 						me.loadDataOptions().then(=>
 							defer.resolve({
 								operators: operators,
+								fieldOptions: options,
 								options: if options_formatter then options_formatter(me.options_data[data_name]) else me.options_data[data_name],
 								multiselect: !options.single
 							})
@@ -136,7 +139,8 @@ define [
 						return defer.promise
 					else
 						return {
-							operators: operators
+							operators: operators,
+							fieldOptions: options
 						}
 
 				getDataFormatter: ->
@@ -310,7 +314,7 @@ define [
 								if value.options.date1
 									date1 = new Date(value.options.date1 * 1000)
 								if value.options.date2
-									date2 = new Date(value.options.date1 * 1000)
+									date2 = new Date(value.options.date2 * 1000)
 							else
 								use_relative = true
 								if value.options.date1_relative

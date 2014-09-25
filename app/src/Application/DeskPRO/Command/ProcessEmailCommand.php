@@ -58,6 +58,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
 		$this->addOption('success-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of success (e.g., use as a trigger for external tool). Note that this command will return 0 on success, so you can use that instead.');
 		$this->addOption('error-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of error (e.g., use as a trigger for external tool). Note that this command will return 1 on an error, so you can use that instead.');
 		$this->addOption('enable-retries', null, InputOption::VALUE_NONE, 'If processing the message fails, enable retry scheduling instead of setting to "error".');
+		$this->addOption('insert-only', null, InputOption::VALUE_NONE, 'Save the source with an inserted status (do not process right now)');
 		$this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from-email=\"user@example.com\" --to-email=\"gateway@example.com\" | php cmd.php dp:process-email --file");
 	}
 
@@ -73,6 +74,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
 	{
 		$success_string = $input->getOption('success-string');
 		$error_string   = $input->getOption('error-string');
+		$insert_only    = $input->getOption('insert-only');
 
 		#----------------------------------------
 		# Read/save source object
@@ -202,36 +204,40 @@ class ProcessEmailCommand extends ContainerAwareCommand
 		# Run the gateway
 		#----------------------------------------
 
-		$output->setVerbosity(3);
+		if (!$insert_only) {
+			$output->setVerbosity(3);
 
-		$logger = new Logger();
-		$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
-		$logger->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
+			$logger = new Logger();
+			$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
+			$logger->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
 
-		$runner = new Runner();
-		$runner->setLogger($logger);
-		$runner->setPhpTimeLimit(900);
-		if ($input->getOption('enable-retries')) {
-			$runner->setRetryScheduling(true);
-		} else {
-			$runner->setRetryScheduling(false);
-		}
-		$result = $runner->executeSource($source, $reader);
-
-		if ($result) {
-			if ($success_string) {
-				echo "\n";
-				echo $success_string;
-				echo "\n";
+			$runner = new Runner();
+			$runner->setLogger($logger);
+			$runner->setPhpTimeLimit(900);
+			if ($input->getOption('enable-retries') || defined('DP_EMAILPROC_ALWAYS_RETRY')) {
+				$runner->setRetryScheduling(true);
+			} else {
+				$runner->setRetryScheduling(false);
 			}
-			return 0;
-		} else {
-			if ($error_string) {
-				echo "\n";
-				echo $error_string;
-				echo "\n";
+			$result = $runner->executeSource($source, $reader);
+
+			if ($result) {
+				if ($success_string) {
+					echo "\n";
+					echo $success_string;
+					echo "\n";
+				}
+
+				return 0;
+			} else {
+				if ($error_string) {
+					echo "\n";
+					echo $error_string;
+					echo "\n";
+				}
+
+				return 1;
 			}
-			return 1;
 		}
 	}
 

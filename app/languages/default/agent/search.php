@@ -12,4 +12,12 @@
 	'agent.search.select'                        => 'Select',
 	'agent.search.simple'                        => 'Simple',
 	'agent.search.view_all_results'              => 'View all results',
+	'agent.search.type_ticket'                   => 'Tickets',
+	'agent.search.type_person'                   => 'People',
+	'agent.search.type_organization'             => 'Organizations',
+	'agent.search.type_chat_conversation'        => 'Chats',
+	'agent.search.type_article'                  => 'Article',
+	'agent.search.type_download'                 => 'Download',
+	'agent.search.type_news'                     => 'News',
+	'agent.search.type_feedback'                 => 'Feedback',
 );

@@ -37,6 +37,7 @@ namespace DeskPRO\Kernel;
 
 if (!defined('DP_ROOT')) exit('No access');
 
+use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Orb\Util\Web;
@@ -595,10 +596,11 @@ class DpLoader extends LoaderAbstract
 		$session_id = null;
 
 		if (isset($_GET['chat'])) {
-			$online_time = 0;
-			if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
-				$online_time = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
+			$GLOBALS['DP_DB_PDO'] = $this->getPdo();
+			if (!class_exists('Application\\DeskPRO\\Chat\\UserChat\\ChatAvailableCheck')) {
+				require_once DP_ROOT . '/src/Application/DeskPRO/Chat/UserChat/ChatAvailableCheck.php';
 			}
+			$online_time = ChatAvailableCheck::getAvailableTime();
 
 			// If departments were specified, we need to see if those specific
 			// departments are online

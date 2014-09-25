@@ -1,0 +1,316 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("flaticon.eot");
+	src: url("flaticon.eot#iefix") format("embedded-opentype"),
+	url("flaticon.woff") format("woff"),
+	url("flaticon.ttf") format("truetype"),
+	url("flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+	font-family: Flaticon;
+        font-size: 20px;
+font-style: normal;
+margin-left: 20px;
+}.flaticon-business123:before {
+	content: "\e000";
+}
+.flaticon-business125:before {
+	content: "\e001";
+}
+.flaticon-business126:before {
+	content: "\e002";
+}
+.flaticon-business127:before {
+	content: "\e003";
+}
+.flaticon-business128:before {
+	content: "\e004";
+}
+.flaticon-business132:before {
+	content: "\e005";
+}
+.flaticon-business135:before {
+	content: "\e006";
+}
+.flaticon-business136:before {
+	content: "\e007";
+}
+.flaticon-businessman128:before {
+	content: "\e008";
+}
+.flaticon-businessman129:before {
+	content: "\e009";
+}
+.flaticon-businessman130:before {
+	content: "\e00a";
+}
+.flaticon-businessman131:before {
+	content: "\e00b";
+}
+.flaticon-businessman132:before {
+	content: "\e00c";
+}
+.flaticon-businessman133:before {
+	content: "\e00d";
+}
+.flaticon-businessman134:before {
+	content: "\e00e";
+}
+.flaticon-businessman135:before {
+	content: "\e00f";
+}
+.flaticon-businessman136:before {
+	content: "\e010";
+}
+.flaticon-businessman137:before {
+	content: "\e011";
+}
+.flaticon-businessman138:before {
+	content: "\e012";
+}
+.flaticon-businessman139:before {
+	content: "\e013";
+}
+.flaticon-businessman140:before {
+	content: "\e014";
+}
+.flaticon-businessman141:before {
+	content: "\e015";
+}
+.flaticon-businessman142:before {
+	content: "\e016";
+}
+.flaticon-businessman143:before {
+	content: "\e017";
+}
+.flaticon-businessman144:before {
+	content: "\e018";
+}
+.flaticon-businessman145:before {
+	content: "\e019";
+}
+.flaticon-businessman146:before {
+	content: "\e01a";
+}
+.flaticon-businessman147:before {
+	content: "\e01b";
+}
+.flaticon-businessman148:before {
+	content: "\e01c";
+}
+.flaticon-businessman149:before {
+	content: "\e01d";
+}
+.flaticon-businessman150:before {
+	content: "\e01e";
+}
+.flaticon-businessman151:before {
+	content: "\e01f";
+}
+.flaticon-businessman152:before {
+	content: "\e020";
+}
+.flaticon-businessman153:before {
+	content: "\e021";
+}
+.flaticon-businessman154:before {
+	content: "\e022";
+}
+.flaticon-businessman155:before {
+	content: "\e023";
+}
+.flaticon-businessman156:before {
+	content: "\e024";
+}
+.flaticon-businessman159:before {
+	content: "\e025";
+}
+.flaticon-businessman160:before {
+	content: "\e026";
+}
+.flaticon-businessman161:before {
+	content: "\e027";
+}
+.flaticon-businessman162:before {
+	content: "\e028";
+}
+.flaticon-businessman163:before {
+	content: "\e029";
+}
+.flaticon-businessman164:before {
+	content: "\e02a";
+}
+.flaticon-businessman165:before {
+	content: "\e02b";
+}
+.flaticon-businessman166:before {
+	content: "\e02c";
+}
+.flaticon-businessman167:before {
+	content: "\e02d";
+}
+.flaticon-businessman168:before {
+	content: "\e02e";
+}
+.flaticon-businessman169:before {
+	content: "\e02f";
+}
+.flaticon-businessman170:before {
+	content: "\e030";
+}
+.flaticon-businessman171:before {
+	content: "\e031";
+}
+.flaticon-businessman172:before {
+	content: "\e032";
+}
+.flaticon-businessman173:before {
+	content: "\e033";
+}
+.flaticon-businessman174:before {
+	content: "\e034";
+}
+.flaticon-businessman176:before {
+	content: "\e035";
+}
+.flaticon-businessman177:before {
+	content: "\e036";
+}
+.flaticon-businessman178:before {
+	content: "\e037";
+}
+.flaticon-businessman179:before {
+	content: "\e038";
+}
+.flaticon-businessman180:before {
+	content: "\e039";
+}
+.flaticon-businessman181:before {
+	content: "\e03a";
+}
+.flaticon-businessman182:before {
+	content: "\e03b";
+}
+.flaticon-businessman183:before {
+	content: "\e03c";
+}
+.flaticon-businessman184:before {
+	content: "\e03d";
+}
+.flaticon-businessman185:before {
+	content: "\e03e";
+}
+.flaticon-businessman186:before {
+	content: "\e03f";
+}
+.flaticon-businessman187:before {
+	content: "\e040";
+}
+.flaticon-businessman188:before {
+	content: "\e041";
+}
+.flaticon-businessman190:before {
+	content: "\e042";
+}
+.flaticon-businessman191:before {
+	content: "\e043";
+}
+.flaticon-businessman192:before {
+	content: "\e044";
+}
+.flaticon-businessman193:before {
+	content: "\e045";
+}
+.flaticon-businessman194:before {
+	content: "\e046";
+}
+.flaticon-businessman195:before {
+	content: "\e047";
+}
+.flaticon-businessman196:before {
+	content: "\e048";
+}
+.flaticon-businessman197:before {
+	content: "\e049";
+}
+.flaticon-businessman198:before {
+	content: "\e04a";
+}
+.flaticon-businessman199:before {
+	content: "\e04b";
+}
+.flaticon-businessman200:before {
+	content: "\e04c";
+}
+.flaticon-businessman201:before {
+	content: "\e04d";
+}
+.flaticon-businessmen27:before {
+	content: "\e04e";
+}
+.flaticon-businessmen28:before {
+	content: "\e04f";
+}
+.flaticon-businessmen29:before {
+	content: "\e050";
+}
+.flaticon-businessmen30:before {
+	content: "\e051";
+}
+.flaticon-businessmen31:before {
+	content: "\e052";
+}
+.flaticon-descending8:before {
+	content: "\e053";
+}
+.flaticon-international18:before {
+	content: "\e054";
+}
+.flaticon-international19:before {
+	content: "\e055";
+}
+.flaticon-international20:before {
+	content: "\e056";
+}
+.flaticon-male217:before {
+	content: "\e057";
+}
+.flaticon-man339:before {
+	content: "\e058";
+}
+.flaticon-man340:before {
+	content: "\e059";
+}
+.flaticon-man344:before {
+	content: "\e05a";
+}
+.flaticon-person282:before {
+	content: "\e05b";
+}
+.flaticon-real3:before {
+	content: "\e05c";
+}
+.flaticon-searching33:before {
+	content: "\e05d";
+}
+.flaticon-standing88:before {
+	content: "\e05e";
+}
+.flaticon-two215:before {
+	content: "\e05f";
+}
+.flaticon-two216:before {
+	content: "\e060";
+}
+.flaticon-two217:before {
+	content: "\e061";
+}
+.flaticon-two219:before {
+	content: "\e062";
+}
+.flaticon-work1:before {
+	content: "\e063";
+}

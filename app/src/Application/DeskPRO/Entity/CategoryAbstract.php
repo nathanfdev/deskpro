@@ -107,7 +107,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
 	public function setParent(CategoryAbstract $cat = null)
 	{
-		if ($cat && $cat->getId() == $this->getId()) {
+		if ($cat && $cat->getId() && $this->getId() && $cat->getId() == $this->getId()) {
 			throw new \InvalidArgumentException("Cannot set parent to self");
 		}
 

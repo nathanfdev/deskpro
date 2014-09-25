@@ -147,6 +147,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			if (!$person) {
 				$this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
+				$this->logMessage('[TicketGatewayProcessor] Person ID is ' . $person->id);
 			}
 
 			if ($person && !$person->is_agent) {

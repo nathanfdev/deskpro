@@ -209,8 +209,6 @@ abstract class ProcessAbstract
 				continue;
 			}
 
-			$db->beginTransaction();
-
 			$person_processor = new PersonFromEmailProcessor();
 
 			$cc_person = $person_processor->findPerson($cc);
@@ -220,11 +218,12 @@ abstract class ProcessAbstract
 					$this->logMessage("Skipping cc: $cc_email (no person match and closed helpdesk)");
 					continue;
 				}
+
+				$db->beginTransaction();
 				$cc_person = $person_processor->createPerson($cc, true);
 				$this->logMessage("Added cc: $cc_email (Person {$cc_person->id})");
+				$db->commit();
 			}
-
-			$db->commit();
 
 			if ($cc_person) {
 				if ($cc_person->is_agent && !$this->person->is_agent) {

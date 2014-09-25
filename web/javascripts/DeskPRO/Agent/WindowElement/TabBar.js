@@ -44,7 +44,30 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.$scope = DeskPRO_Window.$scope;
 		this.$timeout = DeskPRO_Window.$timeout;
 		this.$scope.tabs = this._tabs;
+		this.$scope.contextMenuTab = null;
 		this.$scope.tabClick = function($event, tab){ self._tabStripClick($event, tab); };
+
+		this.$scope.context = function(tab) {
+			self.$scope.contextTab = tab;
+		};
+
+		this.$scope.closeAll = function(){
+			var tabs = [];
+			self._tabs.each(function(tab){ tabs.push(tab) });
+			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+		};
+
+		this.$scope.closeOthers = function(){
+			var tabs = [], active = self.getActiveTab();
+			self._tabs.each(function(tab){ tab !== active && tabs.push(tab) });
+			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+		};
+
+		this.$scope.closeCurrent = function(){
+			self.$timeout(function(){
+				self.$scope.contextTab && self.removeTab(self.$scope.contextTab);
+			}, 10);
+		};
 
 		this.$scope.$watch('listItems', function(){
 			self._checkOpenedItems();
@@ -71,8 +94,18 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		for (i = 0; i < this._tabs.length; i++) {
 			tab = this._tabs[i];
 			if (tab.page) {
-				tab.title = tab.page.getMetaData('title', 'Untitled');
-				console.log(tab)
+				var title = tab.page.getMetaData('title', null);
+				var classId = tab.page.getMetaData('tabClassId', '');
+
+				if (title) {
+					tab.title = title;
+				}
+				if (classId) {
+					classId = classId + '';
+				}
+				if (classId && classId.length) {
+					tab.classId = classId;
+				}
 			}
 		}
 		this.$scope.$safeApply();
@@ -198,6 +231,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var data = {};
 		data.id = id;
 		data.page = page;
+		data.classId = page.getMetaData('tabClassId', '');
 		data.title = page.getMetaData('title', 'Untitled');
 		data.callback_render = function(container) {
 			container = $(container);
@@ -233,7 +267,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		if (page.meta.existingWrapper) {
 			data.wrapper = page.meta.existingWrapper;
 			data.wrapper.attr('id', data.wrapperId);
-			data.wrapper.attr('class', 'tabViewDetailContent test');
+			data.wrapper.attr('class', 'tabViewDetailContent');
 			data.wrapper.css('display', 'none');
 			data.wrapper.appendTo(this.bodyPane);
 		} else {
@@ -261,18 +295,25 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		var wasActive = false;
 		var otherTab = null;
+		var placeTab = this.getActiveTab();
 
 		if (data.page && data.page.meta.tabPlaceholderId) {
 			otherTab = this.getTab(data.page.meta.tabPlaceholderId);
 		}
 
-			// We may have had a placeholder, in which case we want to place
-			// the new tab where the old one was while also removing the placeholder
-			// content in the body pane
+		// We may have had a placeholder, in which case we want to place
+		// the new tab where the old one was while also removing the placeholder
+		// content in the body pane
 
-		// insert new tab after active
+		// insert new tab after placeholder that will be removed in a moment
 		if (otherTab && this._tabs.indexOf(otherTab) < this._tabs.length - 1) {
 			this._tabs.splice(this._tabs.indexOf(otherTab) + 1, 0, data);
+
+		// insert new tab after the currently selected tab
+		} else if (placeTab && this._tabs.indexOf(placeTab) < this._tabs.length - 1) {
+			this._tabs.splice(this._tabs.indexOf(placeTab) + 1, 0, data);
+
+		// just push it on to the end
 		} else {
 			this._tabs.push(data);
 		}
@@ -390,7 +431,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.callback_activate(data, wrapper, this);
 		}
 
-		this.clearAlertTab(data);
+		tab.isAlerting = false;
 
 		this.currentTabId = id;
 
@@ -463,6 +504,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var self = this;
 		var id = tab.id;
 		var wasActive = false;
+		var oldTabIdx = this._tabs.indexOf(tab);
 
 		if (this.currentTabId == id) {
 			wasActive = true;
@@ -480,6 +522,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			$('body').addClass('without-tabs').removeClass('with-tabs');
 		}
 		this._tabs.splice(this._tabs.indexOf(tab), 1);
+		if (tab === this.$scope.contextTab) {
+			this.$scope.contextTab = null;
+		}
 		this._checkOpenedItems();
 
 		if (data.callback_remove_content !== undefined) {
@@ -506,20 +551,31 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			this.fireEvent('removeTab', [data, this]);
 
 			if (wasActive) {
-				var last_tab_id = Object.keys(this.tabs).getLast();
-				if (last_tab_id) {
-					this.activateTabById(last_tab_id);
+				// Go to the next tab
+				if (oldTabIdx != -1 && this._tabs[oldTabIdx]) {
+					this.activateTab(this._tabs[oldTabIdx]);
+
+				// Was last, so go to the previous
+				} else if (oldTabIdx != -1 && this._tabs[oldTabIdx-1]) {
+					this.activateTab(this._tabs[oldTabIdx-1]);
+
+				// Otherwise go to the last
 				} else {
-					// If list view isnt active, then after a small timeout
-					// make it visiable.
-					// The timeout is in case we have other routines that auto-open
-					// a new tab (e.g., after ticket reply)
-					this.$timeout(function(){
-						var last_tab_id = Object.keys(self.tabs).getLast();
-						if (!last_tab_id) {
-							self.$scope.showList();
-						}
-					}, 100);
+					var last_tab_id = Object.keys(this.tabs).getLast();
+					if (last_tab_id) {
+						this.activateTabById(last_tab_id);
+					} else {
+						// If list view isnt active, then after a small timeout
+						// make it visiable.
+						// The timeout is in case we have other routines that auto-open
+						// a new tab (e.g., after ticket reply)
+						this.$timeout(function () {
+							var last_tab_id = Object.keys(self.tabs).getLast();
+							if (!last_tab_id) {
+								self.$scope.showList();
+							}
+						}, 100);
+					}
 				}
 			}
 
@@ -610,30 +666,17 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 	alertTab: function(tab) {
 		var el = $(tab.tabBtnId);
-		if (tab.isActive || el.is('.is-alerting')) return;
+		if (tab.isActive || el.isAlerting) return;
 
-		if(!this.isTabVisible(tab)) {
-			this.tabToFrontTabById(tab.id, true);
-		}
-
-		el.addClass('is-alerting');
-		var timeout = this._alertTabDoHighlight.periodical(700, this, [el]);
-		el.data('alerting-timeout', timeout);
+		this.$scope.$safeApply(function() {
+			tab.isAlerting = true;
+		});
 	},
 
 	clearAlertTab: function(tab) {
-		var el = $(tab.tabBtnId);
-
-		if (!el.length) return;
-
-		el.removeClass('alert-highlight').removeClass('is-alerting');
-
-		var timeout = el.data('alerting-timeout');
-		if (timeout) {
-			window.clearTimeout(timeout);
-		}
-
-		el.data('alerting-timeout', null);
+		this.$scope.$safeApply(function() {
+			tab.isAlerting = false;
+		});
 	},
 
 	_alertTabDoHighlight: function(el) {

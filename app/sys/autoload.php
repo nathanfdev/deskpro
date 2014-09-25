@@ -78,6 +78,7 @@ $loader->registerClassNames(array(
 	'NTLMSoapClient'                  => DP_ROOT.'/vendor-src/php-ews/NTLMSoapClient.php',
 	'NTLMSoapClient_Exchange'         => DP_ROOT.'/vendor-src/php-ews/NTLMSoapClient/Exchange.php',
 	'tnef'                            => DP_ROOT.'/vendor-src/tnef-decoder/tnef.php',
+	'PDODblibBundle'                  => DP_ROOT.'/vendor-src/ouster',
 ));
 
 spl_autoload_register(function($classname) {

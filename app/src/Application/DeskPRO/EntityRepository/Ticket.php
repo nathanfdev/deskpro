@@ -709,7 +709,7 @@ class Ticket extends AbstractEntityRepository
 		", array($validating_email));
 	}
 
-	public function getTicketIdsWithEmail($email)
+	public function getTicketIdsWithEmail($email, $for_validation = false)
 	{
 		if (is_object($email)) {
 			$email = $email->getId();
@@ -717,14 +717,22 @@ class Ticket extends AbstractEntityRepository
 
 		$email = (int)$email;
 
-		return $this->getEntityManager()->getConnection()->fetchAllCol("
-			SELECT id
-			FROM tickets
-			WHERE person_email_id = ?
-			ORDER BY id DESC
-		", array($email));
+		if ($for_validation) {
+			return $this->getEntityManager()->getConnection()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE (person_email_id = ? OR person_email_id IS null) AND status = 'hidden' AND hidden_status = 'validating'
+				ORDER BY id DESC
+			", array($email));
+		} else {
+			return $this->getEntityManager()->getConnection()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE person_email_id = ?
+				ORDER BY id DESC
+			", array($email));
+		}
 	}
-
 
 	public function getTicketCountsForPeople(array $people)
 	{
@@ -833,5 +841,18 @@ class Ticket extends AbstractEntityRepository
 		");
 
 		return $counts;
+	}
+
+	/**
+	 * @param int $offlineOffset offset in seconds from now, when the agents considered as 'offline'
+	 */
+	public function unlockOfflineAgentsTickets($offlineOffset = 120)
+	{
+		$lockDate = new \DateTime(- (int) $offlineOffset . ' seconds');
+		$this->getEntityManager()->getConnection()->executeQuery('
+			UPDATE tickets t
+			JOIN sessions s ON t.locked_by_agent = s.person_id AND s.date_last IS NOT NULL AND s.date_last < :lockDate
+			SET t.locked_by_agent = NULL, t.date_locked = NULL
+		', array('lockDate' => $lockDate->format('Y-m-d H:i:s')));
 	}
 }

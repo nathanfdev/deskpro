@@ -38,9 +38,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<option {% if news.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
 			<option {% if news.getStatusCode == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
 			<option {% if news.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
-			{% if news.person.id == app.user.id %}
-				<option value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
-			{% endif %}
+			<option {% if news.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
 		</select>
 	</div>
 	<h1>

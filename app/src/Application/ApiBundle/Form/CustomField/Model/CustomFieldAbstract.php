@@ -107,11 +107,8 @@ abstract class CustomFieldAbstract
 		$field->description = $this->description ?: '';
 		$field->is_enabled = $this->is_enabled;
 		$field->is_agent_field = $this->is_agent_field;
-		if ($this->default_value) {
-			$field->default_value = $this->default_value;
-		} else {
-			$field->default_value = null;
-		}
+		$field->default_value = $this->default_value ?: null;
+
 		if ($this->isNewField()) {
 			$field->handler_class = $this->handler_class;
 		}

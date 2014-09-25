@@ -11,10 +11,9 @@ define [
 		resolveResponse: (response) ->
 			models = []
 			for data in response.agents
-				data.agent.permissions = data.perms
-				models.push data.agent
+				models.push data
 
 			models
 
 		all: (reload) ->
-			super (reload), {full: 1}
+			super (reload), {basic: 1}

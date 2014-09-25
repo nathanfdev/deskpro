@@ -196,7 +196,7 @@ class NewsController extends AbstractController
 		}
 
 		// Auto-correct URL
-		if ($slug != $news->getUrlSlug()) {
+		if ($slug != $news->getUrlSlug() && !($this->in->getString('_partial') == 'overlayWidget' || $this->in->getString('_partial') == 'overlaySuggest')) {
 			return $this->redirectRoute('user_news_view', array('slug' => $news->getUrlSlug()), 301);
 		}
 

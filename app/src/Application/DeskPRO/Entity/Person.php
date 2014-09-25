@@ -496,6 +496,16 @@ class Person extends DomainObject implements HighlightableModelInterface
     protected $_search_highlights;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
+	protected $teams;
+
+	/**
+	 * @var AgentTeam
+	 */
+	protected $primary_team;
+
+	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
 	 *
@@ -544,8 +554,16 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 		$this->setModelField('date_created',    new \DateTime());
 		$this->setModelField('secret_string',   Strings::random(40));
-		$this->setModelField('timezone',        'UTC');
 		$this->setModelField('salt',            Strings::random(40));
+
+		if (class_exists('Application\\DeskPRO\\App', false)) {
+			try {
+				$this->setTimezone(App::$container->getSetting('core.default_timezone'));
+			} catch (\Exception $e) {};
+		}
+		if (!$this->timezone) {
+			$this->setModelField('timezone', 'UTC');
+		}
 
 		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
@@ -558,6 +576,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->department_permissions = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->teams                  = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initPersonLogger();
 		$this->_person_logger->recordExtra('person_created', true);
@@ -2456,6 +2475,43 @@ class Person extends DomainObject implements HighlightableModelInterface
 		return $data;
 	}
 
+	public function addTeam(AgentTeam $team)
+	{
+		if (!$this->teams->contains($team)) {
+			if (!$this->primary_team) {
+				$this->setModelField('primary_team', $team);
+			}
+			$this->teams->add($team);
+			$this->_onPropertyChanged('teams', $this->teams, $this->teams);
+		}
+
+		$team->addPerson($this);
+	}
+
+	public function removeTeam(AgentTeam $team)
+	{
+		$this->teams->removeElement($team);
+		$this->_onPropertyChanged('teams', $this->teams, $this->teams);
+		$team->removePerson($this);
+
+		if ($this->primary_team === $team) {
+			$this->setModelField('primary_team', $this->teams->first() ?: null);
+		}
+	}
+
+	public function getPrimaryTeam()
+	{
+		if ($this->primary_team) {
+			return $this->primary_team;
+		}
+
+		if ($first = $this->teams->first()) {
+			return $first;
+		}
+
+		return null;
+	}
+
 
 	/**
 	 * @param bool  $primary
@@ -2548,6 +2604,35 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$field_manager->addApiData($this, $data);
 
 		return $data;
+	}
+
+	public function toBasicApiData()
+	{
+		$agent_data = array(
+			'id'             => $this->id,
+			'name'           => $this->name,
+			'first_name'     => $this->first_name,
+			'last_name'      => $this->last_name,
+			'display_name'   => $this->getDisplayName(),
+			'is_agent'       => $this->is_agent,
+			'can_agent'      => $this->can_agent,
+			'can_admin'      => $this->can_admin,
+			'can_billing'    => $this->can_billing,
+			'can_reports'    => $this->can_reports,
+			'is_deleted'     => $this->is_deleted,
+			'is_disabled'    => $this->is_disabled,
+			'primary_email'  => array('id' => $this->primary_email->id, 'email' => $this->primary_email->email),
+			'picture_url'    => $this->getPictureUrl(),
+			'picture_url_80' => $this->getPictureUrl(80),
+			'picture_url_64' => $this->getPictureUrl(64),
+			'picture_url_50' => $this->getPictureUrl(50),
+			'picture_url_45' => $this->getPictureUrl(45),
+			'picture_url_32' => $this->getPictureUrl(32),
+			'picture_url_22' => $this->getPictureUrl(22),
+			'picture_url_16' => $this->getPictureUrl(16),
+		);
+		
+		return $agent_data;
 	}
 
     /**
@@ -2644,8 +2729,8 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), )  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'dpApi' => true ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'primary_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => NULL, 'inversedBy' => NULL, 'fetch' => ClassMetadata::FETCH_EAGER, 'joinColumns' => array( 0 => array( 'name' => 'primary_email_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'emails', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'cascade' => array('persist'), 'mappedBy' => 'person', 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataPerson', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'orphanRemoval' => true, 'dpApi' => true));
 		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'person', 'indexBy' => 'id', 'dpApi' => true, 'dpApiDeep' => true ));
@@ -2662,6 +2747,25 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
 		                               'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
 		                               'mappedBy' => 'person'
+		));
+
+		$metadata->mapManyToMany(array(
+			'fieldName' => 'teams',
+			'mappedBy' => 'members',
+			'dpApi' => true,
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+			'joinTable' => array(
+				'name' => 'agent_team_members',
+				'joinColumns' => array(array( 'name' => 'person_id' )),
+				'inverseJoinColumns' => array(array( 'name' => 'team_id' )),
+			),
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'primary_team',
+			'dpApi' => true,
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+			'nullable' => true,
 		));
 	}
 }

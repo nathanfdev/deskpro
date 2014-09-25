@@ -199,7 +199,15 @@ class TicketListRenderer
 				case 'department':
 					$dep = $this->container->getDataService('Department')->get($ticket->department->getId());
 					if ($dep) {
-						$data['department'] = array('id' => $dep->id, 'title' => $dep->title, 'title_full' => $dep->getFullTitle());
+						$data['department'] = array(
+							'id' => $dep->id,
+							'title' => $dep->title,
+							'title_full' => $dep->getFullTitle(),
+						);
+
+						foreach (array(80, 64, 50, 45, 32, 22, 16) as $size) {
+							$data['department']['avatar_url_'.$size] = $dep->getAvatarUrl($size);
+						}
 					}
 					break;
 
@@ -218,6 +226,18 @@ class TicketListRenderer
 
 				case 'agent':
 					$data['agent'] = $this->container->getAgentData()->has($ticket->agent->getId()) ? $this->renderPerson($this->container->getAgentData()->get($ticket->agent->getId())) : null;
+					break;
+
+				case 'agent_team':
+					$data['agent_team'] = array(
+						'id' => $ticket->agent_team['id'],
+						'name' => $ticket->agent_team['name'],
+					);
+
+					foreach (array(80, 64, 50, 45, 32, 22, 16) as $size) {
+						$data['agent_team']['avatar_url_'.$size] = $ticket->agent_team->getAvatarUrl($size);
+					}
+
 					break;
 
 				case 'locked_by_agent':
@@ -243,7 +263,34 @@ class TicketListRenderer
 			}
 		}
 
-		$data['ticket_slas'] = $ticket->ticket_slas;
+		$data['ticket_slas'] = array();
+		foreach ($this->ticket_display->getTicketSlas($ticket) as $sla) {
+			$sla['sla'] = array(
+				'id' => $sla['sla_id'],
+				'title' => $sla['title']
+			);
+			if ($sla['warn_date']) {
+				$sla['warn_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['warn_date']);
+			} else {
+				$sla['warn_date_ts'] = 0;
+			}
+			if ($sla['fail_date']) {
+				$sla['fail_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['fail_date']);
+			} else {
+				$sla['fail_date_ts'] = 0;
+			}
+
+			$times = array();
+			if ($sla['warn_date_ts']) $times[] = $sla['warn_date_ts'];
+			if ($sla['fail_date_ts']) $times[] = $sla['fail_date_ts'];
+			if ($times) {
+				$sla['next_trigger_date_ts'] = min($times);
+			} else {
+				$sla['next_trigger_date_ts'] = 0;
+			}
+
+			$data['ticket_slas'][] = $sla;
+		}
 
 
 		$data['previews'] = array();

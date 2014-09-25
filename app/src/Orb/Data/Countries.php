@@ -117,7 +117,6 @@ class Countries
 		'FJ' => 'Fiji',
 		'FI' => 'Finland',
 		'FR' => 'France',
-		'FX' => 'France, Metropolitan',
 		'GF' => 'French Guinea',
 		'PF' => 'French Polynesia',
 		'TF' => 'French Southern Territories',
