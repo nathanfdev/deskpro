@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\ApiKeys\ApiKeyEdit;
 use Application\DeskPRO\ApiKeys\Form\Type\ApiKeyType;
+use Application\DeskPRO\Entity\ApiKeyLog;
 use Application\DeskPRO\Exception\ValidationException;
 
 /**
@@ -160,10 +161,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 			throw ValidationException::create($this->getFormValidationErrorsString($form));
 		}
 
-		return $this->createApiResponse(array(
-			 'success' => true,
-			 'id'      => $api_key->id,
-		));
+		return $this->getAction($api_key['id']);
 	}
 
 	####################################################################################################################

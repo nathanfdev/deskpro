@@ -99,6 +99,13 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'tasks',
+		url: '/tasks',
+		templateName: 'Index/app-nav-tasks.html',
+		controller: 'Admin_Main_Ctrl_Nav'
+	});
+
+	routes.push({
 		id: 'server',
 		url: '/server',
 		templateName: 'Index/app-nav-server.html',
@@ -237,16 +244,6 @@ define(function() {
 		controller: 'Admin_Main_Ctrl_BareList'
 	});
 
-	//###
-	//# Elastic Search
-	//###
-	routes.push({
-		id: 'setup.elastic_search',
-		url: '/settings_elastic_search',
-		templateName: 'ElasticSearch/setup.html',
-		controller: 'Admin_Settings_Ctrl_ElasticSearch'
-	});
-
 	//##################################################################################################################
 	// Agents
 	//##################################################################################################################
@@ -287,6 +284,13 @@ define(function() {
 		url: '/{id:[0-9]+}',
 		templateName: 'Agents/deleted-restore.html',
 		controller: 'Admin_Agents_Ctrl_DeletedRestore'
+	});
+
+	routes.push({
+		id: 'agents.settings',
+		url: '/settings',
+		templateName: 'Agents/settings.html',
+		controller: 'Admin_Settings_Ctrl_PasswordSettings'
 	});
 
 	//###
@@ -646,14 +650,16 @@ define(function() {
 		id: 'tickets.labels',
 		url: '/labels',
 		templateName: 'Labels/Ticket/list.html',
-		controller: 'Admin_Labels_Ticket_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'tickets'}
 	});
 
 	routes.push({
 		id: 'tickets.labels.create',
 		url: '/create',
 		templateName: 'Labels/Ticket/edit.html',
-		controller: 'Admin_Labels_Ticket_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'tickets'}
 	});
 
 	routes.push({
@@ -667,7 +673,25 @@ define(function() {
 		id: 'tickets.labels.edit',
 		url: '/{label:.*}',
 		templateName: 'Labels/Ticket/edit.html',
-		controller: 'Admin_Labels_Ticket_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'tickets'}
+	});
+
+	//###
+	//# Round Robin
+	//###
+	routes.push({
+		id: 'tickets.roundrobin',
+		url: '/roundrobin',
+		templateName: 'RoundRobin/list.html',
+		controller: 'Admin_RoundRobin_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'tickets.roundrobin.edit',
+		url: '/{id:.*}',
+		templateName: 'RoundRobin/edit.html',
+		controller: 'Admin_RoundRobin_Ctrl_Edit'
 	});
 
 	//###
@@ -748,7 +772,7 @@ define(function() {
 
 	routes.push({
 		id: 'tickets.ticket_deps.edit',
-		url: '/{id:[0-9]+}',
+		url: '/{id:[0-9]+}?tab',
 		templateName: 'TicketDeps/edit.html',
 		controller: 'Admin_TicketDeps_Ctrl_Edit'
 	});
@@ -826,6 +850,46 @@ define(function() {
 		templateName: 'CustomFields/Tickets/edit.html',
 		controller: 'Admin_CustomFields_Tickets_Ctrl_Edit'
 	});
+
+
+	//###
+	//# Sms Channel
+	//###
+	routes.push({
+		id: 'tickets.channel_sms',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/list.html',
+		controller: 'Admin_ChannelSms_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.outgoing_log',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/create.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.incoming_log',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/create.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.create',
+		url: '/create',
+		templateName: 'ChannelSms/edit.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'ChannelSms/edit.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
 
 	//###
 	//# Ticket Accounts
@@ -905,6 +969,14 @@ define(function() {
 		url: '/outgoing-email',
 		templateName: 'EmailStatus/sendmail-list.html',
 		controller: 'Admin_EmailStatus_Ctrl_SendmailList',
+		target: "appbody@tickets"
+	});
+
+	routes.push({
+		id: 'tickets.ticket_accounts.advancedsettings',
+		url: '/advanced-settings',
+		templateName: 'TicketAccounts/advanced-settings.html',
+		controller: 'Admin_TicketAccounts_Ctrl_Settings',
 		target: "appbody@tickets"
 	});
 
@@ -1103,14 +1175,16 @@ define(function() {
 		id: 'crm.user_labels',
 		url: '/user_labels',
 		templateName: 'Labels/Person/list.html',
-		controller: 'Admin_Labels_Person_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'people'}
 	});
 
 	routes.push({
 		id: 'crm.user_labels.create',
 		url: '/create',
 		templateName: 'Labels/Person/edit.html',
-		controller: 'Admin_Labels_Person_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'people'}
 	});
 
 	routes.push({
@@ -1124,7 +1198,8 @@ define(function() {
 		id: 'crm.user_labels.edit',
 		url: '/{label:.*}',
 		templateName: 'Labels/Person/edit.html',
-		controller: 'Admin_Labels_Person_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'people'}
 	});
 
 	//###
@@ -1135,14 +1210,16 @@ define(function() {
 		id: 'crm.org_labels',
 		url: '/org_labels',
 		templateName: 'Labels/Org/list.html',
-		controller: 'Admin_Labels_Org_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'organizations'}
 	});
 
 	routes.push({
 		id: 'crm.org_labels.create',
 		url: '/create',
 		templateName: 'Labels/Org/edit.html',
-		controller: 'Admin_Labels_Org_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'organizations'}
 	});
 
 	routes.push({
@@ -1156,7 +1233,8 @@ define(function() {
 		id: 'crm.org_labels.edit',
 		url: '/{label:.*}',
 		templateName: 'Labels/Org/edit.html',
-		controller: 'Admin_Labels_Org_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'organizations'}
 	});
 
 	//###
@@ -1262,6 +1340,13 @@ define(function() {
 	routes.push({
 		id: 'portal.embeds',
 		url: '/embeds',
+		templateName: 'Portal/embeds-list.html',
+		controller: 'Admin_Main_Ctrl_Bare'
+	});
+
+	routes.push({
+		id: 'portal.embeds.type',
+		url: '/{type:tab|chat|form|helpdesk}',
 		templateName: 'Portal/embeds.html',
 		controller: 'Admin_Portal_Ctrl_Embeds'
 	});
@@ -1301,14 +1386,16 @@ define(function() {
 		id: 'portal.kb_labels',
 		url: '/kb/labels',
 		templateName: 'Labels/Kb/list.html',
-		controller: 'Admin_Labels_Kb_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'kb'}
 	});
 
 	routes.push({
 		id: 'portal.kb_labels.create',
 		url: '/create/',
 		templateName: 'Labels/Kb/edit.html',
-		controller: 'Admin_Labels_Kb_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'kb'}
 	});
 
 	routes.push({
@@ -1324,7 +1411,8 @@ define(function() {
 		id: 'portal.kb_labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/Kb/edit.html',
-		controller: 'Admin_Labels_Kb_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'kb'}
 	});
 
 	//###
@@ -1344,14 +1432,16 @@ define(function() {
 		id: 'portal.downloads_labels',
 		url: '/downloads/labels',
 		templateName: 'Labels/Downloads/list.html',
-		controller: 'Admin_Labels_Downloads_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'downloads'}
 	});
 
 	routes.push({
 		id: 'portal.downloads_labels.create',
 		url: '/create/',
 		templateName: 'Labels/Downloads/edit.html',
-		controller: 'Admin_Labels_Downloads_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'downloads'}
 	});
 
 	routes.push({
@@ -1367,7 +1457,8 @@ define(function() {
 		id: 'portal.downloads_labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/Downloads/edit.html',
-		controller: 'Admin_Labels_Downloads_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'downloads'}
 	});
 
 
@@ -1388,14 +1479,16 @@ define(function() {
 		id: 'portal.news_labels',
 		url: '/news/labels',
 		templateName: 'Labels/News/list.html',
-		controller: 'Admin_Labels_News_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'news'}
 	});
 
 	routes.push({
 		id: 'portal.news_labels.create',
 		url: '/create/',
 		templateName: 'Labels/News/edit.html',
-		controller: 'Admin_Labels_News_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'news'}
 	});
 
 	routes.push({
@@ -1411,7 +1504,8 @@ define(function() {
 		id: 'portal.news_labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/News/edit.html',
-		controller: 'Admin_Labels_News_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'news'}
 	});
 
 	//###
@@ -1524,14 +1618,16 @@ define(function() {
 		id: 'portal.feedback_labels',
 		url: '/feedback/labels',
 		templateName: 'Labels/Feedback/list.html',
-		controller: 'Admin_Labels_Feedback_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'feedback'}
 	});
 
 	routes.push({
 		id: 'portal.feedback_labels.create',
 		url: '/create/',
 		templateName: 'Labels/Feedback/edit.html',
-		controller: 'Admin_Labels_Feedback_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'feedback'}
 	});
 
 	routes.push({
@@ -1545,7 +1641,8 @@ define(function() {
 		id: 'portal.feedback_labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/Feedback/edit.html',
-		controller: 'Admin_Labels_Feedback_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'feedback'}
 	});
 
 	//##################################################################################################################
@@ -1636,14 +1733,16 @@ define(function() {
 		id: 'chat.labels',
 		url: '/labels',
 		templateName: 'Labels/Chat/list.html',
-		controller: 'Admin_Labels_Chat_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'chat'}
 	});
 
 	routes.push({
 		id: 'chat.labels.create',
 		url: '/create/',
 		templateName: 'Labels/Chat/edit.html',
-		controller: 'Admin_Labels_Chat_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'chat'}
 	});
 
 	routes.push({
@@ -1659,7 +1758,8 @@ define(function() {
 		id: 'chat.labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/Chat/edit.html',
-		controller: 'Admin_Labels_Chat_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'chat'}
 	});
 
 
@@ -1808,6 +1908,16 @@ define(function() {
 	});
 
 	//##################################################################################################################
+	// Tasks
+	//##################################################################################################################
+	routes.push({
+		id: 'tasks.settings',
+		url: '/settings',
+		templateName: 'Tasks/settings.html',
+		controller: 'Admin_Tasks_Ctrl_Edit'
+	});
+
+	//##################################################################################################################
 	// Server
 	//##################################################################################################################
 
@@ -1819,6 +1929,16 @@ define(function() {
 		url: '/settings',
 		templateName: 'Settings/server-settings.html',
 		controller: 'Admin_Settings_Ctrl_ServerSettings'
+	});
+
+	//###
+	//# Elastic Search
+	//###
+	routes.push({
+		id: 'server.elastic_search',
+		url: '/settings_elastic_search',
+		templateName: 'ElasticSearch/setup.html',
+		controller: 'Admin_Settings_Ctrl_ElasticSearch'
 	});
 
 	//###

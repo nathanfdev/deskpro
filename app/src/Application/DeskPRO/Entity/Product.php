@@ -289,6 +289,12 @@ class Product extends CategoryAbstract implements HasPhraseName
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
 
+		if ($this->parent) {
+			$data['parent_id'] = $this->parent->getId();
+		} else {
+			$data['parent_id'] = null;
+		}
+
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('product_fields_manager');
 

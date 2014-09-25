@@ -48,20 +48,14 @@
 		<div class="dp-menu-area dp-menu-area-primary">
 			<label>{{ phrase('agent.tickets.reply_and_set_status') }}</label>
 			<ul>
-				<li data-type="awaiting_user" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_user')}) }}">
-					<div class="on-icon"><i class="icon-ok"></i></div>
-					{{ phrase('agent.tickets.kbd_awaiting_user') }}
-				</li>
-				<li data-type="awaiting_agent" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_agent')}) }}">
-					<div class="on-icon"><i class="icon-ok"></i></div>
-					{{ phrase('agent.tickets.kbd_awaiting_agent') }}
-				</li>
-				{% if ticket_perms.modify_set_resolved %}
-					<li data-type="resolved" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_resolved')}) }}">
-						<div class="on-icon"><i class="icon-ok"></i></div>
-						{{ phrase('agent.tickets.kbd_resolved') }}
-					</li>
-				{% endif %}
+                {% for status in ['awaiting_user', 'awaiting_agent', 'resolved'] %}
+                    {% if status == ticket.status or ticket_perms['modify_set_' ~ status] %}
+                        <li data-type="{{ status }}" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_' ~ status)}) }}">
+                            <div class="on-icon"><i class="icon-ok"></i></div>
+                            {{ phrase('agent.tickets.kbd_' ~ status) }}
+                        </li>
+                    {% endif %}
+                {% endfor %}
 			</ul>
 		</div>
 	</section>
@@ -239,15 +233,31 @@
 					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group" style="position: relative; z-index: 50;">
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
-							{% if app.getSetting('core_tickets.reply_status') == 'awaiting_user' or (ticket.status == 'awaiting_user' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
-							{% elseif app.getSetting('core_tickets.reply_status') == 'awaiting_agent' or (ticket.status == 'awaiting_agent' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.kbd_send_awaiting_agent') }}</span>
-							{% elseif app.getSetting('core_tickets.reply_status') == 'resolved' or (ticket.status == 'resolved' and not app.getSetting('core_tickets.reply_status')) %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="resolved">{{ phrase('agent.tickets.kbd_send_resolved') }}</span>
-							{% else %}
-								<span id="{{ replyBaseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
-							{% endif %}
+
+                            {% set defaultStatus = app.getSetting('core_tickets.reply_status') %}
+                            {% set statuses = ['awaiting_user', 'awaiting_agent', 'resolved'] %}
+                            {% set found = false %}
+
+                            {# check for allowed default first #}
+                            {% for status in statuses if not found %}
+                                {% if status == defaultStatus and ticket_perms['modify_set_' ~ status] %}
+                                    <span id="{{ replyBaseId }}_reply_as_type" data-type="{{ status }}">
+                                        {{ phrase('agent.tickets.kbd_send_' ~ status) }}
+                                    </span>
+                                    {% set found = true %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {# if not found, then show current ticket status #}
+                            {% for status in statuses if not found %}
+                                {% if status == ticket.status %}
+                                    <span id="{{ replyBaseId }}_reply_as_type" data-type="{{ status }}">
+                                        {{ phrase('agent.tickets.kbd_send_' ~ status) }}
+                                        </span>
+                                    {% set found = true %}
+                                {% endif %}
+                            {% endfor %}
+
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
 					</div>
@@ -292,18 +302,18 @@
 							<label for="{{ replyBaseId }}_agent_team_sel_check">{{ phrase('agent.general.team') }}:&nbsp;</label>
 						</div><div class="inner-cell" style="position: relative;">
 							<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text" ></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
-							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1">
+							<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1" data-style-type="icons" data-select-icon-size="22">
 								{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 								<optgroup label="{% if app.user.getAgent().getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
 									{% for team in app.user.getAgent().getTeams() %}
-										<option value="{{ team.id }}" {% if app.getSetting(assign_opt) == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
+										<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if app.getSetting(assign_opt) == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
 									{% endfor %}
 								</optgroup>
 								{% endif %}
 
 								{% for team in agent_teams %}
 									{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
-										<option value="{{ team.id }}" {% if (not app.getSetting(assign_opt) and team.id == ticket.agent_team.id) %}selected="selected"{% endif %}>{{ team.name }}</option>
+										<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if (not app.getSetting(assign_opt) and team.id == ticket.agent_team.id) %}selected="selected"{% endif %}>{{ team.name }}</option>
 									{% endif %}
 								{% endfor %}
 							</select>

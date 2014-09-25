@@ -73,15 +73,20 @@
           return function() {
             var promise;
             promise = _this.Api.sendPostJson('/reports/builder/test/' + _this.report.id, {
-              parts: _this.query_parts
+              parts: _this.query_parts,
+              params: _this.$stateParams.params
             });
             return promise.success(function(data) {
               if (data.error) {
                 _this.query_error = data.error;
-              }
-              if (data.rendered_result) {
-                _this.query_error = null;
-                _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
+              } else {
+                if (data.rendered_result) {
+                  _this.query_error = null;
+                  _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
+                } else {
+                  _this.query_error = null;
+                  _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
+                }
               }
               _this.stopSpinner('builder_loading', true);
               return _this.stopSpinner('query_loading', true);

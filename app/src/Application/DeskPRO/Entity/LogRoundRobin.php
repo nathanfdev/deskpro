@@ -56,10 +56,10 @@ class LogRoundRobin extends DomainObject implements Loggable
 	public function __construct($robinId, $agentId, $ticketId, $triggerId)
 	{
 		$this['timestamp'] = time();
-		$this['roundRobinId'] = $robinId;
-		$this['agentId'] = $agentId;
-		$this['ticketId'] = $ticketId;
-		$this['triggerId'] = $triggerId;
+		$this['roundRobinId'] = (int) $robinId;
+		$this['agentId'] = (int) $agentId;
+		$this['ticketId'] = (int) $ticketId;
+		$this['triggerId'] = (int) $triggerId;
 	}
 
 	/**
@@ -86,11 +86,11 @@ class LogRoundRobin extends DomainObject implements Loggable
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->setPrimaryTable(array( 'name' => 'log_round_robin', ));
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true,));
-		$metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'columnName' => 'timestamp', 'columnDefinition' => 'int(11) unsigned not null'));
-		$metadata->mapField(array( 'fieldName' => 'roundRobinId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'round_robin_id', 'columnDefinition' => 'int(11) unsigned not null'));
-		$metadata->mapField(array( 'fieldName' => 'agentId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'agent_id', 'columnDefinition' => 'int(11) unsigned not null'));
-		$metadata->mapField(array( 'fieldName' => 'ticketId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'ticket_id', 'columnDefinition' => 'int(11) unsigned not null'));
-		$metadata->mapField(array( 'fieldName' => 'triggerId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'trigger_id', 'columnDefinition' => 'int(11) unsigned not null'));
+		$metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'columnName' => 'timestamp',));
+		$metadata->mapField(array( 'fieldName' => 'roundRobinId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'round_robin_id'));
+		$metadata->mapField(array( 'fieldName' => 'agentId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'agent_id'));
+		$metadata->mapField(array( 'fieldName' => 'ticketId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'ticket_id'));
+		$metadata->mapField(array( 'fieldName' => 'triggerId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'trigger_id'));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 }

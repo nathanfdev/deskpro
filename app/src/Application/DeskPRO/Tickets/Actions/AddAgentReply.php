@@ -90,10 +90,11 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 
 		if (!$this->getActionOption('no_formatter')) {
 			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
+			$formatter->addVar('user_vars', $context->getUserVars());
 			$reply_text = $formatter->formatText($reply_text, $ticket);
 		}
 
-		$message->setMessageText($reply_text);
+		$message->setMessage($reply_text);
 
 		$ticket->addMessage($message);
 		$em->persist($message);

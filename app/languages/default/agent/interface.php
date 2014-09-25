@@ -69,4 +69,6 @@
 	'agent.interface.viewbtn-source'               => 'Toggle Filter and Search Columm',
 	'agent.interface.viewbtn-tab'                  => 'Tabs Only View',
 	'agent.interface.viewbtn-table'                => 'Tabular Results View',
+	'agent.interface.viewbtn-1col'                 => '1 Column View',
+	'agent.interface.viewbtn-2col'                 => '2 Column View',
 );

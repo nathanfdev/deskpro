@@ -55,6 +55,16 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	private $_enabled = false;
 
 	/**
+	 * @var array
+	 */
+	private $_track_ids = array();
+
+	/**
+	 * @var array
+	 */
+	private $_track_regex = array();
+
+	/**
 	 * The time this object was instantiated. Most scripts have the DP_START_TIME constant
 	 * defined during boot, so this is just a fallback used when determining when to log the
 	 * slow page log.
@@ -95,6 +105,11 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 	private $_query_count = 0;
 
 	/**
+	 * @var int
+	 */
+	private $_count_tracked = 0;
+
+	/**
 	 * A count of DB time used so far
 	 *
 	 * @var int
@@ -109,7 +124,36 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		if (!function_exists('dp_get_config')) return;
 		if (!dp_get_config('debug.page_log.enabled') || isset($GLOBALS['DP_NOSQL_LOG'])) return;
 
+		$this->_track_ids = dp_get_config('debug.page_log.track_query_ids', array());
+		if ($this->_track_ids) {
+			$this->_track_ids = array_fill_keys($this->_track_ids, true);
+		} else {
+			$this->_track_ids = null;
+		}
+
+		$this->_track_regex = dp_get_config('debug.page_log.track_query_regex', array());
+		if (!$this->_track_regex) {
+			$this->_track_regex = null;
+		}
+
 		$this->_enabled = true;
+
+		$patterns = dp_get_config('debug.page_log.url_pattern');
+		if ($patterns) {
+			if (!is_array($patterns)) {
+				$patterns = array($patterns);
+			}
+
+			$any = false;
+			foreach ($patterns as $pattern) {
+				$url = defined('DP_REQUEST_URL') ? DP_REQUEST_URL : @$_SERVER["REQUEST_URI"];
+				if ($url && preg_match($pattern, $url)) {
+					$any = true;
+					break;
+				}
+			}
+			$this->_enabled = $any;
+		}
 	}
 
 	public function writeLogQuiet()
@@ -140,8 +184,15 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$GLOBALS['DP_QUERY_COUNT']++;
 		$this->_query_count++;
 
+		$id = md5($sql);
+
+		$is_tracking = ($this->_track_ids !== null && isset($this->_track_ids[$id])) || ($this->_track_regex !== null && $this->_isSqlTracking($sql));
+		if ($is_tracking) {
+			$this->_count_tracked++;
+		}
+
 		$trace = null;
-		if (dp_get_config('debug.page_log.save_trace')) {
+		if (dp_get_config('debug.page_log.save_trace') || $is_tracking) {
 			$e = new \Exception();
 			$trace = $e->getTraceAsString();
 		}
@@ -153,13 +204,29 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			'time_end'       => 0,
 			'time_taken'     => 0,
 			'trans_level'    => 0,
-			'trace'          => $trace
+			'trace'          => $trace,
+			'id'             => $id,
+			'is_tracking'    => $is_tracking,
 		);
+	}
+
+	private function _isSqlTracking($sql)
+	{
+		if (!$this->_track_regex) return false;
+		foreach ($this->_track_regex as $re) {
+			if (preg_match($re, $sql)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public function stopQuery()
 	{
 		$queryinfo = $this->_last_query;
+
+		if (!$queryinfo) return;
+
 		$queryinfo['time_end']       = microtime(true);
 		$queryinfo['time_taken']     = $queryinfo['time_end'] - $queryinfo['time_start'];
 
@@ -167,9 +234,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$this->_last_query = null;
 
 		if (!$this->_enabled) return;
-		if (!$this->_last_query) return;
 		if (isset($GLOBALS['DP_NOSQL_LOG']) && $GLOBALS['DP_NOSQL_LOG']) return;
-
 		if ($this->_query_count > self::SAFE_MAX) return;
 
 		$queryinfo['params_string']  = \DeskPRO\Kernel\KernelErrorHandler::varToString($queryinfo['params']);
@@ -190,6 +255,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 		$opt_slow_db_time    = dp_get_config('debug.page_log.slow_db_time');
 		$opt_slow_php_time   = dp_get_config('debug.page_log.slow_php_time');
 		$opt_slow_page_time  = dp_get_config('debug.page_log.slow_page_time');
+		$opt_tracked_log     = dp_get_config('debug.page_log.tracked_query_log');
 
 		dp_pagelog_set('query_count', $this->_query_count);
 		dp_pagelog_set('time_php', $php_time);
@@ -209,12 +275,13 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 			}
 		}
 
-		$do_max_query  = ($opt_max_query_count && $this->_query_count >= $opt_max_query_count) ? true : false;
-		$do_slow_db    = ($opt_slow_db_time    && $db_time            >= $opt_slow_db_time)    ? true : false;
-		$do_slow_php   = ($opt_slow_php_time   && $php_time           >= $opt_slow_php_time)   ? true : false;
-		$do_slow_page  = ($opt_slow_page_time  && $total_time         >= $opt_slow_page_time)  ? true : false;
+		$do_max_query   = ($opt_max_query_count && $this->_query_count >= $opt_max_query_count) ? true : false;
+		$do_slow_db     = ($opt_slow_db_time    && $db_time            >= $opt_slow_db_time)    ? true : false;
+		$do_slow_php    = ($opt_slow_php_time   && $php_time           >= $opt_slow_php_time)   ? true : false;
+		$do_slow_page   = ($opt_slow_page_time  && $total_time         >= $opt_slow_page_time)  ? true : false;
+		$do_tracked_log = ($opt_tracked_log && $this->_count_tracked > 0) ? true : false;
 
-		if (!$do_slow_query && !$do_max_query && !$do_slow_db && !$do_slow_php && !$do_slow_page) {
+		if (!$do_slow_query && !$do_max_query && !$do_slow_db && !$do_slow_php && !$do_slow_page && !$do_tracked_log) {
 			return;
 		}
 
@@ -232,6 +299,7 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 					'total_time' => $queryinfo['time_taken'],
 					'min_time'   => $queryinfo['time_taken'],
 					'max_time'   => $queryinfo['time_taken'],
+					'id'         => $queryinfo['id']
 				);
 			} else {
 				$repeated_queries[$query_name]['count']++;
@@ -359,6 +427,18 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 				$page_header
 			);
 		}
+
+		#------------------------------
+		# Tracked Query Log
+		#------------------------------
+
+		if ($do_tracked_log) {
+			$write = array_merge($page_header, $this->_formatAllQueryRows(array_filter($this->_queries, function($q) { return $q['is_tracking']; })));
+			$this->_writeLogFile(
+				dp_get_log_dir() . DIRECTORY_SEPARATOR . 'pagelog-tracked-queries.log',
+				$write
+			);
+		}
 	}
 
 
@@ -471,13 +551,14 @@ class SysQueryLogger extends \Symfony\Bridge\Doctrine\Logger\DbalLogger
 
 		foreach ($repeated_queries as $name => $info) {
 			$write[] = sprintf(
-				"\t<%s> Count: %03d   Time: %.4f   MaxTime: %.4f   MinTime: %.4f   AvgTime: %.4f",
+				"\t<%s> Count: %03d   Time: %.4f   MaxTime: %.4f   MinTime: %.4f   AvgTime: %.4f -- ID: %s",
 				$name,
 				$info['count'],
 				$info['total_time'],
 				$info['max_time'],
 				$info['min_time'],
-				$info['avg_time']
+				$info['avg_time'],
+				$info['id']
 			);
 		}
 

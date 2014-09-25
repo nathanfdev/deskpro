@@ -72,21 +72,30 @@
 
 	<nav class="dp-tabletabs">
 		<ul>
-			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#">Tickets</a></li>
-			<li dp-tab-btn="main.perms.people"><a href="#">People</a></li>
-			<li dp-tab-btn="main.perms.chat"><a href="#">Chat</a></li>
-			<li dp-tab-btn="main.perms.publish"><a href="#">Publish</a></li>
-			<li dp-tab-btn="main.perms.profile"><a href="#">Profile</a></li>
+			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i class="fa fa-envelope"></i> {{ phrase('adm.agents.perm_title_tickets') }}</a></li>
+			<li dp-tab-btn="main.perms.people"><a href="#"><i class="fa fa-user"></i> {{ phrase('adm.agents.perm_title_people') }}</a></li>
+			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fa fa-comment"></i> {{ phrase('adm.agents.perm_title_chat') }}</a></li>
+			<li dp-tab-btn="main.perms.publish"><a href="#"><i class="fa fa-book"></i> {{ phrase('adm.agents.perm_title_publish') }}</a></li>
+			<li dp-tab-btn="main.perms.profile"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('adm.agents.perm_title_profile') }}</a></li>
+			{% if app.getSetting('core.apps_tasks') %}
+                <li dp-tab-btn="main.perms.tasks"><a href="#"><i class="fa fa-calendar-o"></i> {{ phrase('adm.agents.perm_title_tasks') }}</a></li>
+            {% endif %}
 		</ul>
 	</nav>
 
 	{# TICKET PERMISSIONS #}
 	<table class="table table-hover agent-perms-table" dp-tab-body="main.perms.tickets">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'ticket'} %}
+
 		<tbody>
 			{{ _self.perm_row('ticket', 'use') }}
 			{{ _self.perm_row('ticket', 'create') }}
 			{{ _self.perm_row('ticket', 'reply_mass') }}
 			{{ _self.perm_row('ticket', 'modify_set_closed') }}
+			{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
+				{{ _self.perm_row('ticket', 'modify_billing') }}
+			{% endif %}
 		</tbody>
 		<tbody>
 			{{ _self.perm_row('ticket', 'reply_own',                     {first: true}) }}
@@ -105,6 +114,7 @@
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_user_own',  {toggleName: 'ticket.modify_own'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_own', {toggleName: 'ticket.modify_own'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_resolved_own',       {toggleName: 'ticket.modify_own'}) }}
+            {{ _self.perm_row('ticket', 'modify_set_unresolved_own',     {toggleName: 'ticket.modify_own'}) }}
 			{{ _self.perm_row('ticket', 'modify_messages_own') }}
 			{{ _self.perm_row('ticket', 'delete_own') }}
 		</tbody>
@@ -125,6 +135,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_followed',  {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_followed', {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_followed',       {toggleName: 'ticket.modify_followed'}) }}
+        {{ _self.perm_row('ticket', 'modify_set_unresolved_followed',     {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_followed') }}
 		{{ _self.perm_row('ticket', 'delete_followed') }}
 		</tbody>
@@ -146,6 +157,7 @@
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_user_unassigned',   {toggleName: 'ticket.modify_unassigned'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_unassigned',  {toggleName: 'ticket.modify_unassigned'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_resolved_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_unresolved_unassigned',      {toggleName: 'ticket.modify_unassigned'}) }}
 			{{ _self.perm_row('ticket', 'modify_messages_unassigned') }}
 			{{ _self.perm_row('ticket', 'delete_unassigned') }}
 		</tbody>
@@ -167,6 +179,7 @@
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_user_others',  {toggleName: 'ticket.modify_others'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_others', {toggleName: 'ticket.modify_others'}) }}
 			{{ _self.perm_row('ticket', 'modify_set_resolved_others',       {toggleName: 'ticket.modify_others'}) }}
+			{{ _self.perm_row('ticket', 'modify_set_unresolved_others',     {toggleName: 'ticket.modify_others'}) }}
 			{{ _self.perm_row('ticket', 'modify_messages_others') }}
 			{{ _self.perm_row('ticket', 'delete_others') }}
 		</tbody>
@@ -175,6 +188,9 @@
 
 	{# PEOPLE PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.people">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'people'} %}
+
 		<tbody>
 			{{ _self.perm_row('people', 'use') }}
 			{{ _self.perm_row('people', 'create') }}
@@ -200,6 +216,9 @@
 	{# CHAT PERMISSIONS #}
 	{% if app.getSetting('core.apps_chat') %}
 		<table class="table table-hover" dp-tab-body="main.perms.chat">
+
+            {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'chat'} %}
+
 			<tbody>
 				{{ _self.perm_row('chat', 'use') }}
 				{{ _self.perm_row('chat', 'view_transcripts') }}
@@ -213,6 +232,9 @@
 
 	{# PUBLISH PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.publish">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'publish'} %}
+
 		<tbody>
 			{{ _self.perm_row('publish', 'create') }}
 			{{ _self.perm_row('publish', 'delete') }}
@@ -224,9 +246,24 @@
 
 	{# GENERAL PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.profile">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'general'} %}
+
+        <tbody>
 			{{ _self.perm_row('general', 'picture') }}
 			{{ _self.perm_row('general', 'signature') }}
 		</tbody>
 	</table>
 	{# /GENERAL PERMISSIONS #}
+
+    {# TASKS PERMISSIONS #}
+    <table class="table table-hover" dp-tab-body="main.perms.tasks">
+
+        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'tasks'} %}
+
+        <tbody>
+        {{ _self.perm_row('tasks', 'use') }}
+        </tbody>
+    </table>
+    {# /TASKS PERMISSIONS #}
 </div>

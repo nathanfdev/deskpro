@@ -142,20 +142,20 @@ span.gear{
 	left: 0;
 }
 
-#tabNavigationPane{
+#tabNavigationPane {
 	.gradient(#DADBDE, #F0F1F3);
 	height: 37px;
 	position: absolute;
 	overflow: hidden;
 	border-bottom: 1px solid #B6BABF;
-	top: 0;
+	top: 51px;
 	right: 0;
 	left: 0;
 }
 
 #tabNavSelectorLeft{
 	position: absolute;
-	left: 1;
+	left: 0px;
 	top: 0;
 	bottom: 0;
 	width: 18px;
@@ -248,11 +248,11 @@ span.gear{
 .with-overflow.far-left #tabNavSelectorLeft {	display:none !important; }
 .with-overflow.far-right #tabNavSelectorRight {	display:none !important; }
 
-.deskproTabList{
+.mainDeskproTabList{
 	position: absolute;
-	height: 37px;
+	height: 39px;
 	top: 0;
-	left: 0;
+	left: 0px;
 	bottom: 0;
 	right: 0;
 	overflow: hidden;
@@ -288,6 +288,37 @@ span.gear{
 	max-width: 115px;
 	overflow:hidden;
 }
+
+@keyframes tabbarpulse {
+	0% { opacity: 1; }
+	50% { opacity: 0.4 }
+	100% { opacity: 1; }
+}
+@-webkit-keyframes tabbarpulse {
+	0% { opacity: 1; }
+	50% { opacity: 0.4 }
+	100% { opacity: 1; }
+}
+
+.deskproTabList li.is-alerting {
+	border: 1px solid #0090ce;
+	-webkit-animation: tabbarpulse 0.8s infinite;
+	animation: tabbarpulse 0.8s infinite;
+	background: #fff !important;
+
+	.bound-fade {
+		@rgba_start: rgba(255, 255, 255, 0);
+		@rgba_end: rgba(255, 255, 255, 1);
+		background: transparent; /* old browsers just dont have fading */
+		background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+		background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+	}
+}
+
+
 .deskproTabList li:hover, .deskproTabList li.over {
 	@rgba_start: rgba(234,236,238,0);
 	@rgba_end: rgba(219,221,223,1);
@@ -330,12 +361,27 @@ span.gear{
 /*.ie .deskproTabList li.activeTabList{
 	box-shadow: none !important;
 }*/
-.deskproTabList li.activeTabList:hover{
+.deskproTabList li:hover, .deskproTabList li.activeTabList:hover{
 	background: #FFFFFF;
 	filter: none;
 	-ms-filter: none;
 	box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1) inset;
 	position: relative;
+	border-color: #99999D;
+	a {
+		color: #000;
+	}
+
+	.bound-fade {
+		@rgba_start: rgba(255,255,255,0);
+		@rgba_end: rgba(255,255,255,1);
+		background: transparent; /* old browsers just dont have fading */
+		background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* Opera11.10+ */
+		background: linear-gradient(left, @rgba_start 0%,@rgba_end 100%); /* W3C */
+	}
 }
 
 .deskproTabList li.activeTabList .bound-fade {
@@ -351,8 +397,8 @@ span.gear{
 }
 
 .deskproTabList li .bound-fade {
-	@rgba_start: rgba(197,200,205,0);
-	@rgba_end: rgba(197,200,205,1);
+	@rgba_start: rgba(224,226,230,0);
+	@rgba_end: rgba(224,226,230,1);
 	background: transparent; /* old browsers just dont have fading */
 	background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
 	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@rgba_start), color-stop(100%,@rgba_end)); /* Chrome,Safari4+ */
@@ -375,9 +421,8 @@ span.gear{
     background-repeat: no-repeat;
     background-image: url(../../images/agent/tabs/tabtype-general.png) /** sprite-ref: ui-v; sprite-alignment: left; sprite-margin-left: 1px; sprite-margin-top: 9px; sprite-margin-bottom: 15px; */;
 
-	font-size: 11px;
-	color: #000000;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	font-size: 12px;
+	color: #555;
 	padding: 5px 4px 3px 19px;
 	float: left;
 	position: relative;
@@ -6528,23 +6573,21 @@ ul.attachment-list {
     padding: 8px;
 
     li { background: url(../../images/filetypes/page.png) no-repeat 0 50%; padding-left: 18px; }
-	li.icon-filetype-pdf { background-image: url(../../images/filetypes/page_white_acrobat.png); }
-	li.icon-filetype-zip { background-image: url(../../images/filetypes/page_white_zip.png); }
-	li.icon-filetype-gz { background-image: url(../../images/filetypes/page_white_zip.png); }
-	li.icon-filetype-rar { background-image: url(../../images/filetypes/page_white_zip.png); }
-	li.icon-filetype-7z { background-image: url(../../images/filetypes/page_white_zip.png); }
-	li.icon-filetype-gif { background-image: url(../../images/filetypes/page_white_picture.png); }
-	li.icon-filetype-png { background-image: url(../../images/filetypes/page_white_picture.png); }
-	li.icon-filetype-jpeg { background-image: url(../../images/filetypes/page_white_picture.png); }
-	li.icon-filetype-jpg { background-image: url(../../images/filetypes/page_white_picture.png); }
-
-	li.icon-filetype-doc { background-image: url(../../images/filetypes/page_white_word.png); }
-	li.icon-filetype-docx { background-image: url(../../images/filetypes/page_white_word.png); }
-
-	li.icon-filetype-html { background-image: url(../../images/filetypes/page_white_world.png); }
-	li.icon-filetype-htm { background-image: url(../../images/filetypes/page_white_world.png); }
-	li.icon-filetype-js { background-image: url(../../images/filetypes/page_white_world.png); }
-	li.icon-filetype-css { background-image: url(../../images/filetypes/page_white_world.png); }
+	li.with-icon-filetype-pdf { background-image: url(../../images/filetypes/page_white_acrobat.png); }
+	li.with-icon-filetype-zip { background-image: url(../../images/filetypes/page_white_zip.png); }
+	li.with-icon-filetype-gz { background-image: url(../../images/filetypes/page_white_zip.png); }
+	li.with-icon-filetype-rar { background-image: url(../../images/filetypes/page_white_zip.png); }
+	li.with-icon-filetype-7z { background-image: url(../../images/filetypes/page_white_zip.png); }
+	li.with-icon-filetype-gif { background-image: url(../../images/filetypes/page_white_picture.png); }
+	li.with-icon-filetype-png { background-image: url(../../images/filetypes/page_white_picture.png); }
+	li.with-icon-filetype-jpeg { background-image: url(../../images/filetypes/page_white_picture.png); }
+	li.with-icon-filetype-jpg { background-image: url(../../images/filetypes/page_white_picture.png); }
+	li.with-icon-filetype-doc { background-image: url(../../images/filetypes/page_white_word.png); }
+	li.with-icon-filetype-docx { background-image: url(../../images/filetypes/page_white_word.png); }
+	li.with-icon-filetype-html { background-image: url(../../images/filetypes/page_white_world.png); }
+	li.with-icon-filetype-htm { background-image: url(../../images/filetypes/page_white_world.png); }
+	li.with-icon-filetype-js { background-image: url(../../images/filetypes/page_white_world.png); }
+	li.with-icon-filetype-css { background-image: url(../../images/filetypes/page_white_world.png); }
 }
 
 i.dp-icon-filetype {
@@ -8053,6 +8096,7 @@ table.data-display-table tr th {
 	.remove-row-trigger {
 		color: #7C7C7C;
 		font-size: 11px;
+		cursor: pointer;
 		&:hover {
 			color: #000;
 			text-shadow: 0px 0px 8px #f00;
@@ -8093,4 +8137,83 @@ nav#popup_top_tabbar ul li:hover {
 
 nav#popup_top_tabbar ul li a {
 	color: #000;
+}
+
+.assign-self-link-wrap {
+	margin-left: 1px;
+	font-size: 11px;
+	color: #aaa;
+}
+
+a.assign-self-link {
+	margin-left: 1px;
+	font-size: 11px;
+	color: #aaa;
+	font-weight: normal;
+
+	&:hover {
+		color: #444;
+	}
+}
+
+.profile-files-wrap {
+	.file-delete, .file-edit, .file-edit-save {
+		color: #aaa;
+		text-decoration: none;
+		font-size: 10px;
+
+		&:hover {
+			color: #444;
+		}
+	}
+
+	textarea {
+		min-width: 200px;
+	}
+
+	.editable .editable-visible.block {
+		display: block;
+		width: 80%;
+	}
+}
+
+.page-dp-news {
+	background: #fff;
+	.dp-page-content {
+		background: #fff;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+
+	.top-controls {
+		margin: 8px;
+		padding: 4px;
+		background: #f2f2f2;
+		border: 1px solid #cecece;
+		border-radius: 2px;
+	}
+
+	.frame-container {
+		position: absolute;
+		top: 42px;
+		left: 1px;
+		right: 1px;
+		bottom: 1px;
+
+		iframe {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			border: none;
+		}
+	}
 }

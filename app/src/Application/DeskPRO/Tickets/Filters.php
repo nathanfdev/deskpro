@@ -138,6 +138,17 @@ class Filters
 			unset($sys_filters_hold['agent_team_w_hold']);
 		}
 
+		uasort($custom_filters, function($a, $b) {
+			$o1 = $a->display_order;
+			$o2 = $b->display_order;
+
+			if ($o1 == $o2) {
+				return strcmp($a->title, $b->title);
+			}
+
+			return $o1 < $o2 ? -1 : 1;
+		});
+
 		return array(
 			'all_filters' => $all_filters,
 			'sys_filters' => $sys_filters,

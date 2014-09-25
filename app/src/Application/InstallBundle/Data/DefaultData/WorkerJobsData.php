@@ -271,6 +271,33 @@ class WorkerJobsData extends AbstractDefaultData
 			'run_interval' => Job\FetchJiraComments::DEFAULT_INTERVAL
 		);
 
+		$jobs[] = array(
+			'id'           => 'locked_tickets_release',
+			'worker_group' => 'locked_tickets_release',
+			'title'        => 'Locked Tickets Release',
+			'description'  => 'Release locked tickets',
+			'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\ReleaseLockedTickets',
+			'run_interval' => Job\ReleaseLockedTickets::DEFAULT_INTERVAL,
+		);
+
+		$jobs[] = array(
+			'id'           => 'job_queue',
+			'worker_group' => 'job_queue',
+			'title'        => 'Job Queue',
+			'description'  => 'Processes the job queue',
+			'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\JobQueueExecutor',
+			'run_interval' => Job\JobQueueExecutor::DEFAULT_INTERVAL,
+		);
+
+		$jobs[] = array(
+			'id'           => 'job_supervisor',
+			'worker_group' => 'job_queue',
+			'title'        => 'Job Supervisor',
+			'description'  => 'Supervises the job queue',
+			'job_class'    => 'Application\\DeskPRO\\WorkerProcess\\Job\\JobQueueSupervisor',
+			'run_interval' => Job\JobQueueSupervisor::DEFAULT_INTERVAL,
+		);
+
 		#------------------------------
 		# Insert jobs
 		#------------------------------

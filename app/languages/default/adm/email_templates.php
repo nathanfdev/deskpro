@@ -109,4 +109,6 @@
 	'adm.email_templates.emails_common_ticket-props-table_desc'       => 'This is the properties table sent to agents in email notifications.',
 	'adm.email_templates.emails_common_ticket-fwd-out-header_title'   => 'Forward-out Header',
 	'adm.email_templates.emails_common_ticket-fwd-out-header_desc'    => 'This is the content added to the top of a message being forwarded out of the helpdesk.',
+	'adm.email_templates.emails_common_ticket-rating-links_title'     => 'Inline Ticket Rating Links',
+	'adm.email_templates.emails_common_ticket-rating-links_desc'      => 'These are the links that appear under agent replies asking the user to rate their support.'
 );

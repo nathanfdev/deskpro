@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Service;
 use Application\DeskPRO\App;
 use DeskPRO\Kernel\License;
+use Doctrine\DBAL\DBALException;
 
 class ErrorReporter
 {
@@ -214,7 +215,7 @@ class ErrorReporter
 				return;
 			}
 
-			if (isset($errinfo['exception']) && $errinfo['exception'] instanceof \PDOException) {
+			if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
 				$ignore_codes = array(
 					'HY000', // MySQL server has gone away
 					'1203',  // more than 'max_user_connections' active connections
@@ -376,7 +377,7 @@ class ErrorReporter
 		unset($d);
 
 		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => $timeout, 'strictredirects' => true));
+			$client = new \Zend\Http\Client(null, array('timeout' => $timeout, 'strictredirects' => true, 'sslverifypeer' => false));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 
 			$url = \DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/' . $service . '.json';
@@ -425,7 +426,7 @@ class ErrorReporter
 		$data['license_code'] = App::getSetting('core.license');
 
 		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true));
+			$client = new \Zend\Http\Client(null, array('timeout' => 20, 'strictredirects' => true, 'sslverifypeer' => false));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/heartbeat.json');
 			$client->getRequest()->getPost()->fromArray($data);
@@ -451,7 +452,7 @@ class ErrorReporter
 		);
 
 		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
+			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/ping-install.json');
 			$client->getRequest()->getPost()->fromArray($data);
@@ -512,7 +513,7 @@ class ErrorReporter
 		);
 
 		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
+			$client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/submit-feedback.json');
 			$client->getRequest()->getPost()->fromArray($data);
@@ -520,6 +521,7 @@ class ErrorReporter
 			$r = $client->send();
 			return true;
 		} catch (\Exception $e) {
+			\DeskPRO\Kernel\KernelErrorHandler::logException($e, true, 'failed_send_support_message');
 			return false;
 		}
 	}

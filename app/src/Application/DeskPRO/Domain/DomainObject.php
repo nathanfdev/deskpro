@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Util;
 
 /**
@@ -138,8 +140,14 @@ abstract class DomainObject extends BasicDomainObject
 		if (is_null($value) && is_null($old)) {
 			return;
 		} elseif (is_scalar($value)) {
-			if ($value == $old) {
-				return;
+			if (is_numeric($value) && is_numeric($old)) {
+				if ($value == $old) {
+					return;
+				}
+			} else {
+				if ($value === $old) {
+					return;
+				}
 			}
 		} elseif ($value instanceof \DateTime) {
 			if ($old instanceof \DateTime && $value->getTimestamp() == $old->getTimestamp()) {
@@ -311,7 +319,6 @@ abstract class DomainObject extends BasicDomainObject
 	{
 		return $this->_no_persist;
 	}
-
 
 	/**
 	 * @return string

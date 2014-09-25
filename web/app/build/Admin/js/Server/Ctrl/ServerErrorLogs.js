@@ -74,6 +74,10 @@
           return function() {
             return _this.$scope.server_error_logs.logs = null;
           };
+        })(this)).error((function(_this) {
+          return function() {
+            return _this.showAlert("Clearing the logs failed because the log file is not writable by the web server. You must make the data/logs/error.log file writable before you can clear it.");
+          };
         })(this));
       };
 

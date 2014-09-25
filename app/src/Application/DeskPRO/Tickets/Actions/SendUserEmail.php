@@ -55,7 +55,7 @@ class SendUserEmail extends AbstractEmailAction
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users');
+		$options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users', 'headers');
 		return $options;
 	}
 
@@ -100,10 +100,22 @@ class SendUserEmail extends AbstractEmailAction
 			->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
 			->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 			->setLogger($context->getLogger())
+			->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
 			->setFromEmailAccount($from_account);
 
 		if ($this->getActionOption('do_cc_users')) {
 			$build->enableUserCc();
+		}
+
+		// If this is from a user reply, then mark the email as auto and handle disable auto setting
+		if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
+			$context->getLogger()->info("[SendUserEmail] Identified as an automatic email");
+			$build->setIsAuto();
+
+			if ($ticket->person->disable_autoresponses) {
+				$context->getLogger()->info("Skipping email because user is marked as an auto-responder");
+				return;
+			}
 		}
 
 		$ticket_email = $build->buildTicketEmail();

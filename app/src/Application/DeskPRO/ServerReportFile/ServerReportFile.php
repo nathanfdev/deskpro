@@ -39,11 +39,17 @@ use Application\DeskPRO\Service\ErrorReporter;
 use DeskPRO\Kernel\License;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
+use Orb\Util\Files;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ServerReportFile
 {
+	/**
+	 * @var int
+	 */
+	private $max_file_size = 250000;
+
 	/**
 	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
@@ -252,7 +258,7 @@ class ServerReportFile
 	 */
 	protected function _createWebErrorLog($file_name)
 	{
-		$file = str_repeat('#', 72) . "# server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
+		$file = str_repeat('#', 72) . "#\n server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
 
 		$log_file_path = @ini_get('error_log');
 
@@ -285,7 +291,7 @@ class ServerReportFile
 	 */
 	protected function _createCliErrorLog($file_name)
 	{
-		$file = str_repeat('#', 72) . "# cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
+		$file = str_repeat('#', 72) . "#\n cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
 
 		try {
 
@@ -676,9 +682,18 @@ class ServerReportFile
 	 */
 	protected function _readFile($file_name)
 	{
-		if(($content = @file_get_contents($file_name)) === false) {
+		if (!file_exists($file_name)) {
+			return '';
+		}
 
-			throw new IOException('Could not read file under location - ' . $file_name);
+		try {
+			$content = Files::readFromEnd($file_name, $this->max_file_size);
+		} catch (\Exception $e) {
+			$content = false;
+		}
+
+		if ($content === false) {
+			$content = '(failed to read file)';
 		}
 
 		return $content;

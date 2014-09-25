@@ -2,7 +2,10 @@
 
 namespace Orb\Jira;
 
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Guzzle\Http\Client;
+use Guzzle\Http\Exception\BadResponseException;
 
 /**
  * JIRA Web Service Wrapper<br/>
@@ -39,6 +42,8 @@ class Service
 	
 	protected $_em;
 
+	protected $_regEnabled = false;
+
 	/**
 	 * The default constructor
 	 * 
@@ -61,6 +66,8 @@ class Service
 		if (isset($params['debug']) && $params['debug']) {
 			$this->_debug = true;
 		}
+
+		$this->_regEnabled = !empty($params['reg_enabled']);
 		
 		$this->_em = $em;
 	}
@@ -94,12 +101,12 @@ class Service
 	 * @return \JIRA\Service
 	 * @throws \Exception if the debug mode is off
 	 */
-	public function addError($error)
+	public function addError($error, $code = 0)
 	{
 		if (!$this->_debug) {
 			$this->_errors[] = $error;
 		} else {
-			throw new \Exception($error);
+			throw new \Exception($error, (int) $code);
 		}
 		
 		return $this;
@@ -140,7 +147,11 @@ class Service
 			}
 			
 		} catch (\Exception $e) {
-			$this->addError($e->getMessage());
+			if ($e instanceof BadResponseException) {
+				$this->addError($e->getMessage(), $e->getResponse()->getStatusCode());
+			} else {
+				$this->addError($e->getMessage());
+			}
 		}
 		
 		return false;
@@ -156,8 +167,8 @@ class Service
 	public function get($uri, array $headers = array(), $params = array())
 	{
 		$defaultParams = array(
-			'timeout'         => 40,
-			'connect_timeout' => 40
+			'timeout'         => 20,
+			'connect_timeout' => 1.5
 		);
 		
 		$params = array_merge($defaultParams, $params);
@@ -400,9 +411,10 @@ class Service
 	
 	public function getCreateMeta()
 	{
+		// todo this may cause "Operation timed out after 1xxx milliseconds" without any handling
 		return $this->get('rest/api/latest/issue/createmeta', array(), array(
-			'timeout'         => 15,
-			'connect_timeout' => 10
+			'timeout'         => 5,
+			'connect_timeout' => 4
 		));
 	}
 	
@@ -438,27 +450,29 @@ class Service
 	/**
 	 * Fetches all the comments on all associated JIRA issues
 	 */
-	public function fetchAllComment()
+	public function fetchAllComment($limit = 0)
 	{
+		//Fetch all the exported JIRA Issues
+		/** @var \Application\DeskPRO\EntityRepository\JiraIssue $jiraIssueRepository */
 		$jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
-		$jiraIssues = $jiraIssueRepository->findAll();
-
+		
+		$jiraIssues = $limit
+			? $jiraIssueRepository->findAll()
+			: $jiraIssueRepository->findBy(array(), array('lastSynced' => 'ASC'), $limit);
+		
 		foreach ($jiraIssues as $jiraIssue) {
 			$issue_id = $jiraIssue->issue;
-			try {
-				$this->_fetchCommentsByIssueId($issue_id);
-			} catch (\Exception $e) {
-				// Could be a 404 etc
-			}
+			
+			$this->_fetchCommentsByIssueId($issue_id);
 		}
 	}
-
+	
 	/**
 	 * Fetches comments on given JIRA issue
 	 * 
 	 * @param type $issue_id JIRA issue ID
 	 */
-	private function _fetchCommentsByIssueId($issue_id)
+	public function _fetchCommentsByIssueId($issue_id)
 	{
 		$jiraIssueRepository = $this->_em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 		
@@ -469,9 +483,22 @@ class Service
 		if (!$jiraIssues) {
 			return false;
 		}
-		
-		//Reaching this point means there are DeskPRO tickets associated to this issue_id 
-		$issue		= $this->findIssue($issue_id);
+
+		try {
+			//Reaching this point means there are DeskPRO tickets associated to this issue_id
+			$issue	= $this->findIssue($issue_id);
+		} catch (\Exception $e) {
+			if (404 === $e->getCode()) {
+				foreach ($jiraIssues as $issue) {
+					$this->_em->remove($issue);
+				}
+				return $this->_em->flush();
+			}
+		}
+
+		if (!$issue) {
+			return;
+		}
 		
 		$jiraRepository	= $this->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
 		
@@ -481,7 +508,7 @@ class Service
 			$ticket = $jiraIssue->ticket;
 			
 			$savedComments = $jiraIssue->comments;
-
+			
 			foreach ($comments as $comment) {
 				foreach ($savedComments as $savedComment) {
 					if ($savedComment->jiraId === (int) $comment['id']) {
@@ -511,9 +538,21 @@ class Service
 				if ($matchedEmail) {
 					$commentAuthor = $matchedEmail->person;
 				} else {
-					$personRepository = $this->_em->getRepository('Application\DeskPRO\Entity\Person');
-					
-					$commentAuthor = $personRepository->find(1);
+
+					if (!$this->_regEnabled) {
+						// todo?
+						continue;
+					}
+
+					$person_processor = new PersonFromEmailProcessor();
+					$eml = new EmailAddress();
+					$eml->email = $jiraUserEmail;
+					$person = $person_processor->createPerson($eml, true);
+
+					if (!$person) {
+						// todo?
+						continue;
+					}
 				}
 				
 				$ticketNote['person']			= $commentAuthor;
@@ -543,7 +582,8 @@ class Service
 				$this->_em->persist($jiraIssue);
 			}
 		}
-		
+
+		$jiraIssue['lastSynced'] = time();
 		$this->_em->flush();
 	}
 }

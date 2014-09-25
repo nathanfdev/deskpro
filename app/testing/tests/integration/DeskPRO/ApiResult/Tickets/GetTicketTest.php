@@ -37,11 +37,14 @@ class GetTicketTest extends AbstractApiResultTest
 		}
 
 		foreach ($this->getTimestampFields('ticket') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketArray[$field]);
+			// 0 check because some times can be null
+			if ($retrievedTicketArray[$field] !== 0) {
+				$this->assertIsValidTimestamp($retrievedTicketArray[$field], "ticket.$field");
+			}
 		}
 
 		foreach ($this->getTimestampFields('person') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketArray['person'][$field]);
+			$this->assertIsValidTimestamp($retrievedTicketArray['person'][$field], "person.$field");
 		}
 
 		foreach ($this->getTimestampFields('person_email') as $field) {
@@ -90,7 +93,6 @@ class GetTicketTest extends AbstractApiResultTest
 		$this->assertEquals($retrievedTicketArray['subject'], $testSubject);
 	}
 
-	/* TODO Fatal error: Call to undefined method DeskPRO\Criteria\Ticket::addDepartment() in /deskpro/www/app/testing/tests/integration/DeskPRO/ApiResult/Tickets/GetTicketTest.php on line 101
 	public function testFindByDepartment()
 	{
 		$testDepartmentId = 1;
@@ -111,7 +113,6 @@ class GetTicketTest extends AbstractApiResultTest
 
 		$this->assertEquals($retrievedTicketArray['department']['id'], $testDepartmentId);
 	}
-	*/
 
 	public function testFindByAgent()
 	{

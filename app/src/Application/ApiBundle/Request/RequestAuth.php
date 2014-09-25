@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Request;
 
 use Application\ApiBundle\ApiUser;
+use Application\DeskPRO\Entity\ApiKey;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -103,7 +104,10 @@ class RequestAuth
 
 				// API Keys can specify an agent ID context which overrides their own
 				$agent_id = $this->getRequestValue('X-DeskPRO-Agent-ID', 'AGENT-ID', false);
-				if ($agent_id) {
+				if (!$agent_id) {
+					$agent_id = $this->getRequestValue('X-DeskPRO-Agent-ID', 'DP-AGENT-ID', false);
+				}
+				if ($agent_id && $this->api_user->api_key->isFlagSet(ApiKey::FLAG_SUPER_KEY)) {
 					$agent = $this->em->getRepository('DeskPRO:Person')->find($agent_id);
 					if ($agent && $agent->is_agent && !$agent->is_deleted) {
 						$this->api_user->person = $agent;

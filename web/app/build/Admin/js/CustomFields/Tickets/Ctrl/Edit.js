@@ -20,8 +20,23 @@
       Admin_CustomFields_Tickets_Ctrl_Edit.prototype.initialLoadExtra = function() {
         return this.Api.sendGet('/ticket_layouts/fields/ticket_field_' + (this.field_id || '__undefined__')).success((function(_this) {
           return function(data) {
+            var l, _i, _j, _len, _len1, _ref, _ref1, _results;
             _this.user_layouts = data.user_layouts;
-            return _this.agent_layouts = data.agent_layouts;
+            _this.agent_layouts = data.agent_layouts;
+            if (!_this.field_id) {
+              _ref = _this.user_layouts;
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                l = _ref[_i];
+                l.enabled = true;
+              }
+              _ref1 = _this.agent_layouts;
+              _results = [];
+              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                l = _ref1[_j];
+                _results.push(l.enabled = true);
+              }
+              return _results;
+            }
           };
         })(this));
       };
@@ -32,12 +47,14 @@
           enable_user_layouts: [],
           enable_agent_layouts: []
         };
-        _ref = this.user_layouts;
-        for (k in _ref) {
-          if (!__hasProp.call(_ref, k)) continue;
-          l = _ref[k];
-          if (l.enabled) {
-            postData.enable_user_layouts.push(l.department ? l.department.id : 0);
+        if (!this.form.is_agent_field) {
+          _ref = this.user_layouts;
+          for (k in _ref) {
+            if (!__hasProp.call(_ref, k)) continue;
+            l = _ref[k];
+            if (l.enabled) {
+              postData.enable_user_layouts.push(l.department ? l.department.id : 0);
+            }
           }
         }
         _ref1 = this.agent_layouts;

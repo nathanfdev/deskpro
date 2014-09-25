@@ -37,7 +37,7 @@
 				</li>
 			{% endif %}
 
-			{% if app.getSetting('core.apps_tasks')  %}
+			{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}
 				<li id="tasks_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tasks">
 					<span class="count-badge" style="display: none"><span></span></span>
 					<a title="{{ phrase('agent.chrome.nav_tasks') }}"><i class="app-icon app-icon-tasks"></i></a>

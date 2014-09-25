@@ -39,7 +39,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+        var f, options, set_options, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7;
         if (typesData == null) {
           typesData = null;
         }
@@ -139,6 +139,10 @@
           value: 'CheckLabel'
         });
         options.push({
+          title: 'SLAs',
+          value: 'CheckSlaStatus'
+        });
+        options.push({
           title: 'Creation System',
           value: 'CheckCreationSystem'
         });
@@ -158,15 +162,21 @@
           title: 'User Message',
           value: 'CheckUserMessage'
         });
+        if ((_ref = this.options_data) != null ? (_ref1 = _ref.ticket_settings) != null ? _ref1.satisfaction_enabled : void 0 : void 0) {
+          options.push({
+            title: 'Ticket Satisfaction',
+            value: 'CheckTicketSatisfaction'
+          });
+        }
         set_options.push({
           title: 'Ticket Criteria',
           subOptions: options
         });
-        if ((_ref = this.options_data) != null ? _ref.ticket_fields : void 0) {
+        if ((_ref2 = this.options_data) != null ? _ref2.ticket_fields : void 0) {
           options = [];
-          _ref1 = this.options_data.ticket_fields;
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            f = _ref1[_i];
+          _ref3 = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
+            f = _ref3[_i];
             options.push({
               title: f.title,
               value: this.initFieldGetter('CheckTicketField', f)
@@ -181,6 +191,10 @@
         }
         options = [];
         options.push({
+          title: 'User',
+          value: 'CheckUserId'
+        });
+        options.push({
           title: 'User Name',
           value: 'CheckUserName'
         });
@@ -190,7 +204,7 @@
         });
         options.push({
           title: 'User Label',
-          value: 'CheckUserLabels'
+          value: 'CheckUserLabel'
         });
         options.push({
           title: 'Usergroup',
@@ -224,11 +238,11 @@
           title: 'User Criteria',
           subOptions: options
         });
-        if ((_ref2 = this.options_data) != null ? _ref2.user_fields : void 0) {
+        if ((_ref4 = this.options_data) != null ? _ref4.user_fields : void 0) {
           options = [];
-          _ref3 = this.options_data.user_fields;
-          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
-            f = _ref3[_j];
+          _ref5 = this.options_data.user_fields;
+          for (_j = 0, _len1 = _ref5.length; _j < _len1; _j++) {
+            f = _ref5[_j];
             options.push({
               title: f.title,
               value: this.initFieldGetter('CheckUserField', f)
@@ -242,6 +256,10 @@
           }
         }
         options = [];
+        options.push({
+          title: 'Organization',
+          value: 'CheckOrgId'
+        });
         options.push({
           title: 'Organization Name',
           value: 'CheckOrgName'
@@ -262,11 +280,11 @@
           title: 'Organization Criteria',
           subOptions: options
         });
-        if ((_ref4 = this.options_data) != null ? _ref4.org_fields : void 0) {
+        if ((_ref6 = this.options_data) != null ? _ref6.org_fields : void 0) {
           options = [];
-          _ref5 = this.options_data.org_fields;
-          for (_k = 0, _len2 = _ref5.length; _k < _len2; _k++) {
-            f = _ref5[_k];
+          _ref7 = this.options_data.org_fields;
+          for (_k = 0, _len2 = _ref7.length; _k < _len2; _k++) {
+            f = _ref7[_k];
             options.push({
               title: f.title,
               value: this.initFieldGetter('OrgField', f)
@@ -292,6 +310,10 @@
           title: 'Ticket Created Date',
           value: 'CheckDateCreated'
         });
+        options.push({
+          title: 'During Working Hours',
+          value: 'CheckWorkingHours'
+        });
         set_options.push({
           title: 'Dates',
           subOptions: options
@@ -313,11 +335,29 @@
           title: 'Check Current Agent',
           value: 'CheckPerformer'
         });
+        options.push({
+          title: 'Check Performer Email',
+          value: 'CheckPerformerEmail'
+        });
         set_options.push({
           title: 'Trigger Control',
           subOptions: options
         });
+        options = [];
+        options.push({
+          title: 'Check API key',
+          value: 'CheckApiKey'
+        });
+        set_options.push({
+          title: 'API Criteria',
+          subOptions: options
+        });
         return set_options;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.resetData = function() {
+        this.options_data = null;
+        return this.loadDataPromise = null;
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.loadDataOptions = function() {
@@ -339,13 +379,16 @@
               'ticket_fields': '/ticket_fields',
               'user_fields': '/user_fields',
               'org_fields': '/org_fields',
+              'ticket_slas': '/ticket_slas',
               'ticket_accounts': '/email_accounts',
               'usergroups': '/user_groups',
               'langs': '/langs',
-              'email_tpls': '/email-templates-info'
+              'email_tpls': '/email-templates-info',
+              'api_keys': '/api_keys',
+              'ticket_settings': '/ticket_settings'
             }).then((function(_this) {
               return function(result) {
-                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
                 data = result.data;
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
@@ -358,30 +401,33 @@
                 options_data['ticket_fields'] = (_ref1 = data.ticket_fields) != null ? _ref1.custom_fields : void 0;
                 options_data['org_fields'] = (_ref2 = data.org_fields) != null ? _ref2.custom_fields : void 0;
                 options_data['user_fields'] = (_ref3 = data.user_fields) != null ? _ref3.custom_fields : void 0;
+                options_data['ticket_slas'] = (_ref4 = data.ticket_slas) != null ? _ref4.slas : void 0;
                 options_data['email_accounts'] = data.ticket_accounts.email_accounts;
                 options_data['usergroups'] = data.usergroups.groups;
-                options_data['langs'] = (_ref4 = data.langs) != null ? _ref4.languages : void 0;
+                options_data['langs'] = (_ref5 = data.langs) != null ? _ref5.languages : void 0;
                 options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
+                options_data['api_keys'] = data.api_keys.api_keys;
+                options_data['ticket_settings'] = (_ref6 = data.ticket_settings) != null ? _ref6.ticket_settings : void 0;
                 _this.options_data = options_data;
-                if ((_ref5 = _this.options_data) != null ? _ref5.ticket_fields : void 0) {
-                  _ref6 = _this.options_data.ticket_fields;
-                  for (_i = 0, _len = _ref6.length; _i < _len; _i++) {
-                    f = _ref6[_i];
+                if ((_ref7 = _this.options_data) != null ? _ref7.ticket_fields : void 0) {
+                  _ref8 = _this.options_data.ticket_fields;
+                  for (_i = 0, _len = _ref8.length; _i < _len; _i++) {
+                    f = _ref8[_i];
                     _this.initFieldGetter('CheckTicketField', f);
                   }
                 }
-                if ((_ref7 = _this.options_data) != null ? _ref7.user_fields : void 0) {
-                  _ref8 = _this.options_data.user_fields;
-                  for (_j = 0, _len1 = _ref8.length; _j < _len1; _j++) {
-                    f = _ref8[_j];
+                if ((_ref9 = _this.options_data) != null ? _ref9.user_fields : void 0) {
+                  _ref10 = _this.options_data.user_fields;
+                  for (_j = 0, _len1 = _ref10.length; _j < _len1; _j++) {
+                    f = _ref10[_j];
                     _this.initFieldGetter('CheckUserField', f);
                   }
                 }
-                if ((_ref9 = _this.options_data) != null ? _ref9.org_fields : void 0) {
-                  _ref10 = _this.options_data.org_fields;
+                if ((_ref11 = _this.options_data) != null ? _ref11.org_fields : void 0) {
+                  _ref12 = _this.options_data.org_fields;
                   _results = [];
-                  for (_k = 0, _len2 = _ref10.length; _k < _len2; _k++) {
-                    f = _ref10[_k];
+                  for (_k = 0, _len2 = _ref12.length; _k < _len2; _k++) {
+                    f = _ref12[_k];
                     _results.push(_this.initFieldGetter('CheckOrgField', f));
                   }
                   return _results;
@@ -434,7 +480,7 @@
         if (options == null) {
           options = {};
         }
-        options.propName = 'urgency1';
+        options.propName = 'urgency';
         options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte'];
         def = this.getStandardInput(options);
         return def;
@@ -501,6 +547,17 @@
         options.operators = ['contains', 'notcontains'];
         options.template = 'OptionBuilder/type-criteria-performer.html';
         def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckPerformerEmail = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'email';
+        options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
+        def = this.getStandardInput(options);
         return def;
       };
 
@@ -714,6 +771,74 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckSlaStatus = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-slas.html');
+          },
+          getData: function() {
+            var defer;
+            defer = me.$q.defer();
+            me.loadDataOptions().then((function(_this) {
+              return function() {
+                var sla, _i, _len, _ref;
+                options = [];
+                _ref = me.options_data['ticket_slas'];
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                  sla = _ref[_i];
+                  options.push({
+                    title: sla.title,
+                    value: sla.id
+                  });
+                }
+                return defer.resolve({
+                  options: options
+                });
+              };
+            })(this));
+            return defer.promise;
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                if (value == null) {
+                  value = {};
+                }
+                options = value.options || {};
+                return {
+                  op: value.op || 'contains',
+                  sla_ids: options.sla_ids || [],
+                  is_complete: !!options.is_complete,
+                  sla_status: options.sla_status || 'passing',
+                  show_status: !!options.sla_status
+                };
+              },
+              getValue: function(model, data) {
+                var value;
+                if (model == null) {
+                  model = {};
+                }
+                value = {
+                  type: 'CheckSlaStatus',
+                  op: model.op || 'contains',
+                  options: {
+                    sla_ids: model.sla_ids || [],
+                    is_complete: model.op === 'contains' ? !!model.is_complete : null,
+                    sla_status: model.show_status && model.sla_status && model.op === 'contains' ? model.sla_status : null
+                  }
+                };
+                return value;
+              }
+            };
+          }
+        };
+      };
+
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckStatus = function(options) {
         var def;
         if (options == null) {
@@ -861,18 +986,63 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserId = function(options) {
+        var format;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'id';
+        options.operators = ['is', 'not'];
+        options.url = '/people/quick_search';
+        format = function(item) {
+          return "" + item['name'] + " (" + (item.email || '') + ")";
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10,
+                with_agents: false,
+                start_with: true
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
+      };
+
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserEmail = function(options) {
-        var def;
+        var format;
         if (options == null) {
           options = {};
         }
         options.propName = 'email';
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
-        def = this.getStandardInput(options);
-        return def;
+        options.url = '/people/quick_search';
+        format = function(item) {
+          return "" + item[options.propName] + " (" + (item.name || '') + ")";
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10,
+                with_agents: false,
+                start_with: true
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabels = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckUserLabel = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -1044,6 +1214,32 @@
         options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
         def = this.getStandardInput(options);
         return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgId = function(options) {
+        var format;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'id';
+        options.operators = ['is', 'not'];
+        options.url = '/organizations/quick_search';
+        format = function(item) {
+          return item['name'];
+        };
+        options.inputOptions = {
+          formatResult: format,
+          formatSelection: format,
+          ajax: {
+            data: function(term, page) {
+              return {
+                query: term,
+                limit: 10
+              };
+            }
+          }
+        };
+        return this.getRemoteInput(options);
       };
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckOrgLabel = function(options) {
@@ -1224,20 +1420,28 @@
           getDataFormatter: function() {
             return {
               getViewValue: function(value, data) {
+                var _ref, _ref1;
                 if (value == null) {
                   value = {};
                 }
                 return {
-                  op: value.op || 'is'
+                  op: value.op || 'is',
+                  set_name: ((_ref = value.options) != null ? _ref.set_name : void 0) || 'default',
+                  working_hours: ((_ref1 = value.options) != null ? _ref1.working_hours : void 0) || {}
                 };
               },
               getValue: function(model, data) {
-                var value;
                 if (model == null) {
                   model = {};
                 }
-                value = {};
-                return value;
+                return {
+                  type: 'CheckWorkingHours',
+                  op: model.op,
+                  options: {
+                    set_name: model.set_name || 'default',
+                    working_hours: model.working_hours
+                  }
+                };
               }
             };
           }
@@ -1337,6 +1541,55 @@
 
       Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckAgentIsEmailed = function() {
         return this.getIsEmailed('CheckAgentIsEmailed', 'type-criteria-agentisemailed.html');
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckApiKey = function(options) {
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'api_key_id';
+        options.dataName = 'api_keys';
+        options.operators = ['is', 'not'];
+        options.single = true;
+        options.optionsFormatter = function(options) {
+          var key, name, opts, _i, _len;
+          opts = [];
+          for (_i = 0, _len = options.length; _i < _len; _i++) {
+            key = options[_i];
+            name = key.person ? key.person.display_name : 'Super User';
+            opts.push({
+              value: key.id,
+              title: [name, key.note].join(' | ')
+            });
+          }
+          return opts;
+        };
+        return this.getStandardSelect(options);
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckTicketSatisfaction = function(options) {
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'feedback_rating';
+        options.dataName = 'feedback_rating';
+        options.operators = ['is', 'isset', 'not_isset', 'changed', 'changed_to'];
+        options.single = true;
+        options.optionsFormatter = function(options) {
+          return [
+            {
+              value: -1,
+              title: 'Negative'
+            }, {
+              value: 0,
+              title: 'Neutral'
+            }, {
+              value: 1,
+              title: 'Positive'
+            }
+          ];
+        };
+        return this.getStandardSelect(options);
       };
 
       return Admin_OptionBuilder_TypesDef_TicketCriteria;

@@ -93,7 +93,7 @@
 	{# Subject #}
 	{##################################################################################################################}
 
-	{% if app.getSetting('tickets_enable_like_search') %}
+	{% if app.getSetting('core_tickets.enable_like_search_mode') %}
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">
@@ -147,7 +147,7 @@
 	{# Message #}
 	{##################################################################################################################}
 
-	{% if app.getSetting('tickets_enable_like_search') %}
+	{% if app.getSetting('core_tickets.enable_like_search_mode') %}
 	{% set elid = el_uid() %}
 	<div class="input-row">
 		<div class="input-row-title">

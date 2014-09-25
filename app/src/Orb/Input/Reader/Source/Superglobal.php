@@ -152,7 +152,7 @@ class Superglobal implements SourceInterface, ResetSourceInterface
 		$post = $_POST;
 		if ($this->options->get('accept_json_post') && in_array(Web::getRequestContentType(), array('application/json', 'text/x-json'))) {
 			$json_post = @json_decode(@file_get_contents('php://input'), true);
-			if ($json_post) {
+			if ($json_post && is_array($json_post)) {
 				$post = array_merge($post, $json_post);
 			}
 		}

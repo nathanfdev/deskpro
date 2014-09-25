@@ -133,8 +133,8 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 				}
 
 				if (data.success) {
-					this.markForReload();
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/downloads/file/' + data.download_id);
+					this.markForReload();
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');

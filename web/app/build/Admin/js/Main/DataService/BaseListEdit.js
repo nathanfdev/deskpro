@@ -1,5 +1,5 @@
 (function() {
-  define(['DeskPRO/Util/Angular', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(Util_Angular, Arrays, Util) {
+  define(['DeskPRO/Util/Angular', 'DeskPRO/Util/Arrays', 'DeskPRO/Util/Util', 'angular'], function(Util_Angular, Arrays, Util, angular) {
 
     /*
     	 * This is a simple base data service that implements some default functionality for
@@ -9,6 +9,7 @@
     return Admin_Main_DataService_BaseListEdit = (function() {
       function Admin_Main_DataService_BaseListEdit() {
         Util_Angular.setInjectedProperties(this, arguments);
+        this.map = {};
         this.loadListPromise = null;
         this.isListLoaded = false;
         this.listModels = [];
@@ -44,7 +45,7 @@
       		 * @return {Promise}
        */
 
-      Admin_Main_DataService_BaseListEdit.prototype.loadList = function(reload) {
+      Admin_Main_DataService_BaseListEdit.prototype.loadList = function(reload, params) {
         var deferred;
         if (reload || this.isReloadWaiting) {
           this.loadListPromise = null;
@@ -60,7 +61,7 @@
         }
         deferred = this.$q.defer();
         this.loadListPromise = deferred.promise;
-        this._doLoadList().then((function(_this) {
+        this._doLoadList(params).then((function(_this) {
           return function(models) {
             _this.isListLoaded = true;
             _this._setListData(models);
@@ -145,7 +146,7 @@
           _results1 = [];
           for (_j = 0, _len1 = listModels.length; _j < _len1; _j++) {
             model = listModels[_j];
-            _results1.push(this.listModels.push(model));
+            _results1.push(this._addModel(model));
           }
           return _results1;
         }
@@ -555,6 +556,152 @@
           };
         })(this));
         return this.listModels.reverse();
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype._addModel = function(model) {
+        if (!model || (model[this.idProp] == null)) {
+          return null;
+        }
+        if (this.map[model[this.idProp]] != null) {
+          angular.copy(model, this.map[model[this.idProp]]);
+          if (this.listModels.indexOf(this.map[model[this.idProp]]) === -1) {
+            this.listModels.push(this.map[model[this.idProp]]);
+          }
+        } else {
+          this.map[model[this.idProp]] = model;
+          this.listModels.push(model);
+        }
+        return model;
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype._removeModel = function(model) {
+        var idx;
+        if (model[this.idProp] == null) {
+          return null;
+        }
+        model = this.map[model[this.idProp]];
+        if (model == null) {
+          return null;
+        }
+        delete this.map[model[this.idProp]];
+        idx = this.listModels.indexOf(model);
+        if (idx > -1) {
+          return this.listModels.splice(idx, 1);
+        }
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype.all = function(reload, params) {
+        return this.loadList(reload, params);
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype.get = function(id) {
+        var deferred;
+        if (id == null) {
+          return null;
+        }
+        deferred = this.$q.defer();
+        this.all().then((function(_this) {
+          return function() {
+            return deferred.resolve(_this.map[id]);
+          };
+        })(this));
+        return deferred.promise;
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype.set = function(data) {
+        var def;
+        def = this.$q.defer();
+        this._doSave(data).then((function(_this) {
+          return function(data) {
+            return def.resolve(_this._addModel(data));
+          };
+        })(this), (function(_this) {
+          return function(res) {
+            return def.reject(res);
+          };
+        })(this));
+        return def.promise;
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype.remove = function(model) {
+        var def;
+        def = this.$q.defer();
+        this._doRemove(model).then((function(_this) {
+          return function() {
+            return def.resolve(_this._removeModel(model));
+          };
+        })(this), (function(_this) {
+          return function(res) {
+            return def.reject(res);
+          };
+        })(this));
+        return def.promise;
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype.url = function() {
+        throw new Exception("This method must be implemented by a sub-class");
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype.resolveResponse = function(response) {
+        return response;
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype._doLoadList = function(params) {
+        var deferred;
+        deferred = this.$q.defer();
+        if (params == null) {
+          params = {};
+        }
+        this.Api.sendGet(this.url(), params).success((function(_this) {
+          return function(data) {
+            return deferred.resolve(_this.resolveResponse(data));
+          };
+        })(this)).error(function(data, status, headers, config) {
+          return deferred.reject(data);
+        });
+        return deferred.promise;
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype._doSave = function(model) {
+        var deferred, id, method;
+        deferred = this.$q.defer();
+        method = 'sendPostJson';
+        if ((model[this.idProp] != null) && model[this.idProp]) {
+          method = 'sendPutJson';
+        }
+        id = model[this.idProp] || 0;
+        this.Api[method](this.url() + ("/" + id), model).success((function(_this) {
+          return function(data) {
+            return deferred.resolve(_this.resolveResponse(data));
+          };
+        })(this)).error((function(_this) {
+          return function(data, status, headers, config) {
+            return deferred.reject({
+              info: data.error_message,
+              status: status
+            });
+          };
+        })(this));
+        return deferred.promise;
+      };
+
+      Admin_Main_DataService_BaseListEdit.prototype._doRemove = function(model) {
+        var deferred, id;
+        deferred = this.$q.defer();
+        id = model[this.idProp] || 0;
+        this.Api.sendDelete(this.url() + ("/" + id)).success((function(_this) {
+          return function() {
+            return deferred.resolve();
+          };
+        })(this)).error((function(_this) {
+          return function(data, status, headers, config) {
+            return deferred.reject({
+              info: data.error_message,
+              status: status
+            });
+          };
+        })(this));
+        return deferred.promise;
       };
 
       return Admin_Main_DataService_BaseListEdit;

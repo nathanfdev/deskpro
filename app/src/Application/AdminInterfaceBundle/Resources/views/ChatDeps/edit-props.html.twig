@@ -28,6 +28,23 @@
 				</div>
 			</div>
 		</div>
+        <div class="form-group">
+            <div class="col-lg-3">
+                <h3>Department Avatar</h3>
+            </div>
+            <div class="col-lg-9">
+                <img ng-src="{{ ng_var('icon_image') }}" height="50" />&nbsp;&nbsp;&nbsp;
+                <a href="javascript:;" ng-click="EditCtrl.setAvatar()">Set Default</a>
+                |
+                <a href="javascript:;" ng-click="EditCtrl.$modal.open({ templateUrl: ListCtrl.getTemplatePath('Index/modal-icons.html'), scope: this })">Pick Avatar</a>
+                |
+                <a href="javascript:;" class="file-upload-wrapper">
+                    <input type="file" ng-file-select="EditCtrl.onFileSelect($files)" accept="image/*" />
+                    Upload Avatar
+                </a>
+                <i class="spinner-flat" ng-show="uploading"></i>
+            </div>
+        </div>
 		<div class="form-group">
 			<div class="col-lg-3">
 				<h3>{{ phrase('agent.general.parent') }}</h3>

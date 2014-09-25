@@ -96,9 +96,11 @@ class TicketEscalationsController extends AbstractController implements Protecte
 
 		$trans = new LegacyTermsTransformer();
 		$crit = $trans->toFilterTerms($esc->terms);
+		$crit2 = $trans->toFilterTerms($esc->terms_any);
 
 		$esc = $this->getApiData($esc);
 		$esc['terms'] = $crit->exportToArray();
+		$esc['terms_any'] = $crit2->exportToArray();
 
 		return $this->createApiResponse(array(
 			'escalation' => $esc
@@ -132,6 +134,14 @@ class TicketEscalationsController extends AbstractController implements Protecte
 
 		$trans = new LegacyTermsTransformer();
 		$esc->terms = $trans->toLegacyTerms($crit);
+
+		$crit = new FilterTerms();
+		foreach ($this->in->getArrayValue('terms_any') as $term_info) {
+			$crit->addTermFromArray($term_info);
+		}
+
+		$trans = new LegacyTermsTransformer();
+		$esc->terms_any = $trans->toLegacyTerms($crit);
 
 		$actions = new TriggerActions();
 		foreach ($this->in->getArrayValue('actions') as $act) {

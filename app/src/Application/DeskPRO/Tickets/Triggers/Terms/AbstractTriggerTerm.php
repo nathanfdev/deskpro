@@ -266,15 +266,14 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 					$op = 'is';
 				} else if ($this->op == 'not_changed_to') {
 					$op = 'not';
-				} else {
-					if ($prop_name instanceof TermValue) {
-						$value = $state->getLastChangeForField($prop_name);
-					}
-					if ($this->op == 'changed_from') {
-						$op = 'is';
-					} else {
-						$op = 'not';
-					}
+				} else if ($this->op == 'changed_from') {
+					$op = 'is';
+					$value = $state->getFirstChangeForField($prop_name)->getOld();
+				} else if ($this->op == 'not_changed_from') {
+					$op = 'not';
+					$value = $state->getFirstChangeForField($prop_name)->getOld();
+				} else if ($op == 'changed') {
+					$op = 'changed';
 				}
 			}
 		} else if ($this->op == 'touched' || $this->op == 'nottouched') {
@@ -317,6 +316,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 		if ($opts['is_changed_op'] && !$opts['was_changed']) {
 			return false;
+		}
+		if ($opts['is_changed_op'] && $opts['was_changed'] && $op == 'changed') {
+			return true;
 		}
 
 		if ($check_ids === null || empty($check_ids)) {
@@ -373,6 +375,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 		if ($opts['is_changed_op'] && !$opts['was_changed']) {
 			return false;
+		}
+		if ($opts['is_changed_op'] && $opts['was_changed'] && $op == 'changed') {
+			return true;
 		}
 
 		if (!is_array($all_values)) {
@@ -578,6 +583,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			elseif (!$opts['was_touched']) return $op == 'nottouched';
 		}
 
+		if ($opts['is_changed_op'] && !$opts['was_changed']) {
+			return false;
+		}
+		if ($opts['is_changed_op'] && $opts['was_changed'] && $op == 'changed') {
+			return true;
+		}
+
 		if ($check_value === null) {
 			return false;
 		}
@@ -649,6 +661,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 				case 'not_regex':
 					foreach ($check_value as $v) {
 						$regex = Strings::getInputRegexPattern($v);
+
 						if (!$regex) {
 							return false;
 						}

@@ -9,9 +9,15 @@
             var clickHref;
             clickHref = attrs['dpClickHref'];
             return element.on('click', function(ev) {
+              var a;
+              if (element.is('a')) {
+                a = element;
+              } else {
+                a = element.find('a').first();
+              }
               if (ev.which === 1 && !(ev.shiftKey || ev.altKey || ev.metaKey || ev.ctrlKey)) {
                 ev.preventDefault();
-                return $('a').attr('href', clickHref).click();
+                return a.attr('href', clickHref).click();
               }
             });
           }

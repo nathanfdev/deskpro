@@ -41,10 +41,10 @@ class TicketWorkflow extends AbstractEntityRepository
 	public function getAll()
 	{
 		$works = $this->getEntityManager()->createQuery("
-				SELECT w
-				FROM DeskPRO:TicketWorkflow w
-				ORDER BY w.display_order
-			")->execute();
+			SELECT w
+			FROM DeskPRO:TicketWorkflow w
+			ORDER BY w.display_order ASC
+		")->execute();
 
 		return $works;
 	}
@@ -58,7 +58,7 @@ class TicketWorkflow extends AbstractEntityRepository
 			$works = $this->getEntityManager()->createQuery("
 				SELECT w
 				FROM DeskPRO:TicketWorkflow w
-				ORDER BY w.display_order
+				ORDER BY w.display_order ASC
 			")->execute();
 		}
 

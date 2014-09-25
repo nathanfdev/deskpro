@@ -17,6 +17,8 @@ define ->
 							$(this).removeClass('group-open').find('.group-section-content').addClass('with-no-height')
 						)
 
+						$timeout(-> element.find('.dp-item-list').find('a').first().click())
+
 						element.addClass('group-open')
 						contentEls.removeClass('with-no-height')
 					else

@@ -68,7 +68,9 @@ class ServerReqs
 		$this->server_check = new ServerChecks();
 		$this->server_check->checkServer();
 
-		$this->web_checks = $this->_generateMessages($this->server_check->getErrors());
+		$this->web_checks = $this->_generateMessages(array_merge(
+			$this->server_check->getErrors(), $this->server_check->getOptionals()
+		), true);
 
 		if (file_exists(dp_get_data_dir() . '/cli-server-reqs-check.dat')) {
 
@@ -99,13 +101,12 @@ class ServerReqs
 
 	/**
 	 * @param array $errors
-	 *
+	 * @param bool $includeOptionals
 	 * @return array
 	 */
-
-	protected function _generateMessages(array $errors)
+	protected function _generateMessages(array $errors, $includeOptionals = false)
 	{
-		$this->_generateCheckTable();
+		$this->_generateCheckTable($includeOptionals);
 
 		$result = array();
 
@@ -132,10 +133,9 @@ class ServerReqs
 	}
 
 	/**
-	 *
+	 * @param bool $includeOptionals
 	 */
-
-	protected function _generateCheckTable()
+	protected function _generateCheckTable($includeOptionals = false)
 	{
 		$ini_path = Env::getPhpIniPath();
 
@@ -251,14 +251,6 @@ class ServerReqs
 				'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_openssl'),
 				'recommendation' => true,
 			),
-			'apc_check'              => array(
-				'description'    => ($is_win) ?
-					'Checking for the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> or the <a href="http://www.php.net/manual/en/book.wincache.php">WinCache extension</a>' :
-					'Checking for the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a>',
-				'error'          => 'We recommend installing the <a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a> or the <a href="http://www.php.net/manual/en/book.wincache.php">WinCache extension</a> to dramatically improve performance.',
-				'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_error_apc'),
-				'recommendation' => true,
-			),
 			'magic_quotes_gpc_check' => array(
 				'description'    => 'Checking if <a href="http://www.php.net/manual/en/security.magicquotes.disabling.php">magic_quotes_gpc</a> is disabled',
 				'error'          => 'We recommend disabling <code>magic_quotes_gpc</code> in your php.ini for a small performance improvement. (Your php.ini file is located at <code>' . $ini_path . '</code>)',
@@ -266,5 +258,36 @@ class ServerReqs
 				'recommendation' => true,
 			),
 		);
+
+		$recommendOpcache = version_compare(phpversion(), '5.5.0', '<')
+			? (\Orb\Util\Env::isWindows()
+				? '<a href="http://www.php.net/manual/en/book.wincache.php">WinCache extension</a>'
+				: '<a href="http://www.php.net/manual/en/apc.installation.php">APC extension</a>' )
+			: '<a href="http://php.net/manual/book.opcache.php">OPcache extension</a>';
+
+		$this->checksTable['apc_check'] = array(
+			'description'    => 'Checking for opcode cache storage',
+			'error'          => sprintf('We recommend installing the %s to dramatically improve performance.', $recommendOpcache),
+			'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_error_apc'),
+			'recommendation' => true,
+		);
+
+
+		if ($includeOptionals) {
+			$this->addOptionals();
+		}
+	}
+
+	/**
+	 * optional extensions
+	 */
+	protected function addOptionals()
+	{
+//		$this->checksTable['test'] = array(
+//			'description'    => 'Checking test',
+//			'error'          => 'We recommend test',
+//			'readMore'       => 'read more',
+//			'recommendation' => true,
+//		);
 	}
 }

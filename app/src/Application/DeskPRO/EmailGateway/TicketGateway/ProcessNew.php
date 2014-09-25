@@ -44,6 +44,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Orb\Util\Strings;
+use \Application\DeskPRO\Translate\Translate;
 
 class ProcessNew extends ProcessAbstract
 {
@@ -51,16 +52,6 @@ class ProcessNew extends ProcessAbstract
 	 * @var TicketIncomingEmail
 	 */
 	protected $ticket_email;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
-
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
-	 */
-	protected $reader;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailAccount
@@ -78,13 +69,16 @@ class ProcessNew extends ProcessAbstract
 	 * @param Person $person
 	 * @param TicketIncomingEmail $ticket_email
 	 */
-	public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email)
+	public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email,
+		Translate $translator
+	)
 	{
 		$this->account       = $account;
 		$this->person        = $person;
 		$this->ticket_email  = $ticket_email;
 		$this->reader        = $ticket_email->reader;
 		$this->cleaner       = App::get('deskpro.core.input_cleaner');
+		$this->translator    = $translator;
 	}
 
 
@@ -187,7 +181,11 @@ class ProcessNew extends ProcessAbstract
 
 		$use_lang = null;
 
-		if (!$this->person->getRealLanguage() && App::getDataService('Language')->isLangSystemEnabled()) {
+		if (!App::getDataService('Language')->isLangSystemEnabled()) {
+			$this->logMessage("Helpdesk is in single-language mode");
+		} else if ($this->person->getRealLanguage()) {
+			$this->logMessage("Person has language set: " . $this->person->getRealLanguage()->id . " " . $this->person->getRealLanguage()->title);
+		} else {
 			$detect_body = strip_tags($email_info->body);
 			if (strlen($detect_body) < 300) {
 				$this->logMessage('Message too short to attempt lang detection');
@@ -201,6 +199,10 @@ class ProcessNew extends ProcessAbstract
 					$this->logMessage("Detected language {$lang->title} (#{$lang->id})");
 					$use_lang = $lang;
 				}
+			}
+
+			if (!$use_lang) {
+				$this->logMessage('No language detected, no language will be set');
 			}
 		}
 
@@ -260,13 +262,18 @@ class ProcessNew extends ProcessAbstract
 		}
 
 		$ticket = $this->getTicketManager()->createTicket();
-		$ticket->subject       = $subject;
-		$ticket->person        = $this->person;
-		$ticket->status        = 'awaiting_agent';
-		$ticket->email_account = $this->account;
+		$ticket->subject         = $subject;
+		$ticket->person          = $this->person;
+		$ticket->status          = 'awaiting_agent';
+		$ticket->email_account   = $this->account;
+		$ticket->creation_system = 'gateway.person';
+
+		if ($use_lang) {
+			$ticket->language = $use_lang;
+		}
 
 		// Set the proper email address on the ticket from the users account
-		if ($this->reader->getFromAddress()->email != $this->person->getPrimaryEmailAddress()) {
+		if (strtolower($this->reader->getFromAddress()->email) != $this->person->getPrimaryEmailAddress()) {
 			$email_rec = $this->person->findEmailAddress($this->reader->getFromAddress()->getEmail());
 			if ($email_rec) {
 				$ticket->person_email = $email_rec;
@@ -278,6 +285,7 @@ class ProcessNew extends ProcessAbstract
 		$ticket_message->message_raw = $email_info->body_raw;
 		$ticket_message->setMessageHtml($email_info->body);
 		$ticket_message->withNewSubject = $subject;
+		$ticket_message->creation_system = 'gateway.person';
 
 		if ($this->reader->getProperty('email_source')) {
 			$ticket_message->email_source = $this->reader->getProperty('email_source');

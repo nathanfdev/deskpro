@@ -283,8 +283,11 @@ class NewTicketController extends AbstractController
 				$error_fields = $validator->getErrorGroups(true);
 			}
 		} else {
-			if (isset($_REQUEST['newticket'])) {
-				$form->bind($_REQUEST['newticket']);
+			if (($newticketData = $this->get('request')->get('newticket')) && is_array($newticketData)) {
+				// need to iterate over children as form locked by mapped 'person' child
+				foreach ($newticketData as $name => $value) {
+					$form->get($name)->setData($value);
+				}
 			}
 		}
 

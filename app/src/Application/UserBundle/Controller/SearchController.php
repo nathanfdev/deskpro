@@ -76,12 +76,13 @@ class SearchController extends AbstractController
 
 		if ($q) {
 			$is_search  = true;
-			$search     = App::getSearchAdapter();
-			$search->setPersonContext($this->person);
 
-			$result_set = $search->getContentSearcher()->omnisearch($q, null, $per_page, $cur_page);
-			$total      = $result_set->totalCount();
-			$results    = $search->getResultSetObjects($result_set, true);
+			$se = $this->container->getSearchEngine();
+			$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+			$result_set = $se->getUserSearch()->search($context, $q);
+
+			$total      = $result_set->getTotal();
+			$results    = $result_set->getTypedResults();
 
 			$sticky_search  = new StickyWordSearch($this->em);
 			$sticky_search->setPersonContext($this->person);
@@ -192,17 +193,16 @@ class SearchController extends AbstractController
 
 	public function omnisearchAction($query)
 	{
-		$search = App::getSearchAdapter();
-		$result_set = $search->getContentSearcher()->omnisearch($query);
-		$results = $search->getResultSetObjects($result_set, true);
+		$se = $this->container->getSearchEngine();
+		$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+		$results = $se->getUserSearch()->search($context, $query);
 
 		$format = $this->in->getString('format');
 
 		if ($format == 'json') {
 			$data = array('results' => array());
 
-			foreach ($results as $res) {
-				$item = $res['object'];
+			foreach ($results->getResults() as $item) {
 				$data['results'][] = array(
 					'url' => $item->getLink(),
 					'title' => $item->getTitle()
@@ -216,7 +216,7 @@ class SearchController extends AbstractController
 			}
 		} else {
 			return $this->render('UserBundle:Search:omnisearch.html.twig', array(
-				'results' => $results,
+				'results' => $results->getTypedResults(),
 				'query'   => $query,
 			));
 		}

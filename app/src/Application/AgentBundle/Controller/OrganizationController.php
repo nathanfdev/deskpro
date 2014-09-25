@@ -39,6 +39,7 @@ use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\OrganizationNote;
+use Application\DeskPRO\Entity\OrganizationFile;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
 
@@ -67,10 +68,13 @@ class OrganizationController extends AbstractController
 		#------------------------------
 
 		$notes = $this->em->getRepository('DeskPRO:OrganizationNote')->getNotesForOrganization($org);
+		
+		$org_files = $this->em->getRepository('DeskPRO:OrganizationFile')->getFilesForOrganization($org);
+		$org_files_count = count($org_files);
 
 		$search = new TicketSearch();
 		$search->addTerm(TicketSearch::TERM_ORGANIZATION, 'is', $org->getId());
-		$search->setOrderBy('ticket.status', 'DESC');
+		$search->setOrderBy('ticket.status', 'ASC');
 
 		$org_tickets = $search->getMatches(array('offset' => 0, 'limit' => 30));
 		$org_tickets = $this->em->getRepository('DeskPRO:Ticket')->getByIds($org_tickets, true);
@@ -128,6 +132,8 @@ class OrganizationController extends AbstractController
 			'org_usergroups'     => $org_usergroups,
 			'usergroup_names'    => $usergroup_names,
 			'notes'              => $notes,
+			'org_files'          => $org_files,
+			'org_files_count'    => $org_files_count,
 			'activity_stream'    => $activity_stream,
 			'org_tickets'        => $org_tickets,
 			'org_tickets_count'  => $org_tickets_count,
@@ -203,7 +209,7 @@ class OrganizationController extends AbstractController
 			case 'get-person-row':
 				$person = $this->em->find('DeskPRO:Person', $this->in->getUint('person_id'));
 				if ($person->organization->id = $org->id) {
-					$data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person));
+					$data['row_html'] = $this->renderView('AgentBundle:Organization:view-members-row.html.twig', array('person' => $person, 'org' => $org));
 				}
 				break;
 
@@ -244,6 +250,14 @@ class OrganizationController extends AbstractController
 					}
 
 					$this->container->getDb()->batchInsert('organization2usergroups', $inserts);
+				}
+				break;
+				
+			case 'remove-file':
+				$file = $this->em->find('DeskPRO:OrganizationFile', $this->in->getUint('file_id'));
+				if ($file && $file->organization && $file->organization->id == $org->id) {
+					$this->em->remove($file);
+					$data['removed_file_id'] = $file['id'];
 				}
 				break;
 
@@ -484,6 +498,48 @@ class OrganizationController extends AbstractController
 			'success' => true,
 			'organization_id' => $org['id'],
 			'note_li_html' => $this->renderView('AgentBundle:Organization:note-li.html.twig', array('note' => $note))
+		));
+	}
+	
+	############################################################################
+	# ajax-save-file
+	############################################################################
+
+	public function ajaxSaveFileAction($organization_id)
+	{
+		if (!$this->person->hasPerm('agent_org.notes')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		$org = $this->getOrgOr404($organization_id);
+
+		$note_txt = $this->in->getString('note');
+		
+		if ($this->in->getUint('file_id')) {
+			$file = $this->em->find('DeskPRO:OrganizationFile', $this->in->getUint('file_id'));
+		} else {
+			$blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
+
+			$file = new OrganizationFile();
+			$file['agent'] = $this->person;
+			$file['organization'] = $org;
+			$file['blob'] = $blob;
+		}
+		$file['note'] = $note_txt;
+		
+		$em = $this->em;
+
+		$em->beginTransaction();
+		
+		$em->persist($file);
+
+		$em->flush();
+		$em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'organization_id' => $org['id'],
+			'html' => $this->renderView('AgentBundle:Person:file-row.html.twig', array('file' => $file))
 		));
 	}
 

@@ -35,6 +35,17 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 
 
 		/**
+		 * Adds an event handler to a fragment event.
+		 *
+		 * @param event_name
+		 * @param fn
+		 */
+		addFragmentEventHandler: function(event_name, fn) {
+			this.getFragment().addEvent(event_name, fn);
+		},
+
+
+		/**
 		 * Gets the fragment root element
 		 * @returns {HTMLElement}
 		 */

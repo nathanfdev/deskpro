@@ -36,6 +36,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -52,6 +53,7 @@ use Orb\Util\Strings;
 class ApiKey extends DomainObject
 {
 	const FLAG_ADMIN_MANAGE = 'admin_manage';
+	const FLAG_SUPER_KEY = 'super';
 
 	/**
 	 * @var int
@@ -80,10 +82,16 @@ class ApiKey extends DomainObject
 	 */
 	protected $flags = array();
 
+	/**
+	 * @var ArrayCollection
+	 */
+	protected $logs;
+
 
 	public function __construct()
 	{
 		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
+		$this->logs = new ArrayCollection();
 	}
 
 
@@ -181,6 +189,15 @@ class ApiKey extends DomainObject
 				'onDelete'             => 'cascade',
 				'columnDefinition'     => null,
 			)),
+		));
+
+		$metadata->mapOneToMany(array(
+			'fieldName'    => 'logs',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
+			'mappedBy'     => 'key',
+			'inversedBy'   => null,
+			'orderBy'      => array('id' => 'DESC'),
+			'cascade'      => array('persist', 'remove'), // doesn't work
 		));
 	}
 }

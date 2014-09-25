@@ -100,6 +100,7 @@
 	'agent.tickets.draft_note'                          => 'Draft Note',
 	'agent.tickets.edit_snippet_category'               => 'Edit Snippet Category',
 	'agent.tickets.email_is_ticket_account'             => 'The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot create a ticket for an email account.',
+	'agent.tickets.email_is_dupe'                       => 'The email address you entered is already on this ticket.',
 	'agent.tickets.email_is_agent_use_followers'        => 'The user you specified is an agent. To add an agent to this ticket, use the "Add a follower" button in the Properties box.',
 	'agent.tickets.email_user_newticket_info'           => 'Email the user this new ticket',
 	'agent.tickets.participant_already_exists'          => 'The user you specified is already on this ticket.',
@@ -138,6 +139,7 @@
 	'agent.tickets.hidden_status_deleted'               => 'Deleted',
 	'agent.tickets.hidden_status_spam'                  => 'Spam',
 	'agent.tickets.hidden_status_validating'            => 'Validating',
+	'agent.tickets.hidden_status_temp'                  => 'Temporary',
 	'agent.tickets.hidden_tickets'                      => 'Hidden Tickets',
 	'agent.tickets.hold_btn'                            => 'Put ticket on hold',
 	'agent.tickets.html_body'                           => 'HTML Body',
@@ -388,4 +390,5 @@
 	'agent.tickets.your_tickets'                        => 'Your tickets',
 	'agent.tickets.create_linked_ticket'                => 'Create Linked Ticket',
 	'agent.tickets.linked_tickets'                      => 'Linked Tickets',
+	'agent.tickets.linking_with_ticket'                 => 'Linking with ticket:',
 );

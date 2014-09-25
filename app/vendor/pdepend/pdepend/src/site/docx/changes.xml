@@ -8,26 +8,24 @@
         <author email="mapi@pdepend.org">Manuel Pichler</author>
     </properties>
 
-    <body>
-        <release version="1.1.3"  
-                 date="2013/12/04"
-                 description="Bug fix release of PDepend.">
-            <action date="226d8f1" dev="mapi" type="fix" issue="127" system="github" due-to="cweiske">
-                package.xml date invalid: 2011/02/12
+	<body>
+        <release version="2.0.0"
+                 date="2014/05/21"
+                 description="New mayor release of PDepend.">
+            <action date="b9775ac" dev="manuelpichler" due-to="claar" type="fix" issue="126" system="github">
+                Allow closure as array element
             </action>
-            <action date="0a2435b" dev="mapi" type="fix" issue="137" system="github" due-to="WebconsultsEU">
-                PHP 5.2 - Syntax Error in Util/Configuration/Factory
+            <action date="e536e7a" dev="manuelpichler" due-to="hgraca" type="fix" issue="153" system="github">
+                Support for new finally keyword implemented.
             </action>
-        </release>
-
-        <release version="1.1.2"
-                 date="2013/11/08"
-                 description="Disables the file cache on affected PHP version">
-            <action date="5bbd201" dev="mapi" type="fix" issue="94" system="github">
-                With this fix we provide a workaround for issue 94 which is caused by a
-                bug in PHP's unserialize/serialize implementation in all PHP versions
-                5.4.0 and 5.4.4. With this workaround we deactivate the file cache in
-                all affected PHP versions.
+            <action date="f6acea9" dev="manuelpichler" type="fix" issue="144" system="github">
+                pdepend --version gives me a wrong message..
+            </action>
+            <action date="3ba9c9e" dev="robocoder" type="add" issue="113" system="github">
+                Specify license, BSD license was missing in composer.json file.
+            </action>
+            <action date="e624f8e" dev="ajgarlag" type="add" issue="117" system="github">
+                Adds composer autoload info
             </action>
         </release>
         <release version="1.1.1"

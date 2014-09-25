@@ -1,0 +1,23 @@
+<td width="20">
+</td>
+<td ng-repeat="field in getDisplayableFields()" ng-switch="field">
+
+    {# Id #}
+    <span ng-switch-when="id" class="prop-val">{{ ng_var('org.id') }}</span>
+
+    {# Name #}
+    <span ng-switch-when="name" class="prop-val">{{ ng_var('org.name') }}</span>
+
+    {# Members count #}
+    <span ng-switch-when="members_count" class="prop-val">{{ ng_var('org.members_count') }}</span>
+
+    {# Labels #}
+    <span ng-switch-when="labels">
+        <span class="listing-tag" ng-repeat="label in org.labels" style="margin-right: 5px;" dp-label="label">
+            {{ ng_var('label') }}
+        </span>
+    </span>
+
+    {#<span ng-switch-default class="prop-val">-</span>#}
+
+</td>

@@ -36,12 +36,21 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 class AgentDataService
 {
+	/**
+	 * @var bool
+	 */
 	protected $has_init = false;
+
+	/**
+	 * @var bool
+	 */
+	protected $has_init_teammap = false;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person[]
@@ -52,6 +61,21 @@ class AgentDataService
 	 * @var array
 	 */
 	private $agent_teams = array();
+
+	/**
+	 * @var array
+	 */
+	private $agent_to_teams = array();
+
+	/**
+	 * @var array
+	 */
+	private $team_to_agents = array();
+
+	/**
+	 * @var array
+	 */
+	private $agent_to_groups = array();
 
 	/**
 	 * @var array
@@ -113,6 +137,29 @@ class AgentDataService
 		$this->team_ids = array_keys($this->agent_teams);
 	}
 
+	protected function preloadTeamMap()
+	{
+		if ($this->has_init_teammap) {
+			return;
+		}
+		$this->has_init_teammap = true;
+
+		$this->team_to_agents = $this->db->fetchAllGrouped("
+			SELECT team_id, person_id
+			FROM agent_team_members
+		", array(), 'team_id', null, 'person_id');
+
+		$this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true);
+
+		if ($this->ids) {
+			$this->agent_to_groups = $this->db->fetchAllGrouped("
+				SELECT person_id, usergroup_id
+				FROM person2usergroups
+				WHERE person_id IN (" . implode(',', $this->ids) . ")
+			", array(), 'person_id', null, 'usergroup_id');
+		}
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\Entity\Person[]
@@ -136,6 +183,7 @@ class AgentDataService
 
 	/**
 	 * @param array $for_ids
+	 * @return string[]
 	 */
 	public function getNames(array $for_ids = null)
 	{
@@ -174,7 +222,8 @@ class AgentDataService
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\Person
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\Person|null
 	 */
 	public function get($id)
 	{
@@ -189,6 +238,7 @@ class AgentDataService
 
 
 	/**
+	 * @param int $id
 	 * @return bool
 	 */
 	public function has($id)
@@ -227,7 +277,7 @@ class AgentDataService
 	 * specify $invalid and all invalid IDs will be put into it.
 	 *
 	 * @param array $ids
-	 * @param null $invalid
+	 * @param null $invalid_ids
 	 * @return array
 	 */
 	public function confirmAgentIds(array $ids, &$invalid_ids = null)
@@ -333,7 +383,8 @@ class AgentDataService
 
 
 	/**
-	 * @return \Application\DeskPRO\Entity\AgentTeam
+	 * @param int $id
+	 * @return \Application\DeskPRO\Entity\AgentTeam|null
 	 */
 	public function getTeam($id)
 	{
@@ -348,6 +399,7 @@ class AgentDataService
 
 
 	/**
+	 * @param int $id
 	 * @return bool
 	 */
 	public function hasTeam($id)
@@ -378,5 +430,228 @@ class AgentDataService
 		}
 
 		return $teams;
+	}
+
+
+	/**
+	 * @param int|\Application\DeskPRO\Entity\Person $agent
+	 * @return \Application\DeskPRO\Entity\AgentTeam[]
+	 * @throws \InvalidArgumentException
+	 */
+	public function getTeamsForAgent($agent)
+	{
+		$this->preload();
+		$this->preloadTeamMap();
+
+		$aid = is_object($agent) ? $agent->id : $agent;
+		$agent = $this->get($aid);
+
+		if (!$agent) {
+			throw new \InvalidArgumentException;
+		}
+
+		if (empty($this->agent_to_teams[$agent->id])) {
+			return array();
+		}
+
+		$teams = array();
+		foreach ($this->agent_to_teams[$agent->id] as $tid) {
+			$t = $this->getTeam($tid);
+			if ($t) {
+				$teams[] = $t;
+			}
+		}
+
+		return $teams;
+	}
+
+	/**
+	 * @param int|\Application\DeskPRO\Entity\Person $agent
+	 * @return \Application\DeskPRO\Entity\AgentTeam[]
+	 * @throws \InvalidArgumentException
+	 */
+	public function getGroupIdsForAgent($agent)
+	{
+		$this->preload();
+		$this->preloadTeamMap();
+
+		$aid = is_object($agent) ? $agent->id : $agent;
+		$agent = $this->get($aid);
+
+		if (!$agent) {
+			throw new \InvalidArgumentException;
+		}
+
+		if (empty($this->agent_to_groups[$agent->id])) {
+			return array();
+		}
+
+		return $this->agent_to_groups[$agent->id];
+	}
+
+
+	/**
+	 * @param int|\Application\DeskPRO\Entity\AgentTeam $team
+	 * @return \Application\DeskPRO\Entity\Person[]
+	 * @throws \InvalidArgumentException
+	 */
+	public function getAgentsForTeam($team)
+	{
+		$this->preload();
+		$this->preloadTeamMap();
+
+		$tid = is_object($team) ? $team->id : $team;
+		$team = $this->getTeam($tid);
+
+		if (!$team) {
+			throw new \InvalidArgumentException;
+		}
+
+		if (empty($this->team_to_agents[$team->id])) {
+			return array();
+		}
+
+		$agents = array();
+		foreach ($this->team_to_agents[$team->id] as $tid) {
+			$t = $this->get($tid);
+			if ($t) {
+				$agents[] = $t;
+			}
+		}
+
+		return $agents;
+	}
+
+
+	/**
+	 * Selects agents based on some kind of selector:
+	 *
+	 * - ticket_agent:          The assigned agent
+	 * - ticket_team:           Agents of the assigned team
+	 * - ticket_agent_teams:    Agents of the teams of the assigned agent
+	 * - ticket_followers:      Agent followers
+	 * - ticket_follower_teams: Teams of the current followers
+	 * - person:                The current person performer
+	 * - person_teams:          Teams of the current person performer
+	 * - all_agents:            All agents
+	 * - agent:10               A specific agent
+	 * - team:12                Agents of a specific team
+	 *
+	 * @param string $selector        Keyword or agent id
+	 * @param Person $person_context  Current person performer
+	 * @param Ticket $ticket_context  Current ticket context
+	 * @return array
+	 */
+	public function selectAgents($selector, Person $person_context = null, Ticket $ticket_context = null)
+	{
+		$return = array();
+
+		// Legacy terms
+		switch ($selector) {
+			case -1:          $selector = 'person'; break;
+			case 'agent':     $selector = 'ticket_agent'; break;
+			case 'team':      $selector = 'ticket_team'; break;
+			case 'followers': $selector = 'ticket_followers'; break;
+		}
+
+		if (is_numeric($selector)) {
+			$selector = 'agent:' . $selector;
+		}
+
+		if (strpos($selector, ':')) {
+			list ($type, $option) = explode(':', $selector, 2);
+		} else {
+			$type = $selector;
+			$option = null;
+		}
+
+		switch ($type) {
+			// Ticket agent
+			case 'ticket_agent':
+				if ($ticket_context && $ticket_context->agent) {
+					$return[] = $ticket_context->agent;
+				}
+				break;
+
+			// Teams of assigned agent
+			case 'ticket_agent_teams':
+				if ($ticket_context && $ticket_context->agent) {
+					$teams = $this->getTeamsForAgent($ticket_context->agent);
+					foreach ($teams as $t) {
+						$return = array_merge($return, $this->getAgentsForTeam($t));
+					}
+				}
+				break;
+
+			// Agents of assigned team
+			case 'ticket_team':
+				if ($ticket_context && $ticket_context->agent_team) {
+					$return = $this->getAgentsForTeam($ticket_context->agent_team);
+				}
+				break;
+
+
+			// Agent followers
+			case 'ticket_followers':
+				if ($ticket_context) {
+					$return = $ticket_context->getAgentParticipants();
+				}
+				break;
+
+			// Agents of teams of follower
+			case 'ticket_follower_teams':
+				if ($ticket_context) {
+					$followers = $ticket_context->getAgentParticipants();
+					foreach ($followers as $a) {
+						$teams = $this->getTeamsForAgent($a);
+						if ($teams) {
+							foreach ($teams as $t) {
+								$return = array_merge($return, $this->getAgentsForTeam($t));
+							}
+						}
+					}
+				}
+				break;
+
+			// Current person
+			case 'person':
+				if ($person_context && $person_context->is_agent) {
+					$return[] = $person_context;
+				}
+				break;
+
+			// Teams of current person
+			case 'person_teams':
+				if ($person_context && $person_context->is_agent) {
+					$teams = $this->getTeamsForAgent($person_context);
+					foreach ($teams as $t) {
+						$return = array_merge($return, $this->getAgentsForTeam($t));
+					}
+				}
+				break;
+
+			// All agents
+			case 'all_agents':
+				$return = $this->getAgents();
+				break;
+
+			// Specific agent
+			case 'agent':
+				$agent = $this->get($option);
+				if ($agent) {
+					$return[] = $agent;
+				}
+				break;
+
+			// Specific team
+			case 'team':
+				$team = $this->getTeam($option);
+				if ($team) {
+					$return = array_merge($return, $this->getAgentsForTeam($team));
+				}
+				break;
+		}
+
+		return $return;
 	}
 }

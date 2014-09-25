@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ use Swagger\Annotations\AbstractAnnotation;
  * @subpackage
  *
  * @Annotation
- * @link https://github.com/wordnik/swagger-core/wiki/Response-Messages
+ * @link https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#525-response-message-object
  */
 class ResponseMessage extends AbstractAnnotation
 {

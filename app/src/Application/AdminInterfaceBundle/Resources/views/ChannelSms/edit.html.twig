@@ -1,0 +1,84 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="ChannelSmsEdit.saveAccount()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div ng-hide="form.account.is_connected">
+							<div class="form-group" style="border-bottom: none;">
+								<div class="row">
+									<div class="col-lg-3"><h3>{{ phrase('admin.channels.sms_service_provider') }}</h3></div>
+									<div class="col-lg-9">
+										<select style="margin-bottom: 15px;" ui-select2 ng-model="form.account.type">
+											<option value="">Select...</option>
+											<option value="twilio">Twilio</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div ng-switch="form.account.type">
+							<div ng-switch-when="twilio">
+								{% include 'AdminInterfaceBundle:ChannelSms:edit-twilio.html.twig' %}
+							</div>
+						</div>
+						<div class="form-group" ng-show="form.account.is_connected && form.account.is_tested">
+							<div class="col-lg-3">
+								<h3>{{ phrase('admin.general.enabled') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<label>
+									<input type="checkbox" ng-model="form.account.is_enabled"
+										/>
+									{{ phrase('admin.channels.sms_enable_account') }}
+								</label>
+								<span class="help-block" style="margin-bottom: 15px;"
+									ng-show="!form.account.is_enabled">
+									{{ phrase('admin.channels.sms_enable_account_help') }}
+								</span>
+									<span class="help-block" style="margin-bottom: 15px;"
+										ng-show="form.account.is_enabled">
+										{{ phrase('admin.channels.sms_disable_account_help') }}
+									</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+			<footer ng-hide="form_props.$attempted && form_props.$invalid">
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							{#<li ng-show="form_props.sid.$error.required">Your Twillio AccountSID is required</li>#}
+							{#<li ng-show="form_props.auth_token.$error.required">Your Twillio AuthToken is required</li>#}
+						</ul>
+					</div>
+					<div class="dp-delete-control" ng-if="ChannelSmsEdit.account.id"
+						ng-hide="form_props.$attempted && form_props.$invalid">
+						<button class="btn btn-danger"
+							ng-click="$event.preventDefault(); $parent.ChannelSmsList.startDelete(ChannelSmsEdit.account.id);">
+							{{ phrase('agent.general.delete') }}
+						</button>
+					</div>
+					<div class="dp-btn-controls"
+						ng-hide="!form.account.is_tested || !form.account.is_connected || (form_props.$attempted && form_props.$invalid)">
+						<div dp-hide-spinning="saving_account">
+							<button class="btn btn-primary" type="submit" dp-submit-form>
+								{{ phrase('agent.general.save') }}
+							</button>
+						</div>
+						<div dp-show-spinning="saving_account">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+		<div dp-register-message="saved_account">{{ phrase('admin.general.save_settings_success') }}</div>
+		<div dp-register-message="connected">{{ phrase('admin.channels.sms_sync_success') }}</div>
+		<div dp-register-message="connected_fail">{{ phrase('admin.channels.sms_sync_fail') }}</div>
+		<div dp-register-message="setup_and_tested_success">{{ phrase('admin.channels.setup_and_tested_success') }}</div>
+	</form>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('tickets.ticket_accounts') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>{{ phrase('adm.ticket_accounts.email_accounts') }}</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>{{ phrase('adm.ticket_accounts.advanced_settings') }}</h3>
+		</header>
+        <article class="form-horizontal dp-form">
+            <div class="row">
+
+                <div class="col-lg-6">
+                    <div class="panel panel-innertable">
+                        <div class="panel-heading">
+                            <h3>
+                                <span>{{ phrase('adm.ticket_accounts.user_attachments') }}</span>
+                            </h3>
+                        </div>
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <input type="radio" name="attach_user_exts_limitmode" value="any" ng-model="attach_user_exts_limitmode" />
+                                    {{ phrase('adm.ticket_accounts.allow_all') }}
+                                </h4>
+                            </label>
+                            <br/>
+                            <label>
+                                <h4>
+                                    <input type="radio" name="attach_user_exts_limitmode" value="allow" ng-model="attach_user_exts_limitmode" />
+                                    {{ phrase('adm.ticket_accounts.allow_only') }}
+                                </h4>
+                            </label>
+                            <div ng-show="attach_user_exts_limitmode == 'allow'">
+                                <input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_user_must_exts" style="width: 350px;" placeholder="Example: zip, pdf" />
+                            </div>
+                            <br />
+                            <label>
+                                <h4>
+                                    <input type="radio" name="attach_user_exts_limitmode" value="disallow" ng-model="attach_user_exts_limitmode" />
+                                    {{ phrase('adm.ticket_accounts.disallow_only') }}
+                                </h4>
+                            </label>
+                            <div ng-show="attach_user_exts_limitmode == 'disallow'">
+                                <input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_user_not_exts" style="width: 350px;" placeholder="Example: exe, msi" />
+                            </div>
+                        </div>
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    {{ phrase('adm.ticket_accounts.max_file_size') }}
+                                </h4>
+                            </label>
+                            <div>
+                                <dp-filesize-with-unit ng-model="settings.attach_user_maxsize"></dp-filesize-with-unit>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="panel panel-innertable">
+                        <div class="panel-heading">
+                            <h3>
+                                <span>{{ phrase('adm.ticket_accounts.agent_attachments') }}</span>
+                            </h3>
+                        </div>
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <input type="radio" name="attach_agent_exts_limitmode" value="any" ng-model="attach_agent_exts_limitmode" />
+                                    {{ phrase('adm.ticket_accounts.allow_all') }}
+                                </h4>
+                            </label>
+                            <br/>
+                            <label>
+                                <h4>
+                                    <input type="radio" name="attach_agent_exts_limitmode" value="allow" ng-model="attach_agent_exts_limitmode" />
+                                    {{ phrase('adm.ticket_accounts.allow_only') }}
+                                </h4>
+                            </label>
+                            <div ng-show="attach_agent_exts_limitmode == 'allow'">
+                                <input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_agent_must_exts" style="width: 350px;" placeholder="Example: zip, pdf" />
+                            </div>
+                            <br />
+                            <label>
+                                <h4>
+                                    <input type="radio" name="attach_agent_exts_limitmode" value="disallow" ng-model="attach_agent_exts_limitmode" />
+                                    {{ phrase('adm.ticket_accounts.disallow_only') }}
+                                </h4>
+                            </label>
+                            <div ng-show="attach_agent_exts_limitmode == 'disallow'">
+                                <input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="settings.attach_agent_not_exts" style="width: 350px;" placeholder="Example: exe, msi" />
+                            </div>
+                        </div>
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    {{ phrase('adm.ticket_accounts.max_file_size') }}
+                                </h4>
+                            </label>
+                            <div>
+                                <dp-filesize-with-unit ng-model="settings.attach_agent_maxsize"></dp-filesize-with-unit>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </article>
+
+        <footer>
+            <div class="dp-content">
+                <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                    <div dp-hide-spinning="saving">
+                        <button class="btn btn-primary" ng-click="Settings.save()">{{ phrase('agent.general.save') }}</button>
+                    </div>
+                    <div dp-show-spinning="saving">
+                        <i class="spinner-flat"></i>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+	</section>
+
+    <div dp-register-message="saved_settings">{{ phrase('adm.ticket_accounts.saved') }}</div>
+{% endblock %}

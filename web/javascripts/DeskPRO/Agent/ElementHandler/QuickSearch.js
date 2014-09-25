@@ -10,6 +10,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 		var listWrap   = $('#dp_search_box_list_wrap');
 		var list       = $('#dp_search_box_list');
 		var eatClick   = false;
+		var ignoreBlur = false;
 
 		searchBox.data('handler', {
 			setSearch: function(term) {
@@ -90,6 +91,7 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 
 		var lastWinW = 0;
 		searchBox.on('focus', function() {
+			ignoreBlur = false;
 
 			var winW = $(window).width();
 			$(this).addClass('dp-focus');
@@ -148,6 +150,12 @@ DeskPRO.Agent.ElementHandler.QuickSearch = new Orb.Class({
 			}
 
 		}).on('blur', function() {
+
+			if (!ignoreBlur && document.activeElement === listWrap[0]) {
+				ignoreBlur = true;
+				return;
+			}
+
 			$(this).removeClass('dp-focus');
 
 			if ($(this).hasClass('dp-regaining-focus')) {

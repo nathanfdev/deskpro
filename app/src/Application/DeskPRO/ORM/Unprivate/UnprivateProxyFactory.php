@@ -1,17 +1,17 @@
 <?php
-/* This file has been auto-generated (2013-10-07). See build-vendors-mutate.php */
+/* This file has been auto-generated (2014-09-04). See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
-use Application\DeskPRO\ORM\Proxy\ProxyGenerator;
+use Doctrine\ORM\Proxy\ProxyException;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Proxy\AbstractProxyFactory;
-use Doctrine\Common\Proxy\Proxy as BaseProxy;
 use Doctrine\Common\Proxy\ProxyDefinition;
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Proxy\Proxy as BaseProxy;
+use Application\DeskPRO\ORM\Proxy\ProxyGenerator;
+use Doctrine\ORM\ORMInvalidArgumentException;
+use Doctrine\ORM\Persisters\BasicEntityPersister;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\ORM\Persisters\BasicEntityPersister;
-use Doctrine\ORM\Proxy\ProxyException;
-
 class UnprivateProxyFactory extends AbstractProxyFactory
 {
     protected $em;

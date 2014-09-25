@@ -35,13 +35,38 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BigMode;
+use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
+use Doctrine\DBAL\LockMode;
 
 class Person extends AbstractEntityRepository
 {
 	protected $identity_helper;
+
+
+	public function findOneByPhoneNumber($from_number)
+	{
+		$phone_number = $this->getEntityManager()->getRepository('DeskPRO:PhoneNumber')->findByNumber($from_number);
+
+		if (!$phone_number) {
+			return null; // didnt find the number in the db
+		}
+
+		$query = $this->getEntityManager()->createQuery(
+		"
+			SELECT p
+			FROM DeskPRO:Person p
+			WHERE :found_phone_number MEMBER OF p.phone_numbers
+		"
+		);
+
+		$query->setMaxResults(1)->setParameter('found_phone_number', $phone_number);
+
+		return $query->getOneOrNullResult();
+	}
 
 	/**
 	 * @return \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
@@ -88,6 +113,36 @@ class Person extends AbstractEntityRepository
 		")->execute();
 
 		return $deleted_agents;
+	}
+
+
+	/**
+	 * Give a department and get back the agents that are in that department.
+	 *
+	 * Currently this is defined as anyone with a "FULL" permission to the
+	 * ticket system.
+	 *
+	 * @param Department|int $department the actual department or the id of it
+	 *
+	 * @return Person[]
+	 */
+	public function getAgentsInDepartment($department)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			JOIN p.department_permissions dep_per
+			WHERE (p.is_agent = true AND p.is_deleted = false)
+			AND dep_per.department = :department
+			AND dep_per.name = :permission
+			AND dep_per.app = :app
+			AND dep_per.value = 1
+			ORDER BY p.last_name ASC, p.first_name ASC
+		")
+			->setParameter('department', $department)
+			->setParameter('permission', DepartmentPermission::FULL)
+			->setParameter('app', DepartmentPermission::APP_TICKETS)
+			->execute();
 	}
 
 	public function findAgentByName($name)
@@ -235,19 +290,38 @@ class Person extends AbstractEntityRepository
 	 * @param string $email
 	 * @return Person
 	 */
-	public function findOneByEmail($email)
+	public function findOneByEmail($email, $for_write = false)
 	{
-		$person = $this->getEntityManager()->createQuery("
-			SELECT p
-			FROM DeskPRO:Person p
-			LEFT JOIN p.emails e
-			WHERE e.email = ?1
-			ORDER BY p.id ASC
-		")->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+		if (App::getDb()->isTransactionActive() && $for_write) {
+			$person = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				JOIN p.emails e
+				WHERE e.email = ?1
+				ORDER BY p.id ASC
+			")->setLockMode(LockMode::PESSIMISTIC_WRITE)->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+		} else {
+			$person = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				JOIN p.emails e
+				WHERE e.email = ?1
+				ORDER BY p.id ASC
+			")->setParameter(1, $email)->setMaxResults(1)->getOneOrNullResult();
+		}
 
 		return $person;
 	}
 
+	public function findByEmails(array $emails)
+	{
+		if (!$emails) return array();
+
+		return $this->getEntityManager()->createQuery('
+			SELECT p FROM DeskPRO:Person p
+			JOIN p.emails e WITH e.email IN (:emails)
+		')->setParameter('emails', $emails)->getResult();
+	}
 
 	public function searchByEmailStartingWith($email, $limit = null)
 	{
@@ -341,7 +415,7 @@ class Person extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT p
 			FROM DeskPRO:Person p INDEX BY p.id
-			WHERE p.organization = ?1
+			WHERE p.organization = ?1 AND p.is_deleted = false
 			ORDER BY p.organization_manager DESC, p.last_name ASC, p.first_name ASC
 		")->setFirstResult(($page - 1)*$limit)->setMaxResults($limit)->execute(array(1=> $org));
 	}
@@ -499,5 +573,83 @@ class Person extends AbstractEntityRepository
 		);
 
 		return $counts;
+	}
+
+	/**
+	 * moved from AgentBundle/Controller/PeopleSearchController::performQuickSearch
+	 * @param null $q               search query
+	 * @param bool $startWith       ?
+	 * @param bool $withAgents      include agents
+	 * @param int $excludeOrg       exclude org
+	 * @param int $limit            limit
+	 * @return array
+	 */
+	public function quickSearch($q = null, $startWith = false, $withAgents = true, $excludeOrg = 0, $limit = 10)
+	{
+		$startWith = (bool) $startWith;
+		$withAgents = (bool) $withAgents;
+		$excludeOrg = abs($excludeOrg);
+		$limit = max(10, min($limit, 100));
+		$agent_sql = $withAgents ? '' : ' p.is_agent = 0 AND ';
+		$db = $this->getEntityManager()->getConnection();
+		$q = strtolower($q);
+
+		if (BigMode::isBigMode(BigMode::PERSON_AUTOCOMPLETE)) {
+
+			if (!strlen($q) && $startWith) {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					WHERE $agent_sql
+					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
+					ORDER BY p.id DESC
+					LIMIT $limit
+				");
+			} else {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					WHERE
+						$agent_sql
+						LOWER(e.email) LIKE ?
+						" . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
+					GROUP BY p.id
+					ORDER BY p.date_last_login DESC, p.id DESC
+					LIMIT $limit
+				", array("$q%"));
+			}
+		} else {
+			if (!strlen($q) && $startWith) {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					WHERE $agent_sql
+					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
+					ORDER BY p.name ASC
+					LIMIT $limit
+				");
+			} else {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					WHERE
+						$agent_sql
+						(LOWER(e.email) LIKE ?
+						OR LOWER(p.name) LIKE ?
+						OR LOWER(p.first_name) LIKE ?
+						OR LOWER(p.last_name) LIKE ?)
+						" . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
+					GROUP BY p.id
+					ORDER BY p.date_last_login DESC, p.id DESC
+					LIMIT $limit
+				", array("%$q%", "%$q%", "%$q%", "%$q%"));
+			}
+		}
+
+		return array();
 	}
 }

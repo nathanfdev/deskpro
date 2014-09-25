@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
     var Admin_Templates_Ctrl_EmailTemplateEditor;
     Admin_Templates_Ctrl_EmailTemplateEditor = (function(_super) {
       __extends(Admin_Templates_Ctrl_EmailTemplateEditor, _super);
@@ -38,6 +38,7 @@
         this.$scope.save = (function(_this) {
           return function() {
             var postData, url;
+            _this.$scope.is_error = false;
             _this.$scope.saving_template = true;
             postData = {
               template: {
@@ -45,6 +46,13 @@
                 body: _this.editorMessage.getValue()
               }
             };
+            if (!_this.$scope.email.email_name || Strings.trim(_this.$scope.email.email_name) === "") {
+              _this.$scope.saving_template = false;
+              _this.$scope.is_error = true;
+              _this.$scope.syntax_error = false;
+              _this.$scope.error_message = 'You must specify a template name';
+              return;
+            }
             if (_this.$scope.is_new_email) {
               url = "/templates/" + 'DeskPRO:emails_custom:' + _this.$scope.email.email_name + '.html.twig';
               postData.create_new = true;
@@ -71,6 +79,12 @@
                 isNewEmail: _this.$scope.is_new_email,
                 mode: 'custom'
               });
+            }, function(result) {
+              _this.$scope.saving_template = false;
+              _this.$scope.is_error = true;
+              _this.$scope.syntax_error = result.data.error_syntax || false;
+              _this.$scope.syntax_line = result.data.error_line || 0;
+              return _this.$scope.error_message = result.data.error_message || 'Unknown';
             });
           };
         })(this);
@@ -99,8 +113,8 @@
               if (newHeight > maxH) {
                 newHeight = maxH;
               }
-              if (newHeight < 10) {
-                newHeight = 10;
+              if (newHeight < 18) {
+                newHeight = 18;
               }
               $(editor.container).height(newHeight);
               return editor.resize();
@@ -121,8 +135,8 @@
               if (newHeight > maxH) {
                 newHeight = maxH;
               }
-              if (newHeight < 10) {
-                newHeight = 10;
+              if (newHeight < 85) {
+                newHeight = 85;
               }
               $(editor.container).height(newHeight);
               return editor.resize();

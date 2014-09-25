@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "AgentTeams.js",
+  "sourceRoot": "../../../../../Admin/AgentTeams/DataService/",
+  "sources": [
+    "AgentTeams.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA;AAAA,MAAA;mSAAA;;AAAA,EAAA,MAAA,CAAO,CACN,qCADM,CAAP,EAEG,SACF,mCADE,GAAA;AAGF,QAAA,uCAAA;WAAM;AACL,gEAAA,CAAA;;;;OAAA;;AAAA,MAAA,uCAAC,CAAA,OAAD,GAAW,CAAC,KAAD,EAAQ,IAAR,CAAX,CAAA;;AAAA,wDAGA,GAAA,GAAK,SAAA,GAAA;eAAG,eAAH;MAAA,CAHL,CAAA;;AAAA,wDAKA,eAAA,GAAiB,SAAC,QAAD,GAAA;eAAc,QAAQ,CAAC,YAAvB;MAAA,CALjB,CAAA;;qDAAA;;OADqD,qCAHpD;EAAA,CAFH,CAAA,CAAA;AAAA"
+}

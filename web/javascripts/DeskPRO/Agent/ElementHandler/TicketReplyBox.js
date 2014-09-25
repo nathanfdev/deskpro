@@ -438,6 +438,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			uploadTemplate: $('.template-upload', this.el),
 			downloadTemplate: $('.template-download', this.el)
 		});
+
 		this.el.bind('fileuploaddone', function() {
 			self.getElById('attach_row').show().removeClass('is-hidden');
 			if (self.page) {
@@ -463,6 +464,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		this.el.on('click', '.remove-attach-trigger', function() {
 
+			$(this).trigger('blobremove', [$(this).prev('input').val()]);
 			var row = $(this).closest('li');
 			row.fadeOut('fast', function() {
 				row.remove();

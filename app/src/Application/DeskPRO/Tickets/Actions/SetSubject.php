@@ -73,6 +73,7 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
 
 		if ($this->getActionOption('with_formatter')) {
 			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
+			$formatter->addVar('user_vars', $context->getUserVars());
 			$subject = $formatter->formatText($subject, $ticket);
 			$subject = preg_replace("#[\r\n]#", ' ', $subject);
 			$subject = preg_replace("#\\s{2,}#", ' ', $subject);

@@ -95,7 +95,7 @@ abstract class Repository
 		try {
 			$response = $client->get($endPoint . $id);
 		} catch (\Exception $e) {
-			$client->addError($e->getMessage());
+			$client->addError($e->getMessage(), $e->getCode());
 			
 			return false;
 		}

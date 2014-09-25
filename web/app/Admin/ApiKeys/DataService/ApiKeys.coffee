@@ -110,7 +110,7 @@ define [
 				promise = @Api.sendPostJson('/api_keys/' + model.id, {api_key: postData})
 			else
 				promise = @Api.sendPutJson('/api_keys', {api_key: postData}).success( (data) ->
-					model.id = data.id
+					model = data.api_key if data.api_key?
 				)
 
 			promise.success(=>

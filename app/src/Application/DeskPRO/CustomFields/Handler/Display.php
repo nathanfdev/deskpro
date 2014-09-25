@@ -36,6 +36,7 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Strings;
 
 /**
  * A display field doesn't actually have any form or anything (unless of course a plugin
@@ -48,6 +49,16 @@ class Display extends HandlerAbstract
 		$setData = '';
 		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'hidden', $setData, array('required' => false));
 		return $field;
+	}
+
+	public function renderHtml($data = null, array $template_vars = array())
+	{
+		return $this->field_def->getOption('html');
+	}
+
+	public function renderText($data = null, array $template_vars = array())
+	{
+		return Strings::stripTags($this->field_def->getOption('html'));
 	}
 
 	function getDataFromForm(array $form_data)

@@ -29,8 +29,8 @@
 						<tr>
 							<td style="vertical-align: top;">Agents:</td>
 							<td>
-								<ul class="checkbox-list" style="min-width: 200px; max-height: 175px; overflow: auto;">
-									<li style="border-bottom: 1px solid #ccc;">
+								<ul class="checkbox-list" style="min-width: 260px; max-height: 175px; overflow: auto;">
+									<li style="border-bottom: 1px solid #ccc;" ng-if="object_type != 'escalation'">
 										<label>
 											<input type="checkbox" ng-model="model.agent_ids.notify_list" />
 											Subscribed agents
@@ -43,6 +43,44 @@
 											{{ ng_var('agent.display_name') }}
 										</label>
 									</li>
+									<li style="border-top: 1px solid #ccc;">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_agent" />
+											Assigned Agent
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_team" />
+											Agents of Assigned Team
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_followers" />
+											Ticket Followers
+										</label>
+									</li>
+									<li>
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.ticket_follower_teams" />
+											Teams of Ticket Followers
+										</label>
+									</li>
+									<li ng-if="object_type != 'escalation'">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.person" />
+											Agent Performer
+											<i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the agent that caused this trigger to run."></i>
+										</label>
+									</li>
+									<li ng-if="object_type != 'escalation'">
+										<label>
+											<input type="checkbox" ng-model="model.agent_ids.person_team" />
+											Teams of Agent Performer
+											<i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the teams of the agent that caused this trigger to run."></i>
+										</label>
+									</li>
 								</ul>
 							</td>
 						</tr>
@@ -50,7 +88,7 @@
 							<td>From Name:</td>
 							<td>
 								<select ui-select2="{dropdownAutoWidth:true}" ng-model="model.from_name" ng-init="" style="min-width: 50px;">
-									<option value="performer">Name of the person who initiated the action</option>
+									<option value="performer" ng-if="object_type != 'escalation'">Name of the person who initiated the action</option>
 									<option value="helpdesk_name">Helpdesk Name ({{ app.getSetting('core.deskpro_name') }})</option>
 									{% if app.getSetting('core.site_name') %}<option value="site_name">Site Name ({{ app.getSetting('core.site_name') }})</option>{% endif %}
 									<option value="custom">Enter a custom name</option>
@@ -73,6 +111,9 @@
 								</select>
 							</td>
 						</tr>
+
+                        {% include 'AdminInterfaceBundle:OptionBuilder:email-headers.html.twig' %}
+
 					</table>
 				</td>
 			</tr>

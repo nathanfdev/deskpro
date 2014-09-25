@@ -112,7 +112,7 @@ class NativeAppsSync
 		$this->logger->debug("Updating {$package->native_name}");
 
 		// Updates the resources
-		$app_package = new Package($this->manager->getAppPath($package->name));
+		$app_package = new Package($this->manager->getAppPath($package->name, true));
 		$this->package_installer->installPackage($app_package, $package);
 		$this->logger->debug("... done install");
 
@@ -123,7 +123,7 @@ class NativeAppsSync
 			if ($class) {
 				$this->logger->debug("... running update for app #{$app->id}");
 				$context = new InstallerContext($this->container, $native_app);
-				$obj = new $class();
+				$obj = new $class($package['settings_def']);
 				$obj->updatePackage($context);
 				$this->logger->debug("... done");
 			}

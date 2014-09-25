@@ -11,7 +11,7 @@
 		<select name="newticket[ticket][category_id]" class="category_id">
 			<option></option>
 			{% for cat in app.getDataService('TicketCategory').getRootNodes() %}
-				{{ formmacro.select_options_hierarchy(cat, newticket.ticket.category_id) }}
+				{{ formmacro.select_options_hierarchy(cat, form.ticket.category_id.vars.value) }}
 			{% endfor %}
 		</select>
 		<div class="dp-help-inline dp-error-explain">

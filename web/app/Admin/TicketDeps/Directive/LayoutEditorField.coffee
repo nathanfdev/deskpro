@@ -1,4 +1,4 @@
-define ->
+define ['DeskPRO/Util/Util'], (Util) ->
 	class LayoutEditorField
 		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout) ->
 
@@ -45,6 +45,8 @@ define ->
 			if not @scope.field.options
 				@scope.field.options = {}
 
+			field = @scope.field
+
 			inst = @$modal.open({
 				templateUrl: tpl,
 				controller: ['$scope', '$modalInstance', 'options', 'typeDef', ($scope, $modalInstance, options, typeDef) ->
@@ -52,11 +54,21 @@ define ->
 					if not options.criteria?.terms then options.criteria.terms = {}
 					if not options.criteria?.mode then options.criteria.mode = 'all'
 
-					$scope.options = options
+					$scope.formOptions = {
+						with_criteria: false
+					}
 
-					$scope.with_criteria = false
-					if $scope.options.criteria.terms.length
-						$scope.with_criteria = true
+					if Util.isArray(options.criteria.terms)
+						terms = {}
+						for t in options.criteria.terms
+							terms[Util.uid('t')] = t
+						options.criteria.terms = terms
+
+					for own _ of options.criteria.terms
+						$scope.formOptions.with_criteria = true
+						break
+
+					$scope.options = options
 
 					$scope.criteriaOptions = []
 					$scope.criteriaOptions.push({
@@ -82,9 +94,11 @@ define ->
 
 					$scope.criteriaTypesDef = typeDef
 
+					$scope.dismiss = -> $modalInstance.dismiss();
+
 					$scope.done = ->
-						if not $scope.with_criteria
-							$scope.options.criteria.terms.length = 0
+						if not $scope.formOptions.with_criteria
+							$scope.options.criteria.terms = {}
 
 						$modalInstance.dismiss();
 				],
@@ -107,6 +121,11 @@ define ->
 		UserFields   = DataService.get('UserFields')
 
 		directive.link = (scope, element, attrs, ngModel) ->
+			if not scope.field.options                 then scope.field.options = {}
+			if not scope.field.options.criteria?       then scope.field.options.criteria = {}
+			if not scope.field.options.criteria?.terms then scope.field.options.criteria.terms = {}
+			if not scope.field.options.criteria?.mode  then scope.field.options.criteria.mode = 'all'
+
 			handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout)
 
 		return directive

@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -103,6 +104,13 @@ class TicketManager
 		$this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
 		$this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
 		$this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization'));
+		$this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
+			$container->getEm(),
+			$container->getSetting('core_email.antiflood_newtickets'),
+			$container->getSetting('core_email.antiflood_newtickets_time'),
+			$container->getSetting('core_email.antiflood_newreplies'),
+			$container->getSetting('core_email.antiflood_newreplies_time')
+		);
 
 		$this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
 		$this->post_save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
@@ -150,7 +158,7 @@ class TicketManager
 	 * Set an auto context var
 	 *
 	 * @param string $k
-	 * @param mixed d$v
+	 * @param mixed $v
 	 */
 	public function setAutoContextVar($k, $v)
 	{
@@ -239,6 +247,7 @@ class TicketManager
 	public function saveTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$this->db->beginTransaction();
+
 		try {
 			$ret = $this->doSaveTicket($ticket, $context);
 			$this->db->commit();
@@ -268,6 +277,7 @@ class TicketManager
 
 		if ($is_trivial_change) {
 			$context->getLogger()->debug("is_trivial_change = true");
+			$context->setEventType('noop');
 			$is_noop = true;
 		}
 
@@ -349,8 +359,18 @@ class TicketManager
 			));
 		}
 
-		$search_updater = new TicketSearchUpdater($this->db, $ticket);
-		$search_updater->update();
+		if (!$is_noop) {
+			$search_updater = new TicketSearchUpdater($this->db, $ticket);
+			\DpShutdown::add(
+				function () use ($search_updater) {
+					try {
+						$search_updater->update();
+					} catch (\Exception $e) {
+						KernelErrorHandler::logException($e);
+					}
+				}, null, 'db_done_trans_commit'
+			);
+		}
 
 		$this->em->flush();
 
@@ -360,14 +380,11 @@ class TicketManager
 
 		$context->getLogger()->info(sprintf("########## END SAVE TICKET -- %s -- %.4fs ##########", $ticket->id ?: 0, microtime(true) - $time_start));
 
-		$ticket->resetStateChangeRecorder();
-		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
-
 		if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
 			$log_text = $context->getLogger()->getSavedMessages();
 			if ($log_text) {
 				try {
-					$blob = $this->blob_storage->createBlobRecordFromString($log_text, 'ticket-manager.' . date('Y-m-d_H-i-s') . '.log', 'plain/text');
+					$blob = $this->blob_storage->createBlobRecordFromString($log_text, 'ticket-manager.' . date('Y-m-d.H-i-s') . '.' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '.log', 'plain/text');
 				} catch (\Exception $e) {
 					$blob = null;
 					KernelErrorHandler::logException($e);
@@ -386,6 +403,9 @@ class TicketManager
 				}
 			}
 		}
+
+		$ticket->resetStateChangeRecorder();
+		$ticket->__dp_last_process_save = $ticket->getStateChangeRecorder()->getStateVersion();
 	}
 
 
@@ -403,6 +423,18 @@ class TicketManager
 
 		if ($agent) {
 			$context->setPersonContext($agent);
+		}
+
+		if ('api' === $event_method) {
+			$key = null;
+			/** @var $auth RequestAuth */
+			if ($auth = $this->container->get('deskpro.api.request_auth')) {
+				$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+			}
+
+			if ($key) {
+				$context->getVars()->set('via_api_key', $key);
+			}
 		}
 
 		$context->setEventPerformer('agent');
@@ -426,6 +458,16 @@ class TicketManager
 
 		if ($user) {
 			$context->setPersonContext($user);
+		}
+
+		if ('api' === $event_method) {
+			$key = null;
+			/** @var $auth RequestAuth */
+			if ($auth = $this->container->get('deskpro.api.request_auth')) {
+				$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+			}
+
+			$context->getVars()->set('via_api_key', $key);
 		}
 
 		$context->setEventPerformer('user');

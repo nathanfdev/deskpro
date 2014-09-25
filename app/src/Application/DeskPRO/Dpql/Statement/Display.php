@@ -536,6 +536,10 @@ class Display
 	 */
 	protected function _setSqlLimit()
 	{
+		if (!$this->_limitAmount && in_array('table', $this->_display)) {
+			$this->_limitAmount = 2500;
+		}
+
 		if ($this->_limitAmount) {
 			$limit = ($this->_implicitLimit ? min($this->_implicitLimit, $this->_limitAmount) : $this->_limitAmount);
 		} else {
@@ -1065,10 +1069,14 @@ class Display
 			if (empty($parts['display'][0])) {
 				$display = 'TABLE';
 			} else {
-				$parts['display'] = array_unique($parts['display']);
-				$display = $parts['display'][0];
-				if (!empty($parts['display'][1])) {
-					$display .= ', ' . $parts['display'][1];
+				if (is_array($parts['display'])) {
+					$parts['display'] = array_unique($parts['display']);
+					$display          = $parts['display'][0];
+					if (!empty($parts['display'][1])) {
+						$display .= ', ' . $parts['display'][1];
+					}
+				} else {
+					$display = $parts['display'];
 				}
 			}
 

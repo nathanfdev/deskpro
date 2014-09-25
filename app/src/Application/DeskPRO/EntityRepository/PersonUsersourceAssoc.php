@@ -44,16 +44,15 @@ class PersonUsersourceAssoc extends AbstractEntityRepository
 	 */
 	public function getIdentityAssociation($usersource, $identity)
 	{
-		try {
-			$assoc = $this->_em->createQuery("
-				SELECT f, p
-				FROM DeskPRO:PersonUsersourceAssoc f
-				LEFT JOIN f.person p
-				WHERE f.usersource = ?1 AND f.identity = ?2
-			")->setParameter(1, $usersource)->setParameter(2, $identity)->getSingleResult();
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			return null;
-		}
+		$assoc = $this->_em->createQuery("
+			SELECT f, p
+			FROM DeskPRO:PersonUsersourceAssoc f
+			LEFT JOIN f.person p
+			WHERE f.usersource = ?1 AND f.identity = ?2
+		")->setMaxResults(1)
+		  ->setParameter(1, $usersource)
+		  ->setParameter(2, $identity)
+		  ->getOneOrNullResult();
 
 		return $assoc;
 	}

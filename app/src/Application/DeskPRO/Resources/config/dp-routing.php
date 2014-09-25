@@ -88,6 +88,11 @@ $collection->create('sys_report_error', array(
 	'controller'  => 'DeskPRO:Data:sendErrorReport',
 ));
 
+$collection->create('sys_go_billing', array(
+	'path'        => '/billing',
+	'controller'  => 'DeskPRO:Misc:goToBilling',
+));
+
 $collection->create('data_interface_data', array(
 	'path'          => '/data/interface-data.{_format}',
 	'controller'    => 'DeskPRO:Data:interfaceData',
@@ -215,5 +220,17 @@ $collection->create('dp3_redirect_view_php', array(
 	'path'        => '/view.php',
 	'controller'  => 'DeskPRO:Deskpro3Redirect:ticketView',
 ));
+
+########################################################################################################################
+# Incoming Channel Endpoints
+########################################################################################################################
+
+$collection->create(
+	'api_channel_incoming_sms_twilio', array(
+		'path'       => '/sms.php/twilio',
+		'controller' => 'DeskPRO:ChannelIncoming:twilioSms',
+		'methods'    => array('POST'),
+	)
+);
 
 return $collection;

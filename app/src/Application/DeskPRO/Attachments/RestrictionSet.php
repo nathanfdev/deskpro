@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Attachments;
 
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -69,33 +70,58 @@ class RestrictionSet
 
 
 	/**
-	 * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+	 * @param \Symfony\Component\HttpFoundation\File\File $file
 	 * @return array|null
 	 */
-	public function getError(UploadedFile $file)
+	public function getError(File $file)
 	{
 		$size = $file->getSize();
-		$ext  = Strings::getExtension($file->getClientOriginalName());
+		$ext  = Strings::getExtension($file->getFilename());
 
-		if ($this->max_size && $size > $this->max_size) {
-			return array(
-				'error_code' => self::ERR_SIZE,
-				'error_detail' => $this->max_size
-			);
+		if ($file instanceof UploadedFile) {
+			$ext = Strings::getExtension($file->getClientOriginalName());
 		}
 
-		if ($this->allowed_exts && !in_array($ext, $this->allowed_exts)) {
-			return array(
-				'error_code' => self::ERR_FAIL_MUST_EXT,
-				'error_detail' => implode(',', $this->allowed_exts)
-			);
+		return $this->getErrorForProperties(array(
+			'size' => $size,
+			'ext'  => $ext
+		));
+	}
+
+
+	/**
+	 * Check properties against this restriction set. $props can be:
+	 * - size (filesize)
+	 * - ext (file extension)
+	 *
+	 * @param array $props
+	 * @return array|null
+	 */
+	public function getErrorForProperties(array $props)
+	{
+		if (isset($props['size'])) {
+			if ($this->max_size && $props['size'] > $this->max_size) {
+				return array(
+					'error_code'   => self::ERR_SIZE,
+					'error_detail' => $this->max_size
+				);
+			}
 		}
 
-		if ($this->disallowed_exts && in_array($ext, $this->disallowed_exts)) {
-			return array(
-				'error_code' => self::ERR_FAIL_NOT_EXT,
-				'error_detail' => implode(',', $this->disallowed_exts)
-			);
+		if (isset($props['ext'])) {
+			if ($this->allowed_exts && !in_array($props['ext'], $this->allowed_exts)) {
+				return array(
+					'error_code'   => self::ERR_FAIL_MUST_EXT,
+					'error_detail' => implode(',', $this->allowed_exts)
+				);
+			}
+
+			if ($this->disallowed_exts && in_array($props['ext'], $this->disallowed_exts)) {
+				return array(
+					'error_code'   => self::ERR_FAIL_NOT_EXT,
+					'error_detail' => implode(',', $this->disallowed_exts)
+				);
+			}
 		}
 
 		return null;
@@ -104,6 +130,7 @@ class RestrictionSet
 
 	/**
 	 * @param array $allowed_exts
+	 * @return $this
 	 */
 	public function setAllowedExts(array $allowed_exts = null)
 	{
@@ -126,6 +153,7 @@ class RestrictionSet
 
 	/**
 	 * @param array $disallowed_exts
+	 * @return $this
 	 */
 	public function setDisallowedExts(array $disallowed_exts = null)
 	{
@@ -148,6 +176,7 @@ class RestrictionSet
 
 	/**
 	 * @param int $max_size
+	 * @return $this
 	 */
 	public function setMaxSize($max_size = null)
 	{

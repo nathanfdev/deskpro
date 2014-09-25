@@ -1,7 +1,14 @@
 {% extends 'AdminInterfaceBundle:Layout:fill-page-alt.html.twig' %}
 {% block alt_content %}
 	<div class="dp-appalt-section">
-		<header><h2>Agents</h2></header>
+		<header>
+            <h2 style="width: 100%;">
+                Agents
+                <button class="btn btn-default btn-xs pull-right" ng-click="Home.$modal.open({ templateUrl: Home.getTemplatePath('Agents/import.html') })">
+                    {{ phrase('agent.general.add_bulk') }}
+                </button>
+            </h2>
+        </header>
 		<section ng-if="Home.online_agents.length">
 			<header><h3>Online</h3></header>
 			<article>
@@ -25,10 +32,29 @@
 				</ul>
 			</article>
 		</section>
+
+        <section ng-if="Home.unactive_agents.length">
+            <header><h3>Never Logged In</h3></header>
+            <article>
+                <ul class="dp-icon-list with-icons x22">
+                    <li class="media" ng-repeat="agent in Home.unactive_agents">
+                        <i class="icon-img" bg-img="agent.picture_url_22"></i>
+                        <a href="{{ ng_href('agents.agents.edit', '{id:agent.id}') }}"><span class="title">{{ ng_var('agent.display_name') }}</span></a>
+                    </li>
+                </ul>
+            </article>
+        </section>
 	</div>
 
 	<div class="dp-appalt-section">
-		<header><h2>Invite Agent</h2></header>
+		<header>
+            <h2 style="width: 100%;">
+                Invite Agent
+                <button class="btn btn-default btn-xs pull-right" ng-click="Home.$modal.open({ templateUrl: Home.getTemplatePath('Agents/import.html') })">
+                    {{ phrase('agent.general.add_bulk') }}
+                </button>
+            </h2>
+        </header>
 		<section>
 			<article>
 				<form>
@@ -131,7 +157,7 @@
 		<table cellspacing="35" width="100%">
 			<tbody>
 				<tr>
-					<td class="dp-item" width="33%">
+					<td class="dp-item" width="25%">
 						<article><a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');">
 							<div class="title-wrap"><h3>Agent Interface</h3></div>
 							<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
@@ -140,7 +166,16 @@
 							</strong>
 						</a></article>
 					</td>
-					<td class="dp-item" width="33%">
+					<td class="dp-item" width="25%">
+						<article><a href="{{ path('user') }}" dp-click-href="#/go_to_user" onmouseover="$('body').addClass('user-interface-hover');" onmouseout="$('body').removeClass('user-interface-hover');">
+								<div class="title-wrap"><h3>User Portal</h3></div>
+								<div class="img-wrap"><img src="{{ asset('images/admin/portal-screen.png') }}" /></div>
+								<strong>
+									The helpdesk portal that end-users see.
+								</strong>
+							</a></article>
+					</td>
+					<td class="dp-item" width="25%">
 						<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">
 							<div class="title-wrap"><h3>Reports Interface</h3></div>
 							<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
@@ -149,7 +184,7 @@
 							</strong>
 						</a></article>
 					</td>
-					<td class="dp-item" width="33%">
+					<td class="dp-item" width="25%">
 						<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
 							<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
 							<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
@@ -181,7 +216,7 @@
 								<div class="icon bad"><i class="fa fa-warning"></i></div>
 								<strong>
 									The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
-									You are behind by {{ ng_var('Home.latest_version.count_behind') }} versions.<br/>
+									You are behind by <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.count_behind') }} version(s)</a>.<br/>
 								</strong>
 							</header>
 							<article>

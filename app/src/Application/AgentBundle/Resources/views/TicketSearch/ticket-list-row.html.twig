@@ -30,7 +30,18 @@
 			</div>
 		</div>
 		<div class="top-row-right">
+
 			<div class="bound-fade"></div>
+
+			<span class="new-tab-icon" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- ticket_display.id %>'})|raw }}" data-route-newtab="true" title="Open in a new tab instead of replacing the currently open tab">
+				<i class="fa fa-external-link"></i>
+			</span>
+
+            <% if (ticket_display.locked_by_agent) { %>
+            <span class="tipped agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
+                <i class="icon-lock" style="font-size: 150%;"></i>
+            </span>
+            <% } %>
 			<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
 			<div class="status-pill status urgency-<%= ticket_display.urgency %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
 				<% if (ticket_display.status == 'awaiting_agent') { %>
@@ -73,6 +84,7 @@
 			<% if (ticket_display.flag) { %>
 				<i class="flag <%= ticket_display.flag %>"></i>
 			<% } %>
+
 			<br class="clear" />
 		</div>
 	</div>
@@ -89,11 +101,21 @@
 			<% } %>
 		<div class="bound-fade"></div>
 	</div>
+	<%
+	var displayable_fields = [];
+	for (var i = 0; i < display_fields.length; i++) {
+		var field = display_fields[i];
+		if (!this.isFieldDisplayable(ticket, field)) continue;
+		displayable_fields.push(field);
+	}
+	%>
+	<% if (displayable_fields.length) { %>
 	<div class="extra-fields">
 		<ul>
-			<% for (var i = 0; i < display_fields.length; i++) { var field = display_fields[i]; if (!this.isFieldDisplayable(ticket, field)) continue; %>
-				<li>
+			<% for (var i = 0; i < displayable_fields.length; i++) { var field = displayable_fields[i]; %>
+				<li style="<% if((field == 'department') || field == 'agent_team' || field == 'agent') { %>position: relative;margin-left: 20px;<% } %>padding-top:3px;padding-bottom:3px;">
 					<% if (field == 'department') { %>
+                        <img style="position: absolute;left:-20px;top:0;" src="<%- ticket_display.department.avatar_url_16 %>" />
 						<span class="prop-title">{{ phrase('agent.general.department') }}:</span>
 						<span class="prop-val"><%- ticket_display.department.title_full %></span>
 					<% } %>
@@ -129,6 +151,7 @@
 					<% } %>
 
 					<% if (field == 'agent') { %>
+                        <img style="position: absolute;left:-20px;top:0;" src="<%- ticket_display.agent.picture_url_16 %>" />
 						<span class="prop-title">{{ phrase('agent.general.agent') }}:</span>
 						<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><%- ticket_display.agent.display_name %></span><% } %>
 						<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><%- ticket_display.agent.display_name %></a></span><% } %>
@@ -136,6 +159,7 @@
 					<% } %>
 
 					<% if (field == 'agent_team') { %>
+                        <img style="position: absolute;left:-20px;top:0;" src="<%- ticket_display.agent_team.avatar_url_16 %>" />
 						<span class="prop-title">{{ phrase('agent.general.agent_team') }}:</span>
 						<% if (ticket_display.agent_team) { %><span class="prop-val"><%- ticket_display.agent_team.name %></span><% } %>
 						<% if (!ticket_display.agent_team) { %><span class="prop-val">{{ phrase('agent.general.no_team') }}</span><% } %>
@@ -144,8 +168,10 @@
 					<% if (field == 'labels') { %>
 						<span class="prop-title">{{ phrase('agent.general.labels') }}:</span>
 						<span class="prop-val">
-							<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
-								<span class="listing-tag"><%- ticket_display.labels[labelIdx] %></span>
+							<% if (ticket_display.labels) { %>
+								<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
+									<span class="listing-tag" dp-label="<%- ticket_display.labels[labelIdx] %>"><%- ticket_display.labels[labelIdx] %></span>
+								<% } %>
 							<% } %>
 						</span>
 					<% } %>
@@ -221,7 +247,7 @@
 						<span class="prop-title">{{ phrase('agent.general.slas') }}:</span>
 						<span class="prop-val">
 							<% for (var slaIdx = 0; slaIdx < ticket_display.ticket_slas.length; slaIdx++) { var ticket_sla = ticket_display.ticket_slas[slaIdx]; %>
-							<span class="prop-val sla-status-<%= ticket_sla.sla_status %>">
+							<span class="sla-status-<%= ticket_sla.sla_status %>">
 								<%- ticket_sla.sla.title %>
 								<% if (ticket_sla.next_trigger_date_ts) { %>
 									(<span dp-timeago timestamp="<%= ticket_sla.next_trigger_date_ts %>" no-suffix />)
@@ -248,4 +274,5 @@
 		</ul>
 		<br class="clear"/>
 	</div>
+	<% } %>
 </article>

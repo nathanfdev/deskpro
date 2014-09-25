@@ -45,7 +45,8 @@ class UserChatManagerFactory
 		$o = new UserChatManager(
 			$options->session,
 			$container->get('doctrine.orm.entity_manager'),
-			$container->get('deskpro.core.translate')
+			$container->get('deskpro.core.translate'),
+			$container->getPersonActivityLogger()
 		);
 
 		return $o;

@@ -15,17 +15,6 @@
 
       Admin_Main_Ctrl_MainBody.DEPS = [];
 
-      Admin_Main_Ctrl_MainBody.prototype.init = function() {
-        this.$scope.do_show_ids = false;
-        this.$scope.$watch('do_show_ids', function(isOn) {
-          if (isOn) {
-            return $('body').addClass('show-title-ids');
-          } else {
-            return $('body').removeClass('show-title-ids');
-          }
-        });
-      };
-
       return Admin_Main_Ctrl_MainBody;
 
     })(Admin_Ctrl_Base);

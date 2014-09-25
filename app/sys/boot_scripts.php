@@ -70,6 +70,12 @@ switch ($_GET['_sys']) {
 		require DP_ROOT . '/sys/scripts/apc.php';
 		break;
 
+	case 'opcache':
+		if (defined('DPC_IS_CLOUD')) exit;
+		if (!$is_authed) die('Invalid auth code.');
+		require DP_ROOT . '/sys/scripts/opcache.php';
+		break;
+
 	case 'apcclear':
 		if (defined('DPC_IS_CLOUD')) exit;
 		if (!$is_authed) die('Invalid auth code.');
@@ -117,6 +123,10 @@ switch ($_GET['_sys']) {
 
 	case 'ping':
 		require DP_ROOT . '/sys/scripts/ping.php';
+		break;
+
+	case 'rewrite_loop_detected':
+		require DP_ROOT . '/sys/scripts/rewrite_loop_detected.php';
 		break;
 
 	case 'licinfo':

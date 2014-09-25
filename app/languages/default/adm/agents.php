@@ -1,4 +1,16 @@
 <?php return array(
+
+	'adm.agents.primary_team'                                     => 'Primary Team',
+
+	'adm.agents.perm_toggle_all'                                  => 'Toggle All',
+
+	'adm.agents.perm_title_tickets'                               => 'Tickets',
+	'adm.agents.perm_title_people'                                => 'People',
+	'adm.agents.perm_title_chat'                                  => 'Chat',
+	'adm.agents.perm_title_publish'                               => 'Publish',
+	'adm.agents.perm_title_profile'                               => 'Profile',
+	'adm.agents.perm_title_tasks'                                 => 'Tasks',
+
 	'adm.agents.perm_ticket_use'                                  => 'Can use the ticket system',
 	'adm.agents.perm_ticket_create'                               => 'Can create new tickets',
 	'adm.agents.perm_ticket_reply_mass'                           => 'Can mass-reply to tickets',
@@ -6,21 +18,21 @@
 	'adm.agents.perm_ticket_reply_own'                            => 'Can reply to owned and team tickets',
 	'adm.agents.perm_ticket_modify_own'                           => 'Can modify owned and team tickets',
 	'adm.agents.perm_ticket_modify_messages_own'                  => 'Can edit and delete messages in owned and team tickets',
-	'adm.agents.perm_ticket_delete_own'                           => 'Can delete owned and team tickets',
+	'adm.agents.perm_ticket_delete_own'                           => 'Can delete and spam owned and team tickets',
 	'adm.agents.perm_ticket_reply_to_followed'                    => 'Can reply to followed tickets',
 	'adm.agents.perm_ticket_modify_followed'                      => 'Can modify followed tickets',
 	'adm.agents.perm_ticket_modify_messages_followed'             => 'Can edit and delete messages in followed tickets',
-	'adm.agents.perm_ticket_delete_followed'                      => 'Can delete followed tickets',
+	'adm.agents.perm_ticket_delete_followed'                      => 'Can delete and spam followed tickets',
 	'adm.agents.perm_ticket_view_unassigned'                      => 'Can view unassigned tickets',
 	'adm.agents.perm_ticket_reply_unassigned'                     => 'Can reply to unassigned tickets',
 	'adm.agents.perm_ticket_modify_unassigned'                    => 'Can modify unassigned tickets',
 	'adm.agents.perm_ticket_modify_messages_unassigned'           => 'Can edit and delete messages in unassigned tickets',
-	'adm.agents.perm_ticket_delete_unassigned'                    => 'Can delete followed tickets',
+	'adm.agents.perm_ticket_delete_unassigned'                    => 'Can delete and spam unassigned tickets',
 	'adm.agents.perm_ticket_view_others'                          => 'Can view tickets assigned to others',
 	'adm.agents.perm_ticket_reply_others'                         => 'Can reply to tickets assigned to others',
 	'adm.agents.perm_ticket_modify_others'                        => 'Can modify tickets assigned to others',
 	'adm.agents.perm_ticket_modify_messages_others'               => 'Can edit and delete messages in tickets assigned to others',
-	'adm.agents.perm_ticket_delete_others'                        => 'Can delete tickets assigned to others',
+	'adm.agents.perm_ticket_delete_others'                        => 'Can delete and spam tickets assigned to others',
 	'adm.agents.perm_people_use'                                  => 'Can use the CRM system',
 	'adm.agents.perm_people_create'                               => 'Can create new user profiles',
 	'adm.agents.perm_people_edit'                                 => 'Can edit user profiles',
@@ -47,6 +59,7 @@
 	'adm.agents.perm_publish_validate'                            => 'Can validate content and comments (including own)',
 	'adm.agents.perm_general_picture'                             => 'Can set their own picture',
 	'adm.agents.perm_general_signature'                           => 'Can set their own signature',
+	'adm.agents.perm_tasks_use'                                   => 'Can use tasks',
 
 	'adm.agents.perm_ticket_modify_department'                    => 'Modify department',
 	'adm.agents.perm_ticket_modify_fields'                        => 'Modify fields',
@@ -62,4 +75,21 @@
 	'adm.agents.perm_ticket_modify_set_awaiting_user'             => 'Can set status to awaiting user',
 	'adm.agents.perm_ticket_modify_set_awaiting_agent'            => 'Can set status to awaiting agent',
 	'adm.agents.perm_ticket_modify_set_resolved'                  => 'Can set status to resolved',
+	'adm.agents.perm_ticket_modify_set_unresolved'                => 'Can unresolve ticket',
+	'adm.agents.perm_ticket_modify_billing'			              => 'Can modify billing and time log records',
+
+
+
+	'adm.agents.import_title'                                     => 'Bulk Invite Agents',
+	'adm.agents.import_textarea_title'                            => 'Copy/Paste a list of Email Addresses',
+	'adm.agents.import_textarea_description'                      => 'Paste a list of addresses below separated by a comma, semicolon, space or line return',
+	'adm.agents.import_file_title'                                => 'Upload a spreadsheet',
+	'adm.agents.import_file_description'                          => 'Click the link below to download a special CSV spreadsheet. Fill in the spreadsheet with the contact details of your agents, then upload it here.',
+	'adm.agents.import_file_dd'                                   => 'Drag & Drop completed spreadsheet here',
+	'adm.agents.import_btn_next'                                  => 'Next step',
+	'adm.agents.import_btn_more'                                  => 'Invite More Agents?',
+	'adm.agents.import_results'                                   => '{{count}} Agent have been invited to DeskPRO|{{count}} Agents have been invited to DeskPRO',
+	'adm.agents.import_results_failed'                            => '{{count}} Agent Invitation Failed|{{count}} Agent Invitations Failed',
+	'adm.agents.import_kb'                                        => 'Download Spreadsheet Template',
+
 );

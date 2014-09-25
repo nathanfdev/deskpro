@@ -23,11 +23,11 @@
 $CONFIG = array();
 
 $CONFIG['OPTIONS'] = array(
-	'java_path'       => '/usr/bin/java',
-	'yui_compressor'  => '/usr/local/bin/yuicompressor.jar',
-	'nodejs'          => '/usr/local/bin/node',
-	'less'            => '/usr/local/lib/node_modules/less/bin/lessc',
-	'smartsprites'    => '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
+	'java_path'       => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
+	'yui_compressor'  => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
+	'nodejs'          => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/local/bin/node',
+	'less'            => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/lib/node_modules/less/bin/lessc',
+	'smartsprites'    => defined('DP_SMARTSPRITES_PATH') ? DP_SMARTSPRITES_PATH : '/usr/local/bin/smartsprites-0.2.8/smartsprites.sh',
 );
 
 if (isset($GLOBALS['DP_CONFIG']['assetic_config'])) {
@@ -71,7 +71,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/tmpl.min.js',
 
-		'vendor/underscore/underscore-min.js',
+		'app/bower_components/underscore/underscore-min.js',
 
 		'vendor/jquery/jquery.localscroll.js',
 		'vendor/jquery/jquery.mousewheel.js',
@@ -104,12 +104,12 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/ZeroClipboard/ZeroClipboard.min.js',
 		'vendor/idbstore/idbstore.min.js',
 		'vendor/twig/twig.js',
-		'vendor/angular/angular.min.js',
-		'vendor/angular/angular-animate.min.js',
-		'vendor/angular/modules/bindonce.min.js',
 		'vendor/momentjs/moment.min.js',
 
-		'app/bower_components/notify.js/notify.js'
+		'app/bower_components/notify.js/notify.js',
+		'app/bower_components/intl-tel-input/build/js/intlTelInput.min.js',
+
+		'app/vendor-src/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js',
 	)
 );
 
@@ -234,6 +234,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ChangePic.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/UploadVcard.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/UploadFile.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ContactEditor.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/DeleteControl.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Content/StickyWords.js',
@@ -256,6 +257,7 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/FeedbackView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/DpNews.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTweet.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
@@ -406,7 +408,6 @@ $CONFIG['agent_misc'] = array(
 
 		'javascripts/DeskPRO/Agent/TicketList/MassActions.js',
 		'javascripts/DeskPRO/Agent/TicketList/ListView.js',
-		'javascripts/DeskPRO/Agent/PageHelper/PeopleList/ListView.js',
 
 		'javascripts/DeskPRO/Agent/TicketList/ChangeManager.js',
 		'javascripts/DeskPRO/Agent/TicketList/Property/Abstract.js',
@@ -641,7 +642,7 @@ $CONFIG['agent_vendor_out_css'] = array(
 	'out' => 'css/agent-vendors-all.css',
 	'post_filters' => array('css'),
 	'references' => array(
-		'agent_vendors_css',
+		'agent_vendors_css'
 	)
 );
 
@@ -660,6 +661,9 @@ $CONFIG['agent_interface_css1'] = array(
 		'stylesheets-less/agent/dp-interface.less',
 		'stylesheets-less/agent/dp-agent-chat.less',
 		'stylesheets-less/agent/overlayCreateTicket.less',
+		'stylesheets-less/agent/dp-source-pane.less',
+		'stylesheets-less/agent/dp-list-pane.less',
+		'app/vendor-src/bootstrap-datetimepicker-master/build/build_standalone.less',
 	)
 );
 
@@ -667,8 +671,6 @@ $CONFIG['agent_interface_css2'] = array(
 	'out' => 'css/agent-interface2.css',
 	'filters' => array('less'),
 	'files' => array(
-		'stylesheets-less/agent/dp-source-pane.less',
-		'stylesheets-less/agent/dp-list-pane.less',
 		'stylesheets-less/agent/dp-content-pane.less',
 		'stylesheets-less/agent/agent.less',
 		'stylesheets-less/agent/jira.less',

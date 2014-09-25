@@ -40,6 +40,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Orb\Zip\ZipException;
 use Symfony\Component\HttpFoundation\Request;
 
 class AppsController extends AbstractController
@@ -292,7 +293,7 @@ class AppsController extends AbstractController
 			$class = $native_app->getConfig()->getInstallerHandlerClass();
 			if ($class) {
 				$context = new InstallerContext($this->container, $native_app, $this->in->getCleanValueArray('settings'));
-				$handler = new $class();
+				$handler = new $class($app->package['settings_def']);
 			}
 		}
 
@@ -366,7 +367,7 @@ class AppsController extends AbstractController
 			$class = $native_app->getConfig()->getInstallerHandlerClass();
 			if ($class) {
 				$context = new InstallerContext($this->container, $native_app);
-				$handler = new $class();
+				$handler = new $class($app->package['settings_def']);
 				$handler->uninstall($context);
 			}
 		}
@@ -797,15 +798,13 @@ class AppsController extends AbstractController
 			return $this->createApiErrorResponse('invalid_upload', 'Invalid file upload');
 		}
 
-		require_once(DP_ROOT . '/vendor-src/pclzip/pclzip.lib.php');
-		$zip = new \PclZip($temp_name);
-
 		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . time() . '-' . mt_rand(1000,9999);
 		if (!@mkdir($tmpdir)) {
 			return $this->createApiErrorResponse('copy_error', 'Failed to create extraction directory');
 		}
 
 		register_shutdown_function(function() use ($tmpdir) {
+				return;
 			if (!is_dir($tmpdir)) {
 				return;
 			}
@@ -815,20 +814,16 @@ class AppsController extends AbstractController
 			@rmdir($tmpdir);
 		});
 
-		if (!is_array($zip->extract(
-			\PCLZIP_OPT_PATH, $tmpdir,
-			\PCLZIP_OPT_ADD_TEMP_FILE_ON,
-			\PCLZIP_OPT_STOP_ON_ERROR
-		))) {
-			switch ($zip->errorName()) {
-				case 'PCLZIP_ERR_BAD_FORMAT':
-				case 'PCLZIP_ERR_INVALID_ZIP':
-				case 'PCLZIP_ERR_INVALID_ARCHIVE_ZIP':
-				case 'PCLZIP_ERR_UNSUPPORTED_COMPRESSION':
-				case 'PCLZIP_ERR_UNSUPPORTED_ENCRYPTION':
-					return $this->createApiErrorResponse('invalid_file', 'Invalid ZIP file: ' . $zip->errorName(true));
-				default:
-					return $this->createApiErrorResponse('extract_failed', 'Invalid ZIP file: ' . $zip->errorName(true));
+		/** @var \Orb\Zip\Zip $zipper */
+		$zipper = $this->container->getSystemService('zipper');
+
+		try {
+			$zipper->decompressZip($temp_name, $tmpdir);
+		} catch (ZipException $e) {
+			if ($e->getCode() == ZipException::BAD_FORMAT) {
+				return $this->createApiErrorResponse('invalid_file', 'Invalid ZIP file -- Invalid format -- Details: ' . $e->getMessage());
+			} else {
+				return $this->createApiErrorResponse('extract_failed', 'Invalid ZIP file -- Unknown error -- Detauls: ' . $e->getMessage());
 			}
 		}
 

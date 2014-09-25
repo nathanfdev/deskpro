@@ -21,6 +21,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 						templateName: @templateName,
 						mode: 'custom'
 					})
+				, (result) =>
+					@$scope.saving_template = false
+					@$scope.is_error = true
+					@$scope.syntax_error  = result.data.error_syntax || false
+					@$scope.syntax_line   = result.data.error_line || 0
+					@$scope.error_message = result.data.error_message || 'Unknown'
 				)
 
 			@$scope.revert = =>
@@ -42,8 +48,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth()
 					if newHeight > maxH
 						newHeight = maxH
-					if newHeight < 10
-						newHeight = 10
+					if newHeight < 85
+						newHeight = 85
 
 					$(editor.container).height(newHeight)
 					editor.resize()

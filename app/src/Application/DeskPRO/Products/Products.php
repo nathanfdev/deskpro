@@ -49,7 +49,7 @@ class Products extends LazyPreloadedHierarchy
 	 */
 	protected function loadRecords()
 	{
-		$recs = $this->em->getRepository('DeskPRO:Product')->findAll();
+		$recs = $this->em->getRepository('DeskPRO:Product')->getAll();
 		$recs = Arrays::keyFromData($recs, 'id');
 		return $recs;
 	}

@@ -1574,7 +1574,7 @@ class TicketSearchController extends AbstractController
             ftruncate($temp, 0);
 
             if(empty($tickets) && $got < $count) {
-                $this->getDoctrine()->getEntityManager()->clear();
+                $this->container->getEm()->clear();
 
                 if($vars['is_grouped_result']) {
                     $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page++, $chunk_size);
@@ -1770,7 +1770,7 @@ class TicketSearchController extends AbstractController
 					'ticket_id' => $ticket['id'],
 					'agent_id' => $ticket['id'],
 				),
-				'created_by_client' => $this->session->getEntity()->getId(),
+				'created_by_client' => 0,
 			));
 
 			$this->em->persist($ticket);

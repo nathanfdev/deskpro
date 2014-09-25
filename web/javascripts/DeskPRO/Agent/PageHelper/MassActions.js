@@ -374,6 +374,11 @@ DeskPRO.Agent.PageHelper.MassActions = new Orb.Class({
 		//------------------------------
 
 		var leftEnd = 269; // Where the left ends (aka where listpane starts)
+
+		if (!DeskPRO_Window.paneVis.source) {
+			leftEnd = 78;
+		}
+
 		var topEnd = 50; // Where the top ends (aka header height)
 		var contentStart = pos.left;
 

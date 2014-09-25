@@ -183,6 +183,7 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 			'new_message'        => Arrays::getLastItem($new_replies),
 			'new_messages'       => $new_replies,
 			'ticket_logs'        => $ticket_logs,
+			'user_vars'          => $context->getUserVars(),
 		);
 
 		return $vars;
@@ -244,19 +245,68 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 				return $this->getContainer()->getSetting('core.site_name');
 			default:
 				try {
-					$name = $this->getContainer()->getTwig()->renderStringTemplate($name, array(
-						'performer'     => $context->getPersonContext(),
-						'ticket'        => $ticket,
-						'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
-						'site_name'     => $this->getContainer()->getSetting('core.site_name'),
-						'user_vars'     => $context->getUserVars(),
-					));
-
+					$name = $this->renderStringTemplate($name, $ticket, $context);
 					return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
 				} catch (\Exception $e) {
 					$context->getLogger()->warn('Invalid name pattern syntax: ' . $name . '. Exception: ' . $e->getMessage(), array('exception' => $e));
 					return '';
 				}
 		}
+	}
+
+
+	/**
+	 * @param string                   $string
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @param array                    $extra_vars
+	 * @return string
+	 */
+	protected function renderStringTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
+	{
+		// Simple string, cant be a template so dont waste time evaluating it
+		if (strpos($string, '{{') === false && strpos($string, '{%') === false) {
+			return $string;
+		}
+
+		$vars = array(
+			'performer'     => $context->getPersonContext(),
+			'ticket'        => $ticket,
+			'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
+			'site_name'     => $this->getContainer()->getSetting('core.site_name'),
+			'user_vars'     => $context->getUserVars(),
+		);
+
+		if ($extra_vars) {
+			$vars = array_merge($vars, $extra_vars);
+		}
+
+		try {
+			$rendered = $this->getContainer()->getTwig()->renderStringTemplate($string, $vars);
+		} catch (\Exception $e) {
+			return $string;
+		}
+
+		return $rendered;
+	}
+
+
+	/**
+	 * @param array                    $raw_headers
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return array
+	 */
+	protected function processHeaders(array $raw_headers, Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$headers = array();
+		foreach ($raw_headers as $h) {
+			$headers[] = array(
+				'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
+				'value' => $this->renderStringTemplate($h['value'], $ticket, $context)
+			);
+		}
+
+		return $headers;
 	}
 }

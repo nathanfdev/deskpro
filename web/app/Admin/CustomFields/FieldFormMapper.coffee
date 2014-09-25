@@ -15,6 +15,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 			form = {
 				title: '',
 				description: '',
+				is_enabled: true,
 				text: {
 					user_validation:          '0',
 					user_min_length:          '1',
@@ -52,6 +53,19 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					agent_validation:          '0',
 					agent_validation_resolve:  false
 				},
+				datetime: {
+					default_mode:              '0',
+					default_value:              new Date,
+					valid_weekdays:            [true, true, true, true, true, true, true],
+					valid_dates_mode:          '0',
+					valid_date_range_start:    '',
+					valid_date_range_end:      '',
+					valid_date_relrange_start: '',
+					valid_date_relrange_end:   '',
+					user_validation:           '0',
+					agent_validation:          '0',
+					agent_validation_resolve:  false
+				},
 				display: {
 					html: ''
 				},
@@ -77,8 +91,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
 				if fieldModel.is_agent_field
 					form.is_agent_field = true
-				if fieldModel.is_enabled
+				if fieldModel.is_enabled || not fieldModel.id
 					form.is_enabled = true
+				else
+					form.is_enabled = false
 
 				switch fieldModel.type_name
 					when "text", "textarea"
@@ -129,8 +145,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 						if fieldModel.choices and fieldModel.choices.length
 							formTypeOpts.options = fieldModel.choices
 
-						if fieldModel.default_value
-							formTypeOpts.default_value = parseInt(fieldModel.default_value)
+						formTypeOpts.default_value = fieldModel.default_value
 
 					when "toggle"
 						formTypeOpts.label_text = fieldModel.options.label_text || ''
@@ -145,10 +160,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 						if fieldModel.default_value
 							formTypeOpts.default_value = true
 
-					when "date"
+					when "date", "datetime"
 						if not Util.isBlank(fieldModel.default_value)
 							formTypeOpts.default_mode = 'date'
-							formTypeOpts.default_value = moment(fieldModel.default_value, 'YYYY-MM-DD').toDate()
+							formTypeOpts.default_value = moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate()
 
 						if not Util.isBlank(fieldModel.options.date_valid_dow)
 							formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false]
@@ -265,10 +280,16 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 					if formTypeOpts.agent_validation == 'required'
 						postData.agent_validation_type = 'required'
 
-				when "date"
-					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date'
+				when "date", "datetime"
+					format = 'YYYY-MM-DD'
+					if 'date' == fieldType
+						postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date'
+					else
+						postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime'
+						format += ' HH:mm'
+
 					if formTypeOpts.default_mode == 'date'
-						postData.default_value = moment(formTypeOpts.default_value).format('YYYY-MM-DD')
+						postData.default_value = moment(formTypeOpts.default_value).utc().format(format)
 
 					postData.date_valid_dow = []
 					for x, day in formTypeOpts.valid_weekdays

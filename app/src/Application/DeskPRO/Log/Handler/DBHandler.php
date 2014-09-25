@@ -32,7 +32,6 @@ namespace Application\DeskPRO\Log\Handler;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
 

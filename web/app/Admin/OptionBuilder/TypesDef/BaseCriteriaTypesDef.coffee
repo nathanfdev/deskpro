@@ -1,5 +1,13 @@
-define ['DeskPRO/Util/Util'], (Util) ->
-	class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef
+define [
+	'DeskPRO/Util/Util',
+	'DeskPRO/Util/Arrays',
+	'Admin/OptionBuilder/TypesDef/BaseTypesDef'
+], (
+	Util,
+	Arrays,
+	BaseTypesDef
+) ->
+	class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef
 		constructor: (@$q, @Api, @dpTemplateManager) ->
 			@options_data        = null
 			@inputTemplate       = 'OptionBuilder/type-criteria-input.html'
@@ -7,6 +15,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			@timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html'
 			@selectTemplate      = 'OptionBuilder/type-criteria-select.html'
 			@isTemplate          = 'OptionBuilder/type-criteria-is.html'
+			@remoteTemplate      = 'OptionBuilder/type-criteria-remote.html'
 			@init()
 
 		init: ->
@@ -93,35 +102,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			extraOptions = options.extraOptions || null
 
 			if not options_formatter
-				options_formatter = (options) ->
-					opts = []
-
-					if extraOptions
-						for opt in extraOptions
-							opts.push(opt)
-
-					for opt in options
-						if opt.title
-							title = opt.title
-						else if opt.name
-							title = opt.name
-						else
-							title = null
-
-						if opt.id
-							val = opt.id
-						else if opt.value
-							val = opt.value
-						else
-							val = null
-
-						if title != null and val != null
-							opts.push({
-								title: title,
-								value: val
-							})
-
-					return opts
+				options_formatter = (options) =>
+					return @standardOptionsFormatter(options, extraOptions)
 
 			me = @
 
@@ -138,6 +120,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				getData: ->
 					if options.options
 						return {
+							fieldOptions: options,
 							operators: operators,
 							options: if options_formatter then options_formatter(options.options) else options.options,
 							multiselect: !options.single
@@ -147,6 +130,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						me.loadDataOptions().then(=>
 							defer.resolve({
 								operators: operators,
+								fieldOptions: options,
 								options: if options_formatter then options_formatter(me.options_data[data_name]) else me.options_data[data_name],
 								multiselect: !options.single
 							})
@@ -155,7 +139,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						return defer.promise
 					else
 						return {
-							operators: operators
+							operators: operators,
+							fieldOptions: options
 						}
 
 				getDataFormatter: ->
@@ -293,7 +278,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 						value.type = type
 						value.op = model.op
 						value.options = {}
-						valie.options[prop_name] = val
+						value.options[prop_name] = val
 						return value
 					}
 			}
@@ -329,7 +314,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 								if value.options.date1
 									date1 = new Date(value.options.date1 * 1000)
 								if value.options.date2
-									date2 = new Date(value.options.date1 * 1000)
+									date2 = new Date(value.options.date2 * 1000)
 							else
 								use_relative = true
 								if value.options.date1_relative

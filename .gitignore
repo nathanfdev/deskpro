@@ -67,6 +67,7 @@ app/sys/Resources/agent-perm-names.php
 # Per-site files
 /config.php
 /config.testing.php
+/config.build.php
 /app/src/Cloud/Resources/cloud_serve/_sys/config.php
 /app/src/Cloud/Resources/cloud_serve/_sys/dp-config.php
 /app/testing/logs/*

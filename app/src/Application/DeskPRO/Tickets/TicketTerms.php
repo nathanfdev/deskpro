@@ -980,6 +980,52 @@ class TicketTerms
 				}
 				break;
 
+			case TicketSearch::TERM_USER_WAITING:
+
+				$waiting_time = $ticket->getCurrentUserWaitingTime();
+
+				try {
+					$choice_secs = \Orb\Util\Dates::getUnitInSeconds(@$choice['waiting_time'], @$choice['waiting_time_unit']);
+				} catch (\InvalidArgumentException $e) {
+					return false;
+				}
+
+				switch ($op) {
+					case self::OP_LT:
+					case self::OP_LTE:
+						if ($waiting_time > $choice_secs) return false;
+						break;
+					case self::OP_GT:
+					case self::OP_GTE:
+						if ($waiting_time < $choice_secs) return false;
+						break;
+				}
+
+				break;
+
+			case TicketSearch::TERM_TOTAL_USER_WAITING:
+
+				$waiting_time = $ticket->getRealTotalUserWaiting();
+
+				try {
+					$choice_secs = \Orb\Util\Dates::getUnitInSeconds(@$choice['waiting_time'], @$choice['waiting_time_unit']);
+				} catch (\InvalidArgumentException $e) {
+					return false;
+				}
+
+				switch ($op) {
+					case self::OP_LT:
+					case self::OP_LTE:
+						if ($waiting_time > $choice_secs) return false;
+						break;
+					case self::OP_GT:
+					case self::OP_GTE:
+					if ($waiting_time < $choice_secs) return false;
+						break;
+				}
+
+				break;
+
 			case TicketSearch::TERM_FEEDBACK_RATING:
 				$choice = isset($choice['rating']) ? $choice['rating'] : 'set';
 
@@ -1051,7 +1097,7 @@ class TicketTerms
 
 				$any = false;
 				foreach ($ticket->ticket_slas as $ticket_sla) {
-					if ($ticket_sla->sla_status == $sla_status && (!$sla_id || $ticket_sla->sla->id = $sla_id)) {
+					if ($ticket_sla->sla_status == $sla_status && (!$sla_id || $ticket_sla->sla->id == $sla_id)) {
 						$any = true;
 						if ($op == self::OP_NOTCONTAINS) {
 							return false;
@@ -1250,9 +1296,8 @@ class TicketTerms
 				break;
 
 			default:
-				$e = new \InvalidArgumentException("Unknown trigger criteria: " . $term);
-				$einfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
-				\DeskPRO\Kernel\KernelErrorHandler::logErrorInfo($einfo);
+				$e = new \InvalidArgumentException("(Non-critical notice) Unknown trigger criteria: " . $term);
+				\DeskPRO\Kernel\KernelErrorHandler::logException($e, true, 'failed_term_'.$term);
 
 				return false;
 		}

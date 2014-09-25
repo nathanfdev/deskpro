@@ -4,16 +4,17 @@
 		<header>
 			<nav>
 				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="ListCtrl.deps.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-list-autoload>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-list-autoload dp-max-height>
 				<li class="with-drag-handle" ng-repeat="dep in ListCtrl.depList" dp-state-mark="tickets.ticket_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 					<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<div style="float:right">
-							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="!dep.children.length && dep.has_layout"><i class="fa fa-columns"></i></span>
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="!dep.children.length && dep.has_layout" dp-go="{{ ng_href('tickets.ticket_deps.edit', '{id: dep.id}') }}" dp-go-params="{tab: 'layout'}"><i class="fa fa-columns"></i></span>
 						</div>
 						<h4><span class="title-id" title="ID">#{{ ng_var('dep.id') }}</span> <span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
@@ -22,7 +23,7 @@
 							<a href="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}">
 								<i class="fa fa-bars drag-handle"></i>
 								<div style="float:right">
-									<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="subdep.has_layout"><i class="fa fa-columns"></i></span>
+									<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="This department uses a custom form layout" ng-show="subdep.has_layout" dp-go="{{ ng_href('tickets.ticket_deps.edit', '{id: subdep.id}') }}" dp-go-params="{tab: 'layout'}"><i class="fa fa-columns"></i></span>
 								</div>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
@@ -86,7 +87,12 @@
 
 				<dt><em>Q:</em>I don't need departments - can I disable the field?</dt>
 				<dd><em>A:</em>
-					Tickets always have a department, but if you only have one department defined, it will not be shown to users, effectively disabling the field.
+					Tickets must always have a department, but if you only have one department, it is not shown to users on the portal when they submit a ticket; tickets are just automatically assigned to that department.
+				</dd>
+				
+				<dt><em>Q:</em>How exactly do set it up so that some of my agents can only access certain departments?</dt>
+				<dd><em>A:</em>
+					See the article <a href="https://support.deskpro.com/kb/articles/256" target="_blank">Limiting agent access to tickets by department</a> on the DeskPRO Knowledgebase for more details.
 				</dd>
 
 
@@ -106,6 +112,9 @@
 				<dd><em>A:</em>
 					You need to enter a translation for the department names. Go to <strong>Setup > Languages</strong>; click on each language you have installed beyond the default, click <strong>Edit Phrases</strong>, and enter a custom translation.
 				</dd>
+			
+
+				
 			</dl>
 		</section>
 
@@ -117,7 +126,8 @@
 				<li><i class="fa fa-book"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#departments" target="_blank">Departments</a></li>
 				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/191-adding-custom-user-fields-to-ticket-forms" target="_blank">Adding custom user fields to ticket forms</a></li>
     					<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
-
+    			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/256" target="_blank">Limiting agent access to tickets by department</a>
+				</li>		
     
 				</ul>
         	</section>

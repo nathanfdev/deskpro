@@ -1,0 +1,14 @@
+<tr>
+    <td>Headers:</td>
+    <td>
+        <ul class="list-unstyled">
+            <li ng-repeat="header in model.headers" style="padding: 5px 0;">
+                <input type="text" class="form-control" ng-model="header.name" style="width: 40%;" />:
+                <input type="text" class="form-control" ng-model="header.value" style="width: 40%;" />
+                <i class="fa fa-times-circle" style="cursor: pointer;"
+                   ng-click="model.headers.splice(model.headers.indexOf(header), 1)"></i>
+            </li>
+        </ul>
+        <button class="btn btn-default" type="button" ng-click="model.headers.push({})">Add header</button>
+    </td>
+</tr>

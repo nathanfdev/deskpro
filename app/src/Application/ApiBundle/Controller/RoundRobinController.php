@@ -35,19 +35,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
-use Application\DeskPRO\Banning\EmailBanEdit;
-use Application\DeskPRO\Banning\EmailBans;
-use Application\DeskPRO\Banning\Form\Type\EmailBanType;
-use Application\DeskPRO\Banning\Form\Type\IpBanType;
-use Application\DeskPRO\Banning\IpBanEdit;
 use Application\DeskPRO\Entity\RoundRobin;
-use Application\DeskPRO\Entity\RoundRobinAgent;
-use Application\DeskPRO\EntityRepository\BanEmail;
-use Application\DeskPRO\Exception\ValidationException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Application\DeskPRO\Tickets\Actions\ActionComposite;
+use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {
@@ -130,6 +122,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 			throw $this->createNotFoundException();
 		}
 
+		$this->countRoundRobinTriggers(true, $rr['id']);
 		$this->em->remove($rr);
 		$this->em->flush();
 
@@ -143,11 +136,75 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 	public function settingsAction()
 	{
 		if ($this->request->isMethod('PUT')) {
-			$this->settings->setSetting('core.round_robin.enabled', $this->in->getBool('enabled'));
+			$enabled = $this->in->getBool('enabled');
+			$this->settings->setSetting('core.round_robin.enabled', $enabled);
+
+			if (!$enabled) {
+				$this->countRoundRobinTriggers(true);
+			}
 		}
 
 		return $this->createApiResponse(array(
-			'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false)
+			'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false),
 		));
+	}
+
+	/**
+	 * check triggers using round robin id, or all round robins if id is null
+	 * @param $id
+	 * @return Response
+	 */
+	public function checkTriggersAction($id)
+	{
+		return $this->createApiResponse(array('active_triggers' => $this->countRoundRobinTriggers(false, $id)));
+	}
+
+	protected function isTriggerActionClear($action, $roundRobinId = null)
+	{
+		if ($action instanceof SetRoundRobin) {
+
+			if (!$roundRobinId || $action->getActionOption('id') == $roundRobinId) {
+				return false;
+			}
+
+		} elseif ($action instanceof ActionComposite) {
+			foreach ($action as $subAction) {
+				if (!$this->isTriggerActionClear($subAction)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	protected function countRoundRobinTriggers($disable = false, $roundRobinId = null)
+	{
+		$count = 0;
+		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers();
+		foreach ($triggers as $trigger) {
+			$newActions = new TriggerActions();
+			/** @var TriggerActions $actions */
+			$actions = $trigger->actions;
+			if (!$actions) continue;
+
+			foreach ($actions as $action) {
+				if ($this->isTriggerActionClear($action, $roundRobinId)) {
+					$newActions->addAction($action);
+				}
+			}
+
+			if ($newActions->count() !== $actions->count()) {
+				$count++;
+
+				if ($disable) {
+					$trigger->actions = $newActions;
+					$trigger['is_enabled'] = false;
+					$this->em->flush();
+				}
+			}
+		}
+
+		return $count;
 	}
 }

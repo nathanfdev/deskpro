@@ -38,7 +38,9 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
+use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class ProcessAbstract
 {
@@ -79,6 +81,21 @@ abstract class ProcessAbstract
 	 * @var array
 	 */
 	protected $dupe_inline_blobs = array();
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person;
+
+	/**
+	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
+	 */
+	protected $reader;
+
+	/**
+	 * @var \Application\DeskPRO\Translate\Translate
+	 */
+	protected $translator;
 
 	/**
 	 * @return mixed
@@ -162,6 +179,7 @@ abstract class ProcessAbstract
 	public function handleCc($ticket, array $ccs)
 	{
 		$account_manager = App::$container->getEmailAccountManager();
+		$db = App::$container->getDb();
 
 		$count = 0;
 		foreach ($ccs as $cc) {
@@ -200,28 +218,29 @@ abstract class ProcessAbstract
 					$this->logMessage("Skipping cc: $cc_email (no person match and closed helpdesk)");
 					continue;
 				}
+
+				$db->beginTransaction();
 				$cc_person = $person_processor->createPerson($cc, true);
 				$this->logMessage("Added cc: $cc_email (Person {$cc_person->id})");
+				$db->commit();
 			}
 
-			if (!$cc_person) {
-				continue;
-			}
-
-			if ($cc_person->is_agent && !$this->person->is_agent) {
-				if (!$this->person || !$this->person->getId() || !$this->person->is_agent) {
-					if (!App::getSetting('core_tickets.add_agent_ccs')) {
-						$this->logMessage("Skipping agent CC because core_tickets.add_agent_ccs is off");
-						continue;
+			if ($cc_person) {
+				if ($cc_person->is_agent && !$this->person->is_agent) {
+					if (!$this->person || !$this->person->getId() || !$this->person->is_agent) {
+						if (!App::getSetting('core_tickets.add_agent_ccs')) {
+							$this->logMessage("Skipping agent CC because core_tickets.add_agent_ccs is off");
+							continue;
+						}
 					}
 				}
-			}
 
-			$this->logMessage("Add CC person: {$cc_person->getId()}");
+				$this->logMessage("Add CC person: {$cc_person->getId()}");
 
-			if (!$ticket->hasParticipantPerson($cc_person)) {
-				$ticket->addParticipantPerson($cc_person);
-				$count++;
+				if (!$ticket->hasParticipantPerson($cc_person)) {
+					$ticket->addParticipantPerson($cc_person);
+					$count++;
+				}
 			}
 		}
 	}
@@ -237,9 +256,23 @@ abstract class ProcessAbstract
 		if ($this->processed_blobs !== null) return $this->processed_blobs;
 		$this->processed_blobs = array();
 
+		$accept = App::$container->getAttachmentAccepter();
+		$r_set = $accept->getRestrictionSet($this->person->is_agent ? 'emails.agent' : 'emails.user');
+
 		foreach ($this->reader->getAttachments() as $attach) {
 
 			if ($skip_attach && $skip_attach === $attach) {
+				continue;
+			}
+
+			$props = array(
+				'size' => strlen($attach->getFileContents()),
+				'ext'  => Strings::getExtension($attach->getFileName())
+			);
+
+			$error = $r_set->getErrorForProperties($props);
+			if ($error) {
+				$this->logMessage(sprintf("[processBlobs] %s rejected: %s %s", $attach->getFileName(), $error['error_code'], $error['error_detail']));
 				continue;
 			}
 

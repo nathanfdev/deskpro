@@ -78,7 +78,7 @@ define [
 					isOn = false
 
 					for currentStateId in [checkStateId, checkStateId2]
-						if not currentStateId then continue
+						if isOn or not currentStateId then continue
 
 						if currentStateVars
 							for v in currentStateVars
@@ -96,13 +96,12 @@ define [
 						if currentStateId.match(myStateIdRe1) or currentStateId.match(myStateIdRe2)
 							isOn = true
 
-						if isOn
-							element.addClass('state-on active')
-							if element.closest('[dp-nav-subnav]')
-								element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
-							break
-						else
-							element.removeClass('state-on active')
+					if isOn
+						element.addClass('state-on active')
+						if element.closest('[dp-nav-subnav]')
+							element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
+					else
+						element.removeClass('state-on active')
 
 				scope.$on('$stateChangeSuccess', ->
 					updateMarker()

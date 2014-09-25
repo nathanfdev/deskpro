@@ -41,6 +41,21 @@
 
 							<input type="text" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
 						</div>
+
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+									<input type="checkbox" class="form-control" ng-model="settings.helpdesk_disabled" style="width: auto;vertical-align: middle;margin-top: 1px;" />
+                                    Disable the helpdesk
+                                </h4>
+                            </label>
+							<div ng-show="settings.helpdesk_disabled">
+								<span class="help-block">
+                                This message will be displayed when the helpdesk is offline or when you are installing updates. HTML is allowed.
+							</span>
+								<textarea class="form-control" ng-model="settings.helpdesk_disabled_message" rows="5" style="width: 40%;"></textarea>
+							</div>
+                        </div>
 					{% endif %}
 				</div>
 			</div>
@@ -173,20 +188,6 @@
 							<h4>Time format</h4>
 						</label>
 						<input type="text" class="form-control" ng-model="settings.date_time" style="width: 210px;" />
-					</div>
-					<div class="inner-group">
-						<label style="width: 200px;">
-							<h4>Send agent task reminders at</h4>
-						</label>
-						<select ng-model="settings.task_reminder_time" ui-select2 style="width: 210px;">
-							{% for i in range(1,23) %}
-								{% if i < 10 %}{% set i = '0' ~ i %}{% endif %}
-								{% set time1 = i ~ ':00' %}
-								{% set time2 = i ~ ':30' %}
-								<option value="{{ time1 }}">{{ time1 }}</option>
-								<option value="{{ time2 }}">{{ time2 }}</option>
-							{% endfor %}
-						</select>
 					</div>
 				</div>
 			</div>

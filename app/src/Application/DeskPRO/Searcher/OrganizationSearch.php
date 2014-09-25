@@ -184,7 +184,7 @@ class OrganizationSearch extends SearcherAbstract
 				switch ($search_type) {
 					case 'input':
 					case 'value':
-						$order_by = arary(
+						$order_by = array(
 							"INNER JOIN custom_data_organizationss AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
 							"sort_table.$search_type $dir"
 						);
@@ -299,6 +299,7 @@ class OrganizationSearch extends SearcherAbstract
 							$choices_in[] = $db->quote($c);
 						}
 						$choices_in = implode(',', $choices_in);
+						if (!$choices_in) $choices_in = '';
 					}
 
 					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);

@@ -107,14 +107,14 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
 	public function setParent(CategoryAbstract $cat = null)
 	{
-		if ($cat && $cat->getId() == $this->getId()) {
+		if ($cat && $cat->getId() && $this->getId() && $cat->getId() == $this->getId()) {
 			throw new \InvalidArgumentException("Cannot set parent to self");
 		}
 
 		$this->setModelField('parent', $cat);
 
 		if ($cat) {
-			$this->setModelField('root', $cat->root ? $cat->root : $cat);
+			$this->setModelField('root', $cat->root ? $cat->root : $cat->id);
 			$this->setModelField('depth', $cat->depth + 1);
 		} else {
 			$this->setModelField('root', null);

@@ -135,7 +135,7 @@ abstract class LoaderAbstract
 
 		if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger') || is_file(DP_WEB_ROOT.'/auto-update-is-running.trigger')) {
 			header('HTTP/1.1 503 Service Unavailable');
-			echo "Helpdesk is offline.";
+			echo HelpdeskOfflineMessage::getOfflineMessage();
 			exit(1);
 		}
 
@@ -231,12 +231,28 @@ abstract class LoaderAbstract
 
 		$port = '';
 		$dbhost = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
-		if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
-			$dbhost = $m[1];
-			$port = ";port={$m[2]};";
+		$unix_socket = null;
+
+		$m = null;
+		if (preg_match('#^unix_socket:(.*?)$#', $dbhost, $m)) {
+			$unix_socket = trim($m[1]);
 		}
 
-		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$dbhost}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		if (!$unix_socket) {
+			$m = null;
+			if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
+				$dbhost = $m[1];
+				$port   = ";port={$m[2]};";
+			}
+		}
+
+		if ($unix_socket) {
+			$host_part = "unix_socket=$unix_socket";
+		} else {
+			$host_part = "host={$dbhost}$port";
+		}
+
+		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};$host_part", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 		$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 		$this->pdo->exec("SET sql_mode=''");
 		$this->pdo->exec("SET NAMES 'UTF8'");
@@ -259,17 +275,33 @@ abstract class LoaderAbstract
 		if (!empty($DP_CONFIG['db_read']['host'])) {
 			$key = 'db_read';
 		} else {
-			$key = 'db';
+			return $this->getPdo();
 		}
 
 		$port = '';
-		$dbhost = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
-		if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
-			$dbhost = $m[1];
-			$port = ";port={$m[2]};";
+		$dbhost = isset($DP_CONFIG[$key]['host']) ? $DP_CONFIG[$key]['host'] : '';
+		$unix_socket = null;
+
+		$m = null;
+		if (preg_match('#^unix_socket:(.*?)$#', $dbhost, $m)) {
+			$unix_socket = trim($m[1]);
 		}
 
-		$this->pdo_read = new \PDO("mysql:dbname={$DP_CONFIG[$key]['dbname']};host={$dbhost}$port", $DP_CONFIG[$key]['user'], $DP_CONFIG[$key]['password']);
+		if (!$unix_socket) {
+			$m = null;
+			if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
+				$dbhost = $m[1];
+				$port   = ";port={$m[2]};";
+			}
+		}
+
+		if ($unix_socket) {
+			$host_part = "unix_socket=$unix_socket";
+		} else {
+			$host_part = "host={$dbhost}$port";
+		}
+
+		$this->pdo_read = new \PDO("mysql:dbname={$DP_CONFIG[$key]['dbname']};$host_part", $DP_CONFIG[$key]['user'], $DP_CONFIG[$key]['password']);
 		$this->pdo_read->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 		$this->pdo_read->exec("SET sql_mode=''");
 		$this->pdo_read->exec("SET NAMES 'UTF8'");

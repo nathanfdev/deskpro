@@ -17,10 +17,20 @@
 		</ul>
 	</div>
 
+	<div ng-show="EditCtrl.hasDepOverrides">
+		<div class="alert alert-warning">
+			<p>
+				<span class="fa fa-exclamation-triangle"></span>
+				There are department permission overrides set on this agent. Manage permission overrides below.
+				<button class="btn btn-default btn-xs" ng-click="$event.preventDefault(); showConfirm('Are you sure you want to unset all department permission overrides?', EditCtrl.clearDepOverrides);" style="float:right">Click here to remove overrides</button>
+			</p>
+		</div>
+	</div>
+
 	<nav class="dp-tabletabs">
 		<ul>
-			<li class="active" dp-tab-btn="main.deps.tickets"><a href="#">Tickets</a></li>
-			<li dp-tab-btn="main.deps.chat"><a href="#">Chat</a></li>
+			<li class="active" dp-tab-btn="main.deps.tickets"><a href="#"><i class="fa fa-envelope"></i> Tickets</a></li>
+			<li dp-tab-btn="main.deps.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
 		</ul>
 	</nav>
 
@@ -34,6 +44,28 @@
 				</tr>
 			</thead>
 			<tbody>
+
+                <tr>
+                    <td>
+                        &nbsp;
+                        {{ phrase('adm.agents.perm_toggle_all') }}
+                    </td>
+                    <td class="text-center">
+                        <input
+                            dp-slider-switch
+                            ng-model="EditCtrl.all_perms.deps_perms.tickets.assign"
+                            ng-change="EditCtrl.changeAllPerms('deps_perms_tickets', 'assign')"
+                            />
+                    </td>
+                    <td class="text-center">
+                        <input
+                            dp-slider-switch
+                            ng-model="EditCtrl.all_perms.deps_perms.tickets.full"
+                            ng-change="EditCtrl.changeAllPerms('deps_perms_tickets', 'full')"
+                            />
+                    </td>
+                </tr>
+
 				<tr ng-repeat="dep in EditCtrl.ticketDeps">
 					<td>
 						&nbsp;
@@ -45,6 +77,7 @@
 							<input
 								dp-slider-switch
 								ng-model="EditCtrl.deps_perms.tickets[dep.id].assign"
+								ng-change="EditCtrl.updateHasPermOverridesStatus()"
 								is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
 								is-locked="EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
 								locked-tip-e="(EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full) && 'This permission is locked because the permission is granted through an enabled agent group' || 'This permission is locked because you have enabled the Full permission'"
@@ -56,6 +89,7 @@
 							<input
 								dp-slider-switch
 								ng-model="EditCtrl.deps_perms.tickets[dep.id].full"
+								ng-change="EditCtrl.updateHasPermOverridesStatus()"
 								is-on="EditCtrl.deps_perms.tickets[dep.id].full || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
 								is-locked="EditCtrl.ugEffectiveDepPerms.tickets[dep.id].assign || EditCtrl.ugEffectiveDepPerms.tickets[dep.id].full"
 								locked-tip="This permission is locked because the permission is granted through an enabled agent group"
@@ -76,6 +110,21 @@
 				</tr>
 			</thead>
 			<tbody>
+
+                <tr>
+                    <td>
+                        &nbsp;
+                        {{ phrase('adm.agents.perm_toggle_all') }}
+                    </td>
+                    <td class="text-center">
+                        <input
+                            dp-slider-switch
+                            ng-model="EditCtrl.all_perms.deps_perms.chat.full"
+                            ng-change="EditCtrl.changeAllPerms('deps_perms_chat', 'full')"
+                            />
+                    </td>
+                </tr>
+
 				<tr ng-repeat="dep in EditCtrl.chatDeps">
 					<td>
 						&nbsp;
@@ -87,6 +136,7 @@
 							<input
 								dp-slider-switch
 								ng-model="EditCtrl.deps_perms.chat[dep.id].full"
+								ng-change="EditCtrl.updateHasPermOverridesStatus()"
 								is-on="EditCtrl.deps_perms.chat[dep.id].full || EditCtrl.ugEffectiveDepPerms.chat[dep.id].full"
 								is-locked="EditCtrl.ugEffectiveDepPerms.chat[dep.id].full"
 								locked-tip="This permission is locked because the permission is granted through an enabled agent group"

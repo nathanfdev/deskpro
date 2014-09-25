@@ -85,6 +85,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 			->add('subject', 'text', array(
 				'required' => false
 			))
+			->add('account', 'text', array(
+				'required' => false
+			))
 			->add('to', 'text', array(
 				'required' => false
 			))
@@ -203,6 +206,28 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
 		if ($this->in->getBool('with_raw') && $source->blob) {
 			$info['source_raw'] = $this->container->getBlobStorage()->copyBlobRecordToString($source->blob);
+		}
+
+		$info['source_info'] = null;
+		if ($source->source_info) {
+			$info['source_info'] = $source->getSourceInfoAsString();
+		}
+
+		switch ($source->object_type) {
+			case 'ticket':
+				$t = $this->em->find('DeskPRO:Ticket', $source->object_id);
+				if ($t) {
+					$info['ticket'] = $t->toApiData();
+				}
+				break;
+
+			case 'ticket_message':
+				$m = $this->em->find('DeskPRO:TicketMessage', $source->object_id);
+				if ($m) {
+					$info['ticket_message'] = $m->toApiData();
+					$info['ticket']         = $m->ticket ? $m->ticket->toApiData() : null;
+				}
+				break;
 		}
 
 		return $this->createApiResponse($info);
@@ -327,5 +352,100 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 		return $this->createApiResponse(array(
 			'date_next_attempt' => $sendmail->date_next_attempt
 		));
+	}
+
+	####################################################################################################################
+	# sendmail-mass-actions
+	####################################################################################################################
+
+	public function sendmailMassActionsAction($action)
+	{
+		$ids = $this->in->getArrayOfUInts('ids');
+		if (!$ids) {
+			return $this->createApiSuccessResponse();
+		}
+
+		switch ($action) {
+			case 'resend':
+				$this->db->updateIn('sendmail_queue', array(
+					'status'            => 'pending',
+					'date_next_attempt' => date('Y-m-d H:i:s')
+				), $ids);
+				break;
+
+			case 'delete':
+				$bs = $this->container->getBlobStorage();
+				$recs = $this->db->fetchAll("
+					SELECT sendmail_queue.id AS sendmail_queue_id, blobs.*
+					FROM sendmail_queue
+					LEFT JOIN blobs ON blobs.id = sendmail_queue.blob_id
+					WHERE sendmail_queue.id IN (" . implode(',', $ids) . ")
+				");
+
+				foreach ($recs as $r) {
+					if ($r['id']) {
+						$bs->deleteBlobRow($r);
+					}
+
+					$this->db->delete('sendmail_queue', array('id' => $r['sendmail_queue_id']));
+				}
+				break;
+
+			default:
+				throw $this->createNotFoundException();
+		}
+
+		return $this->createApiSuccessResponse();
+	}
+
+	####################################################################################################################
+	# sources-mass-actions
+	####################################################################################################################
+
+	public function emailSourceMassActionsAction($action)
+	{
+		$ids = $this->in->getArrayOfUInts('ids');
+		if (!$ids) {
+			return $this->createApiSuccessResponse();
+		}
+
+		switch ($action) {
+			case 'reprocess':
+				$this->db->updateIn('email_sources', array(
+					'status' => 'retry',
+					'error_code' => null,
+				), $ids);
+				break;
+
+			case 'delete':
+				$bs = $this->container->getBlobStorage();
+				$recs = $this->db->fetchAll("
+					SELECT email_sources.id AS email_sources_id, email_sources.log_blob_id AS email_sources_log_blob_id, blobs.*
+					FROM email_sources
+					LEFT JOIN blobs ON blobs.id = email_sources.blob_id
+					WHERE email_sources.id IN (" . implode(',', $ids) . ")
+				");
+
+				foreach ($recs as $r) {
+					if ($r['id']) {
+						$bs->deleteBlobRow($r);
+					}
+
+					if ($r['email_sources_log_blob_id']) {
+						$log_blob_row = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($r['email_sources_log_blob_id']));
+						if ($log_blob_row) {
+							$bs->deleteBlobRow($log_blob_row);
+						}
+					}
+
+					$this->db->delete('email_sources', array('id' => $r['email_sources_id']));
+				}
+				break;
+
+			default:
+				throw $this->createNotFoundException();
+		}
+
+		return $this->createApiSuccessResponse();
 	}
 }

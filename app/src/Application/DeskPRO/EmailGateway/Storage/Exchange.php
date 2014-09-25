@@ -153,9 +153,9 @@ class Exchange
 		} else {
 			$folder = $this->findFolder($folder);
 			if ($folder) {
-				$request->ParentFolderIds                            = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
-				$request->ParentFolderIds->DistinguishedFolderId     = new EWSType_DistinguishedFolderIdType();
-				$request->ParentFolderIds->DistinguishedFolderId->Id = $folder->FolderId->Id;
+				$request->ParentFolderIds           = new EWSType_NonEmptyArrayOfBaseFolderIdsType();
+				$request->ParentFolderIds->FolderId = new \EWSType_FolderIdType();
+				$request->ParentFolderIds->FolderId->Id = $folder->FolderId->Id;
 			}
 		}
 

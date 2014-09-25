@@ -38,6 +38,7 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {
@@ -135,7 +136,9 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 
 		$crit = new FilterTerms();
 		foreach ($this->in->getArrayValue('filter.terms') as $term_info) {
-			$crit->addTermFromArray($term_info);
+			try {
+				$crit->addTermFromArray($term_info);
+			} catch (\Exception $e) {}
 		}
 
 		$trans = new LegacyTermsTransformer();

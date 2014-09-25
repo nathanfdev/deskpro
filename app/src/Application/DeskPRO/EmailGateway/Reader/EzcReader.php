@@ -326,6 +326,13 @@ class EzcReader extends AbstractReader
 						$attach->file_name = 'email.eml';
 					}
 					$attach->mime_type = 'message/rfc822';
+				} elseif($part->mimeType == 'ms-tnef' || $part->mimeType == 'application/ms-tnef') {
+					$attach = null;
+					$winmail_attach = $this->decodeTnef($part);
+					foreach ($winmail_attach as $a) {
+						$attachments[] = $a;
+					}
+
 				} else {
 					$attach->tmp_file   = $part->fileName;
 
@@ -362,22 +369,15 @@ class EzcReader extends AbstractReader
 					}
 				}
 
-				$attach->content_id = $part->getHeader('Content-ID');
-				if ($attach->content_id) {
-					// Content-ID is enclosed in brackets, remove those
-					$attach->content_id = preg_replace('#^<(.*?)>$#', '$1', $attach->content_id);
+				if ($attach) {
+					$attach->content_id = $part->getHeader('Content-ID');
+					if ($attach->content_id) {
+						// Content-ID is enclosed in brackets, remove those
+						$attach->content_id = preg_replace('#^<(.*?)>$#', '$1', $attach->content_id);
+					}
+
+					$attachments[] = $attach;
 				}
-
-				$attachments[] = $attach;
-			}
-		}
-
-		$set_attachments = array();
-
-		foreach ($attachments as $attach) {
-			if ($attach->file_name != 'winmail.dat') {
-				$set_attachments[] = $attach;
-				continue;
 			}
 		}
 
@@ -533,5 +533,45 @@ class EzcReader extends AbstractReader
 			$body->raw_parts = array(clone $body);
 			return $body;
 		}
+	}
+	
+	/**
+	* Decode a Microsoft Outlook TNEF part (winmail.dat)
+	*
+	* @param $part Message part to decode
+	* @return array
+	*/
+	function decodeTnef($part)
+	{
+		$attachments = array();
+		
+		$tnef = new \tnef;
+		
+		$tnef_arr = $tnef->decompress(file_get_contents( $part->fileName ));
+		if (!$tnef_arr || !is_array($tnef_arr)) {
+			return array();
+		}
+
+		foreach ($tnef_arr as $pid => $winatt) {
+		    $attach = new Item\Attachment();
+
+			// We didnt decode it or its a bad file
+			if (empty($winatt['name']) || empty($winatt['type']) || empty($winatt['subtype']) || empty($winatt['stream'])) {
+				continue;
+			}
+		    
+		    $attach->file_name       = trim($winatt['name']);
+		    $attach->ctype_primary   = trim(strtolower($winatt['type']));
+		    $attach->ctype_secondary = trim(strtolower($winatt['subtype']));
+		    $attach->mime_type       = $attach->ctype_primary . '/' . $attach->ctype_secondary;
+			$attach->file_contents   = $winatt['stream'];
+			$attach->size            = strlen($attach->file_contents);
+
+			$attachments[] = $attach;
+		    
+		    unset($tnef_arr[$pid]);
+		}
+		
+		return $attachments;
 	}
 }

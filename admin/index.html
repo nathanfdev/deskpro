@@ -6,8 +6,21 @@
 	<title></title>
 	<script type="text/javascript" charset="utf-8">
 	window.onload = function() {
-		var loc = window.location.href;
-		loc = loc.replace(/^(.*?)\/admin\/?(.*?)$/, '$1/index.php/admin/$2');
+		var loc, readCookie;
+
+		loc = window.location.href;
+
+		readCookie = function (sKey) {
+			if (!sKey) { return null; }
+			return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+		};
+
+		if (readCookie('dp_autocorrect_url')) {
+			loc = loc.replace(/^(.*?)\/admin\/?(.*?)$/, '$1/index.php?_sys=rewrite_loop_detected');
+		} else {
+			loc = loc.replace(/^(.*?)\/admin\/?(.*?)$/, '$1/index.php/admin/$2');
+		}
+
 		window.location.href = loc;
 	};
 	</script>

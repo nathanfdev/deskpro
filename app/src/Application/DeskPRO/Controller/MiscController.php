@@ -47,4 +47,9 @@ class MiscController extends AbstractController
 	{
 		throw $this->createNotFoundException();
 	}
+
+	public function goToBillingAction()
+	{
+		return $this->redirect($this->generateUrl('admin') . '#/license');
+	}
 }

@@ -59,7 +59,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('agent_ids');
-		$options->addValidNames('template', 'from_name', 'from_account');
+		$options->addValidNames('template', 'from_name', 'from_account', 'headers');
 		return $options;
 	}
 
@@ -73,37 +73,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	{
 		$agents = array();
 
+		$person_context = $context->getPersonContext();
+		$isNotificationsDisabled = $this->getContainer()->getSetting('agent.disable_notifications');
+
 		foreach ($agent_ids as $aid) {
-			// -1 = current user
-			if ($aid == -1) {
-				if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
-					$agents[] = $context->getPersonContext();
-				}
+			if ($aid == 'notify_list') {
 
-			// assigned agent
-			} else if ($aid == 'agent') {
-				if ($ticket->agent) {
-					$agents[] = $ticket->agent;
-				}
-
-			// agents of assigned team
-			} else if ($aid == 'team') {
-				if ($ticket->agent_team) {
-					foreach ($ticket->agent_team->members as $agent) {
-						$agents[] = $agent;
-					}
-				}
-
-			// followers
-			} else if ($aid == 'followers') {
-				if ($agent_followers = $ticket->getAgentParticipants()) {
-					foreach ($agent_followers as $agent) {
-						$agents[] = $agent;
-					}
-				}
-
-			// based on notify list
-			} else if ($aid == 'notify_list') {
+				if ($isNotificationsDisabled) continue;
 
 				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
 				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
@@ -116,23 +92,37 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
 				$notify = $list_builder->genNotifyList();
 
-				$person_context = $context->getPersonContext();
 				foreach ($notify as $n) {
 					// dont send to self
 					if ($person_context && $person_context === $n['agent']) {
-						$context->getLogger()->debug("[SendAgentEmail] notify_list skipping self");
-						continue;
+						$override = false;
+						if ($person_context->getPref('agent_notify_override.all.email')) {
+							$override = true;
+						} else if ($person_context->getPref('agent_notify_override.forward.email') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+							$override = true;
+						}
+
+						if (!$override) {
+							$context->getLogger()->debug("[SendAgentEmail] notify_list skipping self");
+							continue;
+						} else {
+							$context->getLogger()->debug("[SendAgentEmail] notify_list sending to self because got override preference");
+						}
 					}
 					if (in_array('email', $n['types'])) {
 						$agents[] = $n['agent'];
 					}
 				}
 
-			// specific agents
-			} else {
-				if ($agent = $this->getContainer()->getAgentData()->get($aid)) {
-					$agents[] = $agent;
+				$force_list = $context->getVars()->get('agent_force_subscription_list', array());
+				if ($force_list) {
+					$context->getLogger()->debug("[SendAgentEmail] Appending force list");
+					$agents = array_merge($agents, $force_list);
 				}
+
+			} else {
+				$agent_data = $this->getContainer()->getAgentData();
+				$agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
 			}
 		}
 
@@ -141,6 +131,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 		}
 
 		$agents = array_unique($agents);
+		$agents = array_filter($agents, function($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
 
 		return $agents;
 	}
@@ -242,6 +233,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				->setTemplateName($template)
 				->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 				->setLogger($context->getLogger())
+				->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
 				->buildTicketEmail();
 
 			try {

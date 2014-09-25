@@ -17,6 +17,7 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 			postData.settings = Util.clone($scope.setting_values);
 			postData.username = username;
 			postData.password = password;
+			postData.app_id   = $scope.appId || 0;
 
 			deferred = $q.defer();
 

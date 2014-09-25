@@ -125,7 +125,9 @@
           promise = this.Api.sendPutJson('/api_keys', {
             api_key: postData
           }).success(function(data) {
-            return model.id = data.id;
+            if (data.api_key != null) {
+              return model = data.api_key;
+            }
           });
         }
         promise.success((function(_this) {

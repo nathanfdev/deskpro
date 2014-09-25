@@ -577,6 +577,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 					'display_order' => $c->display_order
 				);
 			}
+
+			$defaults = array();
+			foreach (explode(',', $data['default_value']) as $val) {
+				if (strlen($val)) $defaults[] = (int) $val;
+			}
+			$data['default_value'] = $defaults;
 		}
 
 		if ($data['options']) {

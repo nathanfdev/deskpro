@@ -13,7 +13,7 @@ switch ($type) {
 			$callback = !empty($_REQUEST['callback']) ? (string)$_REQUEST['callback'] : null;
 		}
 
-		$callback = preg_replace('#[^a-zA-Z0-9_]#', '', $callback);
+		$callback = preg_replace('#[^a-zA-Z0-9_\.]#', '', $callback);
 		if (!$callback) {
 			$callback = 'callback';
 		}

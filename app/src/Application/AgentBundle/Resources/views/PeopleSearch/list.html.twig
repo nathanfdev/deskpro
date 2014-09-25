@@ -1,7 +1,4 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{% block dp_declare %}
-	{{ set_tplvar('baseId', el_uid()) }}
-{% endblock %}
 
 {######################################################################################################################}
 {# METADATA #}
@@ -23,12 +20,11 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.fetchResultsUrl = '{{ path('agent_peoplesearch_getpage') }}';
 pageMeta.resultId = {{cache_id}};
 pageMeta.cache_id = {{cache_id}};
-{% if not people %}
-	pageMeta.noResults = true;
-{% endif %}
-
-pageMeta.perPage = 50;
-pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+pageMeta.displayFields = {{ display_fields|json_encode|raw }};
+pageMeta.page = {{ page }};
+pageMeta.persons = {{ people_json|raw }};
 </script>
 {% endblock top %}
 
@@ -66,42 +62,54 @@ pageMeta.peopleResultIds = {{ person_ids|json_encode|raw }};
 {######################################################################################################################}
 
 {% block pane_content %}
-	{% if people|length %}
-		<div id="people-list-result">
-			{% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
-			{% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
-			{#{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}#}
 
-			<section class="people-list list-listing no-check">
-				{% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
-			</section>
+    <div id="people-list-result" ng-show="persons.length">
+        {% include 'AgentBundle:PeopleSearch:list-display-options-overlay.html.twig' %}
+        {% include 'AgentBundle:PeopleSearch:list-control-bar.html.twig' %}
+        {#{% include 'AgentBundle:PeopleSearch:list-massactions-bar.html.twig' %}#}
 
-			<footer class="results-nav">
-				<div class="cursor">
-					{% set phrase_part1 %}
-					<span class="results-showing-count" id="{{ tplvars.baseId }}_showing_count"></span>
-					{% endset %}
-					{% set phrase_part2 %}
-					<span class="results-total-count" id="{{ tplvars.baseId }}_total_count">{{ person_ids|length }}</span>
-					{% endset %}
-					{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
-				</div>
-				{% if person_ids|length > 50 %}
-					<ul class="pagenav no-prev">
-						<li class="prev"></li>
-						<li class="next"></li>
-					</ul>
-				{% endif %}
-				<div class="loading">
+        <section class="people-list list-listing no-check"
+                 ng-if="listType == 'list'">
+            {% include 'AgentBundle:PeopleSearch:list-page.html.twig' %}
+        </section>
 
-				</div>
-			</footer>
-		</div>
-	{% else %}
-		<section class="list-listing no-results">
-			<article class="row-item no-results">
-				<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
-			</article>
-		</section>
-	{% endif %}
+        <div class="table-result-list"
+             ng-if="'table' === listType"
+                >
+            <table cellspacing="0" width="100%">
+
+                {% include 'AgentBundle:PeopleSearch:list-table-head.html.twig' %}
+
+                <tbody>
+                <tr
+                        ng-repeat="person in persons"
+                        class="row-item person person-{{ ng_var('person.id') }}"
+                        data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ person.id }}'})|raw }}"
+                        data-route-title="@selector(a.name)" data-route-openclass="open"
+                        >
+                    {% include 'AgentBundle:PeopleSearch:list-table-row.html.twig' %}
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        {% include 'AgentBundle::list-pane-nav.html.twig' with {
+            listName: 'persons',
+            page: page,
+            perPage: per_page,
+            total: person_ids|length,
+            ids: person_ids,
+            displayFields: display_fields,
+            url: path('agent_peoplesearch_getpage')
+        } only %}
+
+    </div>
+
+    <section class="list-listing no-results" ng-show="!persons.length">
+        <article class="row-item no-results">
+            <p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
+        </article>
+    </section>
+
 {% endblock pane_content %}

@@ -93,10 +93,15 @@ class ActiveDirectory extends AbstractAdapter
 			'password' => '',
 		));
 		$rec = null;
-		$rec_arr = $adapter->findRecordViaEmail($id_input);
 
-		if (!$rec_arr || !isset($rec_arr['dn'])) {
-			$rec_arr = $adapter->findRecordViaUsername($id_input);
+		try {
+			$rec_arr = $adapter->findRecordViaEmail($id_input);
+			if (!$rec_arr || !isset($rec_arr['dn'])) {
+				$rec_arr = $adapter->findRecordViaUsername($id_input);
+			}
+		} catch (\Exception $e) {
+			if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+			throw $e;
 		}
 
 		$raw_info = array();
@@ -130,7 +135,13 @@ class ActiveDirectory extends AbstractAdapter
 		}
 
 		if ($rec) {
-			$raw_info = array_merge($raw_info, $rec->getAttributes());
+			foreach ($rec->getData() as $name => $value) {
+				try {
+					$raw_info[$name] = $rec->getAttribute($name, null);
+				} catch (\Exception $e) {
+					$raw_info[$name] = $value;
+				}
+			}
 
 			if ($rec->getAttribute('givenName')) {
 				$raw_info['first_name'] = $rec->getAttribute('givenName', 0);

@@ -1,7 +1,12 @@
 (function() {
-  define(['DeskPRO/Util/Util'], function(Util) {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays', 'Admin/OptionBuilder/TypesDef/BaseTypesDef'], function(Util, Arrays, BaseTypesDef) {
     var Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef;
-    return Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef = (function() {
+    return Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef = (function(_super) {
+      __extends(Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef, _super);
+
       function Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef($q, Api, dpTemplateManager) {
         this.$q = $q;
         this.Api = Api;
@@ -12,6 +17,7 @@
         this.timeElapsedTemplate = 'OptionBuilder/type-criteria-time-elapsed.html';
         this.selectTemplate = 'OptionBuilder/type-criteria-select.html';
         this.isTemplate = 'OptionBuilder/type-criteria-is.html';
+        this.remoteTemplate = 'OptionBuilder/type-criteria-remote.html';
         this.init();
       }
 
@@ -153,40 +159,11 @@
         options_formatter = options.optionsFormatter || null;
         extraOptions = options.extraOptions || null;
         if (!options_formatter) {
-          options_formatter = function(options) {
-            var opt, opts, title, val, _i, _j, _len, _len1;
-            opts = [];
-            if (extraOptions) {
-              for (_i = 0, _len = extraOptions.length; _i < _len; _i++) {
-                opt = extraOptions[_i];
-                opts.push(opt);
-              }
-            }
-            for (_j = 0, _len1 = options.length; _j < _len1; _j++) {
-              opt = options[_j];
-              if (opt.title) {
-                title = opt.title;
-              } else if (opt.name) {
-                title = opt.name;
-              } else {
-                title = null;
-              }
-              if (opt.id) {
-                val = opt.id;
-              } else if (opt.value) {
-                val = opt.value;
-              } else {
-                val = null;
-              }
-              if (title !== null && val !== null) {
-                opts.push({
-                  title: title,
-                  value: val
-                });
-              }
-            }
-            return opts;
-          };
+          options_formatter = (function(_this) {
+            return function(options) {
+              return _this.standardOptionsFormatter(options, extraOptions);
+            };
+          })(this);
         }
         me = this;
         return {
@@ -205,6 +182,7 @@
             var defer;
             if (options.options) {
               return {
+                fieldOptions: options,
                 operators: operators,
                 options: options_formatter ? options_formatter(options.options) : options.options,
                 multiselect: !options.single
@@ -215,6 +193,7 @@
                 return function() {
                   return defer.resolve({
                     operators: operators,
+                    fieldOptions: options,
                     options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
                     multiselect: !options.single
                   });
@@ -223,7 +202,8 @@
               return defer.promise;
             } else {
               return {
-                operators: operators
+                operators: operators,
+                fieldOptions: options
               };
             }
           },
@@ -408,7 +388,7 @@
                 value.type = type;
                 value.op = model.op;
                 value.options = {};
-                valie.options[prop_name] = val;
+                value.options[prop_name] = val;
                 return value;
               }
             };
@@ -450,7 +430,7 @@
                     date1 = new Date(value.options.date1 * 1000);
                   }
                   if (value.options.date2) {
-                    date2 = new Date(value.options.date1 * 1000);
+                    date2 = new Date(value.options.date2 * 1000);
                   }
                 } else {
                   use_relative = true;
@@ -515,7 +495,7 @@
 
       return Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef;
 
-    })();
+    })(BaseTypesDef);
   });
 
 }).call(this);

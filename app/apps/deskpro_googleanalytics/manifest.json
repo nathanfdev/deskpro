@@ -17,8 +17,22 @@
 		{
 			"name": "ga_property_id",
 			"type": "text",
-			"label": "Google Analytics Tracking ID",
+			"label": "Google Analytics Tracking IDDQD",
 			"description": "Enter your Tracking ID here. This will look like: UA-00000000-1.",
+			"native_only": true
+		},
+		{
+			"name": "ga_property_demographics_reports",
+			"type": "checkbox",
+			"label": "Enable Demographics and Interests Reports",
+			"description": "Demographics and Interest Reports make Age, Gender, and Interest data available so you can better understand who your users are.",
+			"native_only": true
+		},
+		{
+			"name": "ga_property_enhanced_link",
+			"type": "checkbox",
+			"label": "Use enhanced link attribution",
+			"description": "Enhanced link attribution allows to better track links on your page.",
 			"native_only": true
 		}
 	]

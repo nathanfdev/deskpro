@@ -37,6 +37,9 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\LoginLogs\LoginLogs;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MiscController extends AbstractController
 {
@@ -290,15 +293,26 @@ class MiscController extends AbstractController
 
 	public function uploadAction()
 	{
-		$file = $this->request->files->get('file');
 		$accept = $this->container->getAttachmentAccepter();
+		$error = null;
 
-		$error = $accept->getError($file, 'agent');
+		if ($path = $this->in->getString('path')) {
+			if (0 !== strpos($path, '/web')) {
+				throw new NotFoundHttpException;
+			}
+			$root = $this->container->getParameter('kernel.root_dir') . '/../..';
+			$path = $root . $path;
+			$file = new UploadedFile($path, pathinfo($path, PATHINFO_BASENAME));
+		} else {
+			$file = $this->request->files->get('file');
+			$error = $accept->getError($file, 'agent');
+		}
+
 		if (!$error && $this->in->getBool('is_image')) {
 			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
 			$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
 			$accept->addRestrictionSet('only_images', $set);
-			$error = $accept->getError($file, 'only_images');
+			$error = $accept->getError($file, 'only_images', true);
 		}
 		if ($error) {
 			$message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);

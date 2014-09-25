@@ -1,11 +1,17 @@
 @import "lib.less";
+@import "../../app/bower_components/intl-tel-input/build/css/intlTelInput.css";
+@import "dropdown.less";
 
 * {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 .ipad body {
-	zoom: 80%;
+	zoom: 100%;
+}
+
+.ipad body {
+	margin: 0;
 }
 
 /* RESET */
@@ -141,6 +147,10 @@ select, .ui-widget select {
 }
 select[multiple]{height:inherit;}
 select:focus{outline: none;}
+
+#colorbox, #cboxOverlay, #cboxWrapper {
+	z-index: 99999999;
+}
 
 article,aside,details,figcaption,figure,
 footer,header,hgroup,menu,nav,section {
@@ -559,6 +569,10 @@ select.dpe_select, select.with-select2 {
 
 	.select2-container .select2-choice span span {
 		margin: 0;
+	}
+
+	.select2-results {
+		max-height: 300px;
 	}
 
 	.select2-container .select2-choice abbr {

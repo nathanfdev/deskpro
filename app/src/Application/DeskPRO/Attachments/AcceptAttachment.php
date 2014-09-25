@@ -36,8 +36,10 @@ namespace Application\DeskPRO\Attachments;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\ORM\EntityManager;
 use Orb\Data\ContentTypes;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -107,11 +109,13 @@ class AcceptAttachment
 			$restriction = $this->getRestrictionSet($restriction_set_id);
 		}
 
+		$is_email = strpos($restriction_set_id, 'email') !== false;
+
 		$max_size = min(\Orb\Util\Env::getEffectiveMaxUploadSize(), $restriction->getMaxSize());
 
 		if ($file === null) {
 			// This means the file is too big and PHP basically rejected the whole request data
-			if (isset($_SERVER['CONTENT_LENGTH']) && empty($_POST) && empty($_FILES)) {
+			if (!$is_email && isset($_SERVER['CONTENT_LENGTH']) && empty($_POST) && empty($_FILES)) {
 				return array('error_code' => self::ERR_SIZE, 'error_detail' => Numbers::filesizeDisplay($max_size));
 			}
 
@@ -162,7 +166,7 @@ class AcceptAttachment
 				default:
 					$log_error = true;
 					$error['error_code'] = self::ERR_SERVER;
-					$error['error_detail'] = 'unknown';
+					$error['error_detail'] = $file->getError();
 					break;
 			}
 		}
@@ -187,14 +191,18 @@ class AcceptAttachment
 		}
 
 		if ($log_error) {
-			App::logErrorMessage('failed_upload', 'INFO', "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}", array(
+			$info = "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}\n";
+			$info .= Arrays::implodeTemplate(array(
 				'error_code' => $error['error_code'],
 				'error_detail' => $error['error_detail'],
 				'filename' => $file->getClientOriginalName(),
 				'type' => $file->getClientMimeType(),
 				'size' => $file->getClientSize(),
 				'file_err_code' => $file->getError()
-			));
+			), "{KEY}: {VAL}\n");
+
+			$e = new \Exception($info, 0);
+			KernelErrorHandler::logException($e, false);
 		}
 
 		return $error;

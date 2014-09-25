@@ -420,7 +420,7 @@ class DownloadsController extends AbstractController
 			$cat_structure_data = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();;
 			$cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
 			$cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
-			$cat_structure_data = Arrays::assocToNumericArary($cat_structure_data, 'children');
+			$cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
 		}
 
 		return $this->render($tpl, array(

@@ -96,6 +96,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			this.initPage(wrapper);
 			this.initApps();
 
+			DeskPRO_Window.TabBar.rescanTitles();
+
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
 		}, this);
 
@@ -145,7 +147,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			if (self.destroyObjects) {
 				var i;
 				for (i = 0; i < self.destroyObjects.length; i++) {
-					self.destroyObjects[i].destroy();
+					if (self.destroyObjects[i] && self.destroyObjects[i].destroy) {
+						self.destroyObjects[i].destroy();
+					}
 				}
 				self.destroyObjects = null;
 			}

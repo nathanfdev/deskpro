@@ -198,7 +198,7 @@ class TicketMerge implements PersonContextInterface
 			'product'       => 'title',
 			'workflow'      => 'title',
 			'priority'      => 'title',
-			'parent_ticket' => 'subject',
+			'parent_ticket' => 'parent_ticket',
 		);
 		foreach ($standard_prop_names as $prop_name => $title_field) {
 			if ($this->ticket[$prop_name] && $this->other_ticket[$prop_name]) {
@@ -230,6 +230,8 @@ class TicketMerge implements PersonContextInterface
 				$this->data_lost['fields'][$f->id] = array($f->title, $prop_field->lost);
 			}
 		}
+
+		$merge_change->setLostData($this->data_lost);
 
 		// If they're different users, then add the old person as a participant on the ticket
 		if ($ticket_person->getId() != $other_ticket_person->getId()) {
@@ -334,6 +336,7 @@ class TicketMerge implements PersonContextInterface
 		", array($this->ticket['id'], $this->other_ticket['id']));
 		$this->db->delete('article_pending_create', array('ticket_id' => $this->other_ticket['id']));
 
+		// Labels
 		$this->db->executeUpdate("
 			UPDATE IGNORE labels_tickets
 			SET ticket_id = ?
@@ -341,26 +344,44 @@ class TicketMerge implements PersonContextInterface
 		", array($this->ticket['id'], $this->other_ticket['id']));
 		$this->db->delete('labels_tickets', array('ticket_id' => $this->other_ticket['id']));
 
+		// Tasks
 		$this->db->executeUpdate("
 			UPDATE IGNORE task_associations
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
 
+		// Billing
 		$this->db->executeUpdate("
 			UPDATE IGNORE ticket_charges
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
 
+		// Feedback
 		$this->db->executeUpdate("
 			UPDATE IGNORE ticket_feedback
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
 
+		// SLAs
 		$this->db->executeUpdate("
 			UPDATE IGNORE ticket_slas
+			SET ticket_id = ?
+			WHERE ticket_id = ?
+		", array($this->ticket['id'], $this->other_ticket['id']));
+
+		// Parent links
+		$this->db->executeUpdate("
+			UPDATE IGNORE tickets
+			SET parent_ticket_id = ?
+			WHERE parent_ticket_id = ?
+		", array($this->ticket['id'], $this->other_ticket['id']));
+
+		// JIRA issues
+		$this->db->executeUpdate("
+			UPDATE IGNORE jira_issues
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));

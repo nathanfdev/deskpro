@@ -129,6 +129,7 @@ return array(
 			'date_picture_check' => NULL,
 			'date_picture_check_ts' => 0,
 			'date_picture_check_ts_ms' => 0,
+			'browser' => null,
 			'picture_blob' => null,
 			'organization' => NULL,
 			'emails' =>
@@ -163,8 +164,12 @@ return array(
 					'id' => 1,
 					'email' => 'admin@example.com',
 				),
+			'primary_phone_number_text' => null,
+			'primary_phone_number_region' => null,
 			'usergroup_ids' =>
-				array(),
+				array(
+					0 => 2,
+				),
 			'agentgroup_ids' =>
 				array(
 					0 => 3,

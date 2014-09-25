@@ -2,10 +2,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_AgentTeams_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_AgentTeams_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = []
+		@DEPS      = ['$upload', '$http']
 
 		init: ->
 			@teamId = parseInt(@$stateParams.id)
+
+			@$scope.icon_image = null
+			@$scope.$on 'icon.selected', (e, path) => @selectIcon path
+
 			return
 
 		initialLoad: ->
@@ -27,17 +31,63 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				else
 					@team = {members: []}
 
+				@setAvatar @team.avatar
+
 				# value=true on agents that are members
 				memberIds = @team.members.map((x) -> x.id)
 				@agents.map((x) -> if x.id in memberIds then x.value = true)
 			)
 			return promise
 
+
+
+		setAvatar: (blob) =>
+			@team.avatar = blob
+			if !blob?
+				@$scope.icon_image = "/web/app/vendor-src/icons/webdev-seo/png/career.png"
+			else
+				@$scope.icon_image = blob.thumbnail_url_50
+
+
+
+		onFileSelect: (files) ->
+			@$scope.uploading = false
+			file = files[0]
+
+			@$upload.upload({
+				url: @$http.formatApiUrl('/misc/upload'),
+				data: { is_image: true },
+				file: file
+			}).success( (data) =>
+				@$scope.uploading = false
+				@setAvatar data.blob
+			).error( (data) =>
+				@$scope.uploading = false
+				@Growl.error data?.error_message || 'Error'
+			)
+
+
+
+		selectIcon: (image) =>
+			setAvatar null if !image?
+
+			@$scope.uploading = true
+			@Api.sendPostJson('/misc/upload', {path: image, is_image: true}).then(
+				(data) =>
+					@$scope.uploading = false
+					@setAvatar data.data.blob
+				() =>
+					@$scope.uploading = false
+			)
+
+
+
 		saveForm: ->
 			postData = {
 				team: {
 					name: @team.name
 					person_ids: []
+					avatar: @team.avatar?.id || null
 				}
 			}
 

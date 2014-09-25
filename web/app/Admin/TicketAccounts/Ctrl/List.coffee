@@ -18,6 +18,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 						@$state.go('tickets.ticket_accounts.create')
 
 				@addManagedListener(@TicketAccountsData.recs, 'changed', =>
+					@TicketAccountsData.recs.reorder()
 					@accounts = @TicketAccountsData.recs.values()
 					@ngApply()
 				)

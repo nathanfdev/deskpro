@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,14 @@ use Swagger\Swagger;
 
 /**
  * Baseclass for the @SWG\Parameter & @SWG\Property annotations.
- * @link https://github.com/wordnik/swagger-core/wiki/datatypes
+ * https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#43-data-types
  *
  * @package
  * @category
  * @subpackage
  *
  * @Annotation
+ * @link https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#43-data-types
  */
 abstract class DataType extends AbstractAnnotation
 {
@@ -55,17 +56,19 @@ abstract class DataType extends AbstractAnnotation
     public $type;
 
     /**
-     *
+     * Fine-tuned primitive type definition
      * @var string
      */
     public $format;
 
     /**
+     * The type definition of the values in the container.
      * @var Items
      */
     public $items;
 
     /**
+     * A flag to note whether the container allows duplicate values or not.
      * @var bool
      */
     public $uniqueItems;
@@ -76,24 +79,25 @@ abstract class DataType extends AbstractAnnotation
     public $required;
 
     /**
-     *
+     * The minimum valid value for the type, inclusive.
      * @var mixed
      */
     public $minimum;
 
     /**
-     *
+     * The maximum valid value for the type, inclusive.
      * @var mixed
      */
     public $maximum;
 
     /**
+     * A fixed list of possible values.
      * @var array
      */
     public $enum;
 
     /**
-     * Undocumented
+     * The default value to be used for the field.
      * @var mixed
      */
     public $defaultValue;
@@ -105,7 +109,7 @@ abstract class DataType extends AbstractAnnotation
     public function __construct(array $values = array())
     {
         parent::__construct($values);
-        Swagger::checkDataType($this->type);
+        Swagger::checkDataType($this->type, $this->_context);
         if (is_string($this->enum)) {
             $values = $this->decode($this->enum);
             if (is_object($values)) {
@@ -124,9 +128,9 @@ abstract class DataType extends AbstractAnnotation
         if (is_string($this->required)) {
             $required = filter_var($this->required, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($required === null) {
-                Logger::notice('Invalid `required="'.$this->required.'"` for '.$this->identity().' expecting `required=true` or `required=false` in '.AbstractAnnotation::$context);
+                Logger::notice('Invalid `required="'.$this->required.'"` for '.$this->identity().' expecting `required=true` or `required=false` in '.$this->_context);
             } else {
-                Logger::notice('Expecting a boolean, got a string `required="'.$this->required.'"` instead of `required='.($required ? 'true': 'false').'` for '.$this->identity().' in '.AbstractAnnotation::$context);
+                Logger::notice('Expecting a boolean, got a string `required="'.$this->required.'"` instead of `required='.($required ? 'true': 'false').'` for '.$this->identity().' in '.$this->_context);
                 $this->required = $required;
             }
         }

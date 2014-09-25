@@ -153,6 +153,10 @@ class CoreExtension extends Extension
 		// Attach listener for no phrase
 		$definition = $container->getDefinition('deskpro.sys_events_loader');
 		$definition->addMethodCall('addNoPhraseEventListener');
+
+		$definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\EventListener', array(new Reference('service_container')));
+		$definition->addTag('doctrine.event_subscriber');
+		$container->setDefinition('deskpro.orm.event_listener.activity_stream', $definition);
 	}
 
 

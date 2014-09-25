@@ -539,7 +539,7 @@ Orb.shimClickCallback_stack = [];
  * @param callback
  * @param zIndex
  */
-Orb.shimClickCallback = function(callback, zIndex) {
+Orb.shimClickCallback = function(callback, zIndex, opts) {
 	if (!Orb.shimClickCallback_shim) {
 		Orb.shimClickCallback_shim = $('<div/>').hide();
 		Orb.shimClickCallback_shim.css({
@@ -558,6 +558,12 @@ Orb.shimClickCallback = function(callback, zIndex) {
 		});
 	}
 
+	if (opts == 'fromtop') {
+		Orb.shimClickCallback_shim.css('top', '51px');
+	} else {
+		Orb.shimClickCallback_shim.css('top', '0');
+	}
+
 	Orb.shimClickCallback_stack.push([callback, zIndex]);
 
 	if (Orb.shimClickCallback_shim.data('zindex-class')) {
@@ -569,6 +575,10 @@ Orb.shimClickCallback = function(callback, zIndex) {
 
 Orb.shimClickCallbackPop = function(no_callback, args) {
 	var lvl = Orb.shimClickCallback_stack.pop();
+
+	if (!Orb.shimClickCallback_shim) {
+		return;
+	}
 
 	if (lvl && !no_callback) {
 		lvl[0].call(args);

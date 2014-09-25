@@ -188,7 +188,7 @@ class FieldManager
 				return $this->fields;
 			}
 
-			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getFields();
+			$all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
 			foreach ($all_fields as $f) {
 
