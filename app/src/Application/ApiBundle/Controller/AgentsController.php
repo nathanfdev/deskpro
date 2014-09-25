@@ -55,7 +55,6 @@ use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AgentsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -144,13 +143,19 @@ class AgentsController extends AbstractController implements ProtectedController
 			throw $this->createNotFoundException();
 		}
 
-		/** @var PersonApiDataFactoryService $apiDataFactory */
-		$apiDataFactory = $this->getContainer()->getSystemService('person_api_data_factory');
-		$agent_data = $apiDataFactory->agentToApiData($agent);
+		$serializer = $this->getContainer()->getSystemService('serializer');
+		$agent_data = $serializer->serialize($agent);
+
+		$agent_data['teams'] = array();
 
 		$agent->loadHelper('Agent');
+		$agent->loadHelper('AgentTeam');
 		$agent->loadHelper('AgentPermissions');
 		$agent->loadHelper('PermissionsManager');
+
+		foreach ($this->container->getAgentData()->getTeamsByIds($agent->getHelper('AgentTeam')->getAgentTeamIds()) as $t) {
+			$agent_data['teams'][] = $t->toApiData();
+		}
 
 		$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
 
@@ -223,13 +228,12 @@ class AgentsController extends AbstractController implements ProtectedController
 		$profile = $this->in->getArrayValue('profile');
 		$skip_email = $this->in->getBool('skip_email');
 
-		return $this->saveAgent($id, $agent_postdata, $profile, $filter_subs, $other_subs, $quick_add, $perm_overrides,
-								$dep_perm_overrides, $skip_email);
+		return $this->saveAgent($id, $agent_postdata, $profile, $filter_subs, $other_subs, $quick_add, $perm_overrides, $dep_perm_overrides, $skip_email);
 	}
 
 	protected function saveAgent($id = null, $agent_postdata = array(), $profile = array(), $filter_subs = array(),
-	                             $other_subs = array(), $quick_add = false, $perm_overrides = array(),
-	                             $dep_perm_overrides = array(), $skip_email = false)
+		$other_subs = array(), $quick_add = false, $perm_overrides = array(),
+		$dep_perm_overrides = array(), $skip_email = false)
 	{
 		#-------------------------
 		# Pre-validation
@@ -840,7 +844,7 @@ class AgentsController extends AbstractController implements ProtectedController
 		$csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
 
 		if (!file_exists($csv_file) || !is_readable($csv_file)) {
-			file_put_contents($csv_file, App::getContainer()->getBlobStorage()->copyBlobRecordToString($blob));
+			file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
 		}
 
 		if (!file_exists($csv_file) || !is_readable($csv_file)) {
