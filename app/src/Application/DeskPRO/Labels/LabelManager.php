@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Labels;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\LabelDef;
 use Application\DeskPRO\ORM\EntityManager;
@@ -70,7 +71,7 @@ class LabelManager
 
 		foreach ($this->entity[$this->labels_property] as $k => $labelobj) {
 			if ($labelobj['label'] == $label) {
-				if ($this->entity instanceof Ticket) {
+				if ($this->entity instanceof Ticket || $this->entity instanceof Person) {
 					$this->entity->removeLabelByString($label);
 				} else {
 					$this->entity[$this->labels_property]->remove($k);

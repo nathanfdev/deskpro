@@ -1898,6 +1898,7 @@ class PersonController extends AbstractController
 		$note['agent'] = $this->person;
 		$note['person'] = $person;
 		$note['note'] = $note_text;
+		$person->addNote($note);
 
 		$this->em->persist($note);
 		$this->em->flush();

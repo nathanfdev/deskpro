@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Doctrine\ORM\EntityManager;
 
@@ -386,6 +387,28 @@ class FieldManager
 		return $custom_fields;
 	}
 
+	/**
+	 * return field title and value for CustomData
+	 * @param CustomDataAbstract $data
+	 * @return array
+	 */
+	public function renderTextForData(CustomDataAbstract $data)
+	{
+		$field = $data->root_field ?: $data->field;
+		$value = !$data->root_field || $data->root_field === $data->field
+			? array('value' => $data->getData())
+			: array('value' => null, 'children' => array(
+				$data->field['id'] => array('value' => $data->getData(), 'children' => null)
+			));
+
+		$val = trim($field->getHandler()->renderText($value));
+
+		return array(
+			'id' => $field['id'],
+			'title' => $field['title'],
+			'value' => $val,
+		);
+	}
 
 	/**
 	 * Render field data form an object to their text values.
@@ -529,56 +552,44 @@ class FieldManager
 	 */
 	public function saveFormToObject(array $form, $object, $only_set = false)
 	{
-		if ($object->getId()) {
-			$this->em->beginTransaction();
+		$fields = $this->getFields();
+
+		// When setting specific values, always operate on all enabled
+		// fields because we might be in user interface but specifically want to set some field in code
+		if ($only_set) {
+			$fields = $this->getDefinedFields();
+			$fields = array_filter($fields, function($f) { return $f->is_enabled; });
 		}
 
-		try {
+		$this->_orig_display = $this->getDisplayArrayForObject($object);
 
-			$fields = $this->getFields();
-
-			// When setting specific values, always operate on all enabled
-			// fields because we might be in user interface but specifically want to set some field in code
-			if ($only_set) {
-				$fields = $this->getDefinedFields();
-				$fields = array_filter($fields, function($f) { return $f->is_enabled; });
+		foreach ($fields as $field_def) {
+			if ($only_set && !isset($form['field_' . $field_def->getId()])) {
+				continue;
 			}
 
-			$this->_orig_display = $this->getDisplayArrayForObject($object);
-
-			// Remove whatever we have before
-			// We'll just re-insert if its still there
-			foreach ($fields as $field_def) {
-				if ($only_set && !isset($form['field_' . $field_def->getId()])) {
-					continue;
-				}
+			if (!$data = $field_def->getHandler()->getDataFromForm($form)) {
 				$this->removeCustomDataOnObject($object, $field_def);
-			}
-			if ($object->getId()) {
-				$this->em->flush();
+				continue;
 			}
 
-			foreach ($fields as $field_def) {
-				if ($only_set && !isset($form['field_' . $field_def->getId()])) {
-					continue;
-				}
-				foreach ($field_def->getHandler()->getDataFromForm($form) as $info) {
-					$this->setCustomDataOnObject($object, $field_def, $info);
-				}
+			// for multiple values only
+			$fieldsIds = array_flip(array_map(function($a){return $a[0];}, $data));
+			foreach ($field_def->children as $child) {
+				if (!$customDataForField = $object->getCustomDataForField($child)) continue;
+				if (isset($fieldsIds[$child['id']])) continue;
+
+				// remove stored CustomData which are not present in current form
+				$this->removeCustomDataOnObject($object, $child);
 			}
 
-			$this->_orig_display = null;
-
-			if ($object->getId()) {
-				$this->em->flush();
-				$this->em->commit();
+			foreach ($data as $info) {
+				$this->setCustomDataOnObject($object, $field_def, $info);
 			}
-		} catch (\Exception $e) {
-			if ($object->getId()) {
-				$this->em->rollback();
-			}
-			throw $e;
 		}
+
+		$this->_orig_display = null;
+		$this->em->flush();
 	}
 
 
@@ -656,14 +667,12 @@ class FieldManager
 
 		// No value
 		if ($value === null || $set_field === null) {
+			// maybe better set CustomData's value to null?
+			$this->removeCustomDataOnObject($object, $field_def);
 			return null;
 		}
 
-		if ($object->getId()) {
-			$this->em->beginTransaction();
-		}
-
-		try {
+		if (!$custom_data = $object->getCustomDataForField($set_field)) {
 			$custom_data = $this->createDataClass();
 			$custom_data->field = $set_field;
 			$custom_data->root_field = $field_def;
@@ -671,19 +680,9 @@ class FieldManager
 
 			$object->addCustomData($custom_data);
 			$this->em->persist($custom_data);
-
-			if ($object->getId()) {
-				$this->em->flush();
-				$this->em->commit();
-			}
-
-		} catch (\Exception $e) {
-			if ($object->getId()) {
-				$this->em->rollback();
-			}
-			throw $e;
 		}
 
+		$custom_data[$value_type] = $value;
 		return $custom_data;
 	}
 
@@ -700,14 +699,14 @@ class FieldManager
 			foreach ($object->$prop as $v) {
 				if ($v->field->getId() == $field_def->getParentId()) {
 					$this->em->remove($v);
-					$object->$prop->removeElement($v);
+					$object->removeCustomDataForField($field_def);
 				}
 			}
 		}
 
 		foreach ($object->$prop as $v) {
 			if ($v->field->getId() == $field_def->getId() || ($v->field->parent && $v->field->parent->getId() == $field_def->getId())) {
-				$object->$prop->removeElement($v);
+				$object->removeCustomDataForField($v->field);
 			}
 		}
 	}
