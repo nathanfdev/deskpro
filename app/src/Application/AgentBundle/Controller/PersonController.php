@@ -967,8 +967,7 @@ class PersonController extends AbstractController
 			foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
 				if ($cd = $person->contact_data->get($id)) {
 					$person->removeContactData($cd);
-					$this->em->remove($cd); // ?
-//					$person->contact_data->remove($id);
+					$this->em->remove($cd);
 
 					if (isset($contact_data_array[$cd->contact_type][$cd->id])) {
 						unset($contact_data_array[$cd->contact_type][$cd->id]);
