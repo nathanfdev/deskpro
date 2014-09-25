@@ -2660,6 +2660,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 			'can_reports'    => $this->can_reports,
 			'is_deleted'     => $this->is_deleted,
 			'is_disabled'    => $this->is_disabled,
+			'date_last_login' => $this->date_last_login ? $this->date_last_login->format('Y-m-d H:i:s') : null,
 			'primary_email'  => array('id' => $this->primary_email->id, 'email' => $this->primary_email->email),
 			'picture_url'    => $this->getPictureUrl(),
 			'picture_url_80' => $this->getPictureUrl(80),
