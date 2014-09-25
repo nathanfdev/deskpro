@@ -59,25 +59,35 @@
         }
       };
 
+      Admin_Labels_Ctrl_Edit.prototype.color2hex = function(color) {
+        var hex, rgb;
+        color = color.replace(/\s/g, '');
+        if (/^#?[0-9A-F]{3}$/i.test(color) || /^#?[0-9A-F]{6}$/i.test(color)) {
+          if (!color.match(/^#/)) {
+            color = '#' + color;
+          }
+          return color;
+        }
+        rgb = color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        if (!rgb) {
+          return '#ffffff';
+        }
+        hex = function(x) {
+          return ("0" + parseInt(x).toString(16)).slice(-2);
+        };
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+      };
+
       Admin_Labels_Ctrl_Edit.prototype.saveLabel = function() {
-        var color, dummy, method, parts, sendData;
+        var color, dummy, method, sendData;
         if (!this.$scope.form.label) {
           return false;
         }
         if (this.definition && this.definition.label === this.$scope.form.label && this.definition.color === this.$scope.form.color) {
           return false;
         }
-        dummy = $('<i></i>').css('color', this.$scope.form.color);
-        color = dummy.css('color');
-        if (0 === color.indexOf('rgb')) {
-          color = color.replace(/^[^\d]+(\d{1,3})\s*\,\s*(\d{1,3})\s*\,\s*(\d{1,3}).+/, "$1,$2,$3");
-          parts = color.split(',');
-          color = ((parts[0] << 16) | (parts[1] << 8) | parts[2]).toString(16);
-          if (color.length < 6) {
-            color = '0' + color;
-          }
-          color = '#' + color;
-        }
+        dummy = $('<div></div>').css('color', this.color2hex(this.$scope.form.color));
+        color = this.color2hex(dummy.css('color'));
         this.$scope.form.color = color;
         this.startSpinner('saving_label');
         if (this.definition) {
