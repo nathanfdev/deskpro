@@ -55,6 +55,7 @@ use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
 use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AgentsController extends AbstractController implements ProtectedControllerInterface
 {
