@@ -181,7 +181,7 @@ class UsersourcesController extends AbstractController
 
 		/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
 		$factory = $this->container->getSystemService('usersource_auth_adapter_factory');
-		$adapter = $factory->getAuthAdapter($source, SsoLoginActionInterface::CONTEXT_BACKGROUND);
+		$adapter = $factory->getAuthAdapter($source, SsoLoginActionInterface::CONTEXT_BACKGROUND, $interface);
 
 		if ($adapter instanceof CallbackInterface) {
 			// append noredirect so that the callback url knows not to refresh the page on success

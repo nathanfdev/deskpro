@@ -93,7 +93,7 @@ class UsersourceAuthAdapterFactory
 	 * @param null $displayContext
 	 * @return \Orb\Auth\Adapter\AdapterInterface
 	 */
-	public function getAuthAdapter(Usersource $usersource, $displayContext = null)
+	public function getAuthAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
 	{
 		$adapter = $usersource->getAdapter()->getAuthAdapter();
 
@@ -111,7 +111,7 @@ class UsersourceAuthAdapterFactory
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$route_type = 'user';
-			if ($this->isAgentInterface()) {
+			if ($this->isAgentInterface($useInterface)) {
 				$route_type = 'agent';
 			}
 
@@ -150,7 +150,7 @@ class UsersourceAuthAdapterFactory
 		}
 
 		if ($adapter instanceof \Orb\Auth\Adapter\SsoCapableInterface) {
-			if ($this->isAgentInterface()) {
+			if ($this->isAgentInterface($useInterface)) {
 				$logout_url = $usersource->getAdapter()->getAgentLogoutRedirectUrl();
 			} else {
 				$logout_url = $usersource->getAdapter()->getUserLogoutRedirectUrl();
@@ -188,8 +188,11 @@ class UsersourceAuthAdapterFactory
 	}
 
 
-	private function isAgentInterface()
+	private function isAgentInterface($useInterface = null)
 	{
+		if ($useInterface && $useInterface != 'agent') {
+			return false;
+		}
 		return $this->interface && $this->interface != 'user';
 	}
 }

@@ -1208,10 +1208,11 @@ HTML;
 	public function usersourceSsoAction($usersource_id)
 	{
 		// TODO: user auth_manager for this
+		$interface = $this->getInterface();
 		$source = $this
 			->usersource_manager
 			->getAll()
-			->forInterface($this->getInterface()) // TODO: will always be user interface since this is always a user URL
+			->forInterface($interface) // TODO: will always be user interface since this is always a user URL
 			->withCapability(UsersourceInfo::CAPABILITY_SSO_JS)
 			->mustHaveId($usersource_id)
 			->getFirstOrNull()
@@ -1229,6 +1230,9 @@ HTML;
 
 		$arr_writer = new ArrayWriter();
 		$usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, array());
+		if (!$usersource_test) {
+			$usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
+		}
 		if ($usersource_test && $adapter instanceof Loggable) {
 			$adapter->getLogger()->addWriter($arr_writer);
 		}
