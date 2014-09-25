@@ -20,16 +20,29 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		};
 
 		$scope.$on('dp-menu.opened', function(){
-			for (var i in $scope.mergeItems) {
-				$scope.mergeItems[i].length = 0;
-			}
+			$scope.mergeItems.open.length = 0;
+			$scope.mergeItems.filter.length = 0;
+
 			$scope.listItems.each(function(item){
 				if ('person' !== item.type) return;
 				if (item.identity === self.meta.pageIdentity) return;
 				var _item = angular.copy(item);
 				_item.id = _item.identity.replace('person:', '');
-				$scope.mergeItems[(item.open ? 'open' : 'filter')].push(_item);
+				$scope.mergeItems['filter'].push(_item);
 			});
+
+			var tabStrip = DeskPRO_Window.getTabStrip();
+			if (tabStrip && tabStrip.$scope && tabStrip.$scope.tabs && tabStrip.$scope.tabs.length > 1) {
+				tabStrip.$scope.tabs.each(function(item) {
+					if (item.page && item.page === self) return;
+					var _item = {
+						id: item.page.meta.person_id,
+						identity: 'person:' + item.page.meta.person_id,
+						title: item.page.meta.title
+					};
+					$scope.mergeItems['open'].push(_item);
+				});
+			}
 		});
 
 		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
