@@ -15,7 +15,7 @@
 		"angularSlider":                   "bower_components/angular-slider/angular-slider.min",
 		"angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
 		"angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
-		"angularUiDatetime":               "bower_components/app/vendor-src/ui-datetime",
+		"angularUiDatetime":               "vendor-src/ui-datetime",
 
 		"ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
 		"ngContextMenu":                   "vendor-src/ng-context-menu/src/ng-context-menu",
