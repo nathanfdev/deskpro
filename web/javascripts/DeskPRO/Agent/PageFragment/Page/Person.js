@@ -965,11 +965,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				doneInitEdit = true;
 				editBox.find('.remove-trigger').on('click', function(ev) {
 					ev.preventDefault();
-					var me = $(this), li = me.closest('li');
+					var me = $(this), tr = me.closest('tr');
 					if (confirm(me.data('confirm'))) {
 						var formData = []
 						formData.push({ name: 'action', value: 'remove-usersource'} );
-						formData.push({ name: 'usersource_id', value: li.data('us-id') });
+						formData.push({ name: 'usersource_id', value: tr.data('us-id') });
 
 						showSaving();
 						$.ajax({
@@ -983,10 +983,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							},
 							success: function(data) {
 
-								usbox.find('.us-' + li.data('us-id')).remove();
+								usbox.find('.us-' + tr.data('us-id')).remove();
 								showNormal();
 
-								if (!displayBox.find('li').length) {
+								if (!displayBox.find('tr').length) {
 									usbox.hide();
 								}
 							}

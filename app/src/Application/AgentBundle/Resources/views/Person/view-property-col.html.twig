@@ -167,7 +167,7 @@
 {% endif %}
 {# /Organization Box #}
 
-{# Usergroups and Usersources #}
+{# Usergroups #}
 {{ dp_app_loc(baseId, 'usergroups.before') }}
 <div class="profile-box-container dp-simpletab-container summary" id="{{baseId}}_ug_box">
 	<header>
@@ -182,7 +182,6 @@
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
 				<li data-tab-for="#{{ baseId }}_usergroups_body">{{ phrase('agent.general.usergroups') }}</li>
-				{% if person.usersource_assoc|length %}<li data-tab-for="#{{ baseId }}_us_body">{{ phrase('agent.general.usersources') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -209,33 +208,113 @@
 				</ul>
 			</div>
 		</div>
-		{% if person.usersource_assoc|length %}
-			<div id="{{baseId}}_us_body">
-				<div id="{{baseId}}_us_display_box" class="contact-list">
-					<ul>
-						{% for as in person.usersource_assoc %}
-							<li class="us-{{ as.usersource.id }}" style="padding-left: 0;">
-								{{ as.usersource.title }}: {{ as.identity_friendly|default(as.identity) }}
-							</li>
-						{% endfor %}
-					</ul>
-				</div>
-				<div id="{{baseId}}_us_edit_box" class="contact-list" style="display: none;">
-					<ul>
-						{% for as in person.usersource_assoc %}
-							<li class="us-{{ as.usersource.id }}" style="padding-left: 0;" data-us-id="{{ as.usersource.id }}">
-								{{ as.usersource.title }}: {{ as.identity_friendly|default(as.identity) }}
-								<button class="remove-trigger clean-white small" data-confirm="Are you sure you want to remove this user source?">Remove</button>
-							</li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		{% endif %}
-		{{ dp_app_loc(baseId, 'usergroups.tab') }}
 	</section>
 </div>
 {{ dp_app_loc(baseId, 'usergroups.after') }}
-{# /Usergroups and Usersources #}
+{# /Usergroups #}
+
+
+
+
+{# Usersources #}
+{# dont display usersources if its only 1 non-app source (deskpro) #}
+	{% set display_usersources = false %}
+	{% if person.usersource_assoc|length == 1 %}
+		{% if person.usersource_assoc.first.usersource.app is not null %}
+			{% set display_usersources = true %}
+		{% else %}
+			{% set display_usersources = false %}
+		{% endif %}
+	{% elseif person.usersource_assoc|length > 1 %}
+		{% set display_usersources = true %}
+	{% else %}
+		{% set display_usersources = false %}
+	{% endif %}
+{% if display_usersources %}
+{{ dp_app_loc(baseId, 'usersources.before') }}
+<div class="profile-box-container dp-simpletab-container summary" id="{{ baseId }}_us_box">
+	<header>
+		{% if perms.edit %}
+			<div class="controls">
+				<span class="edit-gear edit-trigger"></span>
+
+				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
+				<button class="cancel cancel-trigger"
+					style="display: none">{{ phrase('agent.general.cancel') }}</button>
+				<button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
+			</div>
+		{% endif %}
+		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<ul>
+				<li data-tab-for="#{{ baseId }}_us_body">{{ phrase('agent.general.usersources') }}</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		<div id="{{ baseId }}_us_body">
+			<div id="{{ baseId }}_us_display_box" class="contact-list">
+				<table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
+					<tbody>
+					{% for as in person.usersource_assoc %}
+						<tr class="us-{{ as.usersource.id }}">
+							<th>
+								{% if not as.usersource.app %}
+									<img src="{{ asset_full('/images/dp-logo-16.png') }}"
+										alt="{{ as.usersource.title }}" />
+								{% else %}
+									<img src="{{ as.usersource.app.package.toApiData['icon_16'] }}"
+										alt="{{ as.usersource.title }}" />
+								{% endif %}
+								{{ as.usersource.title }}
+							</th>
+							<td>
+								<span>{{ as.identity }}</span>
+								{% if as.identity_friendly and as.identity_friendly != as.identity %}
+								<br>
+								{{ as.identity_friendly }}
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<div id="{{ baseId }}_us_edit_box" class="contact-list" style="display: none;">
+				<table class="prop-table" cellpadding="0" cellspacing="0" width="100%">
+					<tbody>
+					{% for as in person.usersource_assoc %}
+						<tr class="us-{{ as.usersource.id }}" data-us-id="{{ as.usersource.id }}">
+							<th>
+								{% if not as.usersource.app %}
+									<img src="{{ asset_full('/images/dp-logo-16.png') }}"
+										alt="{{ as.usersource.title }}" />
+								{% else %}
+									<img src="{{ as.usersource.app.package.toApiData['icon_16'] }}"
+										alt="{{ as.usersource.title }}" />
+								{% endif %}
+								{{ as.usersource.title }}
+								<button class="remove-trigger clean-white small"
+									data-confirm="Are you sure you want to remove this user source?">Remove
+								</button>
+							</th>
+							<td>
+								<span>{{ as.identity }}</span>
+								{% if as.identity_friendly and as.identity_friendly != as.identity %}
+									<br>
+									{{ as.identity_friendly }}
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		{{ dp_app_loc(baseId, 'usersources.tab') }}
+	</section>
+</div>
+{{ dp_app_loc(baseId, 'usersources.after') }}
+{# /Usersources #}
+{% endif %}
 
 {{ dp_app_loc(baseId, 'right_col.bottom') }}
