@@ -159,8 +159,11 @@ class TicketFilter extends AbstractEntityRepository
 
 	public function getSharedFilters(Entity\Person $agent)
 	{
-		$agent->loadHelper('Agent');
-		$teams = $agent->getTeams();
+		try {
+			$teams = $agent_data = App::$container->getAgentData()->getTeamsForAgent($agent);
+		} catch (\InvalidArgumentException $e) {
+			return arary();
+		}
 
 		if ($teams) {
 			$teams = array_values($teams);
