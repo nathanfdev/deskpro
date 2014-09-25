@@ -101,19 +101,15 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('members', $this->members, $this->members);
 	}
 
+	public function hasAvatar()
+	{
+		return $this->avatar && $this->avatar->isImage();
+	}
+
 	public function getAvatarUrl($size = 50)
 	{
-		if ($this->avatar && $this->avatar->isImage()) {
-			$url = $this->avatar->getThumbnailUrl($size);
-		} else {
-			$url = App::get('router')->generate('serve_default_picture', array(
-				's' => $size,
-				'size-fit' => 1,
-				'is_team' => 1,
-			), true);
-		}
-
-		return $url;
+		if (!$this->hasAvatar()) return null;
+		return $this->avatar->getThumbnailUrl($size);
 	}
 
 

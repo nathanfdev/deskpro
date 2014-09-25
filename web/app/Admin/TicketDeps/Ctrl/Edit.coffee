@@ -170,7 +170,11 @@ define [
 
 				return @$q.all([p1,p2])
 
-			@form.avatar = @dep.avatar?.id || null
+			if @form.enable_avatar
+				@form.avatar = @dep.avatar?.id || null
+			else
+				@form.avatar = null
+
 			promise = @depData.saveFormModel(@dep, @form)
 			promise.then(=>
 				triggerSaver()
@@ -233,9 +237,11 @@ define [
 		setAvatar: (blob) =>
 			@dep.avatar = blob
 			if !blob?
-				@$scope.icon_image = "/web/app/vendor-src/icons/webdev-seo/png/career.png"
+				@$scope.icon_image = null
+				@form.enable_avatar = false
 			else
 				@$scope.icon_image = blob.thumbnail_url_50
+				@form.enable_avatar = true
 
 
 

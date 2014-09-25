@@ -23,6 +23,7 @@
 
       Admin_AgentTeams_Ctrl_Edit.prototype.init = function() {
         this.teamId = parseInt(this.$stateParams.id);
+        this.enable_avatar = false;
         this.$scope.icon_image = null;
         this.$scope.$on('icon.selected', (function(_this) {
           return function(e, path) {
@@ -72,9 +73,11 @@
       Admin_AgentTeams_Ctrl_Edit.prototype.setAvatar = function(blob) {
         this.team.avatar = blob;
         if (blob == null) {
-          return this.$scope.icon_image = "/web/app/vendor-src/icons/webdev-seo/png/career.png";
+          this.$scope.icon_image = null;
+          return this.enable_avatar = false;
         } else {
-          return this.$scope.icon_image = blob.thumbnail_url_50;
+          this.$scope.icon_image = blob.thumbnail_url_50;
+          return this.enable_avatar = true;
         }
       };
 
@@ -126,10 +129,14 @@
         postData = {
           team: {
             name: this.team.name,
-            person_ids: [],
-            avatar: ((_ref = this.team.avatar) != null ? _ref.id : void 0) || null
+            person_ids: []
           }
         };
+        if (this.enable_avatar) {
+          postData.team.avatar = ((_ref = this.team.avatar) != null ? _ref.id : void 0) || null;
+        } else {
+          this.avatar = null;
+        }
         _ref1 = this.agents;
         for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
           a = _ref1[_i];

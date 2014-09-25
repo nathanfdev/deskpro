@@ -350,7 +350,7 @@ pageMeta.baseId = '{{ baseId }}';
 										{% if app.user.getAgent().getTeams()|length %}
 										<optgroup label="{{ phrase('agent.general.your_teams') }}">
 											{% for team in app.user.getAgent().getTeams() %}
-												<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
+												<option value="{{ team.id }}" {% if team.hasAvatar() %}data-icon="{{ team.getAvatarUrl(20) }}"{% endif %} {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
 											{% endfor %}
 										</optgroup>
 										{% endif %}

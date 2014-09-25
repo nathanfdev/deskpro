@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@teamId = parseInt(@$stateParams.id)
+			@enable_avatar = false
 
 			@$scope.icon_image = null
 			@$scope.$on 'icon.selected', (e, path) => @selectIcon path
@@ -44,9 +45,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		setAvatar: (blob) =>
 			@team.avatar = blob
 			if !blob?
-				@$scope.icon_image = DP_ASSET_URL + "/app/vendor-src/icons/webdev-seo/png/career.png"
+				@$scope.icon_image = null
+				@enable_avatar = false
 			else
 				@$scope.icon_image = blob.thumbnail_url_50
+				@enable_avatar = true
 
 
 
@@ -87,9 +90,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 				team: {
 					name: @team.name
 					person_ids: []
-					avatar: @team.avatar?.id || null
 				}
 			}
+
+			if @enable_avatar
+				postData.team.avatar = @team.avatar?.id || null
+			else
+				@avatar = null
 
 			for a in @agents
 				if a.value

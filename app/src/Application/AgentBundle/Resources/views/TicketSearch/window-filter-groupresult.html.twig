@@ -36,7 +36,7 @@
                         {% set team = app.agent_teams.get(cat.id) %}
                         {% if team %}
                             <span
-                                style="background: url('{{ team.getAvatarUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"
+                                {% if team.hasAvatar() %}style="background: url('{{ team.getAvatarUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"{% endif %}
                                 >{{ cat.title }}</span>
                         {% else %}
                             <span>{{ cat.title }}</span>
@@ -45,7 +45,7 @@
                         {% set dep = app.departments.get(cat.id) %}
                         {% if dep %}
                             <span
-                                style="background: url('{{ dep.getAvatarUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"
+                                {% if dep.hasAvatar() %}style="background: url('{{ dep.getAvatarUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"{% endif %}
                                 >{{ cat.title }}</span>
                         {% else %}
                             <span>{{ cat.title }}</span>
