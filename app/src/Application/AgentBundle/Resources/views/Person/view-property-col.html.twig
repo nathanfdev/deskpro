@@ -268,10 +268,11 @@
 								{{ as.usersource.title }}
 							</th>
 							<td>
-								<span>{{ as.identity }}</span>
 								{% if as.identity_friendly and as.identity_friendly != as.identity %}
-								<br>
-								{{ as.identity_friendly }}
+									{{ as.identity_friendly }}
+									({{ as.identity }})
+								{% else %}
+									{{ as.identity }}
 								{% endif %}
 							</td>
 						</tr>
@@ -298,10 +299,11 @@
 								</button>
 							</th>
 							<td>
-								<span>{{ as.identity }}</span>
 								{% if as.identity_friendly and as.identity_friendly != as.identity %}
-									<br>
 									{{ as.identity_friendly }}
+									({{ as.identity }})
+								{% else %}
+									{{ as.identity }}
 								{% endif %}
 							</td>
 						</tr>
