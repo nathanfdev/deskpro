@@ -53,6 +53,12 @@ Email: {{person.email}}
 			</div>
 			<div ng-show="loading">
 				<i class="spinner-flat"></i>
+				<em>Waiting for response from OneLogin. Please authenticate with OneLogin in the box above.</em>
+
+				<div class="alert alert-warning" style="margin-bottom: 0; margin-top: 10px;">
+					If you don't see your login form then there is a problem with either the provided settings or your configuration on the DeskPRO app in your
+					OneLogin account. Please review your settings and configuration.
+				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
