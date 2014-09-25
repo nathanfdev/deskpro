@@ -20,6 +20,7 @@ requirejs.config({
 		"angularUiDatetime":               "app/vendor-src/ui-datetime",
 
 		"ngFileUpload":                    "app/bower_components/ng-file-upload/angular-file-upload.min",
+		"ngContextMenu":                   "app/vendor-src/ng-context-menu/src/ng-context-menu",
 		"jquery":                          "app/bower_components/jquery/jquery.min",
 		"jqueryUi":                        "app/bower_components/jquery-ui/ui/minified/jquery-ui.min",
 		"jquery.ui.widget":                "app/bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget",
