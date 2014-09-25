@@ -91,8 +91,11 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
-	public function __construct()
+	public function __construct($number = null)
 	{
+		if ($number) {
+			$this->setNumber($number);
+		}
 		$this->setModelField('date_created', new \DateTime());
 	}
 

@@ -26,64 +26,42 @@
 \**************************************************************************/
 
 /**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage DependencyInjection
- */
+* DeskPRO
+*
+* @package DeskPRO
+*/
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\JobQueue\JobWorker;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Settings\Settings;
-
-/**
- * This service should be used as a factory to create API array data from people in various contexts.
- */
-class PersonApiDataFactoryService
+class JobExecuteCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	/**
-	 * @var Settings
-	 */
-	private $settings;
-
-	public function __construct(Settings $settings)
+	protected function configure()
 	{
-		$this->settings = $settings;
+		$this->setName('dp:job:execute')
+			->setDescription('Bypasses all queue settings and immediately passes a job to the JobRouter - should only be used to debug')
+			->addArgument('job', InputOption::VALUE_REQUIRED, 'Execute given job ID now, regardless of status');
 	}
 
-	public static function create(DeskproContainer $container, array $options = null)
+	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$settings = $container->get('deskpro.core.settings');
-		$o = new static($settings);
+		$connection = $this->getContainer()->get('doctrine.dbal.default_connection');
+		$router = $this->getContainer()->getSystemService('job_router');
+		$queue = $this->getContainer()->getSystemService('job_queue');
+		$worker = new JobWorker($connection, $router, $queue);
 
-		return $o;
-	}
+		$res = $worker->executeJobById($input->getArgument('job'));
 
-	/**
-	 * Use this instead of $agent->toApiDAta(), whenever possible. It allows using the container dependency injection
-	 * rather than using App::get('settings'), etc, directly inside of the entity itself, without repeating this logic
-	 * in many controllers.
-	 *
-	 * @param Person $agent Expects an agent, produces common API data sent for a person
-	 *
-	 * @return array the API data
-	 */
-	public function agentToApiData(Person $agent)
-	{
-		$data = $agent->toApiData();
-
-		if (!isset($data['primary_phone_number_region'])) {
-			$data['primary_phone_number_region'] = $this->settings->get('core.default_country_code');
+		if ($res) {
+			$output->writeln('<info>Found job and attempted to process it</info>');
+		} else {
+			$output->writeln('<error>Failed to find job</error>');
 		}
-
-		$data['notification_settings'] = array(
-			'no_allow_set_email' => (bool) $agent->getPref('agent_notif.no_allow_set_email'),
-			'no_allow_set_browser' => (bool) $agent->getPref('agent_notif.no_allow_set_browser'),
-		);
-
-		return $data;
 	}
 }

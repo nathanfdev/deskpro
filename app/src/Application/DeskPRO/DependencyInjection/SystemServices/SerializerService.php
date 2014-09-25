@@ -32,52 +32,27 @@
  * @subpackage
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\Entity\Sla;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckOrgName;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckPriority;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserEmail;
-use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
-use Application\DeskPRO\Tickets\Triggers\TriggerActions;
-use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
-use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerActionConverter;
-use Orb\Util\Arrays;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Serializer\PersonSerializer;
+use Application\DeskPRO\Serializer\ToApiDataMethodSerializer;
+use Application\DeskPRO\Serializer\SerializerRegistry;
+use Orb\Serializer\Serializer\ArraySerializer;
 
-class Build1400056736 extends AbstractBuild
+class SerializerService
 {
-	public function run()
+	public static function create(DeskproContainer $container)
 	{
-		$this->out("Upgrading escalation logs");
+		/**
+		 * Recall that the ORDER matters in the registry. First added, first checked.
+		 * Put more specific serializers at the top, and more generic at the bottom.
+		 */
+		$serializer = new SerializerRegistry();
+		$serializer->addSerializer(new PersonSerializer($container->get('deskpro.core.settings')));
+		$serializer->addSerializer(new ToApiDataMethodSerializer());
+		$serializer->addSerializer(new ArraySerializer());
 
-		$db = $this->container->getDb();
-
-		$id_map = $this->getUpgradeData('201404', 'esc_id_map');
-
-		if ($id_map) {
-			$old_ids = implode(',', array_keys($id_map));
-			$new_ids = implode(',', array_values($id_map));
-
-			$db->exec("SET FOREIGN_KEY_CHECKS = 0");
-			$db->exec("
-				INSERT INTO ticket_escalation_logs (ticket_id, escalation_id, date_ran, date_criteria)
-				SELECT ticket_id, trigger_id, date_ran, date_criteria FROM ticket_trigger_logs WHERE trigger_id IN ($old_ids)
-			");
-
-			// First pass is to prevent collisisions on new ids
-			foreach ($id_map as $old_id => $new_id) {
-				$db->update('ticket_escalation_logs', array('escalation_id' => $new_id + 5000), array('escalation_id' => $old_id));
-			}
-
-			// second pass to set the actual IDs
-			foreach ($id_map as $new_id) {
-				$db->update('ticket_escalation_logs', array('escalation_id' => $new_id), array('escalation_id' => $new_id + 5000));
-			}
-
-			$db->executeUpdate("DELETE FROM ticket_escalation_logs WHERE escalation_id NOT IN ($new_ids)");
-			$db->exec("SET FOREIGN_KEY_CHECKS = 1");
-		}
-
-		$db->exec("DROP TABLE IF EXISTS ticket_trigger_logs");
+		return $serializer;
 	}
 }

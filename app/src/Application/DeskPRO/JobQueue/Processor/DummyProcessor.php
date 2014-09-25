@@ -29,26 +29,30 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\JobQueue\Processor;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class InstantSmsSenderService
+class DummyProcessor extends AbstractJobProcessor
 {
-	/**
-	 * @param DeskproContainer $container
-	 * @param array            $options
-	 * @return \Application\DeskPRO\Sms\DeskPROSmsSender
-	 */
-	public static function create(DeskproContainer $container, $options = array())
-	{
-		$sms_sender = $container->get('deskpro.sms_sender');
-		$max_chunks = $container->getSettingsHandler()->get('core.max_sms_chunks');
-		$sms_sender->setMaxChunks($max_chunks);
+	const JOB_TYPE = 'dummy';
 
-		return $sms_sender;
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDataOptions(OptionsResolverInterface $resolver)
+	{
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function process(array $data, array $job)
+	{
+		return true;
 	}
 }

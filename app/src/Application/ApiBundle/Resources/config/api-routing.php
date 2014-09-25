@@ -2978,6 +2978,68 @@ $collection->create('api_ticket_fields_setenabled', array(
 ));
 
 ########################################################################################################################
+# SMS Channel
+########################################################################################################################
+
+$collection->create(
+	'api_channel_sms_accounts', array(
+		'path'       => '/channel/sms/accounts',
+		'controller' => 'ApiBundle:ChannelSms:list',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_get', array(
+		'path'       => '/channel/sms/account/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelSms:get',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_delete', array(
+		'path'       => '/channel/sms/account/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelSms:delete',
+		'methods'    => array('DELETE'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_save', array(
+		'path'       => '/channel/sms/account/{id}',
+		'controller' => 'ApiBundle:ChannelSms:save',
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_create', array(
+		'path'       => '/channel/sms/account',
+		'controller' => 'ApiBundle:ChannelSms:save',
+		'methods'    => array('PUT'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_connect_provider', array(
+		'path'       => '/channel/sms/connect_provider',
+		'controller' => 'ApiBundle:ChannelSms:connectProvider',
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_setup_and_test_twilio', array(
+		'path'       => '/channel/sms/setup-and-test/twilio',
+		'controller' => 'ApiBundle:ChannelSms:setupAndTestTwilio',
+		'methods'    => array('POST'),
+	)
+);
+
+########################################################################################################################
 # Email Accounts
 ########################################################################################################################
 

@@ -242,6 +242,28 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * Get the DB abstraction object.
+	 *
+	 * @return \Application\DeskPRO\JobQueue\JobQueue
+	 */
+	public function getJobQueue()
+	{
+		return $this->getSystemService('job_queue');
+	}
+
+
+	/**
+	 * Get the DB abstraction object.
+	 *
+	 * @return \Application\DeskPRO\JobQueue\JobSupervisor
+	 */
+	public function getJobSupervisor()
+	{
+		return $this->getSystemService('job_supervisor');
+	}
+
+
+	/**
 	 * Gets a DB reader.
 	 *
 	 * There can be many types of readers:
@@ -350,6 +372,18 @@ class DeskproContainer extends Container
 	public function getEm()
 	{
 		return $this->get('doctrine.orm.entity_manager');
+	}
+
+
+
+	/**
+	 * Get the DeskPRO serializer
+	 *
+	 * @return \Application\DeskPRO\Serializer\SerializerRegistry
+	 */
+	public function getSerializer()
+	{
+		return $this->getSystemService('serializer');
 	}
 
 

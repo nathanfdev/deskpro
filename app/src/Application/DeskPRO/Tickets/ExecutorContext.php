@@ -42,6 +42,16 @@ use Orb\Util\OptionsArray;
 
 class ExecutorContext implements ExecutorContextInterface
 {
+	const EVENT_NEW = 'newticket';
+	const EVENT_REPLY = 'newreply';
+	const EVENT_UPDATE = 'update';
+	const EVENT_NOOP = 'noop';
+
+	const METHOD_API = 'api';
+	const METHOD_WEB = 'web';
+	const METHOD_EMAIL = 'email';
+	const METHOD_SMS = 'sms';
+
 	/**
 	 * @var \Orb\Util\OptionsArray
 	 */

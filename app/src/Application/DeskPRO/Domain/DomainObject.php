@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Util;
 
 /**
@@ -317,7 +319,6 @@ abstract class DomainObject extends BasicDomainObject
 	{
 		return $this->_no_persist;
 	}
-
 
 	/**
 	 * @return string

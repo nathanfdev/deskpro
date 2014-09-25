@@ -77,7 +77,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 		###########################################################################
 		# Prepare the DeskproSmsSender
 		###########################################################################
-		$sms_sender = $this->getContainer()->getSystemService('instant_sms_sender');
+		$sms_sender = $this->getContainer()->getSystemService('sms_sender');
 		$sms_sender->setDefaultProvider($this->getSmsProvider());
 		$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
 
@@ -167,7 +167,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 				$sms_message = new SmsMessage($message);
 				$result = $sms_sender->send($number, $sms_message);
 
-				if ($sms_message->isSent()) {
+				if ($result) {
 					$this->recordSuccessfulTicketChange($ticket, $number);
 				} else {
 					$this->logErrorSendingTo($result->getProviderMessage(), $context);

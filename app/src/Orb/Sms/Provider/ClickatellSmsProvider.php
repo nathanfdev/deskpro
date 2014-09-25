@@ -124,4 +124,17 @@ class ClickatellSmsProvider implements SmsProviderInterface
 	{
 		return 'clickatell';
 	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParams()
+	{
+		return array(
+			'user' => $this->user,
+			'password' => $this->password,
+			'api_id' => $this->apiId
+		);
+	}
 }

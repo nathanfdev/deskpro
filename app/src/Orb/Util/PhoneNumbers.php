@@ -189,6 +189,21 @@ class PhoneNumbers
 		$phone_util = PhoneNumberUtil::getInstance();
 		$number = $phone_util->parse($phone_number, null);
 
+		return $phone_util->format($number, PhoneNumberFormat::INTERNATIONAL);
+	}
+
+
+	/**
+	 * @param string $phone_number
+	 *
+	 * @throws NumberParseException Make sure to validate the number string before using this.
+	 * @return string The phone number in National format
+	 */
+	public static function toNationalFormat($phone_number)
+	{
+		$phone_util = PhoneNumberUtil::getInstance();
+		$number = $phone_util->parse($phone_number, null);
+
 		return $phone_util->format($number, PhoneNumberFormat::NATIONAL);
 	}
 

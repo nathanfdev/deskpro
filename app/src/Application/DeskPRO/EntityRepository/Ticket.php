@@ -39,11 +39,45 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
+use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 class Ticket extends AbstractEntityRepository
 {
+	/**
+	 * The ticket is
+	 *
+	 * @param Person $person
+	 * @return TicketEntity
+	 * @throws \Doctrine\ORM\NonUniqueResultException
+	 */
+	public function findMostRecentSmsTicketFromPerson(PersonEntity $person, $date_last_reply = null)
+	{
+		if (!$date_last_reply) {
+			$date_last_reply = new \DateTime("now - 3 days");
+		}
+
+		$query = $this->getEntityManager()->createQuery(
+			"
+				SELECT t
+				FROM DeskPRO:Ticket t
+				WHERE t.person = :person
+				AND t.creation_system = :creation_system
+				AND (t.date_last_user_reply > :date_last_reply OR t.date_last_agent_reply > :date_last_reply)
+				ORDER BY t.date_last_user_reply DESC
+			"
+			)
+			->setMaxResults(1)
+			->setParameter('date_last_reply', $date_last_reply)
+			->setParameter('person', $person->getId())
+			->setParameter('creation_system', IncomingSmsProcessor::TICKET_CREATION_SYSTEM);
+
+		$ticket = $query->getOneOrNullResult();
+
+		return $ticket;
+	}
+
 	/**
 	 * Find a ticket by its TAC
 	 *
@@ -266,7 +300,7 @@ class Ticket extends AbstractEntityRepository
 		if (!$ids) {
 			return array();
 		}
-		
+
 		if ($sort_by === 'date_last_reply') {
 			$ids = App::getDb()->fetchAllCol(
 				"
@@ -790,7 +824,7 @@ class Ticket extends AbstractEntityRepository
 		")->execute(array($parent_ticket));
 	}
 
-	
+
 	/**
 	 * Runs a COUNT query against all awaiting_agent tickets and returns the number of tickets
 	 * in each urgency.

@@ -235,11 +235,6 @@ $definition->setArguments(array(
 $definition->setAbstract(true);
 $container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
 
-// deskpro.sms_sender
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Sms\\DeskPROSmsSender');
-$container->setDefinition('deskpro.sms_sender', $definition);
-
 ############################################################################
 # Validators and Constraints
 ############################################################################
@@ -304,6 +299,9 @@ $container->loadFromExtension('twig', array(
 		'resources' => array(
 			'DeskPRO:Form:form_div_layout.html.twig'
 		)
+	),
+	'globals' => array(
+		'experimental_admin_features' => false
 	)
 ));
 
