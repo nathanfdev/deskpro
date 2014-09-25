@@ -57,7 +57,7 @@
 									<div style="padding-top: 6px;">
 										<label style="font-weight: normal; display: block;">
 											<input type="radio" ng-model="EditCtrl.form.isSuperUser" ng-value="true">
-											Super Key
+											Superuser Key
 										</label>
 										<label style="font-weight: normal; display: block;">
 											<input type="radio" ng-model="EditCtrl.form.isSuperUser" ng-value="false">
@@ -70,7 +70,7 @@
 
                         <div ng-if="EditCtrl.form.isSuperUser" class="form-group">
                             <div class="alert alert-info">
-                                A super user key is not associated with a particular agent. Every request must specify the
+                                If your superuser key does not have a default agent, every request must specify the
                                 agent performing the action.
                             </div>
                             <div class="col-lg-3">
