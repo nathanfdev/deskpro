@@ -1,9 +1,11 @@
 define [
 	'Admin/Main/Service/SessionPing',
+	'Admin/Main/Service/DpDate',
 	'Admin/Cloud/App/CloudService',
 	'angular'
 ], (
 	Admin_Main_Service_SessionPing,
+	Admin_Main_Service_DpDate,
 	Admin_Cloud_App_CloudService,
 	angular
 ) ->
@@ -15,6 +17,8 @@ define [
 		Module.service('Cloud', [ ->
 			return new Admin_Cloud_App_CloudService()
 		])
+
+		Module.service('DpDateService', Admin_Main_Service_DpDate)
 
 		Module.run(['SessionPing', (SessionPing) ->
 			# start pinging after 20 seconds
