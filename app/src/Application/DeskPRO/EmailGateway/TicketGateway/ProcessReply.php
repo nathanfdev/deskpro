@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\DeskPRO\Translate\Translate;
+use Orb\Types\NoValue;
 
 class ProcessReply extends ProcessAbstract
 {
@@ -270,6 +271,11 @@ class ProcessReply extends ProcessAbstract
 			} else {
 				$this->logMessage('No reply because empty reply');
 			}
+
+			if ($context == 'user') {
+				$this->setError('empty');
+				return;
+			}
 		}
 
 		if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
@@ -330,6 +336,10 @@ class ProcessReply extends ProcessAbstract
 			throw $e;
 		}
 
-		return $message;
+		if ($message) {
+			return $message;
+		} else {
+			return NoValue::get();
+		}
 	}
 }

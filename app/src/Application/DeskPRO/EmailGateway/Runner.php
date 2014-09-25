@@ -248,6 +248,11 @@ class Runner
 			$this->logger->logDebug("-> Checking again");
 		}
 
+		if ($result->created_object_type == 'no_value') {
+			$this->logger->logDebug('-> NoValue was returned (note: that is a valid return)');
+			return true;
+		}
+
 		$id = $result->created_object_id;
 		if (!$id) {
 			$this->logger->logWarn("--> No object ID");

@@ -49,6 +49,7 @@ use Application\DeskPRO\EmailGateway\TicketGateway\ProcessReply;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
+use Orb\Types\NoValue;
 
 class TicketGatewayProcessor extends AbstractGatewayProcessor
 {
@@ -399,8 +400,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			return null;
 		}
 
-		$this->created_object_type = 'ticket_message';
-		$this->created_object_id   = $obj->id;
+		if (NoValue::is($obj)) {
+			$this->created_object_type = 'no_value';
+			$this->created_object_id   = 0;
+		} else {
+			$this->created_object_type = 'ticket_message';
+			$this->created_object_id   = $obj->id;
+		}
 
 		return $obj;
 	}
