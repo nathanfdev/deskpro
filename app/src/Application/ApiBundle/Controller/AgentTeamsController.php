@@ -123,7 +123,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 	public function saveTeamAction($id)
 	{
 		if ($id) {
-			if (!$team = $this->em->find('AgentTeam', $id)) {
+			if (!$team = $this->em->find('DeskPRO:AgentTeam', $id)) {
 				throw $this->createNotFoundException();
 			}
 		} else {

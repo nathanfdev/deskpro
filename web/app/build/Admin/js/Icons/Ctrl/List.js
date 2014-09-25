@@ -32,7 +32,7 @@
         def = this.$q.defer();
         this.$timeout((function(_this) {
           return function() {
-            var category, current, iconClass, iconImage, path, rule, stylesheet, _i, _j, _len, _len1, _ref, _ref1;
+            var category, current, iconClass, iconImage, imageId, path, rule, stylesheet, _i, _j, _len, _len1, _ref, _ref1;
             _ref = document.styleSheets;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               stylesheet = _ref[_i];
@@ -57,9 +57,11 @@
                 }
                 iconClass = rule.selectorText.substr(1, rule.selectorText.length - 9);
                 iconImage = path + '/png/' + iconClass.substr(current.length + 1) + '.png';
+                imageId = 'dp_file:icons:' + iconImage;
                 _this.categories[category].push({
                   "class": iconClass,
-                  image: iconImage
+                  image: iconImage,
+                  imageId: imageId
                 });
               }
             }

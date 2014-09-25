@@ -44,7 +44,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		setAvatar: (blob) =>
 			@team.avatar = blob
 			if !blob?
-				@$scope.icon_image = "/web/app/vendor-src/icons/webdev-seo/png/career.png"
+				@$scope.icon_image = DP_ASSET_URL + "/app/vendor-src/icons/webdev-seo/png/career.png"
 			else
 				@$scope.icon_image = blob.thumbnail_url_50
 

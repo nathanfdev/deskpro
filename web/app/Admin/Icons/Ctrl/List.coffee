@@ -41,9 +41,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 							iconClass = rule.selectorText.substr(1, rule.selectorText.length - 9)
 							iconImage = path + '/png/' + iconClass.substr(current.length + 1) + '.png'
+							imageId   = 'dp_file:icons:' + iconImage
 							@categories[category].push
 								class: iconClass
 								image: iconImage
+								imageId: imageId
 
 					@busy = false
 					def.resolve()
