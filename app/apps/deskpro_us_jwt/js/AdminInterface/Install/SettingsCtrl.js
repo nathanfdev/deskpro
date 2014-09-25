@@ -49,5 +49,43 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 
 			return deferred.promise;
 		});
+
+		//##############################################################################################################
+		//# Test modal
+		//##############################################################################################################
+
+		$scope.openTestModal = function (existing_results) {
+			if (updateFormErrors()) {
+				return;
+			}
+
+			return $modal.open({
+				templateUrl: 'deskpro_us_jwt/Install/test-settings-modal.html',
+				controller: ['$scope', '$modalInstance', '$timeout', function ($modalScope, $modalInstance, $timeout) {
+
+					$modalScope.is_verified = false;
+					$modalScope.is_error = false;
+					$modalScope.log = '';
+					$modalScope.loading = true;
+
+					Api.sendGet('/usersources/iframe/code/' + $scope.Ctrl.usersourceType + '/' + $scope.Ctrl.instanceId).then(function (res) {
+						window.USERSOURCE_TEST_SCOPE = $modalScope;
+						angular.element('#iframe_html_usersource_test').html(res.data.iframe_html);
+					});
+
+					$modalScope.dismiss = function () { $modalInstance.dismiss(); };
+
+					$modalScope.saveAndRun = function () {
+						$scope.Ctrl.saveSettings();
+						$timeout(function () {
+								$modalScope.dismiss();
+								$scope.openTestModal();
+							},
+							2000
+						);
+					};
+				}]
+			});
+		};
 	}];
 });
