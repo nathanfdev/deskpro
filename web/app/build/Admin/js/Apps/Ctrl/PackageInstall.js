@@ -36,6 +36,7 @@
           };
         })(this);
         this.presaveCallback = null;
+        this.permission_groups = [];
       };
 
       Admin_Apps_Ctrl_PackageInstall.prototype.initialLoad = function() {
@@ -48,6 +49,16 @@
             var form_template, getResourcePath, installCtrl, jsDeferred, loadingAssets, path, setting, _i, _len, _ref;
             _this.pack = result.data.pack['package'];
             _this.$scope.pack = _this.pack;
+            if (_this.permission_groups.length === 0) {
+              _this.Api.sendGet('/agent_groups').then(function(res) {
+                return res.data.groups.forEach(function(val) {
+                  return _this.permission_groups.push({
+                    "value": val.id.toString(),
+                    "label": val.title
+                  });
+                });
+              });
+            }
             form_template = _this.packageName + '/Install/install.html';
             installCtrl = null;
             loadingAssets = [];

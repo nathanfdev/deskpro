@@ -13,6 +13,7 @@ define ['require', 'Admin/Main/Ctrl/Base',
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
 			@$scope.enableCustomFooter = => @$scope.has_own_footer = true
 			@presaveCallback = null
+			@permission_groups = []
 			return
 
 		initialLoad: ->
@@ -23,6 +24,14 @@ define ['require', 'Admin/Main/Ctrl/Base',
 			}).then( (result) =>
 				@pack = result.data.pack['package']
 				@$scope.pack = @pack
+
+
+				if @permission_groups.length == 0
+					@Api.sendGet('/agent_groups').then((res) =>
+						res.data.groups.forEach((val) =>
+							@permission_groups.push({"value": val.id.toString(), "label": val.title})
+						)
+					)
 
 				form_template = @packageName + '/Install/install.html'
 				installCtrl = null

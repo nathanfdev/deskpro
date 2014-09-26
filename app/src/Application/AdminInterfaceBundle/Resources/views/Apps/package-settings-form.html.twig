@@ -10,6 +10,6 @@
 		</span>
 	</div>
 </div>
-<div class="form-group" ng-repeat="setting in pack.settings_def" ng-switch="setting.type" ng-if="setting.type != 'hidden'">
+<div class="form-group" ng-repeat="setting in pack.settings_def" ng-switch="setting.type" ng-if="setting.type != 'hidden' && (!setting.usersource_display || setting.usersource_display == Ctrl.usersourceType)">
 	{% include 'AdminInterfaceBundle:Apps:package-setting.html.twig' %}
 </div>

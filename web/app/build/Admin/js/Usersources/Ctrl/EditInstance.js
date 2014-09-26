@@ -76,11 +76,10 @@
               if (_this.permission_groups.length === 0) {
                 _this.Api.sendGet('/agent_groups').then(function(res) {
                   return res.data.groups.forEach(function(val) {
-                    _this.permission_groups.push({
+                    return _this.permission_groups.push({
                       "value": val.id.toString(),
                       "label": val.title
                     });
-                    return console.log(_this.permission_groups);
                   });
                 });
               }

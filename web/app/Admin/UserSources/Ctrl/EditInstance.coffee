@@ -52,7 +52,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 						@Api.sendGet('/agent_groups').then( (res) =>
 							res.data.groups.forEach( (val) =>
 								@permission_groups.push({"value": val.id.toString(), "label": val.title})
-								console.log @permission_groups
 							)
 						)
 

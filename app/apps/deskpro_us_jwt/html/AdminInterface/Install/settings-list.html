@@ -46,7 +46,7 @@
 
 		<span class="help-block" ng-show="setting.description" ng-bind-html="setting.description"></span>
 
-		<div ng-show="setting.inline_dependant && setting_values[setting.name]">
+		<div ng-if="setting.inline_dependant && setting_values[setting.name]">
 
 			<div ng-switch="setting.inline_dependant.type">
 				{{ setting.inline_dependant.label }}
