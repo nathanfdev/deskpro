@@ -75,6 +75,11 @@ class TicketIncomingEmail
 	public $force_no_reply_cutter = false;
 
 	/**
+	 * @var bool
+	 */
+	public $force_no_pattern_cutter = false;
+
+	/**
 	 * @var array|null
 	 */
 	public $reply_actions;

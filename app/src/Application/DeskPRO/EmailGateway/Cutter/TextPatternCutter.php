@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EmailGateway\Cutter;
 use Application\DeskPRO\EmailGateway\Cutter\Def\QuoteDef;
 use Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter\TextMatcher;
 use Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter\TextPattern;
+use Orb\Util\Strings;
 
 class TextPatternCutter implements QuoteDef
 {
@@ -54,6 +55,16 @@ class TextPatternCutter implements QuoteDef
 	 */
 	protected $translate_map;
 
+	/**
+	 * @var array
+	 */
+	private $require_from = array();
+
+	/**
+	 * @var int
+	 */
+	protected $limit = 0;
+
 
 	/**
 	 * @param array $translate_map
@@ -61,6 +72,29 @@ class TextPatternCutter implements QuoteDef
 	public function setTranslateMap(array $translate_map)
 	{
 		$this->translate_map = $translate_map;
+	}
+
+
+	/**
+	 * Sets which email addresses must match in a matched pattern for the pattern to really match.
+	 * If none of these email addresses exist in the match text, then the pattern is not considered a match.
+	 *
+	 * @param array $require_from
+	 */
+	public function setRequireFrom(array $require_from)
+	{
+		$this->require_from = $require_from;
+	}
+
+
+	/**
+	 * How many quotes to remove (counts from bottom). 0 is unlimited.
+	 *
+	 * @param string $limit
+	 */
+	public function setLimit($limit)
+	{
+		$this->limit = $limit;
 	}
 
 
@@ -137,14 +171,51 @@ class TextPatternCutter implements QuoteDef
 		foreach ($this->patterns as $pattern) {
 			$matcher = new TextMatcher($body, $pattern);
 			if ($matcher->isMatch()) {
-				$this->matched_patterns[] = $pattern;
-				$body = $matcher->getMarkedDocument();
+
+				if ($this->require_from) {
+					$do_add = false;
+
+					$test_text = $matcher->getMatchedPattern('from');
+					if (!$test_text) {
+						$test_text = $matcher->getMatchedText();
+					}
+
+					$test_text = strtolower($test_text);
+
+					foreach ($this->require_from as $from) {
+						$from = strtolower($from);
+						if (strpos($test_text, $from) !== false) {
+							$do_add = true;
+							break;
+						}
+					}
+
+				} else {
+					$do_add = true;
+				}
+
+				if ($do_add) {
+					$this->matched_patterns[] = $pattern;
+					$body = $matcher->getMarkedDocument();
+				}
 			}
 		}
 
-		$pos = strpos($body, TextMatcher::CUT_MARK);
-		if ($pos !== false) {
-			$body = trim(substr($body, 0, $pos));
+		// Limiting how many we are trimming from the end
+		if ($this->limit) {
+
+			$pos = strrpos($body, TextMatcher::CUT_MARK);
+			if ($pos !== false) {
+				$body = trim(substr($body, 0, $pos));
+			}
+			$body = str_replace(TextMatcher::CUT_MARK, '', $body);
+
+		// No limit
+		} else {
+			$pos = strpos($body, TextMatcher::CUT_MARK);
+			if ($pos !== false) {
+				$body = trim(substr($body, 0, $pos));
+			}
 		}
 
 		return $body;

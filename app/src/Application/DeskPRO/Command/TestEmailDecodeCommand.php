@@ -66,6 +66,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addArgument('file', InputArgument::REQUIRED, 'The email file to process');
 		$this->addOption('source', null, InputOption::VALUE_NONE, 'The "file" is a source ID to process instead of a file on the filesystem');
 		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
+		$this->addOption('no-pattern-cut', null, InputOption::VALUE_NONE, 'Do not run the pattern cutters');
 		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Just output the raw decoded email');
 		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
 		$this->addOption('forward', null, InputOption::VALUE_NONE, 'Test splitting as a forwarded message');
@@ -276,6 +277,9 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 			if ($input->getOption('no-cut')) {
 				$ticket_email->force_no_reply_cutter = true;
+			}
+			if ($input->getOption('no-pattern-cut')) {
+				$ticket_email->force_no_pattern_cutter = true;
 			}
 
 			$email_info = new TicketIncomingEmailMessage(

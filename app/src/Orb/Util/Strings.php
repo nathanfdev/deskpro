@@ -2059,6 +2059,8 @@ class Strings
 	{
 		$body = self::standardEol($string);
 		$body = str_replace("\n", '', $body);
+		$body = preg_replace('#</div>\s*<br[^>]*>#i', "</div>", $body);
+		$body = preg_replace('#</div>#i', "<br />", $body);
 		$body = preg_replace('#<br[^>]*>#i', "\n", $body);
 		$body = preg_replace('#<p[^>]*>#i', "\n", $body);
 		$body = strip_tags($body);
