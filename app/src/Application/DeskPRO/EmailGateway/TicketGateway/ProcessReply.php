@@ -140,9 +140,11 @@ class ProcessReply extends ProcessAbstract
 		} else {
 			$this->logMessage("doNewReply message class: TicketIncomingEmailMessage");
 			$email_info = new TicketIncomingEmailMessage(
+				TicketIncomingEmailMessage::MODE_NEWREPLY,
 				$this->ticket,
 				$this->ticket_email,
 				$this->cleaner,
+				App::$container->getEmailAccountManager(),
 				array($this, 'replaceInlineAttachTokens'),
 				$this->getLogger()
 			);

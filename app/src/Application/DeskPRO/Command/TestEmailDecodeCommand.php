@@ -38,6 +38,8 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\EmailGateway\TicketGateway\AgentReplyCodes;
+use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
+use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmailMessage;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,7 +68,6 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addOption('no-cut', null, InputOption::VALUE_NONE, 'Do not run the cutters');
 		$this->addOption('raw', null, InputOption::VALUE_NONE, 'Just output the raw decoded email');
 		$this->addOption('force-text', null, InputOption::VALUE_NONE, 'Force use of text instead of HTML');
-		$this->addOption('convert-text', null, InputOption::VALUE_NONE, 'Convert HTML email into text');
 		$this->addOption('forward', null, InputOption::VALUE_NONE, 'Test splitting as a forwarded message');
 		$this->addOption('reply-codes', null, InputOption::VALUE_NONE, 'Test reply codes');
 		$this->addOption('save-attach', null, InputOption::VALUE_NONE, 'This will save attachments from the email in the same directory as the file');
@@ -74,6 +75,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addOption('output-text', null, InputOption::VALUE_NONE, 'Process an email as normal, but output as text (e.g., HTML will be stripped).');
 		$this->addOption('output-attach', null, InputOption::VALUE_REQUIRED, 'Output the raw contents of an attachment at index');
 		$this->addOption('output-attach-email', null, InputOption::VALUE_REQUIRED, 'Decode the attachment at index as an email');
+		$this->addOption('output-log', null, InputOption::VALUE_NONE, 'Output logger info');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -236,86 +238,57 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 			}
 
 		} else {
-			if ($r->getBodyHtml()->getBodyUtf8() && !$input->getOption('force-text')) {
-				$body = $raw_body = $r->getBodyHtml()->getBodyUtf8();
 
-				if ($input->getOption('convert-text')) {
-					$text = Strings::standardEol($body);
-					$text = str_replace("\n", ' ', $text);
-					$text = preg_replace('#<br/?>#', "<br/>\n", $text);
-					$text = preg_replace('#(<div[^>]+>)#', "$1\n", $text);
-					$text = preg_replace('#(<p[^>]+>)#', "$1\n", $text);
-					$text = preg_replace('#</div>#', "</div>\n", $text);
-					$text = preg_replace('#</p>#', "</p>\n", $text);
-					$text = strip_tags($text);
-					echo $text;
-					echo "\n";
-					return 0;
+			$logger = new \Orb\Log\Logger();
+			$ar_w = new \Orb\Log\Writer\ArrayWriter();
+			$logger->addWriter($ar_w);
+
+			$ticket_email = new TicketIncomingEmail();
+			$ticket_email->reader          = $this->reader;
+			$ticket_email->is_bounce       = false;
+			$ticket_email->email_body_html = $this->reader->getBodyHtml()->body_utf8;
+			$ticket_email->email_body_text = $this->reader->getBodyText()->body_utf8;
+
+			if ($input->getOption('force-text')) {
+				if ($ticket_email->email_body_text) {
+					$ticket_email->email_body_html = '';
+				} else {
+					$ticket_email->email_body_text = Strings::html2Text($ticket_email->email_body_html);
+					$ticket_email->email_body_html = '';
 				}
-
 				if ($input->getOption('raw')) {
-					echo $body;
+					echo $ticket_email->email_body_text;
 					echo "\n";
-					return 0;
-				}
-
-				if (!$input->getOption('no-cut')) {
-
-					$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-					$body = $generic_cutter->cutQuoteBlock($body, true);
-
-					$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
-					$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
-					$cutter->addPatterns($pattern_config->all());
-
-					$body = $cutter->cutQuoteBlock($body, true);
-					$body .= $generic_cutter->cutBottomBlock($raw_body, true);
-
-					if ($input->getOption('show-cutters')) {
-						$got = $cutter->getMatchedPatterns();
-						if ($got) {
-							foreach ($got as $p) {
-								echo "[Matched Cutter] {$p->getPattern()}\n";
-							}
-						}
-					}
-				}
-
-				$inline_image = new \Application\DeskPRO\EmailGateway\InlineImageTokens($r);
-				$body = $inline_image->processTokens($body);
-
-				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_preclean');
-				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_basicclean');
-				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email');
-				$GLOBALS['doit'] = 1;
-				$body = Strings::trimHtmlAdvanced($body);
-				$body = $this->getContainer()->getIn()->getCleaner()->clean($body, 'html_email_postclean');
-
-				foreach ($r->getAttachments() as $attach) {
-					$body = $inline_image->replaceToken($attach->getContentId(), '<img>', $body);
 				}
 			} else {
-				$body = $r->getBodyText()->getBodyUtf8();
-
 				if ($input->getOption('raw')) {
-					if ($input->getOption('output-text')) {
-						$body = Strings::html2Text($body);
+					if ($ticket_email->email_body_html) {
+						if ($input->getOption('output-text')) {
+							echo Strings::html2Text($ticket_email->email_body_html);
+						} else {
+							echo $ticket_email->email_body_html;
+						}
+					} else {
+						echo $ticket_email->email_body_text;
 					}
-					echo $body;
-					echo "\n";
-					return 0;
-				}
-
-				if (!$input->getOption('no-cut')) {
-					$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-					$body = $generic_cutter->cutQuoteBlock($body, false);
-
-					$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
-					$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
-					$cutter->addPatterns($pattern_config->all());
-					$body = $cutter->cutQuoteBlock($body, false);
 				}
 			}
+
+			if ($input->getOption('no-cut')) {
+				$ticket_email->force_no_reply_cutter = true;
+			}
+
+			$email_info = new TicketIncomingEmailMessage(
+				TicketIncomingEmailMessage::MODE_NEWREPLY,
+				null,
+				$ticket_email,
+				App::$container->getInputCleaner(),
+				App::$container->getEmailAccountManager(),
+				null,
+				$logger
+			);
+
+			$body = $email_info->body;
 
 			if ($input->getOption('output-text')) {
 				$body = Strings::html2Text($body);
@@ -323,6 +296,12 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 
 			echo $body;
 			echo "\n";
+
+			if ($input->getOption('output-log')) {
+				echo "\nLOG\n================================\n\n";
+				echo $ar_w->getMessagesAsString();
+				echo "\n";
+			}
 		}
 
 		return 0;

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\Entity\Ticket;
 use Orb\Input\Cleaner\Cleaner;
@@ -43,6 +44,9 @@ use Orb\Util\Strings;
 
 class TicketIncomingEmailMessage
 {
+	const MODE_NEWTICKET = 'newticket';
+	const MODE_NEWREPLY  = 'newreply';
+
 	/**
 	 * @var string
 	 */
@@ -93,19 +97,36 @@ class TicketIncomingEmailMessage
 	 */
 	private $logger;
 
+	/**
+	 * @var EmailAccountManager
+	 */
+	private $email_accounts;
 
 	/**
+	 * @var string
+	 */
+	private $mode;
+
+
+	/**
+	 * @param                     $mode
 	 * @param Ticket              $ticket
 	 * @param TicketIncomingEmail $ticket_email
 	 * @param Cleaner             $cleaner
+	 * @param EmailAccountManager $email_accounts
 	 * @param null                $token_replace_callback
 	 * @param Logger              $logger
 	 */
-	public function __construct(Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, $token_replace_callback = null, Logger $logger = null)
+	public function __construct($mode, Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, EmailAccountManager $email_accounts, $token_replace_callback = null, Logger $logger = null)
 	{
 		if ($logger) {
 			$this->setLogger($logger);
 		}
+
+		$this->mode = $mode;
+		$this->logMessage('[TicketIncomingEmailMessage] mode = ' . $mode);
+
+		$this->email_accounts = $email_accounts;
 
 		$reader = $ticket_email->reader;
 
@@ -122,11 +143,14 @@ class TicketIncomingEmailMessage
 		$inline_images = new InlineImageTokens($reader);
 		$inline_images2 = new InlineImageTokens($reader);
 
-		if ($ticket) {
-			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true -- ticket exists, so this is a reply');
+		if ($ticket_email->force_reply_cutter) {
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true -- force_reply_cutter is on');
 			$do_cut = true;
 		} else if ($ticket_email->force_reply_cutter) {
-			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true -- force_reply_cutter is on');
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=false -- force_no_reply_cutter is on');
+			$do_cut = false;
+		} else if ($mode == self::MODE_NEWREPLY) {
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true -- mode = newreply');
 			$do_cut = true;
 		} else {
 			$this->logMessage('[TicketIncomingEmailMessage] do_cut=false');

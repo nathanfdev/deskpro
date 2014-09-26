@@ -98,9 +98,11 @@ class ProcessNew extends ProcessAbstract
 		$inline_images = new InlineImageTokens($this->reader);
 
 		$email_info = new TicketIncomingEmailMessage(
+			TicketIncomingEmailMessage::MODE_NEWTICKET,
 			null,
 			$this->ticket_email,
 			$this->cleaner,
+			App::$container->getEmailAccountManager(),
 			array($this, 'replaceInlineAttachTokens'),
 			$this->getLogger()
 		);
