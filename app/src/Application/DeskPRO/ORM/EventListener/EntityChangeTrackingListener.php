@@ -50,6 +50,7 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\ChangeObject;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
+use Application\DeskPRO\People\PersonGuest;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
@@ -173,7 +174,14 @@ class EntityChangeTrackingListener implements EventSubscriber
 			$parentEntry = null;
 			if (!$entity['id']) {
 				$event = new EntityCreated($entity);
-				$parentEntry = new LogEvent($event, $this->getContextPerson()); // group changes for new Person
+
+				// if its a new person, then the actor will be the new person (user creates itself)
+				$person_context = $this->getContextPerson();
+				if (!$person_context || $person_context->id === 0) {
+					$person_context = $entity;
+				}
+
+				$parentEntry = new LogEvent($event, $person_context); // group changes for new Person
 				$this->queue->enqueue($parentEntry);
 			}
 
@@ -253,8 +261,19 @@ class EntityChangeTrackingListener implements EventSubscriber
 	 */
 	protected function getContextPerson()
 	{
-		$c = $this->container;
+		$person = $this->tryToGetPersonFromContext();
 
+		// don't even return a PersonGuest
+		if (!$person || $person instanceof PersonGuest) {
+			return null;
+		}
+
+		return $person;
+	}
+
+	protected function tryToGetPersonFromContext()
+	{
+		$c = $this->container;
 		/** @var RequestAuth $auth */
 		try {
 			if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
@@ -271,8 +290,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 					return $person;
 				}
 			}
-		} catch (InactiveScopeException $e) {}
-
-		return null;
+		} catch (InactiveScopeException $e) {
+		}
 	}
 }
