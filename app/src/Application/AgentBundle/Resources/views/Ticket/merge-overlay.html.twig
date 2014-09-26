@@ -162,7 +162,7 @@
 										{% if ticket.labels is not empty %}
 											<ul>
 												{% for label in ticket.labels %}
-													<li>{{ label.label }}</li>
+													<li dp-label="{{ label.label }}">{{ label.label }}</li>
 												{% endfor %}
 											</ul>
 										{% endif %}

@@ -35,6 +35,7 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
+use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
@@ -236,11 +237,21 @@ class Runner
 
 	/**
 	 * @param OptionsArray $result
+	 * @param bool         $is_retry
 	 * @return bool
 	 */
-	private function verifyCreatedObject(OptionsArray $result)
+	private function verifyCreatedObject(OptionsArray $result, $is_retry = false)
 	{
 		$this->logger->logDebug("Verifying created object...");
+
+		if ($is_retry) {
+			$this->logger->logDebug("-> Checking again");
+		}
+
+		if ($result->created_object_type == 'no_value') {
+			$this->logger->logDebug('-> NoValue was returned (note: that is a valid return)');
+			return true;
+		}
 
 		$id = $result->created_object_id;
 		if (!$id) {
@@ -248,16 +259,18 @@ class Runner
 			return false;
 		}
 
+		$check_result = false;
+
 		switch ($result->created_object_type) {
 			case 'ticket':
 				$this->logger->logDebug("--> Verifying ticket {$id}");
 				$t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($id));
 				if ($t) {
 					$this->logger->logInfo("--> Ticket OKAY");
-					return true;
+					$check_result = true;
 				} else {
 					$this->logger->logWarn("--> Ticket DOES NOT exist");
-					return false;
+					$check_result = false;
 				}
 				break;
 
@@ -266,10 +279,10 @@ class Runner
 				$t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets_messages WHERE id = ?", array($id));
 				if ($t) {
 					$this->logger->logInfo("--> Ticket message OKAY");
-					return true;
+					$check_result = true;
 				} else {
 					$this->logger->logWarn("--> Ticket message DOES NOT exist");
-					return false;
+					$check_result = false;
 				}
 				break;
 
@@ -277,6 +290,13 @@ class Runner
 				$this->logger->logWarn("--> Unknown object type: {$result->created_object_type}");
 				return false;
 		}
+
+		if (!$check_result && !$is_retry) {
+			sleep(1);
+			return $this->verifyCreatedObject($result, true);
+		}
+
+		return $check_result;
 	}
 
 
@@ -353,6 +373,13 @@ class Runner
 			$this->logger->addWriter($this->log_messages);
 		}
 
+		$is_in_trans = App::getDb()->isTransactionActive();
+		if ($is_in_trans) {
+			$this->logger->logWarn('Note: Called within a transaction');
+		} else {
+			$this->logger->logDebug('Note: Not called within a transaction');
+		}
+
 		$this->log_messages->clear();
 
 		$previous_log_text = null;
@@ -379,7 +406,7 @@ class Runner
 
 			if ($remain < $min) {
 				$this->logger->log(sprintf("Detected that we are at the memory limit, quitting run"), 'debug');
-				return 'memory_limit';
+				throw new ProcessingException("Detected that we are at the memory limit", ProcessingException::MEMORY_LIMIT);
 			}
 		}
 
@@ -390,8 +417,10 @@ class Runner
 		App::getOrm()->flush();
 
 		$allow_retry = $this->enable_retry_scheduling;
+		$this->logger->logInfo("Retrying is " . ($allow_retry ? "on" : "off"));
 		if ($allow_retry && $source->exec_count >= $this->max_retry_attempts) {
 			$allow_retry = false;
+			$this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempt}");
 		}
 
 		$this->logger->logDebug("Running processors");
@@ -409,6 +438,15 @@ class Runner
 			$result = $runner_exec->run();
 			App::$container->getEm()->flush();
 			$this->logger->logDebug("--> Processors complete");
+
+			if (!$is_in_trans && App::getDb()->isTransactionActive()) {
+				$this->logger->log("WARNING: Unclosed transaction!", 'info');
+				$e = new \RuntimeException("WARNING: Unclosed transaction");
+				KernelErrorHandler::logException($e);
+				while (App::getDb()->isTransactionActive()) {
+					App::getDb()->commit();
+				}
+			}
 		} catch (\Exception $e) {
 			$this->logger->logDebug("--> Processor exception: {$e->getCode()} {$e->getMessage()}");
 			$result = array(
@@ -428,7 +466,7 @@ class Runner
 					KernelErrorHandler::logException($e, true);
 				}
 			} else {
-				$this->logger->logWarn("Not trying because we have reached the retry limit of {$this->max_retry_attempts}");
+				$this->logger->logWarn("Not trying again (allow_retry is false)");
 				KernelErrorHandler::logException($e, true);
 			}
 
@@ -453,6 +491,12 @@ class Runner
 				));
 
 				$result = $new_result;
+
+				if ($allow_retry) {
+					$do_retry = true;
+				} else {
+					$this->logger->logWarn("Not trying again (allow_retry is false)");
+				}
 			}
 		}
 
@@ -601,6 +645,8 @@ class Runner
 
 		$this->logger->logDebug(sprintf("%d inserted messages being processed first", count($inserted_source_ids)));
 
+		$processed_source_ids = array();
+
 		while (true) {
 			// Make sure any records are flusehd
 			App::getOrm()->flush();
@@ -611,7 +657,7 @@ class Runner
 			// process of emails being rolledback.
 			if (App::getDb()->isTransactionActive()) {
 				$this->logger->log("WARNING: Unclosed transaction!", 'info');
-				$e = new \RuntimeException("WARNING: Unclosed transaction!");
+				$e = new \RuntimeException("WARNING: Unclosed transaction. Sources processed: " . implode(', ', $processed_source_ids));
 				KernelErrorHandler::logException($e);
 				while (App::getDb()->isTransactionActive()) {
 					App::getDb()->commit();
@@ -652,6 +698,8 @@ class Runner
 					break;
 				}
 			}
+
+			$processed_source_ids[] = $source->id;
 
 			if (!$this->log_messages) {
 				$this->log_messages = new \Orb\Log\Writer\ArrayWriter();
@@ -696,7 +744,17 @@ class Runner
 
 			$this->logger->logDebug('START: executeSource('.$source->getId().')');
 			$t = microtime(true);
-			$ret_code = $this->executeSource($source);
+			$is_mem_limit = false;
+			try {
+				$this->executeSource($source);
+			} catch (ProcessingException $e) {
+				if ($e->getCode() == ProcessingException::MEMORY_LIMIT) {
+					$is_mem_limit = true;
+				} else {
+					$this->logger->logError("Exception: " . $e->getMessage());
+				}
+			}
+
 			$this->logger->logDebug(sprintf('FINISH: executeSource('.$source->getId().') - %.4fs', microtime(true)-$t));
 
 			$m_end = memory_get_usage();
@@ -706,10 +764,12 @@ class Runner
 
 			$time_so_far = time() - $exec_start;
 			if ($time_limit && $time_so_far >= $time_limit) {
+				$this->logger->logInfo("Hit time limit, breaking");
 				break;
 			}
 
-			if ($ret_code == 'memory_limit') {
+			if ($is_mem_limit) {
+				$this->logger->logInfo("Hit memory limit, breaking");
 				break;
 			}
 

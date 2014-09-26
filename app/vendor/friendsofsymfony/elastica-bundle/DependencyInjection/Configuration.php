@@ -73,6 +73,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('clients')
                     ->useAttributeAsKey('id')
                     ->prototype('array')
+                        ->performNoDeepMerging()
                         // BC - Renaming 'servers' node to 'connections'
                         ->beforeNormalization()
                         ->ifTrue(function($v) { return isset($v['servers']); })
@@ -182,7 +183,7 @@ class Configuration implements ConfigurationInterface
                 ->treatNullLike(array())
                 // BC - Renaming 'mappings' node to 'properties'
                 ->beforeNormalization()
-                ->ifTrue(function($v) { return isset($v['mappings']); })
+                ->ifTrue(function($v) { return array_key_exists('mappings', $v); })
                 ->then(function($v) {
                     $v['properties'] = $v['mappings'];
                     unset($v['mappings']);
@@ -213,7 +214,7 @@ class Configuration implements ConfigurationInterface
                     foreach ($v['dynamic_templates'] as $key => $type) {
                         if (is_int($key)) {
                             $dt[] = $type;
-                        } else { 
+                        } else {
                             $dt[][$key] = $type;
                         }
                     }

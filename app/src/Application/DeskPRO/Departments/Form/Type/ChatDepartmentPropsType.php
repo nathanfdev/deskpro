@@ -73,6 +73,10 @@ class ChatDepartmentPropsType extends AbstractType
 				 }
 			)
 		);
+		$builder->add('avatar', 'entity', array(
+			'required'      => false,
+			'class'         => 'DeskPRO:Blob',
+		));
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)

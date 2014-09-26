@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -48,6 +49,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 class TicketManager
 {
@@ -103,6 +105,13 @@ class TicketManager
 		$this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
 		$this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
 		$this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization'));
+		$this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
+			$container->getEm(),
+			$container->getSetting('core_email.antiflood_newtickets'),
+			$container->getSetting('core_email.antiflood_newtickets_time'),
+			$container->getSetting('core_email.antiflood_newreplies'),
+			$container->getSetting('core_email.antiflood_newreplies_time')
+		);
 
 		$this->post_save_actions[] = new TicketSaveActions\ExecTriggers($container->getEm()->getRepository('DeskPRO:TicketTrigger'), new ActionApplicator($container));
 		$this->post_save_actions[] = new TicketSaveActions\VerifyDepartment($container->getTicketDepartments());
@@ -150,7 +159,7 @@ class TicketManager
 	 * Set an auto context var
 	 *
 	 * @param string $k
-	 * @param mixed d$v
+	 * @param mixed $v
 	 */
 	public function setAutoContextVar($k, $v)
 	{
@@ -269,6 +278,7 @@ class TicketManager
 
 		if ($is_trivial_change) {
 			$context->getLogger()->debug("is_trivial_change = true");
+			$context->setEventType('noop');
 			$is_noop = true;
 		}
 
@@ -416,6 +426,23 @@ class TicketManager
 			$context->setPersonContext($agent);
 		}
 
+		if ($event_method === 'api') {
+			$key = null;
+
+			try {
+				/** @var $auth RequestAuth */
+				if ($auth = $this->container->get('deskpro.api.request_auth')) {
+					$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+				}
+			} catch (InactiveScopeException $e) {
+				$key = null;
+			}
+
+			if ($key) {
+				$context->getVars()->set('via_api_key', $key);
+			}
+		}
+
 		$context->setEventPerformer('agent');
 		$context->setEventType($event_type);
 		$context->setEventMethod($event_method, $event_method_options);
@@ -437,6 +464,16 @@ class TicketManager
 
 		if ($user) {
 			$context->setPersonContext($user);
+		}
+
+		if ('api' === $event_method) {
+			$key = null;
+			/** @var $auth RequestAuth */
+			if ($auth = $this->container->get('deskpro.api.request_auth')) {
+				$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+			}
+
+			$context->getVars()->set('via_api_key', $key);
 		}
 
 		$context->setEventPerformer('user');

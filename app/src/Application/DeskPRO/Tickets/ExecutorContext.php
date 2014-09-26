@@ -42,6 +42,16 @@ use Orb\Util\OptionsArray;
 
 class ExecutorContext implements ExecutorContextInterface
 {
+	const EVENT_NEW = 'newticket';
+	const EVENT_REPLY = 'newreply';
+	const EVENT_UPDATE = 'update';
+	const EVENT_NOOP = 'noop';
+
+	const METHOD_API = 'api';
+	const METHOD_WEB = 'web';
+	const METHOD_EMAIL = 'email';
+	const METHOD_SMS = 'sms';
+
 	/**
 	 * @var \Orb\Util\OptionsArray
 	 */
@@ -198,7 +208,7 @@ class ExecutorContext implements ExecutorContextInterface
 
 
 	/**
-	 * @return string
+	 * @return string newticket, newreply, update
 	 */
 	public function getEventType()
 	{
@@ -220,7 +230,7 @@ class ExecutorContext implements ExecutorContextInterface
 
 
 	/**
-	 * @return string
+	 * @return string email, api or web
 	 */
 	public function getEventMethod()
 	{
@@ -257,7 +267,7 @@ class ExecutorContext implements ExecutorContextInterface
 
 
 	/**
-	 * @return string
+	 * @return string system, user or agent
 	 */
 	public function getEventPerformer()
 	{

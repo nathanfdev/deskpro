@@ -110,6 +110,11 @@ class Department extends DomainObject implements HasPhraseName
 	protected $display_order = 0;
 
 	/**
+	 * @var Blob
+	 */
+	protected $avatar;
+
+	/**
 	 * @return Department
 	 */
 
@@ -478,6 +483,17 @@ class Department extends DomainObject implements HasPhraseName
 		return $data;
 	}
 
+	public function hasAvatar()
+	{
+		return $this->avatar && $this->avatar->isImage();
+	}
+
+	public function getAvatarUrl($size = 50)
+	{
+		if (!$this->hasAvatar()) return null;
+		return $this->avatar->getThumbnailUrl($size);
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -580,5 +596,22 @@ class Department extends DomainObject implements HasPhraseName
 				 'indexBy'      => 'id'
 			)
 		);
+
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'avatar',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'mappedBy' => NULL,
+			'inversedBy' => NULL,
+			'joinColumns' => array(
+				0 => array(
+					'name' => 'avatar_blob_id',
+					'referencedColumnName' => 'id',
+					'nullable' => true,
+					'onDelete' => 'cascade',
+					'columnDefinition' => NULL,
+				),
+			),
+			'dpApi' => true
+		));
 	}
 }

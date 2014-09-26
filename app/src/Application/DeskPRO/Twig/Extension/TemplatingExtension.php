@@ -148,6 +148,7 @@ class TemplatingExtension extends \Twig_Extension
 			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 			'ng_href'                          => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
 			'ng_href_var'                      => new \Twig_Function_Method($this, 'ngHrefVar', array('is_safe' => array('html'))),
+			'server_capable'                   => new \Twig_Function_Method($this, 'serverCapable', array('is_safe' => array('html'))),
 
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
 			'ng_bind'                          => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
@@ -533,7 +534,7 @@ class TemplatingExtension extends \Twig_Extension
 						$options['media'] = 'screen,print';
 					}
 
-					if ($less_use_css) {
+					if ($less_use_css && strpos($url, '/stylesheets-less/') !== false) {
 						$url = str_replace('/stylesheets-less/', '/stylesheets/', $url);
 						$url = str_replace('.less', '.css', $url);
 						$html[] = '<link rel="stylesheet" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
@@ -1716,6 +1717,19 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return $result;
+	}
+
+	public function serverCapable($what)
+	{
+		switch ($what) {
+			case 'imap':
+				return extension_loaded('imap');
+			case 'soap':
+				return extension_loaded('soap');
+			case 'curl':
+				return extension_loaded('curl');
+		}
+		return false;
 	}
 
 	public function js_error_tracking($loc, array $options = array())

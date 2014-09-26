@@ -96,6 +96,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			this.initPage(wrapper);
 			this.initApps();
 
+			DeskPRO_Window.TabBar.rescanTitles();
+
 			DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
 		}, this);
 

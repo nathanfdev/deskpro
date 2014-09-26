@@ -62,6 +62,7 @@ define [
 			depData.title           = formModel.title
 			depData.parent          = formModel.parent_id || "0"
 			depData.move_tickets_to = 'self'
+			depData.avatar          = formModel.avatar
 
 			if Util.isBlank(depData.parent)
 				depData.parent = null

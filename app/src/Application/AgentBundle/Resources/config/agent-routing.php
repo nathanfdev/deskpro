@@ -115,6 +115,20 @@ $collection->create('agent_dismiss_version_notice', array(
 	'controller'  => 'AgentBundle:Main:dismissVersionNotice',
 ));
 
+$collection->create('agent_dpnews_view', array(
+	'path'         => '/misc/view-dp-news/{id}',
+	'controller'   => 'AgentBundle:Misc:viewDpNews',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('agent_dpnews_dismiss', array(
+	'path'         => '/misc/view-dp-news/{id}/dismiss',
+	'controller'   => 'AgentBundle:Misc:dismissDpNews',
+	'requirements' => array('id' => '\d+'),
+	'methods'      => array('POST'),
+));
+
 $collection->create('agent_redirect_out', array(
 	'path'          => '/redirect-out/{url}',
 	'controller'    => 'AgentBundle:Misc:redirectExternal',
@@ -2304,6 +2318,12 @@ $collection->create('jira_post_comment', array(
 	'controller'    => 'AgentBundle:Jira:postComment',
 	'defaults'		=> array('issue_id' => '-1'),
 	'requirements'  => array('issue_id' => '\\d+'),
+));
+
+$collection->create('agent_label_definitions_list', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'AgentBundle:Labels:listDefinitions',
+	'methods'       => array('GET'),
 ));
 
 return $collection;

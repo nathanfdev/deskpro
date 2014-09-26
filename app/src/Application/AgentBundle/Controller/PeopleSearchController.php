@@ -744,72 +744,12 @@ class PeopleSearchController extends AbstractController
 			$q = $this->in->getString('term');
 		}
 
-		$agent_sql = ' p.is_agent = 0 AND ';
-		if ($this->in->getBool('with_agents')) {
-			$agent_sql = '';
-		}
-
-		$limit = $this->in->getUint('limit');
-		if (!$limit) $limit = 10;
-		$limit = min($limit, 100);
-
-		$not_in_org = $this->in->getUint('exclude_org');
-
-		if (BigMode::isBigMode(BigMode::PERSON_AUTOCOMPLETE)) {
-			if (!$q && $this->in->getBool('start_with')) {
-				$people_list = $this->db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
-					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
-					WHERE $agent_sql
-					" . ($not_in_org ? " p.organization_id != $not_in_org " : '1') . "
-					ORDER BY p.id DESC
-					LIMIT $limit
-				");
-			} else {
-				$people_list = $this->db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
-					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
-					WHERE
-						$agent_sql
-						e.email LIKE ?
-						" . ($not_in_org ? " AND (p.organization_id IS NULL OR p.organization_id != $not_in_org) " : '') . "
-					GROUP BY p.id
-					ORDER BY p.date_last_login DESC, p.id DESC
-					LIMIT $limit
-				", array("$q%"));
-			}
-		} else {
-			if (!$q && $this->in->getBool('start_with')) {
-				$people_list = $this->db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
-					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
-					WHERE $agent_sql
-					" . ($not_in_org ? " p.organization_id != $not_in_org " : '1') . "
-					ORDER BY p.name ASC
-					LIMIT $limit
-				");
-			} else {
-
-				$people_list = $this->db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
-					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
-					WHERE
-						$agent_sql
-						(e.email LIKE ?
-						OR p.name LIKE ?
-						OR p.first_name LIKE ?
-						OR p.last_name LIKE ?)
-						" . ($not_in_org ? " AND (p.organization_id IS NULL OR p.organization_id != $not_in_org) " : '') . "
-					GROUP BY p.id
-					ORDER BY p.date_last_login DESC, p.id DESC
-					LIMIT $limit
-				", array("%$q%", "%$q%", "%$q%", "%$q%"));
-			}
-		}
+		/** @var \Application\DeskPRO\EntityRepository\Person $rep */
+		$rep = $this->em->getRepository('DeskPRO:Person');
+		$people_list = $rep->quickSearch(
+			$q, $this->in->getBool('start_with'), $this->in->getBool('with_agents'),
+			$this->in->getUint('exclude_org'), $this->in->getUint('limit')
+		);
 
 		$format = $this->in->getString('format');
 
@@ -938,7 +878,7 @@ class PeopleSearchController extends AbstractController
 		try {
 			$ids = array();
 			foreach ($people as $person) {
-				if (!$person->is_agent && !$person->is_agent_confirmed) {
+				if (!$person->is_agent && (!$person->is_agent_confirmed || !$person->is_confirmed)) {
 					$ids[] = $person->getId();
 
 					foreach ($person->emails as $email) {

@@ -4,7 +4,7 @@ if (function_exists('apc_clear_cache')) {
 	apc_clear_cache();
 	apc_clear_cache('user');
 	echo "APC Cache Cleared";
-} else if (function_exists('wincache_ucache_clear')) {
+} else if (extension_loaded('wincache')) {
 	wincache_ucache_clear();
 	echo "WinCache User Cache Cleared";
 } else {

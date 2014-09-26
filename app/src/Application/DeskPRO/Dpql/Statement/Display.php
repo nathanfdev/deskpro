@@ -536,6 +536,10 @@ class Display
 	 */
 	protected function _setSqlLimit()
 	{
+		if (!$this->_limitAmount && in_array('table', $this->_display)) {
+			$this->_limitAmount = 2500;
+		}
+
 		if ($this->_limitAmount) {
 			$limit = ($this->_implicitLimit ? min($this->_implicitLimit, $this->_limitAmount) : $this->_limitAmount);
 		} else {

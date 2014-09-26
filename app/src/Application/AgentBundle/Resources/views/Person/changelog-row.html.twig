@@ -1,0 +1,32 @@
+<div class="log-batch">
+    <div
+            class="log-row log-{{entry.id}} type-{{ entry.event }}"
+            data-log-id="{{ entry.id }}"
+            >
+        <div class="info">
+            {% if entry.person %}
+                by <a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': entry.person.id}) }}">{{ entry.person.display_name }}</a>,
+            {% endif %}
+            <time class="timeago" title="{{ entry.timestamp|date('c', 'UTC') }}">{{ entry.timestamp|date('fulltime') }}</time>
+        </div>
+
+        <div class="{{ entry.event }}">
+            {% if 'entity_updated' == entry.event %}
+                Updated
+            {% elseif 'entity_created' == entry.event %}
+                Created
+            {% elseif 'user_merged' == entry.event %}
+                Merged
+            {% endif %}
+        </div>
+    </div>
+
+    {% if entry.children|length %}
+        {% for subentry in entry.getChildren() %}
+            {{ include('AgentBundle:Person:changelog-row-content.html.twig', {entry: subentry}) }}
+        {% endfor %}
+    {% else %}
+        {{ include('AgentBundle:Person:changelog-row-content.html.twig', {entry: entry}) }}
+    {% endif %}
+
+</div>

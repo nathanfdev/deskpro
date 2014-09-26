@@ -81,6 +81,17 @@ class CoreExtension extends Extension
 		));
 		$container->setDefinition('deskpro.person_activity_logger', $definition);
 
+	    $definition = new Definition('Application\\DeskPRO\\ORM\\EventListener\\EntityChangeTrackingListener', array(new Reference('service_container')));
+	    $definition->addTag('doctrine.event_subscriber');
+	    $container->setDefinition('deskpro.orm.event_listener.log_entity_changes', $definition);
+
+	    $definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', array(new Reference('doctrine.orm.entity_manager')));
+		$container->setDefinition('deskpro.log_handler.log_event', $definition);
+
+	    $definition = new Definition('Application\DeskPRO\Monolog\Logger', array('changelog'));
+	    $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
+	    $container->setDefinition('deskpro.logger.changelog', $definition);
+
 		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);

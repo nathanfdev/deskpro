@@ -39,6 +39,8 @@ use Orb\Util\Strings;
 /**
  * Represents a single message that needs to be sent. SmsMessages are one or many chunks of 160 characters.
  * Each SmsMessageChunk holds a SmsResult of it's current status.
+ *
+ * A value object.
  */
 class SmsMessage
 {

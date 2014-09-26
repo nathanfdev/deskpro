@@ -41,16 +41,13 @@ function deskpro_install_check_reqs()
 		$errors['openssl_ext'] = 'recommended';
 	}
 
-	if (version_compare(phpversion(), '5.5.0', '<')) {
-		if (!(function_exists('apc_store') && ini_get('apc.enabled'))) {
-			$errors['apc_check'] = 'recommended';
-		}
-	} else {
-		if (!(extension_loaded('Zend OPcache') && (int) ini_get('opcache.enable'))) {
-			$errors['apc_check'] = 'recommended';
-		}
-	}
+	$enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
+	$enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
+	$enabledOpcache = (int) ini_get('opcache.enable') || extension_loaded('Zend OPcache');
 
+	if (!($enabledApc || $enabledWincache || $enabledOpcache)) {
+		$errors['apc_check'] = 'recommended';
+	}
 
 	if (!function_exists('get_magic_quotes_gpc')) {
 		$errors['magic_quotes_gpc_check'] = 'recommended';

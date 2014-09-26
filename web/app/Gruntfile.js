@@ -4,12 +4,12 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-coffee');
-	grunt.loadNpmTasks('grunt-recess');
+	grunt.loadNpmTasks('grunt-contrib-less');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 
-		recess: {
+		less: {
 			options: {
 				compile: true
 			},
@@ -20,6 +20,10 @@ module.exports = function(grunt) {
 			reports_style: {
 				src: ['Reports/Resources/style/reports-style.less'],
 				dest: 'build/Reports/css/reports-style.css'
+			},
+			icons_style: {
+				src: 'vendor-src/icons/**/*.less',
+				dest: 'build/Admin/css/icons-style.css'
 			}
 		},
 
@@ -83,9 +87,9 @@ module.exports = function(grunt) {
 			options: {
 				spawn: false
 			},
-			admin_recess: {
+			admin_less: {
 				files: 'Admin/Resources/style/*.less',
-				tasks: ['recess']
+				tasks: ['less']
 			},
 			common_js: {
 				files: 'DeskPRO/**/*.coffee',
@@ -103,9 +107,13 @@ module.exports = function(grunt) {
 				files: 'AdminStart/**/*.coffee',
 				tasks: ['coffee']
 			},
-			reports_recess: {
+			reports_less: {
 				files: 'Reports/Resources/style/*.less',
-				tasks: ['recess']
+				tasks: ['less']
+			},
+			icons_less: {
+				files: 'vendor-src/icons/**/*.css',
+				tasks: ['less']
 			},
 			reports_js: {
 				files: 'Reports/**/*.coffee',
@@ -126,8 +134,9 @@ module.exports = function(grunt) {
 		'coffee.admin_upgrade_js': [],
 		'coffee.admin_start_js':   [],
 		'coffee.reports_js':       [],
-		'recess.admin_style':      [],
-		'recess.reports_style':    []
+		'less.admin_style':      [],
+		'less.reports_style':    []
+//		'less.icons_style':    []
 	};
 	var onChange = grunt.util._.debounce(function() {
 
@@ -157,8 +166,9 @@ module.exports = function(grunt) {
 		changedFiles['coffee.admin_upgrade_js']  = [];
 		changedFiles['coffee.admin_start_js']    = [];
 		changedFiles['coffee.reports_js']        = [];
-		changedFiles['recess.admin_style']       = [];
-		changedFiles['recess.reports_style']     = [];
+		changedFiles['less.admin_style']       = [];
+		changedFiles['less.reports_style']     = [];
+//		changedFiles['less.icons_style']        = [];
 	}, 200);
 	grunt.event.on('watch', function(action, filepath) {
 		if (filepath.indexOf('.coffee') !== -1) {
@@ -179,11 +189,11 @@ module.exports = function(grunt) {
 			}
 		}
 		if (filepath.indexOf('.less') !== -1) {
-			if (filepath.indexOf('Admin/Resources/style/') === 0 && changedFiles['recess.admin_style'].indexOf(filepath) === -1) {
-				changedFiles['recess.admin_style'].push(filepath);
+			if (filepath.indexOf('Admin/Resources/style/') === 0 && changedFiles['less.admin_style'].indexOf(filepath) === -1) {
+				changedFiles['less.admin_style'].push(filepath);
 			}
-			if (filepath.indexOf('Reports/Resources/style/') === 0 && changedFiles['recess.reports_style'].indexOf(filepath) === -1) {
-				changedFiles['recess.reports_style'].push(filepath);
+			if (filepath.indexOf('Reports/Resources/style/') === 0 && changedFiles['less.reports_style'].indexOf(filepath) === -1) {
+				changedFiles['less.reports_style'].push(filepath);
 			}
 		}
 		onChange();
@@ -193,6 +203,6 @@ module.exports = function(grunt) {
 	// Register our standard tasks
 	//------------------------------
 
-	grunt.registerTask('build', ['coffee', 'recess']);
-	grunt.registerTask('default', ['coffee', 'recess']);
+	grunt.registerTask('build', ['coffee', 'less']);
+	grunt.registerTask('default', ['coffee', 'less']);
 };

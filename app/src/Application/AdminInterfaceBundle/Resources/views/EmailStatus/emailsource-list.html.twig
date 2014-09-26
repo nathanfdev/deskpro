@@ -97,6 +97,7 @@
 				<colgroup>
 					<col width="1%" />
 					<col width="1%" />
+					<col width="1%" />
 					<col width="25%" />
 					<col width="25%" />
 					<col width="25%" />
@@ -106,6 +107,7 @@
 				</colgroup>
 				<thead>
 					<tr>
+						<th><input type="checkbox" ng-model="ListCtrl.massActionsAll" ng-change="ListCtrl.toggleMassActions()" /></th>
 						<th>ID</th>
 						<th>Date</th>
 						<th>From</th>
@@ -118,6 +120,7 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error', 'warning': result.status == 'rejected'}">
+						<td class=""><input type="checkbox" ng-model="ListCtrl.massActions[result.id]" ng-change="" style="margin: 0;" /></td>
 						<td class="alt dp-id-col"><a href="{{ ng_href('tickets.ticket_accounts.emailsourcesview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
 						<td style="white-space: nowrap" nowrap>{{ ng_var('result.date_created + " UTC" | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_from') }}</td>
@@ -125,8 +128,13 @@
 						<td class="overflow-ellipsis">{{ ng_var('result.email_account.address') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_subject') }}</td>
 						<td nowrap>
-							<span ng-if="result.object_type == 'ticket'" title="New Ticket"><i class="fa fa-envelope"></i> {{ ng_var('result.object_id') }}</span>
-							<span ng-if="result.object_type == 'ticket_message'" title="Reply to a ticket"><i class="fa fa-envelope-o"></i> {{ ng_var('result.object_id') }}</span>
+							<span ng-if="result.object_id == 0">
+								&mdash;
+							</span>
+							<span ng-if="result.object_id != 0">
+								<span ng-if="result.object_type == 'ticket'" title="New Ticket"><i class="fa fa-envelope"></i> {{ ng_var('result.object_id') }}</span>
+								<span ng-if="result.object_type == 'ticket_message'" title="Reply to a ticket"><i class="fa fa-envelope-o"></i> {{ ng_var('result.object_id') }}</span>
+							</span>
 						</td>
 						<td nowrap>
 							{{ ng_var('result.status') }}
@@ -135,6 +143,27 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<div ng-show="ListCtrl.hasAnyMassActions()">
+				With selected: <select ng-model="ListCtrl.massActionsOp" ui-select2>
+					<option value="reprocess">Reprocess Emails</option>
+					<option value="delete">Delete Emails</option>
+				</select>
+				<button ng-hide="massActionsLoading" class="btn btn-primary" type="button" ng-click="ListCtrl.performMassActions()">Perform Actions &rarr;</button>
+				<span ng-show="massActionsLoading"><i class="spinner-flat"></i></span>
+
+				<div ng-switch="ListCtrl.massActionsOp" style="width: 400px;" class="help-block">
+					<div ng-switch-when="reprocess">
+						<i class="fa fa-question-circle"></i> Reprocess Emails: By selecting this option, you will reschedule the
+						selected emails for processing. The system will process the emails the next time the email queue is processed.
+					</div>
+					<div ng-switch-when="delete">
+						<i class="fa fa-question-circle"></i> Delete: Deleting the email will remove the raw email source and processing
+						log from the system. If the email is already processed (e.g., a ticket or ticket message was created),
+						that will remain. If the email is NOT already processed, it never will be.
+					</div>
+				</div>
+			</div>
 
 			<div style="text-align: center;" dp-show-spinning="loading_page"><i class="spinner-flat"></i></div>
 
@@ -151,4 +180,7 @@
 			</div>
 		</article>
 	</section>
+
+	<div dp-register-message="reprocess_done">The selected emails have been scheduled for reprocessing.</div>
+	<div dp-register-message="delete_done">The selected emails have been deleted.</div>
 {% endblock %}

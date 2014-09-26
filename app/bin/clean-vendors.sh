@@ -68,6 +68,10 @@ cd $DIR_VENDOR/doctrine/annotations
 echo "Cleaning $(pwd)"
 rm -rf tests/
 
+cd $DIR_VENDOR/deskpro/deskpro-api-php
+echo "Cleaning $(pwd)"
+rm -rf examples/
+
 cd $DIR_VENDOR/doctrine/cache
 echo "Cleaning $(pwd)"
 rm -rf tests/

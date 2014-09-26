@@ -72,6 +72,11 @@ class HtmlMatcher
 	 */
 	protected $root_state;
 
+	/**
+	 * @var bool
+	 */
+	protected $reverse = true;
+
 
 	/**
 	 * @param string $body
@@ -141,6 +146,9 @@ class HtmlMatcher
 			return null;
 		}
 
+		if ($this->reverse) {
+			$roots = array_reverse($roots, true);
+		}
 
 		foreach ($roots as $id => $root) {
 			$use_tokens = $tokens;

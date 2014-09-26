@@ -41,6 +41,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TaskComment;
+use Application\DeskPRO\Form\Type\TaskType;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Numbers;
@@ -134,107 +135,40 @@ class TaskController extends AbstractController
     public function createAction()
 	{
         $all_task_data = $this->in->getCleanValueArray('newtask', 'raw', 'discard');
-
 		$tasks = array();
 
 		foreach ($all_task_data as $task_data) {
 
-			$task_data['title'] = trim($task_data['title']);
-			if (empty($task_data['title'])) {
-				continue;
-			}
-
 			$task = new Task();
-			$task->title = $task_data['title'];
-			$task->person = $this->person;
-
-			if (!empty($task_data['assigned_agent'])) {
-				list ($type, $id) = explode(':', $task_data['assigned_agent']);
-				if ($type == 'agent') {
-					$task->setAsignedAgentId($id);
-				} else {
-					$task->setAsignedAgentTeamId($id);
-				}
-			}
+			$form = $this->createForm(new TaskType(), $task);
+			$task_data['person'] = $this->person['id'];
 
 			if (!empty($task_data['ticket_id'])) {
-				$ticket = $this->em->find('DeskPRO:Ticket', $task_data['ticket_id']);
-
-				$assoc = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
-				$assoc->ticket = $ticket;
-				$assoc->task   = $task;
-
-				$task->task_associations->add($assoc);
+				$task_data['ticket'] = $task_data['ticket_id'];
 			}
 
-			/*
-            if (!empty($task_data['deal_id'])) {
-				$deal = $this->em->find('DeskPRO:Deal', $task_data['deal_id']);
-
-				$assoc = new \Application\DeskPRO\Entity\TaskAssociatedDeal();
-				$assoc->deal = $deal;
-				$assoc->task   = $task;
-
-				$task->task_associations->add($assoc);
-			}
-			*/
-
-			$task->setVisibility($task_data['visibility']);
-			if (!empty($task_data['date_due'])) {
-				try {
-					$date_due = new \DateTime($task_data['date_due'], $this->person->getDateTimezone());
-
-					if (!empty($task_data['time_due']) && strpos($task_data['time_due'], ':') !== 0) {
-						list ($hour, $min) = explode(':', $task_data['time_due']);
-						$hour = (int)$hour;
-						$min = (int)$min;
-						if (Numbers::inRange($hour, 0, 23) && Numbers::inRange($min, 0, 59)) {
-							$date_due->setTime($hour, $min, 59);
-						} else {
-							$date_due->setTime(23, 59, 59);
-						}
-					} else {
-						$date_due->setTime(23, 59, 59);
-					}
-				} catch (\Exception $e) {
-					$date_due = null;
-				}
-
-				if ($date_due) {
-					$task->date_due = Dates::convertToUtcDateTime($date_due);
-				} else {
-					$task->date_due = null;
-				}
-			} else {
-				$task->date_due = null;
+			if (!empty($task_data['date_due']) && !empty($task_data['time_due'])) {
+				$task_data['date_due'] .= ' ' . $task_data['time_due'];
 			}
 
-			$tasks[] = $task;
+			// remove extra
+			$task_data = array_intersect_key($task_data, $form->all());
+			$form->submit($task_data);
+
+			if ($form->isValid()) {
+				$this->em->persist($task);
+				$tasks[] = $task;
+			}
 		}
+		$this->em->flush();
 
-		$this->db->beginTransaction();
-		try {
-			foreach ($tasks as $t) {
-				$this->em->persist($t);
-			}
-
-			$this->em->flush();
-
-			foreach ($tasks as $t) {
-				$notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($t);
-				$notify->send();
-			}
-			$this->em->flush();
-
-			$this->db->commit();
-
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
+		// todo postPersist event
+		foreach ($tasks as $t) {
+			$notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($t);
+			$notify->send();
 		}
 
 		$task_data = array();
-
 		foreach ($tasks as $t) {
 			$d = false;
 			if ($t->date_due) {
@@ -267,7 +201,7 @@ class TaskController extends AbstractController
     {
         $task_type = false;
 
-		$per_page         = 100;
+		$per_page         = 5;
 		$page             = $this->in->getUInt('page') ?: 1;
 		$completed_page   = $this->in->getUInt('completed_page') ?: 1;
 		$offset           = ($page - 1) * $per_page;
@@ -440,6 +374,11 @@ class TaskController extends AbstractController
 			}
 		}
 
+	    $tasks_arr = array();
+//	    foreach ($tasks as $task) {
+//		    $tasks_arr[] = $task->toApiData();
+//        }
+
         $tpl = 'AgentBundle:Task:task-list.html.twig';
         return $this->render($tpl, array(
 			'agents'          => $agents,
@@ -457,7 +396,9 @@ class TaskController extends AbstractController
 			'has_prev'           => $has_prev,
 			'completed_page'     => $completed_page,
 			'has_next_completed' => $has_next_completed,
-			'has_prev_completed' => $has_prev_completed
+			'has_prev_completed' => $has_prev_completed,
+
+	        'tasks_arr'          => $tasks_arr,
         ));
     }
 
@@ -519,6 +460,34 @@ class TaskController extends AbstractController
 		$task = $this->getTaskOr404($task_id);
 
 		switch ($this->in->getString('action')) {
+			case 'title':
+				$val = $this->in->getString('value');
+				if (!$val || $task->getPersonId() !== $this->person['id']) {
+					break;
+				}
+
+				$task['title'] = trim($val);
+				$this->em->flush();
+
+				break;
+			case 'comment':
+				if (!$arr = json_decode($this->in->getString('value'), 1)) {
+					break;
+				}
+				if (empty($arr['value']) || empty($arr['id'])) {
+					break;
+				}
+				if (!$comment = $this->em->find('DeskPRO:TaskComment', $arr['id'])) {
+					break;
+				}
+				if ($comment->getPersonId() !== $this->person['id']) {
+					break;
+				}
+
+				$comment['content'] = trim($arr['value']);
+				$this->em->flush();
+
+				break;
 			case 'date_due':
 				if ($this->in->getString('value')) {
 					try {

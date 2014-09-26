@@ -60,6 +60,7 @@
 	'agent.general.assign_to'                               => 'Assign to',
 	'agent.general.assign_to_me'                            => 'Assign to Me',
 	'agent.general.assign_to_my_team'                       => 'Assign to My Team',
+	'agent.general.assign_to_primary_team'                  => 'Assign to Primary Team',
 	'agent.general.assigned'                                => 'Assigned',
 	'agent.general.assigned_agent'                          => 'Assigned Agent',
 	'agent.general.assigned_agent_id'                       => 'Agent Id',
@@ -111,6 +112,7 @@
 	'agent.general.changed_to_include'                      => 'Changed to include',
 	'agent.general.changed_to_lte'                          => 'Changed to <=',
 	'agent.general.changed_to_remove'                       => 'Changed to remove',
+	'agent.general.changelog'                               => 'Change Log',
 	'agent.general.chat'                                    => 'Chat',
 	'agent.general.chat_ended'                              => 'Chat ended',
 	'agent.general.chats'                                   => 'Chats',
@@ -742,4 +744,5 @@
 	'agent.general.your_teams'                              => 'Your Teams',
 	'agent.general.new'                                     => 'New',
 	'agent.general.unassign'                                => 'Unassign',
+	'agent.general.dp_updates'                              => 'DeskPRO Updates',
 );

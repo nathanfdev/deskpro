@@ -105,7 +105,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	public function getZendAuthAdapter()
 	{
 		$options = array();
-		foreach (array('host', 'port', 'useStartTls', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountDomainName', 'accountDomainNameShort', 'accountCanonicalForm') as $k) {
+		foreach (array('host', 'port', 'useStartTls', 'useSsl', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountDomainName', 'accountDomainNameShort', 'accountCanonicalForm') as $k) {
 			if (isset($this->options[$k]) && $this->options[$k]) {
 				$options[$k] = $this->options[$k];
 			}

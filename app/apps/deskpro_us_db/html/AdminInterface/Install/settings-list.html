@@ -27,6 +27,7 @@
 					<option value="pdo_sqlite">SQLite (pdo_sqlite)</option>
 					<option value="sqlsrv">MsSQL (sqlsrv)</option>
 					<option value="oci8">Oracle (oci8)</option>
+					<option value="pdo_odbc">ODBC</option>
 				</select>
 			</div>
 		</div>
@@ -213,6 +214,23 @@
 				<div ng-show="use_service_name">
 					<input type="text" class="form-control" ng-model="setting_values.db_service_name" placeholder="Service Name" style="width: 50%;" />
 				</div>
+			</div>
+		</div>
+
+		<!-- ############################# -->
+		<!-- ODBC -->
+		<!-- ############################# -->
+		<div ng-if="setting_values.db_type == 'pdo_odbc'">
+			<label>
+				<h4>
+					<label>
+						Parameters
+					</label>
+				</h4>
+			</label>
+			<div>
+				<textarea class="form-control" ng-model="setting_values.db_odbc_dsn" style="width: 90%; height: 110px; font-size: 11px; font-family: Monaco, Consolas, monospace; white-space: pre;" wrap="off"></textarea>
+				<span class="help-block">Enter options in a key=value format, one per line. Common options: dsn, user, password.</span>
 			</div>
 		</div>
 

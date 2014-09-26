@@ -35,14 +35,19 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\Entity\Ticket;
 use Orb\Input\Cleaner\Cleaner;
 use Orb\Log\Logger;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class TicketIncomingEmailMessage
 {
+	const MODE_NEWTICKET = 'newticket';
+	const MODE_NEWREPLY  = 'newreply';
+
 	/**
 	 * @var string
 	 */
@@ -94,16 +99,35 @@ class TicketIncomingEmailMessage
 	private $logger;
 
 	/**
-	 * @param Ticket $ticket
-	 * @param TicketIncomingEmail $ticket_email
-	 * @param Cleaner $cleaner
-	 * @param null $token_replace_callback
+	 * @var EmailAccountManager
 	 */
-	public function __construct(Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, $token_replace_callback = null, Logger $logger = null)
+	private $email_accounts;
+
+	/**
+	 * @var string
+	 */
+	private $mode;
+
+
+	/**
+	 * @param                     $mode
+	 * @param Ticket              $ticket
+	 * @param TicketIncomingEmail $ticket_email
+	 * @param Cleaner             $cleaner
+	 * @param EmailAccountManager $email_accounts
+	 * @param null                $token_replace_callback
+	 * @param Logger              $logger
+	 */
+	public function __construct($mode, Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, EmailAccountManager $email_accounts, $token_replace_callback = null, Logger $logger = null)
 	{
 		if ($logger) {
 			$this->setLogger($logger);
 		}
+
+		$this->mode = $mode;
+		$this->logMessage('[TicketIncomingEmailMessage] mode = ' . $mode);
+
+		$this->email_accounts = $email_accounts;
 
 		$reader = $ticket_email->reader;
 
@@ -120,15 +144,22 @@ class TicketIncomingEmailMessage
 		$inline_images = new InlineImageTokens($reader);
 		$inline_images2 = new InlineImageTokens($reader);
 
-		if ($ticket) {
-			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true -- ticket exists, so this is a reply');
+		if ($ticket_email->force_reply_cutter) {
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true because force_reply_cutter is on');
 			$do_cut = true;
 		} else if ($ticket_email->force_reply_cutter) {
-			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true -- force_reply_cutter is on');
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=false because force_no_reply_cutter is on');
+			$do_cut = false;
+		} else if ($mode == self::MODE_NEWREPLY) {
+			$this->logMessage('[TicketIncomingEmailMessage] do_cut=true because mode = newreply');
 			$do_cut = true;
 		} else {
 			$this->logMessage('[TicketIncomingEmailMessage] do_cut=false');
 			$do_cut = false;
+		}
+
+		if ($do_cut && $ticket_email->force_no_pattern_cutter) {
+			$this->logMessage('[TicketIncomingEmailMessage] Note: Cutter is enabled but the pattern cutters are disabled');
 		}
 
 		$orig_text = $ticket_email->email_body_text;
@@ -136,6 +167,10 @@ class TicketIncomingEmailMessage
 		$is_text = false;
 		$has_text_cut = false;
 		$has_cut = false;
+
+		$cutters_require_from = Arrays::flatten(array_map(function($e) {
+			return array($e->address, $e->other_addresses);
+		}, $this->email_accounts->getAllAccounts()));
 
 		$precut_do_plaintext = false;
 
@@ -257,28 +292,32 @@ class TicketIncomingEmailMessage
 					$this->found_top_marker = false;
 				}
 
-				$cutter = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
-				$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
-				$cutter->addPatterns($pattern_config->all());
+				if (!$ticket_email->force_no_pattern_cutter) {
+					$cutter         = new \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter();
+					$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('text-cut-patterns');
+					$cutter->addPatterns($pattern_config->all());
+					$cutter->setRequireFrom($cutters_require_from);
+					$this->logMessage("Text cutter set require from: " . implode(', ', $cutters_require_from));
 
-				$this->body = $cutter->cutQuoteBlock($this->body, false);
+					$this->body = $cutter->cutQuoteBlock($this->body, false);
 
-				if ($cutter->getMatchedPatterns()) {
-					$has_text_cut = true;
-					foreach ($cutter->getMatchedPatterns() as $p) {
-						$this->logMessage("Text cutter matched pattern: " . $p->getPattern());
+					if ($cutter->getMatchedPatterns()) {
+						$has_text_cut = true;
+						foreach ($cutter->getMatchedPatterns() as $p) {
+							$this->logMessage("Text cutter matched pattern: " . $p->getPattern());
+						}
+					} else {
+						$this->logMessage("Text cutter did not match any pattern");
 					}
-				} else {
-					$this->logMessage("Text cutter did not match any pattern");
-				}
 
-				// Run generic cutter as well, in case it matches higher
-				$parts = $cut->splitFromFirstHeaderText($this->body);
-				if ($parts && count($parts) == 2) {
-					$this->logMessage("Split header cutter matched, cut from standard quote headers");
-					$this->body = trim($parts[0]);
-				} else {
-					$this->logMessage("Split header cutter did not match");
+					// Run generic cutter as well, in case it matches higher
+					$parts = $cut->splitFromFirstHeaderText($this->body);
+					if ($parts && count($parts) == 2) {
+						$this->logMessage("Split header cutter matched, cut from standard quote headers");
+						$this->body = trim($parts[0]);
+					} else {
+						$this->logMessage("Split header cutter did not match");
+					}
 				}
 			}
 
@@ -303,7 +342,7 @@ class TicketIncomingEmailMessage
 			// The PatternCutter will trim off the remaining quoted headers
 			if ($do_cut) {
 				$generic_cutter = new \Application\DeskPRO\EmailGateway\Cutter\Def\Generic();
-				if ($ticket) {
+				if ($mode == self::MODE_NEWREPLY) {
 					$generic_cut = $generic_cutter->cutQuoteBlock($this->body, $this->body_is_html);
 				} else {
 					$generic_cut = $this->body;
@@ -318,10 +357,22 @@ class TicketIncomingEmailMessage
 					$this->found_top_marker = false;
 				}
 
-				if ($this->body_is_html) {
+				if ($this->body_is_html && !$ticket_email->force_no_pattern_cutter) {
 					$cutter = new \Application\DeskPRO\EmailGateway\Cutter\PatternCutter();
 					$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('html-cut-patterns');
 					$cutter->addPatterns($pattern_config->all());
+
+					// We already cut, so we just want to make sure to cut the preceeding email headers
+					if ($this->found_top_marker) {
+						$cutter->setLimit(1);
+						$cutter->setMaxLinesFromEnd(18);
+						$this->logMessage("HTML cutter set limit =1 , max lines = 18");
+
+					// We didnt cut, so the cutline is missing so we need to guess based on our email address
+					} else {
+						$cutter->setRequireFrom($cutters_require_from);
+						$this->logMessage("HTML cutter set require from: " . implode(', ', $cutters_require_from));
+					}
 
 					$this->body = $cutter->cutQuoteBlock($this->body, true);
 

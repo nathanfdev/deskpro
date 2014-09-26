@@ -364,15 +364,25 @@ class AppManager implements AppManagerInterface
 	 * Gets the base app path for a given app name.
 	 *
 	 * @param string $app_name
+	 * @param bool $check_exists
 	 * @return string|null
 	 */
-	public function getAppPath($app_name)
+	public function getAppPath($app_name, $check_exists = false)
 	{
-		foreach ($this->app_paths as $prefix => $path) {
-			if ($prefix === 'default') {
-				return $path . '/' . $app_name;
-			} else if (strpos($app_name, $prefix) === 0) {
-				return $path . '/' . $app_name;
+		if ($check_exists) {
+			foreach ($this->app_paths as $prefix => $path) {
+				$p = $path . '/' . $app_name;
+				if (file_exists($p)) {
+					return $p;
+				}
+			}
+		} else {
+			foreach ($this->app_paths as $prefix => $path) {
+				if ($prefix === 'default') {
+					return $path . '/' . $app_name;
+				} else if (strpos($app_name, $prefix) === 0) {
+					return $path . '/' . $app_name;
+				}
 			}
 		}
 		return null;

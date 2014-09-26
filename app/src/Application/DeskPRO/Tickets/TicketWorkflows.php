@@ -49,7 +49,7 @@ class TicketWorkflows extends LazyCollection
 	 */
 	protected function loadRecords()
 	{
-		$recs = $this->em->getRepository('DeskPRO:TicketWorkflow')->findAll();
+		$recs = $this->em->getRepository('DeskPRO:TicketWorkflow')->getAll();
 		$recs = Arrays::keyFromData($recs, 'id');
 		return $recs;
 	}
@@ -62,7 +62,7 @@ class TicketWorkflows extends LazyCollection
 	 * With an invalid pref, getDefaultWorkflow() will return the first selectable option.
 	 * Use getById() to check if a exists before calling this.
 	 *
-	 * @param int $dep_or_id
+	 * @param int $obj_or_id
 	 */
 	public function setDefaultWorkflowPreference($obj_or_id)
 	{

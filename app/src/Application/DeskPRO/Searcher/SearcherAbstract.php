@@ -494,6 +494,15 @@ abstract class SearcherAbstract implements PersonContextInterface
 			}
 		}
 
+		if (!$choice || (count($choice) == 1 && $has_empty)) {
+			if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+				$where = "($field = '' OR $field IS NULL)";
+			} else {
+				$where = "($field != '' AND $field IS NOT NULL)";
+			}
+			return $where;
+		}
+
 		$self = $this;
 		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
 			$choices_in = (array)$choice;
@@ -529,7 +538,7 @@ abstract class SearcherAbstract implements PersonContextInterface
 
 			if ($op == self::OP_CONTAINS) {
 				if ($has_empty) {
-					$where = "(($field LIKE " . implode(" OR $field LIKE ", $choices_in) . ")) OR $field IS NULL)";
+					$where = "(($field LIKE " . implode(" OR $field LIKE ", $choices_in) . ") OR $field IS NULL)";
 				} else {
 					$where = "($field LIKE " . implode(" OR $field LIKE ", $choices_in) . ")";
 				}

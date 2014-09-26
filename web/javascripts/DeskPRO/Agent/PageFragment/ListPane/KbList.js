@@ -17,12 +17,14 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 			onCountChange: function(count) {
-				var isOpen = self.massActions.isOpen();
+				if (DeskPRO_Window.paneVis.tabs) {
+					var isOpen = self.massActions.isOpen();
 
-				if (count > 0 && !isOpen) {
-					self.massActions.open();
-				} else if (count <= 0 && isOpen) {
-					self.massActions.close();
+					if (count > 0 && !isOpen) {
+						self.massActions.open();
+					} else if (count <= 0 && isOpen) {
+						self.massActions.close();
+					}
 				}
 			}
 		});

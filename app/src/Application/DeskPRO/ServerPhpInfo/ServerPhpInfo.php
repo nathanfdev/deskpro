@@ -177,7 +177,7 @@ class ServerPhpInfo
 
 		$has_wincache = false;
 
-		if (function_exists('wincache_ucache_clear') && ini_get('wincache.ocenabled')) {
+		if (extension_loaded('wincache') && ini_get('wincache.ocenabled')) {
 
 			$has_wincache = true;
 		}

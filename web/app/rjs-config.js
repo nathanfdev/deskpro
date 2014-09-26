@@ -15,7 +15,10 @@
 		"angularSlider":                   "bower_components/angular-slider/angular-slider.min",
 		"angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
 		"angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
+		"angularUiDatetime":               "vendor-src/ui-datetime",
+
 		"ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
+		"ngContextMenu":                   "vendor-src/ng-context-menu/src/ng-context-menu",
 		"jquery":                          "bower_components/jquery/jquery.min",
 		"jqueryUi":                        "bower_components/jquery-ui/ui/minified/jquery-ui.min",
 		"jquery.ui.widget":                "bower_components/blueimp-file-upload/js/vendor/jquery.ui.widget",
@@ -79,6 +82,7 @@
 		"angularSlider":                   ["angular"],
 		"angularGrid":                     ["angular"],
 		"ngFileUpload":                    ["angular"],
+		"ngContextMenu":                   ["angular"],
 		"jquery":                          { "exports": "jquery" },
 		"jqueryUi":                        ["jquery"],
 		"bootstrapModal":                  ["jquery"],

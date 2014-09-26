@@ -1,5 +1,7 @@
 <?php return array(
 
+	'adm.agents.primary_team'                                     => 'Primary Team',
+
 	'adm.agents.perm_toggle_all'                                  => 'Toggle All',
 
 	'adm.agents.perm_title_tickets'                               => 'Tickets',
@@ -25,7 +27,7 @@
 	'adm.agents.perm_ticket_reply_unassigned'                     => 'Can reply to unassigned tickets',
 	'adm.agents.perm_ticket_modify_unassigned'                    => 'Can modify unassigned tickets',
 	'adm.agents.perm_ticket_modify_messages_unassigned'           => 'Can edit and delete messages in unassigned tickets',
-	'adm.agents.perm_ticket_delete_unassigned'                    => 'Can delete and spam followed tickets',
+	'adm.agents.perm_ticket_delete_unassigned'                    => 'Can delete and spam unassigned tickets',
 	'adm.agents.perm_ticket_view_others'                          => 'Can view tickets assigned to others',
 	'adm.agents.perm_ticket_reply_others'                         => 'Can reply to tickets assigned to others',
 	'adm.agents.perm_ticket_modify_others'                        => 'Can modify tickets assigned to others',
@@ -73,6 +75,7 @@
 	'adm.agents.perm_ticket_modify_set_awaiting_user'             => 'Can set status to awaiting user',
 	'adm.agents.perm_ticket_modify_set_awaiting_agent'            => 'Can set status to awaiting agent',
 	'adm.agents.perm_ticket_modify_set_resolved'                  => 'Can set status to resolved',
+	'adm.agents.perm_ticket_modify_set_unresolved'                => 'Can unresolve ticket',
 	'adm.agents.perm_ticket_modify_billing'			              => 'Can modify billing and time log records',
 
 

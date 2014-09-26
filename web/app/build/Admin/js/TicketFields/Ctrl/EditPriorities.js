@@ -44,9 +44,14 @@
       };
 
       Admin_TicketFields_Ctrl_EditPriorities.prototype.save = function() {
-        var postData, promise;
+        var p, postData, promise, _i, _len, _ref;
         if (!this.pris || !this.pris.length) {
           this.enabled = false;
+        }
+        _ref = this.pris;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          p = _ref[_i];
+          p.priority = p.display_order;
         }
         postData = {
           priorities: this.pris,
@@ -58,15 +63,15 @@
         this.startSpinner('saving');
         return promise = this.Api.sendPostJson('/ticket_pris', postData).success((function(_this) {
           return function() {
-            var _ref, _ref1, _ref2, _ref3;
-            if ((_ref = _this.$scope.$parent) != null) {
-              if ((_ref1 = _ref.TicketFieldsList) != null) {
-                _ref1.saveLayoutData('priority', _this.user_layouts, _this.agent_layouts);
+            var _ref1, _ref2, _ref3, _ref4;
+            if ((_ref1 = _this.$scope.$parent) != null) {
+              if ((_ref2 = _ref1.TicketFieldsList) != null) {
+                _ref2.saveLayoutData('priority', _this.user_layouts, _this.agent_layouts);
               }
             }
-            if ((_ref2 = _this.$scope.$parent) != null) {
-              if ((_ref3 = _ref2.TicketFieldsList) != null) {
-                _ref3.setFieldEnabled('priority', _this.enabled);
+            if ((_ref3 = _this.$scope.$parent) != null) {
+              if ((_ref4 = _ref3.TicketFieldsList) != null) {
+                _ref4.setFieldEnabled('priority', _this.enabled);
               }
             }
             _this.settings = angular.copy(_this.$scope.settings);

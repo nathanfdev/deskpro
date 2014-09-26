@@ -252,6 +252,31 @@ class AppPackage extends DomainObject
 		return null;
 	}
 
+	/**
+	 * Get manifest array
+	 * @return array
+	 */
+	public function getManifest()
+	{
+		return array(
+			'package_name' => $this['name'],
+			'title' => $this['title'],
+			'description' => $this['description'],
+			'tags' => $this['tags'],
+			'api_version' => $this['api_version'],
+			'version' => $this['version'],
+			'version_name' => $this['version_name'],
+			'is_single' => (bool) $this['is_single'],
+			'is_native' => null !== $this['native_name'],
+			'author' => array(
+				'name' => $this['author_name'],
+				'email' => $this['author_email'],
+				'link' => $this['author_link'],
+			),
+			'settings_def' => $this['settings_def']
+		);
+	}
+
 
 	/**
 	 * {@inheritDoc}

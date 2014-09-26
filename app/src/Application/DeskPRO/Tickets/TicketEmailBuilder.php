@@ -316,6 +316,16 @@ class TicketEmailBuilder
 	}
 
 	/**
+	 * @param array $headers
+	 * @return TicketEmailBuilder
+	 */
+	public function setHeaders($headers = array())
+	{
+		$this->options->set('headers', $headers);
+		return $this;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getOptions()

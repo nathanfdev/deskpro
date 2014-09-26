@@ -56,14 +56,14 @@ define [
 				@sla = {}
 				@form = @getFormFromModel({})
 				@origForm = Util.clone(@form, true)
-				return null
 
 			proms.push @actionsTypeDef.loadDataOptions()
 			proms.push @criteraTypeDef.loadDataOptions()
 
-			return @$q.all(proms).then(=>
+			@$q.all(proms).then =>
 				@updateCriteriaOptionTypes()
-			)
+
+
 
 		getFormFromModel: (slaModel) ->
 			return @formMapper.getFormFromModel(slaModel)

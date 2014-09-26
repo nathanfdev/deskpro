@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\DeskPRO\Translate\Translate;
+use Orb\Types\NoValue;
 
 class ProcessReply extends ProcessAbstract
 {
@@ -128,12 +129,22 @@ class ProcessReply extends ProcessAbstract
 		}
 
 		if ($this->ticket_email->is_dp3_reply) {
-			$email_info = new TicketIncomingEmailMessageV3($this->ticket, $this->ticket_email, $this->cleaner, null);
-		} else {
-			$email_info = new TicketIncomingEmailMessage(
+			$this->logMessage("doNewReply message class: TicketIncomingEmailMessageV3");
+			$email_info = new TicketIncomingEmailMessageV3(
 				$this->ticket,
 				$this->ticket_email,
 				$this->cleaner,
+				array($this, 'replaceInlineAttachTokens'),
+				$this->getLogger()
+			);
+		} else {
+			$this->logMessage("doNewReply message class: TicketIncomingEmailMessage");
+			$email_info = new TicketIncomingEmailMessage(
+				TicketIncomingEmailMessage::MODE_NEWREPLY,
+				$this->ticket,
+				$this->ticket_email,
+				$this->cleaner,
+				App::$container->getEmailAccountManager(),
 				array($this, 'replaceInlineAttachTokens'),
 				$this->getLogger()
 			);
@@ -262,6 +273,11 @@ class ProcessReply extends ProcessAbstract
 			} else {
 				$this->logMessage('No reply because empty reply');
 			}
+
+			if ($context == 'user') {
+				$this->setError('empty');
+				return;
+			}
 		}
 
 		if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
@@ -322,6 +338,10 @@ class ProcessReply extends ProcessAbstract
 			throw $e;
 		}
 
-		return $message;
+		if ($message) {
+			return $message;
+		} else {
+			return NoValue::get();
+		}
 	}
 }

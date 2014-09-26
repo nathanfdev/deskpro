@@ -559,7 +559,7 @@
       };
 
       Admin_Main_DataService_BaseListEdit.prototype._addModel = function(model) {
-        if (model[this.idProp] == null) {
+        if (!model || (model[this.idProp] == null)) {
           return null;
         }
         if (this.map[model[this.idProp]] != null) {

@@ -35,6 +35,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Application\DeskPRO\Entity;
 use Application\UserBundle\Form\NewFeedbackType;
 use Application\UserBundle\Form\NewTicketType;
@@ -160,10 +161,7 @@ class WidgetController extends AbstractController
 
 		$chat_active = false;
 		if (App::getSetting('core.apps_chat')) {
-			$online_time = 0;
-			if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
-				$online_time = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
-			}
+			$online_time = ChatAvailableCheck::getAvailableTime();
 
 			if ($online_time && $online_time > time() - 900) {
 				$chat_active = true;

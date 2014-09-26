@@ -683,14 +683,16 @@ define(function() {
 		id: 'tickets.labels',
 		url: '/labels',
 		templateName: 'Labels/Ticket/list.html',
-		controller: 'Admin_Labels_Ticket_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'tickets'}
 	});
 
 	routes.push({
 		id: 'tickets.labels.create',
 		url: '/create',
 		templateName: 'Labels/Ticket/edit.html',
-		controller: 'Admin_Labels_Ticket_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'tickets'}
 	});
 
 	routes.push({
@@ -704,7 +706,8 @@ define(function() {
 		id: 'tickets.labels.edit',
 		url: '/{label:.*}',
 		templateName: 'Labels/Ticket/edit.html',
-		controller: 'Admin_Labels_Ticket_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'tickets'}
 	});
 
 	//###
@@ -880,6 +883,46 @@ define(function() {
 		templateName: 'CustomFields/Tickets/edit.html',
 		controller: 'Admin_CustomFields_Tickets_Ctrl_Edit'
 	});
+
+
+	//###
+	//# Sms Channel
+	//###
+	routes.push({
+		id: 'tickets.channel_sms',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/list.html',
+		controller: 'Admin_ChannelSms_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.outgoing_log',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/create.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.incoming_log',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/create.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.create',
+		url: '/create',
+		templateName: 'ChannelSms/edit.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'ChannelSms/edit.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
 
 	//###
 	//# Ticket Accounts
@@ -1165,14 +1208,16 @@ define(function() {
 		id: 'crm.user_labels',
 		url: '/user_labels',
 		templateName: 'Labels/Person/list.html',
-		controller: 'Admin_Labels_Person_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'people'}
 	});
 
 	routes.push({
 		id: 'crm.user_labels.create',
 		url: '/create',
 		templateName: 'Labels/Person/edit.html',
-		controller: 'Admin_Labels_Person_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'people'}
 	});
 
 	routes.push({
@@ -1186,7 +1231,8 @@ define(function() {
 		id: 'crm.user_labels.edit',
 		url: '/{label:.*}',
 		templateName: 'Labels/Person/edit.html',
-		controller: 'Admin_Labels_Person_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'people'}
 	});
 
 	//###
@@ -1197,14 +1243,16 @@ define(function() {
 		id: 'crm.org_labels',
 		url: '/org_labels',
 		templateName: 'Labels/Org/list.html',
-		controller: 'Admin_Labels_Org_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'organizations'}
 	});
 
 	routes.push({
 		id: 'crm.org_labels.create',
 		url: '/create',
 		templateName: 'Labels/Org/edit.html',
-		controller: 'Admin_Labels_Org_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'organizations'}
 	});
 
 	routes.push({
@@ -1218,7 +1266,8 @@ define(function() {
 		id: 'crm.org_labels.edit',
 		url: '/{label:.*}',
 		templateName: 'Labels/Org/edit.html',
-		controller: 'Admin_Labels_Org_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'organizations'}
 	});
 
 	//###
@@ -1370,14 +1419,16 @@ define(function() {
 		id: 'portal.kb_labels',
 		url: '/kb/labels',
 		templateName: 'Labels/Kb/list.html',
-		controller: 'Admin_Labels_Kb_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'kb'}
 	});
 
 	routes.push({
 		id: 'portal.kb_labels.create',
 		url: '/create/',
 		templateName: 'Labels/Kb/edit.html',
-		controller: 'Admin_Labels_Kb_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'kb'}
 	});
 
 	routes.push({
@@ -1393,7 +1444,8 @@ define(function() {
 		id: 'portal.kb_labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/Kb/edit.html',
-		controller: 'Admin_Labels_Kb_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'kb'}
 	});
 
 	//###
@@ -1413,14 +1465,16 @@ define(function() {
 		id: 'portal.downloads_labels',
 		url: '/downloads/labels',
 		templateName: 'Labels/Downloads/list.html',
-		controller: 'Admin_Labels_Downloads_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'downloads'}
 	});
 
 	routes.push({
 		id: 'portal.downloads_labels.create',
 		url: '/create/',
 		templateName: 'Labels/Downloads/edit.html',
-		controller: 'Admin_Labels_Downloads_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'downloads'}
 	});
 
 	routes.push({
@@ -1436,7 +1490,8 @@ define(function() {
 		id: 'portal.downloads_labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/Downloads/edit.html',
-		controller: 'Admin_Labels_Downloads_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'downloads'}
 	});
 
 
@@ -1457,14 +1512,16 @@ define(function() {
 		id: 'portal.news_labels',
 		url: '/news/labels',
 		templateName: 'Labels/News/list.html',
-		controller: 'Admin_Labels_News_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'news'}
 	});
 
 	routes.push({
 		id: 'portal.news_labels.create',
 		url: '/create/',
 		templateName: 'Labels/News/edit.html',
-		controller: 'Admin_Labels_News_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'news'}
 	});
 
 	routes.push({
@@ -1480,7 +1537,8 @@ define(function() {
 		id: 'portal.news_labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/News/edit.html',
-		controller: 'Admin_Labels_News_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'news'}
 	});
 
 	//###
@@ -1593,14 +1651,16 @@ define(function() {
 		id: 'portal.feedback_labels',
 		url: '/feedback/labels',
 		templateName: 'Labels/Feedback/list.html',
-		controller: 'Admin_Labels_Feedback_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'feedback'}
 	});
 
 	routes.push({
 		id: 'portal.feedback_labels.create',
 		url: '/create/',
 		templateName: 'Labels/Feedback/edit.html',
-		controller: 'Admin_Labels_Feedback_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'feedback'}
 	});
 
 	routes.push({
@@ -1614,7 +1674,8 @@ define(function() {
 		id: 'portal.feedback_labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/Feedback/edit.html',
-		controller: 'Admin_Labels_Feedback_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'feedback'}
 	});
 
 	//##################################################################################################################
@@ -1705,14 +1766,16 @@ define(function() {
 		id: 'chat.labels',
 		url: '/labels',
 		templateName: 'Labels/Chat/list.html',
-		controller: 'Admin_Labels_Chat_Ctrl_List'
+		controller: 'Admin_Labels_Ctrl_List',
+		data: {type: 'chat'}
 	});
 
 	routes.push({
 		id: 'chat.labels.create',
 		url: '/create/',
 		templateName: 'Labels/Chat/edit.html',
-		controller: 'Admin_Labels_Chat_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'chat'}
 	});
 
 	routes.push({
@@ -1728,7 +1791,8 @@ define(function() {
 		id: 'chat.labels.edit',
 		url: '/{label:.*}/',
 		templateName: 'Labels/Chat/edit.html',
-		controller: 'Admin_Labels_Chat_Ctrl_Edit'
+		controller: 'Admin_Labels_Ctrl_Edit',
+		data: {type: 'chat'}
 	});
 
 

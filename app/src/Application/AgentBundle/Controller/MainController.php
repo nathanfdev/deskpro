@@ -149,18 +149,22 @@ class MainController extends AbstractController
 
 		\Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
 
-		$version_notices = new PrefNoticeSet(
-			$this->db,
-			$this->person,
-			'agent.ui.version_notices',
-			DP_ROOT.'/docs/changelog/docs.php'
-		);
-
 		$ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
 		$chat_snippet_cats   = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('chat', $this->person);
 
 		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
 		$password_validator = App::$container->getSystemService('password_policy_validator');
+
+		$dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
+		$read_news = $this->person->getPref('agent.ui.dp_news', array());
+		$unread_dp_news = array();
+		$person_time = $this->person->date_created->getTimestamp();
+		foreach ($dp_news as $info) {
+			$d = @strtotime($info['date']);
+			if ($d && ($d > $person_time) && !in_array($info['id'], $read_news)) {
+				$unread_dp_news[] = $info;
+			}
+		}
 
 		return $this->render('AgentBundle:Main:index.html.twig', array(
 			'has_raw_assets'      => $has_raw_assets,
@@ -186,9 +190,9 @@ class MainController extends AbstractController
 			'is_first_login'      => $is_first_login,
 			'is_first_login_name' => $is_first_login_name,
 			'timezones'           => \DateTimeZone::listIdentifiers(),
-			'version_notices'     => $version_notices,
 			'ticket_snippet_cats' => $ticket_snippet_cats,
 			'chat_snippet_cats'   => $chat_snippet_cats,
+			'unread_dp_news'      => $unread_dp_news,
 		));
 	}
 
@@ -386,7 +390,7 @@ class MainController extends AbstractController
 
 				$return_results[] = array(
 					'type'    => $type,
-					'title'   => $type,
+					'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
 					'results' => $rows
 				);
 			}
@@ -430,7 +434,7 @@ class MainController extends AbstractController
 
 				$return_results[] = array(
 					'type'    => $type,
-					'title'   => $type,
+					'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
 					'results' => $rows
 				);
 			}
@@ -495,7 +499,7 @@ class MainController extends AbstractController
 						'agent'   => null
 					);
 
-					$agent= $ticket_display->getAgent($r);
+					$agent = $ticket_display->getAgent($r);
 					if ($agent) {
 						$ticket_info['agent'] = $render_person($agent);
 					}
@@ -512,6 +516,29 @@ class MainController extends AbstractController
 			case 'person':
 				foreach ($results as $r) {
 					$rows[] = $render_person($r);
+				}
+				break;
+
+			case 'chat_conversation':
+				foreach ($results as $r) {
+					$chat_info = array(
+						'id'      => $r->id,
+						'subject' => $r->subject,
+						'person'  => null,
+						'agent'   => null
+					);
+
+					$agent = $r->agent;
+					if ($agent) {
+						$chat_info['agent'] = $render_person($agent);
+					}
+
+					$person = $r->person;
+					if ($person) {
+						$chat_info['person'] = $render_person($person);
+					}
+
+					$rows[] = $chat_info;
 				}
 				break;
 

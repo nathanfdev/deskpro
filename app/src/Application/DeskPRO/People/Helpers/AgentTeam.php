@@ -93,7 +93,9 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
 
 	public function getPrimaryTeamId()
 	{
-		return Arrays::getFirstItem($this->getAgentTeamIds());
+		return $this->person->primaryTeam
+			? $this->person->primaryTeam['id']
+			: Arrays::getFirstItem($this->getAgentTeamIds());
 	}
 
 	public function addToAgentTeam(Entity\AgentTeam $team)

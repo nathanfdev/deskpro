@@ -70,7 +70,6 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 	private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
 	{
 		$agents = array();
-		$isNotificationsDisabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
 		foreach ($agent_ids as $aid) {
 			// -1 = current user
@@ -103,9 +102,6 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
 			// based on notify list
 			} else if ($aid == 'notify_list') {
-
-				if ($isNotificationsDisabled) continue;
-
 				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
 				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
 				$list_builder  = new AgentNotifyListBuilder(
@@ -121,8 +117,19 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 				foreach ($notify as $n) {
 					// dont send to self
 					if ($person_context && $person_context === $n['agent']) {
-						$context->getLogger()->debug("[SendAgentAlert] notify_list skipping self");
-						continue;
+						$override = false;
+						if ($person_context->getPref('agent_notify_override.all.alert')) {
+							$override = true;
+						} else if ($person_context->getPref('agent_notify_override.forward.alert') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+							$override = true;
+						}
+
+						if (!$override) {
+							$context->getLogger()->debug("[SendAgentAlert] notify_list skipping self");
+							continue;
+						} else {
+							$context->getLogger()->debug("[SendAgentAlert] notify_list sending to self because got override preference");
+						}
 					}
 					if (in_array('alert', $n['types'])) {
 						$agents[] = $n['agent'];

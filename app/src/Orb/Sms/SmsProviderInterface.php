@@ -47,7 +47,7 @@ interface SmsProviderInterface
     /**
      * @param string $fromPhoneNumber phone number to send to, provider should be able to handle any format
      * @param string $toPhoneNumber phone number, provider should be able to handle any format
-     * @param SmsMessageChunk $messageChunk the message chunk to be sent to the given number
+     * @param SmsMessageChunk $textMessage the message chunk to be sent to the given number
      *
      * @throws \Orb\Sms\SmsException
      * @return \Orb\Sms\SmsResult
@@ -60,4 +60,12 @@ interface SmsProviderInterface
      * @return string
      */
     public function getName();
+
+    /**
+     * An array of parameters currently being used by this provider. Useful for serializing/deserializing a provider.
+     * These values are usually sent to a factory along with the value of getName() to re-construct the provider.
+     *
+     * @return array
+     */
+    public function getParams();
 }

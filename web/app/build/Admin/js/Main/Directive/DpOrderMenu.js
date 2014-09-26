@@ -16,7 +16,6 @@
             scope.title = '';
             scope.options = [];
             orderPrefs = attrs.orderDirPrefs ? scope.$eval(attrs.orderDirPrefs) : {};
-            console.log(orderPrefs);
             element.find('.orig').find('option').each(function() {
               return scope.options.push({
                 title: Strings.trim($(this).text()),

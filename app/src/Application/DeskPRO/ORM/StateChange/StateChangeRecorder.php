@@ -36,6 +36,7 @@ namespace Application\DeskPRO\ORM\StateChange;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\PersistentCollection;
 
 class StateChangeRecorder
 {
@@ -106,11 +107,12 @@ class StateChangeRecorder
 	private function addChange(ChangeInterface $change)
 	{
 		$field_id = $change->getField();
-		$this->changes[] = $change;
 
 		if (!isset($this->changes_by_field[$field_id])) {
 			$this->changes_by_field[$field_id] = array();
 		}
+
+		$this->changes[] = $change;
 		$this->changes_by_field[$field_id][] = $change;
 
 		if (!($change instanceof NonStateTrackingInterface)) {
@@ -203,7 +205,14 @@ class StateChangeRecorder
 	 */
 	public function recordCollection($field_id, Collection $coll, $skip_same = true)
 	{
-		$change = ChangeCollection::newFromPersistedCollection($field_id, $coll);
+		$old = array();
+		if (isset($this->changes_by_field[$field_id]) && ($_coll = end($this->changes_by_field[$field_id]))) {
+			$old = $_coll->getNew();
+		} elseif ($coll instanceof PersistentCollection) {
+			$old = $coll->getSnapshot();
+		}
+
+		$change = ChangeCollection::newFromPersistedCollection($field_id, $coll, $old);
 		if ($skip_same && $change->isSame()) {
 			return null;
 		}

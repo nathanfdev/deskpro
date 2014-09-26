@@ -23,15 +23,33 @@
 							<label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
 							<i>{{ cat.title }}</i>
 						</span>
-					{% elseif grouping_var == 'agent' %}
+					{% elseif grouping_var == 'agent' or grouping_var == 'person' %}
 						{% set agent = app.agents.get(cat.id) %}
 						{% if agent %}
 							<span
 								style="background: url('{{ agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"
 							>{{ cat.title }}</span>
-						{% else %}
-							{{ cat.title }}
+                        {% else %}
+                            <span>{{ cat.title }}</span>
 						{% endif %}
+                    {% elseif grouping_var == 'agent_team' %}
+                        {% set team = app.agent_teams.get(cat.id) %}
+                        {% if team %}
+                            <span
+                                {% if team.hasAvatar() %}style="background: url('{{ team.getAvatarUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"{% endif %}
+                                >{{ cat.title }}</span>
+                        {% else %}
+                            <span>{{ cat.title }}</span>
+                        {% endif %}
+                    {% elseif grouping_var == 'department' %}
+                        {% set dep = app.departments.get(cat.id) %}
+                        {% if dep %}
+                            <span
+                                {% if dep.hasAvatar() %}style="background: url('{{ dep.getAvatarUrl(16) }}') no-repeat 0 50%; height: 16px; padding-left: 19px; display: block;"{% endif %}
+                                >{{ cat.title }}</span>
+                        {% else %}
+                            <span>{{ cat.title }}</span>
+                        {% endif %}
 					{% elseif grouping_var == 'language' %}
 						{% set language = app.languages.get(cat.id) %}
 						{% if language and language.flag_image %}

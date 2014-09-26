@@ -209,6 +209,14 @@ abstract class AbstractFetcher
 			return null;
 		}
 
+		// Protection against nulls
+		if (!$raw_message->headers) {
+			$raw_message->headers = '';
+		}
+		if (!$raw_message->content) {
+			$raw_message->content = '';
+		}
+
 		App::getOrm()->beginTransaction();
 
 		try {

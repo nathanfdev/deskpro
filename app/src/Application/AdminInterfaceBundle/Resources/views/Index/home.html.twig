@@ -157,8 +157,8 @@
 		<table cellspacing="35" width="100%">
 			<tbody>
 				<tr>
-					<td class="dp-item" width="33%">
-						<article><a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');">
+					<td class="dp-item" width="25%">
+						<article><a href="/{{ path('user')|ltrim('/') }}agent/" dp-click-href="#/go_to_agent" onmouseover="$('body').addClass('agent-interface-hover');" onmouseout="$('body').removeClass('agent-interface-hover');" onclick="$('body').removeClass('agent-interface-hover');">
 							<div class="title-wrap"><h3>Agent Interface</h3></div>
 							<div class="img-wrap"><img src="{{ asset('images/admin/agent-screen.png') }}" /></div>
 							<strong>
@@ -166,8 +166,17 @@
 							</strong>
 						</a></article>
 					</td>
-					<td class="dp-item" width="33%">
-						<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">
+					<td class="dp-item" width="25%">
+						<article><a href="{{ path('user') }}" dp-click-href="#/go_to_user" onmouseover="$('body').addClass('user-interface-hover');" onmouseout="$('body').removeClass('user-interface-hover');" onclick="$('body').removeClass('user-interface-hover');">
+								<div class="title-wrap"><h3>User Portal</h3></div>
+								<div class="img-wrap"><img src="{{ asset('images/admin/portal-screen.png') }}" /></div>
+								<strong>
+									The helpdesk portal that end-users see.
+								</strong>
+							</a></article>
+					</td>
+					<td class="dp-item" width="25%">
+						<article onmouseover="$('body').addClass('reports-interface-hover');" onmouseout="$('body').removeClass('reports-interface-hover');" onclick="$('body').removeClass('reports-interface-hover');"><a href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">
 							<div class="title-wrap"><h3>Reports Interface</h3></div>
 							<div class="img-wrap"><img src="{{ asset('images/admin/reports-screen.png') }}" /></div>
 							<strong>
@@ -175,8 +184,8 @@
 							</strong>
 						</a></article>
 					</td>
-					<td class="dp-item" width="33%">
-						<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
+					<td class="dp-item" width="25%">
+						<article onmouseover="$('body').addClass('lic-interface-hover');" onmouseout="$('body').removeClass('lic-interface-hover');" onclick="$('body').removeClass('lic-interface-hover');"><a href="{{ ng_href('license') }}">
 							<div class="title-wrap"><h3>Billing &amp; Licensing</h3></div>
 							<div class="img-wrap"><img src="{{ asset('images/admin/billing-screen.png') }}" /></div>
 							<strong>
@@ -207,7 +216,7 @@
 								<div class="icon bad"><i class="fa fa-warning"></i></div>
 								<strong>
 									The latest version is #{{ ng_var('Home.latest_version.build_num_base') }}.
-									You are behind by {{ ng_var('Home.latest_version.count_behind') }} versions.<br/>
+									You are behind by <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.count_behind') }} version(s)</a>.<br/>
 								</strong>
 							</header>
 							<article>

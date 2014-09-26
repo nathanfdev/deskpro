@@ -7,7 +7,7 @@
 	'user.knowledgebase.knowledgebase'            => 'Knowledgebase',
 	'user.knowledgebase.link_view-all'            => 'View the 1 article|View all {{count}} articles',
 	'user.knowledgebase.related_articles'         => 'Related Articles',
-	'user.knowledgebase.sidebar_description'      => 'Our knowledgebase contains 1 question written by our support team to help you answer your question|Our knowledgebase contains {{count}} questions written by our support team to help you answer your question',
+	'user.knowledgebase.sidebar_description'      => 'Our knowledgebase contains 1 article written by our support team to help you answer your question|Our knowledgebase contains {{count}} articles written by our support team to help you answer your question',
 	'user.knowledgebase.subscribe-article'        => '<a href="{{link}}">Subscribe</a> to this article to get an email notification when it is updated.',
 	'user.knowledgebase.subscribe-category'       => '<a href="{{link}}">Subscribe</a> to this category to get an email notification when new articles are published.',
 	'user.knowledgebase.title'                    => 'Knowledgebase',

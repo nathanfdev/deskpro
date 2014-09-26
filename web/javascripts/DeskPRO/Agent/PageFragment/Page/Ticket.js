@@ -329,7 +329,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					var searchListEl = DeskPRO_Window.sections.tickets_section.getListElement();
 					lastOverId = ticketId;
-					lastOvers = searchListEl.find('.ticket-' + ticketId);
+					lastOvers = searchListEl.find('.ticket-row-' + ticketId);
 					lastOvers = lastOvers.add($('#tabNavigationPane').find('.ticket-' + ticketId));
 					lastOvers.addClass('item-hover-over');
 				};
@@ -678,7 +678,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		}
 
-		this.getEl('cc_list_btn').on('click', function(ev) {
+		this.getEl('cc_list_btn2').on('click', function(ev) {
 			ev.preventDefault();
 
 			if (self.getEl('cc_list').hasClass('cc-open')) {
@@ -686,12 +686,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					self.getEl('cc_list').hide().removeClass('cc-open');
 				} else {
 					self.getEl('cc_list').find('.addrow').toggle();
+					self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 				}
 			} else {
 				self.getEl('cc_list').show().addClass('cc-open');
 				self.getEl('cc_list').find('.addrow').show();
 				self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 			}
+		});
+
+		this.getEl('cc_list_btn').on('click', function(ev) {
+			ev.preventDefault();
+
+			self.getEl('cc_list').show().addClass('cc-open');
+			self.getEl('cc_list').find('.addrow').show();
+			self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 		});
 
 		var logsWrap = this.getEl('logs_wrap');
@@ -810,6 +819,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				baseId: self.meta.baseId,
 				defaultProject: self.meta.jiraDefaultProject
 			});
+			this.addEvent('destroy', function() {
+				if (jiraWidget) {
+					jiraWidget.destroy();
+				}
+			});
 		}
 	},
 
@@ -898,6 +912,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						this.getEl('message_next_page').show();
 					}
 				}
+
+				this.fireEvent('load');
 			}
 		});
 	},
@@ -1168,6 +1184,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	handleTicketUpdate: function(data) {
+		this.doHandleTicketUpdate(data);
+		this.fireEvent('ticket_updated', [data]);
+	},
+
+	doHandleTicketUpdate: function(data) {
 		var self = this;
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
@@ -1488,11 +1509,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.lastMessageCount = lastCount;
 
-		messageEl.find('img').bind('load', function() {
-			var article = $(this).closest('article.content-message');
-			self._initTicketMessageClipped(article);
-		});
-
 		var wr = this.getEl('messages_wrap');
 		wr.find('.message-id-txt').each(function() {
 			var findclass = '.message-counter-' + $(this).data('message-id');
@@ -1565,13 +1581,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_initTicketMessageClipped: function(article) {
-		var h = article.find('div.body-text').height();
+		var self = this;
+		var h = article.find('div.body-text-message').height();
+		var doClipping = false;
+		var allArticles = null, idx;
+		var isFirst = false;
 		if (h >= 600) {
+			allArticles = this.getEl('message_page_wrap').find('article');
+			idx = allArticles.index(article.get(0));
+
+			// Clipping on the first message starts at 1200px
+			if ((this.meta.ticket_reverse_order && idx === 0) || (!this.meta.ticket_reverse_order && idx === allArticles.length-1)) {
+				isFirst = true;
+				if (h >= 1200) {
+					doClipping = true;
+				} else {
+					doClipping = false;
+				}
+			} else {
+				doClipping = true;
+			}
+		}
+
+		if (isFirst) {
+			article.addClass('as-first');
+		} else {
+			article.removeClass('as-first');
+		}
+
+		if (doClipping) {
 			if (!article.hasClass('with-clipped-body')) {
 				article.addClass('with-clipped-body');
 				article.find('.fade-bar-longmsg').on('click', function(ev) {
 					ev.stopPropagation();
 					article.addClass('clipped-show');
+				});
+
+				// Images might change the visible height once loaded
+				article.find('img').on('load', function() {
+					self._initTicketMessageClipped(article);
 				});
 			}
 		} else {

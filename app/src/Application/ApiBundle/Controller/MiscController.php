@@ -37,6 +37,10 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\LoginLogs\LoginLogs;
+use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MiscController extends AbstractController
 {
@@ -290,22 +294,36 @@ class MiscController extends AbstractController
 
 	public function uploadAction()
 	{
-		$file = $this->request->files->get('file');
 		$accept = $this->container->getAttachmentAccepter();
+		$error = null;
 
-		$error = $accept->getError($file, 'agent');
-		if (!$error && $this->in->getBool('is_image')) {
-			$set = new \Application\DeskPRO\Attachments\RestrictionSet();
-			$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
-			$accept->addRestrictionSet('only_images', $set);
-			$error = $accept->getError($file, 'only_images');
-		}
-		if ($error) {
-			$message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
-			return $this->createApiErrorResponse($error['error_code'], $message);
-		}
+		$path = $this->in->getString('path');
+		if ($path && strpos($path, 'dp_file:icons:') === 0) {
+			$path = preg_replace('#^dp_file:icons:.*?/web/#', DP_WEB_ROOT . '/web/', $path);
+			$path = str_replace('\\', '/', $path);
+			$path = realpath($path);
+			if (!$path || !is_file($path) || strpos($path, DP_WEB_ROOT) !== 0 || Strings::getExtension($path) != 'png') {
+				throw $this->createNotFoundException();
+			}
 
-		$blob = $accept->accept($file);
+			$blob = $this->container->getBlobStorage()->createBlobRecordFromFile($path, pathinfo($path, PATHINFO_BASENAME), 'image/png');
+		} else {
+			$file = $this->request->files->get('file');
+			$error = $accept->getError($file, 'agent');
+
+			if (!$error && $this->in->getBool('is_image')) {
+				$set = new \Application\DeskPRO\Attachments\RestrictionSet();
+				$set->setAllowedExts(array('gif', 'png', 'jpg', 'jpeg'));
+				$accept->addRestrictionSet('only_images', $set);
+				$error = $accept->getError($file, 'only_images', true);
+			}
+			if ($error) {
+				$message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+				return $this->createApiErrorResponse($error['error_code'], $message);
+			}
+
+			$blob = $accept->accept($file);
+		}
 
 		return $this->createApiResponse(array('blob' => $blob->toApiData()));
 	}

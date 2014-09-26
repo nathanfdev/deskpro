@@ -57,7 +57,7 @@ class Zip
 	 */
 	public function compressPath($path, $to)
 	{
-		//TODO
+		$this->adapter->compressPath($path, $to);
 	}
 
 

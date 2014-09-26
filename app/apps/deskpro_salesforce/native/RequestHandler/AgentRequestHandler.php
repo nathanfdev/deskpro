@@ -75,9 +75,11 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 				$error = error_reporting();
 				error_reporting($error & ~E_WARNING);
 
+				$old = libxml_disable_entity_loader(false);
 				require_once(DP_ROOT . '/vendor-src/salesforce/SforcePartnerClient.php');
 				$sforce = new \SforcePartnerClient();
 				$sforce->createConnection(DP_ROOT . '/vendor-src/salesforce/partner.wsdl.xml');
+				libxml_disable_entity_loader($old);
 
 				error_reporting($error);
 			} catch (\SoapFault $e) {
