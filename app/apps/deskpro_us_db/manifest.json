@@ -189,6 +189,7 @@
 			"label": "Auto Agent",
 			"checkbox_label": "Automatically create agents if they do not already exist",
 			"usersource_display": "agent",
+			"default_value": true,
 
 			"inline_dependant": {
 				"name": "auto_agent_permission_group",
