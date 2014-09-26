@@ -205,6 +205,21 @@ class InstanceInstaller
 			if ($value !== null) {
 				$settings[$setting_def['name']] = $value;
 			}
+
+			#------------------------------------------
+			# include dependant children
+			# TODO: meant to be expanded to allow more options and diffent kinds of dependant fields
+			#------------------------------------------
+			if (isset($setting_def['inline_dependant'])) {
+				$dep = $setting_def['inline_dependant'];
+				$val = isset($settings_form[$dep['name']]) ? $settings_form[$dep['name']] : null;
+				if ($val === null && isset($dep['default_value'])) {
+					$val = $dep['default_value'];
+				}
+				if ($val !== null) {
+					$settings[$dep['name']] = $val;
+				}
+			}
 		}
 
 		return $settings;

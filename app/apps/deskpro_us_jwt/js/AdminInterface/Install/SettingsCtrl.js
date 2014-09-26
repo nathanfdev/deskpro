@@ -7,6 +7,15 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 		$scope.has_errors = false;
 		$scope.errors = {};
 
+		$scope.Ctrl.permission_groups = [];
+		Api.sendGet('/agent_groups').then(function (res) {
+			console.log(res);
+			res.data.groups.forEach(function (val) {
+				$scope.Ctrl.permission_groups.push({"value": val.id.toString(), "label": val.title});
+			});
+			console.log($scope.Ctrl.permission_groups);
+		});
+
 		//##############################################################################################################
 		//# Form validation / errors
 		//##############################################################################################################
@@ -58,6 +67,8 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 			if (updateFormErrors()) {
 				return;
 			}
+
+			console.log($scope);
 
 			return $modal.open({
 				templateUrl: 'deskpro_us_jwt/Install/test-settings-modal.html',

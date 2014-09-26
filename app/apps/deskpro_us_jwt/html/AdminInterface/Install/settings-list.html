@@ -43,8 +43,28 @@
 				</option>
 			</select>
 		</div>
+
 		<span class="help-block" ng-show="setting.description" ng-bind-html="setting.description"></span>
+
+		<div ng-show="setting.inline_dependant && setting_values[setting.name]">
+
+			<div ng-switch="setting.inline_dependant.type">
+				{{ setting.inline_dependant.label }}
+				<div ng-switch-when="choice">
+					<div ng-if="setting.inline_dependant.options_variable">
+					<select
+						ng-model="setting_values[setting.inline_dependant.name]"
+						ng-options="obj.value as obj.label for obj in Ctrl[setting.inline_dependant.options_variable]"
+						ng-required="setting.inline_dependant.is_required"
+						>
+					</select>
+					</div>
+				</div>
+			</div>
+
+		</div>
 
 		<p ng-show="errors[setting.name]" class="text-danger">This field is required and cannot be empty.</p>
 	</div>
 </div>
+
