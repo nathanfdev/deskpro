@@ -268,6 +268,15 @@ class LoginProcessor
 		$this->person['is_user'] = true;
 		$this->person->setLastLoginAt();
 
+		if ($this->usersource->auto_agent && $this->usersource->agent_permission_group) {
+			$agentChecker = App::getSystemService('agent_checker');
+			if ($agentChecker->addAgentSeat($this->person)) {
+				$this->person['is_agent']  = true;
+				$this->person['can_agent'] = true;
+				$this->person->addUsergroup($this->usersource->agent_permission_group);
+			}
+		}
+
 		$em->persist($this->person);
 		$em->persist($this->assoc);
 		$em->flush();
