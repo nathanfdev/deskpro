@@ -43,7 +43,7 @@ class DeskPROSmsSenderTest extends \DpUnitTestCase
 	public function testSendUsesDefaults()
 	{
 		$queue = $this->getMockJobQueue();
-		$queue->shouldReceive('scheduleJob')->once();
+		$queue->shouldReceive('addJob')->once();
 
 		$sms = new DeskPROSmsSender(null, null, $queue);
 		$sms->setDefaultFromNumber($from = '+12345678901');
