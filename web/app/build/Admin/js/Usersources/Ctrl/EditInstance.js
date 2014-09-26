@@ -19,6 +19,7 @@
 
       Admin_Usersources_Ctrl_EditInstance.prototype.init = function() {
         this.instanceId = this.$stateParams.id;
+        this.permission_groups = [];
         this.$scope.getController = (function(_this) {
           return function() {
             return _this;
@@ -72,6 +73,17 @@
             if (!_this.app) {
               return d2.resolve();
             } else {
+              if (_this.permission_groups.length === 0) {
+                _this.Api.sendGet('/agent_groups').then(function(res) {
+                  return res.data.groups.forEach(function(val) {
+                    _this.permission_groups.push({
+                      "value": val.id.toString(),
+                      "label": val.title
+                    });
+                    return console.log(_this.permission_groups);
+                  });
+                });
+              }
               _this.$scope.pack = _this.pack;
               _this.$scope.setting_values = _this.app.settings;
               if (!_this.$scope.setting_values || Util.isArray(_this.$scope.setting_values)) {

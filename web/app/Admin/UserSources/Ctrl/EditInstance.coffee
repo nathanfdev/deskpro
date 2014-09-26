@@ -7,6 +7,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
 		init: ->
 			@instanceId = @$stateParams.id
+			@permission_groups = [];
 			@$scope.getController = => return this
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
 			@$scope.enableCustomFooter = => @$scope.has_own_footer = true
@@ -46,6 +47,15 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 					d2.resolve()
 				else
 					# this is an app instance
+
+					if @permission_groups.length == 0
+						@Api.sendGet('/agent_groups').then( (res) =>
+							res.data.groups.forEach( (val) =>
+								@permission_groups.push({"value": val.id.toString(), "label": val.title})
+								console.log @permission_groups
+							)
+						)
+
 					@$scope.pack = @pack
 					@$scope.setting_values = @app.settings
 					if not @$scope.setting_values || Util.isArray(@$scope.setting_values)
