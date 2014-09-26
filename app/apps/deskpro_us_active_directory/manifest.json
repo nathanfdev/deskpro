@@ -82,6 +82,21 @@
 			"label": "Short Domain Name",
 			"description": "The \"short\" domain name for users in this directory like \"ACME\". Note that there is a 1:1 mapping between this short name and the domain name above. This option should be used to specify the NetBIOS domain name for Windows networks. This option is not required but if it is not supplied, usernames in backslash form (e.g., ACME\\alice) are not supported.",
 			"native_only": true
+		},
+		{
+			"name": "auto_agent",
+			"type": "checkbox",
+			"label": "Auto Agent",
+			"checkbox_label": "Automatically create agents if they do not already exist",
+			"usersource_display": "agent",
+
+			"inline_dependant": {
+				"name": "auto_agent_permission_group",
+				"type": "choice",
+				"label": "Add new agents to this permission group",
+				"options_variable": "permission_groups",
+				"is_required": true
+			}
 		}
 	]
 }

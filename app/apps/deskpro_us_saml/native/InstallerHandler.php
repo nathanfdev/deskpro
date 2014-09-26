@@ -71,6 +71,8 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 		$us->lost_password_url = '';
 		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Saml';
 
+		$this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+
 		if ('auto' == $app->getSetting('sso_type')) {
 			$us->makeSsoAutoOnly();
 		} elseif ('background' == $app->getSetting('sso_type')) {

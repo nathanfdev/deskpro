@@ -35,8 +35,6 @@
 namespace deskpro_us_ldap;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\ORM\EntityManager;
@@ -54,6 +52,8 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 		$us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
 		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
 		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Ldap';
+
+		$this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 
 		$em->persist($app);
 		$em->persist($us);

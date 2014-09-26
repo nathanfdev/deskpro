@@ -52,12 +52,12 @@
 				{{ setting.inline_dependant.label }}
 				<div ng-switch-when="choice">
 					<div ng-if="setting.inline_dependant.options_variable">
-					<select
-						ng-model="setting_values[setting.inline_dependant.name]"
-						ng-options="obj.value as obj.label for obj in Ctrl[setting.inline_dependant.options_variable]"
-						ng-required="setting.inline_dependant.is_required"
-						>
-					</select>
+						<select
+							ng-model="setting_values[setting.inline_dependant.name]"
+							ng-options="obj.value as obj.label for obj in Ctrl[setting.inline_dependant.options_variable]"
+							ng-required="setting.inline_dependant.is_required"
+							>
+						</select>
 					</div>
 				</div>
 			</div>
