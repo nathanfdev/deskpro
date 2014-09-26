@@ -90,7 +90,7 @@
 
 					{% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
 
-					<fieldset>
+					<fieldset style="margin-bottom: 15px;">
 						<p>
 							<i class="icon-envelope-alt"></i>
 							<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}" tabindex="1" />
@@ -100,6 +100,7 @@
 							<input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"  tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
 						</p>
 						<ul style="margin:0;padding:0; line-height:20px;">
+							{% if app.getSetting('core.enable_user_rememberme') %}
 							<li style="float:left; list-style-type:none;">
 								<input type="checkbox"
 									name="remember_me" id="rem_cb" value="1" tabindex="3" />
@@ -109,27 +110,12 @@
 									{{ phrase('agent.login.remember_me') }}
 								</label>
 							</li>
+							{% endif %}
 							<li style="float:none; list-style-type:none; overflow: hidden; text-align: right;">
 								<a href="#"
 									class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a>
 							</li>
 						</ul>
-						<table cellspacing="0" cellpadding="0" border="0">
-							<tr>
-								<td width="10" valign="middle" style="vertical-align: middle;"></td>
-								<td valign="middle" style="vertical-align: middle;">
-									&nbsp;
-
-								</td>
-							</tr>
-							<tr>
-								<td colspan="3" valign="middle" style="vertical-align: middle;" align="right">
-									<p style="margin: 5px;">
-
-									</p>
-								</td>
-							</tr>
-						</table>
 					</fieldset>
 			<input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" style="margin-bottom: 10px;" />
 
