@@ -55,6 +55,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
 use Application\DeskPRO\Monolog\Logger as DPLogger;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 /**
  * This listener logs entity changes
@@ -255,20 +256,22 @@ class EntityChangeTrackingListener implements EventSubscriber
 		$c = $this->container;
 
 		/** @var RequestAuth $auth */
-		if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
-			if ($apiUser = $auth->getApiUser()) {
-				if ($apiUser->person) {
-					return $apiUser->person;
+		try {
+			if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
+				if ($apiUser = $auth->getApiUser()) {
+					if ($apiUser->person) {
+						return $apiUser->person;
+					}
 				}
 			}
-		}
 
-		if ($c->has('session') && ($sess = $c->get('session'))) {
-			/** @var $sess Session */
-			if ($person = $sess->getPerson()) {
-				return $person;
+			if ($c->has('session') && ($sess = $c->get('session'))) {
+				/** @var $sess Session */
+				if ($person = $sess->getPerson()) {
+					return $person;
+				}
 			}
-		}
+		} catch (InactiveScopeException $e) {}
 
 		return null;
 	}

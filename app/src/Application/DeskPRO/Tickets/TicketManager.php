@@ -49,6 +49,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 class TicketManager
 {
@@ -425,11 +426,16 @@ class TicketManager
 			$context->setPersonContext($agent);
 		}
 
-		if ('api' === $event_method) {
+		if ($event_method === 'api') {
 			$key = null;
-			/** @var $auth RequestAuth */
-			if ($auth = $this->container->get('deskpro.api.request_auth')) {
-				$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+
+			try {
+				/** @var $auth RequestAuth */
+				if ($auth = $this->container->get('deskpro.api.request_auth')) {
+					$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+				}
+			} catch (InactiveScopeException $e) {
+				$key = null;
 			}
 
 			if ($key) {
