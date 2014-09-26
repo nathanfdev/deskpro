@@ -71,6 +71,7 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 		$this->addOption('reply-codes', null, InputOption::VALUE_NONE, 'Test reply codes');
 		$this->addOption('save-attach', null, InputOption::VALUE_NONE, 'This will save attachments from the email in the same directory as the file');
 		$this->addOption('show-cutters', null, InputOption::VALUE_NONE, 'Displays the cutters that were used');
+		$this->addOption('output-text', null, InputOption::VALUE_NONE, 'Process an email as normal, but output as text (e.g., HTML will be stripped).');
 		$this->addOption('output-attach', null, InputOption::VALUE_REQUIRED, 'Output the raw contents of an attachment at index');
 		$this->addOption('output-attach-email', null, InputOption::VALUE_REQUIRED, 'Decode the attachment at index as an email');
 	}
@@ -297,6 +298,9 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 				$body = $r->getBodyText()->getBodyUtf8();
 
 				if ($input->getOption('raw')) {
+					if ($input->getOption('output-text')) {
+						$body = Strings::html2Text($body);
+					}
 					echo $body;
 					echo "\n";
 					return 0;
@@ -311,6 +315,10 @@ class TestEmailDecodeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Con
 					$cutter->addPatterns($pattern_config->all());
 					$body = $cutter->cutQuoteBlock($body, false);
 				}
+			}
+
+			if ($input->getOption('output-text')) {
+				$body = Strings::html2Text($body);
 			}
 
 			echo $body;
