@@ -42,7 +42,8 @@ use Orb\Util\Util;
 
 /**
  * Defines information about an external user source
- * @property $title
+ *
+*@property $title
  * @property $type
  * @property $source_type
  * @property $lost_password_url
@@ -51,6 +52,8 @@ use Orb\Util\Util;
  * @property $is_enabled
  * @property $is_sso_auto
  * @property $is_sso_background
+ * @property $auto_agent
+ * @property $agent_permission_group
  * @property $app
  * @property $id
  */
@@ -134,6 +137,20 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * @var bool
 	 */
 	protected $is_sso_background = false;
+
+	/**
+	 * True if this should attempt to make users who login agents
+	 *
+	 * @var bool
+	 */
+	protected $auto_agent = false;
+
+	/**
+	 * If attempting to make agent is successful, this will be the group
+	 *
+	 * @var bool
+	 */
+	protected $agent_permission_group = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\AppInstance|null
@@ -279,6 +296,10 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'is_sso_background', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_background', ));
 
 		$metadata->mapManyToOne(array( 'fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+
+		$metadata->mapField(array( 'fieldName' => 'auto_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auto_agent', ));
+
+		$metadata->mapManyToOne(array( 'fieldName' => 'agent_permission_group', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_permission_group_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 	}
 
