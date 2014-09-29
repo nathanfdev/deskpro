@@ -112,9 +112,25 @@ class SendUserEmail extends AbstractEmailAction
 			$context->getLogger()->info("[SendUserEmail] Identified as an automatic email");
 			$build->setIsAuto();
 
+			if ($context->getVars()->has('ticket_email')) {
+				/** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticket_email */
+				$ticket_email = $context->getVars()->get('ticket_email');
+				if ($ticket_email->is_bounce) {
+					$context->getLogger()->info("Skipping email because is_bounce = true");
+					return;
+				}
+			}
+
 			if ($ticket->person->disable_autoresponses) {
 				$context->getLogger()->info("Skipping email because user is marked as an auto-responder");
 				return;
+			}
+
+			foreach($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
+				if ($m->person->disable_autoresponses) {
+					$context->getLogger()->info(sprintf("Skipping email because user #%d %s on message #%d is an auto-responder", $m->person->id, $m->person->getDisplayContact(), $m->id));
+					return;
+				}
 			}
 		}
 
