@@ -157,6 +157,7 @@ class FinderFilter
 			EmailSource::STATUS_PROCESSING,
 			EmailSource::STATUS_COMPLETE,
 			EmailSource::STATUS_REJECTED,
+			EmailSource::STATUS_RETRY,
 			EmailSource::STATUS_ERROR,
 		);
 
