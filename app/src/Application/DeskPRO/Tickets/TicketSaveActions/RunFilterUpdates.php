@@ -69,6 +69,10 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
 	 */
 	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if ($context->getEventType() == 'noop') {
+			return;
+		}
+
 		$change_set = $this->filter_change_detector->getFilterChangeSet($ticket, $context);
 		$client_messages = $change_set->getListUpdateClientMessages();
 
