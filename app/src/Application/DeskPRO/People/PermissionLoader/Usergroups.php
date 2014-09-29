@@ -82,8 +82,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 
 	public function getSubkey()
 	{
-		$this->getAllPermissions();
-		if ($this->with_overrides && $this->person_id) {
+		if ($this->person && $this->person->is_agent) {
 			return 'person-' . $this->person->id;
 		}
 	}

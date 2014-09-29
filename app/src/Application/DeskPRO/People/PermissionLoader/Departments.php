@@ -56,8 +56,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
 	public function getSubkey()
 	{
-		$this->_init();
-		if ($this->with_overrides && $this->person_id) {
+		if ($this->person && $this->person->is_agent) {
 			return 'person-' . $this->person->id;
 		}
 	}
