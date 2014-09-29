@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "TriggersNew.js",
+  "sourceRoot": "../../../../../Admin/TicketTriggers/DataService/",
+  "sources": [
+    "TriggersNew.coffee"
+  ],
+  "names": [],
+  "mappings": "AAAA;AAAA,MAAA;mSAAA;;AAAA,EAAA,MAAA,CAAO,CACN,+CADM,CAAP,EAEG,SACF,YADE,GAAA;AAGF,QAAA,4CAAA;WAAM;AACL,qEAAA,CAAA;;;;OAAA;;AAAA,MAAA,4CAAC,CAAA,OAAD,GAAW,CAAC,KAAD,EAAQ,IAAR,CAAX,CAAA;;AAAA,6DAEA,IAAA,GAAM,SAAA,GAAA;eACL,IAAC,CAAA,IAAD,GAAQ,YADH;MAAA,CAFN,CAAA;;0DAAA;;OAD0D,cAHzD;EAAA,CAFH,CAAA,CAAA;AAAA"
+}
