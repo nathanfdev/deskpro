@@ -346,7 +346,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
 
 	/**
-	 * Return a response to send to browser OR display the metadata yourself inside this method (and exit).
+	 * Return a response to send to browser
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */

@@ -91,6 +91,11 @@
               _this.$scope.setting_values.dp_app = {
                 title: _this.app.title
               };
+              _this.$scope.usersource_details = {
+                metadata_url: 'http://google.com/meta.xml',
+                consumer_url: 'consumer service url here',
+                metadata_text: 'this will be metadata'
+              };
               _this.$scope.has_display_settings = _this.pack.settings_def.filter(function(x) {
                 return x.type !== 'hidden';
               }).length > 0;

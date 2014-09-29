@@ -59,7 +59,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 					@$scope.setting_values = @app.settings
 					if not @$scope.setting_values || Util.isArray(@$scope.setting_values)
 						@$scope.setting_values = {}
-					@$scope.setting_values.dp_app = {title: @app.title}
+					@$scope.setting_values.dp_app = { title: @app.title }
+					@$scope.usersource_details = { metadata_url: 'http://google.com/meta.xml', consumer_url: 'consumer service url here', metadata_text: 'this will be metadata' }
 
 					@$scope.has_display_settings = @pack.settings_def.filter( (x) -> x.type != 'hidden').length > 0
 					form_template = @packageName + '/AdminInterface/Install/settings.html'
