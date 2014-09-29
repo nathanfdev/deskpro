@@ -56,6 +56,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
 	public function getSubkey()
 	{
+		$this->_init();
 		if ($this->with_overrides && $this->person_id) {
 			return 'person-' . $this->person->id;
 		}
@@ -107,19 +108,10 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 					}
 				}
 
-				if ($has_agent_ugs) {
-					$res = App::getDb()->fetchAll("
-						SELECT department_id, app, name, value, person_id
-						FROM department_permissions
-						WHERE person_id = {$this->person->getId()} OR usergroup_id IN (" . implode(',', $has_agent_ugs) . ")
-					");
-				} else {
-					$res = App::getDb()->fetchAll("
-						SELECT department_id, app, name, value
-						FROM department_permissions
-						WHERE person_id = {$this->person->getId()}
-					");
-				}
+				$res = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent(
+					$this->person->getId(),
+					$has_agent_ugs
+				);
 			}
 		} else {
 			$res = App::getDb()->fetchAll("

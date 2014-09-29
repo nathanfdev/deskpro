@@ -158,17 +158,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 				}
 			}
 		} else {
-			$uids = implode(',', $uids);
-
-			$raw = App::getDb()->fetchAll("
-				SELECT dp.app, dp.department_id
-				FROM department_permissions dp
-				LEFT JOIN usergroups AS ug ON (ug.id = dp.usergroup_id)
-				WHERE
-					(dp.person_id = ? OR (dp.usergroup_id IN ($uids) AND ug.is_agent_group = 1))
-					AND name = 'full'
-					AND value = 1
-			", array($this->person->id));
+			$raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->id, $uids, 'full');
 
 			$this->_allowed_ids = array();
 			foreach ($raw as $r) {

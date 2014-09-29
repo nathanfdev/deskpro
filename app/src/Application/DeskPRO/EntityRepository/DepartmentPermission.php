@@ -37,9 +37,46 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Department as DepartmentEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Orb\Util\Arrays;
 
 class DepartmentPermission extends AbstractEntityRepository
 {
+	/**
+	 * @var array
+	 */
+	private $cache = null;
+
+	public function getPermsForAgent($person_id, array $ug_ids, $name = null)
+	{
+		if ($ug_ids) {
+			$ug_ids = Arrays::castToType($ug_ids, 'integer');
+		}
+		$ug_ids = Arrays::removeFalsey($ug_ids);
+		if (!$ug_ids) {
+			$ug_ids = array();
+		} else {
+			$ug_ids = array_fill_keys($ug_ids, true);
+		}
+
+		if ($this->cache === null) {
+			$this->cache = $this->_em->getConnection()->fetchAll("
+				SELECT dp.app, dp.department_id, dp.usergroup_id, dp.person_id, dp.name, dp.value
+				FROM department_permissions dp
+			");
+		}
+
+		$found = array();
+		foreach ($this->cache as $rec) {
+			if ($rec['person_id'] == $person_id || ($rec['usergroup_id'] && isset($ug_ids[$rec['usergroup_id']]))) {
+				if (!$name || ($name && $rec['name'] == $name)) {
+					$found[] = $rec;
+				}
+			}
+		}
+
+		return $found;
+	}
+
 	/**
 	 * Get an array of department IDs this user has permission to see
 	 * @param \Application\DeskPRO\Entity\Person $person
