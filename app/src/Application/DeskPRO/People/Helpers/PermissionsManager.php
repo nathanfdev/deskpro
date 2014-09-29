@@ -158,7 +158,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		$this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
 
 		if ($this->person->is_agent) {
-			$this->usergroups_key = md5($this->usergroups_key . 'agent-' . $this->person->id);
+			$this->usergroups_key = $this->usergroups_key . '-person-' . $this->person->id;
 		}
 
 		\DpShutdown::add(array($this, 'flushCache'));
@@ -249,8 +249,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		# Fetch from the cache first
 		#-------------------------
 
-		if (!$this->is_loaded) {
-			$this->is_loaded = true;
+		if (!$this->is_loaded && !isset($GLOBALS['DP_CONFIG']['disable_permissions_cache'])) {
 			$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->getId());
 
 			foreach ($caches as $cache) {
@@ -264,6 +263,8 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 				$this->loaders[strtolower($name)] = $loader;
 			}
 		}
+
+		$this->is_loaded = true;
 
 		#-------------------------
 		# Load the rest for the first time
@@ -287,7 +288,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 			$this->loaders[strtolower($name)] = $loader;
 
-			if (!($loader instanceof \Application\DeskPRO\People\PermissionLoader\NoCache)) {
+			if (!($loader instanceof \Application\DeskPRO\People\PermissionLoader\NoCache) && !isset($GLOBALS['DP_CONFIG']['disable_permissions_cache'])) {
 				$this->dirty_caches[] = PermissionCache::newFromLoader($loader, $this->person->getId());
 			}
 		}

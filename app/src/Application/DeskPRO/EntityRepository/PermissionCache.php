@@ -45,6 +45,8 @@ class PermissionCache extends AbstractEntityRepository
 
 	public function loadPermissionTypes($usergroup_key, $person_id = null, array $types = null)
 	{
+		$usergroup_key = preg_replace('#\-person\-\d+$#', '', $usergroup_key);
+
 		if ($this->cache === null) {
 			$this->cache = $this->_em->getConnection()->fetchAll("
 				SELECT name, usergroup_key, perms
@@ -52,10 +54,10 @@ class PermissionCache extends AbstractEntityRepository
 			");
 		}
 
-		$key = $usergroup_key;
-
 		if ($person_id) {
-			$key .= ".$person_id";
+			$person_key = $usergroup_key;
+		} else {
+			$person_key = $usergroup_key . '-person-' . $person_id;
 		}
 
 		if ($types) {
@@ -70,13 +72,29 @@ class PermissionCache extends AbstractEntityRepository
 
 			$types = array_fill_keys($types, true);
 
-			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $key, $types) {
-				return isset($types[$c['name']]) && ($c['usergroup_key'] == $usergroup_key || $c['usergroup_key'] == $key);
+			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $types) {
+				return isset($types[$c['name']]) && ($c['usergroup_key'] == $usergroup_key);
 			});
+			if ($person_key) {
+				$recs_override = array_filter($this->cache, function($c) use ($person_key, $types) {
+					return isset($types[$c['name']]) && $c['usergroup_key'] == $person_key;
+				});
+				if ($recs_override) {
+					$recs = array_merge($recs, $recs_override);
+				}
+			}
 		} else {
-			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $key) {
-				return ($c['usergroup_key'] == $usergroup_key || $c['usergroup_key'] == $key);
+			$recs = array_filter($this->cache, function($c) use ($usergroup_key) {
+				return $c['usergroup_key'] == $usergroup_key;
 			});
+			if ($person_key) {
+				$recs_override = array_filter($this->cache, function($c) use ($person_key) {
+					return $c['usergroup_key'] == $person_key;
+				});
+				if ($recs_override) {
+					$recs = array_merge($recs, $recs_override);
+				}
+			}
 		}
 
 		$loaders = array();

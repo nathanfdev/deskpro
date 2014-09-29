@@ -49,6 +49,18 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 	 */
 	protected $allowed_cats = array('tickets' => array(), 'chat' => array());
 
+	/**
+	 * @var bool
+	 */
+	protected $with_overrides = false;
+
+	public function getSubkey()
+	{
+		if ($this->with_overrides && $this->person_id) {
+			return 'person-' . $this->person->id;
+		}
+	}
+
 	public function _init()
 	{
 		if ($this->has_init) {
@@ -97,7 +109,7 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 
 				if ($has_agent_ugs) {
 					$res = App::getDb()->fetchAll("
-						SELECT department_id, app, name, value
+						SELECT department_id, app, name, value, person_id
 						FROM department_permissions
 						WHERE person_id = {$this->person->getId()} OR usergroup_id IN (" . implode(',', $has_agent_ugs) . ")
 					");
@@ -123,6 +135,11 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 		);
 
 		foreach ($res as $d) {
+
+			if (!empty($d['person_id'])) {
+				$this->with_overrides = true;
+			}
+
 			$dep = App::getDataService('Department')->get($d['department_id']);
 
 			$check = 'is_' . $d['app'] . '_enabled';
