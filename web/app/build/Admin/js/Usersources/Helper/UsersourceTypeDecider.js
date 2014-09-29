@@ -24,4 +24,4 @@
 
 }).call(this);
 
-//# sourceMappingURL=UsersourceTypeDecider.js.map
+//# sourceMappingURL=usersourceTypeDecider.js.map

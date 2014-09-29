@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "Edit.js",
-  "sourceRoot": "../../../../../Admin/Usersources/Ctrl/",
+  "sourceRoot": "../../../../../Admin/UserSources/Ctrl/",
   "sources": [
     "Edit.coffee"
   ],
