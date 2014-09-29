@@ -600,7 +600,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE $agent_sql
 					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
 					ORDER BY p.id DESC
@@ -610,7 +610,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE
 						$agent_sql
 						LOWER(e.email) LIKE ?
@@ -625,7 +625,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE $agent_sql
 					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
 					ORDER BY p.name ASC
@@ -635,7 +635,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE
 						$agent_sql
 						(LOWER(e.email) LIKE ?
