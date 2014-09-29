@@ -1,5 +1,5 @@
 (function() {
-  define(function() {
+  define(['DeskPRO/Util/Strings'], function(Strings) {
 
     /*
         * Description
@@ -31,8 +31,16 @@
       return {
         restrict: 'A',
         link: function(scope, element, attr) {
-          var label, updateLabelElement;
-          label = $parse(attr.dpLabel)(scope);
+          var err, label, updateLabelElement;
+          if (Strings.isBlank(attr.dpLabel)) {
+            return;
+          }
+          try {
+            label = $parse(attr.dpLabel)(scope);
+          } catch (_error) {
+            err = _error;
+            return;
+          }
           updateLabelElement = function(data) {
             var color;
             if (data == null) {

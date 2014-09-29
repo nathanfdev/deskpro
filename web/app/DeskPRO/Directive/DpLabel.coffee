@@ -1,4 +1,4 @@
-define ->
+define ['DeskPRO/Util/Strings'], (Strings) ->
 	###
     # Description
     # -----------
@@ -23,7 +23,12 @@ define ->
 		return {
 			restrict: 'A'
 			link: (scope, element, attr) ->
-				label = $parse(attr.dpLabel)(scope)
+				return if Strings.isBlank(attr.dpLabel)
+
+				try
+					label = $parse(attr.dpLabel)(scope)
+				catch err
+					return
 
 				updateLabelElement = (data) ->
 					return if !data?
