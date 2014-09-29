@@ -27,7 +27,8 @@
 			"type": "text",
 			"label": "SSO: Single Sign On URL",
 			"description": "The SSO URL (provided by your SAML IdP)",
-			"native_only": true
+			"native_only": true,
+			"is_required": true
 		},
 		{
 			"name": "slo_url",
@@ -48,8 +49,7 @@
 			"type": "text",
 			"label": "Certificate Fingerprint",
 			"description": "Your IdP should provide you with a fingerprint of their certificate (provided by your SAML IdP)",
-			"native_only": true,
-			"is_required": true
+			"native_only": true
 		},
 		{
 			"name": "login_custom_text",
