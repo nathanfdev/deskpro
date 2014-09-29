@@ -23,7 +23,7 @@ define [
 	'Admin/AgentGroups/DataService/AgentGroups',
 	'Admin/AgentTeams/DataService/AgentTeams',
 	'Admin/Tasks/DataService/Tasks',
-	'Admin/Labels/Base/DataService/Settings'
+	'Admin/Labels/DataService/Settings'
 	'Admin/Usersources/DataService/Usersources'
 ], (
 	Strings,
