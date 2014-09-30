@@ -153,6 +153,10 @@ class ProcessAgentFwd extends ProcessAbstract
 				'message/rfc822'
 			));
 
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
+
 			App::getMailer()->send($message);
 
 			return null;
@@ -394,6 +398,10 @@ class ProcessAgentFwd extends ProcessAbstract
 				'message.eml',
 				'message/rfc822'
 			));
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
 
 			App::getMailer()->send($message);
 
