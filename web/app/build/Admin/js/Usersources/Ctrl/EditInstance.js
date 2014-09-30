@@ -55,8 +55,9 @@
                 extra_info: '/usersources/' + _this.usersourceType + '/app-' + _this.instanceId + '/extra-details',
                 pack: '/apps/packages/' + _this.app.package_name
               }).then(function(result) {
+                var _ref1;
                 _this.pack = result.data.pack['package'];
-                _this.$scope.usersource_details = result.data.extra_info.usersource_details;
+                _this.$scope.usersource_details = (_ref1 = result.data.extra_info) != null ? _ref1.usersource_details : void 0;
                 _this.packageName = _this.pack.name;
                 return d.resolve();
               });
@@ -181,6 +182,10 @@
         };
         return this.Api.sendPostJson("/apps/instances/" + this.instanceId, postData).then((function(_this) {
           return function() {
+            _this.Api.sendGet('/usersources/' + _this.usersourceType + '/app-' + _this.instanceId + '/extra-details').then(function(result) {
+              _this.$scope.usersource_details = result.data.usersource_details;
+              return console.log(_this.$scope.usersource_details);
+            });
             return _this.stopSpinner('saving_settings').then(function() {
               var _ref, _ref1;
               if ((_ref = _this.$scope.$parent) != null) {

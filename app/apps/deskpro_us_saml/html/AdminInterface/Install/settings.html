@@ -3,32 +3,40 @@
 		<div class="panel-body">
 			<div class="alert alert-info">
 				<strong>SAML Details</strong><br>
-				<p>Some identity providers may want you to provide them with these details:</p>
-				<table style="width: 100%;">
-					<tr>
-						<td style="width: 30%;">Consumer Service URL (ACS)</td>
-						<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
-							value="{{ usersource_details.consumer_url }}" /></td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td style="width: 30%;">Single Logout Service URL (SLO)</td>
-						<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
-							value="{{ usersource_details.slo_url }}" /></td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>Metadata URL</td>
-						<td><input style="width: 100%" type="text" disabled="disabled"
-							value="{{ usersource_details.metadata_url }}" /></td>
-						<td>
-							<button ng-click="showMetadata = true" class="btn btn-default btn-sm" style="margin-left: 25px;">View Metadata</button>
-						</td>
-					</tr>
-				</table>
-				<br>
-				<div ng-show="showMetadata" style="margin: 20px;">
-					<textarea style="width: 100%; height: 250px;" disabled="disabled">{{ usersource_details.metadata_text }}</textarea>
+				<div ng-show="!usersource_details.consumer_url">
+					<p>Some identity providers may want you to provide them with our Metadata XML (or URL), Consumer Service URL (ACS), or SLO URL. We cannot provide these to you until you save the settings below with your IdP's Metadata URL and their SSO URL.</p>
+				</div>
+				<div ng-if="usersource_details.consumer_url">
+					<p>Some identity providers may want you to provide them with these details:</p>
+					<table style="width: 100%;">
+						<tr>
+							<td style="width: 30%;">Consumer Service URL (ACS)</td>
+							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
+								value="{{ usersource_details.consumer_url }}" /></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td style="width: 30%;">Single Logout Service URL (SLO)</td>
+							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
+								value="{{ usersource_details.slo_url }}" /></td>
+							<td>&nbsp;</td>
+						</tr>
+						<tr>
+							<td>Metadata URL</td>
+							<td><input style="width: 100%" type="text" disabled="disabled"
+								value="{{ usersource_details.metadata_url }}" /></td>
+							<td>
+								<button ng-click="showMetadata = true" class="btn btn-default btn-sm"
+									style="margin-left: 25px;">View Metadata
+								</button>
+							</td>
+						</tr>
+					</table>
+					<br>
+
+					<div ng-show="showMetadata" style="margin: 20px;">
+						<textarea style="width: 100%; height: 250px;" disabled="disabled">{{ usersource_details.metadata_text }}</textarea>
+					</div>
 				</div>
 			</div>
 

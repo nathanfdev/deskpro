@@ -134,7 +134,7 @@ class UsersourcesController extends AbstractController
 
 	public function getUsersourceExtraAction($type, $id)
 	{
-		$sources = $this->getUsersourceManager()->getAll();
+			$sources = $this->getUsersourceManager()->getAll();
 
 		if ($type === Usersource::TYPE_USER) {
 			$sources = $sources->configuredForUsers(true);
@@ -158,7 +158,9 @@ class UsersourcesController extends AbstractController
 
 		$details = array();
 		if ($adapter instanceof ExtraDetailsInterface) {
-			$details = $adapter->getExtraDetails();
+			try {
+				$details = $adapter->getExtraDetails();
+			} catch (\Exception $e) {}
 		}
 
 		return $this->createApiResponse(

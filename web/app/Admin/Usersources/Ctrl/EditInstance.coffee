@@ -31,7 +31,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 						pack: '/apps/packages/' + @app.package_name
 					}).then( (result) =>
 						@pack = result.data.pack['package']
-						@$scope.usersource_details = result.data.extra_info.usersource_details
+						@$scope.usersource_details = result.data.extra_info?.usersource_details
 						@packageName = @pack.name
 						d.resolve()
 					)
@@ -40,6 +40,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 					@Api.sendGet('/usersources/' + @usersourceType + '/' + @usersourceId).then((result) =>
 						@usersource = result.data.usersource
 						d.resolve()
+
 					)
 			)
 
@@ -132,6 +133,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 			}
 
 			@Api.sendPostJson("/apps/instances/#{@instanceId}", postData).then(=>
+				@Api.sendGet('/usersources/' + @usersourceType + '/app-' + @instanceId + '/extra-details').then((result) =>
+					@$scope.usersource_details = result.data.usersource_details
+					console.log @$scope.usersource_details
+				)
 				@stopSpinner('saving_settings').then(=>
 					@$scope.$parent?.ListCtrl?.refresh()
 					@Growl.success(@getRegisteredMessage('saved_settings'))

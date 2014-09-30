@@ -185,7 +185,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 		$time_start = microtime(true);
 		if ($this->logger) {
 			$this->logger->log("START Saml::processAcs", Logger::DEBUG);
+			$this->logger->log(
+				"SAML Settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+				Logger::DEBUG
+			);
 		}
+
 
 		$saml = $this->createSamlProcessor();
 		$saml->processResponse();
@@ -195,7 +200,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 		if (!(empty($errors) && $saml->isAuthenticated())) {
 			if ($this->logger) {
 				$this->logger->log(
-					"SAML Errors: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+					"SAML Errors: \n" . trim(Arrays::implodeTemplate($errors, "{KEY}: {VAL}\n")),
 					Logger::DEBUG
 				);
 			}
