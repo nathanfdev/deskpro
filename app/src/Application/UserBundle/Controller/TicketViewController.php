@@ -196,6 +196,11 @@ class TicketViewController extends AbstractController
 			return $this->renderStandardError(null, null, 403);
 		}
 
+		$can_edit = $ticket->person === $this->person;
+		if (!$can_edit && ($this->in->getBool('edit') || $this->in->getBool('process'))) {
+			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+		}
+
 		$ticket_display = new TicketDisplay($ticket, $this->person);
 		$vars = $ticket_display->getDisplayArray();
 
@@ -337,6 +342,8 @@ class TicketViewController extends AbstractController
 
 			$tpl = 'UserBundle:TicketView:view-modify.html.twig';
 		}
+
+		$vars['can_edit'] = $can_edit;
 
 		return $this->render($tpl, $vars);
 	}
