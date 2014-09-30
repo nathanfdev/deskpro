@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Usersource;
 use League\Url\Url;
 use Orb\Auth\Adapter\CallbackInterface;
+use Orb\Auth\Adapter\ExtraDetailsInterface;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
@@ -126,6 +127,43 @@ class UsersourcesController extends AbstractController
 			array(
 				'usersource' => $source->toApiData(),
 				'app'        => $source->app ? $source->app->toApiData() : null
+			)
+		);
+	}
+
+
+	public function getUsersourceExtraAction($type, $id)
+	{
+		$sources = $this->getUsersourceManager()->getAll();
+
+		if ($type === Usersource::TYPE_USER) {
+			$sources = $sources->configuredForUsers(true);
+		} else {
+			$sources = $sources->configuredForAgents(true);
+		}
+
+		$source = null;
+		foreach ($sources as $usersource) {
+			if ($usersource->app && $usersource->app->id == $id) {
+				$source = $usersource;
+				break;
+			}
+		}
+
+		if (!$source) {
+			throw $this->createNotFoundException('usersource id=' . $id . ' not found');
+		}
+
+		$adapter = $this->container->getSystemService('usersource_auth_adapter_factory')->getAuthAdapter($source, null, $type);
+
+		$details = array();
+		if ($adapter instanceof ExtraDetailsInterface) {
+			$details = $adapter->getExtraDetails();
+		}
+
+		return $this->createApiResponse(
+			array(
+				'usersource_details' => $details
 			)
 		);
 	}

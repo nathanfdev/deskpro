@@ -346,11 +346,7 @@ HTML;
 		if (!$usersource) {
 			throw $this->createNotFoundException();
 		}
-		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
-
-		if (!$this->auth_manager->isUsableUsersource($usersource)) {
-			throw $this->createNotFoundException('usersource / adapter not enabled for this scenario');
-		}
+		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'), $usersource->type);
 
 		if ($adapter instanceof SamlAdapterInterface) {
 			return $adapter->getMetadataXmlResponse();
@@ -795,12 +791,12 @@ HTML;
 	 * @param null       $displayContext
 	 * @return \Orb\Auth\Adapter\AdapterInterface
 	 */
-	protected function _initUserSourceAdapter(Usersource $usersource, $displayContext = null)
+	protected function _initUserSourceAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
 	{
 		/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
 		$factory = $this->container->getSystemService('usersource_auth_adapter_factory');
 
-		return $factory->getAuthAdapter($usersource, $displayContext);
+		return $factory->getAuthAdapter($usersource, $displayContext, $useInterface);
 	}
 
 	############################################################################

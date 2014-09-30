@@ -42,7 +42,7 @@ use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Response;
 
-class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, IframeSsoInterface, SamlAdapterInterface
+class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, IframeSsoInterface, SamlAdapterInterface, ExtraDetailsInterface
 {
 	/**
 	 * @var \Orb\Util\OptionsArray
@@ -352,14 +352,34 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 	 */
 	public function getMetadataXmlResponse()
 	{
-		$saml = $this->createSamlProcessor();
-		$sp = $saml->getSettings()->getSPData();
-
-		$saml_metadata = \OneLogin_Saml2_Metadata::builder($sp);
+		$saml_metadata = $this->getMetadataXml();
 
 		$response = new Response($saml_metadata, 200);
 		$response->headers->set('Content-Type', 'text/xml');
 
 		return $response;
+	}
+
+
+	public function getMetadataXml()
+	{
+		$saml = $this->createSamlProcessor();
+		$sp   = $saml->getSettings()->getSPData();
+
+		return \OneLogin_Saml2_Metadata::builder($sp);
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getExtraDetails()
+	{
+		return array(
+			'consumer_url' => $this->getCallbackUrl(),
+			'metadata_url' => $this->getMetadataXmlUrl(),
+			'metadata_text' => $this->getMetadataXml(),
+			'slo_url' => $this->getSingleLogoutServiceUrl(),
+		);
 	}
 }

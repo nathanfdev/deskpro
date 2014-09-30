@@ -52,9 +52,11 @@
             _this.app = (_ref = result.data.app) != null ? _ref.app : void 0;
             if (_this.app) {
               return _this.Api.sendDataGet({
+                extra_info: '/usersources/' + _this.usersourceType + '/app-' + _this.instanceId + '/extra-details',
                 pack: '/apps/packages/' + _this.app.package_name
               }).then(function(result) {
                 _this.pack = result.data.pack['package'];
+                _this.$scope.usersource_details = result.data.extra_info.usersource_details;
                 _this.packageName = _this.pack.name;
                 return d.resolve();
               });
@@ -90,11 +92,6 @@
               }
               _this.$scope.setting_values.dp_app = {
                 title: _this.app.title
-              };
-              _this.$scope.usersource_details = {
-                metadata_url: 'http://google.com/meta.xml',
-                consumer_url: 'consumer service url here',
-                metadata_text: 'this will be metadata'
               };
               _this.$scope.has_display_settings = _this.pack.settings_def.filter(function(x) {
                 return x.type !== 'hidden';

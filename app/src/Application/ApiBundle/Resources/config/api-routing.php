@@ -2475,6 +2475,12 @@ $collection->create('api_usersources_post', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_usersources_extra_details', array(
+	'path'        => '/usersources/{type}/app-{id}/extra-details',
+	'controller'  => 'ApiBundle:Usersources:getUsersourceExtra',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_usersources_iframe', array(
 	'path'        => '/usersources/iframe/code/{interface}/{app_id}',
 	'controller'  => 'ApiBundle:Usersources:getIframe',
