@@ -196,6 +196,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 		$sent_count = 0;
 		$em  = $this->getContainer()->getEm();
 		$tpl = $this->getContainer()->getTemplating();
+		$tr  = $this->getContainer()->getTranslator();
 
 		foreach ($agents as $agent) {
 			if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
@@ -208,7 +209,9 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 				$vars['notify_info'] = $this->notify_info[$agent->id];
 			}
 
-			$tpl_line = $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
+			$tpl_line = $tr->callWithPersonContext($agent, function() use ($tpl, $vars) {
+				return $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
+			});
 			$alert_data['browser_rendered'] = $tpl_line;
 
 			$alert = $alert_sender->createAlert($agent, 'tickets', $alert_data);
