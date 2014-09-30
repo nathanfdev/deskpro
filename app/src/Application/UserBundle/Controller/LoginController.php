@@ -1181,7 +1181,7 @@ HTML;
 		if (!$usersource_test) {
 			$usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
 		}
-		if ($usersource_test && $adapter instanceof Loggable) {
+		if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
 			$adapter->getLogger()->addWriter($arr_writer);
 		}
 
