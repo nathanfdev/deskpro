@@ -611,7 +611,7 @@ HTML;
 		# This needs to be an allowed adapter via settings
 		# -----------------------------
 
-		if (!$this->auth_manager->isUsableUsersource($usersource)) {
+		if (!$usersource_test && !$this->auth_manager->isUsableUsersource($usersource)) {
 			throw new \LogicException('it is illegal to use this usersource in this context');
 		}
 
@@ -623,6 +623,10 @@ HTML;
 		if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
 			$route_type = 'agent';
 		}
+		// not needed now, might be needed in a future adapter
+		//if ($usersource_test) {
+		//	$route_type = $usersource->type;
+		//}
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$result = $adapter->authenticate();
@@ -721,7 +725,17 @@ HTML;
 			throw $this->createNotFoundException();
 		}
 
+		$usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, array());
+		if (!$usersource_test) {
+			$usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
+		}
+
 		$adapter = $this->_initUserSourceAdapter($usersource);
+
+		$arr_writer = new ArrayWriter();
+		if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
+			$adapter->getLogger()->addWriter($arr_writer);
+		}
 
 		// It must be a callback type to be here, so if not redirect back to login
 		if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
@@ -739,6 +753,18 @@ HTML;
 			$login_processor = new LoginProcessor($usersource, $result->getIdentity());
 			$person = $login_processor->getPerson();
 
+			if ($usersource_test) {
+				//--------------------------------------
+				// test result
+				//--------------------------------------
+				return $this->render(
+					'DeskPRO:Auth:_sso_test_verified.html.twig', array(
+						'person' => $person,
+						'log'    => $arr_writer->getMessagesAsString()
+					)
+				);
+			}
+
 			$this->_setupUsersourceSession($usersource, $person, $result);
 
 			if ($this->session->get('auth_return')) {
@@ -752,6 +778,14 @@ HTML;
 
 		// Error, go back to login
 		} else {
+			if ($usersource_test) {
+				return $this->render(
+					'DeskPRO:Auth:_sso_test_failed.html.twig', array(
+						'log' => implode("\n", $arr_writer->getMessages())
+					)
+				);
+			}
+
 			$this->session->setFlash('login_failed', true);
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
