@@ -6,9 +6,15 @@
 				<p>Some identity providers may want you to provide them with these details:</p>
 				<table style="width: 100%;">
 					<tr>
-						<td style="width: 150px;">Consumer URL (ACS)</td>
-						<td><input type="text" style="width: 100%" disabled="disabled"
+						<td style="width: 30%;">Consumer Service URL (ACS)</td>
+						<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
 							value="{{ usersource_details.consumer_url }}" /></td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td style="width: 30%;">Single Logout Service URL (SLO)</td>
+						<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
+							value="{{ usersource_details.slo_url }}" /></td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>

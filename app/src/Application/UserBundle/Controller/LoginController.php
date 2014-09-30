@@ -319,11 +319,7 @@ HTML;
 		if (!$usersource) {
 			throw $this->createNotFoundException();
 		}
-		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
-
-		if (!$this->auth_manager->isUsableUsersource($usersource)) {
-			throw $this->createNotFoundException('usersource / adapter not enabled for this scenario');
-		}
+		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'), $usersource->type);
 
 		if ($adapter instanceof SamlAdapterInterface) {
 			$this->_logoutPerson();
