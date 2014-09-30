@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\ChatConversation;
 
 /**
  * When something needs to be indexed, index it through this
@@ -88,6 +89,8 @@ class SearchIndexer
 						return 'fos_elastica.object_persister.deskpro.person';
 					case $object instanceof Organization:
 						return 'fos_elastica.object_persister.deskpro.organization';
+					case $object instanceof ChatConversation:
+						return 'fos_elastica.object_persister.deskpro.chat_conversation';
 				}
 				return null;
 			};

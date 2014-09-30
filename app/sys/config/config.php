@@ -533,7 +533,7 @@ $container->loadFromExtension(
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
-							'model'                         => 'Application\DeskPRO\Entity\ChatConversation',
+							'model'                         => 'Application\\DeskPRO\\Entity\\ChatConversation',
 							'provider'                      => array(),
 							'finder'                        => array(),
 							'elastica_to_model_transformer' => array('ignore_missing' => true),

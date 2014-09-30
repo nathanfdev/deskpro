@@ -373,6 +373,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 		$message->conversation = $this;
 		$this->messages->add($message);
+		$this->_onPropertyChanged('messages', null, $this->messages, true);
 
 		$this->_created_messages[] = $message;
 
