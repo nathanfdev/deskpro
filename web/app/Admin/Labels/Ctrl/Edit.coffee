@@ -14,21 +14,19 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				'#e11d21', '#eb6420', '#fbca04', '#009800', '#006b75', '#207de5', '#0052cc', '#5319e7',
 				'#f7c6c7', '#fad8c7', '#fef2c0', '#bfe5bf', '#bfdadc', '#c7def8', '#bfd4f2', '#d4c5f9'
 			]
-			@$scope.form = {label: '', color: @$scope.colors[0], label_type: @type}
+			@$scope.form = {label: '', color: "", label_type: @type}
 			@$scope.startDelete = => @startDelete()
 
 		state: (to) ->
 			to = '.' + to if to
 			@$state.current.name.replace /(.+)\.edit|\.create$/, '$1' + to
 
-
-
 		initialLoad: ->
 			if @$stateParams.label
 				@LabelDefinition.get(@type, @$stateParams.label).then (def) =>
-					return if !def?
+					console.log(def)
+					return if !def
 					@definition = def
-					# @definition !== @$scope.form
 					@$scope.form = angular.copy def
 
 		color2hex: (color) ->

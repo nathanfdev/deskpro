@@ -7,7 +7,7 @@
 					<ul>
 						{% for label in labels %}
 							<li id="org_label_cloud_{{label|slugify}}" class="is-nav-item">
-                                <span dp-label="{{ label }}" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][type]=org_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">
+                                <span dp-label dp-label-string="{{ label }}" dp-label-type="organizations" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][type]=org_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">
                                     {{label}}
                                 </span>
                             </li>

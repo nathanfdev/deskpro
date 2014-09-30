@@ -962,7 +962,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	_initLabels: function() {
 		if (this.getEl('labels_input')[0]) {
 			this.labelsInput = new DeskPRO.UI.LabelsInput({
-				type: 'tickets',
+				type: 'people',
 				input: this.getEl('labels_input'),
 				onChange: this.saveLabels.bind(this)
 			});

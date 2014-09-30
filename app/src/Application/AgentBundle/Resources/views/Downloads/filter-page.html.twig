@@ -70,7 +70,7 @@
 										<span class="prop-title">{{ phrase('agent.general.labels') }}</span>
 										<span class="prop-val labels">
 											{% for label in download.labels %}
-												<span class="listing-tag" dp-label="{{ label }}">{{ label }}</span>
+												<span class="listing-tag" dp-label dp-lable-type="downloads" dp-label-string="{{ label }}">{{ label }}</span>
 											{% endfor %}
 										</span>
 									</li>
