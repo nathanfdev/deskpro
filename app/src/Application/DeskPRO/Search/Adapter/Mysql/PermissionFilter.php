@@ -36,17 +36,18 @@ namespace Application\DeskPRO\Search\Adapter\Mysql;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
  * Strips out search results the user cant actually see
  */
-class PermissionFilter implements PersonContextInterface
+class PermissionFilter
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $person_context;
+	protected $context;
 
 	/**
 	 * The types to generate the where for
@@ -73,12 +74,13 @@ class PermissionFilter implements PersonContextInterface
 	 */
 	protected $has_gen = false;
 
+
 	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @param SearchContextInterface $context
 	 */
-	public function setPersonContext(Person $person)
+	public function setContext(SearchContextInterface $context)
 	{
-		$this->person_context = $person;
+		$this->context = $context;
 	}
 
 	/**
