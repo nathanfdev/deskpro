@@ -106,6 +106,7 @@ class PermissionCache extends AbstractEntityRepository
 				$r['perms_loader'] = @unserialize($r['perms']);
 				$r['perms'] = null;
 				if ($r['perms_loader']) {
+					$r['perms_loader']->loaded_key = $r['usergroup_key'];
 					$loaders[] = $r['perms_loader'];
 				}
 			}

@@ -57,6 +57,11 @@ abstract class AbstractLoader implements \Serializable
 	 */
 	protected $person_id = 0;
 
+	/**
+	 * @var string
+	 */
+	public $loaded_key = '';
+
 	public function getSubkey()
 	{
 		return null;

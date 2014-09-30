@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\People\PermissionLoader\Usergroups;
 use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Util;
 
@@ -258,6 +259,13 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 				if ($loader instanceof PersonContextInterface) {
 					$loader->setPersonContext($this->person);
+				}
+
+				// Cache for 'usergroups' (which has perms) must be cache for the agent
+				if ($loader instanceof Usergroups) {
+					if ($this->person && $this->person->is_agent && strpos($loader->loaded_key, '-person-') === false) {
+						continue;
+					}
 				}
 
 				$this->loaders[strtolower($name)] = $loader;
