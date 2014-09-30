@@ -45,10 +45,17 @@
 			"native_only": true
 		},
 		{
+			"name": "cert",
+			"type": "textarea",
+			"label": "x509 Certificate",
+			"description": "Your IdP should provide you with their x509 certificate. Please copy and paste it into this box.",
+			"native_only": true
+		},
+		{
 			"name": "cert_fingerprint",
 			"type": "text",
-			"label": "Certificate Fingerprint",
-			"description": "Your IdP should provide you with a fingerprint of their certificate (provided by your SAML IdP)",
+			"label": "x509 Certificate Fingerprint",
+			"description": "Instead of providing the full x509 certificate, you can use its SHA-1 fingerprint. Your IdP might provide this to you (or execute \"openssl x509 -noout -fingerprint -in 'idp.crt'\" to generate it).",
 			"native_only": true
 		},
 		{

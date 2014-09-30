@@ -65,6 +65,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 			'slo_url'           => $app->getSetting('slo_url'),
 			'issuer_id'         => $app->getSetting('issuer_id'),
 			'cert_fingerprint'  => $app->getSetting('cert_fingerprint'),
+			'cert'              => $app->getSetting('cert'),
 			'login_custom_text' => $app->getSetting('login_custom_text'),
 		);
 		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;

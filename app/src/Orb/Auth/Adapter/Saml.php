@@ -110,7 +110,8 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 				'singleLogoutService' => array(
 					'url' => $this->options['slo_url'],
 				),
-				'certFingerprint'     => $this->options['cert_fingerprint'],
+				'x509cert'            => $this->options['cert'] ?: null,
+				'certFingerprint'     => $this->options['cert_fingerprint'] ?: null,
 			)
 		);
 	}
