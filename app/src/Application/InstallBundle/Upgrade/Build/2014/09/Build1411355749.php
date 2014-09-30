@@ -50,6 +50,14 @@ class Build1411355749 extends AbstractBuild
 		);
 		$this->execMutateSql("UPDATE usersources SET type = '$userType'");
 
+		$this->execMutateSql(
+			"ALTER TABLE usersources ADD agent_permission_group_id INT DEFAULT NULL, ADD auto_agent TINYINT(1) NOT NULL"
+		);
+		$this->execMutateSql(
+			"ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994CF9C72B85 FOREIGN KEY (agent_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL"
+		);
+		$this->execMutateSql("CREATE INDEX IDX_4E3C994CF9C72B85 ON usersources (agent_permission_group_id)");
+
 		$em = $this->container->getEm();
 
 		$this->setupDeskProUsersource($userType, $em);
