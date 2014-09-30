@@ -60,7 +60,7 @@
 			</div>
 		</div>
 		<div ng-if="setting.name == 'cert'">
-			Select .crt file: <input type="file" dp-read-file="readContentsFunction($fileContent)" style="display: inline-block" />
+			Select certificate (usually .crt, .cert, .pem) file: <input type="file" dp-read-file="readContentsFunction($fileContent)" style="display: inline-block" />
 		</div>
 		<p ng-show="errors[setting.name]" class="text-danger">This field is required and cannot be empty.</p>
 	</div>

@@ -14,7 +14,8 @@
 		parent.window.USERSOURCE_TEST_SCOPE.log = '{{ log|escape('js') }}';
 		parent.window.USERSOURCE_TEST_SCOPE.person = {
 			id: '{{ person.id|escape('js') }}',
-			displayName: '{{ person.displayName|escape('js') }}'
+			displayName: '{{ person.displayName|escape('js') }}',
+			email: '{{ person.primary_email.email|escape('js') }}',
 		};
 	});
 </script>
