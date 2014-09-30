@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EmailGateway\Cutter;
 
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 
 /**
  * This works on an email message to detect a forwarded email, parse out
@@ -57,6 +58,28 @@ class ForwardCutter
 
 
 	/**
+	 * @return string
+	 */
+	public static function getFwdSubjectRegex()
+	{
+		try {
+			$regex = App::$container->getSetting('core_tickets.agent_fwd_subject_regex');
+		} catch (\Exception $e) {
+			$regex = false;
+		}
+
+		if ($regex) {
+			$regex = Strings::getInputRegexPattern($regex);
+		}
+
+		if (!$regex) {
+			$regex = '#^(FW|FWD|VL|WG|FS|VB|RV|VS):#i';
+		}
+
+		return $regex;
+	}
+
+	/**
 	 * Check if a subject matches the pattern for a forwarded message.
 	 *
 	 * @param string $subject
@@ -65,7 +88,7 @@ class ForwardCutter
 	public static function subjectIsForward($subject)
 	{
 		// Prefixes for FW/FWD and in other langs too
-		return (bool)preg_match('#^(FW|FWD|VL|WG|FS|VB|RV|VS):#i', ltrim($subject));
+		return (bool)preg_match(self::getFwdSubjectRegex(), ltrim($subject));
 	}
 
 
@@ -77,7 +100,7 @@ class ForwardCutter
 	 */
 	public static function cutSubjectForwardPrefix($subject)
 	{
-		return preg_replace('#^(FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($subject));
+		return trim(preg_replace(self::getFwdSubjectRegex(), '', trim($subject)));
 	}
 
 
