@@ -48,14 +48,14 @@
 			"name": "cert",
 			"type": "textarea",
 			"label": "x509 Certificate",
-			"description": "Your IdP should provide you with their x509 certificate. Please copy and paste it into this box.",
+			"description": "Your IdP should provide you with their x509 certificate. Please copy and paste it into the box above. Alternatively, if you have downloaded an idp.crt file from your IdP (should be in PEM format), please select it below.",
 			"native_only": true
 		},
 		{
 			"name": "cert_fingerprint",
 			"type": "text",
 			"label": "x509 Certificate Fingerprint",
-			"description": "Instead of providing the full x509 certificate, you can use its SHA-1 fingerprint. Your IdP might provide this to you (or execute \"openssl x509 -noout -fingerprint -in 'idp.crt'\" to generate it).",
+			"description": "If you don't have the full certificate, you can instead provide its SHA-1 fingerprint. Your IdP might provide this to you (or execute \"openssl x509 -noout -fingerprint -in 'idp.crt'\" to generate it).",
 			"native_only": true
 		},
 		{

@@ -11,7 +11,7 @@
 		</div>
 		<div ng-switch-when="textarea">
 			<textarea class="form-control" ng-model="setting_values[setting.name]" ng-required="setting.is_required"
-				placeholder="{{ setting.placeholder }}"></textarea>
+				placeholder="{{ setting.placeholder }}" rows="12"></textarea>
 		</div>
 		<div ng-switch-when="password">
 			<input type="password" class="form-control" ng-model="setting_values[setting.name]"
@@ -59,7 +59,9 @@
 				</div>
 			</div>
 		</div>
-
+		<div ng-if="setting.name == 'cert'">
+			Select .crt file: <input type="file" dp-read-file="readContentsFunction($fileContent)" style="display: inline-block" />
+		</div>
 		<p ng-show="errors[setting.name]" class="text-danger">This field is required and cannot be empty.</p>
 	</div>
 </div>
