@@ -47,6 +47,19 @@ class EmailAccountsController extends BaseEmailAccountsController
 	{
 		$data = parent::getSaveFormData($account);
 
+		// Give a default value to address_name if it was left blank
+		if (empty($data['address_name']) || !$data['address_name']) {
+			$db = $this->container->getDb();
+			$check = function($addy) use ($db) {
+				return $db->fetchColumn("SELECT COUNT(*) FROM email_accounts WHERE address = ?", array($addy));
+			};
+			$count = 0;
+			do {
+				$data['address_name'] = 'contact' . ($count ? $count : '') . '@' . DPC_SITE_DOMAIN;
+				$count++;
+			} while ($check($data['address_name']) > 0);
+		}
+
 		if ($data['account_type'] == 'tickets') {
 
 			$data['address'] = $data['address_name'] . '@' . DPC_SITE_DOMAIN;
