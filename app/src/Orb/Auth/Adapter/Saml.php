@@ -64,6 +64,11 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 	 */
 	protected $sls_url;
 
+	/**
+	 * @var string not required, but can be a backup if no saml redirect is provided
+	 */
+	protected $backupLogoutUrl;
+
 
 	public function __construct(array $options)
 	{
@@ -266,7 +271,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 		$parameters = array('SAMLRequest' => $samlRequest);
 		$url = \OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
 
-		return $url;
+		return trim($url) ?: $this->backupLogoutUrl;
 	}
 
 
@@ -276,7 +281,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 	 */
 	public function setLogoutRedirectUrl($url)
 	{
-		return null;
+		$this->backupLogoutUrl = $url;
 	}
 
 
@@ -388,10 +393,10 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 		}
 
 		return array(
-			'consumer_url' => $this->getCallbackUrl(),
-			'metadata_url' => $this->getMetadataXmlUrl(),
+			'consumer_url'  => $this->getCallbackUrl(),
+			'metadata_url'  => $this->getMetadataXmlUrl(),
 			'metadata_text' => $xml_text,
-			'slo_url' => $this->getSingleLogoutServiceUrl(),
+			'slo_url'       => $this->getSingleLogoutServiceUrl(),
 		);
 	}
 }

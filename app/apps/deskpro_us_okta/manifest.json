@@ -52,6 +52,13 @@
 			"native_only": true
 		},
 		{
+			"name": "slo_url",
+			"type": "text",
+			"label": "Logout (SLO) URL",
+			"description": "After a user logs out, redirect him/her to this URL with a SAML SLO Request.",
+			"native_only": true
+		},
+		{
 			"name": "login_custom_text",
 			"type": "text",
 			"label": "Login Button Text",

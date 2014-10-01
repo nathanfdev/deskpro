@@ -89,7 +89,6 @@ class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 
 		if (isset($this->usersource->options['login_custom_text']) && $custom_button_text = $this->usersource->options['login_custom_text']) {
 			$capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;
-			$capabilities[] = UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN;
 		}
 
 		return $capabilities;

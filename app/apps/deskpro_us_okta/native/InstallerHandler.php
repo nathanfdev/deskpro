@@ -61,7 +61,9 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
 	{
 		$us->title             = $app->title;
 		$us->options           = array(
+			'external_key'      => $app->getSetting('external_key'),
 			'sso_url'           => $app->getSetting('sso_url'),
+			'slo_url'           => $app->getSetting('slo_url'),
 			'issuer_id'         => $app->getSetting('issuer_id'),
 			'cert'              => $app->getSetting('cert'),
 			'login_custom_text' => $app->getSetting('login_custom_text'),
