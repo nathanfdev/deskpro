@@ -138,7 +138,12 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 			if ($team->avatar && $blobId != $team->avatar['id']) {
 				$this->em->remove($team->avatar);
 			}
-			$team->avatar = $this->em->getReference('DeskPRO:Blob', $blobId);
+			$blob = $this->em->find('DeskPRO:Blob', $blobId);
+			if ($blob && $blob->isImage()) {
+				$team->avatar = $blob;
+			} else {
+				$team->avatar = null;
+			}
 		} elseif($team->avatar) {
 			$team->avatar && $this->em->remove($team->avatar);
 			$team->avatar = null;
@@ -148,8 +153,6 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 		if (count($errors)) {
 			return $this->createApiValidationErrorResponse($errors);
 		}
-
-		// todo handle image
 
 		#------------------------------
 		# Save members
