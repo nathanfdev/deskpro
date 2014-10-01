@@ -381,10 +381,16 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 	 */
 	public function getExtraDetails()
 	{
+		try {
+			$xml_text = $this->getMetadataXml();
+		} catch (\Exception $e) {
+			$xml_text = 'SP Metadata not yet available. Please fill out SSO URL and Issuer Metadata (a.k.a IdP EntityID) settings and save.';
+		}
+
 		return array(
 			'consumer_url' => $this->getCallbackUrl(),
 			'metadata_url' => $this->getMetadataXmlUrl(),
-			'metadata_text' => $this->getMetadataXml(),
+			'metadata_text' => $xml_text,
 			'slo_url' => $this->getSingleLogoutServiceUrl(),
 		);
 	}

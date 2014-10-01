@@ -13,13 +13,16 @@
 							<td style="width: 30%;">Single Sign On URL</td>
 							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
 								value="{{ usersource_details.consumer_url }}" /></td>
-							<td>&nbsp;</td>
+							<td>
+								<button clip-copy="usersource_details.consumer_url">Copy URL</button>
+							</td>
 						</tr>
 						<tr>
 							<td>Audience URI (SP Entity ID)</td>
 							<td><input style="width: 100%" type="text" disabled="disabled"
 								value="{{ usersource_details.metadata_url }}" /></td>
 							<td>
+								<button clip-copy="usersource_details.metadata_url">Copy URL</button>
 								<button ng-click="showMetadata = true" class="btn btn-default btn-sm"
 									style="margin-left: 25px;">View Metadata
 								</button>
