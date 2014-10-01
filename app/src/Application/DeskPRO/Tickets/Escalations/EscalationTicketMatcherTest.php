@@ -29,111 +29,40 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Tickets
+ * @category Entities
  */
 
-namespace Application\DeskPRO\People\PermissionLoader;
+namespace Application\DeskPRO\Tickets\Escalations;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\TicketEscalation;
+use Application\DeskPRO\Searcher\OrganizationSearch;
+use Application\DeskPRO\Searcher\PersonSearch;
+use Application\DeskPRO\Searcher\TicketSearch;
+use Doctrine\ORM\EntityManager;
+use Monolog\Logger;
+use Psr\Log\NullLogger;
 
-/**
- * A permission loader knows how to load permissions for a thing.
- */
-abstract class AbstractLoader implements \Serializable
+class EscalationTicketMatcherTest extends EscalationTicketMatcher
 {
-	/**
-	 * @var int[]
-	 */
-	protected $usergroup_ids;
+	private $matches;
+
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Person
+	 * @param \Application\DeskPRO\Entity\Ticket[] $tickets
 	 */
-	protected $person;
-
-	/**
-	 * @var int
-	 */
-	protected $person_id = 0;
-
-	/**
-	 * @var string
-	 */
-	public $loaded_key = '';
-
-	public function getSubkey()
+	public function setTickets(array $tickets)
 	{
-		return null;
-	}
-
-	public function setPersonContext(Person $person)
-	{
-		$this->person = $person;
-		$this->person_id = $person->id;
+		$this->matches = $tickets;
 	}
 
 	/**
-	 * @param int[] $usergroup_ids
-	 * @param \Application\DeskPRO\Entity\Person $person Optional person to fetch overrides for
+	 * @param TicketEscalation $esc
+	 * @param int              $limit
+	 * @return \Application\DeskPRO\Entity\Ticket[]
 	 */
-	public function __construct(array $usergroup_ids, Person $person = null)
+	public function getMatches(TicketEscalation $esc, $limit = 100)
 	{
-		$this->usergroup_ids = $usergroup_ids;
-		if (App::$container->getUserGroups()->getEveryoneGroup()->is_enabled) {
-			$this->usergroup_ids[] = 1;
-		} else {
-			$this->usergroup_ids[] = 0;
-		}
-		$this->usergroup_ids = array_unique($this->usergroup_ids);
-		sort($this->usergroup_ids, \SORT_NUMERIC);
-
-		$this->person = $person;
-
-		$this->init();
-	}
-
-	protected function init() {}
-
-
-	/**
-	 * Get the usergroup IDs represented by the loaded permissions
-	 *
-	 * @return array
-	 */
-	public function getUsergroupIds()
-	{
-		return $this->usergroup_ids;
-	}
-
-
-	/**
-	 * Get an array of data we'll serialize
-	 *
-	 * @return array
-	 */
-	abstract protected function serializeData();
-
-	public function serialize()
-	{
-		$data = $this->serializeData();
-		$data['usergroup_ids'] = $this->usergroup_ids;
-
-		return serialize($data);
-	}
-
-	/**
-	 * Initialize this object with an array of saved data
-	 *
-	 * @param array $data
-	 */
-	abstract protected function unserializeData(array $data);
-
-	public function unserialize($data)
-	{
-		$data = unserialize($data);
-
-		$this->usergroup_ids = $data['usergroup_ids'];
-		$this->unserializeData($data);
+		return $this->matches;
 	}
 }

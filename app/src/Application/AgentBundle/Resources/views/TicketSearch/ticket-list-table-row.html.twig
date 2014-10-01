@@ -50,8 +50,8 @@
 			<span class="prop-val"><%= ticket_display.product.title %></span>
 		<% } %>
 		<% if (field == 'agent') { %>
-			<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /></span><% } %>
-			<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /></a></span><% } %>
+			<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /> <%- ticket.agent.display_name %></span><% } %>
+			<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /> <%- ticket.agent.display_name %></a></span><% } %>
 			<% if (!ticket_display.agent) { %>&nbsp;<% } %>
 		<% } %>
 		<% if (field == 'agent_team') { %>

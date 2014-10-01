@@ -40,6 +40,9 @@
 			<li class="dp-author"><i class="dp-icon-user"></i> {{ news.person.display_name_user }}</li>
 			<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_news', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a></li>
 		</ul>
+		{% if news.status != 'published' and news.status != 'archived' and app.user.is_agent %}
+			<div class="sub-note">{{ phrase('user.general.can-view-because-agent') }}</div>
+		{% endif %}
 	</header>
 	<article>
 		{{ news.content_html|raw }}

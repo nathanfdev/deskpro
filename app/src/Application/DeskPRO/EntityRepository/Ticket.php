@@ -719,11 +719,13 @@ class Ticket extends AbstractEntityRepository
 
 		if ($for_validation) {
 			return $this->getEntityManager()->getConnection()->fetchAllCol("
-				SELECT id
+				SELECT tickets.id
 				FROM tickets
-				WHERE (person_email_id = ? OR person_email_id IS null) AND status = 'hidden' AND hidden_status = 'validating'
-				ORDER BY id DESC
-			", array($email));
+				LEFT JOIN people ON (people.id = tickets.person_id)
+				LEFT JOIN people_emails ON (people_emails.id = people.primary_email_id)
+				WHERE (person_email_id = ? OR (person_email_id IS null AND people_emails.id = ?)) AND status = 'hidden' AND hidden_status = 'validating'
+				ORDER BY tickets.id DESC
+			", array($email, $email));
 		} else {
 			return $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id

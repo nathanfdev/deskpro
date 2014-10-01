@@ -321,9 +321,13 @@ class TicketIncomingEmailMessage
 				}
 			}
 
-			$this->body = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
-			$this->body_full = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->body_full, \ENT_QUOTES, 'UTF-8')));
-			$this->generic_cut = str_replace(array("\n", "\r"), '', nl2br(htmlspecialchars($this->generic_cut, \ENT_QUOTES, 'UTF-8')));
+			$this->body        = Strings::utf8_bad_strip($this->body);
+			$this->body_full   = Strings::utf8_bad_strip($this->body_full);
+			$this->generic_cut = Strings::utf8_bad_strip($this->generic_cut);
+
+			$this->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->body, \ENT_QUOTES, 'UTF-8')));
+			$this->body_full = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->body_full, \ENT_QUOTES, 'UTF-8')));
+			$this->generic_cut = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($this->generic_cut, \ENT_QUOTES, 'UTF-8')));
 			$this->body_is_html = false;
 		}
 

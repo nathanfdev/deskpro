@@ -56,9 +56,9 @@ class TicketDepartmentPropsType extends AbstractType
 				return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
 			}
 		));
-		$builder->add('avatar', 'entity', array(
-			'required'      => false,
-			'class'         => 'DeskPRO:Blob',
+		$builder->add('avatar', 'text', array(
+			'required' => false,
+			'mapped'   => false
 		));
 	}
 

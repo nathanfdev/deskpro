@@ -1397,7 +1397,7 @@ article.content-message .content .body-text .fade-bar-longmsg {
 		cursor: pointer;
 		display: block;
 		position: absolute;
-		bottom: 4px;
+		bottom: 5px;
 		left: 0;
 		right: 0;
 		text-align: center;
@@ -1405,11 +1405,11 @@ article.content-message .content .body-text .fade-bar-longmsg {
 		strong {
 			font-weight: normal;
 			font-style: normal;
-			font-size: 11px;
-			background: #E4E4E4;
-			border: 1px solid #999999;
+			font-size: 12px;
+			background: #f1f1f1;
+			border: 1px solid #676c7d;
 			line-height: 100%;
-			padding: 1px 8px;
+			padding: 3px 10px;
 			.rounded(3px);
 			text-shadow: none;
 		}
@@ -7904,6 +7904,7 @@ table.data-display-table tr th {
 		display: block;
 		float: left;
 		padding: 0 10px;
+		height: 31px;
 		border-right: 1px solid #CACACA;
 		cursor: pointer;
 		position: relative;
@@ -7917,7 +7918,21 @@ table.data-display-table tr th {
 		}
 
 		.select2-container.invisible-trigger {
+			z-index: 99;
+			top: auto;
+			bottom: 1px;
+			height: 27px;
+			overflow: hidden;
 
+			a {
+				position: absolute;
+				top: 0; right: 0; left: 0; bottom: 0;
+				span, abbr, div { display: none; }
+			}
+			.select2-drop, input { display: none; }
+		}
+		select {
+			display: none;
 		}
 	}
 

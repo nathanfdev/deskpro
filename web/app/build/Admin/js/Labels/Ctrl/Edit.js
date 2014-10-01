@@ -28,7 +28,7 @@
         this.$scope.colors = ['#e11d21', '#eb6420', '#fbca04', '#009800', '#006b75', '#207de5', '#0052cc', '#5319e7', '#f7c6c7', '#fad8c7', '#fef2c0', '#bfe5bf', '#bfdadc', '#c7def8', '#bfd4f2', '#d4c5f9'];
         this.$scope.form = {
           label: '',
-          color: this.$scope.colors[0],
+          color: "",
           label_type: this.type
         };
         return this.$scope.startDelete = (function(_this) {
@@ -49,7 +49,8 @@
         if (this.$stateParams.label) {
           return this.LabelDefinition.get(this.type, this.$stateParams.label).then((function(_this) {
             return function(def) {
-              if (def == null) {
+              console.log(def);
+              if (!def) {
                 return;
               }
               _this.definition = def;

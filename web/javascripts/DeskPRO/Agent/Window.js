@@ -2346,7 +2346,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		routeData.tabPlaceholderId = DeskPRO_Window.TabBar.addTabPlaceholder(url, routeData);
 
 		if (currentActiveTabId && routeData && routeData.replaceTab) {
-			DeskPRO_Window.TabBar.removeTabById(currentActiveTabId);
+			var currentTab = DeskPRO_Window.TabBar.getTab(currentActiveTabId);
+			if (!(currentTab && currentTab.page && currentTab.page.NO_REPLACE_TAB)) {
+				DeskPRO_Window.TabBar.removeTabById(currentActiveTabId);
+			}
 		}
 
 		if (routeData.routeTriggerEl && routeData.toggleOpenClass) {

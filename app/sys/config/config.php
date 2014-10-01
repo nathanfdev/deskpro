@@ -436,7 +436,8 @@ $container->loadFromExtension(
 							'content'      => array(),
 							'status'       => array(),
 							'category_ids' => array('type' => 'integer'),
-							'labels'       => array()
+							'labels'       => array(),
+							'sticky_words' => array(),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -450,11 +451,12 @@ $container->loadFromExtension(
 					),
 					'news'              => array(
 						'mappings'    => array(
-							'title'       => array(),
-							'labels'      => array(),
-							'content'     => array(),
-							'status'      => array(),
-							'category_id' => array('type' => 'integer'),
+							'title'        => array(),
+							'labels'       => array(),
+							'sticky_words' => array(),
+							'content'      => array(),
+							'status'       => array(),
+							'category_id'  => array('type' => 'integer'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -468,11 +470,12 @@ $container->loadFromExtension(
 					),
 					'download'          => array(
 						'mappings'    => array(
-							'title'       => array(),
-							'labels'      => array(),
-							'content'     => array(),
-							'status'      => array(),
-							'category_id' => array('type' => 'integer'),
+							'title'        => array(),
+							'labels'       => array(),
+							'sticky_words' => array(),
+							'content'      => array(),
+							'status'       => array(),
+							'category_id'  => array('type' => 'integer'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -486,11 +489,12 @@ $container->loadFromExtension(
 					),
 					'feedback'          => array(
 						'mappings'    => array(
-							'title'       => array(),
-							'labels'      => array(),
-							'content'     => array(),
-							'status'      => array(),
-							'category_id' => array('type' => 'integer'),
+							'title'        => array(),
+							'labels'       => array(),
+							'sticky_words' => array(),
+							'content'      => array(),
+							'status'       => array(),
+							'category_id'  => array('type' => 'integer'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -529,7 +533,7 @@ $container->loadFromExtension(
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
-							'model'                         => 'Application\DeskPRO\Entity\ChatConversation',
+							'model'                         => 'Application\\DeskPRO\\Entity\\ChatConversation',
 							'provider'                      => array(),
 							'finder'                        => array(),
 							'elastica_to_model_transformer' => array('ignore_missing' => true),

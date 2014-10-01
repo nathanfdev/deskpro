@@ -29,48 +29,22 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Debug\Data;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class TicketTriggerData implements DataInterface
+class Build1412090212 extends AbstractBuild
 {
-	public function getData()
+	public function run()
 	{
-		$ret = array();
-
-		$data = App::getDb()->fetchAll("SELECT * FROM ticket_triggers ORDER BY id ASC");
-		foreach ($data as &$d) {
-			if (!empty($d['terms'])) {
-				$d['terms'] = @json_decode($d['terms'], true);
-			}
-			if (!empty($d['actions'])) {
-				$d['actions'] = @json_decode($d['actions'], true);
-			}
+		if (!defined('DPC_IS_CLOUD') && $this->container->getSetting('elastica.enabled')) {
+			$this->out("Setting ElasticSearch reindex flag");
+			$this->container->getDb()->replace('settings', array(
+				'name'  => 'elastica.requires_reset',
+				'value' => '1',
+			));
+			$this->container->getDb()->delete('datastore', array('name' => 'sys.es_indexer'));
 		}
-		unset($d);
-		$ret['triggers'] = $data;
-
-		$data = App::getDb()->fetchAll("SELECT * FROM slas ORDER BY id ASC");
-		$ret['slas'] = $data;
-
-		$data = App::getDb()->fetchAll("SELECT * FROM ticket_escalations ORDER BY id ASC");
-		foreach ($data as &$d) {
-			if (!empty($d['terms'])) {
-				$d['terms'] = @json_decode($d['terms'], true);
-			}
-			if (!empty($d['terms_any'])) {
-				$d['terms_any'] = @json_decode($d['terms_any'], true);
-			}
-			if (!empty($d['actions'])) {
-				$d['actions'] = @json_decode($d['actions'], true);
-			}
-		}
-		unset($d);
-		$ret['escalations'] = $data;
-
-		return $ret;
 	}
 }

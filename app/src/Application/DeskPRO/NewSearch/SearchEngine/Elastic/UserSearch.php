@@ -104,7 +104,16 @@ class UserSearch implements UserSearchInterface
 			return new ResultSet();
 		}
 
-		$filtered_query = new Query\Filtered(new Query\QueryString($query), $filter);
+		$bool_query = new Query\Bool();
+		$bool_query->addMust(new Query\QueryString($query));
+
+		$sticky_match = new Query\Match();
+		$sticky_match->setFieldQuery('sticky_words', $query);
+		$sticky_match->setFieldOperator('sticky_words', 'AND');
+		$sticky_match->setFieldBoost('sticky_words', 2);
+		$bool_query->addShould($sticky_match);
+
+		$filtered_query = new Query\Filtered($bool_query, $filter);
 		$res = $search->search($filtered_query);
 		$objects = $this->transformer->transform($res->getResults());
 

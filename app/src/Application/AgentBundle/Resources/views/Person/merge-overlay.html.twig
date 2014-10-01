@@ -126,7 +126,7 @@
 								{% if person.labels is not empty %}
 									<ul>
 										{% for label in person.labels %}
-											<li dp-label="{{ label.label }}">{{ label.label }}</li>
+											<li dp-label dp-label-string="{{ label.label }}" dp-label-type="people">{{ label.label }}</li>
 										{% endfor %}
 									</ul>
 								{% endif %}

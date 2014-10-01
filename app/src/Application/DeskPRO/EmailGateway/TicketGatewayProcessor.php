@@ -190,6 +190,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
 			));
 			$message->setTo($this->reader->getFromAddress()->getEmail());
+
+			App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
+
 			$this->container->getMailer()->send($message);
 
 			return null;
@@ -237,6 +242,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					'message.eml',
 					'message/rfc822'
 				));
+
+				App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function() use ($message) {
+					$message->prepare();
+				});
+
 				App::getMailer()->send($message);
 
 				$this->error = 'obj_closed';

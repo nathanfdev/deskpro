@@ -170,6 +170,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 		if ($('#dp_notify_list').find('li').length < 1) {
 			DeskPRO_Window.dismissAlertQueue = [-1];
+			$('#dp_header_notify_wrap').trigger('dpClose');
 		}
 	},
 

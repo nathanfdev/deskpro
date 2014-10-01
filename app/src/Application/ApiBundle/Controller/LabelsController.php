@@ -106,7 +106,7 @@ class LabelsController extends AbstractController implements ProtectedController
 		$type = trim($new['label_type']);
 		$rep = $this->rep();
 		$rep->renameLabelDef($old['label'], $label, $new['color'], $type);
-		$rep->updateColorForLabel($label, $new['color']);
+		$rep->updateColorForLabel($type, $label, $new['color']);
 
 		return $this->createApiResponse($rep->getDefinition($type, $label)->toApiData());
 	}
@@ -142,7 +142,7 @@ class LabelsController extends AbstractController implements ProtectedController
 		$definition['label'] = trim($label);
 		$definition['color'] = $color;
 		$rep->updateDefinitionUsages($definition);
-		$rep->updateColorForLabel($label, $color);
+		$rep->updateColorForLabel($type, $label, $color);
 		$this->em->flush();
 
 		return $this->createApiResponse($definition->toApiData());

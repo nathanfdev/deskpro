@@ -29,48 +29,23 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Debug\Data;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-
-class TicketTriggerData implements DataInterface
+class Build1412071356 extends AbstractBuild
 {
-	public function getData()
+	public function run()
 	{
-		$ret = array();
-
-		$data = App::getDb()->fetchAll("SELECT * FROM ticket_triggers ORDER BY id ASC");
-		foreach ($data as &$d) {
-			if (!empty($d['terms'])) {
-				$d['terms'] = @json_decode($d['terms'], true);
-			}
-			if (!empty($d['actions'])) {
-				$d['actions'] = @json_decode($d['actions'], true);
-			}
-		}
-		unset($d);
-		$ret['triggers'] = $data;
-
-		$data = App::getDb()->fetchAll("SELECT * FROM slas ORDER BY id ASC");
-		$ret['slas'] = $data;
-
-		$data = App::getDb()->fetchAll("SELECT * FROM ticket_escalations ORDER BY id ASC");
-		foreach ($data as &$d) {
-			if (!empty($d['terms'])) {
-				$d['terms'] = @json_decode($d['terms'], true);
-			}
-			if (!empty($d['terms_any'])) {
-				$d['terms_any'] = @json_decode($d['terms_any'], true);
-			}
-			if (!empty($d['actions'])) {
-				$d['actions'] = @json_decode($d['actions'], true);
-			}
-		}
-		unset($d);
-		$ret['escalations'] = $data;
-
-		return $ret;
+		$this->out("Fix email address assigned to ticket");
+		$this->execMutateSql("
+			UPDATE tickets
+			LEFT JOIN people_emails ON (people_emails.id = tickets.person_email_id)
+			SET tickets.person_email_id = NULL
+			WHERE
+				tickets.person_email_id IS NOT NULL
+				AND people_emails.person_id != tickets.person_id
+		");
 	}
 }

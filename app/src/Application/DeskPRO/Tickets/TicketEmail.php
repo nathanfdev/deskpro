@@ -382,7 +382,7 @@ class TicketEmail
 
 		// To user - use the selected email address on the ticket
 		if ($this->user_mode == self::MODE_USER) {
-			if ($this->ticket->person_email && $this->ticket->person_email->person == $this->to_person) {
+			if ($this->ticket->person_email && $this->ticket->person_email->person === $this->to_person) {
 				$to_email = $this->ticket->person_email->email;
 				$this->logger->info(sprintf("[TicketEmail] to_email(1): %s", $to_email));
 			} else if ($this->ticket->person_email_validating) {

@@ -101,6 +101,7 @@ class ProcessReply extends ProcessAbstract
 		}
 
 		$executor_context->setEmailContext($this->reader);
+		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
 		if ($this->logger) {
 			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
@@ -123,6 +124,11 @@ class ProcessReply extends ProcessAbstract
 				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
 			));
 			$message->setTo($this->reader->getFromAddress()->getEmail());
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
+
 			App::getMailer()->send($message);
 
 			return null;
@@ -162,6 +168,11 @@ class ProcessReply extends ProcessAbstract
 				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
 			));
 			$message->setTo($this->reader->getFromAddress()->getEmail());
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
+
 			App::getMailer()->send($message);
 
 			return null;

@@ -33,6 +33,7 @@ use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Elastica\Filter;
 use Elastica\Query;
+use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
 
 class UserSearch implements UserSearchInterface
@@ -68,13 +69,17 @@ class UserSearch implements UserSearchInterface
 	public function search(SearchContextInterface $context, $query, array $options = null)
 	{
 		$options      = new OptionsArray($options ?: array());
-		$per_page     = $options->get('per_page');
-		$page         = $options->get('page');
+		$per_page     = Numbers::bound($options->get('per_page', 50), 1, 100);
+		$page         = max($options->get('page', 1), 1);
 		$ignore_perms = $options->get('ignore_perms');
 
-		$types = array('article', 'download', 'feedback', 'news');
+		$context_params = $this->buildParams($context);
+		$types = $context_params['types'];
 
-		$limit_type_names = $types;
+		if (!$types) {
+			return new ResultSet(array());
+		}
+
 		$limit_types = "'" . implode('\',\'', $types) . "'";
 
 		$query_words = explode(' ', $query);
@@ -99,15 +104,8 @@ class UserSearch implements UserSearchInterface
 			";
 
 			if (!$ignore_perms) {
-				$permfilter = new \Application\DeskPRO\Search\Adapter\Mysql\PermissionFilter();
-				$permfilter->setPersonContext($this->person);
-
-				if ($limit_type_names) {
-					$permfilter->setTypes($limit_type_names);
-				}
-
-				$perm_join  = $permfilter->getJoin();
-				$perm_where = $permfilter->getWhere();
+				$perm_join  = $context_params['join'];
+				$perm_where = $context_params['where'];
 				if (!$perm_where) {
 					$perm_where = '1';
 				}
@@ -148,5 +146,57 @@ class UserSearch implements UserSearchInterface
 		$objects = $this->transformer->transform($results);
 
 		return new ResultSet($objects, $total);
+	}
+
+
+	/**
+	 * @param SearchContextInterface $context
+	 * @return ResultSet
+	 */
+	private function buildParams(SearchContextInterface $context)
+	{
+		$types  = array();
+		$joins  = array();
+		$wheres = array();
+
+		$x = 0;
+		if ($context->getArticleCategoryIds()) {
+			$jn = '_cs' . $x++;
+			$cat_ids = implode(',', $context->getArticleCategoryIds());
+
+			$types[]  = 'article';
+			$joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'article' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id LIKE 'category_id%' AND $jn.content IN ($cat_ids))";
+			$wheres[] = "($jn.object_type = 'article' AND $jn.object_id IS NOT NULL)";
+		}
+		if ($context->getNewsCategoryIds()) {
+			$jn = '_cs' . $x++;
+			$cat_ids = implode(',', $context->getNewsCategoryIds());
+
+			$types[]  = 'news';
+			$joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'news' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
+			$wheres[] = "($jn.object_type = 'news' AND $jn.object_id IS NOT NULL)";
+		}
+		if ($context->getFeedbackCategoryIds()) {
+			$jn = '_cs' . $x++;
+			$cat_ids = implode(',', $context->getFeedbackCategoryIds());
+
+			$types[]  = 'feedback';
+			$joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";;
+			$wheres[] = "($jn.object_type AND $jn.object_id IS NOT NULL)";
+		}
+		if ($context->getDownloadCategoryIds()) {
+			$jn = '_cs' . $x++;
+			$cat_ids = implode(',', $context->getDownloadCategoryIds());
+
+			$types[]  = 'download';
+			$joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'download' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
+			$wheres[] = "($jn.object_type = 'download' AND $jn.object_id IS NOT NULL)";
+		}
+
+		return array(
+			'types' => $types,
+			'join'  => implode("\n", $joins),
+			'where' =>  "(" . implode(' OR ', $wheres) . ")"
+		);
 	}
 }

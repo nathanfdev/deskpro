@@ -99,6 +99,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		);
 
 		$executor_context->setEmailContext($this->reader);
+		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
 		#------------------------------
 		# Read in email props and create cutter
@@ -151,6 +152,10 @@ class ProcessAgentFwd extends ProcessAbstract
 				'message.eml',
 				'message/rfc822'
 			));
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
 
 			App::getMailer()->send($message);
 
@@ -325,6 +330,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		);
 
 		$executor_context->setEmailContext($this->reader);
+		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
 		$user_raw_source = $has_eml_attach->getFileContents();
 		$user_reader = new EzcReader();
@@ -392,6 +398,10 @@ class ProcessAgentFwd extends ProcessAbstract
 				'message.eml',
 				'message/rfc822'
 			));
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
 
 			App::getMailer()->send($message);
 

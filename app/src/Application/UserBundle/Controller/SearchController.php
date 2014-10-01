@@ -89,11 +89,14 @@ class SearchController extends AbstractController
 			$sticky_results = $sticky_search->getResults($q, 5);
 
 			if ($sticky_results) {
-				foreach ($sticky_results as $key => $x) {
-					if (isset($results[$key])) {
-						unset($results[$key]);
-					}
+				$got_sticky = array();
+				foreach ($sticky_results as $sitem) {
+					$total++;
+					$got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
 				}
+				$results = array_filter($results, function($r) use ($got_sticky) {
+					return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
+				});
 			}
 
 			$searchlog = SearchLog::create($q, count($results) + count($sticky_results), true);
@@ -195,9 +198,27 @@ class SearchController extends AbstractController
 	{
 		$se = $this->container->getSearchEngine();
 		$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
-		$results = $se->getUserSearch()->search($context, $query);
+		$search_results = $se->getUserSearch()->search($context, $query);
+
+		$sticky_search  = new StickyWordSearch($this->em);
+		$sticky_search->setPersonContext($this->person);
+		$sticky_results = $sticky_search->getResults($query, 5);
 
 		$format = $this->in->getString('format');
+
+		$results = array();
+
+		$got_sticky = array();
+		foreach ($sticky_results as $sitem) {
+			$got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
+			$results[] = $sitem;
+		}
+		foreach ($search_results->getTypedResults() as $item) {
+			if (isset($got_sticky[get_class($item['object']).$item['object']->getId()])) {
+				continue;
+			}
+			$results[] = $item;
+		}
 
 		if ($format == 'json') {
 			$data = array('results' => array());
@@ -216,7 +237,7 @@ class SearchController extends AbstractController
 			}
 		} else {
 			return $this->render('UserBundle:Search:omnisearch.html.twig', array(
-				'results' => $results->getTypedResults(),
+				'results' => $results,
 				'query'   => $query,
 			));
 		}

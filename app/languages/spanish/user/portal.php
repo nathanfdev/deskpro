@@ -11,6 +11,7 @@
 	'user.portal.search.new-feedback'                                      => 'Enviar comentario',
 	'user.portal.search.new-ticket'                                        => 'Contactar con nosotros',
 	'user.portal.search.no_matches'                                        => 'Nada apropiado?...',
+	'user.portal.search_label-search_show'                                 => 'Mostrar',
 	'user.portal.search_label-search_with'                                 => 'etiquetado con',
 	'user.portal.search_labels_title'                                      => 'Etiquetas de búsqueda',
 	'user.portal.search_more-results'                                      => 'Ver más resultados de la búsqueda',

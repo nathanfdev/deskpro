@@ -55,6 +55,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 		'Application\\DeskPRO\\Entity\\Person' => 1,
 		'Application\\DeskPRO\\Entity\\PersonEmail' => 1,
 		'Application\\DeskPRO\\Entity\\Organization' => 1,
+		'Application\\DeskPRO\\Entity\\ChatConversation' => 1,
+		'Application\\DeskPRO\\Entity\\ChatMessage' => 1,
 	);
 
 	/**
@@ -186,6 +188,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 			return $ent->ticket;
 		} elseif ($ent instanceof \Application\DeskPRO\Entity\PersonEmail) {
 			return $ent->person;
+		} elseif ($ent instanceof \Application\DeskPRO\Entity\ChatMessage) {
+			return $ent->conversation;
 		}
 
 		return $ent;

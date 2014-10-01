@@ -187,8 +187,10 @@ class Choice extends HandlerAbstract
 		} else if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 			$req_opt = $this->field_def->getOption('agent_required');
 		}
-		if ($req_opt || $is_radio || $is_check) {
+		if ($is_radio || $is_check) {
 			$field_opts['empty_value'] = false;
+		} else {
+			$field_opts['empty_value'] = '';
 		}
 
 		$field_choice = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', null, $field_opts);

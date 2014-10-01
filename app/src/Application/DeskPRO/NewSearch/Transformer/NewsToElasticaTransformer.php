@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\NewSearch\Transformer;
 
+use Application\DeskPRO\App;
 use Elastica\Document;
 use Application\DeskPRO\Entity\News;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
@@ -33,6 +34,15 @@ class NewsToElasticaTransformer implements ModelToElasticaTransformerInterface
 		if ($object->labels) {
 			$labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
 			$document->set('labels', $labels);
+		}
+
+		$sticky_words = App::$container->getDb()->fetchAllCol("
+			SELECT word
+			FROM search_sticky_result
+			WHERE object_type = ? AND object_id = ?
+		", array('DeskPRO:News', $object->id));
+		if ($sticky_words) {
+			$document->set('sticky_words', $sticky_words);
 		}
 
 		return $document;
