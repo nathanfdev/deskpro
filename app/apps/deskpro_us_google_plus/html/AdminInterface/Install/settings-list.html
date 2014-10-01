@@ -1,0 +1,67 @@
+<div class="form-group" ng-repeat="setting in pack.settings_def" ng-switch="setting.type"
+	ng-if="setting.type != 'hidden' && (!setting.usersource_display || setting.usersource_display == Ctrl.usersourceType)">
+	<div class="col-lg-4">
+		<h3>{{ setting.label }}</h3>
+	</div>
+	<div class="col-lg-8">
+		<div ng-switch-when="text">
+			<input type="text" class="form-control" ng-model="setting_values[setting.name]"
+				ng-required="setting.is_required"
+				placeholder="{{ setting.placeholder }}" />
+		</div>
+		<div ng-switch-when="textarea">
+			<textarea class="form-control" ng-model="setting_values[setting.name]" ng-required="setting.is_required"
+				placeholder="{{ setting.placeholder }}" rows="12"></textarea>
+		</div>
+		<div ng-switch-when="password">
+			<input type="password" class="form-control" ng-model="setting_values[setting.name]"
+				ng-required="setting.is_required"
+				placeholder="{{ setting.placeholder }}" />
+		</div>
+		<div ng-switch-when="phone_number">
+			<input type="tel" ng-required="setting.is_required"
+				dp-phone-number
+				style="min-width:250px;"
+				class="form-control"
+				ng-model="setting_values[setting.name]"
+				placeholder="{{ setting.placeholder }}" />
+		</div>
+		<div ng-switch-when="checkbox">
+			<label>
+				<input type="checkbox" ng-model="setting_values[setting.name]" ng-required="setting.is_required" />
+				{{ setting.checkbox_label }}
+			</label>
+		</div>
+		<div ng-switch-when="choice">
+			<select
+				ng-model="setting_values[setting.name]" ng-required="setting.is_required"
+				ui-select2="{dropdownAutoWidth: true}"
+				>
+				<option ng-repeat="opt in setting.options"
+					value="{{ opt.value }}">{{ opt.label }}
+				</option>
+			</select>
+		</div>
+		<span class="help-block" ng-show="setting.description" ng-bind-html="setting.description"></span>
+
+		<div ng-if="setting.inline_dependant && setting_values[setting.name]">
+			<div ng-switch="setting.inline_dependant.type">
+				{{ setting.inline_dependant.label }}
+				<div ng-switch-when="choice">
+					<div ng-if="setting.inline_dependant.options_variable">
+						<select
+							ng-model="setting_values[setting.inline_dependant.name]"
+							ng-options="obj.value as obj.label for obj in Ctrl[setting.inline_dependant.options_variable]"
+							ng-required="setting.inline_dependant.is_required"
+							>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div ng-if="setting.name == 'cert'">
+			Select certificate (usually .crt, .cert, .pem) file: <input type="file" dp-read-file="readContentsFunction($fileContent)" style="display: inline-block" />
+		</div>
+		<p ng-show="errors[setting.name]" class="text-danger">This field is required and cannot be empty.</p>
+	</div>
+</div>
