@@ -420,7 +420,7 @@ class Runner
 		$this->logger->logInfo("Retrying is " . ($allow_retry ? "on" : "off"));
 		if ($allow_retry && $source->exec_count >= $this->max_retry_attempts) {
 			$allow_retry = false;
-			$this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempt}");
+			$this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempts}");
 		}
 
 		$this->logger->logDebug("Running processors");
