@@ -231,7 +231,6 @@ class OrganizationSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 					break;
 
 				case self::TERM_NAME:
@@ -250,7 +249,6 @@ class OrganizationSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_2", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('Phone Number', $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_ADDRESS:
@@ -263,7 +261,6 @@ class OrganizationSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('Address', $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_IM:
@@ -276,7 +273,6 @@ class OrganizationSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('IM', $op, $choice);
 					break;
 
 				case self::TERM_EMAIL_DOMAIN:
@@ -287,7 +283,6 @@ class OrganizationSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch("$join_name.domain", $op, $choice, false);
 
 					$choice = implode(' or ', (array)$choice);
-					$this->summary[] = "Email domain is " . $choice;
 					break;
 
 				case self::TERM_LABEL:
@@ -301,8 +296,6 @@ class OrganizationSearch extends SearcherAbstract
 						$choices_in = implode(',', $choices_in);
 						if (!$choices_in) $choices_in = '';
 					}
-
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:

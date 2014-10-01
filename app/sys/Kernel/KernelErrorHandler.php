@@ -926,6 +926,10 @@ class KernelErrorHandler
 			$no_send_error = true;
 		}
 
+		if (strpos($errstr, 'Kerberos error') !== false) {
+			return;
+		}
+
 		// Socket/network errors
 		if (
 			strpos($errstr, 'stream_socket_enable_crypto():') !== false
