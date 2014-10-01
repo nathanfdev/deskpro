@@ -176,6 +176,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$password = $this->in->getString('password');
 		$password2 = $this->in->getString('password2');
 
+		$history = null;
 		if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
 			$history = new PasswordHistory();
 			$history->person = $this->person;
@@ -198,7 +199,9 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			$this->person->setPassword($password);
 
 			$this->em->persist($this->person);
-			$this->em->persist($history);
+			if ($history) {
+				$this->em->persist($history);
+			}
 			$this->em->flush();
 
 			// Reset user session
