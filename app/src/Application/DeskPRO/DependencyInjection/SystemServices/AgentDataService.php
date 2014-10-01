@@ -465,6 +465,34 @@ class AgentDataService
 		return $teams;
 	}
 
+
+	/**
+	 * @param int|\Application\DeskPRO\Entity\Person $agent
+	 * @param int|\Application\DeskPRO\Entity\AgentTeam $team
+	 * @return bool
+	 */
+	public function isAgentMemberOfTeam($agent, $team)
+	{
+		if (!is_object($agent)) {
+			try {
+				$agent = $this->get($agent);
+			} catch (\InvalidArgumentException $e) {
+				return false;
+			}
+		}
+
+		if (!is_object($team)) {
+			try {
+				$team = $this->getTeam($team);
+			} catch (\InvalidArgumentException $e) {
+				return false;
+			}
+		}
+
+		return in_array($agent, $this->getAgentsForTeam($team), true);
+	}
+
+
 	/**
 	 * @param int|\Application\DeskPRO\Entity\Person $agent
 	 * @return \Application\DeskPRO\Entity\AgentTeam[]
