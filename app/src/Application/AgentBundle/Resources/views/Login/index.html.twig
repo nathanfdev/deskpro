@@ -111,10 +111,12 @@
 								</label>
 							</li>
 							{% endif %}
+							{% if authManager.isForgotPasswordVisible %}
 							<li style="float:none; list-style-type:none; overflow: hidden; text-align: right;">
 								<a href="#"
 									class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a>
 							</li>
+							{% endif %}
 						</ul>
 					</fieldset>
 			<input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" style="margin-bottom: 10px;" />

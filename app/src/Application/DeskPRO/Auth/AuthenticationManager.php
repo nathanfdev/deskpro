@@ -320,7 +320,14 @@ class AuthenticationManager
 	 */
 	public function hasForgotPasswordUsersources()
 	{
-		return count($this->getForgotPasswordUsersources()) > 0;
+		// if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
+		foreach ($this->usersourcesForInterface as $usersource) {
+			if ($usersource->app === null) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
