@@ -1481,6 +1481,11 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$can_view = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+		if (!$can_view) {
+			$refresh_tab = false;
+		}
+
 		$data = array_merge($data, array(
 			'via_reply'                        => true,
 			'updated_agent_parts_html'         => isset($updated_agent_parts) ? $updated_agent_parts : '',
@@ -1498,7 +1503,7 @@ class TicketController extends AbstractController
 			'cc_list'                          => $cc_list,
 			'error_messages'                   => $error_messages ?: false,
 			'notified_agents'                  => $notify_agent_ids,
-			'can_view'                         => $this->person->PermissionsManager->TicketChecker->canView($ticket),
+			'can_view'                         => $can_view,
 			'api_data'                         => $ticket->toApiData()
 		));
 
@@ -2068,6 +2073,10 @@ class TicketController extends AbstractController
 		}
 
 		$data['data']['api_data'] = $ticket->toApiData();
+
+		if (!$data['data']['can_view']) {
+			$data['data']['refresh'] = false;
+		}
 
 		return $this->createJsonResponse($data);
 	}
