@@ -108,13 +108,13 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 				$this->ticket_object->department = $this->ticket->department_id ? App::findEntity('DeskPRO:Department', $this->ticket->department_id) : null;
 			}
 			if (isset($this->display_fields['category'])) {
-				$this->ticket_object->category   = $this->ticket->department_id ? App::findEntity('DeskPRO:TicketCategory', $this->ticket->category_id) : null;
+				$this->ticket_object->category   = $this->ticket->category_id ? App::findEntity('DeskPRO:TicketCategory', $this->ticket->category_id) : null;
 			}
 			if (isset($this->display_fields['priority'])) {
-				$this->ticket_object->priority   = $this->ticket->department_id ? App::findEntity('DeskPRO:TicketPriority', $this->ticket->priority_id) : null;
+				$this->ticket_object->priority   = $this->ticket->priority_id ? App::findEntity('DeskPRO:TicketPriority', $this->ticket->priority_id) : null;
 			}
 			if (isset($this->display_fields['product'])) {
-				$this->ticket_object->product    = $this->ticket->department_id ? App::findEntity('DeskPRO:Product', $this->ticket->product_id) : null;
+				$this->ticket_object->product    = $this->ticket->product_id ? App::findEntity('DeskPRO:Product', $this->ticket->product_id) : null;
 			}
 
 			$field_manager = App::getSystemService('ticket_fields_manager');

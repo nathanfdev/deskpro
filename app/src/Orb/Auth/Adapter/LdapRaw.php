@@ -228,7 +228,9 @@ class LdapRaw implements FormLoginInterface, Loggable
 					$raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('thumbnailPhoto'));
 				}
 			}
-		} catch (\Exception $e) {}
+		} catch (\Exception $e) {
+			return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+		}
 
 		$identity = new Identity($raw_info['identity'], $raw_info);
 

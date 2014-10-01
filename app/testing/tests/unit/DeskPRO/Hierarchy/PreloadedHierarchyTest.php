@@ -143,4 +143,9 @@ class TestCategory
 		$this->parent = $parent;
 		$this->title = $title;
 	}
+
+	public function getId()
+	{
+		return $this->id;
+	}
 }

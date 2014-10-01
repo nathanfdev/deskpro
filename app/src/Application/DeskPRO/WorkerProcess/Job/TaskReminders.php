@@ -145,14 +145,18 @@ class TaskReminders extends AbstractJob
 					$alerts++;
 				}
 
-				if ($agent->getPref('agent_notif.task_due.email')) {
+				$email_accounts = App::$container->getEmailAccountManager();
+				$out = $email_accounts->getDefaultOutAccountWithFallback();
+				$from_email = $out->getUseEmailAddress();
+
+				if ($from_email && $agent->getPref('agent_notif.task_due.email')) {
 					$message = App::getMailer()->createMessage();
 					$message->setTemplate('DeskPRO:emails_agent:task-due-reminder.html.twig', array(
 						'task' => $task,
 						'person' => $agent
 					));
 					$message->setToPerson($agent);
-					$message->setFrom(App::getSetting('core.default_from_email'), App::getSetting('core.deskpro_name'));
+					$message->setFrom($from_email, App::getSetting('core.deskpro_name'));
 					App::getMailer()->send($message);
 
 					$emails++;

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelDef extends AbstractEntityRepository
@@ -283,7 +284,7 @@ class LabelDef extends AbstractEntityRepository
 
 		try {
 			$this->getEntityManager()->getConnection()->executeUpdate(
-				sprintf('DELETE FROM %s WHERE LOWER(label) = ?', self::$types[$definition['label_type']]['table']),
+				sprintf('DELETE FROM %s WHERE label = ?', self::$types[$definition['label_type']]['table']),
 				array(strtolower($definition['label']))
 			);
 			$this->getEntityManager()->remove($definition);
@@ -388,14 +389,13 @@ class LabelDef extends AbstractEntityRepository
 		return $ret;
 	}
 
+
 	/**
-	 * TODO!
-	 * Rename a label
-	 *
-	 * @param $old_label
-	 * @param $new_label
-	 * @param $color
-	 * @param null $types
+	 * @param string $old_label
+	 * @param string $new_label
+	 * @param string $color
+	 * @param string $type
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 * @throws \Exception
 	 */
 	public function renameLabelDef($old_label, $new_label, $color, $type)
@@ -408,146 +408,46 @@ class LabelDef extends AbstractEntityRepository
 
 		$this->getEntityManager()->getConnection()->beginTransaction();
 
-		if (!$definition = $this->getDefinition($type, $old_label)) {
-			throw new NotFoundHttpException;
-		}
-
-		if ($exist = $this->getDefinition($type, $new_label)) {
-			if ($definition['label'] !== $exist['label']) {
-				$this->getEntityManager()->remove($exist);
-				$this->getEntityManager()->flush();
-			}
-		}
-
 		try {
 			foreach ($types as $t) {
 				$table = self::$types[$t]['table'];
 
+				$def_new = $this->getDefinition($t, $new_label);
+				$def_old = $this->getDefinition($t, $old_label);
+
 				$this->getEntityManager()->getConnection()->executeUpdate(
-					'UPDATE IGNORE ' . $table . ' SET label = ? WHERE LOWER(label) = ?',
+					'UPDATE IGNORE ' . $table . ' SET label = ? WHERE label = ?',
 					array($new_label, strtolower($old_label))
 				);
+				$this->getEntityManager()->getConnection()->executeUpdate(
+					'DELETE FROM ' . $table . ' WHERE label = ?',
+					array(strtolower($old_label))
+				);
+
+				if ($def_old && $def_new) {
+					$this->getEntityManager()->remove($def_old);
+				} else if ($def_old && !$def_new || !$def_old && !$def_new) {
+					$def_new = new Entity\LabelDef();
+					$def_new->label_type = $type;
+					$def_new->color = $color ?: '';
+					$def_new->label = $new_label;
+				} else if (!$def_old && $def_new) {
+					// nothing to do
+				}
+
+				$def_new->total = $this->getEntityManager()->getConnection()->fetchColumn("
+					SELECT COUNT(*)
+					FROM $table
+					WHERE label = ?
+				", array($new_label));
+				$this->getEntityManager()->persist($def_new);
 			}
 
-			$definition['label'] = $new_label;
-			$definition['color'] = $color;
-			$this->updateDefinitionUsages($definition);
 			$this->getEntityManager()->flush();
-
 			$this->getEntityManager()->getConnection()->commit();
 		} catch (\Exception $e) {
 			$this->getEntityManager()->getConnection()->rollback();
 			throw $e;
-		}
-
-		#------------------------------
-		# Rename labels within filters/macros/triggers
-		#------------------------------
-
-		$replace_label_arr = function($actions_str, $accept_types) use ($old_label, $new_label) {
-			$actions = @unserialize($actions_str);
-
-			if (!$actions) {
-				return $actions_str;
-			}
-
-			foreach ($actions as &$a) {
-				if (isset($a['type']) && in_array($a['type'], $accept_types) && !empty($a['options']['labels'])) {
-					$a['options']['labels'] = Arrays::replaceValue($a['options']['labels'], $old_label, $new_label);
-					$a['options']['labels'] = array_unique($a['options']['labels']);
-				}
-			}
-			unset($a);
-
-			$actions_str = serialize($actions);
-			return $actions_str;
-		};
-
-		foreach ($types as $t) {
-			if ($t == 'tickets') {
-				$macros = $this->getEntityManager()->getConnection()->fetchAll("
-					SELECT id, actions
-					FROM ticket_macros
-					WHERE actions LIKE '%\"add_labels\"%' OR actions LIKE '%\"remove_labels\"%'
-				");
-				foreach ($macros as $r) {
-					$actions_new = $replace_label_arr($r['actions'], array('add_labels', 'remove_labels'));
-
-					if ($actions_new != $r['actions']) {
-						$this->getEntityManager()->getConnection()->update('ticket_macros', array('actions' => $actions_new), array('id' => $r['id']));
-					}
-				}
-			}
-
-			// TODO - fix removing labels from triggers/filters
-			if (false && in_array($t, array('persons', 'tickets', 'organizations'))) {
-				$triggers = $this->getEntityManager()->getConnection()->fetchAll("
-					SELECT id, actions, terms, terms_any
-					FROM ticket_triggers
-					WHERE
-						actions LIKE '%\"add_labels\"%'
-						OR actions LIKE '%\"remove_labels\"%'
-						OR terms LIKE '%\"label\"%'
-						OR terms LIKE '%\"org_label\"%'
-						OR terms LIKE '%\"person_label\"%'
-						OR terms_any LIKE '%\"label\"%'
-						OR terms_any LIKE '%\"person_label\"%'
-						OR terms_any LIKE '%\"org_label\"%'
-				");
-				foreach ($triggers as $r) {
-					$changes = array();
-					if ($t == 'tickets') {
-						$actions_new = $replace_label_arr($r['actions'], array('add_labels', 'remove_labels'));
-						if ($actions_new != $r['actions']) {
-							$changes['actions'] = $actions_new;
-						}
-					}
-
-					$terms_new = $r['terms'];
-					if ($t == 'tickets') $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
-					if ($t == 'persons') $terms_new = $replace_label_arr($terms_new, array('person_label'));
-					if ($t == 'organizations') $terms_new = $replace_label_arr($terms_new, array('org_label'));
-					if ($terms_new != $r['terms']) {
-						$changes['terms'] = $terms_new;
-					}
-
-					$terms_any_new = $r['terms_any'];
-					if ($t == 'tickets') $terms_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
-					if ($t == 'persons') $terms_new = $replace_label_arr($terms_any_new, array('person_label'));
-					if ($t == 'organizations') $terms_new = $replace_label_arr($terms_any_new, array('org_label'));
-					if ($terms_any_new != $r['terms']) {
-						$changes['terms_any'] = $terms_any_new;
-					}
-
-					if ($changes) {
-						$this->getEntityManager()->getConnection()->update('ticket_triggers', $changes, array('id' => $r['id']));
-					}
-				}
-
-				$filters = $this->getEntityManager()->getConnection()->fetchAll("
-					SELECT id, terms
-					FROM ticket_filters
-					WHERE
-						terms LIKE '%\"label\"%'
-						OR terms LIKE '%\"org_label\"%'
-						OR terms LIKE '%\"person_label\"%'
-				");
-				foreach ($filters as $r) {
-
-					$changes = array();
-					$terms_new = $r['terms'];
-					if ($t == 'tickets') $terms_new = $replace_label_arr($terms_new, array('ticket_label', 'label'));
-					if ($t == 'persons') $terms_new = $replace_label_arr($terms_new, array('person_label'));
-					if ($t == 'organizations') $terms_new = $replace_label_arr($terms_new, array('org_label'));
-					if ($terms_new != $r['terms']) {
-						$changes['terms'] = $terms_new;
-					}
-
-					if ($changes) {
-						$this->getEntityManager()->getConnection()->update('ticket_filters', $changes, array('id' => $r['id']));
-					}
-				}
-			}
 		}
 	}
 
