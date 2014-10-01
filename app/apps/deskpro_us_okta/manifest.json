@@ -23,25 +23,32 @@
 			"native_only": true
 		},
 		{
+			"name": "external_key",
+			"type": "text",
+			"label": "External Key",
+			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"native_only": true
+		},
+		{
 			"name": "sso_url",
 			"type": "text",
-			"label": "Identity Provider Single Sign-On URL",
-			"description": "The SSO URL provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"label": "Redirect Login URL",
+			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
 			"native_only": true,
 			"is_required": true
 		},
 		{
 			"name": "issuer_id",
 			"type": "text",
-			"label": "Identity Provider Issuer",
-			"description": "This URL is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"label": "IDP Metadata Public Link",
+			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
 			"native_only": true
 		},
 		{
 			"name": "cert",
 			"type": "textarea",
 			"label": "x509 Certificate",
-			"description": "Copy and paste the full certificate into the box above. Alternatively, if you have downloaded an okta.cert file, please select it below.",
+			"description": "Download the public certificate from Okta. You can upload it in the box below, or directly copy and paste it's contents into the box above.",
 			"native_only": true
 		},
 		{

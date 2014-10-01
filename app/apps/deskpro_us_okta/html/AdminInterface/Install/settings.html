@@ -10,7 +10,7 @@
 					<p style="margin-top: 5px; margin-bottom: 5px;">Okta will ask you for the following information:</p>
 					<table style="width: 100%;">
 						<tr>
-							<td style="width: 30%;">Single Sign On URL</td>
+							<td style="width: 30%;">Post Back URL</td>
 							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
 								value="{{ usersource_details.consumer_url }}" /></td>
 							<td>
@@ -18,7 +18,15 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Audience URI (SP Entity ID)</td>
+							<td style="width: 30%;">Recipient</td>
+							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
+								value="{{ usersource_details.consumer_url }}" /></td>
+							<td>
+								<button class="btn btn-default btn-sm" clip-copy="usersource_details.consumer_url">Copy URL</button>
+							</td>
+						</tr>
+						<tr>
+							<td>Audience Restriction</td>
 							<td><input style="width: 100%" type="text" disabled="disabled"
 								value="{{ usersource_details.metadata_url }}" /></td>
 							<td>
