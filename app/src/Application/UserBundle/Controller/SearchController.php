@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\Search\StickyWordSearch;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 class SearchController extends AbstractController
 {
@@ -245,14 +246,28 @@ class SearchController extends AbstractController
 
 	public function similarToAction($content_type)
 	{
-		 $content = isset($_REQUEST['content']) ? (string)$_REQUEST['content'] : '';
+		$content = isset($_REQUEST['content']) ? (string)$_REQUEST['content'] : '';
+		$content = Strings::utf8_accents_to_ascii($content);
+		$content = strtolower($content);
+		$content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
+		$content = preg_replace('#\s+#', ' ', $content);
+		$content = explode(' ', $content);
+		$content = array_filter($content, function($s) { return isset($s[2]); });
+		$content = array_unique($content);
+		$content = implode(' ', $content);
 
-		$search = App::getSearchAdapter();
-		$result_set = $search->getContentSearcher()->omnisearch($content, array($content_type));
-		$results = $search->getResultSetObjects($result_set, true);
+		if (!$content) {
+			return $this->render('UserBundle:Search:similar-to.html.twig', array(
+				'results' => array(),
+			));
+		}
+
+		$se = $this->container->getSearchEngine();
+		$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+		$results = $se->getUserSearch()->search($context, $content);
 
 		return $this->render('UserBundle:Search:similar-to.html.twig', array(
-			'results' => $results,
+			'results' => $results->getTypedResults(),
 		));
 	}
 }
