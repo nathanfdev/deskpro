@@ -189,16 +189,6 @@ class AuthenticationManager
 		return count($this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN)) > 0;
 	}
 
-	/**
-	 * Can we handle user registration requests?
-	 *
-	 * @return bool
-	 */
-	public function hasRegistrationCapability()
-	{
-		return $this->appSettings->get('core.reg_enabled');
-	}
-
 
 	/**
 	 * Loop the usersources (in order) and try to authenticate the user. First yes wins.
@@ -312,6 +302,15 @@ class AuthenticationManager
 		return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_FORM_LOGIN);
 	}
 
+	/**
+	 * Can we handle user registration requests?
+	 *
+	 * @return bool
+	 */
+	public function hasRegistrationCapability()
+	{
+		return $this->isDeskPROEnabled() && $this->appSettings->get('core.reg_enabled');
+	}
 
 	/**
 	 * Has at least one usersource that can redirect to "lost password"
@@ -319,6 +318,11 @@ class AuthenticationManager
 	 * @return bool
 	 */
 	public function hasForgotPasswordUsersources()
+	{
+		return $this->isDeskPROEnabled();
+	}
+
+	public function isDeskPROEnabled()
 	{
 		// if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
 		foreach ($this->usersourcesForInterface as $usersource) {
@@ -329,7 +333,6 @@ class AuthenticationManager
 
 		return false;
 	}
-
 
 	/*********************************************
 	#------------------------------
