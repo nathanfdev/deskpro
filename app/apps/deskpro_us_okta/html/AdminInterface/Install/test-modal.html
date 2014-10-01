@@ -1,0 +1,68 @@
+<div class="modal-dialog" style="width: 800px;">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" ng-click="dismiss()">&times;</button>
+			<h4 class="modal-title">Test Settings</h4>
+		</div>
+		<div class="modal-body">
+			<div class="alert alert-info">If you have changed your settings, you must save them before running this test.
+				<button class="btn btn-default" ng-click="saveAndRun()">Save Settings and Rereun Test</button></div>
+			<div id="iframe_html_usersource_test" ng-show="!is_verified && !is_error"></div>
+			<div ng-hide="loading">
+				<div ng-show="is_verified">
+					<h3 class="text-success">Success</h3>
+					<p>
+						Your settings appear to be valid.
+						<button class="btn btn-default" ng-show="!show_userdata && person"
+							ng-click="show_userdata = true"><i
+							class="fa fa-file-text-o"></i> Show user data
+						</button>
+						<button class="btn btn-default" ng-show="!show_log" ng-click="show_log = true"><i
+							class="fa fa-file-text-o"></i> Show log
+						</button>
+					</p>
+				</div>
+				<div ng-show="is_error">
+					<h3 class="text-danger">Error</h3>
+
+					<p>
+						The system failed to authenticate you. Refer to the below log for
+						more information.
+					</p>
+				</div>
+
+				<div ng-show="show_userdata && person">
+					<strong>User data:</strong>
+
+					<div class="dp-log-display">
+						<textarea>
+DeskPRO ID: {{person.id}}
+Name: {{person.displayName}}
+Email: {{person.email}}
+						</textarea>
+					</div>
+				</div>
+
+				<div ng-show="is_error || show_log">
+					<strong>Log:</strong>
+
+					<div class="dp-log-display">
+						<textarea>{{log}}</textarea>
+					</div>
+				</div>
+			</div>
+			<div ng-show="loading">
+				<i class="spinner-flat"></i>
+				<em>Waiting for response from Okta. Please authenticate with Okta in the box above.</em>
+
+				<div class="alert alert-warning" style="margin-bottom: 0; margin-top: 10px;">
+					If you don't see your login form then there is a problem with either the provided settings or your
+					configuration of DeskPRO app in your
+					Okta account. Please review your settings and configuration.
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+		</div>
+	</div>
+</div>
