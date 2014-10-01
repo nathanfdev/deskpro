@@ -125,12 +125,24 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 			return $this->_allowed_ids[$context];
 		}
 
-		$uids = $this->person->getUsergroupIds();
-		if (!$uids) {
-			$uids[] = '0';
+		$agent_groups = App::$container->getAgentGroups();
+		$agent_data   = App::$container->getAgentData();
+
+		try {
+			$uids = $agent_data->getGroupIdsForAgent($this->person);
+		} catch (\InvalidArgumentException $e) {
+			$uids = array();
 		}
 
-		$agent_groups = App::$container->getAgentGroups();
+		if (!$uids) {
+			$uids = array(0);
+		}
+
+		// Only agent groups!
+		$uids = array_filter($uids, function($id) use ($agent_groups) {
+			return $agent_groups->groupExists($id);
+		});
+
 		$allow_all = false;
 		foreach ($uids as $ugid) {
 			if ($agent_groups->groupExists($ugid)) {
