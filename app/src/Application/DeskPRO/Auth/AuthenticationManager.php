@@ -370,9 +370,15 @@ class AuthenticationManager
 		;
 	}
 
-	public function isRegistrationFormVisible()
+	public function isRegistrationFormVisible($interface = null)
 	{
-		return $this->isAuthVisible() && $this->hasRegistrationCapability();
+		if (null === $interface) {
+			return $this->isAuthVisible() && $this->hasRegistrationCapability();
+		}
+
+		// clone the auth manager except make it for the specific interface, not the default
+		$authManager = new AuthenticationManager($this->authSettings, $this->usersourceManager, $this->authAdapterFactory, $this->appSettings, $interface);
+		return $authManager->isRegistrationFormVisible();
 	}
 
 	public function isLoginFormVisible()

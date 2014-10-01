@@ -10,7 +10,9 @@
 						<li ng-if="EditCtrl.agent.id" class="divider"></li>
 						<li><a ng-click="EditCtrl.showEditProfile()"><i class="fa fa-user"></i> Edit profile</a></li>
 						<li ng-if="EditCtrl.agent.id" class="divider"></li>
+						{% if app.authenticationManager.isRegistrationFormVisible %}
 						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showResetPassword()"><i class="fa fa-asterisk"></i> Reset password</a></li>
+						{% endif %}
 						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showLoginAs()"><i class="fa fa-globe"></i> Log in as this agent</a></li>
 					</ul>
 				</menu>
