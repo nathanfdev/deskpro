@@ -86,7 +86,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
 				'created_by_client' => $cm->created_by_client ?: '',
 				'for_client'        => $cm->for_client ?: null,
 				'date_created'      => $cm->date_created->format('Y-m-d H:i:s'),
-				'for_person'        => $cm->for_person ? $cm->for_person->id : null,
+				'for_person_id'     => $cm->for_person ? $cm->for_person->id : null,
 			);
 		}
 
