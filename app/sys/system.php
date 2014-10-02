@@ -346,6 +346,10 @@ abstract class AbstractKernel extends BaseKernel
 
 		$this->postResponseHandled($response, $request);
 
+		if ($response && isset($GLOBALS['DP_CONFIG']['DP_POST_RESPONSE_HANDLED_CALLBACK'])) {
+			$response = call_user_func($GLOBALS['DP_CONFIG']['DP_POST_RESPONSE_HANDLED_CALLBACK'], $response, $request);
+		}
+
 		if ($is_page_load) {
 			$content = $response->getContent();
 			$content = str_replace('</head>', "\n\t<meta name=\"Generator\" content=\"DeskPRO ".DP_BUILD_TIME."\" />\n\t</head>", $content);
