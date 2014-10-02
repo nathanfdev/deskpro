@@ -839,7 +839,8 @@ define([
 							feedback: 5,
 							article: 5,
 							download: 5,
-							news: 5
+							news: 5,
+							chat_conversation: 3
 						};
 						var sortOrder = {
 							organization: 0,
@@ -848,7 +849,8 @@ define([
 							feedback: 3,
 							article: 4,
 							download: 5,
-							news: 6
+							news: 6,
+							chat_conversation: 7
 						};
 						for (var i = 0; i < scope.resultGroups.length; i++) {
 							scope.resultGroups[i].initialShow = initialShow[scope.resultGroups[i].type] || 5;
