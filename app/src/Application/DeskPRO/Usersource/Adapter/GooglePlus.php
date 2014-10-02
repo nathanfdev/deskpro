@@ -56,7 +56,8 @@ class GooglePlus extends AbstractAdapter
 	{
 		$cid = $this->usersource->getOption('client_id', null);
 		$cs = $this->usersource->getOption('client_secret', null);
-		return new \Orb\Auth\Adapter\GooglePlus($cid, $cs);
+		$domain = $this->usersource->getOption('google_apps_domain', null);
+		return new \Orb\Auth\Adapter\GooglePlus($cid, $cs, $domain);
 	}
 
 

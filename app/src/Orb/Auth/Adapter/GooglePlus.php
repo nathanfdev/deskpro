@@ -37,6 +37,7 @@ namespace Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
+use Orb\Util\Urls;
 
 class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterface
 {
@@ -50,11 +51,17 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
 	 */
 	protected $cs;
 
+	/**
+	 * @var string only authenticate users if their email is of this domain
+	 */
+	private $domain;
 
-	public function __construct($cid, $cs)
+
+	public function __construct($cid, $cs, $domain)
 	{
 		$this->cid = $cid;
 		$this->cs = $cs;
+		$this->domain = $domain;
 	}
 
 
@@ -87,6 +94,16 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
 
 			if ($access_token = $client->getAccessToken()) {
 				$attrs = $client->verifyIdToken()->getAttributes();
+
+				if ($this->domain && !Urls::verifyEmailDomain($attrs['payload']['email'], $this->domain)) {
+					return new Result(
+						Result::FAILURE, null,
+						array(
+							'error_code' => 'invalid_argument',
+							'error_message' => 'email does not match specified domain'
+						)
+					);
+				}
 
 				$identity = new Identity(
 					$attrs['payload']['id'],

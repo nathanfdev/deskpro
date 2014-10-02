@@ -36,6 +36,13 @@
 			"native_only": true
 		},
 		{
+			"name": "google_apps_domain",
+			"type": "text",
+			"label": "Google Apps Domain",
+			"description": "Optionally enter your Google Apps domain (e.g. example.com - no www. or http://) to only allow users from within your organisation to log in. When enabled, normal Google users (e.g., example@gmail.com) will not be allowed.",
+			"native_only": true
+		},
+		{
 			"name": "auto_agent",
 			"type": "checkbox",
 			"label": "Auto Agent",
