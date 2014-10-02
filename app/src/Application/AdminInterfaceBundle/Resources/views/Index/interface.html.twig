@@ -5,6 +5,10 @@
 	<meta name="viewport" content="width=device-width">
 	<title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
 
+	<!--[if lte IE 8]>
+	<script type="text/javascript">window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_admin';</script>
+	<![endif]-->
+
 	<style type="text/css">
 		body {
 			overflow: hidden;

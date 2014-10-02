@@ -4,6 +4,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<title>{{ phrase('admin.general.deskpro_reports_interface') }}</title>
+
+	<!--[if lte IE 8]>
+	<script type="text/javascript">window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_reports';</script>
+	<![endif]-->
+
 	<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
 
 	<link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
