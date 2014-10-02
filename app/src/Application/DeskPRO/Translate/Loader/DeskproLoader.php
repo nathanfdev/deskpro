@@ -69,13 +69,12 @@ class DeskproLoader implements LoaderInterface
 
 
 	/**
-	 * Loads phrase groups
-	 *
-	 * @param array $groups Groups to load
-	 * @param \Application\DeskPRO\Entity\Language $language
+	 * @param array $groups
+	 * @param mixed $language
+	 * @param array $loaded_phrases
 	 * @return array
 	 */
-	public function load($groups, $language)
+	public function load($groups, $language, array $loaded_phrases = null)
 	{
 		$phrases = array();
 
@@ -84,7 +83,7 @@ class DeskproLoader implements LoaderInterface
 		}
 
 		if ($this->db_loader) {
-			$phrases = array_merge($phrases, $this->db_loader->load($groups, $language));
+			$phrases = array_merge($phrases, $this->db_loader->load($groups, $language, $phrases));
 		}
 
 		return $phrases;

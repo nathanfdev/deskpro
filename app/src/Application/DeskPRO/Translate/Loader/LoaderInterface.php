@@ -40,16 +40,10 @@ namespace Application\DeskPRO\Translate\Loader;
 interface LoaderInterface
 {
 	/**
-	 * Load all phrases from specified groups.
-	 *
-	 * The returned array structure should be like:
-	 * <code>
-	 * array('group' => array('id' => 'phrase', ...));
-	 * </code>
-	 *
-	 * @param array $group The groups to load
-	 * @param \Application\DeskPRO\Entity\Language $language
-	 * @return array Array of name=>phrase
+	 * @param array $groups
+	 * @param mixed $language
+	 * @param $loaded_phrases
+	 * @return array
 	 */
-	public function load($groups, $language);
+	public function load($groups, $language, array $loaded_phrases = null);
 }

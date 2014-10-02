@@ -47,7 +47,7 @@ class SystemLoader implements LoaderInterface
 	 */
 	protected $loaded_files = array();
 
-	public function load($groups, $language)
+	public function load($groups, $language, array $loaded_phrases = null)
 	{
 		$lang_packs = array();
 
