@@ -557,6 +557,7 @@ class DpKernel extends AbstractKernel
 				) {
 					return false;
 				}
+				break;
 
 			default:
 				return false;
