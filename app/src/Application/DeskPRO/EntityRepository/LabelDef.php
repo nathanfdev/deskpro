@@ -76,7 +76,7 @@ class LabelDef extends AbstractEntityRepository
 				break;
 
 			case 'news':
-				$label_type = 'newss';
+				$label_type = 'news';
 				break;
 
 			case 'organizations':
