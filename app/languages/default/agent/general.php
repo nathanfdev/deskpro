@@ -745,4 +745,8 @@
 	'agent.general.new'                                     => 'New',
 	'agent.general.unassign'                                => 'Unassign',
 	'agent.general.dp_updates'                              => 'DeskPRO Updates',
+
+	'agent.general.tabs_close_current'                      => 'Close this tab',
+	'agent.general.tabs_close_all'                          => 'Close all tabs',
+	'agent.general.tabs_close_others'                       => 'Close all other tabs',
 );

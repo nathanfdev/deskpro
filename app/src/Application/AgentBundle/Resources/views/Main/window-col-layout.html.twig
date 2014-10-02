@@ -118,17 +118,17 @@
         <ul class="dropdown-menu" role="menu">
             <li>
                 <a class="pointer" role="menuitem" tabindex="1" ng-click="closeCurrent()">
-                    Close this tab
+                    {{ phrase('agent.general.tabs_close_current') }}
                 </a>
             </li>
             <li>
                 <a class="pointer" role="menuitem" tabindex="2" ng-click="closeAll()">
-                    Close all tabs
+                    {{ phrase('agent.general.tabs_close_all') }}
                 </a>
             </li>
             <li>
                 <a class="pointer" role="menuitem" tabindex="3" ng-click="closeOthers()">
-                    Close all other tabs
+                    {{ phrase('agent.general.tabs_close_others') }}
                 </a>
             </li>
         </ul>
