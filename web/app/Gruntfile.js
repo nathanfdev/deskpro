@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 				dest: 'build/Reports/css/reports-style.css'
 			},
 			icons_style: {
-				src: 'vendor-src/icons/**/*.less',
+				src: '../vendor/icons/**/*.less',
 				dest: 'build/Admin/css/icons-style.css'
 			}
 		},
@@ -112,7 +112,7 @@ module.exports = function(grunt) {
 				tasks: ['less']
 			},
 			icons_less: {
-				files: 'vendor-src/icons/**/*.css',
+				files: '../vendor/icons/**/*.css',
 				tasks: ['less']
 			},
 			reports_js: {
