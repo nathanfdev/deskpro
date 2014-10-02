@@ -56,6 +56,13 @@
 		</div>
 	{% endif %}
 
+	{% if app.session.hasFlash('login_failed') %}
+		{% set login_failure = app.session.getFlash('login_failed') %}
+		<div class="dp-alert dp-alert-error">
+			{{ phrase('user.profile.login_error') }}
+		</div>
+	{% endif %}
+
 	{#####################################################################}
 	{% if authManager.isAuthVisible %}
 	<section class="dp-well">
