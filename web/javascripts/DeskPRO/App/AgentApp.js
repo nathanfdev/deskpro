@@ -664,6 +664,13 @@ define([
 
 				var closeAll = function() {
 					$backdrop.hide();
+					$('#dp_header_notify_wrap').hide();
+					$('#recent_tabs_menu').hide();
+					$('#dp_omnibox_results').hide();
+
+					scope.isActive = false;
+					scope.mode = 'search';
+
 					$timeout(function() {
 						scope.isActive = false;
 						scope.mode = 'search';
