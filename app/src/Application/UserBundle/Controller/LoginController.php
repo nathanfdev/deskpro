@@ -290,12 +290,12 @@ HTML;
 			if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
 				return $res;
 			}
-			return $this->redirect($this->request->getBaseUrl() . '/admin/login?o');
+			return $this->redirect($this->request->getBaseUrl() . '/admin/login?o=1');
 		} elseif ($this->in->getString('to') == 'agent') {
 			if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
 				return $res;
 			}
-			return $this->redirect($this->request->getBaseUrl() . '/agent/login?o');
+			return $this->redirect($this->request->getBaseUrl() . '/agent/login?o=1');
 		} else {
 			if ($this->in->getString('via') == 'user_chat') {
 				return $this->redirectRoute('user_widget_chat');
@@ -303,7 +303,7 @@ HTML;
 			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), true)) {
 				return $res;
 			}
-			return $this->redirectRoute('user');
+			return $this->redirectRoute('user', array('o' => '1'));
 		}
 	}
 

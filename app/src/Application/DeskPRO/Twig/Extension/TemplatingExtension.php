@@ -1444,6 +1444,12 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		///////////////////////////////////////////////////////////////////////
+		// If the user just logged out, we don't want to be logging him in immediatly
+		if ($request->query->get('o')) {
+			return '';
+		}
+
+		///////////////////////////////////////////////////////////////////////
 		// Get iFrame Output, if any
 		$iFrameOutput = '';
 		if ($auth_interface_settings->isBackgroundSsoEnabled()) {
