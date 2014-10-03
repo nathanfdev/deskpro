@@ -91,7 +91,14 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 				"Attempting JWT Callback", Logger::DEBUG
 			);
 		}
-        return $this->tryJwtAuth($callback_data);
+		try {
+            return $this->tryJwtAuth($callback_data);
+		} catch (\Exception $e) {
+			return new Result(
+				Result::FAILURE_EXCEPTION, null,
+				array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+			);
+		}
 	}
 
 
@@ -105,7 +112,14 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 				"Attempting SSO Action", Logger::DEBUG
 			);
 		}
-		return $this->tryJwtAuth($_REQUEST);
+		try {
+			return $this->tryJwtAuth($_REQUEST);
+		} catch (\Exception $e) {
+			return new Result(
+				Result::FAILURE_EXCEPTION, null,
+				array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+			);
+		}
 	}
 
 
@@ -114,21 +128,28 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
-        $redirect = $this->getFullRedirectUrl();
+		try {
+			$redirect = $this->getFullRedirectUrl();
 
-		if ($this->logger) {
-			$this->logger->log(
-				"Initializing Callback Authentication", Logger::DEBUG
-			);
-			$this->logger->log(
-				"Redirecting to: $redirect", Logger::DEBUG
+			if ($this->logger) {
+				$this->logger->log(
+					"Initializing Callback Authentication", Logger::DEBUG
+				);
+				$this->logger->log(
+					"Redirecting to: $redirect", Logger::DEBUG
+				);
+			}
+
+			// return a success result if we detect they are already logged in
+			$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect));
+
+			return $result;
+		} catch (\Exception $e) {
+			return new Result(
+				Result::FAILURE_EXCEPTION, null,
+				array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
 			);
 		}
-
-		// return a success result if we detect they are already logged in
-		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect));
-
-		return $result;
 	}
 
 	/**
