@@ -582,10 +582,25 @@ HTML;
 
 	public function authLocalInput()
 	{
-		return $this->auth_manager->authenticateFormLogin(
+		$authResult = $this->auth_manager->authenticateFormLogin(
 			$this->in->getString('email'),
 			$this->in->getString('password')
 		);
+
+
+		// if we are using local auth in the user interface, and we fail, try agent form login sources as well
+		if ('user' === $this->auth_manager->getInterface()) {
+			if (!$authResult->isValid()) {
+				$agentAuthManager = $this->auth_manager->cloneForInterface('agent');
+
+				$authResult = $agentAuthManager->authenticateFormLogin(
+					$this->in->getString('email'),
+					$this->in->getString('password')
+				);
+			}
+		}
+
+		return $authResult;
 	}
 
 

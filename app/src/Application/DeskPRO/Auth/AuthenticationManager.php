@@ -377,8 +377,19 @@ class AuthenticationManager
 		}
 
 		// clone the auth manager except make it for the specific interface, not the default
-		$authManager = new AuthenticationManager($this->authSettings, $this->usersourceManager, $this->authAdapterFactory, $this->appSettings, $interface);
+		$authManager = $this->cloneForInterface($interface);
 		return $authManager->isRegistrationFormVisible();
+	}
+
+	/**
+	 * @param $interface
+	 * @return AuthenticationManager
+	 */
+	public function cloneForInterface($interface)
+	{
+		return new AuthenticationManager(
+			$this->authSettings, $this->usersourceManager, $this->authAdapterFactory, $this->appSettings, $interface
+		);
 	}
 
 	public function isLoginFormVisible()
@@ -389,6 +400,12 @@ class AuthenticationManager
 	public function isForgotPasswordVisible()
 	{
 		return $this->hasForgotPasswordUsersources();
+	}
+
+
+	public function getInterface()
+	{
+		return $this->interface;
 	}
 }
  
