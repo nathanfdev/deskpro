@@ -284,7 +284,7 @@ class LoginProcessor
 					$this->person->addUsergroup($this->usersource->agent_permission_group);
 				}
 			}
-			if ($this->new_person) {
+			if ($this->new_person && $this->person->getPrimaryEmail() && $this->person->is_agent ) {
 				$message = App::$container->getMailer()->createMessage();
 				$message->setToPerson($this->person);
 				$message->setTemplate(
