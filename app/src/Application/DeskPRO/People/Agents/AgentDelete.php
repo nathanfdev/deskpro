@@ -140,6 +140,8 @@ class AgentDelete
 			throw $e;
 		}
 
+		$this->clearSessions();
+
 		return true;
 	}
 
@@ -171,6 +173,21 @@ class AgentDelete
 		$this->em->persist($this->agent);
 		$this->em->flush();
 
+		$this->clearSessions();
+
 		return true;
+	}
+
+
+	/**
+	 * Clears any sessions the agent has open.
+	 *
+	 * This is needed because they might have an active agent session right now,
+	 * but if they actually do anything (even ajax polling) will result in some exceptions
+	 * because they arent actually agents anymore.
+	 */
+	private function clearSessions()
+	{
+		$this->db->delete('sessions', array('person_id' => $this->agent->getId()));
 	}
 }
