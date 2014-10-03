@@ -67,19 +67,36 @@ class NTLMSoapClient extends SoapClient
         );
 
         $this->__last_request_headers = $headers;
-        $this->ch = curl_init($location);
 
-        curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, $this->validate);
-        curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, $this->validate);
-        curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($this->ch, CURLOPT_POST, true );
-        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $request);
-        curl_setopt($this->ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($this->ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC/** | CURLAUTH_NTLM*/); // < DESKPRO EDIT: no CURLAUTH_NTLM
-        curl_setopt($this->ch, CURLOPT_USERPWD, $this->user.':'.$this->password);
+		// DESKPRO EDIT : Some versions of curl fail with some
+		// values of CURLOPT_HTTPAUTH, so we try multiple times
+		$user      = $this->user;
+		$pass      = $this->password;
+		$validate  = $this->validate;
+		$make_curl = function($httpauth) use ($location, $validate, $request, $headers, $user, $pass) {
+			$ch = curl_init($location);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $validate);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $validate);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($ch, CURLOPT_POST, true );
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, $httpauth);
+			curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$pass);
+		};
 
-        $response = curl_exec($this->ch);
+		foreach (array(CURLAUTH_NTLM, CURLAUTH_BASIC) as $httpauth) {
+			$this->ch = $make_curl($httpauth);
+			$response = curl_exec($this->ch);
+
+			// A 401 would happen if auth is wrong or if the
+			// NTLM/BASIC was wrong/not accepted, so
+			// any other return code means we dont need to retry
+			if (curl_getinfo($this->ch, CURLINFO_HTTP_CODE) != 401) {
+				break;
+			}
+		}
 
         // TODO: Add some real error handling.
         // If the response if false than there was an error and we should throw

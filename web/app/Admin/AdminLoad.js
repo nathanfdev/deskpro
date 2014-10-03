@@ -194,6 +194,15 @@ define([
 	'CloudAdminLoad'
 
 ], function(angular) {
+
+	if (!window.console) {
+		window.console = {
+			log: function(){},
+			warn: function(){},
+			error: function(){}
+		}
+	}
+
 	return {
 		start: function() {
 

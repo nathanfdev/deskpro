@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -186,6 +186,19 @@ class TicketManager
 	{
 		$ticket = new Ticket();
 		$ticket->disableAutoTicketProcess();
+
+		// Generate a ref now
+		// This will cause less locking if we are outside of a transaction
+		$ref_gen = $this->container->getRefGenerator();
+		try {
+			$ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e);
+			$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+			$ticket->ref = $ref;
+		}
+
+		$ticket->__dp_is_autogen_ref = false;
 
 		return $ticket;
 	}

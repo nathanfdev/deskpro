@@ -109,7 +109,7 @@ $CONFIG['agent_vendors'] = array(
 		'app/bower_components/notify.js/notify.js',
 		'app/bower_components/intl-tel-input/build/js/intlTelInput.min.js',
 
-		'app/vendor-src/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js',
+		'vendor/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js',
 	)
 );
 
@@ -663,7 +663,7 @@ $CONFIG['agent_interface_css1'] = array(
 		'stylesheets-less/agent/overlayCreateTicket.less',
 		'stylesheets-less/agent/dp-source-pane.less',
 		'stylesheets-less/agent/dp-list-pane.less',
-		'app/vendor-src/bootstrap-datetimepicker-master/build/build_standalone.less',
+		'vendor/bootstrap-datetimepicker-master/build/build_standalone.less',
 	)
 );
 

@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -367,12 +367,6 @@ class TicketController extends AbstractController
 
 		$this->em->persist($ticket);
 
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
-		$post_custom_fields = $this->getCustomFieldInput();
-		if (!empty($post_custom_fields)) {
-			$field_manager->saveFormToObject($post_custom_fields, $ticket);
-		}
-
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
 		$message->person = ($this->in->getBool('message_as_agent') ? $this->person : $person);
 		$message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
@@ -416,6 +410,12 @@ class TicketController extends AbstractController
 			App::setCurrentPerson($this->person);
 
 			$this->em->flush();
+
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$post_custom_fields = $this->getCustomFieldInput();
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $ticket);
+			}
 
 			if ($this->in->getBool('message_as_agent')) {
 				$context = $ticket_manager->createAgentExecutorContext($this->person, 'newticket', 'api');
