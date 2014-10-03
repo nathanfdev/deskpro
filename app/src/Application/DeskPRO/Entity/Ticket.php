@@ -313,7 +313,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $ticket_hash;
+	protected $ticket_hash = 'none';
 
 	/**
 	 * @var string
