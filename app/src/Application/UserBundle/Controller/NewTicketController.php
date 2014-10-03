@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\UserBundle\Form\NewTicketType;
 use Orb\Util\Arrays;
+use Symfony\Component\Form\Exception\OutOfBoundsException;
 
 class NewTicketController extends AbstractController
 {
@@ -190,8 +191,6 @@ class NewTicketController extends AbstractController
 
 		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 
-			$validator->setLayout($default_page);
-
 			if (!$this->consumeRequest('newticket')) {
 				return $this->redirectRoute('user');
 			}
@@ -201,6 +200,15 @@ class NewTicketController extends AbstractController
 			$newticket->ticket->attach_ids_authed = true;
 			$newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
 			$newticket->custom_user_fields   = isset($_POST['newticket_custom_user_fields']) ? $_POST['newticket_custom_user_fields'] : array();
+
+			if ($newticket->ticket->department_id) {
+				$layout_page = $layouts->getLayout($newticket->ticket->department_id);
+				$layout_page = LayoutDisplay::createFromLayout($layout_page, LayoutDisplay::NEW_TICKET);
+			} else {
+				$layout_page = $default_page;
+			}
+
+			$validator->setLayout($layout_page);
 
 			$trap_fail = false;
 			if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
@@ -286,7 +294,9 @@ class NewTicketController extends AbstractController
 			if (($newticketData = $this->get('request')->get('newticket')) && is_array($newticketData)) {
 				// need to iterate over children as form locked by mapped 'person' child
 				foreach ($newticketData as $name => $value) {
-					$form->get($name)->setData($value);
+					try {
+						$form->get($name)->setData($value);
+					} catch (OutOfBoundsException $e) {}
 				}
 			}
 		}
