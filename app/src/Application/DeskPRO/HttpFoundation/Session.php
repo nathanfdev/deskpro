@@ -101,9 +101,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 			$allow_rememberme = (bool)App::getSetting('core.enable_user_rememberme');
 		}
 
-		if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id'])) {
+		if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || (!isset($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id']))) {
 			// See if we should carry an agent session
-			if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
+			if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'user' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
 
 				$sid = Entity\Session::getIdFromCode($_COOKIE['dpsid-agent']);
 				if ($sid) {
@@ -159,6 +159,41 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 							'date_created' => date('Y-m-d H:i:s'),
 							'via_cookie'   => 1
 						));
+					}
+				}
+			// can we carry over an agent session in the user interface?
+			} elseif (!empty($_COOKIE['dpsid']) && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
+				$sid = Entity\Session::getIdFromCode($_COOKIE['dpsid']);
+				if ($sid) {
+					if (App::getSetting('core.session_keepalive_require_page')) {
+						$agent_session = App::getDb()->fetchAssoc(
+							"
+														SELECT person_id, auth
+														FROM sessions
+														WHERE id = ? AND date_last > ? AND date_last_page > ?
+													", array(
+								$sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')),
+								date(time() - App::getSetting('core.sessions_lifetime'))
+							)
+						);
+					} else {
+						$agent_session = App::getDb()->fetchAssoc(
+							"
+														SELECT person_id, auth
+														FROM sessions
+														WHERE id = ? AND date_last > ?
+													", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')))
+						);
+					}
+
+					list (, $auth) = explode('-', $_COOKIE['dpsid']);
+
+					if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
+						$person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
+						if ($person && $person->is_agent) {
+							$person_id = $person->id;
+							$this->_setCurrentPerson($person);
+						}
 					}
 				}
 			}
