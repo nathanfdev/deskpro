@@ -765,7 +765,7 @@ HTML;
 		// Valid
 		if ($result->isValid()) {
 
-			$login_processor = new LoginProcessor($usersource, $result->getIdentity());
+			$login_processor = new LoginProcessor($usersource, $result->getIdentity(), $usersource_test);
 			$person = $login_processor->getPerson();
 
 			if ($usersource_test) {
@@ -1229,7 +1229,7 @@ HTML;
 		$result = $adapter->getSsoLoginActionResult($this);
 
 		if ($result->isValid()) {
-			$login_processor = new LoginProcessor($source, $result->getIdentity());
+			$login_processor = new LoginProcessor($source, $result->getIdentity(), $usersource_test);
 			$person = $login_processor->getPerson();
 
 

@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
+use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Util\Arrays;
 use Orb\Util\OptionsArray;
@@ -73,15 +74,29 @@ class LoginProcessor
 	 * @var bool wether we used "new Person()" to create a new user or not
 	 */
 	protected $new_person;
+	/**
+	 * @var bool
+	 */
+	private $test_mode;
 
 
-	public function __construct(Usersource $usersource, Identity $identity)
+	/**
+	 * @param Usersource $usersource
+	 * @param Identity   $identity
+	 * @param bool       $testMode true if we shouldn't do anything permanent (persist to db, mail)
+	 */
+	public function __construct(Usersource $usersource, Identity $identity, $testMode = false)
 	{
 		$this->identity = $identity;
 		$this->usersource = $usersource;
 		$this->new_person = false;
+		$this->test_mode = $testMode;
 	}
 
+
+	/**
+	 * @return Person
+	 */
 	public function getPerson()
 	{
 		if ($this->person !== null) return $this->person;
@@ -95,7 +110,7 @@ class LoginProcessor
 		/** @var \Application\DeskPRO\EntityRepository\PersonUsersourceAssoc $assoc_repos */
 		$assoc_repos = $em->getRepository('DeskPRO:PersonUsersourceAssoc');
 
-		$em->beginTransaction();
+		$this->beginTransaction($em);
 
 		$this->assoc = $assoc_repos->getIdentityAssociation(
 			$this->usersource,
@@ -171,7 +186,7 @@ class LoginProcessor
 				@unlink($filename);
 			}
 
-			$em->persist($this->person);
+			$this->persist($em, $this->person);
 
 			// TODO: we need to update this to the person phone_number field when we deprecate the contact data phone number
 			if ($mapped_fields->has('phone')) {
@@ -183,15 +198,15 @@ class LoginProcessor
 
 				$contact_data->person = $this->person;
 
-				$em->persist($contact_data);
+				$this->persist($em, $contact_data);
 			}
 
-			$em->flush();
+			$this->flush($em);
 
 			if ($set_email && !$this->person->findEmailAddress($set_email)) {
 				$email_obj = $this->person->addEmailAddressString($set_email);
-				$em->persist($email_obj);
-				$em->flush();
+				$this->persist($em, $email_obj);
+				$this->flush($em);
 			}
 
 			if ($mapped_fields->has('twitter')) {
@@ -213,7 +228,7 @@ class LoginProcessor
 				foreach ($this->person->getContactData('twitter') AS $twitter_details) {
 					if ($twitter_details->field_1 == $twitter['screen_name'] || ($twitter_details->field_3 && $twitter_details->field_3 == $twitter['user_id'])) {
 						$twitter_details->field_10 = '1';
-						$em->persist($twitter_details);
+						$this->persist($em, $twitter_details);
 						$has_account = true;
 					}
 				}
@@ -226,10 +241,10 @@ class LoginProcessor
 					$twitter_details->field_2 = '0';
 					$twitter_details->field_3 = $twitter['user_id'];
 					$twitter_details->field_10 = '1';
-					$em->persist($twitter_details);
+					$this->persist($em, $twitter_details);
 				}
 
-				$em->flush();
+				$this->flush($em);
 			}
 
 			// New assoc
@@ -239,8 +254,8 @@ class LoginProcessor
 			$this->assoc['identity']          = $this->identity->getIdentity();
 			$this->assoc['identity_friendly'] = $this->identity->getFriendlyIdentity() ?: $this->identity->getIdentity();
 			$this->assoc['data']              = $this->identity->getRawData();
-			$em->persist($this->assoc);
-			$em->flush();
+			$this->persist($em, $this->assoc);
+			$this->flush($em);
 
 		#------------------------------
 		# The assoc exists
@@ -256,10 +271,10 @@ class LoginProcessor
 					$email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
 					if (!$email) {
 						$email_obj = $this->person->addEmailAddressString($mapped_fields->get('email'));
-						$em->persist($email_obj);
+						$this->persist($em, $email_obj);
 						$this->person->primary_email = $email_obj;
-						$em->persist($this->person);
-						$em->flush();
+						$this->persist($em, $this->person);
+						$this->flush($em);
 					}
 				}
 			}
@@ -284,13 +299,51 @@ class LoginProcessor
 					$this->person->addUsergroup($this->usersource->agent_permission_group);
 				}
 			}
-			if ($this->new_person && $this->person->getPrimaryEmail() && $this->person->is_agent ) {
+			// wont send mail in test mode
+			$this->sendAgentWelcomeEmail();
+		}
+
+		$this->persist($em, $this->person);
+		$this->persist($em, $this->assoc);
+		$this->flush($em);
+		$this->commit($em);
+
+		return $this->person;
+	}
+
+
+	public function beginTransaction(EntityManager $em)
+	{
+		if (!$this->test_mode) $em->beginTransaction();
+	}
+
+	public function commit(EntityManager $em)
+	{
+		if (!$this->test_mode) $em->commit();
+	}
+
+
+	public function persist(EntityManager $em, $entity)
+	{
+		if (!$this->test_mode) $em->persist($entity);
+	}
+
+	public function flush(EntityManager $em)
+	{
+		if (!$this->test_mode) $em->flush();
+	}
+
+
+	protected function sendAgentWelcomeEmail()
+	{
+		if (!$this->test_mode) {
+			if ($this->new_person && $this->person->getPrimaryEmail() && $this->person->is_agent) {
 				$message = App::$container->getMailer()->createMessage();
 				$message->setToPerson($this->person);
 				$message->setTemplate(
 					'DeskPRO:emails_agent:agent-welcome-usersource.html.twig',
 					array(
-						'agent' => $this->person,
+						'agent'      => $this->person,
 						'usersource' => $this->usersource
 					)
 				);
@@ -303,12 +356,5 @@ class LoginProcessor
 				App::$container->getMailer()->send($message);
 			}
 		}
-
-		$em->persist($this->person);
-		$em->persist($this->assoc);
-		$em->flush();
-		$em->commit();
-
-		return $this->person;
 	}
 }
