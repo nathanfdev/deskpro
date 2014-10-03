@@ -42,34 +42,84 @@ use Orb\Util\Arrays;
 class DepartmentPermission extends AbstractEntityRepository
 {
 	/**
+	 * array(agent_id => array(name => array(...), any => array(...))
 	 * @var array
 	 */
-	private $cache = null;
+	private $cache_by_agent = null;
+
+	/**
+	 * array(group_id => array(name => array(...), any => array(...))
+	 * @var null
+	 */
+	private $cache_by_group = null;
 
 	public function getPermsForAgent($person_id, array $ug_ids, $name = null)
 	{
-		if ($ug_ids) {
-			$ug_ids = Arrays::castToType($ug_ids, 'integer');
-		}
 		$ug_ids = Arrays::removeFalsey($ug_ids);
 		if (!$ug_ids) {
 			$ug_ids = array();
-		} else {
-			$ug_ids = array_fill_keys($ug_ids, true);
 		}
 
-		if ($this->cache === null) {
-			$this->cache = $this->_em->getConnection()->fetchAll("
+		if ($this->cache_by_agent === null) {
+			$this->cache_by_agent = array();
+			$this->cache_by_group = array();
+
+			$q = $this->_em->getConnection()->query("
 				SELECT dp.app, dp.department_id, dp.usergroup_id, dp.person_id, dp.name, dp.value
 				FROM department_permissions dp
 			");
+
+			while ($rec = $q->fetch()) {
+				if ($rec['usergroup_id']) {
+					if (!isset($this->cache_by_group[$rec['usergroup_id']])) {
+						$this->cache_by_group[$rec['usergroup_id']]        = array();
+						$this->cache_by_group[$rec['usergroup_id']]['ANY'] = array();
+					}
+					if (!isset($this->cache_by_group[$rec['usergroup_id']][$rec['name']])) {
+						$this->cache_by_group[$rec['usergroup_id']][$rec['name']] = array();
+					}
+
+					$this->cache_by_group[$rec['usergroup_id']]['ANY'][]        = $rec;
+					$this->cache_by_group[$rec['usergroup_id']][$rec['name']][] = $rec;
+				} else if ($rec['person_id']) {
+					if (!isset($this->cache_by_agent[$rec['person_id']])) {
+						$this->cache_by_agent[$rec['person_id']]        = array();
+						$this->cache_by_agent[$rec['person_id']]['ANY'] = array();
+					}
+					if (!isset($this->cache_by_agent[$rec['person_id']][$rec['name']])) {
+						$this->cache_by_agent[$rec['person_id']][$rec['name']] = array();
+					}
+
+					$this->cache_by_agent[$rec['person_id']]['ANY'][]        = $rec;
+					$this->cache_by_agent[$rec['person_id']][$rec['name']][] = $rec;
+				}
+			}
 		}
 
 		$found = array();
-		foreach ($this->cache as $rec) {
-			if ($rec['person_id'] == $person_id || ($rec['usergroup_id'] && isset($ug_ids[$rec['usergroup_id']]))) {
-				if (!$name || ($name && $rec['name'] == $name)) {
-					$found[] = $rec;
+
+		if ($person_id && !empty($this->cache_by_agent[$person_id])) {
+			if ($name) {
+				$found = !empty($this->cache_by_agent[$person_id][$name]) ? $this->cache_by_agent[$person_id][$name] : array();
+			} else {
+				$found = !empty($this->cache_by_agent[$person_id]['ANY']) ? $this->cache_by_agent[$person_id]['ANY'] : array();
+			}
+		}
+
+		if ($ug_ids) {
+			foreach ($ug_ids as $ug_id) {
+				if ($name) {
+					$ug_found = !empty($this->cache_by_group[$ug_id][$name]) ? $this->cache_by_group[$ug_id][$name] : array();
+				} else {
+					$ug_found = !empty($this->cache_by_group[$ug_id]['ANY']) ? $this->cache_by_group[$ug_id]['ANY'] : array();
+				}
+			}
+
+			if ($ug_found) {
+				if ($found) {
+					$found = array_merge($found, $ug_found);
+				} else {
+					$found = $ug_found;
 				}
 			}
 		}
