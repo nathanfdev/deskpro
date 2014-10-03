@@ -181,7 +181,7 @@ define [
 
 			options.push({
 				title: 'Usergroup',
-				value: 'FilterUserUsergroups'
+				value: 'FilterUserGroups'
 			})
 
 			options.push({
@@ -554,7 +554,7 @@ define [
 			def = @getStandardInput(options)
 			return def
 
-		getFilterUserUsergroups: (options = {}) ->
+		getFilterUserGroups: (options = {}) ->
 			options.propName = 'group_ids'
 			options.dataName = 'usergroups'
 			def = @getStandardSelect(options)
