@@ -136,7 +136,14 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 				Logger::DEBUG
 			);
 		}
-		return $this->processAcs($callback_data);
+		try {
+			return $this->processAcs($callback_data);
+		} catch (\Exception $e) {
+			return new Result(
+				Result::FAILURE_EXCEPTION, null,
+				array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+			);
+		}
 	}
 
 
@@ -154,7 +161,14 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 				Logger::DEBUG
 			);
 		}
-		return $this->processAcs($_REQUEST);
+		try {
+			return $this->processAcs($_REQUEST);
+		} catch (\Exception $e) {
+			return new Result(
+				Result::FAILURE_EXCEPTION, null,
+				array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+			);
+		}
 	}
 
 
@@ -163,19 +177,24 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
-		$saml = $this->createSamlProcessor();
-
-		if ($this->logger) {
-			$this->logger->log(
-				"Initializing SAML Authentication", Logger::DEBUG
-			);
-			$this->logger->log(
-				"Using SAML settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
-				Logger::DEBUG
+		try {
+			$saml = $this->createSamlProcessor();
+			if ($this->logger) {
+				$this->logger->log(
+					"Initializing SAML Authentication", Logger::DEBUG
+				);
+				$this->logger->log(
+					"Using SAML settings: \n" . trim(Arrays::implodeTemplate($this->getSamlSettings(), "{KEY}: {VAL}\n")),
+					Logger::DEBUG
+				);
+			}
+			$saml->login();
+		} catch (\Exception $e) {
+			return new Result(
+				Result::FAILURE_EXCEPTION, null,
+				array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
 			);
 		}
-
-		$saml->login();
 	}
 
 
@@ -196,9 +215,15 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 			);
 		}
 
-
-		$saml = $this->createSamlProcessor();
-		$saml->processResponse();
+		try {
+			$saml = $this->createSamlProcessor();
+			$saml->processResponse();
+		} catch (\Exception $e) {
+			return new Result(
+				Result::FAILURE_EXCEPTION, null,
+				array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e)
+			);
+		}
 
 		$errors = $saml->getErrors();
 
