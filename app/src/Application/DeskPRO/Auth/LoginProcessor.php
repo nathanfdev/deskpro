@@ -69,11 +69,17 @@ class LoginProcessor
 	 */
 	protected $person;
 
+	/**
+	 * @var bool wether we used "new Person()" to create a new user or not
+	 */
+	protected $new_person;
+
 
 	public function __construct(Usersource $usersource, Identity $identity)
 	{
 		$this->identity = $identity;
 		$this->usersource = $usersource;
+		$this->new_person = false;
 	}
 
 	public function getPerson()
@@ -126,6 +132,7 @@ class LoginProcessor
 			}
 
 			if (!$this->person) {
+				$this->new_person = true;
 				$this->person = new Person();
 				$this->person->is_user = true;
 				$this->person->creation_system = 'web.usersource';
@@ -276,6 +283,24 @@ class LoginProcessor
 				if ($this->usersource->agent_permission_group) {
 					$this->person->addUsergroup($this->usersource->agent_permission_group);
 				}
+			}
+			if ($this->new_person) {
+				$message = App::$container->getMailer()->createMessage();
+				$message->setToPerson($this->person);
+				$message->setTemplate(
+					'DeskPRO:emails_agent:agent-welcome-usersource.html.twig',
+					array(
+						'agent' => $this->person,
+						'usersource' => $this->usersource
+					)
+				);
+				$attach = \Swift_Attachment::fromPath(
+					DP_ROOT . '/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
+					'application/pdf'
+				);
+				$attach->setFilename('Getting Started with DeskPRO.pdf');
+				$message->attach($attach);
+				App::$container->getMailer()->send($message);
 			}
 		}
 
