@@ -69,6 +69,7 @@ class VerifyRef implements TicketSaveActionInterface
 		}
 
 		if (!$ticket->ref || (isset($ticket->__dp_is_autogen_ref) && $ticket->__dp_is_autogen_ref)) {
+			$ticket->__dp_is_autogen_ref = false;
 			try {
 				$ticket->ref = $this->ref_generator->generateReference('DeskPRO:Ticket');
 			} catch (\Exception $e) {
