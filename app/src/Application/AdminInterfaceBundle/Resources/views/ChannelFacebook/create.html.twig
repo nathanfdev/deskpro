@@ -1,0 +1,111 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+		<section class="dp-paneblock dp-editpane" ng-if="!ChannelFacebookCreate.app_connected">
+
+			{# trying to connect their app and authenticate them so we can get their pages #}
+				<article class="form-horizontal dp-form">
+					<div class="panel panel-fill indent">
+						<div class="panel-body">
+							<div class="alert alert-info">
+								<h3>{{ phrase('admin.channels.facebook_app_setup') }}</h3>
+
+								<p style="margin-top: 15px; margin-bottom: 15px;">{{ phrase('admin.channels.facebook_app_setup_instructions') }}</p>
+
+								<p style="margin-bottom: 15px;"><strong>{{ phrase('admin.channels.facebook_app_setup_instructions_note') }}</strong></p>
+
+								<p>
+									<a target="_blank" class="btn btn-default"
+										href="https://developers.facebook.com/apps/">
+										Facebook Developer Dashboard
+										&rarr;
+									</a>
+								</p>
+							</div>
+							<div
+								ng-class="{alert: ChannelFacebookCreate.app_credentials_required, 'alert-danger': ChannelFacebookCreate.app_credentials_required}">
+								<div class="form-group">
+									<div class="col-lg-4">
+										<h3>{{ phrase('admin.channels.facebook_app_id') }}</h3>
+									</div>
+									<div class="col-lg-8">
+										<input type="text" class="form-control" ng-model="ChannelFacebookCreate.app_id">
+										<span class="help-block">Please enter your company's Facebook App ID.</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-lg-4">
+										<h3>{{ phrase('admin.channels.facebook_app_secret') }}</h3>
+									</div>
+									<div class="col-lg-8">
+										<input type="text" class="form-control" ng-model="ChannelFacebookCreate.app_secret">
+										<span class="help-block">Please enter your company's Facebook App Secret.</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>
+				<footer>
+					<div class="dp-content">
+						<div ng-show="ChannelFacebookCreate.app_credentials_required" class="text-danger">
+							<strong>{{ phrase('agent.general.error') }}</strong> {{ phrase('admin.channels.facebook_app_error') }}
+						</div>
+						<div class="dp-btn-controls">
+							<div dp-hide-spinning="connecting_app">
+								<button class="btn btn-primary"
+									ng-click="ChannelFacebookCreate.appConnect()"> {{ phrase('admin.general.connect') }}
+								</button>
+							</div>
+							<div dp-show-spinning="connecting_app">
+								<i class="spinner-flat"></i>
+							</div>
+						</div>
+					</div>
+				</footer>
+			</section>
+
+
+			{# select the page you want to create a channel with #}
+			<section class="dp-paneblock dp-editpane" ng-if="ChannelFacebookCreate.app_connected">
+				<article class="form-horizontal dp-form">
+					<div class="panel panel-fill indent">
+						<div class="panel-body">
+							<h2>{{ phrase('admin.channels.facebook_select_page_header') }}</h2>
+							<div ng-if="ChannelFacebookCreate.available_user_pages.length > 0">
+								<p>{{ phrase('admin.channels.facebook_select_page') }}</p>
+								<ul style="margin-top: 15px;" class="list-unstyled">
+									<li style="margin-top: 25px;" ng-repeat="page in ChannelFacebookCreate.available_user_pages">
+										<a ng-click="ChannelFacebookCreate.selectPage(page.id)">
+											<img width="50" height="50" style="width: 50px; height: 50px;"
+												ng-src="{{ ng_var('page.picture_url') }}"
+												alt="{{ ng_var('page.name') }}" />
+											{{ ng_var('page.name') }}
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div ng-if="ChannelFacebookCreate.available_user_pages.length == 0">
+								<div class="alert alert-info">
+									<h3>{{ phrase('admin.channels.facebook_select_page_none_header') }}</h3>
+
+									<p style="margin-top: 15px; margin-bottom: 15px;">{{ phrase('admin.channels.facebook_select_page_none') }}</p>
+
+									<p>
+										<a target="_blank" class="btn btn-default"
+											href="https://www.facebook.com/pages/create/">
+											Create Facebook Page
+											&rarr;
+										</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>
+
+		</section>
+
+		<div dp-register-message="connected">{{ phrase('admin.channels.facebook_app_connect_success') }}</div>
+		<div dp-register-message="connected_fail">{{ phrase('admin.channels.facebook_app_connect_fail') }}</div>
+		<div dp-register-message="invalid_permissions">{{ phrase('admin.channels.facebook_invalid_permissions') }}</div>
+{% endblock %}

@@ -3040,6 +3040,52 @@ $collection->create(
 );
 
 ########################################################################################################################
+# Facebook Channel
+########################################################################################################################
+
+$collection->create(
+	'api_channel_facebook_pages', array(
+		'path'       => '/channel/facebook/pages',
+		'controller' => 'ApiBundle:ChannelFacebook:list',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_facebook_page_get', array(
+		'path'       => '/channel/facebook/page/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelFacebook:get',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_facebook_page_delete', array(
+		'path'       => '/channel/facebook/page/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelFacebook:delete',
+		'methods'    => array('DELETE'),
+	)
+);
+
+$collection->create(
+	'api_channel_facebook_page_save', array(
+		'path'       => '/channel/facebook/page/{id}',
+		'controller' => 'ApiBundle:ChannelFacebook:save',
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
+	'api_channel_facebook_page_create', array(
+		'path'       => '/channel/facebook/page',
+		'controller' => 'ApiBundle:ChannelFacebook:save',
+		'methods'    => array('PUT'),
+	)
+);
+
+########################################################################################################################
 # Email Accounts
 ########################################################################################################################
 

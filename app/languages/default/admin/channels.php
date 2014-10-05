@@ -1,4 +1,7 @@
 <?php return array(
+	'admin.channels.setup_and_tested_success'          => 'Successfully Setup and Tested Account',
+
+
 	'admin.channels.sms_x_accounts'                    => '{{count}} SMS Account|{{count}} SMS Accounts',
 	'admin.channels.sms_account_saved'                 => 'SMS Account Saved',
 	'admin.channels.sms_no_accounts_yet'               => 'You have not created any SMS accounts yet.',
@@ -16,10 +19,38 @@
 	'admin.channels.sms_help_extended'                 => 'SMS Channels allow you to communicate with users via SMS messaging',
 	'admin.channels.sms_incoming_log'                  => 'Incoming SMS Log',
 	'admin.channels.sms_outgoing_log'                  => 'Outgoing SMS Log',
-	'admin.channels.sms_connection_problem'            => 'There was a problem connecting with your account. Please There was a problem connecting with your account. Please check your credentials and try again.check your credentials and try again.',
+	'admin.channels.sms_connection_problem'            => 'There was a problem connecting with your account. Please check your credentials and try again.',
 
 	'admin.channels.sync_account_information'          => 'Sync Account Information',
 	'admin.channels.configure_and_test_twilio_account' => 'Configure and Test Twilio Account',
 	'admin.channels.configure_account'                 => 'Configure Account',
-	'admin.channels.setup_and_tested_success'          => 'Successfully Setup and Tested Account',
+
+
+	'admin.channels.facebook_x_pages'                  => '{{count}} Facebook Page|{{count}} Facebook Pages',
+	'admin.channels.facebook_page_saved'               => 'Facebook Page Connected',
+	'admin.channels.facebook_no_pages_yet'             => 'You have not created any Facebook Pages yet.',
+	'admin.channels.facebook_new_page'                 => 'New Facebook Page',
+	'admin.channels.facebook_enable_page'              => 'Enable this Facebook page',
+	'admin.channels.facebook_enable_page_help'         => 'Enabling this page opens it up as a channel.',
+	'admin.channels.facebook_disable_page_help'        => 'Uncheck this box to disable this page. Disabling this page will remove it as a channel. You can re-enable it later.',
+	'admin.channels.facebook_delete_page'              => 'Disconnect Facebook Page',
+	'admin.channels.facebook_delete_page_confirm'      => 'Are you sure you want to disconnect this Facebook Page? DeskPRO will stop processing messages to and from this page.',
+	'admin.channels.facebook_help_header_title'        => 'Facebook Channel',
+	'admin.channels.facebook_help_header_desc'         => 'Facebook channels allow you to communicate with users via Facebook Pages',
+	'admin.channels.facebook_help_extended'            => 'Facebook Channels allow you to communicate with users via Facebook Pages',
+	'admin.channels.facebook_incoming_log'             => 'Incoming Facebook Log',
+	'admin.channels.facebook_outgoing_log'             => 'Outgoing Facebook Log',
+	'admin.channels.facebook_app_connect_success'      => 'Successfully connected to your Facebook app.',
+	'admin.channels.facebook_app_connect_fail'         => 'Failed to connect with your Facebook app. Please check your credentials and retry.',
+	'admin.channels.facebook_app_setup'                => 'Facebook App Setup',
+	'admin.channels.facebook_app_id'                   => 'App ID',
+	'admin.channels.facebook_app_secret'               => 'App Secret',
+	'admin.channels.facebook_app_error'                => 'Please enter your Facebook App ID and App Secret<br>You can create or find one here: <a href="https://developers.facebook.com/apps">https://developers.facebook.com/apps</a>',
+	'admin.channels.facebook_invalid_permissions'      => 'Failed to recieve permission to manage your pages.',
+	'admin.channels.facebook_select_page'              => 'You can create multiple Facebook Page channels. Which page would you like to use for this channel?',
+	'admin.channels.facebook_select_page_none'         => 'We could not find any Facebook Pages that your Facebook Account has access to manage. Please create a Facebook Page and return to this page to create your DeskPRO ticket channel.',
+	'admin.channels.facebook_select_page_none_header'  => 'No Pages Found',
+	'admin.channels.facebook_select_page_header'       => 'Page Selection',
+	'admin.channels.facebook_app_setup_instructions'   => 'Facebook requires that a Facebook app be used to manage your page on your behalf. Creating a Facebook app is free, and you can do this in the Facebook Developer Dashboard. Once you create an app and get your App ID and App Secret, fill in the details blow and click "Connect".',
+	'admin.channels.facebook_app_setup_instructions_note'   => 'The Facebook App you use is important because your users may see it\'s name when interacting with your Facebook Page.'
 );

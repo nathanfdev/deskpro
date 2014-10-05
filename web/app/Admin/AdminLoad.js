@@ -98,6 +98,8 @@ define([
 	'Admin/Templates/Ctrl/TemplateList',
 	'Admin/ChannelSms/Ctrl/List',
 	'Admin/ChannelSms/Ctrl/Edit',
+	'Admin/ChannelFacebook/Ctrl/List',
+	'Admin/ChannelFacebook/Ctrl/Create',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',
 	'Admin/TicketAccounts/Ctrl/Settings',
