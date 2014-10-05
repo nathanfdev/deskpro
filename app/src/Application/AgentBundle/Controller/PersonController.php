@@ -36,13 +36,18 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\DBAL\DoctrineEvent;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Form\Type\DpCategoryBuilderType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Orb\Util\Arrays;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles viewing and editing a person
@@ -709,7 +714,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	public function ajaxSaveCustomFieldsAction($person_id)
+	public function ajaxSaveCustomFieldsAction(Request $request, $person_id)
 	{
 		$person = $this->getPersonOr404($person_id);
 
@@ -748,6 +753,28 @@ class PersonController extends AbstractController
 			return $this->createJsonResponse(array(
 				'error' => true,
 				'invalid_custom_fields' => $invalid_custom_fields
+			));
+		}
+
+		$manager = $this->container->getCustomFieldManager();
+		$form = $manager->createDefinitionsFormForContext($person);
+		// fix: jquery removes empty arrays from post request
+		if (!$request->request->has($form->getName())) {
+			$request->request->set($form->getName(), array());
+		}
+		$form->handleRequest($request);
+
+		if ($form->isValid()) {
+			// todo need clearer solution to track new/removed entities
+			$event = new FormEvent($form, array('em' => $this->em));
+			foreach ($form as $child) {
+				$child->get('_children')->getConfig()->getEventDispatcher()
+					->dispatch(DpCategoryBuilderType::EVENT_MANAGE, $event);
+			}
+		} else {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'invalid_custom_fields' => $form->getErrors(true, true)->current(),
 			));
 		}
 

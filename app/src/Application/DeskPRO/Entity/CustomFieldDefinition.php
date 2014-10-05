@@ -173,6 +173,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 	public function __construct()
 	{
 		$this->children = new ArrayCollection();
+		$this->description = '';
 		$this->display_order = 0;
 		$this->options = array();
 		$this->is_enabled = true;

@@ -25,65 +25,41 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\DeskPRO\Form\Type\CustomFields;
+namespace Application\DeskPRO\Form\Type;
 
-use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity\CustomFieldDefinition;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-abstract class CustomFieldType extends AbstractType
+use Application\DeskPRO\Form\EventListener\ResizeFormListener;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+class DpCategoryBuilderType extends CollectionType
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
-	 */
-	protected $definition;
-
-	public function __construct(CustomFieldDefinition $definition)
-	{
-		$this->definition = $definition;
-	}
+	const EVENT_MANAGE = 'manage';
 
 	/**
-	 * @param OptionsResolverInterface $resolver
+	 * @var ResizeFormListener
 	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$options = $this->definition['options'];
-		$options['label'] = $this->definition['title'];
-		$options['attr']['data-definition-type'] = $this->getName();
-		$options['attr']['data-definition-id'] = $this->definition['id'];
-
-		$resolver
-			->setDefaults($options)
-			->setRequired(array('owner', 'entity_manager'))
-			->setOptional(array('context'))
-			->setAllowedTypes(array(
-				'owner' => 'Application\DeskPRO\Domain\DomainObject',
-				'entity_manager' => 'Doctrine\ORM\EntityManager',
-				'context' => 'Application\DeskPRO\Domain\DomainObject',
-			));
-	}
+	protected $listener;
 
 	/**
-	 * @param FormView $view
-	 * @param FormInterface $form
-	 * @param array $options
+	 * {@inheritdoc}
 	 */
-	public function buildView(FormView $view, FormInterface $form, array $options)
+	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$view->vars['rendered_data'] = $form->getData();
+		$this->listener = new ResizeFormListener(
+			$options['type'],
+			$options['options'],
+			$options['allow_add'],
+			$options['allow_delete'],
+			$options['delete_empty']
+		);
+
+		$builder->addEventSubscriber($this->listener);
+		$builder->addEventListener(self::EVENT_MANAGE, array($this->listener, 'manageEntities'));
 	}
 
-	/**
-	 * @return CustomFieldDefinition
-	 */
-	public function getDefinition()
+	public function getName()
 	{
-		return $this->definition;
+		return 'dp_category_builder';
 	}
-}
+} 

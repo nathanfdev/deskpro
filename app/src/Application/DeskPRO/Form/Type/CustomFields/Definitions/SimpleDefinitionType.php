@@ -43,7 +43,11 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 	 */
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$builder->add('title');
+		$builder
+			->add('id', 'hidden')
+			->add('title')
+			->add('display_order', 'hidden')
+		;
 		$builder->addEventSubscriber($this);
 	}
 
@@ -57,7 +61,7 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 				'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
 			))
 			->setRequired(array(
-				'context',
+				'context', 'parent',
 			))
 			->setAllowedTypes(array(
 				// todo
@@ -65,7 +69,7 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 					'Application\DeskPRO\Entity\Person',
 					'Application\DeskPRO\Entity\Ticket',
 					'Application\DeskPRO\Entity\Organization',
-				)
+				),
 			))
 		;
 	}
@@ -78,19 +82,42 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 		return 'simple_definition';
 	}
 
-
 	/**
 	 * @param FormEvent $event
 	 */
 	public function onPreSubmit(FormEvent $event)
 	{
-		if (!$definition = $event->getData()) {
+		// clean extra data
+		if (!$data = $event->getData()) {
+			return;
+		}
+
+		$data = array_intersect_key($data, $event->getForm()->all());
+		$data['id'] = (int)$data['id'];
+		if ($data['id'] < 1) {
+			$data['id'] = null;
+		}
+		$event->setData($data);
+	}
+
+	/**
+	 * @param FormEvent $event
+	 */
+	public function onPostSubmit(FormEvent $event)
+	{
+		if (!$definition = $event->getForm()->getData()) {
 			return;
 		}
 
 		if ($context = $event->getForm()->getConfig()->getOption('context')) {
 			$definition['context_class'] = get_class($context);
 			$definition['context_id'] = $context['id'];
+		}
+
+		if ($parent = $event->getForm()->getConfig()->getOption('parent')) {
+			$definition['owner_class'] = $parent['owner_class'];
+			$definition['form_type'] = $parent['form_type'];
+			$definition->parent = $parent;
 		}
 	}
 
@@ -100,7 +127,8 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 	public static function getSubscribedEvents()
 	{
 		return array(
-			FormEvents::PRE_SUBMIT   => 'onPreSubmit',
+			FormEvents::PRE_SUBMIT => 'onPreSubmit',
+			FormEvents::POST_SUBMIT => 'onPostSubmit',
 		);
 	}
 }

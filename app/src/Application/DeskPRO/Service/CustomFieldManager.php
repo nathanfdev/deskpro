@@ -34,6 +34,7 @@ use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionChildrenTyp
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\Expr\From;
 use Symfony\Component\Form\FormFactory;
 
 class CustomFieldManager
@@ -120,13 +121,14 @@ class CustomFieldManager
 		$definitions = $this->repDefinition->findBy(array(
 			'parent' => null,
 			'context_class' => get_class($context)
-		));
+		), array('display_order' => 'ASC'));
 
 		$children = new ArrayCollection();
 		$_children = $this->repDefinition->findBy(array(
 			'context_class' => get_class($context),
 			'context_id' => $context['id'],
-		));
+		), array('display_order' => 'ASC'));
+
 		foreach ($_children as $child) {
 			if (!$pid = $child->parent['id']) {
 				continue;
@@ -145,6 +147,7 @@ class CustomFieldManager
 				'context' => $context,
 				'data' => $def,
 				'children_collection' => $children,
+				'children_only' => true,
 			));
 		}
 

@@ -27,20 +27,23 @@
 
 namespace Application\DeskPRO\Form\Type\CustomFields\Definitions;
 
+use Application\DeskPRO\Form\Type\DpCategoryBuilderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ChoiceDefinitionType extends CustomFieldDefinitionType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		if (!$options['children_collection']) {
+		if (!$options['children_only']) {
 			parent::buildForm($builder, $options);
 			$builder->get('options')
 				->add('multiple', 'checkbox')
 				->add('expanded', 'checkbox');
+		} else {
+			// called in parent
+			$builder->addEventSubscriber($this);
 		}
 
 		$children = null;
@@ -49,14 +52,18 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 		}
 
 		$builder
-			->add('children', 'collection', array(
+			->add('_children', new DpCategoryBuilderType(), array(
 				'type' => new SimpleDefinitionType(),
+				'label' => false,
 				'allow_add' => true,
 				'allow_delete' => true,
 				'required' => false,
 				'data' => $children ?: new ArrayCollection(),
+				'mapped' => false,
 				'options' => array(
+					'label' => false,
 					'context' => $options['context'],
+					'parent' => $options['data'],
 				),
 			))
 		;
@@ -68,7 +75,12 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		parent::setDefaultOptions($resolver);
-		$resolver->setOptional(array('children_collection'));
+		$resolver
+			->setOptional(array('children_collection', 'children_only'))
+			->addAllowedTypes(array(
+				'children_collection' => 'Doctrine\Common\Collections\ArrayCollection',
+			))
+		;
 	}
 
 	/**

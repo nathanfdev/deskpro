@@ -71,10 +71,10 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
 	{
 		$resolver
 			->setDefaults(array(
-				'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition'
+				'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
 			))
 			->setOptional(array(
-				'context'
+				'context',
 			))
 			->setAllowedTypes(array(
 				// todo
@@ -90,9 +90,21 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
 	/**
 	 * @param FormEvent $event
 	 */
+	public function onPreSubmit(FormEvent $event)
+	{
+		// clean extra data
+		if ($data = $event->getData()) {
+			$data = array_intersect_key($data, $event->getForm()->all());
+			$event->setData($data);
+		}
+	}
+
+	/**
+	 * @param FormEvent $event
+	 */
 	public function onPostSubmit(FormEvent $event)
 	{
-		if (!$definition = $event->getData()) {
+		if (!$definition = $event->getForm()->getData()) {
 			return;
 		}
 
@@ -109,6 +121,7 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
 	public static function getSubscribedEvents()
 	{
 		return array(
+			FormEvents::PRE_SUBMIT    => 'onPreSubmit',
 			FormEvents::POST_SUBMIT   => 'onPostSubmit',
 		);
 	}
