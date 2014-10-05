@@ -32,69 +32,37 @@
  * @category Entities
  */
 
-namespace Application\ApiBundle\Controller\Helper;
+namespace Application\DeskPRO\EntityRepository;
 
-use Application\ApiBundle\Controller\AbstractController;
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Orb\Util\Util;
+use Application\DeskPRO\Domain\DomainObject;
 
-class CustomFieldHelper
+class CustomFieldData extends AbstractEntityRepository
 {
-	/**
-	 * @var \Application\ApiBundle\Controller\AbstractController
-	 */
-	private $controller;
-
-	/**
- 	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
-
-	/**
-	 * @var \Application\DeskPRO\Input\Reader
-	 */
-	private $in;
-
-	public function __construct(AbstractController $controller)
+	public function getAllDataAsArrayForOwner(DomainObject $object, DomainObject $context = null)
 	{
-		$this->controller = $controller;
-		$this->em = $controller->getContainer()->getEm();
-		$this->in = $controller->getContainer()->getIn();
-	}
+		$em = $this->getEntityManager();
+		$table1 = $em->getClassMetadata($this->getEntityName())->getTableName();
+		$table2 = $em->getClassMetadata('DeskPRO:CustomFieldDefinition')->getTableName();
 
-	/**
-	 * @param CustomDefAbstract $field
-	 * @param $form_data
-	 * @throws \Exception
-	 */
-	public function saveFormToField(CustomDefAbstract $field, array $form_data)
-	{
-		$basetype    = Util::getBaseClassname($field['handler_class']);
-		$model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
-		$type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
+		$qb = $em->getConnection()->createQueryBuilder()
+			->select('da.value, da.input, de.id as definition_id, de.parent_id as definition_parent_id')
+			->from($table1, 'da')
+			->innerJoin('da', $table2, 'de', 'da.definition_id = de.id')
+			->where('da.owner_id = :owner_id')
+			->andWhere('de.owner_class = :owner_class
+				or (de.context_class = :context_class and de.context_id = :cid)')
+			->setParameters(array(
+				'owner_id' => $object['id'],
+				'owner_class' => get_class($object),
+			));
 
-		$editfield = new $model_class($field);
-		$formtype  = new $type_class();
-		$form      = $this->controller->getContainer()->get('form.factory')->create($formtype, $editfield);
-
-		$this->em->getConnection()->beginTransaction();
-		try {
-			if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$editfield->choices_structure = $this->in->getArrayValue('choices_structure');
-				$editfield->default_option = $this->in->getString('default_option');
-			}
-
-			// todo
-			if (empty($form_data['handler_class'])) {
-				$form_data['handler_class'] = $editfield->handler_class ?: $field['handler_class'];
-			}
-			$form->submit($form_data);
-			$editfield->save();
-
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
+		if ($context) {
+			$qb
+				->andWhere('de.context_class is null or (de.context_class = :context_class and de.context_id = :cid)')
+				->setParameter('context_class', get_class($context))
+				->setParameter('cid', $context['id']);
 		}
+
+		return $qb->execute()->fetchAll();
 	}
 }

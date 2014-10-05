@@ -449,10 +449,12 @@ define [
 
 		# simple proxy
 		get: (id) ->
-			if !id? then return null
 			deferred = @$q.defer()
-			@all().then =>
-				deferred.resolve @map[id]
+
+			if !id?
+				deferred.resolve null
+			else
+				@all().then => deferred.resolve @map[id]
 
 			deferred.promise
 
@@ -489,7 +491,7 @@ define [
 
 
 		url: ->
-			throw new Exception("This method must be implemented by a sub-class")
+			throw '[BaseListEdit:url] This method must be implemented by a sub-class'
 
 
 

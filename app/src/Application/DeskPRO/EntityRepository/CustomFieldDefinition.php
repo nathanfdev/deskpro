@@ -32,69 +32,29 @@
  * @category Entities
  */
 
-namespace Application\ApiBundle\Controller\Helper;
+namespace Application\DeskPRO\EntityRepository;
 
-use Application\ApiBundle\Controller\AbstractController;
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Orb\Util\Util;
+use Application\DeskPRO\Domain\DomainObject;
 
-class CustomFieldHelper
+class CustomFieldDefinition extends AbstractEntityRepository
 {
-	/**
-	 * @var \Application\ApiBundle\Controller\AbstractController
-	 */
-	private $controller;
-
-	/**
- 	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
-
-	/**
-	 * @var \Application\DeskPRO\Input\Reader
-	 */
-	private $in;
-
-	public function __construct(AbstractController $controller)
+	public function getAllDefinitionsForOwner(DomainObject $object, DomainObject $context = null)
 	{
-		$this->controller = $controller;
-		$this->em = $controller->getContainer()->getEm();
-		$this->in = $controller->getContainer()->getIn();
-	}
+		$qb = $this->createQueryBuilder('d')
+			->where('d.parent is null')
+			->andWhere('d.owner_class = :owner')
+			->andWhere('d.is_enabled = 1')
+			->setParameter('owner', get_class($object));
 
-	/**
-	 * @param CustomDefAbstract $field
-	 * @param $form_data
-	 * @throws \Exception
-	 */
-	public function saveFormToField(CustomDefAbstract $field, array $form_data)
-	{
-		$basetype    = Util::getBaseClassname($field['handler_class']);
-		$model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
-		$type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
-
-		$editfield = new $model_class($field);
-		$formtype  = new $type_class();
-		$form      = $this->controller->getContainer()->get('form.factory')->create($formtype, $editfield);
-
-		$this->em->getConnection()->beginTransaction();
-		try {
-			if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$editfield->choices_structure = $this->in->getArrayValue('choices_structure');
-				$editfield->default_option = $this->in->getString('default_option');
-			}
-
-			// todo
-			if (empty($form_data['handler_class'])) {
-				$form_data['handler_class'] = $editfield->handler_class ?: $field['handler_class'];
-			}
-			$form->submit($form_data);
-			$editfield->save();
-
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
+		if ($context) {
+			$qb
+				->leftJoin('d.children', 'dc')
+				->andWhere('d.context_class is null
+					or (d.context_class = :context_class and (d.context_id = :cid or dc.context_id = :cid))')
+				->setParameter('context_class', get_class($context))
+				->setParameter('cid', $context['id']);
 		}
+
+		return $qb->getQuery()->getResult();
 	}
 }

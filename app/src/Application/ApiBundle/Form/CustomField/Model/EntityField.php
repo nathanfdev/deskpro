@@ -29,72 +29,25 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage AdminBundle
  */
 
-namespace Application\ApiBundle\Controller\Helper;
+namespace Application\ApiBundle\Form\CustomField\Model;
 
-use Application\ApiBundle\Controller\AbstractController;
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Orb\Util\Util;
-
-class CustomFieldHelper
+class EntityField extends CustomFieldAbstract
 {
-	/**
-	 * @var \Application\ApiBundle\Controller\AbstractController
-	 */
-	private $controller;
+	public $default_value = '';
+	public $handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Entity';
 
-	/**
- 	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
-
-	/**
-	 * @var \Application\DeskPRO\Input\Reader
-	 */
-	private $in;
-
-	public function __construct(AbstractController $controller)
+	public function init()
 	{
-		$this->controller = $controller;
-		$this->em = $controller->getContainer()->getEm();
-		$this->in = $controller->getContainer()->getIn();
+		$this->default_value = $this->_field->default_value;
 	}
 
-	/**
-	 * @param CustomDefAbstract $field
-	 * @param $form_data
-	 * @throws \Exception
-	 */
-	public function saveFormToField(CustomDefAbstract $field, array $form_data)
+	protected function setFieldProperties()
 	{
-		$basetype    = Util::getBaseClassname($field['handler_class']);
-		$model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
-		$type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
+		$field = $this->_field;
 
-		$editfield = new $model_class($field);
-		$formtype  = new $type_class();
-		$form      = $this->controller->getContainer()->get('form.factory')->create($formtype, $editfield);
-
-		$this->em->getConnection()->beginTransaction();
-		try {
-			if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$editfield->choices_structure = $this->in->getArrayValue('choices_structure');
-				$editfield->default_option = $this->in->getString('default_option');
-			}
-
-			// todo
-			if (empty($form_data['handler_class'])) {
-				$form_data['handler_class'] = $editfield->handler_class ?: $field['handler_class'];
-			}
-			$form->submit($form_data);
-			$editfield->save();
-
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
+		$field->default_value = $this->default_value;
 	}
 }

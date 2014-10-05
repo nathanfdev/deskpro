@@ -76,6 +76,7 @@ define([
 	'Admin/CustomFields/Tickets/Ctrl/Edit',
 	'Admin/CustomFields/Chat/Ctrl/Edit',
 	'Admin/CustomFields/User/Ctrl/Edit',
+	'Admin/CustomFields/Entity/Ctrl/Edit',
 	'Admin/CustomFields/Org/Ctrl/Edit',
 	'Admin/Labels/Ctrl/List',
 	'Admin/Labels/Ctrl/Edit',
@@ -186,6 +187,7 @@ define([
 	'Admin/RoundRobin/Ctrl/List',
 	'Admin/RoundRobin/Ctrl/Edit',
 	'Admin/Icons/Ctrl/List',
+	'Admin/CustomFields/Ctrl/Edit',
 
 	'CloudAdminLoad'
 

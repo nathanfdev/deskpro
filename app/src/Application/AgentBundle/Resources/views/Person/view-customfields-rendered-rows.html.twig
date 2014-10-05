@@ -7,6 +7,14 @@
 	</tr>
 	{% endif %}
 	{% endfor %}
+
+    {% for f in custom_fields_2 if f.vars.data is not null %}
+        <tr>
+            <th>{{ form_label(f) }}</th>
+            <td>{{ f.vars.rendered_data }}</td>
+        </tr>
+    {% endfor %}
+
 	<tr>
 		<th>{{ phrase('agent.general.timezone') }}</th>
 		<td>

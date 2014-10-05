@@ -54,6 +54,7 @@ abstract class CustomFieldAbstract
 	public $is_enabled = false;
 	public $is_agent_field = false;
 	public $agent_validation_resolve = false;
+	public $display_order = 0;
 
 	protected $_field = null;
 	protected $_is_new = false;

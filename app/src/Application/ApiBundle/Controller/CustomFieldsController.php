@@ -38,8 +38,10 @@ use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class UserFieldsController extends AbstractController implements ProtectedControllerInterface
+class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -57,17 +59,14 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 	# list
 	####################################################################################################################
 
-	public function listAction()
+	public function listAction($type)
 	{
-		$data = array();
+		$definitions = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->findBy(array(
+			'parent' => null,
+			'form_type' => 'Application\DeskPRO\Form\Type\CustomFields\\' . $type . 'Type',
+		));
 
-		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getPersonFieldManager();
-
-		$custom_fields = $field_manager->getDefinedFields();
-		$data['custom_fields'] = $this->getApiData($custom_fields, false);
-
-		return $this->createApiResponse($data);
+		return $this->createApiResponse($this->getApiData($definitions, false));
 	}
 
 	####################################################################################################################
@@ -76,15 +75,7 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 
 	public function getCustomFieldAction($id)
 	{
-		$field = $this->em->find('DeskPRO:CustomDefPerson', $id);
-		if (!$field || $field->parent) {
-			throw $this->createNotFoundException();
-		}
-
-		$data = array();
-		$data['field'] = $field->toApiData();
-
-		return $this->createApiResponse($data);
+		return $this->createApiResponse($this->getDefinition($id)->toApiData());
 	}
 
 	####################################################################################################################
@@ -93,38 +84,32 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 
 	public function saveCustomFieldAction($id)
 	{
-		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getPersonFieldManager();
-
-		if ($id) {
-			$field = $this->em->find('DeskPRO:CustomDefPerson', $id);
-			if (!$field || $field->parent) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$field                = $field_manager->createNewDefEntity();
-			$field->handler_class = $this->in->getString('handler_class');
-		}
-
 		$post = $this->in->getAll('req');
-
-		$helper = new CustomFieldHelper($this);
-		$helper->saveFormToField($field, $post);
-
 		if ($id) {
-			return $this->createSuccessResponse(
-				array(
-					 'field_id' => $field->id
-				)
-			);
+			$definition = $this->getDefinition($id);
 		} else {
-			return $this->createSuccessResponse(
-				array(
-					 'field_id' => $field->id,
-					 $this->generateUrl('api_user_fields_get', array('id' => $field->id))
-				)
-			);
+			if (empty($post['form_type']) || empty($post['context_class'])) {
+				throw new NotFoundHttpException;
+			}
+			$definition = new CustomFieldDefinition();
+			$definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\' . $post['form_type'] . 'Type';
+
+			// todo
+			$definition['context_class'] = 'Application\DeskPRO\Entity\\' . $post['context_class'];
+			$definition['owner_class'] = 'Application\DeskPRO\Entity\Ticket';
+
+			$this->em->persist($definition);
 		}
+
+		$form = $this->createForm($definition->createDefinitionType(), $definition);
+		$post = array_intersect_key($post, $form->all());
+		$form->submit($post);
+
+		if ($form->isValid()) {
+			$this->em->flush();
+		}
+
+		return $this->getCustomFieldAction($definition['id']);
 	}
 
 	####################################################################################################################
@@ -133,12 +118,7 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 
 	public function deleteCustomFieldAction($id)
 	{
-		$field = $this->em->find('DeskPRO:CustomDefPerson', $id);
-		if (!$field || $field->parent) {
-			throw $this->createNotFoundException();
-		}
-
-		$this->em->remove($field);
+		$this->em->remove($this->getDefinition($id));
 		$this->em->flush();
 
 		return $this->createApiDeleteResponse();
@@ -150,9 +130,9 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 
 	public function toggleFieldAction($field_id, $is_enabled)
 	{
-		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getPersonFieldManager();
-		$field_manager->setFieldEnabledById($field_id, $is_enabled);
+		$definition = $this->getDefinition($field_id);
+		$definition['is_enabled'] = $is_enabled;
+		$this->em->flush();
 
 		return $this->createSuccessResponse();
 	}
@@ -164,7 +144,21 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 	public function saveDisplayOrderAction()
 	{
 		$display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
-		$this->em->getRepository('DeskPRO:CustomDefPerson')->updateDisplayOrders($display_orders);
+		$this->em->getRepository('DeskPRO:CustomDefEntity')->updateDisplayOrders($display_orders);
 		return $this->createSuccessResponse();
+	}
+
+	/**
+	 * @param $id
+	 * @return null|object
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	protected function getDefinition($id)
+	{
+		$definition = $this->em->find('DeskPRO:CustomFieldDefinition', $id);
+		if (!$definition || $definition->parent) {
+			throw $this->createNotFoundException();
+		}
+		return $definition;
 	}
 }

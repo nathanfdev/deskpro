@@ -77,8 +77,16 @@ class PersonController extends AbstractController
 		# Custom fields
 		#------------------------------
 
-		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$manager = $this->container->getCustomFieldManager();
+
+		// todo replace with:
+//		 $form = $manager->createFormForOwner($person, $this->person);
+//		 $custom_fields = $form->createView();
+		$field_manager = $this->container->getPersonFieldManager();
 		$custom_fields = $field_manager->getDisplayArrayForObject($person);
+
+		$form = $manager->createDefinitionsFormForContext($person);
+		$custom_fields_definitions = $form->createView();
 
 		#------------------------------
 		# Misc info needed
@@ -319,6 +327,8 @@ class PersonController extends AbstractController
 			'reg_group'                 => $reg_group,
 			'person_object_counts'      => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person),
 			'changelog'                 => $changelog,
+
+			'custom_fields_definitions' => $custom_fields_definitions,
 		));
 	}
 
@@ -602,34 +612,6 @@ class PersonController extends AbstractController
 				}
 
 				$this->em->flush();
-
-//				if ($usergroup_ids) {
-//					$usergroup_ids = array_unique($usergroup_ids);
-//
-//					// Make sure only valid ones are set
-//					$usergroup_ids = $this->db->fetchAllCol("
-//						SELECT id
-//						FROM usergroups
-//						WHERE id IN (" . implode(',', $usergroup_ids).")
-//							AND sys_name IS NULL
-//					");
-//				}
-
-//				$this->container->getDb()->executeUpdate("
-//					DELETE person2usergroups
-//					FROM person2usergroups
-//					LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
-//					WHERE usergroups.is_agent_group = 0 AND person2usergroups.person_id = ?
-//				", array($person->getId()));
-//
-//				if ($usergroup_ids) {
-//					$inserts = array();
-//					foreach ($usergroup_ids as $uid) {
-//						$inserts[] = array('person_id' => $person->getId(), 'usergroup_id' => $uid);
-//					}
-//
-//					$this->db->batchInsert('person2usergroups', $inserts);
-//				}
 				break;
 
 			case 'remove-usersource':
@@ -750,12 +732,13 @@ class PersonController extends AbstractController
 		}
 
 		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('person_fields_manager');
-		$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
+		$field_manager = $this->container->getPersonFieldManager();
+		$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : array();
+
 		$invalid_custom_fields = array();
 		$is_valid = true;
 		foreach ($field_manager->getFields() as $field) {
-			$errors = $field->getHandler()->validateFormData($custom_fields ?: array());
+			$errors = $field->getHandler()->validateFormData($custom_fields);
 			foreach ($errors as $code) {
 				$invalid_custom_fields['field_' . $field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
 				$is_valid = false;

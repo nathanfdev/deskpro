@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 		init: ->
 			@fieldDataService = @DataService.get('UserFields')
+			@service = @DataService.get 'CustomFields'
 			@custom_fields = []
 			@sortedListOptions = {
 				axis: 'y',
@@ -21,6 +22,19 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					@fieldDataService.saveDisplayOrder(displayOrders)
 					@pingElement('display_orders')
 			}
+
+			@entityFieldListOptions =
+				axis: 'y',
+				handle: '.drag-handle',
+				update: (ev, data) =>
+					$list = data.item.closest 'ul'
+					displayOrders = []
+
+					$list.find('li').each -> displayOrders.push parseInt $(this).data('id')
+
+					@entityFieldDataService.saveDisplayOrder displayOrders
+					@pingElement 'display_orders'
+
 			return
 
 		initialLoad: ->
@@ -28,6 +42,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			promise.then( (list) =>
 				@custom_fields = list
 			)
+			@service.all().then (list) => @specific_user_custom_fields = list
 
 			return promise
 

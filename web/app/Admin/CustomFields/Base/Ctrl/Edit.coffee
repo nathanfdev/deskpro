@@ -45,10 +45,6 @@ define [
 			return
 
 		saveForm: ->
-
-			if not @$scope.form_props.$valid
-				return
-
 			is_new = !@field.id
 
 			@field.type_name = @field_type
@@ -95,7 +91,8 @@ define [
 					$scope.confirm = ->
 						$scope.is_loading =
 						doDelete().then(->
-							$state.go(baseRouteName)
+							baseParts = baseRouteName.split '.'
+							$state.go baseParts[0] + '.' + baseParts[1]
 							$modalInstance.dismiss()
 						)
 

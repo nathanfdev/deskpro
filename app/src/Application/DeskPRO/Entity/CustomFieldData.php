@@ -32,69 +32,78 @@
  * @category Entities
  */
 
-namespace Application\ApiBundle\Controller\Helper;
+namespace Application\DeskPRO\Entity;
 
-use Application\ApiBundle\Controller\AbstractController;
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Orb\Util\Util;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class CustomFieldHelper
+/**
+ * Custom ticket data
+ */
+class CustomFieldData extends CustomDataAbstract
 {
 	/**
-	 * @var \Application\ApiBundle\Controller\AbstractController
+	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
 	 */
-	private $controller;
+	protected $definition;
 
 	/**
- 	 * @var \Doctrine\ORM\EntityManager
+	 * @var int
 	 */
-	private $em;
+	protected $owner_id;
 
-	/**
-	 * @var \Application\DeskPRO\Input\Reader
-	 */
-	private $in;
 
-	public function __construct(AbstractController $controller)
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$this->controller = $controller;
-		$this->em = $controller->getContainer()->getEm();
-		$this->in = $controller->getContainer()->getIn();
-	}
+		$metadata->setPrimaryTable(array('name' => 'custom_field_data'));
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldData';
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
-	/**
-	 * @param CustomDefAbstract $field
-	 * @param $form_data
-	 * @throws \Exception
-	 */
-	public function saveFormToField(CustomDefAbstract $field, array $form_data)
-	{
-		$basetype    = Util::getBaseClassname($field['handler_class']);
-		$model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
-		$type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
+		$metadata->mapField(array(
+			'fieldName' => 'id',
+			'type' => 'integer',
+			'nullable' => false,
+			'columnName' => 'id',
+			'id' => true,
+		));
 
-		$editfield = new $model_class($field);
-		$formtype  = new $type_class();
-		$form      = $this->controller->getContainer()->get('form.factory')->create($formtype, $editfield);
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'definition',
+			'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
+			'joinColumns' => array(
+				array(
+					'name' => 'definition_id',
+					'referencedColumnName' => 'id',
+					'onDelete' => 'cascade',
+				),
+			),
+		));
 
-		$this->em->getConnection()->beginTransaction();
-		try {
-			if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$editfield->choices_structure = $this->in->getArrayValue('choices_structure');
-				$editfield->default_option = $this->in->getString('default_option');
-			}
+		$metadata->mapField(array(
+			'fieldName' => 'owner_id',
+			'type' => 'integer',
+			'nullable' => false,
+			'columnName' => 'owner_id',
+		));
 
-			// todo
-			if (empty($form_data['handler_class'])) {
-				$form_data['handler_class'] = $editfield->handler_class ?: $field['handler_class'];
-			}
-			$form->submit($form_data);
-			$editfield->save();
+		$metadata->mapField(array(
+			'fieldName' => 'value',
+			'type' => 'integer',
+			'nullable' => false,
+			'columnName' => 'value',
+		));
 
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
+		$metadata->mapField(array(
+			'fieldName' => 'input',
+			'type' => 'text',
+			'nullable' => false,
+			'columnName' => 'input',
+		));
 	}
 }

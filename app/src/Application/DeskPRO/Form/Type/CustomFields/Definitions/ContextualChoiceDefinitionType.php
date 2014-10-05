@@ -25,76 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Entities
- */
+namespace Application\DeskPRO\Form\Type\CustomFields\Definitions;
 
-namespace Application\ApiBundle\Controller\Helper;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use Application\ApiBundle\Controller\AbstractController;
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Orb\Util\Util;
-
-class CustomFieldHelper
+class ContextualChoiceDefinitionType extends ChoiceDefinitionType
 {
 	/**
-	 * @var \Application\ApiBundle\Controller\AbstractController
+	 * @param OptionsResolverInterface $resolver
 	 */
-	private $controller;
-
-	/**
- 	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
-
-	/**
-	 * @var \Application\DeskPRO\Input\Reader
-	 */
-	private $in;
-
-	public function __construct(AbstractController $controller)
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		$this->controller = $controller;
-		$this->em = $controller->getContainer()->getEm();
-		$this->in = $controller->getContainer()->getIn();
+		parent::setDefaultOptions($resolver);
+		$resolver->setRequired(array('context'));
 	}
 
 	/**
-	 * @param CustomDefAbstract $field
-	 * @param $form_data
-	 * @throws \Exception
+	 * @return string
 	 */
-	public function saveFormToField(CustomDefAbstract $field, array $form_data)
+	public function getName()
 	{
-		$basetype    = Util::getBaseClassname($field['handler_class']);
-		$model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
-		$type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
-
-		$editfield = new $model_class($field);
-		$formtype  = new $type_class();
-		$form      = $this->controller->getContainer()->get('form.factory')->create($formtype, $editfield);
-
-		$this->em->getConnection()->beginTransaction();
-		try {
-			if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$editfield->choices_structure = $this->in->getArrayValue('choices_structure');
-				$editfield->default_option = $this->in->getString('default_option');
-			}
-
-			// todo
-			if (empty($form_data['handler_class'])) {
-				$form_data['handler_class'] = $editfield->handler_class ?: $field['handler_class'];
-			}
-			$form->submit($form_data);
-			$editfield->save();
-
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
+		return 'cf_definition_contextual_choice';
 	}
 }

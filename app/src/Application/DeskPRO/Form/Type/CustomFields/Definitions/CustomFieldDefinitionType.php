@@ -25,47 +25,96 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @subpackage AdminBundle
- */
+namespace Application\DeskPRO\Form\Type\CustomFields\Definitions;
 
-namespace Application\ApiBundle\Form\CustomField\Type;
-
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-abstract class CustomFieldTypeAbstract extends AbstractType
+class CustomFieldDefinitionType extends AbstractType implements EventSubscriberInterface
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-		#------------------------------
-		# Basic fields
-		#------------------------------
+	{
+		$builder
+			->add('title', 'text', array(
+				'required' => true,
+			))
+			->add('description', 'textarea', array(
+				'required' => false,
+			))
 
-		$builder->add('title', 'text', array('required' => true));
-		$builder->add('description', 'textarea', array('required' => false));
-		$builder->add('default_value', 'text', array('required' => false));
-		$builder->add('handler_class', 'hidden', array('required' => true));
-		$builder->add('validation_type', 'hidden', array('required' => false));
-		$builder->add('agent_validation_type', 'hidden', array('required' => false));
-		$builder->add('agent_validation_resolve', 'hidden', array('required' => false));
+			->add('is_enabled', 'checkbox', array(
+				'required' => true,
+			))
+			->add('is_user_enabled', 'checkbox', array(
+				'required' => true,
+			))
+			->add('is_agent_field', 'checkbox', array(
+				'required' => true,
+			))
 
-		$builder->add('required', 'checkbox', array('required' => false));
-		$builder->add('custom_css_classname', 'text', array('required' => false));
+			->add($builder->create('options', 'form')
+				->add('required', 'checkbox')
+			)
+		;
 
-	    $builder->add('is_enabled', 'checkbox', array('required' => false));
-	    $builder->add('is_agent_field', 'checkbox', array('required' => false));
+		$builder->addEventSubscriber($this);
+	}
 
-		$this->buildCustomFieldForm($builder, $options);
-    }
+	/**
+	 * @param OptionsResolverInterface $resolver
+	 */
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	{
+		$resolver
+			->setDefaults(array(
+				'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition'
+			))
+			->setOptional(array(
+				'context'
+			))
+			->setAllowedTypes(array(
+				// todo
+				'context' => array(
+					'Application\DeskPRO\Entity\Person',
+					'Application\DeskPRO\Entity\Ticket',
+					'Application\DeskPRO\Entity\Organization',
+				)
+			))
+		;
+	}
 
-	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options) {}
+	/**
+	 * @param FormEvent $event
+	 */
+	public function onPostSubmit(FormEvent $event)
+	{
+		if (!$definition = $event->getData()) {
+			return;
+		}
 
-    public function getName()
-    {
-        return 'fielddef';
-    }
+	    if ($definition['form_type']) {
+		    return;
+	    }
+
+		$definition['form_type'] = str_replace(array('\Definitions', 'Definition'), array('', ''), get_class($this));
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getSubscribedEvents()
+	{
+		return array(
+			FormEvents::POST_SUBMIT   => 'onPostSubmit',
+		);
+	}
+
+	public function getName()
+	{
+		return 'cf_definition';
+	}
 }

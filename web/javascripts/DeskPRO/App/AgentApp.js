@@ -6,7 +6,8 @@ define([
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',
 	'DeskPRO/Service/LabelDefinition',
-	'ngContextMenu'
+	'ngContextMenu',
+	'DeskPRO/CategoryBuilder/Module'
 ], function(
 	angular,
 	x1,
@@ -15,9 +16,10 @@ define([
 	Strings,
 	DeskPRO_Directive_DpLabel,
     DeskPRO_Service_LabelDefinition,
-    ngContextMenu
+    ngContextMenu,
+    DpCategoryBuilder
 	) {
-	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu']);
+	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu', 'deskpro.category_builder']);
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor

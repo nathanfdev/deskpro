@@ -25,76 +25,76 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Entities
- */
+namespace Application\DeskPRO\Form\Type\CustomFields;
 
-namespace Application\ApiBundle\Controller\Helper;
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use Application\ApiBundle\Controller\AbstractController;
-use Application\DeskPRO\Entity\CustomDefAbstract;
-use Orb\Util\Util;
-
-class CustomFieldHelper
+abstract class CustomFieldType extends AbstractType implements EventSubscriberInterface
 {
 	/**
-	 * @var \Application\ApiBundle\Controller\AbstractController
+	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
 	 */
-	private $controller;
+	protected $definition;
 
-	/**
- 	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
-
-	/**
-	 * @var \Application\DeskPRO\Input\Reader
-	 */
-	private $in;
-
-	public function __construct(AbstractController $controller)
+	public function __construct(CustomFieldDefinition $definition)
 	{
-		$this->controller = $controller;
-		$this->em = $controller->getContainer()->getEm();
-		$this->in = $controller->getContainer()->getIn();
+		$this->definition = $definition;
 	}
 
 	/**
-	 * @param CustomDefAbstract $field
-	 * @param $form_data
-	 * @throws \Exception
+	 * @param OptionsResolverInterface $resolver
 	 */
-	public function saveFormToField(CustomDefAbstract $field, array $form_data)
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		$basetype    = Util::getBaseClassname($field['handler_class']);
-		$model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
-		$type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
+		$options = $this->definition['options'];
+		$options['label'] = $this->definition['title'];
+		$options['attr']['data-definition-type'] = $this->getName();
+		$options['attr']['data-definition-id'] = $this->definition['id'];
 
-		$editfield = new $model_class($field);
-		$formtype  = new $type_class();
-		$form      = $this->controller->getContainer()->get('form.factory')->create($formtype, $editfield);
+		$resolver
+			->setDefaults($options)
+			->setRequired(array('owner', 'entity_manager'))
+			->setOptional(array('context'))
+			->setAllowedTypes(array(
+				'owner' => 'Application\DeskPRO\Domain\DomainObject',
+				'entity_manager' => 'Doctrine\ORM\EntityManager',
+				'context' => 'Application\DeskPRO\Domain\DomainObject',
+			));
+	}
 
-		$this->em->getConnection()->beginTransaction();
-		try {
-			if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
-				$editfield->choices_structure = $this->in->getArrayValue('choices_structure');
-				$editfield->default_option = $this->in->getString('default_option');
-			}
+	/**
+	 * @param FormView $view
+	 * @param FormInterface $form
+	 * @param array $options
+	 */
+	public function buildView(FormView $view, FormInterface $form, array $options)
+	{
+		$view->vars['rendered_data'] = $form->getData();
+	}
 
-			// todo
-			if (empty($form_data['handler_class'])) {
-				$form_data['handler_class'] = $editfield->handler_class ?: $field['handler_class'];
-			}
-			$form->submit($form_data);
-			$editfield->save();
+	/**
+	 * @return CustomFieldDefinition
+	 */
+	public function getDefinition()
+	{
+		return $this->definition;
+	}
 
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
+	/**
+	 * @return array
+	 */
+	public static function getSubscribedEvents()
+	{
+		return array(
+//			FormEvents::PRE_SUBMIT => 'onPreSubmit',
+//			FormEvents::POST_SUBMIT => 'onPostSubmit',
+		);
 	}
 }

@@ -113,7 +113,7 @@ class TicketController extends AbstractController
 		# Custom fields
 		#------------------------------
 
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$field_manager = $this->container->getTicketFieldManager();
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
 		#------------------------------
