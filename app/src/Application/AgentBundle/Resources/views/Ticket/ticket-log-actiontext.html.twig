@@ -484,6 +484,10 @@
 	{% else %}
 		{{ log.details.new_email }}
 	{% endif %}
+{% elseif log.action_type == 'ticket_sla_status' %}
+	SLA #{{ log.details.sla_id }} {{ log.details.sla_title }} status changed from
+	<span class="old-val">{{ log.details.old_status }}</span>
+	<span class="new-val">{{ log.details.new_status }}</span>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

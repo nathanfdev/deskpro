@@ -615,6 +615,15 @@ class TicketLogGenerator
 
 				return $log_data;
 
+			case 'ticket_sla_status':
+				$log_data = array();
+				$log_data['action_type'] = 'ticket_sla_status';
+				$log_data['sla_id']      = $old['sla']->id;
+				$log_data['sla_title']   = $old['sla']->title;
+				$log_data['old_status']  = $old['status'];
+				$log_data['new_status']  = $new['status'];
+				return $log_data;
+
 			default:
 				return array();
 		}
