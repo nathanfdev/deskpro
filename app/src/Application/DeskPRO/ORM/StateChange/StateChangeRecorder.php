@@ -208,6 +208,9 @@ class StateChangeRecorder
 		$old = array();
 		if (isset($this->changes_by_field[$field_id]) && ($_coll = end($this->changes_by_field[$field_id]))) {
 			$old = $_coll->getNew();
+			if (!is_array($old)) {
+				$old = array($old);
+			}
 		} elseif ($coll instanceof PersistentCollection) {
 			$old = $coll->getSnapshot();
 		}
