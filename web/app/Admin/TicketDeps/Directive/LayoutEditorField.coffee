@@ -1,18 +1,22 @@
 define ['DeskPRO/Util/Util'], (Util) ->
 	class LayoutEditorField
-		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout) ->
+		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, CustomFields) ->
 
 			@scope.ticketFieldTitleFilter = (f) =>
 				@scope.field.field_type == 'ticket_field' and (f.id+'') == (@scope.field.field_id+'')
 			@scope.userFieldTitleFilter = (f) =>
 				@scope.field.field_type == 'user_field' and (f.id+'') == (@scope.field.field_id+'')
+			@scope.CustomFieldTitleFilter = (f) =>
+				@scope.field.field_type == 'custom_field' and (f.id+'') == (@scope.field.field_id+'')
 
-			$q.all([TicketFields.loadList(), UserFields.loadList()]).then( (results) =>
+			$q.all([TicketFields.loadList(), UserFields.loadList(), CustomFields.all()]).then( (results) =>
 				tFields = results[0]
 				uFields = results[1]
+				cFields = results[2]
 
 				@scope.custom_ticket_fields = tFields;
 				@scope.custom_user_fields   = uFields;
+				@scope.custom_fields        = cFields;
 
 				$timeout(=>
 					@_initEvents()
@@ -119,6 +123,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 		TicketFields = DataService.get('TicketFields')
 		UserFields   = DataService.get('UserFields')
+		CustomFields = DataService.get('CustomFields')
 
 		directive.link = (scope, element, attrs, ngModel) ->
 			if not scope.field.options                 then scope.field.options = {}
@@ -126,7 +131,19 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			if not scope.field.options.criteria?.terms then scope.field.options.criteria.terms = {}
 			if not scope.field.options.criteria?.mode  then scope.field.options.criteria.mode = 'all'
 
-			handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout)
+			handler = new LayoutEditorField(
+				scope,
+				element,
+				attrs,
+				ngModel,
+				$modal,
+				dpObTypesDefTicketCriteria,
+				TicketFields,
+				UserFields,
+				$q,
+				$timeout,
+				CustomFields
+			)
 
 		return directive
 	]

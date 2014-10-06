@@ -6,7 +6,7 @@ define [
 	Arrays
 ) ->
 	class InterfaceHandler
-		constructor: (scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger) ->
+		constructor: (scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger, CustomFields) ->
 			@scope    = scope
 			@element  = element
 			@ngModel  = ngModel
@@ -82,13 +82,15 @@ define [
 			@ngModel.$render = =>
 				@render()
 
-			$q.all([TicketFields.loadList(), UserFields.loadList()]).then( (results) =>
+			$q.all([TicketFields.loadList(), UserFields.loadList(), CustomFields.all()]).then( (results) =>
 				tFields = results[0]
 				uFields = results[1]
+				cFields = results[2]
 
 				@scope.field_status         = TicketFields.field_enabled;
 				@scope.custom_ticket_fields = tFields;
 				@scope.custom_user_fields   = uFields;
+				@scope.custom_fields        = cFields;
 
 				$timeout(=>
 					@_reInitTab('user', @els.user_tab)
@@ -426,8 +428,21 @@ define [
 
 			TicketFields = DataService.get('TicketFields')
 			UserFields   = DataService.get('UserFields')
+			CustomFields = DataService.get('CustomFields')
 
-			interfaceHandler = new InterfaceHandler(scope, element, attrs,  ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger)
+			interfaceHandler = new InterfaceHandler(
+				scope,
+				element,
+				attrs,
+				ngModel,
+				$compile,
+				TicketFields,
+				UserFields,
+				$q,
+				$timeout,
+				logger,
+				CustomFields
+			)
 
 		return directive
 	]

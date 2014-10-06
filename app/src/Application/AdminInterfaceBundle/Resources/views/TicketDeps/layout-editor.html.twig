@@ -10,7 +10,7 @@
 			<div class="form-elements">
 				<div class="group">
 					<header>
-						<h3>Ticket Fields &middot; <a href="#/tickets/fields">Manage Fields</a></h3>
+						<h3>{{ phrase('adm.custom_fields.ticket_fields') }} &middot; <a href="#/tickets/fields">Manage Fields</a></h3>
 					</header>
 					<article>
 						<ul>
@@ -37,9 +37,29 @@
 						</ul>
 					</article>
 				</div>
+
+                <div class="group">
+                    <header>
+                        <h3>{{ phrase('adm.custom_fields.specific_user_fields') }} &middot; <a href="#/crm/user_fields">Manage Fields</a></h3>
+                    </header>
+                    <article>
+                        <ul>
+                            <li
+                                ng-repeat="field in custom_fields"
+                                ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+                                class="dp-layout-editor-layout-field layout-field"
+                                data-field-type="custom_field"
+                                data-field-id="{{ ng_var('field.id') }}"
+                                >
+                                <span>{{ ng_var('field.title') }}</span>
+                            </li>
+                        </ul>
+                    </article>
+                </div>
+
 				<div class="group">
 					<header>
-						<h3>User Fields &middot; <a href="#/crm/user_fields">Manage Fields</a></h3>
+						<h3>{{ phrase('adm.custom_fields.user_fields') }} &middot; <a href="#/crm/user_fields">Manage Fields</a></h3>
 					</header>
 					<article>
 						<ul>
@@ -66,9 +86,10 @@
 		</article>
 		<article class="agent-form" ng-show="form_tab == 'agent'">
 			<div class="form-elements">
+
 				<div class="group">
 					<header>
-						<h3>Ticket Fields &middot; <a href="#/tickets/fields">Manage Fields</a></h3>
+						<h3>{{ phrase('adm.custom_fields.ticket_fields') }} &middot; <a href="#/tickets/fields">Manage Fields</a></h3>
 					</header>
 					<article>
 						<ul>
@@ -88,6 +109,26 @@
 						</ul>
 					</article>
 				</div>
+
+                <div class="group">
+                    <header>
+                        <h3>{{ phrase('adm.custom_fields.specific_user_fields') }} &middot; <a href="#/crm/user_fields">Manage Fields</a></h3>
+                    </header>
+                    <article>
+                        <ul>
+                            <li
+                                    ng-repeat="field in custom_fields"
+                                    ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+                                    class="dp-layout-editor-layout-field layout-field"
+                                    data-field-type="custom_field"
+                                    data-field-id="{{ ng_var('field.id') }}"
+                                    >
+                                <span>{{ ng_var('field.title') }}</span>
+                            </li>
+                        </ul>
+                    </article>
+                </div>
+
 			</div>
 			<div class="form-worksheet">
 				<div style="margin: 10px 10px 4px 10px;">

@@ -70,4 +70,8 @@
 	<div ng-repeat="f in custom_user_fields | filter:userFieldTitleFilter ">
 		<h4>{{ ng_var('f.title') }}</h4>
 	</div>
+
+    <div ng-repeat="f in custom_fields | filter:CustomFieldTitleFilter ">
+        <h4>{{ ng_var('f.title') }}</h4>
+    </div>
 </div>
