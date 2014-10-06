@@ -139,7 +139,10 @@
           });
         }
         promise.success((function(_this) {
-          return function() {
+          return function(data) {
+            if (data.error) {
+              return;
+            }
             mapper.applyFormToModel(model, formModel);
             return _this.mergeDataModel(model);
           };
