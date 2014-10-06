@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
+use Application\DeskPRO\Util as DeskPROUtil;
 
 /**
  * Filters based on ticket user labels
@@ -62,7 +63,9 @@ class FilterUserLabels extends AbstractFilterTerm
 	{
 		$options = $this->getTermOptions();
 
-		$query = $this->getStringMatchQuery('user_labels.label', $options['labels']);
+		$labels = DeskPROUtil::labelsArrayFromString($options['labels']);
+
+		$query = $this->getStringMatchQuery('user_labels.label', $labels);
 		$query->addJoin('tickets.person.labels', 'labels_people', 'user_labels', 'user_labels.person_id = tickets.person_id');
 		return $query;
 	}
