@@ -254,17 +254,17 @@
     },
     {
         "name": "zendframework/zendframework",
-        "version": "2.3.1",
-        "version_normalized": "2.3.1.0",
+        "version": "2.3.3",
+        "version_normalized": "2.3.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/zendframework/zf2.git",
-            "reference": "055eac4314425c291f3ef0e104a6196a8fc24cd5"
+            "reference": "88c9b6f566fc1097f64ead155625db9bdfee531e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zf2/zipball/055eac4314425c291f3ef0e104a6196a8fc24cd5",
-            "reference": "055eac4314425c291f3ef0e104a6196a8fc24cd5",
+            "url": "https://api.github.com/repos/zendframework/zf2/zipball/88c9b6f566fc1097f64ead155625db9bdfee531e",
+            "reference": "88c9b6f566fc1097f64ead155625db9bdfee531e",
             "shasum": ""
         },
         "require": {
@@ -326,7 +326,7 @@
         },
         "require-dev": {
             "doctrine/annotations": ">=1.0",
-            "fabpot/php-cs-fixer": "*@dev",
+            "fabpot/php-cs-fixer": "dev-master#fcbb09b5204",
             "ircmaxell/random-lib": "dev-master",
             "ircmaxell/security-lib": "dev-master",
             "mikey179/vfsstream": "1.2.*",
@@ -342,7 +342,7 @@
             "zendframework/zendpdf": "ZendPdf for creating PDF representations of barcodes",
             "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
         },
-        "time": "2014-04-15 14:47:18",
+        "time": "2014-09-16 22:58:11",
         "bin": [
             "bin/classmap_generator.php",
             "bin/pluginmap_generator.php",
@@ -695,17 +695,17 @@
     },
     {
         "name": "doctrine/annotations",
-        "version": "v1.2.0",
-        "version_normalized": "1.2.0.0",
+        "version": "v1.2.1",
+        "version_normalized": "1.2.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/annotations.git",
-            "reference": "d9b1a37e9351ddde1f19f09a02e3d6ee92e82efd"
+            "reference": "6a6bec0670bb6e71a263b08bc1b98ea242928633"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/annotations/zipball/d9b1a37e9351ddde1f19f09a02e3d6ee92e82efd",
-            "reference": "d9b1a37e9351ddde1f19f09a02e3d6ee92e82efd",
+            "url": "https://api.github.com/repos/doctrine/annotations/zipball/6a6bec0670bb6e71a263b08bc1b98ea242928633",
+            "reference": "6a6bec0670bb6e71a263b08bc1b98ea242928633",
             "shasum": ""
         },
         "require": {
@@ -716,7 +716,7 @@
             "doctrine/cache": "1.*",
             "phpunit/phpunit": "4.*"
         },
-        "time": "2014-07-06 15:52:21",
+        "time": "2014-09-25 16:45:30",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -735,17 +735,6 @@
         ],
         "authors": [
             {
-                "name": "Jonathan Wage",
-                "email": "jonwage@gmail.com",
-                "homepage": "http://www.jwage.com/",
-                "role": "Creator"
-            },
-            {
-                "name": "Guilherme Blanco",
-                "email": "guilhermeblanco@gmail.com",
-                "homepage": "http://www.instaclick.com"
-            },
-            {
                 "name": "Roman Borschel",
                 "email": "roman@code-factory.org"
             },
@@ -754,10 +743,16 @@
                 "email": "kontakt@beberlei.de"
             },
             {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com"
+            },
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
+            },
+            {
                 "name": "Johannes Schmitt",
-                "email": "schmittjoh@gmail.com",
-                "homepage": "https://github.com/schmittjoh",
-                "role": "Developer of wrapped JMSSerializerBundle"
+                "email": "schmittjoh@gmail.com"
             }
         ],
         "description": "Docblock Annotations Parser",
@@ -840,17 +835,17 @@
     },
     {
         "name": "doctrine/cache",
-        "version": "v1.3.0",
-        "version_normalized": "1.3.0.0",
+        "version": "v1.3.1",
+        "version_normalized": "1.3.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/cache.git",
-            "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449"
+            "reference": "cf483685798a72c93bf4206e3dd6358ea07d64e7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/cache/zipball/e16d7adf45664a50fa86f515b6d5e7f670130449",
-            "reference": "e16d7adf45664a50fa86f515b6d5e7f670130449",
+            "url": "https://api.github.com/repos/doctrine/cache/zipball/cf483685798a72c93bf4206e3dd6358ea07d64e7",
+            "reference": "cf483685798a72c93bf4206e3dd6358ea07d64e7",
             "shasum": ""
         },
         "require": {
@@ -863,11 +858,11 @@
             "phpunit/phpunit": ">=3.7",
             "satooshi/php-coveralls": "~0.6"
         },
-        "time": "2013-10-25 19:04:14",
+        "time": "2014-09-17 14:24:04",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.0.x-dev"
+                "dev-master": "1.4.x-dev"
             }
         },
         "installation-source": "dist",
@@ -882,17 +877,6 @@
         ],
         "authors": [
             {
-                "name": "Jonathan Wage",
-                "email": "jonwage@gmail.com",
-                "homepage": "http://www.jwage.com/",
-                "role": "Creator"
-            },
-            {
-                "name": "Guilherme Blanco",
-                "email": "guilhermeblanco@gmail.com",
-                "homepage": "http://www.instaclick.com"
-            },
-            {
                 "name": "Roman Borschel",
                 "email": "roman@code-factory.org"
             },
@@ -901,10 +885,16 @@
                 "email": "kontakt@beberlei.de"
             },
             {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com"
+            },
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
+            },
+            {
                 "name": "Johannes Schmitt",
-                "email": "schmittjoh@gmail.com",
-                "homepage": "https://github.com/schmittjoh",
-                "role": "Developer of wrapped JMSSerializerBundle"
+                "email": "schmittjoh@gmail.com"
             }
         ],
         "description": "Caching library offering an object-oriented API for many cache backends",
@@ -1062,17 +1052,17 @@
     },
     {
         "name": "symfony/symfony",
-        "version": "v2.5.2",
-        "version_normalized": "2.5.2.0",
+        "version": "v2.5.5",
+        "version_normalized": "2.5.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/symfony.git",
-            "reference": "e66ee967571b89234c90946fe0d50dad195ad29c"
+            "reference": "2aef97bbc95d0c4ae63537cca81bd6d984427d81"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/symfony/zipball/e66ee967571b89234c90946fe0d50dad195ad29c",
-            "reference": "e66ee967571b89234c90946fe0d50dad195ad29c",
+            "url": "https://api.github.com/repos/symfony/symfony/zipball/2aef97bbc95d0c4ae63537cca81bd6d984427d81",
+            "reference": "2aef97bbc95d0c4ae63537cca81bd6d984427d81",
             "shasum": ""
         },
         "require": {
@@ -1130,13 +1120,13 @@
             "doctrine/data-fixtures": "1.0.*",
             "doctrine/dbal": "~2.2",
             "doctrine/orm": "~2.2,>=2.2.3",
-            "egulias/email-validator": "1.1.0",
+            "egulias/email-validator": "~1.2",
             "ircmaxell/password-compat": "1.0.*",
             "monolog/monolog": "~1.3",
             "ocramius/proxy-manager": ">=0.3.1,<0.6-dev",
             "propel/propel1": "1.6.*"
         },
-        "time": "2014-07-15 15:39:46",
+        "time": "2014-09-28 17:33:53",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1162,14 +1152,12 @@
         ],
         "authors": [
             {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com",
-                "homepage": "http://fabien.potencier.org",
-                "role": "Lead Developer"
-            },
-            {
                 "name": "Symfony Community",
                 "homepage": "http://symfony.com/contributors"
+            },
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
             }
         ],
         "description": "The Symfony PHP framework",
@@ -1229,17 +1217,17 @@
     },
     {
         "name": "pdepend/pdepend",
-        "version": "2.0.0",
-        "version_normalized": "2.0.0.0",
+        "version": "2.0.2",
+        "version_normalized": "2.0.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/pdepend/pdepend.git",
-            "reference": "b74f2bb68e86104cd97dfb8d74209692c9b465ce"
+            "reference": "5fbe4b9ec9d05057d88b898ac5ba9071f427eeb0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/pdepend/pdepend/zipball/b74f2bb68e86104cd97dfb8d74209692c9b465ce",
-            "reference": "b74f2bb68e86104cd97dfb8d74209692c9b465ce",
+            "url": "https://api.github.com/repos/pdepend/pdepend/zipball/5fbe4b9ec9d05057d88b898ac5ba9071f427eeb0",
+            "reference": "5fbe4b9ec9d05057d88b898ac5ba9071f427eeb0",
             "shasum": ""
         },
         "require": {
@@ -1251,7 +1239,7 @@
             "phpunit/phpunit": "3.*@stable",
             "squizlabs/php_codesniffer": "@stable"
         },
-        "time": "2014-05-21 09:48:10",
+        "time": "2014-09-16 14:04:28",
         "bin": [
             "src/bin/pdepend"
         ],
@@ -1348,19 +1336,19 @@
         "source": {
             "type": "git",
             "url": "https://github.com/DeskPRO/deskpro-api-php.git",
-            "reference": "b45a0fae7c33d97faaba9e7bcc4899efc9e29dd1"
+            "reference": "d285c73f5fc14fce3bf0c9895f1d7d0343854dd3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/b45a0fae7c33d97faaba9e7bcc4899efc9e29dd1",
-            "reference": "b45a0fae7c33d97faaba9e7bcc4899efc9e29dd1",
+            "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/d285c73f5fc14fce3bf0c9895f1d7d0343854dd3",
+            "reference": "d285c73f5fc14fce3bf0c9895f1d7d0343854dd3",
             "shasum": ""
         },
         "require-dev": {
             "ext-curl": "*",
             "phpunit/phpunit": "4.*"
         },
-        "time": "2014-07-22 08:31:30",
+        "time": "2014-10-02 14:53:14",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -1534,6 +1522,104 @@
         ]
     },
     {
+        "name": "firebase/php-jwt",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "target-dir": "Firebase/PHP-JWT",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/firebase/php-jwt.git",
+            "reference": "6e4b99948f79622aad86101c4baeb744d14d5946"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/firebase/php-jwt/zipball/6e4b99948f79622aad86101c4baeb744d14d5946",
+            "reference": "6e4b99948f79622aad86101c4baeb744d14d5946",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.0"
+        },
+        "time": "2014-09-10 01:49:07",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "Authentication/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Neuman Vong",
+                "email": "neuman+pear@twilio.com",
+                "role": "Developer"
+            },
+            {
+                "name": "Anant Narayanan",
+                "email": "anant@php.net",
+                "role": "Developer"
+            }
+        ],
+        "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+        "homepage": "https://github.com/firebase/php-jwt"
+    },
+    {
+        "name": "onelogin/php-saml",
+        "version": "2.1.0",
+        "version_normalized": "2.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/onelogin/php-saml.git",
+            "reference": "76a5560672089ef5c122ff5afb43057e5d058737"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/onelogin/php-saml/zipball/76a5560672089ef5c122ff5afb43057e5d058737",
+            "reference": "76a5560672089ef5c122ff5afb43057e5d058737",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2"
+        },
+        "require-dev": {
+            "pdepend/pdepend": "1.1.0",
+            "phploc/phploc": "*",
+            "satooshi/php-coveralls": "dev-master",
+            "sebastian/phpcpd": "*",
+            "squizlabs/php_codesniffer": "*"
+        },
+        "suggest": {
+            "ext-gettext": "Install gettext and php5-gettext libs to handle translations",
+            "ext-mcrypt": "Install mcrypt and php5-mcrypt libs in order to support encryption",
+            "lib-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
+        },
+        "time": "2014-07-03 19:23:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "extlib/xmlseclibs",
+                "lib/Saml",
+                "lib/Saml2"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "OneLogin PHP SAML Toolkit",
+        "homepage": "https://onelogin.zendesk.com/hc/en-us/sections/200245634-SAML-Toolkits",
+        "keywords": [
+            "SAML2",
+            "onelogin",
+            "saml"
+        ]
+    },
+    {
         "name": "doctrine/dbal",
         "version": "v2.4.2",
         "version_normalized": "2.4.2.0",
@@ -1603,17 +1689,17 @@
     },
     {
         "name": "doctrine/orm",
-        "version": "v2.4.4",
-        "version_normalized": "2.4.4.0",
+        "version": "v2.4.5",
+        "version_normalized": "2.4.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/doctrine2.git",
-            "reference": "fc19c3b53dcd00e6584db40669fdd699c4671f97"
+            "reference": "c0d3cdbdfbf873871167050ab077e49b1ad02ab0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/fc19c3b53dcd00e6584db40669fdd699c4671f97",
-            "reference": "fc19c3b53dcd00e6584db40669fdd699c4671f97",
+            "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/c0d3cdbdfbf873871167050ab077e49b1ad02ab0",
+            "reference": "c0d3cdbdfbf873871167050ab077e49b1ad02ab0",
             "shasum": ""
         },
         "require": {
@@ -1630,7 +1716,7 @@
         "suggest": {
             "symfony/yaml": "If you want to use YAML Metadata Mapping Driver"
         },
-        "time": "2014-07-11 03:05:53",
+        "time": "2014-09-22 21:58:51",
         "bin": [
             "bin/doctrine",
             "bin/doctrine.php"
@@ -1653,23 +1739,20 @@
         ],
         "authors": [
             {
-                "name": "Jonathan Wage",
-                "email": "jonwage@gmail.com",
-                "homepage": "http://www.jwage.com/",
-                "role": "Creator"
-            },
-            {
-                "name": "Guilherme Blanco",
-                "email": "guilhermeblanco@gmail.com",
-                "homepage": "http://www.instaclick.com"
-            },
-            {
                 "name": "Roman Borschel",
                 "email": "roman@code-factory.org"
             },
             {
                 "name": "Benjamin Eberlei",
                 "email": "kontakt@beberlei.de"
+            },
+            {
+                "name": "Guilherme Blanco",
+                "email": "guilhermeblanco@gmail.com"
+            },
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
             }
         ],
         "description": "Object-Relational-Mapper for PHP",
@@ -1754,17 +1837,17 @@
     },
     {
         "name": "guzzle/guzzle",
-        "version": "v3.9.1",
-        "version_normalized": "3.9.1.0",
+        "version": "v3.9.2",
+        "version_normalized": "3.9.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/guzzle3.git",
-            "reference": "92d9934f2fca1da15178c91239576ae26e505e60"
+            "reference": "54991459675c1a2924122afbb0e5609ade581155"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/guzzle3/zipball/92d9934f2fca1da15178c91239576ae26e505e60",
-            "reference": "92d9934f2fca1da15178c91239576ae26e505e60",
+            "url": "https://api.github.com/repos/guzzle/guzzle3/zipball/54991459675c1a2924122afbb0e5609ade581155",
+            "reference": "54991459675c1a2924122afbb0e5609ade581155",
             "shasum": ""
         },
         "require": {
@@ -1805,11 +1888,11 @@
             "zendframework/zend-cache": "2.*,<2.3",
             "zendframework/zend-log": "2.*,<2.3"
         },
-        "time": "2014-05-07 17:04:22",
+        "time": "2014-08-11 04:32:36",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "3.8-dev"
+                "dev-master": "3.9-dev"
             }
         },
         "installation-source": "dist",
@@ -1848,17 +1931,17 @@
     },
     {
         "name": "aws/aws-sdk-php",
-        "version": "2.6.13",
-        "version_normalized": "2.6.13.0",
+        "version": "2.6.16",
+        "version_normalized": "2.6.16.0",
         "source": {
             "type": "git",
             "url": "https://github.com/aws/aws-sdk-php.git",
-            "reference": "d1f345a65b490bd83fff735d8a9e49b224ce24b5"
+            "reference": "36434f2cd96ea78844478d897fb568a1866bce5a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d1f345a65b490bd83fff735d8a9e49b224ce24b5",
-            "reference": "d1f345a65b490bd83fff735d8a9e49b224ce24b5",
+            "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/36434f2cd96ea78844478d897fb568a1866bce5a",
+            "reference": "36434f2cd96ea78844478d897fb568a1866bce5a",
             "shasum": ""
         },
         "require": {
@@ -1870,7 +1953,6 @@
             "ext-openssl": "*",
             "monolog/monolog": "1.4.*",
             "phpunit/phpunit": "4.*",
-            "symfony/class-loader": "2.*",
             "symfony/yaml": "2.*"
         },
         "suggest": {
@@ -1880,7 +1962,7 @@
             "monolog/monolog": "Adds support for logging HTTP requests and responses",
             "symfony/yaml": "Eases the ability to write manifests for creating jobs in AWS Import/Export"
         },
-        "time": "2014-07-31 20:34:29",
+        "time": "2014-09-11 22:10:11",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1923,12 +2005,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/migrations.git",
-            "reference": "4256449c5e2603a6b6ee5a78c7c4521d4d4430b8"
+            "reference": "1a9dffa64e33fdc10f4b4c3f5d7230b74d4a1021"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/migrations/zipball/4256449c5e2603a6b6ee5a78c7c4521d4d4430b8",
-            "reference": "4256449c5e2603a6b6ee5a78c7c4521d4d4430b8",
+            "url": "https://api.github.com/repos/doctrine/migrations/zipball/1a9dffa64e33fdc10f4b4c3f5d7230b74d4a1021",
+            "reference": "1a9dffa64e33fdc10f4b4c3f5d7230b74d4a1021",
             "shasum": ""
         },
         "require": {
@@ -1942,7 +2024,7 @@
         "suggest": {
             "symfony/console": "to run the migration from the console"
         },
-        "time": "2014-07-09 07:58:02",
+        "time": "2014-08-18 18:03:07",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1961,14 +2043,12 @@
         ],
         "authors": [
             {
-                "name": "Jonathan Wage",
-                "email": "jonwage@gmail.com",
-                "homepage": "http://www.jwage.com/",
-                "role": "Creator"
-            },
-            {
                 "name": "Benjamin Eberlei",
                 "email": "kontakt@beberlei.de"
+            },
+            {
+                "name": "Jonathan Wage",
+                "email": "jonwage@gmail.com"
             }
         ],
         "description": "Database Schema migrations using Doctrine DBAL",
@@ -2170,12 +2250,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/DoctrineFixturesBundle.git",
-            "reference": "ccd69d9ec90013955a412a21125672afc09738dc"
+            "reference": "9a5b5289eb22079ec139ba1eb06043d4b89c6677"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/ccd69d9ec90013955a412a21125672afc09738dc",
-            "reference": "ccd69d9ec90013955a412a21125672afc09738dc",
+            "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/9a5b5289eb22079ec139ba1eb06043d4b89c6677",
+            "reference": "9a5b5289eb22079ec139ba1eb06043d4b89c6677",
             "shasum": ""
         },
         "require": {
@@ -2184,7 +2264,7 @@
             "php": ">=5.3.2",
             "symfony/doctrine-bridge": "~2.1"
         },
-        "time": "2014-03-05 01:11:31",
+        "time": "2014-09-16 05:03:04",
         "type": "symfony-bundle",
         "extra": {
             "branch-alias": {
@@ -2203,18 +2283,16 @@
         ],
         "authors": [
             {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com",
-                "homepage": "http://fabien.potencier.org",
-                "role": "Lead Developer"
-            },
-            {
                 "name": "Symfony Community",
                 "homepage": "http://symfony.com/contributors"
             },
             {
                 "name": "Doctrine Project",
                 "homepage": "http://www.doctrine-project.org"
+            },
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
             }
         ],
         "description": "Symfony DoctrineFixturesBundle",
@@ -2231,12 +2309,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/padraic/mockery.git",
-            "reference": "5c8d5eee9ca58a618d3f7200012b4921fa887729"
+            "reference": "627a6c8eaf9772ad25c9bdaecc0187d562bf8213"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/padraic/mockery/zipball/5c8d5eee9ca58a618d3f7200012b4921fa887729",
-            "reference": "5c8d5eee9ca58a618d3f7200012b4921fa887729",
+            "url": "https://api.github.com/repos/padraic/mockery/zipball/627a6c8eaf9772ad25c9bdaecc0187d562bf8213",
+            "reference": "627a6c8eaf9772ad25c9bdaecc0187d562bf8213",
             "shasum": ""
         },
         "require": {
@@ -2248,7 +2326,7 @@
             "phpunit/phpunit": "~4.0",
             "satooshi/php-coveralls": "~0.7@dev"
         },
-        "time": "2014-07-28 12:51:16",
+        "time": "2014-10-01 10:20:07",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2294,22 +2372,25 @@
     },
     {
         "name": "monolog/monolog",
-        "version": "1.10.0",
-        "version_normalized": "1.10.0.0",
+        "version": "1.11.0",
+        "version_normalized": "1.11.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/Seldaek/monolog.git",
-            "reference": "25b16e801979098cb2f120e697bfce454b18bf23"
+            "reference": "ec3961874c43840e96da3a8a1ed20d8c73d7e5aa"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/25b16e801979098cb2f120e697bfce454b18bf23",
-            "reference": "25b16e801979098cb2f120e697bfce454b18bf23",
+            "url": "https://api.github.com/repos/Seldaek/monolog/zipball/ec3961874c43840e96da3a8a1ed20d8c73d7e5aa",
+            "reference": "ec3961874c43840e96da3a8a1ed20d8c73d7e5aa",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.0",
             "psr/log": "~1.0"
+        },
+        "provide": {
+            "psr/log-implementation": "1.0.0"
         },
         "require-dev": {
             "aws/aws-sdk-php": "~2.4, >2.4.8",
@@ -2317,7 +2398,8 @@
             "graylog2/gelf-php": "~1.0",
             "phpunit/phpunit": "~3.7.0",
             "raven/raven": "~0.5",
-            "ruflin/elastica": "0.90.*"
+            "ruflin/elastica": "0.90.*",
+            "videlalvaro/php-amqplib": "~2.4"
         },
         "suggest": {
             "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
@@ -2327,13 +2409,14 @@
             "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
             "raven/raven": "Allow sending log messages to a Sentry server",
             "rollbar/rollbar": "Allow sending log messages to Rollbar",
-            "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+            "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
+            "videlalvaro/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib"
         },
-        "time": "2014-06-04 16:30:04",
+        "time": "2014-09-30 13:30:58",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.10.x-dev"
+                "dev-master": "1.11.x-dev"
             }
         },
         "installation-source": "dist",
@@ -2350,8 +2433,7 @@
             {
                 "name": "Jordi Boggiano",
                 "email": "j.boggiano@seld.be",
-                "homepage": "http://seld.be",
-                "role": "Developer"
+                "homepage": "http://seld.be"
             }
         ],
         "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
@@ -3238,24 +3320,24 @@
     },
     {
         "name": "phpunit/php-code-coverage",
-        "version": "1.2.17",
-        "version_normalized": "1.2.17.0",
+        "version": "1.2.18",
+        "version_normalized": "1.2.18.0",
         "source": {
             "type": "git",
             "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-            "reference": "6ef2bf3a1c47eca07ea95f0d8a902a6340390b34"
+            "reference": "fe2466802556d3fe4e4d1d58ffd3ccfd0a19be0b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/6ef2bf3a1c47eca07ea95f0d8a902a6340390b34",
-            "reference": "6ef2bf3a1c47eca07ea95f0d8a902a6340390b34",
+            "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/fe2466802556d3fe4e4d1d58ffd3ccfd0a19be0b",
+            "reference": "fe2466802556d3fe4e4d1d58ffd3ccfd0a19be0b",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3",
             "phpunit/php-file-iterator": ">=1.3.0@stable",
             "phpunit/php-text-template": ">=1.2.0@stable",
-            "phpunit/php-token-stream": ">=1.1.3@stable"
+            "phpunit/php-token-stream": ">=1.1.3,<1.3.0"
         },
         "require-dev": {
             "phpunit/phpunit": "3.7.*@dev"
@@ -3264,7 +3346,7 @@
             "ext-dom": "*",
             "ext-xdebug": ">=2.0.5"
         },
-        "time": "2014-03-28 10:53:45",
+        "time": "2014-09-02 10:13:14",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -3451,12 +3533,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/zircote/swagger-php.git",
-            "reference": "a30321f2e4a38f16b9f16d5f5e132b8276d8c72e"
+            "reference": "c07233c0992749ff13fc7128da2c39c6c8798668"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/zircote/swagger-php/zipball/a30321f2e4a38f16b9f16d5f5e132b8276d8c72e",
-            "reference": "a30321f2e4a38f16b9f16d5f5e132b8276d8c72e",
+            "url": "https://api.github.com/repos/zircote/swagger-php/zipball/c07233c0992749ff13fc7128da2c39c6c8798668",
+            "reference": "c07233c0992749ff13fc7128da2c39c6c8798668",
             "shasum": ""
         },
         "require": {
@@ -3467,7 +3549,7 @@
             "symfony/finder": "*",
             "symfony/process": "*"
         },
-        "time": "2014-05-28 13:55:11",
+        "time": "2014-09-04 08:16:24",
         "bin": [
             "bin/swagger"
         ],
@@ -3504,17 +3586,17 @@
     },
     {
         "name": "ruflin/elastica",
-        "version": "v1.2.1.0",
-        "version_normalized": "1.2.1.0",
+        "version": "v1.3.4.0",
+        "version_normalized": "1.3.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/ruflin/Elastica.git",
-            "reference": "3c3ee39f90d942b1f25fdfb9d39669067375fa79"
+            "reference": "ffbfa5dd391bd097434e1c8262d7a1df1d2555f8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ruflin/Elastica/zipball/3c3ee39f90d942b1f25fdfb9d39669067375fa79",
-            "reference": "3c3ee39f90d942b1f25fdfb9d39669067375fa79",
+            "url": "https://api.github.com/repos/ruflin/Elastica/zipball/ffbfa5dd391bd097434e1c8262d7a1df1d2555f8",
+            "reference": "ffbfa5dd391bd097434e1c8262d7a1df1d2555f8",
             "shasum": ""
         },
         "require": {
@@ -3532,8 +3614,13 @@
             "munkie/elasticsearch-thrift-php": "Allow using thrift transport",
             "psr/log": "for logging"
         },
-        "time": "2014-06-14 08:44:53",
+        "time": "2014-10-04 20:15:58",
         "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.3.x-dev"
+            }
+        },
         "installation-source": "dist",
         "autoload": {
             "psr-0": {
@@ -3543,7 +3630,7 @@
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "Apache 2.0"
+            "MIT"
         ],
         "authors": [
             {
@@ -3565,18 +3652,18 @@
         "source": {
             "type": "git",
             "url": "https://github.com/FriendsOfSymfony/FOSElasticaBundle.git",
-            "reference": "64c5c19831577cbb2dbc35a94b7562b2db93c832"
+            "reference": "b3f87e414f5a5b04a351e741d437a40c988bdbdb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/64c5c19831577cbb2dbc35a94b7562b2db93c832",
-            "reference": "64c5c19831577cbb2dbc35a94b7562b2db93c832",
+            "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/b3f87e414f5a5b04a351e741d437a40c988bdbdb",
+            "reference": "b3f87e414f5a5b04a351e741d437a40c988bdbdb",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.2",
             "psr/log": "~1.0",
-            "ruflin/elastica": ">=0.90.10.0, <1.3-dev",
+            "ruflin/elastica": ">=0.90.10.0, <1.4-dev",
             "symfony/console": "~2.1",
             "symfony/form": "~2.1",
             "symfony/framework-bundle": "~2.3",
@@ -3584,7 +3671,6 @@
         },
         "require-dev": {
             "doctrine/doctrine-bundle": "~1.2@beta",
-            "doctrine/mongodb-odm": "1.0.*@beta",
             "doctrine/orm": "~2.2",
             "jms/serializer-bundle": "@stable",
             "knplabs/knp-components": "~1.2",
@@ -3604,11 +3690,11 @@
             "propel/propel1": "1.6.*",
             "symfony/expression-language": "~2.4"
         },
-        "time": "2014-07-31 05:54:53",
+        "time": "2014-09-21 11:08:41",
         "type": "symfony-bundle",
         "extra": {
             "branch-alias": {
-                "dev-master": "3.0.x-dev"
+                "dev-master": "3.1.x-dev"
             }
         },
         "installation-source": "source",
@@ -3649,52 +3735,6 @@
             "propel",
             "search"
         ]
-    },
-    {
-        "name": "firebase/php-jwt",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "target-dir": "Firebase/PHP-JWT",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/firebase/php-jwt.git",
-            "reference": "9e5ae039440bc0806ba85ab887ab9701b5e55ffb"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/firebase/php-jwt/zipball/9e5ae039440bc0806ba85ab887ab9701b5e55ffb",
-            "reference": "9e5ae039440bc0806ba85ab887ab9701b5e55ffb",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.0"
-        },
-        "time": "2014-08-28 17:20:29",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "classmap": [
-                "Authentication/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Neuman Vong",
-                "email": "neuman+pear@twilio.com",
-                "role": "Developer"
-            },
-            {
-                "name": "Anant Narayanan",
-                "email": "anant@php.net",
-                "role": "Developer"
-            }
-        ],
-        "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
-        "homepage": "https://github.com/firebase/php-jwt"
     },
     {
         "name": "true/punycode",
@@ -3805,70 +3845,18 @@
         ]
     },
     {
-        "name": "onelogin/php-saml",
-        "version": "2.1.0",
-        "version_normalized": "2.1.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/onelogin/php-saml.git",
-            "reference": "76a5560672089ef5c122ff5afb43057e5d058737"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/onelogin/php-saml/zipball/76a5560672089ef5c122ff5afb43057e5d058737",
-            "reference": "76a5560672089ef5c122ff5afb43057e5d058737",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.2"
-        },
-        "require-dev": {
-            "pdepend/pdepend": "1.1.0",
-            "phploc/phploc": "*",
-            "satooshi/php-coveralls": "dev-master",
-            "sebastian/phpcpd": "*",
-            "squizlabs/php_codesniffer": "*"
-        },
-        "suggest": {
-            "ext-gettext": "Install gettext and php5-gettext libs to handle translations",
-            "ext-mcrypt": "Install mcrypt and php5-mcrypt libs in order to support encryption",
-            "lib-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
-        },
-        "time": "2014-07-03 19:23:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "extlib/xmlseclibs",
-                "lib/Saml",
-                "lib/Saml2"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "OneLogin PHP SAML Toolkit",
-        "homepage": "https://onelogin.zendesk.com/hc/en-us/sections/200245634-SAML-Toolkits",
-        "keywords": [
-            "SAML2",
-            "onelogin",
-            "saml"
-        ]
-    },
-    {
         "name": "google/apiclient",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/google/google-api-php-client.git",
-            "reference": "e5d1d21d503ce5e115101bd7672283f8ae43a910"
+            "reference": "1c8ddc45756a28695fe2387032929d473f621202"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/google/google-api-php-client/zipball/e5d1d21d503ce5e115101bd7672283f8ae43a910",
-            "reference": "e5d1d21d503ce5e115101bd7672283f8ae43a910",
+            "url": "https://api.github.com/repos/google/google-api-php-client/zipball/1c8ddc45756a28695fe2387032929d473f621202",
+            "reference": "1c8ddc45756a28695fe2387032929d473f621202",
             "shasum": ""
         },
         "require": {
@@ -3877,7 +3865,7 @@
         "require-dev": {
             "phpunit/phpunit": "3.7.*"
         },
-        "time": "2014-09-30 09:11:56",
+        "time": "2014-10-06 09:16:53",
         "type": "library",
         "extra": {
             "branch-alias": {

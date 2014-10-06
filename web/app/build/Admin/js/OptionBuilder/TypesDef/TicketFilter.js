@@ -155,7 +155,7 @@
         });
         options.push({
           title: 'Usergroup',
-          value: 'FilterUserUsergroups'
+          value: 'FilterUserGroups'
         });
         options.push({
           title: 'Language',
@@ -707,7 +707,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserUsergroups = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserGroups = function(options) {
         var def;
         if (options == null) {
           options = {};

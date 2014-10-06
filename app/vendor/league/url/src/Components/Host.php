@@ -148,7 +148,7 @@ class Host extends AbstractSegment implements HostInterface
         $host = $this->data;
         $imploded = implode($this->delimiter, $data);
         $nb_labels = count($host) + count($data);
-        if (count($data) && (1 > $nb_labels || 127 <= $nb_labels)) {
+        if (count($data) && (2 > $nb_labels || 127 <= $nb_labels)) {
             throw new RuntimeException('Host may have between 2 and 127 parts');
         } elseif (225 <= (strlen(implode($this->delimiter, $host)) + strlen($imploded) + 1)) {
             throw new RuntimeException('Host may have a maximum of 255 characters');
