@@ -48,15 +48,4 @@ abstract class AbstractSupervisorRule implements JobSupervisorRuleInterface
 	{
 		$this->connection = $connection;
 	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public abstract function check();
-
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public abstract function attemptToFix();
 }
