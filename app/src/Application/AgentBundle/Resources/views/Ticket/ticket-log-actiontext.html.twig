@@ -488,6 +488,13 @@
 	SLA #{{ log.details.sla_id }} {{ log.details.sla_title }} status changed from
 	<span class="old-val">{{ log.details.old_status }}</span>
 	<span class="new-val">{{ log.details.new_status }}</span>
+{% elseif log.action_type == 'ticket_sla_complete' %}
+	SLA #{{ log.details.sla_id }} {{ log.details.sla_title }}
+	{% if log.details.complete %}
+		is now <span class="new-val">complete</span>
+	{% else %}
+		has been reopened
+	{% endif %}
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

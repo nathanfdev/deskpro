@@ -164,6 +164,11 @@ class SlaProcessor
 
 			if ($current_complete != $ticket_sla->is_completed) {
 				$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- is_complete: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $ticket_sla->is_completed ? 'true' : 'false'));
+				$ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
+					'ticket_sla_complete',
+					array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $current_complete),
+					array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $ticket_sla->is_completed)
+				));
 			}
 			if ($current_status != $ticket_sla->sla_status) {
 				$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- sla_status: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $ticket_sla->sla_status));
