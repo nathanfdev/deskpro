@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -32,71 +32,15 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Domain\DomainObject;
-use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use \Doctrine\ORM\Mapping\ClassMetadata;
-
-/**
- * @property int $id
- * @property string $app_id
- * @property string $app_secret
- * @property string $name
- * @property string $icon_url
- * @property string $logo_url
- */
-class FacebookApp extends DomainObject
+class Build1412565211 extends AbstractBuild
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id = null;
-
-	/**
-	 * @var string facebook app id
-	 */
-	protected $app_id;
-
-	/**
-	 * @var string facebook app secret
-	 */
-	protected $app_secret;
-
-	/**
-	 * @var string an identifier tthat we put next to the app
-	 */
-	protected $name;
-
-	/**
-	 * @var string url to smaller icon image
-	 */
-	protected $icon_url;
-
-	/**
-	 * @var string url to logo url
-	 */
-	protected $logo_url;
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
+	public function run()
 	{
-		$builder = new ClassMetadataBuilder($metadata);
-		$builder
-			->setTable('facebook_apps')
-			->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\FacebookApp')
-			->setChangeTrackingPolicyNotify()
-		;
-		$builder->mapId();
-		$builder->mapString('app_id', null, null, true);
-		$builder->mapString('app_secret');
-		$builder->mapString('name');
-		$builder->mapString('icon_url');
-		$builder->mapString('logo_url');
+		$this->out("My Upgrade Class");
+		$this->execMutateSql("ALTER TABLE facebook_pages ADD app_id INT DEFAULT NULL, ADD picture_url VARCHAR(256) DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE facebook_pages ADD CONSTRAINT FK_C5B2A27B7987212D FOREIGN KEY (app_id) REFERENCES facebook_apps (id)");
+		$this->execMutateSql("CREATE INDEX IDX_C5B2A27B7987212D ON facebook_pages (app_id)");
 	}
 }

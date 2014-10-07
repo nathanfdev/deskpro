@@ -40,9 +40,12 @@ use \Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * @property int $id
+ * @property FacebookApp $app
  * @property string $graph_id
  * @property string $page_token
+ * @property string $user_token
  * @property string $name
+ * @property string $picture_url
  * @property string $user_graph_id
  * @property bool $import_wall_posts
  * @property bool $disable_own_wall_posts
@@ -58,7 +61,12 @@ class FacebookPage extends DomainObject
 	 *
 	 * @var int
 	 */
-	protected $id = null;
+	protected $id;
+
+	/**
+	 * @var FacebookApp
+	 */
+	protected $app;
 
 	/**
 	 * @var string the facebook graph id for this page
@@ -71,6 +79,11 @@ class FacebookPage extends DomainObject
 	protected $page_token;
 
 	/**
+	 * @var string the facebook user token we use
+	 */
+	protected $user_token;
+
+	/**
 	 * @var string the facebook user that set this page up
 	 */
 	protected $user_graph_id;
@@ -79,6 +92,11 @@ class FacebookPage extends DomainObject
 	 * @var string the page name
 	 */
 	protected $name;
+
+	/**
+	 * @var string the page name
+	 */
+	protected $picture_url;
 
 	/**
 	 * @var bool true if we turn wall posts into tickets
@@ -121,6 +139,17 @@ class FacebookPage extends DomainObject
 		$this->is_tested = false;
 	}
 
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['app'] = $this->app->toApiData();
+
+		return $data;
+	}
+
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -134,15 +163,19 @@ class FacebookPage extends DomainObject
 			->setChangeTrackingPolicyNotify()
 		;
 		$builder->mapId();
-		$builder->mapString('graph_id');
+		$builder->mapString('graph_id', null, null, true);
 		$builder->mapString('page_token');
+		$builder->mapString('user_token');
 		$builder->mapString('user_graph_id');
 		$builder->mapString('name');
+		$builder->mapString('picture_url');
 		$builder->mapBoolean('import_wall_posts');
 		$builder->mapBoolean('disable_own_wall_posts');
 		$builder->mapBoolean('import_direct_messages');
 		$builder->mapBoolean('is_enabled');
 		$builder->mapBoolean('is_connected');
 		$builder->mapBoolean('is_tested');
+
+		$builder->addManyToOne('app', 'Application\DeskPRO\Entity\FacebookApp');
 	}
 }
