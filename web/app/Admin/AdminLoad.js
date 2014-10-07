@@ -99,6 +99,7 @@ define([
 	'Admin/ChannelSms/Ctrl/List',
 	'Admin/ChannelSms/Ctrl/Edit',
 	'Admin/ChannelFacebook/Ctrl/List',
+	'Admin/ChannelFacebook/Ctrl/Edit',
 	'Admin/ChannelFacebook/Ctrl/Create',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',
