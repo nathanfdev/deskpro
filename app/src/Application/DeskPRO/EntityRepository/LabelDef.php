@@ -112,31 +112,20 @@ class LabelDef extends AbstractEntityRepository
 		switch ($label_type) {
 			case 'organizations':
 				return 'DeskPRO:LabelOrganization';
-				break;
-
 			case 'people':
 				return 'DeskPRO:LabelPerson';
-				break;
-
 			case 'tickets':
 				return 'DeskPRO:LabelTicket';
-				break;
-
 			case 'articles':
 				return 'DeskPRO:LabelArticle';
-				break;
-
 			case 'feedback':
 				return 'DeskPRO:LabelFeedback';
-				break;
-
 			case 'downloads':
 				return 'DeskPRO:LabelDownload';
-				break;
-
 			case 'news':
 				return 'DeskPRO:LabelNews';
-				break;
+			case 'chat':
+				return 'DeskPRO:LabelChatConversation';
 		}
 
 		return null;
@@ -164,6 +153,8 @@ class LabelDef extends AbstractEntityRepository
 				return 'labels_downloads';
 			case 'news':
 				return 'labels_news';
+			case 'chat':
+				return 'labels_chat_conversations';
 		}
 
 		return null;
@@ -175,7 +166,13 @@ class LabelDef extends AbstractEntityRepository
 			return null;
 		}
 
-		return substr($type, 7);
+		$t = substr($type, 7);
+
+		if ($t == 'chat_conversations') {
+			return 'chat';
+		}
+
+		return $t;
 	}
 
 	public function findLabelsByType($type)
@@ -228,6 +225,7 @@ class LabelDef extends AbstractEntityRepository
 			'labels_feedback'      => 'DeskPRO:LabelFeedback',
 			'labels_downloads'     => 'DeskPRO:LabelDownload',
 			'labels_news'          => 'DeskPRO:LabelNews',
+			'labels_chat_conversations' => 'DeskPRO:LabelChatConversation',
 		);
 	}
 
