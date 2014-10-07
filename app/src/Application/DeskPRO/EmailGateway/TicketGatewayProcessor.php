@@ -133,6 +133,36 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		#-------------------------
+		# Check TACs
+		#-------------------------
+
+		// If this was a reply via a TAC, then the person detected via address and the person who owns the TAC
+		// should be the sames. Otherwise, *probably* means the agent used a different email address.
+		if ($tac_person && $tac_person->is_agent && ( ($person && $tac_person !== $person) || !$person) ) {
+			$this->logMessage('Agent email with TAC from unknown email address');
+			$this->error = 'auth_invalid';
+			$this->error_type = 'rejected';
+
+			$message = App::getMailer()->createMessage();
+			$message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
+					'ticket'  => $ticket,
+					'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+					'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+				));
+			$message->setTo($this->reader->getFromAddress()->getEmail());
+
+			$lang = $person ? $person->getLanguage() : $tac_person->getLanguage();
+
+			App::$container->getTranslator()->setTemporaryLanguage($lang, function() use ($message) {
+					$message->prepare();
+				});
+
+			App::getMailer()->send($message);
+
+			return null;
+		}
+
+		#-------------------------
 		# Check if we should create a new user on the ticket
 		#-------------------------
 

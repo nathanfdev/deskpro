@@ -108,32 +108,6 @@ class ProcessReply extends ProcessAbstract
 			$executor_context->getLogger()->pushHandler($orb_logger_adapter);
 		}
 
-		//TODO
-		$executor_context->getVars('reply_actions_override', $this->ticket_email->reply_actions);
-
-		// If this was a reply via a TAC, then the person detected via address and the person who owns the TAC
-		// should be the sames. Otherwise, *probably* means the agent used a different email address.
-		if ($this->ticket_email->tac_person && $this->ticket_email->tac_person->is_agent && $this->ticket_email->tac_person->getId() != $this->person->getId()) {
-			$this->logMessage('doNewRelpy agent reply with TAC from unknown email address');
-			$this->setError('auth_invalid');
-
-			$message = App::getMailer()->createMessage();
-			$message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
-				'ticket'  => $this->ticket,
-				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-			));
-			$message->setTo($this->reader->getFromAddress()->getEmail());
-
-			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
-				$message->prepare();
-			});
-
-			App::getMailer()->send($message);
-
-			return null;
-		}
-
 		if ($this->ticket_email->is_dp3_reply) {
 			$this->logMessage("doNewReply message class: TicketIncomingEmailMessageV3");
 			$email_info = new TicketIncomingEmailMessageV3(
@@ -214,8 +188,6 @@ class ProcessReply extends ProcessAbstract
 
 		if (isset($this->ticket_email->reply_actions['is_note'])) {
 			$message['is_agent_note'] = true;
-			
-			//TODO
 			$this->ticket->email_reader_action = 'agent_note';
 		}
 
