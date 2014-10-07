@@ -39,9 +39,17 @@ class Build1412679944 extends AbstractBuild
 	public function run()
 	{
 		$this->out("Correct FKs");
-		$this->execMutateSql("ALTER TABLE agent_teams DROP FOREIGN KEY FK_AF6C0A203B50817B");
-		$this->execMutateSql("ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE SET NULL");
-		$this->execMutateSql("ALTER TABLE people DROP FOREIGN KEY FK_28166A26E2F59C9A");
-		$this->execMutateSql("ALTER TABLE people ADD CONSTRAINT FK_28166A26E2F59C9A FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id) ON DELETE SET NULL");
+		$this->execMutateSql("ALTER TABLE agent_teams DROP FOREIGN KEY FK_AF6C0A203B50817B", true);
+		$this->execMutateSql("CREATE INDEX IDX_AF6C0A203B50817B ON agent_teams (avatar_blob_id)", true);
+		$this->execMutateSql("ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE SET NULL", true);
+
+		// Old
+		$this->execMutateSql("ALTER TABLE people DROP FOREIGN KEY FK_28166A26E715BE01", true);
+		$this->execMutateSql("DROP INDEX IDX_28166A26E715BE01 ON people", true);
+
+		// New
+		$this->execMutateSql("ALTER TABLE people DROP FOREIGN KEY FK_28166A26E2F59C9A", true);
+		$this->execMutateSql("CREATE INDEX IDX_28166A26E2F59C9A ON people (primary_team_id)", true);
+		$this->execMutateSql("ALTER TABLE people ADD CONSTRAINT FK_28166A26E2F59C9A FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id) ON DELETE SET NULL", true);
 	}
 }
