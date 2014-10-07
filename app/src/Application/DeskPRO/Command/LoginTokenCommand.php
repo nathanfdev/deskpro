@@ -65,7 +65,7 @@ class LoginTokenCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
 		$output->writeln("Log in with:");
 		$output->writeln("<info>Email: $email</info>");
-		$output->writeln("<info>Password: $token</info>");
+		$output->writeln("<info>Token: $token</info>");
 
 		if ($person->is_agent) {
 			if ($person->can_admin) {
@@ -78,7 +78,7 @@ class LoginTokenCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 		}
 
 		$url = App::getRouter()->generateUrl('user') . 'login?tok=' . $person->getId() . '-' . $token;
-		$output->writeln("<info>Agent Quick Login: $url</info>");
+		$output->writeln("<info>User Quick Login: $url</info>");
 
 		$output->writeln("Note: This token will only work for the next 5 minutes.");
 	}
