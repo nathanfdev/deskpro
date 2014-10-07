@@ -144,6 +144,7 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 				'name' => 'agent_team_members',
 				'joinColumns' => array(array( 'name' => 'team_id' )),
 				'inverseJoinColumns' => array(array( 'name' => 'person_id' )),
+				'onDelete' => 'cascade',
 			),
 			'orderBy' => array( 'name' => 'ASC', ),
 		));
@@ -152,15 +153,12 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
 			'mappedBy' => NULL,
 			'inversedBy' => NULL,
-			'joinColumns' => array(
-				0 => array(
-					'name' => 'avatar_blob_id',
-					'referencedColumnName' => 'id',
-					'nullable' => true,
-					'onDelete' => 'cascade',
-					'columnDefinition' => NULL,
-				),
-			),
+			'joinColumns' => array(array(
+				'name' => 'avatar_blob_id',
+				'referencedColumnName' => 'id',
+				'nullable' => true,
+				'onDelete' => 'set null',
+			)),
 			'dpApi' => true
 		));
 	}
