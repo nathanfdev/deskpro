@@ -3052,6 +3052,14 @@ $collection->create(
 );
 
 $collection->create(
+	'api_channel_facebook_pages_post', array(
+		'path'       => '/channel/facebook/pages',
+		'controller' => 'ApiBundle:ChannelFacebook:create',
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
 	'api_channel_facebook_page_get', array(
 		'path'       => '/channel/facebook/page/{id}',
 		'requirements' => array('id' => '\d+'),
@@ -3074,14 +3082,6 @@ $collection->create(
 		'path'       => '/channel/facebook/page/{id}',
 		'controller' => 'ApiBundle:ChannelFacebook:save',
 		'methods'    => array('POST'),
-	)
-);
-
-$collection->create(
-	'api_channel_facebook_page_create', array(
-		'path'       => '/channel/facebook/page',
-		'controller' => 'ApiBundle:ChannelFacebook:save',
-		'methods'    => array('PUT'),
 	)
 );
 
