@@ -34,6 +34,7 @@
 
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
+use Application\DeskPRO\Entity\Ticket;
 use Orb\Input\Cleaner\Cleaner;
 use Orb\Util\Strings;
 
@@ -68,7 +69,16 @@ class HtmlPurifier implements CleanerPlugin
 		// So lets just replace pre tags
 		if ($type == 'html_email') {
 			$value = str_replace('<pre', '<div', $value);
-			$value - str_replace('</pre>', '</div>', $value);
+			$value = str_replace('</pre>', '</div>', $value);
+
+			// Replace tokens that look like PTAC's
+			$auth_len = Ticket::TAC_AUTHCODE_LEN;
+			$authcode_min_len = $auth_len + 1;
+			$authcode_max_len = $auth_len + 7;
+
+			// (#TOKEN) becomes [#TOKEN] to stop normal
+			// gateway code detection on it
+			$value = preg_replace('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', '[#$1]', $value);
 		}
 
 		$value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', array(), $cleaner);
