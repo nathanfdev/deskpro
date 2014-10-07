@@ -17,7 +17,6 @@
           var cmpa, cmpb;
           cmpa = a.address;
           cmpb = b.address;
-          console.log("%s < %s = %o", cmpa, cmpa, cmpa < cmpb);
           if (cmpa < cmpb) {
             return -1;
           } else {
