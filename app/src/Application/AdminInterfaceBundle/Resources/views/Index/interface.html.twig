@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html ng-app>
 <head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<title>{{ phrase('adm.general.deskpro_admin_interface') }}</title>
@@ -202,8 +203,6 @@
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
 {{ ng_tpl('AdminInterfaceBundle:Common:timepicker.html.twig', 'template/timepicker/timepicker.html') }}
-
-<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><![endif]-->
 
 <link rel="stylesheet" href="{{ asset('app/bower_components/font-awesome/css/font-awesome.min.css') }}"/>
 <link rel="stylesheet" href="{{ asset('app/bower_components/select2/select2.css') }}"/>
