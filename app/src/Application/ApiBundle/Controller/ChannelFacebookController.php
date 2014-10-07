@@ -40,6 +40,7 @@ use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\FacebookApp;
 use Application\DeskPRO\Entity\FacebookPage;
 use Application\DeskPRO\Facebook\EditPage;
+use Application\DeskPRO\Facebook\FacebookApi;
 use Application\DeskPRO\Facebook\Type\EditPageType;
 
 class ChannelFacebookController extends AbstractController implements ProtectedControllerInterface
@@ -92,6 +93,9 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
 
 		$existing_app = null;
 		if (isset($page_postdata['app']) && isset($page_postdata['app']['app_id'])) {
+
+			// TODO: remember that apps need a random string for subscribing
+
 			$fb_app_repo = $this->container->getEm()->getRepository('DeskPRO:FacebookApp');
 			$existing_app = $fb_app_repo->findOneBy(array('app_id' => $page_postdata['app']['app_id']));
 		}

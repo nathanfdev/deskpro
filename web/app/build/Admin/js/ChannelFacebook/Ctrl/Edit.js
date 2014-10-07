@@ -38,8 +38,7 @@
       };
 
       Admin_ChannelFacebook_Ctrl_Edit.prototype.setFormOnScope = function() {
-        this.$scope.form = this.form_model.form;
-        return console.log(Util.dump(this.$scope.form));
+        return this.$scope.form = this.form_model.form;
       };
 
       Admin_ChannelFacebook_Ctrl_Edit.prototype.savePage = function() {
@@ -48,11 +47,8 @@
         postData = {
           page: this.form_model.getFormData()
         };
-        console.log("sending data");
-        console.log(postData);
         return this.Api.sendPostJson("/channel/facebook/page/" + this.pageId, postData).then((function(_this) {
           return function(result) {
-            console.log(result);
             _this.page = result.data;
             _this.FacebookPagesData.updateModel(_this.page);
             _this.Growl.success(_this.getRegisteredMessage('saved_page'));

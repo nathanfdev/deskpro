@@ -156,6 +156,12 @@ class EditPage
 		$page->is_tested = $this->is_tested ? true : false;
 		$page->app = $fb_app;
 
+		if (!$page->id) {
+			$fb = new FacebookApi($page->app);
+			$fb->extendPageToken($page);
+			$fb->subscribeToFeed($page);
+		}
+
 		$em->persist($page);
 		$em->flush();
 

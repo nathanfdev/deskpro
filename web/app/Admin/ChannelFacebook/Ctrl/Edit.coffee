@@ -29,15 +29,11 @@ define [
 
 		setFormOnScope: ->
 			@$scope.form = @form_model.form
-			console.log(Util.dump(@$scope.form))
 
 		savePage: ->
 			@startSpinner('saving_page')
 			postData = { page: @form_model.getFormData() }
-			console.log "sending data"
-			console.log postData
 			@Api.sendPostJson("/channel/facebook/page/#{@pageId}", postData).then((result) =>
-				console.log result
 				@page = result.data
 				@FacebookPagesData.updateModel(@page)
 				@Growl.success(@getRegisteredMessage('saved_page'))

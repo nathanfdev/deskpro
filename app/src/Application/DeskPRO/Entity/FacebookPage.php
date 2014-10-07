@@ -53,6 +53,8 @@ use \Doctrine\ORM\Mapping\ClassMetadata;
  * @property bool $is_enabled
  * @property bool $is_connected
  * @property bool $is_tested
+ * @property \DateTime date_user_token_received
+ * @property \DateTime date_created
  */
 class FacebookPage extends DomainObject
 {
@@ -128,15 +130,28 @@ class FacebookPage extends DomainObject
 	 */
 	protected $is_tested;
 
+	/**
+	 * @var \DateTime the expires date of user token
+	 */
+	protected $date_user_token_received;
+
+	/**
+	 * @var \DateTime date created page on deskpro
+	 */
+	protected $date_created;
+
 
 	public function __construct()
 	{
+		$this->date_created = new \DateTime();
 		$this->import_wall_posts = false;
 		$this->disable_own_wall_posts = false;
 		$this->import_direct_messages = false;
 		$this->is_enabled = false;
 		$this->is_connected = false;
 		$this->is_tested = false;
+		$this->user_token_expires = null;
+		$this->page_token_expires = null;
 	}
 
 
@@ -175,6 +190,8 @@ class FacebookPage extends DomainObject
 		$builder->mapBoolean('is_enabled');
 		$builder->mapBoolean('is_connected');
 		$builder->mapBoolean('is_tested');
+		$builder->mapDateTime('date_user_token_received');
+		$builder->mapDateTime('date_created', false);
 
 		$builder->addManyToOne('app', 'Application\DeskPRO\Entity\FacebookApp');
 	}
