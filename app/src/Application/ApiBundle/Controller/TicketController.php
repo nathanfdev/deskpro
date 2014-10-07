@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket as Ticket;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * @SWG\Resource(
@@ -429,6 +430,14 @@ class TicketController extends AbstractController
 		} catch (\Exception $e) {
 			$this->db->rollback();
 			throw $e;
+		}
+
+		if (App::getDb()->isTransactionActive()) {
+			$e = new \RuntimeException("WARNING: Unclosed transaction");
+			KernelErrorHandler::logException($e, false, 'unclosed_trans_api');
+			while (App::getDb()->isTransactionActive()) {
+				App::getDb()->commit();
+			}
 		}
 
 		return $this->createApiCreateResponse(
