@@ -152,7 +152,6 @@
 		</table>
 	{% else %}
 		<div class="inner-group">
-			<input type="hidden" ng-model="form.no_soap" ng-init="form.no_imap = true" />
 			<div class="alert alert-danger">
 				<p>
 					To set up IMAP accounts, your server must be configured with the PHP <a href="http://php.net/manual/en/book.imap.php">IMAP extension</a>.
@@ -262,7 +261,6 @@
 		</table>
 	{% else %}
 		<div class="inner-group">
-			<input type="hidden" ng-model="form.no_soap" ng-init="form.no_soap = true" />
 			<div class="alert alert-danger">
 				<p>
 					To set up Exchange accounts, your server must be configured with the PHP <a href="http://php.net/manual/en/book.soap.php">SOAP extension</a>.
