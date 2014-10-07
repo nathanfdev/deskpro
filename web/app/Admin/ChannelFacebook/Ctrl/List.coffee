@@ -15,21 +15,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 				for acc in accounts
 					@pages.push acc
 
-				@pages.push {
-					id: 5,
-					identifier: 'Camp Happy',
-					is_enabled: true,
-					img: 'computer'
-				}
-
-				@pages.push {
-					id: 9,
-					identifier: 'Big Corp.',
-					is_enabled: false,
-					img: 'taxi'
-				}
-
-
 				if @$state.current.name == 'tickets.channel_facebook'
 					if @pages[0]
 						@$state.go('tickets.channel_facebook.edit', {id: @pages[0].id})
@@ -76,8 +61,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 				@ngApply()
 
 				# if currently viewing the deleted account, then should need to switch state
-				if @$state.current.name == 'tickets.channel_sms.edit' and parseInt(@$state.params.id) == acc.id
-					@$state.go('tickets.channel_sms')
+				if @$state.current.name == 'tickets.channel_facebook.edit' and parseInt(@$state.params.id) == acc.id
+					@$state.go('tickets.channel_facebook')
 			)
 
 	Admin_ChannelFacebook_Ctrl_List.EXPORT_CTRL()

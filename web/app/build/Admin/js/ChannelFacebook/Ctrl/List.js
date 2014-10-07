@@ -34,18 +34,6 @@
               acc = accounts[_i];
               _this.pages.push(acc);
             }
-            _this.pages.push({
-              id: 5,
-              identifier: 'Camp Happy',
-              is_enabled: true,
-              img: 'computer'
-            });
-            _this.pages.push({
-              id: 9,
-              identifier: 'Big Corp.',
-              is_enabled: false,
-              img: 'taxi'
-            });
             if (_this.$state.current.name === 'tickets.channel_facebook') {
               if (_this.pages[0]) {
                 _this.$state.go('tickets.channel_facebook.edit', {
@@ -106,8 +94,8 @@
           return function() {
             _this.FacebookPagesData.remove(acc.id);
             _this.ngApply();
-            if (_this.$state.current.name === 'tickets.channel_sms.edit' && parseInt(_this.$state.params.id) === acc.id) {
-              return _this.$state.go('tickets.channel_sms');
+            if (_this.$state.current.name === 'tickets.channel_facebook.edit' && parseInt(_this.$state.params.id) === acc.id) {
+              return _this.$state.go('tickets.channel_facebook');
             }
           };
         })(this));

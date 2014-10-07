@@ -3,8 +3,9 @@
 <section class="dp-paneblock dp-listpane">
 	<header>
 		<nav>
-			<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i
+			<span class="status-pinger saved-ping" dp-ping-flash="save_page"><i
 				class="fa fa-check-square-o-square"></i> {{ phrase('admin.channels.facebook_page_saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 		</nav>
 		<h3 ng-pluralize count="ChannelFacebookList.pages.length || 0"
 			when="{{ ng_plural_phrase('admin.channels.facebook_x_pages') }}"></h3>
@@ -17,13 +18,13 @@
 			<li ng-repeat="page in ChannelFacebookList.pages"
 				dp-state-mark="tickets.channel_facebook.edit.{{ ng_var('page.id') }}" data-id="{{ ng_var('page.id') }}">
 				<a href="{{ ng_href('tickets.channel_facebook.edit', '{id: page.id}') }}">
-					<img ng-src="http://loremicon.com/i/flat/64/{{ ng_var('page.img') }}" />
 					<div class="pull-right">
 						<em class="tag tag-warn" ng-show="!page.is_enabled">{{ phrase('admin.general.disabled') }}</em>
 					</div>
-					<span class="title-id" title="ID">#{{ ng_var('page.id') }}</span>
 					<span class="title-text">
-						{{ ng_var('page.identifier') }}
+						<span class="title-id" style="vertical-align: middle" title="ID">#{{ ng_var('page.id') }}</span>
+						<img style="width: 32px; height: 32px;" width="32" height="32" ng-src="{{ ng_var('page.picture_url') }}" />
+						{{ ng_var('page.name') }}
 					</span>
 				</a>
 			</li>
