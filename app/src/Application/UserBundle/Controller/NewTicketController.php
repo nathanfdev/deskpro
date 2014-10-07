@@ -65,9 +65,11 @@ class NewTicketController extends AbstractController
 			$website_url = $GLOBALS['DP_WEBSITE_URL'];
 		}
 
+	    $ticket = new Entity\Ticket();
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			$interface,
-			$this->person
+			$this->person,
+			$ticket
 		);
 		$newticket->setPersonContext($this->person);
 
@@ -183,6 +185,10 @@ class NewTicketController extends AbstractController
 			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
 		}
 
+	    // specific user custom fields (but can be used for any sort of custom fields)
+	    $manager = $this->container->getCustomFieldManager();
+	    $specific_fields_form = $manager->createFormForOwner($ticket, $this->person, $default_page);
+
 		$captcha_html = '';
 		if ($captcha) {
 			$captcha_html = $captcha->getHtml();
@@ -197,6 +203,8 @@ class NewTicketController extends AbstractController
 			}
 
 			$form->handleRequest($this->get('request'));
+			$specific_fields_form->handleRequest($this->get('request'));
+
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
 			$newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
@@ -207,8 +215,9 @@ class NewTicketController extends AbstractController
 				$trap_fail = true;
 			}
 
-			if ($validator->isValid($newticket) && !$trap_fail) {
+			if ($specific_fields_form->isValid() && $validator->isValid($newticket) && !$trap_fail) {
 				$ticket = $newticket->save();
+				$manager->flushCustomData($specific_fields_form);
 				$person = $ticket['person'];
 
 				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
@@ -320,6 +329,8 @@ class NewTicketController extends AbstractController
 
 			'hide_name_field'       => $hide_name_field,
 			'hide_email_field'      => $hide_email_field,
+
+			'specific_user_custom_fields' => $specific_fields_form->createView(),
 		));
     }
 

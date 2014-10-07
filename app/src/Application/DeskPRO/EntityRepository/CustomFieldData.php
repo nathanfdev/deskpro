@@ -35,10 +35,53 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\TicketLayout\Layout;
+use Doctrine\DBAL\Connection;
 
 class CustomFieldData extends AbstractEntityRepository
 {
-	public function getAllDataAsArrayForOwner(DomainObject $object, DomainObject $context = null)
+	/**
+	 * @param DomainObject $object
+	 * @param DomainObject $context
+	 * @param Layout $layout
+	 * @return mixed
+	 */
+	public function getAllDataForOwner(DomainObject $object, DomainObject $context = null, Layout $layout = null)
+	{
+		$qb = $this->createQueryBuilder('da')
+			->select('da, de', 'rde')
+			->innerJoin('da.definition', 'de')
+			->innerJoin('da.root_definition', 'rde')
+			->where('da.owner_id = :owner_id and de.owner_class = :owner_class')
+			->setParameters(array(
+				'owner_id' => (int) $object['id'], // null -> 0
+				'owner_class' => get_class($object),
+			));
+
+		if ($layout && ($in = $layout->getIdsOfFieldType('custom_field'))) {
+			$qb
+				->andWhere('da.root_definition in (:fields)')
+				->setParameter('fields', $in, Connection::PARAM_INT_ARRAY);
+		}
+
+		if ($context) {
+			$qb
+				->andWhere('de.context_class is null or (de.context_class = :context_class and de.context_id = :cid)')
+				->setParameter('context_class', get_class($context))
+				->setParameter('cid', $context['id']);
+		}
+
+		return $qb->getQuery()->getResult();
+	}
+
+	/**
+	 * array result
+	 * @param DomainObject $object
+	 * @param DomainObject $context
+	 * @param Layout $layout
+	 * @return mixed
+	 */
+	public function getAllDataAsArrayForOwner(DomainObject $object, DomainObject $context = null, Layout $layout = null)
 	{
 		$em = $this->getEntityManager();
 		$table1 = $em->getClassMetadata($this->getEntityName())->getTableName();
@@ -55,6 +98,12 @@ class CustomFieldData extends AbstractEntityRepository
 				'owner_id' => $object['id'],
 				'owner_class' => get_class($object),
 			));
+
+		if ($layout && ($in = $layout->getIdsOfFieldType('custom_field'))) {
+			$qb
+				->andWhere('de.parent_id in (:fields)')
+				->setParameter('fields', $in, Connection::PARAM_INT_ARRAY);
+		}
 
 		if ($context) {
 			$qb

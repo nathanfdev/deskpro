@@ -28,7 +28,9 @@
 namespace Application\DeskPRO\Form\Type\CustomFields;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\From;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -45,19 +47,20 @@ class ContextualChoiceType extends ChoiceType
 
 	/**
 	 * @param EntityRepository $er
-	 * @param Options $options
+	 * @param array $options
 	 * @return \Doctrine\ORM\QueryBuilder
 	 */
-	public function getChoicesQueryBuilder(EntityRepository $er, Options $options)
+	public function getChoicesQueryBuilder(EntityRepository $er, array $options)
 	{
 		/** @var DomainObject $ctx */
 		$ctx = $options['context'];
 		$def = $this->definition;
 
 		return $er->createQueryBuilder('d')
-			->select('d.id, d.title')
+			->add('from', new From('DeskPRO:CustomFieldDefinition', 'd', 'd.id'), false)
 			->where('d.parent = :parent')
 			->andWhere('d.owner_class = :owner_class and d.context_class = :cc and d.context_id = :cid')
+			->orderBy('d.display_order', 'ASC')
 			->setParameter('parent', $def['id'])
 			->setParameter('owner_class', $def['owner_class'])
 			->setParameter('cc', get_class($ctx))

@@ -27,18 +27,23 @@
 
 namespace Application\DeskPRO\Service;
 
+use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\ContextualChoiceDefinitionType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionChildrenType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionType;
+use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\Expr\From;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormInterface;
 
 class CustomFieldManager
 {
+	const EVENT_FLUSH = 'flush';
+
 	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */
@@ -48,6 +53,11 @@ class CustomFieldManager
 	 * @var \Symfony\Component\Form\FormFactory
 	 */
 	protected $ff;
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\CustomDataPersister
+	 */
+	protected $persister;
 
 	/**
 	 * @var \Application\DeskPRO\EntityRepository\CustomFieldDefinition
@@ -65,6 +75,48 @@ class CustomFieldManager
 		$this->ff = $ff;
 		$this->repDefinition = $em->getRepository('DeskPRO:CustomFieldDefinition');
 		$this->repData = $em->getRepository('DeskPRO:CustomFieldData');
+		$this->persister = new CustomDataPersister();
+	}
+
+	/**
+	 * @param DomainObject $owner
+	 * @param DomainObject $context
+	 * @param Layout $layout
+	 * @return array
+	 */
+	public function getCustomDataForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
+	{
+		$datas = array();
+
+		if (!$owner['id']) {
+			return $datas;
+		}
+
+		// fetch fields values
+		foreach ($this->repData->getAllDataForOwner($owner, $context, $layout) as $data) {
+			/** @var $data CustomFieldData */
+			$rootId = $data->root_definition['id'];
+
+			if (!array_key_exists($rootId, $datas)) {
+				$datas[$rootId] = $data;
+			} else {
+				if ($datas[$rootId] instanceof CustomFieldData) {
+					$datas[$rootId] = array($datas[$rootId]);
+				}
+
+				$datas[$rootId][] = $data;
+			}
+		}
+
+		return $datas;
+	}
+
+	/**
+	 * @param FormInterface $form
+	 */
+	public function flushCustomData(FormInterface $form)
+	{
+		$form->getConfig()->getEventDispatcher()->dispatch(self::EVENT_FLUSH);
 	}
 
 	/**
@@ -72,57 +124,55 @@ class CustomFieldManager
 	 *
 	 * @param DomainObject $owner
 	 * @param DomainObject $context add contextual fields to form if context provided
+	 * @param Layout $layout
 	 * @return \Symfony\Component\Form\Form
 	 */
-	public function createFormForOwner(DomainObject $owner, DomainObject $context = null)
+	public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
 	{
-		$builder = $this->ff->createNamedBuilder('custom_fields', 'form');
-		$datas = array();
-
-		// fetch fields values
-		foreach ($this->repData->getAllDataAsArrayForOwner($owner, $context) as $row) {
-			$did = $row['definition_parent_id'] ?: $row['definition_id'];
-			$value = $row['value'] . $row['input'];
-
-			if (!array_key_exists($did, $datas)) {
-				$datas[$did] = $value;
-			} else {
-				if (!is_array($datas[$did])) {
-					$datas[$did] = array($datas[$did]);
-				}
-
-				$datas[$did][] = $value;
-			}
-		}
+		$datas = $this->getCustomDataForOwner($owner, $context, $layout);
 
 		// build types and bind values
-		foreach ($this->repDefinition->getAllDefinitionsForOwner($owner, $context) as $def) {
+		$builder = $this->ff->createNamedBuilder('custom_fields', 'form');
+
+		foreach ($this->repDefinition->getAllDefinitionsForOwner($owner, $context, $layout) as $def) {
 			/** @var $def CustomFieldDefinition */
 			$type = $def->createType();
+			$data = isset($datas[$def['id']]) ? $datas[$def['id']] : null;
 
 			$builder->add($type->getName() . '_' . $def['id'], $type, array(
-				'entity_manager' => $this->em,
 				'owner' => $owner,
 				'context' => $context,
-				'data' => array_key_exists($def['id'], $datas) ? $datas[$def['id']] : null,
+				'data' => $data,
+				'persister' => $this->persister,
 			));
+
+			$persister = $this->persister;
+			$em = $this->em;
+			$builder->addEventListener(self::EVENT_FLUSH, function() use ($persister, $em){
+				$persister->flush($em);
+			});
 		}
 
 		return $builder->getForm();
 	}
 
 	/**
+	 * ContextualChoiceDefinition only (for now)
+	 *
 	 * @param DomainObject $context
 	 * @return \Symfony\Component\Form\Form
 	 */
 	public function createDefinitionsFormForContext(DomainObject $context)
 	{
 		$builder = $this->ff->createNamedBuilder('custom_fields_definitions', 'form');
+
+		// root definitions
 		$definitions = $this->repDefinition->findBy(array(
 			'parent' => null,
 			'context_class' => get_class($context)
 		), array('display_order' => 'ASC'));
 
+		// def children for current context
 		$children = new ArrayCollection();
 		$_children = $this->repDefinition->findBy(array(
 			'context_class' => get_class($context),
@@ -130,9 +180,10 @@ class CustomFieldManager
 		), array('display_order' => 'ASC'));
 
 		foreach ($_children as $child) {
-			if (!$pid = $child->parent['id']) {
+			if (!$child->parent) {
 				continue;
 			}
+			$pid = $child->parent['id'];
 			if (!$sub = $children->get($pid)) {
 				$sub = new ArrayCollection();
 				$children->set($pid, $sub);

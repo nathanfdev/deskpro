@@ -35,16 +35,24 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\TicketLayout\Layout;
+use Doctrine\DBAL\Connection;
 
 class CustomFieldDefinition extends AbstractEntityRepository
 {
-	public function getAllDefinitionsForOwner(DomainObject $object, DomainObject $context = null)
+	public function getAllDefinitionsForOwner(DomainObject $object, DomainObject $context = null, Layout $layout = null)
 	{
 		$qb = $this->createQueryBuilder('d')
 			->where('d.parent is null')
 			->andWhere('d.owner_class = :owner')
 			->andWhere('d.is_enabled = 1')
 			->setParameter('owner', get_class($object));
+
+		if ($layout && ($in = $layout->getIdsOfFieldType('custom_field'))) {
+			$qb
+				->andWhere('d.id in (:fields)')
+				->setParameter('fields', $in, Connection::PARAM_INT_ARRAY);
+		}
 
 		if ($context) {
 			$qb

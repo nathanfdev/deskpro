@@ -34,24 +34,67 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Custom ticket data
  */
-class CustomFieldData extends CustomDataAbstract
+class CustomFieldData extends DomainObject
 {
+	/**
+	 * @var int
+	 */
+	protected $id;
+
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
 	 */
 	protected $definition;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
+	 */
+	protected $root_definition;
+
+	/**
 	 * @var int
 	 */
 	protected $owner_id;
 
+	/**
+	 * @var int
+	 */
+	protected $value;
+
+	/**
+	 * @var input
+	 */
+	protected $input;
+
+	/**
+	 * @var DomainObject
+	 */
+	protected $owner;
+
+	public function __construct()
+	{
+		$this->value = 0;
+		$this->input = '';
+	}
+
+	public function getData()
+	{
+		return $this->value ?: $this->input;
+	}
+
+	public function preFlush()
+	{
+		if ($this->owner && $this->owner['id']) {
+			$this['owner_id'] = $this->owner['id'];
+		}
+	}
 
 	############################################################################
 	# Doctrine Metadata
@@ -59,11 +102,17 @@ class CustomFieldData extends CustomDataAbstract
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setPrimaryTable(array('name' => 'custom_field_data'));
+		$metadata->setPrimaryTable(array(
+			'name' => 'custom_field_data',
+			'uniqueConstraints' => array(
+				'unique_idx' => array('columns' => array('owner_id', 'definition_id'))
+			),
+		));
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldData';
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+		$metadata->addLifecycleCallback('preFlush', 'preFlush');
 
 		$metadata->mapField(array(
 			'fieldName' => 'id',
@@ -71,6 +120,13 @@ class CustomFieldData extends CustomDataAbstract
 			'nullable' => false,
 			'columnName' => 'id',
 			'id' => true,
+		));
+
+		$metadata->mapField(array(
+			'fieldName' => 'owner_id',
+			'type' => 'integer',
+			'nullable' => false,
+			'columnName' => 'owner_id',
 		));
 
 		$metadata->mapManyToOne(array(
@@ -85,11 +141,16 @@ class CustomFieldData extends CustomDataAbstract
 			),
 		));
 
-		$metadata->mapField(array(
-			'fieldName' => 'owner_id',
-			'type' => 'integer',
-			'nullable' => false,
-			'columnName' => 'owner_id',
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'root_definition',
+			'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
+			'joinColumns' => array(
+				array(
+					'name' => 'root_definition_id',
+					'referencedColumnName' => 'id',
+					'onDelete' => 'cascade',
+				),
+			),
 		));
 
 		$metadata->mapField(array(

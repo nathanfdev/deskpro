@@ -102,3 +102,16 @@
 {% endif %}
 
 {% endfor %}
+
+
+
+{###############
+# New Custom Fields
+###############}
+
+{% for f in specific_user_custom_fields %}
+    {% set fid = f.vars.def.id %}
+    <div data-field-id="custom_field_{{fid}}" class="dp-control-group custom-field custom_field_{{ fid }} ticket-display-field" {% if item.has_criteria or item.id not in page_data_field_ids %}style="display: none"{% endif %}>
+        {% include 'UserBundle:NewTicket:field-custom-field-new.html.twig' %}
+    </div>
+{% endfor %}

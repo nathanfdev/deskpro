@@ -1,0 +1,25 @@
+{##
+ # The standard custom field row of the new ticket form.
+ ##}
+<div class="dp-control-group custom-field-{{fid}} {% if f.vars.errors|length %}dp-error dp-error-static{% endif %}">
+    <div class="dp-control-label">
+        <label>
+            <strong>
+                {{f.vars.def.title}} {% if f.vars.def.is_required %}*{% endif %}
+            </strong>
+            {% if f.vars.def.description %}<i class="dp-help-pop dp-icon-question-sign"
+                data-title="{{ f.vars.def.title }}"
+                data-content="{{ f.vars.def.description|nl2br }}"></i>
+            {% endif %}
+        </label>
+    </div>
+    <div class="dp-controls dp-fill">
+        {{ form_widget(f) }}
+
+        {% if f.vars.errors|length %}
+        <div class="dp-help-inline dp-error-explain">
+            {{ form_errors(f) }}
+        </div>
+        {% endif %}
+    </div>
+</div>

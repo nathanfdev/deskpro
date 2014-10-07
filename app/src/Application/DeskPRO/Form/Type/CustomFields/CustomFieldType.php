@@ -28,15 +28,19 @@
 namespace Application\DeskPRO\Form\Type\CustomFields;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Form\Transformer\CustomDataTransformer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-abstract class CustomFieldType extends AbstractType
+abstract class CustomFieldType extends AbstractType implements EventSubscriberInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
@@ -49,24 +53,46 @@ abstract class CustomFieldType extends AbstractType
 	}
 
 	/**
+	 * @param FormBuilderInterface $builder
+	 * @param array $options
+	 */
+	public function buildForm(FormBuilderInterface $builder, array $options)
+	{
+		parent::buildForm($builder, $options);
+		$builder->addEventSubscriber($this);
+	}
+
+	/**
 	 * @param OptionsResolverInterface $resolver
 	 */
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
-		$options = $this->definition['options'];
-		$options['label'] = $this->definition['title'];
-		$options['attr']['data-definition-type'] = $this->getName();
-		$options['attr']['data-definition-id'] = $this->definition['id'];
-
 		$resolver
-			->setDefaults($options)
-			->setRequired(array('owner', 'entity_manager'))
+			->setDefaults(array(
+				'data_class' => 'Application\DeskPRO\Entity\CustomFieldData',
+				'label' => $this->definition['title'],
+				'attr' => array(
+					'data-definition-type' => $this->getName(),
+					'data-definition-id' => $this->definition['id'],
+				),
+			))
+			->setRequired(array('owner', 'persister'))
 			->setOptional(array('context'))
 			->setAllowedTypes(array(
 				'owner' => 'Application\DeskPRO\Domain\DomainObject',
-				'entity_manager' => 'Doctrine\ORM\EntityManager',
 				'context' => 'Application\DeskPRO\Domain\DomainObject',
+				'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
 			));
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getValueOptions()
+	{
+		return array_merge($this->definition['options'], array(
+			'label' => false,
+		));
 	}
 
 	/**
@@ -77,6 +103,7 @@ abstract class CustomFieldType extends AbstractType
 	public function buildView(FormView $view, FormInterface $form, array $options)
 	{
 		$view->vars['rendered_data'] = $form->getData();
+		$view->vars['def'] = $this->definition;
 	}
 
 	/**
@@ -85,5 +112,32 @@ abstract class CustomFieldType extends AbstractType
 	public function getDefinition()
 	{
 		return $this->definition;
+	}
+
+	/**
+	 * @param FormEvent $event
+	 */
+	public function onPostSubmit(FormEvent $event)
+	{
+		if (!($data = $event->getData()) instanceof CustomFieldData) {
+			return;
+		}
+		$form = $event->getForm();
+
+		$options = $form->getConfig()->getOptions();
+		$data->owner = $options['owner'];
+		$data->definition = $this->definition;
+		$data->root_definition = $this->definition;
+		$options['persister']->add($data);
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getSubscribedEvents()
+	{
+		return array(
+			FormEvents::POST_SUBMIT => 'onPostSubmit',
+		);
 	}
 }

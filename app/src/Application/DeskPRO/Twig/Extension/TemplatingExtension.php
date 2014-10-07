@@ -41,6 +41,7 @@ use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormView;
 
 class TemplatingExtension extends \Twig_Extension
 {
@@ -57,7 +58,10 @@ class TemplatingExtension extends \Twig_Extension
         return $this->container;
     }
 
-    public function getTemplating()
+	/**
+	 * @return \Application\DeskPRO\Templating\Engine
+	 */
+	public function getTemplating()
     {
         return $this->container->get('templating');
     }
@@ -1038,6 +1042,10 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function renderCustomFieldForm($display_array, array $vars = array())
 	{
+		if ($display_array instanceof FormView) {
+			$b = 1;
+		}
+
 		$handler = $display_array['handler'];
 		$formView = $display_array['formView'];
 

@@ -28,68 +28,65 @@
 namespace Application\DeskPRO\Form\Type\CustomFields;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity\CustomDefEntity;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Form\Transformer\CustomDataTransformer;
+use Application\DeskPRO\Form\Transformer\CustomFields\ChoiceDataTransformer;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\From;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\OptionsResolver\Options;
 
 class ChoiceType extends CustomFieldType
 {
+	/**
+	 * @param FormBuilderInterface $builder
+	 * @param array $options
+	 */
+	public function buildForm(FormBuilderInterface $builder, array $options)
+	{
+		$that = $this;
+		$builder
+			->add('value', 'entity', array_merge($this->getValueOptions(), array(
+				'empty_value' => 'Choose an option',
+
+				'class' => 'DeskPRO:CustomFieldDefinition',
+				'property' => 'title',
+				'query_builder' => function(EntityRepository $er) use ($that, $options) {
+					return $that->getChoicesQueryBuilder($er, $options);
+				},
+			)))
+			->addModelTransformer(new ChoiceDataTransformer($options['persister'], $options['owner']))
+		;
+
+		parent::buildForm($builder, $options);
+	}
+
 	/**
 	 * @param OptionsResolverInterface $resolver
 	 */
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		parent::setDefaultOptions($resolver);
-
-		$resolver->setDefaults(array(
-			'class' => 'DeskPRO:CustomFieldDefinition',
-			'property' => 'title',
-			'empty_value' => '',
-		));
-
-		$that = $this;
-		$resolver->setNormalizers(array(
-			'choices' => function(Options $options, $configs) use ($that) {
-				return $that->fetchChoices($options);
-			},
-		));
-	}
-
-	/**
-	 * @param Options $options
-	 * @return array
-	 */
-	public function fetchChoices(Options $options)
-	{
-		$em = $options['entity_manager'];
-		$choices = array();
-
-		$res = $this->getChoicesQueryBuilder($em->getRepository('DeskPRO:CustomFieldDefinition'), $options)
-			->getQuery()->execute();
-
-		foreach ($res as $row) {
-			$choices[$row['id']] = $row['title'];
-		}
-
-		return $choices;
+		$resolver->setDefaults(array('data_class' => null));
 	}
 
 	/**
 	 * @param EntityRepository $er
-	 * @param Options $options
+	 * @param array $options
 	 * @return \Doctrine\ORM\QueryBuilder
 	 */
-	protected function getChoicesQueryBuilder(EntityRepository $er, Options $options)
+	protected function getChoicesQueryBuilder(EntityRepository $er, array $options)
 	{
 		$def = $this->definition;
 
 		return $er->createQueryBuilder('d')
-			->select('d.id, d.title')
+			->add('from', new From('DeskPRO:CustomFieldDefinition', 'd', 'd.id'), false)
 			->where('d.parent = :parent')
 			->andWhere('d.owner_class = :owner_class and d.context_class is null')
+			->orderBy('d.display_order', 'ASC')
 			->setParameter('owner_class', $def['owner_class'])
 			->setParameter('parent', $def['id']);
 	}
@@ -101,12 +98,21 @@ class ChoiceType extends CustomFieldType
 	 */
 	public function buildView(FormView $view, FormInterface $form, array $options)
 	{
-		$data = $form->getData();
+		parent::buildView($view, $form, $options);
+		if (!$data = $form->get('value')->getData()) {
+			return;
+		}
+
 		$rendered = null;
 
-		if (null !== $data) {
-			$data = (array) $data;
-			$rendered = array_intersect_key($options['choices'], array_flip($data));
+		if ($data instanceof CustomFieldDefinition) {
+			$rendered = $data['title'];
+		} else {
+			// @var $data CustomFieldDefinition[]
+			$rendered = array();
+			foreach ($data as $el) {
+				$rendered[] = $el['title'];
+			}
 			$rendered = implode(', ', $rendered);
 		}
 
@@ -122,10 +128,10 @@ class ChoiceType extends CustomFieldType
 	}
 
 	/**
-	 * @return null|string|\Symfony\Component\Form\FormTypeInterface
+	 * override parent call
 	 */
-	public function getParent()
+	public function onPostSubmit(FormEvent $event)
 	{
-		return 'choice';
+		return;
 	}
 }
