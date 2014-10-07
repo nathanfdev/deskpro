@@ -49,19 +49,27 @@ define [
 				model.retain()
 				@recs.set(model.id, model)
 
+		checkExistsByGraphId: (graph_id) ->
+			found_it = false
+			@recs.forEach( (id, rec) ->
+				if rec.graph_id == graph_id
+					found_it = true
+			)
+			return found_it
+
 		###
-	# Updates the first-class model (title, etc)
-	# with account provided. Or adds it to the list if it doesnt exist.
-	###
-		updateModel: (account) ->
-			new_model = @em.createEntity('facebook_page', 'id', account)
+		# Updates the first-class model (title, etc)
+		# with page provided. Or adds it to the list if it doesnt exist.
+		###
+		updateModel: (page) ->
+			new_model = @em.createEntity('facebook_page', 'id', page)
 			@recs.set(new_model.id, new_model)
 			return new_model
 
-		###*
-		* Adds a new model to the existing list (eg was just created)
-	*
-	* @return {Admin_Main_Model_Base}
+		###
+		# Adds a new model to the existing list (eg was just created)
+		#
+		# @return {Admin_Main_Model_Base}
 		###
 		addToList: (rec) ->
 			if not rec._is_model

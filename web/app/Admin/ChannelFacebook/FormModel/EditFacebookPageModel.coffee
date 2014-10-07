@@ -2,40 +2,38 @@ define [
 	'DeskPRO/Util/Util'
 ], (Util) ->
 	class Admin_ChannelFacebook_FormModel_EditFacebookPageModel
-		constructor: (@account) ->
-			@form = {account: {}}
-			@form.account.id = @account.id || 0
-			@form.account.type = @account.type || "twilio"
-			@form.account.identifier = @account.identifier || ""
-			@form.account.phone_number = @account.phone_number || ""
-			@form.account.params = @account.params || {}
-			@form.account.is_enabled = if Util.isEmpty(@account.is_enabled) then false else @account.is_enabled
-			@form.account.is_connected = if Util.isEmpty(@account.is_connected) then false else @account.is_connected
-			@form.account.is_tested = if Util.isEmpty(@account.is_tested) then false else @account.is_tested
+		constructor: (page) ->
+			@page = page
 
-		setAccountData: (data) ->
-			@form.account = data
-			if Util.isEmpty(data.phone_number) and not Util.isEmpty(data.params?.numbers)
-				data.phone_number = data.params.numbers[0].number
+			if Util.isEmpty(@page.import_wall_posts) then @page.import_wall_posts = true
+			if Util.isEmpty(@page.import_direct_messages) then @page.import_direct_messages = true
+			if Util.isEmpty(@page.disable_own_wall_posts) then @page.disable_own_wall_posts = true
+
+			@form = { page: {
+					id: @page.id || 0
+					name: @page.name || '',
+					graph_id: @page.graph_id || '',
+					page_token: @page.page_token || '',
+					user_token: @page.user_token || '',
+					picture_url: @page.picture_url || '',
+					user_graph_id: @page.user_graph_id || '',
+					import_wall_posts: if @page.import_wall_posts then true else false,
+					disable_own_wall_posts: if @page.disable_own_wall_posts then true else false,
+					import_direct_messages: if @page.import_direct_messages then true else false,
+					is_enabled: if @page.is_enabled then true else false,
+					is_connected: if @page.is_connected then true else false,
+					is_tested: if @page.is_tested then true else false,
+					app: {
+						id: @page.app.id || 0
+						app_id: @page.app.app_id || '',
+						app_secret: @page.app.app_secret || '',
+						name: @page.app.name || '',
+						logo_url: @page.app.logo_url || '',
+						icon_url: @page.app.icon_url || ''
+					},
+				}
+			}
 
 		getFormData: ->
 			form = Util.clone(@form, true)
-			return form.account
-
-		clearCredentials: ->
-			@markConnected(false)
-
-		markConnected: (isConnected) ->
-			@form.account.is_connected = isConnected
-			if not isConnected
-				@markTested(false)
-				@form.account.identifier = null
-				@form.account.is_enabled = false
-
-		markTested: (isTested) ->
-			@form.account.is_tested = isTested
-			if not isTested
-				@form.account.is_enabled = false
-
-		setFriendlyName: (name) ->
-			@form.account.identifier = name
+			return form.page

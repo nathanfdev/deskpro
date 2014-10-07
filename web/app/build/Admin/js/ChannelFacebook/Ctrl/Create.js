@@ -27,6 +27,7 @@
         this.app_logo_url = '';
         this.app_credentials_required = false;
         this.user_graph_id = null;
+        this.user_access_token = null;
         this.available_user_pages = [];
         this.fb_init = false;
         return this.checked_for_pages = false;
@@ -64,24 +65,43 @@
           }
         }
         if (selected_page) {
-          postData = {
+          this.new_page = {
+            name: selected_page.name,
+            graph_id: selected_page.id,
+            page_token: selected_page.access_token,
+            picture_url: selected_page.picture_url,
+            user_graph_id: this.user_graph_id,
+            user_token: this.user_access_token,
+            import_wall_posts: true,
+            disable_own_wall_posts: true,
+            import_direct_messages: true,
+            is_enbled: false,
+            is_connected: false,
+            is_tested: false,
             app: {
-              id: this.app_id,
+              app_id: this.app_id,
+              app_secret: this.app_secret,
               name: this.app_name,
-              secret: this.app_secret,
               logo_url: this.app_logo_url,
               icon_url: this.app_icon_url
-            },
-            page: {
-              id: selected_page.id,
-              access_token: selected_page.access_token,
-              picture_url: selected_page.picture_url,
-              catgory: selected_page.category,
-              name: selected_page.name
             }
           };
-          console.log("POST DATA HERE:");
-          return console.log(postData);
+          postData = {
+            page: this.new_page
+          };
+          return this.Api.sendPostJson('/channel/facebook/pages', postData).then((function(_this) {
+            return function(response) {
+              _this.available_user_pages = _this.available_user_pages.filter(function(page) {
+                return page.id !== response.data.graph_id;
+              });
+              _this.new_page_model = new Admin_ChannelFacebook_FormModel_EditFacebookPageModel(response.data || {});
+              _this.$scope.$parent.ChannelFacebookList.pingElement('save_page');
+              _this.FacebookPagesData.addToList(_this.new_page_model.getFormData());
+              return _this.$state.go('tickets.channel_facebook.edit', {
+                id: response.data.id
+              });
+            };
+          })(this));
         }
       };
 
@@ -96,11 +116,25 @@
             FB.getLoginStatus(function(response) {
               if (response.status === 'connected') {
                 return FB.api('/me', 'GET', {}, function(me) {
-                  _this.user_graph_id = me.id;
+                  var authResponse;
+                  authResponse = FB.getAuthResponse();
+                  _this.user_graph_id = authResponse.userID;
+                  _this.user_access_token = authResponse.accessToken;
                   return d.resolve(_this.user_graph_id);
                 });
               } else {
-                return _this._login();
+                return FB.login(function(response) {
+                  if (response.authResponse) {
+                    _this.user_graph_id = response.authResponse.userID;
+                    _this.user_access_token = response.authResponse.accessToken;
+                  } else {
+                    _this.Growl.error(_this.getRegisteredMessage('connected_fail'));
+                    _this._stopSpinnerTimeout('connecting_app');
+                  }
+                  return d.resolve();
+                }, {
+                  scope: 'public_profile,manage_pages'
+                });
               }
             });
             return d.promise;
@@ -155,7 +189,7 @@
                     id: pg.id,
                     access_token: pg.access_token,
                     picture_url: pinfo.data.url,
-                    catgory: pg.category,
+                    category: pg.category,
                     name: pg.name
                   });
                   return d3.resolve();
@@ -166,7 +200,9 @@
               _ref = pages.data;
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 page = _ref[_i];
-                promises.push(callfunc(page));
+                if (!_this.FacebookPagesData.checkExistsByGraphId(page.id)) {
+                  promises.push(callfunc(page));
+                }
               }
               return d2.resolve(_this.$q.all(promises));
             });
@@ -178,22 +214,6 @@
           };
         })(this));
         return d2.promise;
-      };
-
-      Admin_ChannelFacebook_Ctrl_Create.prototype._login = function() {
-        return FB.login((function(_this) {
-          return function(response) {
-            if (response.authResponse) {
-              _this.user_graph_id = response.authResponse.userID;
-              return _this.user_access_token = response.authResponse.accessToken;
-            } else {
-              _this.Growl.error(_this.getRegisteredMessage('connected_fail'));
-              return _this._stopSpinnerTimeout('connecting_app');
-            }
-          };
-        })(this), {
-          scope: 'public_profile,manage_pages'
-        });
       };
 
       Admin_ChannelFacebook_Ctrl_Create.prototype._stopSpinnerTimeout = function(name) {

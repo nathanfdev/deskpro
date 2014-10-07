@@ -21,6 +21,7 @@ define [
 			@app_logo_url = ''
 			@app_credentials_required = false
 			@user_graph_id = null
+			@user_access_token = null
 			@available_user_pages = []
 			@fb_init = false
 			@checked_for_pages = false
@@ -47,24 +48,39 @@ define [
 					selected_page = page
 					break
 			if selected_page
-				postData = {
+				@new_page = {
+					name: selected_page.name,
+					graph_id: selected_page.id,
+					page_token: selected_page.access_token,
+					picture_url: selected_page.picture_url,
+					user_graph_id: @user_graph_id,
+					user_token: @user_access_token,
+					import_wall_posts: true,
+					disable_own_wall_posts: true,
+					import_direct_messages: true,
+					is_enbled: false,
+					is_connected: false,
+					is_tested: false,
 					app: {
-						id: @app_id,
+						app_id: @app_id,
+						app_secret: @app_secret,
 						name: @app_name,
-						secret: @app_secret,
 						logo_url: @app_logo_url,
 						icon_url: @app_icon_url
 					},
-					page: {
-						id: selected_page.id,
-						access_token: selected_page.access_token,
-						picture_url: selected_page.picture_url,
-						catgory: selected_page.category,
-						name: selected_page.name
-					}
 				}
-				console.log "POST DATA HERE:"
-				console.log postData
+
+				postData = {
+					page: @new_page
+				}
+
+				@Api.sendPostJson('/channel/facebook/pages', postData).then( (response) =>
+					@available_user_pages = @available_user_pages.filter (page) -> page.id isnt response.data.graph_id
+					@new_page_model = new Admin_ChannelFacebook_FormModel_EditFacebookPageModel(response.data || {})
+					@$scope.$parent.ChannelFacebookList.pingElement('save_page')
+					@FacebookPagesData.addToList(@new_page_model.getFormData())
+					@$state.go('tickets.channel_facebook.edit', { id: response.data.id })
+				)
 
 		_getPages: ->
 			d2 = @$q.defer()
@@ -75,11 +91,24 @@ define [
 				FB.getLoginStatus((response) =>
 					if response.status == 'connected'
 						FB.api('/me', 'GET', {}, (me) =>
-							@user_graph_id = me.id
+							authResponse = FB.getAuthResponse()
+							@user_graph_id = authResponse.userID
+							@user_access_token = authResponse.accessToken
 							d.resolve(@user_graph_id)
 						)
 					else
-						@_login()
+						FB.login((response) =>
+							if response.authResponse
+								@user_graph_id = response.authResponse.userID
+								@user_access_token = response.authResponse.accessToken
+							else
+								@Growl.error(@getRegisteredMessage('connected_fail'))
+								@_stopSpinnerTimeout('connecting_app')
+							d.resolve()
+						, {
+								scope: 'public_profile,manage_pages'
+							}
+						)
 				)
 				return d.promise
 
@@ -103,6 +132,7 @@ define [
 				)
 			).then(() =>
 				FB.api("/#{@user_graph_id}/accounts", 'GET', {}, (pages) =>
+					# check ot see if already a channel, dont show if so
 					@app_connected = true
 					@available_user_pages = []
 					callfunc = (pg) =>
@@ -112,7 +142,7 @@ define [
 								id: pg.id,
 								access_token: pg.access_token,
 								picture_url: pinfo.data.url,
-								catgory: pg.category,
+								category: pg.category,
 								name: pg.name,
 							})
 							d3.resolve()
@@ -121,7 +151,8 @@ define [
 
 					promises = []
 					for page in pages.data
-						promises.push(callfunc(page))
+						if not @FacebookPagesData.checkExistsByGraphId(page.id)
+							promises.push(callfunc(page))
 
 					d2.resolve(@$q.all(promises))
 				)
@@ -132,19 +163,6 @@ define [
 
 
 			return d2.promise
-
-		_login: ->
-			FB.login((response) =>
-				if response.authResponse
-					@user_graph_id = response.authResponse.userID
-					@user_access_token = response.authResponse.accessToken
-				else
-					@Growl.error(@getRegisteredMessage('connected_fail'))
-					@_stopSpinnerTimeout('connecting_app')
-			, {
-					scope: 'public_profile,manage_pages'
-				}
-			)
 
 		_stopSpinnerTimeout: (name) ->
 			@$timeout () =>

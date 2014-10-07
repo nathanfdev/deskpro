@@ -61,24 +61,35 @@
         return _results;
       };
 
+      Admin_ChannelFacebook_DataService_FacebookPages.prototype.checkExistsByGraphId = function(graph_id) {
+        var found_it;
+        found_it = false;
+        this.recs.forEach(function(id, rec) {
+          if (rec.graph_id === graph_id) {
+            return found_it = true;
+          }
+        });
+        return found_it;
+      };
+
 
       /*
-      	 * Updates the first-class model (title, etc)
-      	 * with account provided. Or adds it to the list if it doesnt exist.
+      		 * Updates the first-class model (title, etc)
+      		 * with page provided. Or adds it to the list if it doesnt exist.
        */
 
-      Admin_ChannelFacebook_DataService_FacebookPages.prototype.updateModel = function(account) {
+      Admin_ChannelFacebook_DataService_FacebookPages.prototype.updateModel = function(page) {
         var new_model;
-        new_model = this.em.createEntity('facebook_page', 'id', account);
+        new_model = this.em.createEntity('facebook_page', 'id', page);
         this.recs.set(new_model.id, new_model);
         return new_model;
       };
 
 
-      /**
-      		* Adds a new model to the existing list (eg was just created)
-      	*
-      	* @return {Admin_Main_Model_Base}
+      /*
+      		 * Adds a new model to the existing list (eg was just created)
+      		 *
+      		 * @return {Admin_Main_Model_Base}
        */
 
       Admin_ChannelFacebook_DataService_FacebookPages.prototype.addToList = function(rec) {
