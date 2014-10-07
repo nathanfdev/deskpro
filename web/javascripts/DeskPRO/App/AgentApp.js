@@ -170,7 +170,7 @@ define([
 				}
 
 				function update() {
-					var time, ts;
+					var time, ts, now;
 					if (!scope.timestamp) {
 						return;
 					}
@@ -185,6 +185,11 @@ define([
 
 					if (!time || !time.isValid()) {
 						return;
+					}
+
+					now = moment().subtract(1, 'seconds');
+					if (time.toDate() > now.toDate()) {
+						time = now;
 					}
 
 					// Cancel interval if its an old date that is unlikely to change in realtime
@@ -204,11 +209,20 @@ define([
 					}
 				});
 
+				element.on('dp_update', function() {
+					update();
+				});
+
 				if (attrs['autoUpdate'] || attrs['updateInterval']) {
 					timeoutId = $interval(function() {
 						update();
 					}, parseInt(attrs['updateInterval']) || 15000);
+
+					scope.$watch('timestamp', function() {
+						update();
+					});
 				}
+
 				update();
 			}
 		};
