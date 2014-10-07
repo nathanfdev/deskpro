@@ -255,6 +255,11 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
 				if ($rec->getAttribute('jpegPhoto')) {
 					$raw_info['picture_data'] = $rec->getAttribute('jpegPhoto', 0);
+
+					// Large photo can potentially cause memory issues when we resize/edit it, so ignore it
+					if (isset($raw_info['picture_data'][15000000])) {
+						unset($raw_info['picture_data'][15000000]);
+					}
 				} else if ($rec->getAttribute('thumbnailPhoto')) {
 					$raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
 				}
