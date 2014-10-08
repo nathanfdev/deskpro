@@ -138,28 +138,33 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
 		// If this was a reply via a TAC, then the person detected via address and the person who owns the TAC
 		// should be the sames. Otherwise, *probably* means the agent used a different email address.
-		if ($tac_person && $tac_person->is_agent && ( ($person && $tac_person !== $person) || !$person) ) {
-			$this->logMessage('Agent email with TAC from unknown email address');
-			$this->error = 'auth_invalid';
-			$this->error_type = 'rejected';
+		if ($tac_person && $tac_person->is_agent) {
+			// Need to look up the From sender manually because we dont know which ticket dector was used above,
+			// and the way they find existing people is an implementation detail we dont know here
+			$exist_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->email);
+			if (($exist_person && $tac_person !== $exist_person) || !$exist_person) {
+				$this->logMessage('Agent email with TAC from unknown email address');
+				$this->error      = 'auth_invalid';
+				$this->error_type = 'rejected';
 
-			$message = App::getMailer()->createMessage();
-			$message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
+				$message = App::getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
 					'ticket'  => $ticket,
 					'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-					'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+					'name'    => $this->reader->getFromAddress()->getName() ? : $this->reader->getFromAddress()->getEmail(),
 				));
-			$message->setTo($this->reader->getFromAddress()->getEmail());
+				$message->setTo($this->reader->getFromAddress()->getEmail());
 
-			$lang = $person ? $person->getLanguage() : $tac_person->getLanguage();
+				$lang = $person ? $person->getLanguage() : $tac_person->getLanguage();
 
-			App::$container->getTranslator()->setTemporaryLanguage($lang, function() use ($message) {
+				App::$container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
 					$message->prepare();
 				});
 
-			App::getMailer()->send($message);
+				App::getMailer()->send($message);
 
-			return null;
+				return null;
+			}
 		}
 
 		#-------------------------
