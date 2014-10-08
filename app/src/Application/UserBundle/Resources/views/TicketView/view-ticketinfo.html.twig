@@ -87,7 +87,7 @@
             <tr>
                 <th>{{f.vars.def.title}}</th>
                 <td>
-                    {{ f.vars.rendered_data }}
+                    {{ render_custom_field(f) }}
                 </td>
             </tr>
         {% endfor %}

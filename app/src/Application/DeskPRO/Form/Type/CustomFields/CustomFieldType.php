@@ -103,6 +103,8 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 	public function buildView(FormView $view, FormInterface $form, array $options)
 	{
 		$view->vars['def'] = $this->definition;
+		$view->vars['rendered_data'] = null;
+
 		if (!($data = $form->getData()) instanceof CustomFieldData) {
 			return;
 		}

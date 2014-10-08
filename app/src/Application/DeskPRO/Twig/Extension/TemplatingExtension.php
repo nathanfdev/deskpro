@@ -1030,6 +1030,10 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function renderCustomField($display_array, array $vars = array())
 	{
+		if ($display_array instanceof FormView) {
+			return $display_array->vars['rendered_data'];
+		}
+
 		$handler = $display_array['handler'];
 
 		if (is_object($display_array)) {
@@ -1043,7 +1047,8 @@ class TemplatingExtension extends \Twig_Extension
 	public function renderCustomFieldForm($display_array, array $vars = array())
 	{
 		if ($display_array instanceof FormView) {
-			$b = 1;
+			$formExtension = $this->container->get('twig')->getExtension('form');
+			return $formExtension->renderer->searchAndRenderBlock($display_array, 'widget');
 		}
 
 		$handler = $display_array['handler'];
@@ -1059,6 +1064,10 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function renderCustomFieldText($display_array, array $vars = array())
 	{
+		if ($display_array instanceof FormView) {
+			return $display_array->vars['rendered_data'];
+		}
+
 		$handler = $display_array['handler'];
 
 		if (is_object($display_array)) {

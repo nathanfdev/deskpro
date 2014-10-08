@@ -14,7 +14,7 @@
         </label>
     </div>
     <div class="dp-controls dp-fill">
-        {{ form_widget(f) }}
+        {{ render_custom_field_form(f) }}
 
         {% if f.vars.errors|length %}
         <div class="dp-help-inline dp-error-explain">
