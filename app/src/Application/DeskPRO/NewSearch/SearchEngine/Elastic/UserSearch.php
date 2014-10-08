@@ -82,6 +82,7 @@ class UserSearch implements UserSearchInterface
 			$search->addType('article');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'article')));
+			$f->addMust(new Filter\Term(array('status' => 'published')));
 			$f->addMust(new Filter\Terms('category_ids', $context->getArticleCategoryIds()));
 			$f->setBoost('1.5');
 			$filter->addFilter($f);
@@ -90,6 +91,7 @@ class UserSearch implements UserSearchInterface
 			$search->addType('news');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'news')));
+			$f->addMust(new Filter\Term(array('status' => 'published')));
 			$f->addMust(new Filter\Terms('category_id', $context->getNewsCategoryIds()));
 			$f->setBoost('1.3');
 			$filter->addFilter($f);
@@ -98,6 +100,7 @@ class UserSearch implements UserSearchInterface
 			$search->addType('download');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'download')));
+			$f->addMust(new Filter\Term(array('status' => 'published')));
 			$f->addMust(new Filter\Terms('category_id', $context->getDownloadCategoryIds()));
 			$f->setBoost('1.5');
 			$filter->addFilter($f);
@@ -106,6 +109,7 @@ class UserSearch implements UserSearchInterface
 			$search->addType('feedback');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'feedback')));
+			$f->addMust(new Filter\Term(array('status' => 'published')));
 			$f->addMust(new Filter\Terms('category_id', $context->getFeedbackCategoryIds()));
 			$filter->addFilter($f);
 		}
