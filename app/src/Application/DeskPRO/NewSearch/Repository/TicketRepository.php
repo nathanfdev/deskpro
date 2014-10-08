@@ -52,7 +52,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
 		$assigned_filter->addFilter(new Filter\Term(array('agent' => $this->person->getId())));
 		$team_ids = $this->person->getHelper('Agent')->getTeamIds();
 		if ($team_ids) {
-			$assigned_filter->addFilter(new Filter\Terms(array('agent_team' => $team_ids)));
+			$assigned_filter->addFilter(new Filter\Terms('agent_team', $team_ids));
 		}
 
 		$dis_dep_ids = $this->person->getHelper('AgentPermissions')->getDisallowedDepartments();
