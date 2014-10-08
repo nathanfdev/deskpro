@@ -675,6 +675,14 @@ define([
 				scope.isActive = false;
 				scope.mode = 'search';
 				scope.expanded = {};
+				scope.elasticOrder = 'score';
+
+				scope.setOrder = function(order) {
+					scope.elasticOrder = order;
+					if (scope.resultGroups.length) {
+						updateSearch();
+					}
+				};
 
 				var closeAll = function() {
 					$backdrop.hide();
@@ -836,7 +844,7 @@ define([
 					scope.isMainLoading = true;
 					$http({
 						method: 'GET',
-						params: { q: scope.searchQuery || '' },
+						params: { q: scope.searchQuery || '', sort: scope.elasticOrder },
 						url: 'DP_URL/agent/quick-search.json'
 					}).success(function(data) {
 						scope.isMainLoading = false;
@@ -852,6 +860,7 @@ define([
 						scope.resultGroups = data.grouped_results || [];
 						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
 						scope.index_running = data.index_running || false;
+						scope.is_elastic    = data.is_elastic || false;
 
 						var initialShow = {
 							organization: 3,

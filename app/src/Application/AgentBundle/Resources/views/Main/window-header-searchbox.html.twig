@@ -22,6 +22,12 @@
 				<i class="fa fa-exclamation-circle"></i>
 				Search results may be incomplete because items are still being indexed.
 			</div>
+			<div ng-if="is_elastic && resultGroups && resultGroups.length" class="search-order">
+				<span class="label">Sort by:</span>
+				<span class="opt" ng-class="{'on': elasticOrder == 'score'}" ng-click="setOrder('score')">Best Match</span>
+				<span class="opt" ng-class="{'on': elasticOrder == 'date_active'}" ng-click="setOrder('date_active')">Last Activity</span>
+				<span class="opt" ng-class="{'on': elasticOrder == 'date_created'}" ng-click="setOrder('date_created')">Date Created</span>
+			</div>
 			<section ng-repeat="group in resultGroups" class="result-group">
 				<header>{{ ng_var('group.title') }}</header>
 				<article>

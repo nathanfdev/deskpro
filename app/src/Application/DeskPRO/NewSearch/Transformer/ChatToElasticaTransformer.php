@@ -47,6 +47,9 @@ class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
 
 		$document->set('messages', $messages);
 
+		$document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
+		$document->set('date_active', date('Y-m-d H:i:s'));
+
 		return $document;
     }
 } 

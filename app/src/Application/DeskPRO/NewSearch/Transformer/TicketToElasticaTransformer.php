@@ -51,6 +51,13 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 
         $document->set('messages', $messages);
 
+		$document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
+
+		$dates = array($object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply);
+		$dates = Arrays::removeFalsey($dates);
+		$d = max($dates);
+		$document->set('date_active', $d->format('Y-m-d H:i:s'));
+
         return $document;
     }
 } 
