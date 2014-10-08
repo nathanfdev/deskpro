@@ -48,7 +48,10 @@ class CustomFieldDefinition extends AbstractEntityRepository
 			->andWhere('d.is_enabled = 1')
 			->setParameter('owner', get_class($object));
 
-		if ($layout && ($in = $layout->getIdsOfFieldType('custom_field'))) {
+		if ($layout) {
+			if (!$in = $layout->getIdsOfFieldType('custom_field')) {
+				return array();
+			}
 			$qb
 				->andWhere('d.id in (:fields)')
 				->setParameter('fields', $in, Connection::PARAM_INT_ARRAY);

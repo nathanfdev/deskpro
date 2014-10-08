@@ -58,7 +58,10 @@ class CustomFieldData extends AbstractEntityRepository
 				'owner_class' => get_class($object),
 			));
 
-		if ($layout && ($in = $layout->getIdsOfFieldType('custom_field'))) {
+		if ($layout) {
+			if (!$in = $layout->getIdsOfFieldType('custom_field')) {
+				return array();
+			}
 			$qb
 				->andWhere('da.root_definition in (:fields)')
 				->setParameter('fields', $in, Connection::PARAM_INT_ARRAY);

@@ -147,6 +147,8 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
 
 			case 'user_field':
 				return $ticket->person->hasCustomField($field->getFieldId());
+			case 'custom_field':
+				return true;
 		}
 	}
 }

@@ -187,7 +187,7 @@ class NewTicketController extends AbstractController
 
 	    // specific user custom fields (but can be used for any sort of custom fields)
 	    $manager = $this->container->getCustomFieldManager();
-	    $specific_fields_form = $manager->createFormForOwner($ticket, $this->person, $default_page);
+	    $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person, $default_page);
 
 		$captcha_html = '';
 		if ($captcha) {
@@ -203,7 +203,7 @@ class NewTicketController extends AbstractController
 			}
 
 			$form->handleRequest($this->get('request'));
-			$specific_fields_form->handleRequest($this->get('request'));
+			$new_custom_fields_form->handleRequest($this->get('request'));
 
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
@@ -215,9 +215,9 @@ class NewTicketController extends AbstractController
 				$trap_fail = true;
 			}
 
-			if ($specific_fields_form->isValid() && $validator->isValid($newticket) && !$trap_fail) {
+			if ($new_custom_fields_form->isValid() && $validator->isValid($newticket) && !$trap_fail) {
 				$ticket = $newticket->save();
-				$manager->flushCustomData($specific_fields_form);
+				$manager->flushCustomData($new_custom_fields_form);
 				$person = $ticket['person'];
 
 				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
@@ -330,7 +330,7 @@ class NewTicketController extends AbstractController
 			'hide_name_field'       => $hide_name_field,
 			'hide_email_field'      => $hide_email_field,
 
-			'specific_user_custom_fields' => $specific_fields_form->createView(),
+			'new_custom_fields' => $new_custom_fields_form->createView(),
 		));
     }
 

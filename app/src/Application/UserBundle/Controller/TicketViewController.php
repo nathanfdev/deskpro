@@ -212,6 +212,13 @@ class TicketViewController extends AbstractController
 		$user_participants = $ticket->getUserParticipants();
 		$vars['user_participants'] = $user_participants;
 
+		$layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
+		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+
+		$manager = $this->container->getCustomFieldManager();
+		$new_custom_fields = $manager->createFormForOwner($ticket, $this->person, $layout);
+		$vars['new_custom_fields'] = $new_custom_fields->createView();
+
         if($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_user:view_ticket.html.twig', $vars);
 
@@ -251,8 +258,6 @@ class TicketViewController extends AbstractController
             return $response;
         }
 
-		$layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
-		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
 		$vars['page_display'] = $layout;
 
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
