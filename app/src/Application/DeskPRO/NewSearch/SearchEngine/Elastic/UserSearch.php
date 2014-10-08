@@ -82,7 +82,7 @@ class UserSearch implements UserSearchInterface
 			$search->addType('article');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'article')));
-			$f->addMust(new Filter\Term(array('category_ids' => $context->getArticleCategoryIds())));
+			$f->addMust(new Filter\Terms('category_ids', $context->getArticleCategoryIds()));
 			$f->setBoost('1.5');
 			$filter->addFilter($f);
 		}
@@ -90,7 +90,7 @@ class UserSearch implements UserSearchInterface
 			$search->addType('news');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'news')));
-			$f->addMust(new Filter\Term(array('category_ids' => array($context->getNewsCategoryIds()))));
+			$f->addMust(new Filter\Terms('category_id', $context->getNewsCategoryIds()));
 			$f->setBoost('1.3');
 			$filter->addFilter($f);
 		}
@@ -98,7 +98,7 @@ class UserSearch implements UserSearchInterface
 			$search->addType('download');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'download')));
-			$f->addMust(new Filter\Term(array('category_ids' => array($context->getDownloadCategoryIds()))));
+			$f->addMust(new Filter\Terms('category_id', $context->getDownloadCategoryIds()));
 			$f->setBoost('1.5');
 			$filter->addFilter($f);
 		}
@@ -106,7 +106,7 @@ class UserSearch implements UserSearchInterface
 			$search->addType('feedback');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'feedback')));
-			$f->addMust(new Filter\Term(array('category_ids' => array($context->getFeedbackCategoryIds()))));
+			$f->addMust(new Filter\Terms('category_id', $context->getFeedbackCategoryIds()));
 			$filter->addFilter($f);
 		}
 		if ($context->getPerson() && ($limit_types === null || in_array('ticket', $limit_types))) {
@@ -132,7 +132,10 @@ class UserSearch implements UserSearchInterface
 		}
 
 		$bool_query = new Query\Bool();
-		$bool_query->addMust(new Query\QueryString($query));
+		$qs = new Query\QueryString($query);
+		$qs->setDefaultField('_all');
+		$qs->setDefaultOperator('AND');
+		$bool_query->addMust($qs);
 
 		$sticky_match = new Query\Match();
 		$sticky_match->setFieldQuery('sticky_words', $query);
@@ -140,8 +143,8 @@ class UserSearch implements UserSearchInterface
 		$sticky_match->setFieldBoost('sticky_words', 2);
 		$bool_query->addShould($sticky_match);
 
-		$filtered_query = new Query\Filtered($bool_query, $filter);
-		$res = $search->search($filtered_query);
+		$filtered_query = new Query\Filtered($qs, $filter);
+		$res = $search->search($filtered_query, array('limit' => 500));
 		$objects = $this->transformer->transform($res->getResults());
 
 		return new ResultSet($objects);
