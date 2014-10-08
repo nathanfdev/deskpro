@@ -11,8 +11,19 @@ define [
 
 
 		init: ->
+			@options =
+				expanded: 1
+				multiple: 2
+
 			@service = @DataService.get 'CustomFields'
 			@$scope.definition = {}
+			@$scope.options =
+				choices: 0
+
+			@$scope.$watch 'options.choices', (newVal, oldVal) =>
+				return if !newVal? || !@$scope.definition.options?
+				@$scope.definition.options.multiple = @options.multiple == (newVal & @options.multiple)
+				@$scope.definition.options.expanded = @options.expanded == (newVal & @options.expanded)
 
 
 
@@ -21,6 +32,9 @@ define [
 				@service.get(parseInt(@$stateParams.id)).then (model) =>
 					if '[object Array]' == Object.prototype.toString.call( model.options ) then model.options = {}
 					@$scope.definition = model
+					multiple = if @$scope.definition.options.multiple then @options.multiple else 0
+					expanded = if @$scope.definition.options.expanded then @options.expanded else 0
+					@$scope.options.choices = @$scope.options.choices | multiple | expanded
 
 
 

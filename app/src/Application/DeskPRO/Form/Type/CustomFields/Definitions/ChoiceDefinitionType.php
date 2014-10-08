@@ -36,6 +36,7 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
+		// if we need to define all properties, not only children
 		if (!$options['children_only']) {
 			parent::buildForm($builder, $options);
 			$builder->get('options')
@@ -76,9 +77,13 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 	{
 		parent::setDefaultOptions($resolver);
 		$resolver
+			->setDefaults(array(
+				'children_only' => false,
+				'children_collection' => null,
+			))
 			->setOptional(array('children_collection', 'children_only'))
 			->addAllowedTypes(array(
-				'children_collection' => 'Doctrine\Common\Collections\ArrayCollection',
+				'children_collection' => array('null', 'Doctrine\Common\Collections\ArrayCollection'),
 			))
 		;
 	}

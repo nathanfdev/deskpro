@@ -39,6 +39,7 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Entity\Ticket;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
@@ -92,16 +93,19 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 				throw new NotFoundHttpException;
 			}
 			$definition = new CustomFieldDefinition();
-			$definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\' . $post['form_type'] . 'Type';
 
 			// todo
+
+			$definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\' . $post['form_type'] . 'Type';
 			$definition['context_class'] = 'Application\DeskPRO\Entity\\' . $post['context_class'];
 			$definition['owner_class'] = 'Application\DeskPRO\Entity\Ticket';
 
 			$this->em->persist($definition);
 		}
 
-		$form = $this->createForm($definition->createDefinitionType(), $definition);
+		$form = $this->createForm($definition->createDefinitionType(), $definition, array(
+			'context' => new Ticket(),
+		));
 		$post = array_intersect_key($post, $form->all());
 		$form->submit($post);
 
