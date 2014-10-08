@@ -46,7 +46,7 @@
 	</div>
 
 	<div class="mainDeskproTabList deskproTabList" style="vertical-align: bottom;">
-		<div class="deskproTabListInner">
+		<div class="deskproTabListInner" context-menu="context(null)" data-target="tabContextMenu">
 			<ul class="dp-tab-list">
 
 				<li class="list-btn with-list" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
@@ -116,7 +116,7 @@
 
     <div class="dropdown" id="tabContextMenu" style="position: fixed;z-index: 3;">
         <ul class="dropdown-menu" role="menu">
-            <li>
+            <li ng-show="contextTab">
                 <a class="pointer" role="menuitem" tabindex="1" ng-click="closeCurrent()">
                     {{ phrase('agent.general.tabs_close_current') }}
                 </a>
@@ -126,11 +126,17 @@
                     {{ phrase('agent.general.tabs_close_all') }}
                 </a>
             </li>
-            <li>
+            <li ng-show="contextTab">
                 <a class="pointer" role="menuitem" tabindex="3" ng-click="closeOthers()">
                     {{ phrase('agent.general.tabs_close_others') }}
                 </a>
             </li>
+			<li ng-show="tabHistory.length" role="presentation" class="divider"></li>
+			<li ng-repeat="tab in tabHistory">
+				<a class="pointer" role="menuitem" tabindex="4" ng-click="reopenTab(tab)">
+					{{ phrase('agent.general.tabs_reopen') }} {{ ng_var('tab.title') }}
+				</a>
+			</li>
         </ul>
     </div>
 </div>

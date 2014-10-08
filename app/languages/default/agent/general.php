@@ -750,4 +750,5 @@
 	'agent.general.tabs_close_current'                      => 'Close this tab',
 	'agent.general.tabs_close_all'                          => 'Close all tabs',
 	'agent.general.tabs_close_others'                       => 'Close all other tabs',
+	'agent.general.tabs_reopen'                             => 'Reopen:',
 );
