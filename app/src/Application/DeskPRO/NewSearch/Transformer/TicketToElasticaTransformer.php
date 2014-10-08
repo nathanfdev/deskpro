@@ -37,6 +37,18 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('agent_team', $object->getAgentTeamId());
         $document->set('participants', $object->getParticipantPeopleIds());
 
+		if ($object->organization) {
+			$document->set('organization_id', $object->organization->getId());
+		} else {
+			$document->set('organization_id', 0);
+		}
+
+		if ($object->person) {
+			$document->set('person_id', $object->person->getId());
+		} else {
+			$document->set('person_id', 0);
+		}
+
 		if ($object->labels) {
 			$labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
 			$document->set('labels', $labels);

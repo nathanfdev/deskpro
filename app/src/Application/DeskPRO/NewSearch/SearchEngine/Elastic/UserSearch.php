@@ -32,6 +32,7 @@ use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Elastica\Filter;
 use Elastica\Query;
+use Orb\Util\Arrays;
 
 class UserSearch implements UserSearchInterface
 {
@@ -68,7 +69,16 @@ class UserSearch implements UserSearchInterface
 		$search = $this->index->createSearch();
 		$filter = new Filter\BoolOr();
 
-		if ($context->getArticleCategoryIds()) {
+		$limit_types = isset($options['limit_types']) ? $options['limit_types'] : null;
+		if ($limit_types && !is_array($limit_types)) {
+			$limit_types = explode(',', $limit_types);
+			$limit_types = Arrays::func($limit_types, 'trim');
+		}
+		if ($limit_types) {
+			$limit_types = Arrays::removeFalsey($limit_types);
+		}
+
+		if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
 			$search->addType('article');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'article')));
@@ -76,7 +86,7 @@ class UserSearch implements UserSearchInterface
 			$f->setBoost('1.5');
 			$filter->addFilter($f);
 		}
-		if ($context->getNewsCategoryIds()) {
+		if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
 			$search->addType('news');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'news')));
@@ -84,7 +94,7 @@ class UserSearch implements UserSearchInterface
 			$f->setBoost('1.3');
 			$filter->addFilter($f);
 		}
-		if ($context->getDownloadCategoryIds()) {
+		if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
 			$search->addType('download');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'download')));
@@ -92,11 +102,28 @@ class UserSearch implements UserSearchInterface
 			$f->setBoost('1.5');
 			$filter->addFilter($f);
 		}
-		if ($context->getFeedbackCategoryIds()) {
+		if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
 			$search->addType('feedback');
 			$f = new Filter\Bool();
 			$f->addMust(new Filter\Term(array('_type' => 'feedback')));
 			$f->addMust(new Filter\Term(array('category_ids' => array($context->getFeedbackCategoryIds()))));
+			$filter->addFilter($f);
+		}
+		if ($context->getPerson() && ($limit_types === null || in_array('ticket', $limit_types))) {
+			$search->addType('ticket');
+			$f = new Filter\Bool();
+			$f->addMust(new Filter\Term(array('_type' => 'ticket')));
+
+			$f2 = new Filter\BoolOr();
+			$f2->addFilter(new Filter\Term(array('person_id' => $context->getPerson()->getId())));
+			$f2->addFilter(new Filter\Term(array('participants' => $context->getPerson()->getId())));
+
+			if ($context->getPerson()->organization && $context->getPerson()->organization_manager) {
+				$f2->addFilter(new Filter\Term(array('organization_id' => $context->getPerson()->organization->getId())));
+			}
+
+			$f->addMust($f2);
+			$f->setBoost(5);
 			$filter->addFilter($f);
 		}
 
