@@ -86,7 +86,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 		if (is_array($value)) {
 			$ret = array();
 			foreach ($value as $data) {
-				$this->previous[$value->definition['id']] = $data;
+				$this->previous[$data->definition['id']] = $data;
 				$ret[] = $data->definition;
 			}
 			return array('value' => $ret);
