@@ -48,9 +48,12 @@ class ChoiceType extends CustomFieldType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		$that = $this;
+		$fieldOptions = $this->getValueOptions();
+
 		$builder
-			->add('value', 'entity', array_merge($this->getValueOptions(), array(
-				'empty_value' => 'Choose an option',
+			->add('value', 'entity', array_merge($fieldOptions, array(
+
+				'empty_value' => ! empty($fieldOptions['expanded']) ? false : 'Choose an option',
 
 				'class' => 'DeskPRO:CustomFieldDefinition',
 				'property' => 'title',

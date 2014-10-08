@@ -78,11 +78,15 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 			return array('value' => null);
 		}
 
+
+		// single choice
 		if ($value instanceof CustomFieldData) {
 			$this->previous[$value->definition['id']] = $value;
-			return array('value' => new ArrayCollection(array($value->definition)));
+			return array('value' => $value->definition);
 		}
 
+
+		// multiple choices
 		if (is_array($value)) {
 			$coll = new ArrayCollection();
 			foreach ($value as $data) {
@@ -111,6 +115,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 			return null;
 		}
 
+
 		// single choice
 		if ($value instanceof CustomFieldDefinition) {
 			$data = null;
@@ -130,6 +135,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 
 			return $data;
 		}
+
 
 		// multiple choices
 		if ($value instanceof ArrayCollection || is_array($value)) {

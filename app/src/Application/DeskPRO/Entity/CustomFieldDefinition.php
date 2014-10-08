@@ -169,7 +169,6 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 	 */
 	protected $context_id;
 
-
 	public function __construct()
 	{
 		$this->children = new ArrayCollection();
@@ -321,7 +320,6 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 					'referencedColumnName' => 'id',
 					'nullable' => true,
 					'onDelete' => 'cascade',
-					'columnDefinition' => NULL,
 				),
 			),
 		));

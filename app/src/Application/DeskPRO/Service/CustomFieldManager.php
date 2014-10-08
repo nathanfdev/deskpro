@@ -169,7 +169,8 @@ class CustomFieldManager
 	}
 
 	/**
-	 * ContextualChoiceDefinition only (for now)
+	 * todo used for ContextualChoiceDefinition only (for now)
+	 * the only place this form used is Person view in Agent Interface (to define contextual choices for this person)
 	 *
 	 * @param DomainObject $context
 	 * @return \Symfony\Component\Form\Form
@@ -211,6 +212,7 @@ class CustomFieldManager
 				'data' => $def,
 				'children_collection' => $children,
 				'children_only' => true,
+				'label' => $def['title'],
 			));
 		}
 

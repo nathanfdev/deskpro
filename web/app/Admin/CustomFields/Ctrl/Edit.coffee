@@ -21,7 +21,8 @@ define [
 				choices: 0
 
 			@$scope.$watch 'options.choices', (newVal, oldVal) =>
-				return if !newVal? || !@$scope.definition.options?
+				return if !newVal?
+				@$scope.definition.options = {} if !@$scope.definition.options?
 				@$scope.definition.options.multiple = @options.multiple == (newVal & @options.multiple)
 				@$scope.definition.options.expanded = @options.expanded == (newVal & @options.expanded)
 
@@ -30,6 +31,7 @@ define [
 		initialLoad: ->
 			if @$stateParams.id
 				@service.get(parseInt(@$stateParams.id)).then (model) =>
+					return if !model?
 					if '[object Array]' == Object.prototype.toString.call( model.options ) then model.options = {}
 					@$scope.definition = model
 					multiple = if @$scope.definition.options.multiple then @options.multiple else 0
@@ -77,7 +79,6 @@ define [
 					$scope.dismiss = -> $modalInstance.dismiss();
 				]
 			});
-
 
 
 
