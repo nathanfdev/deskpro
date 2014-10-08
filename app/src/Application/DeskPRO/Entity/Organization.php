@@ -186,13 +186,15 @@ class Organization extends DomainObject implements HighlightableModelInterface
 	 */
 	public function getCustomDataForField($field_id)
 	{
+		if ($field_id instanceof CustomDefOrganization) {
+			$field_id = $field_id['id'];
+		}
+
 		foreach ($this->custom_data as $data) {
 			if ($data['field_id'] == $field_id) {
 				return $data;
 			}
 		}
-
-		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
 		return null;
 	}
