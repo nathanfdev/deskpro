@@ -220,7 +220,7 @@ class FeedbackController extends AbstractController
 
 		$errors = $error_fields = null;
 		$is_submitted = false;
-		if ($this->in->getBool('process_new') && $this->person->hasPerm('feedback.submit')) {
+		if ($this->in->getBool('process_new') && $this->person->hasPerm('feedback.submit') && ($this->person->id || !$this->settings->get('core.interact_require_login'))) {
 
 			$this->ensureStandardRequestToken();
 
