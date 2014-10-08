@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\TaskQueue;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Application\DeskPRO\TaskQueueJob\CsvImport;
 
@@ -75,10 +76,7 @@ class CsvUpload
 			return array('error' => 'no_move');
 		}
 
-		$allowedTypes = array('application/vnd.ms-excel', 'text/plain', 'text/csv', 'text/tsv');
-
-		if (!in_array($file->getMimeType(), $allowedTypes)) {
-
+		if (Strings::getExtension($file->getFilename()) != 'csv') {
 			return array('error' => 'not_csv');
 		}
 
