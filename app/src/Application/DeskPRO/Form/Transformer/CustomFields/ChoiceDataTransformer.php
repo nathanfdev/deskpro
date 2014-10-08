@@ -80,16 +80,16 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 
 		if ($value instanceof CustomFieldData) {
 			$this->previous[$value->definition['id']] = $value;
-			return array('value' => $value->definition);
+			return array('value' => new ArrayCollection(array($value->definition)));
 		}
 
 		if (is_array($value)) {
-			$ret = array();
+			$coll = new ArrayCollection();
 			foreach ($value as $data) {
 				$this->previous[$data->definition['id']] = $data;
-				$ret[] = $data->definition;
+				$coll->add($data->definition);
 			}
-			return array('value' => $ret);
+			return array('value' => $coll);
 		}
 
 		throw new TransformationFailedException;
@@ -135,14 +135,14 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 		if ($value instanceof ArrayCollection || is_array($value)) {
 			$ret = array();
 
-			foreach ($value as $id => $definition) {
+			foreach ($value as $definition) {
 				/** @var $definition CustomFieldDefinition */
 				if (!isset($this->previous[$definition['id']])) {
 					$ret[] = $this->createNewData($definition);
 				} else {
 					$ret[] = $this->previous[$definition['id']];
 				}
-				unset($this->previous[$id]);
+				unset($this->previous[$definition['id']]);
 			}
 
 			$this->persister->removeArray($this->previous);

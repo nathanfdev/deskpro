@@ -91,6 +91,9 @@ class CustomFieldData extends DomainObject
 
 	public function preFlush()
 	{
+		$this['value'] = (int) $this['value'];
+		$this['input'] = (string) $this['input'];
+
 		if ($this->owner && $this->owner['id']) {
 			$this['owner_id'] = $this->owner['id'];
 		}

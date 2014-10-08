@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\Form\Type\CustomFields;
 
+use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
@@ -80,8 +81,8 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 			->setOptional(array('context'))
 			->setAllowedTypes(array(
 				'owner' => 'Application\DeskPRO\Domain\DomainObject',
-				'context' => 'Application\DeskPRO\Domain\DomainObject',
 				'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
+				'context' => array('null', 'Application\DeskPRO\Domain\DomainObject'),
 			));
 	}
 
@@ -122,6 +123,18 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 	/**
 	 * @param FormEvent $event
 	 */
+	public function onPreSubmit(FormEvent $event)
+	{
+		// clean extra data
+		if ($data = $event->getData()) {
+			$data = array_intersect_key($data, $event->getForm()->all());
+			$event->setData($data);
+		}
+	}
+
+	/**
+	 * @param FormEvent $event
+	 */
 	public function onPostSubmit(FormEvent $event)
 	{
 		if (!($data = $event->getData()) instanceof CustomFieldData) {
@@ -130,10 +143,19 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 		$form = $event->getForm();
 
 		$options = $form->getConfig()->getOptions();
-		$data->owner = $options['owner'];
-		$data->definition = $this->definition;
-		$data->root_definition = $this->definition;
-		$options['persister']->add($data);
+		/** @var CustomDataPersister $persister */
+		$persister = $options['persister'];
+		/** @var DomainObject $owner */
+		$owner = $options['owner'];
+
+		if ($data->getData()) {
+			$persister->add($data);
+			$data->owner = $owner;
+			$data->definition = $this->definition;
+			$data->root_definition = $this->definition;
+		} else {
+			$persister->remove($data);
+		}
 	}
 
 	/**
@@ -142,6 +164,7 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 	public static function getSubscribedEvents()
 	{
 		return array(
+			FormEvents::PRE_SUBMIT => 'onPreSubmit',
 			FormEvents::POST_SUBMIT => 'onPostSubmit',
 		);
 	}

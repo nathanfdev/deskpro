@@ -777,6 +777,11 @@ $collection->create('agent_ticket_new_getpersonrow', array(
 	'controller'  => 'AgentBundle:Ticket:newticketGetPersonRow',
 ));
 
+$collection->create('agent_ticket_new_getcustomfieldsrow', array(
+	'path'        => '/tickets/new/get-custom-fields-row/{person_id}/{department_id}',
+	'controller'  => 'AgentBundle:Ticket:newTicketGetCustomFieldsRow',
+));
+
 $collection->create('agent_ticket_getmessagetpl', array(
 	'path'        => '/tickets/get-message-template/{id}.json',
 	'controller'  => 'AgentBundle:Ticket:getTicketMessageTemplate',
@@ -933,12 +938,6 @@ $collection->create('agent_ticket_changeuser', array(
 	'path'          => '/tickets/{ticket_id}/change-user',
 	'controller'    => 'AgentBundle:Ticket:changeUser',
 	'requirements'  => array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
-));
-
-$collection->create('agent_ticket_ajaxsavecustomfields', array(
-	'path'          => '/tickets/{ticket_id}/ajax-save-custom-fields',
-	'controller'    => 'AgentBundle:Ticket:ajaxSaveCustomFields',
-	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
 $collection->create('agent_ticket_ajaxsavereply', array(

@@ -37,6 +37,8 @@ use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionType;
 use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
 
@@ -139,19 +141,29 @@ class CustomFieldManager
 			$type = $def->createType();
 			$data = isset($datas[$def['id']]) ? $datas[$def['id']] : null;
 
-			$builder->add($type->getName() . '_' . $def['id'], $type, array(
+			$builder->add($def['id'], $type, array(
 				'owner' => $owner,
 				'context' => $context,
 				'data' => $data,
 				'persister' => $this->persister,
 			));
-
-			$persister = $this->persister;
-			$em = $this->em;
-			$builder->addEventListener(self::EVENT_FLUSH, function() use ($persister, $em){
-				$persister->flush($em);
-			});
 		}
+
+		$persister = $this->persister;
+		$em = $this->em;
+
+		$builder
+			->addEventListener(self::EVENT_FLUSH, function() use ($persister, $em){
+				$persister->flush($em);
+			})
+			->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+				// clean extra data
+				if ($data = $event->getData()) {
+					$data = array_intersect_key($data, $event->getForm()->all());
+					$event->setData($data);
+				}
+			})
+		;
 
 		return $builder->getForm();
 	}

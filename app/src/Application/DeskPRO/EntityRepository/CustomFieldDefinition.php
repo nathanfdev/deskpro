@@ -58,12 +58,14 @@ class CustomFieldDefinition extends AbstractEntityRepository
 		}
 
 		if ($context) {
+			// only definitions with children
 			$qb
 				->leftJoin('d.children', 'dc')
-				->andWhere('d.context_class is null
-					or (d.context_class = :context_class and (d.context_id = :cid or dc.context_id = :cid))')
+				->andWhere('d.context_class is null or (dc.context_class = :context_class and dc.context_id = :cid)')
 				->setParameter('context_class', get_class($context))
 				->setParameter('cid', $context['id']);
+		} else {
+			$qb->andWhere('d.context_class is null');
 		}
 
 		return $qb->getQuery()->getResult();

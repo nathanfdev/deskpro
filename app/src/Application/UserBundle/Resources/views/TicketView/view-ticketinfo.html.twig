@@ -85,7 +85,7 @@
 
         {% for f in new_custom_fields %}
             <tr>
-                <th>{{f.vars.def.title}}</th>
+                <th>{{ form_label(f) }}</th>
                 <td>
                     {{ render_custom_field(f) }}
                 </td>
