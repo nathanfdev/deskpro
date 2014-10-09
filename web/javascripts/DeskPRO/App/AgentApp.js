@@ -700,7 +700,7 @@ define([
 					})
 				};
 
-				$('#dp_header_notify_wrap, #recent_tabs_menu').on('dpClose', function() {
+				$('#dp_header_notify_wrap, #recent_tabs_menu, #dp_omnibox').on('dpClose', function() {
 					closeAll();
 				});
 
