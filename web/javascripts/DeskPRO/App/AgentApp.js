@@ -716,6 +716,7 @@ define([
 
 				scope.$watch('isActive', function(isActive) {
 					if (isActive) {
+						resizeDebounced();
 						$headerBg.addClass('with-search-active');
 						$backdrop.show();
 					} else {
@@ -905,6 +906,9 @@ define([
 					var width = $listPane.width();
 					if (width < 560) {
 						width = 560;
+					}
+					if (width > 900) {
+						width = 900;
 					}
 
 					var maxHeight = $(window).height() - 40 - 75;
