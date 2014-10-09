@@ -1874,88 +1874,102 @@ class TicketController extends AbstractController
 		if ($macro_id) {
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if ($macro) {
-				$macro->performOnTicket($ticket, $this->person);
-				$tm->saveTicket($ticket, $context);
+				$this->db->beginTransaction();
+				try {
+					$macro->performOnTicket($ticket, $this->person);
+					$tm->saveTicket($ticket, $context);
+					$this->db->commit();
+				} catch (\Exception $e) {
+					$this->db->rollback();
+					throw $e;
+				}
 			}
 		} else {
-			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-			$ticket_edit->setPersonContext($this->person);
+			$this->db->beginTransaction();
+			try {
+				$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+				$ticket_edit->setPersonContext($this->person);
 
-			// Validate based on department...
-			$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
-			$newticket->setValuesFromTicket($ticket);
+				// Validate based on department...
+				$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
+				$newticket->setValuesFromTicket($ticket);
 
-			foreach (array('category_id', 'priority_id', 'product_id', 'workflow_id') as $f) {
-				if ($this->in->checkIsset("actions.$f")) {
-					$newticket->{$f} = $this->in->getUint("actions.$f");
-				}
-			}
-			if (isset($_REQUEST['custom_fields'])) {
-				$newticket->ticket_fields = $_REQUEST['custom_fields'];
-			}
-
-			if ($this->in->getString('actions.status') == 'resolved') {
-				$newticket->status = 'resolved';
-			} else {
-				$newticket->status = '';
-			}
-
-			$validator = new NewTicketValidator();
-			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
-			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
-			$validator->setLayout($layout);
-
-			$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
-
-			if (count($actions) == 1 && isset($actions['department_id'])) {
-				// Validation not on dep changes,
-				// because changing dep could change validation options
-				$new_department_id = $actions['department_id'];
-			} else if ($ticket->status == 'hidden' && count($actions) == 2 && isset($actions['status']) && isset($actions['hidden_status'])) {
-				// skip validation just restoring a deleted ticket, validation will apply after
-			} else {
-				if (!$validator->isValid($newticket)) {
-					$free = array();
-					foreach ($validator->getErrorsInfo() as $info) {
-						$free[] = htmlspecialchars($info['message']);
+				foreach (array('category_id', 'priority_id', 'product_id', 'workflow_id') as $f) {
+					if ($this->in->checkIsset("actions.$f")) {
+						$newticket->{$f} = $this->in->getUint("actions.$f");
 					}
-
-					return $this->createJsonResponse(array('error' => true, 'error_messages' => $free));
 				}
-			}
-
-			$result = $ticket_edit->applyActions($actions);
-
-			// If department is changed,
-			// then we re-output the holder template
-			$is_dep_changed = false;
-			$event_listener = new PropertyChangedCallback(function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
-				if ($propertyName == 'department') {
-					$is_dep_changed = true;
+				if (isset($_REQUEST['custom_fields'])) {
+					$newticket->ticket_fields = $_REQUEST['custom_fields'];
 				}
-			});
-			$ticket->addPropertyChangedListener($event_listener);
 
-			if ($this->in->getBool('with_set_agent_parts')) {
-				$set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
-				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($set_parts);
-				$ticket->setAgentParticipants($agents);
-			}
+				if ($this->in->getString('actions.status') == 'resolved') {
+					$newticket->status = 'resolved';
+				} else {
+					$newticket->status = '';
+				}
 
-			if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+				$validator = new NewTicketValidator();
+				$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+				$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
+				$validator->setLayout($layout);
 
-				if (!empty($_POST['custom_fields'])) {
-					$post_custom_fields = $this->request->request->get('custom_fields', array());
-					if (!empty($post_custom_fields)) {
-						$field_manager->saveFormToObject($post_custom_fields, $ticket);
-						$this->em->persist($ticket);
+				$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
+
+				if (count($actions) == 1 && isset($actions['department_id'])) {
+					// Validation not on dep changes,
+					// because changing dep could change validation options
+					$new_department_id = $actions['department_id'];
+				} else if ($ticket->status == 'hidden' && count($actions) == 2 && isset($actions['status']) && isset($actions['hidden_status'])) {
+					// skip validation just restoring a deleted ticket, validation will apply after
+				} else {
+					if (!$validator->isValid($newticket)) {
+						$free = array();
+						foreach ($validator->getErrorsInfo() as $info) {
+							$free[] = htmlspecialchars($info['message']);
+						}
+
+						return $this->createJsonResponse(array('error' => true, 'error_messages' => $free));
 					}
-
-					$this->em->flush();
 				}
-			}
 
-			$tm->saveTicket($ticket, $context);
+				$result = $ticket_edit->applyActions($actions);
+
+				// If department is changed,
+				// then we re-output the holder template
+				$is_dep_changed = false;
+				$event_listener = new PropertyChangedCallback(function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
+					if ($propertyName == 'department') {
+						$is_dep_changed = true;
+					}
+				});
+				$ticket->addPropertyChangedListener($event_listener);
+
+				if ($this->in->getBool('with_set_agent_parts')) {
+					$set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
+					$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($set_parts);
+					$ticket->setAgentParticipants($agents);
+				}
+
+				if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+
+					if (!empty($_POST['custom_fields'])) {
+						$post_custom_fields = $this->request->request->get('custom_fields', array());
+						if (!empty($post_custom_fields)) {
+							$field_manager->saveFormToObject($post_custom_fields, $ticket);
+							$this->em->persist($ticket);
+						}
+
+						$this->em->flush();
+					}
+				}
+
+				$tm->saveTicket($ticket, $context);
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
 		}
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
