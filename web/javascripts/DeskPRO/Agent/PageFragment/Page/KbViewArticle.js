@@ -744,7 +744,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				var wheel = function(e) {
 					e = e || iframeWindow.event;
 					var scroller = iframe.closest('.with-scrollbar').get(0), proxyE;
-					if (scroller.dispatchEvent) {
+					if (scroller && scroller.dispatchEvent) {
 						try {
 							proxyE = document.createEvent('MouseWheelEvent');
 							proxyE.initMouseWheelEvent(

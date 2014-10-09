@@ -510,6 +510,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	isTabVisible: function(tab) {
 		var $el = $(tab.tabBtnId);
+		if (!$el || !$el[0]) return;
 		var left = $el.position().left;
 
 		// Attempt to ignore margin and border. Lets hope they're the same on both sides.
