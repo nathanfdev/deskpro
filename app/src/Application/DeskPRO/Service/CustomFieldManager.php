@@ -136,7 +136,7 @@ class CustomFieldManager
 		// build types and bind values
 		$builder = $this->ff->createNamedBuilder('custom_fields', 'form');
 
-		foreach ($this->repDefinition->getAllDefinitionsForOwner($owner, $context, $layout) as $def) {
+		foreach ($this->getDefinitions($owner, $context, $layout) as $def) {
 			/** @var $def CustomFieldDefinition */
 			$type = $def->createType();
 			$data = isset($datas[$def['id']]) ? $datas[$def['id']] : null;
@@ -217,5 +217,16 @@ class CustomFieldManager
 		}
 
 		return $builder->getForm();
+	}
+
+	/**
+	 * @param DomainObject $owner
+	 * @param DomainObject $context
+	 * @param Layout $layout
+	 * @return array
+	 */
+	public function getDefinitions(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
+	{
+		return $this->repDefinition->getAllDefinitionsForOwner($owner, $context, $layout);
 	}
 }

@@ -49,12 +49,6 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
 			->add('is_enabled', 'checkbox', array(
 				'required' => true,
 			))
-			->add('is_user_enabled', 'checkbox', array(
-				'required' => true,
-			))
-			->add('is_agent_field', 'checkbox', array(
-				'required' => true,
-			))
 
 			->add($builder->create('options', 'form')
 				->add('required', 'checkbox')

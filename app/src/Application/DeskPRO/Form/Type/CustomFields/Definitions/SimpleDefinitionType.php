@@ -93,8 +93,8 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 		}
 
 		$data = array_intersect_key($data, $event->getForm()->all());
-		$data['id'] = (int)$data['id'];
-		if ($data['id'] < 1) {
+
+		if (isset($data['id']) && (int) $data['id'] < 1) {
 			$data['id'] = null;
 		}
 		$event->setData($data);

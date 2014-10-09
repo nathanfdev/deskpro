@@ -304,8 +304,8 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 		$metadata->mapField(array( 'fieldName' => 'is_user_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_user_enabled', ));
 		$metadata->mapField(array( 'fieldName' => 'is_agent_field', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_agent_field', ));
 
-		$metadata->mapField(array( 'fieldName' => 'form_type', 'type' => 'string', 'nullable' => true, 'columnName' => 'form_type'));
-		$metadata->mapField(array( 'fieldName' => 'owner_class', 'type' => 'string', 'nullable' => true, 'columnName' => 'owner_class'));
+		$metadata->mapField(array( 'fieldName' => 'form_type', 'type' => 'string', 'nullable' => false, 'columnName' => 'form_type'));
+		$metadata->mapField(array( 'fieldName' => 'owner_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'owner_class'));
 		$metadata->mapField(array( 'fieldName' => 'context_class', 'type' => 'string', 'nullable' => true, 'columnName' => 'context_class'));
 		$metadata->mapField(array( 'fieldName' => 'context_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'context_id'));
 

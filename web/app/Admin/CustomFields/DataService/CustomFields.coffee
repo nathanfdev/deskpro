@@ -14,13 +14,12 @@ define [
 
 
 
-		# todo: option to specify field type
+		# todo: option to specify owner and context
 		_doLoadList: ->
 			deferred = @$q.defer()
 
-			@Api.sendDataGet([
-				'/custom_fields/ContextualChoice'
-			]).then (res) -> deferred.resolve res.data.api_custom_fields || []
+			@Api.sendGet(@url(), {owner: 'ticket', context: 'person'}).then (res) ->
+				deferred.resolve res.data || []
 
 			deferred.promise
 
