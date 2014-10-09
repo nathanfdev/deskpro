@@ -79,6 +79,7 @@ class ServerReportFile
 		'errorlog-deskpro.txt'  => '_createDeskPROErrorLog',
 		'errorlog-web.txt'      => '_createWebErrorLog',
 		'errorlog-cli.txt'      => '_createCliErrorLog',
+		'upgrade-log.txt'       => '_createUpgradeLog',
 		'mysql-schema.sql'      => '_createMysqlSchema',
 		'mysql-status.txt'      => '_createMysqlStatus',
 		'mysql-vars.txt'        => '_createMysqlVariables',
@@ -308,6 +309,26 @@ class ServerReportFile
 
 		} catch(IOException $e) {
 
+			echo $e->getMessage();
+		}
+	}
+
+
+	/**
+	 * @param $file_name
+	 */
+	protected function _createUpgradeLog($file_name)
+	{
+		$file = str_repeat('#', 72) . "#\n upgrade.log\n" . str_repeat('#', 72) . "\n\n";
+
+		try {
+			$file .= $this->_readFile(dp_get_log_dir() . '/upgrade.log');
+		} catch(IOException $e) {
+			$file = '';
+		}
+		try {
+			$this->_createFile($this->tmpdir . '/' . $file_name, $file);
+		} catch(IOException $e) {
 			echo $e->getMessage();
 		}
 	}

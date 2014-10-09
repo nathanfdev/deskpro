@@ -569,8 +569,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				window.location.reload(false);
 			}
 		};
-
-
 	},
 
 	initPage: function() {
