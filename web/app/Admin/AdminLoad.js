@@ -44,6 +44,7 @@ define([
 	'Admin/Apps/Ctrl/List',
 	'Admin/Apps/Ctrl/EditInstance',
 	'Admin/Apps/Ctrl/EditCustomInstance',
+	'Admin/Apps/Ctrl/InstallProgress',
 	'Admin/Apps/Ctrl/PackageInfo',
 	'Admin/Apps/Ctrl/PackageInstall',
 	'Admin/Apps/Ctrl/Resync',
