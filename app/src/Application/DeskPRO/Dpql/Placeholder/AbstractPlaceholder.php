@@ -58,6 +58,8 @@ abstract class AbstractPlaceholder
 		'PAST_24_HOURS' => 'Past24Hours',
 		'PAST_7_DAYS' => 'Past7Days',
 		'PAST_30_DAYS' => 'Past30Days',
+		'PAST_6_MONTHS' => 'Past6Months',
+		'PAST_12_MONTHS' => 'Past12Months',
 		'THIS_MONTH' => 'ThisMonth',
 		'THIS_WEEK' => 'ThisWeek',
 		'THIS_YEAR' => 'ThisYear',
