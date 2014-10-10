@@ -31,7 +31,6 @@ use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\CustomFieldData;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\ContextualChoiceDefinitionType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionChildrenType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionType;

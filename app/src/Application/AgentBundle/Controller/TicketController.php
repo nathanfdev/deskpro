@@ -1938,6 +1938,11 @@ class TicketController extends AbstractController
 						}
 
 						$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+						if ($org = $ticket->person->organization) {
+							$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
+								$ticket, $org, $layout
+							));
+						}
 						$new_custom_fields->handleRequest($this->get('request'));
 						if ($new_custom_fields->isValid()) {
 							$new_field_manager->flush($new_custom_fields);
@@ -1955,7 +1960,13 @@ class TicketController extends AbstractController
 		}
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
 		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+		if ($org = $ticket->person->organization) {
+			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
+				$ticket, $org, $layout
+			));
+		}
 
 		$data = array('data' => array());
 		if (isset($result['new_reply'])) {

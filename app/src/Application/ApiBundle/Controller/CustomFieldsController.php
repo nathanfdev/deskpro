@@ -38,6 +38,7 @@ use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
@@ -207,6 +208,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
 		$form = $this->createForm($definition->createDefinitionType(), $definition, array(
 			'context' => new Ticket(),
+			'persister' => new CustomDataPersister(),
 		))->submit($post);
 
 		if (!$form->isValid()) {
