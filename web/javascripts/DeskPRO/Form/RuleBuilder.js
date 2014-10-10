@@ -217,6 +217,10 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 			if (typeof existing.options == 'string' || typeof existing.options == 'number' || typeOf(existing.options) != 'object') {
 				// If its just one item, then we'll just assume its the first field
 				var els = $(':input, textarea, select', new_row).filter(':not(.op, .type)').first().val(existing.options);
+
+				if (existing.options == "1") {
+					els.filter(':checkbox[value="1"]').prop('checked', true);
+				}
 			} else {
 				// Otherwise we'll assume its a k=>v array
 				Object.each(existing.options, function(val, name) {
@@ -259,6 +263,8 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 								var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"], [name$="'+this.makeArrayName(sub_name+'[]',true)+'"]', new_row).first();
 								if (el.is('select')) {
 									el.find('[value="' + subval + '"]').prop('selected', true);
+								} else if (el.is(':checkbox')) {
+									el.prop('checked', true).change();
 								} else {
 									el.val(subval).change();
 								}
