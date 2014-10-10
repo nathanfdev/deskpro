@@ -111,7 +111,7 @@ class ChoiceDataTransformer  implements DataTransformerInterface
 	{
 		$value = $value['value'];
 		if (!$value) {
-			$this->persister->remove($this->previous);
+			$this->persister->removeArray($this->previous);
 			return null;
 		}
 
