@@ -93,7 +93,7 @@ class WebHelper extends \Codeception\Module
 	public function waitForAdminLoad()
 	{
 		$this->getModule('WebDriver')->waitForJS('return (window.DP_IS_BOOTED === true && window.DP_DIGEST_RUNNING === false && window.DP_AJAX_RUNNINGCOUNT === 0);', 20);
-		$this->getModule('WebDriver')->wait(1.2);
+		$this->getModule('WebDriver')->wait(2.2);
 	}
 
 
@@ -105,7 +105,7 @@ class WebHelper extends \Codeception\Module
 		$page = "/" . ltrim($page, '/');
 		$this->getModule('WebDriver')->executeJS('window.DP_NO_DIRTYSTATE_CONFIRM = true;');
 		$this->getModule('WebDriver')->executeJS('parent.location.hash = "'. addslashes($page) . '";');
-		$this->getModule('WebDriver')->wait(1.2);
+		$this->getModule('WebDriver')->wait(2.2);
 		$this->waitForAdminLoad();
 	}
 
