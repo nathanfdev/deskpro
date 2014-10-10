@@ -1559,4 +1559,9 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1412762418'
 	),
 
+	1412937205 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/10/Build1412937205.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\deskpro/www/app/src/Application/InstallBundle/Upgrade/Build/2014/10/Build1412937205'
+	),
+
 );

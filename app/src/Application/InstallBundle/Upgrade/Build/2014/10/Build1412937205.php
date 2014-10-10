@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,54 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\ApiKeys\Form\Type;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\ApiKey;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class ApiKeyPropsType extends AbstractType
+class Build1412937205 extends AbstractBuild
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+	public function run()
 	{
-		$builder->add('note', 'text', array('required' => true));
-		$builder->add(
-			'person',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Person',
-				 'required'      => false,
-				 'multiple'      => false,
-				 'property'      => 'display_name',
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('p')->where(
-						 'p.is_agent = true AND p.is_deleted = false'
-					 );
-				 }
-			)
-		);
-		$builder->add('flags', 'choice', array(
-			'choices' => array(ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY, ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE),
-			'multiple' => true, // an array
-			'required' => false,
-		));
-	}
-
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\ApiKey',
-			)
-		);
-	}
-
-	public function getName()
-	{
-		return 'twitter_account';
+		$this->out("Set super flag on old superuser keys");
+		$this->execMutateSql("UPDATE api_keys SET flags = 'super' WHERE person_id IS NULL");
 	}
 }
