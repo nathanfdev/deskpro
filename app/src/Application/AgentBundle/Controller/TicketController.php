@@ -1937,21 +1937,12 @@ class TicketController extends AbstractController
 							$this->em->persist($ticket);
 						}
 
-<<<<<<< HEAD
-				if (!empty($_POST['custom_fields'])) {
-					$post_custom_fields = $this->request->request->get('custom_fields', array());
-					if (!empty($post_custom_fields)) {
-						$field_manager->saveFormToObject($post_custom_fields, $ticket);
-						$this->em->persist($ticket);
-
 						$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
 						$new_custom_fields->handleRequest($this->get('request'));
 						if ($new_custom_fields->isValid()) {
 							$new_field_manager->flush($new_custom_fields);
 						}
-=======
 						$this->em->flush();
->>>>>>> develop
 					}
 				}
 
