@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Util'], (Util) ->
 	class LayoutEditorField
-		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, CustomFields) ->
+		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, TicketFieldsPerPerson, TicketFieldsPerOrg) ->
 
 			@scope.ticketFieldTitleFilter = (f) =>
 				@scope.field.field_type == 'ticket_field' and (f.id+'') == (@scope.field.field_id+'')
@@ -9,19 +9,17 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			@scope.CustomFieldTitleFilter = (f) =>
 				@scope.field.field_type == 'custom_field' and (f.id+'') == (@scope.field.field_id+'')
 
-			$q.all([TicketFields.loadList(), UserFields.loadList(), CustomFields.all()]).then( (results) =>
-				tFields = results[0]
-				uFields = results[1]
-				cFields = results[2]
-
-				@scope.custom_ticket_fields = tFields;
-				@scope.custom_user_fields   = uFields;
-				@scope.custom_fields        = cFields;
+			$q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all()])
+			.then (results) =>
+				@scope.custom_ticket_fields   = results[0]
+				@scope.custom_user_fields     = results[1]
+				@scope.ticket_fields_per_person = results[2]
+				@scope.ticket_fields_per_org  = results[3]
 
 				$timeout(=>
 					@_initEvents()
 				, 1)
-			)
+
 
 		_initEvents: ->
 			if not @scope.isSticky
@@ -123,7 +121,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 		TicketFields = DataService.get('TicketFields')
 		UserFields   = DataService.get('UserFields')
-		CustomFields = DataService.get('CustomFields')
+		TicketFieldsPerPerson = DataService.get 'CustomFields', 'ticket', 'person'
+		TicketFieldsPerOrg = DataService.get 'CustomFields', 'ticket', 'organization'
 
 		directive.link = (scope, element, attrs, ngModel) ->
 			if not scope.field.options                 then scope.field.options = {}
@@ -142,7 +141,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				UserFields,
 				$q,
 				$timeout,
-				CustomFields
+				TicketFieldsPerPerson
+				TicketFieldsPerOrg
 			)
 
 		return directive

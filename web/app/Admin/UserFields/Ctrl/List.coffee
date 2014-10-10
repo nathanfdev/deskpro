@@ -4,9 +4,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 		@CTRL_AS = 'ListCtrl'
 		@DEPS    = []
 
+
+
 		init: ->
 			@fieldDataService = @DataService.get('UserFields')
-			@service = @DataService.get 'CustomFields'
 			@custom_fields = []
 			@sortedListOptions = {
 				axis: 'y',
@@ -23,7 +24,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					@pingElement('display_orders')
 			}
 
-			@entityFieldListOptions =
+			@specific_user_custom_fields = []
+			data = @$state.current.data
+			@service = @DataService.get 'CustomFields', data.owner, data.context
+			@customFieldListOptions =
 				axis: 'y',
 				handle: '.drag-handle',
 				update: (ev, data) =>
@@ -32,18 +36,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
 					$list.find('li').each -> displayOrders.push parseInt $(this).data('id')
 
-					@entityFieldDataService.saveDisplayOrder displayOrders
+					@service.saveDisplayOrder displayOrders
 					@pingElement 'display_orders'
 
 			return
 
+
+
 		initialLoad: ->
 			promise = @fieldDataService.loadList()
-			promise.then( (list) =>
-				@custom_fields = list
-			)
+			promise.then (list) => @custom_fields = list
 			@service.all().then (list) => @specific_user_custom_fields = list
 
 			return promise
+
+
 
 	Admin_UserFields_Ctrl_List.EXPORT_CTRL()

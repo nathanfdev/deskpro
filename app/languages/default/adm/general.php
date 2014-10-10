@@ -14,7 +14,6 @@
 	'adm.general.back_to_agent'                      => 'Back to the Agent Interface',
 	'adm.general.builtin_fields'                     => 'Built-In Fields',
 	'adm.general.count_custom_fields'                => '{{count}} Custom Field|{{count}} Custom Fields',
-	'adm.general.count_specific_user_fields'  => '{{count}} Specific User Custom Field|{{count}} Specific User Custom Fields',
 	'adm.general.count_labels'                       => '{{count}} Label|{{count}} Labels',
 	'adm.general.deskpro_admin_interface'            => 'DeskPRO Admin Interface',
 	'adm.general.discard_changes_continue'           => 'Discard unsaved changes and continue',

@@ -6,4 +6,6 @@
 	'adm.custom_fields.user_fields'  => 'User Fields',
 	'adm.custom_fields.specific_user_fields'  => 'Specific User Fields',
 	'adm.custom_fields.count_specific_user_fields'  => '{{count}} Specific User Custom Field|{{count}} Specific User Custom Fields',
+	'adm.custom_fields.specific_org_fields' => 'Specific Organization Fields',
+	'adm.custom_fields.count_specific_org_fields'  => '{{count}} Specific Organization Custom Field|{{count}} Specific Organization Custom Fields',
 );

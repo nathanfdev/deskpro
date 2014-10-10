@@ -49,7 +49,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 {
 	protected $allowed = array(
 		'owner' => array('ticket', 'person'),
-		'context' => array('person'),
+		'context' => array('person', 'organization'),
 	);
 
 	/**
@@ -188,18 +188,18 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 	public function saveAction($id)
 	{
 		$post = $this->in->getAll('req');
-		if ($id) {
-			$definition = $this->getDefinition($id);
-		} else {
+		if (!$id || !($definition = $this->getDefinition($id))) {
+
 			if (empty($post['form_type']) || empty($post['context_class'])) {
 				throw new NotFoundHttpException;
 			}
 			$definition = new CustomFieldDefinition();
 
-			// todo
-
-			$definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\' . $post['form_type'] . 'Type';
-			$definition['context_class'] = 'Application\DeskPRO\Entity\\' . $post['context_class'];
+			// todo quite dirty
+			$formType = Container::camelize($post['form_type']);
+			$contextClass = Container::camelize($post['context_class']);
+			$definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\' . $formType . 'Type';
+			$definition['context_class'] = 'Application\DeskPRO\Entity\\' . $contextClass;
 			$definition['owner_class'] = 'Application\DeskPRO\Entity\Ticket';
 
 			$this->em->persist($definition);
@@ -207,15 +207,15 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
 		$form = $this->createForm($definition->createDefinitionType(), $definition, array(
 			'context' => new Ticket(),
-		));
-		$post = array_intersect_key($post, $form->all());
-		$form->submit($post);
+		))->submit($post);
 
-		if ($form->isValid()) {
-			$this->em->flush();
+		if (!$form->isValid()) {
+			return $this->createApiErrorInfoResponse('form_error', 'Validation error', array());
 		}
 
-		return $this->getCustomFieldAction($definition['id']);
+		$this->em->flush();
+
+		return $this->getAction($definition['id']);
 	}
 
 	####################################################################################################################

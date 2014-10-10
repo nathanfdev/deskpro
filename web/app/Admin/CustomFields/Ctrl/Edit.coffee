@@ -1,7 +1,9 @@
 define [
 	'Admin/Main/Ctrl/Base'
+	'angular'
 ], (
 	Admin_Ctrl_Base
+	angular
 ) ->
 	class Admin_CustomFields_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_CustomFields_Ctrl_Edit'
@@ -11,12 +13,17 @@ define [
 
 
 		init: ->
+			data = @$state.current.data
+			@service = @DataService.get 'CustomFields', data.owner, data.context
+
+			@$scope.definition =
+				form_type: 'contextual_choice'
+				context_class: data.context
+
 			@options =
 				expanded: 1
 				multiple: 2
 
-			@service = @DataService.get 'CustomFields'
-			@$scope.definition = {}
 			@$scope.options =
 				choices: 0
 
@@ -29,23 +36,22 @@ define [
 
 
 		initialLoad: ->
-			if @$stateParams.id
-				@service.get(parseInt(@$stateParams.id)).then (model) =>
-					return if !model?
-					if '[object Array]' == Object.prototype.toString.call( model.options ) then model.options = {}
-					@$scope.definition = model
-					multiple = if @$scope.definition.options.multiple then @options.multiple else 0
-					expanded = if @$scope.definition.options.expanded then @options.expanded else 0
-					@$scope.options.choices = @$scope.options.choices | multiple | expanded
+			return if !@$stateParams.id
+
+			@service.get(parseInt(@$stateParams.id)).then (model) =>
+				return if !model?
+
+				if '[object Array]' == Object.prototype.toString.call( model.options ) then model.options = {}
+				@$scope.definition = angular.copy model
+
+				multiple = if @$scope.definition.options.multiple then @options.multiple else 0
+				expanded = if @$scope.definition.options.expanded then @options.expanded else 0
+				@$scope.options.choices = @$scope.options.choices | multiple | expanded
 
 
 
 		saveForm: ->
 			is_new = !@$scope.definition.id
-
-			# todo
-			if !@$scope.definition.form_type then @$scope.definition.form_type = 'ContextualChoice'
-			if !@$scope.definition.context_class then @$scope.definition.context_class = 'Person'
 
 			promise = @service.set @$scope.definition
 			@startSpinner('saving')

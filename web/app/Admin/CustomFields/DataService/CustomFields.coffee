@@ -8,17 +8,20 @@ define [
 
 
 
-		# todo: option to specify field type
+		init: (owner, context) ->
+			@_params = {owner: owner || null, context: context || null}
+
+
+
 		url: ->
 			'/custom_fields'
 
 
 
-		# todo: option to specify owner and context
 		_doLoadList: ->
 			deferred = @$q.defer()
 
-			@Api.sendGet(@url(), {owner: 'ticket', context: 'person'}).then (res) ->
+			@Api.sendGet(@url(), @_params).then (res) ->
 				deferred.resolve res.data || []
 
 			deferred.promise
@@ -33,3 +36,4 @@ define [
 		###
 		saveDisplayOrder: (display_orders) ->
 			@Api.sendPostJson('/custom_fields/display-order', {display_orders: display_orders})
+
