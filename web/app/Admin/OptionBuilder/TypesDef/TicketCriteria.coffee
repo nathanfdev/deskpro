@@ -954,7 +954,7 @@ define [
 
 		getCheckOrgId: (options = {}) ->
 			options.propName = 'id'
-			options.operators = ['is', 'not']
+			options.operators = ['is', 'not', 'isset', 'not_isset']
 			options.url = '/organizations/quick_search'
 			format = (item) -> item['name']
 			options.inputOptions =

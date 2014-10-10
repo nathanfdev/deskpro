@@ -3701,6 +3701,11 @@ ul.pane-tabs {
 	padding: 0;
 	width: 125px;
 	font-family: Helvetica,Arial,sans-serif;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 
 	&.add-btn {
 		position: relative;
@@ -3831,6 +3836,25 @@ ul.pane-tabs {
 		-webkit-box-shadow:  0px -1px 3px 0px rgba(0, 0, 0, 0.2);
 		box-shadow:  0px -1px 3px 0px rgba(0, 0, 0, 0.2);
 	}
+}
+#tabContextMenu li {
+	font-size: 12px;
+
+	a:hover {
+		color: #fff;
+		background-color: #2273af;
+	}
+}
+#tabContextMenu li.divider {
+	border-top: 1px solid #ccc;
+	padding-bottom: 1px;
+	margin: 4px 0;
+}
+
+#tabContextMenu li a {
+	max-width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .deskproTabList li.activeTabList, .deskproTabList li.activeTabList:hover {
@@ -4941,5 +4965,26 @@ em.downarrow {
 		font-size: 11px;
 		text-align: left;
 		padding: 4px;
+	}
+
+	.search-order {
+		background: #eeeeee;
+		padding: 3px;
+		font-size: 11px;
+		line-height: 100%;
+
+		.opt {
+			display: inline-block;
+			margin-right: 5px;
+			background: #fff;
+			padding: 2px 4px;
+			cursor: pointer;
+			border: 1px solid #bbb;
+			border-radius: 2px;
+
+			&.on {
+				border: 1px solid #00B4FF;
+			}
+		}
 	}
 }

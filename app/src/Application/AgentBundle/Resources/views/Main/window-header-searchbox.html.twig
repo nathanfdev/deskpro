@@ -1,4 +1,4 @@
-<div class="dp-omnibox" ng-class="{'is-active': isActive}" dp-omnibox>
+<div class="dp-omnibox" ng-class="{'is-active': isActive}" dp-omnibox id="dp_omnibox">
 	<div class="input-area">
 		<i class="search-icon fa fa-search"></i>
 		<div class="input-wrap">
@@ -13,7 +13,7 @@
 			</ul>
 		</div>
 	</div>
-	<div class="dp-omnibox-results" style="display: none;">
+	<div class="dp-omnibox-results" style="display: none;" id="dp_omnibox_results">
 		<div ng-show="isMainLoading" style="text-align: center; padding: 15px;">
 			<i class="spinner-circle-32"></i>
 		</div>
@@ -21,6 +21,12 @@
 			<div ng-if="index_running" class="result-is-indexing">
 				<i class="fa fa-exclamation-circle"></i>
 				Search results may be incomplete because items are still being indexed.
+			</div>
+			<div ng-if="is_elastic && resultGroups && resultGroups.length" class="search-order">
+				<span class="label">Sort by:</span>
+				<span class="opt" ng-class="{'on': elasticOrder == 'score'}" ng-click="setOrder('score')">Best Match</span>
+				<span class="opt" ng-class="{'on': elasticOrder == 'date_active'}" ng-click="setOrder('date_active')">Last Activity</span>
+				<span class="opt" ng-class="{'on': elasticOrder == 'date_created'}" ng-click="setOrder('date_created')">Date Created</span>
 			</div>
 			<section ng-repeat="group in resultGroups" class="result-group">
 				<header>{{ ng_var('group.title') }}</header>

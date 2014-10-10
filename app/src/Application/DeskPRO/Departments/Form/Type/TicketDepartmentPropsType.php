@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -56,9 +56,9 @@ class TicketDepartmentPropsType extends AbstractType
 				return $er->createQueryBuilder('d')->where('d.is_tickets_enabled = true AND d.parent IS NULL')->orderBy('d.display_order', 'ASC');
 			}
 		));
-		$builder->add('avatar', 'entity', array(
-			'required'      => false,
-			'class'         => 'DeskPRO:Blob',
+		$builder->add('avatar', 'text', array(
+			'required' => false,
+			'mapped'   => false
 		));
 	}
 

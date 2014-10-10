@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\Form\Type;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Doctrine\ORM\EntityRepository;
@@ -78,8 +79,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
 				'required'      => false,
 				'property'      => 'name',
 			))
-		->add('ticket', 'entity', array(
-				'class'         => 'DeskPRO:Ticket',
+		->add('ticket', 'text', array(
 				'required'      => false,
 				'mapped'        => false,
 			))
@@ -118,12 +118,15 @@ class TaskType extends AbstractType implements EventSubscriberInterface
 	 */
 	public function onPostSubmit(FormEvent $event)
 	{
-		if ($ticket = $event->getForm()->get('ticket')->getData()) {
-			$assoc = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
-			$task = $event->getForm()->getData();
-			$assoc->ticket = $ticket;
-			$assoc->task   = $task;
-			$task->task_associations->add($assoc);
+		if ($ticket_id = $event->getForm()->get('ticket')->getData()) {
+			$ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($ticket_id);
+			if ($ticket_id) {
+				$assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
+				$task          = $event->getForm()->getData();
+				$assoc->ticket = $ticket;
+				$assoc->task   = $task;
+				$task->task_associations->add($assoc);
+			}
 		}
 
 		// hardcoded date override

@@ -1,0 +1,33 @@
+<div class="modal-dialog dp-codeeditor-modal">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h4 class="modal-title">Installing: {{ ng_var('pack.title') }}</h4>
+		</div>
+		<div class="modal-body">
+			<ul class="list-group" ng-hide="stepsDone">
+				<li class="list-group-item" ng-class="{'active': stepId == 0, 'disabled': stepId < 0}">1. Initializing Installer</li>
+				<li class="list-group-item" ng-class="{'active': stepId == 1, 'disabled': stepId < 1}">2. Copying files</li>
+				<li class="list-group-item" ng-class="{'active': stepId == 2, 'disabled': stepId < 2}">3. Verifying files</li>
+				<li class="list-group-item" ng-class="{'active': stepId == 3, 'disabled': stepId < 3}">4. Installing application</li>
+				<li class="list-group-item" ng-class="{'active': stepId == 4, 'disabled': stepId < 4}">5. Configuring application</li>
+				<li class="list-group-item" ng-class="{'active': stepId == 5, 'disabled': stepId < 5}">6. Done</li>
+			</ul>
+			<div ng-show="stepsDone">
+				<div style="text-align: center; color: #50a24f;">
+					<i class="fa fa-check-circle fa-6" style="font-size: 18em;"></i>
+				</div>
+				<div style="text-align: center; font-size: 16pt; margin: 10px 0;">
+					{{ ng_var('pack.title') }} has been installed successfully.
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="progress" style="margin: 0; height: 30px;" ng-hide="stepsDone">
+				<div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" ng-style="{'width': perc+'%'}" style="line-height: 30px;"></div>
+			</div>
+			<div ng-show="stepsDone">
+				<button class="btn btn-success" type="button" ng-click="done()">Continue &rarr;</button>
+			</div>
+		</div>
+	</div>
+</div>

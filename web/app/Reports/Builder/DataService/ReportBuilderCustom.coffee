@@ -113,7 +113,10 @@ define [
 					model.id = data.id
 				)
 
-			promise.success(=>
+			promise.success( (data) =>
+				if data.error
+					return
+
 				mapper.applyFormToModel(model, formModel)
 				@mergeDataModel(model)
 			)

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -420,7 +420,7 @@ class Runner
 		$this->logger->logInfo("Retrying is " . ($allow_retry ? "on" : "off"));
 		if ($allow_retry && $source->exec_count >= $this->max_retry_attempts) {
 			$allow_retry = false;
-			$this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempt}");
+			$this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempts}");
 		}
 
 		$this->logger->logDebug("Running processors");
@@ -442,7 +442,7 @@ class Runner
 			if (!$is_in_trans && App::getDb()->isTransactionActive()) {
 				$this->logger->log("WARNING: Unclosed transaction!", 'info');
 				$e = new \RuntimeException("WARNING: Unclosed transaction");
-				KernelErrorHandler::logException($e);
+				KernelErrorHandler::logException($e, false, 'unclosed_trans_gateway');
 				while (App::getDb()->isTransactionActive()) {
 					App::getDb()->commit();
 				}

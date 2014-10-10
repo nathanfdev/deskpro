@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -55,6 +55,21 @@ class TicketTriggerData implements DataInterface
 
 		$data = App::getDb()->fetchAll("SELECT * FROM slas ORDER BY id ASC");
 		$ret['slas'] = $data;
+
+		$data = App::getDb()->fetchAll("SELECT * FROM ticket_escalations ORDER BY id ASC");
+		foreach ($data as &$d) {
+			if (!empty($d['terms'])) {
+				$d['terms'] = @json_decode($d['terms'], true);
+			}
+			if (!empty($d['terms_any'])) {
+				$d['terms_any'] = @json_decode($d['terms_any'], true);
+			}
+			if (!empty($d['actions'])) {
+				$d['actions'] = @json_decode($d['actions'], true);
+			}
+		}
+		unset($d);
+		$ret['escalations'] = $data;
 
 		return $ret;
 	}

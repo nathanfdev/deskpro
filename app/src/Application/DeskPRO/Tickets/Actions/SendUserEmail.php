@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -112,9 +112,25 @@ class SendUserEmail extends AbstractEmailAction
 			$context->getLogger()->info("[SendUserEmail] Identified as an automatic email");
 			$build->setIsAuto();
 
+			if ($context->getVars()->has('ticket_email')) {
+				/** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticket_email */
+				$ticket_email = $context->getVars()->get('ticket_email');
+				if ($ticket_email->is_bounce) {
+					$context->getLogger()->info("Skipping email because is_bounce = true");
+					return;
+				}
+			}
+
 			if ($ticket->person->disable_autoresponses) {
 				$context->getLogger()->info("Skipping email because user is marked as an auto-responder");
 				return;
+			}
+
+			foreach($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
+				if ($m->person->disable_autoresponses) {
+					$context->getLogger()->info(sprintf("Skipping email because user #%d %s on message #%d is an auto-responder", $m->person->id, $m->person->getDisplayContact(), $m->id));
+					return;
+				}
 			}
 		}
 

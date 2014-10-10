@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -719,11 +719,13 @@ class Ticket extends AbstractEntityRepository
 
 		if ($for_validation) {
 			return $this->getEntityManager()->getConnection()->fetchAllCol("
-				SELECT id
+				SELECT tickets.id
 				FROM tickets
-				WHERE (person_email_id = ? OR person_email_id IS null) AND status = 'hidden' AND hidden_status = 'validating'
-				ORDER BY id DESC
-			", array($email));
+				LEFT JOIN people ON (people.id = tickets.person_id)
+				LEFT JOIN people_emails ON (people_emails.id = people.primary_email_id)
+				WHERE (person_email_id = ? OR (person_email_id IS null AND people_emails.id = ?)) AND status = 'hidden' AND hidden_status = 'validating'
+				ORDER BY tickets.id DESC
+			", array($email, $email));
 		} else {
 			return $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id

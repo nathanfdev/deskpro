@@ -1534,9 +1534,33 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1411643955'
 	),
 
+	1412006005 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1412006005.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1412006005'
+	),
+
+	1412071356 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1412071356.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1412071356'
+	),
+
+	1412090212 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/09/Build1412090212.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1412090212'
+	),
+
+	1412679944 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/10/Build1412679944.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1412679944'
+	),
+
+	1412762418 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/10/Build1412762418.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1412762418'
+	),
+
 	1412908313 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/10/Build1412908313.php',
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Users/n3b/projects/deskpro/app/src/Application/InstallBundle/Upgrade/Build/2014/10/Build1412908313'
 	),
-
 );

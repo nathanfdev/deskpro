@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -50,11 +50,13 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\ORM\StateChange\ChangeObject;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
+use Application\DeskPRO\People\PersonGuest;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
 use Application\DeskPRO\Monolog\Logger as DPLogger;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 /**
  * This listener logs entity changes
@@ -172,7 +174,14 @@ class EntityChangeTrackingListener implements EventSubscriber
 			$parentEntry = null;
 			if (!$entity['id']) {
 				$event = new EntityCreated($entity);
-				$parentEntry = new LogEvent($event, $this->getContextPerson()); // group changes for new Person
+
+				// if its a new person, then the actor will be the new person (user creates itself)
+				$person_context = $this->getContextPerson();
+				if (!$person_context || $person_context->id === 0) {
+					$person_context = $entity;
+				}
+
+				$parentEntry = new LogEvent($event, $person_context); // group changes for new Person
 				$this->queue->enqueue($parentEntry);
 			}
 
@@ -252,24 +261,36 @@ class EntityChangeTrackingListener implements EventSubscriber
 	 */
 	protected function getContextPerson()
 	{
-		$c = $this->container;
+		$person = $this->tryToGetPersonFromContext();
 
+		// don't even return a PersonGuest
+		if (!$person || $person instanceof PersonGuest) {
+			return null;
+		}
+
+		return $person;
+	}
+
+	protected function tryToGetPersonFromContext()
+	{
+		$c = $this->container;
 		/** @var RequestAuth $auth */
-		if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
-			if ($apiUser = $auth->getApiUser()) {
-				if ($apiUser->person) {
-					return $apiUser->person;
+		try {
+			if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
+				if ($apiUser = $auth->getApiUser()) {
+					if ($apiUser->person) {
+						return $apiUser->person;
+					}
 				}
 			}
-		}
 
-		if ($c->has('session') && ($sess = $c->get('session'))) {
-			/** @var $sess Session */
-			if ($person = $sess->getPerson()) {
-				return $person;
+			if ($c->has('session') && ($sess = $c->get('session'))) {
+				/** @var $sess Session */
+				if ($person = $sess->getPerson()) {
+					return $person;
+				}
 			}
+		} catch (InactiveScopeException $e) {
 		}
-
-		return null;
 	}
 }

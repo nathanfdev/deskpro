@@ -1648,10 +1648,10 @@
                 }
                 by_agent_id = by_agent_id + "";
                 return {
+                  type: 'AddAgentReply',
                   text: opt.reply_text || '',
                   by_assigned_agent: opt.by_assigned_agent || false,
-                  by_agent_id: by_agent_id,
-                  title: 'Reply Text'
+                  by_agent_id: by_agent_id
                 };
               },
               getValue: function(model, data) {
@@ -1699,10 +1699,10 @@
                 }
                 by_agent_id = by_agent_id + "";
                 return {
+                  type: 'AddAgentNote',
                   text: opt.note_text || '',
                   by_assigned_agent: opt.by_assigned_agent || false,
-                  by_agent_id: by_agent_id,
-                  title: 'Note Text'
+                  by_agent_id: by_agent_id
                 };
               },
               getValue: function(model, data) {

@@ -99,6 +99,17 @@ define ->
 
 
 		###
+    	# Checks if a string is blank (empty after trimming leading and trailing whitespace)
+    	#
+    	# @param {String} string
+    	# @return {Boolean}
+    	###
+		isBlank: (string) ->
+			return true if string == ""
+			return @trim(string) == ""
+
+
+		###
     	# Given a string with words separated by dashes, underscores or spaces, convert it into
     	# camel case. For example "my-string" and "my_string" becomes myString
     	#

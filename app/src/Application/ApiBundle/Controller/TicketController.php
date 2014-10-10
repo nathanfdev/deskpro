@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket as Ticket;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * @SWG\Resource(
@@ -308,8 +309,6 @@ class TicketController extends AbstractController
 
 		$message_blobs = $this->_readTicketMessageAttachments();
 
-		$this->db->beginTransaction();
-
 		// make this check as late as possible to reduce race conditions
 		if ($this->in->checkIsset('person_id')) {
 			$person = $this->em->getRepository('DeskPRO:Person')->findOneById($this->in->getInt('person_id'));
@@ -367,12 +366,6 @@ class TicketController extends AbstractController
 
 		$this->em->persist($ticket);
 
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
-		$post_custom_fields = $this->getCustomFieldInput();
-		if (!empty($post_custom_fields)) {
-			$field_manager->saveFormToObject($post_custom_fields, $ticket);
-		}
-
 		$message = new \Application\DeskPRO\Entity\TicketMessage();
 		$message->person = ($this->in->getBool('message_as_agent') ? $this->person : $person);
 		$message->creation_system = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
@@ -397,6 +390,8 @@ class TicketController extends AbstractController
 		// need to ensure we treat things as the message owner
 		App::setCurrentPerson($message->person);
 
+		$this->db->beginTransaction();
+
 		try {
 			if ($org && !$org->id) {
 				$this->em->persist($org);
@@ -410,12 +405,18 @@ class TicketController extends AbstractController
 			$this->em->persist($ticket);
 			$this->em->persist($message);
 
-			$labels = $this->in->getCleanValue('label', 'string', 'discard');
+			$labels = $this->in->getCleanValueArray('label', 'string', 'discard');
 			$ticket->getLabelManager()->setLabelsArray($labels);
 
 			App::setCurrentPerson($this->person);
 
 			$this->em->flush();
+
+			$field_manager = $this->container->getSystemService('ticket_fields_manager');
+			$post_custom_fields = $this->getCustomFieldInput();
+			if (!empty($post_custom_fields)) {
+				$field_manager->saveFormToObject($post_custom_fields, $ticket);
+			}
 
 			if ($this->in->getBool('message_as_agent')) {
 				$context = $ticket_manager->createAgentExecutorContext($this->person, 'newticket', 'api');
@@ -429,6 +430,14 @@ class TicketController extends AbstractController
 		} catch (\Exception $e) {
 			$this->db->rollback();
 			throw $e;
+		}
+
+		if (App::getDb()->isTransactionActive()) {
+			$e = new \RuntimeException("WARNING: Unclosed transaction");
+			KernelErrorHandler::logException($e, false, 'unclosed_trans_api');
+			while (App::getDb()->isTransactionActive()) {
+				App::getDb()->commit();
+			}
 		}
 
 		return $this->createApiCreateResponse(

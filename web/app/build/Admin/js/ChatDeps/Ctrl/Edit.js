@@ -93,7 +93,11 @@
           return;
         }
         this.startSpinner('saving_dep');
-        this.form.avatar = ((_ref = this.dep.avatar) != null ? _ref.id : void 0) || null;
+        if (this.form.enable_avatar) {
+          this.form.avatar = ((_ref = this.dep.avatar) != null ? _ref.id : void 0) || null;
+        } else {
+          this.form.avatar = null;
+        }
         promise = this.depData.saveFormModel(this.dep, this.form);
         promise.success((function(_this) {
           return function() {
@@ -161,9 +165,11 @@
       Admin_ChatDeps_Ctrl_Edit.prototype.setAvatar = function(blob) {
         this.dep.avatar = blob;
         if (blob == null) {
-          return this.$scope.icon_image = "/web/app/vendor-src/icons/webdev-seo/png/career.png";
+          this.$scope.icon_image = null;
+          return this.form.enable_avatar = false;
         } else {
-          return this.$scope.icon_image = blob.thumbnail_url_50;
+          this.$scope.icon_image = blob.thumbnail_url_50;
+          return this.form.enable_avatar = true;
         }
       };
 

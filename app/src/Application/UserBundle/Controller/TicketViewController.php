@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -196,6 +196,11 @@ class TicketViewController extends AbstractController
 			return $this->renderStandardError(null, null, 403);
 		}
 
+		$can_edit = $ticket->person === $this->person;
+		if (!$can_edit && ($this->in->getBool('edit') || $this->in->getBool('process'))) {
+			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket->getPublicId()));
+		}
+
 		$ticket_display = new TicketDisplay($ticket, $this->person);
 		$vars = $ticket_display->getDisplayArray();
 
@@ -345,6 +350,8 @@ class TicketViewController extends AbstractController
 
 			$tpl = 'UserBundle:TicketView:view-modify.html.twig';
 		}
+
+		$vars['can_edit'] = $can_edit;
 
 		return $this->render($tpl, $vars);
 	}

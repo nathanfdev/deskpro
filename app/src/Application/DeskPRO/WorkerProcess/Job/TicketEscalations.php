@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -41,6 +41,7 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Escalations\EscalationExecutor;
 use Application\DeskPRO\Tickets\Escalations\EscalationsRunner;
 use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcher;
+use Application\DeskPRO\Tickets\Escalations\EscalationTicketMatcherTest;
 
 /**
  * Executes escalations
@@ -54,17 +55,6 @@ class TicketEscalations extends AbstractJob
 
 	public function run()
 	{
-		$escalations = App::$container->getEm()->createQuery("
-			SELECT e
-			FROM DeskPRO:TicketEscalation e
-			WHERE e.is_enabled = true
-			ORDER BY e.date_last_run ASC
-		")->execute();
-
-		if (!count($escalations)) {
-			return;
-		}
-
 		$batch_size = 100;
 		$time_limit = 200;
 
@@ -72,7 +62,49 @@ class TicketEscalations extends AbstractJob
 		$logger = new Logger('TicketTriggers');
 		$logger->pushHandler($orb_adapter);
 
-		$matcher  = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
+		if ($this->options->has('testEscalation')) {
+			$find_id = $this->options->get('testEscalation');
+			$escalations = App::$container->getEm()->getRepository('DeskPRO:TicketEscalation')->getByIds(array($find_id));
+			if (!count($escalations)) {
+				$logger->warn("testEscalation: Escalation #$find_id does not exist");
+				return;
+			} else {
+				$logger->info("testEscalation: Only running escalation #$find_id");
+			}
+		} else {
+			$escalations = App::$container->getEm()->createQuery("
+				SELECT e
+				FROM DeskPRO:TicketEscalation e
+				WHERE e.is_enabled = true
+				ORDER BY e.date_last_run ASC
+			")->execute();
+
+			if (!count($escalations)) {
+				return;
+			}
+		}
+
+		if ($this->options->has('testTickets')) {
+			$ticket_ids = $this->options->get('testTickets');
+			if (!is_array($ticket_ids)) {
+				$ticket_ids = explode(',', $ticket_ids);
+			}
+
+			$tickets = App::$container->getEm()->getRepository('DeskPRO:Ticket')->getByIds($ticket_ids);
+
+			if (!count($tickets)) {
+				$logger->warn("testTickets: No tickets found: " . implode(',', $ticket_ids));
+				return;
+			} else {
+				$logger->info("testTickets: Found tickets: " . implode(',', $ticket_ids));
+			}
+
+			$matcher = new EscalationTicketMatcherTest(App::$container->getEm(), App::$container->getDb());
+			$matcher->setTickets($tickets);
+		} else {
+			$matcher = new EscalationTicketMatcher(App::$container->getEm(), App::$container->getDb());
+		}
+
 		$matcher->setLogger($logger);
 
 		$executor = new EscalationExecutor(App::$container->getDb(), App::$container->getTicketManager(), new ActionApplicator(App::$container));

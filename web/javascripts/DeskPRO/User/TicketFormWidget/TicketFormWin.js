@@ -16,7 +16,7 @@ DeskPRO.User.WebsiteWidget.TicketFormWin = new Orb.Class({
 			hasPostMessage: window.postMessage && (!isIE || ieVer > 8),
 			cacheBust: 0,
 			send: function(message, targetUrl, target) {
-				if (!targetUrl) {
+				if (!targetUrl || !target) {
 					return;
 				}
 				if (this.hasPostMessage) {

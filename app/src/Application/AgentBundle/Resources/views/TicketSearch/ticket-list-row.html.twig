@@ -179,7 +179,7 @@
 						<span class="prop-val">
 							<% if (ticket_display.labels) { %>
 								<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
-									<span class="listing-tag" dp-label="<%- ticket_display.labels[labelIdx] %>"><%- ticket_display.labels[labelIdx] %></span>
+									<span class="listing-tag" dp-label dp-label-string="<%- ticket_display.labels[labelIdx] %>" dp-label-type="tickets"><%- ticket_display.labels[labelIdx] %></span>
 								<% } %>
 							<% } %>
 						</span>

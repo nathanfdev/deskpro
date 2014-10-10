@@ -45,7 +45,7 @@ class ElasticsearchTest extends \DpUnitTestCase
         $results = $manager->quickSearch('test');
 
         foreach (array('article', 'download', 'feedback', 'news', 'ticket', 'person', 'organization') as $object) {
-            $this->assertEmpty($results[0][$object]);
+            $this->assertEmpty(@$results[0][$object]);
         }
 
         $this->assertEmpty($results[1]);

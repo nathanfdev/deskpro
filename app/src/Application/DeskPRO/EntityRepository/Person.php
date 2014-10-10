@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -600,7 +600,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE $agent_sql
 					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
 					ORDER BY p.id DESC
@@ -610,7 +610,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE
 						$agent_sql
 						LOWER(e.email) LIKE ?
@@ -625,7 +625,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE $agent_sql
 					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
 					ORDER BY p.name ASC
@@ -635,7 +635,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE
 						$agent_sql
 						(LOWER(e.email) LIKE ?

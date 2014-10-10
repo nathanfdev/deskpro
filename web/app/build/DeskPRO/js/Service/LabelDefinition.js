@@ -25,7 +25,6 @@
           downloads: {},
           chat: {}
         };
-        this.colors = {};
         loadDefinitions = (function(_this) {
           return function() {
             var d;
@@ -44,34 +43,10 @@
                 label = def.label.toLowerCase();
                 _this.definitions[def.label_type] = _this.definitions[def.label_type] || {};
                 _this.definitions[def.label_type][label] = angular.copy(def);
-                _this.colors[label] = def.color;
               }
               return d.resolve(_this.definitions);
             });
             return loadPromise = d.promise;
-          };
-        })(this);
-        updateColorForLabel = (function(_this) {
-          return function(color, label) {
-            var label_type, _label, _results;
-            label = label.toLowerCase();
-            _results = [];
-            for (label_type in _this.definitions) {
-              _results.push((function() {
-                var _results1;
-                _results1 = [];
-                for (_label in this.definitions[label_type]) {
-                  if (_label === label) {
-                    this.definitions[label_type][_label].color = color;
-                    _results1.push(this.colors[label] = color);
-                  } else {
-                    _results1.push(void 0);
-                  }
-                }
-                return _results1;
-              }).call(_this));
-            }
-            return _results;
           };
         })(this);
       }
@@ -93,8 +68,13 @@
         label = (label || '').toLowerCase();
         loadDefinitions().then((function(_this) {
           return function() {
-            var _ref;
-            return d.resolve((_ref = _this.definitions[label_type]) != null ? _ref[label] : void 0);
+            var val;
+            if (_this.definitions[label_type]) {
+              val = _this.definitions[label_type][label];
+            } else {
+              val = null;
+            }
+            return d.resolve(val);
           };
         })(this));
         return d.promise;
@@ -108,11 +88,9 @@
         label = _new.label.toLowerCase();
         if (_old) {
           delete this.definitions[_old.label_type][_old.label.toLowerCase()];
-          delete this.colors[_old.label.toLowerCase()];
         }
         this.definitions[_new.label_type] = this.definitions[_new.label_type] || {};
-        this.definitions[_new.label_type][label] = _new;
-        return updateColorForLabel(_new.color, label);
+        return this.definitions[_new.label_type][label] = _new;
       };
 
       DeskPRO_Service_LabelDefinition.prototype.remove = function(def) {
@@ -121,22 +99,8 @@
           return;
         }
         if (((_ref = this.definitions[def.label_type]) != null ? _ref[def.label.toLowerCase()] : void 0) != null) {
-          delete this.definitions[def.label_type][def.label.toLowerCase()];
-          delete this.colors[def.label.toLowerCase()];
+          return delete this.definitions[def.label_type][def.label.toLowerCase()];
         }
-        return updateColorForLabel(def.color, def.label);
-      };
-
-      DeskPRO_Service_LabelDefinition.prototype.getColor = function(label) {
-        var d;
-        d = this.$q.defer();
-        label = (label || '').toLowerCase();
-        loadDefinitions().then((function(_this) {
-          return function() {
-            return d.resolve(_this.colors[label] || '');
-          };
-        })(this));
-        return d.promise;
       };
 
       return DeskPRO_Service_LabelDefinition;

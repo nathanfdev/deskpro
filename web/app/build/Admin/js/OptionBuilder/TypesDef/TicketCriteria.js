@@ -1222,7 +1222,7 @@
           options = {};
         }
         options.propName = 'id';
-        options.operators = ['is', 'not'];
+        options.operators = ['is', 'not', 'isset', 'not_isset'];
         options.url = '/organizations/quick_search';
         format = function(item) {
           return item['name'];

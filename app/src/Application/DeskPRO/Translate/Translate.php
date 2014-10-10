@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -215,6 +215,35 @@ class Translate implements PersonContextInterface
 
 
 	/**
+	 * Call $func with the language set to $person. When the call is done,
+	 * the language is reset back to default.
+	 *
+	 * @param Person $person
+	 * @param        $func
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public function callWithPersonContext(Person $person, $func)
+	{
+		$this->setPersonContext($person);
+
+		$e = null;
+		$ret = null;
+		try {
+			$ret = $func($this, $person->getLanguage());
+		} catch (\Exception $e) {}
+
+		$this->setPersonContext();
+
+		if ($e) {
+			throw $e;
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * Reset to the default person context
 	 */
 	public function resetToDefaultPersonContext()
@@ -316,6 +345,35 @@ class Translate implements PersonContextInterface
 		if ($e) {
 			throw $e;
 		}
+	}
+
+
+	/**
+	 * Call a function with the language set ot $language. After the call,
+	 * the language is reset back to the default.
+	 *
+	 * @param Language $language
+	 * @param          $func
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public function callWithLanguage(LanguageEntity $language = null, $func)
+	{
+		$this->setLanguage($language);
+
+		$e = null;
+		$ret = null;
+		try {
+			$func($this, $language);
+		} catch (\Exception $e) {}
+
+		$this->setLanguage();
+
+		if ($e) {
+			throw $e;
+		}
+
+		return $ret;
 	}
 
 

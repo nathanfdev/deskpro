@@ -26,7 +26,12 @@
           };
         })(this);
         this.form.timezone = this.agent.timezone || 'UTC';
-        this.form.signature_html = this.agent.signature_html || '';
+        this.form.signature_html = 'Loading...';
+        this.Api.sendGet("/agents/" + this.agent.id + "?extended=1").success((function(_this) {
+          return function(data) {
+            return _this.form.signature_html = data.signature_html;
+          };
+        })(this));
         if (this.agent.picture_blob) {
           this.form.picture_set = 'current';
         } else {

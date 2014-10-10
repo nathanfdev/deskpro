@@ -176,7 +176,7 @@ define([
 				}
 
 				function update() {
-					var time, ts;
+					var time, ts, now;
 					if (!scope.timestamp) {
 						return;
 					}
@@ -191,6 +191,11 @@ define([
 
 					if (!time || !time.isValid()) {
 						return;
+					}
+
+					now = moment().subtract(1, 'seconds');
+					if (time.toDate() > now.toDate()) {
+						time = now;
 					}
 
 					// Cancel interval if its an old date that is unlikely to change in realtime
@@ -210,11 +215,20 @@ define([
 					}
 				});
 
+				element.on('dp_update', function() {
+					update();
+				});
+
 				if (attrs['autoUpdate'] || attrs['updateInterval']) {
 					timeoutId = $interval(function() {
 						update();
 					}, parseInt(attrs['updateInterval']) || 15000);
+
+					scope.$watch('timestamp', function() {
+						update();
+					});
 				}
+
 				update();
 			}
 		};
@@ -667,9 +681,24 @@ define([
 				scope.isActive = false;
 				scope.mode = 'search';
 				scope.expanded = {};
+				scope.elasticOrder = 'score';
+
+				scope.setOrder = function(order) {
+					scope.elasticOrder = order;
+					if (scope.resultGroups.length) {
+						updateSearch();
+					}
+				};
 
 				var closeAll = function() {
 					$backdrop.hide();
+					$('#dp_header_notify_wrap').hide();
+					$('#recent_tabs_menu').hide();
+					$('#dp_omnibox_results').hide();
+
+					scope.isActive = false;
+					scope.mode = 'search';
+
 					$timeout(function() {
 						scope.isActive = false;
 						scope.mode = 'search';
@@ -677,7 +706,7 @@ define([
 					})
 				};
 
-				$('#dp_header_notify_wrap, #recent_tabs_menu').on('dpClose', function() {
+				$('#dp_header_notify_wrap, #recent_tabs_menu, #dp_omnibox').on('dpClose', function() {
 					closeAll();
 				});
 
@@ -693,6 +722,7 @@ define([
 
 				scope.$watch('isActive', function(isActive) {
 					if (isActive) {
+						resizeDebounced();
 						$headerBg.addClass('with-search-active');
 						$backdrop.show();
 					} else {
@@ -753,11 +783,13 @@ define([
 				};
 
 				scope.clearSearch = function() {
+					scope.searchQuery = '';
+					$input.blur();
+					closeAll();
 					$timeout(function() {
 						scope.searchQuery = '';
-						scope.isActive = false;
-						scope.mode = 'search';
 						$input.blur();
+						closeAll();
 					});
 				};
 
@@ -819,7 +851,7 @@ define([
 					scope.isMainLoading = true;
 					$http({
 						method: 'GET',
-						params: { q: scope.searchQuery || '' },
+						params: { q: scope.searchQuery || '', sort: scope.elasticOrder },
 						url: 'DP_URL/agent/quick-search.json'
 					}).success(function(data) {
 						scope.isMainLoading = false;
@@ -835,6 +867,7 @@ define([
 						scope.resultGroups = data.grouped_results || [];
 						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
 						scope.index_running = data.index_running || false;
+						scope.is_elastic    = data.is_elastic || false;
 
 						var initialShow = {
 							organization: 3,
@@ -843,7 +876,8 @@ define([
 							feedback: 5,
 							article: 5,
 							download: 5,
-							news: 5
+							news: 5,
+							chat_conversation: 3
 						};
 						var sortOrder = {
 							organization: 0,
@@ -852,7 +886,8 @@ define([
 							feedback: 3,
 							article: 4,
 							download: 5,
-							news: 6
+							news: 6,
+							chat_conversation: 7
 						};
 						for (var i = 0; i < scope.resultGroups.length; i++) {
 							scope.resultGroups[i].initialShow = initialShow[scope.resultGroups[i].type] || 5;
@@ -877,6 +912,9 @@ define([
 					var width = $listPane.width();
 					if (width < 560) {
 						width = 560;
+					}
+					if (width > 900) {
+						width = 900;
 					}
 
 					var maxHeight = $(window).height() - 40 - 75;

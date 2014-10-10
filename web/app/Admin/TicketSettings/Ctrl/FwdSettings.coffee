@@ -5,6 +5,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Ad
 		@DEPS      = []
 
 		init: ->
+			@default_fwd_regex = '/^(FW|FWD|VL|WG|FS|VB|RV|VS):/i'
 			@email_accounts = []
 			@$scope.$watch('settings.use_account', (accId) =>
 				accId = parseInt(accId)
@@ -19,6 +20,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Ad
 			}).then( (res) =>
 				@email_accounts = res.data.accounts.email_accounts
 				@$scope.settings = res.data.settings.ticket_fwd_settings
+
+				if @$scope.settings.agent_fwd_subject_regex
+					@$scope.use_agent_fwd_subject_regex = true
+				else
+					@$scope.use_agent_fwd_subject_regex = false
+					@$scope.settings.agent_fwd_subject_regex = @default_fwd_regex
+
 				@settings = Util.clone(@$scope.settings)
 
 				@$scope.settings.use_account = (@$scope.settings.use_account || 0)+""
@@ -34,9 +42,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Ad
 				return false
 
 		save: ->
+
 			postData = {
-				ticket_fwd_settings: @$scope.settings
+				ticket_fwd_settings: Util.clone(@$scope.settings)
 			}
+
+			if not @$scope.use_agent_fwd_subject_regex or @$scope.settings.agent_fwd_subject_regex == @default_fwd_regex
+				postData.ticket_fwd_settings.agent_fwd_subject_regex = null
 
 			@startSpinner('saving')
 			promise = @Api.sendPostJson('/ticket_settings/fwd', postData).success( =>

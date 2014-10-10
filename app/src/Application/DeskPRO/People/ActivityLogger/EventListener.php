@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -78,32 +78,44 @@ class EventListener implements EventSubscriber
 
 			case ($entity instanceof Ticket):
 				/** @var $entity Ticket */
-				$this->queue->enqueue(new NewTicket($entity->person, $entity));
+				if ($entity->person) {
+					$this->queue->enqueue(new NewTicket($entity->person, $entity));
+				}
 				break;
 
 			case ($entity instanceof TicketMessage && $entity->ticket['id']):
 				/** @var $entity TicketMessage */
-				$this->queue->enqueue(new NewTicketReply($entity->person, $entity));
+				if ($entity->person) {
+					$this->queue->enqueue(new NewTicketReply($entity->person, $entity));
+				}
 				break;
 
 			case ($entity instanceof ArticleComment):
 				/** @var $entity CommentAbstract */
-				$this->queue->enqueue(new NewCommentArticle($entity->person, $entity));
+				if ($entity->person) {
+					$this->queue->enqueue(new NewCommentArticle($entity->person, $entity));
+				}
 				break;
 
 			case ($entity instanceof DownloadComment):
 				/** @var $entity CommentAbstract */
-				$this->queue->enqueue(new NewCommentDownload($entity->person, $entity));
+				if ($entity->person) {
+					$this->queue->enqueue(new NewCommentDownload($entity->person, $entity));
+				}
 				break;
 
 			case ($entity instanceof NewsComment):
 				/** @var $entity CommentAbstract */
-				$this->queue->enqueue(new NewCommentNews($entity->person, $entity));
+				if ($entity->person) {
+					$this->queue->enqueue(new NewCommentNews($entity->person, $entity));
+				}
 				break;
 
 			case ($entity instanceof FeedbackComment):
 				/** @var $entity CommentAbstract */
-				$this->queue->enqueue(new NewCommentFeedback($entity->person, $entity));
+				if ($entity->person) {
+					$this->queue->enqueue(new NewCommentFeedback($entity->person, $entity));
+				}
 				break;
 
 			case ($entity instanceof Person):

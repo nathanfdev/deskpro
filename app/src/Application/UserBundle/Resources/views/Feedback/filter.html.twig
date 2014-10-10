@@ -116,7 +116,7 @@
 	{% include 'UserBundle:Feedback:section-header.html.twig' %}
 {% endif %}
 
-{% if app.user.hasPerm('feedback.submit') %}
+{% if app.user.hasPerm('feedback.submit') and (app.user.id or not app.getSetting('core.interact_require_login')) %}
 	{% include 'UserBundle:Feedback:filter-new-feedback.html.twig' %}
 {% endif %}
 

@@ -1,4 +1,4 @@
-define ->
+define ['DeskPRO/Util/Strings'], (Strings) ->
 	###
     # Description
     # -----------
@@ -23,8 +23,6 @@ define ->
 		return {
 			restrict: 'A'
 			link: (scope, element, attr) ->
-				label = $parse(attr.dpLabel)(scope)
-
 				updateLabelElement = (data) ->
 					return if !data?
 					color = data.color || null
@@ -40,20 +38,39 @@ define ->
 							color: ''
 							textShadow: 'none'
 							backgroundImage: 'none'
+					if label.gen
+						element.text(label.label)
 
-					if !data.r
-						element.text data.label
+				label = {}
 
-				# we have label object, so we can track it
-				if 'object' == typeof label && label.label_type
-					LabelDefinition.get(label.label_type, label.label).then (def) =>
-						scope.$watch def, (newVal) =>
-							updateLabelElement newVal
-						updateLabelElement def
+				if attr.dpLabelString
+					label.label = attr.dpLabelString
+				if attr.dpLabelType
+					label.label_type = attr.dpLabelType
 
-				else
-					LabelDefinition.getColor(attr.dpLabel).then (color) =>
-						updateLabelElement {label: attr.dpLabel, color: color, r: true}
+				if attr.dpLabel and typeof attr.dpLabel == "string" and attr.dpLabel.length > 0
+					try
+						labelParsed = $parse(attr.dpLabel)(scope)
+						if labelParsed
+							if labelParsed.label?
+								label.label = labelParsed.label
+							if labelParsed.label_type?
+								label.label_type = labelParsed.label_type
+							if typeof labelParsed == "string"
+								label.label = labelParsed
+
+							label.gen = true
+							element.text(label.label)
+					catch err
+						return
+
+
+				return if !label.label || !label.label_type || Strings.isBlank(label.label) || Strings.isBlank(label.label_type)
+
+				LabelDefinition.get(label.label_type, label.label).then (def) =>
+					scope.$watch def, (newVal) =>
+						updateLabelElement newVal
+					updateLabelElement def
 		}
 
 	return DeskPRO_Directive_DpLabel

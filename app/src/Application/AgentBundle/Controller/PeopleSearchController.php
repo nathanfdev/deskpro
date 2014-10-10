@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -744,12 +744,60 @@ class PeopleSearchController extends AbstractController
 			$q = $this->in->getString('term');
 		}
 
-		/** @var \Application\DeskPRO\EntityRepository\Person $rep */
-		$rep = $this->em->getRepository('DeskPRO:Person');
-		$people_list = $rep->quickSearch(
-			$q, $this->in->getBool('start_with'), $this->in->getBool('with_agents'),
-			$this->in->getUint('exclude_org'), $this->in->getUint('limit')
-		);
+		$limit       = $this->in->getUint('limit') ?: 100;
+		$with_agents = $this->in->getBool('with_agents');
+		$exclude_org = $this->in->getUint('exclude_org');
+
+		if ($this->container->getSetting('elastica.enabled')) {
+			$elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
+			$elasticsearch->setPersonContext($this->person);
+
+			list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, 'date_active', array('person'));
+
+			if (isset($results['person'])) {
+				$results = $results['person'];
+			} else {
+				$results = array();
+			}
+
+			$results = array_slice($results, 0, $limit);
+
+			$output = array();
+			foreach ($results AS $p) {
+				if (!$with_agents && $p->is_agent) {
+					continue;
+				}
+				if ($exclude_org && $p->organization && $p->organization->id == $exclude_org) {
+					continue;
+				}
+
+				$output[] = array(
+					'id'            => $p->id,
+					'first_name'    => $p->first_name,
+					'last_name'     => $p->last_name,
+					'email'         => $p->getPrimaryEmailAddress()
+				);
+			}
+
+			$people_list = $output;
+		} else {
+			/** @var \Application\DeskPRO\EntityRepository\Person $rep */
+			$rep         = $this->em->getRepository('DeskPRO:Person');
+			$people_list = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
+
+			// If the string is an exact email, we can try and find the user in usersources as well
+			if (StringEmail::isValueValid($q)) {
+				$person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+				if ($person && !isset($people_list[$person->getId()])) {
+					$people_list[$person->getId()] = array(
+						'id'         => $person->getId(),
+						'first_name' => $person->first_name,
+						'last_name'  => $person->last_name,
+						'email'      => $person->getPrimaryEmailAddress()
+					);
+				}
+			}
+		}
 
 		$format = $this->in->getString('format');
 
@@ -759,19 +807,6 @@ class PeopleSearchController extends AbstractController
 			$tpl = "AgentBundle:PeopleSearch:search_results.html.twig";
 			if ($format == 'simplelist') {
 				$tpl = "AgentBundle:PeopleSearch:search-results-simplelist.html.twig";
-			}
-		}
-
-		// If the string is an exact email, we can try and find the user in usersources as well
-		if (StringEmail::isValueValid($q)) {
-			$person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-			if ($person && !isset($people_list[$person->getId()])) {
-				$people_list[$person->getId()] = array(
-					'id'         => $person->getId(),
-					'first_name' => $person->first_name,
-					'last_name'  => $person->last_name,
-					'email'      => $person->getPrimaryEmailAddress()
-				);
 			}
 		}
 

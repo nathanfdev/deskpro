@@ -128,7 +128,6 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 				this.startTimeout();
 			},
 			success: function(html) {
-				this.nextParams = null;
 				this.template = html;
 
 				if (callback) {
@@ -142,6 +141,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			complete: function() {
 				this.xhr = null;
 				this.startTimeout();
+				this.nextParams = null;
 			}
 		});
 	},
@@ -186,6 +186,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			if (!DeskPRO_Window.paneVis.tabs) {
 				DeskPRO_Window.$scope.showTabs();
 			}
+			this.nextParams = null;
 			return;
 		}
 

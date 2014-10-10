@@ -4,7 +4,8 @@
 			<span class="btn-remove remove-row-trigger"></span>
 			<div class="task-input">
 				<input type="text"   class="input-title" name="newtask[0][title]" value="" id="{{ baseId }}_newtask_title" class="task-title" placeholder="{{ phrase('agent.tasks.task_description') }}" />
-				<input type="hidden" class="input-date-due" name="newtask[0][date_due]" value="" />
+				<input type="hidden" class="input-date-due" value="" />
+				<input type="hidden" class="input-date-due-real" name="newtask[%baseId%][date_due]" value="" />
 				<input type="hidden" class="input-date-time" name="newtask[0][time_due]" value="" />
 				<input type="hidden" class="input-agent" name="newtask[0][assigned_agent]" value="agent:{{ app.user.id }}" />
 				<input type="hidden" class="input-vis" name="newtask[0][visibility]" value="1" />

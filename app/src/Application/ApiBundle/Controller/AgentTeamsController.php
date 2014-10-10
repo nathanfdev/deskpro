@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -138,7 +138,12 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 			if ($team->avatar && $blobId != $team->avatar['id']) {
 				$this->em->remove($team->avatar);
 			}
-			$team->avatar = $this->em->getReference('DeskPRO:Blob', $blobId);
+			$blob = $this->em->find('DeskPRO:Blob', $blobId);
+			if ($blob && $blob->isImage()) {
+				$team->avatar = $blob;
+			} else {
+				$team->avatar = null;
+			}
 		} elseif($team->avatar) {
 			$team->avatar && $this->em->remove($team->avatar);
 			$team->avatar = null;
@@ -148,8 +153,6 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 		if (count($errors)) {
 			return $this->createApiValidationErrorResponse($errors);
 		}
-
-		// todo handle image
 
 		#------------------------------
 		# Save members

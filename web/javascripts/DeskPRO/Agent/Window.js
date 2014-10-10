@@ -569,8 +569,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				window.location.reload(false);
 			}
 		};
-
-
 	},
 
 	initPage: function() {
@@ -617,8 +615,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var startHash = window.location.hash + "";
 		startHash = startHash.substring(1);
 
-		if (!startHash.length && $.cookie('last_state')) {
-			startHash = $.cookie('last_state');
+		this.startRestoreHash = '';
+		if (!startHash.length && Modernizr.localstorage && localStorage['last_state']) {
+			startHash = localStorage['last_state'];
+			this.startRestoreHash = startHash;
 		}
 
 		var loadNewTicket = false;
@@ -729,7 +729,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 			self.loadHashPath(hash);
-			$.cookie('last_state', hash);
+			if (Modernizr.localstorage) {
+				localStorage['last_state'] = hash;
+			}
 		},{ unescape: ",/:" });
 
 		if (!this.openSection) {
@@ -1395,6 +1397,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var activateTabId = null;
 		var firstTabId = null;
 		var activateSettings = null;
+		var startRestoreHash = this.startRestoreHash || '';
 
 		DeskPRO_Window.TabBar.options.activateNew = false;
 
@@ -1486,7 +1489,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
 				this.loadingPageFragment = hash;
-				this.loadPage(url, { url_fragment: hash, noToggle: true });
+				this.loadPage(url, { url_fragment: hash, noToggle: true, ignore_perm_error: startRestoreHash.replace(/\.o/, '').indexOf(hash.replace(/\.o/, '')) != -1 });
 			}
 		}, this);
 
@@ -2226,6 +2229,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			default:
 				this.loadPage(routeData.url, routeData);
+				if (this.isSingleColMode()) {
+					$('#dp_omnibox').trigger('dpClose');
+					Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(i) {
+						i.close();
+					});
+				}
 				break;
 		}
 	},
@@ -2346,7 +2355,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		routeData.tabPlaceholderId = DeskPRO_Window.TabBar.addTabPlaceholder(url, routeData);
 
 		if (currentActiveTabId && routeData && routeData.replaceTab) {
-			DeskPRO_Window.TabBar.removeTabById(currentActiveTabId);
+			var currentTab = DeskPRO_Window.TabBar.getTab(currentActiveTabId);
+			if (!(currentTab && currentTab.page && currentTab.page.NO_REPLACE_TAB)) {
+				DeskPRO_Window.TabBar.removeTabById(currentActiveTabId);
+			}
 		}
 
 		if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
@@ -2384,6 +2396,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (callback) callback(page);
 		}).bind(this);
 
+		var errorFn = null;
+
 		if (routeData.preloadId) {
 			preloadEl = document.getElementById(routeData.preloadId);
 			if (preloadEl) {
@@ -2396,12 +2410,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		this._doAjaxLoadRoute(url, routeData, successFn);
+		this._doAjaxLoadRoute(url, routeData, successFn, errorFn);
 	},
 
 
 
-	_doAjaxLoadRoute: function(url, routeData, successFn) {
+	_doAjaxLoadRoute: function(url, routeData, successFn, errorFn) {
 
 		routeData = routeData || {};
 		if (!url) {
@@ -2412,7 +2426,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var self = this;
 
 		if (routeData && routeData.postData) {
-			var xhr = $.ajax({
+			var ajaxOptions = {
 				dataType: 'text',
 				url: url,
 				type: 'POST',
@@ -2422,11 +2436,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}).bind(this),
 				noErrorOverride: true,
 				timeout: 180000
-			});
+			};
+
+			if (errorFn) {
+				ajaxOptions.error = function(jqXHR, textStatus, errorThrown) {
+					errorFn(url, routeData, jqXHR, textStatus, errorThrown);
+				};
+			}
+
+			var xhr = $.ajax(ajaxOptions);
 
 			routeData.xhr = xhr;
 		} else {
-			var xhr = $.ajax({
+			var ajaxOptions = {
 				dataType: 'text',
 				url: url,
 				type: 'GET',
@@ -2436,7 +2458,24 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}).bind(this),
 				noErrorOverride: true,
 				timeout: 180000
-			});
+			};
+
+			if (routeData.ignore_perm_error) {
+				ajaxOptions.ignorePermError = true;
+				errorFn = function(url, routeData) {
+					if (routeData.tabPlaceholderId) {
+						DeskPRO_Window.TabBar.removeTabById(routeData.tabPlaceholderId);
+					}
+				};
+			}
+
+			if (errorFn) {
+				ajaxOptions.error = function(jqXHR, textStatus, errorThrown) {
+					errorFn(url, routeData, jqXHR, textStatus, errorThrown);
+				};
+			}
+
+			var xhr = $.ajax(ajaxOptions);
 
 			routeData.xhr = xhr;
 		}
@@ -2778,6 +2817,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (xhr && xhr.status && xhr.status == '403') {
+
+			if (ajaxOptions.ignorePermError) {
+				return;
+			}
 
 			if (data && data.error && (data.error == 'session_expired' || data.error == 'invalid_request_token')) {
 				var url = data.redirect_login;
@@ -4607,5 +4650,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 		return num;
+	},
+
+	isSingleColMode: function() {
+		return !(this.paneVis.tabs && this.paneVis.list);
 	}
 });

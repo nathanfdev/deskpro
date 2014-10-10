@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -133,6 +133,41 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		}
 
 		#-------------------------
+		# Check TACs
+		#-------------------------
+
+		// If this was a reply via a TAC, then the person detected via address and the person who owns the TAC
+		// should be the sames. Otherwise, *probably* means the agent used a different email address.
+		if ($tac_person && $tac_person->is_agent) {
+			// Need to look up the From sender manually because we dont know which ticket dector was used above,
+			// and the way they find existing people is an implementation detail we dont know here
+			$exist_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->email);
+			if (($exist_person && $tac_person !== $exist_person) || !$exist_person) {
+				$this->logMessage('Agent email with TAC from unknown email address');
+				$this->error      = 'auth_invalid';
+				$this->error_type = 'rejected';
+
+				$message = App::getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
+					'ticket'  => $ticket,
+					'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+					'name'    => $this->reader->getFromAddress()->getName() ? : $this->reader->getFromAddress()->getEmail(),
+				));
+				$message->setTo($this->reader->getFromAddress()->getEmail());
+
+				$lang = $person ? $person->getLanguage() : $tac_person->getLanguage();
+
+				App::$container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
+					$message->prepare();
+				});
+
+				App::getMailer()->send($message);
+
+				return null;
+			}
+		}
+
+		#-------------------------
 		# Check if we should create a new user on the ticket
 		#-------------------------
 
@@ -190,6 +225,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 				'name' => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
 			));
 			$message->setTo($this->reader->getFromAddress()->getEmail());
+
+			App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
+
 			$this->container->getMailer()->send($message);
 
 			return null;
@@ -237,6 +277,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 					'message.eml',
 					'message/rfc822'
 				));
+
+				App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function() use ($message) {
+					$message->prepare();
+				});
+
 				App::getMailer()->send($message);
 
 				$this->error = 'obj_closed';

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -216,42 +216,68 @@ class TicketSearchController extends AbstractController
 		if (!$limit) $limit = 10;
 		$limit = min($limit, 100);
 
-		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-		$searcher->setPerson($this->person);
-		$searcher->setOrderBy('ticket.date_created');
-
-		if ($person_id = $this->in->getUint('person_id')) {
-			$searcher->addTerm('person', 'is', array('person_id' => $person_id));
-			$results = $searcher->getMatches();
-			$results = Arrays::castToType($results, 'integer');
-		} else {
-			$q = $this->in->getString('q');
-			if (!$q) {
-				$q = $this->in->getString('term');
-			}
-
-			$searcher->addTerm('ticket_message', 'is', array('query' => $q));
-			$searcher->addTerm('date_created', 'gte', array('date1' => strtotime("-60 days")));
-			$results = $searcher->getMatches();
-			$results = Arrays::castToType($results, 'integer');
-
-			if (ctype_digit($q) || preg_match('/#^([0-9]+)$/', $q)) {
-				if ($q[0] == '#') $q = substr($q, 1);
-				array_unshift($results, $q);
-			}
+		$q = $this->in->getString('q');
+		if (!$q) {
+			$q = $this->in->getString('term');
 		}
 
-		$results = array_slice($results, 0, $limit);
+		if ($this->container->getSetting('elastica.enabled')) {
+			$elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
+			$elasticsearch->setPersonContext($this->person);
 
-		$output = array();
-		foreach (App::getEntityRepository('DeskPRO:Ticket')->getByIds($results, true) AS $ticket) {
-			$output[] = array(
-				'id'            => $ticket->id,
-				'value'         => $ticket->id,
-				'subject'       => $ticket->subject,
-				'status'        => $ticket->getStatusCode(),
-				'last_activity' => $ticket->getLastActivityDate()->getTimestamp()
-			);
+			list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, 'date_active', array('ticket'));
+
+			if (isset($results['ticket'])) {
+				$results = $results['ticket'];
+			} else {
+				$results = array();
+			}
+
+			$results = array_slice($results, 0, $limit);
+
+			$output = array();
+			foreach ($results AS $ticket) {
+				$output[] = array(
+					'id'            => $ticket->id,
+					'value'         => $ticket->id,
+					'subject'       => $ticket->subject,
+					'status'        => $ticket->getStatusCode(),
+					'last_activity' => $ticket->getLastActivityDate()->getTimestamp()
+				);
+			}
+		} else {
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->setPerson($this->person);
+			$searcher->setOrderBy('ticket.date_created');
+
+			if ($person_id = $this->in->getUint('person_id')) {
+				$searcher->addTerm('person', 'is', array('person_id' => $person_id));
+				$results = $searcher->getMatches();
+				$results = Arrays::castToType($results, 'integer');
+			} else {
+				$searcher->addTerm('ticket_message', 'is', array('query' => $q));
+				$searcher->addTerm('date_created', 'gte', array('date1' => strtotime("-60 days")));
+				$results = $searcher->getMatches();
+				$results = Arrays::castToType($results, 'integer');
+
+				if (ctype_digit($q) || preg_match('/#^([0-9]+)$/', $q)) {
+					if ($q[0] == '#') $q = substr($q, 1);
+					array_unshift($results, $q);
+				}
+			}
+
+			$results = array_slice($results, 0, $limit);
+
+			$output = array();
+			foreach (App::getEntityRepository('DeskPRO:Ticket')->getByIds($results, true) AS $ticket) {
+				$output[] = array(
+					'id'            => $ticket->id,
+					'value'         => $ticket->id,
+					'subject'       => $ticket->subject,
+					'status'        => $ticket->getStatusCode(),
+					'last_activity' => $ticket->getLastActivityDate()->getTimestamp()
+				);
+			}
 		}
 
 		return $this->createJsonResponse($output);
