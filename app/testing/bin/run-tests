@@ -18,37 +18,37 @@ echo "Running Unit Tests"
 echo "=========================="
 echo ""
 
-bin/codecept run unit --coverage --xml
+#bin/codecept run unit --coverage --xml
+#
+#if [[ $? -ne 0 ]] ; then
+#	echo "!!! Unit Test Failure !!!"
+#	IS_ERROR=1
+#fi
+#
+#if [ -f logs/coverage.xml ]; then
+#	mv logs/coverage.xml logs/coverage-clover/unit-tests-coverage.xml
+#fi
 
-if [[ $? -ne 0 ]] ; then
-	echo "!!! Unit Test Failure !!!"
-	IS_ERROR=1
-fi
-
-if [ -f logs/coverage.xml ]; then
-	mv logs/coverage.xml logs/coverage-clover/unit-tests-coverage.xml
-fi
-
-if [ $IS_ERROR -ne 1 ] ; then
+#if [ $IS_ERROR -ne 1 ] ; then
 	echo ""
 	echo "=========================="
 	echo "Running Integration Tests"
 	echo "=========================="
 	echo ""
 
-	bin/codecept run integration --coverage --xml
+#	bin/codecept run integration --coverage --xml
 
-	if [[ $? -ne 0 ]] ; then
-		echo "!!! Unit Integration Failure !!!"
-		IS_ERROR=1
-	fi
+#	if [[ $? -ne 0 ]] ; then
+#		echo "!!! Unit Integration Failure !!!"
+#		IS_ERROR=1
+#	fi
+#
+#	if [ -f logs/coverage.xml ]; then
+#		mv logs/coverage.xml logs/coverage-clover/integration-tests-coverage.xml
+#	fi
+#fi
 
-	if [ -f logs/coverage.xml ]; then
-		mv logs/coverage.xml logs/coverage-clover/integration-tests-coverage.xml
-	fi
-fi
-
-if [ $IS_ERROR -ne 1 ] ; then
+#if [ $IS_ERROR -ne 1 ] ; then
 
 	# phpunit will have created cache dirs owned by the cli user
 	# but we'll be making web requests now, so we need to make sure
@@ -72,7 +72,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 	#if [ -f logs/coverage.xml ]; then
 	#	mv logs/coverage.xml logs/coverage-clover/acceptance-tests-coverage.xml
 	#fi
-fi
+#fi
 
 if [ $IS_ERROR -ne 1 ] ; then
 	echo ""
