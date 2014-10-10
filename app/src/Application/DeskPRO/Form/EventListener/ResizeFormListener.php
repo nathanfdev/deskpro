@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\Form\EventListener;
 
+use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
@@ -37,14 +38,24 @@ use Symfony\Component\Form\FormEvents;
 class ResizeFormListener extends BaseListener
 {
 	/**
-	 * @var array
+	 * @var \Application\DeskPRO\CustomFields\CustomDataPersister
 	 */
-	protected $toAdd = array();
+	protected $persister;
+
 	/**
 	 * @var array
 	 */
-	protected $toDelete = array();
+	protected $newEntriesMap;
 
+	public function __construct($type, array $options = array(), $allowAdd = false, $allowDelete = false, $deleteEmpty = false, CustomDataPersister $persister)
+	{
+		parent::__construct($type, $options, $allowAdd, $allowDelete, $deleteEmpty);
+		$this->persister = $persister;
+	}
+
+	/**
+	 * @return array
+	 */
 	public static function getSubscribedEvents()
 	{
 		return array_merge(parent::getSubscribedEvents(), array(
@@ -60,8 +71,7 @@ class ResizeFormListener extends BaseListener
     {
         $form = $event->getForm();
         $data = $event->getData();
-	    $this->toAdd = array();
-	    $this->toDelete = array();
+	    $this->newEntriesMap = array();
 
         if (null === $data || '' === $data) {
             $data = array();
@@ -70,6 +80,9 @@ class ResizeFormListener extends BaseListener
         if (!is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
             throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
         }
+
+
+
 
 	    $map = array();
 	    foreach ($form as $name => $child) {
@@ -90,11 +103,14 @@ class ResizeFormListener extends BaseListener
 	    $data = $newData;
 	    $event->setData($data);
 
+
+
+
 	    // Remove all empty rows
 	    if ($this->allowDelete) {
 		    foreach ($form as $name => $child) {
-			    if (!isset($data[$name])) {
-				    $this->toDelete[] = $child->getData();
+			    if (!isset($data[$name]) && $child->getData() instanceof DomainObject) {
+				    $this->persister->remove($child->getData());
 				    $form->remove($name);
 			    }
 		    }
@@ -109,51 +125,26 @@ class ResizeFormListener extends BaseListener
 				    ), $this->options));
 
 				    // we add only item index here
-				    $this->toAdd[] = $name;
+				    $this->newEntriesMap[] = $name;
 			    }
 		    }
 	    }
     }
 
 	/**
+	 * re-map
 	 * @param FormEvent $event
 	 */
 	public function postSubmit(FormEvent $event)
 	{
-		$toAdd = array();
 		$form = $event->getForm();
 
-		foreach ($this->toAdd as $addIndex) {
-			$toAdd[] = $form[$addIndex]->getData();
-		}
-
-		$this->toAdd = $toAdd;
-	}
-
-	/**
-	 * set entities managed by EM
-	 * @param FormEvent $event
-	 */
-	public function manageEntities(FormEvent $event)
-	{
-		$data = $event->getData();
-		if (empty($data['em']) || !$data['em'] instanceof EntityManager) {
-			return;
-		}
-
-		foreach ($this->toAdd as $add) {
-			if ($add instanceof DomainObject) {
-				$data['em']->persist($add);
+		foreach ($this->newEntriesMap as $name) {
+			if ($form[$name]->getData() instanceof DomainObject) {
+				$this->persister->add($form[$name]->getData());
 			}
 		}
 
-		foreach ($this->toDelete as $del) {
-			if ($del instanceof DomainObject) {
-				$data['em']->remove($del);
-			}
-		}
-
-		$this->toAdd = array();
-		$this->toDelete = array();
+		$this->newEntriesMap = array();
 	}
 }

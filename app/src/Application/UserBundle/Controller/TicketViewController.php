@@ -217,6 +217,9 @@ class TicketViewController extends AbstractController
 
 		$manager = $this->container->getCustomFieldManager();
 		$new_custom_fields = $manager->createFormForOwner($ticket, $this->person, $layout);
+		if ($org = $this->person->organization) {
+			$manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
+		}
 		$vars['new_custom_fields'] = $new_custom_fields->createView();
 
         if($is_pdf) {

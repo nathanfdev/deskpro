@@ -136,7 +136,26 @@
                     <article>
                         <ul>
                             <li
-                                    ng-repeat="field in custom_fields"
+                                    ng-repeat="field in ticket_fields_per_person"
+                                    ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+                                    class="dp-layout-editor-layout-field layout-field"
+                                    data-field-type="custom_field"
+                                    data-field-id="{{ ng_var('field.id') }}"
+                                    >
+                                <span>{{ ng_var('field.title') }}</span>
+                            </li>
+                        </ul>
+                    </article>
+                </div>
+
+                <div class="group">
+                    <header>
+                        <h3>{{ phrase('adm.custom_fields.specific_org_fields') }} &middot; <a href="#/crm/org_fields">Manage Fields</a></h3>
+                    </header>
+                    <article>
+                        <ul>
+                            <li
+                                    ng-repeat="field in ticket_fields_per_org"
                                     ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
                                     class="dp-layout-editor-layout-field layout-field"
                                     data-field-type="custom_field"

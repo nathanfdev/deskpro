@@ -31,6 +31,7 @@ use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\CustomFieldData;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\ContextualChoiceDefinitionType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionChildrenType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionType;
@@ -57,11 +58,6 @@ class CustomFieldManager
 	protected $ff;
 
 	/**
-	 * @var \Application\DeskPRO\CustomFields\CustomDataPersister
-	 */
-	protected $persister;
-
-	/**
 	 * @var \Application\DeskPRO\EntityRepository\CustomFieldDefinition
 	 */
 	protected $repDefinition;
@@ -70,6 +66,11 @@ class CustomFieldManager
 	 * @var \Application\DeskPRO\EntityRepository\CustomFieldData
 	 */
 	protected $repData;
+
+	/**
+	 * @var \Application\DeskPRO\CustomFields\CustomDataPersister
+	 */
+	protected $persister;
 
 	public function __construct(EntityManager $em, FormFactory $ff)
 	{
@@ -116,9 +117,12 @@ class CustomFieldManager
 	/**
 	 * @param FormInterface $form
 	 */
-	public function flushCustomData(FormInterface $form)
+	public function flush(FormInterface $form)
 	{
-		$form->getConfig()->getEventDispatcher()->dispatch(self::EVENT_FLUSH);
+		if (!$form->isSubmitted()) {
+			return;
+		}
+		$this->persister->flush($this->em);
 	}
 
 	/**
@@ -149,13 +153,7 @@ class CustomFieldManager
 			));
 		}
 
-		$persister = $this->persister;
-		$em = $this->em;
-
 		$builder
-			->addEventListener(self::EVENT_FLUSH, function() use ($persister, $em){
-				$persister->flush($em);
-			})
 			->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
 				// clean extra data
 				if ($data = $event->getData()) {
@@ -169,6 +167,22 @@ class CustomFieldManager
 	}
 
 	/**
+	 * @param FormInterface $form1
+	 * @param FormInterface $form2
+	 * @return FormInterface
+	 */
+	public function merge(FormInterface $form1, FormInterface $form2)
+	{
+		foreach ($form2 as $name => $field) {
+			/** @var $field FormInterface */
+			$form2->remove($name);
+			$form1->add($field);
+		}
+
+		return $form1;
+	}
+
+	/**
 	 * todo used for ContextualChoiceDefinition only (for now)
 	 * the only place this form used is Person view in Agent Interface (to define contextual choices for this person)
 	 *
@@ -177,32 +191,16 @@ class CustomFieldManager
 	 */
 	public function createDefinitionsFormForContext(DomainObject $context)
 	{
-		$builder = $this->ff->createNamedBuilder('custom_fields_definitions', 'form');
-
 		// root definitions
 		$definitions = $this->repDefinition->findBy(array(
 			'parent' => null,
 			'context_class' => get_class($context)
 		), array('display_order' => 'ASC'));
 
-		// def children for current context
-		$children = new ArrayCollection();
-		$_children = $this->repDefinition->findBy(array(
-			'context_class' => get_class($context),
-			'context_id' => $context['id'],
-		), array('display_order' => 'ASC'));
+		$children = $this->buildDefinitionChildrenCollectionForContext($context);
 
-		foreach ($_children as $child) {
-			if (!$child->parent) {
-				continue;
-			}
-			$pid = $child->parent['id'];
-			if (!$sub = $children->get($pid)) {
-				$sub = new ArrayCollection();
-				$children->set($pid, $sub);
-			}
-			$sub->add($child);
-		}
+		// build form
+		$builder = $this->ff->createNamedBuilder('custom_fields_definitions', 'form');
 
 		foreach ($definitions as $def) {
 			/** @var $def CustomFieldDefinition */
@@ -213,10 +211,45 @@ class CustomFieldManager
 				'children_collection' => $children,
 				'children_only' => true,
 				'label' => $def['title'],
+				'persister' => $this->persister,
 			));
 		}
 
 		return $builder->getForm();
+	}
+
+	/**
+	 * @param DomainObject $context
+	 * @return ArrayCollection
+	 */
+	protected function buildDefinitionChildrenCollectionForContext(DomainObject $context)
+	{
+		// def children for current context
+		$collection = new ArrayCollection();
+
+		if (!$context['id']) {
+			return $collection;
+		}
+
+		$_children = $this->repDefinition->findBy(array(
+			'context_class' => get_class($context),
+			'context_id' => $context['id'],
+		), array('display_order' => 'ASC'));
+
+		// build child tree
+		foreach ($_children as $child) {
+			if (!$child->parent) {
+				continue;
+			}
+			$pid = $child->parent['id'];
+			if (!$sub = $collection->get($pid)) {
+				$sub = new ArrayCollection();
+				$collection->set($pid, $sub);
+			}
+			$sub->add($child);
+		}
+
+		return $collection;
 	}
 
 	/**

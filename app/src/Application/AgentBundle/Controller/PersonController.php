@@ -756,27 +756,24 @@ class PersonController extends AbstractController
 			));
 		}
 
+
+		// specific user custom fields definitions
 		$manager = $this->container->getCustomFieldManager();
 		$form = $manager->createDefinitionsFormForContext($person);
 		// fix: jquery removes empty arrays from post request
 		if (!$request->request->has($form->getName())) {
 			$request->request->set($form->getName(), array());
 		}
-		$form->handleRequest($request);
-
-		if ($form->isValid()) {
-			// todo need clearer solution to track new/removed entities
-			$event = new FormEvent($form, array('em' => $this->em));
-			foreach ($form as $child) {
-				$child->get('_children')->getConfig()->getEventDispatcher()
-					->dispatch(DpCategoryBuilderType::EVENT_MANAGE, $event);
-			}
-		} else {
+		if (!$form->handleRequest($request)->isValid()) {
 			return $this->createJsonResponse(array(
 				'error' => true,
 				'invalid_custom_fields' => $form->getErrors(true, true)->current(),
 			));
+
 		}
+		$manager->flush($form);
+
+
 
 		if (!empty($custom_fields)) {
 			$field_manager->saveFormToObject($custom_fields, $person);

@@ -3,6 +3,18 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
+	initScope: function() {
+		var self = this;
+		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
+		this.$q = DeskPRO_Window.$q;
+		this.$timeout = DeskPRO_Window.$timeout;
+
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
+			self.wrapper.data('$ngControllerController', self);
+			$compile(self.wrapper.contents())(self.$scope);
+		}]);
+	},
+
 	initializeProperties: function() {
 		var self = this;
 		this.parent();
@@ -28,6 +40,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
+		this.initScope();
 
 		if (this.tabBtn) {
 			if (this.getMetaData('orgPicIcon')) {
@@ -380,7 +393,10 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 			propToggle('form');
 		});
 		$('.save', box).on('click', function() {
-			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
+			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
+				formData[$(this).attr('name')] = $(this).val();
+			});
 
 			$('.is-loading', box).show();
 			$('.save', box).hide();

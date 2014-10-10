@@ -114,12 +114,17 @@ class TicketController extends AbstractController
 		#------------------------------
 
 		$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
-		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::NEW_TICKET, $ticket);
+		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
 
 		$field_manager = $this->container->getTicketFieldManager();
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
+		// new custom fields
 		$new_field_manager = $this->container->getCustomFieldManager();
 		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+		if ($org = $ticket->person->organization) {
+			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, $layout));
+		}
 
 		#------------------------------
 		# Messages
@@ -1920,7 +1925,7 @@ class TicketController extends AbstractController
 						$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
 						$new_custom_fields->handleRequest($this->get('request'));
 						if ($new_custom_fields->isValid()) {
-							$new_field_manager->flushCustomData($new_custom_fields);
+							$new_field_manager->flush($new_custom_fields);
 						}
 					}
 				}
@@ -3287,6 +3292,9 @@ class TicketController extends AbstractController
 
 		$manager = $this->container->getCustomFieldManager();
 		$new_custom_fields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
+		if ($org = $ticket->person->organization) {
+			$manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
+		}
 
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'ticket'                 => $ticket,
@@ -3701,6 +3709,9 @@ class TicketController extends AbstractController
 		$manager = $this->container->getCustomFieldManager();
 		$mock = new Entity\Ticket();
 		$new_custom_fields = $manager->createFormForOwner($mock, $person, $layout);
+		if ($org = $person->organization) {
+			$manager->merge($new_custom_fields, $manager->createFormForOwner($mock, $org, $layout));
+		}
 
 		return $this->render('AgentBundle:Ticket:newticket-custom-fields-row.html.twig', array(
 			'new_custom_fields' => $new_custom_fields->createView(),

@@ -67,6 +67,9 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
 			->setDefaults(array(
 				'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
 			))
+			->setRequired(array(
+				'persister',
+			))
 			->setOptional(array(
 				'context',
 			))
@@ -76,7 +79,8 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
 					'Application\DeskPRO\Entity\Person',
 					'Application\DeskPRO\Entity\Ticket',
 					'Application\DeskPRO\Entity\Organization',
-				)
+				),
+				'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
 			))
 		;
 	}

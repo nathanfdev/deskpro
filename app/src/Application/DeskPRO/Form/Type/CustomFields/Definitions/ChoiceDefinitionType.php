@@ -63,6 +63,7 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 				'required' => false,
 				'data' => $children ?: new ArrayCollection(),
 				'mapped' => false,
+				'persister' => $options['persister'],
 				'options' => array(
 					'label' => false,
 					'context' => $options['context'],
@@ -83,7 +84,9 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 				'children_only' => false,
 				'children_collection' => null,
 			))
-			->setOptional(array('children_collection', 'children_only'))
+			->setOptional(array(
+				'children_collection', 'children_only',
+			))
 			->addAllowedTypes(array(
 				'children_collection' => array('null', 'Doctrine\Common\Collections\ArrayCollection'),
 			))

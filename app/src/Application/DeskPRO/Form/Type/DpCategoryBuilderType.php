@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Form\Type;
 use Application\DeskPRO\Form\EventListener\ResizeFormListener;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DpCategoryBuilderType extends CollectionType
 {
@@ -46,16 +47,27 @@ class DpCategoryBuilderType extends CollectionType
 	 */
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
-		$this->listener = new ResizeFormListener(
+		$builder->addEventSubscriber(new ResizeFormListener(
 			$options['type'],
 			$options['options'],
 			$options['allow_add'],
 			$options['allow_delete'],
-			$options['delete_empty']
-		);
+			$options['delete_empty'],
+			$options['persister']
+		));
+	}
 
-		$builder->addEventSubscriber($this->listener);
-		$builder->addEventListener(self::EVENT_MANAGE, array($this->listener, 'manageEntities'));
+	/**
+	 * @param OptionsResolverInterface $resolver
+	 */
+	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	{
+		parent::setDefaultOptions($resolver);
+		$resolver
+			->setRequired(array('persister'))
+			->addAllowedTypes(array(
+				'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
+			));
 	}
 
 	public function getName()

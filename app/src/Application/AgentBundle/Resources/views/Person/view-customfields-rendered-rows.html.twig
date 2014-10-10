@@ -8,10 +8,10 @@
 	{% endif %}
 	{% endfor %}
 
-    {% for f in custom_fields_2 if f.vars.data is not null %}
+    {% for f in new_custom_fields if f.vars.data is not null %}
         <tr>
             <th>{{ form_label(f) }}</th>
-            <td>{{ f.vars.rendered_data }}</td>
+            <td>{{ render_custom_field(f) }}</td>
         </tr>
     {% endfor %}
 
