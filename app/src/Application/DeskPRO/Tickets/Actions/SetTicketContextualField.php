@@ -31,54 +31,82 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\Tickets\Triggers;
+namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Tickets\Actions\AppActionInterface;
-use Application\DeskPRO\Tickets\Actions\AbstractAction;
-use Orb\Util\Strings;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
 
-class ActionFactory
+class SetTicketContextualField extends AbstractSetCustomField
 {
-	public function createFromArray(array $action_info)
+	/**
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return \Application\DeskPRO\CustomFields\FieldManager
+	 */
+	function getFieldManager(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if (isset($action_info['type_class'])) {
-			$construct_options = array(
-				'type' => $action_info['type'],
-			);
-			return $this->create("@{$action_info['type_class']}", $action_info['options'], $construct_options);
-		} else {
-			return $this->create($action_info['type'], $action_info['options']);
-		}
+		return $this->getContainer()->getTicketFieldManager();
 	}
 
-	public function create($type, array $options, array $construct_options = null)
+
+	/**
+	 * @param Ticket                   $ticket
+	 * @param ExecutorContextInterface $context
+	 * @return mixed
+	 */
+	function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if ($type[0] == '@') {
-			$class_name = substr($type, 1);
-		} else {
-			if (preg_match('#^Set(User|Ticket|Org)(Contextual)?Field(\d+)$#', $type, $m)) {
-				$class_type = 'Set' . $m[1] . $m[2] . 'Field';
-				$options['field_id'] = $m[3];
-			} else {
-				$class_type = $type;
+		return $ticket;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$fm = $this->getContainer()->getCustomFieldManager();
+		$field_id = $this->getActionOption('field_id');
+		$value    = $this->getActionOption('value');
+
+		if (!$def = $fm->getDefinition($field_id)) {
+			return;
+		}
+
+		$formContext = null;
+		if ($def['context_class']) {
+			// todo
+			$formContext = $ticket->person;
+			if ($def['context_class'] !== get_class($formContext)) {
+				$formContext = $formContext->organization;
 			}
-			$class_name = "Application\\DeskPRO\\Tickets\\Actions\\$class_type";
-		}
 
-		if (!class_exists($class_name)) {
-			throw new \InvalidArgumentException("Unknown action $type (could not locate class: $class_name)");
-		}
-
-		$term = new $class_name($options);
-
-		// Set app ID on app actions
-		if ($term instanceof AppActionInterface && $term instanceof AbstractAction && $construct_options) {
-			$id = Strings::extractRegexMatch('#(\d+)$#', $construct_options['type']);
-			if ($id) {
-				$term->getMetaData()->set('app_id', (int)$id);
+			if (!$formContext) {
+				return;
 			}
 		}
 
-		return $term;
+		$form = $fm->createFieldForm($def, $ticket, $formContext);
+
+//  todo should be a way to dynamicaly add a choice inside form
+
+		/** @var EntityChoiceList $choices */
+		$choices = $form->get('value')->getConfig()->getOption('choice_list');
+		$check = strtolower($value);
+		$newVal = null;
+		foreach ($choices->getChoices() as $choice) {
+			/** @var CustomFieldDefinition $choice */
+			if (strtolower($choice['title']) === $check) {
+				$newVal = $choice['id'];
+			}
+		}
+
+		if (!$newVal) {
+			// todo
+		}
+
+		$form->submit(array('value' => $newVal));
+
 	}
 }

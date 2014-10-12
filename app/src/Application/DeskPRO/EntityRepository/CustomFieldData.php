@@ -35,27 +35,28 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\DBAL\Connection;
 
 class CustomFieldData extends AbstractEntityRepository
 {
 	/**
-	 * @param DomainObject $object
+	 * @param DomainObject $owner
 	 * @param DomainObject $context
 	 * @param Layout $layout
 	 * @return mixed
 	 */
-	public function getAllDataForOwner(DomainObject $object, DomainObject $context = null, Layout $layout = null)
+	public function getAllDataForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
 	{
 		$qb = $this->createQueryBuilder('da')
 			->select('da, de', 'rde')
 			->innerJoin('da.definition', 'de')
 			->innerJoin('da.root_definition', 'rde')
-			->where('da.owner_id = :owner_id and de.owner_class = :owner_class')
+			->where('da.owner_id = :owner_id and de.owner_class = :owner_class and rde.is_enabled = 1')
 			->setParameters(array(
-				'owner_id' => (int) $object['id'], // null -> 0
-				'owner_class' => get_class($object),
+				'owner_id' => (int) $owner['id'], // null -> 0
+				'owner_class' => get_class($owner),
 			));
 
 		if ($layout) {
@@ -63,13 +64,13 @@ class CustomFieldData extends AbstractEntityRepository
 				return array();
 			}
 			$qb
-				->andWhere('da.root_definition in (:fields)')
+				->andWhere('rde.id in (:fields)')
 				->setParameter('fields', $in, Connection::PARAM_INT_ARRAY);
 		}
 
 		if ($context) {
 			$qb
-				->andWhere('de.context_class is null or (de.context_class = :context_class and de.context_id = :cid)')
+				->andWhere('rde.context_class is null or (de.context_class = :context_class and de.context_id = :cid)')
 				->setParameter('context_class', get_class($context))
 				->setParameter('cid', $context['id']);
 		}
@@ -78,43 +79,46 @@ class CustomFieldData extends AbstractEntityRepository
 	}
 
 	/**
-	 * array result
-	 * @param DomainObject $object
-	 * @param DomainObject $context
-	 * @param Layout $layout
-	 * @return mixed
+	 * @param CustomFieldDefinition $definition
+	 * @param DomainObject $owner
+	 * @return array|null
 	 */
-	public function getAllDataAsArrayForOwner(DomainObject $object, DomainObject $context = null, Layout $layout = null)
+	public function getFieldData(CustomFieldDefinition $definition, DomainObject $owner)
 	{
-		$em = $this->getEntityManager();
-		$table1 = $em->getClassMetadata($this->getEntityName())->getTableName();
-		$table2 = $em->getClassMetadata('DeskPRO:CustomFieldDefinition')->getTableName();
-
-		$qb = $em->getConnection()->createQueryBuilder()
-			->select('da.value, da.input, de.id as definition_id, de.parent_id as definition_parent_id')
-			->from($table1, 'da')
-			->innerJoin('da', $table2, 'de', 'da.definition_id = de.id')
-			->where('da.owner_id = :owner_id')
-			->andWhere('de.owner_class = :owner_class
-				or (de.context_class = :context_class and de.context_id = :cid)')
-			->setParameters(array(
-				'owner_id' => $object['id'],
-				'owner_class' => get_class($object),
-			));
-
-		if ($layout && ($in = $layout->getIdsOfFieldType('custom_field'))) {
-			$qb
-				->andWhere('de.parent_id in (:fields)')
-				->setParameter('fields', $in, Connection::PARAM_INT_ARRAY);
+		if (!$definition['id'] || !$owner['id']) {
+			return null;
 		}
 
-		if ($context) {
-			$qb
-				->andWhere('de.context_class is null or (de.context_class = :context_class and de.context_id = :cid)')
-				->setParameter('context_class', get_class($context))
-				->setParameter('cid', $context['id']);
+		$qb = $this->createQueryBuilder('da')
+			->join('da.definition', 'de')
+			->where('da.owner_id = :oid and da.root_definition = :did')
+			->setParameter('oid', $owner['id'])
+			->setParameter('did', $definition['id'])
+		;
+
+		return $qb->getQuery()->getResult();
+	}
+
+	/**
+	 * @param CustomFieldDefinition $definition
+	 * @param DomainObject $owner
+	 * @return mixed|null
+	 */
+	public function getFieldRawData(CustomFieldDefinition $definition, DomainObject $owner)
+	{
+		if (!$definition['id'] || !$owner['id']) {
+			return null;
 		}
 
-		return $qb->execute()->fetchAll();
+		$qb = $this->getEntityManager()->createQueryBuilder()
+			->select('da.value, da.input, de.title')
+			->from($this->getEntityName(), 'da')
+			->join('da.definition', 'de')
+			->where('da.owner_id = :oid and da.root_definition = :did')
+			->setParameter('oid', $owner['id'])
+			->setParameter('did', $definition['id'])
+		;
+
+		return $qb->getQuery()->execute();
 	}
 }

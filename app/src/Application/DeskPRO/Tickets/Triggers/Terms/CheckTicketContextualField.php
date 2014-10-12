@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,32 +29,60 @@
  * DeskPRO
  *
  * @package DeskPRO
+ * @category Entities
  */
 
-namespace Application\DeskPRO\Tickets\Triggers;
+namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
-class TermFactory
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Service\CustomFieldManager;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\CheckedOptionsArray;
+
+/**
+ * Checks the value of a ticket field
+ *
+ * @option int field_id   The field to check
+ * @option mixed value    The value. For choice, this will be multiple ints. For others, it will be a string.
+ */
+class CheckTicketContextualField extends AbstractTriggerTerm
 {
-	public function createFromArray(array $term_info)
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
 	{
-		return $this->create($term_info['type'], $term_info['op'], $term_info['options']);
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('field_id', 'value');
+		return $options;
 	}
 
-	public function create($type, $op, array $options)
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if (preg_match('#^Check(User|Ticket|Org)(Contextual)?Field(\d+)$#', $type, $m)) {
-			$class_type = 'Check' . $m[1] . $m[2] . 'Field';
-			$options['field_id'] = $m[3];
-		} else {
-			$class_type = $type;
+		$options = $this->getTermOptions();
+
+		#------------------------------
+		# Get the field value
+		#------------------------------
+		/** @var CustomFieldManager $manager */
+		$value = null;
+		if ($manager = $context->getVars()->get('custom_field_manager')) {
+			$field_id = $this->getTermOptions()->get('field_id');
+			$value = $manager->getFieldRawData($field_id, $ticket);
 		}
 
-		$class_name = "Application\\DeskPRO\\Tickets\\Triggers\\Terms\\$class_type";
-		if (!class_exists($class_name)) {
-			throw new \InvalidArgumentException("Unknown term $type (could not locate class: $class_name)");
-		}
+		return $this->isStringMatch($ticket, $context, TermValue::createWithValue($value), $options->get('value'));
+	}
 
-		$term = new $class_name($op, $options);
-		return $term;
+
+	/**
+	 * @return string
+	 */
+	public function getTermType()
+	{
+		return 'CheckTicketContextualField' . $this->getTermOptions()->get('field_id');
 	}
 }

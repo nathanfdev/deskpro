@@ -40,6 +40,7 @@ use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\UserBundle\Form\NewTicketType;
 use Orb\Util\Arrays;
 use Symfony\Component\Form\Exception\OutOfBoundsException;
+use Symfony\Component\HttpFoundation\Request;
 
 class NewTicketController extends AbstractController
 {
@@ -52,6 +53,8 @@ class NewTicketController extends AbstractController
 	 */
     public function newAction($format = 'normal', $for_department_id = 0)
     {
+	    /** @var Request $request */
+	    $request = $this->get('request');
 		if (!$this->person->hasPerm('core.tickets_submit_check')) {
 			return $this->renderLoginOrPermissionError($this->generateUrl('user_tickets_new'));
 		}
@@ -198,13 +201,16 @@ class NewTicketController extends AbstractController
 			$captcha_html = $captcha->getHtml();
 		}
 
-		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
+		if ($request->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 
 			if (!$this->consumeRequest('newticket')) {
 				return $this->redirectRoute('user');
 			}
 
-			$form->handleRequest($this->get('request'));
+			$form->handleRequest($request);
+			if (!$request->request->has($new_custom_fields_form->getName())) {
+				$request->request->set($new_custom_fields_form->getName(), array());
+			}
 			$new_custom_fields_form->handleRequest($this->get('request'));
 
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
