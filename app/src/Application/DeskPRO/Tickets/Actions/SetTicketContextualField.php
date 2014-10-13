@@ -33,10 +33,9 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
 
 class SetTicketContextualField extends AbstractSetCustomField
 {
@@ -87,26 +86,10 @@ class SetTicketContextualField extends AbstractSetCustomField
 			}
 		}
 
-		$form = $fm->createFieldForm($def, $ticket, $formContext);
-
-//  todo should be a way to dynamicaly add a choice inside form
-
-		/** @var EntityChoiceList $choices */
-		$choices = $form->get('value')->getConfig()->getOption('choice_list');
-		$check = strtolower($value);
-		$newVal = null;
-		foreach ($choices->getChoices() as $choice) {
-			/** @var CustomFieldDefinition $choice */
-			if (strtolower($choice['title']) === $check) {
-				$newVal = $choice['id'];
-			}
+		$form = $fm->createFieldForm($def, $ticket, $formContext, array('allow_add' => true));
+		$form->submit(array('value' => $value));
+		if ($form->isValid()) {
+			$fm->flush($form);
 		}
-
-		if (!$newVal) {
-			// todo
-		}
-
-		$form->submit(array('value' => $newVal));
-
 	}
 }

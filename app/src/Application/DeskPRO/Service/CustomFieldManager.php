@@ -204,7 +204,7 @@ class CustomFieldManager
 			return null;
 		}
 
-		return $this->createFieldFormBuilder($definition, $owner, $context)->getForm();
+		return $this->createFieldFormBuilder($definition, $owner, $context, null, $options)->getForm();
 	}
 
 	/**

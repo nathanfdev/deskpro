@@ -31,6 +31,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Form\Transformer\CustomDataTransformer;
 use Application\DeskPRO\Form\Transformer\CustomFields\ChoiceDataTransformer;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\From;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -73,7 +74,10 @@ class ChoiceType extends CustomFieldType
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
 		parent::setDefaultOptions($resolver);
-		$resolver->setDefaults(array('data_class' => null));
+		$resolver->setDefaults(array(
+			'data_class' => null,
+			'allow_add' => false,
+		));
 	}
 
 	/**
@@ -136,5 +140,59 @@ class ChoiceType extends CustomFieldType
 	public function onPostSubmit(FormEvent $event)
 	{
 		return;
+	}
+
+	public function onPreSubmit(FormEvent $event)
+	{
+		if (!$data = $event->getData()) {
+			return;
+		}
+		$form = $event->getForm();
+		$allowAdd = $form->getConfig()->getOption('allow_add');
+
+		if ($allowAdd && isset($data['value']) && !is_numeric($data['value'])) {
+
+			// first, string comparison
+			/** @var EntityChoiceList $choices */
+			$choices = $form->get('value')->getConfig()->getOption('choice_list')->getChoices();
+			$check = strtolower($data['value']);
+			$newVal = null;
+			foreach ($choices as $choice) {
+				/** @var CustomFieldDefinition $choice */
+				if (strtolower($choice['title']) === $check) {
+					$newVal = $choice['id'];
+				}
+			}
+
+			// then, add new choice to list
+			if (!$newVal) {
+				$newDef = clone $this->definition;
+				$newDef['id'] = null;
+				$newDef->parent = $this->definition;
+				$newDef->children = new ArrayCollection();
+				$newDef['title'] = $data['value'];
+
+				if ($context = $form->getConfig()->getOption('context')) {
+					$newDef['context_id'] = $context['id'];
+				}
+
+				$form->get('value')->getConfig()->getOption('em')->persist($newDef);
+				$form->get('value')->getConfig()->getOption('em')->flush($newDef);
+				$newVal = $newDef['id'];
+				$choices[$newVal] = $newDef;
+
+
+				$form->remove('value');
+				$form->add('value', 'entity', array_merge($this->getValueOptions(), array(
+					'class' => 'DeskPRO:CustomFieldDefinition',
+					'choices' => $choices,
+				)));
+			}
+
+			$data['value'] = $newVal;
+			$event->setData($data);
+		}
+
+		parent::onPreSubmit($event);
 	}
 }
