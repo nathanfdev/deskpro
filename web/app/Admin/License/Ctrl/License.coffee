@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 	class Admin_License_Ctrl_License extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_License_Ctrl_License'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = ['$window']
+		@DEPS      = ['$window', 'DpLicense']
 
 		init: ->
 			@license          = null
@@ -72,5 +72,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		save: ->
 			return
+
+		openUpgradeLicense: ->
+			@DpLicense.openUpgradeLicense('upgrade_plan')
 
 	Admin_License_Ctrl_License.EXPORT_CTRL()

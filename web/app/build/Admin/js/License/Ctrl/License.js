@@ -15,7 +15,7 @@
 
       Admin_License_Ctrl_License.CTRL_AS = 'Ctrl';
 
-      Admin_License_Ctrl_License.DEPS = ['$window'];
+      Admin_License_Ctrl_License.DEPS = ['$window', 'DpLicense'];
 
       Admin_License_Ctrl_License.prototype.init = function() {
         var old_title;
@@ -96,6 +96,10 @@
       };
 
       Admin_License_Ctrl_License.prototype.save = function() {};
+
+      Admin_License_Ctrl_License.prototype.openUpgradeLicense = function() {
+        return this.DpLicense.openUpgradeLicense('upgrade_plan');
+      };
 
       return Admin_License_Ctrl_License;
 

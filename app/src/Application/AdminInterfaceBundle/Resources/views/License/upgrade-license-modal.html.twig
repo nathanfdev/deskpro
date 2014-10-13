@@ -1,0 +1,30 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">License Limit Reached</h4>
+{% endblock %}
+{% block modal_body %}
+	<div ng-show="initial_loading">
+		<div style="padding: 50px 0; text-align: center;">
+			Please wait while we connect to the DeskPRO licensing server.
+		</div>
+	</div>
+	<div ng-hide="initial_loading">
+		<p>
+			You are already using all of the agent seats that your license allows.
+		</p>
+		<p>
+			Increase your license from {{ ng_var('planInfo.current_plan.agents') }} to {{ ng_var('planInfo.next_plan.agents') }} agents to create a new agent.
+			You will be charged {{ ng_var('planInfo.next_plan.upgrade_cost_usd_display') }} (pro-rata rate of {{ ng_var('additional_yearly_cost_display') }} from now until {{ ng_var('planInfo.current_plan.expires | amDateFormat:"MMM D, YYYY"') }}.
+		</p>
+
+		{% include 'AdminInterfaceBundle:License:payment-form.html.twig' %}
+	</div>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-show="initial_loading">
+		<i class="spinner-flat"></i>
+	</div>
+	<div ng-hide="initial_loading">
+
+	</div>
+{% endblock %}
