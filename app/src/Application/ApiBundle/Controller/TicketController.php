@@ -405,12 +405,12 @@ class TicketController extends AbstractController
 			$this->em->persist($ticket);
 			$this->em->persist($message);
 
+			$this->em->flush();
+
 			$labels = $this->in->getCleanValueArray('label', 'string', 'discard');
 			$ticket->getLabelManager()->setLabelsArray($labels);
 
 			App::setCurrentPerson($this->person);
-
-			$this->em->flush();
 
 			$field_manager = $this->container->getSystemService('ticket_fields_manager');
 			$post_custom_fields = $this->getCustomFieldInput();
