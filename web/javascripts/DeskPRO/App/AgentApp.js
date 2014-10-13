@@ -6,7 +6,8 @@ define([
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',
 	'DeskPRO/Service/LabelDefinition',
-	'ngContextMenu'
+	'ngContextMenu',
+	'DeskPRO/Directive/DpTicketQuickActions'
 ], function(
 	angular,
 	x1,
@@ -15,7 +16,8 @@ define([
 	Strings,
 	DeskPRO_Directive_DpLabel,
     DeskPRO_Service_LabelDefinition,
-    ngContextMenu
+    ngContextMenu,
+    DeskPRO_Directive_DpTicketQuickActions
 	) {
 	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu']);
 
@@ -1026,6 +1028,7 @@ define([
 	}]);
 
 	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
+	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
 
 	return AgentApp;
 });

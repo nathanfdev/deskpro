@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
+use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -428,10 +429,11 @@ class TicketResultsDisplay implements PersonContextInterface
 
 		$message_data = $this->db->fetchAllKeyed("
 			SELECT
-				DISTINCT(tickets_messages.ticket_id), tickets_messages.id, tickets_messages.ticket_id, tickets_messages.date_created, tickets_messages.message,
-				people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent
+				tickets_messages.id, tickets_messages.ticket_id, tickets_messages.date_created, tickets_messages.message,
+				people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent,
+				tickets_messages.is_agent_note
 			FROM tickets_messages
-			LEFT JOIN people ON (people.id = tickets_messages.person_id)
+			JOIN people ON (people.id = tickets_messages.person_id)
 			WHERE tickets_messages.ticket_id IN (" . implode(',', $this->ticket_ids) . ")
 			ORDER BY tickets_messages.id DESC
 		", array(), 'id');
@@ -441,6 +443,13 @@ class TicketResultsDisplay implements PersonContextInterface
 			if (!isset($this->all_previews[$m['ticket_id']])) {
 				$this->all_previews[$m['ticket_id']] = array();
 			}
+
+			$m['status'] = $m['is_agent_note']
+				? 'wrote a note'
+				: ($this->tickets[$m['ticket_id']]->date_created->format('Y-m-d H:i:s') === $m['date_created']
+					? 'created ticket'
+					: 'replied'
+				);
 
 			$m['date_created'] = \DateTime::createFromFormat('Y-m-d H:i:s', $m['date_created']);
 
@@ -456,7 +465,12 @@ class TicketResultsDisplay implements PersonContextInterface
 				$m['display_name'] = 'User';
 			}
 
+
+
 			$m['preview_text'] = $this->_getMessagePreviewText($m['message'], 750);
+			$m['picture_url_16'] = isset($this->people[$m['person_id']])
+				? $this->people[$m['person_id']]->getPictureUrl(16)
+				: null;
 
 			$this->all_previews[$m['ticket_id']][] = $m;
 		}

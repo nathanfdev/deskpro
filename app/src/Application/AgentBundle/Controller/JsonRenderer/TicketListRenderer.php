@@ -301,11 +301,13 @@ class TicketListRenderer
 					'preview_text'     => $m['preview_text'],
 					'date_created'     => $m['date_created']->format('Y-m-d H:i:s'),
 					'date_created_ts'  => $m['date_created']->getTimestamp(),
+					'status'           => $m['status'],
 				),
 				'person' => array(
 					'id'            => $m['person_id'],
 					'display_name'  => $m['display_name'],
 					'is_agent'      => $m['is_agent'],
+					'picture_url_16' => $m['picture_url_16'],
 				),
 			);
 		}

@@ -4601,6 +4601,20 @@ blockquote {
 			display: inline-block;
 		}
 	}
+	ul.actions > li {
+		padding: 0 3px;
+		margin: 0;
+		border-left: 1px solid #ccc;
+		float: left;
+	}
+	ul.actions > li:first-child {
+		border-left: none;
+	}
+	ul.actions > li:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
 }
 
 ul.jqtree-tree {
