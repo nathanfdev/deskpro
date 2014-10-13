@@ -37,6 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Orb\Util\Util;
 
 class PersonSearch extends SearcherAbstract
@@ -972,26 +973,33 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_LABEL:
 
-					if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-					elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
-
-					$any = false;
-					if (isset($choice['label'])) {
-						$choice = $choice['label'];
-					}
-
-					foreach ($person->getLabelManager()->getLabelsArray() as $label) {
-						if (strpos(strtolower($label), strtolower($choice)) !== false) {
-							$any = true;
-							if ($op == self::OP_NOTCONTAINS) {
-								return false;
-							}
+					$choice_labels = array();
+					if (!empty($choice['labels'])) {
+						foreach ($choice['labels'] as $l) {
+							$l = Strings::utf8_strtolower($l);
+							$choice_labels[$l] = $l;
 						}
 					}
 
-					if ($op == self::OP_CONTAINS AND !$any) {
-						return false;
+					$has = false;
+					foreach ($person->getLabelManager()->getLabelsArray() as $l) {
+						$l = Strings::utf8_strtolower($l->label);
+						if (isset($choice_labels[$l])) {
+							$has = true;
+							break;
+						}
 					}
+
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						if (!$has) {
+							return false;
+						}
+					} else {
+						if ($has) {
+							return false;
+						}
+					}
+
 					break;
 			}
 		}
