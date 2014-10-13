@@ -74,12 +74,26 @@ define [
 					page: @new_page
 				}
 
-				@Api.sendPostJson('/channel/facebook/pages', postData).then( (response) =>
-					@available_user_pages = @available_user_pages.filter (page) -> page.id isnt response.data.graph_id
-					@new_page_model = new Admin_ChannelFacebook_FormModel_EditFacebookPageModel(response.data || {})
-					@$scope.$parent.ChannelFacebookList.pingElement('save_page')
-					@FacebookPagesData.addToList(@new_page_model.getFormData())
-					@$state.go('tickets.channel_facebook.edit', { id: response.data.id })
+				@Api.sendPostJson('/channel/facebook/pages', postData).then((response) =>
+					if response.status == 200
+						@available_user_pages = @available_user_pages.filter (page) -> page.id isnt response.data.graph_id
+						@new_page_model = new Admin_ChannelFacebook_FormModel_EditFacebookPageModel(response.data || {})
+						@$scope.$parent.ChannelFacebookList.pingElement('save_page')
+						@FacebookPagesData.addToList(@new_page_model.getFormData())
+						@$state.go('tickets.channel_facebook.edit', { id: response.data.id })
+					else
+						@Growl.error(@getRegisteredMessage('connected_fail'))
+						@_stopSpinnerTimeout('connecting_app')
+						@app_connected = false
+						@app_credentials_required = true
+						@checked_for_pages = false
+
+				).catch((data, status) =>
+					@Growl.error(@getRegisteredMessage('connected_fail'))
+					@_stopSpinnerTimeout('connecting_app')
+					@app_connected = false
+					@app_credentials_required = true
+					@checked_for_pages = false
 				)
 
 		_getPages: ->
@@ -94,7 +108,25 @@ define [
 							authResponse = FB.getAuthResponse()
 							@user_graph_id = authResponse.userID
 							@user_access_token = authResponse.accessToken
-							d.resolve(@user_graph_id)
+							FB.api("/#{@user_graph_id}/permissions", 'GET', {}, (perms) =>
+								pp = (p.permission for p in perms.data)
+								if not "manage_pages" in pp or not "read_page_mailboxes" in pp
+									@Growl.error(@getRegisteredMessage('invalid_permissions'))
+									@_stopSpinnerTimeout('connecting_app')
+
+								FB.login((response) =>
+									if response.authResponse
+										@user_graph_id = response.authResponse.userID
+										@user_access_token = response.authResponse.accessToken
+									else
+										@Growl.error(@getRegisteredMessage('connected_fail'))
+										@_stopSpinnerTimeout('connecting_app')
+									d.resolve(@user_graph_id)
+								, {
+										scope: 'public_profile,manage_pages,read_page_mailboxes'
+									}
+								)
+							)
 						)
 					else
 						FB.login((response) =>
@@ -106,7 +138,7 @@ define [
 								@_stopSpinnerTimeout('connecting_app')
 							d.resolve()
 						, {
-								scope: 'public_profile,manage_pages'
+								scope: 'public_profile,manage_pages,read_page_mailboxes'
 							}
 						)
 				)
@@ -124,7 +156,7 @@ define [
 			).then(() =>
 				FB.api("/#{@user_graph_id}/permissions", 'GET', {}, (perms) =>
 					pp = (p.permission for p in perms.data)
-					if "manage_pages" in pp
+					if "manage_pages" in pp and "read_page_mailboxes" in pp
 						@checked_for_pages = true
 					else
 						@Growl.error(@getRegisteredMessage('invalid_permissions'))

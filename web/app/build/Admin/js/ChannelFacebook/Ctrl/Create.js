@@ -91,15 +91,31 @@
           };
           return this.Api.sendPostJson('/channel/facebook/pages', postData).then((function(_this) {
             return function(response) {
-              _this.available_user_pages = _this.available_user_pages.filter(function(page) {
-                return page.id !== response.data.graph_id;
-              });
-              _this.new_page_model = new Admin_ChannelFacebook_FormModel_EditFacebookPageModel(response.data || {});
-              _this.$scope.$parent.ChannelFacebookList.pingElement('save_page');
-              _this.FacebookPagesData.addToList(_this.new_page_model.getFormData());
-              return _this.$state.go('tickets.channel_facebook.edit', {
-                id: response.data.id
-              });
+              if (response.status === 200) {
+                _this.available_user_pages = _this.available_user_pages.filter(function(page) {
+                  return page.id !== response.data.graph_id;
+                });
+                _this.new_page_model = new Admin_ChannelFacebook_FormModel_EditFacebookPageModel(response.data || {});
+                _this.$scope.$parent.ChannelFacebookList.pingElement('save_page');
+                _this.FacebookPagesData.addToList(_this.new_page_model.getFormData());
+                return _this.$state.go('tickets.channel_facebook.edit', {
+                  id: response.data.id
+                });
+              } else {
+                _this.Growl.error(_this.getRegisteredMessage('connected_fail'));
+                _this._stopSpinnerTimeout('connecting_app');
+                _this.app_connected = false;
+                _this.app_credentials_required = true;
+                return _this.checked_for_pages = false;
+              }
+            };
+          })(this))["catch"]((function(_this) {
+            return function(data, status) {
+              _this.Growl.error(_this.getRegisteredMessage('connected_fail'));
+              _this._stopSpinnerTimeout('connecting_app');
+              _this.app_connected = false;
+              _this.app_credentials_required = true;
+              return _this.checked_for_pages = false;
             };
           })(this));
         }
@@ -120,7 +136,35 @@
                   authResponse = FB.getAuthResponse();
                   _this.user_graph_id = authResponse.userID;
                   _this.user_access_token = authResponse.accessToken;
-                  return d.resolve(_this.user_graph_id);
+                  return FB.api("/" + _this.user_graph_id + "/permissions", 'GET', {}, function(perms) {
+                    var p, pp, _ref, _ref1;
+                    pp = (function() {
+                      var _i, _len, _ref, _results;
+                      _ref = perms.data;
+                      _results = [];
+                      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        p = _ref[_i];
+                        _results.push(p.permission);
+                      }
+                      return _results;
+                    })();
+                    if ((_ref = !"manage_pages", __indexOf.call(pp, _ref) >= 0) || (_ref1 = !"read_page_mailboxes", __indexOf.call(pp, _ref1) >= 0)) {
+                      _this.Growl.error(_this.getRegisteredMessage('invalid_permissions'));
+                      _this._stopSpinnerTimeout('connecting_app');
+                    }
+                    return FB.login(function(response) {
+                      if (response.authResponse) {
+                        _this.user_graph_id = response.authResponse.userID;
+                        _this.user_access_token = response.authResponse.accessToken;
+                      } else {
+                        _this.Growl.error(_this.getRegisteredMessage('connected_fail'));
+                        _this._stopSpinnerTimeout('connecting_app');
+                      }
+                      return d.resolve(_this.user_graph_id);
+                    }, {
+                      scope: 'public_profile,manage_pages,read_page_mailboxes'
+                    });
+                  });
                 });
               } else {
                 return FB.login(function(response) {
@@ -133,7 +177,7 @@
                   }
                   return d.resolve();
                 }, {
-                  scope: 'public_profile,manage_pages'
+                  scope: 'public_profile,manage_pages,read_page_mailboxes'
                 });
               }
             });
@@ -167,7 +211,7 @@
                 }
                 return _results;
               })();
-              if (__indexOf.call(pp, "manage_pages") >= 0) {
+              if (__indexOf.call(pp, "manage_pages") >= 0 && __indexOf.call(pp, "read_page_mailboxes") >= 0) {
                 return _this.checked_for_pages = true;
               } else {
                 _this.Growl.error(_this.getRegisteredMessage('invalid_permissions'));

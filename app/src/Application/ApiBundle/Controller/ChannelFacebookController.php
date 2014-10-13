@@ -37,10 +37,10 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\FacebookApp;
 use Application\DeskPRO\Entity\FacebookPage;
 use Application\DeskPRO\Facebook\EditPage;
-use Application\DeskPRO\Facebook\FacebookApi;
 use Application\DeskPRO\Facebook\Type\EditPageType;
 
 class ChannelFacebookController extends AbstractController implements ProtectedControllerInterface
@@ -91,27 +91,29 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
 			return $this->createApiErrorResponse('page_exists', 'this page already exists as a channel');
 		}
 
-		$existing_app = null;
-		if (isset($page_postdata['app']) && isset($page_postdata['app']['app_id'])) {
+		try {
+			$existing_app = null;
+			if (isset($page_postdata['app']) && isset($page_postdata['app']['app_id'])) {
+				$fb_app_repo  = $this->container->getEm()->getRepository('DeskPRO:FacebookApp');
+				$existing_app = $fb_app_repo->findOneBy(array('app_id' => $page_postdata['app']['app_id']));
+			}
 
-			// TODO: remember that apps need a random string for subscribing
+			$page      = new FacebookPage();
+			$page->app = $existing_app ? : new FacebookApp();
 
-			$fb_app_repo = $this->container->getEm()->getRepository('DeskPRO:FacebookApp');
-			$existing_app = $fb_app_repo->findOneBy(array('app_id' => $page_postdata['app']['app_id']));
+			$model = new EditPage($page);
+			$form  = $this->createForm(new EditPageType(), $model);
+			$form->submit($page_postdata, true);
+
+			$model->save($this->container->getEm());
+
+			$data = $this->getContainer()->getSerializer()->serialize($page);
+
+			return $this->createApiSuccessResponse($data);
+		} catch (\Exception $e) {
+			throw $e;
+			return $this->createApiErrorResponse('invalid_argument', 'bad request - please check app credentials and retry');
 		}
-
-		$page = new FacebookPage();
-		$page->app = $existing_app ?: new FacebookApp();
-
-		$model = new EditPage($page);
-		$form = $this->createForm(new EditPageType(), $model);
-		$form->submit($page_postdata, true);
-
-		$model->save($this->container->getEm());
-
-		$data = $this->getContainer()->getSerializer()->serialize($page);
-
-		return $this->createApiSuccessResponse($data);
 	}
 
 

@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use \Doctrine\ORM\Mapping\ClassMetadata;
+use Orb\Util\Strings;
 
 /**
  * @property int $id
@@ -45,6 +46,7 @@ use \Doctrine\ORM\Mapping\ClassMetadata;
  * @property string $page_token
  * @property string $user_token
  * @property string $name
+ * @property string $verify_token
  * @property string $picture_url
  * @property string $user_graph_id
  * @property bool $import_wall_posts
@@ -96,6 +98,11 @@ class FacebookPage extends DomainObject
 	protected $name;
 
 	/**
+	 * @var string the verify token
+	 */
+	protected $verify_token;
+
+	/**
 	 * @var string the page name
 	 */
 	protected $picture_url;
@@ -144,6 +151,7 @@ class FacebookPage extends DomainObject
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
+		$this->verify_token = Strings::random(8);
 		$this->import_wall_posts = false;
 		$this->disable_own_wall_posts = false;
 		$this->import_direct_messages = false;
@@ -183,6 +191,7 @@ class FacebookPage extends DomainObject
 		$builder->mapString('user_token');
 		$builder->mapString('user_graph_id');
 		$builder->mapString('name');
+		$builder->mapString('verify_token');
 		$builder->mapString('picture_url');
 		$builder->mapBoolean('import_wall_posts');
 		$builder->mapBoolean('disable_own_wall_posts');

@@ -45,7 +45,7 @@
 	'admin.channels.facebook_app_setup'                           => 'Facebook App Setup',
 	'admin.channels.facebook_app_id'                              => 'App ID',
 	'admin.channels.facebook_app_secret'                          => 'App Secret',
-	'admin.channels.facebook_app_error'                           => 'Please enter your Facebook App ID and App Secret<br>You can create or find one here: <a href="https://developers.facebook.com/apps">https://developers.facebook.com/apps</a>',
+	'admin.channels.facebook_app_error'                           => 'Your app credentials are not valid. Please enter your Facebook App ID and App Secret<br>You can create or find one here: <a href="https://developers.facebook.com/apps">https://developers.facebook.com/apps</a>',
 	'admin.channels.facebook_invalid_permissions'                 => 'Failed to recieve permission to manage your pages.',
 	'admin.channels.facebook_select_page'                         => 'You can create multiple Facebook Page channels. Which page would you like to use for this channel?',
 	'admin.channels.facebook_select_page_none'                    => 'We could not find any Facebook Pages that your Facebook Account has access to manage. Please create a Facebook Page and return to this page to create your DeskPRO ticket channel.',

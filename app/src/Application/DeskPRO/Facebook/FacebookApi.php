@@ -35,9 +35,11 @@
 namespace Application\DeskPRO\Facebook;
 
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\FacebookApp;
 use Application\DeskPRO\Entity\FacebookPage;
 use Guzzle\Http\Client;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class FacebookApi
 {
@@ -52,14 +54,29 @@ class FacebookApi
 	protected $app;
 
 	/**
+	 * @var App ID
+	 */
+	protected $app_id;
+
+	/**
+	 * @var App secret
+	 */
+	protected $app_secret;
+
+	/**
 	 * @var string app token using for this request
 	 */
 	protected $app_token;
 
-	public function __construct(FacebookApp $app)
+	public function __construct(FacebookApp $app = null, $app_id = null, $app_secret = null)
 	{
-		$this->app = $app;
-		//$this->facebook = new \Facebook(array('appId' => $app->app_id, 'secret' => $app->app_secret));
+		if ($app) {
+			$this->app_id = $app->app_id;
+			$this->app_secret = $app->app_secret;
+		} else {
+			$this->app_id = $app_id;
+			$this->app_secret = $app_secret;
+		}
 	}
 
 
@@ -74,8 +91,8 @@ class FacebookApi
 		if (!$this->app_token) {
 			$output = $this->sendGetRequest(
 				'/oauth/access_token', array(
-					'client_id' => $this->app->app_id,
-					'client_secret' => $this->app->app_secret,
+					'client_id' => $this->app_id,
+					'client_secret' => $this->app_secret,
 					'grant_type' => 'client_credentials'
 				)
 			);
@@ -100,8 +117,8 @@ class FacebookApi
 		$output = $this->sendGetRequest(
 			'/oauth/access_token', array(
 				'grant_type'        => 'fb_exchange_token',
-				'client_id'         => $this->app->app_id,
-				'client_secret'     => $this->app->app_secret,
+				'client_id'         => $this->app_id,
+				'client_secret'     => $this->app_secret,
 				'fb_exchange_token' => $page->user_token
 			)
 		);
@@ -149,6 +166,20 @@ class FacebookApi
 		return true;
 	}
 
+	public function commentOnPost($graph_id, $message, $token)
+	{
+		$output = $this->sendPostRequest(
+			sprintf('/%s/comments', $graph_id),
+			array(
+				'app_id' => $this->app_id,
+				'access_token' => $token,
+				'message' => $message
+			)
+		);
+
+		return true;
+	}
+
 	public function subscribeToFeed(FacebookPage $page)
 	{
 
@@ -163,9 +194,11 @@ class FacebookApi
 		if ($output['success']) {
 			$params = array(
 				'object'       => 'page',
-				'callback_url' => '107.170.193.140/fb.php',
 				'fields'       => 'feed',
-				'verify_token' => 'okokok',
+				'callback_url' => App::getRouter()->generate(
+						'api_channel_facebook_incoming', array(), UrlGeneratorInterface::ABSOLUTE_URL
+					),
+				'verify_token' => $page->verify_token,
 				'access_token' => $this->app_token
 			);
 			$output = $this->sendPostRequest(
@@ -221,4 +254,3 @@ class FacebookApi
 		return $output;
 	}
 }
- 

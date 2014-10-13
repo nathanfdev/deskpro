@@ -301,7 +301,7 @@ $container->loadFromExtension('twig', array(
 		)
 	),
 	'globals' => array(
-		'experimental_admin_features' => false
+		'experimental_admin_features' => true
 	)
 ));
 
