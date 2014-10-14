@@ -6,11 +6,13 @@ define [
 			@form = {brand: {}}
 			@form.brand.id = @brand.id || 0
 			@form.brand.name = @brand.name || ''
+			@form.brand.logo_blob = @brand.logo_blob
 
-#			if @brand.logo_blob
-#				@form.picture_set = 'current'
-#			else
-#				@form.picture_set = 'default'
+
+			if @brand.logo_blob
+				@form.logo_set = 'current'
+			else
+				@form.logo_set = 'default'
 
 		setBrandData: (data) ->
 			@form.brand = data

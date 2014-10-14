@@ -78,6 +78,33 @@ class BrandController extends AbstractController
 			$errors[] = 'Your brand must have a name';
 		}
 
+		if ($this->in->getBool('unset_logo')) {
+			if ($brand->logo_blob) {
+				$old_blob             = $brand->logo_blob;
+				$brand->logo_blob = null;
+
+				try {
+					$this->container->getBlobStorage()->deleteBlobRecord($old_blob);
+				} catch (\Exception $e) {
+				}
+			}
+		} elseif ($blobAuthCode = $this->in->getString('set_logo_blob')) {
+			if ($brand->logo_blob) {
+				$old_blob             = $brand->logo_blob;
+				$brand->logo_blob = null;
+
+				try {
+					$this->container->getBlobStorage()->deleteBlobRecord($old_blob);
+				} catch (\Exception $e) {
+				}
+			}
+
+			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($blobAuthCode);
+			if ($blob && $blob->isImage()) {
+				$brand->logo_blob = $blob;
+			}
+		}
+
 		if (!count($errors)) {
 			$brand->name = $name;
 

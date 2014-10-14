@@ -37,10 +37,12 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Application\DeskPRO\Entity\Blob;
 
 /**
  * @property int $id
  * @property string $name
+ * @property Blob $logo_blob
  */
 class Brand extends DomainObject
 {
@@ -56,6 +58,22 @@ class Brand extends DomainObject
 	 */
 	protected $name;
 
+	/**
+	 * @var Blob
+	 */
+	protected $logo_blob;
+
+
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, $deep, $visited);
+		$data['logo_blob'] = $this->logo_blob ? $this->logo_blob->toApiData() : null;
+
+		return $data;
+	}
+
+
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
@@ -69,5 +87,6 @@ class Brand extends DomainObject
 
 		$builder->mapId();
 		$builder->mapString('name');
+		$builder->addOwningOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob');
 	}
 }

@@ -17,8 +17,8 @@
 					dp-state-mark="brand.setup.edit.{{ ng_var('brand.id') }}">
 					<a href="{{ ng_href('brand.setup.edit', "{id: brand.id}") }}">
 					<span class="title-text">
-						{#<img ng-show="account.type == 'twilio'" src="{{ asset('images/site-icons/twilio_256.png') }}"#}
-							{#height="16" width="16">#}
+						<img ng-show="brand.logo_blob" ng-src="{{ ng_var('brand.logo_blob.thumbnail_url_20') }}"
+							height="20" width="20">
 						<span class="title-id" title="ID">#{{ ng_var('brand.id') }}</span>
 						<span class="title-text">{{ ng_var('brand.name') }}</span>
 					</span>
