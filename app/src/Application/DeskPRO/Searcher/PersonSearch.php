@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Searcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\TicketTerms;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -768,14 +769,12 @@ class PersonSearch extends SearcherAbstract
 	}
 
 
-
 	/**
-	 * Check a specific person against these terms to see if it matches.
-	 *
-	 * @param Person $person
+	 * @param Entity\Person $person
+	 * @param Entity\Ticket $ticket
 	 * @return bool
 	 */
-	public function doesPersontMatch(Entity\Person $person)
+	public function doesPersontMatch(Entity\Person $person, Entity\Ticket $ticket = null)
 	{
 		foreach ($this->terms as $info) {
 			list($term, $op, $choice) = $info;
@@ -1000,6 +999,21 @@ class PersonSearch extends SearcherAbstract
 						}
 					}
 
+					break;
+
+				default:
+					if ($ticket) {
+						$terms = new TicketTerms(array(array(
+							'type'    => $term,
+							'op'      => $op,
+							'options' => $choice
+						)));
+						if (!$terms->doesTicketMatch($ticket)) {
+							return false;
+						}
+					} else {
+						return false;
+					}
 					break;
 			}
 		}
