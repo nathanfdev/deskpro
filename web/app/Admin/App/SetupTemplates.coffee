@@ -37,6 +37,7 @@ define [
 				'Index/app-nav-tickets.html',
 				'Index/app-nav-crm.html',
 				'Index/app-nav-portal.html',
+				'Index/app-nav-brand.html',
 				'Index/app-nav-chat.html',
 				'Index/app-nav-twitter.html',
 				'Index/app-nav-apps.html',

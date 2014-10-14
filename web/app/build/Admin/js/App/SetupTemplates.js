@@ -28,7 +28,7 @@
       return Module.run([
         'dpTemplateManager', function(dpTemplateManager) {
           var t, templates, _i, _len;
-          templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html', 'Index/modal-alert.html', 'Index/modal-confirm-leavetab.html', 'Languages/modal-translate-phrase.html', 'Index/blank.html', 'Index/home.html', 'Common/work-hours-directive.html'];
+          templates = ['Index/app-nav-setup.html', 'Index/app-nav-agents.html', 'Index/app-nav-tickets.html', 'Index/app-nav-crm.html', 'Index/app-nav-portal.html', 'Index/app-nav-brand.html', 'Index/app-nav-chat.html', 'Index/app-nav-twitter.html', 'Index/app-nav-apps.html', 'Index/app-nav-server.html', 'Index/modal-alert.html', 'Index/modal-confirm-leavetab.html', 'Languages/modal-translate-phrase.html', 'Index/blank.html', 'Index/home.html', 'Common/work-hours-directive.html'];
           for (_i = 0, _len = templates.length; _i < _len; _i++) {
             t = templates[_i];
             dpTemplateManager.load(t);

@@ -1,0 +1,18 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+	<h4 class="modal-title">Delete Brand</h4>
+{% endblock %}
+{% block modal_body %}
+	<p>
+		Are you sure you want to delete this brand? (more info on deleting a brand, it's a dangerous thing)
+	</p>
+{% endblock %}
+{% block modal_footer %}
+	<div ng-hide="is_loading">
+		<button class="btn btn-success" ng-click="dismiss()"><i
+				class="fa fa-undo"></i> {{ phrase('agent.general.cancel') }}</button>
+		<button class="btn btn-danger" ng-click="doDelete()"><i
+				class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</button>
+	</div>
+	<i class="spinner-flat" ng-show="is_loading"></i>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span dp-ping-flash="display_brands" class="saved-ping"><i
+						class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+			</nav>
+			<h3 ng-pluralize count="ListCtrl.brands.length || 0"
+				when="{{ ng_plural_phrase('admin.brands.x_brands') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="brand in ListCtrl.brands"
+					dp-state-mark="brand.setup.edit.{{ ng_var('brand.id') }}">
+					<a href="{{ ng_href('brand.setup.edit', "{id: brand.id}") }}">
+					<span class="title-text">
+						{#<img ng-show="account.type == 'twilio'" src="{{ asset('images/site-icons/twilio_256.png') }}"#}
+							{#height="16" width="16">#}
+						<span class="title-id" title="ID">#{{ ng_var('brand.id') }}</span>
+						<span class="title-text">{{ ng_var('brand.name') }}</span>
+					</span>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('brand.setup.create') }}"
+					ng-class="{'active': isStateActive('.create') }"><i
+						class="fa fa-plus"></i> {{ phrase('admin.brands.new_brand') }}</a>
+			</div>
+		</article>
+	</section>
+
+{% endblock %}

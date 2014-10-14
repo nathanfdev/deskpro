@@ -1,5 +1,5 @@
 (function() {
-  define(['Admin/Main/DataService/EntityManager', 'Admin/FeedbackStatuses/DataService/FeedbackStatuses', 'Admin/FeedbackTypes/DataService/FeedbackTypes', 'Admin/FeedbackCategories/DataService/FeedbackCategories', 'Admin/ChannelSms/DataService/SmsAccounts', 'Admin/TicketAccounts/DataService/TicketAccounts', 'DeskPRO/Service/LabelDefinition', 'Admin/OptionBuilder/TypesDef/TicketCriteria', 'Admin/OptionBuilder/TypesDef/TicketActions', 'Admin/OptionBuilder/TypesDef/TicketFilter', 'Admin/Main/Service/DataServiceManager'], function(Admin_Main_DataService_EntityManager, Admin_FeedbackStatuses_DataService_FeedbackStatuses, Admin_FeedbackTypes_DataService_FeedbackTypes, Admin_FeedbackCategories_DataService_FeedbackCategories, Admin_ChannelSms_DataService_SmsAccounts, Admin_TicketAccounts_DataService_TicketAccounts, DeskPRO_Service_LabelDefinition, Admin_OptionBuilder_TypesDef_TicketCriteria, Admin_OptionBuilder_TypesDef_TicketActions, Admin_OptionBuilder_TypesDef_TicketFilter, Admin_Main_Service_DataServiceManager) {
+  define(['Admin/Main/DataService/EntityManager', 'Admin/FeedbackStatuses/DataService/FeedbackStatuses', 'Admin/FeedbackTypes/DataService/FeedbackTypes', 'Admin/FeedbackCategories/DataService/FeedbackCategories', 'Admin/ChannelSms/DataService/SmsAccounts', 'Admin/Brand/DataService/Brands', 'Admin/TicketAccounts/DataService/TicketAccounts', 'DeskPRO/Service/LabelDefinition', 'Admin/OptionBuilder/TypesDef/TicketCriteria', 'Admin/OptionBuilder/TypesDef/TicketActions', 'Admin/OptionBuilder/TypesDef/TicketFilter', 'Admin/Main/Service/DataServiceManager'], function(Admin_Main_DataService_EntityManager, Admin_FeedbackStatuses_DataService_FeedbackStatuses, Admin_FeedbackTypes_DataService_FeedbackTypes, Admin_FeedbackCategories_DataService_FeedbackCategories, Admin_ChannelSms_DataService_SmsAccounts, Admin_Brand_DataService_Brands, Admin_TicketAccounts_DataService_TicketAccounts, DeskPRO_Service_LabelDefinition, Admin_OptionBuilder_TypesDef_TicketCriteria, Admin_OptionBuilder_TypesDef_TicketActions, Admin_OptionBuilder_TypesDef_TicketFilter, Admin_Main_Service_DataServiceManager) {
     return function(Module) {
       Module.service('em', [
         function() {
@@ -24,6 +24,11 @@
       Module.service('SmsAccountsData', [
         'em', 'Api', '$q', function(em, Api, $q) {
           return new Admin_ChannelSms_DataService_SmsAccounts(em, Api, $q);
+        }
+      ]);
+      Module.service('BrandData', [
+        'em', 'Api', '$q', function(em, Api, $q) {
+          return new Admin_Brand_DataService_Brands(em, Api, $q);
         }
       ]);
       Module.service('TicketAccountsData', [

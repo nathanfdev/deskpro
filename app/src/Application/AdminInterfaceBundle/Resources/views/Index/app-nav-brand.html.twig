@@ -1,0 +1,12 @@
+{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% block nav_content %}
+	<nav class="dp-appnav">
+		<ul>
+			<li dp-state-mark="brand.setup">
+				<a href="{{ ng_href('brand.setup') }}">
+					<i class="fa fa-cogs"></i> <span>Setup</span> <i class="fa fa-caret-right"></i>
+				</a>
+			</li>
+		</ul>
+	</nav>
+{% endblock %}

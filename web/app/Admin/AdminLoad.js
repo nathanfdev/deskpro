@@ -99,6 +99,8 @@ define([
 	'Admin/Templates/Ctrl/TemplateList',
 	'Admin/ChannelSms/Ctrl/List',
 	'Admin/ChannelSms/Ctrl/Edit',
+	'Admin/Brand/Ctrl/List',
+	'Admin/Brand/Ctrl/Setup',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',
 	'Admin/TicketAccounts/Ctrl/Settings',

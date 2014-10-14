@@ -2978,6 +2978,51 @@ $collection->create('api_ticket_fields_setenabled', array(
 ));
 
 ########################################################################################################################
+# Brand
+########################################################################################################################
+
+$collection->create(
+	'api_brand_list', array(
+		'path'       => '/brands',
+		'controller' => 'ApiBundle:Brand:list',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_brand_create', array(
+		'path'       => '/brands',
+		'controller' => 'ApiBundle:Brand:save',
+		'methods'    => array('POST'),
+		'defaults'   => array('id' => 0)
+	)
+);
+
+$collection->create(
+	'api_brand_update', array(
+		'path'       => '/brands/{id}',
+		'controller' => 'ApiBundle:Brand:save',
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
+	'api_brand_read', array(
+		'path'       => '/brands/{id}',
+		'controller' => 'ApiBundle:Brand:show',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_brand_delete', array(
+		'path'       => '/brands/{id}',
+		'controller' => 'ApiBundle:Brand:remove',
+		'methods'    => array('DELETE'),
+	)
+);
+
+########################################################################################################################
 # SMS Channel
 ########################################################################################################################
 

@@ -78,6 +78,13 @@ define(function() {
 	});
 
 	routes.push({
+		id: 'brand',
+		url: '/brand',
+		templateName: 'Index/app-nav-brand.html',
+		controller: 'Admin_Main_Ctrl_Nav'
+	});
+
+	routes.push({
 		id: 'chat',
 		url: '/chat',
 		templateName: 'Index/app-nav-chat.html',
@@ -1301,6 +1308,31 @@ define(function() {
 		url: '/import',
 		templateName: 'ImportCsv/import-csv.html',
 		controller: 'Admin_ImportCsv_Ctrl_ImportCsv'
+	});
+
+	//##################################################################################################################
+	// Brand
+	//##################################################################################################################
+
+	routes.push({
+		id: 'brand.setup',
+		url: '/setup',
+		templateName: 'Brand/brand-list.html',
+		controller: 'Admin_Brand_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'brand.setup.create',
+		url: '/create',
+		templateName: 'Brand/brand-setup.html',
+		controller: 'Admin_Brand_Ctrl_Setup'
+	});
+
+	routes.push({
+		id: 'brand.setup.edit',
+		url: '/{id}',
+		templateName: 'Brand/brand-setup.html',
+		controller: 'Admin_Brand_Ctrl_Setup'
 	});
 
 	//##################################################################################################################

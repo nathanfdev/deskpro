@@ -1,0 +1,74 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="BrandSetup.saveBrand()">
+		<section class="dp-paneblock dp-listpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-lg-3">
+							<h3>{{ phrase('admin.brands.name') }}</h3>
+						</div>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" ng-model="form.brand.name" />
+						</div>
+					</div>
+
+					{#<div class="form-group">#}
+						{#<h3>Logo</h3>#}
+						{#<label style="margin-right: 5px;"><input type="radio" ng-model="BrandSetup.form.picture_set"#}
+								{#value="default" /> Default</label>#}
+						{#<label style="margin-right: 5px;" ng-if="BrandSetup.form.brand.logo_blob"><input type="radio"#}
+								{#ng-model="BrandSetup.form.picture_set" value="current" /> Current picture</label>#}
+						{#<label><input type="radio" ng-model="BrandSetup.form.picture_set" value="upload" /> Upload new picture</label>#}
+
+						{#<div ng-show="BrandSetup.form.picture_set == 'default'">#}
+							{#<img ng-src="{{ ng_var('BrandSetup.agent.default_picture_url_50') }}" />#}
+						{#</div>#}
+						{#<div ng-show="BrandSetup.form.picture_set == 'current'">#}
+							{#<img ng-src="{{ ng_var('BrandSetup.agent.picture_blob.thumbnail_url_50') }}" />#}
+						{#</div>#}
+						{#<div ng-show="BrandSetup.form.picture_set == 'upload'"#}
+							{#ng-controller="BrandSetup.uploadPictureCtrl as uploadPicture">#}
+							{#<div ng-show="is_loading_img">#}
+								{#<i class="spinner-flat"></i>#}
+							{#</div>#}
+							{#<div ng-show="new_image">#}
+								{#<img ng-src="{{ ng_var('new_image.thumbnail_url_50') }}" />#}
+
+								{#<div style="margin-top: 3px;">#}
+									{#<button class="btn btn-default btn-xs" type="button" ng-click="new_image = null">#}
+										{#Upload a different image#}
+									{#</button>#}
+								{#</div>#}
+							{#</div>#}
+							{#<div ng-show="!new_image && !is_loading_img">#}
+								{#<div class="alert alert-danger"#}
+									{#ng-show="error && error_message">{{ ng_var('error_message') }}</div>#}
+								{#<div class="alert alert-danger" ng-show="error && !error_message">There was a problem#}
+									{#uploading the selected file, please try again.#}
+								{#</div>#}
+								{#<input type="file" ng-file-select="onFileSelect($files)" />#}
+							{#</div>#}
+						{#</div>#}
+					{#</div>#}
+				</div>
+			</article>
+
+			{##################################################################################################}
+
+			<footer>
+				<div class="dp-content">
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_brand">Brand saved successfully.</div>
+{% endblock %}
