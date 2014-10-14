@@ -39,6 +39,7 @@ use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms;
 use Orb\Util\Util;
+use Application\DeskPRO\Util as DeskPROUtil;
 
 /**
  * This converts between 'new' and 'old' style term definitions.
@@ -149,10 +150,11 @@ class LegacyTermsTransformer
 				);
 
 			case 'FilterLabels':
+				$labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 				return array(
 					'type'    => 'label',
 					'op'      => $term->getTermOperator(),
-					'options' => array('label' => $options['labels'])
+					'options' => array('label' => $labels)
 				);
 
 			case 'FilterLanguage':
@@ -177,10 +179,11 @@ class LegacyTermsTransformer
 				);
 
 			case 'FilterOrgLabels':
+				$labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 				return array(
 					'type'    => 'org_label',
 					'op'      => $term->getTermOperator(),
-					'options' => array('labels' => $options['labels'])
+					'options' => array('labels' => $labels)
 				);
 
 			case 'FilterPriority':
@@ -241,10 +244,11 @@ class LegacyTermsTransformer
 				);
 
 			case 'FilterUserLabels':
+				$labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 				return array(
 					'type'    => 'person_label',
 					'op'      => $term->getTermOperator(),
-					'options' => array('labels' => $options['labels'])
+					'options' => array('labels' => $labels)
 				);
 
 			case 'FilterWorkflow':

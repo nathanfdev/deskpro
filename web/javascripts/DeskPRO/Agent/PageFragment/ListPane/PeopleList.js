@@ -238,7 +238,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 				case 'labels':
 					return person.labels && person.labels.length > 0;
 				case 'person_username':
-					return person.person_username.length > 0;
+					return person.person_username && person.person_username.length > 0;
 				default:
 					if (0 !== field.indexOf('person_fields')) return false;
 					return !!person[field];

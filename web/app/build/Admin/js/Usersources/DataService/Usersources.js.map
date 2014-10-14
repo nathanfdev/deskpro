@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "Usersources.js",
-  "sourceRoot": "../../../../../Admin/UserSources/DataService/",
+  "sourceRoot": "../../../../../Admin/Usersources/DataService/",
   "sources": [
     "Usersources.coffee"
   ],

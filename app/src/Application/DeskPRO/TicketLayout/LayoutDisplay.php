@@ -63,8 +63,21 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
 	public static function createFromLayout(Layout $layout, $mode, Ticket $ticket_context = null)
 	{
 		$obj = new self($mode, $ticket_context);
-		foreach ($layout as $f) {
-			$obj->add($f);
+
+		if ($ticket_context) {
+			foreach ($layout->all() as $f) {
+				if ($f->hasCriteria()) {
+					if ($f->getCriteria()->isTicketMatch($ticket_context)) {
+						$obj->add($f);
+					}
+				} else {
+					$obj->add($f);
+				}
+			}
+		} else {
+			foreach ($layout->all() as $f) {
+				$obj->add($f);
+			}
 		}
 
 		return $obj;

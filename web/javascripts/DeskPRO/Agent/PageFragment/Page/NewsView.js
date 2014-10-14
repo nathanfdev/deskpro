@@ -67,7 +67,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				$.ajax({
 					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
 					type: 'POST',
-					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
 					dataType: 'json'
 				});

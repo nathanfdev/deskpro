@@ -49,6 +49,9 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
 			$document->set('sticky_words', $sticky_words);
 		}
 
+		$document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
+		$document->set('date_active', date('Y-m-d H:i:s'));
+
 		return $document;
 	}
 } 

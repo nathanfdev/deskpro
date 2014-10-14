@@ -79,10 +79,8 @@ class ChangeCollection implements ChangeInterface
 	public static function newFromPersistedCollection($field_id, Collection $coll, $old = array())
 	{
 		if ($coll instanceof PersistentCollection) {
-//			$old = $coll->getSnapshot();
 			$new = $coll->toArray();
 		} else {
-//			$old = array();
 			$new = $coll->toArray();
 		}
 

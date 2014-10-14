@@ -126,7 +126,7 @@ define [
 				depData.email_gateway = null
 
 			if formModel.enable_user_title
-				depData.user_title = formModel.user_titl
+				depData.user_title = formModel.user_title
 
 			permData = formModel.agent_perms.getPermsData()
 			for own uid,usergroup of formModel.usergroup_perms

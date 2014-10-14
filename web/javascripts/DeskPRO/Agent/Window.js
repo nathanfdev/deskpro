@@ -569,8 +569,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				window.location.reload(false);
 			}
 		};
-
-
 	},
 
 	initPage: function() {
@@ -2231,6 +2229,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			default:
 				this.loadPage(routeData.url, routeData);
+				if (this.isSingleColMode()) {
+					$('#dp_omnibox').trigger('dpClose');
+					Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(i) {
+						i.close();
+					});
+				}
 				break;
 		}
 	},
@@ -4646,5 +4650,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 		return num;
+	},
+
+	isSingleColMode: function() {
+		return !(this.paneVis.tabs && this.paneVis.list);
 	}
 });

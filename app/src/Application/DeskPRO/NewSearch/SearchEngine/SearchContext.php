@@ -49,6 +49,29 @@ class SearchContext implements SearchContextInterface
 	 */
 	private $feedback_category_ids = array();
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	private $person;
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getPerson()
+	{
+		return $this->person;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 */
+	public function setPerson($person)
+	{
+		$this->person = $person;
+	}
+
 
 	/**
 	 * @return array

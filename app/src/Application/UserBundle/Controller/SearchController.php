@@ -264,7 +264,7 @@ class SearchController extends AbstractController
 
 		$se = $this->container->getSearchEngine();
 		$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
-		$results = $se->getUserSearch()->search($context, $content);
+		$results = $se->getUserSearch()->search($context, $content, array('limit_types' => array($content_type)));
 
 		return $this->render('UserBundle:Search:similar-to.html.twig', array(
 			'results' => $results->getTypedResults(),

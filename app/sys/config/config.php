@@ -438,6 +438,8 @@ $container->loadFromExtension(
 							'category_ids' => array('type' => 'integer'),
 							'labels'       => array(),
 							'sticky_words' => array(),
+							'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+							'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss')
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -457,6 +459,8 @@ $container->loadFromExtension(
 							'content'      => array(),
 							'status'       => array(),
 							'category_id'  => array('type' => 'integer'),
+							'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+							'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -476,6 +480,8 @@ $container->loadFromExtension(
 							'content'      => array(),
 							'status'       => array(),
 							'category_id'  => array('type' => 'integer'),
+							'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+							'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -495,6 +501,8 @@ $container->loadFromExtension(
 							'content'      => array(),
 							'status'       => array(),
 							'category_id'  => array('type' => 'integer'),
+							'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+							'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -511,6 +519,8 @@ $container->loadFromExtension(
 							'name'          => array('type' => 'string'),
 							'email_domains' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
 							'labels'        => array('type' => 'string'),
+							'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+							'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -529,7 +539,9 @@ $container->loadFromExtension(
 							'department_id' => array('type' => 'integer'),
 							'is_agent'      => array('type' => 'boolean'),
 							'agent_id'      => array('type' => 'integer'),
-							'messages'      => array()
+							'messages'      => array(),
+							'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+							'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -548,7 +560,9 @@ $container->loadFromExtension(
 							'last_name'     => array(),
 							'labels'        => array('type' => 'string'),
 							'emails'        => array('type' => 'string', 'analyzer' => 'email_analyzer'),
-							'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer')
+							'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer'),
+							'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+							'date_active'   => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',
@@ -562,14 +576,18 @@ $container->loadFromExtension(
 					),
 					'ticket'            => array(
 						'mappings'    => array(
-							'subject'       => array(),
-							'ref'           => array(),
-							'department_id' => array('type' => 'integer'),
-							'agent_id'      => array('type' => 'integer'),
-							'agent_team_id' => array('type' => 'integer'),
-							'labels'        => array(),
-							'participants'  => array(),
-							'messages'      => array()
+							'subject'         => array(),
+							'ref'             => array(),
+							'department'      => array('type' => 'integer'),
+							'agent'           => array('type' => 'integer'),
+							'agent_team'      => array('type' => 'integer'),
+							'organization_id' => array('type' => 'integer'),
+							'person_id'       => array('type' => 'integer'),
+							'labels'          => array(),
+							'participants'    => array(),
+							'messages'        => array(),
+							'date_created'    => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+							'date_active'     => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
 						),
 						'persistence' => array(
 							'driver'                        => 'orm',

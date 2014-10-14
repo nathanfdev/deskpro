@@ -131,6 +131,9 @@ class NewsController extends AbstractController
 		if ($this->request->isPartialRequest() == 'portal') {
 			$per_page = 2;
 		}
+		if ($_format == 'rss') {
+			$per_page = 20;
+		}	
 
 		$total = $searcher->getCount();
 		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);

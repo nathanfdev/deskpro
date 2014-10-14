@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket as Ticket;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * @SWG\Resource(
@@ -308,8 +309,6 @@ class TicketController extends AbstractController
 
 		$message_blobs = $this->_readTicketMessageAttachments();
 
-		$this->db->beginTransaction();
-
 		// make this check as late as possible to reduce race conditions
 		if ($this->in->checkIsset('person_id')) {
 			$person = $this->em->getRepository('DeskPRO:Person')->findOneById($this->in->getInt('person_id'));
@@ -391,6 +390,8 @@ class TicketController extends AbstractController
 		// need to ensure we treat things as the message owner
 		App::setCurrentPerson($message->person);
 
+		$this->db->beginTransaction();
+
 		try {
 			if ($org && !$org->id) {
 				$this->em->persist($org);
@@ -404,12 +405,12 @@ class TicketController extends AbstractController
 			$this->em->persist($ticket);
 			$this->em->persist($message);
 
+			$this->em->flush();
+
 			$labels = $this->in->getCleanValueArray('label', 'string', 'discard');
 			$ticket->getLabelManager()->setLabelsArray($labels);
 
 			App::setCurrentPerson($this->person);
-
-			$this->em->flush();
 
 			$field_manager = $this->container->getSystemService('ticket_fields_manager');
 			$post_custom_fields = $this->getCustomFieldInput();
@@ -429,6 +430,14 @@ class TicketController extends AbstractController
 		} catch (\Exception $e) {
 			$this->db->rollback();
 			throw $e;
+		}
+
+		if (App::getDb()->isTransactionActive()) {
+			$e = new \RuntimeException("WARNING: Unclosed transaction");
+			KernelErrorHandler::logException($e, false, 'unclosed_trans_api');
+			while (App::getDb()->isTransactionActive()) {
+				App::getDb()->commit();
+			}
 		}
 
 		return $this->createApiCreateResponse(

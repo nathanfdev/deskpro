@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\NewSearch\Filter;
 
 use Orb\Util\Arrays;
+use Elastica\Filter;
 
 class DepartmentFilter extends AbstractFilter
 {
@@ -20,10 +21,12 @@ class DepartmentFilter extends AbstractFilter
 		if (!empty($departmentIds)) {
 			$departmentIds = array_unique($departmentIds);
 			$departmentIds = array_values($departmentIds);
-			$filter = array('term' => array('department' => $departmentIds));
-			return $filter;
+
+			$filter = new Filter\Terms('department', $departmentIds);
+			return $filter->toArray();
 		} else {
-			return null;
+			$filter = new Filter\Terms('department', array(-1));
+			return $filter->toArray();
 		}
     }
 } 

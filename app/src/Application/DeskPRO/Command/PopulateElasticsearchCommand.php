@@ -182,6 +182,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
 
         $command = $php_path . ' ' . $file . ' dp:elastica:index ' . implode(' ', $arguments);
         $process = new Process($command);
+		$process->setTimeout(600);
 
 		$log_file = $this->log_file;
         $process->run(function ($type, $buffer) use ($output, $log_file) {

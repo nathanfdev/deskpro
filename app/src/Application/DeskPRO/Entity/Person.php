@@ -2807,6 +2807,12 @@ class Person extends DomainObject implements HighlightableModelInterface
 			'dpApi' => true,
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
 			'nullable' => true,
+			'joinColumns' => array(array(
+				'name' => 'primary_team_id',
+				'referencedColumnName' => 'id',
+				'nullable' => true,
+				'onDelete' => 'set null'
+			))
 		));
 	}
 }

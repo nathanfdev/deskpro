@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceTypeDecider'], function(require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourceTypeDecider) {
+  define(['require', 'Admin/Main/Ctrl/Base'], function(require, Admin_Ctrl_Base) {
     var Admin_Apps_Ctrl_PackageInstall;
     Admin_Apps_Ctrl_PackageInstall = (function(_super) {
       __extends(Admin_Apps_Ctrl_PackageInstall, _super);
@@ -15,11 +15,10 @@
 
       Admin_Apps_Ctrl_PackageInstall.CTRL_AS = 'Ctrl';
 
-      Admin_Apps_Ctrl_PackageInstall.DEPS = ['$state', '$http', 'dpTemplateManager'];
+      Admin_Apps_Ctrl_PackageInstall.DEPS = ['$http', 'dpTemplateManager'];
 
       Admin_Apps_Ctrl_PackageInstall.prototype.init = function() {
         this.packageName = this.$stateParams.name.replace(/\.install$/, '');
-        this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
         this.$scope.getController = (function(_this) {
           return function() {
             return _this;
@@ -36,7 +35,6 @@
           };
         })(this);
         this.presaveCallback = null;
-        this.permission_groups = [];
       };
 
       Admin_Apps_Ctrl_PackageInstall.prototype.initialLoad = function() {
@@ -163,19 +161,39 @@
       };
 
       Admin_Apps_Ctrl_PackageInstall.prototype.doInstall = function() {
-        var listCtrl, setting_values, url, _ref;
+        var defer, listCtrl, modalInstance, pack, setting_values, usersourceType, _ref;
         listCtrl = null;
         if (((_ref = this.$scope.$parent.ListCtrl) != null ? _ref.addAppInstance : void 0) != null) {
           listCtrl = this.$scope.$parent.ListCtrl;
         }
         setting_values = this.$scope.setting_values;
-        url = "/apps/packages/" + this.packageName;
-        if (this.usersourceType) {
-          url += '?usersource_type=' + this.usersourceType;
-        }
-        return this.Api.sendPutJson(url, {
-          settings: setting_values
-        }).success((function(_this) {
+        pack = this.pack;
+        usersourceType = this.usersourceType;
+        defer = this.$q.defer();
+        modalInstance = this.$modal.open({
+          templateUrl: this.getTemplatePath('Apps/install-progress-modal.html'),
+          controller: 'Admin_Apps_Ctrl_InstallProgress',
+          resolve: {
+            pack: function() {
+              return pack;
+            },
+            setting_values: function() {
+              return setting_values;
+            },
+            usersourceType: function() {
+              return usersourceType;
+            }
+          }
+        }).result.then((function(_this) {
+          return function(info) {
+            return defer.resolve(info);
+          };
+        })(this), (function(_this) {
+          return function(info) {
+            return defer.reject(info);
+          };
+        })(this));
+        defer.promise.then((function(_this) {
           return function(info) {
             var instanceInfo, _ref1, _ref2, _ref3, _ref4;
             if (listCtrl) {
@@ -212,6 +230,7 @@
             }
           };
         })(this));
+        return defer.promise;
       };
 
       return Admin_Apps_Ctrl_PackageInstall;

@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\Form\Type;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Doctrine\ORM\EntityRepository;
@@ -78,8 +79,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
 				'required'      => false,
 				'property'      => 'name',
 			))
-		->add('ticket', 'entity', array(
-				'class'         => 'DeskPRO:Ticket',
+		->add('ticket', 'text', array(
 				'required'      => false,
 				'mapped'        => false,
 			))
@@ -118,12 +118,15 @@ class TaskType extends AbstractType implements EventSubscriberInterface
 	 */
 	public function onPostSubmit(FormEvent $event)
 	{
-		if ($ticket = $event->getForm()->get('ticket')->getData()) {
-			$assoc = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
-			$task = $event->getForm()->getData();
-			$assoc->ticket = $ticket;
-			$assoc->task   = $task;
-			$task->task_associations->add($assoc);
+		if ($ticket_id = $event->getForm()->get('ticket')->getData()) {
+			$ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($ticket_id);
+			if ($ticket_id) {
+				$assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
+				$task          = $event->getForm()->getData();
+				$assoc->ticket = $ticket;
+				$assoc->task   = $task;
+				$task->task_associations->add($assoc);
+			}
 		}
 
 		// hardcoded date override

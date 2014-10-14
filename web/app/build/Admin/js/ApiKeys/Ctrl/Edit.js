@@ -22,11 +22,6 @@
         return this.api_key = null;
       };
 
-
-      /*
-       	 *
-       */
-
       Admin_ApiKeys_Ctrl_Edit.prototype.initialLoad = function() {
         var promise;
         promise = this.keyData.loadEditApiKeyData(this.$stateParams.id || null).then((function(_this) {
@@ -37,11 +32,6 @@
         })(this));
         return promise;
       };
-
-
-      /*
-      		 *
-       */
 
       Admin_ApiKeys_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise;
@@ -69,11 +59,6 @@
           };
         })(this));
       };
-
-
-      /*
-       	 *
-       */
 
       Admin_ApiKeys_Ctrl_Edit.prototype.regenerateApiKey = function() {
         return this.keyData.regenerateApiKey(this.api_key, this.form).success((function(_this) {

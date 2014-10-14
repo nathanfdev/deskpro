@@ -46,8 +46,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.$scope.tabs = this._tabs;
 		this.$scope.contextMenuTab = null;
 		this.$scope.tabClick = function($event, tab){ self._tabStripClick($event, tab); };
+		this.$scope.tabHistory = [];
 
 		this.$scope.context = function(tab) {
+			self._filterTabHistory();
 			self.$scope.contextTab = tab;
 		};
 
@@ -69,9 +71,35 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			}, 10);
 		};
 
+		this.$scope.reopenTab = function(tab){
+			window.DeskPRO_Window.runPageRoute(tab.route, {noToggle: true, focus: true});
+		};
+
+		this.$scope.$watch('tabs', function(tabs) {
+			self._filterTabHistory();
+		});
+
 		this.$scope.$watch('listItems', function(){
 			self._checkOpenedItems();
 		}, true);
+	},
+
+	_filterTabHistory: function() {
+		var tabRoutes = {}, i, t;
+		var tabHistory = []
+		for (i = 0; i < this.$scope.tabs.length; i++) {
+			t = this.$scope.tabs[i];
+			if (t.page && t.page.meta && t.page.meta.routeUrl) {
+				tabRoutes['page:' + t.page.meta.routeUrl] = true;
+			}
+		}
+		for (i = 0; i < this.$scope.tabHistory.length; i++) {
+			if (!tabRoutes[this.$scope.tabHistory[i].route]) {
+				tabHistory.push(this.$scope.tabHistory[i]);
+				tabRoutes[this.$scope.tabHistory[i].route] = true;
+			}
+		}
+		this.$scope.tabHistory = tabHistory;
 	},
 
 	_checkOpenedItems: function(){
@@ -482,6 +510,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	isTabVisible: function(tab) {
 		var $el = $(tab.tabBtnId);
+		if (!$el || !$el[0]) return;
 		var left = $el.position().left;
 
 		// Attempt to ignore margin and border. Lets hope they're the same on both sides.
@@ -585,6 +614,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		DeskPRO_Window.updateWindowUrlFragment();
 		this.$scope.$safeApply();
+		if (!silent && tab.page && tab.page.meta.routeUrl && !tab.page.LOADING_TYPENAME) {
+			this.$scope.tabHistory.push({
+				title: tab.title,
+				route: 'page:' + tab.page.meta.routeUrl
+			});
+			this._filterTabHistory();
+			while (this.$scope.tabHistory.length > 5) {
+				this.$scope.tabHistory.shift();
+			}
+		}
 		this.$timeout(function() {
 			self.tabBarOverflow.update();
 		})

@@ -218,6 +218,9 @@
                 if (val === null && data.options && prop_name) {
                   val = ((_ref1 = data.options[0]) != null ? _ref1.value : void 0) || null;
                 }
+                if (!options.single && !Util.isArray(val)) {
+                  val = [val];
+                }
                 return {
                   value: val,
                   op: value.op || _.first(data.operators)

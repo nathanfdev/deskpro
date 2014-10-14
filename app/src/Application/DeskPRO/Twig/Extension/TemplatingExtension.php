@@ -218,7 +218,7 @@ class TemplatingExtension extends \Twig_Extension
     {
 		try {
         	return App::getRouter()->generate($name, $parameters, false);
-		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+		} catch (\Exception $e) {
 			if ($this->container->isDebug()) {
 				throw $e;
 			}
@@ -230,7 +230,7 @@ class TemplatingExtension extends \Twig_Extension
     {
 		try {
         	return App::getRouter()->generate($name, $parameters, true);
-		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+		} catch (\Exception $e) {
 			if ($this->container->isDebug()) {
 				throw $e;
 			}

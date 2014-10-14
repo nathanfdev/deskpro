@@ -1,7 +1,7 @@
 {
   "version": 3,
   "file": "New.js",
-  "sourceRoot": "../../../../../Admin/UserSources/Ctrl/",
+  "sourceRoot": "../../../../../Admin/Usersources/Ctrl/",
   "sources": [
     "New.coffee"
   ],

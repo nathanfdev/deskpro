@@ -51,4 +51,10 @@ interface SearchContextInterface
 	 * @return int[]
 	 */
 	public function getFeedbackCategoryIds();
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person|null
+	 */
+	public function getPerson();
 }

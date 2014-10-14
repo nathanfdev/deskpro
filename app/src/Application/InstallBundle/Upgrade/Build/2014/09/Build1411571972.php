@@ -39,17 +39,15 @@ class Build1411571972 extends AbstractBuild
 	public function run()
 	{
 		$this->out("Primary Team upgrade");
-		$this->execMutateSql(
-			<<<SQL
-			ALTER TABLE agent_team_members DROP FOREIGN KEY FK_CC952C03217BBB47;
-ALTER TABLE agent_team_members DROP FOREIGN KEY FK_CC952C03296CD8AE;
-ALTER TABLE agent_team_members ADD CONSTRAINT FK_CC952C03217BBB47 FOREIGN KEY (person_id) REFERENCES people (id);
-ALTER TABLE agent_team_members ADD CONSTRAINT FK_CC952C03296CD8AE FOREIGN KEY (team_id) REFERENCES agent_teams (id);
-ALTER TABLE people ADD primary_team_id INT DEFAULT NULL;
-ALTER TABLE people ADD CONSTRAINT FK_28166A26E715BE01 FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id);
-CREATE INDEX IDX_28166A26E715BE01 ON people (primary_team_id);
-SQL
-		);
+
+		$queries = array();
+		$queries[] = "ALTER TABLE people ADD primary_team_id INT DEFAULT NULL";
+		$queries[] = "CREATE INDEX IDX_28166A26E715BE01 ON people (primary_team_id)";
+		$queries[] = "ALTER TABLE people ADD CONSTRAINT FK_28166A26E715BE01 FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id)";
+
+		foreach ($queries as $q) {
+			$this->execMutateSql($q);
+		}
 
 		$this->out("Initialize primary team");
 		$member_map = $this->container->getDb()->fetchAllKeyValue("

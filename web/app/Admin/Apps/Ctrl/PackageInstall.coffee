@@ -1,19 +1,15 @@
-define ['require', 'Admin/Main/Ctrl/Base',
-	'Admin/Usersources/Helper/UsersourceTypeDecider'
-], (require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourceTypeDecider) ->
+define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 	class Admin_Apps_Ctrl_PackageInstall extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_PackageInstall'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = ['$state', '$http', 'dpTemplateManager']
+		@DEPS      = ['$http', 'dpTemplateManager']
 
 		init: ->
 			@packageName = @$stateParams.name.replace(/\.install$/, '');
-			@usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
 			@$scope.getController = => return this
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
 			@$scope.enableCustomFooter = => @$scope.has_own_footer = true
 			@presaveCallback = null
-			@permission_groups = []
 			return
 
 		initialLoad: ->
@@ -114,10 +110,28 @@ define ['require', 'Admin/Main/Ctrl/Base',
 				listCtrl = @$scope.$parent.ListCtrl
 
 			setting_values = @$scope.setting_values
+			pack = @pack
+			usersourceType = @usersourceType
 
-			url = "/apps/packages/#{@packageName}"
-			if @usersourceType then url += '?usersource_type=' + @usersourceType
-			return @Api.sendPutJson(url, {settings: setting_values}).success( (info) =>
+			defer = @$q.defer()
+			modalInstance = @$modal.open({
+				templateUrl: @getTemplatePath('Apps/install-progress-modal.html'),
+				controller: 'Admin_Apps_Ctrl_InstallProgress',
+				resolve: {
+					pack: ->
+						return pack
+					setting_values: ->
+						return setting_values
+					usersourceType: ->
+						return usersourceType
+				}
+			}).result.then( (info) =>
+				defer.resolve(info)
+			, (info) =>
+				defer.reject(info)
+			)
+
+			defer.promise.then( (info) =>
 				if listCtrl
 					instanceInfo = {
 						id: info.id,
@@ -135,6 +149,8 @@ define ['require', 'Admin/Main/Ctrl/Base',
 					@$state.go('agents.usersources.id', {id: info.id})
 				else
 					@$state.go('apps.apps.instance', {id: info.id});
-			);
+			)
+
+			return defer.promise
 
 	Admin_Apps_Ctrl_PackageInstall.EXPORT_CTRL()
