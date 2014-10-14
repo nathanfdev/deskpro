@@ -1,6 +1,5 @@
-<a name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin"></a>
-<!-- DP_MESSAGE_BEGIN --><div {{ language_html_attr(ticket ? ticket.language : false) }}>{% if message.primary_translation %}{{ message.primary_translation.message|raw }}{% else %}{{ message.message_html|raw }}{% endif %}</div><!-- DP_MESSAGE_END -->
-<a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end"></a>
+<!-- DP_MESSAGE_BEGIN --><div {{ language_html_attr(ticket ? ticket.language : false) }} name="dp_message_{{ message.id }}_begin" class="dp_message_{{ message.id }}_begin">{% if message.primary_translation %}{{ message.primary_translation.message|raw }}{% else %}{{ message.message_html|raw }}{% endif %}</div><!-- DP_MESSAGE_END -->
+<a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end dp_marker_link"></a>
 {% if ticketdisplay.getMessageAttachments(message) %}
 	<div style="font-size:11px">
 		<br />
