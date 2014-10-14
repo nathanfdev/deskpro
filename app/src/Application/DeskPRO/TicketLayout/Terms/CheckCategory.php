@@ -60,7 +60,7 @@ class CheckCategory extends AbstractTicketLayoutTerm
 	public function compileJsCheck()
 	{
 		$js_ids = array();
-		foreach ($this->options['category_ids'] as $id) {
+		foreach ((array)$this->options['category_ids'] as $id) {
 			$js_ids[] = (int)$id;
 		}
 		$js_ids = "[" . implode(',', $js_ids) . "]";
