@@ -1,15 +1,18 @@
-define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
+define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceTypeDecider'
+], (require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourceTypeDecider) ->
 	class Admin_Apps_Ctrl_PackageInstall extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_PackageInstall'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = ['$http', 'dpTemplateManager']
+		@DEPS      = ['$state', '$http', 'dpTemplateManager']
 
 		init: ->
 			@packageName = @$stateParams.name.replace(/\.install$/, '');
+			@usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
 			@$scope.getController = => return this
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
 			@$scope.enableCustomFooter = => @$scope.has_own_footer = true
 			@presaveCallback = null
+			@permission_groups = []
 			return
 
 		initialLoad: ->
@@ -17,17 +20,13 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 
 			@Api.sendDataGet({
 				pack: '/apps/packages/' + @packageName,
+				agent_groups: '/agent_groups'
 			}).then( (result) =>
 				@pack = result.data.pack['package']
 				@$scope.pack = @pack
 
-
-				if @permission_groups.length == 0
-					@Api.sendGet('/agent_groups').then((res) =>
-						res.data.groups.forEach((val) =>
-							@permission_groups.push({"value": val.id.toString(), "label": val.title})
-						)
-					)
+				for val in result.data.agent_groups.groups
+					@permission_groups.push({"value": val.id.toString(), "label": val.title})
 
 				form_template = @packageName + '/Install/install.html'
 				installCtrl = null
@@ -118,12 +117,9 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 				templateUrl: @getTemplatePath('Apps/install-progress-modal.html'),
 				controller: 'Admin_Apps_Ctrl_InstallProgress',
 				resolve: {
-					pack: ->
-						return pack
-					setting_values: ->
-						return setting_values
-					usersourceType: ->
-						return usersourceType
+					pack:           -> pack
+					setting_values: -> setting_values
+					usersourceType: -> usersourceType
 				}
 			}).result.then( (info) =>
 				defer.resolve(info)

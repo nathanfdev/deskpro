@@ -2,7 +2,7 @@
   var __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  define(['require', 'Admin/Main/Ctrl/Base'], function(require, Admin_Ctrl_Base) {
+  define(['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceTypeDecider'], function(require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourceTypeDecider) {
     var Admin_Apps_Ctrl_PackageInstall;
     Admin_Apps_Ctrl_PackageInstall = (function(_super) {
       __extends(Admin_Apps_Ctrl_PackageInstall, _super);
@@ -15,10 +15,11 @@
 
       Admin_Apps_Ctrl_PackageInstall.CTRL_AS = 'Ctrl';
 
-      Admin_Apps_Ctrl_PackageInstall.DEPS = ['$http', 'dpTemplateManager'];
+      Admin_Apps_Ctrl_PackageInstall.DEPS = ['$state', '$http', 'dpTemplateManager'];
 
       Admin_Apps_Ctrl_PackageInstall.prototype.init = function() {
         this.packageName = this.$stateParams.name.replace(/\.install$/, '');
+        this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
         this.$scope.getController = (function(_this) {
           return function() {
             return _this;
@@ -35,26 +36,26 @@
           };
         })(this);
         this.presaveCallback = null;
+        this.permission_groups = [];
       };
 
       Admin_Apps_Ctrl_PackageInstall.prototype.initialLoad = function() {
         var deferred;
         deferred = this.$q.defer();
         this.Api.sendDataGet({
-          pack: '/apps/packages/' + this.packageName
+          pack: '/apps/packages/' + this.packageName,
+          agent_groups: '/agent_groups'
         }).then((function(_this) {
           return function(result) {
-            var form_template, getResourcePath, installCtrl, jsDeferred, loadingAssets, path, setting, _i, _len, _ref;
+            var form_template, getResourcePath, installCtrl, jsDeferred, loadingAssets, path, setting, val, _i, _j, _len, _len1, _ref, _ref1;
             _this.pack = result.data.pack['package'];
             _this.$scope.pack = _this.pack;
-            if (_this.permission_groups.length === 0) {
-              _this.Api.sendGet('/agent_groups').then(function(res) {
-                return res.data.groups.forEach(function(val) {
-                  return _this.permission_groups.push({
-                    "value": val.id.toString(),
-                    "label": val.title
-                  });
-                });
+            _ref = result.data.agent_groups.groups;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              val = _ref[_i];
+              _this.permission_groups.push({
+                "value": val.id.toString(),
+                "label": val.title
               });
             }
             form_template = _this.packageName + '/Install/install.html';
@@ -68,9 +69,9 @@
                 title: _this.pack.title
               }
             };
-            _ref = _this.pack.settings_def;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              setting = _ref[_i];
+            _ref1 = _this.pack.settings_def;
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              setting = _ref1[_j];
               if (setting.default_value) {
                 _this.$scope.setting_values[setting.name] = setting.default_value;
               }

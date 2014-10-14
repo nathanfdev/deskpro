@@ -15,30 +15,13 @@
 
       Admin_Apps_Ctrl_InstallProgress.CTRL_AS = 'EmailTemplateEditor';
 
-      Admin_Apps_Ctrl_InstallProgress.DEPS = ['$modalInstance', 'Api', 'pack', 'setting_values', 'usersourceType'];
+      Admin_Apps_Ctrl_InstallProgress.DEPS = ['$modalInstance', '$timeout', 'Api', 'pack', 'setting_values', 'usersourceType'];
 
       Admin_Apps_Ctrl_InstallProgress.prototype.init = function() {
         var url;
-        console.log(this.pack);
-        console.log(this.setting_values);
         this.$scope.pack = this.pack;
         this.isDone = false;
         this.info = null;
-        url = "/apps/packages/" + this.pack.name;
-        if (this.usersourceType) {
-          url += '?usersource_type=' + this.usersourceType;
-        }
-        this.Api.sendPutJson(url, {
-          settings: this.setting_values
-        }).success((function(_this) {
-          return function(info) {
-            return _this.markAsDone(info);
-          };
-        })(this), (function(_this) {
-          return function(info) {
-            return _this.closeForError(info);
-          };
-        })(this));
         this.step = 0;
         this.steps = [
           {
@@ -73,11 +56,26 @@
         ];
         this.stepTimeout = null;
         this.incrementStep();
-        return this.$scope.done = (function(_this) {
+        this.$scope.done = (function(_this) {
           return function() {
             return _this.closeForSuccess(_this.info);
           };
         })(this);
+        url = "/apps/packages/" + this.pack.name;
+        if (this.usersourceType) {
+          url += '?usersource_type=' + this.usersourceType;
+        }
+        return this.Api.sendPutJson(url, {
+          settings: this.setting_values
+        }).success((function(_this) {
+          return function(info) {
+            return _this.markAsDone(info);
+          };
+        })(this), (function(_this) {
+          return function(info) {
+            return _this.closeForError(info);
+          };
+        })(this));
       };
 
       Admin_Apps_Ctrl_InstallProgress.prototype.incrementStep = function() {
@@ -100,9 +98,9 @@
 
       Admin_Apps_Ctrl_InstallProgress.prototype.beginStepTimeout = function(ms) {
         if (this.stepTimeout) {
-          window.clearTimeout(this.stepTimeout);
+          this.$timeout.cancel(this.stepTimeout);
         }
-        return this.stepTimeout = window.setTimeout((function(_this) {
+        return this.stepTimeout = this.$timeout((function(_this) {
           return function() {
             _this.stepTimeout = null;
             return _this.incrementStep();
@@ -117,14 +115,14 @@
 
       Admin_Apps_Ctrl_InstallProgress.prototype.closeForError = function(info) {
         if (this.stepTimeout) {
-          window.clearTimeout(this.stepTimeout);
+          this.$timeout.cancel(this.stepTimeout);
         }
         return this.$modalInstance.dismiss(info);
       };
 
       Admin_Apps_Ctrl_InstallProgress.prototype.closeForSuccess = function(info) {
         if (this.stepTimeout) {
-          window.clearTimeout(this.stepTimeout);
+          this.$timeout.cancel(this.stepTimeout);
         }
         return this.$modalInstance.close(info);
       };
