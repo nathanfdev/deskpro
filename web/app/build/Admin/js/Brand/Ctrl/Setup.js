@@ -96,6 +96,7 @@
         } else if (this.form_model.form.logo_set === 'upload' && this.new_image) {
           postData.set_logo_blob = this.new_image.authcode;
         }
+        this.startSpinner('saving_brand');
         if (this.brandId) {
           return this.Api.sendPostJson("/brands/" + this.brandId, postData).then((function(_this) {
             return function(result) {
@@ -103,7 +104,8 @@
               _this.BrandData.updateModel(_this.brand);
               _this.form_model = _this.getFormModel();
               _this.setFormOnScope();
-              return _this.Growl.success(_this.getRegisteredMessage('saved_brand'));
+              _this.Growl.success(_this.getRegisteredMessage('saved_brand'));
+              return _this.stopSpinner('saving_brand');
             };
           })(this));
         } else {
@@ -115,9 +117,10 @@
               _this.form_model = _this.getFormModel();
               _this.setFormOnScope();
               _this.Growl.success(_this.getRegisteredMessage('saved_brand'));
-              return _this.$state.go('brand.setup.edit', {
+              _this.$state.go('brand.setup.edit', {
                 id: _this.brandId
               });
+              return _this.stopSpinner('saving_brand');
             };
           })(this));
         }

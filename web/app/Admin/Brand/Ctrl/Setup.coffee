@@ -66,6 +66,8 @@ define [
 			else if @form_model.form.logo_set == 'upload' and @new_image
 				postData.set_logo_blob = @new_image.authcode
 
+			@startSpinner('saving_brand')
+
 			if @brandId
 				@Api.sendPostJson("/brands/#{@brandId}", postData).then((result) =>
 					@brand = result.data
@@ -73,6 +75,7 @@ define [
 					@form_model = @getFormModel()
 					@setFormOnScope()
 					@Growl.success(@getRegisteredMessage('saved_brand'))
+					@stopSpinner('saving_brand')
 				)
 			else
 				@Api.sendPostJson("/brands", postData).then((result) =>
@@ -83,6 +86,7 @@ define [
 					@setFormOnScope()
 					@Growl.success(@getRegisteredMessage('saved_brand'))
 					@$state.go('brand.setup.edit', { id: @brandId })
+					@stopSpinner('saving_brand')
 				)
 
 
