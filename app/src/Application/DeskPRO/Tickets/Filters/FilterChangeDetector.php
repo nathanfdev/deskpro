@@ -371,6 +371,8 @@ class FilterChangeDetector
 					$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
 				}
 
+				if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] New match: %s -- Orig match: %s", $new_match ? 'yes' : 'no', $orig_match ? 'yes' : 'no'));
+
 				if (!$orig_match AND !$new_match) {
 					if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
 				} else if ($orig_match AND $new_match) {
