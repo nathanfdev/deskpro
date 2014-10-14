@@ -121,6 +121,10 @@ class BrandController extends AbstractController
 
 	public function removeAction($id)
 	{
+		if ($id == 1) {
+			return $this->createApiErrorResponse('not_allowed', 'cannot delete default brand');
+		}
+
 		$brand = null;
 		if ($id) {
 			$brand = $this->getBrandRepo()->find($id);

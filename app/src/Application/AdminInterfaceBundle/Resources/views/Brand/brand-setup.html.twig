@@ -58,7 +58,7 @@
 
 			<footer>
 				<div class="dp-content">
-					<div class="dp-delete-control" ng-if="BrandSetup.brand.id">
+					<div class="dp-delete-control" ng-if="BrandSetup.brand.id && BrandSetup.brand.id > 1">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(BrandSetup.brand.id);">
 							Delete
 						</button>
