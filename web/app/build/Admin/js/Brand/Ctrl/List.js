@@ -77,12 +77,12 @@
       };
 
       Admin_Brand_Ctrl_List.prototype.deleteAccount = function(acc) {
-        return this.Api.sendDelete('/brand/' + acc.id).success((function(_this) {
+        return this.Api.sendDelete('/brands/' + acc.id).success((function(_this) {
           return function() {
             _this.BrandData.remove(acc.id);
             _this.ngApply();
-            if (_this.$state.current.name === 'brand.setup' && parseInt(_this.$state.params.id) === acc.id) {
-              return _this.$state.go('brand');
+            if (_this.$state.current.name === 'brand.setup.edit' && parseInt(_this.$state.params.id) === acc.id) {
+              return _this.$state.go('brand.setup');
             }
           };
         })(this));

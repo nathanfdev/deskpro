@@ -49,13 +49,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
 			)
 
 		deleteAccount: (acc) ->
-			@Api.sendDelete('/brand/' + acc.id).success(=>
+			@Api.sendDelete('/brands/' + acc.id).success(=>
 				@BrandData.remove(acc.id)
 				@ngApply()
 
 				# if currently viewing the deleted account, then should need to switch state
-				if @$state.current.name == 'brand.setup' and parseInt(@$state.params.id) == acc.id
-					@$state.go('brand')
+				if @$state.current.name == 'brand.setup.edit' and parseInt(@$state.params.id) == acc.id
+					@$state.go('brand.setup')
 			)
 
 	Admin_Brand_Ctrl_List.EXPORT_CTRL()

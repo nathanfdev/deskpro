@@ -7,6 +7,7 @@
 	'adm.general.apps_chat'                          => 'Chat',
 	'adm.general.apps_crm'                           => 'CRM',
 	'adm.general.apps_portal'                        => 'Portal',
+	'adm.general.apps_brands'                        => 'Brands',
 	'adm.general.apps_server'                        => 'Server',
 	'adm.general.apps_setup'                         => 'Setup',
 	'adm.general.apps_tickets'                       => 'Tickets',

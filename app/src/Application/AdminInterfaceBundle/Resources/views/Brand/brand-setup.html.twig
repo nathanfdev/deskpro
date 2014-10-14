@@ -58,6 +58,11 @@
 
 			<footer>
 				<div class="dp-content">
+					<div class="dp-delete-control" ng-if="BrandSetup.brand.id">
+						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(BrandSetup.brand.id);">
+							Delete
+						</button>
+					</div>
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving_brand">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
