@@ -2,22 +2,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 	class Admin_Apps_Ctrl_InstallProgress extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_InstallProgress'
 		@CTRL_AS   = 'EmailTemplateEditor'
-		@DEPS      = ['$modalInstance', 'Api', 'pack', 'setting_values']
+		@DEPS      = ['$modalInstance', '$timeout', 'Api', 'pack', 'setting_values']
 
 		init: ->
-
-			console.log(@pack)
-			console.log(@setting_values)
-
 			@$scope.pack = @pack
 			@isDone = false
 			@info = null
-
-			@Api.sendPutJson("/apps/packages/#{@pack.name}", {settings: @setting_values}).success( (info) =>
-				@markAsDone(info)
-			, (info) =>
-				@closeForError(info)
-			);
 
 			@step = 0
 			@steps = [
@@ -36,6 +26,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 			@$scope.done = =>
 				@closeForSuccess(@info)
 
+			url = "/apps/packages/#{@pack.name}"
+			@Api.sendPutJson(url, {settings: @setting_values}).success( (info) =>
+				@markAsDone(info)
+			, (info) =>
+				@closeForError(info)
+			)
+
 		incrementStep: ->
 			currentStep = @steps[@step]
 			if currentStep.wait and !@isDone
@@ -53,8 +50,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 			@beginStepTimeout(nextStep.timeout)
 
 		beginStepTimeout: (ms) ->
-			window.clearTimeout(@stepTimeout) if @stepTimeout
-			@stepTimeout = window.setTimeout(=>
+			@$timeout.cancel(@stepTimeout) if @stepTimeout
+			@stepTimeout = @$timeout(=>
 				@stepTimeout = null
 				@incrementStep()
 			, ms)
@@ -64,11 +61,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 			@info = info
 
 		closeForError: (info) ->
-			window.clearTimeout(@stepTimeout) if @stepTimeout
+			@$timeout.cancel(@stepTimeout) if @stepTimeout
 			@$modalInstance.dismiss(info)
 
 		closeForSuccess: (info) ->
-			window.clearTimeout(@stepTimeout) if @stepTimeout
+			@$timeout.cancel(@stepTimeout) if @stepTimeout
 			@$modalInstance.close(info)
 
 	Admin_Apps_Ctrl_InstallProgress.EXPORT_CTRL()
