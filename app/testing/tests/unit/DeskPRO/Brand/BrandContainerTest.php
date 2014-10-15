@@ -32,32 +32,35 @@
  * @subpackage Brand
  */
 
-namespace Application\DeskPRO\Brand;
+namespace DpUnitTests\DeskPRO\Brand;
 
-use Application\DeskPRO\Entity\Brand;
 
-/**
- * The BrandContainer is a hub that holds all of the information that might be needed in the system that relate to a
- * particular brand. It is the context of the brand in question. It encompasses settings, template resolutionrendering,
- * brand information, and anything else you might want to do with a brand.
- *
- * @package Application\DeskPRO\Brand
- */
-class BrandContainer 
+use Application\DeskPRO\Brand\BrandContainer;
+
+class BrandContainerTest extends \DpUnitTestCase
 {
-	private $brand;
-	private $settings_loader;
-	private $brand_templating;
-
-
-	public function __construct(Brand $brand)
+	public function testGetBrand()
 	{
-		$this->brand = $brand;
+		$mockBrand = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+		$bc = new BrandContainer($mockBrand);
+
+		$this->assertSame($mockBrand, $bc->getBrand());
 	}
 
-	public function getBrand()
+	public function testGetSetting()
 	{
-		return $this->brand;
+		$this->markTestSkipped('waiting on lower level stuff');
+	}
+
+
+	/**
+	 * @return array
+	 */
+	protected function createBrandContainer()
+	{
+		$mockBrand = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+		$bc        = new BrandContainer($mockBrand);
+
+		return $bc;
 	}
 }
- 
