@@ -53,7 +53,7 @@ interface CacheAdapterInterface
 	 * True if cache appears to have a value for the key
 	 *
 	 * @param $key
-	 * @return mixed
+	 * @return bool
 	 */
 	public function has($key);
 
