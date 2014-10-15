@@ -1,22 +1,85 @@
-<div dp-payment-form-directive ng-model="paymentForm">
-	<div>
-		<label>
-			<input type="radio" ng-model="card_type" value="existing" /> Use your existing credit-card
+<div dp-license-payment-form ng-model="paymentForm">
+	<div class="well well-sm" ng-if="form.exist_card">
+		<label style="margin: 0; padding: 0; display: block; font-weight: bold; font-size: 120%;">
+			<input type="radio" ng-model="form.mode" value="exist" style="margin: 0; vertical-align: baseline;" /> Use your existing credit-card
 		</label>
-		<div ng-show="mode == 'existing'">
-			{{ ng_var('exist_card.type') }}
-			{{ ng_var('exist_card.number') }}
-			Expires: {{ ng_var('exist_card.expires | amDateFormat:"MMM YYYY"') }}
+		<div ng-show="form.mode == 'exist'" style="margin-top: 10px;">
+			<div class="creditcard-display">
+				<span class="credit-card-type {{ ng_var('form.exist_card.type') }}">{{ ng_var('form.exist_card.type') }}</span>
+				<span class="credit-card-num">
+					xxxx xxxx xxxx {{ ng_var('form.exist_card.number') }}
+				</span>
+				<span class="credit-card-expire">Exp: {{ ng_var('form.exist_card.expire_mm') }} / {{ ng_var('form.exist_card.expire_yy') }}</span>
+			</div>
 		</div>
 	</div>
-	<div>
-		<label>
-			<input type="radio" ng-model="card_type" value="new" /> Use your existing credit-card
+
+	<div class="well well-sm">
+		<label style="margin: 0; padding: 0; display: block; font-weight: bold; font-size: 120%;" ng-if="form.exist_card">
+			<input type="radio" ng-model="form.mode" value="new" style="margin: 0; vertical-align: baseline;" /> Enter a new card
 		</label>
-		<div ng-show="mode == 'new'">
-			Card number: <input type="text" ng-model="new_card.number"/>
-			Verification code: <input type="text" ng-model="new_card.cvv"/>
-			Expiry Date (YYMM): <input type="text" ng-model="new_card.expiry"/>
+		<label style="margin: 0; padding: 0; display: block; font-weight: bold; font-size: 120%;" ng-if="!form.exist_card">
+			Pay by Credit Card
+		</label>
+		<div ng-show="form.mode == 'new'" style="margin-top: 10px;">
+			<table width="100%">
+				<tr>
+					<td>Card Number</td>
+					<td>&nbsp;</td>
+					<td>Security Code</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="text" class="form-control" ng-model="form.new_card.number" ng-change="numberCharsFn()" />
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<input type="text" class="form-control" ng-model="form.new_card.cv2" ng-change="cv2CharsFn()" style="width: 50px;" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding-top: 9px;">Name on Card</td>
+					<td>&nbsp;</td>
+					<td style="padding-top: 9px;">Expiration</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="text" class="form-control" ng-model="form.new_card.name" />
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<select ui-select2 ng-model="form.new_card.expire_mm">
+							<option value="0">MM</option>
+							<option value="{{ ng_var('m') }}" ng-repeat="m in month_opts">{{ ng_var('m') }}</option>
+						</select> /
+						<select ui-select2 ng-model="form.new_card.expire_yy">
+							<option value="0">YY</option>
+							<option value="{{ ng_var('y') }}" ng-repeat="y in year_opts">{{ ng_var('y') }}</option>
+						</select>
+					</td>
+				</tr>
+			</table>
 		</div>
+	</div>
+</div>
+
+<div class="alert alert-danger" ng-show="formErrors && formErrors.length">
+	<p>
+		Please correct the following errors with your form:
+	</p>
+	<ul>
+		<li ng-repeat="err in formErrors" ng-switch="err">
+			<span ng-switch-when="number">The card number you entered appears to be invalid.</span>
+			<span ng-switch-when="cv2">The card security number you entered appears to be invalid.</span>
+			<span ng-switch-when="name">Please enter the name exactly how it appears on the card.</span>
+			<span ng-switch-when="expire">Please enter the expiry date as it appears on the card.</span>
+			<span ng-switch-when="expire">Please enter the expiry date as it appears on the card.</span>
+			<span ng-switch-default>{{ ng_var('err') }}</span>
+		</li>
+	</ul>
+	<div ng-if="invoice" style="margin-top: 8px;">
+		<p>
+			Having trouble? <a ng-href="{{ ng_var('invoice.link') }}" target="_blank">Click here to pay the invoice online</a>.
+		</p>
 	</div>
 </div>

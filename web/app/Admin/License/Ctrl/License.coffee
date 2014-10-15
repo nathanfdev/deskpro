@@ -26,13 +26,32 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			data_promise = @Api.sendDataGet({
 				'lic_info': '/dp_license'
 			}).then( (res) =>
-				console.log(res)
 				@license          = res.data.lic_info.license
 				@ma_token         = res.data.lic_info.ma_token
 				@ma_login_url     = res.data.lic_info.ma_login_url
 				@lic_set_callback = res.data.lic_info.lic_set_callback
 
 				@$scope.lic_code = @license.licenseCode
+
+				@$scope.refreshing_lic = true
+				@DpLicense.getNewLicenseKey().then( (res) =>
+					cmp1 = res.license_code.replace(/[^a-zA-Z0-9]/g, '')
+					cmp2 = @license.licenseCode.replace(/[^a-zA-Z0-9]/g, '')
+
+					if cmp1 == cmp2
+						@$scope.refreshing_lic = false
+					else
+						@DpLicense.setNewLicenseCode(res.license_code).then( =>
+							@$scope.refreshing_lic = false
+							lic_code = res.license_code
+							lic_code = lic_code.replace(/\s/g, '')
+							lic_code = (lic_code.match(/(.{1,50})/g) || [lic_code]).join("\n")
+							@$scope.lic_code = lic_code
+							@license.license.licenseCode = lic_code
+						, =>
+							@$scope.refreshing_lic = false
+						)
+				)
 			)
 
 			return data_promise

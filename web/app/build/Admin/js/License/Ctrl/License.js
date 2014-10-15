@@ -44,12 +44,32 @@
           'lic_info': '/dp_license'
         }).then((function(_this) {
           return function(res) {
-            console.log(res);
             _this.license = res.data.lic_info.license;
             _this.ma_token = res.data.lic_info.ma_token;
             _this.ma_login_url = res.data.lic_info.ma_login_url;
             _this.lic_set_callback = res.data.lic_info.lic_set_callback;
-            return _this.$scope.lic_code = _this.license.licenseCode;
+            _this.$scope.lic_code = _this.license.licenseCode;
+            _this.$scope.refreshing_lic = true;
+            return _this.DpLicense.getNewLicenseKey().then(function(res) {
+              var cmp1, cmp2;
+              cmp1 = res.license_code.replace(/[^a-zA-Z0-9]/g, '');
+              cmp2 = _this.license.licenseCode.replace(/[^a-zA-Z0-9]/g, '');
+              if (cmp1 === cmp2) {
+                return _this.$scope.refreshing_lic = false;
+              } else {
+                return _this.DpLicense.setNewLicenseCode(res.license_code).then(function() {
+                  var lic_code;
+                  _this.$scope.refreshing_lic = false;
+                  lic_code = res.license_code;
+                  lic_code = lic_code.replace(/\s/g, '');
+                  lic_code = (lic_code.match(/(.{1,50})/g) || [lic_code]).join("\n");
+                  _this.$scope.lic_code = lic_code;
+                  return _this.license.license.licenseCode = lic_code;
+                }, function() {
+                  return _this.$scope.refreshing_lic = false;
+                });
+              }
+            });
           };
         })(this));
         return data_promise;
