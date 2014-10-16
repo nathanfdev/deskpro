@@ -38,8 +38,18 @@ use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
 
+/**
+ * Gets the returned array from a php file and uses it as settings. Cache's results in given adapter.
+ */
 class ConfigPhpFileLoader implements SettingsLoaderInterface
 {
+	const KEY_PREFIX = 'settings.loader.config_php_file.';
+
+	/**
+	 * @var string the key we use for cache on this loader
+	 */
+	private $cacheKey;
+
 	/**
 	 * @var \Application\DeskPRO\Cache\ConvenientCache
 	 */
@@ -52,10 +62,10 @@ class ConfigPhpFileLoader implements SettingsLoaderInterface
 
 	public function __construct($absFilePath, CacheAdapterInterface $cache)
 	{
+		$this->cacheKey = static::KEY_PREFIX . $absFilePath;
 		$this->cache = new ConvenientCache($cache);
 		$this->absFilePath = $absFilePath;
 	}
-
 
 	/**
 	 * {@inheritdoc}
@@ -66,7 +76,15 @@ class ConfigPhpFileLoader implements SettingsLoaderInterface
 			throw new \RuntimeException(sprintf('cannot read settings file "%s"', $this->absFilePath));
 		}
 
-		return require $this->absFilePath; // use the cache
+		if ($this->cache->has($this->cacheKey)) {
+			return $this->cache->get($this->cacheKey);
+		}
+
+		$settings = require $this->absFilePath;
+
+		$this->cache->set($this->cacheKey, $settings);
+
+		return $settings;
 	}
 }
  

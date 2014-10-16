@@ -37,6 +37,7 @@ namespace DpUnitTests\DeskPRO\NewSettings\Loader;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\NewSettings\Loader\ConfigPhpFileLoader;
+use Mockery\Mock;
 
 class ConfigPhpFileLoaderTest extends \DpUnitTestCase
 {
@@ -49,25 +50,52 @@ class ConfigPhpFileLoaderTest extends \DpUnitTestCase
 		$loader->load();
 	}
 
-	public function testLoading()
+	public function testLoadingWorksAndStoresInCache()
 	{
-		$loader = new ConfigPhpFileLoader(__DIR__ . '/fixtures/configs_file.php', $cache = new SimpleArrayCache());
+		$config_file_path = __DIR__ . '/fixtures/configs_file.php';
 
-		$settings = $loader->load();
+		$expectedSettings = array(
+			'key'       => 'val',
+			'extra_key' => 'extra_val'
+		);
 
+		$cache_key = 'settings.loader.config_php_file.' . $config_file_path;
+
+		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+		$mockCache->shouldReceive('has')->with($cache_key)->andReturn(false)->once();
+		$mockCache->shouldReceive('set')->with($cache_key, $expectedSettings)->once();
+
+		$loader = new ConfigPhpFileLoader($config_file_path, $mockCache);
+
+		// asseritng that the correct array is recieved from the config file and that cache was set properly
 		$this->assertSame(
-			array(
-				'key'       => 'val',
-				'extra_key' => 'extra_val'
-			),
-			$settings
+			$expectedSettings,
+			$loader->load()
 		);
 	}
 
-
-	public function testCacheIsUsed()
+	public function testLoadingUsesCacheIfExists()
 	{
-		$this->markTestSkipped('need to get cache working');
+		$config_file_path = __DIR__ . '/fixtures/configs_file.php';
+
+		$expectedSettings = array(
+			'key'       => 'val',
+			'extra_key' => 'extra_val'
+		);
+
+		$cache_key = 'settings.loader.config_php_file.' . $config_file_path;
+
+		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+		$mockCache->shouldReceive('has')->with($cache_key)->andReturn(true)->once();
+		$mockCache->shouldReceive('get')->with($cache_key)->andReturn($expectedSettings)->once();
+
+		$loader = new ConfigPhpFileLoader($config_file_path, $mockCache);
+
+		// asseritng that the correct array is recieved from the cache
+		$this->assertSame(
+			$expectedSettings,
+			$loader->load()
+		);
 	}
 }
  
