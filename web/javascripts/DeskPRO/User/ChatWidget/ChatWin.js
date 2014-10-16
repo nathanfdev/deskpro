@@ -209,10 +209,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		if (!msg || msg === "") {
 			if (typeof sessionStorage.dp_chat_id != 'undefined') {
-				delete sessionStorage.dp_chat_id;
+				sessionStorage.dp_chat_id = null;
 			}
 			if (typeof sessionStorage.dp_chat_msg != 'undefined') {
-				delete sessionStorage.dp_chat_msg;
+				sessionStorage.dp_chat_msg = null
 			}
 		} else {
 			sessionStorage.dp_chat_id = this.conversationId;
@@ -227,13 +227,13 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		if (!this.conversationId) {
 			return;
 		}
-		if (typeof sessionStorage.dp_chat_id == 'undefined') {
+		if (typeof sessionStorage.dp_chat_id == 'undefined' || sessionStorage.dp_chat_id === null) {
 			return;
 		}
-		if (typeof sessionStorage.dp_chat_msg == 'undefined') {
+		if (typeof sessionStorage.dp_chat_msg == 'undefined' || sessionStorage.dp_chat_msg === null) {
 			return;
 		}
-		if (parseInt(this.conversationId) != parseInt(sessionStorage.dp_chat_id)) {
+		if (parseInt(this.conversationId) != parseInt(sessionStorage.dp_chat_id || 0)) {
 			return;
 		}
 

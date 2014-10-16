@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -70,18 +70,18 @@ class PreloadedHierarchy
 		$this->objects = array();
 
 		foreach ($objects as $obj) {
-			$this->objects[$obj->id] = $obj;
+			$this->objects[$obj->getId()] = $obj;
 
 			if (!$obj->parent) {
-				$this->root_ids[] = $obj->id;
+				$this->root_ids[] = $obj->getId();
 			} else {
-				$pid = $obj->parent->id;
-				$this->child_to_parent[$obj->id] = $pid;
+				$pid = $obj->parent->getId();
+				$this->child_to_parent[$obj->getId()] = $pid;
 
 				if (!isset($this->parent_to_children[$pid])) {
 					$this->parent_to_children[$pid] = array();
 				}
-				$this->parent_to_children[$pid][$obj->id] = $obj->id;
+				$this->parent_to_children[$pid][$obj->getId()] = $obj->getId();
 			}
 		}
 
@@ -128,7 +128,7 @@ class PreloadedHierarchy
 	 */
 	public function isChild($obj_or_id)
 	{
-		$id = is_object($obj_or_id) ? $obj_or_id->id : intval($obj_or_id);
+		$id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
 
 		return isset($this->child_to_parent[$id]);
 	}
@@ -171,7 +171,7 @@ class PreloadedHierarchy
 	 */
 	public function getParentId($obj_or_id)
 	{
-		$id = is_object($obj_or_id) ? $obj_or_id->id : intval($obj_or_id);
+		$id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
 
 		if (!$this->isChild($id)) {
 			return null;
@@ -189,7 +189,7 @@ class PreloadedHierarchy
 	 */
 	public function getParentPathIds($obj_or_id)
 	{
-		$id = is_object($obj_or_id) ? $obj_or_id->id : intval($obj_or_id);
+		$id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
 
 		if ($this->isRoot($id)) {
 			return array();
@@ -214,7 +214,7 @@ class PreloadedHierarchy
 	 */
 	public function getParentPath($obj_or_id, $keyed = false)
 	{
-		$id = is_object($obj_or_id) ? $obj_or_id->id : intval($obj_or_id);
+		$id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
 		$parent_ids = $this->getParentPathIds($id);
 		$parents = array();
 
@@ -234,7 +234,7 @@ class PreloadedHierarchy
 	 */
 	public function hasChildren($obj_or_id)
 	{
-		$id = is_object($obj_or_id) ? $obj_or_id->id : intval($obj_or_id);
+		$id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
 		return isset($this->parent_to_children[$id]);
 	}
 
@@ -245,7 +245,7 @@ class PreloadedHierarchy
 	 */
 	public function countChildren($obj_or_id)
 	{
-		$id = is_object($obj_or_id) ? $obj_or_id->id : intval($obj_or_id);
+		$id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
 		return isset($this->parent_to_children[$id]) ? count($this->parent_to_children[$id]) : 0;
 	}
 
@@ -258,7 +258,7 @@ class PreloadedHierarchy
 	 */
 	public function getChildrenIds($obj_or_id)
 	{
-		$id = is_object($obj_or_id) ? $obj_or_id->id : intval($obj_or_id);
+		$id = is_object($obj_or_id) ? $obj_or_id->getId() : intval($obj_or_id);
 		if (!isset($this->parent_to_children[$id])) {
 			return array();
 		}

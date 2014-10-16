@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -47,6 +48,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 class TicketManager
 {
@@ -116,7 +118,7 @@ class TicketManager
 		$this->post_save_actions[] = new TicketSaveActions\ApplySlas($container->getEm()->getRepository('DeskPRO:Sla')->getAutoSlas(), $container->getEm(), new SlaClientMessageSender($container->getDb()));
 		$this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($container->getEm(), new ActionApplicator($container));
 		$this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
-		$this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getEm(), $container->getTicketFilterChangeDetector());
+		$this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getDb(), $container->getTicketFilterChangeDetector());
 		$this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
 	}
 
@@ -183,6 +185,19 @@ class TicketManager
 	{
 		$ticket = new Ticket();
 		$ticket->disableAutoTicketProcess();
+
+		// Generate a ref now
+		// This will cause less locking if we are outside of a transaction
+		$ref_gen = $this->container->getRefGenerator();
+		try {
+			$ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e);
+			$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+			$ticket->ref = $ref;
+		}
+
+		$ticket->__dp_is_autogen_ref = false;
 
 		return $ticket;
 	}
@@ -423,6 +438,23 @@ class TicketManager
 			$context->setPersonContext($agent);
 		}
 
+		if ($event_method === 'api') {
+			$key = null;
+
+			try {
+				/** @var $auth RequestAuth */
+				if ($auth = $this->container->get('deskpro.api.request_auth')) {
+					$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+				}
+			} catch (InactiveScopeException $e) {
+				$key = null;
+			}
+
+			if ($key) {
+				$context->getVars()->set('via_api_key', $key);
+			}
+		}
+
 		$context->setEventPerformer('agent');
 		$context->setEventType($event_type);
 		$context->setEventMethod($event_method, $event_method_options);
@@ -444,6 +476,16 @@ class TicketManager
 
 		if ($user) {
 			$context->setPersonContext($user);
+		}
+
+		if ('api' === $event_method) {
+			$key = null;
+			/** @var $auth RequestAuth */
+			if ($auth = $this->container->get('deskpro.api.request_auth')) {
+				$key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->id : null;
+			}
+
+			$context->getVars()->set('via_api_key', $key);
 		}
 
 		$context->setEventPerformer('user');

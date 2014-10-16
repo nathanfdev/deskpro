@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -36,17 +36,18 @@ namespace Application\DeskPRO\Search\Adapter\Mysql;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
  * Strips out search results the user cant actually see
  */
-class PermissionFilter implements PersonContextInterface
+class PermissionFilter
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $person_context;
+	protected $context;
 
 	/**
 	 * The types to generate the where for
@@ -73,12 +74,13 @@ class PermissionFilter implements PersonContextInterface
 	 */
 	protected $has_gen = false;
 
+
 	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @param SearchContextInterface $context
 	 */
-	public function setPersonContext(Person $person)
+	public function setContext(SearchContextInterface $context)
 	{
-		$this->person_context = $person;
+		$this->context = $context;
 	}
 
 	/**

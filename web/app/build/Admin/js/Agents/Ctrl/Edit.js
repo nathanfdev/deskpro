@@ -837,9 +837,10 @@
         }
         promise.then((function(_this) {
           return function(res) {
-            _this.service.agents._addModel(res.data.agent);
             _this.agent.display_name = _this.form.name;
+            _this.service.agents.mergeDataModel(_this.agent);
             if (!_this.agentId) {
+              _this.service.agents.all(true);
               _this.$state.go('agents.agents.edit', {
                 id: res.data.person_id
               });

@@ -72,7 +72,7 @@ class Query extends Param
                 return new self($query);
             case $query instanceof AbstractFilter:
                 $newQuery = new self();
-                $newQuery->setFilter($query);
+                $newQuery->setPostFilter($query);
 
                 return $newQuery;
             case empty($query):
@@ -132,10 +132,13 @@ class Query extends Param
      *
      * @param  \Elastica\Filter\AbstractFilter $filter Filter object
      * @return \Elastica\Query                 Current object
+     * @link    https://github.com/elasticsearch/elasticsearch/issues/7422
+     * @deprecated
      */
     public function setFilter(AbstractFilter $filter)
     {
-        return $this->setParam('filter', $filter->toArray());
+        trigger_error('Deprecated: Elastica\Query::setFilter() is deprecated. Use Elastica\Query::setPostFilter() instead.', E_USER_DEPRECATED);
+        return $this->setPostFilter($filter);
     }
 
     /**
@@ -248,6 +251,8 @@ class Query extends Param
 
     /**
      * Sets the fields to be returned by the search
+     * NOTICE php will encode modified(or named keys) array into object format in json format request
+     * so the fields array must a sequence(list) type of array
      *
      * @param  array          $fields Fields to be returned
      * @return \Elastica\Query Current object
@@ -406,13 +411,21 @@ class Query extends Param
 
     /**
      * Sets post_filter argument for the query. The filter is applied after the query has executed
-     * @param   array $post
-     * @return  \Elastica\Query Current object
-     * @link    http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/_filtering_queries_and_aggregations.html#_post_filter
+     *
+     * @param   array|\Elastica\Filter\AbstractFilter $filter
+     * @return  \Elastica\Param
+     * @link    http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-post-filter.html
      */
-    public function setPostFilter(array $post)
+    public function setPostFilter($filter)
     {
-        return $this->setParam("post_filter", $post);
+        if($filter instanceof AbstractFilter)
+        {
+            $filter = $filter->toArray();
+        } else {
+            trigger_error('Deprecated: Elastica\Query::setPostFilter() passing filter as array is deprecated. Pass instance of AbstractFilter instead.', E_USER_DEPRECATED);
+        }
+
+        return $this->setParam("post_filter", $filter);
     }
 }
 

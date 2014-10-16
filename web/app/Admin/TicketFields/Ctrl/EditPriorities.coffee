@@ -32,6 +32,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			if not @pris or not @pris.length
 				@enabled = false
 
+			# pris dont have display order, but they have numeric 'priority' that works the same
+			for p in @pris
+				p.priority = p.display_order
+
 			postData = {
 				priorities:     @pris,
 				default_id:     @default_id,

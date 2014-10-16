@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -33,7 +33,6 @@
  */
 
 namespace Application\ApiBundle\Controller;
-use Swagger\Swagger;
 
 /**
  * Docs API Controller
@@ -45,27 +44,56 @@ class DocsController extends AbstractController
 		return null;
 	}
 
-	########################################################################################################################
+	####################################################################################################################
+	# about
+	####################################################################################################################
+
+	public function aboutAction()
+	{
+		return $this->render('ApiBundle:SwaggerUi:about.html.twig');
+	}
+
+	####################################################################################################################
+	# api
+	####################################################################################################################
+
+	public function apiAction()
+	{
+		return $this->render('ApiBundle:SwaggerUi:api.html.twig');
+	}
+
+	####################################################################################################################
 	# list
-	########################################################################################################################
+	####################################################################################################################
 
 	public function listAction()
 	{
-		$swagger = new Swagger(__DIR__);
-		header("Content-Type: application/json");
-		echo $swagger->getResourceList(array('output' => 'json'));
-		exit;
+		return $this->serveResource('deskpro-api');
 	}
 
-	########################################################################################################################
+	####################################################################################################################
 	# get
-	########################################################################################################################
+	####################################################################################################################
 
 	public function getAction($id)
 	{
-		$swagger = new Swagger(__DIR__);
-		header("Content-Type: application/json");
-		echo $swagger->getResource('/' . $id, array('output' => 'json'));
-		exit;
+		return $this->serveResource($id);
+	}
+
+	####################################################################################################################
+
+	private function getResourcePath($res)
+	{
+		return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/' . ltrim($res, '/') . '.json';
+	}
+
+	private function serveResource($res)
+	{
+		$path = $this->getResourcePath($res);
+		if (!file_exists($path)) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createJsonResponse(file_get_contents($path));
 	}
 }

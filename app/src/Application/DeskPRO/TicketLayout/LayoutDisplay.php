@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -63,8 +63,21 @@ class LayoutDisplay extends Layout implements \Countable, \IteratorAggregate
 	public static function createFromLayout(Layout $layout, $mode, Ticket $ticket_context = null)
 	{
 		$obj = new self($mode, $ticket_context);
-		foreach ($layout as $f) {
-			$obj->add($f);
+
+		if ($ticket_context) {
+			foreach ($layout->all() as $f) {
+				if ($f->hasCriteria()) {
+					if ($f->getCriteria()->isTicketMatch($ticket_context)) {
+						$obj->add($f);
+					}
+				} else {
+					$obj->add($f);
+				}
+			}
+		} else {
+			foreach ($layout->all() as $f) {
+				$obj->add($f);
+			}
 		}
 
 		return $obj;

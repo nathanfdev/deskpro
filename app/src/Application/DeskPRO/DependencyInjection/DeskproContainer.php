@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -242,6 +242,28 @@ class DeskproContainer extends Container
 
 
 	/**
+	 * Get the DB abstraction object.
+	 *
+	 * @return \Application\DeskPRO\JobQueue\JobQueue
+	 */
+	public function getJobQueue()
+	{
+		return $this->getSystemService('job_queue');
+	}
+
+
+	/**
+	 * Get the DB abstraction object.
+	 *
+	 * @return \Application\DeskPRO\JobQueue\JobSupervisor
+	 */
+	public function getJobSupervisor()
+	{
+		return $this->getSystemService('job_supervisor');
+	}
+
+
+	/**
 	 * Gets a DB reader.
 	 *
 	 * There can be many types of readers:
@@ -350,6 +372,18 @@ class DeskproContainer extends Container
 	public function getEm()
 	{
 		return $this->get('doctrine.orm.entity_manager');
+	}
+
+
+
+	/**
+	 * Get the DeskPRO serializer
+	 *
+	 * @return \Application\DeskPRO\Serializer\SerializerRegistry
+	 */
+	public function getSerializer()
+	{
+		return $this->getSystemService('serializer');
 	}
 
 
@@ -477,11 +511,22 @@ class DeskproContainer extends Container
 	/**
 	 * Get the searcher
 	 *
-	 * @return \Application\DeskPRO\Search\Adapter\AbstractAdapter
+	 * @return \Application\DeskPRO\NewSearch\SearchEngine\SearchEngine
 	 */
 	public function getSearchEngine()
 	{
-		return $this->get('deskpro.search_engine');
+		return $this->getSystemService('SearchEngine');
+	}
+
+
+	/**
+	 * Get the context factory
+	 *
+	 * @return \Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory
+	 */
+	public function getSearchContextFactory()
+	{
+		return $this->getSystemService('SearchContextFactory');
 	}
 
 

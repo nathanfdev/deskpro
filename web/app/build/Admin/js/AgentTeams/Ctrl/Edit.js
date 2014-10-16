@@ -1,5 +1,6 @@
 (function() {
-  var __hasProp = {}.hasOwnProperty,
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -9,6 +10,8 @@
       __extends(Admin_AgentTeams_Ctrl_Edit, _super);
 
       function Admin_AgentTeams_Ctrl_Edit() {
+        this.selectIcon = __bind(this.selectIcon, this);
+        this.setAvatar = __bind(this.setAvatar, this);
         return Admin_AgentTeams_Ctrl_Edit.__super__.constructor.apply(this, arguments);
       }
 
@@ -16,10 +19,17 @@
 
       Admin_AgentTeams_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_AgentTeams_Ctrl_Edit.DEPS = [];
+      Admin_AgentTeams_Ctrl_Edit.DEPS = ['$upload', '$http'];
 
       Admin_AgentTeams_Ctrl_Edit.prototype.init = function() {
         this.teamId = parseInt(this.$stateParams.id);
+        this.enable_avatar = false;
+        this.$scope.icon_image = null;
+        this.$scope.$on('icon.selected', (function(_this) {
+          return function(e, path) {
+            return _this.selectIcon(path);
+          };
+        })(this));
       };
 
       Admin_AgentTeams_Ctrl_Edit.prototype.initialLoad = function() {
@@ -45,6 +55,7 @@
                 members: []
               };
             }
+            _this.setAvatar(_this.team.avatar);
             memberIds = _this.team.members.map(function(x) {
               return x.id;
             });
@@ -59,17 +70,76 @@
         return promise;
       };
 
+      Admin_AgentTeams_Ctrl_Edit.prototype.setAvatar = function(blob) {
+        this.team.avatar = blob;
+        if (blob == null) {
+          this.$scope.icon_image = null;
+          return this.enable_avatar = false;
+        } else {
+          this.$scope.icon_image = blob.thumbnail_url_50;
+          return this.enable_avatar = true;
+        }
+      };
+
+      Admin_AgentTeams_Ctrl_Edit.prototype.onFileSelect = function(files) {
+        var file;
+        this.$scope.uploading = false;
+        file = files[0];
+        return this.$upload.upload({
+          url: this.$http.formatApiUrl('/misc/upload'),
+          data: {
+            is_image: true
+          },
+          file: file
+        }).success((function(_this) {
+          return function(data) {
+            _this.$scope.uploading = false;
+            return _this.setAvatar(data.blob);
+          };
+        })(this)).error((function(_this) {
+          return function(data) {
+            _this.$scope.uploading = false;
+            return _this.Growl.error((data != null ? data.error_message : void 0) || 'Error');
+          };
+        })(this));
+      };
+
+      Admin_AgentTeams_Ctrl_Edit.prototype.selectIcon = function(image) {
+        if (image == null) {
+          setAvatar(null);
+        }
+        this.$scope.uploading = true;
+        return this.Api.sendPostJson('/misc/upload', {
+          path: image,
+          is_image: true
+        }).then((function(_this) {
+          return function(data) {
+            _this.$scope.uploading = false;
+            return _this.setAvatar(data.data.blob);
+          };
+        })(this), (function(_this) {
+          return function() {
+            return _this.$scope.uploading = false;
+          };
+        })(this));
+      };
+
       Admin_AgentTeams_Ctrl_Edit.prototype.saveForm = function() {
-        var a, p, postData, _i, _len, _ref;
+        var a, p, postData, _i, _len, _ref, _ref1;
         postData = {
           team: {
             name: this.team.name,
             person_ids: []
           }
         };
-        _ref = this.agents;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          a = _ref[_i];
+        if (this.enable_avatar) {
+          postData.team.avatar = ((_ref = this.team.avatar) != null ? _ref.id : void 0) || null;
+        } else {
+          this.avatar = null;
+        }
+        _ref1 = this.agents;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          a = _ref1[_i];
           if (a.value) {
             postData.team.person_ids.push(a.id);
           }

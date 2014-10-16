@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -57,6 +57,23 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
 		return $options;
 	}
 
+	protected function resolveAgent(ExecutorContextInterface $context, $id)
+	{
+		if (!$id) {
+			return null;
+		}
+
+		if (-1 == $id) {
+			if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
+				return null;
+			}
+			$agent = $context->getPersonContext();
+		} else {
+			$agent = $this->getContainer()->getAgentData()->get($id);
+		}
+
+		return $agent;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -68,9 +85,11 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
 		#--------------------
 
 		if ($add_agent_ids = $this->getActionOption('add_agent_ids')) {
+			if (!is_array($add_agent_ids)) {
+				$add_agent_ids = array($add_agent_ids);
+			}
 			foreach ($add_agent_ids as $agent_id) {
-				$agent = $this->getContainer()->getAgentData()->get($agent_id);
-				if (!$agent) {
+				if (!$agent = $this->resolveAgent($context, $agent_id)) {
 					continue;
 				}
 
@@ -85,9 +104,11 @@ class SetAgentFollowers extends AbstractContainerAwareAction implements ActionIn
 		#--------------------
 
 		if ($remove_agent_ids = $this->getActionOption('remove_agent_ids')) {
+			if (!is_array($remove_agent_ids)) {
+				$remove_agent_ids = array($remove_agent_ids);
+			}
 			foreach ($remove_agent_ids as $agent_id) {
-				$agent = $this->getContainer()->getAgentData()->get($agent_id);
-				if (!$agent) {
+				if (!$agent = $this->resolveAgent($context, $agent_id)) {
 					continue;
 				}
 

@@ -48,8 +48,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth()
 					if newHeight > maxH
 						newHeight = maxH
-					if newHeight < 10
-						newHeight = 10
+					if newHeight < 85
+						newHeight = 85
 
 					$(editor.container).height(newHeight)
 					editor.resize()

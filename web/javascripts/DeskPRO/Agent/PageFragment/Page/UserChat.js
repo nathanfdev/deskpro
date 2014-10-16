@@ -5,6 +5,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	initializeProperties: function() {
 		this.TYPENAME = 'userchat';
+		this.NO_REPLACE_TAB = true;
 	},
 
 	initMetaData: function() {

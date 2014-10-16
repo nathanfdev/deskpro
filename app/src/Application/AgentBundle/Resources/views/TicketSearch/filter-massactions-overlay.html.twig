@@ -70,9 +70,9 @@
 						<dl>
 							<dt style="white-space: nowrap">
 							    {{ phrase('agent.general.agent') }}
-							    <span id="%baseId%_assign_me" class="assign-self-link-wrap">
+							    <span id="%baseId%_assign_me" class="assign-self-link-wrap" data-me="{{ app.user.id }}">
 									&middot;
-									<a class="assign-self-link" data-me="{{ app.user.id }}">
+									<a class="assign-self-link">
 										{{ phrase('agent.general.assign_to_me') }}
 									</a>
 								</span>
@@ -100,11 +100,15 @@
 							<dt style="white-space: nowrap">
 							    {{ phrase('agent.general.team') }}
 
-                                {% if app.user.agent.teams|length >= 1 %}
-                                <span id="%baseId%_assign_team" class="assign-self-link-wrap" data-team="{{ (app.user.agent.teams|first).id }}">
+                                {% if app.user.agent.primaryTeam %}
+                                <span id="%baseId%_assign_team" class="assign-self-link-wrap" data-team="{{ app.user.agent.primaryTeam.id }}">
                                 	&middot;
 									<a class="assign-self-link">
-										{{ phrase('agent.general.assign_to_my_team') }}
+										{% if 1 == app.user.agent.teams|length %}
+                                            {{ phrase('agent.general.assign_to_my_team') }}
+                                        {% else %}
+                                            {{ phrase('agent.general.assign_to_primary_team') }}
+                                        {% endif %}
 									</a>
 								</span>
                                 <span id="%baseId%_unassign_team" class="assign-self-link-wrap" style="display:none;">

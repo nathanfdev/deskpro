@@ -1,0 +1,36 @@
+<section class="dp-paneblock dp-listpane">
+    <header>
+        <nav>
+            <dp-order-menu ng-model="sortOrder" order-dir-prefs="{'label': 'ASC', 'total': 'DESC'}">
+                <option value="label">Label</option>
+                <option value="total">Count</option>
+            </dp-order-menu>
+        </nav>
+
+        <h3 ng-pluralize count="countDefinitions()" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
+    </header>
+    <article>
+        <ul class="dp-item-list" dp-max-height>
+            <li ng-repeat="label in labels | orderObjectBy:order:orderReverse"
+                dp-state-mark="label!:{{ prefix }}.edit.{{ ng_var('label.label|murmurhash') }}">
+
+                <a href="{{ ng_href(prefix ~ '.edit', '{label: label.label}') }}">
+                    <div class="pull-right">
+                        <span class="badge" ng-show="!delete_mode"
+                              tooltip="The number of organizations with this label"
+                              tooltip-placement="left" style="margin-top: -2px;">
+                            {{ng_var('label.total')}}
+                        </span>
+                    </div>
+                    <h4>
+                        <span class="title-text" dp-label="label" style="display: inline-block; padding: 1% 2%; border-radius: 3px"></span>
+                    </h4>
+                </a>
+
+            </li>
+        </ul>
+        <div class="dp-add-control">
+            <a class="btn btn-default" href="{{ ng_href(prefix ~ '.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{phrase('agent.general.add')}}</a>
+        </div>
+    </article>
+</section>

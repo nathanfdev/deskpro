@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -110,7 +110,14 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		$m = null;
-		if (isset($params['host']) && preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
+		if (isset($params['host']) && preg_match('#^unix_socket:(.*?)$#', $params['host'], $m)) {
+			unset($params['host']);
+			unset($params['port']);
+			$params['unix_socket'] = trim($m[1]);
+		}
+
+		$m = null;
+		if (empty($params['unix_socket']) && isset($params['host']) && preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
 			$params['host'] = $m[1];
 			$params['port'] = $m[2];
 		}

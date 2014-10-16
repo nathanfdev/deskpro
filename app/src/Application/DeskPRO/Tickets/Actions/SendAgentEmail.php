@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -58,7 +58,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('agent_ids');
-		$options->addValidNames('template', 'from_name', 'from_account');
+		$options->addValidNames('template', 'from_name', 'from_account', 'headers');
 		return $options;
 	}
 
@@ -221,6 +221,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				$type_flag = 'status_changed';
 			}
 
+			if ($state->hasChangedField('ticket_sla_status')) {
+				$change = $state->getLastChangeForField('ticket_sla_status');
+				$new = $change->getNew();
+				$vars['sla'] = $new['sla'];
+				$vars['sla_status'] = $new['status'];
+			}
+
 			$vars['type_flag'] = $type_flag;
 
 			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
@@ -232,6 +239,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				->setTemplateName($template)
 				->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
 				->setLogger($context->getLogger())
+				->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
 				->buildTicketEmail();
 
 			try {

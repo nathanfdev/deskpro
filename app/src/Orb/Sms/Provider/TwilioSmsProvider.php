@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -35,9 +35,11 @@
 namespace Orb\Sms\Provider;
 
 use Orb\Service\Twilio\Twilio;
+use Orb\Sms\SmsException;
 use Orb\Sms\SmsMessageChunk;
 use Orb\Sms\SmsProviderInterface;
 use Orb\Sms\SmsResult;
+use Orb\Util\PhoneNumbers;
 
 class TwilioSmsProvider implements SmsProviderInterface
 {
@@ -46,9 +48,30 @@ class TwilioSmsProvider implements SmsProviderInterface
 	 */
 	protected $twilio;
 
+	/**
+	 * @var string
+	 */
+	protected $sid;
+
+	/**
+	 * @var string
+	 */
+	protected $auth_token;
+
 	public function __construct($sid, $auth_token)
 	{
+		$this->sid = $sid;
+		$this->auth_token = $auth_token;
 		$this->twilio = new Twilio($sid, $auth_token);
+	}
+
+
+	/**
+	 * @return string a friendly name for the account
+	 */
+	public function getAccountName()
+	{
+		return $this->twilio->getFriendlyName();
 	}
 
 	/**
@@ -101,9 +124,33 @@ class TwilioSmsProvider implements SmsProviderInterface
 		return $result;
 	}
 
+
+	/**
+	 * @throws \Orb\Sms\SmsException
+	 * @return array an array of arrays in the format:
+	 *               array( 'display_name' => 'Some Name', 'phone_number' => '+19023340390 )
+	 */
 	public function getIncomingNumbers()
 	{
-		return $this->twilio->getIncomingNumbers();
+		try {
+			$out = array();
+
+			$numbers = $this->twilio->getIncomingNumbers();
+			foreach ($numbers as $display => $number) {
+				$number = PhoneNumbers::toInternationalFormat($number);
+				$out[] = array('display_name' => $display, 'number' => $number);
+			}
+
+			return $out;
+		} catch (\Exception $e) {
+			throw new SmsException('could not get incoming numbers from Twilio provider');
+		}
+	}
+
+
+	public function setUrlForNumber($twilio_endpoint, $number)
+	{
+		$this->twilio->setUrlForNumber($twilio_endpoint, $number);
 	}
 
 	/**
@@ -114,5 +161,17 @@ class TwilioSmsProvider implements SmsProviderInterface
 	public function getName()
 	{
 		return 'twilio';
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParams()
+	{
+		return array(
+			'sid' => $this->sid,
+			'auth_token' => $this->auth_token
+		);
 	}
 }

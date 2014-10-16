@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -73,6 +73,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\DevExportLangCommand',
 			'Application\\DeskPRO\\Command\\DevGenChangelogDocCommand',
 			'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
+			'Application\\DeskPRO\\Command\\DevJobCreateIncomingSmsCommand',
 			'Application\\DeskPRO\\Command\\DevLangCheckPhraseIdsCommand',
 			'Application\\DeskPRO\\Command\\DevLangCheckVarsCommand',
 			'Application\\DeskPRO\\Command\\DevLangOneSkyInitCommand',
@@ -86,6 +87,8 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 			'Application\\DeskPRO\\Command\\InstallCommand',
 			'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
 			'Application\\DeskPRO\\Command\\InternalUpgradeRunnerCommand',
+			'Application\\DeskPRO\\Command\\JobExecuteCommand',
+			'Application\\DeskPRO\\Command\\JobSupervisorCommand',
 			'Application\\DeskPRO\\Command\\LanguageToPOCommand',
 			'Application\\DeskPRO\\Command\\LicenseInfoCommand',
 			'Application\\DeskPRO\\Command\\LoginTokenCommand',

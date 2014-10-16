@@ -430,14 +430,16 @@
 
 .list-listing .extra-fields ul li {
 	float: left;
+	display: block;
+	vertical-align: middle;
 	border: 1px solid #D4D7D9;
 	background-color: #f6f6f6;
 	margin-right: 5px;
 	margin-top: 1px;
 	margin-bottom: 1px;
-	font-size: 11px;
-	line-height: 100%;
-	padding:  2px 4px 2px 4px;
+	font-size: 12px;
+	line-height: 18px;
+	padding:  0px 4px 0px 4px;
 	.rounded(2px);
 }
 
@@ -466,6 +468,24 @@
 }
 .list-listing .extra-fields ul li.changed .prop-val {
 	color: #585440;
+}
+
+.list-listing .extra-fields ul li .prop-val .avatar {
+	display: inline-block;
+	vertical-align: top;
+	margin:0;
+	padding: 0;
+	line-height: 100%;
+	border-radius: 4px;
+	overflow: hidden;
+	img {
+		width: 16px;
+		height: 16px;
+		position: relative;
+		top: 1px;
+		margin:0;
+		padding: 0;
+	}
 }
 
 .list-listing .extra-fields ul li .prop-title {
@@ -966,6 +986,15 @@ table.tickets-simple td.status .status
 		background: #f5f5f5;
 		color: #636B73;
 		padding: 0 2px 0 2px;
+	}
+}
+
+.panevis-tabs-off .table-result-list table {
+	.col-agent {
+		width: auto; overflow: visible; text-overflow: clip; text-align: center; vertical-align: middle;
+		img {
+			vertical-align: top;
+		}
 	}
 }
 

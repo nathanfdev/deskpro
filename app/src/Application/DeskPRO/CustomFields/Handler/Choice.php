@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -186,8 +186,10 @@ class Choice extends HandlerAbstract
 		} else if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
 			$req_opt = $this->field_def->getOption('agent_required');
 		}
-		if ($req_opt || $is_radio || $is_check) {
+		if ($is_radio || $is_check) {
 			$field_opts['empty_value'] = false;
+		} else {
+			$field_opts['empty_value'] = '';
 		}
 
 		$field_choice = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', null, $field_opts);

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -49,7 +49,7 @@ class TicketWorkflows extends LazyCollection
 	 */
 	protected function loadRecords()
 	{
-		$recs = $this->em->getRepository('DeskPRO:TicketWorkflow')->findAll();
+		$recs = $this->em->getRepository('DeskPRO:TicketWorkflow')->getAll();
 		$recs = Arrays::keyFromData($recs, 'id');
 		return $recs;
 	}
@@ -62,7 +62,7 @@ class TicketWorkflows extends LazyCollection
 	 * With an invalid pref, getDefaultWorkflow() will return the first selectable option.
 	 * Use getById() to check if a exists before calling this.
 	 *
-	 * @param int $dep_or_id
+	 * @param int $obj_or_id
 	 */
 	public function setDefaultWorkflowPreference($obj_or_id)
 	{

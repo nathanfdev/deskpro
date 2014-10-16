@@ -50,8 +50,8 @@
 			<span class="prop-val"><%= ticket_display.product.title %></span>
 		<% } %>
 		<% if (field == 'agent') { %>
-			<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /></span><% } %>
-			<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /></a></span><% } %>
+			<% if (ticket_display.agent && ticket_display.agent.id == DESKPRO_PERSON_ID) { %><span class="prop-val"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /> <%- ticket.agent.display_name %></span><% } %>
+			<% if (ticket_display.agent && ticket_display.agent.id != DESKPRO_PERSON_ID) { %><span class="prop-val"><a class="agent_link" ng-click="openAgentChat(<%= ticket_display.agent.id %>, $event)"><img ng-src="<%- ticket.agent.picture_url_16 %>" title="<%- ticket.agent.display_name %>" /> <%- ticket.agent.display_name %></a></span><% } %>
 			<% if (!ticket_display.agent) { %>&nbsp;<% } %>
 		<% } %>
 		<% if (field == 'agent_team') { %>
@@ -61,7 +61,7 @@
 		<% if (field == 'labels') { %>
 			<% if (ticket_display.labels) { %>
 				<% for (var labelIdx = 0; labelIdx < ticket_display.labels.length; labelIdx++) { %>
-					<span class="listing-tag"><%- ticket_display.labels[labelIdx] %></span>
+					<span class="listing-tag" dp-label="<%- ticket_display.labels[labelIdx] %>"><%- ticket_display.labels[labelIdx] %></span>
 				<% } %>
 			<% } %>
 		<% } %>
@@ -69,28 +69,28 @@
 			<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': '<%= ticket_display.organization.id %>'}) }}" data-route-title="@text"><%- ticket_display.organization.name %></a>
 		<% } %>
 		<% if (field == 'date_created') { %>
-			<span dp-timeago timestamp="<%= ticket_display.date_created_ts %>" />
+			<span dp-timeago auto-update timestamp="<%= ticket_display.date_created_ts %>" />
 		<% } %>
 		<% if (field == 'date_user_waiting') { %>
-			<span dp-timeago timestamp="<%= ticket_display.date_user_waiting_ts %>" no-suffix />
+			<span dp-timeago auto-update timestamp="<%= ticket_display.date_user_waiting_ts %>" no-suffix />
 		<% } %>
 		<% if (field == 'date_resolved') { %>
-			<span dp-timeago timestamp="<%= ticket_display.date_resolved_ts %>" />
+			<span dp-timeago auto-update timestamp="<%= ticket_display.date_resolved_ts %>" />
 		<% } %>
 		<% if (field == 'date_last_user_reply') { %>
-			<span dp-timeago timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
+			<span dp-timeago auto-update timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
 		<% } %>
 		<% if (field == 'date_last_agent_reply') { %>
-			<span dp-timeago timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
+			<span dp-timeago auto-update timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
 		<% } %>
 		<% if (field == 'date_last_reply') { %>
 			<% if (ticket_display.date_last_agent_reply && (!ticket_display.date_last_user_reply || ticket_display.date_last_agent_reply_ts > ticket_display.date_last_user_reply_ts)) { %>
 				<span class="prop-val">
-					<span dp-timeago timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
+					<span dp-timeago auto-update timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
 				</span>
 			<% } %>
 			<% if (ticket_display.date_last_user_reply && (!ticket_display.date_last_agent_reply || ticket_display.date_last_user_reply_ts > ticket_display.date_last_agent_reply_ts)) { %>
-				<span dp-timeago timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
+				<span dp-timeago auto-update timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
 			<% } %>
 		<% } %>
 		<% if (field == 'total_user_waiting') { %>
@@ -110,7 +110,7 @@
 				<span class="prop-val sla-status-<%= ticket_sla.sla_status %>">
 					<%- ticket_sla.sla.title %>
 					<% if (ticket_sla.next_trigger_date_ts) { %>
-						(<span dp-timeago timestamp="<%= ticket_sla.next_trigger_date_ts %>" no-suffix />)
+						(<span dp-timeago auto-update timestamp="<%= ticket_sla.next_trigger_date_ts %>" no-suffix />)
 					<% } %>
 				</span>
 				<% } %>

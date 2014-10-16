@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -465,6 +465,34 @@ class AgentDataService
 
 		return $teams;
 	}
+
+
+	/**
+	 * @param int|\Application\DeskPRO\Entity\Person $agent
+	 * @param int|\Application\DeskPRO\Entity\AgentTeam $team
+	 * @return bool
+	 */
+	public function isAgentMemberOfTeam($agent, $team)
+	{
+		if (!is_object($agent)) {
+			try {
+				$agent = $this->get($agent);
+			} catch (\InvalidArgumentException $e) {
+				return false;
+			}
+		}
+
+		if (!is_object($team)) {
+			try {
+				$team = $this->getTeam($team);
+			} catch (\InvalidArgumentException $e) {
+				return false;
+			}
+		}
+
+		return in_array($agent, $this->getAgentsForTeam($team), true);
+	}
+
 
 	/**
 	 * @param int|\Application\DeskPRO\Entity\Person $agent

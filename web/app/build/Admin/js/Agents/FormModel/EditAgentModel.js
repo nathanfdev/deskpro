@@ -8,6 +8,7 @@
         this.form.name = agent.name;
         this.form.primary_phone_number_text = agent.primary_phone_number_text;
         this.form.primary_phone_number_region = agent.primary_phone_number_region;
+        this.form.primary_team = agent.primary_team;
         this.form.notification_settings = agent.notification_settings;
         if (!this.form.primary_phone_number_region) {
           this.form.primary_phone_number_region = primary_phone_number_region;
@@ -79,6 +80,7 @@
         formData.name = this.form.name;
         formData.primary_phone_number_text = this.form.primary_phone_number_text;
         formData.notification_settings = this.form.notification_settings;
+        formData.primary_team = this.form.primary_team ? this.form.primary_team.id : null;
         if (this.form.enable_display_name && Strings.trim(this.form.override_name)) {
           formData.override_name = Strings.trim(this.form.override_name);
         } else {

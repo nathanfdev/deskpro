@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -148,14 +148,18 @@ class TaskReminders extends AbstractJob
 					$alerts++;
 				}
 
-				if ($agent->getPref('agent_notif.task_due.email')) {
+				$email_accounts = App::$container->getEmailAccountManager();
+				$out = $email_accounts->getDefaultOutAccountWithFallback();
+				$from_email = $out->getUseEmailAddress();
+
+				if ($from_email && $agent->getPref('agent_notif.task_due.email')) {
 					$message = App::getMailer()->createMessage();
 					$message->setTemplate('DeskPRO:emails_agent:task-due-reminder.html.twig', array(
 						'task' => $task,
 						'person' => $agent
 					));
 					$message->setToPerson($agent);
-					$message->setFrom(App::getSetting('core.default_from_email'), App::getSetting('core.deskpro_name'));
+					$message->setFrom($from_email, App::getSetting('core.deskpro_name'));
 					App::getMailer()->send($message);
 
 					$emails++;

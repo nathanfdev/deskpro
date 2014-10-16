@@ -16,26 +16,13 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.filterId = parseInt(this.meta.filter_id) || 0;
 		this.fixed_fields = ['subject'];
 
-		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
-			self.$scope = $rootScope.$new();
+		self.$scope = DeskPRO_Window.$scope.$new();
+		self.$q = DeskPRO_Window.$q;
+		self.$timeout = DeskPRO_Window.$timeout;
 
-			self.$scope.$safeApply = function(fn) {
-				var phase = this.$root.$$phase;
-				if(phase == '$apply' || phase == '$digest') {
-					if(fn && (typeof(fn) === 'function')) {
-						fn();
-					}
-				} else {
-					this.$apply(fn);
-				}
-			};
-
-			self.$q = $q;
-			self.$timeout = $timeout;
-
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			attachPoint.data('$ngControllerController', self);
 			$compile(attachPoint.contents())(self.$scope);
-
 			self.initScope();
 		}]);
 
@@ -56,6 +43,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				this.meta.topGroupingOption || this.meta.topGroupingOption === 0 ? this.meta.topGroupingOption : null
 			);
 		}
+
+		this.addEvent('activate', this.fillListItems, this);
 	},
 
 	updateSlaListForTicket: function(info) {
@@ -115,7 +104,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		// Wait til after updatePageCursor since it needs full list to know proper cursor
 		$scope.tickets = startTicketsBatch[0];
-
 		this.getEl('ticket_json').remove();
 		this.getEl('ticket_ids_json').remove();
 
@@ -149,12 +137,19 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		}, 10);
 
 
-		$scope.$watch('tickets', function(newVal, oldVal){
-			$scope.$parent.listItems.length = 0;
-			var routeTemplate = $scope.$parent.routes.ticket;
-			newVal.each(function(ticket){
-				$scope.$parent.addListItem('ticket', 'ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
-			});
+		$scope.$watch('tickets', this.fillListItems.bind(this));
+	},
+
+	fillListItems: function() {
+		var self = this,
+			$scope = this.$scope,
+			routeTemplate = $scope.routes.ticket;
+
+		if (!self.IS_ACTIVE) return;
+		$scope.listItems.length = 0;
+
+		$scope.tickets.each(function(ticket){
+			$scope.addListItem('ticket', 'ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
 		});
 	},
 
@@ -356,6 +351,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @param {Array} ticketIds
 	 */
 	queueChangeEvent: function(type, ticketIds) {
+		if (!this.$scope) return;
+
 		var self = this;
 
 		ticketIds.forEach(function(tid) {
@@ -375,6 +372,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	},
 
 	_runQueuedChangeEvents: function() {
+		if (!this.$scope) return;
+
 		var events = this.queuedChangeEvents;
 		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': [], 'postRun': []};
 		this.queuedChangeEvents_timeout = null;
@@ -453,6 +452,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function(tickets) {
+			if (!self.$scope) return;
 			var firstId = $scope.tickets[0] ? $scope.tickets[0].id : null,
 				newFirstTicketIdx = null,
 				listTicketIdsMap;
@@ -657,6 +657,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function (tickets) {
+			if (!self.$scope) return;
 			self.applyTicketData(tickets);
 		});
 
@@ -1001,7 +1002,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 */
 	refreshSubgroupNumbers: function() {
 		var self = this;
-		if (!this.meta.refreshSubgroupCounts) {
+		if (!this.meta.refreshSubgroupCounts || !this.$scope) {
 			return;
 		}
 
@@ -1467,6 +1468,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			url: this.meta.refreshCursorUrl.replace(/\$cursor/g, cursor),
 			dataType: 'json',
 			success: function(data) {
+				if (!self.$scope) return;
 				this.refreshCursorAjax = null;
 				time2 = new Date();
 				console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);

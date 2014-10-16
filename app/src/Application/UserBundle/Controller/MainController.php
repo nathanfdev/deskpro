@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -62,7 +62,7 @@ class MainController extends AbstractController
 			$page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
 
 			if (!$page_display) {
-				throw new $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 
 			if (strpos($page_display->type, '\\') === false) {
@@ -106,7 +106,7 @@ class MainController extends AbstractController
 			}
 
 			if (!$res) {
-				throw new $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		}
 

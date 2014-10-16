@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -50,6 +50,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
@@ -442,7 +443,7 @@ class TicketController extends AbstractController
 		$ticket_perms['reply'] = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
 		$ticket_perms['modify_set_closed'] = $this->person->PermissionsManager->TicketChecker->canSetClosed($ticket);
 
-		foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved') as $p) {
+		foreach (array('department', 'slas', 'fields', 'assign_agent', 'assign_team', 'assign_self', 'cc', 'merge', 'labels', 'notes', 'set_hold', 'set_awaiting_agent', 'set_awaiting_user', 'set_resolved', 'set_unresolved') as $p) {
 			$ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
 		}
 
@@ -743,6 +744,7 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id, 'edit');
 
+		/** @var TicketChecker $tcheck */
 		$tcheck = $this->person->PermissionsManager->TicketChecker;
 
 		if ($this->in->checkIsset('department') && $tcheck->canModify($ticket, 'department')) {
@@ -1088,10 +1090,24 @@ class TicketController extends AbstractController
 		}
 
 		if ($set_status) {
+			/** @var TicketChecker $tcheck */
+			$tcheck = $this->person->PermissionsManager->TicketChecker;
 			switch ($set_status) {
-				case 'resolved':       if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) $set_status = $ticket['status']; break;
-				case 'awaiting_agent': if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) $set_status = $ticket['status']; break;
-				case 'awaiting_user':  if (!$this->person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) $set_status = $ticket['status']; break;
+				case 'resolved':
+					if (!$tcheck->canModify($ticket, 'set_resolved')) {
+						$set_status = $ticket['status'];
+					}
+					break;
+				case 'awaiting_agent':
+					if (!$tcheck->canModify($ticket, 'set_awaiting_agent')) {
+						$set_status = $ticket['status'];
+					}
+					break;
+				case 'awaiting_user':
+					if (!$tcheck->canModify($ticket, 'set_awaiting_user')) {
+						$set_status = $ticket['status'];
+					}
+					break;
 			}
 		}
 
@@ -1328,7 +1344,7 @@ class TicketController extends AbstractController
 
 			if (!$message['is_agent_note'] || $macro) {
 				if ($action_type != 'macro') {
-					$ticket['status'] = $action_type;
+					$ticket['status'] = $set_status;
 				}
 
 				if ($this->in->getBool('options.do_kbpending')) {
@@ -1460,6 +1476,11 @@ class TicketController extends AbstractController
 			}
 		}
 
+		$can_view = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+		if (!$can_view) {
+			$refresh_tab = false;
+		}
+
 		$data = array_merge($data, array(
 			'via_reply'                        => true,
 			'updated_agent_parts_html'         => isset($updated_agent_parts) ? $updated_agent_parts : '',
@@ -1477,7 +1498,7 @@ class TicketController extends AbstractController
 			'cc_list'                          => $cc_list,
 			'error_messages'                   => $error_messages ?: false,
 			'notified_agents'                  => $notify_agent_ids,
-			'can_view'                         => $this->person->PermissionsManager->TicketChecker->canView($ticket),
+			'can_view'                         => $can_view,
 			'api_data'                         => $ticket->toApiData()
 		));
 
@@ -1847,88 +1868,102 @@ class TicketController extends AbstractController
 		if ($macro_id) {
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if ($macro) {
-				$macro->performOnTicket($ticket, $this->person);
-				$tm->saveTicket($ticket, $context);
+				$this->db->beginTransaction();
+				try {
+					$macro->performOnTicket($ticket, $this->person);
+					$tm->saveTicket($ticket, $context);
+					$this->db->commit();
+				} catch (\Exception $e) {
+					$this->db->rollback();
+					throw $e;
+				}
 			}
 		} else {
-			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-			$ticket_edit->setPersonContext($this->person);
+			$this->db->beginTransaction();
+			try {
+				$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+				$ticket_edit->setPersonContext($this->person);
 
-			// Validate based on department...
-			$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
-			$newticket->setValuesFromTicket($ticket);
+				// Validate based on department...
+				$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->em, $this->person);
+				$newticket->setValuesFromTicket($ticket);
 
-			foreach (array('category_id', 'priority_id', 'product_id', 'workflow_id') as $f) {
-				if ($this->in->checkIsset("actions.$f")) {
-					$newticket->{$f} = $this->in->getUint("actions.$f");
-				}
-			}
-			if (isset($_REQUEST['custom_fields'])) {
-				$newticket->ticket_fields = $_REQUEST['custom_fields'];
-			}
-
-			if ($this->in->getString('actions.status') == 'resolved') {
-				$newticket->status = 'resolved';
-			} else {
-				$newticket->status = '';
-			}
-
-			$validator = new NewTicketValidator();
-			$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
-			$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
-			$validator->setLayout($layout);
-
-			$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
-
-			if (count($actions) == 1 && isset($actions['department_id'])) {
-				// Validation not on dep changes,
-				// because changing dep could change validation options
-				$new_department_id = $actions['department_id'];
-			} else if ($ticket->status == 'hidden' && count($actions) == 2 && isset($actions['status']) && isset($actions['hidden_status'])) {
-				// skip validation just restoring a deleted ticket, validation will apply after
-			} else {
-				if (!$validator->isValid($newticket)) {
-					$free = array();
-					foreach ($validator->getErrorsInfo() as $info) {
-						$free[] = htmlspecialchars($info['message']);
+				foreach (array('category_id', 'priority_id', 'product_id', 'workflow_id') as $f) {
+					if ($this->in->checkIsset("actions.$f")) {
+						$newticket->{$f} = $this->in->getUint("actions.$f");
 					}
-
-					return $this->createJsonResponse(array('error' => true, 'error_messages' => $free));
 				}
-			}
-
-			$result = $ticket_edit->applyActions($actions);
-
-			// If department is changed,
-			// then we re-output the holder template
-			$is_dep_changed = false;
-			$event_listener = new PropertyChangedCallback(function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
-				if ($propertyName == 'department') {
-					$is_dep_changed = true;
+				if (isset($_REQUEST['custom_fields'])) {
+					$newticket->ticket_fields = $_REQUEST['custom_fields'];
 				}
-			});
-			$ticket->addPropertyChangedListener($event_listener);
 
-			if ($this->in->getBool('with_set_agent_parts')) {
-				$set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
-				$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($set_parts);
-				$ticket->setAgentParticipants($agents);
-			}
+				if ($this->in->getString('actions.status') == 'resolved') {
+					$newticket->status = 'resolved';
+				} else {
+					$newticket->status = '';
+				}
 
-			if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+				$validator = new NewTicketValidator();
+				$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($newticket->department_id);
+				$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $newticket->getMockTicket());
+				$validator->setLayout($layout);
 
-				if (!empty($_POST['custom_fields'])) {
-					$post_custom_fields = $this->request->request->get('custom_fields', array());
-					if (!empty($post_custom_fields)) {
-						$field_manager->saveFormToObject($post_custom_fields, $ticket);
-						$this->em->persist($ticket);
+				$actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
+
+				if (count($actions) == 1 && isset($actions['department_id'])) {
+					// Validation not on dep changes,
+					// because changing dep could change validation options
+					$new_department_id = $actions['department_id'];
+				} else if ($ticket->status == 'hidden' && count($actions) == 2 && isset($actions['status']) && isset($actions['hidden_status'])) {
+					// skip validation just restoring a deleted ticket, validation will apply after
+				} else {
+					if (!$validator->isValid($newticket)) {
+						$free = array();
+						foreach ($validator->getErrorsInfo() as $info) {
+							$free[] = htmlspecialchars($info['message']);
+						}
+
+						return $this->createJsonResponse(array('error' => true, 'error_messages' => $free));
 					}
-
-					$this->em->flush();
 				}
-			}
 
-			$tm->saveTicket($ticket, $context);
+				$result = $ticket_edit->applyActions($actions);
+
+				// If department is changed,
+				// then we re-output the holder template
+				$is_dep_changed = false;
+				$event_listener = new PropertyChangedCallback(function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
+					if ($propertyName == 'department') {
+						$is_dep_changed = true;
+					}
+				});
+				$ticket->addPropertyChangedListener($event_listener);
+
+				if ($this->in->getBool('with_set_agent_parts')) {
+					$set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
+					$agents = $this->em->getRepository('DeskPRO:Person')->getPeopleFromIds($set_parts);
+					$ticket->setAgentParticipants($agents);
+				}
+
+				if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+
+					if (!empty($_POST['custom_fields'])) {
+						$post_custom_fields = $this->request->request->get('custom_fields', array());
+						if (!empty($post_custom_fields)) {
+							$field_manager->saveFormToObject($post_custom_fields, $ticket);
+							$this->em->persist($ticket);
+						}
+
+						$this->em->flush();
+					}
+				}
+
+				$tm->saveTicket($ticket, $context);
+				$this->db->commit();
+			} catch (\Exception $e) {
+				$this->db->rollback();
+				throw $e;
+			}
 		}
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
@@ -2046,6 +2081,10 @@ class TicketController extends AbstractController
 		}
 
 		$data['data']['api_data'] = $ticket->toApiData();
+
+		if (!$data['data']['can_view']) {
+			$data['data']['refresh'] = false;
+		}
 
 		return $this->createJsonResponse($data);
 	}
@@ -3481,10 +3520,6 @@ class TicketController extends AbstractController
 
 				$newticket->save();
 				$ticket = $newticket->getTicket();
-                                
-				$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
-
-				$ticket->getLabelManager()->setLabelsArray($labels);
 
 				$this->em->persist($ticket);
 
@@ -3508,11 +3543,9 @@ class TicketController extends AbstractController
 				# Labels
 				#------------------------------
 
-				$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
-				if ($labels) {
-					$ticket->getLabelManager()->setLabelsArray($labels);
-					$this->em->flush();
-				}
+				$labels = $this->in->getCleanValue('labels');
+				$ticket->getLabelManager()->setLabelsArray($labels);
+				$this->em->flush();
 
 				#------------------------------
 				# Add CC's
@@ -3719,7 +3752,6 @@ class TicketController extends AbstractController
 		$this->em->persist($lock_cm);
 
 		$ticket->setLockedByAgent($this->person);
-		$this->em->persist($ticket);
 		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));
@@ -3745,7 +3777,6 @@ class TicketController extends AbstractController
 		$this->em->persist($lock_cm);
 
 		$ticket->setLockedByAgent(null);
-		$this->em->persist($ticket);
 		$this->em->flush();
 
 		return $this->createJsonResponse(array('success' => true));

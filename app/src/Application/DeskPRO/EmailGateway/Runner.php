@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -236,11 +236,21 @@ class Runner
 
 	/**
 	 * @param OptionsArray $result
+	 * @param bool         $is_retry
 	 * @return bool
 	 */
-	private function verifyCreatedObject(OptionsArray $result)
+	private function verifyCreatedObject(OptionsArray $result, $is_retry = false)
 	{
 		$this->logger->logDebug("Verifying created object...");
+
+		if ($is_retry) {
+			$this->logger->logDebug("-> Checking again");
+		}
+
+		if ($result->created_object_type == 'no_value') {
+			$this->logger->logDebug('-> NoValue was returned (note: that is a valid return)');
+			return true;
+		}
 
 		$id = $result->created_object_id;
 		if (!$id) {
@@ -248,16 +258,18 @@ class Runner
 			return false;
 		}
 
+		$check_result = false;
+
 		switch ($result->created_object_type) {
 			case 'ticket':
 				$this->logger->logDebug("--> Verifying ticket {$id}");
 				$t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets WHERE id = ?", array($id));
 				if ($t) {
 					$this->logger->logInfo("--> Ticket OKAY");
-					return true;
+					$check_result = true;
 				} else {
 					$this->logger->logWarn("--> Ticket DOES NOT exist");
-					return false;
+					$check_result = false;
 				}
 				break;
 
@@ -266,10 +278,10 @@ class Runner
 				$t = App::$container->getDb()->fetchColumn("SELECT id FROM tickets_messages WHERE id = ?", array($id));
 				if ($t) {
 					$this->logger->logInfo("--> Ticket message OKAY");
-					return true;
+					$check_result = true;
 				} else {
 					$this->logger->logWarn("--> Ticket message DOES NOT exist");
-					return false;
+					$check_result = false;
 				}
 				break;
 
@@ -277,6 +289,13 @@ class Runner
 				$this->logger->logWarn("--> Unknown object type: {$result->created_object_type}");
 				return false;
 		}
+
+		if (!$check_result && !$is_retry) {
+			sleep(1);
+			return $this->verifyCreatedObject($result, true);
+		}
+
+		return $check_result;
 	}
 
 
@@ -353,6 +372,13 @@ class Runner
 			$this->logger->addWriter($this->log_messages);
 		}
 
+		$is_in_trans = App::getDb()->isTransactionActive();
+		if ($is_in_trans) {
+			$this->logger->logWarn('Note: Called within a transaction');
+		} else {
+			$this->logger->logDebug('Note: Not called within a transaction');
+		}
+
 		$this->log_messages->clear();
 
 		$previous_log_text = null;
@@ -390,8 +416,10 @@ class Runner
 		App::getOrm()->flush();
 
 		$allow_retry = $this->enable_retry_scheduling;
+		$this->logger->logInfo("Retrying is " . ($allow_retry ? "on" : "off"));
 		if ($allow_retry && $source->exec_count >= $this->max_retry_attempts) {
 			$allow_retry = false;
+			$this->logger->logInfo("--> Retrying turned off, max count reached: {$source->exec_count} >= {$this->max_retry_attempts}");
 		}
 
 		$this->logger->logDebug("Running processors");
@@ -409,6 +437,15 @@ class Runner
 			$result = $runner_exec->run();
 			App::$container->getEm()->flush();
 			$this->logger->logDebug("--> Processors complete");
+
+			if (!$is_in_trans && App::getDb()->isTransactionActive()) {
+				$this->logger->log("WARNING: Unclosed transaction!", 'info');
+				$e = new \RuntimeException("WARNING: Unclosed transaction");
+				KernelErrorHandler::logException($e, false, 'unclosed_trans_gateway');
+				while (App::getDb()->isTransactionActive()) {
+					App::getDb()->commit();
+				}
+			}
 		} catch (\Exception $e) {
 			$this->logger->logDebug("--> Processor exception: {$e->getCode()} {$e->getMessage()}");
 			$result = array(
@@ -428,7 +465,7 @@ class Runner
 					KernelErrorHandler::logException($e, true);
 				}
 			} else {
-				$this->logger->logWarn("Not trying because we have reached the retry limit of {$this->max_retry_attempts}");
+				$this->logger->logWarn("Not trying again (allow_retry is false)");
 				KernelErrorHandler::logException($e, true);
 			}
 
@@ -453,6 +490,12 @@ class Runner
 				));
 
 				$result = $new_result;
+
+				if ($allow_retry) {
+					$do_retry = true;
+				} else {
+					$this->logger->logWarn("Not trying again (allow_retry is false)");
+				}
 			}
 		}
 

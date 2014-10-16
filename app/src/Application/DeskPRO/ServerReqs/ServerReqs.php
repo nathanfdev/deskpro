@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -70,7 +70,9 @@ class ServerReqs
 		$this->server_check = new ServerChecks();
 		$this->server_check->checkServer();
 
-		$this->web_checks = $this->_generateMessages($this->server_check->getErrors());
+		$this->web_checks = $this->_generateMessages(array_merge(
+			$this->server_check->getErrors(), $this->server_check->getOptionals()
+		), true);
 
 		if (file_exists(dp_get_data_dir() . '/cli-server-reqs-check.dat')) {
 
@@ -101,13 +103,12 @@ class ServerReqs
 
 	/**
 	 * @param array $errors
-	 *
+	 * @param bool $includeOptionals
 	 * @return array
 	 */
-
-	protected function _generateMessages(array $errors)
+	protected function _generateMessages(array $errors, $includeOptionals = false)
 	{
-		$this->_generateCheckTable();
+		$this->_generateCheckTable($includeOptionals);
 
 		$result = array();
 
@@ -134,10 +135,9 @@ class ServerReqs
 	}
 
 	/**
-	 *
+	 * @param bool $includeOptionals
 	 */
-
-	protected function _generateCheckTable()
+	protected function _generateCheckTable($includeOptionals = false)
 	{
 		$ini_path = Env::getPhpIniPath();
 
@@ -273,5 +273,23 @@ class ServerReqs
 			'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_error_apc'),
 			'recommendation' => true,
 		);
+
+
+		if ($includeOptionals) {
+			$this->addOptionals();
+		}
+	}
+
+	/**
+	 * optional extensions
+	 */
+	protected function addOptionals()
+	{
+//		$this->checksTable['test'] = array(
+//			'description'    => 'Checking test',
+//			'error'          => 'We recommend test',
+//			'readMore'       => 'read more',
+//			'recommendation' => true,
+//		);
 	}
 }

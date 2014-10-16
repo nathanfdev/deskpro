@@ -4,6 +4,7 @@
         data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '{{ person.id }}'})|raw }}"
         data-route-title="@selector(a.name)" data-route-openclass="open"
         >
+    <div class="item-hover-over-indicator"></div>
     <span class="top-row-spacer"></span>
     <div class="top-row">
         <div class="top-row-left">
@@ -45,7 +46,9 @@
                 <span ng-switch-when="labels">
                     <span class="prop-title">{{ phrase('agent.general.labels') }}: </span>
                     <span class="prop-val labels">
-                        <span class="listing-tag" ng-repeat-start="label in person.labels">{{ ng_var('label') }}</span>
+                        <span class="listing-tag" ng-repeat-start="label in person.labels" dp-label="label" dp-lable-type="people">
+                            {{ ng_var('label') }}
+                        </span>
                         <span ng-repeat-end></span>
                     </span>
                 </span>

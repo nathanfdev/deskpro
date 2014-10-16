@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -56,6 +56,16 @@ abstract class AbstractLoader implements \Serializable
 	 * @var int
 	 */
 	protected $person_id = 0;
+
+	/**
+	 * @var string
+	 */
+	public $loaded_key = '';
+
+	public function getSubkey()
+	{
+		return null;
+	}
 
 	public function setPersonContext(Person $person)
 	{

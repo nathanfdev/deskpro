@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -142,6 +142,7 @@ class TemplatingExtension extends \Twig_Extension
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
 			'ng_plural_phrase'                 => new \Twig_Function_Method($this, 'ngPluralPhrase', array()),
 			'ng_href'                          => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
+			'server_capable'                   => new \Twig_Function_Method($this, 'serverCapable', array('is_safe' => array('html'))),
 
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
 			'ng_bind'                          => new \Twig_Function_Method($this, 'ngBind', array('is_safe' => array('html'))),
@@ -211,7 +212,7 @@ class TemplatingExtension extends \Twig_Extension
     {
 		try {
         	return App::getRouter()->generate($name, $parameters, false);
-		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+		} catch (\Exception $e) {
 			if ($this->container->isDebug()) {
 				throw $e;
 			}
@@ -223,7 +224,7 @@ class TemplatingExtension extends \Twig_Extension
     {
 		try {
         	return App::getRouter()->generate($name, $parameters, true);
-		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+		} catch (\Exception $e) {
 			if ($this->container->isDebug()) {
 				throw $e;
 			}
@@ -527,7 +528,7 @@ class TemplatingExtension extends \Twig_Extension
 						$options['media'] = 'screen,print';
 					}
 
-					if ($less_use_css) {
+					if ($less_use_css && strpos($url, '/stylesheets-less/') !== false) {
 						$url = str_replace('/stylesheets-less/', '/stylesheets/', $url);
 						$url = str_replace('.less', '.css', $url);
 						$html[] = '<link rel="stylesheet" type="text/css" media="' . $options['media'] .'" href="' . $url .'" />';
@@ -1629,6 +1630,19 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		return $result;
+	}
+
+	public function serverCapable($what)
+	{
+		switch ($what) {
+			case 'imap':
+				return extension_loaded('imap');
+			case 'soap':
+				return extension_loaded('soap');
+			case 'curl':
+				return extension_loaded('curl');
+		}
+		return false;
 	}
 
 	public function js_error_tracking($loc, array $options = array())

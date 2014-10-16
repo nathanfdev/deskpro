@@ -34,7 +34,9 @@
 	</header>
 	<article class="dp-ticket-info">
 		<div class="dp-modify-link-row">
-			<i class="dp-icon-pencil"></i> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id, edit: 1}) }}">{{ phrase('user.tickets.edit') }}</a>
+			{% if can_edit %}
+				<i class="dp-icon-pencil"></i> <a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id, edit: 1}) }}">{{ phrase('user.tickets.edit') }}</a>
+			{% endif %}
 		</div>
 		{% include 'UserBundle:TicketView:view-ticketinfo.html.twig' %}
 	</article>

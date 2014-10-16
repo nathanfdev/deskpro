@@ -29,34 +29,38 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		notifyBox.on('click', '.trigger-dismiss', function(ev) {
 			Orb.cancelEvent(ev);
 			self.dismissAll();
-			$('#dp_header_notify_wrap').trigger('dpClose');
 		}).on('click', '.dismiss', function(ev) {
+
+			if ($('#dp_notify_list_main').find('li') == 1) {
+				$('#dp_header_notify_wrap').trigger('dpClose');
+			}
+
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
 
 			var ul = $(this).closest('ul');
 			var row = $(this).closest('li');
 
+			self.removeRow(row);
+
 			if (row.data('alert-id')) {
 				self.dismissAlertId(row.data('alert-id'));
 				DeskPRO_Window.getMessageChanneler().poller.send();
 			}
 
-			self.removeRow(row);
-
-			if (!ul.find('li')[0]) {
-				$('#dp_header_notify_wrap').trigger('dpClose');
-			}
 		}).on('click', 'li.inside', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
 
-			DeskPRO_Window.runPageRouteFromElement($(this));
-
 			var row = $(this).closest('li');
 
 			if (row.hasClass('is-dismissed')) {
+				DeskPRO_Window.runPageRouteFromElement($(this));
 				return;
+			}
+
+			if ($('#dp_notify_list_main').find('li') == 1) {
+				$('#dp_header_notify_wrap').trigger('dpClose');
 			}
 
 			var ul = $(this).closest('ul');
@@ -68,9 +72,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			self.removeRow(row);
 
-			if (!ul.find('li')[0]) {
-				$('#dp_header_notify_wrap').trigger('dpClose');
-			}
+			DeskPRO_Window.runPageRouteFromElement($(this));
+
 		}).on('click', '.trigger-notify-prefs', function(ev) {
 			Orb.cancelEvent(ev);
 			ev.stopImmediatePropagation();
@@ -137,6 +140,9 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	dismissAll: function() {
+
+		$('#dp_header_notify_wrap').trigger('dpClose');
+
 		var self = this;
 		this.notifyBox.find('.notify-list.for-current').each(function() {
 			$(this).find('li').each(function() {
@@ -165,8 +171,9 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			window.localStorage['dpa_dissmissalerts'] = this.dismissedIds.join(',');
 		}
 
-		if ($('#dp_notify_list').find('li').length < 1) {
+		if ($('#dp_notify_list_main').find('li') < 1) {
 			DeskPRO_Window.dismissAlertQueue = [-1];
+			$('#dp_header_notify_wrap').trigger('dpClose');
 		}
 	},
 
@@ -315,7 +322,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		}
 
 		if (!noSendUpdate && any_alert_ids) {
-			if ($('#dp_notify_list_' + type).find('li').length < 1) {
+			if ($('#dp_notify_list_main').find('li') < 1) {
 				this.dismissAll();
 			} else {
 				DeskPRO_Window.getMessageChanneler().poller.send();
@@ -370,9 +377,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		this.notifsBadge.text(newcount).data('count', newcount);
 
 		if (newcount < 1) {
+			$('#dp_header_notify_wrap').trigger('dpClose');
+
 			this.notifBtn.removeClass('with-activity');
 			$('#dp_notify_list_' + listType).hide();
-			this.notifyBox.find('.no-notifications').show();
+			this.notifyBox.find('.no-notifications.for-current').show();
 
 			if (!this.notifyBox.find('.dp-notifications-on')[0]) {
 				this.notifyBox.find('li.none').show();
@@ -387,6 +396,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			this.notifyBox.find('.no-notifications').hide();
 			$('#dp_notify_list_' + listType).show();
 		}
+
+		$('#dp_header_notify_wrap').find('.notify-count').text(newcount);
 
 		this.fireEvent('modCount', ev);
 	}

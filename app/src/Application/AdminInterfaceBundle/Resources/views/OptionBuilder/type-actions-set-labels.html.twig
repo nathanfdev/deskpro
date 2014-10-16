@@ -12,7 +12,12 @@
 									Add labels
 								</label>
 								<div ng-show="model.with_add">
-									<input type="text" ng-model="model.add_labels" class="form-control" />
+                                    <input
+                                            type="hidden"
+                                            ui-select2="model.select2_add"
+                                            ng-model="model.add_labels"
+                                            style="min-width: 80%"
+                                            >
 								</div>
 							</td>
 						</tr>
@@ -23,7 +28,12 @@
 									Remove labels
 								</label>
 								<div ng-show="model.with_remove">
-									<input type="text" ng-model="model.remove_labels" class="form-control" />
+                                    <input
+                                            type="hidden"
+                                            ui-select2="model.select2_remove"
+                                            ng-model="model.remove_labels"
+                                            style="min-width: 80%"
+                                            >
 								</div>
 							</td>
 						</tr>

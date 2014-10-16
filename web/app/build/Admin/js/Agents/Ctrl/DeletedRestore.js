@@ -47,6 +47,19 @@
         return promise;
       };
 
+      Admin_Agents_Ctrl_DeletedRestore.prototype.convertToUser = function() {
+        var promise;
+        this.startSpinner('saving_convert');
+        promise = this.Api.sendDelete("/agents/" + this.agentId + "/delete/to-user");
+        promise.then((function(_this) {
+          return function() {
+            _this.stopSpinner('saving_convert', true);
+            return _this.$state.go('agents.agents');
+          };
+        })(this));
+        return promise;
+      };
+
       return Admin_Agents_Ctrl_DeletedRestore;
 
     })(Admin_Ctrl_Base);

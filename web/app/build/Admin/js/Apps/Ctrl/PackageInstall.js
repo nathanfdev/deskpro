@@ -145,15 +145,35 @@
       };
 
       Admin_Apps_Ctrl_PackageInstall.prototype.doInstall = function() {
-        var listCtrl, setting_values, _ref;
+        var defer, listCtrl, modalInstance, pack, setting_values, _ref;
         listCtrl = null;
         if (((_ref = this.$scope.$parent.ListCtrl) != null ? _ref.addAppInstance : void 0) != null) {
           listCtrl = this.$scope.$parent.ListCtrl;
         }
         setting_values = this.$scope.setting_values;
-        return this.Api.sendPutJson("/apps/packages/" + this.packageName, {
-          settings: setting_values
-        }).success((function(_this) {
+        pack = this.pack;
+        defer = this.$q.defer();
+        modalInstance = this.$modal.open({
+          templateUrl: this.getTemplatePath('Apps/install-progress-modal.html'),
+          controller: 'Admin_Apps_Ctrl_InstallProgress',
+          resolve: {
+            pack: function() {
+              return pack;
+            },
+            setting_values: function() {
+              return setting_values;
+            }
+          }
+        }).result.then((function(_this) {
+          return function(info) {
+            return defer.resolve(info);
+          };
+        })(this), (function(_this) {
+          return function(info) {
+            return defer.reject(info);
+          };
+        })(this));
+        defer.promise.then((function(_this) {
           return function(info) {
             var instanceInfo;
             if (listCtrl) {
@@ -170,6 +190,7 @@
             });
           };
         })(this));
+        return defer.promise;
       };
 
       return Admin_Apps_Ctrl_PackageInstall;

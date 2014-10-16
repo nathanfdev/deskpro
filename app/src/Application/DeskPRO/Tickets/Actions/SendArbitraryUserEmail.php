@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -58,7 +58,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
 	protected function getOptionsDef()
 	{
 		$options = new CheckedOptionsArray();
-		$options->addValidNames('template', 'from_name', 'from_account', 'emails', 'send_org_managers', 'single_email');
+		$options->addValidNames('template', 'from_name', 'from_account', 'emails', 'send_org_managers', 'single_email', 'headers');
 		return $options;
 	}
 
@@ -141,12 +141,13 @@ class SendArbitraryUserEmail extends AbstractEmailAction
 
 			$build = TicketEmailBuilder::createFromContainer($this->getContainer())
 				->setTicket($ticket)
-				->setToPerson($ticket->person)
+				->setToPerson($person)
 				->setUserMode()
 				->setTemplateName($template)
 				->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
 				->setMaxAttachSize(0)
 				->setLogger($context->getLogger())
+				->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
 				->setFromEmailAccount($from_account);
 
 			$ticket_email = $build->buildTicketEmail();

@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html id="dp_html" xmlns="http://www.w3.org/1999/xhtml" class="{% if is_rtl() %}rtl{% endif %}" {{ language_html_attr() }}>
 <head>
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<meta name="viewport" content="width=device-width" />
         
         <link rel="stylesheet" href="/web/fonts/font-awesome.min.css" type="text/css" />
@@ -38,6 +38,7 @@
 		{{ dp_asset_html('agent_common') }}
 		{{ dp_asset_html('user_portaladmin') }}
 		{{ dp_asset_html('user_portaladmin_css') }}
+        {{ dp_asset_html('agent_vendor_out_css') }}
 	{% endif %}
 
 	{% include 'UserBundle::layout-resources.html.twig' %}

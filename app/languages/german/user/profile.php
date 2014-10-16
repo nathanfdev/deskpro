@@ -69,6 +69,7 @@
 	'user.profile.reset_password_badcode'                                  => 'Der Reset-Link dem Sie gefolgt sind ist ungültig oder abgelaufen. Stellen Sie sicher dass Sie die URL exakt wie in der Email die Sie erhalten haben eingegeben haben. Beachten Sie dass der Link zum Zurücksetzen des Kennworts nur für drei Tage gültig ist und nur ein mal benutzt werden kann.',
 	'user.profile.reset_password_current_logged_in'                        => 'Beachten Sie dass Sie derzeit als {{email}} angemeldet sind. Bei Anfordern einer Kennwortrücksetzung werden Sie abgemeldet.',
 	'user.profile.reset_password_done'                                     => 'Eine spezieller Link zum Rücksetzen des Kennworts wurde an Ihre Email Adresse gesendet. Überprüfen Sie Ihre Email und klicken Sie auf den Link um Ihr Kennwort zurückzusetzen.',
+	'user.profile.reset_password_noaccount'                                => 'Wir konnten kein Konto mit dieser E-Mail-Adresse oder diesem Benutzernamen finden.',
 	'user.profile.reset_password_tryagain'                                 => 'Einen weiteren Reset-Link zusenden',
 	'user.profile.set_as_primary_address'                                  => 'Als primäre Adresse verwenden',
 	'user.profile.timezone'                                                => 'Zeitzone',

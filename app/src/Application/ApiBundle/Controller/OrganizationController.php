@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -38,6 +38,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
 * @SWG\Resource(
@@ -2070,5 +2072,18 @@ class OrganizationController extends AbstractController
 		}
 
 		return $org;
+	}
+
+	/**
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function quickSearchAction(Request $request)
+	{
+		/** @var \Application\DeskPRO\EntityRepository\Organization $rep */
+		$rep = $this->em->getRepository('DeskPRO:Organization');
+		$res = $rep->search($request->get('query'), $request->get('limit'), false);
+
+		return $this->createApiResponse($res);
 	}
 }

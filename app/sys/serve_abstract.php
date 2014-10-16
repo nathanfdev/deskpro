@@ -1,13 +1,13 @@
 <?php
 
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -231,12 +231,28 @@ abstract class LoaderAbstract
 
 		$port = '';
 		$dbhost = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
-		if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
-			$dbhost = $m[1];
-			$port = ";port={$m[2]};";
+		$unix_socket = null;
+
+		$m = null;
+		if (preg_match('#^unix_socket:(.*?)$#', $dbhost, $m)) {
+			$unix_socket = trim($m[1]);
 		}
 
-		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};host={$dbhost}$port", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+		if (!$unix_socket) {
+			$m = null;
+			if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
+				$dbhost = $m[1];
+				$port   = ";port={$m[2]};";
+			}
+		}
+
+		if ($unix_socket) {
+			$host_part = "unix_socket=$unix_socket";
+		} else {
+			$host_part = "host={$dbhost}$port";
+		}
+
+		$this->pdo = new \PDO("mysql:dbname={$DP_CONFIG['db']['dbname']};$host_part", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
 		$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 		$this->pdo->exec("SET sql_mode=''");
 		$this->pdo->exec("SET NAMES 'UTF8'");
@@ -259,17 +275,33 @@ abstract class LoaderAbstract
 		if (!empty($DP_CONFIG['db_read']['host'])) {
 			$key = 'db_read';
 		} else {
-			$key = 'db';
+			return $this->getPdo();
 		}
 
 		$port = '';
-		$dbhost = isset($DP_CONFIG['db']['host']) ? $DP_CONFIG['db']['host'] : '';
-		if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
-			$dbhost = $m[1];
-			$port = ";port={$m[2]};";
+		$dbhost = isset($DP_CONFIG[$key]['host']) ? $DP_CONFIG[$key]['host'] : '';
+		$unix_socket = null;
+
+		$m = null;
+		if (preg_match('#^unix_socket:(.*?)$#', $dbhost, $m)) {
+			$unix_socket = trim($m[1]);
 		}
 
-		$this->pdo_read = new \PDO("mysql:dbname={$DP_CONFIG[$key]['dbname']};host={$dbhost}$port", $DP_CONFIG[$key]['user'], $DP_CONFIG[$key]['password']);
+		if (!$unix_socket) {
+			$m = null;
+			if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
+				$dbhost = $m[1];
+				$port   = ";port={$m[2]};";
+			}
+		}
+
+		if ($unix_socket) {
+			$host_part = "unix_socket=$unix_socket";
+		} else {
+			$host_part = "host={$dbhost}$port";
+		}
+
+		$this->pdo_read = new \PDO("mysql:dbname={$DP_CONFIG[$key]['dbname']};$host_part", $DP_CONFIG[$key]['user'], $DP_CONFIG[$key]['password']);
 		$this->pdo_read->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 		$this->pdo_read->exec("SET sql_mode=''");
 		$this->pdo_read->exec("SET NAMES 'UTF8'");

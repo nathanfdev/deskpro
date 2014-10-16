@@ -1,5 +1,5 @@
 <?php
-/* This file has been auto-generated (2014-09-04). See build-vendors-mutate.php */
+/* This file has been auto-generated (2014-10-06). See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
 use Doctrine\ORM\Proxy\ProxyException;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;

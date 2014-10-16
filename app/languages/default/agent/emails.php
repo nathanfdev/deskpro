@@ -87,7 +87,9 @@
 	'agent.emails.newagent-login-link'                  => 'You can log in here: <a href="{{link}}">{{link}}</a>',
 	'agent.emails.newagent-login-your-email'            => 'Your email address: {{email}}',
 	'agent.emails.newagent-login-initial-password'      => 'Your initial password: {{password}}',
+	'agent.emails.newagent-login-your-password'         => 'Note: You already had a user account on this helpdesk. You can log in as an agent using the same password you set up before.',
 	'agent.emails.newagent-about-pdf'                   => 'We\'ve written a quick guide to the most important things you’ll need to know as an agent. Find it attached, "Getting Started with DeskPRO.pdf".',
 	'agent.emails.newagent-help'                        => 'If you need any help or have questions, please check out the DeskPRO support site at <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> or contact us directly at <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
 	'agent.emails.newagent-welcome-to-deskpro'          => 'Welcome to DeskPRO!',
+	'agent.emails.message-is-note'                      => 'The following message is an internal agent note.',
 );

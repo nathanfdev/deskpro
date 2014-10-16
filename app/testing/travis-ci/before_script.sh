@@ -31,6 +31,8 @@ echo "--> Done"
 
 echo "Cleaning test env"
 app/testing/bin/reset-data
+mysql -e "CREATE DATABASE dp_test_emptydb;"
+mysql -e "CREATE DATABASE dp_test_apisampledb;"
 echo "--> Done"
 
 echo "Ensuring permissions"

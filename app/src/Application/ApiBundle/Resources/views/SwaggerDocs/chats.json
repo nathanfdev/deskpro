@@ -1,0 +1,465 @@
+{
+    "basePath": "/api",
+    "swaggerVersion": "1.2",
+    "resourcePath": "/chats",
+    "apis": [
+        {
+            "path": "/chats",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Search for chats matching criteria",
+                    "nickname": "searchAction",
+                    "type": "array",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "agent_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires chat to be assigned to the specified agent ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "department_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires chat to be in the specified department ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires chat to be have the specified label."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires chat to be created by the specified person ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires chat to be in the specified status. Possible values are ended and open."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "order",
+                            "type": "string",
+                            "required": false,
+                            "description": "Order of the results. Defaults to newest chats. This parameter is not used used yet."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "cache_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "page",
+                            "type": "string",
+                            "required": false,
+                            "description": "The page number of the results to fetch."
+                        }
+                    ],
+                    "notes": "Returns list of chats that matched."
+                }
+            ]
+        },
+        {
+            "path": "/chats/{chat_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a chat by chat ID.",
+                    "nickname": "getChatAction",
+                    "type": "Chat",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ],
+                    "notes": "Information about the chat by chat ID."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Updates a chat by chat ID.",
+                    "nickname": "postChatAction",
+                    "type": "Chat",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "department_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "Department the chat is in."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/chats/{chat_id}/end",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Ends a chat by chat ID.",
+                    "nickname": "endChatAction",
+                    "type": "Chat",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be ended."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/chats/{chat_id}/labels",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the labels for a chat",
+                    "nickname": "getChatLabelsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be checked."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds a label to a chat.",
+                    "nickname": "postChatLabelsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be checked."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label to add."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/chats/{chat_id}/labels/{label}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if the chat has the label.",
+                    "nickname": "getChatLabelAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be checked."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label to check."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes a label from a chat.",
+                    "nickname": "deleteChatLabelAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be checked."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label that needs to be removed."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/chats/{chat_id}/leave",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Leaves a chat by chat ID.",
+                    "nickname": "leaveChatAction",
+                    "type": "Chat",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be left."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "action",
+                            "type": "string",
+                            "required": true,
+                            "description": "If the chat is open, an additional action to take. Options are unassign or end."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/chats/{chat_id}/messages",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets all messages in a chat by chat ID.",
+                    "nickname": "getMessagesAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be ended."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Replies to a chat as the API user",
+                    "nickname": "newMessageAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be ended."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "message",
+                            "type": "integer",
+                            "required": true,
+                            "description": "Message reply text."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/chats/{chat_id}/participants",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets all participants in a chat by chat ID.",
+                    "nickname": "getParticipantsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be ended."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds a participants in a chat by chat ID and person ID.",
+                    "nickname": "postParticipantsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the person that needs to be added to the Chat."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/chats/{chat_id}/participants/{person_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if a person is participating in a chat.",
+                    "nickname": "getParticipantAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be checked."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the person that needs to be added to be checked."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes a participant from a chat",
+                    "nickname": "deleteParticipantAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "chat_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the chat that needs to be checked."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the person that needs to be added to be removed."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Chat not found"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

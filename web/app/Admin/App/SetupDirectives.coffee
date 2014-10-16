@@ -14,6 +14,7 @@ define [
 	'DeskPRO/Directive/DpShowSpinning',
 	'DeskPRO/Directive/DpSubmitForm',
 	'DeskPRO/Directive/DpErrorClass',
+	'DeskPRO/Directive/DpLabel',
 
 	'Admin/Main/Directive/Autofocus',
 	'Admin/Main/Directive/BgImg',
@@ -57,6 +58,7 @@ define [
 	DeskPRO_Directive_DpShowSpinning,
 	DeskPRO_Directive_DpSubmitForm,
 	DeskPRO_Directive_DpErrorClass,
+	DeskPRO_Directive_DpLabel,
 
 	Admin_Main_Directive_Autofocus,
 	Admin_Main_Directive_BgImg,
@@ -101,6 +103,7 @@ define [
 		Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
 		Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm)
 		Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)
+		Module.directive('dpLabel',                        DeskPRO_Directive_DpLabel)
 
 		Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
 		Module.directive('dpLiGroupSection',               Admin_Main_Directive_DpLiGroupSection)

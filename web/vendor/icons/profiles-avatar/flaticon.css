@@ -1,0 +1,106 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("flaticon.eot");
+	src: url("flaticon.eot#iefix") format("embedded-opentype"),
+	url("flaticon.woff") format("woff"),
+	url("flaticon.ttf") format("truetype"),
+	url("flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+	font-family: Flaticon;
+        font-size: 20px;
+font-style: normal;
+margin-left: 20px;
+}.flaticon-adult4:before {
+	content: "\e000";
+}
+.flaticon-avatar2:before {
+	content: "\e001";
+}
+.flaticon-bald36:before {
+	content: "\e002";
+}
+.flaticon-child11:before {
+	content: "\e003";
+}
+.flaticon-chinese14:before {
+	content: "\e004";
+}
+.flaticon-curly2:before {
+	content: "\e005";
+}
+.flaticon-female223:before {
+	content: "\e006";
+}
+.flaticon-female224:before {
+	content: "\e007";
+}
+.flaticon-male227:before {
+	content: "\e008";
+}
+.flaticon-male228:before {
+	content: "\e009";
+}
+.flaticon-male229:before {
+	content: "\e00a";
+}
+.flaticon-male230:before {
+	content: "\e00b";
+}
+.flaticon-man416:before {
+	content: "\e00c";
+}
+.flaticon-man418:before {
+	content: "\e00d";
+}
+.flaticon-man420:before {
+	content: "\e00e";
+}
+.flaticon-man422:before {
+	content: "\e00f";
+}
+.flaticon-man424:before {
+	content: "\e010";
+}
+.flaticon-man425:before {
+	content: "\e011";
+}
+.flaticon-nerd8:before {
+	content: "\e012";
+}
+.flaticon-nerd9:before {
+	content: "\e013";
+}
+.flaticon-personal27:before {
+	content: "\e014";
+}
+.flaticon-profiles:before {
+	content: "\e015";
+}
+.flaticon-smiling43:before {
+	content: "\e016";
+}
+.flaticon-student61:before {
+	content: "\e017";
+}
+.flaticon-woman103:before {
+	content: "\e018";
+}
+.flaticon-woman104:before {
+	content: "\e019";
+}
+.flaticon-woman105:before {
+	content: "\e01a";
+}
+.flaticon-young19:before {
+	content: "\e01b";
+}
+.flaticon-young20:before {
+	content: "\e01c";
+}
+.flaticon-young21:before {
+	content: "\e01d";
+}

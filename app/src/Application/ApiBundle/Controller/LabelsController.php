@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -34,14 +34,11 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
+use Application\DeskPRO\EntityRepository\LabelDef;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelsController extends AbstractController implements ProtectedControllerInterface
 {
-	/** @var array  */
-	static public $allowed = array(
-		'chat', 'downloads', 'feedback', 'articles', 'news', 'organizations', 'people', 'tickets',
-	);
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -55,6 +52,11 @@ class LabelsController extends AbstractController implements ProtectedController
 	 */
 	public function getSettingsAction($type)
 	{
+		$rep = $this->rep();
+		if (!$rep::valid($type)) {
+			throw new NotFoundHttpException;
+		}
+
 		return $this->createApiResponse(array(
 			'agent_can_create' => (bool) $this->settings->get(sprintf('labels.%s.agent_can_create', $type), false),
 		));
@@ -65,10 +67,114 @@ class LabelsController extends AbstractController implements ProtectedController
 	 */
 	public function setSettingsAction($type)
 	{
+		$rep = $this->rep();
+		if (!$rep::valid($type)) {
+			throw new NotFoundHttpException;
+		}
+
 		$this->settings->setSetting(
 			sprintf('labels.%s.agent_can_create', $type),
 			$this->in->getBool('agent_can_create')
 		);
 		return $this->getSettingsAction($type);
+	}
+
+	public function listDefinitionsAction()
+	{
+		return $this->createApiResponse($this->rep()->getAllDefinitions());
+	}
+
+	####################################################################################################################
+	# update
+	####################################################################################################################
+
+	public function updateDefinitionAction()
+	{
+		if (!$old = $this->in->getArrayValue('old')) {
+			throw new NotFoundHttpException;
+		}
+
+		if (!$new = $this->in->getArrayValue('new')) {
+			throw new NotFoundHttpException;
+		}
+
+		if (!isset($new['label_type']) || !isset($new['label']) || !isset($new['color'])) {
+			throw new NotFoundHttpException;
+		}
+
+		$label = trim($new['label']);
+		$type = trim($new['label_type']);
+		$rep = $this->rep();
+		$rep->renameLabelDef($old['label'], $label, $new['color'], $type);
+		$rep->updateColorForLabel($type, $label, $new['color']);
+
+		return $this->createApiResponse($rep->getDefinition($type, $label)->toApiData());
+	}
+
+	####################################################################################################################
+	# create
+	####################################################################################################################
+
+	public function createDefinitionAction()
+	{
+		$rep = $this->rep();
+		if (!$label = $this->in->getString('label')) {
+			throw new NotFoundHttpException;
+		}
+
+		if ((!$type = $this->in->getString('label_type')) || !$rep::valid($type)) {
+			throw new NotFoundHttpException;
+		}
+
+		$color = $this->in->getString('color');
+
+		if (!$definition = $rep->getDefinition($type, $label)) {
+			$definition = new \Application\DeskPRO\Entity\LabelDef();
+			// primary key
+			$definition['label_type'] = $type;
+			$definition['label'] = trim($label);
+			$this->em->persist($definition);
+
+		} else {
+			$rep->renameLabelDef($definition['label'], trim($label), $color, $type);
+		}
+
+		$definition['label'] = trim($label);
+		$definition['color'] = $color;
+		$rep->updateDefinitionUsages($definition);
+		$rep->updateColorForLabel($type, $label, $color);
+		$this->em->flush();
+
+		return $this->createApiResponse($definition->toApiData());
+	}
+
+
+	####################################################################################################################
+	# remove
+	####################################################################################################################
+
+	public function deleteDefinitionAction()
+	{
+		$label = $this->in->getString('label');
+		$type = $this->in->getString('label_type');
+		try {
+			if (!$definition = $this->rep()->getDefinition($type, $label)) {
+				throw $this->createNotFoundException();
+			}
+			$this->rep()->deleteDefinition($definition);
+		}
+		catch (\Exception $e) {
+			throw $this->createNotFoundException();
+		}
+
+		return $this->createApiResponse(array(), 200);
+	}
+
+	/**
+	 * @return LabelDef
+	 */
+	protected function rep()
+	{
+		return $this->em->getRepository('DeskPRO:LabelDef');
 	}
 }

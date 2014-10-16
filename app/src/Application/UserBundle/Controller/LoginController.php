@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -37,7 +37,9 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Service\CheckWhitelistedIP;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -338,11 +340,6 @@ HTML;
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
 
-		$res = $this->handleIpSecurityCheck($person);
-		if ($res) {
-			return $res;
-		}
-		
 		if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
 			$person->setLastLoginAt();
 		}
@@ -459,45 +456,11 @@ HTML;
 
 	protected function handleIpSecurityCheck(\Application\DeskPRO\Entity\Person $person)
 	{
-		$ip_sec = false;
-		if ($person->is_agent && $this->container->getSetting('agent.ip_security.enabled')) {
-			$ip_sec_mode = $this->container->getSetting('agent.ip_security.mode');
-			if (strpos($ip_sec_mode, 'agents') !== false) {
-				$ip_sec = true;
-			} else if ($person->can_admin && strpos($ip_sec_mode, 'admins') !== false) {
-				$ip_sec = true;
-			}
+		if (!CheckWhitelistedIP::checkIP($this->container, $person)) {
+			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+				'ip' => dp_get_user_ip_address()
+			));
 		}
-
-		if ($ip_sec) {
-			if (!in_array(dp_get_user_ip_address(), $this->em->getRepository('DeskPRO:WhiteListedIp')->getIpsForPerson($person))) {
-				$code_data = TmpData::create('whitelist-ip', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+40 minutes');
-				$code_data->setData('ip', dp_get_user_ip_address());
-				$this->em->persist($code_data);
-				$this->em->flush();
-
-				$vars = array(
-					'ip'		=> dp_get_user_ip_address(),
-					'code'		=> $code_data->getCode(),
-					'person'	=> $person,
-					'interface'	=> DP_INTERFACE,
-					'url'		=> $this->generateUrl('agent_whitelist_ip', array('code' => $code_data->getCode()), UrlGeneratorInterface::ABSOLUTE_URL)
-				);
-
-				$message = $this->container->getMailer()->createMessage();
-				$message->setTemplate('DeskPRO:emails_agent:whitelist-ip.html.twig', $vars);
-				$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-				$message->disableQueueHint();
-
-				$this->container->getMailer()->send($message);
-
-				return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-					'ip' => dp_get_user_ip_address()
-				));
-			}
-		}
-
-		return null;
 	}
 
 	public function _doLoginSuccess()
@@ -626,11 +589,6 @@ HTML;
 					return $this->redirect($return);
 				}
 
-				$res = $this->handleIpSecurityCheck($person);
-				if ($res) {
-					return $res;
-				}
-
 				if ($this->session->get('auth_return')) {
 					$return = $this->session->get('auth_return');
 					$this->session->remove('auth_return');
@@ -680,11 +638,6 @@ HTML;
 
 				$this->_setupUsersourceSession($usersource, $person, $result);
 
-				$res = $this->handleIpSecurityCheck($person);
-				if ($res) {
-					return $res;
-				}
-
 				$return = $this->in->getString('return');
 				if ($return) {
 					return $this->redirect($return);
@@ -728,11 +681,6 @@ HTML;
 			$person = $login_processor->getPerson();
 
 			$this->_setupUsersourceSession($usersource, $person, $result);
-
-			$res = $this->handleIpSecurityCheck($person);
-			if ($res) {
-				return $res;
-			}
 
 			if ($this->session->get('auth_return')) {
 				$return = $this->session->get('auth_return');
