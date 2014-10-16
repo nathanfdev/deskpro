@@ -819,6 +819,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				baseId: self.meta.baseId,
 				defaultProject: self.meta.jiraDefaultProject
 			});
+			this.addEvent('destroy', function() {
+				if (jiraWidget) {
+					jiraWidget.destroy();
+				}
+			});
 		}
 	},
 
@@ -908,7 +913,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}
 				}
 
-				this.fireEvent('load', [data]);
+				this.fireEvent('load');
 			}
 		});
 	},
@@ -1504,11 +1509,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.lastMessageCount = lastCount;
 
-		messageEl.find('img').bind('load', function() {
-			var article = $(this).closest('article.content-message');
-			self._initTicketMessageClipped(article);
-		});
-
 		var wr = this.getEl('messages_wrap');
 		wr.find('.message-id-txt').each(function() {
 			var findclass = '.message-counter-' + $(this).data('message-id');
@@ -1581,13 +1581,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_initTicketMessageClipped: function(article) {
-		var h = article.find('div.body-text').height();
+		var self = this;
+		var h = article.find('div.body-text-message').height();
+		var doClipping = false;
+		var allArticles = null, idx;
+		var isFirst = false;
 		if (h >= 600) {
+			allArticles = this.getEl('message_page_wrap').find('article');
+			idx = allArticles.index(article.get(0));
+
+			// Clipping on the first message starts at 1200px
+			if ((this.meta.ticket_reverse_order && idx === 0) || (!this.meta.ticket_reverse_order && idx === allArticles.length-1)) {
+				isFirst = true;
+				if (h >= 1200) {
+					doClipping = true;
+				} else {
+					doClipping = false;
+				}
+			} else {
+				doClipping = true;
+			}
+		}
+
+		if (isFirst) {
+			article.addClass('as-first');
+		} else {
+			article.removeClass('as-first');
+		}
+
+		if (doClipping) {
 			if (!article.hasClass('with-clipped-body')) {
 				article.addClass('with-clipped-body');
 				article.find('.fade-bar-longmsg').on('click', function(ev) {
 					ev.stopPropagation();
 					article.addClass('clipped-show');
+				});
+
+				// Images might change the visible height once loaded
+				article.find('img').on('load', function() {
+					self._initTicketMessageClipped(article);
 				});
 			}
 		} else {
@@ -2737,6 +2769,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			var row = $(this).closest('.task-row');
 			var field = $('input.input-date-due', row);
+			var field_real = $('input.input-date-due-real', row);
 			var field2 = $('input.input-date-time', row);
 			var date = $('input.input-date-due', row).val();
 			if (!date) {
@@ -2749,6 +2782,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				timeLi.show();
 			}, {
 				dateFormat: dateFormat,
+				altFormat: 'yy-mm-dd',
+				altField: field_real,
 				showButtonPanel: true,
 				beforeShow: function(input) {
 					setTimeout(function() {

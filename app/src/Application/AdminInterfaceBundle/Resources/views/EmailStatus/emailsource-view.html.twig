@@ -29,14 +29,14 @@
 				<tr>
 					<th>Status</th>
 					<td>
-						{{ ng_var('ViewSource.source.status') }} ({{ ng_var('ViewSource.source.date_status + " UTC" | amDateFormat:"MMM D, YYYY @ HH:mm"') }})
+						{{ ng_var('ViewSource.source.status') }} ({{ ng_var('ViewSource.source.date_status | amDateFormat:"MMM D, YYYY @ HH:mm"') }})
 						<div ng-if="ViewSource.source.status == 'error'">
 							{{ ng_var('ViewSource.source.error_code') }} &mdash;
 							<button class="btn btn-primary btn-xs" ng-click="ViewSource.startReprocess()">Reprocess Email</button>
 						</div>
 					</td>
 				</tr>
-				<tr ng-if="ViewSource.source.object_type">
+				<tr ng-if="ViewSource.source.object_type && ViewSource.source.object_id != 0">
 					<th>Created Object</th>
 					<td ng-switch="ViewSource.source.object_type">
 						<div ng-switch-when="ticket">

@@ -10,13 +10,16 @@ define [
 	class Admin_TicketDeps_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_TicketDeps_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['$templateCache', 'dpObTypesDefTicketActions', '$location']
+		@DEPS      = ['$templateCache', 'dpObTypesDefTicketActions', '$location', '$upload', '$http']
 
 		init: ->
 			@actionsTypeDef = @dpObTypesDefTicketActions
 			@$scope.actionOptionTypes = []
 			@$scope.actions_form = {}
 			@$scope.actions_form2 = {}
+
+			@$scope.icon_image = null
+			@$scope.$on 'icon.selected', (e, path) => @selectIcon path
 
 			@depId = parseInt(@$stateParams.id)
 			@depData = @DataService.get('TicketDeps')
@@ -55,6 +58,8 @@ define [
 				@is_custom_layout = @form.use_custom_layout
 				@origForm = Util.clone(@form, true)
 				@layout_info = data.layout_info
+
+				@setAvatar @dep.avatar
 
 				if @depId
 					@layout_info.default = @layout_info.default.filter((x) => return x.id != @depId)
@@ -165,6 +170,11 @@ define [
 
 				return @$q.all([p1,p2])
 
+			if @form.enable_avatar
+				@form.avatar = @dep.avatar?.id || null
+			else
+				@form.avatar = null
+
 			promise = @depData.saveFormModel(@dep, @form)
 			promise.then(=>
 				triggerSaver()
@@ -221,5 +231,48 @@ define [
 			})
 
 			return modalInstance
+
+
+
+		setAvatar: (blob) =>
+			@dep.avatar = blob
+			if !blob?
+				@$scope.icon_image = null
+				@form.enable_avatar = false
+			else
+				@$scope.icon_image = blob.thumbnail_url_50
+				@form.enable_avatar = true
+
+
+
+		onFileSelect: (files) ->
+			@$scope.uploading = false
+			file = files[0]
+
+			@$upload.upload({
+				url: @$http.formatApiUrl('/misc/upload'),
+				data: { is_image: true },
+				file: file
+			}).success( (data) =>
+				@$scope.uploading = false
+				@setAvatar data.blob
+			).error( (data) =>
+				@$scope.uploading = false
+				@Growl.error data?.error_message || 'Error'
+			)
+
+
+
+		selectIcon: (image) =>
+			setAvatar null if !image?
+
+			@$scope.uploading = true
+			@Api.sendPostJson('/misc/upload', {path: image, is_image: true}).then(
+				(data) =>
+					@$scope.uploading = false
+					@setAvatar data.data.blob
+				() =>
+					@$scope.uploading = false
+			)
 
 	Admin_TicketDeps_Ctrl_Edit.EXPORT_CTRL()

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -173,9 +173,10 @@ class Strings
 	 * - swuclew
 	 *
 	 * @param   int     $len The maximum length of the string
+	 * @param   int     $dash_len Insert dashes after this many chars
 	 * @return  string
 	 */
-	public static function randomPronounceable($len = 10)
+	public static function randomPronounceable($len = 10, $dash_len = 0)
 	{
 		static $vowels, $cons, $num_vowels, $num_cons;
 
@@ -184,18 +185,28 @@ class Strings
 			$cons = array(
 				'b', 'c', 'd', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'u', 'v', 'w', 'tr',
 				'cr', 'br', 'fr', 'th', 'dr', 'ch', 'ph', 'wr', 'st', 'sp', 'sw', 'pr', 'sl', 'cl'
-				);
+			);
 
-				$num_vowels = count($vowels);
-				$num_cons = count($cons);
+			$num_vowels = count($vowels);
+			$num_cons   = count($cons);
 		}
 
 		$string = '';
-		for($i = 0; $i < $len; $i++){
+		for($i = -1; $i < $len; $i++){
 			$string .= $cons[mt_rand(0, $num_cons - 1)] . $vowels[mt_rand(0, $num_vowels - 1)];
 		}
 
-		return substr($string, 0, $len);
+		if ($dash_len) {
+			$string = implode('-', str_split($string, $dash_len));
+		}
+
+		$string = substr($string, 0, $len);
+
+		if ($dash_len) {
+			$string = trim($string, '-');
+		}
+
+		return $string;
 	}
 
 
@@ -1247,6 +1258,9 @@ class Strings
 		// Counter used to make sure theres not an infinite loop
 		$x = 0;
 
+		// Timer to make sure it doesnt take too long (regex can be slow on large/complex html)
+		$time_start = time();
+
 		// Handle HTML whitespace
 		do {
 			$old_string = $string;
@@ -1261,12 +1275,16 @@ class Strings
 			$string = preg_replace('#\s*(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)\s*</div>$#iu', '</div>', $string);
 			$string = preg_replace('#(<br>|<br />|<p></p>|<p>\s*</p>|<p><br\s*/?></p>|<p>&nbsp;</p>|<p>&\#xA0;</p>|<p>'.Strings::chrUni(160).'</p>|&nsbp;)$#i', '', $string);
 
+			// Trailing empty containers
+			$string = preg_replace('#<div>\s*</div>\s*$#iu', '', $string);
+			$string = preg_replace('#<p>\s*</p>\s*$#iu', '', $string);
+
 			$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)#iu', '', $string);
 			$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)$#iu', '', $string);
 
 			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
 			$string = preg_replace('#(<hr />|<hr>|<hr></hr>)+$#iu', '', $string);
-		} while ($string != $old_string && $x++ < 1000);
+		} while ($string != $old_string && $x++ < 1000 && (time()-$time_start) < 10);
 
 		return $string;
 	}
@@ -2040,6 +2058,8 @@ class Strings
 	{
 		$body = self::standardEol($string);
 		$body = str_replace("\n", '', $body);
+		$body = preg_replace('#</div>\s*<br[^>]*>#i', "</div>", $body);
+		$body = preg_replace('#</div>#i', "<br />", $body);
 		$body = preg_replace('#<br[^>]*>#i', "\n", $body);
 		$body = preg_replace('#<p[^>]*>#i', "\n", $body);
 		$body = strip_tags($body);

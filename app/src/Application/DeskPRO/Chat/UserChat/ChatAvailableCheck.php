@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -90,7 +90,7 @@ class ChatAvailableCheck
 		// Do query
 		if (self::$available_time === null) {
 			$sql  = "
-				SELECT UNIX_TIMESTAMP(sessions.date_last)
+				SELECT UNIX_TIMESTAMP(CONVERT_TZ(sessions.date_last, '+00:00', @@session.time_zone))
 				FROM sessions
 				LEFT JOIN people ON (people.id = sessions.person_id)
 				WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1

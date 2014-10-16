@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -38,6 +38,7 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
 class AgentTeamsController extends AbstractController implements ProtectedControllerInterface
@@ -122,18 +123,31 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 	public function saveTeamAction($id)
 	{
 		if ($id) {
-			$is_new = false;
-			$team = $this->getContainer()->getAgentData()->getTeam($id);
-
-			if (!$team) {
+			if (!$team = $this->em->find('DeskPRO:AgentTeam', $id)) {
 				throw $this->createNotFoundException();
 			}
 		} else {
-			$is_new = true;
 			$team = new AgentTeam();
+			$this->em->persist($team);
 		}
 
 		$team->name = $this->in->getString('team.name');
+
+		// save avatar
+		if ($blobId = $this->in->getUint('team.avatar')) {
+			if ($team->avatar && $blobId != $team->avatar['id']) {
+				$this->em->remove($team->avatar);
+			}
+			$blob = $this->em->find('DeskPRO:Blob', $blobId);
+			if ($blob && $blob->isImage()) {
+				$team->avatar = $blob;
+			} else {
+				$team->avatar = null;
+			}
+		} elseif($team->avatar) {
+			$team->avatar && $this->em->remove($team->avatar);
+			$team->avatar = null;
+		}
 
 		$errors = $this->container->getValidator()->validate($team);
 		if (count($errors)) {
@@ -141,25 +155,13 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 		}
 
 		#------------------------------
-		# Save team
-		#------------------------------
-
-		$this->em->persist($team);
-		$this->em->flush();
-
-		#------------------------------
 		# Save members
 		#------------------------------
-
-		if ($is_new) {
-			$current_members = array();
-		} else {
-			$current_members = $this->db->fetchAllCol("SELECT person_id FROM agent_team_members WHERE team_id = ?", array($team->id));
-		}
 
 		$new_members = $this->in->getArrayOfUInts('team.person_ids');
 		$new_members = array_unique($new_members);
 		$new_members = Arrays::removeFalsey($new_members);
+
 		if ($new_members) {
 			$agent_data = $this->container->getAgentData();
 			$new_members = array_filter($new_members, function($a) use ($agent_data) {
@@ -167,19 +169,15 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 			});
 		}
 
-		$del_members = array_diff($current_members, $new_members);
-		$new_members = array_diff($new_members, $current_members);
+		$members = $this->em->getRepository('DeskPRO:Person')->findBy(array('id' => $new_members));
+		$team->members->clear();
+		foreach ($members as $person) {
+			/** @var $person Person */
+			$person->addTeam($team); // bidirectional
+		}
 
-		if (!$is_new && $del_members) {
-			$this->db->deleteIn('agent_team_members', $del_members, 'person_id', false, "team_id = {$team->id}");
-		}
-		if ($new_members) {
-			$ins = array();
-			foreach ($new_members as $pid) {
-				$ins[] = array('team_id' => $team->id, 'person_id' => $pid);
-			}
-			$this->db->batchInsert('agent_team_members', $ins, true);
-		}
+		$is_new = (bool) $team['id'];
+		$this->em->flush();
 
 		if ($is_new) {
 			return $this->createApiCreateResponse(

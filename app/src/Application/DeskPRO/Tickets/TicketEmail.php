@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -147,6 +147,11 @@ class TicketEmail
 	private $logger;
 
 	/**
+	 * @var array
+	 */
+	private $headers;
+
+	/**
 	 * Use TicketEmailBuilder to build the options array easier.
 	 *
 	 * @param array $options
@@ -174,7 +179,8 @@ class TicketEmail
 			'cc_users',
 			'is_auto',
 			'max_attach_size',
-			'logger'
+			'logger',
+			'headers'
 		);
 		$opt->setAll($options);
 		$opt->ensureRequired();
@@ -198,6 +204,7 @@ class TicketEmail
 		$this->max_attach_size         = $opt->get('max_attach_size', 0);
 
 		$this->user_mode               = $opt->get('user_mode');
+		$this->headers                 = $opt->get('headers', array());
 
 		if ($opt->get('user_mode') == 'user') {
 			$this->user_mode = 'user';
@@ -375,7 +382,7 @@ class TicketEmail
 
 		// To user - use the selected email address on the ticket
 		if ($this->user_mode == self::MODE_USER) {
-			if ($this->ticket->person_email && $this->ticket->person_email->person == $this->to_person) {
+			if ($this->ticket->person_email && $this->ticket->person_email->person === $this->to_person) {
 				$to_email = $this->ticket->person_email->email;
 				$this->logger->info(sprintf("[TicketEmail] to_email(1): %s", $to_email));
 			} else if ($this->ticket->person_email_validating) {
@@ -485,6 +492,10 @@ class TicketEmail
 		$translator->setTemporaryLanguage($this->to_person->getLanguage(), function() use ($message) {
 			$message->prepare();
 		});
+
+		foreach ($this->headers as $header) {
+			$message->getHeaders()->addTextHeader($header['name'], $header['value']);
+		}
 
 		$mailer->send($message);
 

@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strings) ->
 	class Admin_Templates_Ctrl_EmailTemplateEditor extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Templates_Ctrl_EmailTemplateEditor'
 		@CTRL_AS   = 'EmailTemplateEditor'
@@ -28,6 +28,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 						body: @editorMessage.getValue()
 					}
 				}
+
+				if @$scope.is_new_email and (not @$scope.email.email_name || Strings.trim(@$scope.email.email_name) == "")
+					@$scope.saving_template = false
+					@$scope.is_error = true
+					@$scope.syntax_error  = false
+					@$scope.error_message = 'You must specify a template name'
+					return
 
 				if @$scope.is_new_email
 					url = "/templates/" + 'DeskPRO:emails_custom:' + @$scope.email.email_name + '.html.twig'
@@ -80,8 +87,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth()
 					if newHeight > maxH
 						newHeight = maxH
-					if newHeight < 10
-						newHeight = 10
+					if newHeight < 18
+						newHeight = 18
 
 					$(editor.container).height(newHeight)
 					editor.resize()
@@ -97,8 +104,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 					newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth()
 					if newHeight > maxH
 						newHeight = maxH
-					if newHeight < 10
-						newHeight = 10
+					if newHeight < 85
+						newHeight = 85
 
 					$(editor.container).height(newHeight)
 					editor.resize()

@@ -1,56 +1,42 @@
 (function() {
-  define(['DeskPRO/Util/Util'], function(Util) {
+  define(['angular'], function(angular) {
     var ApiKeyEditFormMapper;
     return ApiKeyEditFormMapper = (function() {
       function ApiKeyEditFormMapper() {}
 
-
-      /*
-      			 *
-       		 *
-       */
-
       ApiKeyEditFormMapper.prototype.getFormFromModel = function(model) {
         var form;
-        form = {};
-        form.isSuperUser = true;
-        form.id = model.api_key.id;
-        form.note = model.api_key.note;
-        form.code = model.api_key.code;
-        form.keyString = model.api_key.keyString;
-        if (model.api_key.person) {
-          form.isSuperUser = false;
-          form.person = {};
-          form.person.id = model.api_key.person.id;
-          form.person.name = model.api_key.person.name;
+        form = angular.copy(model.api_key);
+        if (form.flags == null) {
+          form.flags = [];
         }
-        form.agents = model.all_agents;
+        if (form.all_agents == null) {
+          form.all_agents = model.all_agents;
+        }
+        form.isSuperUser = form.flags.indexOf('super') !== -1;
+        form.isAdminManage = form.flags.indexOf('admin_manage') !== -1;
         return form;
       };
 
-
-      /*
-      			 *
-      			 *
-       */
-
       ApiKeyEditFormMapper.prototype.applyFormToModel = function(model, formModel) {
-        return model.note = formModel.note;
+        delete formModel.person;
+        return angular.extend(model, formModel);
       };
-
-
-      /*
-      			 *
-      			 *
-       */
 
       ApiKeyEditFormMapper.prototype.getPostDataFromForm = function(formModel) {
         var postData;
         postData = {};
         postData.id = formModel.id;
         postData.note = formModel.note;
-        if (!formModel.isSuperUser) {
+        postData.flags = [];
+        if (formModel.person) {
           postData.person = formModel.person.id;
+        }
+        if (formModel.isSuperUser) {
+          postData.flags.push('super');
+          if (formModel.isAdminManage) {
+            postData.flags.push('admin_manage');
+          }
         }
         return postData;
       };

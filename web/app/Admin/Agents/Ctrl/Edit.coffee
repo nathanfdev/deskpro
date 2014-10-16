@@ -572,11 +572,11 @@ define [
 				promise = @Api.sendPutJson("/agents", postData)
 
 			promise.then( (res) =>
-				# todo
-				@service.agents._addModel res.data.agent
 				@agent.display_name = @form.name
+				@service.agents.mergeDataModel(@agent)
 
 				if !@agentId
+					@service.agents.all(true)
 					@$state.go('agents.agents.edit', {id: res.data.person_id})
 
 				@stopSpinner('saving')

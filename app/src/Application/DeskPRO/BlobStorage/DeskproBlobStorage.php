@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -757,6 +757,36 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
+	 * @param array      $blob_row
+	 * @param bool       $ex_on_error Throw an exception if there's an error (useful if you want raw exception from storage adapter)
+	 *                                Otherwise, you can still check error state based on the return value.
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function deleteBlobRow(array $blob_row, $ex_on_error = false)
+	{
+		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Deleting {$blob_row['id']} from {$blob_row['storage_loc']}");
+
+		$blob = $this->getBlobFromBlobRow($blob_row);
+
+		try {
+			$this->deleteBlob($blob, $blob_row['storage_loc']);
+			$this->db->delete('blobs', array('id' => $blob_row['id']));
+		} catch (\Exception $e) {
+			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Delete failed: {$e->getCode()} {$e->getMessage()}");
+			if ($ex_on_error) {
+				throw $e;
+			}
+			return false;
+		}
+
+		$this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Delete success");
+
+		return true;
+	}
+
+
+	/**
 	 * @param BlobEntity $blob_entity
 	 * @return Blob
 	 */
@@ -792,7 +822,7 @@ class DeskproBlobStorage implements Loggable
 				'blob_id' => $blob_row['id']
 			)
 		);
-		$blob->setPath($blob['save_path']);
+		$blob->setPath($blob_row['save_path']);
 		if ($blob_row['file_url']) {
 			$blob->setMeta('file_url', $blob_row['file_url']);
 		}

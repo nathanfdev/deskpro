@@ -49,6 +49,27 @@ abstract class AbstractRepository extends Repository
     {
         $queryObj = $this->getQuery($query);
 		$queryObj->setSize(50);
+
+		if (isset($options['sort_type'])) {
+
+			switch ($options['sort_type']) {
+				case 'date_active':
+					$queryObj->setSort(array(
+						array('date_active' => array('order' => 'desc')),
+						'_score'
+					));
+					break;
+				case 'date_created':
+					$queryObj->setSort(array(
+						array('date_created' => array('order' => 'desc')),
+						'_score'
+					));
+					break;
+			}
+
+			unset($options['sort_type']);
+		}
+
         $this->setHighlight($queryObj);
 
         return parent::find($queryObj, $limit, $options);

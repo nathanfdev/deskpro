@@ -1,5 +1,23 @@
-define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions', 'DeskPRO/Util/Strings'], function(angular, x1, x2, Functions, Strings) {
-	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap']);
+define([
+	'angular',
+	'angularAnimate',
+	'angularBootstrap',
+	'DeskPRO/Util/Functions',
+	'DeskPRO/Util/Strings',
+	'DeskPRO/Directive/DpLabel',
+	'DeskPRO/Service/LabelDefinition',
+	'ngContextMenu'
+], function(
+	angular,
+	x1,
+	x2,
+	Functions,
+	Strings,
+	DeskPRO_Directive_DpLabel,
+    DeskPRO_Service_LabelDefinition,
+    ngContextMenu
+	) {
+	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu']);
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor
@@ -152,7 +170,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				}
 
 				function update() {
-					var time, ts;
+					var time, ts, now;
 					if (!scope.timestamp) {
 						return;
 					}
@@ -167,6 +185,11 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 
 					if (!time || !time.isValid()) {
 						return;
+					}
+
+					now = moment().subtract(1, 'seconds');
+					if (time.toDate() > now.toDate()) {
+						time = now;
 					}
 
 					// Cancel interval if its an old date that is unlikely to change in realtime
@@ -186,11 +209,20 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					}
 				});
 
+				element.on('dp_update', function() {
+					update();
+				});
+
 				if (attrs['autoUpdate'] || attrs['updateInterval']) {
 					timeoutId = $interval(function() {
 						update();
 					}, parseInt(attrs['updateInterval']) || 15000);
+
+					scope.$watch('timestamp', function() {
+						update();
+					});
 				}
+
 				update();
 			}
 		};
@@ -643,9 +675,24 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				scope.isActive = false;
 				scope.mode = 'search';
 				scope.expanded = {};
+				scope.elasticOrder = 'score';
+
+				scope.setOrder = function(order) {
+					scope.elasticOrder = order;
+					if (scope.resultGroups.length) {
+						updateSearch();
+					}
+				};
 
 				var closeAll = function() {
 					$backdrop.hide();
+					$('#dp_header_notify_wrap').hide();
+					$('#recent_tabs_menu').hide();
+					$('#dp_omnibox_results').hide();
+
+					scope.isActive = false;
+					scope.mode = 'search';
+
 					$timeout(function() {
 						scope.isActive = false;
 						scope.mode = 'search';
@@ -653,7 +700,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					})
 				};
 
-				$('#dp_header_notify_wrap, #recent_tabs_menu').on('dpClose', function() {
+				$('#dp_header_notify_wrap, #recent_tabs_menu, #dp_omnibox').on('dpClose', function() {
 					closeAll();
 				});
 
@@ -669,6 +716,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 
 				scope.$watch('isActive', function(isActive) {
 					if (isActive) {
+						resizeDebounced();
 						$headerBg.addClass('with-search-active');
 						$backdrop.show();
 					} else {
@@ -729,11 +777,13 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 				};
 
 				scope.clearSearch = function() {
+					scope.searchQuery = '';
+					$input.blur();
+					closeAll();
 					$timeout(function() {
 						scope.searchQuery = '';
-						scope.isActive = false;
-						scope.mode = 'search';
 						$input.blur();
+						closeAll();
 					});
 				};
 
@@ -795,7 +845,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					scope.isMainLoading = true;
 					$http({
 						method: 'GET',
-						params: { q: scope.searchQuery || '' },
+						params: { q: scope.searchQuery || '', sort: scope.elasticOrder },
 						url: 'DP_URL/agent/quick-search.json'
 					}).success(function(data) {
 						scope.isMainLoading = false;
@@ -811,6 +861,7 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 						scope.resultGroups = data.grouped_results || [];
 						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
 						scope.index_running = data.index_running || false;
+						scope.is_elastic    = data.is_elastic || false;
 
 						var initialShow = {
 							organization: 3,
@@ -819,7 +870,8 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 							feedback: 5,
 							article: 5,
 							download: 5,
-							news: 5
+							news: 5,
+							chat_conversation: 3
 						};
 						var sortOrder = {
 							organization: 0,
@@ -828,7 +880,8 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 							feedback: 3,
 							article: 4,
 							download: 5,
-							news: 6
+							news: 6,
+							chat_conversation: 7
 						};
 						for (var i = 0; i < scope.resultGroups.length; i++) {
 							scope.resultGroups[i].initialShow = initialShow[scope.resultGroups[i].type] || 5;
@@ -853,6 +906,9 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 					var width = $listPane.width();
 					if (width < 560) {
 						width = 560;
+					}
+					if (width > 900) {
+						width = 900;
 					}
 
 					var maxHeight = $(window).height() - 40 - 75;
@@ -919,6 +975,57 @@ define(['angular', 'angularAnimate', 'angularBootstrap', 'DeskPRO/Util/Functions
 			});
 		};
 	}]);
+
+	AgentApp.directive('dpMenu', ['$compile', function($compile) {
+		return {
+			restrict: 'A',
+			link: function(scope, $el, attr) {
+
+				var $backdrop = $('#dp-menu-backdrop'),
+					$popover = $('#dp-menu-popover'),
+					$inner = $popover.children(),
+					$tpl = $('#' + attr.dpMenu);
+
+				if (!$backdrop.length) {
+					$backdrop = $('<div id="dp-menu-backdrop" class="dp-popover-backdrop"></div>')
+						.appendTo('body').hide()
+						.on('click', function(){
+							$backdrop.hide();
+							$popover.removeClass('open');
+							$inner.children().remove();
+						});
+				}
+				if (!$popover.length) {
+					$popover = $('<div id="dp-menu-popover" class="dp-popover"><div class="dp-popover-inner"></div></div>')
+						.appendTo($backdrop);
+					$inner = $popover.children();
+				}
+
+				$el.on('click', function(e){
+					scope.$broadcast('dp-menu.opened');
+					$inner.html($tpl.html());
+					$compile($inner.contents())(scope);
+
+					$popover.addClass('open');
+					$backdrop.show();
+					$inner.css('max-height', parseInt($(window).height() / 2 - 40));
+					$popover.position({
+						of: $el,
+						my: 'center top',
+						at: 'center bottom',
+						collision: 'flipfit'
+					});
+				});
+			}
+		};
+	}]);
+
+
+	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
+		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
+	}]);
+
+	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 
 	return AgentApp;
 });

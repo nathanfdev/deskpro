@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EmailGateway\Cutter;
 
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 
 /**
  * This works on an email message to detect a forwarded email, parse out
@@ -63,6 +64,28 @@ class ForwardCutter
 
 
 	/**
+	 * @return string
+	 */
+	public static function getFwdSubjectRegex()
+	{
+		try {
+			$regex = App::$container->getSetting('core_tickets.agent_fwd_subject_regex');
+		} catch (\Exception $e) {
+			$regex = false;
+		}
+
+		if ($regex) {
+			$regex = Strings::getInputRegexPattern($regex);
+		}
+
+		if (!$regex) {
+			$regex = '#^(FW|FWD|VL|WG|FS|VB|RV|VS):#i';
+		}
+
+		return $regex;
+	}
+
+	/**
 	 * Check if a subject matches the pattern for a forwarded message.
 	 *
 	 * @param string $subject
@@ -71,7 +94,7 @@ class ForwardCutter
 	public static function subjectIsForward($subject)
 	{
 		// Prefixes for FW/FWD and in other langs too
-		return (bool)preg_match('#^(FW|FWD|VL|WG|FS|VB|RV|VS):#i', ltrim($subject));
+		return (bool)preg_match(self::getFwdSubjectRegex(), ltrim($subject));
 	}
 
 
@@ -83,7 +106,7 @@ class ForwardCutter
 	 */
 	public static function cutSubjectForwardPrefix($subject)
 	{
-		return preg_replace('#^(FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($subject));
+		return trim(preg_replace(self::getFwdSubjectRegex(), '', trim($subject)));
 	}
 
 

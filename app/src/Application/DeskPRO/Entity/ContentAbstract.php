@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -281,7 +281,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$content = preg_replace("#<br\s*/?>?#", "\n", $content);
 		$content = preg_replace("#<p>\n?#", "\n", $content);
 		$content = preg_replace("#\n?</p>#", "\n", $content);
-		$content = html_entity_decode(strip_tags($content), \ENT_QUOTES, 'UTF-8');
+		$content = html_entity_decode(Strings::stripTags($content), \ENT_QUOTES, 'UTF-8');
 		$content = str_replace('&nbsp;', ' ', $content);
 		$content = trim($content);
 

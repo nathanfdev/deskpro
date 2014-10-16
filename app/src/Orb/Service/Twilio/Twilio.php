@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,6 +34,12 @@
 
 namespace Orb\Service\Twilio;
 
+use Application\DeskPRO\Entity\PhoneNumber;
+use Orb\Util\PhoneNumbers;
+
+/**
+ * Represents a single twillio api account
+ */
 class Twilio
 {
 	/**
@@ -41,8 +47,21 @@ class Twilio
 	 */
 	protected $twilio;
 
+	/**
+	 * @var string the sid
+	 */
+	protected $sid;
+
+	/**
+	 * @var string the auth token
+	 */
+	protected $auth_token;
+
 	public function __construct($sid, $auth_token)
 	{
+		$this->sid = $sid;
+		$this->auth_token = $auth_token;
+
 		$this->twilio = new \Services_Twilio($sid, $auth_token);
 	}
 
@@ -55,13 +74,72 @@ class Twilio
 		);
 	}
 
+
+	/**
+	 * @return string a friendly name that the user sets in twillio, usually their email
+	 */
+	public function getFriendlyName()
+	{
+		return $this->twilio->accounts->get($this->sid)->friendly_name;
+	}
+
+
+	/**
+	 * This method works only for phone numbers already purchased on Twilio. The number must be
+	 * SMS capable. Upon call, if the number is valid, we will tell the API to update the
+	 * "SmsUrl" and "VoiceUrl" to our service.
+	 *
+	 * @param        $phone_number a phone number to set the incoming URL config on
+	 * @param        $url http url for SMS script
+	 * @param string $method http method for SMS script
+	 */
+	public function setSmsUrl($phone_number, $url, $method = 'POST')
+	{
+		$request_num = PhoneNumbers::toE164Format($phone_number);
+		$numbers = $this->twilio->account->incoming_phone_numbers;
+		/** @var \Services_Twilio_Rest_IncomingPhoneNumber $number */
+		foreach ($numbers as $number) {
+			if ($request_num == PhoneNumbers::toE164Format($number->phone_number)) {
+				$number_sid = $number->sid;
+				$number = $this->twilio->account->incoming_phone_numbers->get($number_sid);
+				$number->update(
+					array(
+						"SmsUrl"   => "http://demo.twilio.com/docs/sms.xml"
+					)
+				);
+			}
+		}
+
+		return null;
+	}
+
 	public function getIncomingNumbers()
 	{
 		$numbers = array();
-		foreach ($this->twilio->account->incoming_phone_numbers as $number) {
-			$numbers[] = $number->phone_number;
+		$nums = $this->twilio->account->incoming_phone_numbers;
+		foreach ($nums as $number) {
+			$numbers[$number->friendly_name] = $number->phone_number;
 		}
 
 		return $numbers;
+	}
+
+
+	public function setUrlForNumber($url, $number)
+	{
+		$nums = $this->twilio->account->incoming_phone_numbers;
+		foreach ($nums as $num) {
+			if (PhoneNumbers::toE164Format($num->phone_number) == PhoneNumbers::toE164Format($number)) {
+				// this is the correct number
+				$num->update(
+					array(
+						"SmsUrl"   => $url,
+						"SmsMethod" => 'POST'
+					)
+				);
+			}
+		}
+
+		return true;
 	}
 }

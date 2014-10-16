@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -86,8 +86,8 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 		$obj = new self();
 		$obj['name'] = Util::getBaseClassname($loader);
 		$obj['usergroup_ids'] = $loader->getUsergroupIds();
-		if ($person_id && $loader instanceof PersonContextInterface) {
-			$obj->appendKeyId($person_id);
+		if ($loader->getSubkey()) {
+			$obj->appendKeyId($loader->getSubkey());
 		}
 		$obj->perms = $loader;
 
@@ -115,7 +115,9 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 
 	public function appendKeyId($id)
 	{
-		$this->setModelField('usergroup_key', $this->usergroup_key . $id);
+		if ($id) {
+			$this->setModelField('usergroup_key', $this->usergroup_key . '-' . $id);
+		}
 	}
 
 
@@ -150,7 +152,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'usergroup_key', 'type' => 'string', 'length' => 32, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_key', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'usergroup_key', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_key', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'usergroup_ids', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'usergroup_ids', ));
 		$metadata->mapField(array( 'fieldName' => 'perms', 'type' => 'object', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'perms', ));
 	}

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -47,6 +48,28 @@ class Person extends AbstractEntityRepository
 {
 	/** @var IdentityHelper */
 	protected $identity_helper;
+
+
+	public function findOneByPhoneNumber($from_number)
+	{
+		$phone_number = $this->getEntityManager()->getRepository('DeskPRO:PhoneNumber')->findByNumber($from_number);
+
+		if (!$phone_number) {
+			return null; // didnt find the number in the db
+		}
+
+		$query = $this->getEntityManager()->createQuery(
+		"
+			SELECT p
+			FROM DeskPRO:Person p
+			WHERE :found_phone_number MEMBER OF p.phone_numbers
+		"
+		);
+
+		$query->setMaxResults(1)->setParameter('found_phone_number', $phone_number);
+
+		return $query->getOneOrNullResult();
+	}
 
 	/**
 	 * @return \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
@@ -551,5 +574,83 @@ class Person extends AbstractEntityRepository
 		);
 
 		return $counts;
+	}
+
+	/**
+	 * moved from AgentBundle/Controller/PeopleSearchController::performQuickSearch
+	 * @param null $q               search query
+	 * @param bool $startWith       ?
+	 * @param bool $withAgents      include agents
+	 * @param int $excludeOrg       exclude org
+	 * @param int $limit            limit
+	 * @return array
+	 */
+	public function quickSearch($q = null, $startWith = false, $withAgents = true, $excludeOrg = 0, $limit = 10)
+	{
+		$startWith = (bool) $startWith;
+		$withAgents = (bool) $withAgents;
+		$excludeOrg = abs($excludeOrg);
+		$limit = max(10, min($limit, 100));
+		$agent_sql = $withAgents ? '' : ' p.is_agent = 0 AND ';
+		$db = $this->getEntityManager()->getConnection();
+		$q = strtolower($q);
+
+		if (BigMode::isBigMode(BigMode::PERSON_AUTOCOMPLETE)) {
+
+			if (!strlen($q) && $startWith) {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
+					WHERE $agent_sql
+					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
+					ORDER BY p.id DESC
+					LIMIT $limit
+				");
+			} else {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
+					WHERE
+						$agent_sql
+						LOWER(e.email) LIKE ?
+						" . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
+					GROUP BY p.id
+					ORDER BY p.date_last_login DESC, p.id DESC
+					LIMIT $limit
+				", array("$q%"));
+			}
+		} else {
+			if (!strlen($q) && $startWith) {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
+					WHERE $agent_sql
+					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
+					ORDER BY p.name ASC
+					LIMIT $limit
+				");
+			} else {
+				return $db->fetchAllKeyed("
+					SELECT p.id, p.first_name, p.last_name, p.name, e.email
+					FROM people p
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
+					WHERE
+						$agent_sql
+						(LOWER(e.email) LIKE ?
+						OR LOWER(p.name) LIKE ?
+						OR LOWER(p.first_name) LIKE ?
+						OR LOWER(p.last_name) LIKE ?)
+						" . ($excludeOrg ? " AND (p.organization_id IS NULL OR p.organization_id != $excludeOrg) " : '') . "
+					GROUP BY p.id
+					ORDER BY p.date_last_login DESC, p.id DESC
+					LIMIT $limit
+				", array("%$q%", "%$q%", "%$q%", "%$q%"));
+			}
+		}
+
+		return array();
 	}
 }

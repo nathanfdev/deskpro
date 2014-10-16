@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -41,10 +41,10 @@ class TicketWorkflow extends AbstractEntityRepository
 	public function getAll()
 	{
 		$works = $this->getEntityManager()->createQuery("
-				SELECT w
-				FROM DeskPRO:TicketWorkflow w
-				ORDER BY w.display_order
-			")->execute();
+			SELECT w
+			FROM DeskPRO:TicketWorkflow w
+			ORDER BY w.display_order ASC
+		")->execute();
 
 		return $works;
 	}
@@ -58,7 +58,7 @@ class TicketWorkflow extends AbstractEntityRepository
 			$works = $this->getEntityManager()->createQuery("
 				SELECT w
 				FROM DeskPRO:TicketWorkflow w
-				ORDER BY w.display_order
+				ORDER BY w.display_order ASC
 			")->execute();
 		}
 

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -217,7 +217,7 @@ class FeedbackController extends AbstractController
 
 		$errors = $error_fields = null;
 		$is_submitted = false;
-		if ($this->in->getBool('process_new') && $this->person->hasPerm('feedback.submit')) {
+		if ($this->in->getBool('process_new') && $this->person->hasPerm('feedback.submit') && ($this->person->id || !$this->settings->get('core.interact_require_login'))) {
 
 			$this->ensureStandardRequestToken();
 

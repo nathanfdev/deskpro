@@ -60,6 +60,7 @@
 	'agent.general.assign_to'                               => 'Assign to',
 	'agent.general.assign_to_me'                            => 'Assign to Me',
 	'agent.general.assign_to_my_team'                       => 'Assign to My Team',
+	'agent.general.assign_to_primary_team'                  => 'Assign to Primary Team',
 	'agent.general.assigned'                                => 'Assigned',
 	'agent.general.assigned_agent'                          => 'Assigned Agent',
 	'agent.general.assigned_agent_id'                       => 'Agent Id',
@@ -111,6 +112,7 @@
 	'agent.general.changed_to_include'                      => 'Changed to include',
 	'agent.general.changed_to_lte'                          => 'Changed to <=',
 	'agent.general.changed_to_remove'                       => 'Changed to remove',
+	'agent.general.changelog'                               => 'Change Log',
 	'agent.general.chat'                                    => 'Chat',
 	'agent.general.chat_ended'                              => 'Chat ended',
 	'agent.general.chats'                                   => 'Chats',
@@ -245,6 +247,7 @@
 	'agent.general.enter_a_message'                         => 'Enter a message',
 	'agent.general.enter_a_title'                           => 'Enter a title',
 	'agent.general.enter_organization_name'                 => 'Enter an organization name...',
+	'agent.general.find_or_create_org'                      => 'Find or create an organization',
 	'agent.general.enter_search_terms'                      => 'Enter search terms',
 	'agent.general.error'                                   => 'Error',
 	'agent.general.error_invalid_phone_number'              => 'The phone number you entered is not in a valid format',
@@ -743,4 +746,9 @@
 	'agent.general.new'                                     => 'New',
 	'agent.general.unassign'                                => 'Unassign',
 	'agent.general.dp_updates'                              => 'DeskPRO Updates',
+
+	'agent.general.tabs_close_current'                      => 'Close this tab',
+	'agent.general.tabs_close_all'                          => 'Close all tabs',
+	'agent.general.tabs_close_others'                       => 'Close all other tabs',
+	'agent.general.tabs_reopen'                             => 'Reopen:',
 );

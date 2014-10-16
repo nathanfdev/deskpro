@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -194,10 +194,9 @@ class MiscController extends AbstractController
 		$fragment_router = new FragmentRouter($this->get('router')->getGenerator());
 		$js[] = $fragment_router->compile();
 
-		/** @var \Application\DeskPRO\Labels\LabelDefManager $label_def_manager */
-		$label_def_manager = $this->container->getSystemService('label_def_manager');
-
-		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($label_def_manager->getAllLabelsToTyped());
+		/** @var \Application\DeskPRO\EntityRepository\LabelDef $labelDef */
+		$labelDef = $this->em->getRepository('DeskPRO:LabelDef');
+		$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode($labelDef->getAllLabelsToTyped());
 
 		if ($this->container->getAppManager()->isPackageInstalled('deskpro_ms_translator')) {
 			$ms_translator = $this->container->getAppManager()->getService('ms_translator');
@@ -967,20 +966,22 @@ JS;
 			$rjs->setUrlArgsExpr('"v=' . DP_BUILD_TIME . '"');
 		}
 
-		$rjs->addPath('DeskPRO/App', 'javascripts/DeskPRO/App');
 		$rjs->addPath('AppPlatform', 'javascripts/DeskPRO/App/Platform');
 		$rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
-		$rjs->addPath('DeskPRO/Util', 'app/build/DeskPRO/js/Util');
+		$rjs->addPath('DeskPRO', 'app/build/DeskPRO/js');
+		$rjs->addPath('DeskPRO/App', 'javascripts/DeskPRO/App');
 		$rjs->addPath('AgentApp', 'javascripts/DeskPRO/App/AgentApp');
 		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/app/bower_components/angular/angular.min"');
 		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
 		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
 		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap"');
+		$rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/vendor/ng-context-menu/src/ng-context-menu"');
 
 		$rjs->addShim('angular', array('exports' => 'angular'));
 		$rjs->addShim('angularAnimate', array('angular'));
 		$rjs->addShim('angularSanitize', array('angular'));
 		$rjs->addShim('angularBootstrap', array('angular'));
+		$rjs->addShim('ngContextMenu', array('angular'));
 
 		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
 		$rjs->addPathsFromGenerator($rjs_apps);

@@ -1,0 +1,67 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+<section class="dp-paneblock dp-listpane">
+	<header>
+		<nav>
+			<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i
+				class="fa fa-check-square-o-square"></i> {{ phrase('admin.channels.sms_account_saved') }}</span>
+		</nav>
+		<h3 ng-pluralize count="ChannelSmsList.accounts.length || 0"
+			when="{{ ng_plural_phrase('admin.channels.sms_x_accounts') }}"></h3>
+	</header>
+	<article>
+		<p class="dp-empty-list-notice" ng-if="!ChannelSmsList.accounts.length">
+			{{ phrase('admin.channels.sms_no_accounts_yet') }}
+		</p>
+		<ul class="dp-item-list" ng-if="ChannelSmsList.accounts.length">
+			<li ng-repeat="account in ChannelSmsList.accounts"
+				dp-state-mark="tickets.channel_sms.edit.{{ ng_var('account.id') }}" data-id="{{ ng_var('account.id') }}">
+				<a href="{{ ng_href('tickets.channel_sms.edit', '{id: account.id}') }}">
+					<div class="pull-right">
+						<em class="tag tag-warn" ng-show="!account.is_enabled">Disabled</em>
+					</div>
+					<span class="title-id" title="ID">#{{ ng_var('account.id') }}</span>
+					<span class="title-text">
+						<img ng-show="account.type == 'twilio'" src="{{ asset('images/site-icons/twilio_256.png') }}" height="16" width="16">
+						<span class="intl-tel-input">
+								<div class="flag" ng-class="account.phone_number_region" style=" position: relative; top: 2px;"></div>
+						</span>
+						{{ ng_var('account.phone_number') }}
+					</span>
+				</a>
+			</li>
+		</ul>
+		<div class="dp-add-control">
+			<a class="btn btn-default" href="{{ ng_href('tickets.channel_sms.create') }}"
+				ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('admin.channels.sms_new_account') }}</a>
+		</div>
+	</article>
+</section>
+
+<section class="dp-paneblock dp-panelink">
+	<a href="{{ ng_href('tickets.channel_sms.incoming_log') }}">
+		<em><i class="fa fa-chevron-down"></i></em>
+		<h3>{{ phrase('admin.channels.sms_incoming_log') }}</h3>
+	</a>
+</section>
+
+<section class="dp-paneblock dp-panelink">
+	<a href="{{ ng_href('tickets.channel_sms.outgoing_log') }}">
+		<em><i class="fa fa-chevron-down"></i></em>
+		<h3>{{ phrase('admin.channels.sms_outgoing_log') }}</h3>
+	</a>
+</section>
+
+{% endblock %}
+{% block listpane_help %}
+<header>
+	<h1>{{ phrase('admin.channels.sms_help_header_title') }}</h1>
+
+	<p>{{ phrase('admin.channels.sms_help_header_desc') }}</p>
+</header>
+<article>
+	<section>
+		{{ phrase('admin.channels.sms_help_extended') }}
+	</section>
+</article>
+{% endblock %}

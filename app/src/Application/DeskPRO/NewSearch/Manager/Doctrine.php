@@ -38,14 +38,14 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
     public function quickSearch($q)
     {
         $type_to_ent = array(
-            'article'      => 'DeskPRO:Article',
-            'download'     => 'DeskPRO:Download',
-            'feedback'     => 'DeskPRO:Feedback',
-            'news'         => 'DeskPRO:News',
-            'ticket'       => 'DeskPRO:Ticket',
-            'person'       => 'DeskPRO:Person',
-            'organization' => 'DeskPRO:Organization',
-            'chat'         => 'DeskPRO:ChatConversation'
+            'article'           => 'DeskPRO:Article',
+            'download'          => 'DeskPRO:Download',
+            'feedback'          => 'DeskPRO:Feedback',
+            'news'              => 'DeskPRO:News',
+            'ticket'            => 'DeskPRO:Ticket',
+            'person'            => 'DeskPRO:Person',
+            'organization'      => 'DeskPRO:Organization',
+            'chat_conversation' => 'DeskPRO:ChatConversation'
         );
 
         $results = array(
@@ -56,7 +56,7 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'ticket'                 => array(),
             'person'                 => array(),
             'organization'           => array(),
-            'chat'                   => array()
+            'chat_conversation'      => array()
         );
 
         if (!$this->person->hasPerm('agent_people.use')) {

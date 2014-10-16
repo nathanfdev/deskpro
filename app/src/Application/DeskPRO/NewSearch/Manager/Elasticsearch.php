@@ -24,13 +24,14 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
      * @var array
      */
     protected $objects = array(
-        'article'      => 'DeskPRO:Article',
-        'download'     => 'DeskPRO:Download',
-        'feedback'     => 'DeskPRO:Feedback',
-        'news'         => 'DeskPRO:News',
-        'ticket'       => 'DeskPRO:Ticket',
-        'person'       => 'DeskPRO:Person',
-        'organization' => 'DeskPRO:Organization'
+        'article'           => 'DeskPRO:Article',
+        'download'          => 'DeskPRO:Download',
+        'feedback'          => 'DeskPRO:Feedback',
+        'news'              => 'DeskPRO:News',
+        'ticket'            => 'DeskPRO:Ticket',
+        'person'            => 'DeskPRO:Person',
+        'organization'      => 'DeskPRO:Organization',
+		'chat_conversation' => 'DeskPRO:ChatConversation',
     );
 
     /**
@@ -49,14 +50,25 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
      */
     protected $results = array();
 
-    public function quickSearch($q)
+    public function quickSearch($q, $sort = null, array $limit_types = null)
     {
         $result_meta = array();
         $people_top  = false;
 
+		if ($sort && !in_array($sort, array('score', 'date_active', 'date_created'))) {
+			$sort = null;
+		}
+		if (!$sort) {
+			$sort = 'score';
+		}
+
         $repositoryManager = $this->container->get('fos_elastica.manager');
 
         foreach ($this->objects as $object => $model) {
+
+			if ($limit_types !== null && !in_array($object, $limit_types)) {
+				continue;
+			}
 
             if (!$this->isAllowed($object)) {
                 continue;
@@ -94,7 +106,9 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
 				}
 			}
 
-            $result = $repository->find($q);
+            $result = $repository->find($q, null, array(
+				'sort_type' => $sort
+			));
 			if ($result) {
 				$this->handleResult($object, $result);
 			}

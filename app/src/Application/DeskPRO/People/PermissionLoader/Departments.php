@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -49,6 +49,18 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 	 * @var array
 	 */
 	protected $allowed_cats = array('tickets' => array(), 'chat' => array());
+
+	/**
+	 * @var bool
+	 */
+	protected $with_overrides = false;
+
+	public function getSubkey()
+	{
+		if ($this->person && $this->person->is_agent) {
+			return 'person-' . $this->person->id;
+		}
+	}
 
 	public function _init()
 	{
@@ -96,19 +108,10 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 					}
 				}
 
-				if ($has_agent_ugs) {
-					$res = App::getDb()->fetchAll("
-						SELECT department_id, app, name, value
-						FROM department_permissions
-						WHERE person_id = {$this->person->getId()} OR usergroup_id IN (" . implode(',', $has_agent_ugs) . ")
-					");
-				} else {
-					$res = App::getDb()->fetchAll("
-						SELECT department_id, app, name, value
-						FROM department_permissions
-						WHERE person_id = {$this->person->getId()}
-					");
-				}
+				$res = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent(
+					$this->person->getId(),
+					$has_agent_ugs
+				);
 			}
 		} else {
 			$res = App::getDb()->fetchAll("
@@ -124,6 +127,11 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
 		);
 
 		foreach ($res as $d) {
+
+			if (!empty($d['person_id'])) {
+				$this->with_overrides = true;
+			}
+
 			$dep = App::getDataService('Department')->get($d['department_id']);
 
 			$check = 'is_' . $d['app'] . '_enabled';

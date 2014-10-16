@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -65,6 +65,23 @@ class Build1400056733 extends AbstractBuild
 	{
 		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
 		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerTermConverter.php';
+
+		// See Build1411577850.php
+		// We need to apply this alter now because we use Doctrine to load some
+		// entities, and they will fail because we changed these definitions.
+		// So to prevent them failing, we are bringing "forward" these alters from the future
+
+		$did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1411577850 AND name = 'did_pre_alter'");
+		if (!$did_do) {
+			$this->out("Adding avatar feilds to temas and departments");
+			$this->execMutateSql("ALTER TABLE agent_teams ADD avatar_blob_id INT DEFAULT NULL");
+			$this->execMutateSql("ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+			$this->execMutateSql("CREATE INDEX IDX_AF6C0A203B50817B ON agent_teams (avatar_blob_id)");
+			$this->execMutateSql("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
+			$this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D43B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+			$this->execMutateSql("CREATE INDEX IDX_16AEB8D43B50817B ON departments (avatar_blob_id)");
+			$this->container->getDb()->insertIgnore('install_data', array('build' => '1411577850', 'name' => 'did_pre_alter', 'data' => '1'));
+		}
 
 		$this->out("Upgrading triggers");
 

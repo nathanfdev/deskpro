@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -373,6 +373,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 		$message->conversation = $this;
 		$this->messages->add($message);
+		$this->_onPropertyChanged('messages', null, $this->messages, true);
 
 		$this->_created_messages[] = $message;
 
@@ -746,6 +747,28 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 		return $url;
 	}
+
+	/**
+	 * Find an existing data record for a field id.
+	 *
+	 * @param int $field_id
+	 * @return CustomDefChat
+	 */
+	public function getCustomDataForField($field_id)
+	{
+		if ($field_id instanceof CustomDefChat) {
+			$field_id = $field_id['id'];
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id) {
+				return $data;
+			}
+		}
+
+		return null;
+	}
+
 
 	/**
 	 * Add a custom data item to this chat

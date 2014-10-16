@@ -82,8 +82,6 @@ $files = array(
 	'Application\\DeskPRO\\Templating\\Asset\\UrlPackage',
 	'Application\\DeskPRO\\Templating\\GlobalVariables',
 
-	'Application\\DeskPRO\\Translate\\Loader\\BundleLoader',
-	'Application\\DeskPRO\\Translate\\Loader\\CombinationLoader',
 	'Application\\DeskPRO\\Translate\\Loader\\DbLoader',
 	'Application\\DeskPRO\\Translate\\Loader\\LoaderInterface',
 	'Application\\DeskPRO\\Translate\\Loader\\SystemLoader',

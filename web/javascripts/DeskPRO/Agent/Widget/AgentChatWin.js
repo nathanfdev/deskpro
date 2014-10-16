@@ -393,8 +393,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	},
 
 
-	formatMessage: function(message) {
-		var message = Orb.escapeHtml(message);
+	formatMessage: function(message, preventEscaping) {
+		var message = preventEscaping ? message : Orb.escapeHtml(message);
 		var idMap = {
 			't': {title: 'Ticket', url: BASE_URL + 'agent/tickets/'},
 			'p': {title: 'Person', url: BASE_URL + 'agent/people/'},

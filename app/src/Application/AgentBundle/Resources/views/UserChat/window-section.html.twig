@@ -132,7 +132,9 @@
 								<td class="labels">
 									<ul>
 										{% for label in labels %}
-											<li class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}"><span>{{label}}</span></li>
+											<li class="{{css_class}} nav-label-{{label|slugify}} is-nav-item" data-route="listpane:{{ path('agent_userchat_filterlist', {filter_id: 'label', filter_param: label}) }}">
+                                                <span dp-label dp-label-string="{{ label }}">{{label}}</span>
+                                            </li>
 										{% endfor %}
 									</ul>
 								</td>

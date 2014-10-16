@@ -30,9 +30,9 @@
 {% block content %}
 
 <section class="dp-news-post dp-content-post dp-content-page">
-	<div class="dp-cal-date" title="{{ phrase('user.news.posted_date', {'date':news.date_created|date('fulltime')}) }}">
-		<div class="dp-month">{{ news.date_created|date('M')|upper }}</div>
-		<div class="dp-day">{{ news.date_created|date('d') }}</div>
+	<div class="dp-cal-date" title="{{ phrase('user.news.posted_date', {'date':news.date_published|date('fulltime')}) }}">
+		<div class="dp-month">{{ news.date_published|date('M')|upper }}</div>
+		<div class="dp-day">{{ news.date_published|date('d') }}</div>
 	</div>
 	<header>
 		<h3 style="margin-bottom: 0"><a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a></h3>
@@ -40,6 +40,9 @@
 			<li class="dp-author"><i class="dp-icon-user"></i> {{ news.person.display_name_user }}</li>
 			<li class="dp-category"><i class="dp-icon-folder-close"></i> <a href="{{ path('user_news', {'slug': news.category.url_slug })}}">{{ news.category.title }}</a></li>
 		</ul>
+		{% if news.status != 'published' and news.status != 'archived' and app.user.is_agent %}
+			<div class="sub-note">{{ phrase('user.general.can-view-because-agent') }}</div>
+		{% endif %}
 	</header>
 	<article>
 		{{ news.content_html|raw }}

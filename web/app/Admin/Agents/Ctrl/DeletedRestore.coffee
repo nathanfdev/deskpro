@@ -27,4 +27,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			)
 			return promise
 
+		convertToUser: ->
+			@startSpinner('saving_convert')
+			promise = @Api.sendDelete("/agents/#{@agentId}/delete/to-user")
+			promise.then( =>
+				@stopSpinner('saving_convert', true)
+				@$state.go('agents.agents')
+			)
+			return promise
+
 	Admin_Agents_Ctrl_DeletedRestore.EXPORT_CTRL()

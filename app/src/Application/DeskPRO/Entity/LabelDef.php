@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -51,20 +51,31 @@ class LabelDef extends DomainObject
 	/**
 	 * @var string
 	 */
-
 	protected $label_type;
 
 	/**
 	 * @var string
 	 */
-
 	protected $label;
+
+	/**
+	 * @var string css color
+	 */
+	protected $color;
 
 	/**
 	 * @var int
 	 */
-
 	protected $total = 0;
+
+	public function __construct(array $data = array())
+	{
+		foreach ($data as $k => $v) {
+			if (property_exists($this, $k)) {
+				$this[$k] = trim($v);
+			}
+		}
+	}
 
 	/**
 	 * Get the name of the entity used to store label associations for this type.
@@ -90,6 +101,24 @@ class LabelDef extends DomainObject
 		$table = $class::getTableName();
 
 		return $table;
+	}
+
+
+	/**
+	 * @param string $c
+	 */
+	public function setColor($c)
+	{
+		if (!$c) {
+			$this->setModelField('color', null);
+		} else {
+			$c = trim($c);
+			if ($c === '' || $c === '#') {
+				$this->setModelField('color', null);
+			} else {
+				$this->setModelField('color', $c);
+			}
+		}
 	}
 
 	############################################################################
@@ -131,6 +160,14 @@ class LabelDef extends DomainObject
 				 'nullable'   => false,
 				 'columnName' => 'label',
 				 'id'         => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'color',
+				'type'       => 'string',
+				'nullable'   => false,
+				'columnName' => 'color'
 			)
 		);
 		$metadata->mapField(

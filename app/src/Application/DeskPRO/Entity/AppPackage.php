@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -232,6 +232,31 @@ class AppPackage extends DomainObject
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get manifest array
+	 * @return array
+	 */
+	public function getManifest()
+	{
+		return array(
+			'package_name' => $this['name'],
+			'title' => $this['title'],
+			'description' => $this['description'],
+			'tags' => $this['tags'],
+			'api_version' => $this['api_version'],
+			'version' => $this['version'],
+			'version_name' => $this['version_name'],
+			'is_single' => (bool) $this['is_single'],
+			'is_native' => null !== $this['native_name'],
+			'author' => array(
+				'name' => $this['author_name'],
+				'email' => $this['author_email'],
+				'link' => $this['author_link'],
+			),
+			'settings_def' => $this['settings_def']
+		);
 	}
 
 

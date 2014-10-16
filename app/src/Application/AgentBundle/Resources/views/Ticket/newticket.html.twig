@@ -165,6 +165,7 @@ pageMeta.baseId = '{{ baseId }}';
 							'id': baseId ~ '_dep',
 							'departments': app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign'),
 							'selected': ticket.department_id,
+                            'add_attr': 'data-style-type="icons" data-select-icon-size="22"',
 							with_blank: true
 						} %}
 					</td>
@@ -344,21 +345,21 @@ pageMeta.baseId = '{{ baseId }}';
 								</select>
 
 								{% if app.agent_teams.getTeamNames()|length %}
-									<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select x" data-select-nogrouptitle="1">
+									<select name="newticket[agent_team_id]" id="{{baseId}}_agent_team_sel" class="dpe_select x" data-select-nogrouptitle="1" data-style-type="icons" data-select-icon-size="22">
 										<option value="0" {% if not app.getSetting('core_tickets.new_assignteam') %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
 										{% if app.user.getAgent().getTeams()|length %}
 										<optgroup label="{{ phrase('agent.general.your_teams') }}">
 											{% for team in app.user.getAgent().getTeams() %}
-												<option value="{{ team.id }}" {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
+												<option value="{{ team.id }}" {% if team.hasAvatar() %}data-icon="{{ team.getAvatarUrl(20) }}"{% endif %} {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}>{{ team.name }}</option>
 											{% endfor %}
 										</optgroup>
 										{% endif %}
 
-										{% for id,name in app.agent_teams.getTeamNames() %}
-											{% if id not in app.user.getAgent().getTeamIds() %}
-												<option value="{{ id }}">{{ name }}</option>
-											{% endif %}
-										{% endfor %}
+                                        {% for team in app.agent_teams.getTeams() %}
+                                            {% if team.id not in app.user.getAgent().getTeamIds() %}
+                                                <option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}">{{ team.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
 									</select>
 								{% endif %}
 							</div>

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -128,12 +128,24 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 			return $this->_allowed_ids[$context];
 		}
 
-		$uids = $this->person->getUsergroupIds();
-		if (!$uids) {
-			$uids[] = '0';
+		$agent_groups = App::$container->getAgentGroups();
+		$agent_data   = App::$container->getAgentData();
+
+		try {
+			$uids = $agent_data->getGroupIdsForAgent($this->person);
+		} catch (\InvalidArgumentException $e) {
+			$uids = array();
 		}
 
-		$agent_groups = App::$container->getAgentGroups();
+		if (!$uids) {
+			$uids = array(0);
+		}
+
+		// Only agent groups!
+		$uids = array_filter($uids, function($id) use ($agent_groups) {
+			return $agent_groups->groupExists($id);
+		});
+
 		$allow_all = false;
 		foreach ($uids as $ugid) {
 			if ($agent_groups->groupExists($ugid)) {
@@ -161,17 +173,7 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
 				}
 			}
 		} else {
-			$uids = implode(',', $uids);
-
-			$raw = App::getDb()->fetchAll("
-				SELECT dp.app, dp.department_id
-				FROM department_permissions dp
-				LEFT JOIN usergroups AS ug ON (ug.id = dp.usergroup_id)
-				WHERE
-					(dp.person_id = ? OR (dp.usergroup_id IN ($uids) AND ug.is_agent_group = 1))
-					AND name = 'full'
-					AND value = 1
-			", array($this->person->id));
+			$raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->id, $uids, 'full');
 
 			$this->_allowed_ids = array();
 			foreach ($raw as $r) {

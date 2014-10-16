@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -58,6 +58,8 @@ abstract class AbstractPlaceholder
 		'PAST_24_HOURS' => 'Past24Hours',
 		'PAST_7_DAYS' => 'Past7Days',
 		'PAST_30_DAYS' => 'Past30Days',
+		'PAST_6_MONTHS' => 'Past6Months',
+		'PAST_12_MONTHS' => 'Past12Months',
 		'THIS_MONTH' => 'ThisMonth',
 		'THIS_WEEK' => 'ThisWeek',
 		'THIS_YEAR' => 'ThisYear',

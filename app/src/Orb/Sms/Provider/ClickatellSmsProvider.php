@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
- * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
  * | a British company located in London, England.                            |
  * |                                                                          |
- * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
  * |                                                                          |
  * | The license agreement under which this software is released              |
- * | can be found at http://www.deskpro.com/license                           |
+ * | can be found at https://www.deskpro.com/eula/                            |
  * |                                                                          |
  * | By using this software, you acknowledge having read the license          |
  * | and agree to be bound thereby.                                           |
@@ -123,5 +123,18 @@ class ClickatellSmsProvider implements SmsProviderInterface
 	public function getName()
 	{
 		return 'clickatell';
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getParams()
+	{
+		return array(
+			'user' => $this->user,
+			'password' => $this->password,
+			'api_id' => $this->apiId
+		);
 	}
 }

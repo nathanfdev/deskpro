@@ -15,6 +15,22 @@
 		</tr>
 	{% endif %}
 	<tr>
+		<td class="dp-td-heading">{{ phrase('agent.general.ticket_starter') }}</td>
+		<td>
+			{{ ticket.person.display_name }} &lt;{% if ticket.person_email %}{{ ticket.person_email.email }}{% else %}{{ ticket.person.primary_email.email }}{% endif %}&gt;
+		</td>
+	</tr>
+	{% if ticket.getUserParticipants()|length %}
+		<tr>
+			<td class="dp-td-heading">{{ phrase('agent.general.ccs') }}</td>
+			<td>
+				{% for p in ticket.getUserParticipants() %}
+					&bull; {{ p.getDisplayContact() }}<br/>
+				{% endfor %}
+			</td>
+		</tr>
+	{% endif %}
+	<tr>
 		<td class="dp-td-heading">{{ phrase('agent.general.status') }}</td>
 		<td>
 			{{ phrase( 'agent.tickets.status_' ~ ticket.status) }}

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -76,7 +76,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 		###########################################################################
 		# Prepare the DeskproSmsSender
 		###########################################################################
-		$sms_sender = $this->getContainer()->getSystemService('instant_sms_sender');
+		$sms_sender = $this->getContainer()->getSystemService('sms_sender');
 		$sms_sender->setDefaultProvider($this->getSmsProvider());
 		$sms_sender->setDefaultFromNumber($this->getFromPhoneNumber());
 
@@ -166,7 +166,7 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
 				$sms_message = new SmsMessage($message);
 				$result = $sms_sender->send($number, $sms_message);
 
-				if ($sms_message->isSent()) {
+				if ($result) {
 					$this->recordSuccessfulTicketChange($ticket, $number);
 				} else {
 					$this->logErrorSendingTo($result->getProviderMessage(), $context);

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -158,8 +158,10 @@ class MainController extends AbstractController
 		$dp_news = require_once(DP_ROOT.'/sys/config/config.news.php');
 		$read_news = $this->person->getPref('agent.ui.dp_news', array());
 		$unread_dp_news = array();
+		$person_time = $this->person->date_created->getTimestamp();
 		foreach ($dp_news as $info) {
-			if (!in_array($info['id'], $read_news)) {
+			$d = @strtotime($info['date']);
+			if ($d && ($d > $person_time) && !in_array($info['id'], $read_news)) {
 				$unread_dp_news[] = $info;
 			}
 		}
@@ -325,6 +327,7 @@ class MainController extends AbstractController
 	public function quickSearchAction()
 	{
 		$q = $this->in->getString('q');
+		$sort = $this->in->getString('sort');
 
         $results = array(
             'article'              => array(),
@@ -354,7 +357,7 @@ class MainController extends AbstractController
 
         if ($this->container->getSetting('elastica.enabled')) {
 			try {
-				return $this->searchInElasticsearch($q);
+				return $this->searchInElasticsearch($q, $sort);
 			} catch (\Exception $e) {
 				KernelErrorHandler::logException($e);
 
@@ -366,12 +369,12 @@ class MainController extends AbstractController
         }
 	}
 
-    private function searchInElasticsearch($q)
+    private function searchInElasticsearch($q, $sort = null)
     {
         $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
         $elasticsearch->setPersonContext($this->person);
 
-        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q);
+        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, $sort);
 
 		$return_results = array();
 
@@ -384,7 +387,7 @@ class MainController extends AbstractController
 
 				$return_results[] = array(
 					'type'    => $type,
-					'title'   => $type,
+					'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
 					'results' => $rows
 				);
 			}
@@ -404,7 +407,8 @@ class MainController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'grouped_results' => $return_results,
-			'index_running'   => $index_running
+			'index_running'   => $index_running,
+			'is_elastic'      => true,
 		));
     }
 
@@ -428,7 +432,7 @@ class MainController extends AbstractController
 
 				$return_results[] = array(
 					'type'    => $type,
-					'title'   => $type,
+					'title'   => $this->container->getTranslator()->phrase('agent.search.type_' . $type),
 					'results' => $rows
 				);
 			}
@@ -493,7 +497,7 @@ class MainController extends AbstractController
 						'agent'   => null
 					);
 
-					$agent= $ticket_display->getAgent($r);
+					$agent = $ticket_display->getAgent($r);
 					if ($agent) {
 						$ticket_info['agent'] = $render_person($agent);
 					}
@@ -510,6 +514,29 @@ class MainController extends AbstractController
 			case 'person':
 				foreach ($results as $r) {
 					$rows[] = $render_person($r);
+				}
+				break;
+
+			case 'chat_conversation':
+				foreach ($results as $r) {
+					$chat_info = array(
+						'id'      => $r->id,
+						'subject' => $r->subject,
+						'person'  => null,
+						'agent'   => null
+					);
+
+					$agent = $r->agent;
+					if ($agent) {
+						$chat_info['agent'] = $render_person($agent);
+					}
+
+					$person = $r->person;
+					if ($person) {
+						$chat_info['person'] = $render_person($person);
+					}
+
+					$rows[] = $chat_info;
 				}
 				break;
 

@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -94,7 +94,7 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
 			$reply_text = $formatter->formatText($reply_text, $ticket);
 		}
 
-		$message->setMessageText($reply_text);
+		$message->setMessage($reply_text);
 
 		$ticket->addMessage($message);
 		$em->persist($message);

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -185,6 +185,21 @@ class PhoneNumbers
 	 * @return string The phone number in International format
 	 */
 	public static function toInternationalFormat($phone_number)
+	{
+		$phone_util = PhoneNumberUtil::getInstance();
+		$number = $phone_util->parse($phone_number, null);
+
+		return $phone_util->format($number, PhoneNumberFormat::INTERNATIONAL);
+	}
+
+
+	/**
+	 * @param string $phone_number
+	 *
+	 * @throws NumberParseException Make sure to validate the number string before using this.
+	 * @return string The phone number in National format
+	 */
+	public static function toNationalFormat($phone_number)
 	{
 		$phone_util = PhoneNumberUtil::getInstance();
 		$number = $phone_util->parse($phone_number, null);

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -65,6 +65,11 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 	 */
 	protected $person_id = 0;
 
+	/**
+	 * @var bool
+	 */
+	protected $with_overrides = false;
+
 
 	/**
 	 * @param Person $person
@@ -75,6 +80,12 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 		$this->person_id = $person->id;
 	}
 
+	public function getSubkey()
+	{
+		if ($this->person && $this->person->is_agent) {
+			return 'person-' . $this->person->id;
+		}
+	}
 
 	/**
 	 * Get a permission value
@@ -137,7 +148,11 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 				if ($this->person_id) {
 					$perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
 					if ($this->person && $this->person->is_agent) {
-						$perms = array_merge($perms, array(-1 => App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id)));
+						$overrides = App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id);
+						if ($overrides) {
+							$this->with_overrides = true;
+							$perms = array_merge($perms, array(-1 => $overrides));
+						}
 					}
 				} else {
 					$perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);

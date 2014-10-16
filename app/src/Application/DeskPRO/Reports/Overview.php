@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -532,6 +532,8 @@ class Overview
 					$sla_id = null;
 				}
 
+				$has_slas = $this->em->getConnection()->fetchColumn("SELECT COUNT(*) FROM slas LIMIT 1");
+
 				$stat = new TicketSlaStatus($sla_id, $date, $date2);
 				$stat->setLogger($this->logger);
 				$sum = array_sum($stat->getValues());
@@ -542,6 +544,7 @@ class Overview
 					'values'      => $stat->getValues(),
 					'max'         => $stat->getMax(),
 					'sum'         => $sum,
+					'has_slas'    => $has_slas,
 				);
 
 				break;

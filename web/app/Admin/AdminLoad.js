@@ -13,6 +13,7 @@ define([
 	'angularSelectize',
 	'angularGrid',
 	'ngFileUpload',
+	'angularUiDatetime',
 
 	'moment',
 	'momentTimezone',
@@ -43,6 +44,7 @@ define([
 	'Admin/Apps/Ctrl/List',
 	'Admin/Apps/Ctrl/EditInstance',
 	'Admin/Apps/Ctrl/EditCustomInstance',
+	'Admin/Apps/Ctrl/InstallProgress',
 	'Admin/Apps/Ctrl/PackageInfo',
 	'Admin/Apps/Ctrl/PackageInstall',
 	'Admin/Apps/Ctrl/Resync',
@@ -76,25 +78,9 @@ define([
 	'Admin/CustomFields/Chat/Ctrl/Edit',
 	'Admin/CustomFields/User/Ctrl/Edit',
 	'Admin/CustomFields/Org/Ctrl/Edit',
-	'Admin/Labels/Base/Ctrl/List',
-	'Admin/Labels/Base/Ctrl/Edit',
-	'Admin/Labels/Person/Ctrl/List',
-	'Admin/Labels/Person/Ctrl/Edit',
-	'Admin/Labels/Org/Ctrl/List',
-	'Admin/Labels/Org/Ctrl/Edit',
-	'Admin/Labels/Ticket/Ctrl/List',
-	'Admin/Labels/Ticket/Ctrl/Edit',
-	'Admin/Labels/Feedback/Ctrl/List',
-	'Admin/Labels/Feedback/Ctrl/Edit',
-	'Admin/Labels/Chat/Ctrl/List',
-	'Admin/Labels/Chat/Ctrl/Edit',
-	'Admin/Labels/Kb/Ctrl/List',
-	'Admin/Labels/Kb/Ctrl/Edit',
-	'Admin/Labels/News/Ctrl/List',
-	'Admin/Labels/News/Ctrl/Edit',
-	'Admin/Labels/Downloads/Ctrl/List',
-	'Admin/Labels/Downloads/Ctrl/Edit',
-	'Admin/Labels/Base/Ctrl/Settings',
+	'Admin/Labels/Ctrl/List',
+	'Admin/Labels/Ctrl/Edit',
+	'Admin/Labels/Ctrl/Settings',
 	'Admin/Languages/Ctrl/Edit',
 	'Admin/Languages/Ctrl/Install',
 	'Admin/Languages/Ctrl/List',
@@ -111,6 +97,8 @@ define([
 	'Admin/Templates/Ctrl/TemplateEditor',
 	'Admin/Templates/Ctrl/TemplateGroupList',
 	'Admin/Templates/Ctrl/TemplateList',
+	'Admin/ChannelSms/Ctrl/List',
+	'Admin/ChannelSms/Ctrl/Edit',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',
 	'Admin/TicketAccounts/Ctrl/Settings',
@@ -198,10 +186,20 @@ define([
 	'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
 	'Admin/RoundRobin/Ctrl/List',
 	'Admin/RoundRobin/Ctrl/Edit',
+	'Admin/Icons/Ctrl/List',
 
 	'CloudAdminLoad'
 
 ], function(angular) {
+
+	if (!window.console) {
+		window.console = {
+			log: function(){},
+			warn: function(){},
+			error: function(){}
+		}
+	}
+
 	return {
 		start: function() {
 

@@ -258,10 +258,11 @@ pageMeta.lang = {{ {
 				'blank_title': phrase('agent.general.none'),
 				'selected': ticket.department.id|default(0),
 				'id': baseId ~ '_department_id',
-				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header"',
+				'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header" data-style-type="icons" data-select-icon-size="22"',
 				'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
 			} %}
 
+			<span id="{{ baseId }}_department_icon" class="avatar" {% if not ticket.department.hasAvatar() %}style="display: none;"{% endif %}><img src="{{ ticket.department.getAvatarUrl(22) }}"/></span>
 			<span id="{{ baseId }}_department_txt">{{ ticket.department.full_title|default(phrase('agent.general.none')) }}</span>
 
 			<span class="dp-caret"></span>
@@ -417,11 +418,17 @@ pageMeta.lang = {{ {
 				<td style="padding-right: 5px;">
 					<label class="field-label-title" style="white-space: nowrap">
                         {{ phrase('agent.general.team') }}
-                        {% if app.user.agent.teams|length and ticket_perms.modify_assign_self %}
-                            <span id="{{baseId}}_assign_team" class="assign-self-link-wrap" style="{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}" data-team="{{ (app.user.agent.teams|first).id }}">
+                        {% if app.user.agent.primaryTeam and ticket_perms.modify_assign_self %}
+                            <span id="{{baseId}}_assign_team" class="assign-self-link-wrap"
+                                  style="{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}"
+                                  data-team="{{ app.user.agent.primaryTeam.id }}">
 								&middot;
 								<a class="assign-self-link">
-									{{ phrase('agent.general.assign_to_my_team') }}
+                                    {% if 1 == app.user.agent.teams|length %}
+									    {{ phrase('agent.general.assign_to_my_team') }}
+                                    {% else %}
+                                        {{ phrase('agent.general.assign_to_primary_team') }}
+                                    {% endif %}
 								</a>
                             </span>
                         {% endif %}
@@ -432,7 +439,7 @@ pageMeta.lang = {{ {
                             </a>
                         </span>
                     </label>
-					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1">
+					<select id="{{baseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" data-style-type="icons" data-select-icon-size="22">
 						{% if ticket_perms.modify_assign_team or not ticket.agent_team %}
 							<option value="0" {% if not ticket.agent_team %}selected="selected"{% endif %}>{{ phrase('agent.general.none') }}</option>
 						{% endif %}
@@ -440,14 +447,14 @@ pageMeta.lang = {{ {
 						{% if app.user.getAgent().getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 						<optgroup label="{{ phrase('agent.general.your_teams') }}">
 							{% for team in app.user.getAgent().getTeams() %}
-								<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+								<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 							{% endfor %}
 						</optgroup>
 						{% endif %}
 
 						{% for team in agent_teams %}
 							{% if (ticket_perms.modify_assign_team or ticket.agent_team.id == team.id) and team.id not in app.user.getAgent().getTeamIds() %}
-								<option value="{{ team.id }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+								<option value="{{ team.id }}" data-icon="{{ team.getAvatarUrl(20) }}" {% if ticket.agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 							{% endif %}
 						{% endfor %}
 					</select>
