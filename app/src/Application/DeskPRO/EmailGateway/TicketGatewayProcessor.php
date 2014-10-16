@@ -118,11 +118,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Ticket: " . ($ticket ? $ticket->id : 'none'));
 
 			$tac_person = $ticket_detect->findTacPerson($this->reader);
-			$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- TAC Person: " . ($tac_person ? $tac_person->id : 'none'));
+			$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- TAC Person: " . ($tac_person ? $tac_person->id . ' ' . $tac_person->getDisplayContact() : 'none'));
 
 			if ($ticket) {
 				$person = $ticket_detect->findExistingPerson($ticket, $this->reader);
-				$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Person: " . ($person ? $person->id : 'none'));
+				$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Person: " . ($person ? $person->id . ' ' . $person->getDisplayContact() : 'none'));
 
 				$can_add_new_person = $ticket_detect->canAddUnknownPerson($ticket, $this->reader);
 
@@ -206,7 +206,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		# Reject new tickets by disabled users
 		#-------------------------
 
-		if ($person && $person->is_disabled && !$ticket) {
+		if ($person && ($person->is_disabled || $person->is_deleted)) {
 			$this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
 			$this->error = 'from_disabled_user';
 			$this->error_type = 'rejected';

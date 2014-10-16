@@ -9,7 +9,13 @@ $collection = new RouteCollection();
 
 $collection->create('api', array(
 	'path'        => '/',
-	'controller'  => 'ApiBundle:Test:About',
+	'controller'  => 'ApiBundle:Docs:about',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_docs_home', array(
+	'path'        => '/api.html',
+	'controller'  => 'ApiBundle:Docs:api',
 	'methods'     => array('GET'),
 ));
 

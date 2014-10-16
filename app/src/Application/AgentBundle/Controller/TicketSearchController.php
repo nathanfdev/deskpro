@@ -221,7 +221,7 @@ class TicketSearchController extends AbstractController
 			$q = $this->in->getString('term');
 		}
 
-		if ($this->container->getSetting('elastica.enabled')) {
+		if ($this->container->getSetting('elastica.enabled') && !$this->in->getUint('person_id')) {
 			$elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
 			$elasticsearch->setPersonContext($this->person);
 
@@ -252,6 +252,7 @@ class TicketSearchController extends AbstractController
 
 			if ($person_id = $this->in->getUint('person_id')) {
 				$searcher->addTerm('person', 'is', array('person_id' => $person_id));
+				$searcher->setLimit($this->in->getUInt('limit') ?: 10);
 				$results = $searcher->getMatches();
 				$results = Arrays::castToType($results, 'integer');
 			} else {

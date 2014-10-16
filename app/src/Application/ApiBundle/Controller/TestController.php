@@ -49,10 +49,6 @@ class TestController extends AbstractController
 		return parent::preAction($action, $arguments);
 	}
 
-	public function aboutAction()
-	{
-		return $this->render('ApiBundle:SwaggerUi:index.html.twig');
-	}
 
 	/**
 	 * This action simply returns a message to indicate that the API is working

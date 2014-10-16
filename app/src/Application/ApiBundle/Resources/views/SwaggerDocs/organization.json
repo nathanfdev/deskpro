@@ -1,0 +1,1234 @@
+{
+    "basePath": "/api",
+    "swaggerVersion": "1.2",
+    "resourcePath": "/organization",
+    "apis": [
+        {
+            "path": "/organization",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Search for organizations matching criteria",
+                    "nickname": "searchAction",
+                    "type": "array",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "address[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires an organization's address to contain this value."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "field[#][]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires organization custom field to have the specified value in the listed field."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "im[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires an organization to have an instant messenger contact that contains this value."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires organization to be have the specified label."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "name[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires an organization to have a name that contains this value."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "phone[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires organization to have a phone number that contains this value."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "order",
+                            "type": "string",
+                            "required": false,
+                            "description": "Order of the results. Defaults to accessing organization's preference or organizations.id:asc."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "cache_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "page",
+                            "type": "string",
+                            "required": false,
+                            "description": "The page number of the results to fetch."
+                        }
+                    ],
+                    "notes": "Returns list of organizations that matched."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Creates a new organization.",
+                    "nickname": "newOrganizationAction",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "name",
+                            "type": "string",
+                            "required": true,
+                            "description": "Name of the organization."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "contact_data[#]",
+                            "type": "string",
+                            "required": true,
+                            "description": "Components of a contact detail to add. See the Setting Contact Data organization for more information."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "field[#]",
+                            "type": "string",
+                            "required": true,
+                            "description": "Value for the specified custom organization field."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "group_id[]",
+                            "type": "string",
+                            "required": true,
+                            "description": "ID of a usergroup to add this organization to."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label[]",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label to apply to the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "summary",
+                            "type": "string",
+                            "required": true,
+                            "description": "Summary of the organization's details."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/fields",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available custom organization fields.",
+                    "nickname": "getFieldsAction"
+                },
+                {
+                    "method": "GET",
+                    "summary": "Gets available usergroups.",
+                    "nickname": "getGroupsAction"
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a organization by organization ID.",
+                    "nickname": "getOrganizationAction",
+                    "type": "Organization",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ],
+                    "notes": "Information about the organization by organization ID."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Updates a organization.",
+                    "nickname": "postOrganizationAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be updated."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "name",
+                            "type": "string",
+                            "required": true,
+                            "description": "Name of the organization."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "field[#]",
+                            "type": "string",
+                            "required": true,
+                            "description": "Value for the specified custom organization field."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "summary",
+                            "type": "string",
+                            "required": true,
+                            "description": "Summary of the organization's details."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "DELETEs a organization.",
+                    "nickname": "deleteOrganizationAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/activity-stream",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets activity stream for an organization.",
+                    "nickname": "getOrganizationActivityStreamAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be checked."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "page",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The page number of the results to fetch."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/billing-charges",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets billing charges for an organization.",
+                    "nickname": "getOrganizationBillingChargesAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "page",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Page number to retrieve."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/chats",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets chats by a organization.",
+                    "nickname": "getOrganizationChatsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "page",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The page number of the results to fetch."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "cache_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/contact-details",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets contact details for an organization.",
+                    "nickname": "getOrganizationContactDetailsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Creates a contact detail for an organization.",
+                    "nickname": "postOrganizationContactDetailsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "type",
+                            "type": "string",
+                            "required": true,
+                            "description": "Type of contact detail to add."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "data",
+                            "type": "string",
+                            "required": true,
+                            "description": "Contact detail-specific data."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "comment",
+                            "type": "string",
+                            "required": true,
+                            "description": "Comment or label for the contact detail."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/contact-details/{contact_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if contact ID exists for organization.",
+                    "nickname": "getOrganizationContactDetailAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "contact_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the contact that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Deletes a contact for an organization.",
+                    "nickname": "deleteOrganizationContactDetailAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "contact_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the contact that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/email-domains",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets associated email domains for an organization.",
+                    "nickname": "getOrganizationEmailDomainsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds an email domain for an organization.",
+                    "nickname": "postOrganizationEmailDomainsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "domain",
+                            "type": "string",
+                            "required": true,
+                            "description": "Domain name to associate. May not already be in use."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/email-domains/{domain}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if a domain is associated with an organization.",
+                    "nickname": "getOrganizationEmailDomainAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "domain",
+                            "type": "string",
+                            "required": true,
+                            "description": "Domain that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Deletes a domain association for an organization",
+                    "nickname": "deleteOrganizationEmailDomainAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "domain",
+                            "type": "string",
+                            "required": true,
+                            "description": "Domain that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/email-domains/{domain}/move-taken-users",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Moves users to an organization (if they have another organization).",
+                    "nickname": "postOrganizationEmailDomainMoveTakenUsersAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "domain",
+                            "type": "string",
+                            "required": true,
+                            "description": "Domain where the users need to be moved"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/email-domains/{domain}/move-users",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Moves users to an organization (if they have no organization).",
+                    "nickname": "postOrganizationEmailDomainMoveUsersAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "domain",
+                            "type": "string",
+                            "required": true,
+                            "description": "Domain where the users need to be moved"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/groups",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the groups for an organization.",
+                    "nickname": "getOrganizationGroupsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds an organization to a group.",
+                    "nickname": "postOrganizationGroupsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the group to add this organization to."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/groups/{usergroup_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if an organization is a member of a group.",
+                    "nickname": "getOrganizationGroupAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "usergroup_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the usergroup that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes an organization from a group.",
+                    "nickname": "deleteOrganizationGroupAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "usergroup_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the usergroup that needs to be removed."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/labels",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the labels for an organization.",
+                    "nickname": "getOrganizationLabelsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Add a label for an organization.",
+                    "nickname": "postOrganizationLabelsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label to add"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/labels/{label}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if an organization has a label.",
+                    "nickname": "getOrganizationLabelAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "label that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Determines if an organization has a label.",
+                    "nickname": "deleteOrganizationLabelAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "label that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/members",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets members of an organization.",
+                    "nickname": "getOrganizationMembersAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "page",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The page number of the results to fetch."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "order",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Order of the results. Defaults to person.name:asc."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "cache",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The number of seconds to cache the result for. Defaults to 3600. Use 0 to disable the cache"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/notes",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a list of Organization Notes for an organization.",
+                    "nickname": "getOrganizationNotesAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds a new Organization Notes to an organization.",
+                    "nickname": "postOrganizationNotesAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "note",
+                            "type": "integer",
+                            "required": true,
+                            "description": "The Note content"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/notes/{note_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets an Organization Note for an organization by Organization ID and Note ID.",
+                    "nickname": "getOrganizationNoteAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "note_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization note that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/picture",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a link to an organization's picture.",
+                    "nickname": "getOrganizationPictureAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be checked."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "size",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The maximum size (in pixels) that the picture should be. Defaults to 80"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Updates an organization's picture.",
+                    "nickname": "postOrganizationPictureAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be checked."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "file",
+                            "type": "integer",
+                            "required": false,
+                            "description": "An uploaded image. Required if no blob_id is provided."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "blob_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "ID of a blob record that holds the picture already. Required if no file is provided."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "DELETEs an organization's picture.",
+                    "nickname": "deleteOrganizationPictureAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be checked."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/slas",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a list of automatically applied SLAs for an organization.",
+                    "nickname": "getOrganizationSlasAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds an SLA to the automatically applied SLAs for an organization.",
+                    "nickname": "postOrganizationSlasAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of SLA to add."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/slas/{sla_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if an SLA exists for an organization",
+                    "nickname": "getOrganizationSlaAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the SLA that needs to be checked."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes an SLA from an organization.",
+                    "nickname": "deleteOrganizationSlaAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the SLA that needs to be removed."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/organization/{organization_id}/tickets",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets tickets by an organization.",
+                    "nickname": "getOrganizationTicketsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "organization_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the organization that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "page",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The page number of the results to fetch."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "order",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Order of the results. Defaults to person.name:asc."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "cache_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Organization not found"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

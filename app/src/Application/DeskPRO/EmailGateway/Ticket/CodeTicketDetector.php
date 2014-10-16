@@ -198,9 +198,9 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
 					$this->_tac_person = App::getEntityRepository('DeskPRO:Person')->find($tac['person_id']);
 
 					if ($this->_found_person) {
-						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person already on ticket: {$this->_found_person->id} {$this->_found_person->getDisplayContact()}");
 					} else {
-						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with new person");
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person not already on ticket");
 					}
 
 					return $ticket;
@@ -233,9 +233,9 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
 					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
 					if ($this->_found_person) {
-						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person {$this->_found_person->id}");
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person already on ticket: {$this->_found_person->id} {$this->_found_person->getDisplayContact()}");
 					} else {
-						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with new person");
+						$this->getLogger()->logDebug("[CodeTicketDetector] -- Matched ticket {$ticket->id} with person not already on ticket");
 					}
 
 					return $ticket;

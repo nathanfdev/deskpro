@@ -43,7 +43,7 @@ class PasswordHistory extends AbstractEntityRepository
 	{
 		$recs = $this->_em->getConnection()->fetchAll("
 			SELECT password, password_scheme
-			FROM password_scheme
+			FROM password_history
 			WHERE person_id = ?
 		", array($person->id));
 

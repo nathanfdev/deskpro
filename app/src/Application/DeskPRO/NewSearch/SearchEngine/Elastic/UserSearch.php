@@ -33,6 +33,7 @@ use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Elastica\Filter;
 use Elastica\Query;
 use Orb\Util\Arrays;
+use Elastica\Util as ElasticaUtil;
 
 class UserSearch implements UserSearchInterface
 {
@@ -136,7 +137,7 @@ class UserSearch implements UserSearchInterface
 		}
 
 		$bool_query = new Query\Bool();
-		$qs = new Query\QueryString($query);
+		$qs = $this->getQueryString($query);
 		$qs->setDefaultField('_all');
 		$qs->setDefaultOperator('AND');
 		$bool_query->addMust($qs);
@@ -152,5 +153,42 @@ class UserSearch implements UserSearchInterface
 		$objects = $this->transformer->transform($res->getResults());
 
 		return new ResultSet($objects);
+	}
+
+
+	/**
+	 * Makes sure a "query" var is formatted for use with QueryString
+	 *
+	 * @param string $q
+	 * @return string
+	 */
+	private function escapeQueryStringTerm($q)
+	{
+		$q = ElasticaUtil::escapeTerm($q);
+		$q = str_replace(array('AND', 'OR', 'NOT'), array('and', 'or', 'not'), $q);
+
+		return $q;
+	}
+
+
+	/**
+	 * Constructs the query string
+	 *
+	 * @param $q
+	 * @return Query\QueryString|Query\MultiMatch
+	 */
+	protected function getQueryString($q)
+	{
+		$term = $this->escapeQueryStringTerm($q);
+
+		// If we have an equal number of quotes, then
+		// they are properly balanced and it's valid so we can
+		// accept the "phrase" search
+		if (substr_count($term, '\\"') % 2 === 0) {
+			$term = str_replace('\\"', '"', $term);
+		}
+
+		$queryString = new Query\QueryString($term);
+		return $queryString;
 	}
 }

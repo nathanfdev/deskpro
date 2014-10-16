@@ -70,9 +70,9 @@
 						<dl>
 							<dt style="white-space: nowrap">
 							    {{ phrase('agent.general.agent') }}
-							    <span id="%baseId%_assign_me" class="assign-self-link-wrap">
+							    <span id="%baseId%_assign_me" class="assign-self-link-wrap" data-me="{{ app.user.id }}">
 									&middot;
-									<a class="assign-self-link" data-me="{{ app.user.id }}">
+									<a class="assign-self-link">
 										{{ phrase('agent.general.assign_to_me') }}
 									</a>
 								</span>

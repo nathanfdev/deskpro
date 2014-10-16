@@ -24,7 +24,7 @@ define [
 				}
 			}
 		])
-		.directive('dpOptionbuilderRow', [ ->
+		.directive('dpOptionbuilderRow', [ '$timeout', ($timeout) ->
 			return {
 				restrict: 'E',
 				template: """
@@ -35,7 +35,12 @@ define [
 								<td style="vertical-align: middle; padding: 0; margin: 0;"><div class="dp-ob-row-tag-wrap"></div></td>
 								<td style="vertical-align: middle; padding: 0; margin: 0;" width="1"><input type="checkbox" id="{{rowOpts.withCheckId}}" ng-if="rowOpts.withCheck" ng-model="rowOpts.rowEnabled" ng-disabled="rowOpts.isFixedOn" /></td>
 								<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
-									<div class="dp-ob-row-content" ng-transclude></div>
+									<div class="dp-ob-row-content-wrap" ng-class="{'as-post-render': doShow}">
+										<div class="dp-ob-row-content-placeholder" ng-if="!doShow">
+											<span class="place1"></span> <span class="place2"></span> <span class="place3"></span>
+										</div>
+										<div class="dp-ob-row-content" ng-class="{'as-post-render': doShow}" ng-transclude></div>
+									</div>
 								</td>
 							</tr>
 						</table>
@@ -62,6 +67,12 @@ define [
 						updateTag()
 					)
 					updateTag()
+
+					$timeout(->
+						$timeout(->
+							$timeout(-> scope.doShow = true)
+						)
+					)
 			}
 		]).directive('dpOptionBuilderSet', [ '$compile', '$templateCache', ($compile, $templateCache) ->
 			return {

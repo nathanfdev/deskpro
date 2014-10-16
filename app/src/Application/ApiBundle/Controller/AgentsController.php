@@ -648,9 +648,9 @@ class AgentsController extends AbstractController implements ProtectedController
 
 	public function deleteAgentAction($id, $mode)
 	{
-		$agent = $this->container->getAgentData()->get($id);
+		$agent = $this->em->find('DeskPRO:Person', $id);
 
-		if (!$agent) {
+		if (!$agent || !$agent->is_agent) {
 			throw $this->createNotFoundException();
 		}
 

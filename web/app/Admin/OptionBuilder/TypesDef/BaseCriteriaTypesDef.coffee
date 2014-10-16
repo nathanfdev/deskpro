@@ -150,6 +150,9 @@ define [
 							if val == null and data.options and prop_name
 								val = data.options[0]?.value || null
 
+							if !options.single and not Util.isArray(val)
+								val = [val]
+
 							return {
 								value: val,
 								op: value.op || _.first(data.operators)

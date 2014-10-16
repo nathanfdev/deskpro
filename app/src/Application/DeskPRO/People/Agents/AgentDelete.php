@@ -81,6 +81,8 @@ class AgentDelete
 		$this->agent->can_billing           = false;
 		$this->agent->can_reports           = false;
 		$this->agent->was_agent             = true;
+		$this->agent->is_deleted            = false;
+		$this->agent->is_disabled           = false;
 		$this->agent->override_display_name = ''; // only settable for agents currently
 		$this->em->persist($this->agent);
 
