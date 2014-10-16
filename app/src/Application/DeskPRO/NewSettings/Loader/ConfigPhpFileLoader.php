@@ -76,15 +76,12 @@ class ConfigPhpFileLoader implements SettingsLoaderInterface
 			throw new \RuntimeException(sprintf('cannot read settings file "%s"', $this->absFilePath));
 		}
 
-		if ($this->cache->has($this->cacheKey)) {
-			return $this->cache->get($this->cacheKey);
-		}
+		return $this->cache->get($this->cacheKey, array($this, 'loadFromFile'));
+	}
 
-		$settings = require $this->absFilePath;
-
-		$this->cache->set($this->cacheKey, $settings);
-
-		return $settings;
+	public function loadFromFile()
+	{
+		return require $this->absFilePath;
 	}
 }
  
