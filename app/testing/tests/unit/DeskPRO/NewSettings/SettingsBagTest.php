@@ -51,11 +51,13 @@ class SettingsBagTest extends \DpUnitTestCase
 
 	public function testEverythingAtOnceBecauseThisIsTrivial()
 	{
-		$bag = new SettingsBag(array(
-			'key' => 'value',
-			'setting' => 2,
+		$inputArray = array(
+			'key'           => 'value',
+			'setting'       => 2,
 			'extra_setting' => 0.9
-		));
+		);
+
+		$bag = new SettingsBag($inputArray);
 
 		$this->assertEquals('value', $bag->get('key'));
 		$this->assertEquals(2, $bag->get('setting'));
@@ -74,6 +76,7 @@ class SettingsBagTest extends \DpUnitTestCase
 		$this->assertTrue($bag->has('key'));
 		$this->assertFalse($bag->has('non_existant-key'));
 
+		$this->assertSame($inputArray, $bag->toArray(), 'can get the settings as an array');
 	}
 }
  

@@ -51,6 +51,12 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
 		$this->settings = $settings;
 	}
 
+
+	public function toArray()
+	{
+		return $this->settings;
+	}
+
 	public function has($key)
 	{
 		return array_key_exists($key, $this->settings);
