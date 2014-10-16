@@ -66,6 +66,7 @@ class SettingsResolver
 
 	public function getGlobalSettings()
 	{
+		// TODO: accept a $force argument, and force a reload of the cache if requested
 		return $this->cache->get('settings.bag.global', array($this, 'computeGlobalSettings'));
 	}
 

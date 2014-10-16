@@ -77,7 +77,13 @@ class ConvenientCache implements CacheAdapterInterface
 		return $this->adapter;
 	}
 
-
+	/**
+	 * Similar to CacheAdapterInterface but adds a default value (which also sets on cache if used)
+	 *
+	 * @param      $key
+	 * @param null $default
+	 * @return mixed|null
+	 */
 	public function get($key, $default = null)
 	{
 		if ($default && !$this->adapter->has($key)) {
@@ -101,30 +107,24 @@ class ConvenientCache implements CacheAdapterInterface
 		return $val;
 	}
 
-
+	/**
+	 * {@inheritdoc}
+	 */
 	public function set($key, $val)
 	{
 		$this->adapter->set($key, $val);
 	}
 
-
 	/**
-	 * True if cache appears to have a value for the key
-	 *
-	 * @param $key
-	 * @return bool
+	 * {@inheritdoc}
 	 */
 	public function has($key)
 	{
 		return $this->adapter->has($key);
 	}
 
-
 	/**
-	 * Removes the value and unsets the key
-	 *
-	 * @param $key
-	 * @return null|void
+	 * {@inheritdoc}
 	 */
 	public function delete($key)
 	{

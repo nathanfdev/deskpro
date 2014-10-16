@@ -35,7 +35,14 @@ namespace Application\DeskPRO\Cache;
 
 
 /**
- * All cache adapters implement this interface
+ * All cache adapters implement this interface. A cache adapter must return the value exactly as it recieves it. So
+ * the adapter must store the cached value in such a way that it can always (obv including future requests if need be)
+ * return the same php value back.
+ *
+ * If we set an array, an object, etc, it must be returned equally. Must be a valid php value, but cannot be a callable,
+ * or a closure.
+ *
+ * Recommended to store scalars or plain scalar arrays for best results.
  */
 interface CacheAdapterInterface
 {
@@ -59,7 +66,7 @@ interface CacheAdapterInterface
 
 
 	/**
-	 * Gets the value for a key
+	 * Gets the value for a key, in the same form as it was set (returns arrays, objects, scalars, etc)
 	 *
 	 * @param $key
 	 * @return null|mixed
@@ -68,9 +75,9 @@ interface CacheAdapterInterface
 
 
 	/**
-	 * Removes the value and unsets the key
+	 * Removes the value and unsets the key, should be safe to call even if key doesn't exist
 	 *
-	 * @param $key
+     * @param $key
 	 * @return mixed
 	 */
 	public function delete($key);
