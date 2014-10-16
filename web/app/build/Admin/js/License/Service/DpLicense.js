@@ -7,6 +7,7 @@
         this.$modal = $modal;
         this.$http = $http;
         this.$q = $q;
+        this.shortAuthCode = null;
       }
 
       Admin_License_Service_DpLicense.prototype.getLicInfo = function() {
@@ -122,11 +123,15 @@
         return d.promise;
       };
 
-      Admin_License_Service_DpLicense.prototype.sendPayInvoiceRequest = function(mode, card_info, invoice_id) {
+      Admin_License_Service_DpLicense.prototype.sendPayInvoiceRequest = function(mode, card_info, address_info, invoice_id, invoice_auth) {
         var d, params;
-        params = this.getLicServerParams();
-        params.mode = mode;
-        params.invoice_id = invoice_id;
+        params = {
+          'callback': 'JSON_CALLBACK',
+          'email': window.DP_PERSON_EMAIL,
+          'mode': mode,
+          'invoice_id': invoice_id,
+          'invoice_auth': invoice_auth
+        };
         if (mode === 'new') {
           params.cc_type = card_info.type;
           params.cc_name = card_info.name;
@@ -134,6 +139,11 @@
           params.cc_cv2 = card_info.cv2;
           params.cc_expire_yy = card_info.expire_yy;
           params.cc_expire_mm = card_info.expire_mm;
+          params.addy_country = address_info.country;
+          params.addy_address = address_info.address;
+          params.addy_city = address_info.city;
+          params.addy_state = address_info.state;
+          params.addy_post_code = address_info.post_code;
         }
         d = this.$q.defer();
         this.getLicInfo().then((function(_this) {

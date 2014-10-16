@@ -9,18 +9,25 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 			@$scope.upgradeOptions  = @upgradeOptions
 			@$scope.initial_loading = true
 			@$scope.phase           = 1
-			@$scope.paymentForm = {}
+			@$scope.paymentForm = { new_card: {}, address: {} }
 
 			# DEBUG
-			#@$scope.paymentForm.mode = 'new'
-			#@$scope.paymentForm.new_card = {
-			#	number: '4929000000006',
-			#	cv2: '123',
-			#	name: 'CN',
-			#	expire_yy: '18'
-			#	expire_mm: '01',
-			#	type: 'visa'
-			#}
+			@$scope.paymentForm.mode = 'new'
+			@$scope.paymentForm.new_card = {
+				number: '4929000000006',
+				cv2: '123',
+				name: 'CN',
+				expire_yy: '18'
+				expire_mm: '01',
+				type: 'visa'
+			}
+			@$scope.paymentForm.address = {
+				country: 'UK',
+				city: 'London',
+				state: '',
+				post_code: 'W14 0QA',
+				address: 'Flat D, 27 Aynhoe Road'
+			}
 
 			@$scope.month_opts = []
 			for i in [1..12]
@@ -127,6 +134,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 				@$scope.planInfo = info
 				@$scope.initial_loading = false
 				@$scope.paymentForm.exist_card = info.card_details || null
+				@$scope.paymentForm.address = info.address_info || {}
 				@$scope.paymentForm.invoice = info.invoice || null
 				@$scope.availablePlans = [1..10].map( (x) -> { num: x+"", title: x } )
 				@$scope.toPlan = info.next_plan.years+""
@@ -180,6 +188,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 				if not parseInt(card.expire_mm) or not parseInt(card.expire_yy)
 					errors.push('expire')
 
+				addy = @$scope.paymentForm.address
+
+				if not addy.country
+					errors.push('country')
+				if not addy.address or not addy.address.length
+					errors.push('address')
+				if not addy.city or not addy.city.length
+					errors.push('city')
+				if (not addy.state or not addy.state.length) and addy.country == 'US'
+					errors.push('state')
+				if not addy.post_code or not addy.post_code.length
+					errors.push('post_code')
+
 			@$scope.formErrors = errors
 
 			return errors.length == 0
@@ -191,7 +212,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 			@$scope.stepId = 0
 			@$scope.error_code = null
 
-			@DpLicense.sendPayInvoiceRequest(@$scope.paymentForm.mode, @$scope.paymentForm.new_card, @planInfo.invoice.id).then( (data) =>
+			@DpLicense.sendPayInvoiceRequest(@$scope.paymentForm.mode, @$scope.paymentForm.new_card, @$scope.paymentForm.address, @planInfo.invoice.id, @planInfo.invoice.auth).then( (data) =>
 
 				if not data.success
 					@$scope.phase = 1

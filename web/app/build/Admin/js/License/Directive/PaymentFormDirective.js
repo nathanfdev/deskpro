@@ -44,6 +44,9 @@
               if (!value.new_card) {
                 value.new_card = {};
               }
+              if (!value.address) {
+                value.address = {};
+              }
               if (!value.exist_card || Util.isBlankObject(value.exist_card)) {
                 value.exist_card = null;
               }

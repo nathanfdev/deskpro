@@ -23,7 +23,26 @@
         this.$scope.upgradeOptions = this.upgradeOptions;
         this.$scope.initial_loading = true;
         this.$scope.phase = 1;
-        this.$scope.paymentForm = {};
+        this.$scope.paymentForm = {
+          new_card: {},
+          address: {}
+        };
+        this.$scope.paymentForm.mode = 'new';
+        this.$scope.paymentForm.new_card = {
+          number: '4929000000006',
+          cv2: '123',
+          name: 'CN',
+          expire_yy: '18',
+          expire_mm: '01',
+          type: 'visa'
+        };
+        this.$scope.paymentForm.address = {
+          country: 'UK',
+          city: 'London',
+          state: '',
+          post_code: 'W14 0QA',
+          address: 'Flat D, 27 Aynhoe Road'
+        };
         this.$scope.month_opts = [];
         for (i = _i = 1; _i <= 12; i = ++_i) {
           this.$scope.month_opts.push(i < 10 ? "0" + i : i);
@@ -158,6 +177,7 @@
             _this.$scope.planInfo = info;
             _this.$scope.initial_loading = false;
             _this.$scope.paymentForm.exist_card = info.card_details || null;
+            _this.$scope.paymentForm.address = info.address_info || {};
             _this.$scope.paymentForm.invoice = info.invoice || null;
             _this.$scope.availablePlans = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function(x) {
               return {
@@ -207,7 +227,7 @@
       };
 
       Admin_License_Ctrl_UpgradeLicenseModal.prototype.validate = function() {
-        var card, errors;
+        var addy, card, errors;
         errors = [];
         if (this.$scope.paymentForm.mode === 'new') {
           card = this.$scope.paymentForm.new_card;
@@ -223,6 +243,22 @@
           if (!parseInt(card.expire_mm) || !parseInt(card.expire_yy)) {
             errors.push('expire');
           }
+          addy = this.$scope.paymentForm.address;
+          if (!addy.country) {
+            errors.push('country');
+          }
+          if (!addy.address || !addy.address.length) {
+            errors.push('address');
+          }
+          if (!addy.city || !addy.city.length) {
+            errors.push('city');
+          }
+          if ((!addy.state || !addy.state.length) && addy.country === 'US') {
+            errors.push('state');
+          }
+          if (!addy.post_code || !addy.post_code.length) {
+            errors.push('post_code');
+          }
         }
         this.$scope.formErrors = errors;
         return errors.length === 0;
@@ -236,7 +272,7 @@
         this.$scope.phase = 2;
         this.$scope.stepId = 0;
         this.$scope.error_code = null;
-        return this.DpLicense.sendPayInvoiceRequest(this.$scope.paymentForm.mode, this.$scope.paymentForm.new_card, this.planInfo.invoice.id).then((function(_this) {
+        return this.DpLicense.sendPayInvoiceRequest(this.$scope.paymentForm.mode, this.$scope.paymentForm.new_card, this.$scope.paymentForm.address, this.planInfo.invoice.id, this.planInfo.invoice.auth).then((function(_this) {
           return function(data) {
             if (!data.success) {
               _this.$scope.phase = 1;

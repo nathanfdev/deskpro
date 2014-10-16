@@ -32,6 +32,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 					value = modelValue
 					if not value.new_card then value.new_card = {}
+					if not value.address then value.address = {}
 
 					if not value.exist_card or Util.isBlankObject(value.exist_card)
 						value.exist_card = null
