@@ -67,7 +67,7 @@ class ConfigPhpFileLoaderTest extends \DpUnitTestCase
 
 		$loader = new ConfigPhpFileLoader($config_file_path, $mockCache);
 
-		// asseritng that the correct array is recieved from the config file and that cache was set properly
+		// asserting that the correct array is recieved from the config file and that cache was set properly
 		$this->assertSame(
 			$expectedSettings,
 			$loader->load()
@@ -91,10 +91,35 @@ class ConfigPhpFileLoaderTest extends \DpUnitTestCase
 
 		$loader = new ConfigPhpFileLoader($config_file_path, $mockCache);
 
-		// asseritng that the correct array is recieved from the cache
+		// asserting that the correct array is recieved from the cache
 		$this->assertSame(
 			$expectedSettings,
 			$loader->load()
+		);
+	}
+
+	public function testForceReload()
+	{
+		$config_file_path = __DIR__ . '/fixtures/configs_file.php';
+
+		$expectedSettings = array(
+			'key'       => 'val',
+			'extra_key' => 'extra_val'
+		);
+
+		$cache_key = 'settings.loader.config_php_file.' . $config_file_path;
+
+		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+		$mockCache->shouldReceive('has')->never();
+		$mockCache->shouldReceive('get')->with($cache_key)->never();
+		$mockCache->shouldReceive('set')->with($cache_key, $expectedSettings)->once();
+
+		$loader = new ConfigPhpFileLoader($config_file_path, $mockCache);
+
+		// asserting that we don't ask the cache for data (but do set the cache) when forcing a reload
+		$this->assertSame(
+			$expectedSettings,
+			$loader->load(true)
 		);
 	}
 }
