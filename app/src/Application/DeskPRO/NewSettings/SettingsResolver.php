@@ -72,6 +72,10 @@ class SettingsResolver
 	}
 
 
+	/**
+	 * @param bool $force
+	 * @return SettingsBag
+	 */
 	public function getGlobalSettings($force = false)
 	{
 		if ($force) {
@@ -100,6 +104,10 @@ class SettingsResolver
 	}
 
 
+	/**
+	 * @param bool $force
+	 * @return SettingsBag
+	 */
 	public function getDefaultSettings($force = false)
 	{
 		if ($force) {

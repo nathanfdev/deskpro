@@ -37,6 +37,7 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\NewSettings\Loader\DbGlobalSettingsTableLoader;
 use Application\DeskPRO\NewSettings\Loader\GlobalsArrayLoader;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 
 class SettingsResolverService
@@ -46,14 +47,37 @@ class SettingsResolverService
 		/** @var \Application\DeskPRO\Cache\Adapter\SimpleArrayCache $simple_array_cache */
 		$simple_array_cache = $container->get('cache.simple_array');
 
+		// loaders, in proper order. first loader is default settings.
 		$loaders = array(
-			// the "default" loader must be the first loader
-			// if multiple sources needed for "default" set, create and inject a composite loader
 			$container->getSystemService('default_settings_loader'),
 		    new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
 			new GlobalsArrayLoader($simple_array_cache)
 		);
 
-		return new SettingsResolver($loaders, $simple_array_cache);
+		$resolver = new SettingsResolver($loaders, $simple_array_cache);
+
+		// virtual settings
+		$resolver->setVirtual(
+			'core.interact_require_login', function (array $settings) {
+				$settings = new SettingsBag($settings);
+				return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
+			}
+		);
+		$resolver->setVirtual(
+			'default_timezone', function ($settings) {
+				$settings = new SettingsBag($settings);
+
+				try {
+					$timezone_string = $settings->get('core.default_timezone');
+					$tz = new \DateTimeZone($timezone_string);
+				} catch (\Exception $e) {
+					$tz = new \DateTimeZone('UTC');
+				}
+
+				return $tz;
+			}
+		);
+
+		return $resolver;
 	}
 }

@@ -22,7 +22,7 @@
 | Like the work you see? Think you could make it better? We are always     |
 | looking for great developers to join us: http://www.deskpro.com/jobs/    |
 |                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
+| ~ Thanks, Everyone at Team DeskPRO                                           |
 \**************************************************************************/
 
 /**
@@ -39,96 +39,51 @@ use Application\DeskPRO\DBAL\Connection;
 
 
 /**
+ * DEPRECEATED way of getting settings
+ *
  * This class fethces settings
+ *
+ * @deprecated get the "settings_resolver" system service and fetch the SettingsBag you want from it instead.
+ *             this exists only for BC.
  */
 class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 {
 	/**
-	 * File to fetch defaults from
-	 * @var array
+	 * @var \Application\DeskPRO\NewSettings\SettingsBag
 	 */
-	private $default_settings_file = array();
+	private $settings;
 
 	/**
-	 * Array of array(group => array(settings)) for default settings read in with getDefault()
-	 * @var array
+	 * @var \Application\DeskPRO\NewSettings\SettingsBag
 	 */
-	private $default_settings = null;
+	private $default_settings;
 
 	/**
-	 * Plain database connection for raw queries
+	 * @var \Application\DeskPRO\NewSettings\SettingsResolver $new_settings_resolver
+	 */
+	private $new_settings_resolver;
+
+	/**
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	private $db;
 
-	/**
-	 * Settings we've loaded so far
-	 * @var array
-	 */
-	private $settings = null;
 
 	/**
-	 * @var \DateTimeZone
-	 */
-	private $default_timezone;
-
-	/**
-	 * Virtual settings are not real settings, but depend on other states. For example,
-	 * 'core.interact_require_login' isn't a real setting, it is true depending on the registration mode.
+	 * DEPRECEATED way of getting settings
 	 *
-	 * This is a map of varname => callback
+	 * @deprecated get the "settings_resolver" system service and fetch the SettingsBag you want from it instead.
+	 *             this exists only for BC.
 	 *
-	 * @var array
-	 */
-	private $virtual_settings = array();
-
-
-	/**
 	 * @param string     $default_settings_file
 	 * @param Connection $db
 	 */
 	public function __construct($default_settings_file, Connection $db = null)
 	{
-		$this->default_settings_file = $default_settings_file;
+		$this->new_settings_resolver = App::getSystemService('settings_resolver');
+		$this->settings         = $this->new_settings_resolver->getGlobalSettings();
+		$this->default_settings = $this->new_settings_resolver->getDefaultSettings();
 		$this->db = $db;
-
-		$this->virtual_settings['core.interact_require_login'] = function($settings) {
-			return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
-		};
-
-		$this->virtual_settings['default_timezone'] = function($settings) {
-			return $settings->getDefaultTimezone();
-		};
-	}
-
-
-	/**
-	 * Loads settings
-	 *
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
-	 */
-	private function _loadSettings()
-	{
-		$this->settings = array();
-		$this->default_settings = array();
-
-		if ($this->default_settings_file) {
-			$this->default_settings = require($this->default_settings_file);
-		}
-
-		$this->settings = $this->default_settings;
-
-		if ($this->db) {
-			$this->settings = array_merge($this->settings, $this->db->fetchAllKeyValue("
-				SELECT name, value
-				FROM settings
-			"));
-		}
-
-		if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
-			$this->settings = array_merge($this->settings, $GLOBALS['DP_CONFIG']['SETTINGS']);
-		}
 	}
 
 
@@ -138,7 +93,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	 */
 	public function reloadSettings()
 	{
-		$this->_loadSettings();
+		$this->settings         = $this->new_settings_resolver->getGlobalSettings(true);
+		$this->default_settings = $this->new_settings_resolver->getDefaultSettings(true);
 	}
 
 
@@ -151,17 +107,13 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	 */
 	public function get($name, $default = null)
 	{
-		if (!$name) return $default;
+		return $this->settings->get($name, $default);
+	}
 
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
 
-		if (isset($this->virtual_settings[$name])) {
-			return call_user_func($this->virtual_settings[$name], $this);
-		}
-
-		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
+	public function getAll()
+	{
+		return $this->settings->toArray();
 	}
 
 
@@ -175,13 +127,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	 */
 	public function getDefault($name)
 	{
-		if (!$name) return null;
-
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
-		return isset($this->default_settings[$name]) ? $this->default_settings[$name] : null;
+		return $this->default_settings->get($name);
 	}
 
 
@@ -196,26 +142,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	 */
 	public function getDefaultGroup($group, $short = true)
 	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
-		$group_dot = $group.".";
-		$len = strlen($group_dot);
-
-		$ret = array();
-		foreach ($this->default_settings as $k => $v) {
-			if (substr($k, 0, $len) === $group_dot) {
-				if ($short) {
-					$k_short = substr($k, $len);
-					$ret[$k_short] = $v;
-				} else {
-					$ret[$k] = $v;
-				}
-			}
-		}
-
-		return $ret;
+		$this->default_settings->getGroup($group, $short);
 	}
 
 
@@ -229,22 +156,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	 */
 	public function getGroup($group)
 	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
-		$group_dot = $group.".";
-		$len = strlen($group_dot);
-
-		$ret = array();
-		foreach ($this->settings as $k => $v) {
-			if (substr($k, 0, $len) === $group_dot) {
-				$k_short = substr($k, $len);
-				$ret[$k_short] = $v;
-			}
-		}
-
-		return $ret;
+		return $this->settings->getGroup($group);
 	}
 
 
@@ -260,11 +172,10 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	 */
 	public function setTemporarySettingValues(array $settings)
 	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
-		$this->settings = array_merge($this->settings, $settings);
+		//
+		// left for BC
+		//
+		$this->settings->setArray(array_merge($this->settings->toArray(), $settings));
 	}
 
 
@@ -275,13 +186,13 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	 * @param string $value
 	 * @throws \Doctrine\DBAL\DBALException
 	 * @throws \Exception
+	 * @deprecated don't do this going forard. instead change the source of the setting and use the "settings_resolver" system service
 	 */
 	public function setSetting($setting, $value)
 	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
+		//
+		// it is not an option in the new settings resolver to SET settings directly. This is left for BC.
+		//
 		$this->db->beginTransaction();
 		try {
 
@@ -307,7 +218,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 			throw $e;
 		}
 
-		$this->settings[$setting] = $value;
+		$this->reloadSettings();
 	}
 
 
@@ -316,23 +227,13 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 	 */
 	public function getDefaultTimezone()
 	{
-		if ($this->default_timezone !== null) {
-			return $this->default_timezone;
-		}
-
-		try {
-			$this->default_timezone = new \DateTimeZone($this->get('core.default_timezone'));
-		} catch (\Exception $e) {
-			$this->default_timezone = new \DateTimeZone('UTC');
-		}
-
-		return $this->default_timezone;
+		return $this->new_settings_resolver->getGlobalSettings()->get('default_timezone');
 	}
 
 
 	public function offsetExists($offset)
 	{
-		return $this->get($offset) !== null;
+		return $this->settings->has($offset);
 	}
 
 	public function offsetSet($offset, $value)
@@ -342,7 +243,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
 	public function offsetGet($offset)
 	{
-		return $this->get($offset);
+		return $this->settings->get($offset);
 	}
 
 	public function offsetUnset($offset)
@@ -352,19 +253,11 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
 	public function count()
 	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
 		return count($this->settings);
 	}
 
 	public function getIterator()
 	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
-		return new \ArrayIterator($this->settings);
+		return $this->settings->getIterator();
 	}
 }
