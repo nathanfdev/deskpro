@@ -78,5 +78,50 @@ class SettingsBagTest extends \DpUnitTestCase
 
 		$this->assertSame($inputArray, $bag->toArray(), 'can get the settings as an array');
 	}
+
+	public function testGroups()
+	{
+		$inputArray = array(
+			'no_group'          => 'value',
+			'group_1.key'       => 'val',
+			'group_1.extra_num' => 2,
+			'group_2.key'       => 7.8,
+			'group_2.extra_num' => 99,
+			'group_2.deep.extra_num' => 301
+		);
+
+		$bag = new SettingsBag($inputArray);
+
+		$this->assertEquals(
+			array(
+				'key' => 'val',
+				'extra_num' => 2
+			),
+			$bag->getGroup('group_1')
+		);
+
+		$this->assertEquals(
+			array(
+				'key' => 7.8,
+				'extra_num' => 99,
+				'deep.extra_num' => 301
+			),
+			$bag->getGroup('group_2')
+		);
+
+		$this->assertEquals(
+			array(
+				'extra_num' => 301
+			),
+			$bag->getGroup('group_2.deep')
+		);
+
+		$this->assertEquals(
+			array(
+				'group_2.deep.extra_num' => 301
+			),
+			$bag->getGroup('group_2.deep', false)
+		);
+	}
 }
  

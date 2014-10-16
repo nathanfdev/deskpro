@@ -48,13 +48,18 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
 
 	public function __construct(array $settings = array())
 	{
-		$this->settings = $settings;
+		$this->setArray($settings);
 	}
 
 
 	public function toArray()
 	{
 		return $this->settings;
+	}
+
+	public function setArray(array $settings)
+	{
+		$this->settings = $settings;
 	}
 
 	public function has($key)
@@ -138,6 +143,41 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
 	public function count()
 	{
 		return count($this->settings);
+	}
+
+
+	/**
+	 * Seperating setting names by dots "." is popular. We can use grouping to subset a settings bag and get the
+	 * result array of settings that fit inside that subset.
+	 *
+	 * eg. new SettingsBag(array('core.register' => 1));
+	 *
+	 * This method with the input $group = 'core' will return:
+	 *
+	 * array('register' => 1)
+	 *
+	 * Set the "short" flag to false to not cut off the group part of the setting name, getting:
+	 *
+	 * array('core.register' => 1)
+	 *
+	 * @param string $group the group prefix
+	 * @param bool $short true to cut the group name out of the result array keys
+	 * @return array
+	 */
+	public function getGroup($group, $short = true)
+	{
+		$ret = array();
+
+		$group_dot = $group . '.';
+		$len       = strlen($group_dot);
+
+		foreach ($this->settings as $k => $v) {
+			if (substr($k, 0, $len) === $group_dot) {
+				$ret[$short ? substr($k, $len) : $k] = $v;
+			}
+		}
+
+		return $ret;
 	}
 }
  
