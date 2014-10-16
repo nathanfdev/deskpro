@@ -56,7 +56,36 @@
             return _this.$modalInstance.close();
           };
         })(this);
-        this.DpLicense.getPlanUpgradeInfo().then((function(_this) {
+        if (this.upgradeType === 'extend') {
+          this.$scope.toPlan = 1;
+        } else {
+          this.$scope.toPlan = 100;
+        }
+        this.currentPlan = null;
+        this.$scope.planChanged = (function(_this) {
+          return function(newPlan) {
+            if (!_this.currentPlan || _this.currentPlan === parseInt(newPlan)) {
+              return;
+            }
+            return _this.refreshForm(newPlan);
+          };
+        })(this);
+        return this.refreshForm();
+      };
+
+      Admin_License_Ctrl_UpgradeLicenseModal.prototype.refreshForm = function(plan) {
+        if (this.upgradeType === 'extend') {
+          return this.refreshRenewForm(plan);
+        } else {
+          return this.refreshPlanForm(plan);
+        }
+      };
+
+      Admin_License_Ctrl_UpgradeLicenseModal.prototype.refreshPlanForm = function(plan) {
+        this.$scope.initial_loading = true;
+        this.planInfo = null;
+        this.currentPlan = null;
+        return this.DpLicense.getPlanUpgradeInfo(plan || 0).then((function(_this) {
           return function(info) {
             var name;
             if (info.error_code) {
@@ -69,6 +98,14 @@
             _this.$scope.initial_loading = false;
             _this.$scope.paymentForm.exist_card = info.card_details || null;
             _this.$scope.paymentForm.invoice = info.invoice || null;
+            _this.$scope.availablePlans = info.available_plans.map(function(x) {
+              return {
+                num: x + "",
+                title: x === 100 ? 'Unlimited' : x
+              };
+            });
+            _this.$scope.toPlan = info.next_plan.agents + "";
+            _this.currentPlan = info.next_plan.agents;
             if (info.currency_pref === 'usd') {
               name = 'upgrade_cost_total_display';
             } else {
@@ -88,6 +125,70 @@
               vat_rate: info.vat_rate,
               has_vat: info.vat_rate > 0.0,
               invoice_link: info.invoice ? info.invoice.pdf_link : null
+            };
+            if (_this.$scope.paymentForm.exist_card) {
+              _this.$scope.paymentForm.mode = 'exist';
+            } else {
+              _this.$scope.paymentForm.mode = 'new';
+            }
+            if (!info.allow_inline_form) {
+              return _this.$scope.not_online = true;
+            }
+          };
+        })(this), (function(_this) {
+          return function() {
+            return _this.$scope.not_online = true;
+          };
+        })(this));
+      };
+
+      Admin_License_Ctrl_UpgradeLicenseModal.prototype.refreshRenewForm = function(plan) {
+        this.$scope.initial_loading = true;
+        this.planInfo = null;
+        this.currentPlan = null;
+        return this.DpLicense.getRenewInfo(plan || 0).then((function(_this) {
+          return function(info) {
+            var name;
+            if (info.error_code) {
+              console.error("License server error code: " + info.error_code);
+              _this.$scope.not_online = true;
+              return;
+            }
+            _this.planInfo = info;
+            _this.$scope.planInfo = info;
+            _this.$scope.initial_loading = false;
+            _this.$scope.paymentForm.exist_card = info.card_details || null;
+            _this.$scope.paymentForm.invoice = info.invoice || null;
+            _this.$scope.availablePlans = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function(x) {
+              return {
+                num: x + "",
+                title: x
+              };
+            });
+            _this.$scope.toPlan = info.next_plan.years + "";
+            _this.currentPlan = info.next_plan.years;
+            if (info.currency_pref === 'usd') {
+              name = 'upgrade_cost_total_display';
+            } else {
+              name = 'upgrade_cost_total_' + info.currency_pref + '_display';
+            }
+            _this.$scope.paymentSummary = {
+              line_title: "Renew license for " + info.next_plan.years + " years",
+              cost_per_year: info.current_plan.per_year_cost_display,
+              num_agents: info.current_plan.agents,
+              cost: info.next_plan.upgrade_cost,
+              cost_display: info.next_plan.upgrade_cost_display,
+              cost_vat: info.next_plan.upgrade_cost_vat,
+              cost_vat_display: info.next_plan.upgrade_cost_vat_display,
+              cost_total: info.next_plan.upgrade_cost_total,
+              cost_total_display: info.next_plan.upgrade_cost_total_display,
+              currency_total_display: info.next_plan[name],
+              currency: info.currency_pref,
+              currency_display: info.currency_pref.toUpperCase(),
+              vat_rate: info.vat_rate,
+              has_vat: info.vat_rate > 0.0,
+              invoice_link: info.invoice ? info.invoice.pdf_link : null,
+              invoice_web_link: info.invoice ? info.invoice.link : null
             };
             if (_this.$scope.paymentForm.exist_card) {
               _this.$scope.paymentForm.mode = 'exist';

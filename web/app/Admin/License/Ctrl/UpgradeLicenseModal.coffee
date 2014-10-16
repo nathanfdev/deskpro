@@ -11,6 +11,17 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 			@$scope.phase           = 1
 			@$scope.paymentForm = {}
 
+			# DEBUG
+			#@$scope.paymentForm.mode = 'new'
+			#@$scope.paymentForm.new_card = {
+			#	number: '4929000000006',
+			#	cv2: '123',
+			#	name: 'CN',
+			#	expire_yy: '18'
+			#	expire_mm: '01',
+			#	type: 'visa'
+			#}
+
 			@$scope.month_opts = []
 			for i in [1..12]
 				@$scope.month_opts.push(if i < 10 then "0#{i}" else i)
@@ -31,7 +42,30 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 			@$scope.dismiss      = => @$modalInstance.dismiss()
 			@$scope.closeSuccess = => @$modalInstance.close()
 
-			@DpLicense.getPlanUpgradeInfo().then((info) =>
+			if @upgradeType == 'extend'
+				@$scope.toPlan = 1
+			else
+				@$scope.toPlan = 100
+
+			@currentPlan = null
+			@$scope.planChanged = (newPlan) =>
+				return if not @currentPlan or @currentPlan == parseInt(newPlan)
+				@refreshForm(newPlan)
+
+			@refreshForm()
+
+		refreshForm: (plan) ->
+			if @upgradeType == 'extend'
+				@refreshRenewForm(plan)
+			else
+				@refreshPlanForm(plan)
+
+		refreshPlanForm: (plan) ->
+			@$scope.initial_loading = true
+			@planInfo = null
+			@currentPlan = null
+
+			@DpLicense.getPlanUpgradeInfo(plan || 0).then((info) =>
 				if info.error_code
 					console.error("License server error code: #{info.error_code}")
 					@$scope.not_online = true
@@ -42,6 +76,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 				@$scope.initial_loading = false
 				@$scope.paymentForm.exist_card = info.card_details || null
 				@$scope.paymentForm.invoice = info.invoice || null
+				@$scope.availablePlans = info.available_plans.map( (x) -> { num: x+"", title: if x == 100 then 'Unlimited' else x } )
+				@$scope.toPlan = info.next_plan.agents+""
+				@currentPlan = info.next_plan.agents
 
 				if info.currency_pref == 'usd'
 					name = 'upgrade_cost_total_display'
@@ -71,21 +108,64 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 
 				if not info.allow_inline_form
 					@$scope.not_online = true
-
-# DEBUG
-#				@$scope.paymentForm.mode = 'new'
-#				@$scope.paymentForm.new_card = {
-#					number: '4929000000006',
-#					cv2: '123',
-#					name: 'CN',
-#					expire_yy: '18'
-#					expire_mm: '01',
-#					type: 'visa'
-#				}
 			, =>
 				@$scope.not_online = true
 			)
-			return
+
+		refreshRenewForm: (plan) ->
+			@$scope.initial_loading = true
+			@planInfo = null
+			@currentPlan = null
+
+			@DpLicense.getRenewInfo(plan || 0).then((info) =>
+				if info.error_code
+					console.error("License server error code: #{info.error_code}")
+					@$scope.not_online = true
+					return
+
+				@planInfo = info
+				@$scope.planInfo = info
+				@$scope.initial_loading = false
+				@$scope.paymentForm.exist_card = info.card_details || null
+				@$scope.paymentForm.invoice = info.invoice || null
+				@$scope.availablePlans = [1..10].map( (x) -> { num: x+"", title: x } )
+				@$scope.toPlan = info.next_plan.years+""
+				@currentPlan = info.next_plan.years
+
+				if info.currency_pref == 'usd'
+					name = 'upgrade_cost_total_display'
+				else
+					name = 'upgrade_cost_total_' + info.currency_pref + '_display'
+
+				@$scope.paymentSummary = {
+					line_title:             "Renew license for " + info.next_plan.years + " years",
+					cost_per_year:          info.current_plan.per_year_cost_display,
+					num_agents:             info.current_plan.agents,
+					cost:                   info.next_plan.upgrade_cost,
+					cost_display:           info.next_plan.upgrade_cost_display,
+					cost_vat:               info.next_plan.upgrade_cost_vat,
+					cost_vat_display:       info.next_plan.upgrade_cost_vat_display,
+					cost_total:             info.next_plan.upgrade_cost_total,
+					cost_total_display:     info.next_plan.upgrade_cost_total_display,
+					currency_total_display: info.next_plan[name]
+					currency:               info.currency_pref
+					currency_display:       info.currency_pref.toUpperCase()
+					vat_rate:               info.vat_rate,
+					has_vat:                info.vat_rate > 0.0,
+					invoice_link:           if info.invoice then info.invoice.pdf_link else null
+					invoice_web_link:       if info.invoice then info.invoice.link else null
+				}
+
+				if @$scope.paymentForm.exist_card
+					@$scope.paymentForm.mode = 'exist'
+				else
+					@$scope.paymentForm.mode = 'new'
+
+				if not info.allow_inline_form
+					@$scope.not_online = true
+			, =>
+				@$scope.not_online = true
+			)
 
 		validate: ->
 			errors = []

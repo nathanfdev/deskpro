@@ -1,7 +1,7 @@
 <div dp-license-payment-form ng-model="paymentForm">
 	<div class="well well-sm" ng-if="form.exist_card">
 		<label style="margin: 0; padding: 0; display: block; font-weight: bold; font-size: 120%;">
-			<input type="radio" ng-model="form.mode" value="exist" style="margin: 0; vertical-align: baseline;" /> Use your existing credit-card
+			<input type="radio" ng-model="form.mode" value="exist" style="margin: 0; vertical-align: baseline;" /> Use your existing card
 		</label>
 		<div ng-show="form.mode == 'exist'" style="margin-top: 10px;">
 			<div class="creditcard-display">
@@ -22,7 +22,7 @@
 			Pay by Credit Card
 		</label>
 		<div ng-show="form.mode == 'new'" style="margin-top: 10px;">
-			<table width="100%">
+			<table>
 				<tr>
 					<td>Card Number</td>
 					<td>&nbsp;</td>
@@ -30,7 +30,10 @@
 				</tr>
 				<tr>
 					<td>
-						<input type="text" class="form-control" ng-model="form.new_card.number" ng-change="numberCharsFn()" />
+						<div class="creditcard-input {{ ng_var('form.new_card.type') }}">
+							<input type="text" class="form-control" ng-model="form.new_card.number" ng-change="numberCharsFn()" />
+							<span class="credit-card-type"></span>
+						</div>
 					</td>
 					<td>&nbsp;</td>
 					<td>

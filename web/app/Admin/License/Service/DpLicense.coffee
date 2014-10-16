@@ -12,11 +12,35 @@ define ->
 		getLicServerParams: ->
 			return { 'license_id': @licInfo.licenseId, 'license_code': @licInfo.licenseCode, 'callback': 'JSON_CALLBACK', 'email': window.DP_PERSON_EMAIL }
 
-		getPlanUpgradeInfo: ->
+		getPlanUpgradeInfo: (num_agents) ->
 			d = @$q.defer()
+
+			params = @getLicServerParams();
+			params.num_agents = num_agents || 0
+
 			@getLicInfo().then(=>
 				@$http.jsonp(DP_SECURE_LIC_SERVER + '/api/license/plan-info', {
-					params: @getLicServerParams(),
+					params: params,
+					timeout: 25000,
+					cache: false
+				}).then((x) ->
+					d.resolve(x.data, x)
+				, (x) ->
+					d.reject(x.data, x)
+				)
+			, (x) -> d.reject(x))
+
+			return d.promise
+
+		getRenewInfo: (num_years) ->
+			d = @$q.defer()
+
+			params = @getLicServerParams();
+			params.num_years = num_years || 0
+
+			@getLicInfo().then(=>
+				@$http.jsonp(DP_SECURE_LIC_SERVER + '/api/license/renew-info', {
+					params: params,
 					timeout: 25000,
 					cache: false
 				}).then((x) ->
@@ -95,6 +119,19 @@ define ->
 				resolve: {
 					upgradeType: ->
 						return upgradeType
+					upgradeOptions: ->
+						return options
+				}
+			})
+			return modalInstance.result
+
+		openRenewLicense: (options = {}) ->
+			modalInstance = @$modal.open({
+				templateUrl: '/admin/load-view/License/upgrade-license-modal.html',
+				controller: 'Admin_License_Ctrl_UpgradeLicenseModal',
+				resolve: {
+					upgradeType: ->
+						return 'extend'
 					upgradeOptions: ->
 						return options
 				}

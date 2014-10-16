@@ -64,7 +64,7 @@
                   lic_code = lic_code.replace(/\s/g, '');
                   lic_code = (lic_code.match(/(.{1,50})/g) || [lic_code]).join("\n");
                   _this.$scope.lic_code = lic_code;
-                  return _this.license.license.licenseCode = lic_code;
+                  return _this.license.licenseCode = lic_code;
                 }, function() {
                   return _this.$scope.refreshing_lic = false;
                 });
@@ -118,7 +118,19 @@
       Admin_License_Ctrl_License.prototype.save = function() {};
 
       Admin_License_Ctrl_License.prototype.openUpgradeLicense = function() {
-        return this.DpLicense.openUpgradeLicense('upgrade_plan');
+        return this.DpLicense.openUpgradeLicense('add_agents').then((function(_this) {
+          return function() {
+            return _this.$state.go('license_go');
+          };
+        })(this));
+      };
+
+      Admin_License_Ctrl_License.prototype.openRenewLicense = function() {
+        return this.DpLicense.openRenewLicense().then((function(_this) {
+          return function() {
+            return _this.$state.go('license_go');
+          };
+        })(this));
       };
 
       return Admin_License_Ctrl_License;

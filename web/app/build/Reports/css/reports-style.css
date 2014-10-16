@@ -11156,28 +11156,28 @@ table.agent-perms-table .toggle-wrap i {
   background-image: url("../../../../images/credit-cards/visa.png");
 }
 .creditcard-display .credit-card-type.visa_electron {
-  background-image: url("../../../../images/credit-cards/visa.png");
+  background-image: url("../../../../images/credit-cards/visa_electron.png");
 }
 .creditcard-display .credit-card-type.uke {
-  background-image: url("../../../../images/credit-cards/visa.png");
+  background-image: url("../../../../images/credit-cards/uke.png");
 }
 .creditcard-display .credit-card-type.mc {
-  background-image: url("../../../../images/credit-cards/visa.png");
+  background-image: url("../../../../images/credit-cards/mastercard.png");
 }
 .creditcard-display .credit-card-type.mastercard {
-  background-image: url("../../../../images/credit-cards/visa.png");
+  background-image: url("../../../../images/credit-cards/mastercard.png");
 }
 .creditcard-display .credit-card-type.maestro {
-  background-image: url("../../../../images/credit-cards/visa.png");
+  background-image: url("../../../../images/credit-cards/maestro.png");
 }
 .creditcard-display .credit-card-type.discover {
-  background-image: url("../../../../images/credit-cards/visa.png");
+  background-image: url("../../../../images/credit-cards/discover.png");
 }
 .creditcard-display .credit-card-type.amex {
-  background-image: url("../../../../images/credit-cards/visa.png");
+  background-image: url("../../../../images/credit-cards/amex.png");
 }
 .creditcard-display .credit-card-type.american-express {
-  background-image: url("../../../../images/credit-cards/visa.png");
+  background-image: url("../../../../images/credit-cards/amex.png");
 }
 .creditcard-display .credit-card-num {
   padding: 0 10px;
@@ -11191,6 +11191,57 @@ table.agent-perms-table .toggle-wrap i {
   display: inline-block;
   vertical-align: middle;
   padding-top: 1px;
+}
+.creditcard-input {
+  position: relative;
+}
+.creditcard-input input {
+  padding-right: 54px;
+  height: 32px;
+  width: 325px;
+}
+.creditcard-input.visa .credit-card-type,
+.creditcard-input.visa_electron .credit-card-type,
+.creditcard-input.uke .credit-card-type,
+.creditcard-input.mc .credit-card-type,
+.creditcard-input.mastercard .credit-card-type,
+.creditcard-input.maestro .credit-card-type,
+.creditcard-input.discover .credit-card-type,
+.creditcard-input.amex .credit-card-type,
+.creditcard-input.american-express .credit-card-type {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 51px;
+  height: 32px;
+}
+.creditcard-input.visa .credit-card-type {
+  background-image: url("../../../../images/credit-cards/visa.png");
+}
+.creditcard-input.visa_electron .credit-card-type {
+  background-image: url("../../../../images/credit-cards/visa_electron.png");
+}
+.creditcard-input.uke .credit-card-type {
+  background-image: url("../../../../images/credit-cards/uke.png");
+}
+.creditcard-input.mc .credit-card-type {
+  background-image: url("../../../../images/credit-cards/mastercard.png");
+}
+.creditcard-input.mastercard .credit-card-type {
+  background-image: url("../../../../images/credit-cards/mastercard.png");
+}
+.creditcard-input.maestro .credit-card-type {
+  background-image: url("../../../../images/credit-cards/maestro.png");
+}
+.creditcard-input.discover .credit-card-type {
+  background-image: url("../../../../images/credit-cards/discover.png");
+}
+.creditcard-input.amex .credit-card-type {
+  background-image: url("../../../../images/credit-cards/amex.png");
+}
+.creditcard-input.american-express .credit-card-type {
+  background-image: url("../../../../images/credit-cards/amex.png");
 }
 #upgrader {
   width: 100%;

@@ -47,7 +47,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 							lic_code = lic_code.replace(/\s/g, '')
 							lic_code = (lic_code.match(/(.{1,50})/g) || [lic_code]).join("\n")
 							@$scope.lic_code = lic_code
-							@license.license.licenseCode = lic_code
+							@license.licenseCode = lic_code
 						, =>
 							@$scope.refreshing_lic = false
 						)
@@ -93,6 +93,9 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			return
 
 		openUpgradeLicense: ->
-			@DpLicense.openUpgradeLicense('upgrade_plan')
+			@DpLicense.openUpgradeLicense('add_agents').then(=> @$state.go('license_go') )
+
+		openRenewLicense: ->
+			@DpLicense.openRenewLicense().then(=> @$state.go('license_go') )
 
 	Admin_License_Ctrl_License.EXPORT_CTRL()

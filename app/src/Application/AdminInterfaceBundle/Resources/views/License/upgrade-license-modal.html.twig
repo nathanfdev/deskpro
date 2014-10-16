@@ -1,6 +1,8 @@
 {% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
 {% block modal_title %}
-	<h4 class="modal-title">License Limit Reached</h4>
+	<h4 class="modal-title" ng-if="upgradeType == 'add_agents'"><i class="fa fa-lock"></i> Add Agent Seats</h4>
+	<h4 class="modal-title" ng-if="upgradeType == 'upgrade_plan'"><i class="fa fa-lock"></i> License Limit Reached</h4>
+	<h4 class="modal-title" ng-if="upgradeType == 'extend'"><i class="fa fa-lock"></i> Renew License</h4>
 {% endblock %}
 {% block modal_body %}
 	<div ng-show="initial_loading">
@@ -28,7 +30,7 @@
 		</div>
 		<div ng-if="upgradeType == 'extend'">
 			<p>
-				Extend your license online from our secure members area at
+				Renew your license online from our secure members area at
 				<a href="https://www.dekspro.com/members/" target="_blank">www.dekspro.com/members</a>.
 			</p>
 		</div>
@@ -37,40 +39,32 @@
 	{##############################################################################################################}
 	{# UPGRADE PLAN #}
 
-	<div ng-hide="initial_loading || not_online" ng-if="upgradeType == 'upgrade_plan'">
+	<div ng-hide="initial_loading || not_online" ng-if="upgradeType == 'upgrade_plan' || upgradeType == 'add_agents'">
 		<div ng-if="phase == 1">
-			<p>
-				You are already using all of the agent seats that your license allows.
-			</p>
-			<p>
-				Increase your license from {{ ng_var('planInfo.current_plan.agents') }} to {{ ng_var('planInfo.next_plan.agents') }} agents to create a new agent.
-			</p>
+			<div ng-if="upgradeType == 'upgrade_plan'">
+				<p>
+					You are already using all of the agent seats that your license allows.
+				</p>
+				<p>
+					Increase your license from {{ ng_var('planInfo.current_plan.agents') }} to &nbsp;
+					<select ng-change="planChanged(toPlan)" ng-model="toPlan" ng-options="x.num as x.title for x in availablePlans"></select>
+					agents to create a new agent.
+				</p>
+			</div>
+			<div ng-if="upgradeType == 'add_agents'">
+				<p>
+					Upgrade your license from {{ ng_var('planInfo.current_plan.agents') }} to
+					<select ng-change="planChanged(toPlan)" ng-model="toPlan" ng-options="x.num as x.title for x in availablePlans"></select>
+					agents.
+				</p>
+			</div>
 			<div class="bg-info" style="padding: 10px; margin-top: 6px; margin-bottom: 10px; font-size: 110%;">
 				<a href="" ng-click="show_details = true" ng-hide="show_details" style="float:right;">View Details <i class="fa fa-caret-down"></i></a>
 				<a href="" ng-click="show_details = false" ng-hide="!show_details" style="float:right;">Hide Details <i class="fa fa-caret-up"></i></a>
 				<span style="float: right; margin-right: 8px;">&bull;</span>
 				<a ng-if="paymentSummary.invoice_link" ng-href="{{ ng_var('paymentSummary.invoice_link') }}" target="_blank" style="float: right; margin-right: 8px;">Download PDF Invoice</a>
 				Upgrade now for <mark style="font-weight: bold;">{{ ng_var('paymentSummary.currency_total_display') }}</mark>
-				<div ng-show="show_details" style="border-top: 1px solid #b0c1c9; margin-top: 10px; padding-top: 8px;">
-					{{ ng_var('paymentSummary.line_title') }}<br/>
-					<div style="font-size: 11px;">
-						&bull; Pro-rata rate (of {{ ng_var('planInfo.next_plan.additional_yearly_cost_display') }}) from now until {{ ng_var('planInfo.current_plan.expires | amDateFormat:"MMM D, YYYY"') }}<br/>
-					</div>
-					<div ng-if="paymentSummary.has_vat" style="font-size: 11px; margin-top: 6px;">
-						Sub-Total: {{ ng_var('paymentSummary.cost_display') }}<br/>
-						VAT: {{ ng_var('paymentSummary.cost_vat_display') }}<br/>
-						Total: {{ ng_var('paymentSummary.cost_total_display') }}
-						<div ng-if="paymentSummary.currency != 'usd'">
-							Your credit-card will be charged in {{ ng_var('paymentSummary.currency_display') }}: {{ ng_var('paymentSummary.currency_total_display') }}
-						</div>
-					</div>
-					<div ng-if="!paymentSummary.has_vat" style="font-size: 11px; margin-top: 6px;">
-						Total: {{ ng_var('paymentSummary.cost_total_display') }}
-						<div ng-if="paymentSummary.currency != 'usd'">
-							Your credit-card will be charged in {{ ng_var('paymentSummary.currency_display') }}: {{ ng_var('paymentSummary.currency_total_display') }}
-						</div>
-					</div>
-				</div>
+				{% include 'AdminInterfaceBundle:License:invoice-details.html.twig' with {type: 'agents'} %}
 			</div>
 
 			{% include 'AdminInterfaceBundle:License:payment-form.html.twig' %}
@@ -97,7 +91,39 @@
 	{# EXTEND #}
 
 	<div ng-hide="initial_loading || not_online" ng-if="upgradeType == 'extend'">
+		<div ng-if="phase == 1">
+			<p>
+				Renew your license for
+				<select ng-change="planChanged(toPlan)" ng-model="toPlan" ng-options="x.num as x.title for x in availablePlans"></select>
+				years.
+			</p>
+			<div class="bg-info" style="padding: 10px; margin-top: 6px; margin-bottom: 10px; font-size: 110%;">
+				<a href="" ng-click="show_details = true" ng-hide="show_details" style="float:right;">View Details <i class="fa fa-caret-down"></i></a>
+				<a href="" ng-click="show_details = false" ng-hide="!show_details" style="float:right;">Hide Details <i class="fa fa-caret-up"></i></a>
+				<span style="float: right; margin-right: 8px;">&bull;</span>
+				<a ng-if="paymentSummary.invoice_link" ng-href="{{ ng_var('paymentSummary.invoice_link') }}" target="_blank" style="float: right; margin-right: 8px;">Download PDF Invoice</a>
+				Renew now for <mark style="font-weight: bold;">{{ ng_var('paymentSummary.currency_total_display') }}</mark>
+				{% include 'AdminInterfaceBundle:License:invoice-details.html.twig' with {type: 'years'} %}
+			</div>
 
+			{% include 'AdminInterfaceBundle:License:payment-form.html.twig' %}
+		</div>
+		<div ng-if="phase == 2">
+			<ul class="list-group" ng-hide="stepsDone">
+				<li class="list-group-item" ng-class="{'active': stepId == 0, 'disabled': stepId < 0}">1. Processing Payment</li>
+				<li class="list-group-item" ng-class="{'active': stepId == 1, 'disabled': stepId < 1}">2. Getting new license code</li>
+				<li class="list-group-item" ng-class="{'active': stepId == 2, 'disabled': stepId < 2}">3. Applying new license code</li>
+				<li class="list-group-item" ng-class="{'active': stepId == 3, 'disabled': stepId < 3}">4. Done</li>
+			</ul>
+		</div>
+		<div ng-if="phase == 3">
+			<div style="text-align: center; color: #50a24f;">
+				<i class="fa fa-check-circle fa-6" style="font-size: 18em;"></i>
+			</div>
+			<div style="text-align: center; font-size: 16pt; margin: 10px 0;">
+				Your license has been renewed successfully.
+			</div>
+		</div>
 	</div>
 {% endblock %}
 {% block modal_footer %}
@@ -108,9 +134,21 @@
 		<a class="btn btn-primary" target="_blank" href="https://www.dekspro.com/members/">Go to the DeskPRO Members Area &rarr;</a>
 	</div>
 
-	<div ng-hide="initial_loading || not_online" ng-if="upgradeType == 'upgrade_plan'">
+	<div ng-hide="initial_loading || not_online" ng-if="upgradeType == 'upgrade_plan' || upgradeType == 'add_agents'">
 		<div ng-if="phase == 1">
 			<button class="btn btn-primary" type="button" ng-click="Ctrl.sendPayment()">Upgrade license Now <i class="fa fa-arrow-circle-right"></i></button>
+			<div style="font-size: 11px; margin-top: 5px; color: #999;">
+				<i class="fa fa-lock"></i> Your payment information is being sent securely over HTTPS.
+			</div>
+		</div>
+	</div>
+
+	<div ng-hide="initial_loading || not_online" ng-if="upgradeType == 'extend'">
+		<div ng-if="phase == 1">
+			<button class="btn btn-primary" type="button" ng-click="Ctrl.sendPayment()">Renew License Now <i class="fa fa-arrow-circle-right"></i></button>
+			<div style="font-size: 11px; margin-top: 5px; color: #999;">
+				<i class="fa fa-lock"></i> Your payment information is being sent securely over HTTPS.
+			</div>
 		</div>
 	</div>
 

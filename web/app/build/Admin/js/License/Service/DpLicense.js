@@ -30,13 +30,38 @@
         };
       };
 
-      Admin_License_Service_DpLicense.prototype.getPlanUpgradeInfo = function() {
-        var d;
+      Admin_License_Service_DpLicense.prototype.getPlanUpgradeInfo = function(num_agents) {
+        var d, params;
         d = this.$q.defer();
+        params = this.getLicServerParams();
+        params.num_agents = num_agents || 0;
         this.getLicInfo().then((function(_this) {
           return function() {
             return _this.$http.jsonp(DP_SECURE_LIC_SERVER + '/api/license/plan-info', {
-              params: _this.getLicServerParams(),
+              params: params,
+              timeout: 25000,
+              cache: false
+            }).then(function(x) {
+              return d.resolve(x.data, x);
+            }, function(x) {
+              return d.reject(x.data, x);
+            });
+          };
+        })(this), function(x) {
+          return d.reject(x);
+        });
+        return d.promise;
+      };
+
+      Admin_License_Service_DpLicense.prototype.getRenewInfo = function(num_years) {
+        var d, params;
+        d = this.$q.defer();
+        params = this.getLicServerParams();
+        params.num_years = num_years || 0;
+        this.getLicInfo().then((function(_this) {
+          return function() {
+            return _this.$http.jsonp(DP_SECURE_LIC_SERVER + '/api/license/renew-info', {
+              params: params,
               timeout: 25000,
               cache: false
             }).then(function(x) {
@@ -140,6 +165,26 @@
           resolve: {
             upgradeType: function() {
               return upgradeType;
+            },
+            upgradeOptions: function() {
+              return options;
+            }
+          }
+        });
+        return modalInstance.result;
+      };
+
+      Admin_License_Service_DpLicense.prototype.openRenewLicense = function(options) {
+        var modalInstance;
+        if (options == null) {
+          options = {};
+        }
+        modalInstance = this.$modal.open({
+          templateUrl: '/admin/load-view/License/upgrade-license-modal.html',
+          controller: 'Admin_License_Ctrl_UpgradeLicenseModal',
+          resolve: {
+            upgradeType: function() {
+              return 'extend';
             },
             upgradeOptions: function() {
               return options;
