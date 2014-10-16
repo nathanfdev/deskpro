@@ -40,6 +40,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
 
 class SettingsResolver
 {
+	const CACHE_KEY_GLOBAL = 'settings.bag.global';
 
 	/**
 	 * @var SettingsLoaderInterface[]
@@ -64,25 +65,26 @@ class SettingsResolver
 	}
 
 
-	public function getGlobalSettings()
+	public function getGlobalSettings($force = false)
 	{
-		// TODO: accept a $force argument, and force a reload of the cache if requested
-		return $this->cache->get('settings.bag.global', array($this, 'computeGlobalSettings'));
-	}
-
-
-	/**
-	 * @return SettingsBag
-	 */
-	public function computeGlobalSettings()
-	{
-		$global_settings_array = array();
-
-		foreach ($this->loaders as $loader) {
-			$global_settings_array = array_merge($global_settings_array, $loader->load());
+		if ($force) {
+			$this->cache->delete(static::CACHE_KEY_GLOBAL);
 		}
 
-		return new SettingsBag($global_settings_array);
+		$that = $this;
+
+		return $this->cache->get(
+			static::CACHE_KEY_GLOBAL,
+			function() use ($that, $force) {
+				$global_settings_array = array();
+
+				foreach ($that->getLoaders() as $loader) {
+					$global_settings_array = array_merge($global_settings_array, $loader->load($force));
+				}
+
+				return new SettingsBag($global_settings_array);
+			}
+		);
 	}
 }
  

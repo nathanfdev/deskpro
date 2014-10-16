@@ -83,10 +83,49 @@ class SettingsResolverTest extends \DpUnitTestCase
 			)
 		);
 
+		$mockCache->shouldReceive('delete')->with('settings.bag.global')->never();
 		$mockCache->shouldReceive('has')->with('settings.bag.global')->andReturn(false)->once();
 		$mockCache->shouldReceive('set')->with('settings.bag.global', \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag'))->once();
 
 		$this->assertEquals($expectedResolvedSettingsBag, $resolver->getGlobalSettings());
+	}
+
+	public function testGlobalSettingsForceReload()
+	{
+		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+
+		$mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+		$mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+
+		$resolver = new SettingsResolver(array($mock1, $mock2), $mockCache);
+
+		$mock1->shouldReceive('load')->with(true)->andReturn($settings1 = array(
+				'core.key1' => 'eighteen',
+				'core.key2' => 'sixteen',
+				'core.key3' => 'number4'
+			)
+		);
+
+		$mock2->shouldReceive('load')->with(true)->andReturn($settings2 = array(
+				'core.key2' => 16,
+				'core.key3' => 'some_new-string'
+			)
+		);
+
+		// reflects the order of the loader return values
+		$expectedResolvedSettingsBag = new SettingsBag(
+			array(
+				'core.key1' => 'eighteen',
+				'core.key2' => 16,
+				'core.key3' => 'some_new-string'
+			)
+		);
+
+		$mockCache->shouldReceive('delete')->with('settings.bag.global')->once();
+		$mockCache->shouldReceive('has')->with('settings.bag.global')->andReturn(false)->once();
+		$mockCache->shouldReceive('set')->with('settings.bag.global', \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag'))->once();
+
+		$this->assertEquals($expectedResolvedSettingsBag, $resolver->getGlobalSettings(true));
 	}
 }
  
