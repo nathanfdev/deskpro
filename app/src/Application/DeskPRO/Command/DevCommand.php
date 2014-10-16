@@ -43,9 +43,11 @@ use Application\DeskPRO\Languages\Build\TransifexBuild;
 use Application\InstallBundle\Util\GenBuildManifest;
 use Orb\Types\JsonObjectSerializer;
 use Orb\Util\Strings;
+use Swagger\Swagger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
@@ -56,6 +58,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 		$this->addOption('regen-build-manifest', null, InputOption::VALUE_NONE, 'Regenerate build-manifest.php file');
 		$this->addOption('testdb-safe', null, InputOption::VALUE_NONE, 'Removes or rewrites some common settings to make the database safe to use');
 		$this->addOption('testdb-rewrite-emails', null, InputOption::VALUE_REQUIRED, 'Rewrites all email addresses to be at the domain provided. someone@example.com becomes someone-at-example-com@domain.com');
+		$this->addOption('build-api-docs', null, InputOption::VALUE_NONE, 'Builds Swagger resource files');
 		$this->addOption('preview', null, InputOption::VALUE_NONE, 'Preview');
 	}
 
@@ -82,6 +85,8 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 			return $this->testdbSafeAction($input, $output);
 		} elseif ($input->getOption('testdb-rewrite-emails')) {
 			return $this->testdbRewriteEmailsAction($input, $output);
+		} elseif ($input->getOption('build-api-docs')) {
+			return $this->buildApiDocsAction($input, $output);
 		} else {
 			$output->write("<error>Unknown command</error>");
 			return 1;
@@ -230,5 +235,48 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 				return 1;
 			}
 		}
+	}
+
+
+	/**
+	 * @param InputInterface  $input
+	 * @param OutputInterface $output
+	 * @return int
+	 */
+	private function buildApiDocsAction(InputInterface $input, OutputInterface $output)
+	{
+		$start_time = microtime(true);
+
+		$save_path = DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs';
+
+		$output->writeln("Generating Swagger resources");
+		$output->writeln("-> Path: $save_path");
+
+		$output->writeln("Removing old files");
+		$fs = new Filesystem();
+		$fs->remove($save_path);
+		$fs->mkdir($save_path, 0755);
+		$output->writeln("-> OK");
+
+		$output->writeln("Scanning ...");
+		$swagger = new Swagger(DP_ROOT.'/src/Application/ApiBundle');
+		$output->writeln("-> OK");
+
+		$output->writeln("Generating resource-list.json...");
+		file_put_contents($save_path.'/deskpro-api.json', $swagger->getResourceList(array('output' => 'json')));
+		$fs->chmod($save_path.'/deskpro-api.json', 0644);
+
+		$output->writeln("-> OK");
+
+		foreach ($swagger->getResourceNames() as $res) {
+			$output->writeln("Generating $res.json...");
+			file_put_contents($save_path."/$res.json", $swagger->getResource($res, array('output' => 'json')));
+			$fs->chmod($save_path."/$res.json", 0644);
+			$output->writeln("-> OK");
+		}
+
+		$output->writeln(sprintf("All done in %.4fs", microtime(true)-$start_time));
+
+		return 0;
 	}
 }
