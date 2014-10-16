@@ -64,6 +64,7 @@ class ConfigPhpFileLoaderTest extends \DpUnitTestCase
 		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
 		$mockCache->shouldReceive('has')->with($cache_key)->andReturn(false)->once();
 		$mockCache->shouldReceive('set')->with($cache_key, $expectedSettings)->once();
+		$mockCache->shouldReceive('delete')->never();
 
 		$loader = new ConfigPhpFileLoader($config_file_path, $mockCache);
 
@@ -88,6 +89,7 @@ class ConfigPhpFileLoaderTest extends \DpUnitTestCase
 		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
 		$mockCache->shouldReceive('has')->with($cache_key)->andReturn(true)->once();
 		$mockCache->shouldReceive('get')->with($cache_key)->andReturn($expectedSettings)->once();
+		$mockCache->shouldReceive('delete')->never();
 
 		$loader = new ConfigPhpFileLoader($config_file_path, $mockCache);
 
@@ -110,13 +112,13 @@ class ConfigPhpFileLoaderTest extends \DpUnitTestCase
 		$cache_key = 'settings.loader.config_php_file.' . $config_file_path;
 
 		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
-		$mockCache->shouldReceive('has')->never();
-		$mockCache->shouldReceive('get')->with($cache_key)->never();
+		$mockCache->shouldReceive('delete')->with($cache_key)->once();
+		$mockCache->shouldReceive('has')->with($cache_key)->andReturn(false)->once();
 		$mockCache->shouldReceive('set')->with($cache_key, $expectedSettings)->once();
 
 		$loader = new ConfigPhpFileLoader($config_file_path, $mockCache);
 
-		// asserting that we don't ask the cache for data (but do set the cache) when forcing a reload
+		// asserting that we delete the cache key and regenrate cache
 		$this->assertSame(
 			$expectedSettings,
 			$loader->load(true)

@@ -77,10 +77,7 @@ class ConfigPhpFileLoader implements SettingsLoaderInterface
 		}
 
 		if ($force) {
-			$settings = $this->loadFromFile();
-			$this->cache->set($this->cacheKey, $settings);
-
-			return $settings;
+			$this->cache->delete($this->cacheKey);
 		}
 
 		return $this->cache->get($this->cacheKey, array($this, 'loadFromFile'));
