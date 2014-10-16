@@ -12,7 +12,7 @@ define [
 	class Admin_Agents_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Agents_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = []
+		@DEPS      = ['DpLicense']
 
 		init: ->
 			@agentId = parseInt(@$stateParams.id)
@@ -551,10 +551,44 @@ define [
 
 			return formData
 
+		saveAgent: ->
+			if not @$scope.form_props.$valid
+				return
+
+			if @agentId
+				return @doSaveAgent()
+			else
+				d = @$q.defer()
+
+				@startSpinner('saving')
+
+				@DpLicense.getLicInfo(true).then( (licInfo) =>
+					@stopSpinner('saving', true)
+					if licInfo.limits.remain_agents != 0
+						@doSaveAgent().then(->
+							d.resolve()
+						, ->
+							d.reject()
+						)
+					else
+						@DpLicense.openUpgradeLicense('upgrade_plan').then(=>
+							@doSaveAgent().then(->
+								d.resolve()
+							, ->
+								d.reject()
+							)
+						)
+				, =>
+					@stopSpinner('saving', true)
+					d.reject()
+				)
+
+				return d.promise
+
 		###
     	# Saves the agent
 		###
-		saveAgent: ->
+		doSaveAgent: ->
 			if not @$scope.form_props.$valid
 				return
 

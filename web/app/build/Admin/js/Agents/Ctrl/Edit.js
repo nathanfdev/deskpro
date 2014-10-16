@@ -19,7 +19,7 @@
 
       Admin_Agents_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_Agents_Ctrl_Edit.DEPS = [];
+      Admin_Agents_Ctrl_Edit.DEPS = ['DpLicense'];
 
       Admin_Agents_Ctrl_Edit.prototype.init = function() {
         this.agentId = parseInt(this.$stateParams.id);
@@ -815,12 +815,51 @@
         return formData;
       };
 
+      Admin_Agents_Ctrl_Edit.prototype.saveAgent = function() {
+        var d;
+        if (!this.$scope.form_props.$valid) {
+          return;
+        }
+        if (this.agentId) {
+          return this.doSaveAgent();
+        } else {
+          d = this.$q.defer();
+          this.startSpinner('saving');
+          this.DpLicense.getLicInfo(true).then((function(_this) {
+            return function(licInfo) {
+              _this.stopSpinner('saving', true);
+              if (licInfo.limits.remain_agents !== 0) {
+                return _this.doSaveAgent().then(function() {
+                  return d.resolve();
+                }, function() {
+                  return d.reject();
+                });
+              } else {
+                return _this.DpLicense.openUpgradeLicense('upgrade_plan').then(function() {
+                  return _this.doSaveAgent().then(function() {
+                    return d.resolve();
+                  }, function() {
+                    return d.reject();
+                  });
+                });
+              }
+            };
+          })(this), (function(_this) {
+            return function() {
+              _this.stopSpinner('saving', true);
+              return d.reject();
+            };
+          })(this));
+          return d.promise;
+        }
+      };
+
 
       /*
         	 * Saves the agent
        */
 
-      Admin_Agents_Ctrl_Edit.prototype.saveAgent = function() {
+      Admin_Agents_Ctrl_Edit.prototype.doSaveAgent = function() {
         var postData, promise;
         if (!this.$scope.form_props.$valid) {
           return;

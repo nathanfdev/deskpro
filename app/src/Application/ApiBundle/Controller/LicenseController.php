@@ -61,8 +61,6 @@ class LicenseController extends AbstractController implements ProtectedControlle
 	{
 		$lic = License::getLicense();
 
-		$is_basic = $this->in->getBool('basic');
-
 		$is_expired = false;
 		$expire_in_days = 0;
 
@@ -86,31 +84,37 @@ class LicenseController extends AbstractController implements ProtectedControlle
 			'licenseCode' => $lic->getLicenseCode(),
 		);
 
-		if ($is_basic) {
-			return $this->createApiResponse(array(
-				'license' => $lic_info,
-			));
-		} else {
-			$ma_token = TmpData::create(
-				'ma_login', array(
-					'email_address' => $this->person->getPrimaryEmailAddress()
-				), '+1 hour'
-			);
-			$this->em->persist($ma_token);
-			$this->em->flush($ma_token);
+		$active_agents = $this->container->getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent = 1 AND is_deleted = 0
+		");
+		$limits = array(
+			'max_agents'    => $lic->getMaxAgents() ?: -1,
+			'count_agents'  => $active_agents,
+			'remain_agents' => $lic->getMaxAgents() ? max(0, $lic->getMaxAgents() - $active_agents) : -1
+		);
 
-			$ma_login_url = License::getLicServer() . '/login_check_license';
-			if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {
-				$ma_login_url = str_replace('http://', 'https://', $ma_login_url);
-			}
+		$ma_token = TmpData::create(
+			'ma_login', array(
+				'email_address' => $this->person->getPrimaryEmailAddress()
+			), '+1 hour'
+		);
+		$this->em->persist($ma_token);
+		$this->em->flush($ma_token);
 
-			return $this->createApiResponse(array(
-				'license'          => $lic_info,
-				'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',
-				'ma_token'         => $ma_token->toApiData(),
-				'ma_login_url'     => $ma_login_url,
-			));
+		$ma_login_url = License::getLicServer() . '/login_check_license';
+		if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {
+			$ma_login_url = str_replace('http://', 'https://', $ma_login_url);
 		}
+
+		return $this->createApiResponse(array(
+			'license'          => $lic_info,
+			'limits'           => $limits,
+			'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',
+			'ma_token'         => $ma_token->toApiData(),
+			'ma_login_url'     => $ma_login_url,
+		));
 	}
 
 	####################################################################################################################

@@ -10,16 +10,25 @@
         this.shortAuthCode = null;
       }
 
-      Admin_License_Service_DpLicense.prototype.getLicInfo = function() {
-        if (this.licGetting) {
-          return this.licGetting;
+      Admin_License_Service_DpLicense.prototype.getLicInfo = function(reload) {
+        if (this.licGetting && !reload) {
+          return this.licGetting.promise;
         }
-        return this.licGetting = this.Api.sendGet('/dp_license?basic=1').success((function(_this) {
+        this.licGetting = this.$q.defer();
+        this.Api.sendGet('/dp_license').success((function(_this) {
           return function(data) {
+            _this.info = data;
             _this.licInfo = data.license;
-            return _this.licInfo.licenseCode = _this.licInfo.licenseCode.replace(/\s/g, '');
+            _this.licInfo.licenseCode = _this.licInfo.licenseCode.replace(/\s/g, '');
+            return _this.licGetting.resolve(_this.info);
+          };
+        })(this), (function(_this) {
+          return function() {
+            _this.licGetting.reject();
+            return _this.licGetting = null;
           };
         })(this));
+        return this.licGetting.promise;
       };
 
       Admin_License_Service_DpLicense.prototype.getLicServerParams = function() {
@@ -106,6 +115,7 @@
         d = this.$q.defer();
         this.Api.sendPost("dp_license", postData).success((function(_this) {
           return function() {
+            _this.getLicInfo(true);
             return d.resolve({
               success: true,
               lic_code: lic_code

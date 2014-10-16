@@ -3,12 +3,22 @@ define ->
 		constructor: (@Api, @$modal, @$http, @$q) ->
 			@shortAuthCode = null
 
-		getLicInfo: ->
-			return @licGetting if @licGetting
-			@licGetting = @Api.sendGet('/dp_license?basic=1').success( (data) =>
+		getLicInfo: (reload) ->
+			return @licGetting.promise if @licGetting and not reload
+			@licGetting = @$q.defer()
+
+			@Api.sendGet('/dp_license').success( (data) =>
+				@info = data
 				@licInfo = data.license
 				@licInfo.licenseCode = @licInfo.licenseCode.replace(/\s/g, '')
+
+				@licGetting.resolve(@info)
+			, =>
+				@licGetting.reject()
+				@licGetting = null;
 			)
+
+			return @licGetting.promise
 
 		getLicServerParams: ->
 			return { 'license_id': @licInfo.licenseId, 'license_code': @licInfo.licenseCode, 'callback': 'JSON_CALLBACK', 'email': window.DP_PERSON_EMAIL }
@@ -77,6 +87,7 @@ define ->
 			d = @$q.defer()
 
 			@Api.sendPost("dp_license", postData).success(=>
+				@getLicInfo(true)
 				d.resolve({success: true, lic_code: lic_code})
 			).error( (data) =>
 				d.reject({success: false, lic_code: lic_code, error_code: data?.error_code})
