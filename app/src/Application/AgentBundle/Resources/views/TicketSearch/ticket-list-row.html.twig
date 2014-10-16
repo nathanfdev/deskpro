@@ -18,7 +18,7 @@
 		<div class="top-row-left">
 			<h3>
 				<span class="obj-id">#<%= ticket.id %></span>
-				<a class="subject click-through" dp-ticket-quick-actions="ticket">
+				<a class="subject click-through" ng-mouseenter="$emit('tickets.quick_actions.show', $event, ticket)" ng-mouseleave="$emit('tickets.quick_actions.hide')">
 					<%- ticket.subject %>
 				</a>
 			</h3>

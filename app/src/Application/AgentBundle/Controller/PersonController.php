@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\Entity\Organization;
@@ -42,6 +43,7 @@ use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Log\Event\UserMerged;
+use Application\DeskPRO\People\PeopleResultsDisplay;
 use Orb\Util\Arrays;
 
 /**
@@ -1511,5 +1513,15 @@ class PersonController extends AbstractController
 		}
 
 		return $person;
+	}
+
+	/**
+	 * todo: we use this only for agents now
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listAction()
+	{
+		$ret = $this->em->getRepository('DeskPRO:Person')->getAgentsRaw();
+		return $this->createJsonResponse($ret);
 	}
 }

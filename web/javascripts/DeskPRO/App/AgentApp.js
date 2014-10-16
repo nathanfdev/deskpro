@@ -7,7 +7,8 @@ define([
 	'DeskPRO/Directive/DpLabel',
 	'DeskPRO/Service/LabelDefinition',
 	'ngContextMenu',
-	'DeskPRO/Directive/DpTicketQuickActions'
+	'DeskPRO/Directive/DpTicketQuickActions',
+	'DeskPRO/Service/Person'
 ], function(
 	angular,
 	x1,
@@ -17,7 +18,8 @@ define([
 	DeskPRO_Directive_DpLabel,
     DeskPRO_Service_LabelDefinition,
     ngContextMenu,
-    DeskPRO_Directive_DpTicketQuickActions
+    DeskPRO_Directive_DpTicketQuickActions,
+	DeskPRO_Service_Person
 	) {
 	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu']);
 
@@ -34,6 +36,10 @@ define([
 	AgentApp.factory('dpAppAssetInterceptor', [function() {
 		return  {
 			request: function(config) {
+				if (!window.AppPlatform) {
+					return config;
+				}
+
 				var assetPath = window.AppPlatform.getAssetPath(config.url);
 				if (assetPath) {
 					console.log("[dpAppAssetInterceptor] %s -> %s", config.url, assetPath);
@@ -41,7 +47,6 @@ define([
 					config.dpIsAppAsset = true;
 				} else {
 					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/')
-					config.headers['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 				}
 
 				return config;
@@ -50,6 +55,8 @@ define([
 	}]);
 
 	AgentApp.config(['$httpProvider', function($httpProvider) {
+		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+		$httpProvider.defaults.headers.common['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 		$httpProvider.interceptors.push('dpAppAssetInterceptor');
 	}]);
 
@@ -1026,6 +1033,7 @@ define([
 	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
 		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
 	}]);
+	AgentApp.service('Person', DeskPRO_Service_Person);
 
 	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);

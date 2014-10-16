@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller\JsonRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Util;
 use Orb\Util\Arrays;
@@ -67,6 +68,11 @@ class TicketListRenderer
 	 */
 	private $ticket_display;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Person|null
+	 */
+	protected $person;
+
 
 	/**
 	 * @param TicketResultsDisplay $ticket_display
@@ -77,6 +83,7 @@ class TicketListRenderer
 		$this->container = App::getContainer();
 		$this->em = App::getContainer()->getEm();
 		$this->db = App::getContainer()->getDb();
+		$this->person = $this->container->get('session')->getPerson();
 	}
 
 
@@ -313,6 +320,7 @@ class TicketListRenderer
 		}
 
 		$data['flag'] = $this->ticket_display->getFlaggedColor($ticket);
+		$this->renderAvailableActions($ticket, $data);
 
 		return $data;
 	}
@@ -374,5 +382,21 @@ class TicketListRenderer
 		}
 
 		return $data;
+	}
+
+	protected function renderAvailableActions(Ticket $ticket, array &$display)
+	{
+		$display['actions_allowed'] = array();
+		if (!$this->person) {
+			return;
+		}
+		/** @var TicketChecker $checker */
+		$checker = $this->person->PermissionsManager->TicketChecker;
+		$actions = array('set_resolved', 'set_awaiting_user', 'set_awaiting_agent', 'assign_self', 'assign_agent', 'assign_team');
+		foreach ($actions as $action) {
+			if ($checker->canModify($ticket, $action)) {
+				$display['actions_allowed'][] = $action;
+			}
+		}
 	}
 }

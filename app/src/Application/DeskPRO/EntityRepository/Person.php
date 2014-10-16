@@ -652,4 +652,27 @@ class Person extends AbstractEntityRepository
 
 		return array();
 	}
+
+	/**
+	 * Get agent names
+	 *
+	 * @param null $for_ids
+	 * @return mixed
+	 */
+	public function getAgentsRaw()
+	{
+		$ret = array();
+
+		// todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
+
+		foreach ($this->getAgents() as $agent) {
+			/** @var $agent \Application\DeskPRO\Entity\Person */
+			$ret[] = array(
+				'display_name' => $agent->getDisplayName(),
+				'picture_url' => $agent->getPictureUrl(16),
+			);
+		}
+
+		return $ret;
+	}
 }

@@ -448,6 +448,12 @@ $collection->create('agent_people_ajaxsave_organization', array(
 	'requirements'  => array('person_id' => '\\d+'),
 ));
 
+$collection->create('agent_person_list', array(
+	'path'        => '/person',
+	'controller'  => 'AgentBundle:Person:list',
+	'condition'   => 'request.headers.get("X-Requested-With") == "XMLHttpRequest"',
+));
+
 $collection->create('agent_person_get_tickets', array(
 	'path'          => '/person/{person_id}/tickets',
 	'controller'    => 'AgentBundle:Person:getPersonTickets',
