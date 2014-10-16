@@ -53,7 +53,7 @@ class LabelDefManager
 	/**
 	 * @var array
 	 */
-	static protected $types = array(
+	static public $types = array(
 		'articles'             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
 		'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
 		'downloads'            => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
