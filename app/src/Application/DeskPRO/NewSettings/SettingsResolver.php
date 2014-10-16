@@ -53,11 +53,17 @@ class SettingsResolver
 	 */
 	private $cache;
 
+	/**
+	 * @var array
+	 */
+	private $virtual_settings;
+
 
 	public function __construct(array $loaders, CacheAdapterInterface $cache)
 	{
 		$this->loaders = $loaders;
 		$this->cache = new ConvenientCache($cache);
+		$this->virtual_settings = array();
 	}
 
 	public function getLoaders()
@@ -73,14 +79,19 @@ class SettingsResolver
 		}
 
 		$that = $this;
+		$virtual_settings = $this->virtual_settings;
 
 		return $this->cache->get(
 			static::CACHE_KEY_GLOBAL,
-			function () use ($that, $force) {
+			function () use ($that, $force, $virtual_settings) {
 				$global_settings_array = array();
 
 				foreach ($that->getLoaders() as $loader) {
 					$global_settings_array = array_merge($global_settings_array, $loader->load($force));
+				}
+
+				foreach ($virtual_settings as $key => $callable) {
+					$global_settings_array[$key] = call_user_func($callable, $global_settings_array);
 				}
 
 				return new SettingsBag($global_settings_array);
@@ -96,10 +107,11 @@ class SettingsResolver
 		}
 
 		$that = $this;
+		$virtual_settings = $this->virtual_settings;
 
 		return $this->cache->get(
 			static::CACHE_KEY_DEFAULT,
-			function () use ($that, $force) {
+			function () use ($that, $force, $virtual_settings) {
 
 				$default_settings = array();
 
@@ -109,9 +121,23 @@ class SettingsResolver
 					$default_settings = $default_loader->load($force);
 				}
 
+				foreach ($virtual_settings as $key => $callable) {
+					$default_settings[$key] = call_user_func($callable, $default_settings);
+				}
+
 				return new SettingsBag($default_settings);
 			}
 		);
+	}
+
+
+	public function setVirtual($setting, $callable)
+	{
+		if (!is_callable($callable)) {
+			throw new \InvalidArgumentException('addVirtual must pass in a callable');
+		}
+
+		$this->virtual_settings[$setting] = $callable;
 	}
 }
  

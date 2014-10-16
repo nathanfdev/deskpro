@@ -205,5 +205,47 @@ class SettingsResolverTest extends \DpUnitTestCase
 
 		$this->assertEquals($expectedDefaultSettingsBag, $resolver->getDefaultSettings(true));
 	}
+
+
+	public function testVirtualSettings()
+	{
+		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+
+		$mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+		$mock1->shouldReceive('load')->andReturn(array('core.default_timezone' => 'non_virtual_val'));
+
+		$resolver = new SettingsResolver(array($mock1), $mockCache);
+
+		$resolver->setVirtual('core.default_timezone', function() {
+				return 'func_generated_value';
+			}
+		);
+
+		$mockCache->shouldReceive('has')->with('settings.bag.global')->andReturn(false)->once();
+		$mockCache->shouldReceive('set')->with('settings.bag.global', \Mockery::any())->once();
+
+		$this->assertEquals('func_generated_value', $resolver->getGlobalSettings()->get('core.default_timezone'));
+	}
+
+
+	public function testVirtualSettingsDefault()
+	{
+		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+
+		$mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+		$mock1->shouldReceive('load')->andReturn(array('core.default_timezone' => 'non_virtual_val'));
+
+		$resolver = new SettingsResolver(array($mock1), $mockCache);
+
+		$resolver->setVirtual('core.default_timezone', function() {
+				return 'func_generated_value';
+			}
+		);
+
+		$mockCache->shouldReceive('has')->with('settings.bag.default')->andReturn(false)->once();
+		$mockCache->shouldReceive('set')->with('settings.bag.default', \Mockery::any())->once();
+
+		$this->assertEquals('func_generated_value', $resolver->getDefaultSettings()->get('core.default_timezone'));
+	}
 }
  
