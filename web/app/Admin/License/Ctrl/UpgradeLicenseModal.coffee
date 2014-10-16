@@ -106,6 +106,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 					vat_rate:               info.vat_rate,
 					has_vat:                info.vat_rate > 0.0,
 					invoice_link:           if info.invoice then info.invoice.pdf_link else null
+					invoice_web_link:       if info.invoice then info.invoice.link else null
 				}
 
 				if @$scope.paymentForm.exist_card

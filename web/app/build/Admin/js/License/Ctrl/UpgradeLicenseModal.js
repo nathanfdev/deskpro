@@ -143,7 +143,8 @@
               currency_display: info.currency_pref.toUpperCase(),
               vat_rate: info.vat_rate,
               has_vat: info.vat_rate > 0.0,
-              invoice_link: info.invoice ? info.invoice.pdf_link : null
+              invoice_link: info.invoice ? info.invoice.pdf_link : null,
+              invoice_web_link: info.invoice ? info.invoice.link : null
             };
             if (_this.$scope.paymentForm.exist_card) {
               _this.$scope.paymentForm.mode = 'exist';
