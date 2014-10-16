@@ -35,7 +35,10 @@
 namespace Application\DeskPRO\NewSettings;
 
 
-class SettingsResolver 
+use Application\DeskPRO\Cache\CacheAdapterInterface;
+use Application\DeskPRO\Cache\ConvenientCache;
+
+class SettingsResolver
 {
 
 	/**
@@ -43,10 +46,16 @@ class SettingsResolver
 	 */
 	private $loaders;
 
+	/**
+	 * @var \Application\DeskPRO\Cache\ConvenientCache
+	 */
+	private $cache;
 
-	public function __construct(array $loaders)
+
+	public function __construct(array $loaders, CacheAdapterInterface $cache)
 	{
 		$this->loaders = $loaders;
+		$this->cache = new ConvenientCache($cache);
 	}
 
 	public function getLoaders()
@@ -56,6 +65,15 @@ class SettingsResolver
 
 
 	public function getGlobalSettings()
+	{
+		return $this->cache->get('settings.bag.global', array($this, 'computeGlobalSettings'));
+	}
+
+
+	/**
+	 * @return SettingsBag
+	 */
+	public function computeGlobalSettings()
 	{
 		$global_settings_array = array();
 
