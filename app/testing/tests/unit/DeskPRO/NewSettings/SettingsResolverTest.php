@@ -127,5 +127,83 @@ class SettingsResolverTest extends \DpUnitTestCase
 
 		$this->assertEquals($expectedResolvedSettingsBag, $resolver->getGlobalSettings(true));
 	}
+
+
+	public function testDefaultSettingsIsFirstLoader()
+	{
+		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+
+		$mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+		$mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+
+		$resolver = new SettingsResolver(array($mock1, $mock2), $mockCache);
+
+		$mock1->shouldReceive('load')->andReturn(
+			$settings1 = array(
+				'core.key1' => 'eighteen',
+				'core.key2' => 'sixteen',
+				'core.key3' => 'number4'
+			)
+		);
+
+		$mock2->shouldReceive('load')->andReturn(
+			$settings2 = array(
+				'core.key2' => 16,
+				'core.key3' => 'some_new-string'
+			)
+		);
+
+		// reflects the order of the loader return values
+		$expectedDefaultSettingsBag = new SettingsBag(
+			$settings1
+		);
+
+		$mockCache->shouldReceive('delete')->with('settings.bag.default')->never();
+		$mockCache->shouldReceive('has')->with('settings.bag.default')->andReturn(false)->once();
+		$mockCache->shouldReceive('set')->with(
+			'settings.bag.default', \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
+		)->once();
+
+		$this->assertEquals($expectedDefaultSettingsBag, $resolver->getDefaultSettings());
+	}
+
+
+	public function testDefaultSettingsCanForceReload()
+	{
+		$mockCache = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+
+		$mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+		$mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+
+		$resolver = new SettingsResolver(array($mock1, $mock2), $mockCache);
+
+		$mock1->shouldReceive('load')->with(true)->andReturn(
+			$settings1 = array(
+				'core.key1' => 'eighteen',
+				'core.key2' => 'sixteen',
+				'core.key3' => 'number4'
+			)
+		);
+
+		$mock2->shouldReceive('load')->with(true)->andReturn(
+			$settings2 = array(
+				'core.key2' => 16,
+				'core.key3' => 'some_new-string'
+			)
+		);
+
+		// reflects the order of the loader return values
+		$expectedDefaultSettingsBag = new SettingsBag(
+			$settings1
+		);
+
+		$mockCache->shouldReceive('delete')->with('settings.bag.default')->once();
+		$mockCache->shouldReceive('has')->with('settings.bag.default')->andReturn(false)->once();
+		$mockCache->shouldReceive('set')->with(
+			'settings.bag.default', \Mockery::type('Application\DeskPRO\NewSettings\SettingsBag')
+		)->once();
+
+		$this->assertEquals($expectedDefaultSettingsBag, $resolver->getDefaultSettings(true));
+	}
 }
  

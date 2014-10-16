@@ -41,6 +41,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
 class SettingsResolver
 {
 	const CACHE_KEY_GLOBAL = 'settings.bag.global';
+	const CACHE_KEY_DEFAULT = 'settings.bag.default';
 
 	/**
 	 * @var SettingsLoaderInterface[]
@@ -75,7 +76,7 @@ class SettingsResolver
 
 		return $this->cache->get(
 			static::CACHE_KEY_GLOBAL,
-			function() use ($that, $force) {
+			function () use ($that, $force) {
 				$global_settings_array = array();
 
 				foreach ($that->getLoaders() as $loader) {
@@ -83,6 +84,32 @@ class SettingsResolver
 				}
 
 				return new SettingsBag($global_settings_array);
+			}
+		);
+	}
+
+
+	public function getDefaultSettings($force = false)
+	{
+		if ($force) {
+			$this->cache->delete(static::CACHE_KEY_DEFAULT);
+		}
+
+		$that = $this;
+
+		return $this->cache->get(
+			static::CACHE_KEY_DEFAULT,
+			function () use ($that, $force) {
+
+				$default_settings = array();
+
+				$loaders = $that->getLoaders();
+				if (count($loaders) > 0) {
+					$default_loader = $loaders[0];
+					$default_settings = $default_loader->load($force);
+				}
+
+				return new SettingsBag($default_settings);
 			}
 		);
 	}
