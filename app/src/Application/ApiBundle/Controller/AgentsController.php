@@ -310,6 +310,23 @@ class AgentsController extends AbstractController implements ProtectedController
 				}
 			} else {
 				$agent = new Person();
+
+				// Check license
+				$max_agents = License::getLicense()->getMaxAgents();
+				if ($max_agents) {
+					$active_agents = $this->container->getDb()->fetchColumn("
+						SELECT COUNT(*)
+						FROM people
+						WHERE is_agent = 1 AND is_deleted = 0
+					");
+
+					if ($active_agents >= $max_agents) {
+						return $this->createApiErrorInfoResponse('license_exceeded', 'You have used all available agent seats that your license allows', array(
+							'agent_seats'    => $max_agents,
+							'agents_created' => $active_agents,
+						));
+					}
+				}
 			}
 		}
 
