@@ -57,7 +57,13 @@ class SettingsResolver
 
 	public function getGlobalSettings()
 	{
-		return new SettingsBag();
+		$global_settings_array = array();
+
+		foreach ($this->loaders as $loader) {
+			$global_settings_array = array_merge($global_settings_array, $loader->load());
+		}
+
+		return new SettingsBag($global_settings_array);
 	}
 }
  

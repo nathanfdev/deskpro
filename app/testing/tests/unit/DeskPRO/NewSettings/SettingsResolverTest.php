@@ -35,6 +35,7 @@
 namespace DpUnitTests\DeskPRO\NewSettings;
 
 
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 
 class SettingsResolverTest extends \DpUnitTestCase
@@ -57,6 +58,37 @@ class SettingsResolverTest extends \DpUnitTestCase
 		$resolver = new SettingsResolver(array());
 
 		$this->assertInstanceOf('Application\DeskPRO\NewSettings\SettingsBag', $resolver->getGlobalSettings());
+	}
+
+
+	public function testGlobalSettingsMergesLoadersProperly()
+	{
+		$mock1 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+		$mock2 = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsLoaderInterface');
+
+		$resolver = new SettingsResolver(array($mock1, $mock2));
+
+		$mock1->shouldReceive('load')->andReturn($settings1 = array(
+				'core.key1' => 'eighteen',
+				'core.key2' => 'sixteen',
+				'core.key3' => 'number4'
+			)
+		);
+
+		$mock2->shouldReceive('load')->andReturn($settings2 = array(
+				'core.key2' => 16,
+				'core.key3' => 'some_new-string'
+			)
+		);
+
+		// reflects the order of the loader return values
+		$expectedResolvedSettingsBag = new SettingsBag(array(
+			'core.key1' => 'eighteen',
+			'core.key2' => 16,
+			'core.key3' => 'some_new-string'
+		));
+
+		$this->assertEquals($expectedResolvedSettingsBag, $resolver->getGlobalSettings());
 	}
 }
  
