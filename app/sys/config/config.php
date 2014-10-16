@@ -236,6 +236,14 @@ $definition->setAbstract(true);
 $container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
 
 ############################################################################
+# Cache services
+############################################################################
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
+$definition->setArguments(array());
+$container->setDefinition('cache.simple_array', $definition);
+
+############################################################################
 # Validators and Constraints
 ############################################################################
 
