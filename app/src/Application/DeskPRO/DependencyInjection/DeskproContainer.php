@@ -756,10 +756,24 @@ class DeskproContainer extends Container
 	 * Get the settings object
 	 *
 	 * @return \Application\DeskPRO\Settings\Settings
+	 *
+	 * @deprecated use getSettingsResolver() and use its api instead
 	 */
 	public function getSettingsHandler()
 	{
 		$settings = $this->get('deskpro.core.settings');
+		return $settings;
+	}
+
+
+	/**
+	 * Get the settings resolver system serivce
+	 *
+	 * @return \Application\DeskPRO\NewSettings\SettingsResolver
+	 */
+	public function getSettingsResolver()
+	{
+		$settings = $this->getSystemService('settings_resolver');
 		return $settings;
 	}
 
