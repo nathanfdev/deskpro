@@ -48,6 +48,7 @@ use Application\DeskPRO\EmailGateway\TicketGateway\ProcessNew;
 use Application\DeskPRO\EmailGateway\TicketGateway\ProcessReply;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
 use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Entity\Person;
 use Orb\Types\NoValue;
 
 class TicketGatewayProcessor extends AbstractGatewayProcessor

@@ -88,7 +88,7 @@ class EditAgent
 	 * @var \Application\DeskPRO\Entity\Usergroup[]
 	 */
 	public $agent_groups;
-
+	
 	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam
 	 */
