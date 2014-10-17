@@ -1,13 +1,13 @@
 <?php
 
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -98,6 +98,27 @@ class AgentMessagesLoader extends LoaderAbstract
 				$activity_time = 0;
 			}
 			$is_initial_pool = !empty($_REQUEST['is_initial_poll']);
+			
+			#------------------------------
+			# Dismissed client messages
+			#------------------------------
+			if (isset($_REQUEST['dismissed'])) {
+				$notifications = array();
+				
+				$dismissed_notifications = $this->getDismissedNotifications();
+				
+				foreach ($dismissed_notifications as $notification) {
+					$notification['data'] = unserialize($notification['data']);
+
+					if (!empty($notification['data']['browser_rendered'])) {
+						$notifications[] = $notification['data']['browser_rendered'];
+					}
+				}
+				
+				echo json_encode(array('rendered_list' => implode("\n", $notifications)));
+				
+				return true;
+			}
 
 			#------------------------------
 			# Standard client messages
@@ -801,6 +822,25 @@ class AgentMessagesLoader extends LoaderAbstract
 		}
 
 		return $this->_person;
+	}
+	
+	protected function getDismissedNotifications()
+	{
+		$person = $this->_getPerson();
+		if (!$person) {
+			return array();
+		}
+		
+		$q = $this->getPdoRead()->query("
+			SELECT id, typename, data
+			FROM agent_alerts
+			WHERE person_id = {$person->id} AND is_dismissed = 1
+			ORDER BY id DESC
+			LIMIT 100
+		");
+		$q->execute();
+		
+		return $q->fetchAll();
 	}
 }
 

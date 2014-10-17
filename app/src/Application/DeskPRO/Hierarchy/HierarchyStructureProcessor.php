@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -56,6 +56,13 @@ class HierarchyStructureProcessor
 	 */
 	private $properties;
 
+	/**
+	 * False to disable any hierarchy handling
+	 *
+	 * @var bool
+	 */
+	private $is_hierarchy = true;
+
 
 	/**
 	 * @param EntityManager $em
@@ -67,6 +74,15 @@ class HierarchyStructureProcessor
 		$this->em          = $em;
 		$this->entity_name = $entity_name;
 		$this->properties  = $properties;
+	}
+
+
+	/**
+	 * Disables hierarchy handling
+	 */
+	public function disableHierarchy()
+	{
+		$this->is_hierarchy = false;
 	}
 
 
@@ -98,7 +114,7 @@ class HierarchyStructureProcessor
 				$recs[$cat['id']] = $obj;
 			}
 
-			if (!empty($cat['parent_id']) && $cat['parent_id']) {
+			if ($this->is_hierarchy && !empty($cat['parent_id']) && $cat['parent_id']) {
 				$child_to_parent_map[$cat['id']] = $cat['parent_id'];
 			}
 		}
@@ -123,11 +139,13 @@ class HierarchyStructureProcessor
 			$this->applyProperties($obj, $cat);
 
 			// Also hook up children to their parents
-			if (isset($child_to_parent_map[$cat_id])) {
-				$parent_obj = $recs[$child_to_parent_map[$cat_id]];
-				$obj->parent = $parent_obj;
-			} else {
-				$obj->parent = null;
+			if ($this->is_hierarchy) {
+				if (isset($child_to_parent_map[$cat_id])) {
+					$parent_obj  = $recs[$child_to_parent_map[$cat_id]];
+					$obj->parent = $parent_obj;
+				} else {
+					$obj->parent = null;
+				}
 			}
 		}
 
@@ -157,6 +175,11 @@ class HierarchyStructureProcessor
 				WHERE r NOT IN (?0)
 			")->execute(array($have_ids));
 
+			foreach ($missing_recs as $r) {
+				if ($this->is_hierarchy && $r->parent) {
+					$this->em->remove($r);
+				}
+			}
 			foreach ($missing_recs as $r) {
 				$this->em->remove($r);
 			}

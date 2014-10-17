@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -60,7 +60,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		// Already logged in
 		if ($this->session->getPerson() && $this->session->getPerson()->is_agent) {
-			return $this->redirectRoute($this->route_prefix);
+			if ($return) return $this->redirect($return);
+			else return $this->redirectRoute($this->route_prefix);
 		}
 
 		$has_done_reset = false;

@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -34,6 +34,7 @@
 namespace DeskPRO\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -126,7 +127,13 @@ class DpKernel extends AbstractKernel
 			}
 		}
 
+		// entity loader required to construct symfony container
+		// so enable it temporarily while the container builds
+		$v = libxml_disable_entity_loader(false);
+
 		parent::initializeContainer();
+
+		libxml_disable_entity_loader($v);
 	}
 
 
@@ -460,6 +467,7 @@ class DpKernel extends AbstractKernel
 		if ($do_correction) {
 			$url = App::getSetting('core.deskpro_url') . ltrim($now_path, '/');
 			$response = new RedirectResponse($url, 301);
+			$response->headers->setCookie(new Cookie('dp_autocorrect_url', '1', 0, '/'));
 			return $response;
 		}
 
@@ -501,6 +509,10 @@ class DpKernel extends AbstractKernel
 			$write[] = '';
 			$write = implode("\n", $write);
 			file_put_contents($this->getLogDir() . '/template_use.log', $write, \FILE_APPEND);
+		}
+
+		if (defined('DP_INTERFACE') && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'admin' || DP_INTERFACE == 'reports')) {
+			$response->headers->set('X-Frame-Options', 'SAMEORIGIN');
 		}
 	}
 
@@ -545,6 +557,7 @@ class DpKernel extends AbstractKernel
 				) {
 					return false;
 				}
+				break;
 
 			default:
 				return false;
@@ -566,7 +579,7 @@ class DpKernel extends AbstractKernel
 		}
 
 		// Offline setting applies to all but admin
-		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE != 'admin' && DP_INTERFACE != 'billing') {
+		if (App::getSetting('core.helpdesk_disabled') && DP_INTERFACE == 'user') {
 			return true;
 		}
 

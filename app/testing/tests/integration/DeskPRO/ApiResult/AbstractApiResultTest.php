@@ -123,9 +123,9 @@ abstract class AbstractApiResultTest extends \DpIntegrationTestCase
 		return $this->assertFalse(!strtotime($subject));
 	}
 
-	public function assertIsValidTimestamp($subject)
+	public function assertIsValidTimestamp($subject, $field = '')
 	{
-		return $this->assertGreaterThan(0, $subject);
+		return $this->assertGreaterThan(0, $subject, $field);
 	}
 
 	protected function _getExpectedTicket()

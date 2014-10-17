@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\AgentNotifPrefs;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Translate\Translate;
 
 class PrefsTable
@@ -201,12 +202,14 @@ class PrefsTable
 		);
 	}
 
+
 	/**
-	 * @param string $type
-	 * @param \Application\DeskPRO\Entity\TicketFilter[] $sys_filters
+	 * @param        $type
+	 * @param array  $sys_filters
+	 * @param Person $person_context
 	 * @return array
 	 */
-	public function buildSystemFiltersTable($type, array $sys_filters)
+	public function buildSystemFiltersTable($type, array $sys_filters, Person $person_context = null)
 	{
 		// Sort filters
 		usort($sys_filters, function($a, $b) {
@@ -261,9 +264,14 @@ class PrefsTable
 					if (!$opt) {
 						$col[] = null;
 					} else {
+						if (!$person_context) {
+							$desc = $this->tr->phrase("agent.prefs.inbox_{$f->sys_name}_{$type}_{$opt}");
+						} else {
+							$desc = $this->tr->phrase("agent.prefs.name_inbox_{$f->sys_name}_{$type}_{$opt}", array('name' => $person_context->getDisplayName()));
+						}
 						$col[] = array(
 							'name'  => $opt,
-							'desc'  => $this->tr->phrase("agent.prefs.inbox_{$f->sys_name}_{$type}_{$opt}"),
+							'desc'  => $desc,
 							'value' => (isset($values[$opt]) && $values[$opt]) ? true : false
 						);
 					}

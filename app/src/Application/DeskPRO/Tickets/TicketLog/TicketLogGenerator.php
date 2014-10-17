@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -236,9 +236,9 @@ class TicketLogGenerator
 					'id_after'    => $new ? $new->id : null,
 
 					'old_category_id'    => $old ? $old->id : null,
-					'old_category_name'  => $old ? $old->title : null,
+					'old_category_title' => $old ? $old->title : null,
 					'new_category_id'    => $new ? $new->id : null,
-					'new_category_name'  => $new ? $new->title : null,
+					'new_category_title' => $new ? $new->title : null,
 				);
 				break;
 
@@ -379,11 +379,26 @@ class TicketLogGenerator
 				break;
 
 			case 'participants':
-				return array(
-					'action_type' => 'changed_participants',
-					'added'   => array_map(function($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added),
-					'removed' => array_map(function($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed)
-				);
+				$added_users    = array_filter($added, function($part) { return !$part->person->is_agent; });
+				$added_agents   = array_filter($added, function($part) { return $part->person->is_agent; });
+
+				$removed_users  = array_filter($removed, function($part) { return !$part->person->is_agent; });
+				$removed_agents = array_filter($removed, function($part) { return $part->person->is_agent; });
+
+				if ($added_users || $removed_users) {
+					return array(
+						'action_type' => 'changed_user_participants',
+						'added'   => array_map(function($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
+						'removed' => array_map(function($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_users)
+					);
+				}
+				if ($added_agents || $removed_agents) {
+					return array(
+						'action_type' => 'changed_agent_participants',
+						'added'   => array_map(function($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
+						'removed' => array_map(function($part) { $p = $part->person; return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_agents)
+					);
+				}
 				break;
 
 			case 'person':
@@ -539,6 +554,75 @@ class TicketLogGenerator
 					'package_title'  => $new['package_title'],
 					'message'        => $new['message']
 				);
+
+			case 'attachments':
+				$log_set = array();
+
+				if ($new && isset($new->blob) && !$new->is_inline) {
+					$blob = $new->blob;
+					$log_data = array();
+					$log_data['action_type']     = 'attach_added';
+					$log_data['id_after']        = $new->id;
+					$log_data['attach_id']       = $new->id;
+					$log_data['blob_id']         = $blob->id;
+					$log_data['filename']        = $blob->filename;
+					$log_data['filesize']        = $blob->filesize;
+					$log_data['content_type']    = $blob->content_type;
+					$log_set[] = $log_data;
+				}
+
+				if ($old && isset($old->blob) && !$old->is_inline) {
+					$blob = $old->blob;
+					$log_data = array();
+					$log_data['action_type']     = 'attach_removed';
+					$log_data['id_before']       = $old->id;
+					$log_data['attach_id']       = $old->id;
+					$log_data['blob_id']         = $blob->id;
+					$log_data['filename']        = $blob->filename;
+					$log_data['filesize']        = $blob->filesize;
+					$log_data['content_type']    = $blob->content_type;
+					$log_set[] = $log_data;
+				}
+
+				return $log_set;
+
+			case 'feedback_rating':
+				$log_data = array();
+				$log_data['action_type'] = 'feedback_rating';
+				$log_data['id_before']   = $old;
+				$log_data['id_after']    = $new;
+
+				switch ($new) {
+					case -1: $log_data['rating'] = 'negative'; break;
+					case 0:  $log_data['rating'] = 'neutral';  break;
+					case 1:  $log_data['rating'] = 'positive'; break;
+				}
+
+				return $log_data;
+
+			case 'person_email':
+				$log_data = array();
+				$log_data['action_type'] = 'person_email_changed';
+				$log_data['id_before']   = $old ? $old->id : null;
+				$log_data['id_after']    = $new ? $new->id : null;
+
+				if ($old) {
+					$log_data['old_email'] = $old->email;
+				}
+				if ($new) {
+					$log_data['new_email'] = $new->email;
+				}
+
+				return $log_data;
+
+			case 'ticket_sla_status':
+				$log_data = array();
+				$log_data['action_type'] = 'ticket_sla_status';
+				$log_data['sla_id']      = $old['sla']->id;
+				$log_data['sla_title']   = $old['sla']->title;
+				$log_data['old_status']  = $old['status'];
+				$log_data['new_status']  = $new['status'];
+				return $log_data;
 
 			default:
 				return array();

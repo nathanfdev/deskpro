@@ -11,9 +11,18 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 				'settings': '/password_settings'
 			}).then( (res) =>
 				@$scope.settings = {
-					sessions_lifetime: res.data.settings.settings.sessions_lifetime,
-					session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page
+					sessions_lifetime:              res.data.settings.settings.sessions_lifetime,
+					session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page,
+					ip_security_enabled:            res.data.settings.settings.ip_security_enabled,
+					ip_security_mode:               res.data.settings.settings.ip_security_mode || 'admins',
+					ip_security_whitelist_lifetime: res.data.settings.settings.ip_security_whitelist_lifetime + "",
+					disable_notifications:          res.data.settings.settings.disable_notifications,
+					enable_agent_rememberme:        res.data.settings.settings.enable_agent_rememberme,
+					enable_user_rememberme:         res.data.settings.settings.enable_user_rememberme,
 				}
+
+				console.log @$scope.settings
+
 				@$scope.agent = res.data.settings.settings.agent
 				@$scope.user  = res.data.settings.settings.user
 
@@ -65,7 +74,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
 			@Api.sendPostJson('/password_settings', {settings: settings}).success( =>
 				@stopSpinner('saving').then(=>
-					@Growl.success(@getRegisteredMessage('saved_settings'))
+					message = @getRegisteredMessage('saved_settings')
+					@Growl.success(message) if message && message.length
 				)
 			).error( (info, code) =>
 				@stopSpinner('saving', true)

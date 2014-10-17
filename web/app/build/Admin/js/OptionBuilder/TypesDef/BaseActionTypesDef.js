@@ -1,7 +1,12 @@
 (function() {
-  define(['DeskPRO/Util/Util'], function(Util) {
+  var __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  define(['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays', 'Admin/OptionBuilder/TypesDef/BaseTypesDef'], function(Util, Arrays, BaseTypesDef) {
     var Admin_OptionBuilder_TypesDef_BaseActionTypesDef;
-    return Admin_OptionBuilder_TypesDef_BaseActionTypesDef = (function() {
+    return Admin_OptionBuilder_TypesDef_BaseActionTypesDef = (function(_super) {
+      __extends(Admin_OptionBuilder_TypesDef_BaseActionTypesDef, _super);
+
       function Admin_OptionBuilder_TypesDef_BaseActionTypesDef($q, Api, dpTemplateManager) {
         this.$q = $q;
         this.Api = Api;
@@ -74,42 +79,11 @@
         is_multi = options.isMulti;
         extraOptions = options.extraOptions || null;
         if (!options_formatter) {
-          options_formatter = function(options) {
-            var opt, opts, title, val, _i, _j, _len, _len1;
-            opts = [];
-            if (extraOptions) {
-              for (_i = 0, _len = extraOptions.length; _i < _len; _i++) {
-                opt = extraOptions[_i];
-                opts.push(opt);
-              }
-            }
-            for (_j = 0, _len1 = options.length; _j < _len1; _j++) {
-              opt = options[_j];
-              if (opt.title) {
-                title = opt.title;
-              } else if (opt.display_name) {
-                title = opt.display_name;
-              } else if (opt.name) {
-                title = opt.name;
-              } else {
-                title = null;
-              }
-              if (opt.id) {
-                val = opt.id;
-              } else if (opt.value) {
-                val = opt.value;
-              } else {
-                val = null;
-              }
-              if (title !== null && val !== null) {
-                opts.push({
-                  title: title,
-                  value: val
-                });
-              }
-            }
-            return opts;
-          };
+          options_formatter = (function(_this) {
+            return function(options) {
+              return _this.standardOptionsFormatter(options, extraOptions);
+            };
+          })(this);
         }
         me = this;
         return {
@@ -176,9 +150,10 @@
        */
 
       Admin_OptionBuilder_TypesDef_BaseActionTypesDef.prototype.getStandardIs = function(options) {
-        var me, prop_name, type;
+        var icon, me, prop_name, type;
         type = options.type;
         prop_name = options.propName;
+        icon = options.icon;
         me = this;
         return {
           getTemplate: function() {
@@ -195,7 +170,8 @@
                 }
                 return {
                   value: true,
-                  op: 'is'
+                  op: 'is',
+                  icon: icon || false
                 };
               },
               getValue: function(model, data) {
@@ -333,7 +309,7 @@
 
       return Admin_OptionBuilder_TypesDef_BaseActionTypesDef;
 
-    })();
+    })(BaseTypesDef);
   });
 
 }).call(this);

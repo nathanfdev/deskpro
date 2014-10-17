@@ -1,5 +1,5 @@
 (function() {
-  define(['Admin/Main/Util/EventsMixin'], function(EventsMixin) {
+  define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsMixin, Numbers) {
 
     /**
     	* Save an ordered k=>v
@@ -12,6 +12,7 @@
         this.scope = null;
         this.data = {};
         this.order = [];
+        this.orderFn = null;
       }
 
 
@@ -37,7 +38,11 @@
        */
 
       Admin_Main_Collection_OrderedDictionary.prototype.reorder = function(callback) {
-        this.order.sort((function(_this) {
+        callback = callback || this.orderFn;
+        if (!callback) {
+          return;
+        }
+        return this.order.sort((function(_this) {
           return function(k1, k2) {
             var v1, v2;
             v1 = _this.data[k1];
@@ -45,7 +50,6 @@
             return callback(v1, v2);
           };
         })(this));
-        return this.order.reverse();
       };
 
 
@@ -97,12 +101,16 @@
       Admin_Main_Collection_OrderedDictionary.prototype.set = function(k, v) {
         var exist_pos;
         this._touch = (new Date()).getTime();
+        if (Numbers.isNumber(k)) {
+          k = parseInt(k);
+        }
         this.data[k] = v;
         exist_pos = this.order.indexOf(k);
         if (exist_pos !== -1) {
           this.order.splice(exist_pos, 1);
         }
         this.order.push(k);
+        this.reorder();
         this.notifyListeners('changed');
         return v;
       };
@@ -119,6 +127,9 @@
       Admin_Main_Collection_OrderedDictionary.prototype.get = function(k, default_val) {
         if (default_val == null) {
           default_val = null;
+        }
+        if (Numbers.isNumber(k)) {
+          k = parseInt(k);
         }
         if (this.data[k] == null) {
           return default_val;
@@ -137,12 +148,16 @@
       Admin_Main_Collection_OrderedDictionary.prototype.remove = function(k) {
         var exist_pos, val;
         this._touch = (new Date()).getTime();
+        if (Numbers.isNumber(k)) {
+          k = parseInt(k);
+        }
         val = null;
         if (this.data[k] != null) {
           val = this.data[k];
           delete this.data[k];
           exist_pos = this.order.indexOf(k);
           this.order.splice(exist_pos, 1);
+          this.reorder();
           this.notifyListeners('changed');
         }
         return val;

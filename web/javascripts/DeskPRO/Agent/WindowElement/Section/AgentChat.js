@@ -181,6 +181,14 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	newChatWindow: function(agent_ids, title) {
 		var self = this;
 
+		agent_ids = agent_ids.filter(function(v) {
+			return v !== window.DESKPRO_PERSON_ID;
+		});
+
+		if (!agent_ids.length) {
+			return;
+		}
+
 		var chatWin = DeskPRO.Agent.Widget.AgentChatWin_FindAgents(agent_ids);
 		if (!chatWin) {
 			chatWin = new DeskPRO.Agent.Widget.AgentChatWin({
@@ -192,7 +200,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		this.close();
 
-		chatWin.open();
+		chatWin.open(true);
 	},
 
 	newIncomingMessage: function(info) {

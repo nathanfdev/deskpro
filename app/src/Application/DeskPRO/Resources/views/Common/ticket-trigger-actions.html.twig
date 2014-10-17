@@ -93,7 +93,6 @@
 <div class="builder-type" title="{{ phrase('agent.general.set_department') }}" data-rule-type="department" data-rule-group="Ticket">
 	<div class="builder-options">
 		<select name="department">
-			<option value="email_account">Linked department for email account</option>
 			{% for dep in app.departments.getRootNodes() if dep.is_tickets_enabled %}
 				{% if dep.children|length %}
 					<optgroup label="{{ dep.title }}">

@@ -12,7 +12,7 @@
 		<div class="email-form">
 			<textarea style="width: 98%; height: 120px; font-family: sans-serif; padding: 5px; margin: 5px 0 5px 0; border-radius: 3px; border: 1px solid #aaa;" placeholder="Enter your question here" name="message"></textarea><br />
 			<div style="padding-top: 5px;">
-				<button	class="send-btn btn btn-primary">Send Message</button>
+				<button	class="send-btn btn">Send Message</button>
 				<img class="send-loading" src="https://www.deskpro.com/wp-content/themes/dpstyle/assets/images/loading-small-flat.gif" width="16" height="11" style="margin-top: 4px; display: none;" />
 			</div>
 		</div>

@@ -73,15 +73,20 @@
           return function() {
             var promise;
             promise = _this.Api.sendPostJson('/reports/builder/test/' + _this.report.id, {
-              parts: _this.query_parts
+              parts: _this.query_parts,
+              params: _this.$stateParams.params
             });
             return promise.success(function(data) {
               if (data.error) {
                 _this.query_error = data.error;
-              }
-              if (data.rendered_result) {
-                _this.query_error = null;
-                _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
+              } else {
+                if (data.rendered_result) {
+                  _this.query_error = null;
+                  _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
+                } else {
+                  _this.query_error = null;
+                  _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
+                }
               }
               _this.stopSpinner('builder_loading', true);
               return _this.stopSpinner('query_loading', true);
@@ -176,7 +181,9 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadCsv = function() {
-        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/csv'));
+        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/csv', {
+          params: this.$stateParams.params
+        }));
       };
 
 
@@ -185,7 +192,9 @@
        */
 
       Reports_Builder_Ctrl_Edit.prototype.downloadPdf = function() {
-        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/pdf'));
+        return window.open(this.$http.formatApiUrl('/reports/builder/download/' + this.report.id + '/pdf', {
+          params: this.$stateParams.params
+        }));
       };
 
 

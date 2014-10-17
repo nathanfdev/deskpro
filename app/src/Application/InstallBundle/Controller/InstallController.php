@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -172,18 +173,22 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 
 				try {
 					$this->getDb()->connect();
-				} catch (\PDOException $e) {
-					if ($e->getCode() == '1049') {
+				} catch (\Exception $e) {
+					if ($e instanceof DBALException || $e instanceof \PDOException) {
+						if ($e->getCode() == '1049') {
 
-						// Attempt to create an empty database
-						try {
-							global $DP_CONFIG;
-							$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-							$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
-							$did_create_db = true;
-						} catch (\Exception $e) {
-							$did_create_db = false;
+							// Attempt to create an empty database
+							try {
+								global $DP_CONFIG;
+								$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+								$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
+								$did_create_db = true;
+							} catch (\Exception $e) {
+								$did_create_db = false;
+							}
 						}
+					} else {
+						throw $e;
 					}
 				}
 
@@ -759,13 +764,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		);
 		$app_syncer->runSync();
 
-		$this->getContainer()->resetSystemService('app_manager');
+		$this->container->resetSystemService('app_manager');
 		$instance_installer = new \Application\DeskPRO\App\InstanceInstaller(
-			$this->getContainer()->getAppManager(),
-			$this->getContainer()->getAppManager()->getPackage('deskpro_gravatar'),
-			$this->getContainer()->getEm()
+			$this->container->getAppManager(),
+			$this->container->getAppManager()->getPackage('deskpro_gravatar'),
+			$this->container->getEm()
 		);
-		$instance_installer->install('', array(), $this->getContainer());
+		$instance_installer->install('', array(), $this->container);
 
 		$prev_time = $this->getDb()->fetchColumn("SELECT data FROM install_data WHERE build='default' AND name='install_time'");
 		if (!$prev_time) {

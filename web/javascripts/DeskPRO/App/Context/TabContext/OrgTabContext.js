@@ -6,6 +6,10 @@ define(['DeskPRO/App/Context/TabContext/TabContext'], function(TabContext) {
 			return [
 				['$org', this.getFragment().meta.api_data]
 			]
+		},
+
+		getOrgData: function() {
+			return this.getFragment().meta.api_data;
 		}
 	});
 });

@@ -18,6 +18,15 @@ define [
 			@agentId = parseInt(@$stateParams.id)
 			@form = {email_primary: '', emails_list: []}
 			@hasPermOverrides = false
+			@hasDepOverrides = false
+			@primary_phone_number_region = 'US'
+			@service =
+				agents: @DataService.get 'Agents'
+			@all_perms =
+				perms: {}
+				deps_perms:
+					tickets: {assign: true, full: true}
+					chat: {full: true}
 
 			@$scope.$watch('EditCtrl.form.emails_list', (emails_list) =>
 				@email_sysaccount_error = false
@@ -38,8 +47,9 @@ define [
 					groups: "/agent_groups",
 					groupPerms: "/agent_groups/all/permissions",
 					notif_prefs_table: "/agents/#{@agentId}/notify-prefs/get-tables",
-					ticketDeps: "/ticket_deps?with_perms=1"
-					chatDeps: "/chat_deps?with_perms=1"
+					ticketDeps: "/ticket_deps?with_perms=1",
+					chatDeps: "/chat_deps?with_perms=1",
+					default_country: "/settings/values/core.default_country_code"
 				})
 			else
 				promise = @Api.sendDataGet({
@@ -48,13 +58,13 @@ define [
 					groupPerms: "/agent_groups/all/permissions",
 					notif_prefs_table: "/agents/0/notify-prefs/get-tables",
 					ticketDeps: "/ticket_deps?with_perms=1",
-					chatDeps: "/chat_deps?with_perms=1"
+					chatDeps: "/chat_deps?with_perms=1",
+					default_country: "/settings/values/core.default_country_code"
 				})
 
 			promise.then( (result) =>
 				if @agentId
 					@agent = result.data.agent.agent
-					@agent.signature_html = result.data.agent.signature_html
 					@perm_form = result.data.agent.perms
 				else
 					@agent = {
@@ -66,6 +76,8 @@ define [
 					}
 					@perm_form = null
 
+				@primary_phone_number_region = result.data.default_country.value
+
 				@teams  = result.data.teams.agent_teams
 				@groups = result.data.groups.groups
 				@groupPerms = result.data.groupPerms.groups
@@ -76,14 +88,13 @@ define [
 				@agentNotifPrefsModel = new EditAgentNotifPrefs(result.data.notif_prefs_table)
 				@notif_prefs = @agentNotifPrefsModel.prefsTable
 
-				@agentFormModel = new EditAgentModel(@agent, @groups, @teams)
+				@agentFormModel = new EditAgentModel(@agent, @groups, @teams, @primary_phone_number_region)
 				@form = @agentFormModel.form
 
 				@$scope.$watch('EditCtrl.form.agent_groups', =>
 					@updateEffectiveUgPerms()
+					@updateAllPermsState()
 				, true)
-
-				@updateHasPermOverridesStatus()
 
 				#--------------------
 				# Departments
@@ -113,21 +124,73 @@ define [
 							full = true
 
 					@deps_perms.chat[dep.id] = { full: full }
+
+				@$timeout(=> @updateHasPermOverridesStatus())
 			)
 			return promise
+
+
+
+		changeAllPerms: (type, section) ->
+			return if !@perm_form? || !@deps_perms?
+
+			if 'perms' == type
+				for perm of @perm_form[section]
+					if not @ugEffectivePerms[section]?[perm]? or not @ugEffectivePerms[section][perm]
+						@perm_form[section][perm] = @all_perms[type][section]
+
+				if 'people' == section
+					@changeAllPerms('perms', 'org')
+
+			else if 'deps_perms_tickets' == type
+				for dep of @deps_perms.tickets
+					if !@ugEffectiveDepPerms.tickets[dep]?[section]? || !@ugEffectiveDepPerms.tickets[dep][section]
+						@deps_perms.tickets[dep][section] = @all_perms.deps_perms.tickets[section]
+
+			else if 'deps_perms_chat' == type
+				for dep of @deps_perms.chat
+					if !@ugEffectiveDepPerms.chat[dep]?[section]? || !@ugEffectiveDepPerms.chat[dep][section]
+						@deps_perms.chat[dep][section] = @all_perms.deps_perms.chat[section]
+
+			@updateHasPermOverridesStatus()
+
+
+
+		updateAllPermsState: ->
+			return if !@perm_form?
+
+			for section, perms of @perm_form
+				enabled = true
+				for perm of perms
+					if !perms[perm] && !@ugEffectivePerms[section]?[perm]
+						enabled = false
+						break
+				@all_perms.perms[section] = enabled
+
+			for type, sections of @all_perms.deps_perms
+				for section of sections
+					enabled = true
+					for dep of @deps_perms[type]
+						if !@deps_perms[type][dep][section] && !@ugEffectiveDepPerms[type][dep][section]
+							enabled = false
+					@all_perms.deps_perms[type][section] = enabled
+
 
 
 		###
 		# When usergroups are changed, we need to update the effective list of permissions
 		###
 		updateEffectiveUgPerms: ->
+
+			# todo this map should be loaded from server
 			@ugEffectivePerms = {
 				ticket: {},
 				people: {},
 				org: {},
 				chat: {},
 				publish: {},
-				general: {}
+				general: {},
+				tasks: {}
 			}
 
 			@ugEffectiveDepPerms = {
@@ -177,15 +240,31 @@ define [
     	# it can become too slow to watch the large graph of permissions.
 		###
 		updateHasPermOverridesStatus: ->
-			@updateEffectiveUgPerms()
+			return if !@ugEffectivePerms? || !@ugEffectiveDepPerms?
 
 			@hasPermOverrides = false
-			for own type, perms of @perm_form
-				for own permName, value of perms
-					if value
-						if not @ugEffectivePerms[type]?[permName]? or not @ugEffectivePerms[type][permName]
-							@hasPermOverrides = true
-							return
+			run = =>
+				for own type, perms of @perm_form
+					for own permName, value of perms
+						if value
+							if not @ugEffectivePerms[type]?[permName]? or not @ugEffectivePerms[type][permName] or not @form.agent_groups.length
+								@hasPermOverrides = true
+								return
+			run()
+
+			@hasDepOverrides = false
+			run = =>
+				return if not @deps_perms or not @deps_perms.tickets
+				for app in ['tickets', 'chat']
+					for own depId, perms of @deps_perms[app]
+						for own perm, value of perms
+							if value
+								if not @ugEffectiveDepPerms[app][depId][perm] or not @form.agent_groups.length
+									@hasDepOverrides = true
+									return
+			run()
+
+			@updateAllPermsState()
 
 
 		###
@@ -196,6 +275,16 @@ define [
 				for own permName, value of perms
 					perms[permName] = false
 			@hasPermOverrides = false
+
+		###
+    	# This does the actual removal of all depoverrides
+		###
+		clearDepOverrides: =>
+			for app in ['tickets', 'chat']
+				for own depId, perms of @deps_perms[app]
+					for own perm, value of perms
+						@deps_perms[app][depId][perm] = false
+			@hasDepOverrides = false
 
 
 		###
@@ -224,9 +313,13 @@ define [
 					$scope.saveResetPassword = ->
 						$scope.is_saving = true
 						if $scope.password.mode == 'set'
-							doReset($scope.password.manual).then(=> $modalInstance.close())
+							doReset($scope.password.manual).then(=>
+								$modalInstance.close()
+							, -> $scope.is_saving = false)
 						else
-							doReset(false).then(=> $modalInstance.close())
+							doReset(false).then(=>
+								$modalInstance.close()
+							, -> $scope.is_saving = false)
 				]
 			});
 
@@ -388,7 +481,9 @@ define [
 
 				p = @Api.sendDelete(target)
 				p.then(=>
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.removeAgentFromList(@agentId)
+					# todo
+					@service.agents.get(@agentId).then (agent) =>
+						@service.agents._removeModel agent
 					@$state.go('agents.agents')
 				)
 
@@ -466,6 +561,7 @@ define [
 
 			@email_dupe_error = false
 			@email_sysaccount_error = false
+			@invalid_phone_error = false
 			@startSpinner('saving')
 
 			postData = @getFormData()
@@ -477,12 +573,11 @@ define [
 
 			promise.then( (res) =>
 				@agent.display_name = @form.name
+				@service.agents.mergeDataModel(@agent)
 
-				if @agentId
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.updateAgent(@agent)
-				else
+				if !@agentId
+					@service.agents.all(true)
 					@$state.go('agents.agents.edit', {id: res.data.person_id})
-					if @$scope.$parent.ListCtrl? then @$scope.$parent.ListCtrl.addAgent(res.data.person_id, @agent.display_name)
 
 				@stopSpinner('saving')
 			, (res) =>
@@ -490,6 +585,8 @@ define [
 					@email_dupe_error = res.data.error_info.existing
 				if res?.data?.error_code == 'system_email_addresses'
 					@email_sysaccount_error = res.data.error_info.emails.join(', ')
+				if res?.data?.error_code == 'invalid_phone_number'
+					@invalid_phone_error = res.data.error_message + ': ' + res.data.error_info.primary_phone_number_text
 
 				@stopSpinner('saving', true)
 				@applyErrorResponseToView(res)

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -39,11 +39,45 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
+use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 class Ticket extends AbstractEntityRepository
 {
+	/**
+	 * The ticket is
+	 *
+	 * @param Person $person
+	 * @return TicketEntity
+	 * @throws \Doctrine\ORM\NonUniqueResultException
+	 */
+	public function findMostRecentSmsTicketFromPerson(PersonEntity $person, $date_last_reply = null)
+	{
+		if (!$date_last_reply) {
+			$date_last_reply = new \DateTime("now - 3 days");
+		}
+
+		$query = $this->getEntityManager()->createQuery(
+			"
+				SELECT t
+				FROM DeskPRO:Ticket t
+				WHERE t.person = :person
+				AND t.creation_system = :creation_system
+				AND (t.date_last_user_reply > :date_last_reply OR t.date_last_agent_reply > :date_last_reply)
+				ORDER BY t.date_last_user_reply DESC
+			"
+			)
+			->setMaxResults(1)
+			->setParameter('date_last_reply', $date_last_reply)
+			->setParameter('person', $person->getId())
+			->setParameter('creation_system', IncomingSmsProcessor::TICKET_CREATION_SYSTEM);
+
+		$ticket = $query->getOneOrNullResult();
+
+		return $ticket;
+	}
+
 	/**
 	 * Find a ticket by its TAC
 	 *
@@ -245,13 +279,15 @@ class Ticket extends AbstractEntityRepository
 	 *
 	 * @return array
 	 */
-	public function getPersonTickets(Entity\Person $person, $limit = null, $status_order = false)
+	public function getPersonTickets(Entity\Person $person, $limit = null, $sort_by = null, $sort_order = 'DESC')
 	{
 		if ($person->is_agent) {
 			$ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
 				WHERE person_id = ?
+				ORDER BY id DESC
+				LIMIT 2000
 			", array($person->id));
 		} else {
 			$ids = App::getDb()->fetchAllCol("
@@ -265,13 +301,38 @@ class Ticket extends AbstractEntityRepository
 			return array();
 		}
 
-		if ($status_order && count($ids) < 2000) {
+		if ($sort_by === 'date_last_reply') {
+			$ids = App::getDb()->fetchAllCol(
+				"
+								SELECT id
+								FROM tickets
+								WHERE id IN (" . implode(',', $ids) . ")
+				ORDER BY GREATEST(
++					COALESCE(date_last_user_reply,0),
++					COALESCE(date_last_agent_reply,0)
++				) DESC
+			"
+			);
+		} elseif ($sort_by == 'status') {
 			$ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
 				WHERE id IN (" . implode(',', $ids) . ")
 				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, IF(tickets.status = 'awaiting_agent', tickets.urgency, 0) DESC, tickets.id DESC
 			");
+		} elseif ($sort_by && in_array(strtolower($sort_by), $this->_em->getClassMetadata('DeskPRO:Ticket')->getFieldNames())) {
+			$sort_by = strtolower($sort_by);
+
+			$sort_order = strtolower($sort_order);
+			$sort_order = in_array($sort_order, array('asc', 'desc')) ? $sort_order : 'DESC';
+
+			$ids = App::getDb()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE id IN (" . implode(',', $ids) . ")
+				ORDER BY $sort_by $sort_order
+			"
+			);
 		} else {
 			sort($ids, \SORT_NUMERIC);
 		}
@@ -648,7 +709,7 @@ class Ticket extends AbstractEntityRepository
 		", array($validating_email));
 	}
 
-	public function getTicketIdsWithEmail($email)
+	public function getTicketIdsWithEmail($email, $for_validation = false)
 	{
 		if (is_object($email)) {
 			$email = $email->getId();
@@ -656,14 +717,24 @@ class Ticket extends AbstractEntityRepository
 
 		$email = (int)$email;
 
-		return $this->getEntityManager()->getConnection()->fetchAllCol("
-			SELECT id
-			FROM tickets
-			WHERE person_email_id = ?
-			ORDER BY id DESC
-		", array($email));
+		if ($for_validation) {
+			return $this->getEntityManager()->getConnection()->fetchAllCol("
+				SELECT tickets.id
+				FROM tickets
+				LEFT JOIN people ON (people.id = tickets.person_id)
+				LEFT JOIN people_emails ON (people_emails.id = people.primary_email_id)
+				WHERE (person_email_id = ? OR (person_email_id IS null AND people_emails.id = ?)) AND status = 'hidden' AND hidden_status = 'validating'
+				ORDER BY tickets.id DESC
+			", array($email, $email));
+		} else {
+			return $this->getEntityManager()->getConnection()->fetchAllCol("
+				SELECT id
+				FROM tickets
+				WHERE person_email_id = ?
+				ORDER BY id DESC
+			", array($email));
+		}
 	}
-
 
 	public function getTicketCountsForPeople(array $people)
 	{
@@ -755,7 +826,7 @@ class Ticket extends AbstractEntityRepository
 		")->execute(array($parent_ticket));
 	}
 
-	
+
 	/**
 	 * Runs a COUNT query against all awaiting_agent tickets and returns the number of tickets
 	 * in each urgency.
@@ -772,5 +843,18 @@ class Ticket extends AbstractEntityRepository
 		");
 
 		return $counts;
+	}
+
+	/**
+	 * @param int $offlineOffset offset in seconds from now, when the agents considered as 'offline'
+	 */
+	public function unlockOfflineAgentsTickets($offlineOffset = 120)
+	{
+		$lockDate = new \DateTime(- (int) $offlineOffset . ' seconds');
+		$this->getEntityManager()->getConnection()->executeQuery('
+			UPDATE tickets t
+			JOIN sessions s ON t.locked_by_agent = s.person_id AND s.date_last IS NOT NULL AND s.date_last < :lockDate
+			SET t.locked_by_agent = NULL, t.date_locked = NULL
+		', array('lockDate' => $lockDate->format('Y-m-d H:i:s')));
 	}
 }

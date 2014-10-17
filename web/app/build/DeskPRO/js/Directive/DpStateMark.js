@@ -69,7 +69,7 @@
               return element.addClass('state-on active');
             });
             updateMarker = function() {
-              var checkStateId, checkStateId2, currentStateId, isOn, v, _j, _k, _len1, _len2, _ref1, _ref2, _results;
+              var checkStateId, checkStateId2, currentStateId, isOn, v, _j, _k, _len1, _len2, _ref1, _ref2;
               checkStateId = $state.current.name;
               checkStateId2 = null;
               if ((_ref1 = $state.current.data) != null ? _ref1.stateMarkId : void 0) {
@@ -77,10 +77,9 @@
               }
               isOn = false;
               _ref2 = [checkStateId, checkStateId2];
-              _results = [];
               for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
                 currentStateId = _ref2[_j];
-                if (!currentStateId) {
+                if (isOn || !currentStateId) {
                   continue;
                 }
                 if (currentStateVars) {
@@ -104,17 +103,15 @@
                 if (currentStateId.match(myStateIdRe1) || currentStateId.match(myStateIdRe2)) {
                   isOn = true;
                 }
-                if (isOn) {
-                  element.addClass('state-on active');
-                  if (element.closest('[dp-nav-subnav]')) {
-                    element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open');
-                  }
-                  break;
-                } else {
-                  _results.push(element.removeClass('state-on active'));
-                }
               }
-              return _results;
+              if (isOn) {
+                element.addClass('state-on active');
+                if (element.closest('[dp-nav-subnav]')) {
+                  return element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open');
+                }
+              } else {
+                return element.removeClass('state-on active');
+              }
             };
             scope.$on('$stateChangeSuccess', function() {
               return updateMarker();

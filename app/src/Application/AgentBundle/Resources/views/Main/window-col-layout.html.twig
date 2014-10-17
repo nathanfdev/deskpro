@@ -1,8 +1,9 @@
 <div id="dp_center">
-	<div class="collapsed-area" id="dp_right_collapsed">
-		<ul id="dp_collapsed_tabs"></ul>
-	</div>
 	<div id="dp_source">
+		<div id="dp_source_btn" ng-click="toggleSourcePane()" ng-class="paneVis.source && 'active'">
+			<span class="collapse-btn"><i class="fa fa-chevron-left"></i></span>
+			<span class="pin-btn" style="display: none;"><i class="fa fa-lock"></i></span>
+		</div>
 		<div id="dp_source_loading"></div>
 		<div id="dp_source_footer">
 			<footer class="results-nav no-click-switch" id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat">
@@ -21,26 +22,14 @@
 			</footer>
 		</div>
 	</div>
+	<div id="dp_source_place" style="display: none;">
+		<span><i class="fa fa-chevron-right"></i></span>
+	</div>
 	<div id="dp_list">
 		<div id="dp_list_loading"></div>
 	</div>
-	<div id="dp_list_resizer"><div></div></div>
+	<div id="dp_list_resizer" ng-show="paneVis.list && paneVis.tabs"><div></div></div>
 	<div id="dp_content">
-		<div id="tabNavigationPane">
-			<div id="tabNavSelectorLeft">
-				<a class="tabSlideLeft"></a>
-			</div>
-			<div class="deskproTabList">
-				<div class="deskproTabListInner">
-					<ul class="dp-tab-list">
-
-					</ul>
-				</div>
-			</div>
-			<div id="tabNavSelectorRight">
-				<a class="tabSlideRight"></a>
-			</div>
-		</div>
 		<div id="dp_content_wrap">
 			<div id="dp_content_info">
 				<table cellspacing="0" cellpadding="0" width="100%" height="100%"><tr><td valign="middle">
@@ -49,4 +38,105 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<div id="tabNavigationPane" style="vertical-align: bottom;">
+	<div id="tabNavSelectorLeft">
+		<a class="tabSlideLeft"></a>
+	</div>
+
+	<div class="mainDeskproTabList deskproTabList" style="vertical-align: bottom;">
+		<div class="deskproTabListInner" context-menu="context(null)" context-menu-disabled="!tabHistory.length && !tabs.length" data-target="tabContextMenu">
+			<ul class="dp-tab-list">
+
+				<li class="list-btn with-list" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
+					<span><i class="fa fa-bars"></i></span>
+					<div class="down-btn" id="dp_tab_list_btn">
+						<i class="fa fa-caret-down"></i>
+					</div>
+				</li>
+
+				<li class="add-btn" id="dp_create_btn"><i class="fa fa-plus"></i><span>add</span></li>
+
+				<li ng-repeat="tab in tabs track by tab.id" id="{{ ng_var('tab.tabBtnId') }}"
+					ng-mousedown="tabClick($event, tab)"
+					data-tab-id="{{ ng_var('tab.id') }}"
+					ng-class="{'activeTabList': tab.isActive && paneVis.tabs, 'is-alerting': tab.isAlerting}"
+					class="{{ ng_var('tab.classId') }}"
+                    context-menu="context(tab)"
+                    data-target="tabContextMenu"
+					>
+					<div class="item-hover-over-indicator"></div>
+					<a>
+						<i class="" ng-class="{
+							'fa fa-envelope':  tab.tabType == 'ticket',
+							'fa fa-user':      tab.tabType == 'person',
+							'fa fa-users':     tab.tabType == 'organization',
+							'fa fa-file-text': tab.tabType == 'article',
+							'fa fa-download':  tab.tabType == 'download',
+							'fa fa-list-alt':  tab.tabType == 'news',
+							'fa fa-th-list':   tab.tabType == 'feedback',
+							'fa fa-comment':   tab.tabType == 'userchat'
+						}"></i>{{ ng_var('tab.title') }}
+					</a>
+					<span class="bound-fade"></span>
+					<span class="close"></span>
+				</li>
+			</ul>
+		</div>
+
+		<div id="dp_tab_list_menu" class="dp-tab-list-menu">
+			<ul>
+				<li ng-repeat="item in listItems" ng-class="{'is-open': item.open}">
+					<a href="#" data-route="{{ ng_var('item.route') }}" data-route-replacetab="true" style="overflow: hidden;">
+						<div class="right-icon new-tab" ng-show="!item.open" data-route="{{ ng_var('item.route') }}" data-route-notabreload="true"><i class="fa fa-external-link" title="Open in a new tab"></i></div>
+						<i class="" ng-class="{
+							'fa fa-envelope':  item.type == 'ticket',
+							'fa fa-user':      item.type == 'person',
+							'fa fa-users':     item.type == 'organization',
+							'fa fa-file-text': item.type == 'article',
+							'fa fa-download':  item.type == 'download',
+							'fa fa-list-alt':  item.type == 'news',
+							'fa fa-th-list':   item.type == 'feedback',
+							'fa fa-comment':   item.type == 'userchat'
+						}"></i>
+						<span class="title">{{ ng_var('item.title') }}</span>
+					</a>
+				</li>
+				<li ng-if="!listItems || !listItems.length">
+					<em style="color: #999; padding: 10px; display: block; text-align: center;">The list is empty.</em>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="tabNavSelectorRight">
+		<a class="tabSlideRight"></a>
+	</div>
+
+    <div class="dropdown" id="tabContextMenu" style="position: fixed;z-index: 3;">
+        <ul class="dropdown-menu" role="menu">
+            <li ng-show="contextTab">
+                <a class="pointer" role="menuitem" tabindex="1" ng-click="closeCurrent()">
+                    {{ phrase('agent.general.tabs_close_current') }}
+                </a>
+            </li>
+            <li ng-show="tabs.length">
+                <a class="pointer" role="menuitem" tabindex="2" ng-click="closeAll()">
+                    {{ phrase('agent.general.tabs_close_all') }}
+                </a>
+            </li>
+            <li ng-show="contextTab">
+                <a class="pointer" role="menuitem" tabindex="3" ng-click="closeOthers()">
+                    {{ phrase('agent.general.tabs_close_others') }}
+                </a>
+            </li>
+			<li ng-show="tabHistory.length && tabs.length" role="presentation" class="divider"></li>
+			<li ng-repeat="tab in tabHistory">
+				<a class="pointer" role="menuitem" tabindex="4" ng-click="reopenTab(tab)">
+					{{ phrase('agent.general.tabs_reopen') }} {{ ng_var('tab.title') }}
+				</a>
+			</li>
+        </ul>
+    </div>
 </div>

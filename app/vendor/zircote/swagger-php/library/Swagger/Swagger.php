@@ -3,7 +3,7 @@ namespace Swagger;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,16 @@ use Swagger\Processors\ProcessorInterface;
  */
 class Swagger
 {
+    /**
+     * @var array|Annotations\Info
+     */
+    public $info;
+
+    /**
+     * @var Annotations\Authorization[]
+     */
+    public $authorizations = array();
+
     /**
      * @var Resource[]
      */
@@ -93,18 +103,37 @@ class Swagger
         self::parseOptions($options, array(
             'prefix' => '/',
             'suffix' => '',
+            'template' => null, // array or path to a json file to use as starting point for the listing.
             'basePath' => null,
             'apiVersion' => null,
             'swaggerVersion' => '1.2',
             'output' => 'array',
             'json_pretty_print' => true, // for outputtype 'json'
-            'template' => array(),
         ));
 
-        $result = $options['template'];
-        $result['basePath'] = $options['basePath'];
-        $result['apiVersion'] = $options['apiVersion'];
-        $result['swaggerVersion'] = $options['swaggerVersion'];
+        if (is_array($options['template'])) {
+            $result = $options['template'];
+        } elseif (is_string($options['template'])) {
+            if (substr($options['template'], 0, 1) === '{') {
+                $json = $options['template'];
+            } else {
+                $json = file_get_contents($options['template']);
+                if ($json === false) {
+                    throw new \Exception('Failed to open template "'.$options['template'].'"');
+                }
+            }
+            $result = json_decode($json, true);
+            if (is_array($result) === false) {
+                throw new \Exception('Failed to decode template: "'.$options['template'].'", json_error: '.json_last_error());
+            }
+        } else {
+            $result = array();
+        }
+        foreach (array('basePath', 'apiVersion', 'swaggerVersion') as $key) {
+            if (array_key_exists($key, $result) === false) {
+                $result[$key] = $options[$key];
+            }
+        }
         $result['apis'] = array();
 
         foreach ($this->registry as $resource) {
@@ -126,6 +155,12 @@ class Swagger
         }
         if ($result['basePath'] === null) {
             unset($result['basePath']);
+        }
+        if ($this->info !== null) {
+            $result['info'] = $this->info;
+        }
+        if (count($this->authorizations) !== 0) {
+            $result['authorizations'] = $this->authorizations;
         }
         switch ($options['output']) {
             case 'array':
@@ -215,15 +250,23 @@ class Swagger
 
     /**
      * Process a single code snippet.
+     *
      * @param string $contents PHP code.
      * @param string $context The original location of the contents.
      * @return Swagger
      */
-    public function examine($contents, $context = 'unknown')
+    public function examine($contents, $context = null)
     {
-        if (strpos($contents, '<?php') === false) {
-            throw new \Exception('No PHP code detected, T_OPEN_TAG("<?php") not found');
+        if ($context === null) {
+            $context = Context::detect(1);
+            if ($context->filename) {
+                $context->filename .= '(examined at line '.$context->line.')';
+            }
         }
+        if (strpos($contents, '<?php') === false) {
+            throw new \Exception('No PHP code detected, T_OPEN_TAG("<?php") not found in '.$context);
+        }
+
         $parser = new Parser($this->getProcessors());
         $parser->parseContents($contents, $context);
         $this->processParser($parser);
@@ -237,6 +280,23 @@ class Swagger
      */
     protected function processParser($parser)
     {
+        $info = $parser->getInfo();
+        if ($info) {
+            if ($this->info !== null) {
+                Logger::notice('Overwriting '.$info->identity().' "'.$this->info->_context.'" with "'.$info->_context.'"');
+            }
+            $this->info = $info;
+        }
+        $authorizations = $parser->getAuthorizations();
+        if ($authorizations) {
+            foreach ($authorizations as $authorization) {
+                if (isset($this->authorizations[$authorization->type])) {
+                    Logger::notice('Overwriting '.$authorization->identity().' "'.$this->authorizations[$authorization->type]->_context.'" with "'.$authorization->_context.'"');
+                }
+                $this->authorizations[$authorization->type] = $authorization;
+            }
+            
+        }
         foreach ($parser->getResources() as $resource) {
             if (array_key_exists($resource->resourcePath, $this->registry)) {
                 $this->registry[$resource->resourcePath]->merge($resource);
@@ -261,7 +321,7 @@ class Swagger
         $this->applyPartials($this->models);
         foreach ($this->partials as $partial) {
             if ($partial->_partialId !== null) {
-                Logger::notice('partial="'.$partial->_partialId.'" is was not used.');
+                Logger::notice('partial="'.$partial->_partialId.'" is not used.');
             }
         }
 
@@ -270,10 +330,12 @@ class Swagger
         }
 
         foreach ($this->registry as $resource) {
+            $this->applyAuthorization($resource);
 
             $models = array();
             foreach ($resource->apis as $api) {
                 foreach ($api->operations as $operation) {
+                    $this->applyAuthorization($operation);
                     $model = $this->resolveModel($operation->type);
                     if ($model) {
                         $models[] = $model;
@@ -300,8 +362,8 @@ class Swagger
                         }
                     }
                 }
-                $models = $this->resolveModels($models);
-                foreach (array_unique($models) as $model) {
+                $models = array_unique($this->resolveModels($models));
+                foreach ($models as $model) {
                     $resource->models[$model] = $this->models[$model];
                 }
             }
@@ -357,6 +419,52 @@ class Swagger
             if ($node instanceof Annotations\Resource || $node instanceof Annotations\Model) {
                 $node->validate();
             }
+        }
+    }
+
+    /**
+     * Expand the authorizations fields with the data from @SWG\Authorization().
+     * @param  AbstractAnnotation $annotation
+     * @return void
+     */
+    protected function applyAuthorization($annotation) {
+        if ($annotation->authorizations === null) {
+            return;
+        }
+        if (is_array($annotation->authorizations) && count($annotation->authorizations) === 0) {
+            $annotation->authorizations = new \stdClass();
+            return;
+        }
+        if (is_string($annotation->authorizations) === false) {
+            return;
+        }
+        $keys = explode(',', $annotation->authorizations);
+        $annotation->authorizations = new \stdClass();
+        foreach ($keys as $key) {
+            $key = trim($key);
+            $registered = false;
+            if (isset($this->authorizations[$key])) {
+                $annotation->authorizations->$key = array();
+                continue;
+            }
+
+            $pos = strpos($key, '.');
+            if ($pos !== false) {
+                $scope = substr($key, $pos + 1);
+                $oauth2 = substr($key, 0, $pos);
+                if (isset($annotation->authorizations->$oauth2) === false) {
+                    $annotation->authorizations->$oauth2 = array();
+                }
+                if (isset($this->authorizations[$oauth2]) && is_array($this->authorizations[$oauth2]->scopes)) {
+                    foreach ($this->authorizations[$oauth2]->scopes as $scopeObj) {
+                        if ($scope === $scopeObj->scope) {
+                            array_push($annotation->authorizations->$oauth2, $scopeObj);
+                            continue 2;
+                        }
+                    }
+                }
+            }
+            Logger::notice('Authorization: "'.$key.'" not registered, used in '.$annotation->_context);
         }
     }
 
@@ -471,12 +579,13 @@ class Swagger
 
     /**
      * Log a notice when the type doesn't exactly match the Swagger spec.
-     * @link https://github.com/wordnik/swagger-core/wiki/Datatypes
+     * @link https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#43-data-types
      *
      * @param string $type
+     * @param Context $context
      * @return void
      */
-    public static function checkDataType($type)
+    public static function checkDataType($type, $context)
     {
         $map = array(
             // primitive types
@@ -503,10 +612,10 @@ class Swagger
         );
         if (array_key_exists(strtolower($type), $map) && array_search($type, $map) === false) { // Invalid notation for a primitive?
             if (array_key_exists(strtolower($type), $mapFormats)) { //
-                Logger::notice('Invalid `type="'.$type.'"` use `type="'.$map[strtolower($type)].'",format="'.$mapFormats[strtolower($type)].'"` in '.Annotations\AbstractAnnotation::$context);
+                Logger::notice('Invalid `type="'.$type.'"` use `type="'.$map[strtolower($type)].'",format="'.$mapFormats[strtolower($type)].'"` in '.$context);
             } else {
                 // Don't automaticly correct the type, this creates the incentive to use consistent naming in the doc comments.
-                Logger::notice('Invalid `type="'.$type.'"` use `type="'.$map[strtolower($type)].'"` in '.Annotations\AbstractAnnotation::$context);
+                Logger::notice('Invalid `type="'.$type.'"` use `type="'.$map[strtolower($type)].'"` in '.$context);
             }
         }
     }
@@ -523,6 +632,9 @@ class Swagger
                 $data = $data->jsonSerialize();
             } else {
                 $data = get_object_vars($data);
+            }
+            if (count($data) === 0) {
+                return (object) $data; // empty object
             }
         }
         if (is_array($data) === false) {
@@ -617,14 +729,19 @@ class Swagger
         return $this;
     }
 
+    /**
+     * @param Model $model
+     */
     protected function inheritProperties($model)
     {
-        if ($model->phpExtends === null) {
-            return; // model doesn't have a superclass (or is already resolved)
+        $context = $model->_context;
+        if ($context->is('class') === false || $context->extends === null || $context->is('propertiesInherited')) {
+            return; // model doesn't have a superclass or is already resolved
         }
+        $context->propertiesInherited = true;
         $parent = false;
         foreach ($this->models as $super) {
-            if ($model->phpExtends === $super->phpClass) {
+            if ($context->extends === $super->_context->class) {
                 $parent = $super;
                 break;
             }
@@ -632,7 +749,6 @@ class Swagger
         if ($parent === false) {
             return; // Superclass not discoved or doesn't have annotations
         }
-        $model->phpExtends = null;
         $this->inheritProperties($parent);
         foreach ($parent->properties as $parentProperty) {
             $exists = false;
@@ -646,7 +762,11 @@ class Swagger
                 $model->properties[] = $parentProperty; // Inherit property
             }
         }
-        $model->validate(); // update Model->required
+        if (is_array($parent->required)) {
+             // Merge required properties
+            $model->required = array_unique(array_merge($parent->required, (is_array($model->required) ? $model->required : array())));
+            sort($model->required);
+        }
     }
 
     /**
@@ -677,14 +797,14 @@ class Swagger
     public static function getDefaultProcessors()
     {
         return array(
-            // has to be the first one
-            new Processors\PartialIdProcessor(),
-            // other processors
+            new Processors\ResourceProcessor(),
             new Processors\ApiProcessor(),
             new Processors\ModelProcessor(),
-            new Processors\PartialProcessor(),
             new Processors\PropertyProcessor(),
             new Processors\ResourceProcessor(),
+            new Processors\InfoProcessor(),
+            new Processors\AuthorizationProcessor(),
+            new Processors\NestingProcessor(),
         );
     }
 

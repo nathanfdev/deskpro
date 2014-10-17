@@ -15,6 +15,7 @@ use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
+use Symfony\Component\Debug\Exception\OutOfMemoryException;
 use Symfony\Component\Debug\FatalErrorHandler\UndefinedFunctionFatalErrorHandler;
 use Symfony\Component\Debug\FatalErrorHandler\UndefinedMethodFatalErrorHandler;
 use Symfony\Component\Debug\FatalErrorHandler\ClassNotFoundFatalErrorHandler;
@@ -53,8 +54,6 @@ class ErrorHandler
 
     private $displayErrors;
 
-    private $caughtOutput = 0;
-
     /**
      * @var LoggerInterface[] Loggers for channels
      */
@@ -63,8 +62,6 @@ class ErrorHandler
     private static $stackedErrors = array();
 
     private static $stackedErrorLevels = array();
-
-    private static $fatalHandler = false;
 
     /**
      * Registers the error handler.
@@ -120,17 +117,7 @@ class ErrorHandler
     }
 
     /**
-     * Sets a fatal error exception handler.
-     *
-     * @param callable $handler An handler that will be called on FatalErrorException
-     */
-    public static function setFatalErrorExceptionHandler($handler)
-    {
-        self::$fatalHandler = $handler;
-    }
-
-    /**
-     * @throws ContextErrorException When error_reporting returns error
+     * @throws \ErrorException When error_reporting returns error
      */
     public function handle($level, $message, $file = 'unknown', $line = 0, $context = array())
     {
@@ -154,24 +141,23 @@ class ErrorHandler
 
                     self::$loggers['deprecation']->warning($message, array('type' => self::TYPE_DEPRECATION, 'stack' => $stack));
                 }
-            }
-
-            return true;
-        }
-
-        if ($this->displayErrors && error_reporting() & $level && $this->level & $level) {
-            if (self::$stackedErrorLevels) {
-                self::$stackedErrors[] = func_get_args();
 
                 return true;
             }
-
+        } elseif ($this->displayErrors && error_reporting() & $level && $this->level & $level) {
             if (PHP_VERSION_ID < 50400 && isset($context['GLOBALS']) && is_array($context)) {
-                unset($context['GLOBALS']);
+                $c = $context;                  // Whatever the signature of the method,
+                unset($c['GLOBALS'], $context); // $context is always a reference in 5.3
+                $context = $c;
             }
 
             $exception = sprintf('%s: %s in %s line %d', isset($this->levels[$level]) ? $this->levels[$level] : $level, $message, $file, $line);
-            $exception = new ContextErrorException($exception, 0, $level, $file, $line, $context);
+            if ($context && class_exists('Symfony\Component\Debug\Exception\ContextErrorException')) {
+                // Checking for class existence is a work around for https://bugs.php.net/42098
+                $exception = new ContextErrorException($exception, 0, $level, $file, $line, $context);
+            } else {
+                $exception = new \ErrorException($exception, 0, $level, $file, $line);
+            }
 
             if (PHP_VERSION_ID <= 50407 && (PHP_VERSION_ID >= 50400 || PHP_VERSION_ID <= 50317)) {
                 // Exceptions thrown from error handlers are sometimes not caught by the exception
@@ -240,7 +226,11 @@ class ErrorHandler
         $level = array_pop(self::$stackedErrorLevels);
 
         if (null !== $level) {
-            error_reporting($level);
+            $e = error_reporting($level);
+            if ($e !== ($level | E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR)) {
+                // If the user changed the error level, do not overwrite it
+                error_reporting($e);
+            }
         }
 
         if (empty(self::$stackedErrorLevels)) {
@@ -264,22 +254,35 @@ class ErrorHandler
         gc_collect_cycles();
         $error = error_get_last();
 
-        while (self::$stackedErrorLevels) {
-            static::unstackErrors();
+        // get current exception handler
+        $exceptionHandler = set_exception_handler('var_dump');
+        restore_exception_handler();
+
+        try {
+            while (self::$stackedErrorLevels) {
+                static::unstackErrors();
+            }
+        } catch (\Exception $exception) {
+            if ($exceptionHandler) {
+                call_user_func($exceptionHandler, $exception);
+
+                return;
+            }
+
+            if ($this->displayErrors) {
+                ini_set('display_errors', 1);
+            }
+
+            throw $exception;
         }
 
-        if (null === $error) {
-            return;
-        }
-
-        $type = $error['type'];
-        if (0 === $this->level || !in_array($type, array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE))) {
+        if (!$error || !$this->level || !($error['type'] & (E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_PARSE))) {
             return;
         }
 
         if (isset(self::$loggers['emergency'])) {
             $fatal = array(
-                'type' => $type,
+                'type' => $error['type'],
                 'file' => $error['file'],
                 'line' => $error['line'],
             );
@@ -287,14 +290,8 @@ class ErrorHandler
             self::$loggers['emergency']->emergency($error['message'], $fatal);
         }
 
-        if ($this->displayErrors) {
-            // get current exception handler
-            $exceptionHandler = set_exception_handler('var_dump');
-            restore_exception_handler();
-
-            if ($exceptionHandler || self::$fatalHandler) {
-                $this->handleFatalError($exceptionHandler, $error);
-            }
+        if ($this->displayErrors && $exceptionHandler) {
+            $this->handleFatalError($exceptionHandler, $error);
         }
     }
 
@@ -322,82 +319,25 @@ class ErrorHandler
 
         $level = isset($this->levels[$error['type']]) ? $this->levels[$error['type']] : $error['type'];
         $message = sprintf('%s: %s in %s line %d', $level, $error['message'], $error['file'], $error['line']);
-        $exception = new FatalErrorException($message, 0, $error['type'], $error['file'], $error['line'], 3);
+        if (0 === strpos($error['message'], 'Allowed memory') || 0 === strpos($error['message'], 'Out of memory')) {
+            $exception = new OutOfMemoryException($message, 0, $error['type'], $error['file'], $error['line'], 3, false);
+        } else {
+            $exception = new FatalErrorException($message, 0, $error['type'], $error['file'], $error['line'], 3, true);
 
-        foreach ($this->getFatalErrorHandlers() as $handler) {
-            if ($e = $handler->handleError($error, $exception)) {
-                $exception = $e;
-                break;
-            }
-        }
-
-        // To be as fail-safe as possible, the FatalErrorException is first handled
-        // by the exception handler, then by the fatal error handler. The latter takes
-        // precedence and any output from the former is cancelled, if and only if
-        // nothing bad happens in this handling path.
-
-        $caughtOutput = 0;
-
-        if ($exceptionHandler) {
-            $this->caughtOutput = false;
-            ob_start(array($this, 'catchOutput'));
-            try {
-                call_user_func($exceptionHandler, $exception);
-            } catch (\Exception $e) {
-                // Ignore this exception, we have to deal with the fatal error
-            }
-            if (false === $this->caughtOutput) {
-                ob_end_clean();
-            }
-            if (isset($this->caughtOutput[0])) {
-                ob_start(array($this, 'cleanOutput'));
-                echo $this->caughtOutput;
-                $caughtOutput = ob_get_length();
-            }
-            $this->caughtOutput = 0;
-        }
-
-        if (self::$fatalHandler) {
-            try {
-                call_user_func(self::$fatalHandler, $exception);
-
-                if ($caughtOutput) {
-                    $this->caughtOutput = $caughtOutput;
-                }
-            } catch (\Exception $e) {
-                if (!$caughtOutput) {
-                    // Neither the exception nor the fatal handler succeeded.
-                    // Let PHP handle that now.
-                    throw $exception;
+            foreach ($this->getFatalErrorHandlers() as $handler) {
+                if ($e = $handler->handleError($error, $exception)) {
+                    $exception = $e;
+                    break;
                 }
             }
         }
-    }
 
-    /**
-     * @internal
-     */
-    public function catchOutput($buffer)
-    {
-        $this->caughtOutput = $buffer;
-
-        return '';
-    }
-
-    /**
-     * @internal
-     */
-    public function cleanOutput($buffer)
-    {
-        if ($this->caughtOutput) {
-            // use substr_replace() instead of substr() for mbstring overloading resistance
-            $cleanBuffer = substr_replace($buffer, '', 0, $this->caughtOutput);
-            if (isset($cleanBuffer[0])) {
-                $buffer = $cleanBuffer;
-            }
+        try {
+            call_user_func($exceptionHandler, $exception);
+        } catch (\Exception $e) {
+            // The handler failed. Let PHP handle that now.
+            throw $exception;
         }
-
-        return $buffer;
     }
 }
 

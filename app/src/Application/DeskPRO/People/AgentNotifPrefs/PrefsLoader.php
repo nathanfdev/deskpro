@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -165,15 +165,7 @@ class PrefsLoader
 		//     $prefs->setAppSubs('alert', 'crm', array('new_user' => true));
 		// Which is why we need this loopy loop to convert the structures a bit
 
-		foreach (array(
-			 'chat',
-			 'task',
-			 'twitter',
-			 'feedback',
-			 'publish',
-			 'crm',
-			 'account'
-		) as $app_name) {
+		foreach (Prefs::$apps as $app_name => $bool) {
 			foreach (array('email', 'alert') as $type) {
 				$subs = $prefs->getAppSubs($type, $app_name);
 				foreach (array_keys($subs) as $name) {
@@ -234,22 +226,13 @@ class PrefsLoader
 		#------------------------------
 
 		if ($other_subs) {
-			$valid_apps = array(
-				'chat' => true,
-				'task' => true,
-				'twitter' => true,
-				'feedback' => true,
-				'publish' => true,
-				'crm' => true,
-				'account' => true,
-			);
 
 			foreach ($other_subs as $info) {
 				$app_name    = !empty($info['type']) ? $info['type'] : null;
 				$email_types = !empty($info['email']) ? $info['email'] : array();
 				$alert_types = !empty($info['alert']) ? $info['alert'] : array();
 
-				if (!$app_name || !isset($valid_apps[$app_name])) {
+				if (!$app_name || !isset(Prefs::$apps[$app_name])) {
 					continue;
 				}
 

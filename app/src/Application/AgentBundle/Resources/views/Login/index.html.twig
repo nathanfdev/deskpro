@@ -96,19 +96,21 @@
 						<i class="icon-lock"></i>
 						<input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"  tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
 					</p>
-					<p>
-						<table cellspacing="0" cellpadding="0" border="0">
-							<tr>
-								<td width="10" valign="middle" style="vertical-align: middle;"><input type="checkbox" name="remember_me" id="rem_cb" value="1" tabindex="3" /></td>
-								<td valign="middle" style="vertical-align: middle;">
-									&nbsp;
-									<label for="rem_cb">
-										{{ phrase('agent.login.remember_me') }}
-									</label>
-								</td>
-							</tr>
-						</table>
-					</p>
+					{% if app.getSetting('core.enable_agent_rememberme') %}
+						<p>
+							<table cellspacing="0" cellpadding="0" border="0">
+								<tr>
+									<td width="10" valign="middle" style="vertical-align: middle;"><input type="checkbox" name="remember_me" id="rem_cb" value="1" tabindex="3" /></td>
+									<td valign="middle" style="vertical-align: middle;">
+										&nbsp;
+										<label for="rem_cb">
+											{{ phrase('agent.login.remember_me') }}
+										</label>
+									</td>
+								</tr>
+							</table>
+						</p>
+					{% endif %}
 				</fieldset>
 				<p><input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" /></p>
 				<p class="text-right"><a href="#" class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a></p>

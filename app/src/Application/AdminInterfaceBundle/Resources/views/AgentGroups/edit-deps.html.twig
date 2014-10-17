@@ -11,8 +11,8 @@
 
 	<nav class="dp-tabletabs">
 		<ul>
-			<li class="active" dp-tab-btn="main.deps.tickets"><a href="#">Tickets</a></li>
-			<li dp-tab-btn="main.deps.chat"><a href="#">Chat</a></li>
+			<li class="active" dp-tab-btn="main.deps.tickets"><a href="#"><i class="fa fa-envelope"></i> Tickets</a></li>
+			<li dp-tab-btn="main.deps.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
 		</ul>
 	</nav>
 
@@ -26,6 +26,28 @@
 				</tr>
 			</thead>
 			<tbody>
+
+                <tr ng-if="!all_locked_perms">
+                    <td>
+                        &nbsp;
+                        {{ phrase('adm.agents.perm_toggle_all') }}
+                    </td>
+                    <td class="text-center">
+                        <input
+                                dp-slider-switch
+                                ng-model="EditCtrl.all_perms.deps_perms.tickets.assign"
+                                ng-change="EditCtrl.changeAllPerms('deps_perms_tickets', 'assign')"
+                                />
+                    </td>
+                    <td class="text-center">
+                        <input
+                                dp-slider-switch
+                                ng-model="EditCtrl.all_perms.deps_perms.tickets.full"
+                                ng-change="EditCtrl.changeAllPerms('deps_perms_tickets', 'full')"
+                                />
+                    </td>
+                </tr>
+
 				<tr ng-repeat="dep in EditCtrl.ticketDeps">
 					<td>
 						&nbsp;
@@ -36,9 +58,10 @@
 						<div ng-if="!dep.has_children">
 							<input
 								dp-slider-switch
-								ng-model="EditCtrl.deps_perms.tickets[dep.id].assign"
-								is-on="EditCtrl.deps_perms.tickets[dep.id].assign || EditCtrl.deps_perms.tickets[dep.id].full"
+								ng-model="EditCtrl.group.deps_perms.tickets[dep.id].assign"
+								is-on="EditCtrl.group.deps_perms.tickets[dep.id].assign || EditCtrl.group.deps_perms.tickets[dep.id].full"
 								is-locked="all_locked_perms"
+                                ng-change="EditCtrl.updateAllPermsState()"
 							/>
 						</div>
 					</td>
@@ -46,10 +69,11 @@
 						<div ng-if="!dep.has_children">
 							<input
 								dp-slider-switch
-								ng-model="EditCtrl.deps_perms.tickets[dep.id].full"
-								is-on="EditCtrl.deps_perms.tickets[dep.id].full"
+								ng-model="EditCtrl.group.deps_perms.tickets[dep.id].full"
+								is-on="EditCtrl.group.deps_perms.tickets[dep.id].full"
 								locked-tip="This permission is locked because the permission is granted through an enabled agent group"
 								is-locked="all_locked_perms"
+                                ng-change="EditCtrl.updateAllPermsState()"
 							/>
 						</div>
 					</td>
@@ -67,6 +91,21 @@
 				</tr>
 			</thead>
 			<tbody>
+
+                <tr>
+                    <td>
+                        &nbsp;
+                        {{ phrase('adm.agents.perm_toggle_all') }}
+                    </td>
+                    <td class="text-center">
+                        <input
+                            dp-slider-switch
+                            ng-model="EditCtrl.all_perms.deps_perms.chat.full"
+                            ng-change="EditCtrl.changeAllPerms('deps_perms_chat', 'full')"
+                            />
+                    </td>
+                </tr>
+
 				<tr ng-repeat="dep in EditCtrl.chatDeps">
 					<td>
 						&nbsp;
@@ -77,8 +116,10 @@
 						<div ng-if="!dep.has_children">
 							<input
 								dp-slider-switch
-								ng-model="EditCtrl.deps_perms.chat[dep.id].full"
-								is-on="EditCtrl.deps_perms.chat[dep.id].full"
+								ng-model="EditCtrl.group.deps_perms.chat[dep.id].full"
+								is-on="EditCtrl.group.deps_perms.chat[dep.id].full"
+								is-locked="all_locked_perms"
+                                ng-change="EditCtrl.updateAllPermsState()"
 							/>
 						</div>
 					</td>

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -177,7 +177,7 @@ class ServerPhpInfo
 
 		$has_wincache = false;
 
-		if (function_exists('wincache_ucache_clear') && ini_get('wincache.ocenabled')) {
+		if (extension_loaded('wincache') && ini_get('wincache.ocenabled')) {
 
 			$has_wincache = true;
 		}
@@ -252,6 +252,12 @@ class ServerPhpInfo
 		$apc_link = App::getSetting('core.deskpro_url') . '?_sys=apc';
 		$apc_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'apc', 86400);
 
+		$opcache_link = null;
+		if (version_compare(phpversion(), '5.5.0', '>=') && extension_loaded('Zend OPcache') && (int) ini_get('opcache.enable')) {
+			$opcache_link = App::getSetting('core.deskpro_url') . '?_sys=opcache';
+			$opcache_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'opcache', 86400);
+		}
+
 		$wincache_link = App::getSetting('core.deskpro_url') . '?_sys=wincache';
 		$wincache_link .= '&_=' . Util::generateStaticSecurityToken($this->config_hash . 'wincache', 86400);
 
@@ -267,6 +273,7 @@ class ServerPhpInfo
 			'web_php_link'   => $web_php_link,
 			'cli_php_link'   => $cli_php_link,
 			'apc_link'       => $apc_link,
+			'opcache_link'   => $opcache_link,
 			'wincache_link'  => $wincache_link,
 		);
 	}

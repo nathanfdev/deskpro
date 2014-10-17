@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -48,6 +48,16 @@ class Prefs
 	private $app_subs            = array();
 	private $email_mention_mode  = self::ALWAYS_SEND;
 
+	static public $apps = array(
+		'chat' => 1,
+		'task' => 1,
+		'twitter' => 1,
+		'feedback' => 1,
+		'publish' => 1,
+		'crm' => 1,
+		'account' => 1,
+	);
+
 	public function __construct()
 	{
 		// Init all prefs to off
@@ -59,15 +69,7 @@ class Prefs
 			self::TYPE_ALERT => array_fill_keys($this->getFilterNotifyPrefNames(self::TYPE_ALERT), false),
 		);
 
-		foreach (array(
-			'chat',
-			'task',
-			'twitter',
-			'feedback',
-			'publish',
-			'crm',
-			'account'
-		) as $app_name) {
+		foreach (self::$apps as $app_name => $bool) {
 			$method = 'get' . ucfirst($app_name) . 'NotifyTypes';
 
 			$this->app_subs[$app_name] = array(

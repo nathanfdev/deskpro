@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -60,15 +60,37 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
 	/**
 	 * @param LayoutField $field
+	 * @param string $before_field Field ID of a field to insert the field before. If not specified, the field is added to the end.
 	 */
-	public function add(LayoutField $field)
+	public function add(LayoutField $field, $before_field = null)
 	{
 		$id = $field->getId();
 		if (isset($this->fields[$id])) {
 			unset($this->fields[$id]);
 		}
 
-		$this->fields[$id] = $field;
+		$did_add = false;
+		if ($before_field) {
+			$pos = Arrays::findKey($this->fields, function($v) use ($before_field) {
+				return $v->getId() == $before_field;
+			});
+			if ($pos !== null) {
+				$all_fields = $this->fields;
+				$this->fields = array();
+				foreach ($all_fields as $k => $v) {
+					if ($k == $before_field) {
+						$did_add = true;
+						$this->fields[$id] = $field;
+					}
+
+					$this->fields[$k] = $v;
+				}
+			}
+		}
+
+		if (!$did_add) {
+			$this->fields[$id] = $field;
+		}
 	}
 
 

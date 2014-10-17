@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -39,6 +39,7 @@ use Application\DeskPRO\Tickets\Filters\Terms\FilterTermComposite;
 use Application\DeskPRO\Tickets\Filters\Terms\FilterTermInterface;
 use Application\DeskPRO\Tickets\Filters\Terms;
 use Orb\Util\Util;
+use Application\DeskPRO\Util as DeskPROUtil;
 
 /**
  * This converts between 'new' and 'old' style term definitions.
@@ -149,10 +150,11 @@ class LegacyTermsTransformer
 				);
 
 			case 'FilterLabels':
+				$labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 				return array(
 					'type'    => 'label',
 					'op'      => $term->getTermOperator(),
-					'options' => array('labels' => $options['labels'])
+					'options' => array('label' => $labels)
 				);
 
 			case 'FilterLanguage':
@@ -177,10 +179,11 @@ class LegacyTermsTransformer
 				);
 
 			case 'FilterOrgLabels':
+				$labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 				return array(
 					'type'    => 'org_label',
 					'op'      => $term->getTermOperator(),
-					'options' => array('labels' => $options['labels'])
+					'options' => array('labels' => $labels)
 				);
 
 			case 'FilterPriority':
@@ -241,10 +244,11 @@ class LegacyTermsTransformer
 				);
 
 			case 'FilterUserLabels':
+				$labels = DeskPROUtil::labelsArrayFromString($options['labels']);
 				return array(
 					'type'    => 'person_label',
 					'op'      => $term->getTermOperator(),
-					'options' => array('labels' => $options['labels'])
+					'options' => array('labels' => $labels)
 				);
 
 			case 'FilterWorkflow':
@@ -533,7 +537,7 @@ class LegacyTermsTransformer
 				));
 
 			case 'label':
-				$labels = @$options['labels'] ?: array();
+				$labels = @$options['label'] ?: array();
 				if (!is_array($labels)) {
 					$labels = array($labels);
 				}
@@ -652,7 +656,12 @@ class LegacyTermsTransformer
 				));
 
 			case 'total_user_waiting':
-				return new Terms\FilterTotalUserWaiting($op, $options);
+				return new Terms\FilterTotalUserWaiting($op, array(
+					'time' => array(
+						@$options['waiting_time'] ?: 1,
+						@$options['waiting_time_unit'] ?: 'days'
+					)
+				));
 
 			case 'date_created':
 				return new Terms\FilterDateCreated($op, $options);

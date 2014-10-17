@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -37,9 +37,96 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Department as DepartmentEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Orb\Util\Arrays;
 
 class DepartmentPermission extends AbstractEntityRepository
 {
+	/**
+	 * array(agent_id => array(name => array(...), any => array(...))
+	 * @var array
+	 */
+	private $cache_by_agent = null;
+
+	/**
+	 * array(group_id => array(name => array(...), any => array(...))
+	 * @var null
+	 */
+	private $cache_by_group = null;
+
+	public function getPermsForAgent($person_id, array $ug_ids, $name = null)
+	{
+		$ug_ids = Arrays::removeFalsey($ug_ids);
+		if (!$ug_ids) {
+			$ug_ids = array();
+		}
+
+		if ($this->cache_by_agent === null) {
+			$this->cache_by_agent = array();
+			$this->cache_by_group = array();
+
+			$q = $this->_em->getConnection()->query("
+				SELECT dp.app, dp.department_id, dp.usergroup_id, dp.person_id, dp.name, dp.value
+				FROM department_permissions dp
+			");
+
+			while ($rec = $q->fetch()) {
+				if ($rec['usergroup_id']) {
+					if (!isset($this->cache_by_group[$rec['usergroup_id']])) {
+						$this->cache_by_group[$rec['usergroup_id']]        = array();
+						$this->cache_by_group[$rec['usergroup_id']]['ANY'] = array();
+					}
+					if (!isset($this->cache_by_group[$rec['usergroup_id']][$rec['name']])) {
+						$this->cache_by_group[$rec['usergroup_id']][$rec['name']] = array();
+					}
+
+					$this->cache_by_group[$rec['usergroup_id']]['ANY'][]        = $rec;
+					$this->cache_by_group[$rec['usergroup_id']][$rec['name']][] = $rec;
+				} else if ($rec['person_id']) {
+					if (!isset($this->cache_by_agent[$rec['person_id']])) {
+						$this->cache_by_agent[$rec['person_id']]        = array();
+						$this->cache_by_agent[$rec['person_id']]['ANY'] = array();
+					}
+					if (!isset($this->cache_by_agent[$rec['person_id']][$rec['name']])) {
+						$this->cache_by_agent[$rec['person_id']][$rec['name']] = array();
+					}
+
+					$this->cache_by_agent[$rec['person_id']]['ANY'][]        = $rec;
+					$this->cache_by_agent[$rec['person_id']][$rec['name']][] = $rec;
+				}
+			}
+		}
+
+		$found = array();
+
+		if ($person_id && !empty($this->cache_by_agent[$person_id])) {
+			if ($name) {
+				$found = !empty($this->cache_by_agent[$person_id][$name]) ? $this->cache_by_agent[$person_id][$name] : array();
+			} else {
+				$found = !empty($this->cache_by_agent[$person_id]['ANY']) ? $this->cache_by_agent[$person_id]['ANY'] : array();
+			}
+		}
+
+		if ($ug_ids) {
+			foreach ($ug_ids as $ug_id) {
+				if ($name) {
+					$ug_found = !empty($this->cache_by_group[$ug_id][$name]) ? $this->cache_by_group[$ug_id][$name] : array();
+				} else {
+					$ug_found = !empty($this->cache_by_group[$ug_id]['ANY']) ? $this->cache_by_group[$ug_id]['ANY'] : array();
+				}
+			}
+
+			if ($ug_found) {
+				if ($found) {
+					$found = array_merge($found, $ug_found);
+				} else {
+					$found = $ug_found;
+				}
+			}
+		}
+
+		return $found;
+	}
+
 	/**
 	 * Get an array of department IDs this user has permission to see
 	 * @param \Application\DeskPRO\Entity\Person $person

@@ -1,6 +1,8 @@
 <?php return array(
 	'adm.general.agent_perms'                        => 'Agent Permissions',
 	'adm.general.apps'                               => 'Apps',
+	'adm.general.api_keys'                           => 'API Keys',
+	'adm.general.tasks'                              => 'Tasks',
 	'adm.general.apps_agents'                        => 'Agents',
 	'adm.general.apps_chat'                          => 'Chat',
 	'adm.general.apps_crm'                           => 'CRM',
@@ -43,7 +45,7 @@
 	'adm.general.x_ticket_filters'                   => '{{count}} Ticket Filter|{{count}} Ticket Filters',
 	'adm.general.x_ticket_escalations'               => '{{count}} Ticket Escalation|{{count}} Ticket Escalations',
 	'adm.general.x_twitter_accounts'                 => '{{count}} Twitter Account|{{count}} Twitter Accounts',
-	'adm.general.x_api_keys'                         => '{{count}} Api Key|{{count}} Api Keys',
+	'adm.general.x_api_keys'                         => '{{count}} API Key|{{count}} API Keys',
 	'adm.general.x_ip_bans'                          => '{{count}} IP Ban|{{count}} IP Bans',
 	'adm.general.x_email_bans'                       => '{{count}} Email Ban|{{count}} Email Bans',
 	'adm.general.x_user_rules'                       => '{{count}} User Rule|{{count}} User Rules',

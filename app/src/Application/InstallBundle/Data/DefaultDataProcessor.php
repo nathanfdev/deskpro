@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -63,11 +63,6 @@ class DefaultDataProcessor
 	private $data_info;
 
 	/**
-	 * @var int|null
-	 */
-	private $loaded_data_id = null;
-
-	/**
 	 * @var
 	 */
 	private $logger;
@@ -105,7 +100,6 @@ class DefaultDataProcessor
 		$data = null;
 		if ($row) {
 			$data = @unserialize($row['data']);
-			$this->loaded_data_id = $row['id'];
 		}
 		if (!$data) {
 			$data = array();
@@ -124,17 +118,12 @@ class DefaultDataProcessor
 	 */
 	private function flushDataInfo()
 	{
-		if ($this->loaded_data_id) {
-			$this->container->getDb()->update('datastore', array(
-				'data' => serialize($this->data_info)
-			), array('id' => $this->loaded_data_id));
-		} else {
-			$this->container->getDb()->insert('datastore', array(
-				'name' => 'sys.install.default_data',
-				'auth' => Strings::random(15),
-				'data' => serialize($this->data_info)
-			));
-		}
+		$this->container->getDb()->delete('datastore', array('name' => 'sys.install.default_data'));
+		$this->container->getDb()->insert('datastore', array(
+			'name' => 'sys.install.default_data',
+			'auth' => Strings::random(15),
+			'data' => serialize($this->data_info)
+		));
 	}
 
 

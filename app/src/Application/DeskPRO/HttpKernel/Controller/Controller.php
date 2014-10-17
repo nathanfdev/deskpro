@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -206,7 +206,8 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	 */
 	public function createJsonResponse($content, $status_code = 200)
 	{
-		$response = $this->container->get('response');
+//		$response = $this->container->get('response');
+		$response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
 
 		// Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
 		if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
@@ -217,9 +218,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
 		$response->setStatusCode($status_code);
 
-		if (is_array($content)) {
-			$content = Util::jsonEncode($content);
-		}
+//		if (is_array($content)) {
+//			$content = Util::jsonEncode($content);
+//		}
 
 		$response->setContent($content);
 

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,8 +34,11 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\Controller\Helper\OrganizationResults;
+use Application\AgentBundle\Controller\JsonRenderer\OrganizationListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Organizations\OrgResultsDisplay;
 use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 
@@ -44,7 +47,7 @@ use Orb\Util\Arrays;
  */
 class OrganizationSearchController extends AbstractController
 {
-	protected function _getResponseForOrgs($type, $type_id, $results_helper, array $vars = array())
+	protected function _getResponseForOrgs($type, $type_id, OrganizationResults $results_helper, array $vars = array())
 	{
 		$is_partial = false;
 		$tpl = 'AgentBundle:OrganizationSearch:filter.html.twig';
@@ -66,21 +69,15 @@ class OrganizationSearchController extends AbstractController
 		# Send results
 		#------------------------------
 
-		if (!count($organizations) && $is_partial) {
-			return $this->createJsonResponse(array('no_more_results' => true));
-		}
-
-		// person defs for columns
-		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
-
+		$renderer = new OrganizationListRenderer($this->container);
 		$result_display = new \Application\DeskPRO\Organizations\OrgResultsDisplay($organizations);
 		$vars = array_merge($vars, array(
 			'type'               => $type,
 			'type_id'            => $type_id,
 			'organizations'      => $organizations,
+			'organizations_json' => $renderer->renderJson($result_display),
 			'page'               => $page,
-			'org_field_defs'     => $org_field_defs,
-			'result_display'     => $result_display,
+			'per_page'           => $results_helper->getPerPage(),
 		));
 
 		$html = $this->renderView($tpl, $vars);
@@ -116,8 +113,13 @@ class OrganizationSearchController extends AbstractController
 		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 
 		$tpl = 'filter-page.html.twig';
-		if ($this->in->getString('view_type') == 'list') {
+		$view_type = $this->in->getString('view_type');
+		if ('list' === $view_type) {
 			$tpl = 'filter-list-page.html.twig';
+		} elseif ('json' === $view_type) {
+			$display = new OrgResultsDisplay($organizations);
+			$renderer = new OrganizationListRenderer($this->container);
+			return $this->createJsonResponse($renderer->renderArray($display));
 		}
 
 		$result_display = new \Application\DeskPRO\Organizations\OrgResultsDisplay($organizations);

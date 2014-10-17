@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -102,7 +102,6 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
 			// based on notify list
 			} else if ($aid == 'notify_list') {
-
 				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
 				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
 				$list_builder  = new AgentNotifyListBuilder(
@@ -118,8 +117,19 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 				foreach ($notify as $n) {
 					// dont send to self
 					if ($person_context && $person_context === $n['agent']) {
-						$context->getLogger()->debug("[SendAgentAlert] notify_list skipping self");
-						continue;
+						$override = false;
+						if ($person_context->getPref('agent_notify_override.all.alert')) {
+							$override = true;
+						} else if ($person_context->getPref('agent_notify_override.forward.alert') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+							$override = true;
+						}
+
+						if (!$override) {
+							$context->getLogger()->debug("[SendAgentAlert] notify_list skipping self");
+							continue;
+						} else {
+							$context->getLogger()->debug("[SendAgentAlert] notify_list sending to self because got override preference");
+						}
 					}
 					if (in_array('alert', $n['types'])) {
 						$agents[] = $n['agent'];
@@ -186,6 +196,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 		$sent_count = 0;
 		$em  = $this->getContainer()->getEm();
 		$tpl = $this->getContainer()->getTemplating();
+		$tr  = $this->getContainer()->getTranslator();
 
 		foreach ($agents as $agent) {
 			if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
@@ -198,7 +209,9 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 				$vars['notify_info'] = $this->notify_info[$agent->id];
 			}
 
-			$tpl_line = $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
+			$tpl_line = $tr->callWithPersonContext($agent, function() use ($tpl, $vars) {
+				return $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
+			});
 			$alert_data['browser_rendered'] = $tpl_line;
 
 			$alert = $alert_sender->createAlert($agent, 'tickets', $alert_data);

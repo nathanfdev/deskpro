@@ -1,0 +1,33 @@
+<li id="file_row_{{file.id}}" class="note file-row">
+	<div class="message">
+		{% if file.blob.isImage() %}
+			<div class="message-avatar">
+				<a class="dragout" draggable="true" data-downloadurl="{{file.blob.content_type}}:{{file.blob.filename}}:{{ file.blob.getDownloadUrl(true) }}" data-blob-authid="{{ file.blob.getAuthId() }}" href="{{ file.blob.download_url }}" data-deskpro-url="{{ file.blob.getDownloadUrl(false, false) }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': file.blob.auth_id, 'filename': file.blob.filename_safe, 's': 25, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+			</div>
+		{% endif %}
+		<div class="message-body">
+			<div class="message-meta">
+				<time class="timeago" title="{{file.date_created|date('c', 'UTC')}}">{{file.date_created|date('day')}}</time>
+				<span style="float:right; font-size: 10px; padding-right: 5px;">{{ file.agent.display_name }} &middot; </span>
+				<h4 style="font-size: 10pt;">
+					<a href="{{ file.blob.getDownloadUrl(true) }}" title="{{ file.blob.filename }}" target="_blank">{{ file.blob.filename }}</a>
+				</h4>
+			</div>
+			<div style="float:right;">
+				<span class="editable-hidden">
+					<a href="" class="file-delete">delete</a>
+					<a href="" class="file-edit">edit</a>
+				</span>
+				<span class="editable-visible"><a href="" class="file-edit-save">save</a></span>
+			</div>
+			<div class="message-text" style="padding-top:5px;">
+				<div class="editable-hidden">
+					<p>{{ file.note }}</p>
+				</div>
+				<div class="editable-visible block">
+					<textarea class="editable-note-input" id="file_note_input_{{file.id}}" style="width: 97%">{{file.note}}</textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+</li>

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
@@ -674,6 +675,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				),
 				400
 			);
+		// maybe we should wrap all exceptions?
+		} elseif ($e instanceof NotFoundHttpException) {
+			return $this->createApiResponse(array(
+				'error_code' => 404,
+				'error_message' => $e->getMessage() ?: 'Not Found',
+			), 404);
 		}
 
 		return null;

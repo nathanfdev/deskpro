@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -44,6 +44,8 @@ use Orb\Util\Arrays;
  */
 class OrganizationResults
 {
+	const PER_PAGE_DEFAULT = 50;
+
 	/**
 	 * @var \Application\AgentBundle\Controller\AbstractController
 	 */
@@ -59,6 +61,8 @@ class OrganizationResults
 	 */
 	protected $order_by = null;
 
+	protected $perPage;
+
 	/**
 	 * @return \Application\AgentBundle\Controller\Helper\OrganizationResults
 	 */
@@ -72,9 +76,15 @@ class OrganizationResults
 
 
 
-	public function __construct($controller)
+	public function __construct($controller, $perPage = self::PER_PAGE_DEFAULT)
 	{
 		$this->controller = $controller;
+		$this->perPage = $perPage;
+	}
+
+	public function getPerPage()
+	{
+		return $this->perPage;
 	}
 
 
@@ -106,9 +116,9 @@ class OrganizationResults
 	 *
 	 * @return array
 	 */
-	public function getOrgsForPage($page, $per_page = 50)
+	public function getOrgsForPage($page)
 	{
-		return $this->_getPageFromOrgsIds($this->getOrganizationIds(), $page, $per_page);
+		return $this->_getPageFromOrgsIds($this->getOrganizationIds(), $page, $this->getPerPage());
 	}
 
 

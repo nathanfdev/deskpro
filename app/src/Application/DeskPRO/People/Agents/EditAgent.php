@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,13 +34,16 @@
 
 namespace Application\DeskPRO\People\Agents;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\ORM\CollectionHelper;
 use Application\DeskPRO\Validator\Constraints as DeskproConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
+use Orb\Util\PhoneNumbers;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
@@ -72,6 +75,11 @@ class EditAgent
 	public $emails;
 
 	/**
+	 * @var string
+	 */
+	public $primary_phone_number_text;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam[]
 	 */
 	public $teams;
@@ -81,15 +89,24 @@ class EditAgent
 	 */
 	public $agent_groups;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\AgentTeam
+	 */
+	public $primary_team;
+
+	public $notification_settings;
+
 
 	/**
 	 * @param Person $person
 	 */
 	public function __construct(Person $person)
 	{
-		$this->agent         = $person;
-		$this->name          = $person->name;
+		$this->agent = $person;
+		$this->name = $person->name;
 		$this->override_name = $person->override_display_name;
+		$this->primary_phone_number = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+		$this->primary_phone_number_text = $person->getPrimaryPhoneNumberText();
 
 		$this->zones = array();
 		if ($person->can_admin) {
@@ -116,6 +133,13 @@ class EditAgent
 		}
 
 		$this->agent_groups = $person->usergroups->toArray();
+
+		$this->notification_settings = array(
+			'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
+			'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
+		);
+
+		$this->primary_team = $person->primary_team;
 	}
 
 
@@ -143,6 +167,13 @@ class EditAgent
 		$agent->name                  = $this->name;
 		$agent->override_display_name = $this->override_name ?: '';
 
+		if (!PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
+			$this->primary_phone_number->number = $this->primary_phone_number_text;
+			$agent->setPrimaryPhoneNumber($this->primary_phone_number);
+		} else {
+			$agent->setPrimaryPhoneNumber(null);
+		}
+
 		$agent->can_admin             = in_array('admin', $this->zones);
 		$agent->can_reports           = in_array('reports', $this->zones);
 
@@ -150,26 +181,27 @@ class EditAgent
 		# Teams
 		#------------------------------
 
-		$current_teams = array();
-		if ($agent->id) {
-			$agent->loadHelper('AgentTeam');
-			$current_teams = $agent->getHelper('AgentTeam')->getAgentTeams();
+		foreach ($agent->teams as $team) {
+			/** @var $team AgentTeam */
+			$team->removePerson($agent); // unidirectional
 		}
 
-		if ($this->teams instanceof ArrayCollection) {
-			$this->teams = $this->teams->toArray();
-		}
-		$add_teams = array_diff($this->teams, $current_teams);
-		$del_teams = array_diff($current_teams, $this->teams);
+		$found_primary = false;
 
-		foreach ($add_teams as $team) {
-			$team->members->add($agent);
-			$em->persist($team);
+		foreach ($this->teams as $team) {
+			/** @var $team AgentTeam */
+			$agent->addTeam($team); // bidirectional
+
+			if ($team === $this->primary_team) {
+				$found_primary = true;
+			}
 		}
-		if ($agent->id) {
-			foreach ($del_teams as $team) {
-				$team->members->removeElement($agent);
-				$em->persist($team);
+
+		if (!$found_primary) {
+			if ($this->teams) {
+				$this->primary_team = Arrays::getFirstItem($this->teams);
+			} else {
+				$this->primary_team = null;
 			}
 		}
 
@@ -201,29 +233,35 @@ class EditAgent
 			$email->email        = $email_address;
 			$email->is_validated = true;
 
-			$agent->emails->add($email);
+			$agent->addEmailAddress($email);
 			$em->persist($email);
 		}
 
 		foreach ($del_emails as $email_address) {
 			$email = $agent->findEmailAddress($email_address);
 			if ($email) {
-				$agent->emails->removeElement($email);
+				$agent->removeEmailAddressId($email['id']);
 				$em->remove($email);
 			}
 		}
 
 		$primary_email_address = strtolower(Arrays::getFirstItem($this->emails));
 		foreach ($agent->emails as $email) {
-			if (strtolower($email->email) == $primary_email_address) {
+			if (strtolower($email->email) == $primary_email_address && !$agent->primary_email) {
 				$agent->primary_email = $email;
 				break;
 			}
 		}
 
-		#------------------------------
-		# Save
-		#------------------------------
+		$em->flush();
+
+		foreach ($this->notification_settings as $k => $v) {
+			$p = $agent->setPreference('agent_notif.'.$k, (int) $v);
+			$em->persist($p);
+		}
+
+		$em->persist($agent);
+		$agent->primary_team = $this->primary_team;
 
 		$em->flush();
 	}
@@ -235,7 +273,9 @@ class EditAgent
 
 	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
 	{
-		$metadata->addPropertyConstraint('name', new Constraints\NotBlank());
+		$metadata->addPropertyConstraint('name', new Constraints\NotBlank(array(
+			'message' => 'Name should not be blank.',
+		)));
 		$metadata->addPropertyConstraint('emails', new Constraints\All(array(
 			'constraints' => array(
 				new Constraints\NotBlank(),

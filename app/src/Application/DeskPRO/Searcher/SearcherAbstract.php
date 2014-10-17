@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -482,6 +482,27 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$choice = Arrays::getFirstItem($choice);
 		}
 
+		if (!is_array($choice)) {
+			$choice = array($choice);
+		}
+
+		$has_empty = false;
+		foreach ($choice as $c) {
+			if (trim($c) === "") {
+				$has_empty = true;
+				break;
+			}
+		}
+
+		if (!$choice || (count($choice) == 1 && $has_empty)) {
+			if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+				$where = "($field = '' OR $field IS NULL)";
+			} else {
+				$where = "($field != '' AND $field IS NOT NULL)";
+			}
+			return $where;
+		}
+
 		$self = $this;
 		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
 			$choices_in = (array)$choice;
@@ -492,9 +513,17 @@ abstract class SearcherAbstract implements PersonContextInterface
 			$choices_in = "(" . implode(',', $choices_in) . ")";
 
 			if ($op == self::OP_IS) {
-				$where = "$field IN $choices_in";
+				if ($has_empty) {
+					$where = "($field IN $choices_in OR $field IS NULL)";
+				} else {
+					$where = "$field IN $choices_in";
+				}
 			} elseif ($op == self::OP_NOT) {
-				$where = "$field NOT IN $choices_in";
+				if ($has_empty) {
+					$where = "($field NOT IN $choices_in)";
+				} else {
+					$where = "($field NOT IN $choices_in OR $field IS NULL)";
+				}
 			}
 
 		} else {
@@ -508,9 +537,17 @@ abstract class SearcherAbstract implements PersonContextInterface
 			});
 
 			if ($op == self::OP_CONTAINS) {
-				$where = "($field LIKE " . implode(" OR $field LIKE ", $choices_in) . ")";
+				if ($has_empty) {
+					$where = "(($field LIKE " . implode(" OR $field LIKE ", $choices_in) . ") OR $field IS NULL)";
+				} else {
+					$where = "($field LIKE " . implode(" OR $field LIKE ", $choices_in) . ")";
+				}
 			} else {
-				$where = "($field NOT LIKE " . implode(" AND $field NOT LIKE ", $choices_in) . ")";
+				if ($has_empty) {
+					$where = "($field NOT LIKE " . implode(" AND $field NOT LIKE ", $choices_in) . ")";
+				} else {
+					$where = "(($field NOT LIKE " . implode(" AND $field NOT LIKE ", $choices_in) . ") OR $field IS NULL)";
+				}
 			}
 		}
 

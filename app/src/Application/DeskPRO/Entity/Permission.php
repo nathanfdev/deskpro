@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -123,7 +123,7 @@ class Permission extends DomainObject
 	/**
 	 * Combine an array of permissions into a superduper array of effective permissions.
 	 *
-	 * @param \Application\DeskPRO\Entity\Permission[] $perms
+	 * @param \Application\DeskPRO\Entity\Permission[]|array $perms
 	 * @return array
 	 */
 
@@ -133,8 +133,13 @@ class Permission extends DomainObject
 
 		foreach ($perms as $perm) {
 
-			$k = $perm->name;
-			$v = $perm->value;
+			if (is_array($perm)) {
+				$k = $perm['name'];
+				$v = $perm['value'];
+			} else {
+				$k = $perm->name;
+				$v = $perm->value;
+			}
 
 			if (!Numbers::isInteger($v)) {
 

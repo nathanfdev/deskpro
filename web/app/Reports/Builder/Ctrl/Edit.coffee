@@ -53,15 +53,21 @@ define [
 
 			run = =>
 				promise = @Api.sendPostJson('/reports/builder/test/' + @report.id, {
-					parts: @query_parts
+					parts: @query_parts,
+					params: @$stateParams.params
 				})
 
 				promise.success((data) =>
-					if data.error then @query_error = data.error
+					if data.error
+						@query_error = data.error
 
-					if data.rendered_result
-						@query_error = null
-						@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
+					else
+						if data.rendered_result
+							@query_error = null
+							@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
+						else
+							@query_error = null
+							@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
 
 					@stopSpinner('builder_loading', true)
 					@stopSpinner('query_loading', true)
@@ -139,14 +145,14 @@ define [
 		# This method is called when user clicks on 'CSV' button
 		###
 		downloadCsv: ->
-			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id +  '/csv'))
+			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id +  '/csv', {params: @$stateParams.params}))
 
 
 		###
 		# This method is called when user clicks on 'PDF' button
 		###
 		downloadPdf: ->
-			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id + '/pdf'))
+			window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id + '/pdf', {params: @$stateParams.params}))
 
 
 		###

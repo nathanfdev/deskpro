@@ -51,8 +51,16 @@
           value: 'FilterPriority'
         });
         options.push({
+          title: 'Urgency',
+          value: 'FilterUrgency'
+        });
+        options.push({
           title: 'Workflow',
           value: 'FilterWorkflow'
+        });
+        options.push({
+          title: 'Labels',
+          value: 'FilterLabels'
         });
         options.push({
           title: 'Email Account',
@@ -147,7 +155,7 @@
         });
         options.push({
           title: 'Usergroup',
-          value: 'FilterUserUsergroups'
+          value: 'FilterUserGroups'
         });
         options.push({
           title: 'Language',
@@ -219,6 +227,11 @@
           subOptions: options
         });
         return set_options;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.resetData = function() {
+        this.options_data = null;
+        return this.loadDataPromise = null;
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.loadDataOptions = function() {
@@ -301,6 +314,30 @@
         return def;
       };
 
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterLabels = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'labels';
+        options.type_title = 'Labels';
+        options.tags = true;
+        options.operators = ['contains', 'notcontains'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUrgency = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'urgency';
+        options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte'];
+        def = this.getStandardInput(options);
+        return def;
+      };
+
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterPriority = function(options) {
         var def;
         if (options == null) {
@@ -315,6 +352,17 @@
           }
         ];
         def = this.getStandardSelect(options);
+        return def;
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getCheckUrgency = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'urgency';
+        options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte'];
+        def = this.getStandardInput(options);
         return def;
       };
 
@@ -336,6 +384,7 @@
         }
         options.propName = 'status';
         options.template = 'OptionBuilder/type-filter-status.html';
+        options.noArchive = true;
         def = this.getStandardSelect(options);
         return def;
       };
@@ -658,7 +707,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserUsergroups = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterUserGroups = function(options) {
         var def;
         if (options == null) {
           options = {};

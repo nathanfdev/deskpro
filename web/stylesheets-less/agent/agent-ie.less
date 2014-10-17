@@ -56,18 +56,17 @@
 
 .deskproTabList li.is-alerting:hover .bound-fade,
 .deskproTabList li.is-alerting.alert-highlight .bound-fade {
-	background: transparent !important;
 	filter: none !important;
 	-ms-filter: none !important;
 }
 
 .deskproTabList li:hover, .deskproTabList li.over {
-	background: #fff;
 	filter: none !important;
 	-ms-filter: none !important;
 }
 
 .deskproTabList li:hover .bound-fade, .deskproTabList li.over .bound-fade {
+	display: none;
 	background: transparent !important;
 	filter: none !important;
 	-ms-filter: none !important;
@@ -124,6 +123,12 @@ article.content-message.note-message .content header {
 	padding: 8px 0 8px 0 !important;
 }
 
+.deskproTabList li {
+	/* This solves a bug where the contents of a tab randomly disappear. */
+	/* Why? Because IE. */
+	opacity: 0.99999;
+}
+
 .deskproTabList li a {
 	width: 90px !important;
 	white-space: nowrap;
@@ -131,4 +136,16 @@ article.content-message.note-message .content header {
 
 .deskproTabList li {
 	width: 115px !important;
+}
+
+.deskproTabList li.list-btn {
+	width: 25px !important;
+}
+
+.deskproTabList li.list-btn.with-list {
+	width: 45px !important;
+}
+
+.deskproTabList li.add-btn {
+	width: auto !important;
 }

@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,12 +63,20 @@ class Parameter extends DataType
      * @var bool
      */
     public $required;
+    
+    /**
+     * Another way to allow multiple values for a "query" parameter. 
+     * If used, the query parameter may accept comma-separated values. 
+     * The field may be used only if paramType is "query", "header" or "path".
+     * @var bool
+     */
+    public $allowMultiple;
 
     public function __construct(array $values = array())
     {
         parent::__construct($values);
         if ($this->paramType && !in_array($this->paramType, array('path', 'query', 'body', 'header', 'form'))) {
-            Logger::warning('Unexpected paramType "'.$this->paramType.'", expecting "path", "query", "body", "header" or "form" in '.AbstractAnnotation::$context);
+            Logger::warning('Unexpected paramType "'.$this->paramType.'", expecting "path", "query", "body", "header" or "form" in '.$this->_context);
         }
     }
 }

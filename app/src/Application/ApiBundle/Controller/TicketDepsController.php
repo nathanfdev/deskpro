@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -155,7 +155,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
 		if (!$dep || !$dep->is_tickets_enabled) {
-			throw new $this->createNotFoundException();
+			throw $this->createNotFoundException();
 		}
 
 		$data = array();
@@ -194,6 +194,16 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
 		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
+		if ($this->in->getBool('with_agents_list')) {
+			$data['agents_list'] = array();
+			foreach ($this->container->getAgentData()->getAgents() as $agent) {
+				$agent->loadHelper('AgentPermissions');
+				if ($agent->getHelper('AgentPermissions')->isDepartmentAllowed($dep)) {
+					$data['agents_list'][] = $agent->toBasicApiData();
+				}
+			}
+		}
+
 		return $this->createApiResponse($data);
 	}
 
@@ -208,7 +218,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 			$dep = $this->container->getSystemService('ticket_departments')->getById($id);
 
 			if (!$dep || !$dep->is_tickets_enabled) {
-				throw new $this->createNotFoundException();
+				throw $this->createNotFoundException();
 			}
 		} else {
 			$dep = Department::createTicketDepartment();
@@ -227,10 +237,19 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 		$data = $this->in->getAll('post');
 		$form->submit($data, true);
 
-		// todo need to sort out applying errors to the angualr view
-		// todo handle "This form should not contain extra fields."
-
 		if ($form->isValid() || 1) {
+
+			if ($avatar_blob_id = $this->in->getUInt('department.avatar')) {
+				$blob = $this->em->find('DeskPRO:Blob', $avatar_blob_id);
+				if ($blob && $blob->isImage()) {
+					$dep_edit->department->avatar = $blob;
+				} else {
+					$dep_edit->department->avatar = null;
+				}
+			} else {
+				$dep_edit->department->avatar = null;
+			}
+
 			$dep_edit->save($this->em);
 			$dep_edit->savePermissions(
 				$this->em,

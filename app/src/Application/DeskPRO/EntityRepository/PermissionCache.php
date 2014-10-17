@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -38,33 +38,80 @@ use Application\DeskPRO\App;
 
 class PermissionCache extends AbstractEntityRepository
 {
-	public function loadPermissionTypes($usergroup_key, $person_id, array $types)
+	/**
+	 * @var array
+	 */
+	private $cache;
+
+	public function loadPermissionTypes($usergroup_key, $person_id = null, array $types = null)
 	{
-		// A simple filter to make sure only valid names are included
-		$types = array_filter($types, function($var) {
-			return !preg_match('#[^a-zA-Z0-9_]#', $var);
-		});
+		$usergroup_key = preg_replace('#\-person\-\d+$#', '', $usergroup_key);
 
-		if (!$types) {
-			return array();
+		if ($this->cache === null) {
+			$this->cache = $this->_em->getConnection()->fetchAll("
+				SELECT name, usergroup_key, perms
+				FROM permissions_cache
+			");
 		}
-
-		$key = $usergroup_key;
 
 		if ($person_id) {
-			$key .= ".$person_id";
+			$person_key = $usergroup_key . '-person-' . $person_id;
+		} else {
+			$person_key = null;
 		}
 
-		$types = '\'' . implode('\',\'', $types) . '\'';
+		if ($types) {
+			// A simple filter to make sure only valid names are included
+			$types = array_filter($types, function($var) {
+				return !preg_match('#[^a-zA-Z0-9_]#', $var);
+			});
 
-		$caches = $this->getEntityManager()->createQuery("
-			SELECT c
-			FROM DeskPRO:PermissionCache c
-			WHERE c.name IN ($types) AND (c.usergroup_key = ?1 OR c.usergroup_key = ?2)
-		")->setParameter(1, $usergroup_key)
-		  ->setParameter(2, $key)
-		  ->getResult();
+			if (!$types) {
+				return array();
+			}
 
-		return $caches;
+			$types = array_fill_keys($types, true);
+
+			$recs = array_filter($this->cache, function($c) use ($usergroup_key, $types) {
+				return isset($types[$c['name']]) && ($c['usergroup_key'] == $usergroup_key);
+			});
+			if ($person_key) {
+				$recs_override = array_filter($this->cache, function($c) use ($person_key, $types) {
+					return isset($types[$c['name']]) && $c['usergroup_key'] == $person_key;
+				});
+				if ($recs_override) {
+					$recs = array_merge($recs, $recs_override);
+				}
+			}
+		} else {
+			$recs = array_filter($this->cache, function($c) use ($usergroup_key) {
+				return $c['usergroup_key'] == $usergroup_key;
+			});
+			if ($person_key) {
+				$recs_override = array_filter($this->cache, function($c) use ($person_key) {
+					return $c['usergroup_key'] == $person_key;
+				});
+				if ($recs_override) {
+					$recs = array_merge($recs, $recs_override);
+				}
+			}
+		}
+
+		$loaders = array();
+
+		foreach ($recs as &$r) {
+			if (isset($r['perms_loader'])) {
+				$loaders[] = $r['perms_loader'];
+			} else if (!empty($r['perms'])) {
+				$r['perms_loader'] = @unserialize($r['perms']);
+				$r['perms'] = null;
+				if ($r['perms_loader']) {
+					$r['perms_loader']->loaded_key = $r['usergroup_key'];
+					$loaders[] = $r['perms_loader'];
+				}
+			}
+		}
+
+		return $loaders;
 	}
 }

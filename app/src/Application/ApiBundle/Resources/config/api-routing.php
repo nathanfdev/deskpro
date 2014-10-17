@@ -9,7 +9,13 @@ $collection = new RouteCollection();
 
 $collection->create('api', array(
 	'path'        => '/',
-	'controller'  => 'ApiBundle:Test:About',
+	'controller'  => 'ApiBundle:Docs:about',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_docs_home', array(
+	'path'        => '/api.html',
+	'controller'  => 'ApiBundle:Docs:api',
 	'methods'     => array('GET'),
 ));
 
@@ -82,6 +88,44 @@ $collection->create('api_docs_get', array(
 ########################################################################################################################
 # General
 ########################################################################################################################
+
+$collection->create('api_labels_settings_get', array(
+	'path'          => '/labels/{type}/settings',
+	'controller'    => 'ApiBundle:Labels:getSettings',
+	'methods'       => array('GET'),
+	'requirements'  => array('type' => implode('|', \Application\DeskPRO\EntityRepository\LabelDef::valid())),
+));
+
+$collection->create('api_labels_settings_set', array(
+	'path'          => '/labels/{type}/settings',
+	'controller'    => 'ApiBundle:Labels:setSettings',
+	'methods'       => array('PUT'),
+	'requirements'  => array('type' => implode('|', \Application\DeskPRO\EntityRepository\LabelDef::valid())),
+));
+
+$collection->create('api_labels_definitions', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:listDefinitions',
+	'methods'       => array('GET'),
+));
+
+$collection->create('api_labels_definitions_create', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:createDefinition',
+	'methods'       => array('POST'),
+));
+
+$collection->create('api_labels_definitions_update', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:updateDefinition',
+	'methods'       => array('PUT'),
+));
+
+$collection->create('api_labels_definitions_delete', array(
+	'path'          => '/labels/definitions',
+	'controller'    => 'ApiBundle:Labels:deleteDefinition',
+	'methods'       => array('DELETE'),
+));
 
 $collection->create('api_misc_upload', array(
 	'path'        => '/misc/upload',
@@ -520,6 +564,12 @@ $collection->create('api_people', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_people_quick_search', array(
+	'path'        => '/people/quick_search',
+	'controller'  => 'ApiBundle:Person:quickSearch',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_people_post', array(
 	'path'        => '/people',
 	'controller'  => 'ApiBundle:Person:newPerson',
@@ -879,6 +929,12 @@ $collection->create('api_agents_create', array(
 	'methods'     => array('PUT'),
 ));
 
+$collection->create('api_agents_create_bulk', array(
+	'path'        => '/agents_bulk',
+	'controller'  => 'ApiBundle:Agents:bulkCreateAgents',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_agents_notifyprefs_gettables', array(
 	'path'        => '/agents/{id}/notify-prefs/get-tables',
 	'controller'  => 'ApiBundle:Agents:getNotifyPrefs',
@@ -977,6 +1033,12 @@ $collection->create('api_combiner', array(
 $collection->create('api_organizations', array(
 	'path'        => '/organizations',
 	'controller'  => 'ApiBundle:Organization:search',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_organizations_quick_search', array(
+	'path'        => '/organizations/quick_search',
+	'controller'  => 'ApiBundle:Organization:quickSearch',
 	'methods'     => array('GET'),
 ));
 
@@ -2276,6 +2338,48 @@ foreach ($label_types as $info) {
 }
 
 ########################################################################################################################
+# Round Robin
+########################################################################################################################
+
+$collection->create('api_roundrobins_list', array(
+	'path'        => '/round_robin',
+	'controller'  => 'ApiBundle:RoundRobin:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_settings', array(
+	'path'        => '/round_robin/settings',
+	'controller'  => 'ApiBundle:RoundRobin:settings',
+	'methods'     => array('GET', 'PUT'),
+));
+
+$collection->create('api_roundrobins_triggers', array(
+	'path'        => '/round_robin/triggers/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:checkTriggers',
+	'defaults'    => array('id' => null),
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_get', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:get',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_roundrobins_set', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:set',
+	'methods'     => array('POST', 'PUT'),
+	'defaults'    => array('id' => 0),
+));
+
+$collection->create('api_roundrobins_delete', array(
+	'path'        => '/round_robin/{id}',
+	'controller'  => 'ApiBundle:RoundRobin:delete',
+	'methods'     => array('DELETE'),
+));
+
+########################################################################################################################
 # Start Settings
 ########################################################################################################################
 
@@ -2432,6 +2536,12 @@ $collection->create('api_elastic_settings', array(
 	'controller'  => 'ApiBundle:ElasticSearch:getSettings',
 	'methods'     => array('GET'),
 ));
+
+$collection->create('api_elastic_index_status', array(
+		'path'        => '/elastic-search/index-status',
+		'controller'  => 'ApiBundle:ElasticSearch:indexStatus',
+		'methods'     => array('GET'),
+	));
 
 $collection->create('api_elastic_settings_save', array(
 	'path'        => '/elastic-search/settings',
@@ -2874,6 +2984,68 @@ $collection->create('api_ticket_fields_setenabled', array(
 ));
 
 ########################################################################################################################
+# SMS Channel
+########################################################################################################################
+
+$collection->create(
+	'api_channel_sms_accounts', array(
+		'path'       => '/channel/sms/accounts',
+		'controller' => 'ApiBundle:ChannelSms:list',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_get', array(
+		'path'       => '/channel/sms/account/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelSms:get',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_delete', array(
+		'path'       => '/channel/sms/account/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelSms:delete',
+		'methods'    => array('DELETE'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_save', array(
+		'path'       => '/channel/sms/account/{id}',
+		'controller' => 'ApiBundle:ChannelSms:save',
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_account_create', array(
+		'path'       => '/channel/sms/account',
+		'controller' => 'ApiBundle:ChannelSms:save',
+		'methods'    => array('PUT'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_connect_provider', array(
+		'path'       => '/channel/sms/connect_provider',
+		'controller' => 'ApiBundle:ChannelSms:connectProvider',
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
+	'api_channel_sms_setup_and_test_twilio', array(
+		'path'       => '/channel/sms/setup-and-test/twilio',
+		'controller' => 'ApiBundle:ChannelSms:setupAndTestTwilio',
+		'methods'    => array('POST'),
+	)
+);
+
+########################################################################################################################
 # Email Accounts
 ########################################################################################################################
 
@@ -2881,6 +3053,18 @@ $collection->create('api_emailaccounts', array(
 	'path'        => '/email_accounts',
 	'controller'  => 'ApiBundle:EmailAccounts:list',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_emailaccounts_settings_get', array(
+	'path'        => '/email_accounts/settings',
+	'controller'  => 'ApiBundle:EmailAccounts:getSettings',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_emailaccounts_settings_set', array(
+	'path'        => '/email_accounts/settings',
+	'controller'  => 'ApiBundle:EmailAccounts:setSettings',
+	'methods'     => array('PUT'),
 ));
 
 $collection->create('api_emailaccounts_create', array(
@@ -2944,6 +3128,13 @@ $collection->create('api_emailstatus_source_reprocess', array(
 	'methods'      => array('POST'),
 ));
 
+$collection->create('api_emailstatus_source_massactions', array(
+	'path'         => '/email_status/sources/mass-actions/{action}',
+	'controller'   => 'ApiBundle:EmailStatus:emailSourceMassActions',
+	'requirements' => array('action' => '[a-z]+'),
+	'methods'      => array('POST'),
+));
+
 $collection->create('api_emailstatus_source_delete', array(
 	'path'         => '/email_status/sources/{id}',
 	'controller'   => 'ApiBundle:EmailStatus:deleteEmailSource',
@@ -2955,6 +3146,13 @@ $collection->create('api_emailstatus_sendmaillist', array(
 	'path'        => '/email_status/sendmail',
 	'controller'  => 'ApiBundle:EmailStatus:listSendmail',
 	'methods'     => array('GET'),
+));
+
+$collection->create('api_emailstatus_sendmail_massactions', array(
+	'path'         => '/email_status/sendmail/mass-actions/{action}',
+	'controller'   => 'ApiBundle:EmailStatus:sendmailMassActions',
+	'requirements' => array('action' => '[a-z]+'),
+	'methods'      => array('POST'),
 ));
 
 $collection->create('api_emailstatus_sendmail_delete', array(
@@ -3772,6 +3970,22 @@ $collection->create('api_api_keys_regenerate', array(
 ));
 
 ########################################################################################################################
+# Tasks
+########################################################################################################################
+
+$collection->create('api_tasks_settings_get', array(
+	'path'       => '/tasks/settings',
+	'controller' => 'ApiBundle:Tasks:settings',
+	'methods'    => array('GET'),
+));
+
+$collection->create('api_tasks_settings_set', array(
+	'path'       => '/tasks/settings',
+	'controller' => 'ApiBundle:Tasks:updateSettings',
+	'methods'    => array('PUT'),
+));
+
+########################################################################################################################
 # CRM User Fields
 ########################################################################################################################
 
@@ -3850,7 +4064,7 @@ $collection->create('api_org_fields_delete', array(
 	'path'         => '/org_fields/{id}',
 	'controller'   => 'ApiBundle:OrgFields:deleteCustomField',
 	'requirements' => array('id' => '\\d+'),
-	'methods'      => array('DELTE'),
+	'methods'      => array('DELETE'),
 ));
 
 $collection->create('api_org_fields', array(

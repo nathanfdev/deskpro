@@ -42,6 +42,17 @@
 		</div>
 		<div class="form-group">
 			<div class="col-lg-3">
+				<h3>Phone Number</h3>
+			</div>
+			<div class="col-lg-9">
+				<div ng-show="EditCtrl.invalid_phone_error" class="alert alert-danger">
+					{{ ng_var('EditCtrl.invalid_phone_error') }}
+				</div>
+				<input type="tel" style="min-width: 250px" dp-phone-number="{{ ng_var('EditCtrl.form.primary_phone_number_region') }}" class="form-control" name="primary_phone_number_text" ng-model="EditCtrl.form.primary_phone_number_text" style="width:80%"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
 				<h3>Zones</h3>
 			</div>
 			<div class="col-lg-9">
@@ -68,11 +79,24 @@
 			<div class="col-lg-9">
 				<ul class="checkbox-list" style="min-width: 250px">
 					<li ng-repeat="team in EditCtrl.form.teams">
-						<label>
-							<input type="checkbox" ng-model="team.value" />
-							<span>{{ ng_var('team.name') }}</span>
-							<a class="inline-edit-link" href="{{ ng_href('agents.teams.edit', '{id: team.id}') }}"><i class="fa fa-pencil"></i><em>edit team</em></a>
-						</label>
+						<div style="min-width: 400px;">
+                            <label>
+                                <input type="checkbox" ng-model="team.value" ng-change="EditCtrl.updatePrimaryTeam()" />
+                                <span>{{ ng_var('team.name') }}</span>
+                                <a class="inline-edit-link" href="{{ ng_href('agents.teams.edit', '{id: team.id}') }}">
+                                    <i class="fa fa-pencil"></i>
+                                    <em>edit team</em>
+                                </a>
+                            </label>
+                            <span class="pull-right"
+                                  style="padding: 3px 10px;"
+                                  ng-if="team.value"
+                                  ng-style="EditCtrl.form.primary_team.id == team.id && {color:'#000'} || {cursor: 'pointer', color:'#ccc'}"
+                                  ng-click="EditCtrl.form.primary_team = team">
+                                <i ng-show="EditCtrl.form.primary_team.id == team.id" class="fa fa-check"></i>
+                                {{ phrase('adm.agents.primary_team') }}
+                            </span>
+						</div>
 					</li>
 				</ul>
 			</div>
@@ -92,12 +116,24 @@
 					</li>
 				</ul>
 				<span class="help-block">
-					<div ng-show="EditCtrl.hasPermOverrides">
-						<span class="fa fa-exclamation-triangle"></span>
-						This agent has permission overrides on the <button class="btn btn-default btn-xs" dp-tab-btn="main.perms">Permissions</button> tab.
+					<div>
+						Switch to the <span class="soft-link" dp-tab-btn="main.perms">Permissions</span> or <span class="soft-link" dp-tab-btn="main.deps">Departments</span> tab to manage permission overrides.
 					</div>
-					<div ng-show="!EditCtrl.hasPermOverrides">
-						Switch to the <button class="btn btn-default btn-xs" dp-tab-btn="main.perms">Permissions</button> tab to manage permission overrides.
+					<div ng-show="EditCtrl.hasPermOverrides || EditCtrl.hasDepOverrides">
+						<span class="fa fa-exclamation-triangle"></span>
+						<span ng-show="EditCtrl.hasPermOverrides && EditCtrl.hasDepOverrides">
+							Note: This agent has permission overrides on both the
+							<span class="soft-link" dp-tab-btn="main.perms">Permissions</span>
+							and <span class="soft-link" dp-tab-btn="main.deps">Departments</span> tabs.
+						</span>
+						<span ng-show="EditCtrl.hasPermOverrides && !EditCtrl.hasDepOverrides">
+							Note: This agent has permission overrides on the
+							<span class="soft-link" dp-tab-btn="main.perms">Permissions</span> tab.
+						</span>
+						<span ng-show="!EditCtrl.hasPermOverrides && EditCtrl.hasDepOverrides">
+							Note: This agent has permission overrides on the
+							<span class="soft-link" dp-tab-btn="main.deps">Departments</span> tab.
+						</span>
 					</div>
 				</span>
 			</div>

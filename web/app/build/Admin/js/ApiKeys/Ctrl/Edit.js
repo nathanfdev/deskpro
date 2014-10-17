@@ -22,11 +22,6 @@
         return this.api_key = null;
       };
 
-
-      /*
-       	 *
-       */
-
       Admin_ApiKeys_Ctrl_Edit.prototype.initialLoad = function() {
         var promise;
         promise = this.keyData.loadEditApiKeyData(this.$stateParams.id || null).then((function(_this) {
@@ -37,11 +32,6 @@
         })(this));
         return promise;
       };
-
-
-      /*
-      		 *
-       */
 
       Admin_ApiKeys_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise;
@@ -54,20 +44,21 @@
         return promise.then((function(_this) {
           return function() {
             _this.stopSpinner('saving', true).then(function() {
-              return _this.Growl.success("Saved");
+              return _this.Growl.success('Saved');
             });
             _this.skipDirtyState();
             if (is_new) {
               return _this.$state.go('apps.api_keys.gocreate');
             }
           };
+        })(this), (function(_this) {
+          return function() {
+            return _this.stopSpinner('saving', true).then(function() {
+              return _this.Growl.error('Error');
+            });
+          };
         })(this));
       };
-
-
-      /*
-       	 *
-       */
 
       Admin_ApiKeys_Ctrl_Edit.prototype.regenerateApiKey = function() {
         return this.keyData.regenerateApiKey(this.api_key, this.form).success((function(_this) {

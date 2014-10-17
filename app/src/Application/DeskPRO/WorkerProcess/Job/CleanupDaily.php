@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -41,6 +41,12 @@ class CleanupDaily extends AbstractJob
 	const DEFAULT_INTERVAL = 86400;
 
 	public function run()
+	{
+		$this->doRun();
+		App::getDb()->setIsolationDefault();
+	}
+
+	private function doRun()
 	{
 		#------------------------------
 		# email sources
@@ -283,21 +289,23 @@ class CleanupDaily extends AbstractJob
 		if ($num) {
 			$this->logStatus("Cleaned up $num ref_reserve records");
 		}
-
+		
 		#------------------------------
-		# Enable/disable like search
+		# whitelisted IPs
 		#------------------------------
 
-		$c_messages = App::getDb()->count('tickets_messages');
-		$like_search = 1;
-		if ($c_messages > 300000) {
-			$like_search = 0;
+		if (App::getSetting('agent.ip_security.enabled')) {
+			$cutoff = App::getSetting('agent.ip_security.whitelist_lifetime');
+			$datecut = date('Y-m-d H:i:s', time() - $cutoff);
+			$num = App::getDb()->executeUpdate("
+				DELETE FROM white_listed_ips
+				WHERE date_created < ?
+			", array($datecut));
+
+			if ($num) {
+				$this->logStatus("Cleaned up $num white_listed_ips records");
+			}
 		}
-
-		App::getDb()->replace('settings', array(
-			'name' => 'core_tickets.enable_like_search_auto',
-			'value' => $like_search
-		));
 
 		#------------------------------
 		# Temp files

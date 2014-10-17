@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -43,9 +43,15 @@ use Application\DeskPRO\Email\EmailAccount\IncomingAccount\IncomingAccountTester
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\OutgoingAccountTester;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\Settings\EmailAccountsSettings;
+use Orb\Util\Env;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Orb\Validator\StringEmail;
 
 class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
+	protected $emailSettings = null;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -82,9 +88,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 	public function getAction($id)
 	{
 		$manager = $this->container->getEmailAccountManager();
-		$account = $manager->getAccount($id);
 
-		if (!$account) {
+		try {
+			$account = $manager->getAccount($id);
+		} catch (\OutOfBoundsException $e) {
 			throw $this->createNotFoundException();
 		}
 
@@ -231,7 +238,28 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 		$data = $this->getTestOutgoingFormData();
 		$form->submit($data);
 
-		$tester = new OutgoingAccountTester($edit_account->getOutgoingAccountConfig());
+		if (!StringEmail::isValueValid($this->in->getString('test_email.to'))) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'Invalid TO email address',
+			));
+		}
+		if (!StringEmail::isValueValid($this->in->getString('test_email.from'))) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'Invalid FROM email address',
+			));
+		}
+
+		$out_account = $edit_account->getOutgoingAccountConfig();
+		if (!$out_account) {
+			return $this->createApiResponse(array(
+				'is_success'    => false,
+				'log'           => 'No outgoing account configuration was specified.',
+			));
+		}
+
+		$tester = new OutgoingAccountTester($out_account);
 		$tester->test(
 			$this->in->getString('test_email.to'),
 			$this->in->getString('test_email.from'),
@@ -251,5 +279,31 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 	protected function getTestOutgoingFormData()
 	{
 		return $this->in->getAll('post');
+	}
+
+	public function getSettingsAction()
+	{
+		if (!$this->emailSettings) {
+			$this->emailSettings = new EmailAccountsSettings($this->settings);
+		}
+
+		$data = array(
+			'email_settings' => $this->emailSettings->toArray(),
+			'max_filesize'     => Env::getEffectiveMaxUploadSize(),
+		);
+
+		return $this->createApiResponse($data);
+	}
+
+	public function setSettingsAction()
+	{
+		if (!$this->emailSettings) {
+			$this->emailSettings = new EmailAccountsSettings($this->settings);
+		}
+
+		$data = $this->in->getArrayValue('settings');
+		$this->emailSettings->fromArray($data);
+
+		return $this->getSettingsAction();
 	}
 }

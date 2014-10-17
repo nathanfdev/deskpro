@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -55,6 +55,16 @@ class TextMatcher
 	/**
 	 * @var string
 	 */
+	protected $matched_text = '';
+
+	/**
+	 * @var array
+	 */
+	protected $matched_patterns;
+
+	/**
+	 * @var string
+	 */
 	protected $marked_body;
 
 	/**
@@ -89,8 +99,11 @@ class TextMatcher
 
 		$this->pattern_match = false;
 		$this->marked_body   = $this->body;
+		$m = null;
 
-		if (preg_match($this->pattern->getPattern(), $this->body)) {
+		if (preg_match($this->pattern->getPattern(), $this->body, $m)) {
+			$this->matched_patterns = $m;
+			$this->matched_text = $m[0];
 			$this->marked_body = preg_replace($this->pattern->getPattern(), self::CUT_MARK . '$0', $this->body);
 			$this->pattern_match = true;
 		}
@@ -110,6 +123,25 @@ class TextMatcher
 		}
 
 		return false;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getMatchedText()
+	{
+		return $this->matched_text;
+	}
+
+
+	/**
+	 * @param string|int $k The offset in the matches array
+	 * @return string|null
+	 */
+	public function getMatchedPattern($k)
+	{
+		return isset($this->matched_patterns[$k]) ? $this->matched_patterns[$k] : null;
 	}
 
 

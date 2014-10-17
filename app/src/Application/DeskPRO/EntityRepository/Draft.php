@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Doctrine\DBAL\DBALException;
 
 class Draft extends AbstractEntityRepository
 {
@@ -149,7 +150,7 @@ class Draft extends AbstractEntityRepository
 
 			$this->getEntityManager()->persist($draft);
 			$this->getEntityManager()->flush($draft);
-		} catch (\Doctrine\DBAL\DBALException $e) {
+		} catch (\PDOException $e) {
 			return null;
 		}
 

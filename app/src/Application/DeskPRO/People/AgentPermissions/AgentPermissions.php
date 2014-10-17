@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -38,7 +38,9 @@ use Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\GeneralPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\OrgPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions;
+use Application\DeskPRO\People\AgentPermissions\Value\PermissionValueInterface;
 use Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions;
+use Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
 
 class AgentPermissions
@@ -73,6 +75,11 @@ class AgentPermissions
 	 */
 	public $ticket;
 
+	/**
+	 * @var \Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions
+	 */
+	public $tasks;
+
 	public function __construct()
 	{
 		$this->chat    = new ChatPermissions();
@@ -81,6 +88,7 @@ class AgentPermissions
 		$this->people  = new PeoplePermissions();
 		$this->publish = new PublishPermissions();
 		$this->ticket  = new TicketPermissions();
+		$this->tasks   = new TasksPermissions();
 	}
 
 
@@ -106,7 +114,10 @@ class AgentPermissions
 	public function toArray()
 	{
 		$arr = array();
-		foreach (array('chat', 'general', 'org', 'people', 'publish', 'ticket') as $prop) {
+		foreach (get_object_vars($this) as $prop => $val) {
+			if (! $val instanceof PermissionValueInterface) {
+				continue;
+			}
 			$arr[$prop] = array();
 			foreach ($this->$prop->getNames() as $name) {
 				$arr[$prop][$name] = (bool)$this->$prop->$name;
@@ -124,7 +135,10 @@ class AgentPermissions
 	 */
 	public function fromArray(array $perms)
 	{
-		foreach (array('chat', 'general', 'org', 'people', 'publish', 'ticket') as $prop) {
+		foreach (get_object_vars($this) as $prop => $val) {
+			if (! $val instanceof PermissionValueInterface) {
+				continue;
+			}
 			if (!isset($perms[$prop])) continue;
 
 			foreach ($this->$prop->getNames() as $name) {

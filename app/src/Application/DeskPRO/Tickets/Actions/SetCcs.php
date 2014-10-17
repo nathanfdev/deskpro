@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -89,7 +89,9 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
 		if ($this->getActionOption('add_emails')) {
 			foreach ($this->getActionOption('add_emails') as $email) {
-				if (!trim($email)) continue;
+				$email = trim($email);
+
+				if (!$email) continue;
 				if ($ticket->hasParticipantEmailAddress($email)) {
 					continue;
 				}
@@ -131,6 +133,8 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
 
 		if ($this->getActionOption('remove_emails')) {
 			foreach ($this->getActionOption('remove_emails') as $email) {
+				$email = trim($email);
+
 				foreach ($ticket->participants as $k => $p) {
 					if ($p->person->findEmailAddress($email)) {
 						$context->getLogger()->debug(sprintf("[SetCcs] Removing user %d %s %s", $p->person->id, $p->person->getDisplayName(), $p->person->primary_email->email));

@@ -1,7 +1,7 @@
 {
 	"package_name": "deskpro_jira",
 	"is_native": true,
-	"title": "JIRA Integration",
+	"title": "JIRA",
 	"description": "Enables agents to link DeskPRO tickets to Jira tickets.",
 	"tags": ["jira", "profiles"],
 	"api_version": 1,
@@ -47,6 +47,13 @@
 			"type": "text",
 			"label": "Default Tags",
 			"description": "Enter tags to add by default when creating new JIRA tickets (optional).",
+			"native_only": true
+		},
+		{
+			"name": "jira_default_priority",
+			"type": "text",
+			"label": "Default Priority",
+			"description": "Enter priority to add by default when creating new JIRA tickets (optional).",
 			"native_only": true
 		}
 	]

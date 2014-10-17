@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Doctrine\ORM\Query;
 use Orb\Util\Numbers;
 
 class Organization extends AbstractEntityRepository
@@ -135,7 +136,7 @@ class Organization extends AbstractEntityRepository
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM people
-			WHERE organization_id = {$org['id']}
+			WHERE organization_id = {$org['id']} AND is_deleted = false
 		");
 	}
 
@@ -181,15 +182,17 @@ class Organization extends AbstractEntityRepository
 	 * @param null $limit
 	 * @return mixed
 	 */
-	public function search($q, $limit = null)
+	public function search($q, $limit = null, $hydrate = true)
 	{
 		$q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+		$q = strtolower($q);
+		$mode = $hydrate ? null : Query::HYDRATE_ARRAY;
 
 		return $this->getEntityManager()->createQuery("
 			SELECT o
 			FROM DeskPRO:Organization o
-			WHERE o.name LIKE ?1
+			WHERE LOWER(o.name) LIKE ?1
 			ORDER BY o.name ASC
-		")->setParameters(array(1=> $q))->setMaxResults($limit)->execute();
+		")->setMaxResults($limit)->execute(array(1=> $q), $mode);
 	}
 }

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -111,6 +111,17 @@ class TicketFilterCollection
 
 		$this->cached['getCustomFilters'] = array_filter($this->filters, function($f) {
 			return $f->sys_name === null;
+		});
+
+		usort($this->cached['getCustomFilters'], function($a, $b) {
+			$o1 = $a->display_order;
+			$o2 = $b->display_order;
+
+			if ($o1 == $o2) {
+				return strcmp($a->title, $b->title);
+			}
+
+			return $o1 < $o2 ? -1 : 1;
 		});
 
 		return $this->cached['getCustomFilters'];

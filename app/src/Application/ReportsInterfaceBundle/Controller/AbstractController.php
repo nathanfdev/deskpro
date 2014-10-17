@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,6 +34,7 @@
 namespace Application\ReportsInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Service\CheckWhitelistedIP;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -94,6 +95,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
 			}
+		}
+
+		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+				'ip' => dp_get_user_ip_address()
+			));
 		}
 
 		return null;

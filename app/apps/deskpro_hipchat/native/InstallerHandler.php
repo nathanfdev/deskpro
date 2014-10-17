@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -53,7 +53,7 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	public function uninstall(InstallerContext $context)
 	{
-		$action_name = "deskpro_hipchat_" . $context->getApp()->id;
+		$action_name = $this->getActionName($context);
 		$context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", array($action_name));
 	}
 
@@ -81,7 +81,7 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	private function refreshTriggerAction(InstallerContext $context)
 	{
-		$action_name = 'HipChatAction' . $context->getApp()->id;
+		$action_name = $this->getActionName($context);
 		$rec = array(
 			'app_id'      => $context->getApp()->id,
 			'action_name' => $action_name,
@@ -95,5 +95,18 @@ class InstallerHandler extends AbstractInstallerHandler
 		} else {
 			$context->getDb()->insert('ticket_actions_def', $rec);
 		}
+	}
+
+
+	/**
+	 * @param InstallerContext $context
+	 *
+	 * @return string
+	 */
+	private function getActionName(InstallerContext $context)
+	{
+		$action_name = 'HipChatAction'.$context->getApp()->id;
+
+		return $action_name;
 	}
 }

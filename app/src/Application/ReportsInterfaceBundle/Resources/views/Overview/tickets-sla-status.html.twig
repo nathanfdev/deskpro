@@ -1,9 +1,8 @@
-<section class="report-wrapper" ng-if="tickets_sla_status.values">
+<section class="report-wrapper" ng-if="tickets_sla_status.has_slas">
 	<header>
 		<div style="float: left; padding-bottom: 5px;">
-			<select ui-select2 ng-model="tickets_sla_status.sla_id" style="min-width: 120px" class="no-search"
-					ng-change="Overview.getStats('tickets_sla_status')">
-				<option value="0">All SLAs</option>
+			<select ui-select2 ng-model="tickets_sla_status.sla_id" ng-init="tickets_sla_status.sla_id = (tickets_sla_status.sla_id || '')+''" style="min-width: 120px" class="no-search" ng-change="Overview.getStats('tickets_sla_status')">
+				<option value="">All SLAs</option>
 				{% for sla in app.getDataService('Sla').getAllSlas() %}
 					<option value="{{ sla.id }}">
 						{{ sla.title }}
@@ -15,8 +14,7 @@
 		<h2 style="float: left;">for Tickets Created</h2>
 
 		<div style="float: left; padding-bottom: 5px;">
-			<select ui-select2 ng-model="tickets_sla_status.date_choice" style="min-width: 120px" class="no-search"
-					ng-change="Overview.getStats('tickets_sla_status')">
+			<select ui-select2 ng-model="tickets_sla_status.date_choice" ng-init="tickets_sla_status.date_choice = tickets_sla_status.date_choice || 'today'" style="min-width: 120px" class="no-search" ng-change="Overview.getStats('tickets_sla_status')">
 				{% for field,title in {
 					'today': 'Today',
 					'this_week': 'This Week',

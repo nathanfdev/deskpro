@@ -32,6 +32,50 @@ class CheckOrgLabelTest extends AbstractEntityCheckTest
 	}
 
 	/**
+	 * Checks 'is label' on a ticket without an org
+	 */
+	public function testNoOrgIsLabel()
+	{
+		$ticket = new Ticket();
+		$ticket->id = 10;
+
+		$checker = $this->createChecker('is', array('labels' => array('label')));
+		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+
+		$checker = $this->createChecker('is', array('labels' => array('label', 'label2')));
+		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+
+		$checker = $this->createChecker('contains', array('labels' => array('label')));
+		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+
+		$checker = $this->createChecker('contains', array('labels' => array('label', 'label2')));
+		$this->assertFalse($checker->isTriggerMatch($ticket, $this->getExecContext()));
+	}
+
+
+	/**
+	 * Check 'not label' on a ticket without an org
+	 */
+	public function testNoOrgNotLabel()
+	{
+		$ticket = new Ticket();
+		$ticket->id = 10;
+
+		$checker = $this->createChecker('not', array('labels' => array('label')));
+		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+
+		$checker = $this->createChecker('not', array('labels' => array('label', 'label2')));
+		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+
+		$checker = $this->createChecker('notcontains', array('labels' => array('label')));
+		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+
+		$checker = $this->createChecker('notcontains', array('labels' => array('label', 'label2')));
+		$this->assertTrue($checker->isTriggerMatch($ticket, $this->getExecContext()));
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	protected function getCheckClass()

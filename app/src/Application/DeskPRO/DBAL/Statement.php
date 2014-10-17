@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,23 +34,34 @@
 
 namespace Application\DeskPRO\DBAL;
 
+use Doctrine\DBAL\DBALException;
+
 class Statement extends \Doctrine\DBAL\Statement
 {
 	public function execute($params = null)
 	{
+		$is_ignore = false;
 		if ($this->sql == 'INSERT INTO labels_tickets (label, ticket_id) VALUES (?, ?)') {
 			// easiest way to avoid problems with simultaneous labelling requests
 			// no easy way to make doctrine do this on the entity-level,
 			// and we dont want to resort to table locking.
 			// future: add in official doctrine support for replace into/insert ignore?
 			$this->sql = 'INSERT IGNORE INTO labels_tickets (label, ticket_id) VALUES (?, ?)';
+			$is_ignore = true;
 		}
 		try {
-			parent::execute($params);
-		} catch (\Doctrine\DBAL\DBALException $e) {
-			$e->_dp_query = $this->sql;
-			$e->_dp_query_params = $params;
-			throw $e;
+			return parent::execute($params);
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($is_ignore) {
+					return false;
+				}
+				$e->_dp_query        = $this->sql;
+				$e->_dp_query_params = $params;
+				throw $e;
+			} else {
+				throw $e;
+			}
 		}
 	}
 }

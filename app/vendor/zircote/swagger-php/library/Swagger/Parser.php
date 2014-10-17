@@ -3,7 +3,7 @@ namespace Swagger;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,6 @@ use Doctrine\Common\Annotations\TokenParser;
 use Swagger\Annotations\AbstractAnnotation;
 use Swagger\Annotations\Model;
 use Swagger\Annotations\Resource;
-use Swagger\Contexts\ClassContext;
-use Swagger\Contexts\Context;
-use Swagger\Contexts\MethodContext;
-use Swagger\Contexts\PropertyContext;
 use Swagger\Processors\ProcessorInterface;
 
 /**
@@ -38,18 +34,29 @@ use Swagger\Processors\ProcessorInterface;
  */
 class Parser
 {
+    /**
+     * Allows Annotation classes to know the context of the annotation that is being processed.
+     * @var Context
+     */
+    public static $context;
+
+    /**
+     * The metadata about the API
+     * @var Annotations\Info
+     */
+    protected $info = null;
+
+    /**
+     * The authentication config
+     * @var Annotations\Authorizations
+     */
+    protected $authorizations = null;
 
     /**
      * All detected resources
      * @var Resource[]
      */
     protected $resources = array();
-
-    /**
-     * Current resource
-     * @var Resource
-     */
-    protected $currentResource = false;
 
     /**
      * All detected models
@@ -64,20 +71,9 @@ class Parser
     protected $partials = array();
 
     /**
-     * Current model
-     * @var Model
-     */
-    protected $currentModel = false;
-
-    /**
      * @var DocParser
      */
     private $docParser;
-
-    /**
-     * @var string
-     */
-    private $filename;
 
     /**
      * @var ProcessorInterface[]
@@ -105,7 +101,6 @@ class Parser
      */
     public function getResources()
     {
-        AbstractAnnotation::$context = $this->filename;
         $resources = array();
         foreach ($this->resources as $resource) {
             if ($resource->validate()) {
@@ -113,25 +108,7 @@ class Parser
             }
         }
         $this->resources = $resources;
-        AbstractAnnotation::$context = 'unknown';
         return $resources;
-    }
-
-    /**
-     * @param Resource $resource resource
-     */
-    public function appendResource(Resource $resource)
-    {
-        $this->resources[] = $resource;
-        $this->currentResource = $resource;
-    }
-
-    /**
-     * @return Annotation\Resource
-     */
-    public function getCurrentResource()
-    {
-        return $this->currentResource;
     }
 
     /**
@@ -140,7 +117,6 @@ class Parser
      */
     public function getModels()
     {
-        AbstractAnnotation::$context = $this->filename;
         $models = array();
         foreach ($this->models as $model) {
             if ($model->validate()) {
@@ -148,25 +124,7 @@ class Parser
             }
         }
         $this->models = $models;
-        AbstractAnnotation::$context = 'unknown';
         return $models;
-    }
-
-    /**
-     * @param Model $model model
-     */
-    public function appendModel(Model $model)
-    {
-        $this->models[] = $model;
-        $this->currentModel = $model;
-    }
-
-    /**
-     * @return Annotation\Model
-     */
-    public function getCurrentModel()
-    {
-        return $this->currentModel;
     }
 
     /**
@@ -198,170 +156,292 @@ class Parser
     }
 
     /**
+     * @return Annotations\Info
+     */
+    public function getInfo()
+    {
+        return $this->info;
+    }
+
+    /**
+     * @return Annotations\Authorizations
+     */
+    public function getAuthorizations()
+    {
+        return $this->authorizations;
+    }
+
+    /**
      * Extract and process all doc-comments from a file.
      * @param string $filename Path to a php file.
      */
     public function parseFile($filename)
     {
-        $this->filename = $filename;
-        $tokenParser = new TokenParser(file_get_contents($this->filename));
-        return $this->parseTokens($tokenParser);
+        $tokens = token_get_all(file_get_contents($filename));
+        return $this->parseTokens($tokens, new Context(array('filename' => $filename)));
     }
 
     /**
      * Extract and process all doc-comments from the contents.
      * @param string $contents PHP code.
-     * @param string $context The original location of the contents.
+     * @param Context $context The original location of the contents.
      */
-    public function parseContents($contents, $context = 'unknown')
+    public function parseContents($contents, $context)
     {
-        $this->filename = $context;
-        $tokenParser = new TokenParser($contents);
-        return $this->parseTokens($tokenParser);
+        $tokens = token_get_all($contents);
+        return $this->parseTokens($tokens, $context);
     }
 
     /**
      * Shared implementation for parseFile() & parseContents().
-     * @param TokenParser $tokenParser
+     * @param array $tokens The result of a token_get_all()
      */
-    protected function parseTokens(TokenParser $tokenParser)
+    protected function parseTokens($tokens, $parseContext)
     {
         $this->docParser = new DocParser();
         $this->docParser->setIgnoreNotImportedAnnotations(true);
 
-        $token = $tokenParser->next(false);
+        reset($tokens);
+        $token = '';
         $namespace = '';
-        $class = false;
-
         $imports = array(
             'swg' => 'Swagger\Annotations' // Use @SWG\* for swagger annotations (unless overwrittemn by a use statement)
         );
         $this->docParser->setImports($imports);
         $uses = array();
-        $docComment = false;
-        while ($token != null) {
+        $classContext = $parseContext; // Use the parseContext until a classContext is created.
+        $comment = false;
+        $line = 0;
+        while ($token !== false) {
             $previousToken = $token;
-            $token = $tokenParser->next(false);
+            $token = $this->nextToken($tokens, $parseContext);
             if (is_array($token) === false) { // Ignore tokens like "{", "}", etc
                 continue;
             }
             if ($token[0] === T_DOC_COMMENT) {
-                $location = $this->filename . ' on line ' . $token[2];
-                AbstractAnnotation::$context = $location;
-                if ($docComment) { // 2 Doc-comments in succession?
-                    $this->parseContext(new Context($docComment));
+                if ($comment) { // 2 Doc-comments in succession?
+                    $this->parseContext(new Context(array('comment' => $comment, 'line' => $line), $classContext));
                 }
-                $docComment = $token[1];
+                $comment = $token[1];
+                $line = $token[2];
                 continue;
             }
             if ($token[0] === T_ABSTRACT) {
-                $token = $tokenParser->next(false); // Skip "abstract" keyword
+                $token = $this->nextToken($tokens, $parseContext); // Skip "abstract" keyword
             }
             if ($token[0] === T_CLASS) { // Doc-comment before a class?
                 if (is_array($previousToken) && $previousToken[0] === T_DOUBLE_COLON) {
                     //php 5.5 class name resolution (i.e. ClassName::class)
                     continue;
                 }
-                $token = $tokenParser->next();
-                $class = $namespace ? $namespace . '\\' . $token[1] : $token[1];
-                $this->currentModel = false;
+                $token = $this->nextToken($tokens, $parseContext);
+                $classContext = new Context(array(
+                    'class' => $namespace ? $namespace . '\\' . $token[1] : $token[1],
+                    'line' => $token[2],
+                ), $parseContext);
                 // @todo detect end-of-class and reset $class
-                if ($docComment) {
-                    $extends = null;
-                    $token = $tokenParser->next(false);
-                    if ($token[0] === T_EXTENDS) {
-                        $extends = $this->prefixNamespace($namespace, $tokenParser->parseClass(), $uses);
-                    }
-                    AbstractAnnotation::$context = $class . ' in ' . $location;
-                    $this->parseContext(new ClassContext($class, $extends, $docComment));
-                    $docComment = false;
+                $extends = null;
+                $token = $this->nextToken($tokens, $parseContext);
+                if ($token[0] === T_EXTENDS) {
+                    $classContext->extends = $this->prefixNamespace($namespace, $this->parseNamespace($tokens, $token, $parseContext), $uses);
+                }
+                if ($comment) {
+                    $classContext->comment = $comment;
+                    $classContext->line = $line;
+                    $this->parseContext($classContext);
+                    $comment = false;
                     continue;
                 }
             }
-            if ($docComment) {
+            if ($comment) {
                 if ($token[0] == T_STATIC) {
-                    $token = $tokenParser->next(false);
+                    $token = $this->nextToken($tokens, $parseContext);
                     if ($token[0] === T_VARIABLE) { // static property
-                        AbstractAnnotation::$context = $class . '::' . $token[1] . ' in ' . $location;
-
-                        $this->parseContext(new PropertyContext(substr($token[1], 1), $docComment));
-                        $docComment = false;
+                        $this->parseContext(new Context(array(
+                            'property' => substr($token[1], 1),
+                            'static' => true,
+                            'comment' => $comment,
+                            'line' => $line
+                        ), $classContext));
+                        $comment = false;
                         continue;
                     }
                 }
                 if (in_array($token[0], array(T_PRIVATE, T_PROTECTED, T_PUBLIC, T_VAR))) { // Scope
-                    $token = $tokenParser->next(false);
+                    $token = $this->nextToken($tokens, $parseContext);
                     if ($token[0] == T_STATIC) {
-                        $token = $tokenParser->next(false);
+                        $token = $this->nextToken($tokens, $parseContext);
                     }
                     if ($token[0] === T_VARIABLE) { // instance property
-                        AbstractAnnotation::$context = $class . '->' . substr($token[1], 1) . ' in ' . $location;
-                        $this->parseContext(new PropertyContext(substr($token[1], 1), $docComment));
-                        $docComment = false;
+                        $this->parseContext(new Context(array(
+                            'property' => substr($token[1], 1),
+                            'comment' => $comment,
+                            'line' => $line
+                        ), $classContext));
+                        $comment = false;
                     } elseif ($token[0] === T_FUNCTION) {
-                        $token = $tokenParser->next(false);
+                        $token = $this->nextToken($tokens, $parseContext);
                         if ($token[0] === T_STRING) {
-                            AbstractAnnotation::$context = $class . '->' . $token[1] . '(...)' . ' in ' . $location;
-                            $this->parseContext(new MethodContext($token[1], $docComment));
-                            $docComment = false;
+                            $this->parseContext(new Context(array(
+                                'method' => $token[1],
+                                'comment' => $comment,
+                                'line' => $line
+                            ), $classContext));
+                            $comment = false;
                         }
                     }
                     continue;
                 } elseif ($token[0] === T_FUNCTION) {
-                    $token = $tokenParser->next(false);
+                    $token = $this->nextToken($tokens, $parseContext);
                     if ($token[0] === T_STRING) {
-                        AbstractAnnotation::$context = $class . '->' . $token[1] . '(...)' . ' in ' . $location;
-                        $this->parseContext(new MethodContext($token[1], $docComment));
-                        $docComment = false;
+                        $this->parseContext(new Context(array(
+                            'method' => $token[1],
+                            'comment' => $comment,
+                            'line' => $line
+                        ), $classContext));
+                        $comment = false;
                     }
                 }
                 if (in_array($token[0], array(T_NAMESPACE, T_USE)) === false) { // Skip "use" & "namespace" to prevent "never imported" warnings)
                     // Not a doc-comment for a class, property or method?
-                    $this->parseContext(new Context($docComment));
-                    $docComment = false;
+                    $this->parseContext(new Context(array('comment' => $comment, 'line' => $line), $classContext));
+                    $comment = false;
                 }
             }
             if ($token[0] === T_NAMESPACE) {
-                $namespace = $tokenParser->parseNamespace();
+                $namespace = $this->parseNamespace($tokens, $token, $parseContext);
                 continue;
             }
             if ($token[0] === T_USE) {
-                $nsLength = strlen(__NAMESPACE__);
-                foreach ($tokenParser->parseUseStatement() as $alias => $target) {
+                $statements = $this->parseUseStatement($tokens, $token, $parseContext);
+                foreach ($statements as $alias => $target) {
                     if ($target[0] === '\\') {
                         $target = substr($target, 1);
                     }
-
                     $imports[$alias] = $target;
                 }
                 $this->docParser->setImports($imports);
                 continue;
             }
         }
-        if ($docComment) { // File ends with a T_DOC_COMMENT
-            $this->parseContext(new Context($docComment));
+        if ($comment) { // File ends with a T_DOC_COMMENT
+            $this->parseContext(new Context(array('comment' => $comment, 'line' => $line), $classContext));
         }
-        AbstractAnnotation::$context = 'unknown';
+        $rootContext = $parseContext->getRootContext();
+        if ($rootContext->info) {
+            $this->info = $rootContext->info;
+        }
+        if ($rootContext->authorizations) {
+            $this->authorizations = $rootContext->authorizations;
+        }
+    }
+    
+    /**
+     * The next non-whitespace, non-comment token.
+     * @param array $tokens
+     * @param Context $context
+     * @return string|array The next token (or false)
+     */
+    private function nextToken(&$tokens, $context) {
+        $token = next($tokens);
+        if ($token[0] === T_WHITESPACE) {
+            return $this->nextToken($tokens, $context);
+        }
+        if ($token[0] === T_COMMENT) {
+            $pos = strpos($token[1], '@SWG\\');
+            if ($pos) {
+                $commentContext = new Context(array('line' => $token[2]), $context);
+                Logger::notice('Annotations are only parsed inside `/**` DocBlocks, skipping '.$commentContext);
+            }
+            return $this->nextToken($tokens, $context);
+        }
+        return $token;
+    }
+    
+    private function parseNamespace(&$tokens, &$token, $parseContext) {
+        $namespace = '';
+        while($token !== false) {
+            $token = $this->nextToken($tokens, $parseContext);
+            if ($token[0] !== T_STRING && $token[0] !== T_NS_SEPARATOR) {
+                break;
+            }
+            $namespace .= $token[1];
+        } 
+        return $namespace;
+    }
+    
+    private function parseUseStatement(&$tokens, &$token, $parseContext) {
+        $class = '';
+        $alias = '';
+        $statements = array();
+        $explicitAlias = false;
+        while ($token !== false) {
+            $token = $this->nextToken($tokens, $parseContext);
+            $isNameToken = $token[0] === T_STRING || $token[0] === T_NS_SEPARATOR;
+            if (!$explicitAlias && $isNameToken) {
+                $class .= $token[1];
+                $alias = $token[1];
+            } else if ($explicitAlias && $isNameToken) {
+                $alias .= $token[1];
+            } else if ($token[0] === T_AS) {
+                $explicitAlias = true;
+                $alias = '';
+            } else if ($token === ',') {
+                $statements[strtolower($alias)] = $class;
+                $class = '';
+                $alias = '';
+                $explicitAlias = false;
+            } else if ($token === ';') {
+                $statements[strtolower($alias)] = $class;
+                break;
+            } else {
+                break;
+            }
+        }
+        return $statements;
     }
 
     /**
      *
-     * @param Context $context Content containing the docComment
+     * @param Context $context
      * @return AbstractAnnotation[]
      */
     protected function parseContext($context)
     {
         try {
-            $annotations = $this->docParser->parse($context->getDocComment(), AbstractAnnotation::$context);
+            self::$context = $context;
+            $annotations = $this->docParser->parse($context->comment, $context);
+            self::$context = null;
         } catch (\Exception $e) {
-            Logger::warning($e);
+            self::$context = null;
+            if (preg_match('/^(.+) at position ([0-9]+) in '.preg_quote($context, '/').'\.$/', $e->getMessage(), $matches)) {
+                $errorMessage = $matches[1];
+                $errorPos = $matches[2];
+                $atPos = strpos($context->comment, '@');
+                $context->line += substr_count($context->comment, "\n", 0, $atPos + $errorPos);
+                $lines = explode("\n", substr($context->comment, $atPos, $errorPos));
+                $context->character = strlen(array_pop($lines)) + 1; // position starts at 0 character starts at 1
+                Logger::warning(new \Exception($errorMessage.' in '.$context, $e->getCode(), $e));
+            } else {
+                Logger::warning($e);
+            }
             return array();
         }
 
         foreach ($annotations as $annotation) {
             foreach ($this->processors as $processor) {
-                if ($processor->supports($annotation, $context)) {
-                    $processor->process($this, $annotation, $context);
+                $processor->process($annotation, $context);
+            }
+            if ($annotation instanceof AbstractAnnotation) {
+                if ($annotation->hasPartialId()) {
+                    if ($this->hasPartial($annotation->_partialId)) {
+                        Logger::notice('partial="' . $annotation->_partialId . '" is not unique. another was found in ' . $annotation->_context);
+                    }
+                    $this->setPartial($annotation->_partialId, $annotation);
+                } elseif ($annotation instanceof Resource) {
+                    $this->resources[] = $annotation;
+                } elseif ($annotation instanceof Model) {
+                    $this->models[] = $annotation;
                 }
             }
         }

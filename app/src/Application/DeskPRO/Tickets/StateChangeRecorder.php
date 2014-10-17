@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -40,6 +40,32 @@ use Application\DeskPRO\ORM\StateChange\StateChangeRecorder as BaseStateChangeRe
 class StateChangeRecorder extends BaseStateChangeRecorder
 {
 	/**
+	 * @var array
+	 */
+	static private $trivial_fields = array(
+		'access_codes'             => true,
+		'ticket_hash'              => true,
+		'date_feedback_rating'     => true,
+		'date_created'             => true,
+		'date_resolved'            => true,
+		'date_closed'              => true,
+		'date_first_agent_assign'  => true,
+		'date_first_agent_reply'   => true,
+		'date_last_agent_reply'    => true,
+		'date_last_user_reply'     => true,
+		'date_agent_waiting'       => true,
+		'date_user_waiting'        => true,
+		'date_status'              => true,
+		'total_user_waiting'       => true,
+		'total_to_first_reply'     => true,
+		'locked_by_agent'          => true,
+		'date_locked'              => true,
+		'has_attachments'          => true,
+		'count_agent_replies'      => true,
+		'count_user_replies'       => true
+	);
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	private $ticket;
@@ -49,6 +75,21 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 	 */
 	private $no_id = false;
 
+	/**
+	 * If this is a trivial changeset
+	 * @var bool
+	 */
+	private $is_trivial = false;
+
+	/**
+	 * When the last trivial check was made
+	 * @var null
+	 */
+	private $is_trivial_checkid = null;
+
+	/**
+	 * @param Ticket $ticket
+	 */
 	public function __construct(Ticket $ticket)
 	{
 		parent::__construct();
@@ -57,6 +98,27 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 		if (!$ticket->id) {
 			$this->no_id = true;
 		}
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isTrivialChangeSet()
+	{
+		if ($this->is_trivial_checkid === null || $this->is_trivial_checkid < $this->getStateVersion()) {
+			$this->is_trivial = true;
+			$this->is_trivial_checkid = $this->getStateVersion();
+
+			foreach ($this->getChangedFields() as $f) {
+				if (!isset(self::$trivial_fields[$f])) {
+					$this->is_trivial = false;
+					break;
+				}
+			}
+		}
+
+		return $this->is_trivial;
 	}
 
 

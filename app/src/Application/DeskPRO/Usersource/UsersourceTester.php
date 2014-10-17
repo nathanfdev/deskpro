@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Usersource;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class UsersourceTester
@@ -142,7 +143,14 @@ class UsersourceTester
 
 		if ($result && $result->isValid() && $result->getIdentity()) {
 			$result_raw = "DATA RECORD:\n=======================================================\n";
-			$result_raw .= print_r($result->getIdentity()->getRawData(), true);
+			$raw_data = Arrays::mapRecursive($result->getIdentity()->getRawData(), function($v) {
+				if (is_int($v) || is_float($v) || ctype_digit($v) || is_bool($v) || is_null($v) || ctype_print($v)) {
+					return $v;
+				} else {
+					return Strings::utf8_bad_strip($v);
+				}
+			});
+			$result_raw .= print_r($raw_data, true);
 		} else {
 			$result_raw = "No Identity";
 		}

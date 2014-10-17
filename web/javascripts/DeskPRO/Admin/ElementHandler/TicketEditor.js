@@ -152,6 +152,14 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 				formItem.insertAfter(el);
                 $('.Date.customfield input', formItem).datepicker();
 
+				$('.DateTime.customfield input', formItem).each(function(){
+					$(this).datetimepicker({
+						format: 'yyyy-mm-dd hh:ii',
+						container: $(this).parent().css('position', 'relative'),
+						autoclose: true
+					});
+				});
+
 				draggingSidebarEl.hide();
 				el.remove();
 
@@ -412,6 +420,14 @@ DeskPRO.Admin.ElementHandler.TicketEditor = new Orb.Class({
 			}
 
             $('.Date.customfield input', formItem).datepicker();
+
+			$('.DateTime.customfield input', formItem).each(function(){
+				$(this).datetimepicker({
+					format: 'yyyy-mm-dd hh:ii',
+					container: $(this).parent().css('position', 'relative'),
+					autoclose: true
+				});
+			});
 		}
 
 		if (TICKET_DISPLAY_DATA && TICKET_DISPLAY_DATA.length) {

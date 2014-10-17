@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -49,13 +49,21 @@ class TicketsStatus extends AbstractTableOverviewStat
 	 */
 	public function getTitles()
 	{
-		return array(
+		$s = array(
 			'awaiting_agent' => 'Awaiting Agent',
 			'awaiting_user'  => 'Awaiting User',
 			'resolved'       => 'Resolved',
 			'closed'         => 'Archived',
 			'hidden'         => 'Hidden'
 		);
+
+		$return = array();
+		foreach ($s as $k => $v) {
+			$return[$k] = $v;
+			$return[$k . '_hold'] = $v . ' (On Hold)';
+		}
+
+		return $return;
 	}
 
 
@@ -70,7 +78,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 
 		$sql = "
 			SELECT tickets.status, COUNT(*)
-			FROM tickets AS tickets
+			FROM tickets AS tickets WHERE is_hold = 0
 			GROUP BY tickets.status
 		";
 
@@ -78,6 +86,17 @@ class TicketsStatus extends AbstractTableOverviewStat
 		$this->logger->startTimer('TicketsStatus');
 		$this->values = App::getDb()->fetchAllKeyValue($sql);
 		$this->logger->logTotalTime('TicketsStatus');
+
+		$sql = "
+			SELECT CONCAT(tickets.status, '_hold'), COUNT(*)
+			FROM tickets AS tickets WHERE is_hold = 1
+			GROUP BY tickets.status
+		";
+
+		$this->logger->logDebug("[TicketsStatus w hold] $sql");
+		$this->logger->startTimer('TicketsStatus_w_hold');
+		$this->values = array_merge($this->values, App::getDb()->fetchAllKeyValue($sql));
+		$this->logger->logTotalTime('TicketsStatus_w_hold');
 
 		return $this->values;
 	}

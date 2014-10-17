@@ -1,0 +1,76 @@
+@font-face {
+	font-family: "Flaticon";
+	src: url("flaticon.eot");
+	src: url("flaticon.eot#iefix") format("embedded-opentype"),
+	url("flaticon.woff") format("woff"),
+	url("flaticon.ttf") format("truetype"),
+	url("flaticon.svg") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+	font-family: Flaticon;
+        font-size: 20px;
+font-style: normal;
+margin-left: 20px;
+}.flaticon-business162:before {
+	content: "\e000";
+}
+.flaticon-businessman221:before {
+	content: "\e001";
+}
+.flaticon-businessman222:before {
+	content: "\e002";
+}
+.flaticon-job10:before {
+	content: "\e003";
+}
+.flaticon-job2:before {
+	content: "\e004";
+}
+.flaticon-job3:before {
+	content: "\e005";
+}
+.flaticon-job4:before {
+	content: "\e006";
+}
+.flaticon-job5:before {
+	content: "\e007";
+}
+.flaticon-job6:before {
+	content: "\e008";
+}
+.flaticon-job7:before {
+	content: "\e009";
+}
+.flaticon-job8:before {
+	content: "\e00a";
+}
+.flaticon-job9:before {
+	content: "\e00b";
+}
+.flaticon-list61:before {
+	content: "\e00c";
+}
+.flaticon-male226:before {
+	content: "\e00d";
+}
+.flaticon-man414:before {
+	content: "\e00e";
+}
+.flaticon-online32:before {
+	content: "\e00f";
+}
+.flaticon-online33:before {
+	content: "\e010";
+}
+.flaticon-person303:before {
+	content: "\e011";
+}
+.flaticon-woman101:before {
+	content: "\e012";
+}
+.flaticon-woman102:before {
+	content: "\e013";
+}

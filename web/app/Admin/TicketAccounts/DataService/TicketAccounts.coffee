@@ -16,6 +16,11 @@ define [
 			@loadListPromise = null
 			@recs = new Admin_Main_Collection_OrderedDictionary()
 
+			@recs.orderFn = (a, b) ->
+				cmpa = a.address
+				cmpb = b.address
+				return if cmpa < cmpb then -1 else 1
+
 		###*
 		* Loads list of accounts
     	*

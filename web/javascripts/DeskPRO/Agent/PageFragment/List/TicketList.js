@@ -14,27 +14,15 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		this.wrapper = el;
 		this.perPage = 50;
 		this.filterId = parseInt(this.meta.filter_id) || 0;
+		this.fixed_fields = ['subject'];
 
-		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', '$rootScope', '$q', '$timeout', function($compile, $rootScope, $q, $timeout) {
-			self.$scope = $rootScope.$new();
+		self.$scope = DeskPRO_Window.$scope.$new();
+		self.$q = DeskPRO_Window.$q;
+		self.$timeout = DeskPRO_Window.$timeout;
 
-			self.$scope.$safeApply = function(fn) {
-				var phase = this.$root.$$phase;
-				if(phase == '$apply' || phase == '$digest') {
-					if(fn && (typeof(fn) === 'function')) {
-						fn();
-					}
-				} else {
-					this.$apply(fn);
-				}
-			};
-
-			self.$q = $q;
-			self.$timeout = $timeout;
-
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
 			attachPoint.data('$ngControllerController', self);
 			$compile(attachPoint.contents())(self.$scope);
-
 			self.initScope();
 		}]);
 
@@ -55,6 +43,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				this.meta.topGroupingOption || this.meta.topGroupingOption === 0 ? this.meta.topGroupingOption : null
 			);
 		}
+
+		this.addEvent('activate', this.fillListItems, this);
 	},
 
 	updateSlaListForTicket: function(info) {
@@ -100,6 +90,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.checkedTicketsCount  = 0;
 		$scope.display_fields       = this.meta.display_fields || [];
 		$scope.openTickets          = {};
+		$scope.listType             = 'list';
+		$scope.DESKPRO_PERSON_ID    = DESKPRO_PERSON_ID;
+
+		if (Modernizr.localstorage && window.localStorage['dp_ticket_listtype']) {
+			$scope.listType = window.localStorage['dp_ticket_listtype'];
+		}
 
 		this.listTicketIds = eval(this.getEl('ticket_ids_json').html());
 
@@ -108,7 +104,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		// Wait til after updatePageCursor since it needs full list to know proper cursor
 		$scope.tickets = startTicketsBatch[0];
-
 		this.getEl('ticket_json').remove();
 		this.getEl('ticket_ids_json').remove();
 
@@ -140,6 +135,22 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				$scope.isLoaded = true;
 			}
 		}, 10);
+
+
+		$scope.$watch('tickets', this.fillListItems.bind(this));
+	},
+
+	fillListItems: function() {
+		var self = this,
+			$scope = this.$scope,
+			routeTemplate = $scope.routes.ticket;
+
+		if (!self.IS_ACTIVE) return;
+		$scope.listItems.length = 0;
+
+		$scope.tickets.each(function(ticket){
+			$scope.addListItem('ticket', 'ticket:'+ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
+		});
 	},
 
 	//#########################################################################
@@ -241,6 +252,15 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self.queueChangeEvent('removeTicketResults', ticket_ids);
 		}, null, [this.OBJ_ID]);
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', (function(info) {
+			var ticketId = parseInt(info.ticket_id);
+			self.listTicketIds.indexOf(ticketId) !== -1 && self.queueChangeEvent('refreshTicketResults', [ticketId]);
+		}).bind(this), null, [this.OBJ_ID]);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked', (function(info) {
+			var ticketId = parseInt(info.ticket_id);
+			self.listTicketIds.indexOf(ticketId) !== -1 && self.queueChangeEvent('refreshTicketResults', [ticketId]);
+		}).bind(this));
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function(info) {
 			var ticketId = parseInt(info.ticket_id),
 				currentlyInView,
@@ -331,6 +351,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @param {Array} ticketIds
 	 */
 	queueChangeEvent: function(type, ticketIds) {
+		if (!this.$scope) return;
+
 		var self = this;
 
 		ticketIds.forEach(function(tid) {
@@ -350,6 +372,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	},
 
 	_runQueuedChangeEvents: function() {
+		if (!this.$scope) return;
+
 		var events = this.queuedChangeEvents;
 		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': [], 'postRun': []};
 		this.queuedChangeEvents_timeout = null;
@@ -428,6 +452,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function(tickets) {
+			if (!self.$scope) return;
 			var firstId = $scope.tickets[0] ? $scope.tickets[0].id : null,
 				newFirstTicketIdx = null,
 				listTicketIdsMap;
@@ -549,6 +574,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				return true;
 			}
 		});
+
 		this.listTicketIds = this.listTicketIds.filter(function(tid) {
 			if (removeTicketIdsMap[tid]) {
 				if (!didRemoveList[tid]) {
@@ -631,6 +657,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function (tickets) {
+			if (!self.$scope) return;
 			self.applyTicketData(tickets);
 		});
 
@@ -853,7 +880,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				ticket.version_id++;
 			}
 		});
-		console.log(this.$scope.tickets);
 	},
 
 
@@ -976,7 +1002,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 */
 	refreshSubgroupNumbers: function() {
 		var self = this;
-		if (!this.meta.refreshSubgroupCounts) {
+		if (!this.meta.refreshSubgroupCounts || !this.$scope) {
 			return;
 		}
 
@@ -1029,7 +1055,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		//------------------------------
 
 		$scope.uncheckTicketId = function(ticketId) {
+			ticketId = parseInt(ticketId);
 			if ($scope.checkedTickets[ticketId]) {
+				$scope.checkedTickets[ticketId] = false;
 				delete $scope.checkedTickets[ticketId];
 				$scope.checkedTicketsCount--;
 			}
@@ -1049,7 +1077,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				$scope.checkedTicketsToggle = false;
 			}
 
-			if ($scope.checkedTicketsCount && !self.massActions) {
+			if ($scope.checkedTicketsCount && !self.massActions && DeskPRO_Window.paneVis.tabs) {
 				$scope.openMassActions();
 			} else if (!$scope.checkedTicketsCount && self.massActions) {
 				self.massActions.close();
@@ -1061,7 +1089,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		$scope.checkAllTickets = function(isChecked) {
 			if (isChecked) {
 				$scope.checkedTickets = {};
-				$scope.tickets.forEach(function(x) { $scope.checkedTickets[x.id] = true; });
+				$scope.tickets.forEach(function(x) { $scope.checkedTickets[parseInt(x.id)] = true; });
 			} else {
 				$scope.checkedTickets = {};
 			}
@@ -1126,7 +1154,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self = this;
 
 		for (var i in $scope.checkedTickets) {
-			if ($scope.checkedTickets.hasOwnProperty(i)) {
+			if ($scope.checkedTickets.hasOwnProperty(i) && $scope.checkedTickets[i] === true) {
 				ids.push(parseInt(i));
 			}
 		}
@@ -1146,7 +1174,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			self = this;
 
 		for (var i in $scope.checkedTickets) {
-			if ($scope.checkedTickets.hasOwnProperty(i)) {
+			if ($scope.checkedTickets.hasOwnProperty(i) && $scope.checkedTickets[i] === true) {
 				ids.push(parseInt(i));
 			}
 		}
@@ -1259,6 +1287,22 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 		};
 
+		$scope.getDisplayableFields = function() {
+			var fields = [];
+			self.fixed_fields.each(function(v){
+				fields.push(v);
+			});
+			$scope.display_fields.each(function(v){
+				if (fields.indexOf(v) > -1 || v == 'id') return;
+				fields.push(v);
+			});
+			return fields;
+		};
+
+		$scope.getFieldDisplayName = function(field){
+			return (field.charAt(0).toUpperCase() + field.slice(1)).replace('_', ' ');
+		};
+
 		displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
 			prefId: 'ticket-' + this.meta.resultTypeName,
 			resultId: this.meta.resultTypeId,
@@ -1358,31 +1402,19 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 		//------------------------------
 
 		$scope.openDisplayOptions = function() { displayOptions.open(); };
-		$scope.openTableView = function() { self.openTableView(); };
+		$scope.openTableView = function() {
+			$scope.pauseListAnim = true;
+			$scope.listType = 'table' === $scope.listType ? 'list' : 'table';
+			$timeout(function() {
+				$scope.pauseListAnim = false;
+			}, 500);
+
+			if (Modernizr.localstorage) {
+				window.localStorage['dp_ticket_listtype'] = $scope.listType;
+			}
+		};
 	},
 
-
-	//#########################################################################
-	//# List View
-	//#########################################################################
-
-	/**
-	 * Opens the current view in the table overlay
-	 */
-	openTableView: function() {
-		var oldlist = this.listview;
-		this.listview = new DeskPRO.Agent.TicketList.ListView(this);
-
-		if (oldlist && !oldlist.OBJ_DESTROYED) {
-			this.listview.addEvent('ajaxLoaded', function() {
-				if (!oldlist.OBJ_DESTROYED) {
-					oldlist.destroy();
-				}
-			});
-		}
-
-		this.listview.open();
-	},
 
 	//#########################################################################
 	//# Paging and refreshing
@@ -1436,6 +1468,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			url: this.meta.refreshCursorUrl.replace(/\$cursor/g, cursor),
 			dataType: 'json',
 			success: function(data) {
+				if (!self.$scope) return;
 				this.refreshCursorAjax = null;
 				time2 = new Date();
 				console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);
@@ -1510,7 +1543,7 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 	getSupportedFields: function() {
 		return [
 			'department', 'category', 'product', 'organization', 'person',
-			'language', 'agent', 'agent_team', 'agent_team', 'urgency',
+			'language', 'agent', 'agent_team', 'agent_team', 'urgency'
 		];
 	},
 
@@ -1906,6 +1939,44 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 			self._formUpdatedDebounce();
 		});
 
+		// todo should be redo to $scope models
+		var $assignMe = this.getElById('assign_me'), $unassignAgent = this.getElById('unassign_agent');
+		$assignMe.on('click', function(){
+			$('select[name="actions[agent]"]', this.wrapper).val($(this).data('me')).trigger('change');
+		});
+		$unassignAgent.on('click', function(){
+			$('select[name="actions[agent]"]', this.wrapper).val(0).trigger('change');
+		});
+		$('select[name="actions[agent]"]').on('change', function(){
+			$(this).val() == $assignMe.data('me') ? $assignMe.hide() : $assignMe.show();
+			parseInt($(this).val()) ? $unassignAgent.show() : $unassignAgent.hide();
+		});
+		var $assignTeam = this.getElById('assign_team'),
+			$unassignTeam = this.getElById('unassign_team');
+		$assignTeam.on('click', function(){
+			$('select[name="actions[agent_team]"]', this.wrapper).val($(this).data('team')).trigger('change');
+		});
+		$unassignTeam.on('click', function(){
+			$('select[name="actions[agent_team]"]', this.wrapper).val(0).trigger('change');
+		});
+		$('select[name="actions[agent_team]"]').on('change', function(){
+			$(this).val() == $assignTeam.data('team') ? $assignTeam.hide() : $assignTeam.show();
+			parseInt($(this).val()) ? $unassignTeam.show() : $unassignTeam.hide();
+		});
+		var $assignFollow = this.getElById('follower_me');
+		$assignFollow.on('click', function(){
+			var $sel = $('select[name="actions[add_participants][add_participants][]"]', this.wrapper),
+				me = $(this).data('me').toString(),
+				val = $sel.val();
+			val ? val.push(me) : val = [me];
+			$sel.val(val);
+			$sel.trigger('change');
+		});
+		$('select[name="actions[add_participants][add_participants][]"]').on('change', function(){
+			var val = $(this).val();
+			val && val.length && val.indexOf($assignFollow.data('me').toString()) > -1 ? $assignFollow.hide() : $assignFollow.show();
+		});
+
 		$('.apply-actions', this.wrapper).on('click', (function(ev) {
 			this.apply();
 		}).bind(this));
@@ -2297,6 +2368,11 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 		//------------------------------
 
 		var leftEnd = 269; // Where the left ends (aka where listpane starts)
+
+		if (!DeskPRO_Window.paneVis.source) {
+			leftEnd = 78;
+		}
+
 		var topEnd = 50; // Where the top ends (aka header height)
 		var contentStart = pos.left;
 

@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -68,11 +68,16 @@ class VerifyDepartment implements TicketSaveActionInterface
 		}
 
 		if (!$ticket->department) {
-			$ticket->department = $this->ticket_deps->getDefaultDepartment();
+			$dep = $this->ticket_deps->getDefaultDepartment();
+			$context->getLogger()->info("Setting system default department: {$dep->id} {$dep->title}");
+			$ticket->department = $dep;
 		}
 
-		if ($this->ticket_deps->getChildren($ticket->department)) {
-			$ticket->department = $this->ticket_deps->getDefaultDepartment();
+		if ($ticket->department && $this->ticket_deps->getChildren($ticket->department)) {
+			$set = $ticket->department;
+			$dep = $this->ticket_deps->getDefaultDepartment();
+			$context->getLogger()->info("The set department {$set->id} {$set->title} has children. Reverting to system default: {$dep->id} {$dep->title}");
+			$ticket->department = $dep;
 		}
 	}
 

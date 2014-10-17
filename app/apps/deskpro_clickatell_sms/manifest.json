@@ -1,0 +1,39 @@
+{
+	"package_name": "deskpro_clickatell_sms",
+	"is_native": true,
+	"title": "Clickatell SMS",
+	"description": "Allows you to add ticket triggers that send an SMS text message to people you choose.",
+	"tags": ["notifications", "ticket-triggers"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "username",
+			"type": "text",
+			"label": "Username",
+			"description": "Your Clickatell account username.",
+			"native_only": true
+		},
+		{
+			"name": "password",
+			"type": "password",
+			"label": "Password",
+			"description": "Your Clickatell account password.",
+			"native_only": true
+		},
+		{
+			"name": "api_id",
+			"type": "text",
+			"label": "API ID",
+			"description": "Your Clickatell API ID. You can find your API IDs when logged into the Clickatell website. It is most likely listed here: https://central.clickatell.com/api/manage",
+			"native_only": true
+		}
+	]
+}

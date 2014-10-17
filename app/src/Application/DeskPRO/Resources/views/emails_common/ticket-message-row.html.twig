@@ -11,7 +11,7 @@
 	<tr><td>
 		<table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td>
 			{% if message.person.is_agent %}
-				<div class="dp-quoted-message">{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' %}<!-- DP_MESSAGE_END --></div>
+				<div class="dp-quoted-message">{% if message.is_agent_note %}<div class="dp-agent-note-line">{{ phrase('agent.emails.message-is-note') }}</div>{% endif %}{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' %}<!-- DP_MESSAGE_END --></div>
 			{% else %}
 				<div class="dp-quoted-message">{% include 'DeskPRO:emails_common:ticket-message.html.twig' %}<!-- DP_MESSAGE_END --></div>
 			{% endif %}

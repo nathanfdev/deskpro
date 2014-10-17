@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
+use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
 
@@ -47,7 +48,8 @@ class SettingsController extends AbstractController
 
 	public function profileAction()
 	{
-		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
+		$defaultCountryCode = $this->getContainer()->get('deskpro.core.settings')->get('core.default_country_code');
+		$edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person, $defaultCountryCode);
 		$edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
 		$form      = $this->get('form.factory')->create($edit_form, $edit_profile);
 
@@ -291,6 +293,7 @@ class SettingsController extends AbstractController
 	{
 		$subs = $this->in->getCleanValueArray('filter_sub', 'array', 'uint');
 
+		/** @var PersonEditManager $person_editor */
 		$person_editor = $this->container->getSystemService('person_edit_manager');
 		$person_editor->saveFilterSubscriptions($this->person, $subs);
 

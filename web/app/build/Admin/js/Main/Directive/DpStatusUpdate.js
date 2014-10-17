@@ -56,7 +56,7 @@
               return function(newVal, oldVal) {
                 var doGetRequest, interval;
                 scope.update_in_progress = true;
-                doGetRequest = function() {
+                doGetRequest = function(immediate) {
                   return Api.sendGet(statusUpdateUrl).then((function(_this) {
                     return function(res) {
                       var data, message, status;
@@ -64,8 +64,9 @@
                       status = data.status;
                       message = data.message;
                       scope.status_update_message = message;
+                      scope.$emit('dp-status-update', data);
                       if (validStatuses.indexOf(status) === -1) {
-                        if (updateCompletedGrowlMessage && status === 'completed') {
+                        if (!immediate && updateCompletedGrowlMessage && status === 'completed') {
                           Growl.success(updateCompletedGrowlMessage);
                         }
                         scope.update_in_progress = false;
@@ -76,7 +77,7 @@
                 };
                 interval = setInterval(doGetRequest, updateInterval);
                 if (updateImmediate) {
-                  return doGetRequest();
+                  return doGetRequest(true);
                 }
               };
             })(this));

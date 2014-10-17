@@ -19,6 +19,10 @@ form {
 	margin: 0;
 }
 
+input[type="checkbox"], input[type="radio"] {
+	vertical-align: middle;
+}
+
 label {
 	font-weight: normal;
 }
@@ -34,6 +38,10 @@ p:last-of-type {
 .saved-ping {
 	margin-right: 5px;
 	color: #888;
+}
+
+.with-dp-max-height {
+	overflow-y: auto;
 }
 
 .dp-clear {
@@ -160,6 +168,39 @@ div.success-message {
 		padding: 5px;
 		margin-bottom: 0;
 	}
+}
+
+.soft-link {
+	cursor: pointer;
+	text-decoration: none;
+	color: #333;
+	border-bottom: 1px dotted #777;
+
+	&:hover {
+		border-bottom: 1px solid #555;
+	}
+}
+
+.no-text-select {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.yes-text-select {
+	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
+}
+
+.help-block .soft-link {
+	color: #737373;
 }
 
 div.danger-message {
@@ -323,6 +364,23 @@ div.info-message {
 			display: block;
 			border-top: 1px solid transparent;
 			border-bottom: 1px solid transparent;
+
+			&.dotdotdot {
+				line-height: 100%;
+				span {
+					color: #eee;
+					font-size: 14px;
+					font-weight: bold;
+					text-align: center;
+					display: block;
+					margin: 0 6px 0 6px;
+					padding: 2px 0;
+
+					background: #3c4146;
+					cursor: pointer;
+					border-radius: 2px;
+				}
+			}
 
 			a {
 				display: block;
@@ -488,7 +546,27 @@ div.info-message {
 	}
 }
 
-.agent-interface-hover, .reports-interface-hover, .lic-interface-hover {
+.dp-appstrip ul.btm.mini { display: none; }
+.dp-appstrip ul.btm.mini-rest {
+	width: 43px;
+	background: #3c4146;
+	border-radius: 2px;
+	margin: 0 6px 0 6px;
+
+	li a {
+		width: 43px;
+	}
+	li i.app-icon {
+		width: 43px;
+	}
+}
+
+@media all and (max-height: 790px) {
+	.dp-appstrip ul.btm.mini { display: block; }
+	.dp-appstrip ul.btm.normal { display: none; }
+}
+
+.agent-interface-hover, .reports-interface-hover, .lic-interface-hover, .user-interface-hover {
 	.app-icon.app-icon-admin-ifce { background-image: url('@{img_path}/app-icons/1x/Admin.png'); }
 
 	ul.btm .section-on {
@@ -504,6 +582,18 @@ div.info-message {
 		background-image: url('@{img_path}/app-icons/1x_active/Agent-Interface.png');
 	}
 	.agent-ifce-btn {
+		border-top: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+		background: #000;
+		box-shadow: 0 0 19px 12px rgba(255,255,255,0.3);
+	}
+}
+
+.user-interface-hover {
+	.app-icon.app-icon-user-ifce {
+		background-image: url('@{img_path}/app-icons/1x_active/User-Portal.png');
+	}
+	.user-ifce-btn {
 		border-top: 1px solid #fff;
 		border-bottom: 1px solid #fff;
 		background: #000;
@@ -553,6 +643,12 @@ only screen and (                min-resolution: 2dppx) {
 		.app-icon.app-icon-agent-ifce {
 			background-image: url('@{img_path}/app-icons/2x_active/Agent-Interface.png');
 			background-size: 40px 40px;
+		}
+	}
+
+	.user-interface-hover {
+		.app-icon.app-icon-user-ifce {
+			background-image: url('@{img_path}/app-icons/2x_active/User-Portal.png');
 		}
 	}
 
@@ -926,6 +1022,10 @@ div.dp-appalt-section {
 	}
 }
 
+.dp-layout-list-listpane .dp-panelbock {
+	overflow: auto;
+}
+
 .dp-paneblock {
 	margin: 10px;
 	background: #fff;
@@ -1111,6 +1211,7 @@ nav.dp-blocktabs {
 	nav.dp-blocktabs.responsive {
 		> ul {
 			li {
+              	margin-bottom: 10px;
 				a {
 					font-size: 120%;
 				}
@@ -1150,21 +1251,26 @@ nav.dp-tabletabs {
 					color: #777;
 				}
 
+				background: #eee;
+				position: relative;
+				bottom: -1px;
+				z-index: 1;
 				display: block;
 				color: #000;
 				text-decoration: none;
 				padding: 4px 10px 3px 10px;
 				font-size: 120%;
 				font-weight: normal;
-				border: 1px solid transparent;
-				border-bottom: none;
+				border: 1px solid #ccc;
+				border-bottom-color: #bbb;
 				.border-radius(3px, 3px, 0, 0);
 			}
 
 			&.active, &:hover {
 				a {
+					background: #fff;
 					border: 1px solid #bbb;
-					border-bottom: none;
+					border-bottom-color: #fff;
 				}
 			}
 		}
@@ -1429,6 +1535,7 @@ section.dp-help-content-wrapper.open {
 .dp-item-list {
 	padding: 0;
 	margin: 0;
+	overflow: auto;
 
 	> li {
 		list-style-type: none;
@@ -1520,6 +1627,21 @@ section.dp-help-content-wrapper.open {
 	}
 	a:hover h4 > .title-text {
 		text-decoration: underline;
+	}
+
+	h4:hover .title-copy, a:hover .title-copy, .title-copy.zeroclipboard-is-hover {
+		visibility: visible;
+	}
+
+	.title-copy {
+		visibility: hidden;
+		font-size: 15px;
+		color: #853f24;
+		background-color: #fff;
+		border-radius: 2px;
+		padding: 1px;
+		line-height: 100%;
+		cursor: pointer;
 	}
 
 	.drag-handle {
@@ -1793,6 +1915,31 @@ section.dp-help-content-wrapper.open {
 	}
 }
 
+.dp-settings-ctrl {
+	display: inline-block;
+	a {
+		cursor: pointer;
+	}
+
+	a.title {
+		display: block;
+		margin: 11px 13px 0 0;
+		padding: 0;
+		color: #aaa;
+		text-decoration: none;
+
+		i.fa {
+			font-size: 13px;
+			position: relative;
+			top: 1px;
+		}
+
+		&:hover {
+			color: #444;
+		}
+	}
+}
+
 //######################################################################################################################
 //# Panel Style
 //######################################################################################################################
@@ -1964,6 +2111,10 @@ section.dp-help-content-wrapper.open {
 			}
 		}
 	}
+}
+
+.table tbody.no-tbody + tbody.no-tbody {
+	border-top: none;
 }
 
 .panel.panel-innertable + .panel.panel-innertable {
@@ -2221,6 +2372,10 @@ section.dp-help-content-wrapper.open {
 		display: inline-block;
 		margin-bottom: 0;
 	}
+
+	label input {
+		vertical-align: text-bottom;
+	}
 }
 
 .panel-innertable .form-group {
@@ -2257,7 +2412,7 @@ section.dp-help-content-wrapper.open {
 
 		input {
 			margin-right: 3px;
-			vertical-align: baseline;
+			vertical-align: text-bottom;
 		}
 
 		p {
@@ -2298,7 +2453,7 @@ ul.checkbox-list {
 
 			input {
 				margin: 0 2px 0 0;
-				vertical-align: baseline;
+				vertical-align: middle;
 			}
 
 			span {
@@ -2939,7 +3094,7 @@ button.toast-close-button {
 }
 
 .editor {
-
+	font-size: 11px;
 }
 
 .ace-tm .ace_print-margin {
@@ -3054,6 +3209,38 @@ button.toast-close-button {
 	border-top: 1px solid #ccc;
 	&:last-of-type {
 		border-bottom: none;
+	}
+
+	.dp-ob-row-content-wrap {
+		display: block;
+		height: 36px;
+		overflow: hidden;
+	}
+	.dp-ob-row-content-wrap.as-post-render {
+		height: auto;
+	}
+
+	.dp-ob-row-content-placeholder {
+		display: block;
+
+		.place1, .place2, .place3 {
+			margin-top: 8px;
+			display: inline-block;
+			background: #ededed;
+			line-height: 100%;
+			height: 20px;
+		}
+
+		.place1 { width: 85px; }
+		.place2 { width: 125px; margin-left: 6px; margin-right: 6px; }
+		.place3 { width: 360px; }
+	}
+
+	.dp-ob-row-content {
+		visibility: hidden;
+	}
+	.dp-ob-row-content.as-post-render {
+		visibility: visible;
 	}
 
 	.dp-ob-row-tag-wrap {
@@ -3407,7 +3594,8 @@ table.display-table.spaced {
 		display: block;
 		border-top: 1px solid #999;
 		height: 1px;
-		width: 18px;
+		width: 10px;
+		padding-right: 8px;
 		position: absolute;
 		top: 13px;
 		left: 31px;
@@ -3814,8 +4002,6 @@ li.dp-layout-editor-layout-field {
 //######################################################################################################################
 //# Table Grid
 //######################################################################################################################
-
-.table-row-variant(info, @state-info-bg, @state-info-border);
 
 table.table {
 	> thead {
@@ -4710,4 +4896,38 @@ input.invisible-copytext {
 		color: #777;
 		em { visibility: visible; }
 	}
+}
+
+.iconpicker {
+    .icon {
+        color: #888;
+        transition: all 150ms ease-in-out;
+        -webkit-transition: all 150ms ease-in-out;
+        -moz-transition: all 150ms ease-in-out;
+    }
+    .icon:hover {
+        color: #444;
+        cursor: pointer;
+        transform: scale(1.1) translate(-1%, -1%);
+        -webkit-transform: scale(1.1) translate(-1%, -1%);
+        -moz-transform: scale(1.1) translate(-1%, -1%);
+    }
+}
+
+.file-upload-wrapper {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+
+    & input {
+        position: absolute;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0;
+    }
 }

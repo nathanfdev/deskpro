@@ -45,7 +45,7 @@ class Process
     private $commandline;
     private $cwd;
     private $env;
-    private $stdin;
+    private $input;
     private $starttime;
     private $lastOutputTime;
     private $timeout;
@@ -69,6 +69,8 @@ class Process
     private $useFileHandles = false;
     /** @var ProcessPipes */
     private $processPipes;
+
+    private $latestSignal;
 
     private static $sigchild;
 
@@ -128,7 +130,7 @@ class Process
      * @param string             $commandline The command line to run
      * @param string|null        $cwd         The working directory or null to use the working dir of the current PHP process
      * @param array|null         $env         The environment variables or null to inherit
-     * @param string|null        $stdin       The STDIN content
+     * @param string|null        $input       The input
      * @param int|float|null     $timeout     The timeout in seconds or null to disable
      * @param array              $options     An array of options for proc_open
      *
@@ -136,7 +138,7 @@ class Process
      *
      * @api
      */
-    public function __construct($commandline, $cwd = null, array $env = null, $stdin = null, $timeout = 60, array $options = array())
+    public function __construct($commandline, $cwd = null, array $env = null, $input = null, $timeout = 60, array $options = array())
     {
         if (!function_exists('proc_open')) {
             throw new RuntimeException('The Process class relies on proc_open, which is not available on your PHP installation.');
@@ -156,7 +158,7 @@ class Process
             $this->setEnv($env);
         }
 
-        $this->stdin = $stdin;
+        $this->input = $input;
         $this->setTimeout($timeout);
         $this->useFileHandles = defined('PHP_WINDOWS_VERSION_BUILD');
         $this->pty = false;
@@ -213,9 +215,16 @@ class Process
      * @param callable|null $callback
      *
      * @return self
+     *
+     * @throws RuntimeException       if PHP was compiled with --enable-sigchild and the enhanced sigchild compatibility mode is not enabled
+     * @throws ProcessFailedException if the process didn't terminate successfully
      */
     public function mustRun($callback = null)
     {
+        if ($this->isSigchildEnabled() && !$this->enhanceSigchildCompatibility) {
+            throw new RuntimeException('This PHP has been compiled with --enable-sigchild. You must use setEnhanceSigchildCompatibility() to use this method.');
+        }
+
         if (0 !== $this->run($callback)) {
             throw new ProcessFailedException($this);
         }
@@ -224,7 +233,7 @@ class Process
     }
 
     /**
-     * Starts the process and returns after sending the STDIN.
+     * Starts the process and returns after writing the input to STDIN.
      *
      * This method blocks until all STDIN data is sent to the process then it
      * returns while the process runs in the background.
@@ -288,7 +297,7 @@ class Process
             return;
         }
 
-        $this->processPipes->write(false, $this->stdin);
+        $this->processPipes->write(false, $this->input);
         $this->updateStatus(false);
         $this->checkTimeout();
     }
@@ -355,7 +364,7 @@ class Process
             usleep(1000);
         }
 
-        if ($this->processInformation['signaled']) {
+        if ($this->processInformation['signaled'] && $this->processInformation['termsig'] !== $this->latestSignal) {
             throw new RuntimeException(sprintf('The process has been signaled with signal "%s".', $this->processInformation['termsig']));
         }
 
@@ -782,7 +791,8 @@ class Process
                     throw new RuntimeException('Unable to kill the process');
                 }
             }
-            proc_terminate($this->process);
+            // given `SIGTERM` may not be defined and that `proc_terminate` uses the constant value and not the constant itself, we use the same here
+            $this->doSignal(15, false);
             do {
                 usleep(1000);
             } while ($this->isRunning() && microtime(true) < $timeoutMicro);
@@ -1038,28 +1048,63 @@ class Process
      * Gets the contents of STDIN.
      *
      * @return string|null The current contents
+     *
+     * @deprecated Deprecated since version 2.5, to be removed in 3.0.
+     *             This method is deprecated in favor of getInput.
      */
     public function getStdin()
     {
-        return $this->stdin;
+        return $this->getInput();
+    }
+
+    /**
+     * Gets the Process input.
+     *
+     * @return null|string The Process input
+     */
+    public function getInput()
+    {
+        return $this->input;
     }
 
     /**
      * Sets the contents of STDIN.
      *
+     * Deprecation: As of Symfony 2.5, this method only accepts scalar values.
+     *
      * @param string|null $stdin The new contents
+     *
+     * @return self The current Process instance
+     *
+     * @deprecated Deprecated since version 2.5, to be removed in 3.0.
+     *             This method is deprecated in favor of setInput.
+     *
+     * @throws LogicException           In case the process is running
+     * @throws InvalidArgumentException In case the argument is invalid
+     */
+    public function setStdin($stdin)
+    {
+        return $this->setInput($stdin);
+    }
+
+    /**
+     * Sets the input.
+     *
+     * This content will be passed to the underlying process standard input.
+     *
+     * @param string|null $input The content
      *
      * @return self The current Process instance
      *
      * @throws LogicException In case the process is running
      */
-    public function setStdin($stdin)
+    public function setInput($input)
     {
         if ($this->isRunning()) {
-            throw new LogicException('STDIN can not be set while the process is running.');
+            throw new LogicException('Input can not be set while the process is running.');
         }
 
-        $this->stdin = $stdin;
+        $this->input = ProcessUtils::validateInput(sprintf('%s::%s', __CLASS__, __FUNCTION__), $input);
 
         return $this;
     }
@@ -1203,8 +1248,8 @@ class Process
      */
     private function getDescriptors()
     {
-        $this->processPipes = new ProcessPipes($this->useFileHandles, $this->tty, $this->pty);
-        $descriptors = $this->processPipes->getDescriptors($this->outputDisabled);
+        $this->processPipes = new ProcessPipes($this->useFileHandles, $this->tty, $this->pty, $this->outputDisabled);
+        $descriptors = $this->processPipes->getDescriptors();
 
         if (!$this->useFileHandles && $this->enhanceSigchildCompatibility && $this->isSigchildEnabled()) {
             // last exit code is output on the fourth pipe and caught to work around --enable-sigchild
@@ -1381,6 +1426,7 @@ class Process
         $this->stdout = null;
         $this->stderr = null;
         $this->process = null;
+        $this->latestSignal = null;
         $this->status = self::STATUS_READY;
         $this->incrementalOutputOffset = 0;
         $this->incrementalErrorOutputOffset = 0;
@@ -1423,6 +1469,8 @@ class Process
 
             return false;
         }
+
+        $this->latestSignal = $signal;
 
         return true;
     }

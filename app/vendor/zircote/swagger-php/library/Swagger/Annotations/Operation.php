@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ use Swagger\Swagger;
 class Operation extends AbstractAnnotation
 {
     /**
-     * This is the HTTP method required to invoke this operation--the allowable values are GET, POST, PUT, DELETE.
+     * This is the HTTP method required to invoke this operation--the allowable values are GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS.
      * @var string
      */
     public $method;
@@ -100,7 +100,13 @@ class Operation extends AbstractAnnotation
     public $consumes;
 
     /**
-     * Undocumented
+     * A list of authorizations required to execute this operation.
+     * @var string|array
+     */
+    public $authorizations;
+
+    /**
+     * Declares this operation to be deprecated.
      * @var bool
      */
     public $deprecated;
@@ -111,6 +117,7 @@ class Operation extends AbstractAnnotation
         '\Swagger\Annotations\Produces' => 'produces[]',
         '\Swagger\Annotations\Consumes' => 'consumes[]',
         '\Swagger\Annotations\Items' => 'items',
+        '\Swagger\Annotations\Authorizations' => 'authorizations',
     );
 
     /**
@@ -143,9 +150,9 @@ class Operation extends AbstractAnnotation
     public function validate()
     {
         if (empty($this->nickname)) {
-            Logger::notice('Required field "nickname" is missing for "'.$this->identity().'" in '.AbstractAnnotation::$context);
+            Logger::notice('Required field "nickname" is missing for "'.$this->identity().'" in '.$this->_context);
         }
-        Swagger::checkDataType($this->type);
+        Swagger::checkDataType($this->type, $this->_context);
         foreach ($this->parameters as $parameter) {
             if ($parameter->validate() == false) {
                 return false;

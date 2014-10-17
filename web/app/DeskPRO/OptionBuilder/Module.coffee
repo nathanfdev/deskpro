@@ -24,7 +24,7 @@ define [
 				}
 			}
 		])
-		.directive('dpOptionbuilderRow', [ ->
+		.directive('dpOptionbuilderRow', [ '$timeout', ($timeout) ->
 			return {
 				restrict: 'E',
 				template: """
@@ -35,7 +35,12 @@ define [
 								<td style="vertical-align: middle; padding: 0; margin: 0;"><div class="dp-ob-row-tag-wrap"></div></td>
 								<td style="vertical-align: middle; padding: 0; margin: 0;" width="1"><input type="checkbox" id="{{rowOpts.withCheckId}}" ng-if="rowOpts.withCheck" ng-model="rowOpts.rowEnabled" ng-disabled="rowOpts.isFixedOn" /></td>
 								<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
-									<div class="dp-ob-row-content" ng-transclude></div>
+									<div class="dp-ob-row-content-wrap" ng-class="{'as-post-render': doShow}">
+										<div class="dp-ob-row-content-placeholder" ng-if="!doShow">
+											<span class="place1"></span> <span class="place2"></span> <span class="place3"></span>
+										</div>
+										<div class="dp-ob-row-content" ng-class="{'as-post-render': doShow}" ng-transclude></div>
+									</div>
 								</td>
 							</tr>
 						</table>
@@ -44,12 +49,30 @@ define [
 				replace: true,
 				transclude: true,
 				link: (scope, element, attrs) ->
-					if scope.rowOpts?.rowIdx > 1 and scope.rowOpts?.tagString
-						tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.rowOpts.tagClass).text(scope.rowOpts?.tagString)
-						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'))
-					else
-						tag = $('<em class="dp-ob-row-tag"></em>').addClass('no-tag')
-						tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('without-tag'))
+					tagWrap = element.find('.dp-ob-row-tag-wrap')
+					updateTag = ->
+						tag = tagWrap.find('.dp-ob-row-tag')
+						if scope.rowOpts?.rowIdx > 1 and scope.rowOpts?.tagString
+							if not tag[0]
+								tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.rowOpts.tagClass)
+								tag.prependTo(tagWrap)
+
+							tag.text(scope.rowOpts?.tagString)
+							tagWrap.addClass('with-tag')
+						else
+							if tag[0] then tag.remove()
+							tagWrap.addClass('without-tag')
+
+					scope.$watch('rowOpts.rowIdx', ->
+						updateTag()
+					)
+					updateTag()
+
+					$timeout(->
+						$timeout(->
+							$timeout(-> scope.doShow = true)
+						)
+					)
 			}
 		]).directive('dpOptionBuilderSet', [ '$compile', '$templateCache', ($compile, $templateCache) ->
 			return {
@@ -84,7 +107,14 @@ define [
 				recountRows = ->
 					for row, i in rows
 						if row.rowScope.setIndex != i+1
-							row.rowScope.$apply(-> row.rowScope.setIndex = i+1)
+							row.rowScope.$apply(->
+								row.rowScope.setIndex = i+1
+
+								if row.rowScope.setIndex == 1
+									row.element.find('.remove-btn-wrap').hide()
+								else
+									row.element.find('.remove-btn-wrap').show()
+							)
 
 				addRow = (useExistSetId) ->
 					tpl = $templateCache.get(opts.template)
@@ -126,6 +156,11 @@ define [
 
 					if scope.setCount >= 1
 						element.addClass('empty')
+
+					if rowScope.setIndex == 1
+						element.find('.remove-btn-wrap').hide()
+					else
+						element.find('.remove-btn-wrap').show()
 
 					element.find('.removerow_btn').on('click', (ev) ->
 						ev.preventDefault()

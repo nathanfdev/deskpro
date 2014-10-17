@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -266,15 +266,14 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 					$op = 'is';
 				} else if ($this->op == 'not_changed_to') {
 					$op = 'not';
-				} else {
-					if ($prop_name instanceof TermValue) {
-						$value = $state->getLastChangeForField($prop_name);
-					}
-					if ($this->op == 'changed_from') {
-						$op = 'is';
-					} else {
-						$op = 'not';
-					}
+				} else if ($this->op == 'changed_from') {
+					$op = 'is';
+					$value = $state->getFirstChangeForField($prop_name)->getOld();
+				} else if ($this->op == 'not_changed_from') {
+					$op = 'not';
+					$value = $state->getFirstChangeForField($prop_name)->getOld();
+				} else if ($op == 'changed') {
+					$op = 'changed';
 				}
 			}
 		} else if ($this->op == 'touched' || $this->op == 'nottouched') {
@@ -317,6 +316,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 		if ($opts['is_changed_op'] && !$opts['was_changed']) {
 			return false;
+		}
+		if ($opts['is_changed_op'] && $opts['was_changed'] && $op == 'changed') {
+			return true;
 		}
 
 		if ($check_ids === null || empty($check_ids)) {
@@ -374,6 +376,9 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 		if ($opts['is_changed_op'] && !$opts['was_changed']) {
 			return false;
 		}
+		if ($opts['is_changed_op'] && $opts['was_changed'] && $op == 'changed') {
+			return true;
+		}
 
 		if (!is_array($all_values)) {
 			$all_values = array($all_values);
@@ -381,6 +386,10 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 
 		if ($check_ids === null || empty($check_ids)) {
 			$check_ids = array();
+		}
+
+		if (!is_array($check_ids)) {
+			$check_ids = array($check_ids);
 		}
 
 		if ($check_ids) {
@@ -574,6 +583,13 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 			elseif (!$opts['was_touched']) return $op == 'nottouched';
 		}
 
+		if ($opts['is_changed_op'] && !$opts['was_changed']) {
+			return false;
+		}
+		if ($opts['is_changed_op'] && $opts['was_changed'] && $op == 'changed') {
+			return true;
+		}
+
 		if ($check_value === null) {
 			return false;
 		}
@@ -645,6 +661,7 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 				case 'not_regex':
 					foreach ($check_value as $v) {
 						$regex = Strings::getInputRegexPattern($v);
+
 						if (!$regex) {
 							return false;
 						}
@@ -675,6 +692,15 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	 */
 	public function getMultiMatchResult(array $all_values, $check_fn, $op, $multi_mode)
 	{
+		// No values to check
+		if (!$all_values) {
+			if ($op == 'not' || $op == 'notcontains' || $op == 'not_regex' || $op == 'not_isset') {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		$match_count = 0;
 		$check_count = 0;
 		foreach ($all_values as $v) {

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -109,7 +109,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	public function getZendAuthAdapter()
 	{
 		$options = array();
-		foreach (array('host', 'port', 'useStartTls', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountDomainName', 'accountDomainNameShort', 'accountCanonicalForm') as $k) {
+		foreach (array('host', 'port', 'useStartTls', 'useSsl', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountDomainName', 'accountDomainNameShort', 'accountCanonicalForm') as $k) {
 			if (isset($this->options[$k]) && $this->options[$k]) {
 				$options[$k] = $this->options[$k];
 			}
@@ -255,6 +255,11 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 
 				if ($rec->getAttribute('jpegPhoto')) {
 					$raw_info['picture_data'] = $rec->getAttribute('jpegPhoto', 0);
+
+					// Large photo can potentially cause memory issues when we resize/edit it, so ignore it
+					if (isset($raw_info['picture_data'][15000000])) {
+						unset($raw_info['picture_data'][15000000]);
+					}
 				} else if ($rec->getAttribute('thumbnailPhoto')) {
 					$raw_info['picture_data'] =$rec->getAttribute('thumbnailPhoto', 0);
 				}

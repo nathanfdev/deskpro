@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -75,9 +75,11 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
 				$error = error_reporting();
 				error_reporting($error & ~E_WARNING);
 
+				$old = libxml_disable_entity_loader(false);
 				require_once(DP_ROOT . '/vendor-src/salesforce/SforcePartnerClient.php');
 				$sforce = new \SforcePartnerClient();
 				$sforce->createConnection(DP_ROOT . '/vendor-src/salesforce/partner.wsdl.xml');
+				libxml_disable_entity_loader($old);
 
 				error_reporting($error);
 			} catch (\SoapFault $e) {

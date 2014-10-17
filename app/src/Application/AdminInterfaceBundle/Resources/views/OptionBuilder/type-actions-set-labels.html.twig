@@ -6,15 +6,35 @@
 				<td ng-show="rowOpts.rowEnabled">
 					<table class="display-table spaced" width="100%">
 						<tr>
-							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">Add labels:</td>
-							<td>
-								<input type="text" ng-model="model.add_labels" class="form-control" />
+							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+								<label>
+									<input type="checkbox" ng-model="model.with_add" />
+									Add labels
+								</label>
+								<div ng-show="model.with_add">
+                                    <input
+                                            type="hidden"
+                                            ui-select2="model.select2_add"
+                                            ng-model="model.add_labels"
+                                            style="min-width: 80%"
+                                            >
+								</div>
 							</td>
 						</tr>
 						<tr>
-							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">Remove labels:</td>
-							<td>
-								<input type="text" ng-model="model.remove_labels" class="form-control" />
+							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+								<label>
+									<input type="checkbox" ng-model="model.with_remove" />
+									Remove labels
+								</label>
+								<div ng-show="model.with_remove">
+                                    <input
+                                            type="hidden"
+                                            ui-select2="model.select2_remove"
+                                            ng-model="model.remove_labels"
+                                            style="min-width: 80%"
+                                            >
+								</div>
 							</td>
 						</tr>
 					</table>

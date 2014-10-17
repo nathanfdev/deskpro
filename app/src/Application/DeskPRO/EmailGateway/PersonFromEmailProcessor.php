@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -91,6 +91,7 @@ class PersonFromEmailProcessor
 					$person = $login_processor->getPerson();
 
 					$this->passPerson($from, $person);
+
 					return $person;
 				} catch (\Exception $e) {
 					KernelErrorHandler::logException($e, false, 'gateway_usersource_error');
@@ -127,13 +128,24 @@ class PersonFromEmailProcessor
 	 */
 	public function createPerson(EmailAddress $from, $do_validated = false)
 	{
+		App::getDb()->beginTransaction();
+
+		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
+
+		if ($person) {
+			App::getDb()->commit();
+			return $person;
+		}
+
+		$email = new Entity\PersonEmail();
+		$email->setEmail($from->getEmail());
+
 		$person = Entity\Person::newContactPerson();
 		$person->creation_system = 'gateway.person';
 		$person->name = $from->getNameUtf8();
 
-		$email = new \Application\DeskPRO\Entity\PersonEmail();
-		$email->setEmail($from->getEmail());
 		$email->person = $person;
+		$person->addEmailAddress($email);
 
 		$email->is_validated = true;
 		$person->is_confirmed = true;
@@ -143,14 +155,10 @@ class PersonFromEmailProcessor
 		}
 
 		App::getOrm()->persist($person);
-		App::getOrm()->flush($person);
-
-		$person->addEmailAddress($email);
-		App::getOrm()->persist($person);
 		App::getOrm()->persist($email);
+		App::getOrm()->flush();
 
-		App::getOrm()->flush($person);
-		App::getOrm()->flush($email);
+		App::getDb()->commit();
 
 		return $person;
 	}

@@ -16,7 +16,11 @@ define [
 				@$modalInstance.dismiss()
 
 			@form.timezone = @agent.timezone || 'UTC'
-			@form.signature_html = @agent.signature_html || ''
+			@form.signature_html = 'Loading...';
+
+			@Api.sendGet("/agents/#{@agent.id}?extended=1").success((data) =>
+				@form.signature_html = data.signature_html
+			)
 
 			if @agent.picture_blob
 				@form.picture_set = 'current'

@@ -8,9 +8,14 @@
 					<input type="hidden" class="set_person_id" value="{{ person.id }}" />
 					{% if person.emails|length > 1 %}
 						<select name="newticket[person][email_address]">
-							{% for email in person.getEmailAddresses() %}
-								<option value="{{ email }}" {% if email == person.email_address %}selected="selected"{% endif %}>{{ email }}</option>
-							{% endfor %}
+							<optgroup label="Primary Email Address">
+								<option value="{{ person.primary_email.email }}" selected="selected">{{ person.primary_email.email }}</option>
+							</optgroup>
+							<optgroup label="Secondary Email Addresses">
+								{% for email in person.emails if email.id != person.primary_email.id %}
+									<option value="{{ email.email }}">{{ email.email }}</option>
+								{% endfor %}
+							</optgroup>
 						</select>
 					{% else %}
 						{{ person.primary_email.email }} &middot; <a data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">{{ phrase('agent.people.view_profile') }}</a>

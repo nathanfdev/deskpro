@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -171,12 +171,22 @@ class TriggerTermConverter
 
 	private function upgradeTerm_email_cc_email($type, $op, OptionsArray $options)
 	{
-		return new Terms\CheckEmailCcAddress($op, array('email' => $options->get('email', 'NO EMAIL')));
+		return new Terms\CheckEmailCcAddress($op, array('email' => $options->get('email_address', 'NO EMAIL')));
+	}
+
+	private function upgradeTerm_email_cc_name($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckEmailCcName($op, array('name' => $options->get('name', 'NO NAME')));
 	}
 
 	private function upgradeTerm_email_from_email($type, $op, OptionsArray $options)
 	{
-		return new Terms\CheckEmailFromAddress($op, array('email' => $options->get('email', 'NO EMAIL')));
+		return new Terms\CheckEmailFromAddress($op, array('email' => $options->get('email_address', 'NO EMAIL')));
+	}
+
+	private function upgradeTerm_email_from_name($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckEmailFromName($op, array('name' => $options->get('email_name', 'NO NAME')));
 	}
 
 	private function upgradeTerm_email_subject($type, $op, OptionsArray $options)
@@ -186,7 +196,12 @@ class TriggerTermConverter
 
 	private function upgradeTerm_email_to_email($type, $op, OptionsArray $options)
 	{
-		return new Terms\CheckEmailToAddress($op, array('email' => $options->get('email', 'NO EMAIL')));
+		return new Terms\CheckEmailToAddress($op, array('email' => $options->get('email_address', 'NO EMAIL')));
+	}
+
+	private function upgradeTerm_email_to_name($type, $op, OptionsArray $options)
+	{
+		return new Terms\CheckEmailToName($op, array('name' => $options->get('name', 'NO NAME')));
 	}
 
 	private function upgradeTerm_email_header($type, $op, OptionsArray $options)

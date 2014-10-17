@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -49,7 +49,7 @@ class LabelDefManager
 	 */
 	protected $em;
 
-	protected $types = array(
+	static protected $types = array(
 		'articles'             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
 		'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
 		'downloads'            => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
@@ -110,35 +110,79 @@ class LabelDefManager
 	 */
 	public function getLabels($types = null)
 	{
-		if ($types) {
-			$labels = $this->db->fetchAllCol("SELECT DISTINCT label FROM label_defs WHERE label_type IN ('" . implode("','", (array)$types) . "') ORDER BY label ASC");
-		} else {
-			$labels = $this->db->fetchAllCol("SELECT DISTINCT label FROM label_defs ORDER BY label ASC");
+		if ($types === null) {
+			$types = self::valid();
 		}
+		if (is_string($types)) {
+			$types = explode(',', $types);
+			$types = array_map('trim', $types);
+		}
+
+		if (!$types) {
+			return array();
+		}
+
+		$types = array_map(function($t) {
+			if ($t == 'chat') $t = 'chat_conversations';
+			return $t;
+		}, $types);
+
+		// invalid type(s)
+		if (array_diff($types, self::valid())) {
+			throw new \InvalidArgumentException();
+		}
+
+		$parts = array();
+		$parts[] = "SELECT DISTINCT(label) FROM label_defs " . (count($types) < 8 ? "WHERE label_type IN ('" . implode("','", $types) . "')" : '');
+		foreach ($types as $t) {
+			$parts[] = "SELECT DISTINCT(label) FROM labels_$t";
+		}
+
+		$q = '(' . implode(') UNION (', $parts) . ')';
+		$labels = $this->db->fetchAllCol($q);
 
 		return $labels;
 	}
 
+	public function getAllDefinitions()
+	{
+		return $this->db->fetchAll('SELECT * FROM label_defs');
+	}
+
 
 	/**
-	 * Count all label definitions
-	 *
 	 * @return array
 	 */
-	public function countDefs()
+	public function getAllLabelsToTyped()
 	{
-		$counts = $this->db->fetchAllKeyValue("
-			SELECT label_type, COUNT(*) as count
-			FROM label_defs
-			GROUP BY label_type
-		");
+		$ret = array();
 
-		$counts['TOTAL'] = $this->db->fetchColumn("
-			SELECT COUNT(DISTINCT label) as count
-			FROM label_defs
-		");
+		// Admin defined
+		foreach ($this->db->fetchAll("SELECT * FROM label_defs") as $x) {
+			if (!isset($x['label'])) {
+				$ret[$x['label']] = array();
+			}
 
-		return $counts;
+			$ret[$x['label']][] = $x['label_type'];
+		}
+
+		// Non-admin defined
+		$types = array('articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations');
+		$parts = array();
+		foreach ($types as $t) {
+			$parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";
+		}
+
+		$q = '(' . implode(') UNION (', $parts) . ')';
+		foreach ($this->db->fetchAll($q) as $x) {
+			if (!isset($x['label'])) {
+				$ret[$x['label']] = array();
+			}
+
+			$ret[$x['label']][] = $x['label_type'];
+		}
+
+		return $ret;
 	}
 
 
@@ -153,13 +197,13 @@ class LabelDefManager
 		$query  = array();
 
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
 
 		foreach ($types as $t) {
-			$info = $this->types[$t];
+			$info = self::$types[$t];
 			$query[]  = "SELECT COUNT(*) AS count, label FROM {$info['table']} GROUP BY label";
 		}
 
@@ -194,13 +238,13 @@ class LabelDefManager
 		$params = array();
 
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
 
 		foreach ($types as $t) {
-			$info = $this->types[$t];
+			$info = self::$types[$t];
 
 			$query[]  = "SELECT COUNT(*) AS count FROM {$info['table']} WHERE label = ?";
 			$params[] = $label;
@@ -229,10 +273,10 @@ class LabelDefManager
 	 * @param $label
 	 * @param null $types
 	 */
-	public function createLabelDef($label, $types = null)
+	public function createLabelDef($label, $color, $types = null)
 	{
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
@@ -241,7 +285,10 @@ class LabelDefManager
 
 		try {
 			foreach ($types as $t) {
-				$this->db->executeUpdate("INSERT IGNORE INTO label_defs SET label_type = ?, label = ?, total = 0", array($t, $label));
+				$this->db->executeUpdate(
+					'INSERT IGNORE INTO label_defs SET label_type = ?, label = ?, color = ?, total = 0',
+					array($t, $label, $color)
+				);
 			}
 
 			$this->db->commit();
@@ -261,7 +308,7 @@ class LabelDefManager
 	public function deleteLabelDef($label, $types = null)
 	{
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
@@ -270,7 +317,7 @@ class LabelDefManager
 
 		try {
 			foreach ($types as $t) {
-				$table = $this->types[$t]['table'];
+				$table = self::$types[$t]['table'];
 
 				$this->db->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $label));
 				$this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($label));
@@ -295,7 +342,7 @@ class LabelDefManager
 	public function renameLabelDef($old_label, $new_label, $types = null)
 	{
 		if (!$types) {
-			$types = array_keys($this->types);
+			$types = array_keys(self::$types);
 		} else {
 			$types = (array)$types;
 		}
@@ -303,15 +350,10 @@ class LabelDefManager
 		$this->db->beginTransaction();
 		try {
 			foreach ($types as $t) {
-				$table = $this->types[$t]['table'];
+				$table = self::$types[$t]['table'];
 
 				$this->db->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $old_label));
 				$adjusted = $this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
-				$this->db->executeUpdate("
-					INSERT INTO label_defs (label_type, label, total)
-					VALUES (?, ?, ?)
-					ON DUPLICATE KEY UPDATE total = total + VALUES(total)
-				", array($t, $new_label, $adjusted));
 				$this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($old_label));
 			}
 
@@ -430,5 +472,10 @@ class LabelDefManager
 				}
 			}
 		}
+	}
+
+	static public function valid($type = null)
+	{
+		return null === $type ? array_keys(self::$types) : isset(self::$types[$type]);
 	}
 }

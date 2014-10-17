@@ -123,23 +123,25 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		this.wrapper = newContainer;
 
+		var zIndexStart = 40000;
+
 		newContainer.find('> .window').find('> header, > div.messages-box, > .input-message-wrap').on('click', function(ev) {
 			var count = 0;
 			Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(win) {
 				if (win) {
-					win.wrapper.css('z-index', count++);
+					win.wrapper.css('z-index', zIndexStart+(count++));
 				}
 			});
-			self.wrapper.css('z-index', count+1);
+			self.wrapper.css('z-index', zIndexStart+count+1);
 		});
 		newContainer.find('> nav').on('click', function() {
 			var count = 0;
 			Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(win) {
 				if (win) {
-					win.wrapper.css('z-index', count++);
+					win.wrapper.css('z-index', zIndexStart+(count++));
 				}
 			});
-			self.wrapper.css('z-index', count+1);
+			self.wrapper.css('z-index', zIndexStart+count+1);
 		});
 
 		// Accept clicks on routes
@@ -391,8 +393,8 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	},
 
 
-	formatMessage: function(message) {
-		var message = Orb.escapeHtml(message);
+	formatMessage: function(message, preventEscaping) {
+		var message = preventEscaping ? message : Orb.escapeHtml(message);
 		var idMap = {
 			't': {title: 'Ticket', url: BASE_URL + 'agent/tickets/'},
 			'p': {title: 'Person', url: BASE_URL + 'agent/people/'},
@@ -453,10 +455,13 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 	/**
 	 * Open the chat tab
 	 */
-	open: function() {
+	open: function(isManual) {
 		if (this.wrapper) {
 			this.wrapper.addClass('open');
-			this.wrapper.find('textarea').focus();
+
+			if (isManual) {
+				this.wrapper.find('textarea').focus();
+			}
 		}
 	},
 

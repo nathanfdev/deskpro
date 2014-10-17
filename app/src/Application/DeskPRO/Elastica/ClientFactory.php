@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -56,17 +56,37 @@ class ClientFactory
 
 
 	/**
+	 * @param array $config
+	 * @return Client
+	 */
+	public function createSystemClientByConfig(array $config)
+	{
+		if (isset($config['connections'][0]['host']) && $config['connections'][0]['host'] == 'DEFAULT') {
+			return $this->createClientById('default');
+		} else {
+			return $this->createClientByConfig($config);
+		}
+	}
+
+
+	/**
 	 * @param string $id
 	 * @return Client
 	 */
 	public function createClientById($id)
 	{
-		$config = array(
-			'host'      => $this->settings->get("elastica.clients.$id.host"),
-			'port'      => $this->settings->get("elastica.clients.$id.port"),
-			'path'      => $this->settings->get("elastica.clients.$id.path") ?: null,
-			'transport' => $this->settings->get("elastica.clients.$id.transport") ?: null
-		);
+		if ($this->settings->get("elastica.clients.$id.url")) {
+
+			$config = self::createConfigFromUrl($this->settings->get("elastica.clients.$id.url"));
+
+		} else {
+			$config = array(
+				'host'      => $this->settings->get("elastica.clients.$id.host"),
+				'port'      => $this->settings->get("elastica.clients.$id.port"),
+				'path'      => $this->settings->get("elastica.clients.$id.path") ? : null,
+				'transport' => $this->settings->get("elastica.clients.$id.transport") ? : null
+			);
+		}
 
 		if (!$config['host'] || !$config['port']) {
 			throw new MissingConfigurationException;
@@ -75,6 +95,46 @@ class ClientFactory
 		$config = Arrays::removeFalsey($config);
 
 		return $this->createClientByConfig($config);
+	}
+
+
+	/**
+	 * @param string $url
+	 * @return array
+	 * @throws \Application\DeskPRO\Exception\MissingConfigurationException
+	 */
+	public static function createConfigFromUrl($url)
+	{
+		if (!$url) {
+			throw new MissingConfigurationException("No URL specified");
+		}
+
+		if (!preg_match('#^\w+://#', $url)) {
+			$url = 'http://' . $url;
+		}
+
+		$url_info = parse_url($url);
+		if (!$url_info) {
+			throw new MissingConfigurationException("Invalid URL");
+		}
+
+		$url_info = new OptionsArray($url_info);
+		if (!$url_info->has('host')) {
+			throw new MissingConfigurationException("Missing host");
+		}
+
+		$config = array(
+			'host'      => $url_info->host,
+			'port'      => $url_info->port ?: 9200,
+			'path'      => $url_info->path ?: null,
+			'transport' => strtolower($url_info->get('scheme', 'http')) == 'https' ? 'Https' : 'Http'
+		);
+
+		if ($url_info->user && $url_info->pass) {
+			$config['headers'] = array('Authorization'=> 'Basic '.  base64_encode($url_info->user .':'. $url_info->pass));
+		}
+
+		return $config;
 	}
 
 
@@ -91,6 +151,7 @@ class ClientFactory
 			'port'      => $config->get('port', 9200),
 			'path'      => $config->get('path', null),
 			'transport' => $config->get('transport', null),
+			'headers'   => $config->get('headers', array()),
 			'log'       => $config->get('log', null)
 		));
 

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -33,6 +33,7 @@
 
 namespace Application\DeskPRO\ChatSetup;
 
+use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Application\DeskPRO\Settings\Settings;
 
 class ChatSetup
@@ -58,13 +59,8 @@ class ChatSetup
 
 	public function getChatInfo()
 	{
-		$chat_online = false;
-
-		if (file_exists(dp_get_data_dir() . '/chat_is_available.trigger')) {
-
-			$chat_online = file_get_contents(dp_get_data_dir() . '/chat_is_available.trigger');
-			$chat_online = (bool) $chat_online;
-		}
+		$chat_online = ChatAvailableCheck::getAvailableTime();
+		$chat_online = (bool)$chat_online;
 
 		$chat_enabled = (bool) $this->settings->get('core.apps_chat');
 

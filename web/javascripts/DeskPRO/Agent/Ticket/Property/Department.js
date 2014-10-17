@@ -33,6 +33,16 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 
 		var name = this.ticketPage.getEl('department_id').find('option:selected').data('full-title');
 		this.getInterfaceElement().text(name);
+
+		var icon = this.ticketPage.getEl('department_id').find('option:selected').data('icon');
+		var iconEl = this.ticketPage.getEl('department_icon');
+		if (icon) {
+			iconEl.find('img').attr('src', icon);
+			iconEl.show();
+		} else {
+			iconEl.hide();
+		}
+
 		this.ticketPage.getEl('value_form').find('.department_id').val(value);
 	},
 

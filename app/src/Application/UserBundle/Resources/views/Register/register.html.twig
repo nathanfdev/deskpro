@@ -115,7 +115,9 @@
 						</td>
 						<td style="text-align: center; vertical-align: middle;" valign="middle">
 							<input class="dp-btn dp-btn-primary" type="submit" value="{{ phrase('user.general.log_in') }}" tabindex="102" />
-							<label style="margin: 5px 0 0"><input type="checkbox" name="remember_me" value="1" style="display:inline; position: relative; top: -2px;" tabindex="103" /> {{ phrase('user.general.remember_me') }}</label>
+							{% if app.getSetting('core.enable_user_rememberme') %}
+								<label style="margin: 5px 0 0"><input type="checkbox" name="remember_me" value="1" style="display:inline; position: relative; top: -2px;" tabindex="103" /> {{ phrase('user.general.remember_me') }}</label>
+							{% endif %}
 						</td>
 					</tr>
 				</table>

@@ -15,11 +15,6 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 		this.wrapper = el;
 
 		var nolink = false;
-		this.addEvent('popover-open', function() {
-			nolink = false;
-			rowContainer.empty();
-			addTaskRow();
-		});
 
 		var statusMenu = new DeskPRO.UI.Menu({
 			menuElement: this.getEl('menu_vis'),
@@ -34,6 +29,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 		form.on('submit', Orb.cancelEvent);
 
 		var rowContainer = this.getEl('tasks');
+		rowContainer.empty();
 
 		var openForEl = null;
 		rowContainer.on('click', '.remove-row-trigger', function(ev) {
@@ -136,6 +132,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 			var row = $(this).closest('.task-row');
 			var field = $('input.input-date-due', row);
+			var field_real = $('input.input-date-due-real', row);
 			var field2 = $('input.input-date-time', row);
 			var date = $('input.input-date-due', row).val();
 			if (!date) {
@@ -148,6 +145,8 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 				timeLi.show();
 			}, {
 				dateFormat: dateFormat,
+				altFormat: 'yy-mm-dd',
+				altField: field_real,
 				showButtonPanel: true,
 				beforeShow: function(input) {
 					setTimeout(function() {
@@ -234,7 +233,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 		addTaskRow();
 
-		var footer = $('footer.pop-footer', el);
+		var footer = $('footer', el);
 		$('.submit-trigger', el).on('click', function() {
 			var postData = form.serializeArray();
 
@@ -249,10 +248,10 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 					footer.removeClass('loading');
 				},
 				success: function(data) {
-					self.meta.popover.close();
 					if (DeskPRO_Window.sections.tasks_section) {
 						DeskPRO_Window.sections.tasks_section.refresh();
 					}
+					self.closeSelf();
 				}
 			});
 		});

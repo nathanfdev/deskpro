@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -35,9 +35,11 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\PeopleResults;
+use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\People\PeopleResultsDisplay;
 use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -162,7 +164,7 @@ class PeopleSearchController extends AbstractController
 	protected function _getResponseForPeople($type, $type_id, PeopleResults $results_helper, array $vars = array())
 	{
 		$view_type = $this->in->getString('view_type');
-		if (!$view_type OR !in_array($view_type, array('list', 'simple'))) {
+		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'json'))) {
 			$view_type = 'simple';
 		}
 
@@ -198,8 +200,6 @@ class PeopleSearchController extends AbstractController
 		$user_field_manager = $this->container->getSystemService('person_fields_manager');
 		$person_field_defs = $user_field_manager->getFields();
 
-		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
-
 		$alphabet = $this->getAlphabet();
 		$letters = array();
 
@@ -218,26 +218,34 @@ class PeopleSearchController extends AbstractController
 			);
 		}
 
+		$person_display = new PeopleResultsDisplay($people);
+		$renderer = new PeopleListRenderer($this->container);
+
 		$vars = array_merge($vars, array(
 			'type'                    => $type,
 			'type_id'                 => $type_id,
 			'people'                  => $people,
+			'people_json'             => $renderer->renderJson($person_display),
 			'page'                    => $page,
-			'person_field_defs'       => $person_field_defs,
+			'per_page'                => $results_helper->getPerPageCount(),
 			'load_first'              => $this->in->getBool('load_first'),
-			'result_display'          => $result_display,
 			'alphabet'                => $letters
 		));
 
-		$html = $this->renderView($tpl, $vars);
 
-		if ($is_partial) {
-			return $this->createJsonResponse(array(
-				'html'              => $html,
-				'page'              => $page,
-			));
+		if ('json' === $view_type) {
+			return $this->createJsonpResponse($vars);
 		} else {
-			return $this->createResponse($html);
+			$html = $this->renderView($tpl, $vars);
+
+			if ($is_partial) {
+				return $this->createJsonResponse(array(
+					'html'              => $html,
+					'page'              => $page,
+				));
+			} else {
+				return $this->createResponse($html);
+			}
 		}
 	}
 
@@ -261,9 +269,14 @@ class PeopleSearchController extends AbstractController
 		$user_field_manager = $this->container->getSystemService('person_fields_manager');
 		$person_field_defs = $user_field_manager->getFields();
 
+		$view_type = $this->in->getString('view_type');
 		$tpl = 'list-page.html.twig';
-		if ($this->in->getString('view_type') == 'list') {
+		if ('list' === $view_type) {
 			$tpl = 'list-list-page.html.twig';
+		} elseif ('json' === $view_type) {
+			$person_display = new PeopleResultsDisplay($people);
+			$renderer = new PeopleListRenderer($this->container);
+			return $this->createJsonResponse($renderer->renderArray($person_display));
 		}
 
 		$result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
@@ -318,6 +331,7 @@ class PeopleSearchController extends AbstractController
 				'person_contact_phone'      => array('op' => 'contains', 'options' => array()),
 				'is_agent_confirmed'        => array('op' => 'is', 'options' => array()),
 				'is_confirmed'              => array('op' => 'is', 'options' => array()),
+				'any_mode'                  => array('op' => 'is', 'options' => array()),
 			);
 
 			foreach ($set_terms_map as $name => $info) {
@@ -544,7 +558,7 @@ class PeopleSearchController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		return $this->searchAction('*', array('person_organization' => $id), 'organization.' . $id);
+		return $this->searchAction('*', array('person_organization' => $id, 'any_mode' => 1), 'organization.' . $id);
 	}
 
 	protected function applyLetterToSearcher($letter, $searcher)
@@ -730,70 +744,58 @@ class PeopleSearchController extends AbstractController
 			$q = $this->in->getString('term');
 		}
 
-		$agent_sql = ' p.is_agent = 0 AND ';
-		if ($this->in->getBool('with_agents')) {
-			$agent_sql = '';
-		}
+		$limit       = $this->in->getUint('limit') ?: 100;
+		$with_agents = $this->in->getBool('with_agents');
+		$exclude_org = $this->in->getUint('exclude_org');
 
-		$limit = $this->in->getUint('limit');
-		if (!$limit) $limit = 10;
-		$limit = min($limit, 100);
+		if ($this->container->getSetting('elastica.enabled')) {
+			$elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
+			$elasticsearch->setPersonContext($this->person);
 
-		$not_in_org = $this->in->getUint('exclude_org');
+			list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, 'date_active', array('person'));
 
-		if (BigMode::isBigMode(BigMode::PERSON_AUTOCOMPLETE)) {
-			if (!$q && $this->in->getBool('start_with')) {
-				$people_list = $this->db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
-					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
-					WHERE $agent_sql
-					" . ($not_in_org ? " p.organization_id != $not_in_org " : '1') . "
-					ORDER BY p.id DESC
-					LIMIT $limit
-				");
+			if (isset($results['person'])) {
+				$results = $results['person'];
 			} else {
-				$people_list = $this->db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
-					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
-					WHERE
-						$agent_sql
-						e.email LIKE ?
-						" . ($not_in_org ? " AND (p.organization_id IS NULL OR p.organization_id != $not_in_org) " : '') . "
-					GROUP BY p.id
-					ORDER BY p.date_last_login DESC, p.id DESC
-					LIMIT $limit
-				", array("$q%"));
+				$results = array();
 			}
-		} else {
-			if (!$q && $this->in->getBool('start_with')) {
-				$people_list = $this->db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
-					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
-					WHERE $agent_sql
-					" . ($not_in_org ? " p.organization_id != $not_in_org " : '1') . "
-					ORDER BY p.name ASC
-					LIMIT $limit
-				");
-			} else {
 
-				$people_list = $this->db->fetchAllKeyed("
-					SELECT p.id, p.first_name, p.last_name, e.email
-					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
-					WHERE
-						$agent_sql
-						(e.email LIKE ?
-						OR p.name LIKE ?
-						OR p.first_name LIKE ?
-						OR p.last_name LIKE ?)
-						" . ($not_in_org ? " AND (p.organization_id IS NULL OR p.organization_id != $not_in_org) " : '') . "
-					GROUP BY p.id
-					ORDER BY p.date_last_login DESC, p.id DESC
-					LIMIT $limit
-				", array("%$q%", "%$q%", "%$q%", "%$q%"));
+			$results = array_slice($results, 0, $limit);
+
+			$output = array();
+			foreach ($results AS $p) {
+				if (!$with_agents && $p->is_agent) {
+					continue;
+				}
+				if ($exclude_org && $p->organization && $p->organization->id == $exclude_org) {
+					continue;
+				}
+
+				$output[] = array(
+					'id'            => $p->id,
+					'first_name'    => $p->first_name,
+					'last_name'     => $p->last_name,
+					'email'         => $p->getPrimaryEmailAddress()
+				);
+			}
+
+			$people_list = $output;
+		} else {
+			/** @var \Application\DeskPRO\EntityRepository\Person $rep */
+			$rep         = $this->em->getRepository('DeskPRO:Person');
+			$people_list = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
+
+			// If the string is an exact email, we can try and find the user in usersources as well
+			if (StringEmail::isValueValid($q)) {
+				$person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+				if ($person && !isset($people_list[$person->getId()])) {
+					$people_list[$person->getId()] = array(
+						'id'         => $person->getId(),
+						'first_name' => $person->first_name,
+						'last_name'  => $person->last_name,
+						'email'      => $person->getPrimaryEmailAddress()
+					);
+				}
 			}
 		}
 
@@ -805,19 +807,6 @@ class PeopleSearchController extends AbstractController
 			$tpl = "AgentBundle:PeopleSearch:search_results.html.twig";
 			if ($format == 'simplelist') {
 				$tpl = "AgentBundle:PeopleSearch:search-results-simplelist.html.twig";
-			}
-		}
-
-		// If the string is an exact email, we can try and find the user in usersources as well
-		if (StringEmail::isValueValid($q)) {
-			$person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-			if ($person && !isset($people_list[$person->getId()])) {
-				$people_list[$person->getId()] = array(
-					'id'         => $person->getId(),
-					'first_name' => $person->first_name,
-					'last_name'  => $person->last_name,
-					'email'      => $person->getPrimaryEmailAddress()
-				);
 			}
 		}
 
@@ -924,7 +913,7 @@ class PeopleSearchController extends AbstractController
 		try {
 			$ids = array();
 			foreach ($people as $person) {
-				if (!$person->is_agent && !$person->is_agent_confirmed) {
+				if (!$person->is_agent && (!$person->is_agent_confirmed || !$person->is_confirmed)) {
 					$ids[] = $person->getId();
 
 					foreach ($person->emails as $email) {

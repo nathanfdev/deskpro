@@ -1,4 +1,4 @@
-define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
+define ['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], (EventsMixin, Numbers) ->
 	###*
 	* Save an ordered k=>v
 	###
@@ -9,6 +9,7 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 			@scope = null
 			@data = {}
 			@order = []
+			@orderFn = null
 
 		###
     	# Clears all data from the collection
@@ -25,13 +26,15 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
     	# @param {Function} callback The callback function that returns 0, -1 or 1
     	###
 		reorder: (callback) ->
+			callback = callback || @orderFn
+			return if not callback
+
 			@order.sort( (k1, k2) =>
 				v1 = @data[k1]
 				v2 = @data[k2]
 
 				return callback(v1, v2)
 			)
-			@order.reverse()
 
 
 		###
@@ -65,6 +68,8 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 		set: (k, v) ->
 			@_touch = (new Date()).getTime();
 
+			if Numbers.isNumber(k) then k = parseInt(k)
+
 			@data[k] = v
 
 			exist_pos = @order.indexOf(k)
@@ -72,6 +77,7 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 				@order.splice(exist_pos, 1)
 
 			@order.push(k)
+			@reorder()
 			@notifyListeners('changed')
 			return v
 
@@ -84,6 +90,7 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
     	# @return {mixed}
     	###
 		get: (k, default_val = null) ->
+			if Numbers.isNumber(k) then k = parseInt(k)
 			if not @data[k]?
 				return default_val
 
@@ -97,7 +104,8 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
     	# @return {mixed} The value removed, or null if no key
     	###
 		remove: (k) ->
-			@_touch = (new Date()).getTime();
+			@_touch = (new Date()).getTime()
+			if Numbers.isNumber(k) then k = parseInt(k)
 
 			val = null
 			if @data[k]?
@@ -105,6 +113,7 @@ define ['Admin/Main/Util/EventsMixin'], (EventsMixin) ->
 				delete @data[k]
 				exist_pos = @order.indexOf(k)
 				@order.splice(exist_pos, 1)
+				@reorder()
 				@notifyListeners('changed')
 
 			return val

@@ -9,7 +9,7 @@
 			the <a href="{{ ng_href('tickets.ticket_deps') }}">ticket department</a> section.
 
 			<div style="margin-top: 5px;">
-				<div style="width: 45%; float:left;">
+				<div style="width: 45%; float:left;" ng-if="!EditCtrl.form.is_agent_field">
 					<strong>User Layouts</strong>
 					<ul class="checkbox-list" style="min-width: 250px">
 						<li ng-repeat="layout in EditCtrl.user_layouts">

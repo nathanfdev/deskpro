@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -274,6 +274,10 @@ class ServerFileUploads
 				$settings->setSetting('core.filestorage_s3_key',    $options->get('s3_key', null));
 				$settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
 				$settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
+
+				// Need to clear CSS blobs too, since the URLs will change
+				\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+
 				break;
 		}
 
@@ -294,17 +298,16 @@ class ServerFileUploads
 	{
 		$transfer = $this->getMovingFiles();
 
+		$to_method = App::$container->getSettingsHandler()->get('core.filestorage_method');
+
 		if(!empty($transfer['id'])) {
 
 			$status  = 'progress';
 
-			if ($this->isUsingFileSystem()) {
-
-				$message = 'Currently transferring files from the database to the filesystem. ';
-
-			} else {
-
-				$message = 'Currently transferring files from the filesystem to the database. ';
+			switch ($to_method) {
+				case 'db': $message = 'Currently transferring files to the database'; break;
+				case 'fs': $message = 'Currently transferring files to the filesystem'; break;
+				case 's3': $message = 'Currently transferring files AmazonS3'; break;
 			}
 
 			$message .= $transfer['count_done'] . ' of ' .  $transfer['count_todo'];

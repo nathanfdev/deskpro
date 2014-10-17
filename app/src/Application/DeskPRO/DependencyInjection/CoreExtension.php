@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -81,6 +81,17 @@ class CoreExtension extends Extension
 		));
 		$container->setDefinition('deskpro.person_activity_logger', $definition);
 
+	    $definition = new Definition('Application\\DeskPRO\\ORM\\EventListener\\EntityChangeTrackingListener', array(new Reference('service_container')));
+	    $definition->addTag('doctrine.event_subscriber');
+	    $container->setDefinition('deskpro.orm.event_listener.log_entity_changes', $definition);
+
+	    $definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', array(new Reference('doctrine.orm.entity_manager')));
+		$container->setDefinition('deskpro.log_handler.log_event', $definition);
+
+	    $definition = new Definition('Application\DeskPRO\Monolog\Logger', array('changelog'));
+	    $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
+	    $container->setDefinition('deskpro.logger.changelog', $definition);
+
 		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
@@ -110,26 +121,20 @@ class CoreExtension extends Extension
 	 */
 	protected function loadTranslation(ContainerBuilder $container)
 	{
-		// BundleLoader
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', array(array(
 			DP_ROOT . '/languages'
 		)));
 		$container->setDefinition('deskpro.core.translate_loader_system', $definition);
 
-		// DbLoader
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', array(
 			new Reference('database_connection')
 		));
 		$container->setDefinition('deskpro.core.translate_loader_db', $definition);
 
-		// CombinationLoader
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DeskproLoader');
 		$definition->addMethodCall('setSystemLoader', array(new Reference('deskpro.core.translate_loader_system')));
 		$definition->addMethodCall('setDbLoader', array(new Reference('deskpro.core.translate_loader_db')));
 		$container->setDefinition('deskpro.core.translate_loader', $definition);
-
-		// Add the cacher to the CombinationLoader if we want
-		$definition->addMethodCall('setCache', array(new Reference('deskpro.cache.phrases', ContainerBuilder::IGNORE_ON_INVALID_REFERENCE)));
 
 		// Now create the translate object
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Translate', array(
@@ -142,6 +147,10 @@ class CoreExtension extends Extension
 		// Attach listener for no phrase
 		$definition = $container->getDefinition('deskpro.sys_events_loader');
 		$definition->addMethodCall('addNoPhraseEventListener');
+
+		$definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\EventListener', array(new Reference('service_container')));
+		$definition->addTag('doctrine.event_subscriber');
+		$container->setDefinition('deskpro.orm.event_listener.activity_stream', $definition);
 	}
 
 

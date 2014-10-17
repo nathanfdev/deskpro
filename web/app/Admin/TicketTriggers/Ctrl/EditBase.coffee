@@ -41,6 +41,9 @@ define [
 			@$scope.criteriaOptionTypes = []
 			@$scope.actionOptionTypes = []
 
+			@criteraTypeDef.setVar('object_type', 'trigger');
+			@actionsTypeDef.setVar('object_type', 'trigger');
+
 			@customInit()
 			return
 
@@ -186,6 +189,7 @@ define [
 				@dpTriggers.mergeDataModel({
 					id: @trigger.id,
 					title: @trigger.title,
+					is_enabled: @trigger.is_enabled,
 					has_stop_triggers_action: has_stop_triggers_action
 				})
 

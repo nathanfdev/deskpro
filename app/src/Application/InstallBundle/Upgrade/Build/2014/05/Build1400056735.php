@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -42,10 +42,16 @@ use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerActionConverter;
+use Application\InstallBundle\Upgrade\Build\Helper201405\TriggerTermConverter;
 use Orb\Util\Arrays;
 
 class Build1400056735 extends AbstractBuild
 {
+	/**
+	 * @var TriggerTermConverter
+	 */
+	private $term_converter;
+
 	/**
 	 * @var TriggerActionConverter
 	 */
@@ -54,10 +60,9 @@ class Build1400056735 extends AbstractBuild
 	public function run()
 	{
 		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
+		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerTermConverter.php';
 
 		$this->out("Upgrading SLAs");
-
-		$db = $this->container->getDb();
 
 		#------------------------------
 		# Init helpers
@@ -70,6 +75,7 @@ class Build1400056735 extends AbstractBuild
 		);
 
 		$this->action_converter = new TriggerActionConverter($mappings);
+		$this->term_converter   = new TriggerTermConverter($mappings);
 
 		#------------------------------
 		# Load old data
@@ -160,7 +166,7 @@ class Build1400056735 extends AbstractBuild
 				break;
 
 			case 'people_orgs':
-				$sla->apply_type = 'auto';
+				$sla->apply_type = 'terms';
 
 				if ($old_sla['@people']) {
 					$ids = Arrays::castToType($old_sla['@people'], 'int');
@@ -189,17 +195,19 @@ class Build1400056735 extends AbstractBuild
 					}
 				} else {
 					$sla->apply_type = 'manual';
+					$is_incomplete = true;
 				}
 				break;
 
 			case 'priority':
 				if ($old_sla['apply_priority_id']) {
-					$sla->apply_type = 'auto';
+					$sla->apply_type = 'terms';
 					$set = new TriggerTermComposite();
 					$set->add(new CheckPriority('is', array('priority_ids' => $old_sla['apply_priority_id'])));
 					$sla->apply_terms->addTerm($set);
 				} else {
 					$sla->apply_type = 'manual';
+					$is_incomplete = true;
 				}
 				break;
 
@@ -209,11 +217,27 @@ class Build1400056735 extends AbstractBuild
 					if ($sets and count($sets)) {
 						$sla->apply_terms = $sets;
 					}
+					$sla->apply_type = 'terms';
 				} else {
 					$sla->apply_type = 'manual';
 					$is_incomplete = true;
 				}
 				break;
+
+			default:
+				$sla->apply_type = 'manual';
+				$is_incomplete = true;
+				break;
+		}
+
+		#------------------------------
+		# Update active_time
+		#------------------------------
+
+		switch ($old_sla['active_time']) {
+			case 'work_hours': $sla->active_time = 'custom';  break;
+			case 'all':        $sla->active_time = 'all';     break;
+			default:           $sla->active_time = 'default'; break;
 		}
 
 		#------------------------------
@@ -297,7 +321,9 @@ class Build1400056735 extends AbstractBuild
 				}
 			} else {
 				$this->out("-- Skipping action {$act['type']}");
-				$is_incomplete = true;
+				if ($act['type'] != 'recalculate_sla_status') {
+					$is_incomplete = true;
+				}
 			}
 		}
 
@@ -332,8 +358,8 @@ class Build1400056735 extends AbstractBuild
 		$term_sets = new TriggerTerms();
 
 		$terms_all = new TriggerTermComposite();
-		if (!empty($old_trigger['terms_any'])) {
-			foreach ($old_trigger['terms_any'] as $term) {
+		if (!empty($old_trigger['terms'])) {
+			foreach ($old_trigger['terms'] as $term) {
 				$new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
 				if ($new_term) {
 					$terms_all->add($new_term);

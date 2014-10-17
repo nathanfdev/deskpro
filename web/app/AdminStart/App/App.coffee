@@ -50,6 +50,15 @@ define [
 		return new AppState(Api)
 	])
 
+	AdminStartModule.run(['Api', (Api) ->
+		window.setInterval(->
+			Api.sendGet('/my/session/renew-request-token?session_id=' + window.DP_SESSION_ID).success( (data) ->
+				if data.request_token
+					window.DP_REQUEST_TOKEN = data.request_token
+			)
+		, 30000)
+	])
+
 	AdminStartModule.directive('script', DeskPRO_Directive_DpJsonData)
 	AdminStartModule.directive('script', DeskPRO_Directive_DpNgTemplate)
 

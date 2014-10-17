@@ -18,6 +18,7 @@
       Admin_TicketSettings_Ctrl_FwdSettings.DEPS = [];
 
       Admin_TicketSettings_Ctrl_FwdSettings.prototype.init = function() {
+        this.default_fwd_regex = '/^(FW|FWD|VL|WG|FS|VB|RV|VS):/i';
         this.email_accounts = [];
         return this.$scope.$watch('settings.use_account', (function(_this) {
           return function(accId) {
@@ -40,6 +41,12 @@
           return function(res) {
             _this.email_accounts = res.data.accounts.email_accounts;
             _this.$scope.settings = res.data.settings.ticket_fwd_settings;
+            if (_this.$scope.settings.agent_fwd_subject_regex) {
+              _this.$scope.use_agent_fwd_subject_regex = true;
+            } else {
+              _this.$scope.use_agent_fwd_subject_regex = false;
+              _this.$scope.settings.agent_fwd_subject_regex = _this.default_fwd_regex;
+            }
             _this.settings = Util.clone(_this.$scope.settings);
             return _this.$scope.settings.use_account = (_this.$scope.settings.use_account || 0) + "";
           };
@@ -61,8 +68,11 @@
       Admin_TicketSettings_Ctrl_FwdSettings.prototype.save = function() {
         var postData, promise;
         postData = {
-          ticket_fwd_settings: this.$scope.settings
+          ticket_fwd_settings: Util.clone(this.$scope.settings)
         };
+        if (!this.$scope.use_agent_fwd_subject_regex || this.$scope.settings.agent_fwd_subject_regex === this.default_fwd_regex) {
+          postData.ticket_fwd_settings.agent_fwd_subject_regex = null;
+        }
         this.startSpinner('saving');
         return promise = this.Api.sendPostJson('/ticket_settings/fwd', postData).success((function(_this) {
           return function() {

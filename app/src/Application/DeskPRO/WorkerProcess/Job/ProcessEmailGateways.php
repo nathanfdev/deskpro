@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * Goes through each gateway and processes email
@@ -57,10 +58,12 @@ class ProcessEmailGateways extends AbstractJob
 		$num = App::getDb()->executeUpdate("
 			UPDATE email_sources
 			SET status = 'error', error_code = 'timeout'
-			WHERE status = 'inserted' AND date_created < ?
+			WHERE status = 'processing' AND date_created < ?
 		", array($d));
 
 		if ($num) {
+			$e = new \Exception("$num email source(s) were running for longer than 15 minutes. Assumed fatal error. They have been marked as timeout.");
+			KernelErrorHandler::logException($e);
 			$this->getLogger()->log("$num sources marked as timeout", 'ERR');
 		}
 

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -133,6 +133,16 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
 	public function getTemplateAction($name)
 	{
+		if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
+			$block_id = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
+			$block = $this->em->find('DeskPRO:PortalPageDisplay', $block_id);
+			if (!$block || !$block->getData('tpl')) {
+				throw $this->createNotFoundException();
+			}
+
+			$name = $block->getData('tpl');
+		}
+
 		$set = $this->getTemplateSet();
 
 		try {
@@ -183,7 +193,28 @@ class TemplatesController extends AbstractController implements ProtectedControl
 			$template_code->setCode($code);
 		}
 
-		$set->saveTemplate($template);
+		try {
+			$set->saveTemplate($template);
+		} catch (\Twig_Error_Syntax $e) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_syntax' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage(),
+				'error_line' => $e->getTemplateLine(),
+			), 400);
+		} catch (\Twig_Error $e) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'error_code' => $e->getCode(),
+				'error_message' => $e->getMessage(),
+			), 400);
+		}
+
+		// CSS templates must regenerate CSS blob file
+		if (strpos($name, ':Css:') !== false) {
+			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+		}
 
 		return $this->createSuccessResponse(array(
 			'name' => $template->getName(),
@@ -210,6 +241,10 @@ class TemplatesController extends AbstractController implements ProtectedControl
 		}
 
 		$set->deleteTemplate($template);
+
+		if (strpos($name, ':Css:') !== false) {
+			\Application\DeskPRO\Style\RefreshStylesheets::refresh($this->container);
+		}
 
 		return $this->createSuccessResponse(array(
 			'old_name' => $name,

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -305,6 +305,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 			$extra = 'data-downloadurl="' . $download_url . '" data-blob-authid="' . $m[2] . '"';
 
+			$marker_class_a = 'dp-embed-blob-a-' . $m[2];
+			$marker_class_img = 'dp-embed-blob-img-' . $m[2];
+
 			// Add a sign code
 			// There was a bug briefly in the wild where a blob that failed to save using its primary fs
 			// adapter could have the wrong authcode and be served from the db, which means any embedded images saved in the text of messages
@@ -334,12 +337,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 				}
 
 				if (!$do_link) {
-					$replace = sprintf('<img src="%s" title="%s" class="dragout" %s/>', $url, $m[3], $extra);
+					$replace = sprintf('<img src="%s" title="%s" class="dragout '.$marker_class_img.'" %s/>', $url, $m[3], $extra);
 				} else {
-					$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout" %s><img src="%s" title="%s" /></a>', $download_url, $extra, $url, $m[3]);
+					$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s><img src="%s" title="%s" class="'.$marker_class_img.'" /></a>', $download_url, $extra, $url, $m[3]);
 				}
 			} else {
-				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout" %s>%s</a>', $download_url, $extra, $m[3]);
+				$replace = sprintf('<a href="%s" target="_blank" class="dp-is-image dragout '.$marker_class_a.'" %s>%s</a>', $download_url, $extra, $m[3]);
 			}
 
 			return $replace;
@@ -363,14 +366,25 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function convertEmbeddedImagesToInlineAttach()
 	{
-		$message_text = $this->message;
+		$message_text = $this->convertEmbeddedImagesToInlineAttachInText($this->message);
+		$this->message = $message_text;
+		return $message_text;
+	}
 
+	public function convertEmbeddedImagesToInlineAttachInText($message_text)
+	{
 		foreach ($this->attachments AS $attachment) {
 			if ($attachment->is_inline) {
 				$blob = $attachment->blob;
+				$replace = $blob->getEmbedCode(true);
 
 				$regex = '#(<img[^>]+src=")' . preg_quote($blob->getDownloadUrl(true), '#') . '("[^>]*>)#i';
-				$replace = $blob->getEmbedCode(true);
+				$message_text = preg_replace($regex, $replace, $message_text);
+
+				$regex = '#<a[^>]+' . preg_quote('dp-embed-blob-a-' . $blob->getAuthId()) . '[^>]*>.*?</a>#';
+				$message_text = preg_replace($regex, $replace, $message_text);
+
+				$regex = '#<img[^>]+' . preg_quote('dp-embed-blob-img-' . $blob->getAuthId()) . '[^>]>#';
 				$message_text = preg_replace($regex, $replace, $message_text);
 			}
 		}
@@ -378,8 +392,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		// signature images - alt contains the original text
 		$regex = '#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i';
 		$message_text = preg_replace($regex, '$1', $message_text);
-
-		$this->message = $message_text;
 
 		return $message_text;
 	}
@@ -566,10 +578,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function initPersonAccessCode()
 	{
-		if ($this->id) {
-			App::getEntityRepository('DeskPRO:Cache')->delete("ticket_messages.{$this->ticket['id']}");
-		}
-
 		$this->ticket->addAccessCodeForPerson($this->person);
 	}
 

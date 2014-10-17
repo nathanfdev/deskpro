@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,6 +34,7 @@
 
 namespace Orb\Input\Cleaner\CleanerPlugin;
 
+use Application\DeskPRO\Entity\Ticket;
 use Orb\Input\Cleaner\Cleaner;
 use Orb\Util\Strings;
 
@@ -68,7 +69,16 @@ class HtmlPurifier implements CleanerPlugin
 		// So lets just replace pre tags
 		if ($type == 'html_email') {
 			$value = str_replace('<pre', '<div', $value);
-			$value - str_replace('</pre>', '</div>', $value);
+			$value = str_replace('</pre>', '</div>', $value);
+
+			// Replace tokens that look like PTAC's
+			$auth_len = Ticket::TAC_AUTHCODE_LEN;
+			$authcode_min_len = $auth_len + 1;
+			$authcode_max_len = $auth_len + 7;
+
+			// (#TOKEN) becomes [#TOKEN] to stop normal
+			// gateway code detection on it
+			$value = preg_replace('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', '[#$1]', $value);
 		}
 
 		$value = $cleaner->getCleaner('basic')->cleanValue($value, 'string', array(), $cleaner);
@@ -163,7 +173,7 @@ class HtmlPurifier implements CleanerPlugin
 			);
 
 			$m = null;
-			if (preg_match_all('#<span\s*style=(?:\'|")[^"\'>]+font-family\s*:\s*Wingdings[^"\'>]+(?:\'|")>([^<>]+)</span>#', $value, $m, \PREG_SET_ORDER)) {
+			if (preg_match_all('#<span\s*style=(?:\'|")[^\'"]*font-family\s*:\s*Wingdings[^\'"]*(?:\'|")>([^<>]+)</span>#', $value, $m, \PREG_SET_ORDER)) {
 				foreach ($m as $match) {
 					$replace = $match[1];
 					foreach ($map as $f => $r) {

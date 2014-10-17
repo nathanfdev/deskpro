@@ -13,6 +13,16 @@
         this.Api = Api;
         this.loadListPromise = null;
         this.recs = new Admin_Main_Collection_OrderedDictionary();
+        this.recs.orderFn = function(a, b) {
+          var cmpa, cmpb;
+          cmpa = a.address;
+          cmpb = b.address;
+          if (cmpa < cmpb) {
+            return -1;
+          } else {
+            return 1;
+          }
+        };
       }
 
 

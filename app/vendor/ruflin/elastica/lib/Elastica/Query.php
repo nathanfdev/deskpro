@@ -72,7 +72,7 @@ class Query extends Param
                 return new self($query);
             case $query instanceof AbstractFilter:
                 $newQuery = new self();
-                $newQuery->setFilter($query);
+                $newQuery->setPostFilter($query);
 
                 return $newQuery;
             case empty($query):
@@ -132,10 +132,13 @@ class Query extends Param
      *
      * @param  \Elastica\Filter\AbstractFilter $filter Filter object
      * @return \Elastica\Query                 Current object
+     * @link    https://github.com/elasticsearch/elasticsearch/issues/7422
+     * @deprecated
      */
     public function setFilter(AbstractFilter $filter)
     {
-        return $this->setParam('filter', $filter->toArray());
+        trigger_error('Deprecated: Elastica\Query::setFilter() is deprecated. Use Elastica\Query::setPostFilter() instead.', E_USER_DEPRECATED);
+        return $this->setPostFilter($filter);
     }
 
     /**
@@ -248,6 +251,8 @@ class Query extends Param
 
     /**
      * Sets the fields to be returned by the search
+     * NOTICE php will encode modified(or named keys) array into object format in json format request
+     * so the fields array must a sequence(list) type of array
      *
      * @param  array          $fields Fields to be returned
      * @return \Elastica\Query Current object
@@ -348,6 +353,10 @@ class Query extends Param
             unset($this->_params['facets']);
         }
 
+        if (isset($this->_params['post_filter']) && 0 === count($this->_params['post_filter'])) {
+            unset($this->_params['post_filter']);
+        }
+
         return $this->_params;
     }
 
@@ -386,6 +395,37 @@ class Query extends Param
     public function setRescore($rescore)
     {
         $this->setParam('rescore', $rescore->toArray());
+    }
+
+    /**
+     * Sets the _source field to be returned with every hit
+     *
+     * @param  array          $fields Fields to be returned
+     * @return \Elastica\Query Current object
+     * @link   http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-request-source-filtering.html
+     */
+    public function setSource(array $fields)
+    {
+        return $this->setParam('_source', $fields);
+    }
+
+    /**
+     * Sets post_filter argument for the query. The filter is applied after the query has executed
+     *
+     * @param   array|\Elastica\Filter\AbstractFilter $filter
+     * @return  \Elastica\Param
+     * @link    http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-request-post-filter.html
+     */
+    public function setPostFilter($filter)
+    {
+        if($filter instanceof AbstractFilter)
+        {
+            $filter = $filter->toArray();
+        } else {
+            trigger_error('Deprecated: Elastica\Query::setPostFilter() passing filter as array is deprecated. Pass instance of AbstractFilter instead.', E_USER_DEPRECATED);
+        }
+
+        return $this->setParam("post_filter", $filter);
     }
 }
 

@@ -19,6 +19,7 @@
         form = {
           title: '',
           description: '',
+          is_enabled: true,
           text: {
             user_validation: '0',
             user_min_length: '1',
@@ -56,6 +57,19 @@
             agent_validation: '0',
             agent_validation_resolve: false
           },
+          datetime: {
+            default_mode: '0',
+            default_value: new Date,
+            valid_weekdays: [true, true, true, true, true, true, true],
+            valid_dates_mode: '0',
+            valid_date_range_start: '',
+            valid_date_range_end: '',
+            valid_date_relrange_start: '',
+            valid_date_relrange_end: '',
+            user_validation: '0',
+            agent_validation: '0',
+            agent_validation_resolve: false
+          },
           display: {
             html: ''
           },
@@ -80,8 +94,10 @@
           if (fieldModel.is_agent_field) {
             form.is_agent_field = true;
           }
-          if (fieldModel.is_enabled) {
+          if (fieldModel.is_enabled || !fieldModel.id) {
             form.is_enabled = true;
+          } else {
+            form.is_enabled = false;
           }
           switch (fieldModel.type_name) {
             case "text":
@@ -144,9 +160,7 @@
               if (fieldModel.choices && fieldModel.choices.length) {
                 formTypeOpts.options = fieldModel.choices;
               }
-              if (fieldModel.default_value) {
-                formTypeOpts.default_value = parseInt(fieldModel.default_value);
-              }
+              formTypeOpts.default_value = fieldModel.default_value;
               break;
             case "toggle":
               formTypeOpts.label_text = fieldModel.options.label_text || '';
@@ -164,9 +178,10 @@
               }
               break;
             case "date":
+            case "datetime":
               if (!Util.isBlank(fieldModel.default_value)) {
                 formTypeOpts.default_mode = 'date';
-                formTypeOpts.default_value = moment(fieldModel.default_value, 'YYYY-MM-DD').toDate();
+                formTypeOpts.default_value = moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate();
               }
               if (!Util.isBlank(fieldModel.options.date_valid_dow)) {
                 formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false];
@@ -238,7 +253,7 @@
        */
 
       FieldFormMapper.prototype.getPostDataFromForm = function(fieldType, formModel) {
-        var day, formTypeOpts, postData, x, _i, _len, _ref;
+        var day, formTypeOpts, format, postData, x, _i, _len, _ref;
         postData = {
           title: formModel.title,
           description: formModel.description,
@@ -302,9 +317,16 @@
             }
             break;
           case "date":
-            postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date';
+          case "datetime":
+            format = 'YYYY-MM-DD';
+            if ('date' === fieldType) {
+              postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date';
+            } else {
+              postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime';
+              format += ' HH:mm';
+            }
             if (formTypeOpts.default_mode === 'date') {
-              postData.default_value = moment(formTypeOpts.default_value).format('YYYY-MM-DD');
+              postData.default_value = moment(formTypeOpts.default_value).utc().format(format);
             }
             postData.date_valid_dow = [];
             _ref = formTypeOpts.valid_weekdays;

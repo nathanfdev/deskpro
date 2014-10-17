@@ -1,0 +1,32 @@
+<td width="20">
+</td>
+<td ng-repeat="field in getDisplayableFields()" ng-switch="field">
+
+    {# Id #}
+    <span ng-switch-when="id" class="prop-val">{{ ng_var('person.id') }}</span>
+
+    {# Name with title #}
+    <span ng-switch-when="name_with_title" class="prop-val">{{ ng_var('person.name_with_title') }}</span>
+
+    {# Email #}
+    <span ng-switch-when="email" class="prop-val">{{ ng_var('person.email') }}</span>
+
+    {# Organization #}
+    <span ng-switch-when="org" class="prop-val">{{ ng_var('person.organization.name') }}</span>
+
+    {# Org position #}
+    <span ng-switch-when="org_pos" class="prop-val">{{ ng_var('person.organization_position') }}</span>
+
+    {# Tickets count #}
+    <span ng-switch-when="num_tickets" class="prop-val">{{ ng_var('person.num_tickets') }}</span>
+
+    {# Labels #}
+    <span ng-switch-when="labels">
+        <span class="listing-tag" ng-repeat="label in person.labels" style="margin-right: 5px;" dp-label="label" dp-label-type="people">
+            {{ ng_var('label') }}
+        </span>
+    </span>
+
+    {#<span ng-switch-default class="prop-val">-</span>#}
+
+</td>

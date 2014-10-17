@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -184,7 +184,7 @@ class OrganizationSearch extends SearcherAbstract
 				switch ($search_type) {
 					case 'input':
 					case 'value':
-						$order_by = arary(
+						$order_by = array(
 							"INNER JOIN custom_data_organizationss AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
 							"sort_table.$search_type $dir"
 						);
@@ -231,7 +231,6 @@ class OrganizationSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 					break;
 
 				case self::TERM_NAME:
@@ -250,7 +249,6 @@ class OrganizationSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_2", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('Phone Number', $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_ADDRESS:
@@ -263,7 +261,6 @@ class OrganizationSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('Address', $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_IM:
@@ -276,7 +273,6 @@ class OrganizationSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('IM', $op, $choice);
 					break;
 
 				case self::TERM_EMAIL_DOMAIN:
@@ -287,7 +283,6 @@ class OrganizationSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch("$join_name.domain", $op, $choice, false);
 
 					$choice = implode(' or ', (array)$choice);
-					$this->summary[] = "Email domain is " . $choice;
 					break;
 
 				case self::TERM_LABEL:
@@ -299,9 +294,8 @@ class OrganizationSearch extends SearcherAbstract
 							$choices_in[] = $db->quote($c);
 						}
 						$choices_in = implode(',', $choices_in);
+						if (!$choices_in) $choices_in = '';
 					}
-
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:

@@ -4,7 +4,7 @@ namespace Swagger\Processors;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ namespace Swagger\Processors;
  * @package    Swagger
  */
 use Swagger\Annotations\Resource;
-use Swagger\Contexts\ClassContext;
-use Swagger\Parser;
 use Swagger\Processors\ProcessorInterface;
 
 /**
@@ -33,24 +31,22 @@ class ResourceProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function supports($annotation, $context)
+    public function process($annotation, $context)
     {
-        return $annotation instanceof Resource;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function process(Parser $parser, $annotation, $context)
-    {
-        if (!$annotation->hasPartialId()) {
-            $parser->appendResource($annotation);
+        if (($annotation instanceof Resource) === false) {
+            return;
         }
-
-        if ($context instanceof ClassContext) {
+        if ($annotation->hasPartialId() === false) {
+            if ($context->is('class')) {
+                $context->resource = $annotation; // Expose within the class context
+            } else {
+                $context->getRootContext()->resource = $annotation; // Expose to the parse/file context
+            }
+        }
+        if ($context->is('class')) {
             if ($annotation->resourcePath === null) { // No resourcePath given ?
                 // Assume Classname (without Controller suffix) matches the base route.
-                $annotation->resourcePath = '/' . lcfirst(basename(str_replace('\\', '/', $context->getClass())));
+                $annotation->resourcePath = '/' . lcfirst(basename(str_replace('\\', '/', $context->class)));
                 $annotation->resourcePath = preg_replace('/Controller$/i', '', $annotation->resourcePath);
             }
 

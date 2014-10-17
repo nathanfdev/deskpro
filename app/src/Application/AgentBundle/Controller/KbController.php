@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 1|                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -209,7 +209,13 @@ class KbController extends AbstractController
 
 	public function ajaxSaveLabelsAction($article_id)
 	{
-		$article = $this->em->find('DeskPRO:Article', $article_id);
+		if (!$article = $this->em->find('DeskPRO:Article', $article_id)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+			return $this->createJsonResponse(array('success' => 0));
+		}
 
 		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
@@ -861,7 +867,7 @@ class KbController extends AbstractController
 			$cat_structure_data = $article_categories;
 			$cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
 			$cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
-			$cat_structure_data = Arrays::assocToNumericArary($cat_structure_data, 'children');
+			$cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
 		}
 
 		return $this->render($tpl, array(

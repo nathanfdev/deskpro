@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -64,29 +64,49 @@ class NewsController extends AbstractController
 		$search_options = array();
 		$search_options['order_by'] = $this->in->getString('order_by');
 
+		$category_id = 0;
+		$category = null;
+
 		if ($slug) {
 			$category_id = $this->container->getRouter()->getIdFromSlug($slug);
 			$category = null;
 
+			if ($category_id) {
+
+				if ($category_id && $structure->hasNewsCategory($category_id)) {
+					$category = $structure->getNewsCategory($category_id);
+				}
+
+				if (!$category) {
+					return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
+				}
+
+				// Auto-correct URL
+				if ($category_id == $this->getContainer()->getSetting('user.portal_default_news_cat') && $slug) {
+					return $this->redirectRoute('user_news', array(), 301);
+				} else if ($slug != $category->getUrlSlug()) {
+					return $this->redirectRoute('user_news', array('slug' => $category->getUrlSlug()), 301);
+				}
+			}
+		}
+
+		if (!$category && $this->getContainer()->getSetting('user.portal_default_news_cat') && !$slug) {
+			$category_id = $this->getContainer()->getSetting('user.portal_default_news_cat');
 			if ($category_id && $structure->hasNewsCategory($category_id)) {
 				$category = $structure->getNewsCategory($category_id);
 			}
 
 			if (!$category) {
-				return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
+				$category_id = 0;
 			}
+		}
 
-			// Auto-correct URL
-			if ($slug != $category->getUrlSlug()) {
-				return $this->redirectRoute('user_news', array('slug' => $category->getUrlSlug()), 301);
-			}
-
+		if ($category) {
 			$category_path = $category->getTreeParents();
 
 			$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
 			$searcher->setPersonContext($this->person);
 			$searcher->addTerm('category_specific', 'is', $category['id']);
-
 		} else {
 			$category = null;
 			$category_path = null;
@@ -111,6 +131,9 @@ class NewsController extends AbstractController
 		if ($this->request->isPartialRequest() == 'portal') {
 			$per_page = 2;
 		}
+		if ($_format == 'rss') {
+			$per_page = 20;
+		}	
 
 		$total = $searcher->getCount();
 		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
@@ -176,7 +199,7 @@ class NewsController extends AbstractController
 		}
 
 		// Auto-correct URL
-		if ($slug != $news->getUrlSlug()) {
+		if ($slug != $news->getUrlSlug() && !($this->in->getString('_partial') == 'overlayWidget' || $this->in->getString('_partial') == 'overlaySuggest')) {
 			return $this->redirectRoute('user_news_view', array('slug' => $news->getUrlSlug()), 301);
 		}
 

@@ -21,6 +21,18 @@ define ->
 			"/": '&#x2F;'
 		};
 
+		@TPL_MATCHER = /<%-([\s\S]+?)%>|<%=([\s\S]+?)%>|<%([\s\S]+?)%>|$/g
+		@TPL_ESCAPES = {
+			"'":      "'",
+			'\\':     '\\',
+			'\r':     'r',
+			'\n':     'n',
+			'\t':     't',
+			'\u2028': 'u2028',
+			'\u2029': 'u2029'
+		}
+		@TPL_ESCAPER = /\\|'|\r|\n|\t|\u2028|\u2029/g
+
 
 		###
     	# Generates a random string.
@@ -87,6 +99,17 @@ define ->
 
 
 		###
+    	# Checks if a string is blank (empty after trimming leading and trailing whitespace)
+    	#
+    	# @param {String} string
+    	# @return {Boolean}
+    	###
+		isBlank: (string) ->
+			return true if string == ""
+			return @trim(string) == ""
+
+
+		###
     	# Given a string with words separated by dashes, underscores or spaces, convert it into
     	# camel case. For example "my-string" and "my_string" becomes myString
     	#
@@ -126,7 +149,7 @@ define ->
     	# @return {String}
     	###
 		escapeHtml: (htmlString) ->
-			return htmlString.replace(/[&<>"'\/]/g, (s) ->
+			return (htmlString+'').replace(/[&<>"'\/]/g, (s) ->
 				return DeskPRO_Util_Strings.ENTITY_MAP[s];
 			);
 
@@ -282,6 +305,85 @@ define ->
 				return res.toString(16)
 			else
 				return res
+
+		###
+    	# Simple JS templates.
+    	#
+    	# This is based on Underscore.template: http://underscorejs.org/#template
+    	#
+    	# Except there are added features that make it more lenient to errors.
+    	# - Prefix an escape or interpolation string with '@' to wrap it in a try/catch:
+    	#     <%- @possibleFailure() %>
+    	#
+    	# - If you are outputting simple variables, they are automatically wrapped with undefined checks
+    	#     <%- this.doesnt.exist %>
+    	#   The above wont result in an error, just an empty string. Pass settings.disableSafeVar to disable this.
+    	#
+    	# @param {String} text The template text
+    	# @param {Object} settings
+    	# @return Function
+		###
+		simpleTemplate: (text, settings = {}) ->
+			STRINGS = @
+			index = 0
+			source = "var __t, __p = '', __j=Array.prototype.join, __escape=Strings.escapeHtml, "
+			source += "print=function(){__p+=__j.call(arguments,'');};\n"
+			source += "with(obj||{}){\n";
+			source += "__p+='"
+
+			resolveVar = (varname) ->
+				if settings.disableSafeVar then return varname
+				m = varname.match(/^\s*([a-zA-Z0-9\_\\$\\.]+)\s*$/)
+				if not m then return varname
+
+				testparts = []
+				names = []
+				parts = m[1].split('.')
+				for p in parts
+					names.push(p)
+					testparts.push("typeof " + names.join('.') + " !== 'undefined' && " + names.join('.') + " !== null")
+
+				return "((" + testparts.join(' && ') + ") ? " + varname + " : '')";
+
+			text.replace(DeskPRO_Util_Strings.TPL_MATCHER, (match, escape, interpolate, evaluate, offset) ->
+				source += text.slice(index, offset).replace(DeskPRO_Util_Strings.TPL_ESCAPER, (m) -> return '\\' + DeskPRO_Util_Strings.TPL_ESCAPES[m])
+
+				if escape
+					escape = STRINGS.trim(escape)
+					if escape[0] == '@'
+						source += "';\ntry { __p+= ((__t=(" + escape.substring(1) + "))==null?'':__escape(__t)); } catch (e) {}\n__p+='";
+					else
+						source += "'+\n((__t=(" + resolveVar(escape) + "))==null?'':__escape(__t))+\n'";
+
+				if interpolate
+					interpolate = STRINGS.trim(interpolate)
+					if interpolate[0] == '@'
+						source += "';\ntry { __p+= ((__t=(" + interpolate.substring(1) + "))==null?'':__t+''); } catch (e) {}\n__p+='";
+					else
+						source += "'+\n((__t=(" + resolveVar(interpolate) + "))==null?'':__t+'')+\n'";
+
+				if evaluate
+					source += "';\n" + evaluate + "\n__p+='";
+
+				index = offset + match.length
+				return match
+			)
+
+			source += "';\n}\nreturn __p;\n"
+
+			try
+				render = new Function('obj', 'Strings', source);
+			catch e
+				console.log("Error compiling source: " + source)
+				e.source = source
+				throw e
+
+			fn = (data) ->
+				return render.call(this, data, window.STRINGS)
+
+			fn.source = source
+
+			return fn
 
 
 	window.STRINGS = new DeskPRO_Util_Strings()

@@ -1,13 +1,13 @@
 <?php
 
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -605,6 +605,10 @@ class FilestorageLoader extends LoaderAbstract
 		$name = 'picture-default';
 		if (isset($_GET['is_agent'])) {
 			$name = 'picture-default-agent';
+		} elseif (isset($_GET['is_team'])) {
+			$name = 'picture-default-team';
+		} elseif (isset($_GET['is_dep'])) {
+			$name = 'picture-default-dep';
 		}
 
 		$sth = $this->getPdoRead()->prepare("SELECT * FROM blobs WHERE sys_name = :sys_name");
@@ -613,11 +617,18 @@ class FilestorageLoader extends LoaderAbstract
 
 		// The default avatar blob hasnt been inserted yet, default it from the resources dir now
 		if (!$blob) {
+			$file = DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg';
+			$mime = 'image/jpeg';
+			if (!file_exists($file)) {
+				$file = DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.png';
+				$mime = 'image/png';
+			}
+
 			$container = $this->bootFullSystem();
 			$blob_entity = $container->getBlobStorage()->createBlobRecordFromFile(
-				DP_ROOT.'/src/Application/DeskPRO/Resources/assets/'.$name.'.jpeg',
-				$name . '.jpeg',
-				'image/jpeg',
+				$file,
+				pathinfo($file, PATHINFO_BASENAME),
+				$mime,
 				array('sys_name' => $name)
 			);
 
@@ -664,6 +675,12 @@ class FilestorageLoader extends LoaderAbstract
 				$path = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-manual/en_US.pdf';
 				$filename = 'Agent Manual.pdf';
 				$mimetype = 'application/pdf';
+				break;
+
+			case 'Admin-Bulk-Add-Agents-Spreadsheet.zip':
+				$path = DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/assets/Bulk-Add-Agents-Spreadsheet-Template.zip';
+				$filename = 'Bulk-Add-Agents-Spreadsheet-Template.zip';
+				$mimetype = 'application/zip';
 				break;
 
 			default:
@@ -1352,6 +1369,17 @@ class FilestorageLoader extends LoaderAbstract
 						'basepath' => $base_path . '/'. $appname . '/'. $type_f
 					);
 				}
+			}
+		}
+
+		// Second path is doing dumb-check on every path
+		foreach ($paths as $prefix => $base_path) {
+			$path = $base_path . '/'. $appname . '/'. $type_f . $filename;
+			if (file_exists($path)) {
+				return array(
+					'filepath' => $path,
+					'basepath' => $base_path . '/'. $appname . '/'. $type_f
+				);
 			}
 		}
 

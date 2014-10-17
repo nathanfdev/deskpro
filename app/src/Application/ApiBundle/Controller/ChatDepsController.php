@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -67,7 +67,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 		$chat_deps   = $this->container->getSystemService('chat_departments');
 		$flat_array  = $chat_deps->getFlatArray();
 
+		$ag = $this->container->getAgentGroups();
 		$with_perms = $this->in->getBool('with_perms');
+
 		if ($with_perms) {
 			$perms = array();
 
@@ -109,6 +111,12 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 				} else {
 					$r['permissions'] = array();
 				}
+
+				if (!isset($r['permissions']['agentgroups'])) {
+					$r['permissions']['agentgroups'] = array();
+				}
+				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full');
+				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full');
 			}
 
 			$deps[] = $r;
@@ -140,6 +148,10 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 		$data                = array();
 		$data['department']  = $this->getApiData($dep);
 		$data['permissions'] = $chat_deps->getPermissionsInfo($dep);
+
+		$ag = $this->container->getAgentGroups();
+		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
+		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
 		return $this->createApiResponse($data);
 	}

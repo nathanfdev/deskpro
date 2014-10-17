@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -46,6 +46,13 @@ class MoveBlobs extends AbstractJob
 
 	public function run()
 	{
+		// Signals error handler to log error to standard error log.
+		// Usually errors are logged to blob log, but not to standard error log.
+		// (so automated reporting and such dont send on temporarily issues that arent important).
+		// But if it fails here during the retry, then it means the admin should probably check it out
+
+		$GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'] = true;
+
 		$mover = new MoveBlobsUtil(App::getOrm(), App::getContainer()->getBlobStorage());
 		$mover->setLogger($this->getLogger());
 		$mover->setIgnoreErrors();
@@ -54,6 +61,7 @@ class MoveBlobs extends AbstractJob
 
 		$count = $mover->getCount();
 		if (!$count) {
+			unset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND']);
 			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
 
 			// Nothing to do
@@ -70,5 +78,7 @@ class MoveBlobs extends AbstractJob
 		} else {
 			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
 		}
+
+		unset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND']);
 	}
 }

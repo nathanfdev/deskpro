@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -50,32 +50,37 @@ class AttachmentAccepterService
 
 		$effective_max_size = EnvUtil::getEffectiveMaxUploadSize();
 
-		foreach (array('agent', 'user') as $type) {
-			$res = new \Application\DeskPRO\Attachments\RestrictionSet();
+		foreach (array('', 'emails.') as $prefix) {
+			foreach (array('agent', 'user') as $type) {
+				$res = new \Application\DeskPRO\Attachments\RestrictionSet();
 
-			$max_size  = $container->getSetting('core.attach_'.$type.'_maxsize');
-			$max_size  = min($effective_max_size, $max_size);
+				$max_size  = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_maxsize');
 
-			$must_exts = $container->getSetting('core.attach_'.$type.'_must_exts');
-			$not_exts  = $container->getSetting('core.attach_'.$type.'_not_exts');
+				if ($prefix != 'emails.') {
+					$max_size = min($effective_max_size, $max_size);
+				}
 
-			if ($must_exts) {
-				$must_exts = explode(',', strtolower($must_exts));
-				array_walk($must_exts, 'trim');
-			} else {
-				$must_exts = null;
+				$must_exts = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_must_exts');
+				$not_exts  = $container->getSetting('core.' . $prefix . 'attach_'.$type.'_not_exts');
+
+				if ($must_exts) {
+					$must_exts = explode(',', strtolower($must_exts));
+					array_walk($must_exts, 'trim');
+				} else {
+					$must_exts = null;
+				}
+
+				if ($not_exts) {
+					$not_exts = explode(',', strtolower($not_exts));
+					array_walk($not_exts, 'trim');
+				} else {
+					$not_exts = null;
+				}
+
+				$res->setMaxSize($max_size)->setAllowedExts($must_exts)->setDisallowedExts($not_exts);
+
+				$accepter->addRestrictionSet($prefix . $type, $res);
 			}
-
-			if ($not_exts) {
-				$not_exts = explode(',', strtolower($not_exts));
-				array_walk($not_exts, 'trim');
-			} else {
-				$not_exts = null;
-			}
-
-			$res->setMaxSize($max_size)->setAllowedExts($must_exts)->setDisallowedExts($not_exts);
-
-			$accepter->addRestrictionSet($type, $res);
 		}
 
 		return $accepter;

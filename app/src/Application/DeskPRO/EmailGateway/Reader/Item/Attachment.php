@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -39,7 +39,7 @@ class Attachment
 {
 	public $tmp_file;
 	public $file_contents_callback;
-	public $file_contents;
+	public $file_contents = null;
 	public $file_name;
 	public $file_name_utf8;
 	public $mime_type;
@@ -48,12 +48,14 @@ class Attachment
 
 	public function getFileContents()
 	{
-		if ($this->file_contents) {
+		if ($this->file_contents !== null) {
 			return $this->file_contents;
 		} elseif ($this->file_contents_callback) {
 			return call_user_func($this->file_contents_callback, $this);
-		} else {
+		} elseif ($this->tmp_file) {
 			return file_get_contents($this->tmp_file);
+		} else {
+			return '';
 		}
 	}
 

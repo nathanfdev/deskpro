@@ -54,10 +54,12 @@ return array(
 	'lotus_notes_2'                      => 'font #From:.*?# /font font /font br /br font #To:.*?# /font font /font br /br font #Date:.*?# /font font /font br /br font #Subject:.*?# /font font /font',
 
 	// X-Mailer: Microsoft Office Outlook 12.0
-	'outlook_1'                          => 'lang:p b span #%From%:#i /span /b span #.*# br /br b #%Sent%:#i /b #.*# br /br b #%To%:#i /b #.*# br /br /span /p',
+	'outlook_1'                          => 'lang:b span #%From%:#i /span /b span #.*# br /br b #%Sent%:#i /b #.*# br /br b #%To%:#i /b #.*# br /br /span',
+	'outlook_1_a'                        => 'lang:b span #%From%:#i /span /b span #.*# a #.*# /a br /br b #%Sent%:#i /b #.*# br /br b #%To%:#i /b #.*# br /br /span',
 
 	// X-Mailer: Microsoft Outlook 14.0
-	'outlook_2'                          => 'lang:p b span #%From%:#i /span /b span #.*# br /br b #%Sent%:#i /b #.*# br /br b #%To%:#i /b #.*# br /br b #%Subject%:#i /b /span /p',
+	'outlook_2'                          => 'lang:b span #%From%:#i /span /b span #.*# br /br b #%Sent%:#i /b #.*# br /br b #%To%:#i /b #.*# br /br b #%Subject%:#i /b /span',
+	'outlook_2_a'                        => 'lang:b span #%From%:#i /span /b span #.*# a #.*# /a br /br b #%Sent%:#i /b #.*# br /br b #%To%:#i /b #.*# br /br b #%Subject%:#i /b /span',
 
 	// Outlook
 	'outlook_3'                          => 'lang:font b #%From%:# /b #.*?# br /br b #%Sent%:# /b #.*?# br /br b #%To%:# /b #.*?# br /br b #%Subject%:# /b #.*?# br /br',

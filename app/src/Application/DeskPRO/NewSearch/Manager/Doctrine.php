@@ -38,14 +38,14 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
     public function quickSearch($q)
     {
         $type_to_ent = array(
-            'article'      => 'DeskPRO:Article',
-            'download'     => 'DeskPRO:Download',
-            'feedback'     => 'DeskPRO:Feedback',
-            'news'         => 'DeskPRO:News',
-            'ticket'       => 'DeskPRO:Ticket',
-            'person'       => 'DeskPRO:Person',
-            'organization' => 'DeskPRO:Organization',
-            'chat'         => 'DeskPRO:ChatConversation'
+            'article'           => 'DeskPRO:Article',
+            'download'          => 'DeskPRO:Download',
+            'feedback'          => 'DeskPRO:Feedback',
+            'news'              => 'DeskPRO:News',
+            'ticket'            => 'DeskPRO:Ticket',
+            'person'            => 'DeskPRO:Person',
+            'organization'      => 'DeskPRO:Organization',
+            'chat_conversation' => 'DeskPRO:ChatConversation'
         );
 
         $results = array(
@@ -55,10 +55,8 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'news'                   => array(),
             'ticket'                 => array(),
             'person'                 => array(),
-            'person_related'         => array(),
             'organization'           => array(),
-            'organization_related'   => array(),
-            'chat'                   => array()
+            'chat_conversation'      => array()
         );
 
         if (!$this->person->hasPerm('agent_people.use')) {
@@ -373,18 +371,6 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
 							")->setMaxResults(100)->execute(array($oids));
                             foreach ($people as $p) {
                                 $results['person'][$p->id] = $p;
-                            }
-                        }
-                    }
-
-                    if ($results['person']) {
-                        $tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsForPeople($results['person'], 250);
-                        foreach ($tickets as $t) {
-                            if (!$t->hidden_status && $this->person->PermissionsManager->TicketChecker->canView($t)) {
-                                if (!isset($results['person_related'][$t->person->getId()])) {
-                                    $results['person_related'][$t->person->getId()] = array();
-                                }
-                                $results['person_related'][$t->person->getId()][] = $t;
                             }
                         }
                     }

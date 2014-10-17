@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -125,8 +125,11 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get some data from the extra array
 	 */
-	public function getData($key, $default = null)
+	public function getData($key = null, $default = null)
 	{
+		if ($key === null) {
+			return $this->data;
+		}
 		return (isset($this->data[$key]) ? $this->data[$key] : $default);
 	}
 

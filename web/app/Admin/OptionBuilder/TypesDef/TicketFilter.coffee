@@ -51,8 +51,18 @@ define [
 			})
 
 			options.push({
+				title: 'Urgency',
+				value: 'FilterUrgency'
+			})
+
+			options.push({
 				title: 'Workflow',
 				value: 'FilterWorkflow'
+			})
+
+			options.push({
+				title: 'Labels',
+				value: 'FilterLabels'
 			})
 
 			options.push({
@@ -171,7 +181,7 @@ define [
 
 			options.push({
 				title: 'Usergroup',
-				value: 'FilterUserUsergroups'
+				value: 'FilterUserGroups'
 			})
 
 			options.push({
@@ -267,6 +277,10 @@ define [
 
 			return set_options
 
+		resetData: ->
+			@options_data = null
+			@loadDataPromise = null
+
 		loadDataOptions: ->
 			if @options_data
 				p = @$q.fcall( =>
@@ -324,6 +338,20 @@ define [
 			def = @getStandardSelect(options)
 			return def
 
+		getFilterLabels: (options = {}) ->
+			options.propName = 'labels'
+			options.type_title = 'Labels'
+			options.tags = true
+			options.operators = ['contains', 'notcontains']
+			def = @getStandardInput(options)
+			return def
+
+		getFilterUrgency: (options = {}) ->
+			options.propName = 'urgency'
+			options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+			def = @getStandardInput(options)
+			return def
+
 		getFilterPriority: (options = {}) ->
 			options.propName = 'priority_ids'
 			options.dataName = 'ticket_pris'
@@ -331,6 +359,12 @@ define [
 				{title: 'None', value: 0}
 			]
 			def = @getStandardSelect(options)
+			return def
+
+		getCheckUrgency: (options = {}) ->
+			options.propName = 'urgency'
+			options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+			def = @getStandardInput(options)
 			return def
 
 		getFilterCategory: (options = {}) ->
@@ -342,6 +376,7 @@ define [
 		getFilterStatus: (options = {}) ->
 			options.propName = 'status'
 			options.template = 'OptionBuilder/type-filter-status.html'
+			options.noArchive = true
 			def = @getStandardSelect(options)
 			return def
 
@@ -519,7 +554,7 @@ define [
 			def = @getStandardInput(options)
 			return def
 
-		getFilterUserUsergroups: (options = {}) ->
+		getFilterUserGroups: (options = {}) ->
 			options.propName = 'group_ids'
 			options.dataName = 'usergroups'
 			def = @getStandardSelect(options)

@@ -15,15 +15,6 @@
 
       Reports_Overview_Ctrl_Overview.CTRL_AS = 'Overview';
 
-      Reports_Overview_Ctrl_Overview.DEPS = ['Api'];
-
-
-      /*
-      		 *
-       */
-
-      Reports_Overview_Ctrl_Overview.prototype.init = function() {};
-
 
       /*
       		 * Just doing all the necessary AJAX calls here
@@ -65,8 +56,8 @@
 
 
       /*
-       	 * This method is used in select boxes for defining grouping field and / or other search parameters
-       	 * @param {String} data_key - using this key data is looked in @$scope
+      		 * This method is used in select boxes for defining grouping field and / or other search parameters
+      		 * @param {String} data_key - using this key data is looked in @$scope
        */
 
       Reports_Overview_Ctrl_Overview.prototype.getStats = function(data_key) {
@@ -94,7 +85,7 @@
 
 
       /*
-       	 * Used for hiding / showing AJAX loader
+      		 * Used for hiding / showing AJAX loader
        */
 
       Reports_Overview_Ctrl_Overview.prototype.toggleLoadingState = function(data_key) {
@@ -104,7 +95,7 @@
 
       /*
       		 * We need to display bar graphs - so let's pre-calculate some variables
-       	 * @param {String} data_key - using this key data is looked in @$scope
+      		 * @param {String} data_key - using this key data is looked in @$scope
        */
 
       Reports_Overview_Ctrl_Overview.prototype.setDataForBarGraphs = function(data_key) {
@@ -136,7 +127,7 @@
 
       /*
       		 * We need to display bar graphs - so let's pre-calculate some variables
-       	 * This method is special case of @setDataForBarGraphs()
+      		 * This method is special case of @setDataForBarGraphs()
        */
 
       Reports_Overview_Ctrl_Overview.prototype.setDataForTicketsOpenedHours = function() {
@@ -175,7 +166,7 @@
       		 * Just for cases with no data we display only labels without graphical bars
       		 * Ie. if we have 0 tickets created < 5 minutes ago, we still display '< 5 minutes' label, but without bar
       		 * This leads to the situation that we have to iterate over all the '@$scope.tickets_user_waiting_time.titles' array
-       	 * @param {String} data_key - using this key data is looked in @$scope
+      		 * @param {String} data_key - using this key data is looked in @$scope
        */
 
       Reports_Overview_Ctrl_Overview.prototype.setDataForTableWithBarGraphs = function(data_key) {

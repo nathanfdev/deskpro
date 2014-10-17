@@ -2,17 +2,20 @@
 
 namespace Application\DeskPRO\NewSearch\Filter;
 
+use Elastica\Filter;
+
 class AgentTeamFilter extends AbstractFilter
 {
     public function getFilter()
     {
-        $filter  = null;
         $teamIds = $this->person->getHelper('Agent')->getTeamIds();
 
         if (!empty($teamIds)) {
-            $filter = array('term' => array('agent_team' => $teamIds));
-        }
-
-        return $filter;
+			$filter = new Filter\Terms('agent_team', $teamIds);
+			return $filter->toArray();
+        } else {
+			$filter = new Filter\Terms('agent_team', array(-1));
+			return $filter->toArray();
+		}
     }
 } 

@@ -182,12 +182,15 @@
             '$scope', '$modalInstance', function($scope, $modalInstance) {
               var uploadDone, uploadError;
               uploadDone = function(data) {
-                $modalInstance.dismiss();
-                return me.$timeout(function() {
-                  return me.$state.go('apps.go_apps_install', {
-                    name: data.package_name
-                  });
-                }, 250);
+                return me.initialLoad().then(function() {
+                  $modalInstance.dismiss();
+                  return me.$timeout(function() {
+                    console.log(data);
+                    return me.$state.go('apps.go_apps_install', {
+                      name: 'go-apps-' + data.package_name
+                    });
+                  }, 250);
+                });
               };
               uploadError = function(data) {
                 return $scope.form.error = (data != null ? data.error_code : void 0) || 'general';
@@ -209,11 +212,11 @@
               };
               $scope.$on('fileuploaddone', function(e, data) {
                 $scope.form.is_active = false;
-                return uploadDone(data.result, $modalInstance);
+                return uploadDone(data.result);
               });
               $scope.$on('fileuploadfail', function(e, data) {
                 $scope.form.is_active = false;
-                return uploadError(data.result || {}, $modalInstance);
+                return uploadError(data.result || {});
               });
               return $scope.startUpload = function() {
                 $scope.form.error = null;
@@ -226,10 +229,10 @@
                     file_url: $scope.form.upload_url
                   }).then(function(result) {
                     $scope.form.is_active = false;
-                    return uploadDone(result.data, $modalInstance);
+                    return uploadDone(result.data);
                   }, function(result) {
                     $scope.form.is_active = false;
-                    return uploadError(result.data || {}, $modalInstance);
+                    return uploadError(result.data || {});
                   });
                 }
               };

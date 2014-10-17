@@ -50,23 +50,29 @@
       };
 
       Admin_TicketSlas_Ctrl_Edit.prototype.initialLoad = function() {
-        var promise;
+        var proms;
+        proms = [];
         if (this.$stateParams.id) {
-          promise = this.slaData.loadEditSlaData(this.$stateParams.id).then((function(_this) {
+          proms.push(this.slaData.loadEditSlaData(this.$stateParams.id).then((function(_this) {
             return function(data) {
               _this.sla = data.sla;
               _this.form = _this.getFormFromModel(_this.sla);
               return _this.origForm = Util.clone(_this.form, true);
             };
-          })(this));
-          return promise;
+          })(this)));
         } else {
           this.macro = {};
           this.sla = {};
           this.form = this.getFormFromModel({});
           this.origForm = Util.clone(this.form, true);
-          return null;
         }
+        proms.push(this.actionsTypeDef.loadDataOptions());
+        proms.push(this.criteraTypeDef.loadDataOptions());
+        return this.$q.all(proms).then((function(_this) {
+          return function() {
+            return _this.updateCriteriaOptionTypes();
+          };
+        })(this));
       };
 
       Admin_TicketSlas_Ctrl_Edit.prototype.getFormFromModel = function(slaModel) {

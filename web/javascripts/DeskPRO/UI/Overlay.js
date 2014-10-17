@@ -479,7 +479,20 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	 */
 	destroy: function() {
 
+		if (this.isThisDestroyed) {
+			return;
+		}
+
 		this.fireEvent('beforeDestroy', [this]);
+
+		if (this.elements.wrapper) {
+			this.elements.wrapper.find('.with-destroy-handler').each(function () {
+				var fn = $(this).data('destroy-handler');
+				if (fn) {
+					fn();
+				}
+			});
+		}
 
 		if (this.elements.wrapperOuter) {
 			this.elements.wrapperOuter.remove();

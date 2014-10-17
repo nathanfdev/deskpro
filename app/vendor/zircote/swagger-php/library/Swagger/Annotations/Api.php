@@ -3,7 +3,7 @@ namespace Swagger\Annotations;
 
 /**
  * @license    http://www.apache.org/licenses/LICENSE-2.0
- *             Copyright [2013] [Robert Allen]
+ *             Copyright [2014] [Robert Allen]
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,31 +48,8 @@ class Api extends AbstractAnnotation
      */
     public $operations = array();
 
-    /**
-     * @var array
-     */
-    public $produces;
-
-    /**
-     * @var array
-     */
-    public $consumes;
-
-    /**
-     * Undocumented
-     * @var bool
-     */
-    public $deprecated;
-
-    /**
-     * @var Undocumented
-     */
-    public $defaultValue;
-
     protected static $mapAnnotations = array(
         '\Swagger\Annotations\Operation' => 'operations[]',
-        '\Swagger\Annotations\Produces' => 'produces[]',
-        '\Swagger\Annotations\Consumes' => 'consumes[]',
     );
 
     public function __construct(array $values = array())
@@ -106,8 +83,6 @@ class Api extends AbstractAnnotation
             Logger::notice('Api "'.$this->path.'" doesn\'t have any valid operations');
             return false;
         }
-        Produces::validateContainer($this);
-        Consumes::validateContainer($this);
         return true;
     }
 

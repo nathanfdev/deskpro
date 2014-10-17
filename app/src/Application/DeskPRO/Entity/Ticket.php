@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -43,8 +43,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use Orb\Util\Arrays;
+use Orb\Util\OptionsArray;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Orb\Util\WorkHoursSet;
+use Orb\Util\WorkHoursSetAll;
 
 /**
  * Class Ticket
@@ -68,6 +72,7 @@ use Orb\Util\Util;
  * @property TicketAttachment[] $attachments
  * @property TicketAccessCode[] $access_codes
  * @property TicketMessage[] $messages
+ * @property TicketSms[] $sms_messages
  * @property CustomDataTicket[] $custom_data
  * @property LabelTicket[] $labels
  * @property string $sent_to_address
@@ -173,7 +178,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $parent_ticket = null;
-	
+
 	/**
 	 * The language the ticket is in
 	 *
@@ -259,6 +264,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
+	protected $sms_messages;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
 	protected $custom_data;
 
 	/**
@@ -291,7 +301,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $creation_system;
+	protected $creation_system = 'unknown';
 
 	/**
 	 * Optional information about the creation system. For example, source URL the ticket came from.
@@ -303,12 +313,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $ticket_hash;
+	protected $ticket_hash = 'none';
 
 	/**
 	 * @var string
 	 */
-	protected $status;
+	protected $status = 'awaiting_agent';
 
 	/**
 	 * @var string
@@ -543,6 +553,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this->_is_new       = true;
 		$this->participants  = new ArrayCollection();
 		$this->messages      = new ArrayCollection();
+		$this->sms_messages  = new ArrayCollection();
 		$this->custom_data   = new ArrayCollection();
 		$this->labels        = new ArrayCollection();
 		$this->access_codes  = new ArrayCollection();
@@ -1323,6 +1334,35 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	}
 
 
+	public function addSmsMessage(TicketSms $message)
+	{
+		$this->sms_messages->add($message);
+		$message->ticket = $this;
+
+		$now = new \DateTime();
+		if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
+			if (!!$this->_is_new) {
+				if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
+					$this['date_last_agent_reply'] = $now;
+				}
+
+				if (!$this->date_first_agent_reply) {
+					$this['date_first_agent_reply'] = $now;
+					$this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp(
+						) - $this->date_created->getTimestamp();
+				}
+			}
+		} else {
+			if (!$this->date_last_user_reply || $this->date_last_user_reply < $now) {
+				$this['date_last_user_reply'] = $now;
+			}
+		}
+
+		$this->_onPropertyChanged('sms_messages', null, $this->sms_messages, true);
+		$this->getStateChangeRecorder()->record('sms_message', null, $message);
+	}
+
+
 	/**
 	 * Add a ticket attachment
 	 *
@@ -1335,6 +1375,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this->attachments->add($attach);
 
 		$this->_onPropertyChanged('attachments', null, $this->attachments);
+		$this->getStateChangeRecorder()->record('attachments', null, $attach);
 	}
 
 
@@ -1591,8 +1632,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$x = new LabelTicket();
 		$x->label = $l;
 
-		if (($idx = $this->labels->indexOf($x->label)) !== false) {
-			return $this->labels->get($idx);
+		foreach ($this->labels as $l) {
+			if ($l->label == $x->label) {
+				return $l;
+			}
 		}
 
 		return null;
@@ -2170,6 +2213,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this['date_status'] = new \DateTime();
 
 		$old_status  = $this->status;
+		$old_hstatus = $this->hidden_status;
+		$old_status_code = $this->getStatusCode();
 
 		if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
 			$this->setModelField('total_user_waiting', $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp());
@@ -2209,10 +2254,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		if ($status != 'awaiting_agent' && $this->is_hold) {
 			$this['is_hold'] = false;
 		}
-
-		$old_hstatus = $this->hidden_status;
-		$old_status_code = "$old_status.$old_hstatus";
-
 		$status_code = $status;
 		$hstatus = null;
 		if (strpos($status, '.')) {
@@ -2244,6 +2285,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 		$this->setModelField('status', $status);
 		$this->setModelField('hidden_status', $hstatus);
+
+		$this->getStateChangeRecorder()->record('status_code', $old_status_code, $this->getStatusCode());
 
 		if ($old_status_code == 'hidden.deleted' && $status_code != 'hidden.deleted') {
 			$this->undeleteTicket();
@@ -2434,7 +2477,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	public function findAccessCodeForPerson(Person $person)
 	{
 		foreach ($this->access_codes as $tac) {
-			if ($tac->person = $person) {
+			if ($tac->person === $person) {
 				return $tac;
 			}
 		}
@@ -2911,7 +2954,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	public function getWorkHoursSet()
 	{
 		if (!$this->_work_hours_set) {
-			$this->_work_hours_set = new \Orb\Util\WorkHoursSetAll();
+			try {
+				$work_hours = App::getSetting('core_tickets.work_hours');
+				if ($work_hours && !is_array($work_hours)) {
+					$work_hours = @unserialize($work_hours);
+				}
+				if ($work_hours) {
+					$work_hours = Arrays::removeEmptyArray($work_hours);
+					$work_hours = Arrays::removeNull($work_hours);
+					$work_hours = Arrays::removeEmptyString($work_hours);
+
+					$work_hours = new OptionsArray($work_hours);
+					return new WorkHoursSet(
+						$work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
+						$work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
+						$work_hours->get('work_days', array(false, true, true, true, true, true, false)),
+						$work_hours->get('timezone', 'UTC'),
+						$work_hours->get('holidays', array())
+					);
+				} else {
+					return new WorkHoursSetAll();
+				}
+			} catch (\Exception $e) {
+				$this->_work_hours_set = new \Orb\Util\WorkHoursSetAll();
+			}
 		}
 
 		return $this->_work_hours_set;
@@ -3597,6 +3663,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$metadata->mapOneToMany(array(
 			'fieldName'            => 'messages',
 			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketMessage',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'fetch'                => 'EXTRA_LAZY',
+			'orderBy'              => array( 'date_created' => 'ASC'),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'sms_messages',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketSms',
 			'cascade'              => array('remove', 'persist', 'merge'),
 			'mappedBy'             => 'ticket',
 			'fetch'                => 'EXTRA_LAZY',

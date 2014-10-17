@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-	<section class="dp-paneblock dp-listpane">
+	<section class="dp-paneblock dp-listpane" ng-if="type == 'tab'">
 		<header>
 			<h3>Feedback and Support Tab</h3>
 		</header>
@@ -36,7 +36,10 @@
 								</select>
 							</p>
 
-							<div class="editor-row" style="width: 60%">
+							<div class="editor-row" style="width: 95%">
+								<div class="dp-controls">
+									<button class="btn btn-xs" clip-copy="code_snippets.overlay" clip-click="Growl.success('The code snippet was copied to your clipboard')"><i class="fa fa-clipboard"></i> Copy to clipboard</button>
+								</div>
 								<div class="editor-wrap">
 									<div class="editor" ng-model="code_snippets.overlay" ui-ace="{
 									mode: 'html',
@@ -44,7 +47,7 @@
 									showGutter: false,
 									theme: 'textmate',
 									onLoad: embedEditorLoaded
-								}" style="height: 110px;"></div>
+								}" style="height: 200px;"></div>
 								</div>
 							</div>
 						</div>
@@ -56,7 +59,7 @@
 
 	{##################################################################################################}
 
-	<section class="dp-paneblock dp-listpane">
+	<section class="dp-paneblock dp-listpane" ng-if="type == 'chat'">
 		<header>
 			<h3>Chat</h3>
 		</header>
@@ -97,7 +100,10 @@
 								</div>
 							</p>
 
-							<div class="editor-row" style="width: 60%">
+							<div class="editor-row" style="width: 95%">
+								<div class="dp-controls">
+									<button class="btn btn-xs" clip-copy="code_snippets.chat" clip-click="Growl.success('The code snippet was copied to your clipboard')"><i class="fa fa-clipboard"></i> Copy to clipboard</button>
+								</div>
 								<div class="editor-wrap">
 									<div class="editor" ng-model="code_snippets.chat" ui-ace="{
 									mode: 'html',
@@ -105,7 +111,7 @@
 									showGutter: false,
 									theme: 'textmate',
 									onLoad: embedEditorLoaded
-								}" style="height: 110px;"></div>
+								}" style="height: 200px;"></div>
 								</div>
 							</div>
 						</div>
@@ -117,7 +123,7 @@
 
 	{##################################################################################################}
 
-	<section class="dp-paneblock dp-listpane">
+	<section class="dp-paneblock dp-listpane" ng-if="type == 'form'">
 		<header>
 			<h3>Contact Form</h3>
 		</header>
@@ -142,7 +148,10 @@
 									<option ng-repeat="d in Embeds.deps" value="{{ ng_var('d.id') }}">{{ ng_var('d.title') }}</option>
 								</select>
 							</p>
-							<div class="editor-row" style="width: 60%">
+							<div class="editor-row" style="width: 95%">
+								<div class="dp-controls">
+									<button class="btn btn-xs" clip-copy="code_snippets.form_frame" clip-click="Growl.success('The code snippet was copied to your clipboard')"><i class="fa fa-clipboard"></i> Copy to clipboard</button>
+								</div>
 								<div class="editor-wrap">
 									<div class="editor" ng-model="code_snippets.form_frame" ui-ace="{
 									mode: 'html',
@@ -150,7 +159,7 @@
 									showGutter: false,
 									theme: 'textmate',
 									onLoad: embedEditorLoaded
-								}" style="height: 110px;"></div>
+								}" style="height: 200px;"></div>
 								</div>
 							</div>
 						</div>
@@ -162,7 +171,7 @@
 
 	{##################################################################################################}
 
-	<section class="dp-paneblock dp-listpane">
+	<section class="dp-paneblock dp-listpane" ng-if="type == 'helpdesk'">
 		<header>
 			<h3>Embed your entire helpdesk</h3>
 		</header>
@@ -197,7 +206,10 @@
 									<option ng-repeat="l in Embeds.langs" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
 								</select>
 							</p>
-							<div class="editor-row" style="width: 60%">
+							<div class="editor-row" style="width: 95%">
+								<div class="dp-controls">
+									<button class="btn btn-xs" clip-copy="code_snippets.iframe" clip-click="Growl.success('The code snippet was copied to your clipboard')"><i class="fa fa-clipboard"></i> Copy to clipboard</button>
+								</div>
 								<div class="editor-wrap">
 									<div class="editor" ng-model="code_snippets.iframe" ui-ace="{
 									mode: 'html',
@@ -205,7 +217,7 @@
 									showGutter: false,
 									theme: 'textmate',
 									onLoad: embedEditorLoaded
-								}" style="height: 110px;"></div>
+								}" style="height: 200px;"></div>
 								</div>
 							</div>
 						</div>
@@ -215,10 +227,4 @@
 		</article>
 	</section>
 
-{% endblock %}
-{% block listpane_help %}
-	<header>
-		<h1>Embed DeskPRO in your website</h1>
-		<p>Use these code snippets to add portal functions to your site, or embed the whole portal.</p>
-	</header>
 {% endblock %}

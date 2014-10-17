@@ -154,6 +154,11 @@ define [
 			})
 
 			options.push({
+				title: 'SLAs',
+				value: 'CheckSlaStatus'
+			})
+
+			options.push({
 				title: 'Creation System',
 				value: 'CheckCreationSystem'
 			})
@@ -177,6 +182,12 @@ define [
 				title: 'User Message',
 				value: 'CheckUserMessage'
 			})
+
+			if @options_data?.ticket_settings?.satisfaction_enabled
+				options.push({
+					title: 'Ticket Satisfaction',
+					value: 'CheckTicketSatisfaction'
+				})
 
 			set_options.push({
 				title: 'Ticket Criteria',
@@ -209,6 +220,11 @@ define [
 			options = []
 
 			options.push({
+				title: 'User',
+				value: 'CheckUserId'
+			})
+
+			options.push({
 				title: 'User Name',
 				value: 'CheckUserName'
 			})
@@ -220,7 +236,7 @@ define [
 
 			options.push({
 				title: 'User Label',
-				value: 'CheckUserLabels'
+				value: 'CheckUserLabel'
 			})
 
 			options.push({
@@ -289,6 +305,11 @@ define [
 			options = []
 
 			options.push({
+				title: 'Organization',
+				value: 'CheckOrgId'
+			})
+
+			options.push({
 				title: 'Organization Name',
 				value: 'CheckOrgName'
 			})
@@ -353,6 +374,11 @@ define [
 				value: 'CheckDateCreated'
 			})
 
+			options.push({
+				title: 'During Working Hours',
+				value: 'CheckWorkingHours'
+			})
+
 			#options.push({
 			#	title: 'Within working hours',
 			#	value: 'CheckWorkingHours'
@@ -389,12 +415,37 @@ define [
 				value: 'CheckPerformer'
 			})
 
+			options.push({
+				title: 'Check Performer Email',
+				value: 'CheckPerformerEmail'
+			})
+
 			set_options.push({
 				title: 'Trigger Control',
 				subOptions: options
 			})
 
+			#------------------------------
+			# API Criteria
+			#------------------------------
+
+			options = []
+
+			options.push({
+				title: 'Check API key',
+				value: 'CheckApiKey'
+			})
+
+			set_options.push({
+				title: 'API Criteria',
+				subOptions: options
+			})
+
 			return set_options
+
+		resetData: ->
+			@options_data = null
+			@loadDataPromise = null
 
 		loadDataOptions: ->
 			if @options_data
@@ -414,10 +465,13 @@ define [
 						'ticket_fields':   '/ticket_fields',
 						'user_fields':     '/user_fields',
 						'org_fields':      '/org_fields',
+						'ticket_slas':     '/ticket_slas',
 						'ticket_accounts': '/email_accounts',
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
 						'email_tpls':      '/email-templates-info'
+						'api_keys':        '/api_keys',
+						'ticket_settings': '/ticket_settings'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -431,10 +485,13 @@ define [
 						options_data['ticket_fields']    = data.ticket_fields?.custom_fields
 						options_data['org_fields']       = data.org_fields?.custom_fields
 						options_data['user_fields']      = data.user_fields?.custom_fields
+						options_data['ticket_slas']      = data.ticket_slas?.slas
 						options_data['email_accounts']   = data.ticket_accounts.email_accounts
 						options_data['usergroups']       = data.usergroups.groups
 						options_data['langs']            = data.langs?.languages
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
+						options_data['api_keys']         = data.api_keys.api_keys
+						options_data['ticket_settings']  = data.ticket_settings?.ticket_settings
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -510,6 +567,12 @@ define [
 			options.operators = ['contains', 'notcontains']
 			options.template = 'OptionBuilder/type-criteria-performer.html';
 			def = @getStandardSelect(options)
+			return def
+
+		getCheckPerformerEmail: (options = {}) ->
+			options.propName = 'email'
+			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
+			def = @getStandardInput(options)
 			return def
 
 		getCheckAgentTeam: (options = {}) ->
@@ -640,6 +703,55 @@ define [
 			def = @getStandardInput(options)
 			return def
 
+		getCheckSlaStatus: (options = {}) ->
+			me = @
+			return {
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-slas.html')
+
+				getData: ->
+					defer = me.$q.defer()
+					me.loadDataOptions().then(=>
+						options = []
+						for sla in me.options_data['ticket_slas']
+							options.push({
+								title: sla.title,
+								value: sla.id
+							})
+
+						defer.resolve({
+							options: options
+						})
+					)
+
+					return defer.promise
+
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value.options || {}
+							return {
+								op:          value.op || 'contains',
+								sla_ids:     options.sla_ids || [],
+								is_complete: !!options.is_complete,
+								sla_status:  options.sla_status || 'passing',
+								show_status: !!options.sla_status
+							}
+
+						getValue: (model = {}, data) ->
+							value = {
+								type: 'CheckSlaStatus',
+								op: model.op || 'contains',
+								options: {
+									sla_ids: model.sla_ids || []
+									is_complete: if model.op == 'contains' then !!model.is_complete else null,
+									sla_status: if model.show_status and model.sla_status and model.op == 'contains' then model.sla_status else null
+								}
+							}
+							return value
+						}
+			}
+
 		getCheckStatus: (options = {}) ->
 			options.propName = 'status'
 			options.template = 'OptionBuilder/type-criteria-status.html'
@@ -715,13 +827,33 @@ define [
 			def = @getStandardInput(options)
 			return def
 
+		getCheckUserId: (options = {}) ->
+			options.propName = 'id'
+			options.operators = ['is', 'not']
+			options.url = '/people/quick_search'
+			format = (item) ->
+				"#{item['name']} (#{item.email || ''})"
+			options.inputOptions =
+				formatResult: format
+				formatSelection: format
+				ajax:
+					data: (term, page) -> { query: term, limit: 10, with_agents: false, start_with: true }
+			@getRemoteInput options
+
 		getCheckUserEmail: (options = {}) ->
 			options.propName = 'email'
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
-			def = @getStandardInput(options)
-			return def
+			options.url = '/people/quick_search'
+			format = (item) ->
+				"#{item[options.propName]} (#{item.name || ''})"
+			options.inputOptions =
+				formatResult: format
+				formatSelection: format
+				ajax:
+					data: (term, page) -> { query: term, limit: 10, with_agents: false, start_with: true }
+			@getRemoteInput options
 
-		getCheckUserLabels: (options = {}) ->
+		getCheckUserLabel: (options = {}) ->
 			options.propName = 'labels'
 			options.operators = ['contains', 'notcontains']
 			def = @getStandardInput(options)
@@ -819,6 +951,18 @@ define [
 			options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
 			def = @getStandardInput(options)
 			return def
+
+		getCheckOrgId: (options = {}) ->
+			options.propName = 'id'
+			options.operators = ['is', 'not', 'isset', 'not_isset']
+			options.url = '/organizations/quick_search'
+			format = (item) -> item['name']
+			options.inputOptions =
+				formatResult: format
+				formatSelection: format
+				ajax:
+					data: (term, page) -> { query: term, limit: 10 }
+			@getRemoteInput options
 
 		getCheckOrgLabel: (options = {}) ->
 			options.propName = 'labels'
@@ -936,20 +1080,25 @@ define [
 					return me.dpTemplateManager.get('OptionBuilder/type-criteria-workinghours.html')
 
 				getData: ->
-					return {
-
-					}
+					return {}
 
 				getDataFormatter: ->
 					return {
 						getViewValue: (value = {}, data) ->
 							return {
 								op: value.op || 'is'
+								set_name: value.options?.set_name || 'default'
+								working_hours: value.options?.working_hours || {}
 							}
 
-					getValue: (model = {}, data) ->
-						value = {}
-						return value
+						getValue: (model = {}, data) ->
+							return {
+								type: 'CheckWorkingHours'
+								op: model.op
+								options:
+									set_name: model.set_name || 'default'
+									working_hours: model.working_hours
+							}
 					}
 			}
 
@@ -1018,3 +1167,31 @@ define [
 
 		getCheckAgentIsEmailed: ->
 			return @getIsEmailed('CheckAgentIsEmailed', 'type-criteria-agentisemailed.html')
+
+		getCheckApiKey: (options = {}) ->
+			options.propName = 'api_key_id'
+			options.dataName = 'api_keys'
+			options.operators = ['is', 'not']
+			options.single = true
+			options.optionsFormatter = (options) ->
+				opts = []
+
+				for key in options
+					name = if key.person then key.person.display_name else 'Super User'
+					opts.push({
+						value: key.id,
+						title: [name, key.note].join ' | '
+					})
+
+				opts
+
+			@getStandardSelect(options)
+
+		getCheckTicketSatisfaction: (options = {}) ->
+			options.propName = 'feedback_rating'
+			options.dataName = 'feedback_rating'
+			options.operators = ['is', 'isset', 'not_isset', 'changed', 'changed_to']
+			options.single = true
+			options.optionsFormatter = (options) ->
+				return [{value: -1, title: 'Negative'}, {value: 0, title: 'Neutral'}, {value: 1, title: 'Positive'}]
+			@getStandardSelect options

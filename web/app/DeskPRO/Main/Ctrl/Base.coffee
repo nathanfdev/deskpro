@@ -82,6 +82,7 @@ define ['angular'], (angular) ->
 				@$scope[@constructor.CTRL_AS] = @
 
 			@_managed_listeners = []
+			@$scope.Growl = @Growl
 			@$scope._autoload_links = []
 			@$scope.$on('$destroy', (ev) =>
 				return
@@ -98,7 +99,7 @@ define ['angular'], (angular) ->
 				return @$state.isStateActive(stateId, stateParams)
 
 			@$scope.state_path = (route, params = {}) =>
-				return @$state.href(route, params)
+				return @$state.href(route, params).replace(/\?.*$/, '')
 
 			# Allow showAlert(message, callback) to be called from code
 			@$scope.showAlert = (message, fn) =>
@@ -396,7 +397,7 @@ define ['angular'], (angular) ->
     	# @return {String}
     	###
 		getRegisteredMessage: (id) ->
-			content = @$scope?._element_messages[id] || ''
+			content = @$scope?._element_messages?[id] || ''
 
 			if _.isFunction(content)
 				content = content() || ''

@@ -41,6 +41,8 @@
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
         this.$scope.criteriaOptionTypes = [];
         this.$scope.actionOptionTypes = [];
+        this.criteraTypeDef.setVar('object_type', 'trigger');
+        this.actionsTypeDef.setVar('object_type', 'trigger');
         this.customInit();
       };
 
@@ -229,6 +231,7 @@
             _this.dpTriggers.mergeDataModel({
               id: _this.trigger.id,
               title: _this.trigger.title,
+              is_enabled: _this.trigger.is_enabled,
               has_stop_triggers_action: has_stop_triggers_action
             });
             _this.skipDirtyState();

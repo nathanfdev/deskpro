@@ -209,10 +209,10 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		if (!msg || msg === "") {
 			if (typeof sessionStorage.dp_chat_id != 'undefined') {
-				delete sessionStorage.dp_chat_id;
+				sessionStorage.dp_chat_id = null;
 			}
 			if (typeof sessionStorage.dp_chat_msg != 'undefined') {
-				delete sessionStorage.dp_chat_msg;
+				sessionStorage.dp_chat_msg = null
 			}
 		} else {
 			sessionStorage.dp_chat_id = this.conversationId;
@@ -227,13 +227,13 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 		if (!this.conversationId) {
 			return;
 		}
-		if (typeof sessionStorage.dp_chat_id == 'undefined') {
+		if (typeof sessionStorage.dp_chat_id == 'undefined' || sessionStorage.dp_chat_id === null) {
 			return;
 		}
-		if (typeof sessionStorage.dp_chat_msg == 'undefined') {
+		if (typeof sessionStorage.dp_chat_msg == 'undefined' || sessionStorage.dp_chat_msg === null) {
 			return;
 		}
-		if (parseInt(this.conversationId) != parseInt(sessionStorage.dp_chat_id)) {
+		if (parseInt(this.conversationId) != parseInt(sessionStorage.dp_chat_id || 0)) {
 			return;
 		}
 
@@ -384,7 +384,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			this.startChat();
 		}
 
-		$('body').fileupload({
+		$('#dp_chat_message_upload').fileupload({
 			url: this.options.uploadTo,
 			dropZone: $(document),
 			autoUpload: true,
@@ -419,6 +419,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 			$('#uploading_list').hide().find('> ul').empty();
 		});
+
 		$('body').bind('fileuploadstart', function() {
 			$('#uploading_list').detach().appendTo($('#dp_chat_messages_pane')).show();
 			$('#dp_chat_messages_pane').scrollTop(10000);
@@ -426,6 +427,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 
 		// Prevents default browser action of navigating to a dropped file
 		// if a drop target isnt configured yet (ie no tab open to accept a file)
+
 		$(document).bind('drop dragover', function (e) {
 			e.preventDefault();
 		});

@@ -27,7 +27,7 @@
 
 							<li
 								ng-repeat="field in custom_ticket_fields"
-								ng-class="{'disabled': !field.is_enabled}"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="ticket_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -49,7 +49,7 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
 							<li
 								ng-repeat="field in custom_user_fields"
-								ng-class="{'disabled': !field.is_enabled}"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="user_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -78,7 +78,7 @@
 							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.priority}" data-field-type="priority"><span>Priority</span></li>
 							<li
 								ng-repeat="field in custom_ticket_fields"
-								ng-class="{'disabled': !field.is_enabled}"
+								ng-class="{'disabled': !field.is_enabled }"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="ticket_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -105,6 +105,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
+					<button type="button" class="close" ng-click="dismiss()">&times;</button>
 					<h4 class="modal-title">Options</h4>
 				</div>
 				<div class="modal-body">
@@ -123,10 +124,10 @@
 						<button dp-toggle-switch ng-model="options.on_editticket"></button> Let the user edit this field after the ticket is created
 					</p>
 					<p style="margin-top: 11px; padding-top: 9px; border-top: 1px solid #ccc;">
-						<button dp-toggle-switch ng-model="with_criteria"></button>
+						<input dp-slider-switch ng-model="formOptions.with_criteria" />
 						Only show this field based on custom criteria
 					</p>
-					<div ng-show="with_criteria" style="margin-left: 49px;">
+					<div ng-show="formOptions.with_criteria" style="margin-left: 49px;">
 						<div style="margin-bottom: 5px;">
 							Show when
 							<select ng-model="options.criteria.mode" ui-select2 style="width: 80px;">
@@ -153,6 +154,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
+					<button type="button" class="close" ng-click="dismiss()">&times;</button>
 					<h4 class="modal-title">Options</h4>
 				</div>
 				<div class="modal-body">
@@ -171,10 +173,10 @@
 						<button dp-toggle-switch ng-model="options.on_editticket"></button> Allow agents to edit the field
 					</p>
 					<p style="margin-top: 11px; padding-top: 9px; border-top: 1px solid #ccc;">
-						<button dp-toggle-switch ng-model="with_criteria"></button>
+						<input dp-slider-switch ng-model="formOptions.with_criteria" />
 						Only show this field based on custom criteria
 					</p>
-					<div ng-show="with_criteria" style="margin-left: 49px;">
+					<div ng-show="formOptions.with_criteria" style="margin-left: 49px;">
 						<div style="margin-bottom: 5px;">
 							Show when
 							<select ng-model="options.criteria.mode" ui-select2 style="width: 80px;">

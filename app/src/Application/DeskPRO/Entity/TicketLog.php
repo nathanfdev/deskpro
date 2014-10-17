@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -197,6 +197,23 @@ class TicketLog extends DomainObject
 		$details[$name] = $value;
 
 		$this->setModelField('details', $details);
+	}
+
+	public function getDetails()
+	{
+		$details = $this->details;
+
+		// Legacy name (bug caused bad key name)
+		if ($this->action_type == 'changed_category') {
+			if (isset($details['old_category_name'])) {
+				$details['old_category_title'] = $details['old_category_name'];
+			}
+			if (isset($details['new_category_name'])) {
+				$details['new_category_title'] = $details['new_category_name'];
+			}
+		}
+
+		return $details;
 	}
 
 	############################################################################

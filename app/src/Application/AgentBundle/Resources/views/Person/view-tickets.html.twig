@@ -1,0 +1,27 @@
+{% for ticket in tickets %}
+	<tr class="ticket_row">
+		<td>
+			<div class="fade-container">
+				<div class="line">
+					<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text"><span class="id-number">#{{ ticket.id }}</span> {{ticket.subject}}</a>
+				</div>
+				<div class="bound-fade"></div>
+			</div>
+		</td>
+		<td {% if not ticket.agent %}colspan="2"{% endif %}>
+			<div class="status-pill status urgency-{{ ticket.urgency }} {{ ticket.status_code|replace({'.': '_'}) }}" style="float: right; position: relative; top: 0px;">
+				<label>{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</label>
+				{% if ticket.status == 'awaiting_agent' %}<i class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
+			</div>
+		</td>
+		{% if ticket.agent %}
+			<td width="16" style="width: 16px; padding:0; padding-right: 4px;">
+				<span
+					class="tipped"
+					title="{{ ticket.agent.display_name }}"
+					style="background: url('{{ ticket.agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; width: 16px; overflow: hidden; display: block;"
+					></span>
+			</td>
+		{% endif %}
+	</tr>
+{% endfor %}

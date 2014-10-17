@@ -1,19 +1,23 @@
 define [
 	'DeskPRO/Util/Angular',
 	'DeskPRO/Util/Arrays',
-	'DeskPRO/Util/Util'
+	'DeskPRO/Util/Util',
+	'angular'
 ], (
 	Util_Angular,
 	Arrays,
-	Util
+	Util,
+	angular
 ) ->
 	###
 	# This is a simple base data service that implements some default functionality for
 	# loading the "list" collection, and some methods for keeping the list up to date.
 	###
+  # todo update models after reload instead of creating new
 	class Admin_Main_DataService_BaseListEdit
 		constructor: ->
 			Util_Angular.setInjectedProperties(this, arguments)
+			@map = {}
 			@loadListPromise   = null
 			@isListLoaded      = false
 			@listModels        = []
@@ -45,7 +49,7 @@ define [
 		#
 		# @return {Promise}
 		###
-		loadList: (reload) ->
+		loadList: (reload, params) ->
 			if reload or @isReloadWaiting
 				@loadListPromise = null
 				@isListLoaded = false
@@ -61,7 +65,7 @@ define [
 			deferred = @$q.defer()
 			@loadListPromise = deferred.promise
 
-			@_doLoadList().then( (models) =>
+			@_doLoadList(params).then( (models) =>
 				@isListLoaded = true
 				@_setListData(models)
 				@_setPaginationData(models)
@@ -114,7 +118,7 @@ define [
 							@listModels[subModel].push(model)
 			else
 				for model in listModels
-					@listModels.push(model)
+					@_addModel model
 
 
 		###
@@ -407,3 +411,133 @@ define [
 				return (o1 < o2) ? -1 : 1
 			)
 			@listModels.reverse()
+
+
+
+		# add new model to list/map
+		_addModel: (model) ->
+			return null if !model || !model[@idProp]?
+			if @map[model[@idProp]]?
+				angular.copy model, @map[model[@idProp]] # update exist model
+				if @listModels.indexOf(@map[model[@idProp]]) == -1
+					@listModels.push(@map[model[@idProp]])
+			else
+				@map[model[@idProp]] = model
+				@listModels.push model
+
+			model
+
+
+
+		# remove model from list/map
+		_removeModel: (model) ->
+			return null if !model[@idProp]?
+			model = @map[model[@idProp]]
+			return null if !model?
+
+			delete @map[model[@idProp]]
+			idx = @listModels.indexOf model
+			@listModels.splice(idx, 1) if idx > -1
+
+
+
+		# simple proxy
+		all: (reload, params) ->
+			@loadList(reload, params)
+
+
+
+		# simple proxy
+		get: (id) ->
+			if !id? then return null
+			deferred = @$q.defer()
+			@all().then =>
+				deferred.resolve @map[id]
+
+			deferred.promise
+
+
+
+		# update/create model
+		set: (data) ->
+			def = @$q.defer()
+
+			@_doSave(data).then(
+				(data) =>
+					def.resolve @_addModel data
+				(res) =>
+					def.reject res
+			)
+
+			def.promise
+
+
+
+		# remove model
+		remove: (model) ->
+			def = @$q.defer()
+
+			@_doRemove(model).then(
+				() =>
+					def.resolve @_removeModel(model)
+				(res) =>
+					def.reject res
+			)
+
+			def.promise
+
+
+
+		url: ->
+			throw new Exception("This method must be implemented by a sub-class")
+
+
+
+		resolveResponse: (response) ->
+			response
+
+
+
+		# overriden by child classes for back compatibiliy
+		_doLoadList: (params) ->
+			deferred = @$q.defer()
+			params = {} if !params?
+
+			@Api.sendGet(@url(), params).success (data) =>
+				deferred.resolve @resolveResponse(data)
+			.error (data, status, headers, config) ->
+					deferred.reject(data)
+
+			deferred.promise
+
+
+
+		_doSave: (model) ->
+			deferred = @$q.defer()
+			method = 'sendPostJson' # is new
+			method = 'sendPutJson' if model[@idProp]? and model[@idProp]
+
+			id = model[@idProp] || 0
+			@Api[method](@url() + "/#{id}", model).success (data) =>
+				deferred.resolve @resolveResponse(data)
+			.error (data, status, headers, config) =>
+					deferred.reject
+						info: data.error_message
+						status: status
+
+			deferred.promise
+
+
+
+		_doRemove: (model) ->
+			deferred = @$q.defer()
+
+			id = model[@idProp] || 0
+			@Api.sendDelete(@url() + "/#{id}").success =>
+				deferred.resolve()
+			.error (data, status, headers, config) =>
+					deferred.reject
+						info: data.error_message
+						status: status
+
+			deferred.promise

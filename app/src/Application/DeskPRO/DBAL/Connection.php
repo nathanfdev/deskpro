@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\DBAL;
 
+use Doctrine\DBAL\DBALException;
 use Orb\Log\Logger;
 use PDO;
 
@@ -76,9 +77,24 @@ class Connection extends \Doctrine\DBAL\Connection
 	protected $trans_count = 0;
 
 	/**
+	 * @var array
+	 */
+	protected $writes_in_tx = array();
+
+	/**
 	 * @var bool
 	 */
 	protected $has_run_avoid = false;
+
+	/**
+	 * @var string
+	 */
+	protected $default_isolation = 'REPEATABLE READ';
+
+	/**
+	 * @var bool
+	 */
+	protected $do_reset_isolation = false;
 
 	public function __construct(array $params, \Doctrine\DBAL\Driver $driver, \Doctrine\DBAL\Configuration $config = null, \Doctrine\Common\EventManager $eventManager = null)
 	{
@@ -94,7 +110,14 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		$m = null;
-		if (isset($params['host']) && preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
+		if (isset($params['host']) && preg_match('#^unix_socket:(.*?)$#', $params['host'], $m)) {
+			unset($params['host']);
+			unset($params['port']);
+			$params['unix_socket'] = trim($m[1]);
+		}
+
+		$m = null;
+		if (empty($params['unix_socket']) && isset($params['host']) && preg_match('#^(.*?):([0-9]+)$#', $params['host'], $m)) {
 			$params['host'] = $m[1];
 			$params['port'] = $m[2];
 		}
@@ -110,9 +133,19 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
 			$this->transaction_logger = new Logger();
-			$this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/db-transactions.log'));
+			if ($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log'] == 'separate_files') {
+				$fn = 'db-transactions.'. uniqid('') .'.log';
+			} else {
+				$fn = 'db-transactions.log';
+			}
+			$this->transaction_logger->addWriter(new \Orb\Log\Writer\Stream(dp_get_log_dir().'/' . $fn));
 			$this->transaction_logger->logDebug("--- BEGIN PAGE ---");
-			$this->transaction_logger->logDebug("URL: " . $_SERVER['PHP_SELF']);
+
+			if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
+				$this->transaction_logger->logDebug("Command: " . implode(' ', $_SERVER['argv']));
+			} else {
+				$this->transaction_logger->logDebug("URL: " . $_SERVER['PHP_SELF']);
+			}
 		}
 	}
 
@@ -355,11 +388,45 @@ class Connection extends \Doctrine\DBAL\Connection
 
 
 	/**
+	 * Just like insert() except uses INSERT IGNORE.
+	 *
+	 * @param string $tableName
+	 * @param array $data
+	 * @param array $types
+	 * @return int
+	 */
+	public function insertIgnore($tableName, array $data, array $types = array())
+	{
+		$this->connect();
+
+		try {
+			// column names are specified as array keys
+			$cols = array();
+			$placeholders = array();
+
+			foreach ($data as $columnName => $value) {
+				$cols[] = $columnName;
+				$placeholders[] = '?';
+			}
+
+			$query = 'INSERT IGNORE INTO ' . $tableName
+				. ' (' . implode(', ', $cols) . ')'
+				. ' VALUES (' . implode(', ', $placeholders) . ')';
+
+			return $this->executeUpdate($query, array_values($data), $types);
+		} catch (\Exception $e) {
+			return 0;
+		}
+	}
+
+
+	/**
 	 * Just like insert() except executes a REPLACE INTO instead.
 	 *
 	 * @param $tableName
 	 * @param array $data
 	 * @param array $types
+	 * @return int
 	 */
 	public function replace($tableName, array $data, array $types = array())
 	{
@@ -431,14 +498,24 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param array $types
 	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile|null $qcp
 	 */
-	public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null)
+	public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
 	{
 		try {
 			return parent::executeQuery($query, $params, $types, $qcp);
-		} catch (\Doctrine\DBAL\DBALException $e) {
-			$e->_dp_query = $query;
-			$e->_dp_query_params = $params;
-			throw $e;
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+					usleep(500000);
+
+					return $this->executeQuery($query, $params, $types, $is_retry + 1);
+				}
+
+				$e->_dp_query        = $query;
+				$e->_dp_query_params = $params;
+				throw $e;
+			} else {
+				throw $e;
+			}
 		}
 	}
 
@@ -454,18 +531,27 @@ class Connection extends \Doctrine\DBAL\Connection
 			$this->_writeDeleteQuery($query, $params);
 		}
 
+		$level = $this->getTransactionNestingLevel();
+		if ($level && !$is_retry) {
+			$this->writes_in_tx[] = array($query, $params, $types);
+		}
+
 		try {
 			return parent::executeUpdate($query, $params, $types);
-		} catch (\Doctrine\DBAL\DBALException $e) {
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+					usleep(500000);
 
-			if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
-				usleep(500000);
-				return $this->executeUpdate($query, $params, $types, $is_retry+1);
+					return $this->executeUpdate($query, $params, $types, $is_retry + 1);
+				}
+
+				$e->_dp_query        = $query;
+				$e->_dp_query_params = $params;
+				throw $e;
+			} else {
+				throw $e;
 			}
-
-			$e->_dp_query = $query;
-			$e->_dp_query_params = $params;
-			throw $e;
 		}
 	}
 
@@ -607,10 +693,14 @@ class Connection extends \Doctrine\DBAL\Connection
 	{
 		try {
 			return parent::exec($statement);
-		} catch (\Doctrine\DBAL\DBALException $e) {
-			$e->_dp_query = is_string($statement) ? $statement : null;
-			$e->_dp_query_params = array();
-			throw $e;
+		} catch (\Exception $e) {
+			if ($e instanceof DBALException || $e instanceof \PDOException) {
+				$e->_dp_query        = is_string($statement) ? $statement : null;
+				$e->_dp_query_params = array();
+				throw $e;
+			} else {
+				throw $e;
+			}
 		}
 	}
 
@@ -628,6 +718,11 @@ class Connection extends \Doctrine\DBAL\Connection
 
 	public function beginTransaction()
 	{
+		$level = $this->getTransactionNestingLevel();
+		if ($level == 0) {
+			$this->writes_in_tx = array();
+		}
+
 		parent::beginTransaction();
 		if ($this->transaction_logger) {
 			$e = new \Exception();
@@ -640,10 +735,33 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 	}
 
-	public function commit()
+	public function commit($is_retry = 0)
 	{
+		try {
+			parent::commit();
+		} catch (\Exception $e) {
+			if ($this->writes_in_tx && $is_retry <= 1 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
+				usleep(500000);
+
+				$retry = $this->writes_in_tx;
+				$this->writes_in_tx = array();
+
+				// Retry the trans
+				$this->_conn->beginTransaction();
+				foreach ($retry as $q) {
+					$this->executeUpdate($q[0], $q[1], $q[2], 1);
+				}
+				$this->commit(true);
+			} else {
+				$this->writes_in_tx = array();
+				throw $e;
+			}
+		}
+
 		$level = $this->getTransactionNestingLevel();
-		parent::commit();
+		if ($level == 0) {
+			$this->writes_in_tx = array();
+		}
 
 		if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_COMMIT)) {
 			$this->running_trans_event = true;
@@ -662,13 +780,18 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		if (!$this->getTransactionNestingLevel()) {
 
-			// Set in SearchUpdater::run
+			// Set in EntityWatcher
 			// If we have got here with a successful commit, then the changes are now
 			// properly synced and we dont need the flag set anymore
 			unset($GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES']);
 
-			\DpShutdown::run('db_done_trans');
+			if ($this->do_reset_isolation) {
+				$this->do_reset_isolation = false;
+				$this->setIsolationDefault();
+			}
+
 			\DpShutdown::run('db_done_trans_commit');
+			\DpShutdown::run('db_done_trans');
 		}
 	}
 
@@ -683,6 +806,9 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		$level = $this->getTransactionNestingLevel();
+		if ($level == 0) {
+			$this->writes_in_tx = array();
+		}
 
 		if ($is_unexpected) {
 			if (!$this->running_trans_event && $this->_eventManager->hasListeners(self::EVENT_POST_ROLLBACK)) {
@@ -701,8 +827,49 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		if (!$level) {
-			\DpShutdown::run('db_done_trans');
+			if ($this->do_reset_isolation) {
+				$this->do_reset_isolation = false;
+				$this->setIsolationDefault();
+			}
 			\DpShutdown::run('db_done_trans_rollback');
+			\DpShutdown::run('db_done_trans');
 		}
+	}
+
+
+	/**
+	 * Set isolation level to REPEATABLE READ
+	 *
+	 * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
+	 */
+	public function setIsolationRepeatableRead($auto_reset = false)
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ");
+		if ($auto_reset) {
+			$this->do_reset_isolation = true;
+		}
+	}
+
+
+	/**
+	 * Set isolation level to READ COMMITTED
+	 *
+	 * @param bool $auto_reset True to auto-reset the isolation after the current transaction ends
+	 */
+	public function setIsolationReadCommitted($auto_reset = false)
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED");
+		if ($auto_reset) {
+			$this->do_reset_isolation = true;
+		}
+	}
+
+
+	/**
+	 * Set isolation level back to default (REPEATABLE READ usually)
+	 */
+	public function setIsolationDefault()
+	{
+		$this->exec("SET SESSION TRANSACTION ISOLATION LEVEL {$this->default_isolation}");
 	}
 }

@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -178,7 +178,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 				throw new \Exception("Invalid field_id `$field_id`");
 			}
 			$custom_data = new CustomDataProduct();
-			$custom_data['field'] = $field;
+			$custom_data->field = $field;
 		}
 
 		$field = $custom_data->field;
@@ -186,6 +186,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 			foreach ($this->custom_data as $d) {
 				if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
 					$this->custom_data->removeElement($d);
+					$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 				}
 			}
 		}
@@ -194,6 +195,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 
 		if ($value === null) {
 			$this->custom_data->removeElement($custom_data);
+			$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 			return null;
 		}
 
@@ -225,6 +227,7 @@ class Product extends CategoryAbstract implements HasPhraseName
 		foreach ($this->custom_data as $data) {
 			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
 				$this->custom_data->removeElement($data);
+				$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 			}
 		}
 	}
@@ -285,6 +288,12 @@ class Product extends CategoryAbstract implements HasPhraseName
 	public function toApiData($primary = true, $deep = true, array $visited = array())
 	{
 		$data = parent::toApiData($primary, $deep, $visited);
+
+		if ($this->parent) {
+			$data['parent_id'] = $this->parent->getId();
+		} else {
+			$data['parent_id'] = null;
+		}
 
 		// Render custom fields to text values
 		$field_manager = App::getContainer()->getSystemService('product_fields_manager');

@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -55,6 +55,7 @@ class TicketChecker extends AbstractChecker
 		'set_awaiting_user',
 		'set_awaiting_agent',
 		'set_resolved',
+		'set_unresolved',
 		'followed',
 	);
 
@@ -63,9 +64,15 @@ class TicketChecker extends AbstractChecker
 	 */
 	protected $person;
 
+	/**
+	 * @var \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
+	 */
+	private $agents;
+
 	protected function init()
 	{
 		$this->person->loadHelper('Agent');
+		$this->agents = App::$container->getAgentData();
 	}
 
 	/**
@@ -87,7 +94,7 @@ class TicketChecker extends AbstractChecker
 			return true;
 		}
 
-		if ($ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+		if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
 			return true;
 		}
 
@@ -143,7 +150,7 @@ class TicketChecker extends AbstractChecker
 				return true;
 			}
 
-			if ($ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+			if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
 				return true;
 			}
 		}
@@ -217,7 +224,7 @@ class TicketChecker extends AbstractChecker
 				return true;
 			}
 
-			if ($ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+			if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
 				return true;
 			}
 		}
@@ -283,6 +290,11 @@ class TicketChecker extends AbstractChecker
 			return false;
 		}
 
+		$isSetUnresolved = 'set_awaiting_user' === $op || 'set_awaiting_agent' === $op;
+		if ($isSetUnresolved && 'resolved' === $ticket['status'] && !$this->canModify($ticket, 'set_unresolved')) {
+			return false;
+		}
+
 		if (!in_array($op, self::$modify_ops)) {
 			throw new \InvalidArgumentException("Invalid modify permission op: $op");
 		}
@@ -293,7 +305,7 @@ class TicketChecker extends AbstractChecker
 		#------------------------------
 
 		// Own tickets
-		if (($ticket->agent && $ticket->agent->id == $this->person->id) || $ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+		if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
 			$set_suffix = 'own';
 
 		// Unassigned tickets
@@ -339,7 +351,7 @@ class TicketChecker extends AbstractChecker
 				return true;
 			}
 
-			if ($ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+			if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
 				return true;
 			}
 		}
@@ -395,7 +407,7 @@ class TicketChecker extends AbstractChecker
 	public function canMerge(Ticket $ticket1, Ticket $ticket2)
 	{
 		foreach (array($ticket1, $ticket2) as $ticket) {
-			if (($ticket->agent && $ticket->agent->id == $this->person->id) || $ticket->agent_team && $this->person->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+			if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
 				$set_suffix = 'own';
 			} elseif (!$ticket->agent && !$ticket->agent_team) {
 				$set_suffix = 'unassigned';

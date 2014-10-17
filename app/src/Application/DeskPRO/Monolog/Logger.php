@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Monolog;
 
+use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Log\Loggable;
 use Monolog\Handler\TestHandler;
 use Monolog\Logger as BaseLogger;
 
@@ -138,5 +140,25 @@ class Logger extends BaseLogger
 		}
 
 		return $this->test_handler->getRecords();
+	}
+
+	/**
+	 * @inheritdoc
+	 * @param int $level
+	 * @param string $message
+	 * @param array $context
+	 * @return bool|void
+	 */
+	public function addRecord($level, $message, array $context = array())
+	{
+		if ($message instanceof Loggable) {
+			$context = array_merge($context, $message->context());
+		}
+
+		if ($message instanceof DomainObject) {
+			$context['_entity'] = $message;
+		}
+
+		return parent::addRecord($level, $message, $context);
 	}
 }

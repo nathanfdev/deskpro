@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -106,6 +106,18 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 	 */
 	public function save(EntityManager $em)
 	{
+		// New, we should set a proper display order
+		if (!$this->department->id) {
+			$do = $em->getConnection()->fetchColumn("
+				SELECT display_order
+				FROM departments
+				WHERE is_tickets_enabled = 1
+				ORDER BY display_order DESC
+			");
+			$do += 10;
+			$this->department->display_order = $do;
+		}
+
 		$em->persist($this->department);
 		$em->flush();
 

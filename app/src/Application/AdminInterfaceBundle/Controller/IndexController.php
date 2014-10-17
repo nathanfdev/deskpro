@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -68,11 +68,12 @@ class IndexController extends AbstractController
 		$rjs_apps_config = $rjs_apps->generateRequireJsConfigCode();
 
 		return $this->render('AdminInterfaceBundle:Index:interface.html.twig', array(
-			'api_token'     => $token,
-			'session'       => $this->session->getEntity(),
+			'api_token'             => $token,
+			'session'               => $this->session->getEntity(),
 			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
-			'inhelp_states' => $inhelp_states,
-			'rjs_apps_config' => $rjs_apps_config,
+			'inhelp_states'         => $inhelp_states,
+			'rjs_apps_config'       => $rjs_apps_config,
+			'redirect_license'      => defined('DP_BILLING_ERROR')
 		));
 	}
 }

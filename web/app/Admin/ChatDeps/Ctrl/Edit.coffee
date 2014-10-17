@@ -10,7 +10,7 @@ define [
 	class Admin_ChatDeps_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_ChatDeps_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = []
+		@DEPS      = ['$upload', '$http']
 
 		###
  	#
@@ -19,6 +19,8 @@ define [
 		init: ->
 
 			@depData = @DataService.get('ChatDeps')
+			@$scope.icon_image = null
+			@$scope.$on 'icon.selected', (e, path) => @selectIcon path
 
 			@initializeScopeWatching()
 
@@ -47,6 +49,7 @@ define [
 				@agents      = data.agents
 
 				@dep_parent_list = data.dep_parent_list
+				@setAvatar @dep.avatar
 			)
 
 			return promise
@@ -78,6 +81,10 @@ define [
 
 			@startSpinner('saving_dep')
 
+			if @form.enable_avatar
+				@form.avatar = @dep.avatar?.id || null
+			else
+				@form.avatar = null
 			promise = @depData.saveFormModel(@dep, @form)
 
 			promise.success( =>
@@ -138,6 +145,49 @@ define [
 				@form.agent_perms.setAgentPerm(obj.model.id, perm, '&')
 
 			@_propogatePermission_running = false
+
+
+
+		setAvatar: (blob) =>
+			@dep.avatar = blob
+			if !blob?
+				@$scope.icon_image = null
+				@form.enable_avatar = false
+			else
+				@$scope.icon_image = blob.thumbnail_url_50
+				@form.enable_avatar = true
+
+
+
+		onFileSelect: (files) ->
+			@$scope.uploading = false
+			file = files[0]
+
+			@$upload.upload({
+				url: @$http.formatApiUrl('/misc/upload'),
+				data: { is_image: true },
+				file: file
+			}).success( (data) =>
+				@$scope.uploading = false
+				@setAvatar data.blob
+			).error( (data) =>
+				@$scope.uploading = false
+				@Growl.error data?.error_message || 'Error'
+			)
+
+
+
+		selectIcon: (image) =>
+			setAvatar null if !image?
+
+			@$scope.uploading = true
+			@Api.sendPostJson('/misc/upload', {path: image, is_image: true}).then(
+				(data) =>
+					@$scope.uploading = false
+					@setAvatar data.data.blob
+				() =>
+					@$scope.uploading = false
+			)
 
 
 	Admin_ChatDeps_Ctrl_Edit.EXPORT_CTRL()

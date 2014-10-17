@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -49,10 +49,6 @@ class TestController extends AbstractController
 		return parent::preAction($action, $arguments);
 	}
 
-	public function aboutAction()
-	{
-		return $this->render('ApiBundle:SwaggerUi:index.html.twig');
-	}
 
 	/**
 	 * This action simply returns a message to indicate that the API is working

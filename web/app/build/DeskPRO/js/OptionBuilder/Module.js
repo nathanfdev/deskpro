@@ -20,21 +20,43 @@
         };
       }
     ]).directive('dpOptionbuilderRow', [
-      function() {
+      '$timeout', function($timeout) {
         return {
           restrict: 'E',
-          template: "<div class=\"dp-ob-row\">\n	<div class=\"remove-row-trigger\" ng-click=\"rowFn.removeRow()\" ng-if=\"!rowOpts.hideRemove\"><i class=\"fa fa-times-circle\"></i></div>\n	<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"margin: 0; padding: 0; border: none;\">\n		<tr>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\"><div class=\"dp-ob-row-tag-wrap\"></div></td>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\" width=\"1\"><input type=\"checkbox\" id=\"{{rowOpts.withCheckId}}\" ng-if=\"rowOpts.withCheck\" ng-model=\"rowOpts.rowEnabled\" ng-disabled=\"rowOpts.isFixedOn\" /></td>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\" width=\"100%\">\n				<div class=\"dp-ob-row-content\" ng-transclude></div>\n			</td>\n		</tr>\n	</table>\n</div>",
+          template: "<div class=\"dp-ob-row\">\n	<div class=\"remove-row-trigger\" ng-click=\"rowFn.removeRow()\" ng-if=\"!rowOpts.hideRemove\"><i class=\"fa fa-times-circle\"></i></div>\n	<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\" style=\"margin: 0; padding: 0; border: none;\">\n		<tr>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\"><div class=\"dp-ob-row-tag-wrap\"></div></td>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\" width=\"1\"><input type=\"checkbox\" id=\"{{rowOpts.withCheckId}}\" ng-if=\"rowOpts.withCheck\" ng-model=\"rowOpts.rowEnabled\" ng-disabled=\"rowOpts.isFixedOn\" /></td>\n			<td style=\"vertical-align: middle; padding: 0; margin: 0;\" width=\"100%\">\n				<div class=\"dp-ob-row-content-wrap\" ng-class=\"{'as-post-render': doShow}\">\n					<div class=\"dp-ob-row-content-placeholder\" ng-if=\"!doShow\">\n						<span class=\"place1\"></span> <span class=\"place2\"></span> <span class=\"place3\"></span>\n					</div>\n					<div class=\"dp-ob-row-content\" ng-class=\"{'as-post-render': doShow}\" ng-transclude></div>\n				</div>\n			</td>\n		</tr>\n	</table>\n</div>",
           replace: true,
           transclude: true,
           link: function(scope, element, attrs) {
-            var tag, _ref, _ref1, _ref2;
-            if (((_ref = scope.rowOpts) != null ? _ref.rowIdx : void 0) > 1 && ((_ref1 = scope.rowOpts) != null ? _ref1.tagString : void 0)) {
-              tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.rowOpts.tagClass).text((_ref2 = scope.rowOpts) != null ? _ref2.tagString : void 0);
-              return tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('with-tag'));
-            } else {
-              tag = $('<em class="dp-ob-row-tag"></em>').addClass('no-tag');
-              return tag.prependTo(element.find('.dp-ob-row-tag-wrap').addClass('without-tag'));
-            }
+            var tagWrap, updateTag;
+            tagWrap = element.find('.dp-ob-row-tag-wrap');
+            updateTag = function() {
+              var tag, _ref, _ref1, _ref2;
+              tag = tagWrap.find('.dp-ob-row-tag');
+              if (((_ref = scope.rowOpts) != null ? _ref.rowIdx : void 0) > 1 && ((_ref1 = scope.rowOpts) != null ? _ref1.tagString : void 0)) {
+                if (!tag[0]) {
+                  tag = $('<em class="dp-ob-row-tag"></em>').addClass(scope.rowOpts.tagClass);
+                  tag.prependTo(tagWrap);
+                }
+                tag.text((_ref2 = scope.rowOpts) != null ? _ref2.tagString : void 0);
+                return tagWrap.addClass('with-tag');
+              } else {
+                if (tag[0]) {
+                  tag.remove();
+                }
+                return tagWrap.addClass('without-tag');
+              }
+            };
+            scope.$watch('rowOpts.rowIdx', function() {
+              return updateTag();
+            });
+            updateTag();
+            return $timeout(function() {
+              return $timeout(function() {
+                return $timeout(function() {
+                  return scope.doShow = true;
+                });
+              });
+            });
           }
         };
       }
@@ -77,7 +99,12 @@
                 row = rows[i];
                 if (row.rowScope.setIndex !== i + 1) {
                   _results.push(row.rowScope.$apply(function() {
-                    return row.rowScope.setIndex = i + 1;
+                    row.rowScope.setIndex = i + 1;
+                    if (row.rowScope.setIndex === 1) {
+                      return row.element.find('.remove-btn-wrap').hide();
+                    } else {
+                      return row.element.find('.remove-btn-wrap').show();
+                    }
                   }));
                 } else {
                   _results.push(void 0);
@@ -123,6 +150,11 @@
               });
               if (scope.setCount >= 1) {
                 element.addClass('empty');
+              }
+              if (rowScope.setIndex === 1) {
+                element.find('.remove-btn-wrap').hide();
+              } else {
+                element.find('.remove-btn-wrap').show();
               }
               element.find('.removerow_btn').on('click', function(ev) {
                 var k, v, _ref;

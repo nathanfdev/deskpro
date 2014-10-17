@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -176,6 +176,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$password = $this->in->getString('password');
 		$password2 = $this->in->getString('password2');
 
+		$history = null;
 		if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
 			$history = new PasswordHistory();
 			$history->person = $this->person;
@@ -186,19 +187,22 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
 		$password_validator = App::$container->getSystemService('password_policy_validator');
 
+		$error = null;
+
 		if (!$this->person->checkPassword($this->in->getString('current_password'))) {
 			$this->session->setFlash('invalid_current_password', 1);
 		} else if ($password != $password2) {
 			$this->session->setFlash('invalid_repeat_password', 1);
-		} elseif ($password_validator->checkPassword($password, $this->person)) {
+		} elseif (!$password_validator->checkPassword($password, $this->person, $error)) {
 			$this->session->setFlash('invalid_password', 1);
 		} else {
 			$this->person->setPassword($password);
-			$person = $this->person;
-			$this->em->transactional(function ($em) use ($person, $history) {
-				$em->persist($person);
-				$em->persist($history);
-			});
+
+			$this->em->persist($this->person);
+			if ($history) {
+				$this->em->persist($history);
+			}
+			$this->em->flush();
 
 			// Reset user session
 			$this->db->delete('sessions', array('person_id' => $this->person->id));

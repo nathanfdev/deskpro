@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -37,6 +37,7 @@ namespace Application\DeskPRO\DBAL;
 use Application\DeskPRO\App;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DBALException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -123,18 +124,22 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
 		if ($recreate_retry) {
 			try {
 				$conn->connect();
-			} catch (\PDOException $err) {
-				if (strpos($err->getMessage(), 'Unknown database') !== false) {
-					$params_2 = $params;
-					unset($params_2['dbname']);
-					try {
-						$conn2 = parent::createConnection($params_2);
-						$conn2->exec("CREATE DATABASE `{$params['dbname']}`");
+			} catch (\Exception $err) {
+				if ($err instanceof DBALException || $err instanceof \PDOException) {
+					if (strpos($err->getMessage(), 'Unknown database') !== false) {
+						$params_2 = $params;
+						unset($params_2['dbname']);
+						try {
+							$conn2 = parent::createConnection($params_2);
+							$conn2->exec("CREATE DATABASE `{$params['dbname']}`");
 
-						$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
-						$conn->connect();
-					} catch (\Exception $e) {
-						error_log("Could not create test database: {$e->getMessage()}");
+							$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
+							$conn->connect();
+						} catch (\Exception $e) {
+							error_log("Could not create test database: {$e->getMessage()}");
+							throw $err;
+						}
+					} else {
 						throw $err;
 					}
 				} else {

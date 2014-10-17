@@ -10,7 +10,7 @@
 		<select name="newticket[ticket][priority_id]" class="priority_id">
 			<option></option>
 			{% for id,pri in app.getDataService('TicketPriority').getNames() %}
-				<option value="{{ id }}" {% if newticket.ticket.priority_id == id %}selected="selected"{% endif %}>{{ pri }}</option>
+				<option value="{{ id }}" {% if form.ticket.priority_id.vars.value == id %}selected="selected"{% endif %}>{{ pri }}</option>
 			{% endfor %}
 		</select>
 		<div class="dp-help-inline dp-error-explain">

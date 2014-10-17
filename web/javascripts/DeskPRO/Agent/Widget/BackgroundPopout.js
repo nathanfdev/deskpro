@@ -128,7 +128,6 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 				this.startTimeout();
 			},
 			success: function(html) {
-				this.nextParams = null;
 				this.template = html;
 
 				if (callback) {
@@ -142,6 +141,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			complete: function() {
 				this.xhr = null;
 				this.startTimeout();
+				this.nextParams = null;
 			}
 		});
 	},
@@ -178,17 +178,15 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			this.clear();
 		}
 
-		if (
-			this.options.tabRoute
-			&& (
-				!DeskPRO_Window.paneVis.list
-				|| (DeskPRO_Window.paneVis.list && !DeskPRO_Window.paneVis.tabs)
-			)
-		) {
-			DeskPRO_Window.runPageRoute(this.options.tabRoute);
+		if (this.options.tabRoute) {
+			DeskPRO_Window.runPageRoute(this.options.tabRoute, {
+				openCallback: callback || function() {},
+				params: this.nextParams || null
+			});
 			if (!DeskPRO_Window.paneVis.tabs) {
-				DeskPRO_Window.setPaneVisNum(2);
+				DeskPRO_Window.$scope.showTabs();
 			}
+			this.nextParams = null;
 			return;
 		}
 

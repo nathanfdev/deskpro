@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -129,12 +129,13 @@ class ApiKey extends AbstractEntityRepository
 			);
 		}
 
+		$interval = (int) App::getSetting('core.api_rate_limit_interval');
 		if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
 			$rate_limit = array(
 				'api_key_id'    => $api_key->id,
 				'hits'          => 0,
 				'created_stamp' => time(),
-				'reset_stamp'   => time() + 3600
+				'reset_stamp'   => time() + $interval
 			);
 		}
 
@@ -148,6 +149,7 @@ class ApiKey extends AbstractEntityRepository
 	public function updateRateLimit(\Application\DeskPRO\Entity\ApiKey $api_key)
 	{
 		$time = time();
+		$interval = (int) App::getSetting('core.api_rate_limit_interval');
 
 		App::getDb()->executeUpdate(
 			"
@@ -157,7 +159,7 @@ class ApiKey extends AbstractEntityRepository
 							(?, 1, ?, ?)
 						ON DUPLICATE KEY UPDATE hits = hits + 1
 					",
-			array($api_key->id, $time, $time + 3600)
+			array($api_key->id, $time, $time + $interval)
 		);
 	}
 }

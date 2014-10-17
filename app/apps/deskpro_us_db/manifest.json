@@ -114,6 +114,13 @@
 			"native_only": true
 		},
 		{
+			"name": "db_odbc_dsn",
+			"type": "textarea",
+			"label": "ODBC Settings",
+			"description": "",
+			"native_only": true
+		},
+		{
 			"name": "table",
 			"type": "text",
 			"label": "Table",

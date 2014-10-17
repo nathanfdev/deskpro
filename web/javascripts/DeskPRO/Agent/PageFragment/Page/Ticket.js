@@ -329,7 +329,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					var searchListEl = DeskPRO_Window.sections.tickets_section.getListElement();
 					lastOverId = ticketId;
-					lastOvers = searchListEl.find('.ticket-' + ticketId);
+					lastOvers = searchListEl.find('.ticket-row-' + ticketId);
 					lastOvers = lastOvers.add($('#tabNavigationPane').find('.ticket-' + ticketId));
 					lastOvers.addClass('item-hover-over');
 				};
@@ -537,13 +537,41 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			})();
 		}
         
-        this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
-		loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
-		saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
-		ticket_id: this.meta.ticket_id
-	});
-	
-	this.ownObject(this.linkExistingTicket);
+		this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
+			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
+			saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
+			ticket_id: this.meta.ticket_id
+		});
+
+		this.ownObject(this.linkExistingTicket);
+
+		this.wrapper.find('.unlink-ticket').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unlink the selected ticket?")) {
+				return;
+			}
+
+			var linkType     = $(this).data('from-type');
+			var linkTicketId = $(this).data('from-id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: BASE_URL + "agent/tickets/" + self.meta.ticket_id + "/unlink-ticket",
+				type: 'POST',
+				data: {
+					ticket_id: self.meta.ticket_id,
+					link_type: linkType,
+					link_ticket_id: linkTicketId
+				},
+				error: function() {
+					$(this).closest('tr').show();
+				},
+				success: function() {
+					$(this).closest('tr').remove();
+				}
+			});
+		});
 
 		this.addEvent('deactivate', function() {
 			if (self.ticketReplyBox && self.ticketReplyBox.textarea) {
@@ -640,9 +668,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var st   = head.find('nav').data('simpletabs');
 		if (st) {
 			st.addEvent('tabSwitch', function(evData) {
-				var id = $(evData.tabEl).attr('id') || '';
+				var id = $(evData.tabContent).attr('id') || '';
 
-				if (id && id.indexOf('fields_display_main_wrap_tab') !== -1) {
+				if (id && id.indexOf('fields_display_main_wrap') !== -1) {
 					head.removeClass('controls-off');
 				} else {
 					head.addClass('controls-off');
@@ -650,7 +678,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		}
 
-		this.getEl('cc_list_btn').on('click', function(ev) {
+		this.getEl('cc_list_btn2').on('click', function(ev) {
 			ev.preventDefault();
 
 			if (self.getEl('cc_list').hasClass('cc-open')) {
@@ -658,12 +686,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					self.getEl('cc_list').hide().removeClass('cc-open');
 				} else {
 					self.getEl('cc_list').find('.addrow').toggle();
+					self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 				}
 			} else {
 				self.getEl('cc_list').show().addClass('cc-open');
 				self.getEl('cc_list').find('.addrow').show();
 				self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 			}
+		});
+
+		this.getEl('cc_list_btn').on('click', function(ev) {
+			ev.preventDefault();
+
+			self.getEl('cc_list').show().addClass('cc-open');
+			self.getEl('cc_list').find('.addrow').show();
+			self.getEl('cc_list').find('.addrow').find('input[type="text"]').focus();
 		});
 
 		var logsWrap = this.getEl('logs_wrap');
@@ -780,7 +817,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var jiraWidget = new DeskPRO.Agent.Jira.Widget({
 				ticketId: self.meta.ticket_id,
 				baseId: self.meta.baseId,
-				defaultProject: self.meta.jiraDefaultProject,
+				defaultProject: self.meta.jiraDefaultProject
+			});
+			this.addEvent('destroy', function() {
+				if (jiraWidget) {
+					jiraWidget.destroy();
+				}
 			});
 		}
 	},
@@ -870,6 +912,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						this.getEl('message_next_page').show();
 					}
 				}
+
+				this.fireEvent('load');
 			}
 		});
 	},
@@ -1140,6 +1184,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	handleTicketUpdate: function(data) {
+		this.doHandleTicketUpdate(data);
+		this.fireEvent('ticket_updated', [data]);
+	},
+
+	doHandleTicketUpdate: function(data) {
 		var self = this;
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
@@ -1209,10 +1258,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
 				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 			}
-		}
-
-		if (typeof data.cc_list == "string") {
-			this.wrapper.find('ul.cc-row-list').empty().html(data.cc_list);
 		}
 
 		var billing = this.billing;
@@ -1464,11 +1509,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		this.lastMessageCount = lastCount;
 
-		messageEl.find('img').bind('load', function() {
-			var article = $(this).closest('article.content-message');
-			self._initTicketMessageClipped(article);
-		});
-
 		var wr = this.getEl('messages_wrap');
 		wr.find('.message-id-txt').each(function() {
 			var findclass = '.message-counter-' + $(this).data('message-id');
@@ -1541,13 +1581,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_initTicketMessageClipped: function(article) {
-		var h = article.find('div.body-text').height();
+		var self = this;
+		var h = article.find('div.body-text-message').height();
+		var doClipping = false;
+		var allArticles = null, idx;
+		var isFirst = false;
 		if (h >= 600) {
+			allArticles = this.getEl('message_page_wrap').find('article');
+			idx = allArticles.index(article.get(0));
+
+			// Clipping on the first message starts at 1200px
+			if ((this.meta.ticket_reverse_order && idx === 0) || (!this.meta.ticket_reverse_order && idx === allArticles.length-1)) {
+				isFirst = true;
+				if (h >= 1200) {
+					doClipping = true;
+				} else {
+					doClipping = false;
+				}
+			} else {
+				doClipping = true;
+			}
+		}
+
+		if (isFirst) {
+			article.addClass('as-first');
+		} else {
+			article.removeClass('as-first');
+		}
+
+		if (doClipping) {
 			if (!article.hasClass('with-clipped-body')) {
 				article.addClass('with-clipped-body');
 				article.find('.fade-bar-longmsg').on('click', function(ev) {
 					ev.stopPropagation();
 					article.addClass('clipped-show');
+				});
+
+				// Images might change the visible height once loaded
+				article.find('img').on('load', function() {
+					self._initTicketMessageClipped(article);
 				});
 			}
 		} else {
@@ -1600,9 +1672,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	addAttachToList: function(attachInfo) {
-		var row = $('.template-download', this.getEl('replybox')).tmpl(attachInfo);
-		$('.file-list', this.getEl('replybox')).append(row);
-		this.updateUi();
+		var $form = this.getEl('replybox_wrap').children('.ticket-reply-form:first'),
+			fileupload = $form.data('fileupload');
+
+		if (!$form.length || !fileupload) return;
+		$form.trigger('fileuploaddone');
+		fileupload.options.done.apply($form[0], [null, { result: [attachInfo]}]);
 	},
 
 	//#################################################################
@@ -2253,6 +2328,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}).always(function() {
 						form.removeClass('loading');
 					}).done(function(data) {
+
+						if (data.error) {
+							if (data.error_code == 'no_messages') {
+								alert('Please select at least one message to split from this ticket.');
+							} else {
+								alert('You cannot split all messages from this ticket.');
+							}
+							return;
+						}
+
 						overlay.close();
 
 						if (data.ticket_id) {
@@ -2383,7 +2468,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					success: function(info) {
 						self.messageEditOverlay.close();
 						var messageHtml = info.message_html;
-						self.wrapper.find('article.message-' + self.currentOpenMessageId).find('.body-text-message').html(messageHtml);
+
+						var messageEl = self.wrapper.find('article.message-' + self.currentOpenMessageId);
+						messageEl.find('.body-text-message').html(messageHtml);
+
+						// reprocess events on message (eg image preview)
+						self._initMessage(messageEl);
 					}
 				});
 			});
@@ -2679,6 +2769,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			var row = $(this).closest('.task-row');
 			var field = $('input.input-date-due', row);
+			var field_real = $('input.input-date-due-real', row);
 			var field2 = $('input.input-date-time', row);
 			var date = $('input.input-date-due', row).val();
 			if (!date) {
@@ -2691,6 +2782,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				timeLi.show();
 			}, {
 				dateFormat: dateFormat,
+				altFormat: 'yy-mm-dd',
+				altField: field_real,
 				showButtonPanel: true,
 				beforeShow: function(input) {
 					setTimeout(function() {
@@ -2877,6 +2970,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						$this.closest('tr').remove();
 
 						rowRemoved(slaId);
+
+						if (getVisibleOptions(idSelect.find('option')).length >= 1) {
+							form.show();
+						}
 					}
 				});
 			}
@@ -3012,6 +3109,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'POST',
 				data: postData
 			});
+
+			self.meta.title = setName;
+
+			if (DeskPRO_Window.TabBar) {
+				DeskPRO_Window.TabBar.rescanTitles();
+			}
 		};
 
 		namef.on('dblclick', startEditable).on('keypress', function(ev) {

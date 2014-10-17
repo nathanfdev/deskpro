@@ -1,3 +1,16 @@
+<style>
+	.editable-visible  {
+		display: none;
+	}
+	
+	.editable .editable-visible {
+		display: inline-block;
+	}
+	
+	.editable .editable-hidden {
+		display: none;
+	}
+</style>
 {{ dp_app_loc(baseId, 'left_col.top') }}
 
 {# Box Summary #}
@@ -235,6 +248,61 @@
 </div>
 {{ dp_app_loc(baseId, 'members.after') }}
 
+{# Files Tabs #}
+{{ dp_app_loc(baseId, 'files.before') }}
+<div class="profile-box-container dp-simpletab-container tabbed" id="{{baseId}}_files_box">
+	<header>
+		<nav>
+			<ul>
+				<li data-tab-for="#{{baseId}}_files_tab" class="on">{{ phrase('agent.general.files') }} <span class="count">{{ org_files_count }}</span></li>
+				<li data-tab-for="#{{baseId}}_add_file_tab" class="off">Add File</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{# Files Tab #}
+		<article id="{{baseId}}_files_tab" class="on">
+			<div class="notes-wrap profile-files-wrap">
+				<ul id="{{baseId}}_files_initial">
+					{% for file in person_files %}
+						{% include 'AgentBundle:Person:file-row.html.twig' with { 'file' : file } %}
+					{% else %}
+						<li class="note profile-file-row empty-notice"><p style="padding:10px;">No files.</p></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</article>
+		{# /Files Tab #}
+		{# Add File Tab #}
+		<article id="{{baseId}}_add_file_tab" class="off">
+			<form id="{{baseId}}_add_file_form" method="POST" action="{{ path('agent_org_ajaxsave_file', {organization_id: org.id}) }}">
+				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+					<tbody id="{{baseId}}_add_file_initial">
+					<tr>
+						<td colspan="2"><textarea style="width: 97%" placeholder="comment" id="input_note"></textarea>
+					</tr>
+					<tr>
+						<td style="width: 70%;"><h4 style="float:left;">{{ phrase('agent.general.file') }}</h4>
+							<br class="clear" />
+							<div id="{{baseId}}_file_section_up">
+								<input type="file" name="file-upload" multiple="multiple" />
+							</div>
+							{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'blob_id' } %}
+							<ul class="files file-list"></ul>
+						</td>
+						<td style="width: 30%"><input type="submit" class="save-trigger" value="save"/></td>
+					</tr>
+					</tbody>
+				</table>
+			</form>
+		</article>
+		{# /Add file Tab #}
+		{{ dp_app_loc(baseId, 'files.tab') }}
+	</section>
+</div>
+{{ dp_app_loc(baseId, 'files.after') }}
+{# /Files Tabs #}
+
 {% if notes|length or activity_stream|length or app.user.hasPerm('agent_org.notes') %}
 {{ dp_app_loc(baseId, 'notes.before') }}
 <div class="profile-box-container dp-simpletab-container tabbed">
@@ -288,19 +356,19 @@
 							<div class="fade-container">
 								<div class="line">
 									<span class="what">
-										<a class="with-route" data-route="page:{{ path('agent_people_view', {'person_id': action.person.id }) }}">
+										<a class="with-route" data-route="page:{{ path('agent_people_view', {'person_id': action.person.id|default('0') }) }}">
 											{{ action.person.display_name }}
 										</a>
 										{% if action.action_type == 'registered' %}
 											{{ phrase('agent.people.act_reg') }}
 										{% elseif action.action_type == 'new_ticket' %}
 											{{ phrase('agent.people.act_submitted_ticket') }}
-											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id|default('0') }) }}">
 												{{ action.details.subject }}
 											</a>
 										{% elseif action.action_type == 'new_ticket_reply' %}
 											{{ phrase('agent.people.act_replied_ticket') }}
-											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id|default('0') }) }}">
 												{{ action.details.subject }}
 											</a>
 										{% endif %}

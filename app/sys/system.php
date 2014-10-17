@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -228,6 +228,10 @@ abstract class AbstractKernel extends BaseKernel
 			}
 		}
 
+		if (License::getLicense()->isPastExpireDate()) {
+			define('DP_BILLING_ERROR', true);
+		}
+
 		/** @var $response \Symfony\Component\HttpFoundation\Response */
 		$response = $this->getHttpKernel()->handle($request, $type, $catch);
 
@@ -274,16 +278,6 @@ abstract class AbstractKernel extends BaseKernel
 							return $response;
 						}
 					}
-
-					// On every admin page, redirect them to agents management, dont let them do anything else
-					// Also let them use the license page to update the license!
-					if (DP_INTERFACE == 'admin' && !preg_match('#^/admin/agents#', $path) && !preg_match('#^/billing#', $path) && !preg_match('#^/admin/login#', $path)) {
-						$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0");
-						if ($count > License::getLicense()->getMaxAgents()) {
-							$response = new RedirectResponse($request->getBaseUrl() . '/admin/agents');
-							return $response;
-						}
-					}
 				}
 
 				#------------------------------
@@ -293,11 +287,7 @@ abstract class AbstractKernel extends BaseKernel
 				if (defined('DPC_IS_CLOUD')) {
 					// Demos have a set expiry date
 					if (License::getLicense()->isPastExpireDate()) {
-						// Admin just goes right to billing
-						if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'agent') {
-							$response = new RedirectResponse($request->getBaseUrl() . '/billing');
-							return $response;
-						} else {
+						if (DP_INTERFACE == 'agent' || (DP_INTERFACE == 'user' && License::getLicense()->isPastExpireDate() >= 14)) {
 							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_demo_expired', $request->getBaseUrl()));
 							return $response;
 						}
@@ -305,15 +295,9 @@ abstract class AbstractKernel extends BaseKernel
 
 					// Bill failures are handled a bit differently...
 					if (DPC_BILL_FAILED) {
-						// Admin just goes right to billing
-						if (DP_INTERFACE == 'admin') {
-							$response = new RedirectResponse($request->getBaseUrl() . '/billing');
-							return $response;
-						}
-
 						// Agent might be disbaled
 						if (DP_INTERFACE == 'agent' && DPC_AGENT_OFF) {
-							$response = new RedirectResponse($request->getBaseUrl() . '/billing');
+							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('cloud_billfail_agent', $request->getBaseUrl()));
 							return $response;
 						}
 
@@ -345,8 +329,8 @@ abstract class AbstractKernel extends BaseKernel
 					}
 				} else {
 					if (License::getLicense()->isPastExpireDate()) {
-						// Show lic error if not user, or if its been 14 days then show it for users too
-						if (DP_INTERFACE != 'user' || License::getLicense()->isPastExpireDate() >= 14) {
+						// Show lic error
+						if (DP_INTERFACE == 'agent' || (DP_INTERFACE == 'user' && License::getLicense()->isPastExpireDate() >= 14)) {
 							$response = new Response(HelpdeskOfflineMessage::getLicenseErrorPage('expired', $request->getBaseUrl()));
 							return $response;
 						}
@@ -361,6 +345,10 @@ abstract class AbstractKernel extends BaseKernel
 		}
 
 		$this->postResponseHandled($response, $request);
+
+		if ($response && isset($GLOBALS['DP_CONFIG']['DP_POST_RESPONSE_HANDLED_CALLBACK'])) {
+			$response = call_user_func($GLOBALS['DP_CONFIG']['DP_POST_RESPONSE_HANDLED_CALLBACK'], $response, $request);
+		}
 
 		if ($is_page_load) {
 			$content = $response->getContent();

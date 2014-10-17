@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -73,6 +73,7 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
 
 		if ($this->getActionOption('with_formatter')) {
 			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
+			$formatter->addVar('user_vars', $context->getUserVars());
 			$subject = $formatter->formatText($subject, $ticket);
 			$subject = preg_replace("#[\r\n]#", ' ', $subject);
 			$subject = preg_replace("#\\s{2,}#", ' ', $subject);

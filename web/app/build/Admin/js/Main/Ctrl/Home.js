@@ -22,49 +22,47 @@
         this.offline_agents = [];
         this.$scope.new_agent = {};
         this.$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false;
+        this.online_agents = [];
+        this.offline_agents = [];
+        this.unactive_agents = [];
+        this.agentsMap = {};
+        this.service = {
+          agents: this.DataService.get('Agents')
+        };
         this.loadMethodTests();
       };
 
       Admin_Main_Ctrl_Home.prototype.initialLoad = function() {
         var promise;
+        this.refreshAgents();
         promise = this.Api.sendDataGet({
-          agents: '/agents',
           lastLogin: '/me/last-login',
+          versionInfo: '/dp_license/version-info'
+        }).then((function(_this) {
+          return function(result) {
+            _this.version_info = result.data.versionInfo;
+            _this.last_login = result.data.lastLogin.last_login;
+            if (_this.last_login) {
+              return _this.last_login.date_created_d = new Date(_this.last_login.date_created_ts * 1000);
+            }
+          };
+        })(this));
+        this.Api.sendDataGet({
           cronStatus: '/server/cron-status',
           errorStatus: '/server/error-status',
           apcStatus: '/server/apc-status',
-          versionInfo: '/dp_license/version-info',
           quickStats: '/tickets/quick-stats'
         }).then((function(_this) {
           return function(result) {
-            var agent, data, problem_triggers, _i, _len, _ref, _results;
-            data = result.data;
-            _this.online_agents = [];
-            _this.offline_agents = [];
+            var problem_triggers;
             _this.cron_status = result.data.cronStatus;
             _this.error_status = result.data.errorStatus;
             _this.apc_status = result.data.apcStatus;
-            _this.version_info = result.data.versionInfo;
             _this.quick_stats = result.data.quickStats;
-            _this.last_login = result.data.lastLogin.last_login;
-            if (_this.last_login) {
-              _this.last_login.date_created_d = new Date(_this.last_login.date_created_ts * 1000);
-            }
             problem_triggers = [_this.cron_status.is_problem, _this.error_status.error_count > 0, _this.error_status.gateway_error_count > 0, _this.error_status.sendmail_error_count > 0, _this.apc_status.is_problem];
-            _this.is_server_problem = problem_triggers.filter(function(x) {
+            return _this.is_server_problem = problem_triggers.filter(function(x) {
               return !!x;
             }).length > 0;
-            _ref = data.agents.agents;
-            _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              agent = _ref[_i];
-              if (agent.is_online_now || agent.id === DP_PERSON_ID) {
-                _results.push(_this.online_agents.push(agent));
-              } else {
-                _results.push(_this.offline_agents.push(agent));
-              }
-            }
-            return _results;
           };
         })(this));
         this.Api.sendDataGet({
@@ -89,6 +87,55 @@
           };
         })(this));
         return promise;
+      };
+
+      Admin_Main_Ctrl_Home.prototype.refreshAgents = function() {
+        return this.service.agents.all(true).then((function(_this) {
+          return function(agents) {
+            var agent, i, index, list, state, _agent, _i, _j, _len, _len1;
+            for (_i = 0, _len = agents.length; _i < _len; _i++) {
+              agent = agents[_i];
+              if (_this.agentsMap[agent.id] == null) {
+                if (agent.is_online_now || agent.id === DP_PERSON_ID) {
+                  _this.online_agents.push(agent);
+                  _this.agentsMap[agent.id] = 'online_agents';
+                } else if (agent.date_last_login == null) {
+                  _this.unactive_agents.push(agent);
+                  _this.agentsMap[agent.id] = 'unactive_agents';
+                } else {
+                  _this.offline_agents.push(agent);
+                  _this.agentsMap[agent.id] = 'offline_agents';
+                }
+              } else {
+                state = 'offline_agents';
+                if (agent.is_online_now || agent.id === DP_PERSON_ID) {
+                  state = 'online_agents';
+                } else if (agent.date_last_login == null) {
+                  state = 'unactive_agents';
+                }
+                if (_this.agentsMap[agent.id] !== state) {
+                  list = _this[_this.agentsMap[agent.id]];
+                  index = -1;
+                  for (i = _j = 0, _len1 = list.length; _j < _len1; i = ++_j) {
+                    _agent = list[i];
+                    if (_agent.id === agent.id) {
+                      index = i;
+                      break;
+                    }
+                  }
+                  if (-1 !== index) {
+                    list.splice(index, 1);
+                  }
+                  _this[state].push(agent);
+                  _this.agentsMap[agent.id] = state;
+                }
+              }
+            }
+            return _this.$timeout((function() {
+              return _this.refreshAgents();
+            }), 60 * 1000);
+          };
+        })(this));
       };
 
       Admin_Main_Ctrl_Home.prototype.loadMethodTests = function() {
@@ -169,7 +216,8 @@
         }
         this.startSpinner('saving_new_agent');
         return this.Api.sendPutJson('/agents', postData).then((function(_this) {
-          return function() {
+          return function(data) {
+            _this.unactive_agents.push(data.data);
             return _this.stopSpinner('saving_new_agent').then(function() {
               _this.$scope.created_agent = _this.$scope.new_agent;
               return _this.$scope.new_agent = {};

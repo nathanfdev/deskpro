@@ -189,6 +189,12 @@
 		'groupId'        => 'tickets',
 		'name'           => 'DeskPRO:emails_user:ticket-rate.html.twig'
 	),
+	array(
+		'typeId'         => 'user',
+		'groupId'        => 'tickets',
+		'name'           => 'DeskPRO:emails_common:ticket-rating-links.html.twig',
+		'type'           => 'template',
+	),
 
 	//--------------------
 	// Account

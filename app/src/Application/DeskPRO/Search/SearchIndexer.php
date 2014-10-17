@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -35,8 +35,15 @@
 namespace Application\DeskPRO\Search;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Queue\Queue;
-use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\ChatConversation;
 
 /**
  * When something needs to be indexed, index it through this
@@ -44,53 +51,103 @@ use Doctrine\ORM\EntityManager;
 class SearchIndexer
 {
 	/**
-	 * Entity manager
-	 * @var \Doctrine\ORM\EntityManager
+	 * @var DeskproContainer
 	 */
-	protected $em;
+	private $container;
 
 	/**
-	 * Plain database connection for raw queries
-	 * @var \Application\DeskPRO\DBAL\Connection
+	 * @param DeskproContainer $container
 	 */
-	protected $db;
-
-	/**
-	 * @var \Application\DeskPRO\Queue\Queue
-	 */
-	protected $queue;
-
-	public function __construct(EntityManager $em, Queue $queue)
+	public function __construct(DeskproContainer $container)
 	{
-		$this->em = $em;
-		$this->db = $em->getConnection();
-		$this->queue = $queue;
+		$this->container = $container;
 	}
 
-	public function update($object, $op = 'update')
+	public function handle(array $updates, array $deletes)
 	{
-		$type = \Orb\Util\Util::getBaseClassname($object);
+		#------------------------------
+		# Elastic
+		#------------------------------
 
-		// These flags are used in the importer
-		if (isset($GLOBALS['DP_INDEX_REALTIME']) || in_array($type, array('Article', 'Download', 'Feedback', 'News'))) {
-			$this->updateNow($object, $op);
-			return;
-		}
-		if (isset($GLOBALS['DP_INDEX_NOINDEX'])) {
-			return;
-		}
+		if ($this->container->getSetting('elastica.enabled')) {
+			$updates_by_type = array();
+			$deletes_by_type = array();
 
-		$content_type = App::getContainer()->getSearchAdapter()->getContentTypeNameForObject($object);
+			$get_persister = function($object) {
+				switch (true) {
+					case $object instanceof Article:
+						return 'fos_elastica.object_persister.deskpro.article';
+					case $object instanceof News:
+						return 'fos_elastica.object_persister.deskpro.news';
+					case $object instanceof Download:
+						return 'fos_elastica.object_persister.deskpro.download';
+					case $object instanceof Feedback:
+						return 'fos_elastica.object_persister.deskpro.feedback';
+					case $object instanceof Ticket:
+						return 'fos_elastica.object_persister.deskpro.ticket';
+					case $object instanceof Person:
+						return 'fos_elastica.object_persister.deskpro.person';
+					case $object instanceof Organization:
+						return 'fos_elastica.object_persister.deskpro.organization';
+					case $object instanceof ChatConversation:
+						return 'fos_elastica.object_persister.deskpro.chat_conversation';
+				}
+				return null;
+			};
 
-		$this->queue->send(array('entity_class' => get_Class($object), 'id' => $object->getId(), 'op' => $op));
-	}
+			foreach ($updates as $object) {
+				$persister_id = $get_persister($object);
+				if ($persister_id) {
+					if (!isset($updates_by_type[$persister_id])) {
+						$updates_by_type[$persister_id] = array();
+					}
+					$updates_by_type[$persister_id][] = $object;
+				}
+			}
+			foreach ($deletes as $object) {
+				$persister_id = $get_persister($object);
+				if ($persister_id) {
+					if (!isset($deletes_by_type[$persister_id])) {
+						$deletes_by_type[$persister_id] = array();
+					}
+					$deletes_by_type[$persister_id][] = $object;
+				}
+			}
 
-	public function updateNow($object, $op = 'update')
-	{
-		if ($op == 'update') {
-			App::getContainer()->getSearchAdapter()->updateObjectsInIndex(array($object));
+			foreach ($updates_by_type as $persister_id => $objects) {
+				$persister = $this->container->get($persister_id);
+				$persister->replaceMany($objects);
+			}
+			foreach ($deletes_by_type as $persister_id => $objects) {
+				$persister = $this->container->get($persister_id);
+				$persister->deleteMany($objects);
+			}
+
+		#------------------------------
+		# Default
+		#------------------------------
+
 		} else {
-			App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex(array($object));
+			foreach ($updates as $object) {
+				switch (true) {
+					case $object instanceof Article:
+					case $object instanceof News:
+					case $object instanceof Download:
+					case $object instanceof Feedback:
+						App::getContainer()->getSearchAdapter()->updateObjectsInIndex(array($object));
+						break;
+				}
+			}
+			foreach ($deletes as $object) {
+				switch (true) {
+					case $object instanceof Article:
+					case $object instanceof News:
+					case $object instanceof Download:
+					case $object instanceof Feedback:
+						App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex(array($object));
+						break;
+				}
+			}
 		}
 	}
 }

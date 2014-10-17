@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -99,6 +99,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		);
 
 		$executor_context->setEmailContext($this->reader);
+		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
 		#------------------------------
 		# Read in email props and create cutter
@@ -139,6 +140,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			}
 
 			$message = App::getMailer()->createMessage();
+			$message->setSuppressAutoreplies(true);
 			$message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
 				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
 				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
@@ -150,6 +152,10 @@ class ProcessAgentFwd extends ProcessAbstract
 				'message.eml',
 				'message/rfc822'
 			));
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
 
 			App::getMailer()->send($message);
 
@@ -196,6 +202,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
 		$ticket_message = new TicketMessage();
 		$ticket_message->person = $user;
+		$ticket_message->creation_system = 'gateway.agent';
 
 		$body = $fwd_cutter->getForwardedMessage();
 		$body = $this->cleanBodyText($body);
@@ -217,6 +224,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			$agent_ticket_message->date_created->modify('+1 second');
 			$agent_ticket_message->person = $this->person;
 			$agent_ticket_message->setMessageHtml($agent_reply);
+			$agent_ticket_message->creation_system = 'gateway.agent';
 			$ticket->addMessage($agent_ticket_message);
 			$ticket->setStatus('awaiting_user');
 		}
@@ -322,6 +330,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		);
 
 		$executor_context->setEmailContext($this->reader);
+		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
 		$user_raw_source = $has_eml_attach->getFileContents();
 		$user_reader = new EzcReader();
@@ -353,11 +362,57 @@ class ProcessAgentFwd extends ProcessAbstract
 		}
 
 		#------------------------------
+		# Verify forward
+		#------------------------------
+
+		$person_email_item = $user_reader->getFromAddress();
+
+		$bad_email = false;
+		$bad_body  = false;
+
+		if (!$person_email_item || !$person_email_item->getEmail()) {
+			$bad_email = true;
+		}
+
+		if (!$user_reader->getBodyHtml()->getBodyUtf8() && !$user_reader->getBodyText()->getBodyUtf8()) {
+			$bad_body = true;
+		}
+
+		if ($bad_email || $bad_body) {
+			if ($bad_email) {
+				$this->setError(EmailSource::ERR_INVALID_FWD_EMAIL);
+			} else {
+				$this->setError(EmailSource::ERR_INVALID_FWD);
+			}
+
+			$message = App::getMailer()->createMessage();
+			$message->setSuppressAutoreplies(true);
+			$message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', array(
+				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+				'error'   => $this->error
+			));
+			$message->setTo($this->reader->getFromAddress()->getEmail());
+			$message->attach(\Swift_Attachment::newInstance(
+				$this->reader->getRawSource(),
+				'message.eml',
+				'message/rfc822'
+			));
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
+
+			App::getMailer()->send($message);
+
+			return null;
+		}
+
+		#------------------------------
 		# Find person
 		#------------------------------
 
 		$person_processor = new PersonFromEmailProcessor();
-		$person_email_item = $user_reader->getFromAddress();
 
 		$user = $person_processor->findPerson($person_email_item);
 		if ($user) {
@@ -384,6 +439,7 @@ class ProcessAgentFwd extends ProcessAbstract
 
 		$ticket_message = new TicketMessage();
 		$ticket_message->person = $user;
+		$ticket_message->creation_system = 'gateway.agent';
 
 		if ($user_reader->getBodyHtml() && $user_reader->getBodyHtml()->body_utf8) {
 			$this->logMessage('[TicketGatewayProcessor] (User) Reading html');
@@ -415,6 +471,7 @@ class ProcessAgentFwd extends ProcessAbstract
 			$agent_ticket_message->date_created->modify('+1 second');
 			$agent_ticket_message->person = $this->person;
 			$agent_ticket_message->setMessageHtml($agent_reply);
+			$agent_ticket_message->creation_system = 'gateway.agent';
 			$ticket->addMessage($agent_ticket_message);
 			$ticket->setStatus('awaiting_user');
 		}

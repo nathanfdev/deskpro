@@ -70,7 +70,29 @@
         });
       }
 
-      DeskPRO_CategoryBuilder_Controller.prototype.updateOrder = function() {};
+      DeskPRO_CategoryBuilder_Controller.prototype.updateOrder = function() {
+        var cat_rows, order, row, rowId, viewValue, _i, _len;
+        order = 10;
+        cat_rows = this.cat_rows;
+        this.$element.find('.dp-cb-row').each(function() {
+          var rowId;
+          rowId = $(this).data('cat-id');
+          if (!rowId || !cat_rows[rowId]) {
+            return;
+          }
+          cat_rows[rowId].display_order = order;
+          return order += 10;
+        });
+        viewValue = this.ngModel.$viewValue || [];
+        for (_i = 0, _len = viewValue.length; _i < _len; _i++) {
+          row = viewValue[_i];
+          rowId = row.id;
+          if (rowId && cat_rows[rowId]) {
+            row.display_order = cat_rows[rowId].display_order;
+          }
+        }
+        return this.ngModel.$setViewValue(viewValue);
+      };
 
       DeskPRO_CategoryBuilder_Controller.prototype.setModel = function(ngModel) {
         this.ngModel = ngModel;
@@ -181,7 +203,7 @@
 
       DeskPRO_CategoryBuilder_Controller.prototype.renderRow = function(cat) {
         var newRow, rowScope, tpl;
-        tpl = "<li class=\"dp-cb-row\">\n	<div class=\"dp-cb-titlewrap\">\n		<div class=\"dp-cb-row-move\"><i class=\"fa fa-bars\"></i></div>\n		<div class=\"dp-cb-row-controls\">\n			<i class=\"fa fa-times-circle remove-trigger\"></i>\n		</div>\n		<div class=\"dp-cb-row-indent\"></div>\n		<span class=\"title-id\" title=\"ID\" ng-if=\"cat.id && !cat.is_new\">#<span ng-bind=\"cat.id\"></span></span>\n		<span class=\"title-id\" title=\"ID will be generated after you save\" ng-if=\"cat.is_new\">?</span>\n		<input type=\"text\" class=\"form-control dp-cb-input\" ng-model=\"cat.title\" placeholder=\"Enter title...\" />\n	</div>\n	<ul ui-sortable=\"sortedListOptions\"></ul>\n</li>";
+        tpl = "<li class=\"dp-cb-row\" data-cat-id=\"{{cat.id}}\">\n	<div class=\"dp-cb-titlewrap\">\n		<div class=\"dp-cb-row-move\"><i class=\"fa fa-bars\"></i></div>\n		<div class=\"dp-cb-row-controls\">\n			<i class=\"fa fa-times-circle remove-trigger\"></i>\n		</div>\n		<div class=\"dp-cb-row-indent\"></div>\n		<span class=\"title-id\" title=\"ID\" ng-if=\"cat.id && !cat['@is_new']\">#<span ng-bind=\"cat.id\"></span></span>\n		<span class=\"title-id\" title=\"ID will be generated after you save\" ng-if=\"cat['@is_new']\">?</span>\n		<input type=\"text\" class=\"form-control dp-cb-input\" ng-model=\"cat.title\" placeholder=\"Enter title...\" />\n	</div>\n	<ul ui-sortable=\"sortedListOptions\"></ul>\n</li>";
         rowScope = this.$scope.$new();
         rowScope.sortedListOptions = this.$scope.sortedListOptions;
         rowScope.cat = cat;
@@ -196,6 +218,21 @@
         viewValue.push(catData);
         this.ngModel.$setViewValue(viewValue);
         return this.updateView(viewValue);
+      };
+
+      DeskPRO_CategoryBuilder_Controller.prototype.getMaxDisplayOrder = function(parentId) {
+        var max, row, viewValue, _i, _len;
+        max = 10;
+        viewValue = this.ngModel.$viewValue || [];
+        for (_i = 0, _len = viewValue.length; _i < _len; _i++) {
+          row = viewValue[_i];
+          if ((parentId && ((row.parent_id != null) && (row.parent_id + "") === (parentId + ""))) || !parentId) {
+            if (row.display_order >= max) {
+              max = row.display_order + 10;
+            }
+          }
+        }
+        return max;
       };
 
       DeskPRO_CategoryBuilder_Controller.prototype.addNewCatFromTrigger = function(triggerEl) {
@@ -216,7 +253,7 @@
           "@is_new": true,
           title: title,
           parent_id: parent_id,
-          display_order: 0
+          display_order: this.getMaxDisplayOrder(parent_id)
         };
         if (rowEl.data('parentId')) {
           catData.parent_id = rowEl.data('parentId');

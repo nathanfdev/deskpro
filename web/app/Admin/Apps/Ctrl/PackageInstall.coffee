@@ -97,8 +97,25 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 				listCtrl = @$scope.$parent.ListCtrl
 
 			setting_values = @$scope.setting_values
+			pack = @pack
 
-			return @Api.sendPutJson("/apps/packages/#{@packageName}", {settings: setting_values}).success( (info) =>
+			defer = @$q.defer()
+			modalInstance = @$modal.open({
+				templateUrl: @getTemplatePath('Apps/install-progress-modal.html'),
+				controller: 'Admin_Apps_Ctrl_InstallProgress',
+				resolve: {
+					pack: ->
+						return pack
+					setting_values: ->
+						return setting_values
+				}
+			}).result.then( (info) =>
+				defer.resolve(info)
+			, (info) =>
+				defer.reject(info)
+			)
+
+			defer.promise.then( (info) =>
 				if listCtrl
 					instanceInfo = {
 						id: info.id,
@@ -109,6 +126,8 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 					listCtrl.addAppInstance(instanceInfo)
 
 				@$state.go('apps.apps.instance', {id: info.id});
-			);
+			)
+
+			return defer.promise
 
 	Admin_Apps_Ctrl_PackageInstall.EXPORT_CTRL()

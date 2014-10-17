@@ -1,5 +1,7 @@
 (function() {
-  define(function() {
+  var __hasProp = {}.hasOwnProperty;
+
+  define(['DeskPRO/Util/Util'], function(Util) {
     var LayoutEditorField;
     LayoutEditorField = (function() {
       function LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout) {
@@ -57,7 +59,7 @@
       };
 
       LayoutEditorField.prototype.openOptions = function() {
-        var inst, tpl;
+        var field, inst, tpl;
         if (this.scope.type === 'user') {
           tpl = 'ticketdeps_layouteditor_user_options';
         } else {
@@ -66,11 +68,12 @@
         if (!this.scope.field.options) {
           this.scope.field.options = {};
         }
+        field = this.scope.field;
         return inst = this.$modal.open({
           templateUrl: tpl,
           controller: [
             '$scope', '$modalInstance', 'options', 'typeDef', function($scope, $modalInstance, options, typeDef) {
-              var _ref, _ref1;
+              var t, terms, _, _i, _len, _ref, _ref1, _ref2, _ref3;
               if (options.criteria == null) {
                 options.criteria = {};
               }
@@ -80,11 +83,25 @@
               if (!((_ref1 = options.criteria) != null ? _ref1.mode : void 0)) {
                 options.criteria.mode = 'all';
               }
-              $scope.options = options;
-              $scope.with_criteria = false;
-              if ($scope.options.criteria.terms.length) {
-                $scope.with_criteria = true;
+              $scope.formOptions = {
+                with_criteria: false
+              };
+              if (Util.isArray(options.criteria.terms)) {
+                terms = {};
+                _ref2 = options.criteria.terms;
+                for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
+                  t = _ref2[_i];
+                  terms[Util.uid('t')] = t;
+                }
+                options.criteria.terms = terms;
               }
+              _ref3 = options.criteria.terms;
+              for (_ in _ref3) {
+                if (!__hasProp.call(_ref3, _)) continue;
+                $scope.formOptions.with_criteria = true;
+                break;
+              }
+              $scope.options = options;
               $scope.criteriaOptions = [];
               $scope.criteriaOptions.push({
                 title: 'Department',
@@ -107,9 +124,12 @@
                 value: 'CheckWorkflow'
               });
               $scope.criteriaTypesDef = typeDef;
+              $scope.dismiss = function() {
+                return $modalInstance.dismiss();
+              };
               return $scope.done = function() {
-                if (!$scope.with_criteria) {
-                  $scope.options.criteria.terms.length = 0;
+                if (!$scope.formOptions.with_criteria) {
+                  $scope.options.criteria.terms = {};
                 }
                 return $modalInstance.dismiss();
               };
@@ -143,7 +163,19 @@
         TicketFields = DataService.get('TicketFields');
         UserFields = DataService.get('UserFields');
         directive.link = function(scope, element, attrs, ngModel) {
-          var handler;
+          var handler, _ref, _ref1;
+          if (!scope.field.options) {
+            scope.field.options = {};
+          }
+          if (scope.field.options.criteria == null) {
+            scope.field.options.criteria = {};
+          }
+          if (!((_ref = scope.field.options.criteria) != null ? _ref.terms : void 0)) {
+            scope.field.options.criteria.terms = {};
+          }
+          if (!((_ref1 = scope.field.options.criteria) != null ? _ref1.mode : void 0)) {
+            scope.field.options.criteria.mode = 'all';
+          }
           return handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout);
         };
         return directive;

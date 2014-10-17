@@ -189,9 +189,24 @@
 	'core.default_timezone' => 'UTC',
 
 	/**
+	 * The default 2-letter country code (ISO 3166-1 alpha-2 format)
+	 */
+	'core.default_country_code' => 'US',
+
+	/**
 	 * Use gravatar for default avatars?
 	 */
 	'core.use_gravatar' => 0,
+
+	/**
+	 * Enable remember-me for agents?
+	 */
+	'core.enable_agent_rememberme' => true,
+
+	/**
+	 * Enable remember-me for users?
+	 */
+	'core.enable_user_rememberme' => true,
 
 	/**
 	 * How long, in seconds, are sessions valid for?
@@ -280,6 +295,13 @@
 	 */
 	'core.attach_user_not_exts' => null,
 
+	'core.emails.attach_agent_maxsize' => '26214400',
+	'core.emails.attach_agent_must_exts' => null,
+	'core.emails.attach_agent_not_exts' => null,
+	'core.emails.attach_user_maxsize' => '26214400',
+	'core.emails.attach_user_must_exts' => null,
+	'core.emails.attach_user_not_exts' => null,
+
 	/**
 	 * True to have the DeskPRO local user source enabled
 	 */
@@ -330,6 +352,11 @@
 	'core.apps_downloads' => 1,
 
 	/**
+	 * Maximum SMS chunks to send for a single message
+	 */
+	'core.max_sms_chunks' => 5,
+
+	/**
 	 * Max email size to read from gateways
 	 */
 	'core.gateway_max_email' => 41943040,
@@ -369,8 +396,13 @@
 	 */
 	'core.ga_property_id' => '',
 
+
 	/**
-	 * Number of allowed requests to the API per hour. 0 to disable.
+	 * Interval to limit allowed requests to API in seconds
+	 */
+	'core.api_rate_limit_interval' => 60,
+	/**
+	 * Number of allowed requests to the API per interval. 0 to disable.
 	 */
 	'core.api_rate_limit' => defined('DPC_IS_CLOUD') ? 1000 : 0,
 
@@ -399,6 +431,19 @@
 
 	'core.agent_translate_debug' => false,
 	'core.agent_enable_kb_shortcuts' => true,
+
+	/**#@+
+	 * If agents can create various labels
+	 */
+	'labels.downloads.agent_can_create'     => true,
+	'labels.feedback.agent_can_create'      => true,
+	'labels.articles.agent_can_create'      => true,
+	'labels.news.agent_can_create'          => true,
+	'labels.organizations.agent_can_create' => true,
+	'labels.people.agent_can_create'        => true,
+	'labels.tickets.agent_can_create'       => true,
+	'labels.chat.agent_can_create'          => true,
+	/**#@-*/
 
 	####################################################################################################################
 	# core_tickets
@@ -444,8 +489,7 @@
 	'core_tickets.use_archive' => 0,
 	'core_tickets.auto_archive_time' => 2419000,
 
-	'core_tickets.enable_like_search_mode' => 'auto',
-	'core_tickets.enable_like_search_auto' => true,
+	'core_tickets.enable_like_search_mode' => true,
 
 	// True to force agent emails to have the marker line
 	'core_tickets.gateway_agent_require_marker' => true,
@@ -472,6 +516,7 @@
 	 * Process FW agent emails as forwards
 	 */
 	'core_tickets.process_agent_fwd' => true,
+	'core_tickets.agent_fwd_subject_regex' => null,
 
 	'core_tickets.lock_on_view' => false,
 	'core_tickets.unlock_on_close' => false,
@@ -726,6 +771,7 @@
 	'user.portal_tab_feedback' => 1,
 	'user.portal_tab_tickets' => 1,
 	'user.disable_chat_element' => false,
+	'user.portal_default_news_cat' => 0,
 
 	'user.show_ratings' => true,
 	'user.show_ratings_min_votes' => 1,
@@ -773,6 +819,10 @@
 	'agent.password_policy.require_num_lowercase' => 0,
 	'agent.password_policy.require_num_number' => 0,
 	'agent.password_policy.require_num_symbol' => 0,
+	
+	'agent.ip_security.enabled'            => false,
+	'agent.ip_security.mode'               => 'agents,admins',
+	'agent.ip_security.whitelist_lifetime' => 1814400,
 
 	####################################################################################################################
 	# user_style

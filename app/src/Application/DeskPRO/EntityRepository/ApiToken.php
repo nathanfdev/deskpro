@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -80,12 +80,13 @@ class ApiToken extends AbstractEntityRepository
 			));
 		}
 
+		$interval = (int) App::getSetting('core.api_rate_limit_interval');
 		if (!$rate_limit || $rate_limit['reset_stamp'] <= time()) {
 			$rate_limit = array(
 				'api_token_id' => $api_token->id,
 				'hits' => 0,
 				'created_stamp' => time(),
-				'reset_stamp' => time() + 3600
+				'reset_stamp' => time() + $interval
 			);
 		}
 
@@ -96,12 +97,13 @@ class ApiToken extends AbstractEntityRepository
 	{
 		$time = time();
 
+		$interval = (int) App::getSetting('core.api_rate_limit_interval');
 		App::getDb()->executeUpdate("
 			INSERT INTO api_token_rate_limit
 				(api_token_id, hits, created_stamp, reset_stamp)
 			VALUES
 				(?, 1, ?, ?)
 			ON DUPLICATE KEY UPDATE hits = hits + 1
-		", array($api_token->person->id, $time, $time + 3600));
+		", array($api_token->id, $time, $time + $interval));
 	}
 }

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\PermissionCache;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\People\PermissionLoader\Usergroups;
 use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Util;
 
@@ -100,18 +101,30 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	protected $admin_god_mode = false;
 
 	/**
+	 * Permission records loaded?
+	 * @var bool
+	 */
+	protected $is_loaded = false;
+
+	/**
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
 	public function __construct(Person $person)
 	{
 		$this->person = $person;
 
-		$this->usergroup_ids = App::getDb()->fetchAllCol("
-			SELECT person2usergroups.usergroup_id
-			FROM person2usergroups
-			LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
-			WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
-		", array($this->person['id']));
+		$agent_data = App::$container->getAgentData();
+
+		if ($agent_data->has($person->id)) {
+			$this->usergroup_ids = $agent_data->getGroupIdsForAgent($person);
+		} else {
+			$this->usergroup_ids = App::getDb()->fetchAllCol("
+				SELECT person2usergroups.usergroup_id
+				FROM person2usergroups
+				LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id
+				WHERE person2usergroups.person_id = ? AND usergroups.is_enabled = 1
+			", array($this->person['id']));
+		}
 
 		$everyone_ug = App::$container->getUserGroups()->getEveryoneGroup();
 		if ($everyone_ug && $everyone_ug->is_enabled) {
@@ -146,7 +159,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		$this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
 
 		if ($this->person->is_agent) {
-			$this->usergroups_key = md5($this->usergroups_key . 'agent-' . $this->person->id);
+			$this->usergroups_key = $this->usergroups_key . '-person-' . $this->person->id;
 		}
 
 		\DpShutdown::add(array($this, 'flushCache'));
@@ -237,24 +250,34 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 		# Fetch from the cache first
 		#-------------------------
 
-		$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->getId(), $this->queued_types);
+		if (!$this->is_loaded && !isset($GLOBALS['DP_CONFIG']['disable_permissions_cache'])) {
+			$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->person->getId());
 
-		foreach ($caches as $cache) {
-			$loader = $cache->perms;
-			$name = Util::getBaseClassname($loader);
+			foreach ($caches as $cache) {
+				$loader = $cache;
+				$name   = Util::getBaseClassname($loader);
 
-			if ($loader instanceof PersonContextInterface) {
-				$loader->setPersonContext($this->person);
+				if ($loader instanceof PersonContextInterface) {
+					$loader->setPersonContext($this->person);
+				}
+
+				// Cache for 'usergroups' (which has perms) must be cache for the agent
+				if ($loader instanceof Usergroups) {
+					if ($this->person && $this->person->is_agent && strpos($loader->loaded_key, '-person-') === false) {
+						continue;
+					}
+				}
+
+				$this->loaders[strtolower($name)] = $loader;
 			}
-
-			$this->loaders[strtolower($name)] = $loader;
 		}
+
+		$this->is_loaded = true;
 
 		#-------------------------
 		# Load the rest for the first time
 		#-------------------------
 
-		$do_cache = array();
 		$queued_types = $this->queued_types;
 		$this->queued_types = array();
 
@@ -273,7 +296,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 
 			$this->loaders[strtolower($name)] = $loader;
 
-			if (!($loader instanceof \Application\DeskPRO\People\PermissionLoader\NoCache)) {
+			if (!($loader instanceof \Application\DeskPRO\People\PermissionLoader\NoCache) && !isset($GLOBALS['DP_CONFIG']['disable_permissions_cache'])) {
 				$this->dirty_caches[] = PermissionCache::newFromLoader($loader, $this->person->getId());
 			}
 		}

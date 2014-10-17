@@ -123,7 +123,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					if (ticketRoute) {
-						DeskPRO_Window.runPageRoute(ticketRoute);
+						DeskPRO_Window.runPageRoute(ticketRoute, {noToggle: true, focus: true});
 					}
 
 					if (DeskPRO_Window.newArticleLoader) {

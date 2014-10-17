@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -184,6 +184,8 @@ class LayoutUpgrader
 
 		foreach ($this->form_new as $old_field) {
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+			
 			$field->enableOnNew();
 			$field->enableOnView();
 			$field->enableOnEdit();
@@ -191,6 +193,8 @@ class LayoutUpgrader
 		}
 		foreach ($this->form_view as $old_field) {
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			if ($layout->has($field->getId())) {
 				$field = $layout->get($field->getId());
 			} else {
@@ -203,6 +207,8 @@ class LayoutUpgrader
 		}
 		foreach ($this->form_edit as $old_field) {
 			$field = $this->convertField($old_field);
+			if (!$field) continue;
+
 			if ($layout->has($field->getId())) {
 				$field = $layout->get($field->getId());
 			} else {

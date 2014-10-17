@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -35,6 +35,7 @@ namespace Application\UserBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\CarryAdminSession;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Orb\Util\Strings;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -86,6 +87,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public function preAction($action, $arguments = null)
 	{
 		$this->person = $this->session->getPerson();
+
+		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+				'ip' => dp_get_user_ip_address()
+			));
+		}
 
 		if (
 			($set_lang_id = $this->in->getString('language_id'))

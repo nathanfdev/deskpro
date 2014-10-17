@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -114,7 +114,7 @@ class LdapRaw implements FormLoginInterface, Loggable
 	public function getZendAuthAdapter()
 	{
 		$options = array();
-		foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn') as $k) {
+		foreach (array('host', 'port', 'baseDn', 'username', 'password', 'accountFilterFormat', 'accountCanonicalForm', 'bindRequiresDn', 'useStartTls', 'useSsl') as $k) {
 			if (isset($this->options[$k]) && $this->options[$k]) {
 				$options[$k] = $this->options[$k];
 			}
@@ -228,7 +228,9 @@ class LdapRaw implements FormLoginInterface, Loggable
 					$raw_info['picture_data'] = Arrays::getFirstItem($rec->getAttribute('thumbnailPhoto'));
 				}
 			}
-		} catch (\Exception $e) {}
+		} catch (\Exception $e) {
+			return new Result(Result::FAILURE_EXCEPTION, null, array('error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e));
+		}
 
 		$identity = new Identity($raw_info['identity'], $raw_info);
 

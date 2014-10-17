@@ -1,5 +1,6 @@
 <?php return array(
 	'user.downloads.button-download'                                       => 'Descarga',
+	'user.downloads.change_file'                                           => 'Cambia archivo',
 	'user.downloads.downloads-count'                                       => 'El archivo ha sido descargado una vez|El archivo ha sido descargado {{count}} veces',
 	'user.downloads.file_not_found'                                        => 'El archivo no se ha encontrado',
 	'user.downloads.message_no-files'                                      => 'No hay archivos en esta carpeta.',

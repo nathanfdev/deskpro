@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -39,45 +39,47 @@ use Application\DeskPRO\Service\ErrorReporter;
 use DeskPRO\Kernel\License;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
+use Orb\Util\Files;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ServerReportFile
 {
 	/**
+	 * @var int
+	 */
+	private $max_file_size = 250000;
+
+	/**
 	 * @var \Application\DeskPRO\ORM\EntityManager
 	 */
-
 	protected $em;
 
 	/**
 	 * @var string
 	 */
-
 	protected $tmpdir = '';
 
 	/**
 	 * @var string
 	 */
-
 	protected $file_name = 'deskpro-report.zip';
 
 	/**
 	 * @var string
 	 */
-
 	protected $archive_file = '';
 
 	/**
 	 * @var array - this is mapping array between file name and method of this class that creates file content
 	 */
-
 	protected $files_added_to_archive = array(
 		'phpinfo-web.html'      => '_createPhpInfoFile',
 		'phpinfo-cli.txt'       => '_createCliInfoFile',
 		'errorlog-deskpro.txt'  => '_createDeskPROErrorLog',
 		'errorlog-web.txt'      => '_createWebErrorLog',
 		'errorlog-cli.txt'      => '_createCliErrorLog',
+		'upgrade-log.txt'       => '_createUpgradeLog',
 		'mysql-schema.sql'      => '_createMysqlSchema',
 		'mysql-status.txt'      => '_createMysqlStatus',
 		'mysql-vars.txt'        => '_createMysqlVariables',
@@ -86,12 +88,12 @@ class ServerReportFile
 		'cron-status.txt'       => '_createCronStatus',
 		'license.txt'           => '_createLicense',
 		'file-integrity.txt'    => '_createFileIntegrity',
+		'templates.txt'         => '_createTemplates',
 	);
 
 	/**
 	 * @param EntityManager $em
 	 */
-
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;
@@ -112,7 +114,6 @@ class ServerReportFile
 	 *
 	 * @param string $file_check_results - string with results of integrity file checks
 	 */
-
 	public function saveFileCheckResults($file_check_results)
 	{
 		try {
@@ -127,7 +128,6 @@ class ServerReportFile
 	/**
 	 * Actually outputs the archive as downloadable attachment
 	 */
-
 	public function outputArchive()
 	{
 		header('Content-Type: application/zip; filename=' . $this->file_name);
@@ -154,7 +154,6 @@ class ServerReportFile
 	/**
 	 * Creates archive with all needed files inside it
 	 */
-
 	public function createArchive()
 	{
 		$this->_addFilesToArchive();
@@ -177,7 +176,6 @@ class ServerReportFile
 	/**
 	 * This methods iterates over all of the $this->files_added_to_archive and creates all the needed files
 	 */
-
 	protected function _addFilesToArchive()
 	{
 		foreach($this->files_added_to_archive as $file_name => $func) {
@@ -189,7 +187,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createPhpInfoFile($file_name)
 	{
 		/**
@@ -212,7 +209,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createCliInfoFile($file_name)
 	{
 		/**
@@ -235,7 +231,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createDeskPROErrorLog($file_name)
 	{
 		$file = str_repeat('#', 72) . "\n# error.log\n" . str_repeat('#', 72) . "\n\n";
@@ -262,10 +257,9 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createWebErrorLog($file_name)
 	{
-		$file = str_repeat('#', 72) . "# server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
+		$file = str_repeat('#', 72) . "#\n server-phperr-web.log\n" . str_repeat('#', 72) . "\n\n";
 
 		$log_file_path = @ini_get('error_log');
 
@@ -296,10 +290,9 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createCliErrorLog($file_name)
 	{
-		$file = str_repeat('#', 72) . "# cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
+		$file = str_repeat('#', 72) . "#\n cli-phperr.log\n" . str_repeat('#', 72) . "\n\n";
 
 		try {
 
@@ -320,10 +313,29 @@ class ServerReportFile
 		}
 	}
 
+
+	/**
+	 * @param $file_name
+	 */
+	protected function _createUpgradeLog($file_name)
+	{
+		$file = str_repeat('#', 72) . "#\n upgrade.log\n" . str_repeat('#', 72) . "\n\n";
+
+		try {
+			$file .= $this->_readFile(dp_get_log_dir() . '/upgrade.log');
+		} catch(IOException $e) {
+			$file = '';
+		}
+		try {
+			$this->_createFile($this->tmpdir . '/' . $file_name, $file);
+		} catch(IOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMysqlSchema($file_name)
 	{
 		$sql = array();
@@ -356,7 +368,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMysqlStatus($file_name)
 	{
 		$sections = array();
@@ -395,7 +406,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMysqlVariables($file_name)
 	{
 		$sections = array();
@@ -434,7 +444,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMisc($file_name)
 	{
 		/**
@@ -498,10 +507,29 @@ class ServerReportFile
 		}
 	}
 
+	protected function _createTemplates()
+	{
+		$templates = App::getDb()->fetchAll("SELECT name, template_code, date_created, date_updated FROM templates");
+		$out = array();
+
+		foreach ($templates as $t) {
+			$out[] = ">>>>>>>>>>>>>>>>>>>> Template: {$t['name']} -- Created: {$t['date_created']} -- Updated: {$t['date_updated']} <<<<<<<<<<<<<<<<<<<<\n\n";
+			$out[] = $t['template_code'];
+			$out[] = "\n\n\n\n\n";
+		}
+
+		$out = trim(implode('', $out));
+
+		try {
+			$this->_createFile($this->tmpdir . '/' . 'templates.txt', $out);
+		} catch(IOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createMysqlSchemaDiff($file_name)
 	{
 		try {
@@ -531,7 +559,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createCronStatus($file_name)
 	{
 		/**
@@ -578,7 +605,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createLicense($file_name)
 	{
 		$license = License::getLicense();
@@ -626,7 +652,6 @@ class ServerReportFile
 	/**
 	 * @param string $file_name
 	 */
-
 	protected function _createFileIntegrity($file_name)
 	{
 		$fs = new Filesystem();
@@ -659,7 +684,6 @@ class ServerReportFile
 	 *
 	 * @throws \Symfony\Component\Filesystem\Exception\IOException
 	 */
-
 	protected function _createFile($file_name, $content)
 	{
 		if (@file_put_contents($file_name, $content) === false) {
@@ -677,12 +701,20 @@ class ServerReportFile
 	 *
 	 * @throws \Symfony\Component\Filesystem\Exception\IOException
 	 */
-
 	protected function _readFile($file_name)
 	{
-		if(($content = @file_get_contents($file_name)) === false) {
+		if (!file_exists($file_name)) {
+			return '';
+		}
 
-			throw new IOException('Could not read file under location - ' . $file_name);
+		try {
+			$content = Files::readFromEnd($file_name, $this->max_file_size);
+		} catch (\Exception $e) {
+			$content = false;
+		}
+
+		if ($content === false) {
+			$content = '(failed to read file)';
 		}
 
 		return $content;

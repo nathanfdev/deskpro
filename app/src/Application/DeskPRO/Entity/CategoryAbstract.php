@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -107,14 +107,14 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
 	public function setParent(CategoryAbstract $cat = null)
 	{
-		if ($cat && $cat->getId() == $this->getId()) {
+		if ($cat && $cat->getId() && $this->getId() && $cat->getId() == $this->getId()) {
 			throw new \InvalidArgumentException("Cannot set parent to self");
 		}
 
 		$this->setModelField('parent', $cat);
 
 		if ($cat) {
-			$this->setModelField('root', $cat->root ? $cat->root : $cat);
+			$this->setModelField('root', $cat->root ? $cat->root : $cat->id);
 			$this->setModelField('depth', $cat->depth + 1);
 		} else {
 			$this->setModelField('root', null);

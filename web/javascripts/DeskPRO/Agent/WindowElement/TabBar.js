@@ -25,32 +25,119 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.tabPane = $(this.options.tabPane);
 		this.tabList = this.tabPane.find('ul.dp-tab-list').first();
-		this.tabList2 = $('#dp_collapsed_tabs');
 		this.bodyPane = $(this.options.bodyPane);
 		this.menuBtn = $(this.options.menuBtn);
+		this.active = null;
 
 		this.tabCount = 0;
 
 		this.tabs = {};
+		this._tabs = [];
 		this.currentTabId = null;
-
-		this.tabPane.on('mouseup', this._tabStripClick.bind(this));
-		$('#dp_collapsed_tabs').on('mouseup', this._tabStripClick.bind(this));
+		this.initScope();
 
 		this.tabBarOverflow = new DeskPRO.Agent.WindowElement.TabBarOverflow();
+	},
 
+	initScope: function() {
 		var self = this;
-		this.tabList2.on('click', function(ev) {
-			ev.preventDefault();
-			DeskPRO_Window.setPaneVis('tabs', true);
+		this.$scope = DeskPRO_Window.$scope;
+		this.$timeout = DeskPRO_Window.$timeout;
+		this.$scope.tabs = this._tabs;
+		this.$scope.contextMenuTab = null;
+		this.$scope.tabClick = function($event, tab){ self._tabStripClick($event, tab); };
+		this.$scope.tabHistory = [];
 
-			var el = $(ev.target);
-			if (el.data('tab')) {
-				self.activateTab(el.data('tab'));
+		this.$scope.context = function(tab) {
+			self._filterTabHistory();
+			self.$scope.contextTab = tab;
+		};
+
+		this.$scope.closeAll = function(){
+			var tabs = [];
+			self._tabs.each(function(tab){ tabs.push(tab) });
+			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+		};
+
+		this.$scope.closeOthers = function(){
+			var tabs = [], active = self.getActiveTab();
+			self._tabs.each(function(tab){ tab !== active && tabs.push(tab) });
+			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+		};
+
+		this.$scope.closeCurrent = function(){
+			self.$timeout(function(){
+				self.$scope.contextTab && self.removeTab(self.$scope.contextTab);
+			}, 10);
+		};
+
+		this.$scope.reopenTab = function(tab){
+			window.DeskPRO_Window.runPageRoute(tab.route, {noToggle: true, focus: true});
+		};
+
+		this.$scope.$watch('tabs', function(tabs) {
+			self._filterTabHistory();
+		});
+
+		this.$scope.$watch('listItems', function(){
+			self._checkOpenedItems();
+		}, true);
+	},
+
+	_filterTabHistory: function() {
+		var tabRoutes = {}, i, t;
+		var tabHistory = []
+		for (i = 0; i < this.$scope.tabs.length; i++) {
+			t = this.$scope.tabs[i];
+			if (t.page && t.page.meta && t.page.meta.routeUrl) {
+				tabRoutes['page:' + t.page.meta.routeUrl] = true;
+			}
+		}
+		for (i = 0; i < this.$scope.tabHistory.length; i++) {
+			if (!tabRoutes[this.$scope.tabHistory[i].route]) {
+				tabHistory.push(this.$scope.tabHistory[i]);
+				tabRoutes[this.$scope.tabHistory[i].route] = true;
+			}
+		}
+		this.$scope.tabHistory = tabHistory;
+	},
+
+	_checkOpenedItems: function(){
+		var self = this;
+
+		this.$scope.listItems.each(function(item){
+			item.open = false;
+			for (var i = 0; i < self._tabs.length; i++) {
+				var tab = self._tabs[i];
+				if (tab.page && tab.page.meta.pageIdentity === item.identity) {
+					item.open = true;
+					return;
+				}
 			}
 		});
 	},
 
+	rescanTitles: function() {
+		var i, tab;
+		for (i = 0; i < this._tabs.length; i++) {
+			tab = this._tabs[i];
+			if (tab.page) {
+				var title = tab.page.getMetaData('title', null);
+				var classId = tab.page.getMetaData('tabClassId', '');
+
+				if (title) {
+					tab.title = title;
+				}
+				if (classId) {
+					classId = classId + '';
+				}
+				if (classId && classId.length) {
+					tab.classId = classId;
+				}
+			}
+		}
+		this.$scope.$safeApply();
+	},
 
 	//##################################################################################################################
 	// Methods to fetch tabs
@@ -162,6 +249,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	addTab: function(page) {
 
+		var self = this;
+
 		this.isAdding = true;
 
 		var id = Orb.uuid();
@@ -170,6 +259,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var data = {};
 		data.id = id;
 		data.page = page;
+		data.classId = page.getMetaData('tabClassId', '');
 		data.title = page.getMetaData('title', 'Untitled');
 		data.callback_render = function(container) {
 			container = $(container);
@@ -189,8 +279,11 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		data.isInited = false;
 
+		if (!this.tabs[id]) {
+			this.tabCount++;
+			$('body').removeClass('without-tabs').addClass('with-tabs');
+		}
 		this.tabs[id] = data;
-		this.tabCount++;
 
 		//----------
 		// Render content to dom
@@ -202,7 +295,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		if (page.meta.existingWrapper) {
 			data.wrapper = page.meta.existingWrapper;
 			data.wrapper.attr('id', data.wrapperId);
-			data.wrapper.attr('class', 'tabViewDetailContent test');
+			data.wrapper.attr('class', 'tabViewDetailContent');
 			data.wrapper.css('display', 'none');
 			data.wrapper.appendTo(this.bodyPane);
 		} else {
@@ -218,76 +311,51 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		//----------
 
 		data.tabBtnId = 'tabbtn_' + id;
+		data.tabType = null;
 
-		var tabIdClass = data.page.getMetaData('tabIdClass', '');
-		var html = '<li id="'+data.tabBtnId+'" data-tab-id="'+data.id+'" class="' + tabIdClass;
-
-			if (data.page.TYPENAME != 'basic') {
-				html += ' ' + data.page.TYPENAME;
+		if (page) {
+			if (page.TYPENAME_FOR) {
+				data.tabType = page.TYPENAME_FOR;
+			} else if (page.TYPENAME) {
+				data.tabType = page.TYPENAME;
 			}
-
-			if (data.page.LOADING_TYPENAME) {
-				html += ' ' + data.page.LOADING_TYPENAME;
-			}
-
-			html += '"><div class="item-hover-over-indicator"></div>';
-			html += '<a>';
-				html += '<i class="icon-globe dp-icon-placeholder"></i>'+Orb.escapeHtml(data.title)+'';
-			html += '</a>';
-			html += '<span class="bound-fade"></span>';
-			html += '<span class="close"></span>';
-		html += '</li>';
-
-		var html2 = '<li id="'+data.tabBtnId+'_2" data-tab-id="'+data.id+'" class="' + tabIdClass;
-			html2 += '">';
-			html2 += '<span class="tab-title"><label>'+Orb.escapeHtml(data.title)+'</label> <i class="icon-remove-sign close trigger-close-tab"></i></span>';
-		html2 += '</li>';
-
-		data.tabBtn = $(html);
-		data.tabBtn.data('tab', data);
-
-		if (data.page && data.page.meta.alert_id) {
-			data.tabBtn.addClass(data.page.meta.alert_id);
 		}
-
-		data.tabBtn2 = $(html2);
-		data.tabBtn2.data('tab', data);
 
 		var wasActive = false;
 		var otherTab = null;
+		var placeTab = this.getActiveTab();
+
 		if (data.page && data.page.meta.tabPlaceholderId) {
 			otherTab = this.getTab(data.page.meta.tabPlaceholderId);
 		}
 
+		// We may have had a placeholder, in which case we want to place
+		// the new tab where the old one was while also removing the placeholder
+		// content in the body pane
+
+		// insert new tab after placeholder that will be removed in a moment
+		if (otherTab && this._tabs.indexOf(otherTab) < this._tabs.length - 1) {
+			this._tabs.splice(this._tabs.indexOf(otherTab) + 1, 0, data);
+
+		// insert new tab after the currently selected tab
+		} else if (placeTab && this._tabs.indexOf(placeTab) < this._tabs.length - 1) {
+			this._tabs.splice(this._tabs.indexOf(placeTab) + 1, 0, data);
+
+		// just push it on to the end
+		} else {
+			this._tabs.push(data);
+		}
+
 		if (otherTab) {
-			// We may have had a placeholder, in which case we want to place
-			// the new tab where the old one was while also removing the placeholder
-			// content in the body pane
-
-			var otherTab = this.getTab(data.page.meta.tabPlaceholderId);
-			data.tabBtn.insertAfter(otherTab.tabBtn);
-			otherTab.tabBtn.remove();
-
-			data.tabBtn2.insertAfter(otherTab.tabBtn2);
-			otherTab.tabBtn2.remove();
-
 			if (this.currentTabId == otherTab.id) {
 				wasActive = true;
 				this.currentTabId = null;
 			}
 
 			this.removeTab(otherTab, true);
-
-		} else {
-			data.tabBtn.prependTo(this.tabList);
-			data.tabBtn2.appendTo(this.tabList2);
 		}
 
-		// If tabs are collapsed, then we need to re-calc
-		// the layout when adding a new tab in case the side navstrip is hidden (it was empty and now is not)
-		if (!DeskPRO_Window.paneVis.tabs) {
-			DeskPRO_Window.layout.doResize(true);
-		}
+		this._checkOpenedItems();
 
 		//----------
 		// Just about done
@@ -303,8 +371,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isAdding = false;
 
-		this.tabBarOverflow.update();
-
+		this.$scope.$safeApply();
+		this.$timeout(function() {
+			self.tabBarOverflow.update();
+		});
 		return id;
 	},
 
@@ -348,7 +418,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	/**
 	 * Activate a tab in the tabbar
 	 *
-	 * @param {Object} id
+	 * @param {Object} tab
 	 */
 	activateTab: function(tab) {
 
@@ -389,9 +459,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.callback_activate(data, wrapper, this);
 		}
 
-		this.tabList.find('li').removeClass('activeTabList');
-		data.tabBtn.addClass('activeTabList');
-		this.clearAlertTab(data);
+		tab.isAlerting = false;
 
 		this.currentTabId = id;
 
@@ -399,8 +467,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isActivating = false;
 		data.isActive = true;
-
 		DeskPRO_Window.updateWindowUrlFragment();
+		this.$scope.$safeApply();
 	},
 
 
@@ -441,11 +509,13 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 * @param tab
 	 */
 	isTabVisible: function(tab) {
-		var left = tab.tabBtn.position().left;
+		var $el = $(tab.tabBtnId);
+		if (!$el || !$el[0]) return;
+		var left = $el.position().left;
 
 		// Attempt to ignore margin and border. Lets hope they're the same on both sides.
-		var guess_slack = Math.round((tab.tabBtn.outerWidth() - tab.tabBtn.innerWidth()) / 2);
-		var right = left + tab.tabBtn.innerWidth() + guess_slack;
+		var guess_slack = Math.round(($el.outerWidth() - $el.innerWidth()) / 2);
+		var right = left + $el.innerWidth() + guess_slack;
 
 		var bounds = this.tabBarOverflow.getBounds();
 
@@ -460,8 +530,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	 */
 	removeTab: function(tab, silent) {
 
+		var self = this;
 		var id = tab.id;
 		var wasActive = false;
+		var oldTabIdx = this._tabs.indexOf(tab);
 
 		if (this.currentTabId == id) {
 			wasActive = true;
@@ -475,6 +547,14 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var data = this.tabs[id];
 		delete this.tabs[id];
 		this.tabCount--;
+		if (this.tabCount <= 0) {
+			$('body').addClass('without-tabs').removeClass('with-tabs');
+		}
+		this._tabs.splice(this._tabs.indexOf(tab), 1);
+		if (tab === this.$scope.contextTab) {
+			this.$scope.contextTab = null;
+		}
+		this._checkOpenedItems();
 
 		if (data.callback_remove_content !== undefined) {
 			data.callback_remove_content(data, $('#' + data.wrapperId), this);
@@ -500,22 +580,28 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			this.fireEvent('removeTab', [data, this]);
 
 			if (wasActive) {
-				var last_tab_id = Object.keys(this.tabs).getLast();
-				if (last_tab_id) {
-					this.activateTabById(last_tab_id);
+				// Go to the next tab
+				if (oldTabIdx != -1 && this._tabs[oldTabIdx]) {
+					this.activateTab(this._tabs[oldTabIdx]);
+
+				// Was last, so go to the previous
+				} else if (oldTabIdx != -1 && this._tabs[oldTabIdx-1]) {
+					this.activateTab(this._tabs[oldTabIdx-1]);
+
+				// Otherwise go to the last
 				} else {
-					if (!DeskPRO_Window.paneVis.list) {
+					var last_tab_id = Object.keys(this.tabs).getLast();
+					if (last_tab_id) {
+						this.activateTabById(last_tab_id);
+					} else {
 						// If list view isnt active, then after a small timeout
 						// make it visiable.
 						// The timeout is in case we have other routines that auto-open
 						// a new tab (e.g., after ticket reply)
-						var self = this;
-						window.setTimeout(function(){
+						this.$timeout(function () {
 							var last_tab_id = Object.keys(self.tabs).getLast();
 							if (!last_tab_id) {
-								DeskPRO_Window.paneVis.list = true;
-								DeskPRO_Window.paneVis.tabs = false;
-								DeskPRO_Window.layout.doResize(true);
+								self.$scope.showList();
 							}
 						}, 100);
 					}
@@ -527,13 +613,20 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
-		this.tabBarOverflow.update();
-
-		// Trigger a resize so the sidebar tabs can be hidden
-		// if there are now no tabs
-		if (!DeskPRO_Window.paneVis.tabs) {
-			DeskPRO_Window.layout.doResize(true);
+		this.$scope.$safeApply();
+		if (!silent && tab.page && tab.page.meta.routeUrl && !tab.page.LOADING_TYPENAME) {
+			this.$scope.tabHistory.push({
+				title: tab.title,
+				route: 'page:' + tab.page.meta.routeUrl
+			});
+			this._filterTabHistory();
+			while (this.$scope.tabHistory.length > 5) {
+				this.$scope.tabHistory.shift();
+			}
 		}
+		this.$timeout(function() {
+			self.tabBarOverflow.update();
+		})
 	},
 
 
@@ -578,34 +671,31 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			DP.console.log("Cannot activate, unknown tab %s", id);
 		}
 
-		var btn = tab.tabBtn;
-		tab.tabBtn.detach();
-		tab.tabBtn = btn;
-
 		var otherTab = null;
 		if (tab.page && tab.page.meta.tabPlaceholderId) {
 			otherTab = this.getTab(tab.page.meta.tabPlaceholderId);
 		}
 
-		if (otherTab && otherTab != tab) {
-			tab.tabBtn.insertAfter(otherTab.tabBtn);
-			otherTab.tabBtn.remove();
+		this._tabs.splice(this._tabs.indexOf(tab), 1);
 
+		if (otherTab && otherTab != tab) {
 			if (this.currentTabId == otherTab.id) {
-				wasActive = true;
 				this.currentTabId = null;
 			}
 
-			this.removeTab(otherTab, true);
+			this._tabs.indexOf(otherTab) < this._tabs.length - 1
+				? this._tabs.splice(this._tabs.indexOf(otherTab) + 1, 0, tab)
+				: this._tabs.push(tab);
 
+			this.removeTab(otherTab, true);
 		} else {
-			tab.tabBtn.prependTo(this.tabList);
+			this._tabs.unshift(tab);
 		}
 
 		this.tabBarOverflow.resetScroll();
 
 		if(!noalert) {
-			tab.tabBtn.effect("pulsate", { times:4 }, 500);
+			$(tab.tabBtnId).effect("pulsate", { times:4 }, 500);
 		}
 	},
 
@@ -614,30 +704,18 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	//##################################################################################################################
 
 	alertTab: function(tab) {
-		var el = tab.tabBtn;
-		if (!el.length || el.is('.activeTabList') || el.is('.is-alerting')) return;
+		var el = $(tab.tabBtnId);
+		if (tab.isActive || el.isAlerting) return;
 
-		if(!this.isTabVisible(tab)) {
-			this.tabToFrontTabById(tab.id, true);
-		}
-
-		el.addClass('is-alerting');
-		var timeout = this._alertTabDoHighlight.periodical(700, this, [el]);
-		el.data('alerting-timeout', timeout);
+		this.$scope.$safeApply(function() {
+			tab.isAlerting = true;
+		});
 	},
 
 	clearAlertTab: function(tab) {
-		var el = tab.tabBtn;
-		if (!el.length) return;
-
-		el.removeClass('alert-highlight').removeClass('is-alerting');
-
-		var timeout = el.data('alerting-timeout');
-		if (timeout) {
-			window.clearTimeout(timeout);
-		}
-
-		el.data('alerting-timeout', null);
+		this.$scope.$safeApply(function() {
+			tab.isAlerting = false;
+		});
 	},
 
 	_alertTabDoHighlight: function(el) {
@@ -649,7 +727,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 	// Handling events
 	//##################################################################################################################
 
-	_tabStripClick: function(event) {
+	_tabStripClick: function(event, tab) {
 
 		if (this.cancelClickActivate) {
 			this.cancelClickActivate = false;
@@ -660,27 +738,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		var el_click = $(event.target);
 
-		if (el_click.is('li')) {
-			var el = el_click;
-		} else {
-			var el = el_click.closest('li');
-		}
-
-		// If its not a tab, we can just ignore the event
-		if (!el[0] || !el.is('li')) {
-			DP.console.log('not click %o', event.target);
-			this.cancelClickActivate = false;
-			return;
-		}
-
-		event.preventDefault();
-		event.stopPropagation();
-
-		var tabId = el.data('tab-id');
-
 		// If the clicked thing was the close button, or if its a middle-click...
 		if (el_click.is('.close') || event.which == 2 || event.isDbl) {
-			var tab = this.getTab(tabId);
 			if (!tab) {
 				return;
 			}
@@ -696,7 +755,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			}
 
 			tab.isCloseClick = true;
-			this.removeTabById(tabId);
+			this.removeTabById(tab.id);
 			tab.isCloseClick = false;
 
 			this.cancelClickActivate = false;
@@ -705,7 +764,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		// Otherwise activate the tab
-		this.activateTabById(tabId);
+		this.activateTabById(tab.id);
+
+		DeskPRO_Window.$scope.showTabs();
 
 		this.cancelClickActivate = false;
 	}

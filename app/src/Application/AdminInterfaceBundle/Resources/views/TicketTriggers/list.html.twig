@@ -4,14 +4,15 @@
 		<header>
 			<nav>
 				<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="List.triggers.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_triggers') }}"></h3>
 		</header>
 		<article>
-			<p ng-if="!List.triggers.length" style="padding: 15px;">
+			<p ng-if="!List.triggers.length && !List.depList.length && !List.accounts.length" style="padding: 15px;">
 				{{ phrase('adm.ticket_triggers.no_triggers') }}
 			</p>
-			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length" dp-move-list-to-pos>
+			<ul class="dp-item-list" ui-sortable="List.sortedListOptions" ng-if="List.triggers.length" dp-move-list-to-pos dp-max-height>
 
 				{#######################}
 				{# Department Triggers #}
@@ -45,7 +46,10 @@
 							<ul class="dp-item-list" ng-if="List.eventType == 'newticket'">
 								<li ng-repeat="dep in List.depList" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('dep.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-' + dep.id}") }}">
-										<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+										<h4>
+											<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[dep.id]') }}</span>
+											<span class="title-text">{{ ng_var('dep.title') }}</span>
+										</h4>
 									</a>
 									<ul class="dp-item-list sublist" ng-show="dep.children.length">
 										<li ng-repeat="subdep in dep.children" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('subdep.id') }}">
@@ -53,6 +57,7 @@
 												<h4>
 													<span class="tree-char middle" ng-if="!$last"></span>
 													<span class="tree-char last" ng-if="$last"></span>
+													<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[subdep.id]') }}</span>
 													<span class="title-text">{{ ng_var('subdep.title') }}</span>
 												</h4>
 											</a>
@@ -71,6 +76,7 @@
 												<h4>
 													<span class="tree-char middle" ng-if="!$last"></span>
 													<span class="tree-char last" ng-if="$last"></span>
+													<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[subdep.id]') }}</span>
 													<span class="title-text">{{ ng_var('subdep.title') }}</span>
 												</h4>
 											</a>
@@ -111,7 +117,10 @@
 							<ul class="dp-item-list">
 								<li ng-repeat="acc in List.accounts" dp-state-mark="id:tickets.triggers.editemailacc.emailaccount-{{ ng_var('acc.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editemailacc', "{type: List.eventType, id: 'emailaccount-' + acc.id}") }}">
-										<h4><span class="title-text">{{ ng_var('acc.address') }}</span></h4>
+										<h4>
+											<span class="title-id" title="ID">#{{ ng_var('email_trigger_ids[acc.id]') }}</span>
+											<span class="title-text">{{ ng_var('acc.address') }}</span>
+										</h4>
 									</a>
 								</li>
 							</ul>
@@ -197,7 +206,12 @@
 			<p>Special <strong>Trigger Control</strong> actions can affect any following triggers lower in the list. The <em>Stop Processing Triggers</em> action prevents following triggers running. You can also use <em>Prevent Emails to User</em> or <em>Prevent Emails to Agents</em> to stop any email notifications that lower triggers try to send. These only prevent triggers that are running immediately afterwards - i.e. that are being checked due to the same event.
 				
 			</p>
-		
+			
+			
+	<h2> SMS triggers </h2>
+	<p> Note that to send SMS alerts, you must have an account with an SMS delivery provider, and install the corresponding app in the <strong>Apps</strong> section.</p>
+	
+	<p>For SMS delivery to work, ensure that the receiving agent's cell/mobile number has been entered in their profile in the <strong>Agents</strong> section of this interface (not the CRM section in the agent interface).</p>
 				
 		
 							
@@ -212,7 +226,22 @@
 				<dd><em>A:</em>
 				You can see which triggers ran and in what order using the ticket <strong>Full Log</strong> tab in the agent interface.
 				</dd>
-
+				
+				<dt><em>Q:</em>What does Check Current Agent do in trigger criteria?</dt>
+				<dd><em>A:</em>
+				This checks if the agent or agents selected caused the event, whether through the agent interface, while logged in to the portal or via email.
+				</dd>
+				
+				
+				<dt><em>Q:</em>What does Check Performer Email do in trigger criteria?</dt>
+				<dd><em>A:</em>
+				This checks the email address of the person who caused the event, whether they are a user or an agent.
+				</dd>
+				
+				<dt><em>Q:</em>When using a Set Assigned Team action, what does "the Current Agent's team" do if the agent has multiple teams?</dt>
+				<dd><em>A:</em>
+				It uses the agent's <strong>primary team</strong>, as set in their profile under <strong>Agents</strong>.
+				</dd>
 
 			</dl>
 			

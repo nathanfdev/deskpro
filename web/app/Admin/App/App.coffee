@@ -10,6 +10,7 @@ define [
 	'DeskPRO/App/SetupServices',
 	'Admin/App/SetupServices',
 	'Admin/App/SetupTemplates',
+	'DeskPRO/Util/Util'
 ], (
 	angular,
 	AdminModule,
@@ -21,7 +22,9 @@ define [
 	SetupRouting,
 	SetupServices,
 	AdminSetupServices,
-	SetupTemplates
+	SetupTemplates,
+
+	Util
 ) ->
 
 	SetupServices(AdminModule)
@@ -41,19 +44,43 @@ define [
 	AdminModule.config(['$httpProvider', ($httpProvider) ->
 		$httpProvider.interceptors.push('dpHttpSessionInterceptor');
 	])
+	AdminModule.constant('angularMomentConfig', {
+		timezone: window.DP_PERSON_TZ,
+		preprocess: 'deskpro_process'
+	})
+	AdminModule.config(['$provide', ($provide) ->
+		$provide.decorator("amMoment", ($delegate) ->
+			$delegate.preprocessors.deskpro_process = (input) ->
+				if Util.isInteger(input)
+					if (parseInt(input)+"").length >= 13
+						return moment.unix(input / 1000)
+					else
+						return moment.unix(input)
+				else
+					return moment.utc(input).local()
+
+			return $delegate
+		);
+	])
 
 	SetupNetwork(AdminModule)
 	SetupDirectives(AdminModule)
 	SetupRouting(AdminModule)
 	SetupTemplates(AdminModule)
 
+	if window.DP_REDIRECT_TO_LICENSE
+		console.log("Redirect to license")
+		window.location.hash = '/license'
+
 	if window.parent?.DP_FRAME_OVERLAYS?.admin
 		window.parent.DP_FRAME_OVERLAYS.admin.callLoaded()
 
 		AdminModule.run(['$rootScope', ($rootScope) ->
-			$rootScope.$on('$stateChangeSuccess', ->
-				window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash)
-			)
+
+			if not window.DP_REDIRECT_TO_LICENSE
+				$rootScope.$on('$stateChangeSuccess', ->
+					window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash)
+				)
 		])
 
 	return AdminModule

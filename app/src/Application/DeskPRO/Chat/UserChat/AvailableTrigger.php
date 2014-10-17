@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -82,14 +82,22 @@ class AvailableTrigger
 					$ug_ids = array(0);
 				}
 
-				$ug_ids_cs = implode(',', $ug_ids);
+				$all1 = App::$container->getAgentGroups()->getSysGroup('agent_all_perms')->id;
+				$all2 = App::$container->getAgentGroups()->getSysGroup('agent_all_safe_perms')->id;
 
-				$dep_check = App::getDb()->fetchColumn("
-					SELECT department_id
-					FROM department_permissions
-					WHERE (person_id IN ($agent_ids_cs) or usergroup_id IN ($ug_ids_cs)) AND app = 'chat' AND value = '1'
-					LIMIT 1
-				");
+				// 'all perms' check
+				if (in_array($all1, $ug_ids) || in_array($all2, $ug_ids)) {
+					$dep_check = true;
+				} else {
+					$ug_ids_cs = implode(',', $ug_ids);
+
+					$dep_check = App::getDb()->fetchColumn("
+						SELECT department_id
+						FROM department_permissions
+						WHERE (person_id IN ($agent_ids_cs) or usergroup_id IN ($ug_ids_cs)) AND app = 'chat' AND value = '1'
+						LIMIT 1
+					");
+				}
 
 				if ($dep_check) {
 					$is_chat_available = true;

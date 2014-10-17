@@ -17,6 +17,15 @@ pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat
 	<div class="add-new-task">
 		<button class="clean-white" id="{{baseId}}_add_btn"><span class="btn-add"></span>{{ phrase('agent.tasks.add_another_task') }}</button>
 	</div>
+
+    <footer style="text-align: center;">
+        <div class="is-not-loading">
+            <button class="submit-trigger clean-white">{{ phrase('agent.general.save') }}</button>
+        </div>
+        <div class="is-loading" style="padding-top: 9px;">
+            <img src="{{ asset('images/spinners/loading-small.gif') }}" />
+        </div>
+    </footer>
 </form>
 
 <script type="text/x-deskpro-plain" id="{{baseId}}_task_row_tpl">
@@ -24,7 +33,8 @@ pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat
 		<span class="btn-remove remove-row-trigger"></span>
 		<div class="task-input">
 			<input type="text"   class="input-title" name="newtask[%baseId%][title]" value="" class="task-title" placeholder="{{ phrase('agent.tasks.task_description') }}" />
-			<input type="hidden" class="input-date-due" name="newtask[%baseId%][date_due]" value="" />
+			<input type="hidden" class="input-date-due" value="" />
+			<input type="hidden" class="input-date-due-real" name="newtask[%baseId%][date_due]" value="" />
 			<input type="hidden" class="input-date-time" name="newtask[%baseId%][time_due]" value="" />
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
 			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="1" />
@@ -75,72 +85,6 @@ pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat
 	<li data-vis="0">{{ phrase('agent.general.private') }}</li>
 	<li data-vis="1">{{ phrase('agent.general.public') }}</li>
 </ul>
-
-<div class="optionbox reply-agent-team-ob single-option-type" id="{{baseId}}_assign_ob" style="display: none">
-	<div class="col">
-		<section data-section-name="agents">
-			<header>
-				<h3>{{ phrase('agent.general.agents') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-			</header>
-			<ul>
-				<li class="me last-me">
-					<input type="radio" name="{{baseId}}_asignedto" value="{{ app.user.id }}" />
-					<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
-				</li>
-
-				{% for agent in agents %}
-					{% if agent.id != app.user.id %}
-						<li>
-							<input type="radio" name="{{baseId}}_asignedto" value="{{ agent.id }}" />
-							<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
-							<div class="bound-fade"></div>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</section>
-	</div>
-	{% if app.getSetting('core.use_agent_team') %}
-	<div class="col">
-		<section data-section-name="teams">
-			<header>
-				<h3>{{ phrase('agent.general.teams') }}</h3>
-				<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
-			</header>
-			<ul>
-				{% for team in app.user.getAgent().getTeams() %}
-					<li class="me {% if loop.last %}last-me{% endif %}">
-						<input type="radio" name="{{baseId}}_asignedto" value="{{ team.id }}" />
-						<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
-						<div class="bound-fade"></div>
-					</li>
-				{% endfor %}
-
-				{% for team in agent_teams %}
-					{% if team.id not in app.user.getAgent().getTeamIds() %}
-						<li>
-							<input type="radio" name="{{baseId}}_asignedto" value="{{ team.id }}" />
-							<label class="agent-team-label-{{ team.id }}">{{ team.name }}</label>
-							<div class="bound-fade"></div>
-						</li>
-					{% endif %}
-				{% endfor %}
-			</ul>
-		</section>
-	</div>
-	{% endif %}
-	<br class="clear" />
-</div>
-
-<footer class="pop-footer">
-	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.general.save') }}</button>
-	</div>
-	<div class="is-loading" style="padding-top: 9px;">
-		<img src="{{ asset('images/spinners/loading-small.gif') }}" />
-	</div>
-</footer>
 
 </div>
 </div>

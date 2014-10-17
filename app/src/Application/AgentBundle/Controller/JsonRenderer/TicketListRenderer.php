@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -181,7 +181,7 @@ class TicketListRenderer
 		$data['worst_sla_status']        = $ticket->worst_sla_status;
 		$data['waiting_times']           = $ticket->waiting_times;
 
-		foreach (array('language', 'department', 'category', 'priority', 'workflow', 'product', 'person', 'agent', 'agent_team', 'organization') as $field) {
+		foreach (array('language', 'department', 'category', 'priority', 'workflow', 'product', 'person', 'agent', 'agent_team', 'organization', 'locked_by_agent') as $field) {
 			$data[$field] = null;
 
 			if (!$ticket->$field) {
@@ -199,7 +199,15 @@ class TicketListRenderer
 				case 'department':
 					$dep = $this->container->getDataService('Department')->get($ticket->department->getId());
 					if ($dep) {
-						$data['department'] = array('id' => $dep->id, 'title' => $dep->title, 'title_full' => $dep->getFullTitle());
+						$data['department'] = array(
+							'id' => $dep->id,
+							'title' => $dep->title,
+							'title_full' => $dep->getFullTitle(),
+						);
+
+						foreach (array(80, 64, 50, 45, 32, 22, 16) as $size) {
+							$data['department']['avatar_url_'.$size] = $dep->getAvatarUrl($size);
+						}
 					}
 					break;
 
@@ -220,6 +228,24 @@ class TicketListRenderer
 					$data['agent'] = $this->container->getAgentData()->has($ticket->agent->getId()) ? $this->renderPerson($this->container->getAgentData()->get($ticket->agent->getId())) : null;
 					break;
 
+				case 'agent_team':
+					$data['agent_team'] = array(
+						'id' => $ticket->agent_team['id'],
+						'name' => $ticket->agent_team['name'],
+					);
+
+					foreach (array(80, 64, 50, 45, 32, 22, 16) as $size) {
+						$data['agent_team']['avatar_url_'.$size] = $ticket->agent_team->getAvatarUrl($size);
+					}
+
+					break;
+
+				case 'locked_by_agent':
+					$data[$field] = $this->container->getAgentData()->has($ticket->$field->getId())
+						? $this->renderPerson($this->container->getAgentData()->get($ticket->$field->getId()))
+						: null;
+					break;
+
 				default:
 					$data[$field] = $ticket->$field->toApiData(false, false);
 			}
@@ -237,7 +263,34 @@ class TicketListRenderer
 			}
 		}
 
-		$data['ticket_slas'] = $ticket->ticket_slas;
+		$data['ticket_slas'] = array();
+		foreach ($this->ticket_display->getTicketSlas($ticket) as $sla) {
+			$sla['sla'] = array(
+				'id' => $sla['sla_id'],
+				'title' => $sla['title']
+			);
+			if ($sla['warn_date']) {
+				$sla['warn_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['warn_date']);
+			} else {
+				$sla['warn_date_ts'] = 0;
+			}
+			if ($sla['fail_date']) {
+				$sla['fail_date_ts'] = \DateTime::createFromFormat('YYYY-mm-dd H:i:s', $sla['fail_date']);
+			} else {
+				$sla['fail_date_ts'] = 0;
+			}
+
+			$times = array();
+			if ($sla['warn_date_ts']) $times[] = $sla['warn_date_ts'];
+			if ($sla['fail_date_ts']) $times[] = $sla['fail_date_ts'];
+			if ($times) {
+				$sla['next_trigger_date_ts'] = min($times);
+			} else {
+				$sla['next_trigger_date_ts'] = 0;
+			}
+
+			$data['ticket_slas'][] = $sla;
+		}
 
 
 		$data['previews'] = array();

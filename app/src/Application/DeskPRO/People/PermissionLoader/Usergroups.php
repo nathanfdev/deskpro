@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity;
+use Orb\Util\Arrays;
 
 /**
  * Loads general usergroup permissions likes flags and the like.
@@ -64,6 +65,11 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 	 */
 	protected $person_id = 0;
 
+	/**
+	 * @var bool
+	 */
+	protected $with_overrides = false;
+
 
 	/**
 	 * @param Person $person
@@ -74,6 +80,12 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 		$this->person_id = $person->id;
 	}
 
+	public function getSubkey()
+	{
+		if ($this->person && $this->person->is_agent) {
+			return 'person-' . $this->person->id;
+		}
+	}
 
 	/**
 	 * Get a permission value
@@ -133,25 +145,26 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
 			if (!$this->usergroup_ids && !$this->person_id) {
 				$this->perms = array();
 			} else {
-				$ids_string = implode(',', $this->usergroup_ids);
-				if (!$ids_string) {
-					$ids_string = '0';
-				}
 				if ($this->person_id) {
-					$perms = App::getOrm()->createQuery("
-						SELECT p
-						FROM DeskPRO:Permission p
-						WHERE p.usergroup IN ($ids_string) OR p.person = ?1
-					")->setParameter(1, $this->person_id)
-					  ->getResult();
+					$perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
+					if ($this->person && $this->person->is_agent) {
+						$overrides = App::getSystemService('PermissionsLoader')->getAgentOverridePermissions($this->person_id);
+						if ($overrides) {
+							$this->with_overrides = true;
+							$perms = array_merge($perms, array(-1 => $overrides));
+						}
+					}
 				} else {
-					$perms = App::getOrm()->createQuery("
-						SELECT p
-						FROM DeskPRO:Permission p
-						WHERE p.usergroup IN ($ids_string)
-					")->getResult();
+					$perms = App::getSystemService('PermissionsLoader')->getUsergroupPermissions($this->usergroup_ids);
 				}
-				$this->perms = Permission::getEffectivePermissions($perms);
+				$perm_result = array();
+				foreach ($perms as $p_group) {
+					foreach ($p_group as $p) {
+						$perm_result[] = $p;
+					}
+				}
+
+				$this->perms = Permission::getEffectivePermissions($perm_result);
 			}
 		}
 

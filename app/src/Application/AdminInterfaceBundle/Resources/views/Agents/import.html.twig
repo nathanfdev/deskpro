@@ -1,0 +1,93 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_attributes %}ng-controller="Admin_Agents_Ctrl_Import"{% endblock %}
+{% block modal_controls %}<button type="button" class="close" ng-click="$dismiss()">&times;</button>{% endblock %}
+
+
+
+{% block modal_title %}
+    <h4 class="modal-title">{{ phrase('adm.agents.import_title') }}</h4>
+{% endblock %}
+
+
+
+{% block modal_body %}
+
+    <form ng-show="!Ctrl.page" role="form" name="Form" ng-submit="Ctrl.submitEmails()">
+        <h4>
+            {{ phrase('adm.agents.import_textarea_title') }}
+        </h4>
+        <p>
+            {{ phrase('adm.agents.import_textarea_description') }}
+        </p>
+        <div class="form-group" dp-error-class="Form.emails">
+            <textarea rows="4" class="form-control" name="emails" ng-model="Ctrl.emails" ng-list="/[\,\;\n\s]/" required></textarea>
+        </div>
+        <button class="btn btn-default" dp-submit-form>
+            <i class="fa fa-arrow-circle-right"></i>
+            {{ phrase('adm.agents.import_btn_next') }}
+        </button>
+
+    </form>
+
+    {#<form id="fileupload" ng-show="!Ctrl.page"#}
+          {#method="POST"#}
+          {#enctype="multipart/form-data"#}
+          {#file-upload="fileUploadOptions"#}
+          {#action="{{ ng_var('fileUploadOptions.url') }}">#}
+    <div ng-show="!Ctrl.page">
+        <br /><br /><br />
+
+        <h4>
+            {{ phrase('adm.agents.import_file_title') }}
+        </h4>
+        <p>
+            {{ phrase('adm.agents.import_file_description') }}
+        </p>
+        <p>
+            <i class="fa fa-file-excel-o"></i>
+            <a href="{{ path('serve_dp_asset', {filename: 'Admin-Bulk-Add-Agents-Spreadsheet.zip'}) }}" target="_blank">
+                {{ phrase('adm.agents.import_kb') }}
+            </a>
+        </p>
+        <br />
+
+        <div style="width: 200px;border-radius:5px;border:1px #ccc dashed;padding:10px;position:relative;" class="text-center"
+             class="text-center" ng-file-drop="Ctrl.uploadFiles($files)">
+            {{ phrase('adm.agents.import_file_dd') }}
+        </div>
+    </div>
+    {#</form>#}
+
+    <div ng-show="1 === Ctrl.page">
+        <p ng-pluralize count="Ctrl.invited" when="{{ ng_plural_phrase('adm.agents.import_results') }}"></p>
+        <p ng-if="Ctrl.results.length - Ctrl.invited" ng-pluralize count="Ctrl.results.length - Ctrl.invited" when="{{ ng_plural_phrase('adm.agents.import_results_failed') }}"></p>
+        <br />
+        <div style="max-height: 400px;overflow-y: scroll;">
+            <ul class="dp-item-list">
+                <li ng-repeat="agent in Ctrl.results">
+                    <h4 ng-if="agent.id">
+                        <i class="fa fa-check text-success"></i>
+                        {% include 'AdminInterfaceBundle:Agents:agent.html.twig' %}
+                    </h4>
+                    <h4 ng-if="agent.error">
+                        <i class="fa fa-times text-danger"></i>
+                        {{ ng_var('agent._email') }}
+                        <br />
+                        <small class="muted">{{ ng_var('agent.error') }}</small>
+                    </h4>
+                    <p></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+{% block modal_footer %}
+    <i class="spinner-flat" ng-show="Ctrl.busy"></i>
+    <button class="btn btn-default" ng-show="1 === Ctrl.page && !Ctrl.busy" ng-click="Ctrl.restart()">
+        {{ phrase('adm.agents.import_btn_more') }}
+    </button>
+{% endblock %}

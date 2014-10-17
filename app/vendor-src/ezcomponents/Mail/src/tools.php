@@ -294,7 +294,8 @@ class ezcMailTools
             {
                 $inQuote = !$inQuote;
             }
-            else if ( $addresses[$i] == ',' && !$inQuote )
+			// DESKPRO EDIT: Handle semi-colon which some clients erroneously use as an email sep
+            else if ( ($addresses[$i] == ',' || $addresses[$i] == ';') && !$inQuote )
             {
                 $addressesArray[] = substr( $addresses, $last, $i - $last );
                 $last = $i + 1; // eat comma

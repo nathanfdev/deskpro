@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -59,6 +59,7 @@ class AppOptionsMapper
 		$settings = new OptionsArray($settings);
 
 		$connection_options = array();
+		$options = array();
 
 		switch ($settings->get('db_type')) {
 			case 'pdo_mysql':
@@ -110,16 +111,25 @@ class AppOptionsMapper
 					$connection_options['servicename'] = $settings->get('db_service_name');
 				}
 				break;
+			case 'pdo_odbc':
+				$options['db_custom_options'] = $settings->get('db_odbc_dsn', '');
+				$odbc_settings = Strings::parseEqualsLines($settings->get('db_odbc_dsn'));
+
+				$connection_options['driverClass'] = 'Orb\\Doctrine\\DBAL\\Driver\\PDOODBC\\SQLServerDriver';
+				$connection_options['dsn'] = @$odbc_settings['dsn'];
+				$connection_options['user'] = @$odbc_settings['user'];
+				$connection_options['password'] = @$odbc_settings['password'];
+				break;
 		}
 
 		if ($settings->get('db_with_options') && ($custom_settings = trim($settings->get('db_custom_options', '')))) {
+			$options['db_custom_options'] = $settings->get('db_custom_options', '');
 			$custom_settings = Strings::parseEqualsLines($custom_settings);
 			if ($custom_settings) {
 				$connection_options['driverOptions'] = $custom_settings;
 			}
 		}
 
-		$options = array();
 		$options['connection_options'] = $connection_options;
 
 		foreach (array('table', 'field_id', 'field_username', 'field_email', 'field_password', 'field_first_name', 'field_last_name', 'field_name') as $f) {

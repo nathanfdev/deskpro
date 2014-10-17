@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -34,6 +34,7 @@
 namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Service\CheckWhitelistedIP;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -76,7 +77,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$return = '';
 		if (!$this->person['id']) {
 			if ($this->isPostRequest()) {
-				$return = $this->get('router')->generate('adm');
+				$return = $this->get('router')->generate('admin');
 			} else {
 				$return = $this->request->getRequestUri();
 			}
@@ -88,7 +89,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 				return $this->createJsonResponse($data, 403);
 			}
 
-			return $this->redirectRoute('agent_login', array('return' => $return));
+			return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+				'return' => $return
+			));
 		}
 
 		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
@@ -102,6 +105,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
 			}
+		}
+
+		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+				'ip' => dp_get_user_ip_address()
+			));
 		}
 
 		return null;

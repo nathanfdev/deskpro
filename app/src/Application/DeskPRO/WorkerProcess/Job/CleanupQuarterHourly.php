@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -41,6 +41,12 @@ class CleanupQuarterHourly extends AbstractJob
 	const DEFAULT_INTERVAL = 900;
 
 	public function run()
+	{
+		$this->doRun();
+		App::getDb()->setIsolationDefault();
+	}
+
+	private function doRun()
 	{
 		#------------------------------
 		# Page cache
@@ -79,13 +85,19 @@ class CleanupQuarterHourly extends AbstractJob
 			$datetime = date('Y-m-d H:i:s', time() - $maxage);
 			$num = App::getDb()->executeUpdate("
 				DELETE FROM agent_alerts
-				WHERE date_created < ? OR is_dismissed = 1
+				WHERE date_created < ? AND is_dismissed = 1
 			", array($datetime));
 
 			if ($num) {
 				$this->logStatus("Cleaned up $num agent alerts");
 			}
 		}
+
+		#------------------------------
+		# Old API logs
+		#------------------------------
+
+		App::$container->getEm()->getRepository('DeskPRO:ApiKeyLog')->cleanup();
 
 		#------------------------------
 		# Update table counts

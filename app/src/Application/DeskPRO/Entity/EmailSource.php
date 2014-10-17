@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -44,6 +44,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
 	const STATUS_INSERTED   = 'inserted';
+	const STATUS_RETRY      = 'retry';
 	const STATUS_PROCESSING = 'processing';
 	const STATUS_COMPLETE   = 'complete';
 	const STATUS_ERROR      = 'error';
@@ -78,6 +79,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	const ERR_MISSING_MARKER    = 'missing_marker';
 	const ERR_AGENT_BOUNCE      = 'agent_bounce';
 	const ERR_DATE_LIMIT        = 'date_limit';
+	const ERR_INVALID_ADDRESS   = 'invalid_address';
 
 	/**
 	 * @var int
@@ -182,6 +184,12 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \DateTime
 	 */
 	protected $date_created;
+
+	/**
+	 * How many times the email has been processed.
+	 * @var int
+	 */
+	protected $exec_count = 0;
 
 	/**
 	 * The raw source, pieced together.
@@ -338,6 +346,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from', ));
 		$metadata->mapField(array( 'fieldName' => 'header_subject', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_subject', ));
 		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
+		$metadata->mapField(array( 'fieldName' => 'exec_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'exec_count' ));
 		$metadata->mapField(array( 'fieldName' => 'error_code', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'error_code', ));
 		$metadata->mapField(array( 'fieldName' => 'source_info', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'source_info', ));
 		$metadata->mapField(array( 'fieldName' => 'date_status', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_status', ));
@@ -355,7 +364,17 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 				'onDelete'             => 'cascade',
 			)),
 		));
-		$metadata->mapManyToOne(array( 'fieldName' => 'email_account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'email_account',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount',
+			'dpApi'        => true,
+			'joinColumns'  => array(array(
+				'name'                 => 'email_account_id',
+				'referencedColumnName' => 'id',
+				'nullable'             => true,
+				'onDelete'             => 'cascade',
+			))
+		));
 		$metadata->mapManyToOne(array(
 			'fieldName'    => 'log_blob',
 			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',

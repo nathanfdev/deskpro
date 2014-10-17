@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,13 +34,13 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\People\ActivityLogger\ActivityLogger;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\EntityManager;
 use Orb\Validator\StringEmail;
@@ -85,11 +85,17 @@ class UserChatManager
 	 */
 	protected $auto_assigner;
 
-	public function __construct(Session $session = null, EntityManager $em, Translate $translate)
+	/**
+	 * @var \Application\DeskPRO\People\ActivityLogger\ActivityLogger
+	 */
+	protected $activityLogger;
+
+	public function __construct(Session $session = null, EntityManager $em, Translate $translate, ActivityLogger $logger)
 	{
 		$this->em = $em;
 		$this->db = $em->getConnection();
 		$this->tr = $translate;
+		$this->activityLogger = $logger;
 
 		if ($session) {
 			$this->session     = $session;
@@ -272,7 +278,7 @@ class UserChatManager
 
 			if ($convo->person) {
 				$action = new \Application\DeskPRO\People\ActivityLogger\ActionType\NewChat($convo->person, $convo);
-				App::getPersonActivityLogger()->saveAction($action);
+				$this->activityLogger->saveAction($action);
 			}
 
 			$this->em->flush();

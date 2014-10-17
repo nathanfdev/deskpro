@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -108,11 +108,17 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
 		$adapter = $this->getAuthAdapter();
 
 		$userinfo = null;
-		if (\Orb\Validator\StringEmail::isValueValid($id_input)) {
-			$userinfo = $adapter->getUserInfoForEmail($id_input);
-		}
-		if (!$userinfo) {
-			$userinfo = $adapter->getUserInfoForUsername($id_input);
+
+		try {
+			if (\Orb\Validator\StringEmail::isValueValid($id_input)) {
+				$userinfo = $adapter->getUserInfoForEmail($id_input);
+			}
+			if (!$userinfo) {
+				$userinfo = $adapter->getUserInfoForUsername($id_input);
+			}
+		} catch (\Exception $e) {
+			if ($adapter->getLogger()) $adapter->getLogger()->logDebug("findIdentityByInput Exception: {$e->getCode()} {$e->getMessage()}");
+			throw $e;
 		}
 
 		if (!$userinfo) {

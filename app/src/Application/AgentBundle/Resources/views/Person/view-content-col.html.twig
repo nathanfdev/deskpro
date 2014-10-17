@@ -1,3 +1,16 @@
+<style>
+	.editable-visible  {
+		display: none;
+	}
+	
+	.editable .editable-visible {
+		display: inline-block;
+	}
+	
+	.editable .editable-hidden {
+		display: none;
+	}
+</style>
 {{ dp_app_loc(baseId, 'left_col.top') }}
 
 {# Box Summary #}
@@ -80,6 +93,7 @@
 				{% if person_charges %}<li data-tab-for="#{{baseId}}_billing_tab">Billing <span class="count">{{ person_charge_totals.count }}</span></li>{% endif %}
 			</ul>
 		</nav>
+				<button class="save sort-trigger" id="{{baseId}}_sort_tickets_menu_trigger" style="float: right; margin: 5px;">Sort Tickets By <em class="downarrow"></em></button>
 	</header>
 	<section>
 		{# Tickets Tab #}
@@ -167,6 +181,13 @@
 				{% endif %}
 			</table>
 		</article>
+			<ul id="{{baseId}}_sort_tickets_menu" style="display: none;">
+				<li data-sort-by="status">{{ phrase('agent.general.status') }}</li>
+				<li data-sort-by="date_last_user_reply">{{ phrase('agent.general.date_of_last_user_reply')}}</li>
+				<li data-sort-by="date_last_agent_reply">{{ phrase('agent.general.date_of_last_agent_reply')}}</li>
+				<li data-sort-by="last_reply">{{ phrase('agent.general.date_of_last_reply')}}</li>
+				<li data-sort-by="date_created">{{ phrase('agent.general.date_created')}} </li>
+			</ul>
 		{% endif %}
 		{# /Tickets Tab #}
 
@@ -216,6 +237,61 @@
 {{ dp_app_loc(baseId, 'interactions.after') }}
 {# /Interaction Tabs #}
 
+{# Interaction Tabs #}
+{{ dp_app_loc(baseId, 'files.before') }}
+<div class="profile-box-container dp-simpletab-container tabbed" id="{{baseId}}_files_box">
+	<header>
+		<nav>
+			<ul>
+				<li data-tab-for="#{{baseId}}_files_tab" class="on">{{ phrase('agent.general.files') }} <span class="count">{{ person_files_count }}</span></li>
+				<li data-tab-for="#{{baseId}}_add_file_tab" class="off">Add File</li>
+			</ul>
+		</nav>
+	</header>
+	<section>
+		{# Files Tab #}
+		<article id="{{baseId}}_files_tab" class="on">
+			<div class="notes-wrap profile-files-wrap">
+				<ul id="{{baseId}}_files_initial">
+					{% for file in person_files %}
+						{% include 'AgentBundle:Person:file-row.html.twig' with { 'file' : file } %}
+					{% else %}
+						<li class="note profile-file-row empty-notice"><p style="padding:10px;">No files.</p></li>
+					{% endfor %}
+				</ul>
+			</div>
+		</article>
+		{# /Files Tab #}
+		{# Add File Tab #}
+		<article id="{{baseId}}_add_file_tab" class="off">
+			<form id="{{baseId}}_add_file_form" method="POST" action="{{ path('agent_people_ajaxsave_file', {person_id: person.id}) }}">
+			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tbody id="{{baseId}}_add_file_initial">
+					<tr>
+						<td colspan="2"><textarea style="width: 97%" placeholder="comment" id="input_note"></textarea>
+					</tr>
+					<tr>
+						<td style="width: 70%;"><h4 style="float:left;">{{ phrase('agent.general.file') }}</h4>
+								<br class="clear" />
+								<div id="{{baseId}}_file_section_up">
+									<input type="file" name="file-upload" multiple="multiple" />
+								</div>
+								{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'blob_id' } %}
+								<ul class="files file-list"></ul>
+						</td>
+						<td style="width: 30%"><input type="submit" class="save-trigger" value="save"/></td>
+					</tr>
+				</tbody>
+			</table>
+			</form>
+		</article>
+		{# /Add file Tab #}
+		{{ dp_app_loc(baseId, 'files.tab') }}
+	</section>
+</div>
+{{ dp_app_loc(baseId, 'files.after') }}
+{# /Interaction Tabs #}
+
 {# Info Tabs #}
 {{ dp_app_loc(baseId, 'details.before') }}
 <div class="profile-box-container dp-simpletab-container tabbed">
@@ -223,6 +299,7 @@
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
 			<ul>
 				{% if notes|length or perms.notes %}<li data-tab-for="#{{baseId}}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span class="count" id="{{baseId}}_notes_count">{{ notes|length }}</span></li>{% endif %}
+                {% if changelog|length %}<li data-tab-for="#{{baseId}}_changelog_tab">{{ phrase('agent.general.changelog') }}</li>{% endif %}
 				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
 				<li data-tab-for="#{{baseId}}_tracking_tab">{{ phrase('agent.general.detail') }}</li>
 			</ul>
@@ -262,6 +339,22 @@
 		{% endif %}
 		{# /Notes Tab #}
 
+        {# Changelog Tab #}
+        {% if changelog|length %}
+            <article id="{{baseId}}_changelog_tab">
+                <table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    {% for entry in changelog %}
+                        <tr>
+                            <td>
+                                {{ include('AgentBundle:Person:changelog-row.html.twig', {entry: entry}) }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </article>
+        {% endif %}
+        {# /Changelog Tab #}
+
 		{# Activity Tab #}
 		{% if activity_stream|length %}
 		<article id="{{baseId}}_activity_tab">
@@ -274,17 +367,17 @@
 									<span class="what">
 										{% if action.action_type == 'registered' %}
 											{{ phrase('agent.people.act_reg') }}
-										{% elseif action.action_type == 'new_ticket' %}
+										{% elseif action.action_type == 'new_ticket' and action.details.ticket_id %}
 											{{ phrase('agent.people.act_submitted_ticket') }}
 											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
 												{{ action.details.subject }}
 												{{ action.details.subject }}
 											</a>
-										{% elseif action.action_type == 'new_chat' %}
+										{% elseif action.action_type == 'new_chat' and action.details.convo_id %}
 											Created a chat:
 											{% set chat = person_chats[action.details.convo_id] %}
 											<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': action.details.convo_id}) }}" data-route-notabreload="1" data-route-title="@text">{{ chat.getSubjectLine()|default(action.details.convo_id) }}</a>
-										{% elseif action.action_type == 'new_ticket_reply' %}
+										{% elseif action.action_type == 'new_ticket_reply' and action.details.ticket_id %}
 											{{ phrase('agent.people.act_replied_ticket') }}
 											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
 												{{ action.details.subject }}
@@ -418,7 +511,7 @@
 					</tr>
 				{% endif %}
 				<tr>
-					<td class="label">Auto-responder?</td>
+					<td class="label">Auto-responder <span class="small-light-icon tipped" title="If the system detects a user automatically responds to messages (e.g., a robot or script), then DeskPRO will disable outgoing auto-emails to the user. The user will still get normal email notifications (like agent replies), only automatic auto-confirmations are disabled."></span></td>
 					<td class="value">
 						<select id="{{baseId}}_disable_autoresponses">
 							<option value="0" {% if not person.disable_autoresponses %}selected="selected"{% endif %}>{{ phrase('agent.people.user_not_autoresponder') }}</option>

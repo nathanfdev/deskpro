@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -58,8 +58,9 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 		 */
 
 		$csv_upload = $this->container->getSystemService('csv_upload');
+		$options = $this->in->getArrayValue('options');
 
-		$result = $csv_upload->upload($file);
+		$result = $csv_upload->upload($file, $options);
 
 		return $this->createApiResponse($result);
 	}
@@ -75,6 +76,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 		$skip_first    = $this->in->getBool('skip_first');
 		$welcome_email = $this->in->getBool('welcome_email');
 		$filename      = $this->in->getUint('filename');
+		$options       = $this->in->getArrayValue('options');
 
 		/**
 		 * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
@@ -82,7 +84,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
 
 		$csv_upload = $this->container->getSystemService('csv_upload');
 
-		$result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email);
+		$result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $options);
 
 		return $this->createApiResponse($result);
 	}

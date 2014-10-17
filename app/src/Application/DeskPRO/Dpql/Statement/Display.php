@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -168,16 +168,43 @@ class Display
 	 * @var array
 	 */
 	protected static $_tableEntityMap = array(
+		'agent_teams' => 'DeskPRO:AgentTeam',
 		'articles' => 'DeskPRO:Article',
+		'article_categories' => 'DeskPRO:ArticleCategory',
 		'article_attachments' => 'DeskPRO:ArticleAttachment',
 		'article_comments' => 'DeskPRO:ArticleComment',
+		'article_pending_create' => 'DeskPRO:ArticlePendingCreate',
+		'auditlog' => 'DeskPRO:AuditLog',
+		'ban_emails' => 'DeskPRO:BanEmail',
+		'ban_ips' => 'DeskPRO:BanIp',
+		'blobs' => 'DeskPRO:Blob',
 		'chat_conversations' => 'DeskPRO:ChatConversation',
 		'chat_messages' => 'DeskPRO:ChatMessage',
+		'custom_data_article' => 'DeskPRO:CustomDataArticle',
+		'custom_data_chat' => 'DeskPRO:CustomDataChat',
+		'custom_data_feedback' => 'DeskPRO:CustomDataFeedback',
+		'custom_data_organizations' => 'DeskPRO:CustomDataOrganization',
+		'custom_data_person' => 'DeskPRO:CustomDataPerson',
+		'custom_data_product' => 'DeskPRO:CustomDataProduct',
+		'custom_data_ticket' => 'DeskPRO:CustomDataTicket',
+		'custom_def_article' => 'DeskPRO:CustomDefArticle',
+		'custom_def_chat' => 'DeskPRO:CustomDefChat',
+		'custom_def_feedback' => 'DeskPRO:CustomDefFeedback',
+		'custom_def_organizations' => 'DeskPRO:CustomDefOrganization',
+		'custom_def_people' => 'DeskPRO:CustomDefPerson',
+		'custom_def_products' => 'DeskPRO:CustomDefProduct',
+		'custom_def_ticket' => 'DeskPRO:CustomDefTicket',
+		'departments' => 'DeskPRO:Department',
 		'downloads' => 'DeskPRO:Download',
+		'download_categories' => 'DeskPRO:DownloadCategory',
 		'download_comments' => 'DeskPRO:DownloadComment',
+		'email_accounts' => 'DeskPRO:EmailAccount',
+		'email_sources' => 'DeskPRO:EmailSource',
 		'feedback' => 'DeskPRO:Feedback',
 		'feedback_attachments' => 'DeskPRO:FeedbackAttachment',
 		'feedback_comments' => 'DeskPRO:FeedbackComment',
+		'glossary_words' => 'DeskPRO:GlossaryWord',
+		'glossary_word_definitions' => 'DeskPRO:GlossaryWordDefinition',
 		'labels_articles' => 'DeskPRO:LabelArticle',
 		'labels_chat_conversations' => 'DeskPRO:LabelChatConversation',
 		'labels_downloads' => 'DeskPRO:LabelDownload',
@@ -187,30 +214,55 @@ class Display
 		'labels_people' => 'DeskPRO:LabelPerson',
 		'labels_tasks' => 'DeskPRO:LabelTask',
 		'labels_tickets' => 'DeskPRO:LabelTicket',
+		'languages' => 'DeskPRO:Language',
 		'news' => 'DeskPRO:News',
+		'news_categories' => 'DeskPRO:NewsCategory',
 		'news_comments' => 'DeskPRO:NewsComment',
 		'organizations' => 'DeskPRO:Organization',
+		'organization_email_domains' => 'DeskPRO:OrganizationEmailDomain',
+		'organization_files' => 'DeskPRO:OrganizationFile',
+		'organization_notes' => 'DeskPRO:OrganizationNote',
+		'organizations_contact_data' => 'DeskPRO:OrganizationContactData',
 		'page_view_log' => 'DeskPRO:PageViewLog',
 		'people' => 'DeskPRO:Person',
+		'people_contact_data' => 'DeskPRO:PersonContactData',
 		'people_emails' => 'DeskPRO:PersonEmail',
+		'people_files' => 'DeskPRO:PersonFile',
+		'people_notes' => 'DeskPRO:PersonNote',
+		'phone_numbers' => 'DeskPRO:PhoneNumber',
+		'products' => 'DeskPRO:Product',
+		'related_content' => 'DeskPRO:RelatedContent',
+		'searchlog' => 'DeskPRO:SearchLog',
+		'sms_accounts' => 'DeskPRO:SmsAccount',
 		'tasks' => 'DeskPRO:Task',
 		'task_comments' => 'DeskPRO:TaskComment',
+		'text_snippets' => 'DeskPRO:TextSnippet',
+		'text_snippet_categories' => 'DeskPRO:TextSnippetCategory',
+		'text_snippet_logs' => 'DeskPRO:TextSnippetLog',
 		'tickets' => 'DeskPRO:Ticket',
-		'tickets_log' => 'DeskPRO:TicketLog',
+		'ticket_categories' => 'DeskPRO:TicketCategory',
+		'ticket_escalation_logs' => 'DeskPRO:TicketEscalationLog',
+		'ticket_escalations' => 'DeskPRO:TicketEscalation',
+		'ticket_filters' => 'DeskPRO:TicketFilter',
+		'ticket_filter_subscriptions' => 'DeskPRO:TicketFilterSubscription',
+		'ticket_layouts' => 'DeskPRO:TicketLayout',
+		'ticket_macros' => 'DeskPRO:TicketMacro',
+		'ticket_priorities' => 'DeskPRO:TicketPriority',
+		'ticket_triggers' => 'DeskPRO:TicketTrigger',
+		'ticket_workflows' => 'DeskPRO:TicketWorkflow',
+		'tickets_attachments' => 'DeskPRO:TicketAttachment',
+		'tickets_deleted' => 'DeskPRO:TicketDeleted',
+		'tickets_flagged' => 'DeskPRO:TicketFlagged',
+		'tickets_participants' => 'DeskPRO:TicketParticipant',
+		'tickets_logs' => 'DeskPRO:TicketLog',
 		'tickets_messages' => 'DeskPRO:TicketMessage',
 		'ticket_attachments' => 'DeskPRO:TicketAttachment',
 		'ticket_charges' => 'DeskPRO:TicketCharge',
 		'ticket_feedback' => 'DeskPRO:TicketFeedback',
 		'ticket_slas' => 'DeskPRO:TicketSla',
-		'twitter_accounts' => 'DeskPRO:TwitterAccount',
-		'twitter_accounts_followers' => 'DeskPRO:TwitterAccountFollower',
-		'twitter_accounts_friends' => 'DeskPRO:TwitterAccountFriend',
-		'twitter_accounts_statuses' => 'DeskPRO:TwitterAccountStatus',
-		'twitter_accounts_statuses_notes' => 'DeskPRO:TwitterAccountStatusNote',
-		'twitter_statuses' => 'DeskPRO:TwitterStatus',
-		'twitter_users' => 'DeskPRO:TwitterUser',
-		'twitter_users_followers' => 'DeskPRO:TwitterUserFollower',
-		'twitter_users_friend' => 'DeskPRO:TwitterUserFriend',
+		'user_rules' => 'DeskPRO:UserRule',
+		'usergroups' => 'DeskPRO:Usergroup',
+		'usersources' => 'DeskPRO:Usersource',
 	);
 
 	/**
@@ -536,6 +588,10 @@ class Display
 	 */
 	protected function _setSqlLimit()
 	{
+		if (!$this->_limitAmount && in_array('table', $this->_display)) {
+			$this->_limitAmount = 2500;
+		}
+
 		if ($this->_limitAmount) {
 			$limit = ($this->_implicitLimit ? min($this->_implicitLimit, $this->_limitAmount) : $this->_limitAmount);
 		} else {
@@ -1065,10 +1121,14 @@ class Display
 			if (empty($parts['display'][0])) {
 				$display = 'TABLE';
 			} else {
-				$parts['display'] = array_unique($parts['display']);
-				$display = $parts['display'][0];
-				if (!empty($parts['display'][1])) {
-					$display .= ', ' . $parts['display'][1];
+				if (is_array($parts['display'])) {
+					$parts['display'] = array_unique($parts['display']);
+					$display          = $parts['display'][0];
+					if (!empty($parts['display'][1])) {
+						$display .= ', ' . $parts['display'][1];
+					}
+				} else {
+					$display = $parts['display'];
 				}
 			}
 

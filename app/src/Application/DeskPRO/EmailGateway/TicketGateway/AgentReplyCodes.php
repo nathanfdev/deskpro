@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use Orb\Input\Cleaner\Cleaner;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
@@ -70,6 +71,11 @@ class AgentReplyCodes implements Loggable
 	protected $props;
 
 	/**
+	 * @var Cleaner
+	 */
+	protected $cleaner;
+
+	/**
 	 * @param string $body
 	 * @param bool   $is_html
 	 */
@@ -77,6 +83,14 @@ class AgentReplyCodes implements Loggable
 	{
 		$this->orig_body = $body;
 		$this->is_html = $is_html;
+	}
+
+	/**
+	 * @param Cleaner $cleaner
+	 */
+	public function setCleaner(Cleaner $cleaner)
+	{
+		$this->cleaner = $cleaner;
 	}
 
 	/**
@@ -95,6 +109,15 @@ class AgentReplyCodes implements Loggable
 
 		$text = $this->orig_body;
 		if ($this->is_html) {
+			if ($this->cleaner) {
+				$text = $this->cleaner->clean($text, 'html_email_preclean');
+				$text = $this->cleaner->clean($text, 'html_email_basicclean');
+				$text = $this->cleaner->clean($text, 'html_email');
+				$text = Strings::trimHtmlAdvanced($text);
+				$text = $this->cleaner->clean($text, 'html_email_postclean');
+				$this->orig_body = $text;
+			}
+
 			$text = Strings::standardEol($text);
 			$text = str_replace("\n", ' ', $text);
 			$text = preg_replace('#<br/?>#', "<br/>\n", $text);
@@ -173,6 +196,18 @@ class AgentReplyCodes implements Loggable
 	public function getNewBody()
 	{
 		return $this->new_body;
+	}
+
+
+	/**
+	 * Get the original body that we scanned for codes. This is the original body string but may be
+	 * slightly modified by the initial cleaner.
+	 *
+	 * @return string
+	 */
+	public function getOrigBody()
+	{
+		return $this->orig_body;
 	}
 
 

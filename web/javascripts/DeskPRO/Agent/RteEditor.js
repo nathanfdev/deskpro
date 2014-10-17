@@ -62,6 +62,8 @@ DeskPRO.Agent.RteEditor = {
 			minHeight: 150,
 			observeImages: false,
 			cleanup: false,
+			convertDivs: false,
+			linebreaks: true,
 			imageUpload: BASE_URL + 'agent/misc/accept-redactor-image-upload',
 			uploadFields: {
 				_rt: window.DP_REQUEST_TOKEN
@@ -118,7 +120,7 @@ DeskPRO.Agent.RteEditor = {
 			// letter keyboard shortcuts (e.g., 't' for new ticket)
 			// - But allow other key combos to propagate so other combos,
 			// like close tab, still work
-			if (!(ev.metaKey || ev.ctrlKey)) {
+			if (!(ev.metaKey || ev.ctrlKey || ev.altKey)) {
 				ev.stopPropagation();
 			}
 
@@ -147,7 +149,7 @@ DeskPRO.Agent.RteEditor = {
 		});
 
 		editor.bind('dragover drop', function(ev) {
-			ev.stopPropagation();
+//			ev.stopPropagation();
 		});
 
 		// setup autosave
@@ -269,6 +271,14 @@ DeskPRO.Agent.RteEditor = {
 				} else {
 					var file = event.originalEvent.dataTransfer.files[0];
 					if (!file) {
+
+						// handle already uploaded blob
+						var blobData = event.originalEvent.dataTransfer.getData('blobData');
+						if (blobData) {
+							blobData = JSON.parse(blobData);
+							$.proxy(api.imageUploadCallback, api)(blobData);
+						}
+
 						return;
 					}
 					var fd = new FormData();

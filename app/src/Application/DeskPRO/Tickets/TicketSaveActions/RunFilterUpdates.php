@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,10 +34,10 @@
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Doctrine\ORM\EntityManager;
 
 class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterface
 {
@@ -47,18 +47,18 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
 	private $filter_change_detector;
 
 	/**
-	 * @var EntityManager
+	 * @var Connection
 	 */
-	private $em;
+	private $db;
 
 
 	/**
-	 * @param EntityManager        $em
+	 * @param Connection           $db
 	 * @param FilterChangeDetector $filter_change_detector
 	 */
-	public function __construct(EntityManager $em, FilterChangeDetector $filter_change_detector)
+	public function __construct(Connection $db, FilterChangeDetector $filter_change_detector)
 	{
-		$this->em = $em;
+		$this->db = $db;
 		$this->filter_change_detector = $filter_change_detector;
 	}
 
@@ -69,11 +69,29 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
 	 */
 	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
 	{
+		if ($context->getEventType() == 'noop') {
+			return;
+		}
+
 		$change_set = $this->filter_change_detector->getFilterChangeSet($ticket, $context);
 		$client_messages = $change_set->getListUpdateClientMessages();
 
+		$rows = array();
+
 		foreach ($client_messages as $cm) {
-			$this->em->persist($cm);
+			$rows[] = array(
+				'channel'           => $cm->channel,
+				'auth'              => $cm->auth,
+				'data'              => serialize($cm->data),
+				'created_by_client' => $cm->created_by_client ?: '',
+				'for_client'        => $cm->for_client ?: null,
+				'date_created'      => $cm->date_created->format('Y-m-d H:i:s'),
+				'for_person_id'     => $cm->for_person ? $cm->for_person->id : null,
+			);
+		}
+
+		if ($rows) {
+			$this->db->batchInsert('client_messages', $rows);
 		}
 	}
 }
