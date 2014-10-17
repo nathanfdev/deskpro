@@ -150,6 +150,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return License::getLicense()->isDemo();
 	}
 
+
+	/**
+	 * @return null
+	 * @deprecated
+	 */
 	public function getStyle()
 	{
 		return App::getSystemService('style');

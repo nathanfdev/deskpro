@@ -14,18 +14,6 @@ $l['lang_code'] = 'eng';
 $em->persist($l);
 $em->flush();
 
-################################################################################
-# Style
-################################################################################
-
-##BEGIN:create_style.master##
-$s = new \Application\DeskPRO\Entity\Style();
-$s['title'] = $translate->phrase('agent.defaults.default_style');
-$s['note'] = $translate->phrase('agent.defaults.default_style');
-$s['css_dir'] = 'stylesheets/user';
-$em->persist($s);
-$em->flush();
-
 
 ################################################################################
 # Departments

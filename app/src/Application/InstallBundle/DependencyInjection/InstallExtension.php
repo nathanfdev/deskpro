@@ -43,6 +43,12 @@ class InstallExtension extends Extension
 {
 	public function load(array $config, ContainerBuilder $container)
     {
+	    ## NOTE: duplicated in config.php
+	    $definition = new Definition();
+	    $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
+	    $definition->setArguments(array());
+	    $container->setDefinition('cache.simple_array', $definition);
+
 		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
 			DP_ROOT . '/sys/config/settings.php',
 			new Reference('database_connection')

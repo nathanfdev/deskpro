@@ -71,25 +71,24 @@ class Template extends AbstractEntityRepository
 		}
 	}
 
+
+	/**
+	 * @param $style
+	 * @return array
+	 * @deprecated
+	 */
 	public function getCustomTemplateNamesInStyle($style)
 	{
-		$names = App::getDb()->fetchColumn("
-			SELECT name
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']));
-
-		return $names;
+		return array();
 	}
 
+	/**
+	 * @param $style
+	 * @return array
+	 * @deprecated
+	 */
 	public function getCustomTemplateInfoInStyle($style)
 	{
-		$names = App::getDb()->fetchAllKeyed("
-			SELECT name, date_updated
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']), 'name');
-
-		return $names;
+		return array();
 	}
 }

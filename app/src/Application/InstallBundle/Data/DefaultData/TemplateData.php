@@ -43,13 +43,10 @@ class TemplateData extends AbstractDefaultData
 	{
 		$this->getLogger()->debug("Saving default template");
 		$this->getDb()->executeUpdate("DELETE FROM templates WHERE name = 'UserBundle:Portal:welcome-block.html.twig'");
-		$style = $this->getEm()->getRepository('DeskPRO:Style')->findAll();
-		$style = $style[0];
 
 		$set = new TemplateSet(
 			$this->getEm(),
-			$this->getContainer()->get('twig'),
-			$style
+			$this->getContainer()->get('twig')
 		);
 		$template = $set->getCustomTemplate('UserBundle:Portal:welcome-block.html.twig');
 		$template_code = $template->getTemplateCode();

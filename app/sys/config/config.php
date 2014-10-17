@@ -238,6 +238,8 @@ $container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
 ############################################################################
 # Cache services
 ############################################################################
+
+## NOTE: duplicated in install bundle's DI
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
 $definition->setArguments(array());

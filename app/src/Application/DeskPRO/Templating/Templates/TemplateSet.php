@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Templating\Templates;
 
-use Application\DeskPRO\Entity\Style;
 use Application\DeskPRO\Entity\Template as TemplateEntity;
 use Application\DeskPRO\Templating\EmailTemplatesDesc;
 use Application\DeskPRO\Translate\Translate;
@@ -53,19 +52,15 @@ class TemplateSet
 	 */
 	private $twig;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Style
-	 */
-	private $style;
 
 	/**
-	 * @param EntityManager $em
+	 * @param EntityManager    $em
+	 * @param Twig_Environment $twig
 	 */
-	public function __construct(EntityManager $em, Twig_Environment $twig, Style $style)
+	public function __construct(EntityManager $em, Twig_Environment $twig)
 	{
 		$this->em = $em;
 		$this->twig = $twig;
-		$this->style = $style;
 	}
 
 
@@ -104,16 +99,18 @@ class TemplateSet
 		}
 
 		$entity = new TemplateEntity();
-		$entity->style = $this->style;
-		$entity->name = $template->getName();
+		$entity->name = $name;
+		$custom = null;
 
-		$custom = TemplateCustom::createFromEntity($entity);
-		$custom->getTemplateCode()->setCode($template->getTemplateCode()->getCode());
+		if ($entity->name) {
+			$custom = TemplateCustom::createFromEntity($entity);
+			$custom->getTemplateCode()->setCode($template->getTemplateCode()->getCode());
 
-		$entity->setTemplate(
-			$custom->getTemplateCode()->getCode(),
-			$this->compileTemplate($custom)
-		);
+			$entity->setTemplate(
+				$custom->getTemplateCode()->getCode(),
+				$this->compileTemplate($custom)
+			);
+		}
 
 		return $custom;
 	}
@@ -126,8 +123,6 @@ class TemplateSet
 	public function createCustomTemplate($name)
 	{
 		$entity = new TemplateEntity();
-		$entity->style = $this->style;
-		$entity->name = $name;
 		$custom = TemplateCustom::createFromEntity($entity);
 		return $custom;
 	}

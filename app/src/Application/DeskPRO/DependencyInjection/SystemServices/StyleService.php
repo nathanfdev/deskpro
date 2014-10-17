@@ -36,13 +36,13 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
+/**
+ * @deprecated no longer used
+ */
 class StyleService
 {
 	public static function create(DeskproContainer $container)
 	{
-		$style_id = $container->get('deskpro.core.settings')->get('core.default_style_id');
-		$style = $container->get('doctrine.orm.entity_manager')->find('DeskPRO:Style', array('id' => $style_id));
-
-		return $style;
+		return null;
 	}
 }

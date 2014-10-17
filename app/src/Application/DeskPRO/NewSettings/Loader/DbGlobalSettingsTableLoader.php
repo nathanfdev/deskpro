@@ -86,6 +86,7 @@ class DbGlobalSettingsTableLoader implements SettingsLoaderInterface
 						"
 							SELECT name, value
 							FROM settings
+							WHERE brand_id IS NULL
 						"
 				);
 			}
