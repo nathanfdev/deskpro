@@ -42,6 +42,7 @@ class SettingsResolver
 {
 	const CACHE_KEY_GLOBAL = 'settings.bag.global';
 	const CACHE_KEY_DEFAULT = 'settings.bag.default';
+	const CACHE_KEY_BRAND_PREFIX = 'settings.bag.brand';
 
 	/**
 	 * @var SettingsLoaderInterface[]
@@ -58,12 +59,20 @@ class SettingsResolver
 	 */
 	private $virtual_settings;
 
+	/**
+	 * Loader responsible for brand specific settings
+	 *
+	 * @var SettingsLoaderInterface
+	 */
+	private $brandSettingsLoader;
 
-	public function __construct(array $loaders, CacheAdapterInterface $cache)
+
+	public function __construct(array $loaders, CacheAdapterInterface $cache, SettingsLoaderInterface $brandSettingsLoader)
 	{
 		$this->loaders = $loaders;
 		$this->cache = new ConvenientCache($cache);
 		$this->virtual_settings = array();
+		$this->brandSettingsLoader = $brandSettingsLoader;
 	}
 
 	public function getLoaders()
@@ -99,6 +108,35 @@ class SettingsResolver
 				}
 
 				return new SettingsBag($global_settings_array);
+			}
+		);
+	}
+
+	/**
+	 * Gets the settings bag for the given brand ID
+	 * @param bool $force
+	 * @param int $brand_id
+	 * @return SettingsBag
+	 */
+	public function getBrandSettings($brand_id, $force = false)
+	{
+		if ($force) {
+			$this->cache->delete(static::CACHE_KEY_GLOBAL);
+		}
+
+		$brand_settings_resolver = $this->brandSettingsLoader;
+		$global_settings = $this->getGlobalSettings($force);
+
+		$cacheKey = static::CACHE_KEY_BRAND_PREFIX . '.brand' . $brand_id;
+
+		return $this->cache->get(
+			$cacheKey,
+			function () use ($brand_settings_resolver, $global_settings, $force) {
+				$global_settings_array = $global_settings->toArray();
+
+				$brand_settings_array = array_merge($global_settings_array, $brand_settings_resolver->load($force));
+
+				return new SettingsBag($brand_settings_array);
 			}
 		);
 	}

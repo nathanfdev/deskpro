@@ -36,13 +36,23 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
  * Settings used by the system.
  *
+ * @property int $id
+ * @property string $name
+ * @property string $value
+ * @property \Application\DeskPRO\Entity\Brand $brand
  */
 class Setting extends \Application\DeskPRO\Domain\DomainObject
 {
+	/**
+	 * @var int
+	 */
+	protected $id;
+
 	/**
 	 * The name of the setting
 	 *
@@ -70,23 +80,37 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
+
+		$builder = new ClassMetadataBuilder($metadata);
+		$builder->mapId();
+		$builder->setTable('settings');
+		$builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Setting');
+		$builder->addUniqueConstraint(array('name', 'brand_id'), 'unique_settings_per_brand');
+
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Setting';
-		$metadata->setPrimaryTable(array('name' => 'settings'));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
-		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
+		$metadata->mapField(
+			array(
+				'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'name'
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'value',
+			)
+		);
 		$metadata->mapManyToOne(
 			array(
 				'fieldName'  => 'brand', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand', 'mappedBy' => null,
 				'inversedBy' => null, 'joinColumns' => array(
 				0 => array(
-					'name'             => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => true,
-					'onDelete'         => 'cascade', 'columnDefinition' => null,
+					'name'     => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => true,
+					'onDelete' => 'cascade', 'columnDefinition' => null,
 				),
 			),
 			)
 		);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_NONE);
 	}
 }
