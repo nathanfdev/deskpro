@@ -46,7 +46,7 @@
                 <span ng-switch-when="labels">
                     <span class="prop-title">{{ phrase('agent.general.labels') }}: </span>
                     <span class="prop-val labels">
-                        <span class="listing-tag" ng-repeat-start="label in person.labels" dp-label="label">
+                        <span class="listing-tag" ng-repeat-start="label in person.labels" dp-label="label" dp-lable-type="people">
                             {{ ng_var('label') }}
                         </span>
                         <span ng-repeat-end></span>

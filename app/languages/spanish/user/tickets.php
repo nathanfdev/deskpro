@@ -7,7 +7,7 @@
 	'user.tickets.check_email'                                             => 'compruebe su correo',
 	'user.tickets.click_to_close'                                          => 'Clic para cerrar este ticket',
 	'user.tickets.close_window'                                            => 'Cerrar ventana',
-	'user.tickets.contact_us_explain'                                      => 'Por favor, cumplimente el formulario y uno de nuestros agentes le responderá por correo electrónico lo antes posible',
+	'user.tickets.contact_us_explain'                                      => 'Por favor, complete el formulario y uno de nuestros agentes le responderá por correo electrónico lo antes posible',
 	'user.tickets.content-suggestions_answered'                            => 'Nos complace que su pregunta haya sido respondida. ¿Todavía necesita enviarnos un correo electrónico?',
 	'user.tickets.creator'                                                 => 'Creado por',
 	'user.tickets.date_created'                                            => 'Fecha de creación',

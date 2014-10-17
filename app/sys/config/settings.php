@@ -516,6 +516,7 @@
 	 * Process FW agent emails as forwards
 	 */
 	'core_tickets.process_agent_fwd' => true,
+	'core_tickets.agent_fwd_subject_regex' => null,
 
 	'core_tickets.lock_on_view' => false,
 	'core_tickets.unlock_on_close' => false,

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Log\Event\UserMerged;
 use Orb\Util\Arrays;
 
 /**
@@ -280,6 +281,11 @@ class PersonController extends AbstractController
 			}
 		}
 
+		$changelog = $this->em->getRepository('DeskPRO:LogEvent')->findBy(
+			array('subject' => 'Person', 'subject_id' => $person['id'], 'parent' => null),
+			array('id' => 'DESC')
+		);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'with_warn_for_email'       => $with_warn_for_email,
 			'person'                    => $person,
@@ -311,7 +317,8 @@ class PersonController extends AbstractController
 			'perms'                     => $perms,
 			'is_person_editable'        => $is_editable,
 			'reg_group'                 => $reg_group,
-			'person_object_counts'      => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person)
+			'person_object_counts'      => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person),
+			'changelog'                 => $changelog,
 		));
 	}
 
@@ -580,33 +587,49 @@ class PersonController extends AbstractController
 				$usergroup_ids = $this->in->getCleanValueArray('usergroup_ids', 'uint', 'discard');
 				$usergroup_ids = Arrays::removeFalsey($usergroup_ids);
 
-				if ($usergroup_ids) {
-					$usergroup_ids = array_unique($usergroup_ids);
+				$usergroups = $usergroup_ids
+					? $this->em->getRepository('DeskPRO:Usergroup')->findBy(array('id' => $usergroup_ids))
+					: array();
 
-					// Make sure only valid ones are set
-					$usergroup_ids = $this->db->fetchAllCol("
-						SELECT id
-						FROM usergroups
-						WHERE id IN (" . implode(',', $usergroup_ids).")
-							AND sys_name IS NULL
-					");
-				}
-
-				$this->container->getDb()->executeUpdate("
-					DELETE person2usergroups
-					FROM person2usergroups
-					LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
-					WHERE usergroups.is_agent_group = 0 AND person2usergroups.person_id = ?
-				", array($person->getId()));
-
-				if ($usergroup_ids) {
-					$inserts = array();
-					foreach ($usergroup_ids as $uid) {
-						$inserts[] = array('person_id' => $person->getId(), 'usergroup_id' => $uid);
+				foreach ($person->usergroups as $personGroup) {
+					if (false === in_array($personGroup, $usergroups, true)) {
+						$person->removeUsergroup($personGroup);
 					}
-
-					$this->db->batchInsert('person2usergroups', $inserts);
 				}
+
+				foreach ($usergroups as $personGroup) {
+					$person->addUsergroup($personGroup);
+				}
+
+				$this->em->flush();
+
+//				if ($usergroup_ids) {
+//					$usergroup_ids = array_unique($usergroup_ids);
+//
+//					// Make sure only valid ones are set
+//					$usergroup_ids = $this->db->fetchAllCol("
+//						SELECT id
+//						FROM usergroups
+//						WHERE id IN (" . implode(',', $usergroup_ids).")
+//							AND sys_name IS NULL
+//					");
+//				}
+
+//				$this->container->getDb()->executeUpdate("
+//					DELETE person2usergroups
+//					FROM person2usergroups
+//					LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
+//					WHERE usergroups.is_agent_group = 0 AND person2usergroups.person_id = ?
+//				", array($person->getId()));
+//
+//				if ($usergroup_ids) {
+//					$inserts = array();
+//					foreach ($usergroup_ids as $uid) {
+//						$inserts[] = array('person_id' => $person->getId(), 'usergroup_id' => $uid);
+//					}
+//
+//					$this->db->batchInsert('person2usergroups', $inserts);
+//				}
 				break;
 
 			case 'remove-usersource':
@@ -726,6 +749,7 @@ class PersonController extends AbstractController
 			$language = null;
 		}
 
+		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
 		$field_manager = $this->container->getSystemService('person_fields_manager');
 		$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
 		$invalid_custom_fields = array();
@@ -744,26 +768,17 @@ class PersonController extends AbstractController
 			));
 		}
 
-		$this->em->beginTransaction();
-
-		try {
-			if (!empty($custom_fields)) {
-				$field_manager->saveFormToObject($custom_fields, $person);
-			}
-
-			if ($timezone) {
-				$person->timezone = $timezone;
-				$this->em->persist($person);
-			}
-
-			$person->language = $language;
-
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
+		if (!empty($custom_fields)) {
+			$field_manager->saveFormToObject($custom_fields, $person);
 		}
+
+		if ($timezone) {
+			$person->timezone = $timezone;
+		}
+
+		$person->language = $language;
+
+		$this->em->flush();
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($person);
 
@@ -932,6 +947,7 @@ class PersonController extends AbstractController
 					$contact_data->person = $person;
 
 					$this->em->persist($contact_data);
+					$person->addContactData($contact_data);
 
 					$added[] = $contact_data;
 				}
@@ -949,10 +965,9 @@ class PersonController extends AbstractController
 
 			// Removing values
 			foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
-				if (isset($person->contact_data[$id])) {
-					$cd = $person->contact_data[$id];
-					$this->em->remove($person->contact_data[$id]);
-					$person->contact_data->remove($id);
+				if ($cd = $person->contact_data->get($id)) {
+					$person->removeContactData($cd);
+					$this->em->remove($cd);
 
 					if (isset($contact_data_array[$cd->contact_type][$cd->id])) {
 						unset($contact_data_array[$cd->contact_type][$cd->id]);
@@ -1090,6 +1105,7 @@ class PersonController extends AbstractController
 		$note['agent'] = $this->person;
 		$note['person'] = $person;
 		$note['note'] = $note_txt;
+		$person->addNote($note);
 		$em->persist($note);
 
 		$em->flush();
@@ -1222,8 +1238,10 @@ class PersonController extends AbstractController
 
 		$old_person_id = $other_person['id'];
 
+		$logEvent = new Entity\LogEvent(new UserMerged($person, $other_person), $this->person);
 		$merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
 		$merge->merge();
+		$this->container->get('deskpro.logger.changelog')->info($logEvent);
 
 		return $this->createJsonResponse(array(
 			'success' => true,

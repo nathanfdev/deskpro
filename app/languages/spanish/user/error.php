@@ -12,6 +12,8 @@
 	'user.error.form_choice_max'                                           => 'Por favor, seleccione como máximo una opción|Por favor, seleccione como máximo {{count}} opciones',
 	'user.error.form_choice_min'                                           => 'Por favor, seleccione como mínimo una opción|Por favor, seleccione como mínimo {{count}} opciones',
 	'user.error.form_date_invalid'                                         => 'Introduzca una fecha válida',
+	'user.error.form_date_invalid_dow'                                     => 'El día de la semana que seleccionaste no está permitido.',
+	'user.error.form_date_invalid_range'                                   => 'La fecha que seleccionaste no contiene un rango permitido.',
 	'user.error.form_required'                                             => 'Campo obligatorio',
 	'user.error.form_text_max'                                             => 'Introduzca como máximo un caracter|Introduzca como máximo {{count}} caracteres',
 	'user.error.form_text_min'                                             => 'Introduzca como mínimo un caracter|Introduzca como mínimo {{count}} caracteres',

@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -106,7 +106,7 @@ class LabelsController extends AbstractController implements ProtectedController
 		$type = trim($new['label_type']);
 		$rep = $this->rep();
 		$rep->renameLabelDef($old['label'], $label, $new['color'], $type);
-		$rep->updateColorForLabel($label, $new['color']);
+		$rep->updateColorForLabel($type, $label, $new['color']);
 
 		return $this->createApiResponse($rep->getDefinition($type, $label)->toApiData());
 	}
@@ -142,7 +142,7 @@ class LabelsController extends AbstractController implements ProtectedController
 		$definition['label'] = trim($label);
 		$definition['color'] = $color;
 		$rep->updateDefinitionUsages($definition);
-		$rep->updateColorForLabel($label, $color);
+		$rep->updateColorForLabel($type, $label, $color);
 		$this->em->flush();
 
 		return $this->createApiResponse($definition->toApiData());

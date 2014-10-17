@@ -130,6 +130,7 @@
         depData.parent = formModel.parent_id || "0";
         depData.email_gateway = formModel.email_gateway_id || "0";
         depData.move_tickets_to = 'self';
+        depData.avatar = formModel.avatar;
         if (Util.isBlank(depData.parent)) {
           depData.parent = null;
         }
@@ -137,7 +138,7 @@
           depData.email_gateway = null;
         }
         if (formModel.enable_user_title) {
-          depData.user_title = formModel.user_titl;
+          depData.user_title = formModel.user_title;
         }
         permData = formModel.agent_perms.getPermsData();
         _ref = formModel.usergroup_perms;

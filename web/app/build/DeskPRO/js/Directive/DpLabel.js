@@ -1,5 +1,5 @@
 (function() {
-  define(function() {
+  define(['DeskPRO/Util/Strings'], function(Strings) {
 
     /*
         * Description
@@ -31,8 +31,7 @@
       return {
         restrict: 'A',
         link: function(scope, element, attr) {
-          var label, updateLabelElement;
-          label = $parse(attr.dpLabel)(scope);
+          var err, label, labelParsed, updateLabelElement;
           updateLabelElement = function(data) {
             var color;
             if (data == null) {
@@ -54,30 +53,49 @@
                 backgroundImage: 'none'
               });
             }
-            if (!data.r) {
-              return element.text(data.label);
+            if (label.gen) {
+              return element.text(label.label);
             }
           };
-          if ('object' === typeof label && label.label_type) {
-            return LabelDefinition.get(label.label_type, label.label).then((function(_this) {
-              return function(def) {
-                scope.$watch(def, function(newVal) {
-                  return updateLabelElement(newVal);
-                });
-                return updateLabelElement(def);
-              };
-            })(this));
-          } else {
-            return LabelDefinition.getColor(attr.dpLabel).then((function(_this) {
-              return function(color) {
-                return updateLabelElement({
-                  label: attr.dpLabel,
-                  color: color,
-                  r: true
-                });
-              };
-            })(this));
+          label = {};
+          if (attr.dpLabelString) {
+            label.label = attr.dpLabelString;
           }
+          if (attr.dpLabelType) {
+            label.label_type = attr.dpLabelType;
+          }
+          if (attr.dpLabel && typeof attr.dpLabel === "string" && attr.dpLabel.length > 0) {
+            try {
+              labelParsed = $parse(attr.dpLabel)(scope);
+              if (labelParsed) {
+                if (labelParsed.label != null) {
+                  label.label = labelParsed.label;
+                }
+                if (labelParsed.label_type != null) {
+                  label.label_type = labelParsed.label_type;
+                }
+                if (typeof labelParsed === "string") {
+                  label.label = labelParsed;
+                }
+                label.gen = true;
+                element.text(label.label);
+              }
+            } catch (_error) {
+              err = _error;
+              return;
+            }
+          }
+          if (!label.label || !label.label_type || Strings.isBlank(label.label) || Strings.isBlank(label.label_type)) {
+            return;
+          }
+          return LabelDefinition.get(label.label_type, label.label).then((function(_this) {
+            return function(def) {
+              scope.$watch(def, function(newVal) {
+                return updateLabelElement(newVal);
+              });
+              return updateLabelElement(def);
+            };
+          })(this));
         }
       };
     };

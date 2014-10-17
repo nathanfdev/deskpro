@@ -117,7 +117,12 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.resultsBox.on('click', function(ev) { ev.stopPropagation(); });
 
 		$(document).on('click', this.close.bind(this));
-		$(this.termInput).closest('.doc-layer').on('click', this.close.bind(this));
+		$(document).on('mousedown contextmenu', function(e) {
+			if (e.target && !($(e.target).closest('.person-search-box')[0])) {
+				self.close();
+			}
+		});
+		$(this.termInput).closest('.doc-layer').on('click mousedown contextmenu', this.close.bind(this));
 
 		//------------------------------
 		// Clicking on an item fires an event that

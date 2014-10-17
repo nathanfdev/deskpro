@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,7 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -66,6 +68,11 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	protected $members = null;
 
 	/**
+	 * @var Blob
+	 */
+	protected $avatar;
+
+	/**
 	 * @return int
 	 */
 	public function getId()
@@ -73,10 +80,17 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id;
 	}
 
+	public function __construct()
+	{
+		$this->members = new ArrayCollection();
+	}
 
 
 	public function addPerson(Entity\Person $person)
 	{
+		if ($this->members->contains($person)) {
+			return;
+		}
 		$this->members->add($person);
 		$this->_onPropertyChanged('members', $this->members, $this->members);
 	}
@@ -85,6 +99,17 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->members->removeElement($person);
 		$this->_onPropertyChanged('members', $this->members, $this->members);
+	}
+
+	public function hasAvatar()
+	{
+		return $this->avatar && $this->avatar->isImage();
+	}
+
+	public function getAvatarUrl($size = 50)
+	{
+		if (!$this->hasAvatar()) return null;
+		return $this->avatar->getThumbnailUrl($size);
 	}
 
 
@@ -111,6 +136,30 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToMany(array( 'fieldName' => 'members', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'agent_team_members', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'team_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'orderBy' => array( 'name' => 'ASC', ), ));
+		$metadata->mapManyToMany(array(
+			'fieldName' => 'members',
+			'mapedBy' => 'teams',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+			'joinTable' => array(
+				'name' => 'agent_team_members',
+				'joinColumns' => array(array( 'name' => 'team_id' )),
+				'inverseJoinColumns' => array(array( 'name' => 'person_id' )),
+				'onDelete' => 'cascade',
+			),
+			'orderBy' => array( 'name' => 'ASC', ),
+		));
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'avatar',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'mappedBy' => NULL,
+			'inversedBy' => NULL,
+			'joinColumns' => array(array(
+				'name' => 'avatar_blob_id',
+				'referencedColumnName' => 'id',
+				'nullable' => true,
+				'onDelete' => 'set null',
+			)),
+			'dpApi' => true
+		));
 	}
 }

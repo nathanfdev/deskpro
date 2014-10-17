@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\Search\StickyWordSearch;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 class SearchController extends AbstractController
 {
@@ -89,11 +90,14 @@ class SearchController extends AbstractController
 			$sticky_results = $sticky_search->getResults($q, 5);
 
 			if ($sticky_results) {
-				foreach ($sticky_results as $key => $x) {
-					if (isset($results[$key])) {
-						unset($results[$key]);
-					}
+				$got_sticky = array();
+				foreach ($sticky_results as $sitem) {
+					$total++;
+					$got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
 				}
+				$results = array_filter($results, function($r) use ($got_sticky) {
+					return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
+				});
 			}
 
 			$searchlog = SearchLog::create($q, count($results) + count($sticky_results), true);
@@ -195,9 +199,27 @@ class SearchController extends AbstractController
 	{
 		$se = $this->container->getSearchEngine();
 		$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
-		$results = $se->getUserSearch()->search($context, $query);
+		$search_results = $se->getUserSearch()->search($context, $query);
+
+		$sticky_search  = new StickyWordSearch($this->em);
+		$sticky_search->setPersonContext($this->person);
+		$sticky_results = $sticky_search->getResults($query, 5);
 
 		$format = $this->in->getString('format');
+
+		$results = array();
+
+		$got_sticky = array();
+		foreach ($sticky_results as $sitem) {
+			$got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
+			$results[] = $sitem;
+		}
+		foreach ($search_results->getTypedResults() as $item) {
+			if (isset($got_sticky[get_class($item['object']).$item['object']->getId()])) {
+				continue;
+			}
+			$results[] = $item;
+		}
 
 		if ($format == 'json') {
 			$data = array('results' => array());
@@ -216,7 +238,7 @@ class SearchController extends AbstractController
 			}
 		} else {
 			return $this->render('UserBundle:Search:omnisearch.html.twig', array(
-				'results' => $results->getTypedResults(),
+				'results' => $results,
 				'query'   => $query,
 			));
 		}
@@ -224,14 +246,28 @@ class SearchController extends AbstractController
 
 	public function similarToAction($content_type)
 	{
-		 $content = isset($_REQUEST['content']) ? (string)$_REQUEST['content'] : '';
+		$content = isset($_REQUEST['content']) ? (string)$_REQUEST['content'] : '';
+		$content = Strings::utf8_accents_to_ascii($content);
+		$content = strtolower($content);
+		$content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
+		$content = preg_replace('#\s+#', ' ', $content);
+		$content = explode(' ', $content);
+		$content = array_filter($content, function($s) { return isset($s[2]); });
+		$content = array_unique($content);
+		$content = implode(' ', $content);
 
-		$search = App::getSearchAdapter();
-		$result_set = $search->getContentSearcher()->omnisearch($content, array($content_type));
-		$results = $search->getResultSetObjects($result_set, true);
+		if (!$content) {
+			return $this->render('UserBundle:Search:similar-to.html.twig', array(
+				'results' => array(),
+			));
+		}
+
+		$se = $this->container->getSearchEngine();
+		$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+		$results = $se->getUserSearch()->search($context, $content, array('limit_types' => array($content_type)));
 
 		return $this->render('UserBundle:Search:similar-to.html.twig', array(
-			'results' => $results,
+			'results' => $results->getTypedResults(),
 		));
 	}
 }

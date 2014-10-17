@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.restoreAgent()">
+	<div class="form-horizontal dp-form">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div>
@@ -39,9 +39,29 @@
 									</p>
 
 									<div dp-hide-spinning="saving">
-										<button class="btn btn-primary" dp-submit-form>Restore Agent</button>
+										<button class="btn btn-primary" ng-click="EditCtrl.restoreAgent()">Restore Agent</button>
 									</div>
 									<div dp-show-spinning="saving">
+										<i class="spinner-flat"></i>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>Convert into user</h3>
+								</div>
+								<div class="col-lg-9">
+									<p>
+										Converting this deleted agent to a user will remove all agent properties from their account
+										and make them a regular user. The account will be able to perform normal user actions
+										such as creating tickets.
+									</p>
+
+									<div dp-hide-spinning="saving_convert">
+										<button class="btn btn-primary" ng-click="EditCtrl.convertToUser()">Convert agent into user</button>
+									</div>
+									<div dp-show-spinning="saving_convert">
 										<i class="spinner-flat"></i>
 									</div>
 								</div>
@@ -52,7 +72,7 @@
 				</div>
 			</article>
 		</section>
-	</form>
+	</div>
 	{{ ng_tpl('AdminInterfaceBundle:Agents:reset-password-modal.html.twig') }}
 	{{ ng_tpl('AdminInterfaceBundle:Agents:copy-settings-modal.html.twig') }}
 	{{ ng_tpl('AdminInterfaceBundle:Agents:delete-modal.html.twig') }}

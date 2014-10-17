@@ -1,5 +1,5 @@
 (function() {
-  define(['angular', 'Admin/App/AdminModule', 'Admin/App/SetupDataServices', 'Admin/App/SetupDirectives', 'DeskPRO/App/SetupLogging', 'DeskPRO/App/SetupNetwork', 'Admin/App/SetupRouting', 'DeskPRO/App/SetupServices', 'Admin/App/SetupServices', 'Admin/App/SetupTemplates'], function(angular, AdminModule, SetupDataServices, SetupDirectives, SetupLogging, SetupNetwork, SetupRouting, SetupServices, AdminSetupServices, SetupTemplates) {
+  define(['angular', 'Admin/App/AdminModule', 'Admin/App/SetupDataServices', 'Admin/App/SetupDirectives', 'DeskPRO/App/SetupLogging', 'DeskPRO/App/SetupNetwork', 'Admin/App/SetupRouting', 'DeskPRO/App/SetupServices', 'Admin/App/SetupServices', 'Admin/App/SetupTemplates', 'DeskPRO/Util/Util'], function(angular, AdminModule, SetupDataServices, SetupDirectives, SetupLogging, SetupNetwork, SetupRouting, SetupServices, AdminSetupServices, SetupTemplates, Util) {
     var _ref, _ref1;
     SetupServices(AdminModule);
     AdminSetupServices(AdminModule);
@@ -25,8 +25,27 @@
       }
     ]);
     AdminModule.constant('angularMomentConfig', {
-      timezone: window.DP_PERSON_TZ
+      timezone: window.DP_PERSON_TZ,
+      preprocess: 'deskpro_process'
     });
+    AdminModule.config([
+      '$provide', function($provide) {
+        return $provide.decorator("amMoment", function($delegate) {
+          $delegate.preprocessors.deskpro_process = function(input) {
+            if (Util.isInteger(input)) {
+              if ((parseInt(input) + "").length >= 13) {
+                return moment.unix(input / 1000);
+              } else {
+                return moment.unix(input);
+              }
+            } else {
+              return moment.utc(input).local();
+            }
+          };
+          return $delegate;
+        });
+      }
+    ]);
     SetupNetwork(AdminModule);
     SetupDirectives(AdminModule);
     SetupRouting(AdminModule);

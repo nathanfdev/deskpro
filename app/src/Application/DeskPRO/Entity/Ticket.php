@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -72,6 +72,7 @@ use Orb\Util\WorkHoursSetAll;
  * @property TicketAttachment[] $attachments
  * @property TicketAccessCode[] $access_codes
  * @property TicketMessage[] $messages
+ * @property TicketSms[] $sms_messages
  * @property CustomDataTicket[] $custom_data
  * @property LabelTicket[] $labels
  * @property string $sent_to_address
@@ -177,7 +178,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 */
 	protected $parent_ticket = null;
-	
+
 	/**
 	 * The language the ticket is in
 	 *
@@ -263,6 +264,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
+	protected $sms_messages;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 */
 	protected $custom_data;
 
 	/**
@@ -307,7 +313,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $ticket_hash;
+	protected $ticket_hash = 'none';
 
 	/**
 	 * @var string
@@ -547,6 +553,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this->_is_new       = true;
 		$this->participants  = new ArrayCollection();
 		$this->messages      = new ArrayCollection();
+		$this->sms_messages  = new ArrayCollection();
 		$this->custom_data   = new ArrayCollection();
 		$this->labels        = new ArrayCollection();
 		$this->access_codes  = new ArrayCollection();
@@ -1324,6 +1331,35 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 		$this->_onPropertyChanged('messages', null, $this->messages, true);
 		$this->getStateChangeRecorder()->record('message', null, $message);
+	}
+
+
+	public function addSmsMessage(TicketSms $message)
+	{
+		$this->sms_messages->add($message);
+		$message->ticket = $this;
+
+		$now = new \DateTime();
+		if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
+			if (!!$this->_is_new) {
+				if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
+					$this['date_last_agent_reply'] = $now;
+				}
+
+				if (!$this->date_first_agent_reply) {
+					$this['date_first_agent_reply'] = $now;
+					$this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp(
+						) - $this->date_created->getTimestamp();
+				}
+			}
+		} else {
+			if (!$this->date_last_user_reply || $this->date_last_user_reply < $now) {
+				$this['date_last_user_reply'] = $now;
+			}
+		}
+
+		$this->_onPropertyChanged('sms_messages', null, $this->sms_messages, true);
+		$this->getStateChangeRecorder()->record('sms_message', null, $message);
 	}
 
 
@@ -2441,7 +2477,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	public function findAccessCodeForPerson(Person $person)
 	{
 		foreach ($this->access_codes as $tac) {
-			if ($tac->person = $person) {
+			if ($tac->person === $person) {
 				return $tac;
 			}
 		}
@@ -3627,6 +3663,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$metadata->mapOneToMany(array(
 			'fieldName'            => 'messages',
 			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketMessage',
+			'cascade'              => array('remove', 'persist', 'merge'),
+			'mappedBy'             => 'ticket',
+			'fetch'                => 'EXTRA_LAZY',
+			'orderBy'              => array( 'date_created' => 'ASC'),
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'sms_messages',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\TicketSms',
 			'cascade'              => array('remove', 'persist', 'merge'),
 			'mappedBy'             => 'ticket',
 			'fetch'                => 'EXTRA_LAZY',

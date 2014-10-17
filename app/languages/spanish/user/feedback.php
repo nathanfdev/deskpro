@@ -31,6 +31,7 @@
 	'user.feedback.title-feedback'                                         => 'Hay 1 asunto para comentar|Hay {{count}} asuntos para comentar',
 	'user.feedback.title-feedback-closed'                                  => '1 asunto cerrado a comentarios|{{count}} asunto s cerrados a comentarios',
 	'user.feedback.title-status'                                           => '1 asunto abierto y activo a comentarios|{{count}} asuntos abiertos y activos a comentarios',
+	'user.feedback.type'                                                   => 'Tipo',
 	'user.feedback.type_feedback'                                          => 'Sugerencia',
 	'user.feedback.voting_button-yes'                                      => 'Estoy de acuerdo',
 	'user.feedback.voting_closed'                                          => 'Votación ya cerrada',

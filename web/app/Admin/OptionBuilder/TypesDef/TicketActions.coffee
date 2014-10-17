@@ -1263,10 +1263,10 @@ define [
 							by_agent_id = by_agent_id + ""
 
 							return {
+								type: 'AddAgentReply',
 								text: opt.reply_text || '',
 								by_assigned_agent: opt.by_assigned_agent || false,
 								by_agent_id: by_agent_id
-								title: 'Reply Text'
 							}
 
 						getValue: (model = {}, data) ->
@@ -1301,10 +1301,10 @@ define [
 					by_agent_id = by_agent_id + ""
 
 					return {
+						type: 'AddAgentNote',
 						text: opt.note_text || '',
 						by_assigned_agent: opt.by_assigned_agent || false,
 						by_agent_id: by_agent_id
-						title: 'Note Text'
 					}
 
 				getValue: (model = {}, data) ->

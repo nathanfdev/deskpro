@@ -156,6 +156,8 @@ return array(
 							'is_enabled' => true,
 						),
 				),
+			'teams' => array(),
+			'primary_team' => null,
 			'labels' =>
 				array(),
 			'display_name' => 'Admin Admin',
@@ -164,8 +166,8 @@ return array(
 					'id' => 1,
 					'email' => 'admin@example.com',
 				),
-			'primary_phone_number_text' => null,
-			'primary_phone_number_region' => null,
+			'primary_phone_number_text' => '',
+			'primary_phone_number_region' => '',
 			'usergroup_ids' =>
 				array(
 					0 => 2,

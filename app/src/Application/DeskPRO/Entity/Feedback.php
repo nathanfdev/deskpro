@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -144,6 +144,28 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 		} else {
 			$this->setModelField('validating', $validating);
 		}
+	}
+
+
+	/**
+	 * Find an existing data record for a field id.
+	 *
+	 * @param int $field_id
+	 * @return CustomDataFeedback
+	 */
+	public function getCustomDataForField($field_id)
+	{
+		if ($field_id instanceof CustomDefFeedback) {
+			$field_id = $field_id['id'];
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id) {
+				return $data;
+			}
+		}
+
+		return null;
 	}
 
 

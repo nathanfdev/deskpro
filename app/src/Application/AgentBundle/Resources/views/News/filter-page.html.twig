@@ -60,7 +60,7 @@
 										<span class="prop-title">{{ phrase('agent.general.labels') }}</span>
 										<span class="prop-val labels">
 											{% for label in news.labels %}
-												<span class="listing-tag" dp-label="{{ label }}">{{ label }}</span>
+												<span class="listing-tag" dp-label dp-lable-type="news" dp-label-string="{{ label }}">{{ label }}</span>
 											{% endfor %}
 										</span>
 									</li>

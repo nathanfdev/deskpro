@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -99,6 +99,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		);
 
 		$executor_context->setEmailContext($this->reader);
+		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
 		#------------------------------
 		# Read in email props and create cutter
@@ -151,6 +152,10 @@ class ProcessAgentFwd extends ProcessAbstract
 				'message.eml',
 				'message/rfc822'
 			));
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
 
 			App::getMailer()->send($message);
 
@@ -325,6 +330,7 @@ class ProcessAgentFwd extends ProcessAbstract
 		);
 
 		$executor_context->setEmailContext($this->reader);
+		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
 		$user_raw_source = $has_eml_attach->getFileContents();
 		$user_reader = new EzcReader();
@@ -392,6 +398,10 @@ class ProcessAgentFwd extends ProcessAbstract
 				'message.eml',
 				'message/rfc822'
 			));
+
+			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
+				$message->prepare();
+			});
 
 			App::getMailer()->send($message);
 

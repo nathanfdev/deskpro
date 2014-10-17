@@ -32,6 +32,21 @@
 							</label>
 						</div>
 					</div>
+					<div class="inner-group" ng-show="settings.process_agent_fwd">
+						<div class="col-lg-12">
+							<label>
+								<input type="checkbox" ng-model="use_agent_fwd_subject_regex" />
+								<h4>Use a custom Subject regular expression for detecting forwarded emails</h4>
+							</label>
+							<div class="inner-group" ng-show="use_agent_fwd_subject_regex">
+								<input type="text" class="form-control" ng-model="settings.agent_fwd_subject_regex" style="width: 425px; font-family: Monaco, Consolas, monospace; font-size: 12px;" />
+								<span class="help-block">
+									Enter a regular expression (<a href="http://php.net/manual/en/reference.pcre.pattern.syntax.php" target="_blank">PCRE</a>) that will be run against email subjects to determine if it is a forwarded message. By default, this
+									looks for common prefixes like "FW:" or "FWD:". When an email subject from an agent matches this expression, DeskPRO will process it as a forward.
+								</span>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</article>

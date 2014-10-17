@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -331,6 +331,7 @@ class MainController extends AbstractController
 	public function quickSearchAction()
 	{
 		$q = $this->in->getString('q');
+		$sort = $this->in->getString('sort');
 
         $results = array(
             'article'              => array(),
@@ -360,7 +361,7 @@ class MainController extends AbstractController
 
         if ($this->container->getSetting('elastica.enabled')) {
 			try {
-				return $this->searchInElasticsearch($q);
+				return $this->searchInElasticsearch($q, $sort);
 			} catch (\Exception $e) {
 				KernelErrorHandler::logException($e);
 
@@ -372,12 +373,12 @@ class MainController extends AbstractController
         }
 	}
 
-    private function searchInElasticsearch($q)
+    private function searchInElasticsearch($q, $sort = null)
     {
         $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
         $elasticsearch->setPersonContext($this->person);
 
-        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q);
+        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, $sort);
 
 		$return_results = array();
 
@@ -410,7 +411,8 @@ class MainController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'grouped_results' => $return_results,
-			'index_running'   => $index_running
+			'index_running'   => $index_running,
+			'is_elastic'      => true,
 		));
     }
 

@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -176,6 +176,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$password = $this->in->getString('password');
 		$password2 = $this->in->getString('password2');
 
+		$history = null;
 		if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
 			$history = new PasswordHistory();
 			$history->person = $this->person;
@@ -198,7 +199,9 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			$this->person->setPassword($password);
 
 			$this->em->persist($this->person);
-			$this->em->persist($history);
+			if ($history) {
+				$this->em->persist($history);
+			}
 			$this->em->flush();
 
 			// Reset user session

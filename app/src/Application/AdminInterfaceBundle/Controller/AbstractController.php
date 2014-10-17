@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -77,7 +77,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$return = '';
 		if (!$this->person['id']) {
 			if ($this->isPostRequest()) {
-				$return = $this->get('router')->generate('adm');
+				$return = $this->get('router')->generate('admin');
 			} else {
 				$return = $this->request->getRequestUri();
 			}

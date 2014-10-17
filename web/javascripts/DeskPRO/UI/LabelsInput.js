@@ -84,26 +84,13 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			formatSelection: function(data, container) {
 				var name = Orb.escapeHtml(data.text);
 
-				// todo angularize and change select2 to ui-select2
-				container.parent().attr('dp-label', name);
+				container.parent().attr('dp-label', "");
+				container.parent().attr('dp-label-string', name);
+				container.parent().attr('dp-label-type', self.options.type);
 				angular.element(document).injector().invoke(['$compile', function($compile) {
 					$compile(container.parent())(DeskPRO_Window.$scope);
 				}]);
 				return name;
-			}
-		});
-
-		this.input.select2('container').on('click', '.select2-search-choice', function(ev) {
-			if (ev.target && $(ev.target).is('.select2-search-choice-close')) {
-				return;
-			}
-
-			ev.preventDefault();
-			ev.stopPropagation();
-
-			var label = $(this).text().trim();
-			if (label) {
-				$('#dp_search_box').data('handler').setSearch('[' + label + ']');
 			}
 		});
 	},

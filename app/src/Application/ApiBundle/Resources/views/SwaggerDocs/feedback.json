@@ -1,0 +1,748 @@
+{
+    "basePath": "/api",
+    "swaggerVersion": "1.2",
+    "resourcePath": "/feedback",
+    "apis": [
+        {
+            "path": "/feedback",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Search for feedbacks matching criteria",
+                    "nickname": "searchAction",
+                    "type": "array",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "category_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Comma seperated IDs of categories to search in"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "category_id_specific[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Comma seperated IDs of categories to search in"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_created_end",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Requires the feedback to have been created before this date. Must be specified as a Unix timestamp."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_created_start",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Requires the feedback to have been created after this date. Must be specified as a Unix timestamp."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires the feedback to have this label."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires the feedback to be in this status. Possible values: new, active, closed, hidden."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status_category_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires the feedback to be in this status category."
+                        }
+                    ],
+                    "notes": "Returns list of feedbacks that matched."
+                }
+            ]
+        },
+        {
+            "path": "/feedback/categories",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available feedback categories.",
+                    "nickname": "getCategoriesAction"
+                }
+            ]
+        },
+        {
+            "path": "/feedback/status-categories",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available feedback status categories.",
+                    "nickname": "getStatusCategoriesAction"
+                }
+            ]
+        },
+        {
+            "path": "/feedback/user-categories",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available feedback user categories.",
+                    "nickname": "getUserCategoriesAction"
+                }
+            ]
+        },
+        {
+            "path": "/feedback/validating-comments",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets feedback comments that are awaiting validation.",
+                    "nickname": "getValidatingCommentsAction"
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a feedback by feedback ID.",
+                    "nickname": "getFeedbackAction",
+                    "type": "Feedback",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the feedback that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Information about the feedback by feedback ID."
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Deletes a Feedback by ID.",
+                    "nickname": "deleteFeedbackAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}/attachments",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets information about a feedback record's attachments",
+                    "nickname": "getFeedbackAttachmentsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Information about a feedback record's attachments by Feedback ID."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds an attachment to a feedback record.",
+                    "nickname": "newFeedbackAttachmentAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "body",
+                            "name": "file",
+                            "type": "string",
+                            "required": true,
+                            "description": "Attached file to include with the feedback. See the API Basics for more information on sending files to the API. Required if no attach_id is provided."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "attach_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The ID of an already uploaded file to include with the feedback. Required if no attach value is provided."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Adds an attachment to a feedback record by feedback ID."
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}/attachments/{attachment_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if a feedback record has an attachment",
+                    "nickname": "getFeedbackAttachmentAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "attachment_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback Comment that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes a feedback attachment",
+                    "nickname": "deleteFeedbackAttachmentAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "attachment_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback Comment that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Removes a feedback attachment by Feedback ID and Attachment ID."
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}/comments",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the comments for feedback",
+                    "nickname": "getFeedbackCommentsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Information about the comments by Feedback ID."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Add a comment for a feedback entry.",
+                    "nickname": "newFeedbackCommentAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "content",
+                            "type": "integer",
+                            "required": true,
+                            "description": "Text of the comment."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": " ID of the person that owns the comment. If not provided, defaults to the agent making the request."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status",
+                            "type": "string",
+                            "required": false,
+                            "description": "Status of the comment. Defaults to visible."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Creates a feedback comment by feedback ID."
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}/comments/{comment_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets info about a specific feedback comment",
+                    "nickname": "getFeedbackCommentAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "comment_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback Comment that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Information about a specific feedback comment by Feedback ID and Comment ID."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Updates a feedback comment",
+                    "nickname": "postFeedbackCommentAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "comment_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback Comment that needs to be updated."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "content",
+                            "type": "integer",
+                            "required": false,
+                            "description": "New Text of the Comment."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Status of the comment."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "DELETE a specific feedback comment",
+                    "nickname": "deleteFeedbackCommentAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "comment_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback Comment that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "DELETE a specific feedback comment by Feedback ID and Comment ID."
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}/labels",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the labels for feedback",
+                    "nickname": "getFeedbackLabelsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Information about a feedback record's labels by Feedback ID."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Add a label for a feedback entry.",
+                    "nickname": "postFeedbackLabelsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label to add."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Creates a feedback label by feedback ID."
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}/labels/{label}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if feedback has a label.",
+                    "nickname": "getFeedbackLabelAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label to search for"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes a label from feedback",
+                    "nickname": "deleteFeedbackLabelAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the feedback that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label that needs to be deleted"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}/merge/{other_feedback_id}",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Merges the two feedback records",
+                    "nickname": "mergeFeedbackAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the first Feedback"
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "other_feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the second Feedback"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/feedback/{feedback_id}/votes",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the votes for feedback",
+                    "nickname": "getFeedbackVotesAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "feedback_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Feedback that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Feedback not found"
+                        }
+                    ],
+                    "notes": "Information about the votes by Feedback ID."
+                }
+            ]
+        },
+        {
+            "path": "/feedbacks",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Creates a new feedback.",
+                    "nickname": "newFeedbackAction",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "title",
+                            "type": "string",
+                            "required": true,
+                            "description": "Title of the feedback. "
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "content",
+                            "type": "string",
+                            "required": true,
+                            "description": "Content of the feedback. Marked up using HTML."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "category_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Category of the feedback."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Comma seperated list of Labels to apply to the feedback."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Status of the feedback. Defaults to new if not overridden by this or status_category_id."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status_category_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Status category of the feedback."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "user_category_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "User category of the feedback."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/feedbacks/{feedback_id}",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Updates a Feedback by feedback ID.",
+                    "nickname": "postFeedbackAction",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "feedback_id",
+                            "type": "string",
+                            "required": true,
+                            "description": "ID of the feedback the needs to be updated."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "title",
+                            "type": "string",
+                            "required": true,
+                            "description": "Title of the feedback. "
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "content",
+                            "type": "string",
+                            "required": true,
+                            "description": "Content of the feedback. Marked up using HTML."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "category_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Category of the feedback."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Comma seperated list of Labels to apply to the feedback."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Status of the feedback. Defaults to new if not overridden by this or status_category_id."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status_category_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Status category of the feedback."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "user_category_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "User category of the feedback."
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

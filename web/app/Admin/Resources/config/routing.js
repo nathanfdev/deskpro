@@ -851,6 +851,46 @@ define(function() {
 		controller: 'Admin_CustomFields_Tickets_Ctrl_Edit'
 	});
 
+
+	//###
+	//# Sms Channel
+	//###
+	routes.push({
+		id: 'tickets.channel_sms',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/list.html',
+		controller: 'Admin_ChannelSms_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.outgoing_log',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/create.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.incoming_log',
+		url: '/channel_sms',
+		templateName: 'ChannelSms/create.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.create',
+		url: '/create',
+		templateName: 'ChannelSms/edit.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_sms.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'ChannelSms/edit.html',
+		controller: 'Admin_ChannelSms_Ctrl_Edit'
+	});
+
+
 	//###
 	//# Ticket Accounts
 	//###
@@ -1347,7 +1387,7 @@ define(function() {
 		url: '/kb/labels',
 		templateName: 'Labels/Kb/list.html',
 		controller: 'Admin_Labels_Ctrl_List',
-		data: {type: 'kb'}
+		data: {type: 'articles'}
 	});
 
 	routes.push({
@@ -1355,7 +1395,7 @@ define(function() {
 		url: '/create/',
 		templateName: 'Labels/Kb/edit.html',
 		controller: 'Admin_Labels_Ctrl_Edit',
-		data: {type: 'kb'}
+		data: {type: 'articles'}
 	});
 
 	routes.push({

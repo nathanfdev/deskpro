@@ -1,5 +1,7 @@
 <?php return array(
 
+	'adm.agents.primary_team'                                     => 'Primary Team',
+
 	'adm.agents.perm_toggle_all'                                  => 'Toggle All',
 
 	'adm.agents.perm_title_tickets'                               => 'Tickets',

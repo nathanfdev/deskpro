@@ -1,12 +1,12 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -439,10 +439,10 @@ function dp_get_php_path($test = false)
 		$ret = null;
 
 		// php -v: PHP 5.3.10 (cli) (built: May 18 2012 10:07:25) etc
-		exec($path . " -v", $out, $ret);
+		exec($path . " -v 2>&1", $out, $ret);
 
 		$out = is_array($out) ? implode("\n", $out) : (string)$out;
-		if (!$ret || stripos($out, 'php') !== false) {
+		if (!$ret || stripos($out, 'the php group') !== false) {
 			$pass_test = true;
 		} else {
 			$pass_test = false;
@@ -514,10 +514,10 @@ function dp_get_mysqldump_path($test = false)
 		$ret = null;
 
 		// mysqldump (no args): Usage: mysqldump [OPTIONS] database [tables]  etc
-		exec($path, $out, $ret);
+		exec($path . " 2>&1", $out, $ret);
 
 		$out = is_array($out) ? implode("\n", $out) : (string)$out;
-		if (!$ret || stripos($out, 'mysqldump') !== false) {
+		if (!$ret || stripos($out, 'usage:') !== false) {
 			$pass_test = true;
 		} else {
 			$pass_test = false;
@@ -559,10 +559,10 @@ function dp_get_mysql_path($test = false)
 		$ret = null;
 
 		// mysql --help: Lots of stuff but we can find mysql
-		exec($path . " --help", $out, $ret);
+		exec($path . " --help 2>&1", $out, $ret);
 
 		$out = is_array($out) ? implode("\n", $out) : (string)$out;
-		if (!$ret || stripos($out, 'mysql') !== false) {
+		if (!$ret || stripos($out, 'usage:') !== false) {
 			$pass_test = true;
 		} else {
 			$pass_test = false;

@@ -14,39 +14,40 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				'#e11d21', '#eb6420', '#fbca04', '#009800', '#006b75', '#207de5', '#0052cc', '#5319e7',
 				'#f7c6c7', '#fad8c7', '#fef2c0', '#bfe5bf', '#bfdadc', '#c7def8', '#bfd4f2', '#d4c5f9'
 			]
-			@$scope.form = {label: '', color: @$scope.colors[0], label_type: @type}
+			@$scope.form = {label: '', color: "", label_type: @type}
 			@$scope.startDelete = => @startDelete()
-
-
 
 		state: (to) ->
 			to = '.' + to if to
 			@$state.current.name.replace /(.+)\.edit|\.create$/, '$1' + to
 
-
-
 		initialLoad: ->
 			if @$stateParams.label
 				@LabelDefinition.get(@type, @$stateParams.label).then (def) =>
-					return if !def?
+					console.log(def)
+					return if !def
 					@definition = def
-					# @definition !== @$scope.form
 					@$scope.form = angular.copy def
 
+		color2hex: (color) ->
+			color = color.replace /\s/g, ''
+			if /^#?[0-9A-F]{3}$/i.test(color) or /^#?[0-9A-F]{6}$/i.test(color)
+				color = '#' + color if not color.match(/^#/)
+				return color
 
+			rgb = color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)
+			if not rgb then return '#ffffff'
+			hex = (x) ->
+				return("0" + parseInt(x).toString(16)).slice(-2)
+
+			return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
 
 		saveLabel: ->
 			return false if not @$scope.form.label
 			return false if @definition && @definition.label == @$scope.form.label && @definition.color == @$scope.form.color
 
-			dummy = $('<i></i>').css 'color', @$scope.form.color
-			color = dummy.css 'color'
-			if 0 == color.indexOf 'rgb'
-				color = color.replace /^[^\d]+(\d{1,3})\s*\,\s*(\d{1,3})\s*\,\s*(\d{1,3}).+/, "$1,$2,$3"
-				parts = color.split ','
-				color = ((parts[0] << 16)|(parts[1] << 8)|parts[2]).toString 16
-				color = '0' + color if color.length < 6
-				color = '#' + color
+			dummy = $('<div></div>').css 'color', @color2hex(@$scope.form.color)
+			color = @color2hex(dummy.css 'color')
 			@$scope.form.color = color
 
 			@startSpinner 'saving_label'

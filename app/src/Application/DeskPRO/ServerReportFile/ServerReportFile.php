@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -79,6 +79,7 @@ class ServerReportFile
 		'errorlog-deskpro.txt'  => '_createDeskPROErrorLog',
 		'errorlog-web.txt'      => '_createWebErrorLog',
 		'errorlog-cli.txt'      => '_createCliErrorLog',
+		'upgrade-log.txt'       => '_createUpgradeLog',
 		'mysql-schema.sql'      => '_createMysqlSchema',
 		'mysql-status.txt'      => '_createMysqlStatus',
 		'mysql-vars.txt'        => '_createMysqlVariables',
@@ -308,6 +309,26 @@ class ServerReportFile
 
 		} catch(IOException $e) {
 
+			echo $e->getMessage();
+		}
+	}
+
+
+	/**
+	 * @param $file_name
+	 */
+	protected function _createUpgradeLog($file_name)
+	{
+		$file = str_repeat('#', 72) . "#\n upgrade.log\n" . str_repeat('#', 72) . "\n\n";
+
+		try {
+			$file .= $this->_readFile(dp_get_log_dir() . '/upgrade.log');
+		} catch(IOException $e) {
+			$file = '';
+		}
+		try {
+			$this->_createFile($this->tmpdir . '/' . $file_name, $file);
+		} catch(IOException $e) {
 			echo $e->getMessage();
 		}
 	}

@@ -104,7 +104,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		// Wait til after updatePageCursor since it needs full list to know proper cursor
 		$scope.tickets = startTicketsBatch[0];
-
 		this.getEl('ticket_json').remove();
 		this.getEl('ticket_ids_json').remove();
 
@@ -352,6 +351,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 * @param {Array} ticketIds
 	 */
 	queueChangeEvent: function(type, ticketIds) {
+		if (!this.$scope) return;
+
 		var self = this;
 
 		ticketIds.forEach(function(tid) {
@@ -371,6 +372,8 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	},
 
 	_runQueuedChangeEvents: function() {
+		if (!this.$scope) return;
+
 		var events = this.queuedChangeEvents;
 		this.queuedChangeEvents = {'addTicketResults': [], 'removeTicketResults': [], 'refreshTicketResults': [], 'postRun': []};
 		this.queuedChangeEvents_timeout = null;
@@ -449,6 +452,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function(tickets) {
+			if (!self.$scope) return;
 			var firstId = $scope.tickets[0] ? $scope.tickets[0].id : null,
 				newFirstTicketIdx = null,
 				listTicketIdsMap;
@@ -653,6 +657,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 		promise = this.getTicketRows(ticketIds);
 		promise.then(function (tickets) {
+			if (!self.$scope) return;
 			self.applyTicketData(tickets);
 		});
 
@@ -997,7 +1002,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 	 */
 	refreshSubgroupNumbers: function() {
 		var self = this;
-		if (!this.meta.refreshSubgroupCounts) {
+		if (!this.meta.refreshSubgroupCounts || !this.$scope) {
 			return;
 		}
 
@@ -1463,6 +1468,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			url: this.meta.refreshCursorUrl.replace(/\$cursor/g, cursor),
 			dataType: 'json',
 			success: function(data) {
+				if (!self.$scope) return;
 				this.refreshCursorAjax = null;
 				time2 = new Date();
 				console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);

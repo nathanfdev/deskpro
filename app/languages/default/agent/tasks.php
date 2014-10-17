@@ -15,7 +15,7 @@
 	'agent.tasks.list_title'         => '1 Task|{{count}} Tasks',
 	'agent.tasks.my_tasks'           => 'My Tasks',
 	'agent.tasks.my_teams'           => 'My Teams\'',
-	'agent.tasks.my_teamstasks'      => 'My Teams\'s Tasks',
+	'agent.tasks.my_teamstasks'      => 'My Teams\' Tasks',
 	'agent.tasks.no_due_date'        => 'No due date',
 	'agent.tasks.or'                 => 'or',
 	'agent.tasks.overdue'            => 'Overdue',

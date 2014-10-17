@@ -82,11 +82,24 @@
 			<div class="col-lg-9">
 				<ul class="checkbox-list" style="min-width: 250px">
 					<li ng-repeat="team in EditCtrl.form.teams">
-						<label>
-							<input type="checkbox" ng-model="team.value" />
-							<span>{{ ng_var('team.name') }}</span>
-							<a class="inline-edit-link" href="{{ ng_href('agents.teams.edit', '{id: team.id}') }}"><i class="fa fa-pencil"></i><em>edit team</em></a>
-						</label>
+						<div style="min-width: 400px;">
+                            <label>
+                                <input type="checkbox" ng-model="team.value" ng-change="EditCtrl.updatePrimaryTeam()" />
+                                <span>{{ ng_var('team.name') }}</span>
+                                <a class="inline-edit-link" href="{{ ng_href('agents.teams.edit', '{id: team.id}') }}">
+                                    <i class="fa fa-pencil"></i>
+                                    <em>edit team</em>
+                                </a>
+                            </label>
+                            <span class="pull-right"
+                                  style="padding: 3px 10px;"
+                                  ng-if="team.value"
+                                  ng-style="EditCtrl.form.primary_team.id == team.id && {color:'#000'} || {cursor: 'pointer', color:'#ccc'}"
+                                  ng-click="EditCtrl.form.primary_team = team">
+                                <i ng-show="EditCtrl.form.primary_team.id == team.id" class="fa fa-check"></i>
+                                {{ phrase('adm.agents.primary_team') }}
+                            </span>
+						</div>
 					</li>
 				</ul>
 			</div>

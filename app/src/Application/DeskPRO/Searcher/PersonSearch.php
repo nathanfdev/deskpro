@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -36,7 +36,9 @@ namespace Application\DeskPRO\Searcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\TicketTerms;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Orb\Util\Util;
 
 class PersonSearch extends SearcherAbstract
@@ -348,21 +350,11 @@ class PersonSearch extends SearcherAbstract
 					} else {
 						$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
 					}
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
 					break;
                 case self::TERM_LANGUAGE:
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.language'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Language')->getTitles((array)$choice);
-						return $titles;
-					});
-
 					$wheres[] = $this->_choiceMatch("$people_table.language_id", $op, $choice, true);
 					break;
 				case self::TERM_ORGANIZATION:
-                    $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.organization'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames((array)$choice);
-						return $titles;
-					});
 					$wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
 					break;
 				case self::TERM_ORGANIZATION_NAME:
@@ -373,11 +365,6 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch("$join_name.name", $op, $choice);
 					break;
                 case self::TERM_USERGROUP:
-                    $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.usergroup'), $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames((array)$choice);
-						return $titles;
-					});
-
 					$choice = array_map('intval', (array)$choice);
 					$person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
 						SELECT person_id
@@ -429,7 +416,6 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch("$join_name.email", $op, $choice, $suffix_only);
 
 					$choice = implode(' or ', (array)$choice);
-					$this->summary[] = "Email is " . $choice;
 
 					break;
 				case self::TERM_EMAIL_DOMAIN:
@@ -459,12 +445,11 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch("$join_name.email_domain", $op, $choice, $suffix_only);
 
 					$choice = implode(' or ', (array)$choice);
-					$this->summary[] = "Email domain is " . $choice;
+
 					break;
 
 				case self::TERM_DATE_CREATED:
 					$wheres[] = $this->_dateMatch("$people_table.date_created", $op, $choice);
-					$this->summary[] = $this->_dateRangeSummary('User created', $op, $choice);
 					break;
 
 				case self::TERM_NAME:
@@ -479,14 +464,12 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $w;
 
 					$choice = implode(' or ', (array)$choice);
-					$this->summary[] = "Name is " . $choice;
 
 					break;
 
 				case self::TERM_USERNAME:
 					$choice = (array)$choice;
 					$choice = array_pop($choice);
-					$this->summary[] = "Username is " . $choice;
 
 					$joins[] = array(
 						'person_usersource_assoc',
@@ -499,7 +482,7 @@ class PersonSearch extends SearcherAbstract
 				case self::TERM_ALPHA:
 
 					$wheres[] = $this->_stringMatch("people.last_name", $op, $choice, true, true);
-					$this->summary[] = 'Name begins with ' . implode(', ', $choice);
+
 
 					break;
 
@@ -529,7 +512,6 @@ class PersonSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_10", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('Phone Number', $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_ADDRESS:
@@ -542,7 +524,6 @@ class PersonSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('Address', $op, $choice);
 					break;
 
 				case self::TERM_CONTACT_IM:
@@ -555,7 +536,6 @@ class PersonSearch extends SearcherAbstract
 					);
 					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice, false, true);
 
-					$this->summary[] = $this->_choiceSummary('IM', $op, $choice);
 					break;
 
 				case self::TERM_LABEL:
@@ -570,7 +550,6 @@ class PersonSearch extends SearcherAbstract
 						if (!$choices_in) $choices_in = '';
 					}
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:
@@ -731,11 +710,6 @@ class PersonSearch extends SearcherAbstract
 						"LEFT JOIN agent_team_members AS $join_name ON ($join_name.person_id = people.id)"
 					);
 
-					$this->summary[] = $this->_choiceSummary("Agent Team", $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
-						return $titles;
-					});
-
 					$wheres[] = $this->_choiceMatch("$join_name.team_id", $op, $choice, true);
 
 					break;
@@ -795,14 +769,12 @@ class PersonSearch extends SearcherAbstract
 	}
 
 
-
 	/**
-	 * Check a specific person against these terms to see if it matches.
-	 *
-	 * @param Person $person
+	 * @param Entity\Person $person
+	 * @param Entity\Ticket $ticket
 	 * @return bool
 	 */
-	public function doesPersontMatch(Entity\Person $person)
+	public function doesPersontMatch(Entity\Person $person, Entity\Ticket $ticket = null)
 	{
 		foreach ($this->terms as $info) {
 			list($term, $op, $choice) = $info;
@@ -1000,24 +972,46 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_LABEL:
 
-					if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-					elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
-
-					$any = false;
-					if (isset($choice['label'])) {
-						$choice = $choice['label'];
-					}
-
-					foreach ($person->getLabelManager()->getLabelsArray() as $label) {
-						if (strpos(strtolower($label), strtolower($choice)) !== false) {
-							$any = true;
-							if ($op == self::OP_NOTCONTAINS) {
-								return false;
-							}
+					$choice_labels = array();
+					if (!empty($choice['labels'])) {
+						foreach ($choice['labels'] as $l) {
+							$l = Strings::utf8_strtolower($l);
+							$choice_labels[$l] = $l;
 						}
 					}
 
-					if ($op == self::OP_CONTAINS AND !$any) {
+					$has = false;
+					foreach ($person->getLabelManager()->getLabelsArray() as $l) {
+						$l = Strings::utf8_strtolower($l->label);
+						if (isset($choice_labels[$l])) {
+							$has = true;
+							break;
+						}
+					}
+
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						if (!$has) {
+							return false;
+						}
+					} else {
+						if ($has) {
+							return false;
+						}
+					}
+
+					break;
+
+				default:
+					if ($ticket) {
+						$terms = new TicketTerms(array(array(
+							'type'    => $term,
+							'op'      => $op,
+							'options' => $choice
+						)));
+						if (!$terms->doesTicketMatch($ticket)) {
+							return false;
+						}
+					} else {
 						return false;
 					}
 					break;

@@ -29,38 +29,51 @@
 		<header>
 			<h3>Elasticsearch</h3>
 		</header>
-		<div class="panel panel-innertable" style="margin-top: 0;">
-			<div class="labels-group">
-				<label>
-					<input type="checkbox" ng-model="settings.enabled" />
-					<h4>Enable Elasticsearch</h4>
-				</label>
-			</div>
-			<div ng-show="settings.enabled">
-				<div class="inner-group">
+		{% if server_capable('curl') %}
+			<div class="panel panel-innertable" style="margin-top: 0;">
+				<div class="labels-group">
 					<label>
-						<h4>Elasticsearch URL:</h4>
+						<input type="checkbox" ng-model="settings.enabled" />
+						<h4>Enable Elasticsearch</h4>
 					</label>
-					<input type="text" class="form-control" ng-model="settings.url" />
-					<span class="help-block">
-						Enter the URL to your Elasticsearch service. Here are a few examples: http://localhost/, https://search:9200/ or http://user:pass@host:9200/.
-					</span>
 				</div>
-			</div>
-		</div>
-		<footer>
-			<div class="dp-content">
-				<div class="dp-btn-controls">
-					<div dp-hide-spinning="saving">
-						<button class="btn btn-info" ng-show="settings.enabled" ng-click="Settings.testSettingsModal()"><i class="fa fa-bolt"></i> Test Settings</button>
-						<button class="btn btn-primary" ng-click="Settings.saveSettings()">Save Settings</button>
-					</div>
-					<div dp-show-spinning="saving">
-						<i class="spinner-flat"></i>
+				<div ng-show="settings.enabled">
+					<div class="inner-group">
+						<label>
+							<h4>Elasticsearch URL:</h4>
+						</label>
+						<input type="text" class="form-control" ng-model="settings.url" />
+						<span class="help-block">
+							Enter the URL to your Elasticsearch service. Here are a few examples: http://localhost/, https://search:9200/ or http://user:pass@host:9200/.
+						</span>
 					</div>
 				</div>
 			</div>
-		</footer>
+			<footer>
+				<div class="dp-content">
+					<div class="dp-btn-controls">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-info" ng-show="settings.enabled" ng-click="Settings.testSettingsModal()"><i class="fa fa-bolt"></i> Test Settings</button>
+							<button class="btn btn-primary" ng-click="Settings.saveSettings()">Save Settings</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		{% else %}
+			<div class="panel panel-innertable" style="margin-top: 0;">
+				<div class="alert alert-danger">
+					<p>
+						To set up ElasticSearch, your server must be configured with the PHP <a href="http://php.net/manual/en/book.curl.php">cURL extension</a>.
+					</p>
+					<p>
+						Please install the cURL extension then try again.
+					</p>
+				</div>
+			</div>
+		{% endif %}
 	</section>
 
 	<section class="dp-paneblock dp-listpane" ng-show="settings.enabled && was_on">

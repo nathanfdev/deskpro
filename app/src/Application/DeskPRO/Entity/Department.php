@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -108,6 +108,11 @@ class Department extends DomainObject implements HasPhraseName
 	 * @var int
 	 */
 	protected $display_order = 0;
+
+	/**
+	 * @var Blob
+	 */
+	protected $avatar;
 
 	/**
 	 * @return Department
@@ -478,6 +483,17 @@ class Department extends DomainObject implements HasPhraseName
 		return $data;
 	}
 
+	public function hasAvatar()
+	{
+		return $this->avatar && $this->avatar->isImage();
+	}
+
+	public function getAvatarUrl($size = 50)
+	{
+		if (!$this->hasAvatar()) return null;
+		return $this->avatar->getThumbnailUrl($size);
+	}
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -580,5 +596,22 @@ class Department extends DomainObject implements HasPhraseName
 				 'indexBy'      => 'id'
 			)
 		);
+
+		$metadata->mapManyToOne(array(
+			'fieldName' => 'avatar',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+			'mappedBy' => NULL,
+			'inversedBy' => NULL,
+			'joinColumns' => array(
+				0 => array(
+					'name' => 'avatar_blob_id',
+					'referencedColumnName' => 'id',
+					'nullable' => true,
+					'onDelete' => 'cascade',
+					'columnDefinition' => NULL,
+				),
+			),
+			'dpApi' => true
+		));
 	}
 }

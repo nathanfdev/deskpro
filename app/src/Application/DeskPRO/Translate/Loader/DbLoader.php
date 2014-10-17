@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -35,7 +35,11 @@
 namespace Application\DeskPRO\Translate\Loader;
 
 /**
- * Loads phrases from the database
+ * Loads phrases from the database.
+ *
+ * This is an eager loader. All phrases are loaded the first time it is called because
+ * 99% of all phrases are NOT in the database, so its a waste to issue multiple queries
+ * for lang, so we just do one.
  */
 class DbLoader implements LoaderInterface
 {
@@ -48,7 +52,12 @@ class DbLoader implements LoaderInterface
 	/**
 	 * @var array
 	 */
-	protected $loaded_langs = array();
+	protected $loaded = null;
+
+	/**
+	 * @var int
+	 */
+	protected $default_lang_id = 1;
 
 	/**
 	 * @param \Application\DeskPRO\DBAL\Connection $dbconn
@@ -58,92 +67,66 @@ class DbLoader implements LoaderInterface
 		$this->dbconn = $dbconn;
 	}
 
-	public function load($groups, $language)
+	private function returnPhrases($groups, $language, array $loaded_phrases = null)
 	{
-		// No lang means we have nothing to do here,
-		// usually means we're in an area without db yet (pre install?)
-		if (!$language OR !$language['id']) {
-			return array();
-		}
+		$phrases = array();
 
-		// The LoaderInterface expects to load groups as they're needed,
-		// but thats expensive in the db so we load then entire thing in one query
-		// - This check prevents the query from re-running when another call is made
-		if (isset($this->loaded_langs[$language['id']])) {
-			return $this->loaded_langs[$language['id']];
-		}
-
-		$this->loaded_langs[$language['id']] = array();
-
+		// Langs to fetch in order of pri
 		$langs = array();
-		$langs[] = 1; // default deskpro lang
-
 		if ($language) {
 			$langs[] = $language->getId(); // the chosen lang
 		}
+		$langs[] = $this->default_lang_id; // default deskpro lang
+		$langs[] = 0; // system use
 
-		// null contains non-language language like cat names and such
-		$langs[] = '0';
+		foreach ($langs as $lid) {
+			foreach ($groups as $g) {
+				if (empty($this->loaded[$lid][$g])) continue;
 
-		$specific_lang_ids = array(0);
-		if ($language) {
-			$specific_lang_ids[] = $language->getId();
-		}
-		$specific_lang_ids = implode(',', $specific_lang_ids);
+				if ($lid != $this->default_lang_id || ($language && $language->getId() == $lid)) {
+					$phrases = array_merge($phrases, $this->loaded[$lid][$g]);
+				} else {
+					// For default custom phrases, we need to make sure
+					// we arent overriding a language with a custom english.
+					// Case: An English phrase is overriden, user is using German,
+					//       we DONT want overriden English phrase to overwrite default German
+					foreach ($this->loaded[$lid][$g] as $phr_id => $phr) {
+						if ($loaded_phrases !== null && isset($loaded_phrases[$phr_id])) {
+							continue;
+						}
 
-		$langs = array_unique($langs, \SORT_STRING);
-
-		$lang_in = implode(',', $langs);
-
-		// Depending on the interface, we load user, user+agent or user+agent+admin
-		if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'cron' || DP_INTERFACE == 'cli' || (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'dp')) {
-			$sql = "
-				SELECT name, phrase, original_phrase
-				FROM phrases
-				WHERE language_id IN ($lang_in)
-				ORDER BY language_id ASC
-			";
-		} elseif (DP_INTERFACE == 'agent') {
-			$sql = "
-				SELECT name, phrase, original_phrase
-				FROM phrases
-				WHERE
-					language_id IN ($lang_in) AND (
-						groupname LIKE 'agent.%' OR groupname LIKE 'user.%' OR groupname LIKE \"obj_%\" OR groupname = \"custom\"
-					)
-				ORDER BY language_id ASC
-			";
-		} else {
-			$sql = "
-				SELECT name, phrase, original_phrase
-				FROM phrases
-				WHERE
-					language_id IN ($lang_in) AND (
-						groupname LIKE 'agent.%' OR groupname LIKE 'user.%' OR groupname LIKE \"obj_%\" OR groupname = \"custom\"
-					)
-				ORDER BY language_id ASC
-			";
-		}
-
-		$q = $this->dbconn->query($sql);
-
-		$phrases = array();
-		while ($r = $q->fetch()) {
-
-			if ($r['name'] == 'user.general.helpdesk_by') {
-				continue;
+						$phrases[$phr_id] = $phr;
+					}
+				}
 			}
-
-			$phrase_text = $r['phrase'];
-			if (empty($phrase_text)) {
-				$phrase_text = $r['original_phrase'];
-			}
-
-			$phrases[$r['name']] = $phrase_text;
 		}
-
-		$this->loaded_langs[$language['id']] = $phrases;
 
 		return $phrases;
+	}
+
+	public function load($groups, $language, array $loaded_phrases = null)
+	{
+		if ($this->loaded !== null) {
+			return $this->returnPhrases($groups, $language, $loaded_phrases);
+		}
+
+		$q = $this->dbconn->query("
+			SELECT language_id, groupname, name, COALESCE(NULLIF(phrase, ''), original_phrase) AS phrase
+			FROM phrases
+		");
+
+		$this->loaded = array();
+		while ($r = $q->fetch()) {
+			if (!isset($this->loaded[$r['language_id']])) {
+				$this->loaded[$r['language_id']] = array();
+			}
+			if (!isset($this->loaded[$r['language_id']][$r['groupname']])) {
+				$this->loaded[$r['language_id']][$r['groupname']] = array();
+			}
+
+			$this->loaded[$r['language_id']][$r['groupname']][$r['name']] = $r['phrase'];
+		}
+
+		return $this->returnPhrases($groups, $language, $loaded_phrases);
 	}
 }

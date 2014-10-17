@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -45,6 +45,28 @@ use Doctrine\DBAL\LockMode;
 class Person extends AbstractEntityRepository
 {
 	protected $identity_helper;
+
+
+	public function findOneByPhoneNumber($from_number)
+	{
+		$phone_number = $this->getEntityManager()->getRepository('DeskPRO:PhoneNumber')->findByNumber($from_number);
+
+		if (!$phone_number) {
+			return null; // didnt find the number in the db
+		}
+
+		$query = $this->getEntityManager()->createQuery(
+		"
+			SELECT p
+			FROM DeskPRO:Person p
+			WHERE :found_phone_number MEMBER OF p.phone_numbers
+		"
+		);
+
+		$query->setMaxResults(1)->setParameter('found_phone_number', $phone_number);
+
+		return $query->getOneOrNullResult();
+	}
 
 	/**
 	 * @return \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
@@ -578,7 +600,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE $agent_sql
 					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
 					ORDER BY p.id DESC
@@ -588,7 +610,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE
 						$agent_sql
 						LOWER(e.email) LIKE ?
@@ -603,7 +625,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE $agent_sql
 					" . ($excludeOrg ? " p.organization_id != $excludeOrg " : '1') . "
 					ORDER BY p.name ASC
@@ -613,7 +635,7 @@ class Person extends AbstractEntityRepository
 				return $db->fetchAllKeyed("
 					SELECT p.id, p.first_name, p.last_name, p.name, e.email
 					FROM people p
-					LEFT JOIN people_emails e ON (e.person_id = p.id)
+					LEFT JOIN people_emails e ON (e.id = p.primary_email_id)
 					WHERE
 						$agent_sql
 						(LOWER(e.email) LIKE ?

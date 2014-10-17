@@ -41,6 +41,15 @@ define([
 	'Reports/Billing/Ctrl/List',
 	'Reports/Billing/Ctrl/View'
 ], function(angular) {
+
+	if (!window.console) {
+		window.console = {
+			log: function(){},
+			warn: function(){},
+			error: function(){}
+		}
+	}
+
 	return {
 		start: function() {
 			window.DP_UID_COUNTER = 0;
