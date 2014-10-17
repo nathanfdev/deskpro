@@ -37,6 +37,7 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
+use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewTicketType;
 use Orb\Util\Arrays;
 use Symfony\Component\Form\Exception\OutOfBoundsException;
@@ -216,7 +217,17 @@ class NewTicketController extends AbstractController
 			}
 
 			if ($validator->isValid($newticket) && !$trap_fail) {
-				$ticket = $newticket->save();
+				try {
+					$ticket = $newticket->save();
+
+				} catch (DuplicateTicketException $e) {
+					// Double submit detected, just continue on
+					$ticket = $this->em->find('DeskPRO:Ticket', $e->ticket_id);
+
+					if (!$ticket) {
+						throw $this->createNotFoundException();
+					}
+				}
 				$person = $ticket['person'];
 
 				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
