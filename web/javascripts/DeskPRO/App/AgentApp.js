@@ -1033,7 +1033,7 @@ define([
 	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
 		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
 	}]);
-	AgentApp.service('Person', DeskPRO_Service_Person);
+	AgentApp.service('PersonService', DeskPRO_Service_Person);
 
 	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);

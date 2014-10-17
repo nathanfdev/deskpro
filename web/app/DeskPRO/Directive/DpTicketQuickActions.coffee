@@ -25,17 +25,20 @@ define ->
 					        <span></span>
 					    </div>
 					    <ul class="previewtext-row actions">
-									<li ng-repeat="action in actions"><a href="#">{{ action.title }}</a></li>
+									<li ng-repeat="action in actions">
+											<a href="#" ng-click="$event.preventDefault(); handleAction(action)">{{ action.title }}</a>
+									</li>
 							</ul>
+							<input type="hidden" style="width: 200px;position: absolute;bottom: -30px;" />
 					</div>
 			'
-			controller: ($scope, $filter, Person) ->
+			controller: ($scope, $filter, PersonService, $http) ->
 				$scope.actions = []
 				me = $scope.$root.app_person_id
 
 				$scope.setTicket = (ticket) ->
 
-					service = Person
+					service = PersonService
 					t = ticket
 
 					# update scope vars
@@ -43,9 +46,9 @@ define ->
 					$scope.name = t.previews[0].person.display_name
 					$scope.status = t.previews[0].message.status
 					$scope.time = $filter('formatTimestampAgo')(t.previews[0].message.date_created_ts)
-					$scope.text = t.previews[0].message.preview_text.substr 0, 1000 # reduce possible length
 
 					$scope.actions.length = 0
+					$scope.ticket_id = t.id
 
 					# if locked by other agent or no actions allowed
 					return if !ticket.actions_allowed?.length || (t.locked_by_agent && t.locked_by_agent.id != me)
@@ -55,22 +58,47 @@ define ->
 						return -1 != ticket.actions_allowed.indexOf(action)
 
 					if isAllowed('assign_self') && (!t.agent || t.agent.id != $scope.$root.app_person_id)
-						$scope.actions.push {title: 'Assign Me', type: 'assign-agent', params: {id: me}}
+						$scope.actions.push {title: 'Assign Me', params: {agent_id: me}}
 
 					if isAllowed('assign_agent')
-						$scope.actions.push {title: 'Assign Agent', type: 'assign-agent', params: {id: 1}}
+						$scope.actions.push {title: 'Assign Agent', params: {agent_id: null}}
 
 					if isAllowed('assign_team')
-						$scope.actions.push {title: 'Assign Team', type: 'assign-team', params: {id: 1}}
+						$scope.actions.push {title: 'Assign Team', params: {agent_team_id: null}}
 
 					if isAllowed('set_awaiting_user') && 'awaiting_user' != t.status
-						$scope.actions.push {title: 'Set Awaiting User', type: 'set-status', params: {status: 'awaiting_user'}}
+						$scope.actions.push {title: 'Set Awaiting User', params: {status: 'awaiting_user', hidden_status: false}}
 
 					if isAllowed('set_awaiting_agent') && 'awaiting_agent' != t.status
-						$scope.actions.push {title: 'Set Awaiting Agent', type: 'set-status', params: {status: 'awaiting_agent'}}
+						$scope.actions.push {title: 'Set Awaiting Agent', params: {status: 'awaiting_agent', hidden_status: false}}
 
 					if isAllowed('set_resolved') && 'resolved' != t.status
-						$scope.actions.push {title: 'Set Resolved', type: 'set-status', params: {status: 'resolved'}}
+						$scope.actions.push {title: 'Set Resolved', params: {status: 'resolved', hidden_status: false}}
+
+
+				$scope.handleAction = (action) ->
+
+					callback = () ->
+						$http.post("/agent/tickets/#{$scope.ticket_id}/ajax-save-actions", {actions: action.params}).success () ->
+							window.DeskPRO_Window.getMessageChanneler().poller.send();
+						$scope.$root.$emit 'tickets.quick_actions.hide'
+
+
+					switch true
+						when action.params.status? || action.params.agent_id == me
+							console.info 'set status or assign self'
+							callback()
+
+						when null == action.params.agent_id
+							console.info 'assign agent'
+							# show agents dropdown
+							1
+
+						when null == action.params.agent_team_id
+							console.info 'assign team'
+						# show teams dropdown
+							1
+
 
 
 			link: ($scope, $el) ->
@@ -80,6 +108,7 @@ define ->
 				promise = null
 				$preview = $el.find '.previewtext-row > span:eq(0)'
 				$preview.dotdotdot {elipsis: '...', wrap: 'word', height: options.preview_text_height}
+				$select2 = $el.find('input').select2 {data: [{id:0, text: 'test'}]}
 
 
 				# events
@@ -98,19 +127,23 @@ define ->
 					DP_DEBUG && console.timeEnd 'bind quick actions data'
 
 					DP_DEBUG && console.time 'update quick actions preview text'
-					$preview.text($scope.text).trigger 'update'
+					$preview.text(ticket.previews[0].message?.preview_text).trigger 'update'
 					DP_DEBUG && console.timeEnd 'update quick actions preview text'
 
 				$scope.$root.$on 'tickets.quick_actions.hide', ->
 					$el.trigger 'mouseleave'
 
-				$el.on 'mousemove', ->
+				$el.on 'mousemove', (e) ->
 					promise && $timeout.cancel promise
 
-				$el.on 'mouseleave', ->
+				$el.on 'mouseleave', (e) ->
+					console.info 'leave'
 					promise = $timeout (=> $el.hide()), options.widget_hide_delay
 
-				$el.on 'click', '.actions a', (e) ->
-					e.preventDefault()
-					e.stopPropagation()
+
+				console.info $select2.data 'select2'
+#				select2 hacks
+
+				$(document).on 'mousemove', '#select2-drop-mask', (e) ->
+					$el.trigger e
 		}
