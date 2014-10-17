@@ -339,6 +339,7 @@ class DpKernel extends AbstractKernel
 			new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
 			new \Application\AgentBundle\AgentBundle(),
 			new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
+			new \Application\PortalBundle\PortalBundle(),
 			new \Application\UserBundle\UserBundle(),
 			new \Application\ApiBundle\ApiBundle(),
 			new \Application\ImportBundle\ImportBundle(),

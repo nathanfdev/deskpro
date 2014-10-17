@@ -7,7 +7,17 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/DeskPRO/Resources/config/dp-routing.php'));
+
+//
+// to be removed shortly
+//
 $collection->addCollection($loader->import(DP_ROOT.'/src/Application/UserBundle/Resources/config/user-routing.php'));
+//
+//
+//
+
+$col = $loader->import(DP_ROOT . '/src/Application/PortalBundle/Resources/config/portal-routing.php');
+$collection->addCollection($col);
 
 $col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php');
 $col->addPrefix('/agent');
