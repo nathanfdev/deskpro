@@ -155,6 +155,18 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			ev.stopPropagation();
 		});
 
+		var context = this.popoverOuter;
+		// override DeskPRO_Window.initInterfaceLayerEvents
+		setTimeout(function(){
+			context.off('click', '[data-route]').on('click', '[data-route]', function(e){
+				e.stopPropagation();
+				e.preventDefault();
+				DeskPRO_Window.runPageRoute($(this).data('route'));
+			});
+		}, 200);
+
+
+
 		this.updatePositions();
 
 		$('.close', this.popoverOuter).first().on('click', (function(ev) {
