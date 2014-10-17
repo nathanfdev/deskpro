@@ -29,64 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
-/**
- * Settings used by the system.
- *
- */
-class Setting extends \Application\DeskPRO\Domain\DomainObject
+class Build1413514082 extends AbstractBuild
 {
-	/**
-	 * The name of the setting
-	 *
-	 * @var string
-	 */
-	protected $name;
-
-	/**
-	 * The value of a setting
-	 *
-	 * @var string
-	 */
-	protected $value;
-
-	/**
-	 * The scope this settings is scoped to
-	 *
-	 * @var \Application\DeskPRO\Entity\Brand
-	 */
-	protected $brand;
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
+	public function run()
 	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Setting';
-		$metadata->setPrimaryTable(array('name' => 'settings'));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
-		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
-		$metadata->mapManyToOne(
-			array(
-				'fieldName'  => 'brand', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand', 'mappedBy' => null,
-				'inversedBy' => null, 'joinColumns' => array(
-				0 => array(
-					'name'             => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => true,
-					'onDelete'         => 'cascade', 'columnDefinition' => null,
-				),
-			),
-			)
-		);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_NONE);
+		$this->out("Scope some settings to a brand");
+		$this->execMutateSql("ALTER TABLE settings ADD brand_id INT DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE settings ADD CONSTRAINT FK_E545A0C544F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE");
+		$this->execMutateSql("CREATE INDEX IDX_E545A0C544F5D008 ON settings (brand_id)");
 	}
 }
