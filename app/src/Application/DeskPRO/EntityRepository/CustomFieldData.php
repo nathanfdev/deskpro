@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity\CustomFieldDefinition;
+use Application\DeskPRO\Entity\CustomFieldDefinition as FieldDefinition;
 use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\DBAL\Connection;
 
@@ -79,11 +79,11 @@ class CustomFieldData extends AbstractEntityRepository
 	}
 
 	/**
-	 * @param CustomFieldDefinition $definition
+	 * @param FieldDefinition $definition
 	 * @param DomainObject $owner
 	 * @return array|null
 	 */
-	public function getFieldData(CustomFieldDefinition $definition, DomainObject $owner)
+	public function getFieldData(FieldDefinition $definition, DomainObject $owner)
 	{
 		if (!$definition['id'] || !$owner['id']) {
 			return null;
@@ -100,11 +100,11 @@ class CustomFieldData extends AbstractEntityRepository
 	}
 
 	/**
-	 * @param CustomFieldDefinition $definition
+	 * @param FieldDefinition $definition
 	 * @param DomainObject $owner
 	 * @return mixed|null
 	 */
-	public function getFieldRawData(CustomFieldDefinition $definition, DomainObject $owner)
+	public function getFieldRawData(FieldDefinition $definition, DomainObject $owner)
 	{
 		if (!$definition['id'] || !$owner['id']) {
 			return null;
