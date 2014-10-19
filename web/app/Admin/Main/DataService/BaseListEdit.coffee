@@ -237,19 +237,6 @@ define [
 
 			return false
 
-		###
-		# This method should be overriden.
-		#
-		# This method needs to load the list data and needs to
-		# resolve to an array of models that will be set on the list collection.
-		#
-		# This method must return a promise
-		#
-		# @return {promise}
-		###
-		_doLoadList: ->
-			throw new Exception("This method must be implemented by a sub-class")
-
 
 		###
 		# Takes a data model and updates the list.
@@ -449,9 +436,9 @@ define [
 
 		# simple proxy
 		get: (id) ->
-			if !id? then return null
 			deferred = @$q.defer()
 			@all().then =>
+				deferred.resolve null if !id
 				deferred.resolve @map[id]
 
 			deferred.promise
@@ -489,7 +476,7 @@ define [
 
 
 		url: ->
-			throw new Exception("This method must be implemented by a sub-class")
+			throw new Exception "This method must be implemented by a sub-class"
 
 
 

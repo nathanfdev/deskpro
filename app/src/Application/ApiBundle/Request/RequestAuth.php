@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Request;
 
 use Application\ApiBundle\ApiUser;
 use Application\DeskPRO\Entity\ApiKey;
+use Application\DeskPRO\Entity\ApiKeyLog;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -58,6 +59,11 @@ class RequestAuth
 	 * @var \Symfony\Component\HttpFoundation\Request
 	 */
 	private $request;
+
+    /**
+     * @var \Application\DeskPRO\Entity\ApiKeyLog
+     */
+    protected $log_entry;
 
 
 	/**
@@ -113,6 +119,9 @@ class RequestAuth
 						$this->api_user->person = $agent;
 					}
 				}
+
+                $this->createApiLogEntry();
+
 			} else if ($this->api_user->api_token) {
 				$this->api_user->person = $this->api_user->api_token->person;
 			}
@@ -202,4 +211,38 @@ class RequestAuth
 
 		return null;
 	}
+
+    /**
+     *
+     */
+    protected function createApiLogEntry()
+    {
+        if (!$key = $this->api_user->api_key) {
+            return;
+        }
+
+        $log = new ApiKeyLog();
+        $log->key = $key;
+        $log->request = array(
+            'path' => $this->request->getPathInfo(),
+            'method' => $this->request->getMethod(),
+            'payload' => $this->request->request->all(),
+        );
+        $log->response = array(
+            'status' => null,
+            'content' => null, // parse json to array?
+        );
+
+        $this->em->persist($log);
+        $this->em->flush($log);
+        $this->log_entry = $log;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\ApiKeyLog|null
+     */
+    public function getApiLogEntry()
+    {
+        return $this->log_entry;
+    }
 }

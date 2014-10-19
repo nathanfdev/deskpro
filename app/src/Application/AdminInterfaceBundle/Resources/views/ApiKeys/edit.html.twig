@@ -2,14 +2,16 @@
 
 {% block editpane_content %}
 
-	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 
             <nav class="dp-blocktabs responsive">
                 <ul>
                     <li class="active" dp-tab-btn="api.keys"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('adm.api_keys.keys_title') }}</a></li>
-                    <li class="pipe">|</li>
-                    <li dp-tab-btn="api.logs"><a href="#"><i class="fa fa-key"></i> {{ phrase('adm.api_keys.logs_title') }}</a></li>
+                    <li class="pipe" ng-if="EditCtrl.api_key.logs && EditCtrl.api_key.logs.length">|</li>
+                    <li dp-tab-btn="api.logs" ng-if="EditCtrl.api_key.logs && EditCtrl.api_key.logs.length">
+	                    <a href="#"><i class="fa fa-key"></i> {{ phrase('adm.api_keys.logs_title') }}</a>
+                    </li>
                 </ul>
             </nav>
 
@@ -81,17 +83,18 @@
 											</label>
 										</div>
 									</div>
-									<div class="inner-group">
+									<div class="inner-group" dp-error-class="form_props.person">
 										<div ng-if="EditCtrl.form.isSuperUser">
 											<label>Default Agent:</label>
 											<select
+												name="person"
 												ui-select2
-												ng-model="EditCtrl.form.person.id"
+												ng-model="EditCtrl.form.person"
 												style="min-width: 240px"
 												class="no-search"
 												>
 												<option value="">No default agent</option>
-												<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.form.all_agents">
+												<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.agents">
 													{{ ng_var('agent.display_name') }}
 												</option>
 											</select>
@@ -104,12 +107,14 @@
 										<div ng-if="!EditCtrl.form.isSuperUser">
 											<label>Agent:</label>
 											<select
+												name="person"
 												ui-select2
-												ng-model="EditCtrl.form.person.id"
+												ng-model="EditCtrl.form.person"
 												style="min-width: 240px"
 												class="no-search"
+											    required
 												>
-												<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.form.all_agents">
+												<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.agents">
 													{{ ng_var('agent.display_name') }}
 												</option>
 											</select>
@@ -141,7 +146,7 @@
 										<div class="alert alert-danger" ng-show="EditCtrl.form.isAdminManage">
 											Be very careful with API keys with this option enabled! Anyone with this API key essentially has complete
 											admin access to the helpdesk.
-										</span>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -152,13 +157,13 @@
                     <ul class="dp-item-list">
                         <li dp-li-group-section ng-repeat="item in EditCtrl.api_key.logs">
                             <a href="#" class="toggle" ng-click="$event.preventDefault();">
-                                <div class="row">
+                                <div class="row" ng-class="!item.response.status && 'text-danger'">
                                     <div class="col-lg-4">{{ ng_var('item.request.method') }}</div>
                                     <div class="col-lg-4">{{ ng_var('item.request.path') }}</div>
                                     <div class="col-lg-4">{{ ng_var('item.time') }}</div>
                                 </div>
                             </a>
-                            <div class="group-section-wrapper row-fluid">
+                            <div class="group-section-wrapper">
                                 <div class="col-lg-12">
                                     <h4>{{ phrase('adm.api_keys.request') }}</h4>
 
@@ -180,6 +185,11 @@
                                         <dd>{{ ng_var('item.response.content') }}</dd>
                                     </dl>
                                     <br />
+
+                                    <button class="btn btn-default" type="button" ng-click="replayLogEntry(item)">
+                                        <i class="fa fa-refresh" ng-class="!item.response && 'fa-spin'"></i> Replay
+                                    </button>
+                                    <br /><br />
                                 </div>
                             </div>
                         </li>
@@ -196,9 +206,9 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.api_key.id">
+					<div class="dp-delete-control" ng-if="EditCtrl.form.id">
 						<button class="btn btn-danger"
-								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.api_key.id);">
+								ng-click="$event.preventDefault(); EditCtrl.startDelete(EditCtrl.form.id);">
 							Delete
 						</button>
 					</div>

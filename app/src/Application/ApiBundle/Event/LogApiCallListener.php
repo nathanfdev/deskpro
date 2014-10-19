@@ -45,7 +45,7 @@ class LogApiCallListener
 			return;
 		}
 
-		if (!$key = $auth->getApiUser()->api_key) {
+		if (!$log = $auth->getApiLogEntry()) {
 			return;
 		}
 
@@ -54,28 +54,21 @@ class LogApiCallListener
 			return;
 		}
 
+        /** @var EntityManager $em */
+        $em = $dispatcher->getContainer()->get('doctrine.orm.entity_manager');
+
 		// Dont log rate limit
 		if ($response->getStatusCode() == 429) {
+            $em->remove($log);
+            $em->flush($log);
 			return;
 		}
 
-		/** @var Request $request */
-		$request = $event->get('request');
-
-		/** @var EntityManager $em */
-		$em = $dispatcher->getContainer()->get('doctrine.orm.entity_manager');
-		$log = new ApiKeyLog();
-		$log->key = $key;
-		$log->request = array(
-			'path' => $request->getPathInfo(),
-			'method' => $request->getMethod(),
-			'payload' => $request->request->all(),
-		);
 		$log->response = array(
 			'status' => $response->getStatusCode(),
 			'content' => $response->getContent(), // parse json to array?
 		);
-		$em->persist($log);
-		$em->flush();
+
+		$em->flush($log);
 	}
 } 

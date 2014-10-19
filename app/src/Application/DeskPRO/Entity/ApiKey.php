@@ -90,17 +90,8 @@ class ApiKey extends DomainObject
 
 	public function __construct()
 	{
-		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
+		$this->regenerateApiKey();
 		$this->logs = new ArrayCollection();
-	}
-
-
-	/**
-	 * @return ApiKey
-	 */
-	public static function createApiKey()
-	{
-		return new self();
 	}
 
 
@@ -132,6 +123,26 @@ class ApiKey extends DomainObject
 	public function isFlagSet($flag)
 	{
 		return in_array($flag, $this->flags);
+	}
+
+	/**
+	 * @param bool $primary
+	 * @param bool $deep
+	 * @param array $visited
+	 * @return array
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = parent::toApiData($primary, false, $visited);
+		$data['keyString'] = $this->getKeyString();
+		$data['person'] = $this->person ? $this->person['id'] : null;
+		$data['logs'] = array();
+
+		foreach ($this->logs as $log) {
+			$data['logs'][] = $log->toApiData(true, false);
+		}
+
+		return $data;
 	}
 
 
