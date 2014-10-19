@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\NewSettings\Loader\BrandSettingsLoader;
 use Application\DeskPRO\NewSettings\Loader\DbGlobalSettingsTableLoader;
 use Application\DeskPRO\NewSettings\Loader\GlobalsArrayLoader;
 use Application\DeskPRO\NewSettings\SettingsBag;
@@ -47,14 +48,20 @@ class SettingsResolverService
 		/** @var \Application\DeskPRO\Cache\Adapter\SimpleArrayCache $simple_array_cache */
 		$simple_array_cache = $container->get('cache.simple_array');
 
-		// loaders, in proper order. first loader is default settings.
+		// loaders, in proper order. first loader is treated as the default settings.
 		$loaders = array(
 			$container->getSystemService('default_settings_loader'),
 		    new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
 			new GlobalsArrayLoader($simple_array_cache)
 		);
 
-		$resolver = new SettingsResolver($loaders, $simple_array_cache);
+		// brand settings loader is a special loader, injected directly
+		$resolver = new SettingsResolver(
+			$loaders,
+			$simple_array_cache,
+			new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
+		);
+
 
 		// virtual settings
 		$resolver->setVirtual(
