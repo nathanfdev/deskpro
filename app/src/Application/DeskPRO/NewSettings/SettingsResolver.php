@@ -37,6 +37,7 @@ namespace Application\DeskPRO\NewSettings;
 
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
+use Application\DeskPRO\Entity\Brand;
 
 class SettingsResolver
 {
@@ -121,6 +122,10 @@ class SettingsResolver
 	 */
 	public function getBrandSettings($brand_id, $force = false)
 	{
+		if ($brand_id instanceof Brand) {
+			$brand_id = $brand_id->id;
+		}
+
 		$cacheKey = static::CACHE_KEY_BRAND_PREFIX . '.brand' . $brand_id;
 
 		if ($force) {

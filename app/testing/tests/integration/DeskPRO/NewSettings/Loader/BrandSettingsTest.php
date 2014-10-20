@@ -1,6 +1,6 @@
 <?php
 
-namespace DpIntegrationTests\DeskPRO\Labels;
+namespace DpIntegrationTests\DeskPRO\NewSettings\Loader;
 
 use Application\DeskPRO\EntityRepository\Setting as SettingRepo;
 use Application\DeskPRO\EntityRepository\Brand as BrandRepo;
@@ -41,10 +41,20 @@ class BrandSettingsTest extends \DpIntegrationTestCase
 		$this->assertEquals('val2', $settings->get('456key'));
 	}
 
-	public function testBrandSettings()
+	public function testBrandSettingsByBrandId()
 	{
 		$brand = $this->brands_repo->findOneBy(array('name' => 'some_name'));
 		$settings = $this->settings_resolver->getBrandSettings($brand->id);
+
+		// "456 key" would be "val2" if we fetched the global settingbag
+		$this->assertEquals('val', $settings->get('123key'));
+		$this->assertEquals('brand-setting', $settings->get('456key'));
+	}
+
+	public function testBrandSettingsByBrandEntity()
+	{
+		$brand = $this->brands_repo->findOneBy(array('name' => 'some_name'));
+		$settings = $this->settings_resolver->getBrandSettings($brand);
 
 		// "456 key" would be "val2" if we fetched the global settingbag
 		$this->assertEquals('val', $settings->get('123key'));
