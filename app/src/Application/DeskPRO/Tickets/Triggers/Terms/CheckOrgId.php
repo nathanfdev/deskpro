@@ -62,6 +62,15 @@ class CheckOrgId extends AbstractTriggerTerm
 	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$options = $this->getTermOptions();
+
+		if ($this->getTermOperator() == 'isset') {
+			if ($ticket->organization) return true;
+			else return false;
+		} elseif ($this->getTermOperator() == 'not_isset') {
+			if (!$ticket->organization) return true;
+			else return false;
+		}
+
 		return $this->isEntityMatch($ticket, $context, 'organization', 'id', $options['id']);
 	}
 }

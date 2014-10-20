@@ -18,100 +18,134 @@
                 <div dp-tab-body="api.keys">
 				    <div class="panel panel-fill indent">
 					    <div class="panel-body">
-						<div class="form-group">
-							<div class="col-lg-3">
-								<h3>Description</h3>
-							</div>
-							<div class="col-lg-9">
-								<div class="inner-group" dp-error-class="form_props.note">
-									<input type="text" class="form-control" name="note" ng-model="EditCtrl.form.note"
-										   style="width: 50%;" required autofocus/>
-									<span class="help-block">
-										Used as note for this API key.
-										You could use this field as a reminder of what this API key will be used for.
-									</span>
+							<div class="form-group">
+								<div class="col-lg-2">
+									<h3>Description</h3>
+								</div>
+								<div class="col-lg-10">
+									<div class="inner-group" dp-error-class="form_props.note">
+										<input type="text" class="form-control" name="note" ng-model="EditCtrl.form.note"
+											   style="width: 50%;" required autofocus/>
+										<span class="help-block">
+											Used as note for this API key.
+											You could use this field as a reminder of what this API key will be used for.
+										</span>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="form-group" ng-if="EditCtrl.form.id">
-							<div class="col-lg-3">
-								<h3>API Key Code</h3>
-							</div>
-							<div class="col-lg-9">
-								<div class="pull-right">
-									<span class="btn btn-success" ng-click="EditCtrl.regenerateApiKey()">
-										Regenerate API Key
-									</span>
+							<div class="form-group" ng-if="EditCtrl.form.id">
+								<div class="col-lg-2">
+									<h3>API Key Code</h3>
 								</div>
-								<div class="inner-group">
-									{{ ng_var('EditCtrl.form.keyString') }}
+								<div class="col-lg-10">
+									<div class="pull-right">
+										<span class="btn btn-success" ng-click="EditCtrl.regenerateApiKey()">
+											Regenerate API Key
+										</span>
+									</div>
+									<div class="inner-group">
+										{{ ng_var('EditCtrl.form.keyString') }}
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-lg-3">
-								<h3>API Key Type</h3>
+							<div class="form-group">
+								<div class="col-lg-2">
+									<h3>
+										API Key Type
+										<button dp-inhelp-btn="admin.api_keys.edit.key_type"></button>
+									</h3>
+								</div>
+								<div class="col-lg-10">
+									<div class="inner-group">
+										<div class="panel-help" dp-inhelp-body="admin.api_keys.edit.key_type" style="margin-top: 0;">
+											<p>
+												All API requests are executed in the context of a particular agent. The agent account used
+												defines what can be performed using the API. For example, if an agent does not have permission
+												to edit tickets then an API key for that agent won't be able to edit tickets using API requests either.
+											</p>
+											<p>
+												<strong>Superuser keys</strong> are special API keys that allow you specify the agent context
+												whenever you make an API request rather than pre-defining it here. These are very powerful because
+												it means, for example, you could easily perform actions as an admin user with full permissions.
+											</p>
+										</div>
+
+										<div style="padding-top: 6px;">
+											<label style="font-weight: normal; display: block;">
+												<input type="radio" ng-model="EditCtrl.form.isSuperUser" ng-value="false">
+												Normal API Key
+											</label>
+											<label style="font-weight: normal; display: block;">
+												<input type="radio" ng-model="EditCtrl.form.isSuperUser" ng-value="true">
+												Superuser API Key
+											</label>
+										</div>
+									</div>
+									<div class="inner-group">
+										<div ng-if="EditCtrl.form.isSuperUser">
+											<label>Default Agent:</label>
+											<select
+												ui-select2
+												ng-model="EditCtrl.form.person.id"
+												style="min-width: 240px"
+												class="no-search"
+												>
+												<option value="">No default agent</option>
+												<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.form.all_agents">
+													{{ ng_var('agent.display_name') }}
+												</option>
+											</select>
+											<span class="help-block">
+												The <strong>default agent</strong> to use if no agent is specified with an API request.
+												If no default agent is selected here and no agent is specified with an API request, then the request will fail.
+											</span>
+										</div>
+
+										<div ng-if="!EditCtrl.form.isSuperUser">
+											<label>Agent:</label>
+											<select
+												ui-select2
+												ng-model="EditCtrl.form.person.id"
+												style="min-width: 240px"
+												class="no-search"
+												>
+												<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.form.all_agents">
+													{{ ng_var('agent.display_name') }}
+												</option>
+											</select>
+											<span class="help-block">
+												<strong>Required.</strong>
+												Select the agent that this API key will be bound to. All API requests will be executed
+												in the context of this agent.
+											</span>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div class="col-lg-9">
-								<div class="inner-group">
-									<div style="padding-top: 6px;">
-										<label style="font-weight: normal; display: block;">
-											<input type="radio" ng-model="EditCtrl.form.isSuperUser" ng-value="true">
-											Superuser Key
+
+							<div class="form-group" ng-if="EditCtrl.form.isSuperUser">
+								<div class="col-lg-2">
+									<h3>Options</h3>
+								</div>
+								<div class="col-lg-10">
+									<div class="inner-group">
+										<label>
+											<input type="checkbox" ng-model="EditCtrl.form.isAdminManage" />
+											<h4>Enable administration API endpoints</h4>
 										</label>
-										<label style="font-weight: normal; display: block;">
-											<input type="radio" ng-model="EditCtrl.form.isSuperUser" ng-value="false">
-											Specific Agent
-										</label>
+										<span class="help-block">
+											When admin API endpoints are enabled, the API can be used to make administrative changes to the helpdesk
+											such as changing permissions, editing or deleting agents, setting system settings, editing or deleting email accounts,
+											etc.
+										</span>
+										<div class="alert alert-danger" ng-show="EditCtrl.form.isAdminManage">
+											Be very careful with API keys with this option enabled! Anyone with this API key essentially has complete
+											admin access to the helpdesk.
+										</span>
 									</div>
 								</div>
 							</div>
 						</div>
-
-                        <div ng-if="EditCtrl.form.isSuperUser" class="form-group">
-                            <div class="alert alert-info">
-                                If your superuser key does not have a default agent, every request must specify the
-                                agent performing the action.
-                            </div>
-                            <div class="col-lg-3">
-                                <h3>Select default agent</h3>
-                            </div>
-                            <div class="col-lg-9">
-                                <select
-                                    ui-select2
-                                    ng-model="EditCtrl.form.person.id"
-                                    style="min-width: 240px"
-                                    class="no-search"
-                                    >
-                                    <option value="">No default agent</option>
-                                    <option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.form.all_agents">
-                                        {{ ng_var('agent.display_name') }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-						<div ng-if="!EditCtrl.form.isSuperUser" class="form-group">
-							<div class="alert alert-info">
-								Perform all API requests as a specific agent.
-							</div>
-							<div class="col-lg-3">
-								<h3>Select specific agent</h3>
-							</div>
-							<div class="col-lg-9">
-								<select
-										ui-select2
-										ng-model="EditCtrl.form.person.id"
-										style="min-width: 240px"
-										class="no-search"
-										>
-									<option value="{{ ng_var('agent.id') }}" ng-repeat="agent in EditCtrl.form.all_agents">
-										{{ ng_var('agent.display_name') }}
-									</option>
-								</select>
-							</div>
-						</div>
-					</div>
 				    </div>
                 </div>
                 <div dp-tab-body="api.logs">

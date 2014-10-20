@@ -9,7 +9,13 @@ $collection = new RouteCollection();
 
 $collection->create('api', array(
 	'path'        => '/',
-	'controller'  => 'ApiBundle:Test:About',
+	'controller'  => 'ApiBundle:Docs:about',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_docs_home', array(
+	'path'        => '/api.html',
+	'controller'  => 'ApiBundle:Docs:api',
 	'methods'     => array('GET'),
 ));
 
@@ -926,6 +932,12 @@ $collection->create('api_agents_create', array(
 $collection->create('api_agents_create_bulk', array(
 	'path'        => '/agents_bulk',
 	'controller'  => 'ApiBundle:Agents:bulkCreateAgents',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_agents_create_bulk_check', array(
+	'path'        => '/agents_bulk/check',
+	'controller'  => 'ApiBundle:Agents:bulkLicenseCheck',
 	'methods'     => array('POST'),
 ));
 

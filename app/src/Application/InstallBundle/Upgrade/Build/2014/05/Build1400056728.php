@@ -50,6 +50,13 @@ class Build1400056728 extends AbstractBuild
 		$db = $this->container->getDb();
 		$db->exec("DELETE FROM ticket_layouts");
 
+		// Hack: Later upgrade modifies departments table
+		// but we're using entities below, which means doctrine will try to
+		// use the new schema before its been upgraded
+		try {
+			$db->exec("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
+		} catch (\Exception $e) {}
+
 		#------------------------------
 		# Get current layouts
 		#------------------------------
@@ -105,5 +112,9 @@ class Build1400056728 extends AbstractBuild
 			$em->persist($layout);
 			$em->flush();
 		}
+
+		try {
+			$db->exec("ALTER TABLE departments DROP avatar_blob_id");
+		} catch (\Exception $e) {}
 	}
 }

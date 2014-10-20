@@ -38,6 +38,13 @@ define(function() {
 		controller: 'Admin_License_Ctrl_License'
 	});
 
+	routes.push({
+		id: 'license_go',
+		url: '/go-license',
+		template: '',
+		controller: ['$state', function ($state) { $state.go('license'); }]
+	});
+
 	//##################################################################################################################
 	// Main Nav
 	//##################################################################################################################
@@ -1426,7 +1433,7 @@ define(function() {
 		url: '/kb/labels',
 		templateName: 'Labels/Kb/list.html',
 		controller: 'Admin_Labels_Ctrl_List',
-		data: {type: 'kb'}
+		data: {type: 'articles'}
 	});
 
 	routes.push({
@@ -1434,7 +1441,7 @@ define(function() {
 		url: '/create/',
 		templateName: 'Labels/Kb/edit.html',
 		controller: 'Admin_Labels_Ctrl_Edit',
-		data: {type: 'kb'}
+		data: {type: 'articles'}
 	});
 
 	routes.push({

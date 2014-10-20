@@ -112,8 +112,18 @@ abstract class ezcMailPartParser
         if ( isset( $headers['Content-Type'] ) )
         {
             $matches = array();
+
+			// DESKPRO EDIT
+			// Fixed regex pattern to match proper Content-Type string in
+			// complex mime header strings.
+			//
+			// Old regex:    '/^(\S+)\/([^;]+)/'
+			// Failed on:    multipart/related;type="multipart/alternative";boundary="----example1"
+			// Would match:  multipart/related;type
+			// Sholud match: multipart/related
+
             // matches "type/subtype; blahblahblah"
-            preg_match_all( '/^(\S+)\/([^;]+)/',
+            preg_match_all( '/^(\S*?)\/([^;]+)/',
                             $headers['Content-Type'], $matches, PREG_SET_ORDER );
             if ( count( $matches ) > 0 )
             {

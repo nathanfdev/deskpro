@@ -492,7 +492,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.hasInitLabels = true;
 
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'article',
+			type: 'articles',
 			input: this.getEl('labels_input'),
 			onChange: this.saveLabels.bind(this)
 		});
@@ -744,7 +744,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				var wheel = function(e) {
 					e = e || iframeWindow.event;
 					var scroller = iframe.closest('.with-scrollbar').get(0), proxyE;
-					if (scroller.dispatchEvent) {
+					if (scroller && scroller.dispatchEvent) {
 						try {
 							proxyE = document.createEvent('MouseWheelEvent');
 							proxyE.initMouseWheelEvent(

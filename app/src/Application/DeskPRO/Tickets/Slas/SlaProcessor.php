@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Slas;
 
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
@@ -113,26 +114,38 @@ class SlaProcessor
 
 			$calc = $ticket_sla->sla->getCalculator();
 
-			if ($set_warn_date = $calc->calculateWarnDate($ticket)) {
+			$set_warn_date = $calc->calculateWarnDate($ticket) ?: null;
+			if ($ticket_sla->warn_date != $set_warn_date) {
 				$ticket_sla->warn_date = $set_warn_date;
-			} else if (!$ticket_sla->is_completed) {
-				$ticket_sla->warn_date = null;
+				$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- warn_date: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $set_warn_date ? $set_warn_date->format('Y-m-d H:i:s') : 'null'));
 			}
 
-			if ($set_fail_date = $calc->calculateFailDate($ticket)) {
+			$set_fail_date = $calc->calculateFailDate($ticket) ?: null;
+			if ($ticket_sla->fail_date != $set_fail_date) {
 				$ticket_sla->fail_date = $set_fail_date;
-			} else if (!$ticket_sla->is_completed) {
-				$ticket_sla->fail_date = null;
+				$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- fail_date: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $set_fail_date ? $set_fail_date->format('Y-m-d H:i:s') : 'null'));
 			}
 
 			if (!$ticket_sla->is_completed) {
 				if ($ticket_sla->sla_status == 'ok' || $ticket_sla->sla_status == 'warning') {
 					if ($calc->isTicketSlaFailed($ticket, $ticket_sla)) {
+						$ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
+							'ticket_sla_status',
+							array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => $ticket_sla->sla_status),
+							array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => 'fail')
+						));
+						$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- set failed', $ticket_sla->sla->id, $ticket_sla->sla->title));
 						$ticket_sla->sla_status = TicketSla::STATUS_FAIL;
 						$do_triggers = true;
 					}
 				} else if ($ticket_sla->sla_status == 'ok') {
 					if ($calc->isTicketSlaWarning($ticket, $ticket_sla)) {
+						$ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
+							'ticket_sla_status',
+							array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => $ticket_sla->sla_status),
+							array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'status' => 'warning')
+						));
+						$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- set warning', $ticket_sla->sla->id, $ticket_sla->sla->title));
 						$ticket_sla->sla_status = TicketSla::STATUS_WARNING;
 						$do_triggers = true;
 					}
@@ -151,6 +164,11 @@ class SlaProcessor
 
 			if ($current_complete != $ticket_sla->is_completed) {
 				$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- is_complete: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $ticket_sla->is_completed ? 'true' : 'false'));
+				$ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
+					'ticket_sla_complete',
+					array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $current_complete),
+					array('ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $ticket_sla->is_completed)
+				));
 			}
 			if ($current_status != $ticket_sla->sla_status) {
 				$context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- sla_status: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $ticket_sla->sla_status));

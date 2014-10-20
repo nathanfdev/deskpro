@@ -331,6 +331,7 @@ class MainController extends AbstractController
 	public function quickSearchAction()
 	{
 		$q = $this->in->getString('q');
+		$sort = $this->in->getString('sort');
 
         $results = array(
             'article'              => array(),
@@ -360,7 +361,7 @@ class MainController extends AbstractController
 
         if ($this->container->getSetting('elastica.enabled')) {
 			try {
-				return $this->searchInElasticsearch($q);
+				return $this->searchInElasticsearch($q, $sort);
 			} catch (\Exception $e) {
 				KernelErrorHandler::logException($e);
 
@@ -372,12 +373,12 @@ class MainController extends AbstractController
         }
 	}
 
-    private function searchInElasticsearch($q)
+    private function searchInElasticsearch($q, $sort = null)
     {
         $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
         $elasticsearch->setPersonContext($this->person);
 
-        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q);
+        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, $sort);
 
 		$return_results = array();
 
@@ -410,7 +411,8 @@ class MainController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'grouped_results' => $return_results,
-			'index_running'   => $index_running
+			'index_running'   => $index_running,
+			'is_elastic'      => true,
 		));
     }
 

@@ -88,9 +88,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 	public function getAction($id)
 	{
 		$manager = $this->container->getEmailAccountManager();
-		$account = $manager->getAccount($id);
 
-		if (!$account) {
+		try {
+			$account = $manager->getAccount($id);
+		} catch (\OutOfBoundsException $e) {
 			throw $this->createNotFoundException();
 		}
 

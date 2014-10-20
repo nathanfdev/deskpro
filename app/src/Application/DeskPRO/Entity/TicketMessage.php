@@ -455,7 +455,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setMessageText($message)
 	{
-		$this->setMessage(nl2br(htmlspecialchars($message)));
+		$this->setMessage(Strings::convert4ByteCharsToHtmlEntities(nl2br(htmlspecialchars($message))));
 	}
 
 	public function setMessage($message)
@@ -578,10 +578,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function initPersonAccessCode()
 	{
-		if ($this->id) {
-			App::getEntityRepository('DeskPRO:Cache')->delete("ticket_messages.{$this->ticket['id']}");
-		}
-
 		$this->ticket->addAccessCodeForPerson($this->person);
 	}
 

@@ -46,7 +46,7 @@
                 body: _this.editorMessage.getValue()
               }
             };
-            if (!_this.$scope.email.email_name || Strings.trim(_this.$scope.email.email_name) === "") {
+            if (_this.$scope.is_new_email && (!_this.$scope.email.email_name || Strings.trim(_this.$scope.email.email_name) === "")) {
               _this.$scope.saving_template = false;
               _this.$scope.is_error = true;
               _this.$scope.syntax_error = false;

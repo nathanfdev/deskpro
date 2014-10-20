@@ -78,6 +78,19 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 			$(document).on('click', this.close.bind(this));
 		}
 
+		var footer = this.resultsBox.find('footer').hide();
+		var footerName = footer.find('em');
+
+		this.termInput.on('keyup change', function() {
+			var val = self.getTerm();
+			if (!val || !val.length) {
+				footer.hide();
+			} else {
+				footerName.text(val);
+				footer.show();
+			}
+		});
+
 		//------------------------------
 		// Clicking on an item fires an event that
 		// the page controller can listen to

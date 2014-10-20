@@ -749,6 +749,28 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Find an existing data record for a field id.
+	 *
+	 * @param int $field_id
+	 * @return CustomDefChat
+	 */
+	public function getCustomDataForField($field_id)
+	{
+		if ($field_id instanceof CustomDefChat) {
+			$field_id = $field_id['id'];
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id) {
+				return $data;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
 	 * Add a custom data item to this chat
 	 *
 	 * @param CustomDataChat $data

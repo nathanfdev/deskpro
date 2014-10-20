@@ -1,0 +1,44 @@
+{
+    "basePath": "/api/api_keys",
+    "swaggerVersion": "1.2",
+    "resourcePath": "/api_keys",
+    "apis": [
+        {
+            "path": "/api_keys",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Get list of all existing API Keys",
+                    "nickname": "listAction",
+                    "notes": "Returns array of all existing API Keys"
+                }
+            ]
+        },
+        {
+            "path": "/api_keys/{id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Find API Key By ID",
+                    "nickname": "getAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of API Key that needs to be fetched"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "API Key not found"
+                        }
+                    ],
+                    "notes": "Returns API Key based on ID"
+                }
+            ]
+        }
+    ]
+}

@@ -118,17 +118,52 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 			$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Ticket: " . ($ticket ? $ticket->id : 'none'));
 
 			$tac_person = $ticket_detect->findTacPerson($this->reader);
-			$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- TAC Person: " . ($tac_person ? $tac_person->id : 'none'));
+			$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- TAC Person: " . ($tac_person ? $tac_person->id . ' ' . $tac_person->getDisplayContact() : 'none'));
 
 			if ($ticket) {
 				$person = $ticket_detect->findExistingPerson($ticket, $this->reader);
-				$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Person: " . ($person ? $person->id : 'none'));
+				$this->logMessage("[TicketGatewayProcessor] Ticket Detector -- Person: " . ($person ? $person->id . ' ' . $person->getDisplayContact() : 'none'));
 
 				$can_add_new_person = $ticket_detect->canAddUnknownPerson($ticket, $this->reader);
 
 				if ($ticket_detect->getMatchedDetector($this->reader) instanceof Dp3Detector) {
 					$is_dp3_reply = true;
 				}
+			}
+		}
+
+		#-------------------------
+		# Check TACs
+		#-------------------------
+
+		// If this was a reply via a TAC, then the person detected via address and the person who owns the TAC
+		// should be the sames. Otherwise, *probably* means the agent used a different email address.
+		if ($tac_person && $tac_person->is_agent) {
+			// Need to look up the From sender manually because we dont know which ticket dector was used above,
+			// and the way they find existing people is an implementation detail we dont know here
+			$exist_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->email);
+			if (($exist_person && $tac_person !== $exist_person) || !$exist_person) {
+				$this->logMessage('Agent email with TAC from unknown email address');
+				$this->error      = 'auth_invalid';
+				$this->error_type = 'rejected';
+
+				$message = App::getMailer()->createMessage();
+				$message->setTemplate('DeskPRO:emails_agent:error-unknown-from.html.twig', array(
+					'ticket'  => $ticket,
+					'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+					'name'    => $this->reader->getFromAddress()->getName() ? : $this->reader->getFromAddress()->getEmail(),
+				));
+				$message->setTo($this->reader->getFromAddress()->getEmail());
+
+				$lang = $person ? $person->getLanguage() : $tac_person->getLanguage();
+
+				App::$container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
+					$message->prepare();
+				});
+
+				App::getMailer()->send($message);
+
+				return null;
 			}
 		}
 
@@ -171,7 +206,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 		# Reject new tickets by disabled users
 		#-------------------------
 
-		if ($person && $person->is_disabled && !$ticket) {
+		if ($person && ($person->is_disabled || $person->is_deleted)) {
 			$this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
 			$this->error = 'from_disabled_user';
 			$this->error_type = 'rejected';

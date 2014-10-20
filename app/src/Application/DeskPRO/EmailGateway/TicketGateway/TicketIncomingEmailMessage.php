@@ -398,9 +398,9 @@ class TicketIncomingEmailMessage
 		$cut_len = strlen($this->body);
 		$full_len = strlen($this->body_full);
 
-		if (($full_len - $cut_len) > 10000) {
+		if (($full_len - $cut_len) > 19000) {
 			$this->logMessage('body_full too long, trimming');
-			$this->body_full = substr($this->body_full, 0, 10000 + $cut_len);
+			$this->body_full = substr($this->body_full, 0, 19000 + $cut_len);
 
 			// Simple way to try and handle if we cut in the middle of a tag name
 			$tag_start_pos = strrpos($this->body_full, '<');

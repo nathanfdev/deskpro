@@ -212,7 +212,7 @@ class TemplatingExtension extends \Twig_Extension
     {
 		try {
         	return App::getRouter()->generate($name, $parameters, false);
-		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+		} catch (\Exception $e) {
 			if ($this->container->isDebug()) {
 				throw $e;
 			}
@@ -224,7 +224,7 @@ class TemplatingExtension extends \Twig_Extension
     {
 		try {
         	return App::getRouter()->generate($name, $parameters, true);
-		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+		} catch (\Exception $e) {
 			if ($this->container->isDebug()) {
 				throw $e;
 			}
@@ -547,6 +547,12 @@ class TemplatingExtension extends \Twig_Extension
 		switch ($id) {
 			case 'country_names':
 				return \Orb\Data\Countries::getCountryNames();
+				break;
+			case 'countries':
+				return \Orb\Data\Countries::getCountryArray();
+				break;
+			case 'us_states':
+				return \Orb\Data\Countries::getUsStates();
 				break;
 			case 'timezones':
 				$tzs = \DateTimeZone::listIdentifiers();

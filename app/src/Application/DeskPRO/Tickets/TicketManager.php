@@ -187,6 +187,19 @@ class TicketManager
 		$ticket = new Ticket();
 		$ticket->disableAutoTicketProcess();
 
+		// Generate a ref now
+		// This will cause less locking if we are outside of a transaction
+		$ref_gen = $this->container->getRefGenerator();
+		try {
+			$ticket->ref = $ref_gen->generateReference('DeskPRO:Ticket');
+		} catch (\Exception $e) {
+			KernelErrorHandler::logException($e);
+			$ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . date('ymd');
+			$ticket->ref = $ref;
+		}
+
+		$ticket->__dp_is_autogen_ref = false;
+
 		return $ticket;
 	}
 

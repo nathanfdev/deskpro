@@ -442,7 +442,7 @@ class Runner
 			if (!$is_in_trans && App::getDb()->isTransactionActive()) {
 				$this->logger->log("WARNING: Unclosed transaction!", 'info');
 				$e = new \RuntimeException("WARNING: Unclosed transaction");
-				KernelErrorHandler::logException($e);
+				KernelErrorHandler::logException($e, false, 'unclosed_trans_gateway');
 				while (App::getDb()->isTransactionActive()) {
 					App::getDb()->commit();
 				}

@@ -84,6 +84,7 @@ class NTLMSoapClient extends SoapClient
 			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
 			curl_setopt($ch, CURLOPT_HTTPAUTH, $httpauth);
 			curl_setopt($ch, CURLOPT_USERPWD, $user.':'.$pass);
+			return $ch;
 		};
 
 		foreach (array(CURLAUTH_NTLM, CURLAUTH_BASIC) as $httpauth) {

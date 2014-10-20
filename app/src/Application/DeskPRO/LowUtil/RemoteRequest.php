@@ -264,7 +264,8 @@ class DeskPRO_LowUtil_RequestNative implements DeskPRO_LowUtil_Requester
 		$res = @copy($url, $save_path, $context);
 
 		if (!$res) {
-			throw new DeskPRO_LowUtil_Fetch_Exception("Failed downloading remote file", DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
+			$e = error_get_last();
+			throw new DeskPRO_LowUtil_Fetch_Exception("Failed downloading remote file: " . @$e['message'], DeskPRO_LowUtil_Fetch_Exception::WRITE_FAILED);
 		}
 
 		if (!$this->isSuccessResponse($http_response_header)) {

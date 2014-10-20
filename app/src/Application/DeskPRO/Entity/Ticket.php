@@ -313,7 +313,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var string
 	 */
-	protected $ticket_hash;
+	protected $ticket_hash = 'none';
 
 	/**
 	 * @var string
@@ -2477,7 +2477,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	public function findAccessCodeForPerson(Person $person)
 	{
 		foreach ($this->access_codes as $tac) {
-			if ($tac->person = $person) {
+			if ($tac->person === $person) {
 				return $tac;
 			}
 		}

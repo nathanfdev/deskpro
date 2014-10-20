@@ -29,7 +29,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 					}
 				}
 
-				if not @$scope.email.email_name || Strings.trim(@$scope.email.email_name) == ""
+				if @$scope.is_new_email and (not @$scope.email.email_name || Strings.trim(@$scope.email.email_name) == "")
 					@$scope.saving_template = false
 					@$scope.is_error = true
 					@$scope.syntax_error  = false

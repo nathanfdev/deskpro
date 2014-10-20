@@ -57,6 +57,10 @@ class SearchContextFactory
 
 		$person->loadHelper('PermissionsManager');
 
+		if ($person && !$person->isGuest()) {
+			$context->setPerson($person);
+		}
+
 		if ($person->hasPerm('articles.use')) {
 			$ids = $person->PermissionsManager->ArticleCategories->getAllowedCategories();
 			$context->setArticleCategoryIds($ids);

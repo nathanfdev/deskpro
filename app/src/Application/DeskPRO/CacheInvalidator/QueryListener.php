@@ -125,6 +125,7 @@ class QueryListener
 				break;
 
 			case 'update_article_to_categories':
+			case 'insert_article_to_categories':
 			case 'delete_article_to_categories':
 				$this->updates[] = 'publish_structure_cache';
 				$this->updates[] = 'permissions';

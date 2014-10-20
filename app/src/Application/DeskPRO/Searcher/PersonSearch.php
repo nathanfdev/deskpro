@@ -36,7 +36,9 @@ namespace Application\DeskPRO\Searcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\TicketTerms;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 use Orb\Util\Util;
 
 class PersonSearch extends SearcherAbstract
@@ -767,14 +769,12 @@ class PersonSearch extends SearcherAbstract
 	}
 
 
-
 	/**
-	 * Check a specific person against these terms to see if it matches.
-	 *
-	 * @param Person $person
+	 * @param Entity\Person $person
+	 * @param Entity\Ticket $ticket
 	 * @return bool
 	 */
-	public function doesPersontMatch(Entity\Person $person)
+	public function doesPersontMatch(Entity\Person $person, Entity\Ticket $ticket = null)
 	{
 		foreach ($this->terms as $info) {
 			list($term, $op, $choice) = $info;
@@ -972,24 +972,46 @@ class PersonSearch extends SearcherAbstract
 
 				case self::TERM_LABEL:
 
-					if ($op == self::OP_IS) $op = self::OP_CONTAINS;
-					elseif ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
-
-					$any = false;
-					if (isset($choice['label'])) {
-						$choice = $choice['label'];
-					}
-
-					foreach ($person->getLabelManager()->getLabelsArray() as $label) {
-						if (strpos(strtolower($label), strtolower($choice)) !== false) {
-							$any = true;
-							if ($op == self::OP_NOTCONTAINS) {
-								return false;
-							}
+					$choice_labels = array();
+					if (!empty($choice['labels'])) {
+						foreach ($choice['labels'] as $l) {
+							$l = Strings::utf8_strtolower($l);
+							$choice_labels[$l] = $l;
 						}
 					}
 
-					if ($op == self::OP_CONTAINS AND !$any) {
+					$has = false;
+					foreach ($person->getLabelManager()->getLabelsArray() as $l) {
+						$l = Strings::utf8_strtolower($l);
+						if (isset($choice_labels[$l])) {
+							$has = true;
+							break;
+						}
+					}
+
+					if ($op == self::OP_IS || $op == self::OP_CONTAINS) {
+						if (!$has) {
+							return false;
+						}
+					} else {
+						if ($has) {
+							return false;
+						}
+					}
+
+					break;
+
+				default:
+					if ($ticket) {
+						$terms = new TicketTerms(array(array(
+							'type'    => $term,
+							'op'      => $op,
+							'options' => $choice
+						)));
+						if (!$terms->doesTicketMatch($ticket)) {
+							return false;
+						}
+					} else {
 						return false;
 					}
 					break;

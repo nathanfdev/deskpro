@@ -8,6 +8,8 @@
                 >
             <option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
             <option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
+            <option ng-if="operators.indexOf('isset') !== -1" value="isset">is set</option>
+            <option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">is not set</option>
             <option ng-if="operators.indexOf('contains') !== -1" value="contains">contains</option>
             <option ng-if="operators.indexOf('notcontains') !== -1" value="notcontains">does not contain</option>
             <option ng-if="operators.indexOf('is_regex') !== -1" value="is_regex">matches regex</option>
@@ -21,6 +23,8 @@
             <option ng-if="operators.indexOf('lt') !== -1" value="lt">&lt;</option>
             <option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
         </select>
-        <input ui-select2="model.inputOptions" ng-model="model.value" style="min-width: 140px;" />
+		<div style="display: inline-block" ng-show="model.op != 'isset' && model.op != 'not_isset'">
+        	<input ui-select2="model.inputOptions" ng-model="model.value" style="min-width: 140px;" />
+		</div>
 	</div>
 </dp-optionbuilder-row>

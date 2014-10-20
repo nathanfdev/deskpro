@@ -222,6 +222,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				$type_flag = 'status_changed';
 			}
 
+			if ($state->hasChangedField('ticket_sla_status')) {
+				$change = $state->getLastChangeForField('ticket_sla_status');
+				$new = $change->getNew();
+				$vars['sla'] = $new['sla'];
+				$vars['sla_status'] = $new['status'];
+			}
+
 			$vars['type_flag'] = $type_flag;
 
 			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())

@@ -9,7 +9,8 @@ define [
 	'Admin/App/SetupRouting',
 	'DeskPRO/App/SetupServices',
 	'Admin/App/SetupServices',
-	'Admin/App/SetupTemplates'
+	'Admin/App/SetupTemplates',
+	'DeskPRO/Util/Util'
 ], (
 	angular,
 	AdminModule,
@@ -21,7 +22,9 @@ define [
 	SetupRouting,
 	SetupServices,
 	AdminSetupServices,
-	SetupTemplates
+	SetupTemplates,
+
+	Util
 ) ->
 
 	SetupServices(AdminModule)
@@ -42,8 +45,23 @@ define [
 		$httpProvider.interceptors.push('dpHttpSessionInterceptor');
 	])
 	AdminModule.constant('angularMomentConfig', {
-		timezone: window.DP_PERSON_TZ
+		timezone: window.DP_PERSON_TZ,
+		preprocess: 'deskpro_process'
 	})
+	AdminModule.config(['$provide', ($provide) ->
+		$provide.decorator("amMoment", ($delegate) ->
+			$delegate.preprocessors.deskpro_process = (input) ->
+				if Util.isInteger(input)
+					if (parseInt(input)+"").length >= 13
+						return moment.unix(input / 1000)
+					else
+						return moment.unix(input)
+				else
+					return moment.utc(input).local()
+
+			return $delegate
+		);
+	])
 
 	SetupNetwork(AdminModule)
 	SetupDirectives(AdminModule)

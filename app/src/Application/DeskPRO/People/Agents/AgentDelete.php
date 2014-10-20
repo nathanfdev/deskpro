@@ -81,6 +81,8 @@ class AgentDelete
 		$this->agent->can_billing           = false;
 		$this->agent->can_reports           = false;
 		$this->agent->was_agent             = true;
+		$this->agent->is_deleted            = false;
+		$this->agent->is_disabled           = false;
 		$this->agent->override_display_name = ''; // only settable for agents currently
 		$this->em->persist($this->agent);
 
@@ -140,6 +142,8 @@ class AgentDelete
 			throw $e;
 		}
 
+		$this->clearSessions();
+
 		return true;
 	}
 
@@ -171,6 +175,21 @@ class AgentDelete
 		$this->em->persist($this->agent);
 		$this->em->flush();
 
+		$this->clearSessions();
+
 		return true;
+	}
+
+
+	/**
+	 * Clears any sessions the agent has open.
+	 *
+	 * This is needed because they might have an active agent session right now,
+	 * but if they actually do anything (even ajax polling) will result in some exceptions
+	 * because they arent actually agents anymore.
+	 */
+	private function clearSessions()
+	{
+		$this->db->delete('sessions', array('person_id' => $this->agent->getId()));
 	}
 }

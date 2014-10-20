@@ -281,8 +281,7 @@ class NewTicket
 		#------------------------------
 
 		// Ticket props
-		$ticket = new Ticket();
-		$this->_ticket_manager->markAsManaged($ticket);
+		$ticket = $this->_ticket_manager->createTicket();
 
 		$ticket_context = $this->_ticket_manager->createAgentExecutorContext($this->_person_context, 'newticket', 'web');
 
