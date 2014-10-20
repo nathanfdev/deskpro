@@ -299,9 +299,6 @@ $container->loadFromExtension('twig', array(
 		'resources' => array(
 			'DeskPRO:Form:form_div_layout.html.twig'
 		)
-	),
-	'globals' => array(
-		'experimental_admin_features' => true
 	)
 ));
 
