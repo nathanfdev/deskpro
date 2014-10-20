@@ -21,13 +21,11 @@ define [
 
 			@$scope.replayLogEntry = (entry) =>
 				return if !entry?.id?
-					entry.response = null
+				entry.response = null
 
 				@service.keys.replayLogEntry(entry).then(
-					() =>
-						console.info arguments
-					() =>
-						console.error arguments
+					(data) => entry.response = data
+					=> entry.response = {status: null, content: null}
 				)
 
 
@@ -96,7 +94,7 @@ define [
 
 
 		regenerateApiKey: ->
-			@keyData.regenerateApiKey(@form).success =>
+			@service.keys.regenerateApiKey(@form).success =>
 				@Growl.success("API Key regenerated")
 
 

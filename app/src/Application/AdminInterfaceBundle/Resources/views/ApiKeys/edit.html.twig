@@ -8,8 +8,8 @@
             <nav class="dp-blocktabs responsive">
                 <ul>
                     <li class="active" dp-tab-btn="api.keys"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('adm.api_keys.keys_title') }}</a></li>
-                    <li class="pipe" ng-if="EditCtrl.api_key.logs && EditCtrl.api_key.logs.length">|</li>
-                    <li dp-tab-btn="api.logs" ng-if="EditCtrl.api_key.logs && EditCtrl.api_key.logs.length">
+                    <li class="pipe" ng-if="EditCtrl.form.logs && EditCtrl.form.logs.length">|</li>
+                    <li dp-tab-btn="api.logs" ng-if="EditCtrl.form.logs && EditCtrl.form.logs.length">
 	                    <a href="#"><i class="fa fa-key"></i> {{ phrase('adm.api_keys.logs_title') }}</a>
                     </li>
                 </ul>
@@ -155,7 +155,7 @@
                 </div>
                 <div dp-tab-body="api.logs">
                     <ul class="dp-item-list">
-                        <li dp-li-group-section ng-repeat="item in EditCtrl.api_key.logs">
+                        <li dp-li-group-section ng-repeat="item in EditCtrl.form.logs">
                             <a href="#" class="toggle" ng-click="$event.preventDefault();">
                                 <div class="row" ng-class="!item.response.status && 'text-danger'">
                                     <div class="col-lg-4">{{ ng_var('item.request.method') }}</div>
@@ -165,8 +165,14 @@
                             </a>
                             <div class="group-section-wrapper">
                                 <div class="col-lg-12">
-                                    <h4>{{ phrase('adm.api_keys.request') }}</h4>
+                                    <h4>
+	                                    {{ phrase('adm.api_keys.request') }}
+	                                    <button class="btn btn-default btn-xs" type="button" ng-click="replayLogEntry(item)">
+		                                    <i class="fa fa-refresh" ng-class="null === item.response && 'fa-spin'"></i> Replay
+	                                    </button>
+                                    </h4>
 
+	                                <br />
                                     <dl class="dl-horizontal">
                                         <dt>{{ phrase('adm.api_keys.path') }}</dt>
                                         <dd>{{ ng_var('item.request.path') }}</dd>
@@ -177,18 +183,17 @@
                                             <dd>{{ ng_var('val') }}</dd>
                                         </div>
                                     </dl>
+
+
+	                                <br />
+
                                     <h4>{{ phrase('adm.api_keys.response') }}</h4>
-                                    <dl class="dl-horizontal">
+                                    <dl class="dl-horizontal" ng-class="!item.response.status && 'text-danger'">
                                         <dt>{{ phrase('adm.api_keys.status') }}</dt>
                                         <dd>{{ ng_var('item.response.status') }}</dd>
                                         <dt>{{ phrase('adm.api_keys.content') }}</dt>
                                         <dd>{{ ng_var('item.response.content') }}</dd>
                                     </dl>
-                                    <br />
-
-                                    <button class="btn btn-default" type="button" ng-click="replayLogEntry(item)">
-                                        <i class="fa fa-refresh" ng-class="!item.response && 'fa-spin'"></i> Replay
-                                    </button>
                                     <br /><br />
                                 </div>
                             </div>

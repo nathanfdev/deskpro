@@ -30,12 +30,16 @@
         return this.$scope.replayLogEntry = (function(_this) {
           return function(entry) {
             if ((entry != null ? entry.id : void 0) == null) {
-              return entry.response = null;
+              return;
             }
-            return _this.service.keys.replayLogEntry(entry).then(function() {
-              return console.info(arguments);
+            entry.response = null;
+            return _this.service.keys.replayLogEntry(entry).then(function(data) {
+              return entry.response = data;
             }, function() {
-              return console.error(arguments);
+              return entry.response = {
+                status: null,
+                content: null
+              };
             });
           };
         })(this);
@@ -125,7 +129,7 @@
       };
 
       Admin_ApiKeys_Ctrl_Edit.prototype.regenerateApiKey = function() {
-        return this.keyData.regenerateApiKey(this.form).success((function(_this) {
+        return this.service.keys.regenerateApiKey(this.form).success((function(_this) {
           return function() {
             return _this.Growl.success("API Key regenerated");
           };

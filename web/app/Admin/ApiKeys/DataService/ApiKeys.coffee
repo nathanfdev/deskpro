@@ -3,12 +3,27 @@ define [
 ], (
 	BaseListEdit
 )  ->
-	class ApiKeys extends BaseListEdit
+	class Admin_ApiKeys_DataService_ApiKeys extends BaseListEdit
 		@$inject = ['Api', '$q']
+
 
 
 		url: ->
 			'/api_keys'
+
+
+
+		replayLogEntry: (entry) ->
+			deferred = @$q.defer()
+
+			@Api.sendGet("/api_keys/replay/#{entry.id}")
+			.success((data, status, headers, config) =>
+				@loadList true
+				deferred.resolve(data, status)
+			)
+			.error((data, status, headers, config) -> deferred.reject(data, status))
+
+			deferred.promise
 
 
 
@@ -23,16 +38,3 @@ define [
 				model.code = data.code
 				model.keyString = data.keyString
 
-
-
-    replayLogEntry: (entry) ->
-      deferred = @$q.defer()
-
-      @Api.sendGet("/api_keys/replay/#{entry.id}")
-      .success((data, status, headers, config) =>
-        @loadList true
-        deferred.resolve(data, status)
-      )
-      .error((data, status, headers, config) -> deferred.reject(data, status))
-
-      deferred.promise

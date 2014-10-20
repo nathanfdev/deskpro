@@ -191,7 +191,20 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         if (!$entry = $this->em->find('DeskPRO:ApiKeyLog', $logEntryId)) {
             throw new NotFoundHttpException;
         }
+	    /** @var ApiKey $key */
+	    $key = $entry->key;
+	    $request = $entry['request'];
 
-        return $this->createApiSuccessResponse();
+	    $api = new \DeskPRO\Api($this->settings->get('core.deskpro_url'), $key->getKeyString(), $key->person['id']);
+	    $path = 0 === strpos($request['path'], '/api') ? substr($request['path'], 4) : $request['path'];
+	    /** @var \DeskPRO\Api\Result $response */
+	    $response = $api->call($request['method'], $path, $request['payload']);
+
+	    $result = array(
+		    'status' => $response->getResponseCode(),
+		    'content' => $response->getData(),
+	    );
+
+        return $this->createApiResponse($result);
     }
 }
