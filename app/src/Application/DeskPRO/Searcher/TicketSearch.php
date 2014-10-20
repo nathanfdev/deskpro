@@ -2352,12 +2352,15 @@ class TicketSearch extends SearcherAbstract
 						'op' => $op,
 						'options' => $choice
 					)));
-					return $terms->doesTicketMatch($ticket);
+					if (!$terms->doesTicketMatch($ticket)) {
+						return false;
+					}
+					break;
 			}
 		}
 
 		if ($this->person_search) {
-			if (!$this->person_search->doesPersontMatch($ticket->person)) {
+			if (!$this->person_search->doesPersontMatch($ticket->person, $ticket)) {
 				return false;
 			}
 		}

@@ -85,6 +85,7 @@ class HtmlPurifier implements CleanerPlugin
 
 		if ($type == 'html_email_postclean') {
 			$value = Strings::postDomDocument($value);
+			$value = Strings::convert4ByteCharsToHtmlEntities($value);
 			return $value;
 		}
 
@@ -223,6 +224,7 @@ class HtmlPurifier implements CleanerPlugin
 			$value = Strings::trimHtmlAdvanced($value);
 		}
 
+		$value = Strings::convert4ByteCharsToHtmlEntities($value);
 		return $value;
 	}
 

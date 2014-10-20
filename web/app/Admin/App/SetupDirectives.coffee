@@ -43,6 +43,8 @@ define [
 	'Admin/Portal/Directive/PortalEditor',
 	'Admin/TicketDeps/Directive/LayoutEditor',
 	'Admin/TicketDeps/Directive/LayoutEditorField',
+
+	'Admin/License/Directive/PaymentFormDirective',
 ], (
 	DeskPRO_Directive_DpClickHref,
 	DeskPRO_Directive_DpClosestNumber,
@@ -88,6 +90,8 @@ define [
 	Admin_Portal_Directive_PortalEditor,
 	Admin_TicketDeps_Directive_LayoutEditor,
 	Admin_TicketDeps_Directive_LayoutEditorField,
+
+	Admin_License_Directive_PaymentFormDirective
 ) ->
 	return (Module) ->
 		Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref)
@@ -135,6 +139,8 @@ define [
 
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
+
+		Module.directive('dpLicensePaymentForm',           Admin_License_Directive_PaymentFormDirective)
 
 		Module.directive('dpToggleShowIds', [ ->
 			return {

@@ -1552,9 +1552,47 @@ class Strings
 
 
 	/**
+	 * Converts 4-byte chars in $string to HTML entities.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function convert4ByteCharsToHtmlEntities($string)
+	{
+		$string = preg_replace_callback('/(?:
+			\xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+			| [\xF1-\xF3][\x80-\xBF]{3}        # planes 4-15
+			| \xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
+		)/xsS', function($m) {
+			return Strings::htmlEntityEncodeUtf8($m[0]);
+		}, $string);
+
+		return $string;
+	}
+
+
+	/**
+	 * @param string $string
+	 * @param string $replace_with Replace with a string (e.g., '?') instead of stripping
+	 * @return mixed
+	 */
+	public static function strip4ByteChars($string, $replace_with = '')
+	{
+		$string = preg_replace('/(?:
+			\xF0[\x90-\xBF][\x80-\xBF]{2}      # planes 1-3
+			| [\xF1-\xF3][\x80-\xBF]{3}        # planes 4-15
+			| \xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
+		)/xsS', $replace_with, $string);
+
+		return $string;
+	}
+
+
+	/**
 	 * Get text between the body tags in an html doc
 	 *
 	 * @param string $value
+	 * @return string
 	 */
 	public static function extractBodyTag($value)
 	{
@@ -1932,7 +1970,7 @@ class Strings
 			return $string;
 		}
 
-		$new_string = preg_replace_callback('/[^\x00-\x7F]/u', function($match) use ($encodeString) {
+		$new_string = preg_replace_callback('/[^\x00-\x7F]/uS', function($match) use ($encodeString) {
 			$string = $match[0];
 			$c1 = ord($string[0]);
 			if ($c1 < 0x80) {
