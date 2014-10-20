@@ -46,17 +46,15 @@ class Build1413803749 extends AbstractBuild
 
 		$userType = Usersource::TYPE_USER;
 
-		$this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL, ADD is_sso_auto TINYINT(1) NOT NULL, ADD is_sso_background TINYINT(1) NOT NULL"
-		);
-		$this->execMutateSql("UPDATE usersources SET type = '$userType'");
+		$did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1413803749 AND name = 'did_pre_alter'");
+		if (!$did_do) {
+			$this->execMutateSql("ALTER TABLE usersources  ADD type VARCHAR(25) NOT NULL, ADD is_sso_auto TINYINT(1) NOT NULL, ADD is_sso_background TINYINT(1) NOT NULL");
+			$this->execMutateSql("ALTER TABLE usersources ADD agent_permission_group_id INT DEFAULT NULL, ADD auto_agent TINYINT(1) NOT NULL");
+			$this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994CF9C72B85 FOREIGN KEY (agent_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL");
+			$this->execMutateSql("CREATE INDEX IDX_4E3C994CF9C72B85 ON usersources (agent_permission_group_id)");
+		}
 
-		$this->execMutateSql(
-			"ALTER TABLE usersources ADD agent_permission_group_id INT DEFAULT NULL, ADD auto_agent TINYINT(1) NOT NULL"
-		);
-		$this->execMutateSql(
-			"ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994CF9C72B85 FOREIGN KEY (agent_permission_group_id) REFERENCES usergroups (id) ON DELETE SET NULL"
-		);
-		$this->execMutateSql("CREATE INDEX IDX_4E3C994CF9C72B85 ON usersources (agent_permission_group_id)");
+		$this->execMutateSql("UPDATE usersources SET type = '$userType'");
 
 		$em = $this->container->getEm();
 
