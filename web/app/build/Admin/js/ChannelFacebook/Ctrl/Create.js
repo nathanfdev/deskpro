@@ -3,7 +3,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  define(['Admin/Main/Ctrl/Base', 'Admin/ChannelFacebook/FormModel/EditFacebookPageModel', 'facebook'], function(Admin_Ctrl_Base, Admin_ChannelFacebook_FormModel_EditFacebookPageModel, FB) {
+  define(['Admin/Main/Ctrl/Base', 'Admin/ChannelFacebook/FormModel/EditFacebookPageModel'], function(Admin_Ctrl_Base, Admin_ChannelFacebook_FormModel_EditFacebookPageModel) {
     var Admin_ChannelFacebook_Ctrl_Create;
     Admin_ChannelFacebook_Ctrl_Create = (function(_super) {
       __extends(Admin_ChannelFacebook_Ctrl_Create, _super);
@@ -19,7 +19,7 @@
       Admin_ChannelFacebook_Ctrl_Create.DEPS = ['Api', 'Growl', 'FacebookPagesData', '$stateParams', '$state', '$timeout'];
 
       Admin_ChannelFacebook_Ctrl_Create.prototype.init = function() {
-        this.app_id = '1496820407237522';
+        this.app_id = '';
         this.app_secret = null;
         this.app_connected = false;
         this.app_name = '';
@@ -30,7 +30,24 @@
         this.user_access_token = null;
         this.available_user_pages = [];
         this.fb_init = false;
-        return this.checked_for_pages = false;
+        this.checked_for_pages = false;
+        requirejs.config({
+          paths: {
+            facebook: '//connect.facebook.net/en_US/all'
+          },
+          shim: {
+            facebook: {
+              exports: 'FB'
+            }
+          }
+        });
+        return require(['facebook'], (function(_this) {
+          return function(FB) {
+            return _this.FB = FB;
+          };
+        })(this), function() {
+          return console.warn("Failed to load Facebook: connect.facebook.net/en_US/all.js");
+        });
       };
 
       Admin_ChannelFacebook_Ctrl_Create.prototype.appConnect = function() {

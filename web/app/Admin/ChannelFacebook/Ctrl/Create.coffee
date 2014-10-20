@@ -1,11 +1,9 @@
 define [
 	'Admin/Main/Ctrl/Base',
 	'Admin/ChannelFacebook/FormModel/EditFacebookPageModel',
-	'facebook'
 ], (
 	Admin_Ctrl_Base,
-	Admin_ChannelFacebook_FormModel_EditFacebookPageModel,
-	FB
+	Admin_ChannelFacebook_FormModel_EditFacebookPageModel
 ) ->
 	class Admin_ChannelFacebook_Ctrl_Create extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_ChannelFacebook_Ctrl_Create'
@@ -13,7 +11,7 @@ define [
 		@DEPS    = ['Api', 'Growl', 'FacebookPagesData', '$stateParams', '$state', '$timeout']
 
 		init: ->
-			@app_id = '1496820407237522'
+			@app_id = ''
 			@app_secret = null
 			@app_connected = false
 			@app_name = ''
@@ -26,6 +24,17 @@ define [
 			@fb_init = false
 			@checked_for_pages = false
 			# initial load MUST contain curent page ids so that we only display new ones
+
+			requirejs.config({
+				paths: { facebook: '//connect.facebook.net/en_US/all' },
+				shim:  { facebook: { exports: 'FB' } }
+			});
+
+			require(['facebook'], (FB) =>
+				@FB = FB
+			, ->
+				console.warn("Failed to load Facebook: connect.facebook.net/en_US/all.js");
+			)
 
 		appConnect: ->
 			if !@app_id or !@app_secret

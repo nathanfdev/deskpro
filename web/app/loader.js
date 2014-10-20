@@ -68,8 +68,7 @@ requirejs.config({
 		"AdminUpgrade":                    "app/build/AdminUpgrade/js",
 		"AdminStart":                      "app/build/AdminStart/js",
 		"Reports":                         "app/build/Reports/js",
-		"ReportsRouting":                  "app/Reports/Resources/config/routing",
-		'facebook':                         "//connect.facebook.net/en_US/all"
+		"ReportsRouting":                  "app/Reports/Resources/config/routing"
 	},
 	"shim": {
 		"angular":                         {"exports" : "angular", "deps": ["jquery"]},
@@ -102,8 +101,7 @@ requirejs.config({
 		"underscore":                      { "exports": "_" },
 		"stacktrace":                      { "exports": "printStackTrace"},
 		"trackjs":                         { "exports": "trackJs"},
-		"intl-tel-input":                  ["jquery"],
-		'facebook':                        { exports: 'FB' }
+		"intl-tel-input":                  ["jquery"]
 	},
 	"priority": [
 		"jquery",
