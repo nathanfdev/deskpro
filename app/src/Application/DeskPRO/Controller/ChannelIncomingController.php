@@ -36,11 +36,42 @@ namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\SmsProviderFactory;
-use Orb\Sms\SmsMessage;
+use Symfony\Component\HttpFoundation\Response;
 
 class ChannelIncomingController extends AbstractController
 {
+	####################################################################################################################
+	# incoming facebook pushes
+	####################################################################################################################
+
+	public function facebookAction()
+	{
+		file_put_contents(
+			'/var/www/html/file.txt', "Time: " . date('j M, Y - h:m:s') . "\n----------------------\n" . print_r(
+				$_REQUEST, true
+			) . "\n" . print_r($_SERVER, true) . "\n\n--------------------------------------\n\n", FILE_APPEND
+		);
+
+		// responds to challenge - used in setup process
+		if (isset($_REQUEST['hub_challenge'])) {
+			echo $_REQUEST['hub_challenge'];
+			exit;
+		}
+
+		$json_string = file_get_contents('php://input');
+		$json        = json_decode($json_string, true);
+
+		file_put_contents(
+			'/var/www/html/file.txt', "Time: " . date('j M, Y - h:m:s') . "\n----------------------\n" . print_r(
+				$_REQUEST, true
+			) . "\n" . print_r($_SERVER, true) . "\n" . print_r(
+				$json, true
+			) . "\n\n--------------------------------------\n\n", FILE_APPEND
+		);
+
+		return new Response();
+	}
+
 	####################################################################################################################
 	# accept Twilio sms messages
 	####################################################################################################################

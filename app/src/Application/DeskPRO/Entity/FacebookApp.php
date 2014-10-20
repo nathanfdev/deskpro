@@ -29,65 +29,74 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
+use Application\DeskPRO\Domain\DomainObject;
+use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use \Doctrine\ORM\Mapping\ClassMetadata;
 
-class JobRouterService
+/**
+ * @property int $id
+ * @property string $app_id
+ * @property string $app_secret
+ * @property string $name
+ * @property string $icon_url
+ * @property string $logo_url
+ */
+class FacebookApp extends DomainObject
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 */
+	protected $id = null;
+
+	/**
+	 * @var string facebook app id
+	 */
+	protected $app_id;
+
+	/**
+	 * @var string facebook app secret
+	 */
+	protected $app_secret;
+
+	/**
+	 * @var string an identifier tthat we put next to the app
+	 */
+	protected $name;
+
+	/**
+	 * @var string url to smaller icon image
+	 */
+	protected $icon_url;
+
+	/**
+	 * @var string url to logo url
+	 */
+	protected $logo_url;
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
-		$queue = $container->getJobQueue();
-
-		$router = new JobRouter($conn);
-
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(
-			new OutgoingSmsProcessor(
-				$conn,
-				$queue
-			)
-		);
-
-
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
-
-
-		/*************************************
-		 * outgoing_facebook_feed
-		 */
-		$router->addProcessor(
-			new OutgoingFacebookFeedProcessor(
-				$conn,
-				$queue
-			)
-		);
-
-		return $router;
+		$builder = new ClassMetadataBuilder($metadata);
+		$builder
+			->setTable('facebook_apps')
+			->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\FacebookApp')
+			->setChangeTrackingPolicyNotify()
+		;
+		$builder->mapId();
+		$builder->mapString('app_id', null, null, true);
+		$builder->mapString('app_secret');
+		$builder->mapString('name');
+		$builder->mapString('icon_url');
+		$builder->mapString('logo_url');
 	}
 }

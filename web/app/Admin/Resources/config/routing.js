@@ -932,6 +932,45 @@ define(function() {
 
 
 	//###
+	//# Facebook Channel
+	//###
+	routes.push({
+		id: 'tickets.channel_facebook',
+		url: '/channel_facebook',
+		templateName: 'ChannelFacebook/list.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'tickets.channel_facebook.outgoing_log',
+		url: '/channel_facebook',
+		templateName: 'ChannelFacebook/create.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_facebook.incoming_log',
+		url: '/channel_facebook',
+		templateName: 'ChannelFacebook/create.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_facebook.create',
+		url: '/create',
+		templateName: 'ChannelFacebook/create.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_Create'
+	});
+
+	routes.push({
+		id: 'tickets.channel_facebook.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'ChannelFacebook/edit.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_Edit'
+	});
+
+
+	//###
 	//# Ticket Accounts
 	//###
 	routes.push({

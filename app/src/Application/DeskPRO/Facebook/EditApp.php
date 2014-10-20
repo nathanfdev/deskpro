@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,65 +29,78 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage Facebook
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\DeskPRO\Facebook;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
 
-class JobRouterService
+use Application\DeskPRO\Entity\FacebookApp;
+use Application\DeskPRO\ORM\EntityManager;
+
+class EditApp
 {
-	public static function create(DeskproContainer $container)
+	/**
+	 * The unique ID.
+	 *
+	 * @var FacebookApp
+	 */
+	protected $app;
+
+	/**
+	 * @var string facebook app id
+	 */
+	public $app_id;
+
+	/**
+	 * @var string facebook app secret
+	 */
+	public $app_secret;
+
+	/**
+	 * @var string an identifier tthat we put next to the app
+	 */
+	public $name;
+
+	/**
+	 * @var string url to smaller icon image
+	 */
+	public $icon_url;
+
+	/**
+	 * @var string url to logo url
+	 */
+	public $logo_url;
+
+
+	/**
+	 * @param FacebookApp $app
+	 */
+	public function __construct(FacebookApp $app)
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
-		$queue = $container->getJobQueue();
-
-		$router = new JobRouter($conn);
-
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(
-			new OutgoingSmsProcessor(
-				$conn,
-				$queue
-			)
-		);
+		$this->app        = $app;
+		$this->app_id     = $app->app_id;
+		$this->app_secret = $app->app_secret;
+		$this->name       = $app->name;
+		$this->icon_url   = $app->icon_url;
+		$this->logo_url   = $app->logo_url;
+	}
 
 
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
+	public function save(EntityManager $em)
+	{
+		$app = $this->app;
 
+		$app->app_id     = $this->app_id;
+		$app->app_secret = $this->app_secret;
+		$app->name       = $this->name;
+		$app->icon_url   = $this->icon_url;
+		$app->logo_url   = $this->logo_url;
 
-		/*************************************
-		 * outgoing_facebook_feed
-		 */
-		$router->addProcessor(
-			new OutgoingFacebookFeedProcessor(
-				$conn,
-				$queue
-			)
-		);
+		$em->persist($app);
+		$em->flush();
 
-		return $router;
+		return $app;
 	}
 }
+ 

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,65 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
-
-class JobRouterService
+class Build1412568091 extends AbstractBuild
 {
-	public static function create(DeskproContainer $container)
+	public function run()
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
-		$queue = $container->getJobQueue();
-
-		$router = new JobRouter($conn);
-
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(
-			new OutgoingSmsProcessor(
-				$conn,
-				$queue
-			)
-		);
-
-
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
-
-
-		/*************************************
-		 * outgoing_facebook_feed
-		 */
-		$router->addProcessor(
-			new OutgoingFacebookFeedProcessor(
-				$conn,
-				$queue
-			)
-		);
-
-		return $router;
+		$this->out("My Upgrade Class");
+		$this->execMutateSql("ALTER TABLE facebook_apps DROP app_access_token, CHANGE app_id app_id VARCHAR(255) NOT NULL");
+		$this->execMutateSql("CREATE UNIQUE INDEX UNIQ_3E57D977987212D ON facebook_apps (app_id)");
+		$this->execMutateSql("ALTER TABLE facebook_pages CHANGE graph_id graph_id VARCHAR(255) NOT NULL");
+		$this->execMutateSql("CREATE UNIQUE INDEX UNIQ_C5B2A27B99134837 ON facebook_pages (graph_id)");
 	}
 }

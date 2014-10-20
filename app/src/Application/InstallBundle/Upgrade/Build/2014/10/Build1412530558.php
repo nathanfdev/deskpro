@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,65 +29,17 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JobQueue\JobRouter;
-use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
-use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Application\DeskPRO\Sms\Detector\PersonDetector;
-use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
-use Application\DeskPRO\Sms\Detector\TicketDetector;
-
-class JobRouterService
+class Build1412530558 extends AbstractBuild
 {
-	public static function create(DeskproContainer $container)
+	public function run()
 	{
-		$conn = $container->get('doctrine.dbal.default_connection');
-		$em = $container->getEm();
-		$queue = $container->getJobQueue();
-
-		$router = new JobRouter($conn);
-
-		/*************************************
-		 * outgoing_sms
-		 */
-		$router->addProcessor(
-			new OutgoingSmsProcessor(
-				$conn,
-				$queue
-			)
-		);
-
-
-		/*************************************
-		 * incoming_sms
-		 */
-		$router->addProcessor(
-			new IncomingSmsProcessor(
-				$conn,
-				new SmsAccountDetector($em),
-				new PersonDetector($em),
-				new TicketDetector($em),
-				$container->getSystemService('ticket_manager')
-			)
-		);
-
-
-		/*************************************
-		 * outgoing_facebook_feed
-		 */
-		$router->addProcessor(
-			new OutgoingFacebookFeedProcessor(
-				$conn,
-				$queue
-			)
-		);
-
-		return $router;
+		$this->out("Adds a Facebook channel");
+		$this->execMutateSql("CREATE TABLE facebook_apps (id INT AUTO_INCREMENT NOT NULL, app_id VARCHAR(256) DEFAULT NULL, app_secret VARCHAR(256) DEFAULT NULL, app_access_token VARCHAR(256) DEFAULT NULL, name VARCHAR(256) DEFAULT NULL, icon_url VARCHAR(256) DEFAULT NULL, logo_url VARCHAR(256) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("CREATE TABLE facebook_pages (id INT AUTO_INCREMENT NOT NULL, graph_id VARCHAR(256) DEFAULT NULL, page_token VARCHAR(256) DEFAULT NULL, user_graph_id VARCHAR(256) DEFAULT NULL, name VARCHAR(256) DEFAULT NULL, import_wall_posts TINYINT(1) NOT NULL, disable_own_wall_posts TINYINT(1) NOT NULL, import_direct_messages TINYINT(1) NOT NULL, is_enabled TINYINT(1) NOT NULL, is_connected TINYINT(1) NOT NULL, is_tested TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 	}
 }
