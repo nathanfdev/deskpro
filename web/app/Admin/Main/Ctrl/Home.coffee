@@ -8,7 +8,7 @@ define [
 	class Admin_Main_Ctrl_Home extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Main_Ctrl_Home'
 		@CTRL_AS   = 'Home'
-		@DEPS      = ['$http']
+		@DEPS      = ['$http', 'DpLicense']
 
 		init: ->
 			@online_agents = []
@@ -199,12 +199,18 @@ define [
 				return
 
 			@startSpinner('saving_new_agent')
-			@Api.sendPutJson('/agents', postData).then( (data) =>
-				@unactive_agents.push data.data
+			@Api.sendPutJson('/agents', postData).then( (res) =>
+				@unactive_agents.push res.data
 				@stopSpinner('saving_new_agent').then(=>
 					@$scope.created_agent = @$scope.new_agent
 					@$scope.new_agent = {}
 				)
+			, (res) =>
+				@stopSpinner('saving_new_agent', true)
+				if res.data.error_code and res.data.error_code == 'license_exceeded'
+					@DpLicense.openUpgradeLicense('upgrade_plan').then(=>
+						@addNewAgent()
+					)
 			)
 
 		###

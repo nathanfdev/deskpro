@@ -318,11 +318,11 @@
 
 @font-face {
   font-family: "flaticon-data";
-  src: url("/web/vendor/icons/data-icons/flaticon.eot");
-  src: url("/web/vendor/icons/data-icons/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/data-icons/flaticon.woff") format("woff"), url("/web/vendor/icons/data-icons/flaticon.ttf") format("truetype"), url("/web/vendor/icons/data-icons/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/data-icons/flaticon.eot");
+  src: url("../../../../vendor/icons/data-icons/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/data-icons/flaticon.woff") format("woff"), url("../../../../vendor/icons/data-icons/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/data-icons/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/data-icons";
+  content: "../../../../vendor/icons/data-icons";
 }
 [class^="flaticon-data"]:before,
 [class*=" flaticon-data"]:before,
@@ -909,11 +909,11 @@
 
 @font-face {
   font-family: "flaticon-finances";
-  src: url("/web/vendor/icons/finances/flaticon.eot");
-  src: url("/web/vendor/icons/finances/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/finances/flaticon.woff") format("woff"), url("/web/vendor/icons/finances/flaticon.ttf") format("truetype"), url("/web/vendor/icons/finances/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/finances/flaticon.eot");
+  src: url("../../../../vendor/icons/finances/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/finances/flaticon.woff") format("woff"), url("../../../../vendor/icons/finances/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/finances/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/finances";
+  content: "../../../../vendor/icons/finances";
 }
 [class^="flaticon-finances"]:before,
 [class*=" flaticon-finances"]:before,
@@ -1017,11 +1017,11 @@
 
 @font-face {
   font-family: "flaticon-humans";
-  src: url("/web/vendor/icons/humans-2/flaticon.eot");
-  src: url("/web/vendor/icons/humans-2/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/humans-2/flaticon.woff") format("woff"), url("/web/vendor/icons/humans-2/flaticon.ttf") format("truetype"), url("/web/vendor/icons/humans-2/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/humans-2/flaticon.eot");
+  src: url("../../../../vendor/icons/humans-2/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/humans-2/flaticon.woff") format("woff"), url("../../../../vendor/icons/humans-2/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/humans-2/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/humans-2";
+  content: "../../../../vendor/icons/humans-2";
 }
 [class^="flaticon-humans"]:before,
 [class*=" flaticon-humans"]:before,
@@ -1710,11 +1710,11 @@
 
 @font-face {
   font-family: "flaticon-job";
-  src: url("/web/vendor/icons/job-search/flaticon.eot");
-  src: url("/web/vendor/icons/job-search/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/job-search/flaticon.woff") format("woff"), url("/web/vendor/icons/job-search/flaticon.ttf") format("truetype"), url("/web/vendor/icons/job-search/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/job-search/flaticon.eot");
+  src: url("../../../../vendor/icons/job-search/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/job-search/flaticon.woff") format("woff"), url("../../../../vendor/icons/job-search/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/job-search/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/job-search";
+  content: "../../../../vendor/icons/job-search";
 }
 [class^="flaticon-job"]:before,
 [class*=" flaticon-job"]:before,
@@ -1789,11 +1789,11 @@
 
 @font-face {
   font-family: "flaticon-profile";
-  src: url("/web/vendor/icons/profiles-avatar/flaticon.eot");
-  src: url("/web/vendor/icons/profiles-avatar/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/profiles-avatar/flaticon.woff") format("woff"), url("/web/vendor/icons/profiles-avatar/flaticon.ttf") format("truetype"), url("/web/vendor/icons/profiles-avatar/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/profiles-avatar/flaticon.eot");
+  src: url("../../../../vendor/icons/profiles-avatar/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/profiles-avatar/flaticon.woff") format("woff"), url("../../../../vendor/icons/profiles-avatar/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/profiles-avatar/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/profiles-avatar";
+  content: "../../../../vendor/icons/profiles-avatar";
 }
 [class^="flaticon-profile"]:before,
 [class*=" flaticon-profile"]:before,
@@ -1897,11 +1897,11 @@
 
 @font-face {
   font-family: "flaticon-business2";
-  src: url("/web/vendor/icons/simpleicon-business/flaticon.eot");
-  src: url("/web/vendor/icons/simpleicon-business/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/simpleicon-business/flaticon.woff") format("woff"), url("/web/vendor/icons/simpleicon-business/flaticon.ttf") format("truetype"), url("/web/vendor/icons/simpleicon-business/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/simpleicon-business/flaticon.eot");
+  src: url("../../../../vendor/icons/simpleicon-business/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/simpleicon-business/flaticon.woff") format("woff"), url("../../../../vendor/icons/simpleicon-business/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/simpleicon-business/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/simpleicon-business";
+  content: "../../../../vendor/icons/simpleicon-business";
 }
 [class^="flaticon-business2"]:before,
 [class*=" flaticon-business2"]:before,
@@ -2284,11 +2284,11 @@
 
 @font-face {
   font-family: "flaticon-communication";
-  src: url("/web/vendor/icons/simpleicon-communication/flaticon.eot");
-  src: url("/web/vendor/icons/simpleicon-communication/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/simpleicon-communication/flaticon.woff") format("woff"), url("/web/vendor/icons/simpleicon-communication/flaticon.ttf") format("truetype"), url("/web/vendor/icons/simpleicon-communication/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/simpleicon-communication/flaticon.eot");
+  src: url("../../../../vendor/icons/simpleicon-communication/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/simpleicon-communication/flaticon.woff") format("woff"), url("../../../../vendor/icons/simpleicon-communication/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/simpleicon-communication/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/simpleicon-communication";
+  content: "../../../../vendor/icons/simpleicon-communication";
 }
 [class^="flaticon-communication"]:before,
 [class*=" flaticon-communication"]:before,
@@ -2695,11 +2695,11 @@
 
 @font-face {
   font-family: "flaticon-e-commerce";
-  src: url("/web/vendor/icons/simpleicon-ecommerce/flaticon.eot");
-  src: url("/web/vendor/icons/simpleicon-ecommerce/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/simpleicon-ecommerce/flaticon.woff") format("woff"), url("/web/vendor/icons/simpleicon-ecommerce/flaticon.ttf") format("truetype"), url("/web/vendor/icons/simpleicon-ecommerce/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/simpleicon-ecommerce/flaticon.eot");
+  src: url("../../../../vendor/icons/simpleicon-ecommerce/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/simpleicon-ecommerce/flaticon.woff") format("woff"), url("../../../../vendor/icons/simpleicon-ecommerce/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/simpleicon-ecommerce/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/simpleicon-ecommerce";
+  content: "../../../../vendor/icons/simpleicon-ecommerce";
 }
 [class^="flaticon-e-commerce"]:before,
 [class*=" flaticon-e-commerce"]:before,
@@ -3001,11 +3001,11 @@
 
 @font-face {
   font-family: "flaticon-webdev";
-  src: url("/web/vendor/icons/webdev-seo/flaticon.eot");
-  src: url("/web/vendor/icons/webdev-seo/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/webdev-seo/flaticon.woff") format("woff"), url("/web/vendor/icons/webdev-seo/flaticon.ttf") format("truetype"), url("/web/vendor/icons/webdev-seo/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/webdev-seo/flaticon.eot");
+  src: url("../../../../vendor/icons/webdev-seo/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/webdev-seo/flaticon.woff") format("woff"), url("../../../../vendor/icons/webdev-seo/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/webdev-seo/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/webdev-seo";
+  content: "../../../../vendor/icons/webdev-seo";
 }
 [class^="flaticon-webdev"]:before,
 [class*=" flaticon-webdev"]:before,
