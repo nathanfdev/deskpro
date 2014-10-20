@@ -1,11 +1,11 @@
 <?php
 
-namespace DpIntegrationTests\DeskPRO\NewSettings\Loader;
+namespace DpIntegrationTests\DeskPRO\Brand;
 
 use Application\DeskPRO\EntityRepository\Brand as BrandRepo;
 use Application\DeskPRO\Brand\BrandStack;
 
-class BrandSettingsTest extends \DpIntegrationTestCase
+class BrandStackTest extends \DpIntegrationTestCase
 {
 	/**
 	 * @var BrandRepo
