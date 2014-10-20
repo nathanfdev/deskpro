@@ -53,6 +53,7 @@ use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
 use DeskPRO\Kernel\License;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -310,6 +311,23 @@ class AgentsController extends AbstractController implements ProtectedController
 				}
 			} else {
 				$agent = new Person();
+
+				// Check license
+				$max_agents = License::getLicense()->getMaxAgents();
+				if ($max_agents) {
+					$active_agents = $this->container->getDb()->fetchColumn("
+						SELECT COUNT(*)
+						FROM people
+						WHERE is_agent = 1 AND is_deleted = 0
+					");
+
+					if ($active_agents >= $max_agents) {
+						return $this->createApiErrorInfoResponse('license_exceeded', 'You have used all available agent seats that your license allows', array(
+							'agent_seats'    => $max_agents,
+							'agents_created' => $active_agents,
+						));
+					}
+				}
 			}
 		}
 
@@ -811,6 +829,86 @@ class AgentsController extends AbstractController implements ProtectedController
 				'alert' => $prefs->getFilterNotifyPrefs('alert'),
 			),
 			'mention_mode' => $prefs->getEmailMentionMode(),
+		));
+	}
+
+	public function bulkLicenseCheckAction()
+	{
+		$max_agents = License::getLicense()->getMaxAgents();
+
+		if (!$max_agents) {
+			return $this->createApiResponse(array('okay' => true));
+		}
+
+		$active_agents = $this->container->getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent = 1 AND is_deleted = 0
+		");
+
+		$remain_agents = max(0, $max_agents - $active_agents);
+
+		$agent_emails = array();
+
+		if ($filename = $this->in->getString('filename')) {
+			if (!$blob = $this->em->find('DeskPRO:Blob', $filename)) {
+				return $this->createApiErrorResponse('file_not_found', 'File not found');
+			}
+
+			$csv_file = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+
+			if (!file_exists($csv_file) || !is_readable($csv_file)) {
+				file_put_contents($csv_file, $this->container->getBlobStorage()->copyBlobRecordToString($blob));
+			}
+
+			if (!file_exists($csv_file) || !is_readable($csv_file)) {
+				return $this->createApiErrorResponse('file_not_found', 'File not found');
+			}
+
+			if (!$fp = fopen($csv_file, 'r')) {
+				return $this->createApiErrorResponse('file_not_readable', 'Can\'t read file');
+			}
+
+			$row = @fgetcsv($fp); // headers
+			if (0 !== strpos($row[0], 'Email Address')) {
+				@fclose($fp);
+			} else {
+				$delimeter = 1 === count($row) ? substr($row[0], 13, 1) : ',';
+
+				while ($row = fgetcsv($fp, null, $delimeter)) {
+					if (!$email = trim($row[0])) continue;
+					$agent_emails[] = $email;
+				}
+			}
+		} else {
+			foreach ($this->in->getArrayValue('agents') as $email => $x) {
+				$agent_emails[] = $email;
+			}
+		}
+
+		$agent_emails = Arrays::removeFalsey($agent_emails);
+		$agent_emails = Arrays::func($agent_emails, 'strtolower');
+
+		$new_emails = array();
+		foreach ($agent_emails as $email) {
+			if (!$this->container->getAgentData()->getByEmail($email)) {
+				$new_emails[] = $email;
+			}
+		}
+
+		$remain_after_new = $remain_agents - count($new_emails);
+
+		if ($remain_after_new >= 0) {
+			return $this->createApiResponse(array('okay' => true));
+		}
+
+		$need_extra = abs($remain_after_new);
+
+		$new_plan = Numbers::roundToMultiple($max_agents + $need_extra, 5, Numbers::ROUND_MULTIPLE_UP);
+
+		return $this->createApiResponse(array(
+			'okay' => false,
+			'need_plan' => $new_plan
 		));
 	}
 

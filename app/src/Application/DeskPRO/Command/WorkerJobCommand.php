@@ -306,6 +306,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		$ignore_interval = false;
 		if ($input->getOption('ignore-interval')) {
 			$ignore_interval = true;
+			$GLOBALS['DP_CRON_IGNORE_INTERVAL'] = true;
 		}
 
 		$runner = new \Application\DeskPRO\WorkerProcess\Runner\Standard();

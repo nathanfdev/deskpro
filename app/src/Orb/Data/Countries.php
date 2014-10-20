@@ -1048,6 +1048,60 @@ class Countries
 		array('country' => 'Zimbabwe',                                        'country_code' => 'ZW',  'calling_code' => '263'     ),
 	);
 
+	protected static $us_states = array(
+		'AL' => 'Alabama',
+		'AK' => 'Alaska',
+		'AZ' => 'Arizona',
+		'AR' => 'Arkansas',
+		'CA' => 'California',
+		'CO' => 'Colorado',
+		'CT' => 'Connecticut',
+		'DE' => 'Delaware',
+		'DC' => 'District Of Columbia',
+		'FL' => 'Florida',
+		'GA' => 'Georgia',
+		'HI' => 'Hawaii',
+		'ID' => 'Idaho',
+		'IL' => 'Illinois',
+		'IN' => 'Indiana',
+		'IA' => 'Iowa',
+		'KS' => 'Kansas',
+		'KY' => 'Kentucky',
+		'LA' => 'Louisiana',
+		'ME' => 'Maine',
+		'MD' => 'Maryland',
+		'MA' => 'Massachusetts',
+		'MI' => 'Michigan',
+		'MN' => 'Minnesota',
+		'MS' => 'Mississippi',
+		'MO' => 'Missouri',
+		'MT' => 'Montana',
+		'NE' => 'Nebraska',
+		'NV' => 'Nevada',
+		'NH' => 'New Hampshire',
+		'NJ' => 'New Jersey',
+		'NM' => 'New Mexico',
+		'NY' => 'New York',
+		'NC' => 'North Carolina',
+		'ND' => 'North Dakota',
+		'OH' => 'Ohio',
+		'OK' => 'Oklahoma',
+		'OR' => 'Oregon',
+		'PA' => 'Pennsylvania',
+		'RI' => 'Rhode Island',
+		'SC' => 'South Carolina',
+		'SD' => 'South Dakota',
+		'TN' => 'Tennessee',
+		'TX' => 'Texas',
+		'UT' => 'Utah',
+		'VT' => 'Vermont',
+		'VA' => 'Virginia',
+		'WA' => 'Washington',
+		'WV' => 'West Virginia',
+		'WI' => 'Wisconsin',
+		'WY' => 'Wyoming',
+	);
+
 
 
 	/**
@@ -1245,5 +1299,40 @@ class Countries
 	public static function isEuroCountry($country_code)
 	{
 		return in_array(strtoupper($country_code), self::getEuroCountries());
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public static function getUsStates()
+	{
+		return self::$us_states;
+	}
+
+
+	/**
+	 * @param string $state
+	 * @return mixed
+	 */
+	public static function getUsStateCode($state)
+	{
+		if (strlen($state) == 2) {
+			return strtoupper($state);
+		}
+
+		$state = strtolower($state);
+		$state = preg_replace('#[^a-z]#', '', $state);
+
+		foreach (self::$us_states as $code => $s) {
+			$s = strtolower($s);
+			$s = preg_replace('#[^a-z]#', '', $s);
+
+			if ($state == $s) {
+				return $code;
+			}
+		}
+
+		return null;
 	}
 }
