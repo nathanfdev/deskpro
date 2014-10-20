@@ -83,6 +83,9 @@
 
       Admin_Settings_Ctrl_GeneralSettings.prototype.save = function() {
         var pingUrl, postData, promise;
+        if (this.$scope.form_props.$invalid) {
+          return;
+        }
         this.$scope.url_error = false;
         this.startSpinner('saving');
         if (this.orig_url && this.orig_url !== this.$scope.settings.deskpro_url) {

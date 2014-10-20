@@ -38,6 +38,13 @@ define(function() {
 		controller: 'Admin_License_Ctrl_License'
 	});
 
+	routes.push({
+		id: 'license_go',
+		url: '/go-license',
+		template: '',
+		controller: ['$state', function ($state) { $state.go('license'); }]
+	});
+
 	//##################################################################################################################
 	// Main Nav
 	//##################################################################################################################

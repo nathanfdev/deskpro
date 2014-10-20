@@ -120,7 +120,15 @@ class RunnerExecSource
 	 */
 	public function run()
 	{
-		$reader = $this->getReader();
+		try {
+			$reader = $this->getReader();
+		} catch (\Exception $e) {
+			$this->logger->logDebug("Exception while decoding: " . $e->getMessage());
+			return array(
+				'status'     => 'rejected',
+				'error_code' => 'message_missing',
+			);
+		}
 
 		#------------------------------
 		# Output debug TO

@@ -1300,6 +1300,27 @@
           },
           scopeInit: [
             '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
+              $scope.$watch(function() {
+                return $scope.model.agent_ids.all_agents;
+              }, (function(_this) {
+                return function(newVal, oldVal) {
+                  var k, v, _ref, _results;
+                  if (!newVal) {
+                    return;
+                  }
+                  _ref = $scope.model.agent_ids;
+                  _results = [];
+                  for (k in _ref) {
+                    if (!__hasProp.call(_ref, k)) continue;
+                    v = _ref[k];
+                    if ('all_agents' === k) {
+                      continue;
+                    }
+                    _results.push($scope.model.agent_ids[k] = false);
+                  }
+                  return _results;
+                };
+              })(this));
               return $scope.handleTemplateChange = function() {
                 if ($scope.model.template === 'CREATE') {
                   $scope.model.template = null;

@@ -935,6 +935,12 @@ $collection->create('api_agents_create_bulk', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_agents_create_bulk_check', array(
+	'path'        => '/agents_bulk/check',
+	'controller'  => 'ApiBundle:Agents:bulkLicenseCheck',
+	'methods'     => array('POST'),
+));
+
 $collection->create('api_agents_notifyprefs_gettables', array(
 	'path'        => '/agents/{id}/notify-prefs/get-tables',
 	'controller'  => 'ApiBundle:Agents:getNotifyPrefs',
