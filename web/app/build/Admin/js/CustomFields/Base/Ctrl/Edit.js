@@ -58,9 +58,6 @@
 
       Admin_CustomFields_Base_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise, successFn;
-        if (!this.$scope.form_props.$valid) {
-          return;
-        }
         is_new = !this.field.id;
         this.field.type_name = this.field_type;
         promise = this.fieldDataService.saveFormModel(this.field, this.form);
@@ -115,7 +112,9 @@
             '$scope', '$modalInstance', '$state', function($scope, $modalInstance, $state) {
               $scope.confirm = function() {
                 return $scope.is_loading = doDelete().then(function() {
-                  $state.go(baseRouteName);
+                  var baseParts;
+                  baseParts = baseRouteName.split('.');
+                  $state.go(baseParts[0] + '.' + baseParts[1]);
                   return $modalInstance.dismiss();
                 });
               };

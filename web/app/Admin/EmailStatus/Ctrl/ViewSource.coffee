@@ -2,15 +2,18 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 	class Admin_EmailStatus_Ctrl_ViewSource extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_EmailStatus_Ctrl_ViewSource'
 		@CTRL_AS = 'ViewSource'
-		@DEPS    = ['$state', '$modal']
+		@DEPS    = ['$state', '$modal', 'DpDateService']
 
 		init: ->
 			@sourceId = parseInt(@$stateParams.id)
+			@$scope.ds = @DpDateService
 			return
 
 		initialLoad: ->
 			@Api.sendGet("/email_status/sources/#{@sourceId}?with_raw=1").then( (res) =>
         for own k,v of res.data
+	        if 'date_status' == k || 'date_created' == k
+		        v = @DpDateService.local v
           @[k] = v
 			)
 

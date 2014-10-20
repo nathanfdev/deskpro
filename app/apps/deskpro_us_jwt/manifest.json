@@ -1,0 +1,103 @@
+{
+	"package_name": "deskpro_us_jwt",
+	"is_native": true,
+	"title": "JSON Web Token (JWT)",
+	"description": "Enables user authentication through a JSON Web Token (JWT).",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": false,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "url",
+			"type": "text",
+			"label": "Remote Login URL",
+			"description": "This is the URL to the page that will generate the JWT token. A user is also sent here if they forgot their password.",
+			"native_only": true,
+			"is_required": true
+		},
+		{
+			"name": "secret",
+			"type": "text",
+			"label": "JWT Secret Code",
+			"description": "This secret code is used by your programmer to create the JWT tokens.",
+			"native_only": true,
+			"is_required": true
+		},
+		{
+			"name": "login_custom_text",
+			"type": "text",
+			"label": "Login Button Text",
+			"description": "The text that appears on the button on the login page. Not shown if using the Automatic SSO Method setting. This is also optional - leave blank to show no button.",
+			"native_only": true
+		},
+		{
+			"name": "logout_agent_url",
+			"type": "text",
+			"label": "Agent Logout Redirect",
+			"description": "The URL we redirect to after an agent logs out (only applies if SSO is enabled)",
+			"native_only": true,
+			"usersource_display": "agent"
+		},
+		{
+			"name": "logout_user_url",
+			"type": "text",
+			"label": "User Logout Redirect",
+			"description": "The URL we redirect to after a user logs out (only applies if SSO is enabled)",
+			"native_only": true,
+			"usersource_display": "user"
+		},
+		{
+			"name": "sso_type",
+			"type": "choice",
+			"label": "SSO Method",
+			"description": "When SSO is enabled, users will be automatically logged-in when they visit DeskPRO.",
+			"native_only": true,
+			"default_value": "none",
+			"options": [
+				{
+					"label": "Disabled",
+					"value": "none"
+				},
+				{
+					"label": "Automatic",
+					"value": "auto"
+				},
+				{
+					"label": "Background",
+					"value": "background"
+				}
+			]
+		},
+		{
+			"name": "auto_agent",
+			"type": "checkbox",
+			"label": "Auto Agent",
+			"checkbox_label": "Automatically create agents if they do not already exist",
+			"usersource_display": "agent",
+			"default_value": true,
+
+			"inline_dependant": {
+				"name": "auto_agent_permission_group",
+				"type": "choice",
+				"label": "Add new agents to this permission group",
+				"options_variable": "permission_groups",
+				"is_required": true
+			}
+		}
+	]
+}

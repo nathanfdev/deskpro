@@ -45,6 +45,7 @@ class ImapAccountType extends AbstractType
 		$builder->add('password',    'password', array('required' => false));
 		$builder->add('host',        'text',     array('required' => true));
 		$builder->add('port',        'text',     array('required' => true));
+		$builder->add('no_validation', 'checkbox', array('required' => true));
 		$builder->add('secure_mode', 'choice',   array(
 			'required'      => false,
 			'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),

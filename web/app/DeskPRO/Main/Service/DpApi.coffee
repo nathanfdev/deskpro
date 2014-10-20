@@ -48,6 +48,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 				else
 					v = encodeURIComponent(v)
 					url += "#{k}=#{v}&"
+			url
 
 		###*
 		* Uses the api-caller endpoint to fetch multiple data points at once.

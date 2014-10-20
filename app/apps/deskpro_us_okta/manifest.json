@@ -1,0 +1,107 @@
+{
+	"package_name": "deskpro_us_okta",
+	"is_native": true,
+	"title": "Okta Authentication",
+	"description": "Enables user authentication by making your helpdesk an Okta Service Provider",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": false,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "external_key",
+			"type": "text",
+			"label": "External Key",
+			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"native_only": true
+		},
+		{
+			"name": "sso_url",
+			"type": "text",
+			"label": "Redirect Login URL",
+			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"native_only": true,
+			"is_required": true
+		},
+		{
+			"name": "issuer_id",
+			"type": "text",
+			"label": "IDP Metadata Public Link",
+			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"native_only": true
+		},
+		{
+			"name": "cert",
+			"type": "textarea",
+			"label": "x509 Certificate",
+			"description": "Download the public certificate from Okta. You can upload it in the box below, or directly copy and paste it's contents into the box above.",
+			"native_only": true
+		},
+		{
+			"name": "slo_url",
+			"type": "text",
+			"label": "Logout (SLO) URL",
+			"description": "After a user logs out, redirect him/her to this URL with a SAML SLO Request.",
+			"native_only": true
+		},
+		{
+			"name": "login_custom_text",
+			"type": "text",
+			"label": "Login Button Text",
+			"description": "The text that appears on the button on the login page. Not shown if using the Automatic SSO Method setting. This is also optional - leave blank to show no button.",
+			"native_only": true
+		},
+		{
+			"name": "sso_type",
+			"type": "choice",
+			"label": "SSO Method",
+			"description": "When SSO is enabled, users will be automatically logged-in when they visit DeskPRO.",
+			"native_only": true,
+			"default_value": "none",
+			"options": [
+				{
+					"label": "Disabled",
+					"value": "none"
+				},
+				{
+					"label": "Automatic",
+					"value": "auto"
+				},
+				{
+					"label": "Background",
+					"value": "background"
+				}
+			]
+		},
+		{
+			"name": "auto_agent",
+			"type": "checkbox",
+			"label": "Auto Agent",
+			"checkbox_label": "Automatically create agents if they do not already exist",
+			"usersource_display": "agent",
+			"default_value": true,
+
+			"inline_dependant": {
+				"name": "auto_agent_permission_group",
+				"type": "choice",
+				"label": "Add new agents to this permission group",
+				"options_variable": "permission_groups",
+				"is_required": true
+			}
+		}
+	]
+}

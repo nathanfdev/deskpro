@@ -199,9 +199,6 @@
       };
 
       Admin_RoundRobin_Ctrl_Edit.prototype.save = function() {
-        if (this.$scope.Form.$invalid) {
-          return;
-        }
         this.startSpinner('saving');
         return this.service.set(this.robin).then((function(_this) {
           return function(model) {

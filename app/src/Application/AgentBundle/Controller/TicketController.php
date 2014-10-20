@@ -113,8 +113,18 @@ class TicketController extends AbstractController
 		# Custom fields
 		#------------------------------
 
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
+		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
+
+		$field_manager = $this->container->getTicketFieldManager();
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
+		// new custom fields
+		$new_field_manager = $this->container->getCustomFieldManager();
+		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+		if ($org = $ticket->person->organization) {
+			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, $layout));
+		}
 
 		#------------------------------
 		# Messages
@@ -361,6 +371,7 @@ class TicketController extends AbstractController
 			'user_parts'                 => $user_parts,
 
 			'custom_fields'              => $custom_fields,
+			'new_custom_fields'          => $new_custom_fields->createView(),
 
 			'show_related_content'       => $show_related_content,
 			'linked_tickets'             => $linked_tickets,
@@ -695,46 +706,6 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
-
-
-
-	############################################################################
-	# ajax-save-custom-fields
-	############################################################################
-
-	public function ajaxSaveCustomFieldsAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id, 'fields');
-
-		$this->em->beginTransaction();
-
-		try {
-			$field_manager = $this->container->getSystemService('ticket_fields_manager');
-			$post_custom_fields = $this->request->request->get('custom_fields', array());
-			if (!empty($post_custom_fields)) {
-				$field_manager->saveFormToObject($post_custom_fields, $org);
-			}
-
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
-		}
-
-		$custom_fields = $field_manager->getDisplayArrayForObject($org);
-
-
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-
-		return $this->render('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
-			'ticket' => $ticket,
-			'ticket_options' => $ticket_options,
-			'custom_fields' => $custom_fields,
-		));
-	}
-
-
 
 	############################################################################
 	# ajax-save-options
@@ -1863,7 +1834,11 @@ class TicketController extends AbstractController
 
 		$language = $ticket->language;
 
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$layout = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($ticket->getDepartmentId());
+		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::EDIT_TICKET, $ticket);
+
+		$field_manager = $this->container->getTicketFieldManager();
+		$new_field_manager = $this->container->getCustomFieldManager();
 		$error_messages = array();
 
 		$perms_before = $this->_getTicketPerms($ticket);
@@ -1872,6 +1847,7 @@ class TicketController extends AbstractController
 
 		$macro_id = $this->in->getUint('macro_id');
 		if ($macro_id) {
+			/** @var $macro Entity\TicketMacro */
 			$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
 			if ($macro) {
 				$this->db->beginTransaction();
@@ -1884,6 +1860,7 @@ class TicketController extends AbstractController
 					throw $e;
 				}
 			}
+
 		} else {
 			$this->db->beginTransaction();
 			try {
@@ -1960,6 +1937,16 @@ class TicketController extends AbstractController
 							$this->em->persist($ticket);
 						}
 
+						$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+						if ($org = $ticket->person->organization) {
+							$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
+								$ticket, $org, $layout
+							));
+						}
+						$new_custom_fields->handleRequest($this->get('request'));
+						if ($new_custom_fields->isValid()) {
+							$new_field_manager->flush($new_custom_fields);
+						}
 						$this->em->flush();
 					}
 				}
@@ -1973,6 +1960,13 @@ class TicketController extends AbstractController
 		}
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
+		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+		if ($org = $ticket->person->organization) {
+			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
+				$ticket, $org, $layout
+			));
+		}
 
 		$data = array('data' => array());
 		if (isset($result['new_reply'])) {
@@ -1991,6 +1985,7 @@ class TicketController extends AbstractController
 			'ticket'              => $ticket,
 			'ticket_options'      => $ticket_options,
 			'custom_fields'       => $custom_fields,
+			'new_custom_fields'   => $new_custom_fields->createView(),
 		));
 
 		$client_messages = false;
@@ -3323,8 +3318,18 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$field_manager = $this->container->getSystemService('ticket_fields_manager');
+		$field_manager = $this->container->getTicketFieldManager();
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+
+		$layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
+		$page = $layouts->getLayout($ticket->department ? $ticket->department['id'] : 0);
+		$layout = LayoutDisplay::createFromLayout($page, LayoutDisplay::NEW_TICKET);
+
+		$manager = $this->container->getCustomFieldManager();
+		$new_custom_fields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
+		if ($org = $ticket->person->organization) {
+			$manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
+		}
 
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'ticket'                 => $ticket,
@@ -3336,6 +3341,7 @@ class TicketController extends AbstractController
 			'agent_teams'            => $agent_teams,
 			'ticket_options'         => $ticket_options,
 			'custom_fields'          => $custom_fields,
+			'new_custom_fields'      => $new_custom_fields->createView(),
 		));
 	}
 
@@ -3533,8 +3539,6 @@ class TicketController extends AbstractController
 					$parent_ticket = $this->em->find('DeskPRO:Ticket', $this->in->getUint('parent_ticket_id'));
 					if ($parent_ticket) {
 						$ticket->parent_ticket = $parent_ticket;
-						$this->em->flush($ticket);
-						$this->em->flush();
 					}
 				}
 
@@ -3719,6 +3723,33 @@ class TicketController extends AbstractController
 		return $this->render('AgentBundle:Ticket:newticket-person-row.html.twig', array(
 			'person' => $person,
 			'api_data' => $api_data,
+		));
+	}
+
+	/**
+	 * refresh custom fields for changed person context
+	 * @param $person_id
+	 * @param $department_id
+	 * @return Response
+	 */
+	public function newTicketGetCustomFieldsRowAction($person_id, $department_id)
+	{
+		if ($person_id) {
+			$person = $this->em->find('DeskPRO:Person', $person_id);
+		}
+
+		$layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
+		$layout = LayoutDisplay::createFromLayout($layouts->getLayout($department_id), LayoutDisplay::NEW_TICKET);
+
+		$manager = $this->container->getCustomFieldManager();
+		$mock = new Entity\Ticket();
+		$new_custom_fields = $manager->createFormForOwner($mock, $person, $layout);
+		if ($org = $person->organization) {
+			$manager->merge($new_custom_fields, $manager->createFormForOwner($mock, $org, $layout));
+		}
+
+		return $this->render('AgentBundle:Ticket:newticket-custom-fields-row.html.twig', array(
+			'new_custom_fields' => $new_custom_fields->createView(),
 		));
 	}
 

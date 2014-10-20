@@ -34,64 +34,31 @@
 
 namespace deskpro_us_twitter;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
+use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\ORM\EntityManager;
 
-class InstallerHandler extends AbstractInstallerHandler
+class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function install(InstallerContext $context)
+	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
 	{
-		$context->getDb()->insert('usersources', array(
-			'app_id'            => $context->getApp()->id,
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url') ?: '',
-			'options'           => json_encode(array(
-				'app_key'    => $context->getApp()->getSetting('consumer_key'),
-				'app_secret' => $context->getApp()->getSetting('consumer_secret'),
-			)),
-			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Twitter',
-			'is_enabled'        => '1'
-		));
-	}
+		$us->title             = $app->title;
+		$us->options           = array(
+			'app_key'    => $app->getSetting('consumer_key'),
+			'app_secret' => $app->getSetting('consumer_secret'),
+		);
+		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
+		$us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Twitter';
 
+		$this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$context->getDb()->delete('usersources', array('app_id' => $context->getApp()->id));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$context->getDb()->update('usersources', array(
-			'title'             => $context->getApp()->title,
-			'source_type'       => 'app',
-			'lost_password_url' => $context->getApp()->getSetting('lost_pwd_url'),
-			'options'           => json_encode(array(
-				'app_key'    => $context->getApp()->getSetting('consumer_key'),
-				'app_secret' => $context->getApp()->getSetting('consumer_secret'),
-			)),
-			'source_type'       => 'Application\\DeskPRO\\Usersource\\Adapter\\Twitter',
-			'is_enabled'        => '1'
-		), array('app_id' => $context->getApp()->id));
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		// Nothing
+		$em->persist($us);
+		$em->persist($app);
+		$em->flush();
 	}
 }

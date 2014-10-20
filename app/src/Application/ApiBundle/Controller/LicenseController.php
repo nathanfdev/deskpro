@@ -73,9 +73,33 @@ class LicenseController extends AbstractController implements ProtectedControlle
 			}
 		}
 
-		$ma_token = TmpData::create('ma_login', array(
-			'email_address' => $this->person->getPrimaryEmailAddress()
-		), '+1 hour');
+		$lic_info = array(
+			'licenseId'   => $lic->getLicenseId(),
+			'org'         => $lic->get('org') ?: null,
+			'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
+			'isExpired'   => $is_expired,
+			'expireDays'  => $expire_in_days,
+			'isDemo'      => $lic->isDemo() ? true : false,
+			'maxAgents'   => $lic->getMaxAgents(),
+			'licenseCode' => $lic->getLicenseCode(),
+		);
+
+		$active_agents = $this->container->getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent = 1 AND is_deleted = 0
+		");
+		$limits = array(
+			'max_agents'    => $lic->getMaxAgents() ?: -1,
+			'count_agents'  => $active_agents,
+			'remain_agents' => $lic->getMaxAgents() ? max(0, $lic->getMaxAgents() - $active_agents) : -1
+		);
+
+		$ma_token = TmpData::create(
+			'ma_login', array(
+				'email_address' => $this->person->getPrimaryEmailAddress()
+			), '+1 hour'
+		);
 		$this->em->persist($ma_token);
 		$this->em->flush($ma_token);
 
@@ -85,16 +109,8 @@ class LicenseController extends AbstractController implements ProtectedControlle
 		}
 
 		return $this->createApiResponse(array(
-			'license' => array(
-				'licenseId'   => $lic->getLicenseId(),
-				'org'         => $lic->get('org') ?: null,
-				'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
-				'isExpired'   => $is_expired,
-				'expireDays'  => $expire_in_days,
-				'isDemo'      => $lic->isDemo() ? true : false,
-				'maxAgents'   => $lic->getMaxAgents(),
-				'licenseCode' => $lic->getLicenseCode(),
-			),
+			'license'          => $lic_info,
+			'limits'           => $limits,
 			'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',
 			'ma_token'         => $ma_token->toApiData(),
 			'ma_login_url'     => $ma_login_url,

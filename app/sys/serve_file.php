@@ -35,6 +35,7 @@
 
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Imagine\Image\Box;
 use Orb\Data\ContentTypes;
@@ -1336,8 +1337,13 @@ class FilestorageLoader extends LoaderAbstract
 		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
 		header('Content-Length: ' . $filesize);
 		header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
-		header('Expires: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
-		header('Cache-Control: max-age=31556926,private');
+
+		// if not in dev mode, cache assets
+		$is_dev = dp_get_config('debug.dev');
+		if (!$is_dev) {
+			header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
+			header('Cache-Control: max-age=31556926,private');
+		}
 
 		if ($content !== null) {
 			echo $content;

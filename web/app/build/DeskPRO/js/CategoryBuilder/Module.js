@@ -10,7 +10,8 @@
           controller: DeskPRO_CategoryBuilder_Controller.FACTORY,
           controllerAs: 'CategoryBuilder',
           scope: {
-            saveFlatArray: '='
+            saveFlatArray: '=',
+            fieldName: '@fieldName'
           },
           link: function(scope, iElement, iAttrs, ngModel) {
             return scope.categoryBuilder.setModel(ngModel);

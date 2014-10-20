@@ -182,7 +182,7 @@ define [
 						<div class="dp-cb-row-indent"></div>
 						<span class="title-id" title="ID" ng-if="cat.id && !cat['@is_new']">#<span ng-bind="cat.id"></span></span>
 						<span class="title-id" title="ID will be generated after you save" ng-if="cat['@is_new']">?</span>
-						<input type="text" class="form-control dp-cb-input" ng-model="cat.title" placeholder="Enter title..." />
+						<input type="text" name="{{ fieldName }}" class="form-control dp-cb-input" ng-model="cat.title" placeholder="Enter title..." />
 					</div>
 					<ul ui-sortable="sortedListOptions"></ul>
 				</li>
@@ -192,6 +192,7 @@ define [
 			rowScope.sortedListOptions = @$scope.sortedListOptions
 
 			rowScope.cat = cat
+			rowScope.fieldName = cat.field_name || rowScope.fieldName
 			newRow = @$compile(tpl)(rowScope)
 			newRow.data('catId', cat.id)
 			return [newRow, rowScope]

@@ -234,7 +234,7 @@ class Task extends AbstractEntityRepository
 		$today = Dates::convertToUtcDateTime($today);
 
 		$tomorrow = $person->getDateTime();
-		$tomorrow->setTime(23, 59, 59);
+		$tomorrow->modify('+1 day')->setTime(0, 0, 0);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();
@@ -327,7 +327,7 @@ class Task extends AbstractEntityRepository
 		$today = Dates::convertToUtcDateTime($today);
 
 		$tomorrow = $person->getDateTime();
-		$tomorrow->setTime(23, 59, 59);
+		$tomorrow->modify('+1 day')->setTime(0, 0, 0);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();
@@ -420,7 +420,7 @@ class Task extends AbstractEntityRepository
 		$today = Dates::convertToUtcDateTime($today);
 
 		$tomorrow = $person->getDateTime();
-		$tomorrow->setTime(23, 59, 59);
+		$tomorrow->modify('+1 day')->setTime(0, 0, 0);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();
@@ -513,7 +513,7 @@ class Task extends AbstractEntityRepository
 		$today = Dates::convertToUtcDateTime($today);
 
 		$tomorrow = $person->getDateTime();
-		$tomorrow->setTime(23, 59, 59);
+		$tomorrow->modify('+1 day')->setTime(0, 0, 0);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();

@@ -123,7 +123,7 @@
 					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error', 'warning': result.status == 'rejected'}">
 						<td class=""><input type="checkbox" ng-model="ListCtrl.massActions[result.id]" ng-change="" style="margin: 0;" /></td>
 						<td class="alt dp-id-col"><a href="{{ ng_href('tickets.ticket_accounts.emailsourcesview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
-						<td style="white-space: nowrap" nowrap>{{ ng_var('result.date_created | amDateFormat:"MMM D, YYYY @ HH:mm"') }}</td>
+						<td style="white-space: nowrap" nowrap dp-date="result.date_created"></td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_from') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.email_account.address') }}</td>

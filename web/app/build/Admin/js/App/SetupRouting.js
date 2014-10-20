@@ -31,6 +31,9 @@
             }
             if (route.views) {
               opts.views = route.views;
+            } else if (route.abstract) {
+              opts.abstract = true;
+              opts.template = '<ui-view/>';
             } else {
               opts.views = {};
               v = {};

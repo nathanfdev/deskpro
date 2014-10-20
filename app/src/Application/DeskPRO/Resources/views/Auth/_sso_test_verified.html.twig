@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+	<title>Verified</title>
+</head>
+<body>
+<h1>Success</h1>
+<p>You would have been logged in as {{ person.displayName }} (id = {{ person.id }})</p>
+<script type="text/javascript">
+	parent.window.USERSOURCE_TEST_SCOPE.$apply(function(){
+		parent.window.USERSOURCE_TEST_SCOPE.is_verified = true;
+		parent.window.USERSOURCE_TEST_SCOPE.is_error = false;
+		parent.window.USERSOURCE_TEST_SCOPE.loading = false;
+		parent.window.USERSOURCE_TEST_SCOPE.log = '{{ log|escape('js') }}';
+		parent.window.USERSOURCE_TEST_SCOPE.person = {
+			id: '{{ person.id|escape('js') }}',
+			displayName: '{{ person.displayName|escape('js') }}',
+			email: '{{ person.primary_email.email|escape('js') }}',
+		};
+	});
+</script>
+</body>
+</html>

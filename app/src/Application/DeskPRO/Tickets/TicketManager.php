@@ -121,6 +121,8 @@ class TicketManager
 		$this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
 		$this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getDb(), $container->getTicketFilterChangeDetector());
 		$this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
+
+		$this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
 	}
 
 
@@ -332,6 +334,7 @@ class TicketManager
 
 		$this->em->persist($ticket);
 		$this->em->flush();
+		$this->auto_vars['custom_field_manager']->flush();
 
 		foreach ($this->post_save_actions as $action) {
 			$context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));

@@ -88,22 +88,26 @@ class PasswordPolicyValidator
 			return false;
 		}
 
-		if ($policy->require_num_uppercase && preg_match_all('#[A-Z]#', $password) < $policy->require_num_uppercase) {
+		$m = null;
+		if ($policy->require_num_uppercase && preg_match_all('#[A-Z]#', $password, $m) < $policy->require_num_uppercase) {
 			$error = 'require_num_uppercase';
 			return false;
 		}
 
-		if ($policy->require_num_lowercase && preg_match_all('#[a-z]#', $password) < $policy->require_num_lowercase) {
+		$m = null;
+		if ($policy->require_num_lowercase && preg_match_all('#[a-z]#', $password, $m) < $policy->require_num_lowercase) {
 			$error = 'require_num_lowercase';
 			return false;
 		}
 
-		if ($policy->require_num_number && preg_match_all('#[0-9]#', $password) < $policy->require_num_number) {
+		$m = null;
+		if ($policy->require_num_number && preg_match_all('#[0-9]#', $password, $m) < $policy->require_num_number) {
 			$error = 'require_num_number';
 			return false;
 		}
 
-		if ($policy->require_num_symbol && preg_match_all('#[\-!$%^&*()_+|~=`{}\[\]:";\'<>?,./\#]#', $password) < $policy->require_num_symbol) {
+		$m = null;
+		if ($policy->require_num_symbol && preg_match_all('#[\-!$%^&*()_+|~=`{}\[\]:";\'<>?,./\#]#', $password, $m) < $policy->require_num_symbol) {
 			$error = 'require_num_symbol';
 			return false;
 		}

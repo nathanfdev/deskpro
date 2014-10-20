@@ -119,8 +119,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
 
 		save: ->
-			if @$scope.Form.$invalid then return
-
 			@startSpinner 'saving'
 			@service.set(@robin).then(
 				(model) =>

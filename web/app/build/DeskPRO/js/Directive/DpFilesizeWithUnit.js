@@ -29,7 +29,7 @@
       function() {
         return {
           restrict: 'E',
-          template: "<div class=\"dp-filesize-unit\">\n	<input type=\"text\" ng-model=\"size_num\" class=\"form-control size_num\" />\n	<select\n		ng-model=\"size_unit\"\n		ui-select2\n		style=\"min-width: 100px;\"\n	>\n		<option value=\"b\">B</option>\n		<option value=\"kb\">KB</option>\n		<option value=\"mb\">MB</option>\n		<option value=\"gb\">GB</option>\n	</select>\n</div>",
+          template: "<div class=\"dp-filesize-unit\">\n	<input type=\"text\" ng-model=\"size_num\" name=\"size_num\" class=\"form-control size_num\" required autofocus />\n	<select\n		ng-model=\"size_unit\"\n		ui-select2\n		style=\"min-width: 100px;\"\n	>\n		<option value=\"b\">B</option>\n		<option value=\"kb\">KB</option>\n		<option value=\"mb\">MB</option>\n		<option value=\"gb\">GB</option>\n	</select>\n</div>",
           scope: {},
           require: 'ngModel',
           replace: true,

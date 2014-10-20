@@ -68,6 +68,12 @@ class ImapConfig implements AccountConfigInterface
 	public $secure_mode = null;
 
 	/**
+	 * disable certificate validation (validate by default)
+	 * @var bool
+	 */
+	public $no_validation = false;
+
+	/**
 	 * 'read', 'delete', 'archive'
 	 * @var string
 	 */
@@ -97,6 +103,7 @@ class ImapConfig implements AccountConfigInterface
 			'user'            => $this->user,
 			'password'        => $this->password,
 			'secure_mode'     => $this->secure_mode,
+			'no_validation'   => $this->no_validation,
 			'mode'            => $this->mode,
 			'read_mailbox'    => $this->read_mailbox,
 			'archive_mailbox' => $this->archive_mailbox

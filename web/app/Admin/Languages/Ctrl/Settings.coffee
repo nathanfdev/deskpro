@@ -33,6 +33,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			return promise
 
 		saveSettings: ->
+			console.info 'test'
+			return if @$scope.form_props.$invalid
+
 			@startSpinner('saving_settings')
 			@Api.sendPost('/settings/values/core.lang_auto_install', {
 				value: if @form.lang_auto_install then '1' else '0'

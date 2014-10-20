@@ -18,6 +18,7 @@
       Admin_OrgFields_Ctrl_List.DEPS = [];
 
       Admin_OrgFields_Ctrl_List.prototype.init = function() {
+        var data;
         this.fieldDataService = this.DataService.get('OrgFields');
         this.custom_fields = [];
         this.sortedListOptions = {
@@ -36,6 +37,25 @@
             };
           })(this)
         };
+        this.specific_org_custom_fields = [];
+        data = this.$state.current.data;
+        this.service = this.DataService.get('CustomFields', data.owner, data.context);
+        this.customFieldListOptions = {
+          axis: 'y',
+          handle: '.drag-handle',
+          update: (function(_this) {
+            return function(ev, data) {
+              var $list, displayOrders;
+              $list = data.item.closest('ul');
+              displayOrders = [];
+              $list.find('li').each(function() {
+                return displayOrders.push(parseInt($(this).data('id')));
+              });
+              _this.service.saveDisplayOrder(displayOrders);
+              return _this.pingElement('display_orders');
+            };
+          })(this)
+        };
       };
 
       Admin_OrgFields_Ctrl_List.prototype.initialLoad = function() {
@@ -44,6 +64,11 @@
         promise.then((function(_this) {
           return function(list) {
             return _this.custom_fields = list;
+          };
+        })(this));
+        this.service.all().then((function(_this) {
+          return function(list) {
+            return _this.specific_org_custom_fields = list;
           };
         })(this));
         return promise;

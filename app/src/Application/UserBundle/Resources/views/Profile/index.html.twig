@@ -3,6 +3,7 @@
  ##}
 {% extends 'UserBundle::layout.html.twig' %}
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
+{% set authManager = app.authenticationManager %}
 {% block breadcrumb %}
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_profile') }}">{{ phrase('user.profile.profile') }}</a></li>
 {% endblock %}
@@ -236,7 +237,7 @@
 	</section>
 {% endif %}
 
-{% if app.getSetting('core.deskpro_source_enabled') %}
+{% if authManager.isRegistrationFormVisible %}
 <section class="dp-portal-section">
 	<header>
 		<h1>{{ phrase('user.profile.change_password') }}</h1>

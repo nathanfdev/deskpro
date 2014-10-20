@@ -44,10 +44,10 @@ class ClassMetadataBuilder extends BaseBuilder
 	}
 
 
-	public function mapString($fieldName, $length = 256, $nullable = true)
+	public function mapString($fieldName, $length = 256, $nullable = true, $unique = false)
 	{
 		$this->addField(
-			$fieldName, 'string', array('nullable' => $nullable, 'length' => $length)
+			$fieldName, 'string', array('nullable' => $nullable, 'length' => $length, 'unique' => $unique)
 		);
 	}
 

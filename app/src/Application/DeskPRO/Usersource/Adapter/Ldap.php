@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 
 class Ldap extends AbstractAdapter
@@ -180,8 +181,8 @@ class Ldap extends AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			'form_login',
-			'find_identity'
+			UsersourceInfo::CAPABILITY_FORM_LOGIN,
+			UsersourceInfo::CAPABILITY_FIND_IDENTITY
 		);
 	}
 

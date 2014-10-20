@@ -2,7 +2,12 @@
 {% block editpane_content %}
 	<section class="dp-paneblock dp-editpane">
 		<article class="form-horizontal dp-form">
+			<div ng-show="Ctrl.pack.is_usersource_app">
+			{% include 'AdminInterfaceBundle:Apps:package-usersource-summary.html.twig' %}
+			</div>
+			<div ng-show="!Ctrl.pack.is_usersource_app">
 			{% include 'AdminInterfaceBundle:Apps:package-summary.html.twig' %}
+			</div>
 		</article>
 	</section>
 	{{ ng_tpl('AdminInterfaceBundle:Apps:instance-delete-modal.html.twig') }}
