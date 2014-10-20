@@ -35,6 +35,8 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Entity\ApiToken;
+use DeskPRO\Kernel\License;
+use Orb\Util\Strings;
 
 class IndexController extends AbstractController
 {
@@ -73,7 +75,8 @@ class IndexController extends AbstractController
 			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
 			'inhelp_states'         => $inhelp_states,
 			'rjs_apps_config'       => $rjs_apps_config,
-			'redirect_license'      => defined('DP_BILLING_ERROR')
+			'redirect_license'      => defined('DP_BILLING_ERROR'),
+			'license_server'        => rtrim(License::getSecureLicServer(), '/'),
 		));
 	}
 }

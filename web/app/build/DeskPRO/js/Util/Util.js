@@ -256,6 +256,35 @@
 
 
       /*
+        	 * Check if an object is empty or contains only empty data
+        	 *
+        	 * @param {Object} obj
+        	 * @return {bool}
+       */
+
+      DeskPRO_Util_Util.prototype.isBlankObject = function(obj) {
+        var any, k, v;
+        any = false;
+        for (k in obj) {
+          if (!__hasProp.call(obj, k)) continue;
+          v = obj[k];
+          if (v) {
+            if (this.isString(v)) {
+              if (v.length) {
+                any = true;
+                break;
+              }
+            } else {
+              any = true;
+              break;
+            }
+          }
+        }
+        return !any;
+      };
+
+
+      /*
       		 * Check if a value is blank. This means roughly the same as PHP's "falsey" values: 0, "0", [], ""
       		 *
       		 * @param {Object} obj
