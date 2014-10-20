@@ -4042,6 +4042,58 @@ $collection->create('api_user_fields_update_order', array(
 ));
 
 ########################################################################################################################
+# CRM New Custom Fields
+########################################################################################################################
+
+$collection->create('api_custom_fields', array(
+	'path'        => '/custom_fields',
+	'controller'  => 'ApiBundle:CustomFields:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_custom_fields_children', array(
+	'path'         => '/custom_fields/{id}/children',
+	'controller'   => 'ApiBundle:CustomFields:children',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_custom_fields_children', array(
+	'path'         => '/custom_fields/{id}/children',
+	'controller'   => 'ApiBundle:CustomFields:addChild',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_custom_fields_get', array(
+	'path'         => '/custom_fields/{id}',
+	'controller'   => 'ApiBundle:CustomFields:get',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_custom_fields_save', array(
+	'path'         => '/custom_fields/{id}',
+	'controller'   => 'ApiBundle:CustomFields:save',
+	'requirements' => array('id' => '\\d+'),
+	'defaults'     => array('id' => 0),
+	'methods'      => array('PUT', 'POST'),
+));
+
+$collection->create('api_custom_fields_delete', array(
+	'path'         => '/custom_fields/{id}',
+	'controller'   => 'ApiBundle:CustomFields:delete',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
+$collection->create('api_custom_fields_update_order', array(
+	'path'        => '/custom_fields/display-order',
+	'controller'  => 'ApiBundle:CustomFields:saveDisplayOrder',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
 # CRM Organization Fields
 ########################################################################################################################
 

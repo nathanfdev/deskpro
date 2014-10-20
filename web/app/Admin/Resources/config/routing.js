@@ -1081,6 +1081,7 @@ define(function() {
 	routes.push({
 		id: 'crm.user_fields',
 		url: '/user_fields',
+		data: {owner: 'ticket', context: 'person'},
 		templateName: 'UserFields/list.html',
 		controller: 'Admin_UserFields_Ctrl_List'
 	});
@@ -1108,12 +1109,44 @@ define(function() {
 		controller: 'Admin_CustomFields_User_Ctrl_Edit'
 	});
 
+	routes.push({
+		id: 'crm.user_fields.specific',
+		url: '/specific',
+		abstract: true
+	});
+
+	routes.push({
+		id: 'crm.user_fields.specific.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('crm.user_fields.specific.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'crm.user_fields.specific.create',
+		url: '/create',
+		data: {owner: 'ticket', context: 'person'},
+		templateName: 'CustomFields/edit.html',
+		controller: 'Admin_CustomFields_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.user_fields.specific.edit',
+		url: '/{id:[0-9]+}',
+		data: {owner: 'ticket', context: 'person'},
+		templateName: 'CustomFields/edit.html',
+		controller: 'Admin_CustomFields_Ctrl_Edit'
+	});
+
 	//###
 	//# Fields::Orgs
 	//###
 	routes.push({
 		id: 'crm.org_fields',
 		url: '/org_fields',
+		data: {owner: 'ticket', context: 'organization'},
 		templateName: 'OrgFields/list.html',
 		controller: 'Admin_OrgFields_Ctrl_List'
 	});
@@ -1139,6 +1172,37 @@ define(function() {
 		url: '/{id:[0-9]+}',
 		templateName: 'CustomFields/Org/edit.html',
 		controller: 'Admin_CustomFields_Org_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.org_fields.specific',
+		url: '/specific',
+		abstract: true
+	});
+
+	routes.push({
+		id: 'crm.org_fields.specific.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('crm.org_fields.specific.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'crm.org_fields.specific.create',
+		url: '/create',
+		data: {owner: 'ticket', context: 'organization'},
+		templateName: 'CustomFields/edit.html',
+		controller: 'Admin_CustomFields_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.org_fields.specific.edit',
+		url: '/{id:[0-9]+}',
+		data: {owner: 'ticket', context: 'organization'},
+		templateName: 'CustomFields/edit.html',
+		controller: 'Admin_CustomFields_Ctrl_Edit'
 	});
 
 	//###

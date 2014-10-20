@@ -293,4 +293,19 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 		$obj->importFromArray($data);
 		return $obj;
 	}
+
+	/**
+	 * @param $type
+	 * @return array
+	 */
+	public function getIdsOfFieldType($type)
+	{
+		$ret = array();
+		foreach ($this->fields as $field) {
+			if ($type === $field->getFieldType()) {
+				$ret[] = $field->getFieldId();
+			}
+		}
+		return $ret;
+	}
 }

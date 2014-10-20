@@ -3177,6 +3177,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			if (App::getCurrentPerson()) {
 				$context->setPersonContext(App::getCurrentPerson(), true);
 			}
+			$context->getVars()->set('custom_field_manager', App::$container->getCustomFieldManager());
 
 			$state = $this->getStateChangeRecorder();
 			if ($state->isNewTicket()) {

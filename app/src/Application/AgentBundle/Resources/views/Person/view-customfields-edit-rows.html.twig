@@ -47,4 +47,23 @@
 			</td>
 		</tr>
 	{% endif %}
+
+    {% for f in custom_fields_2 %}
+        <tr>
+            <th>{{ form_label(f) }}</th>
+            <td>
+                {{ form_widget(f) }}
+            </td>
+        </tr>
+    {% endfor %}
+
+    {% for f in custom_fields_definitions %}
+        <tr>
+            <th>{{ form_label(f) }}</th>
+            <td>
+                {{ form_widget(f) }}
+            </td>
+        </tr>
+    {% endfor %}
+
 </table>

@@ -4,6 +4,7 @@ define [
 	'Admin/CustomFields/Chat/DataService/ChatFields',
 	'Admin/CustomFields/User/DataService/UserFields',
 	'Admin/CustomFields/Org/DataService/OrgFields',
+	'Admin/CustomFields/DataService/CustomFields',
 	'Admin/TicketFilters/DataService/TicketFilters',
 	'Admin/TicketDeps/DataService/TicketDeps',
 	'Admin/ChatDeps/DataService/ChatDeps',
@@ -30,6 +31,7 @@ define [
 	DataService_ChatFields,
 	DataService_UserFields,
 	DataService_OrgFields,
+	DataService_CustomFields,
 	DataService_TicketFilters,
 	DataService_TicketDeps,
 	DataService_ChatDeps,
@@ -59,27 +61,37 @@ define [
 			@ds_cache = {}
 			@registered = {}
 
-		get: (serviceId) ->
-			if @ds_cache[serviceId]
-				obj = @ds_cache[serviceId]
+
+
+		get: (serviceId, args...) ->
+			cacheKey = serviceId
+
+			cacheKey = args.reduce(
+				(prev, current) -> prev + '_' + current.toString()
+				cacheKey
+			)
+
+			if @ds_cache[cacheKey]
+				obj = @ds_cache[cacheKey]
 			else
-				obj = null
+				obj = @factory.apply @, arguments
+				@ds_cache[cacheKey] = obj
 
-				# If this class has a custom initXXX method, call that
-				# instead uf the default
-				initName = 'init' + Strings.ucFirst(Strings.toCamelCase(serviceId))
-				if @[initName]?
-					obj = @[initName]()
+			obj
 
-				if not obj
-					name = 'DataService_' + serviceId
-					eval("constructor = #{name};")
 
-					if not constructor
-						throw new Error("Invalid data service name: " + name)
 
-					obj = @$injector.instantiate(constructor)
+		factory: (serviceId) ->
+			# If this class has a custom initXXX method, call that
+			# instead uf the default
+			initName = 'init' + Strings.ucFirst(Strings.toCamelCase(serviceId))
+			return @[initName]() if @[initName]?
 
-				@ds_cache[serviceId] = obj
+			name = 'DataService_' + serviceId
+			eval("constructor = #{name};")
 
-			return obj
+			throw new Error("Invalid data service name: " + name) if !constructor
+
+			obj = @$injector.instantiate(constructor)
+			obj.init.apply obj, Array.prototype.slice.call(arguments, 1) if obj.init?
+			obj

@@ -168,3 +168,26 @@
 		</tr>
 	</tbody>
 {% endfor %}
+{% for f in new_custom_fields %}
+    {% set id = f.vars.def.id %}
+    <tbody class="custom_field_{{id}} custom-field item" data-field-type="custom_field" data-item-id="{{id}}" style="display:none">
+    <tr class="mode-display">
+        <th width="80">
+            <span class="custom-field edit-trigger custom_field_{{id}}" data-item-id="{{id}}">{{ f.vars.label }}:</span>
+        </th>
+        <td>
+            <div class="custom-field content ticket_field_{{id}}" data-item-id="{{id}}">
+                {{ render_custom_field(f) }}
+            </div>
+        </td>
+    </tr>
+    <tr class="mode-edit">
+        <th width="80">{{ form_label(f) }}:</th>
+        <td>
+            <div class="custom-field field-input custom_field_{{id}}" data-item-id="{{id}}">
+                {{ render_custom_field_form(f) }}
+            </div>
+        </td>
+    </tr>
+    </tbody>
+{% endfor %}

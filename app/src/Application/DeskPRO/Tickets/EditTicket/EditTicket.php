@@ -123,6 +123,9 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 				$field_manager->saveFormToObject($post_custom_fields, $this->ticket_object);
 			}
 
+			$new_field_manager = App::$container->getCustomFieldManager();
+			$new_field_manager->flush();
+
 			$user_field_manager = App::getSystemService('person_fields_manager');
 			$post_custom_fields = App::getRequest()->request->get('custom_user_fields', array());
 			if (!empty($post_custom_fields)) {
