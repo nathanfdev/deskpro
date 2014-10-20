@@ -1,6 +1,7 @@
 {% extends 'AdminInterfaceBundle:Layout:fill-page-alt.html.twig' %}
 {% block fillpage_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()"
+		xmlns="http://www.w3.org/1999/html">
 		<section class="dp-paneblock dp-listpane">
 			<header>
 				<h3>License</h3>
@@ -85,20 +86,20 @@
 									<div ng-if="Ctrl.license.expireDays && Ctrl.license.expireDays < 30">
 										Your license expires in {{ ng_var('Ctrl.license.expireDays') }} days on {{ ng_var('Ctrl.license.expireDate') }}.
 										<div style="padding-top: 3px;">
-											<a target="_blank" class="btn btn-warning" ng-click="$event.preventDefault(); Ctrl.goToMembersArea();" href="http://www.deskpro.com/members/"><i class="fa fa-calendar"></i> Extend your license</a>
+											<button class="btn btn-default" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar"></i> Extend your license</button>
 										</div>
 									</div>
 									<div ng-if="!Ctrl.license.expireDays || Ctrl.license.expireDays >= 30">
 										Your license expires on {{ ng_var('Ctrl.license.expireDate') }}.
 										<div style="padding-top: 3px;">
-											<a target="_blank" class="btn btn-default" ng-click="$event.preventDefault(); Ctrl.goToMembersArea();" href="http://www.deskpro.com/members/"><i class="fa fa-calendar"></i> Extend your license</a>
+											<button class="btn btn-default" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar"></i> Extend your license</button>
 										</div>
 									</div>
 								</div>
 								<div ng-if="Ctrl.license.isExpired">
 									Your license period expired on {{ ng_var('Ctrl.license.expireDate') }}.
 									&nbsp;&nbsp;&nbsp;
-									<a target="_blank" class="btn btn-warning" ng-click="$event.preventDefault(); Ctrl.goToMembersArea();" href="http://www.deskpro.com/members/"><i class="fa fa-calendar"></i> Renew your license now</a>
+									<button class="btn btn-warning" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar"></i> Renew your license now</button>
 								</div>
 							</div>
 						</div>
@@ -113,10 +114,12 @@
 						<div class="col-lg-10">
 							<div class="inner-group form-control-static">
 								<div ng-if="!Ctrl.license.maxAgents || Ctrl.license.maxAgents >= 100">
-									Unlimited
+									Unlimited Agents
 								</div>
 								<div ng-if="Ctrl.license.maxAgents && Ctrl.license.maxAgents < 100">
-									{{ ng_var('Ctrl.license.maxAgents') }}
+									{{ ng_var('Ctrl.license.maxAgents') }} Agents
+									<br/>
+									<button class="btn btn-default" ng-click="Ctrl.openUpgradeLicense()" type="button">Add Agent Seats</button>
 								</div>
 							</div>
 						</div>
@@ -146,7 +149,7 @@
 						</div>
 					</div>
 
-					<div class="form-group">
+					<div class="form-group" ng-if="Ctrl.license.isDemo">
 						<div class="col-lg-2">
 							<label>
 								<h4>Key File</h4>

@@ -15,7 +15,7 @@
 
       Admin_Main_Ctrl_Home.CTRL_AS = 'Home';
 
-      Admin_Main_Ctrl_Home.DEPS = ['$http'];
+      Admin_Main_Ctrl_Home.DEPS = ['$http', 'DpLicense'];
 
       Admin_Main_Ctrl_Home.prototype.init = function() {
         this.online_agents = [];
@@ -216,12 +216,21 @@
         }
         this.startSpinner('saving_new_agent');
         return this.Api.sendPutJson('/agents', postData).then((function(_this) {
-          return function(data) {
-            _this.unactive_agents.push(data.data);
+          return function(res) {
+            _this.unactive_agents.push(res.data);
             return _this.stopSpinner('saving_new_agent').then(function() {
               _this.$scope.created_agent = _this.$scope.new_agent;
               return _this.$scope.new_agent = {};
             });
+          };
+        })(this), (function(_this) {
+          return function(res) {
+            _this.stopSpinner('saving_new_agent', true);
+            if (res.data.error_code && res.data.error_code === 'license_exceeded') {
+              return _this.DpLicense.openUpgradeLicense('upgrade_plan').then(function() {
+                return _this.addNewAgent();
+              });
+            }
           };
         })(this));
       };
