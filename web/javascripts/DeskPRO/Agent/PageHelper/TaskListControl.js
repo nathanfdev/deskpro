@@ -294,7 +294,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 
 		el.on('click', '.save-comment-trigger', function(ev) {
 			var row = $(this).closest('article.task');
-			var commentTxt = $('textarea', row);
+			var commentTxt = $('.comment-input textarea', row);
 
 			var closefn = function() {
 				commentTxt.val('');
