@@ -61,6 +61,9 @@ class Imap extends Server
 					$this->setFlag('tls');
 					break;
 			}
+			if ($options['no_validation']) {
+				$this->setFlag('novalidate-cert');
+			}
 		}
 
 		$this->setAuthentication($options['user'], $options['password']);
