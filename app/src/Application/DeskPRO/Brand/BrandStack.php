@@ -55,6 +55,9 @@ use Application\DeskPRO\Entity\Brand;
  *
  *         $this->brandStack->pop() // revert the stack so that our service doesn't interrupt others
  *     }
+ *
+ * Any service / controller that wants to work with a brand (settings/templating/etc) should simply depend on this
+ * BrandStack and use getActive(). Pop in an out of different brands as necessary.
  */
 class BrandStack 
 {
@@ -64,7 +67,7 @@ class BrandStack
 	private $factory;
 
 	/**
-	 * @var array with brand id as key, and brand container as value
+	 * @var \array
 	 */
 	private $stack;
 
@@ -76,6 +79,8 @@ class BrandStack
 	public function __construct(BrandContainerFactory $factory)
 	{
 		$this->factory = $factory;
+		$this->stack = array();
+		$this->brand_containers = array();
 	}
 
 	/**
@@ -85,16 +90,38 @@ class BrandStack
 	 */
 	public function getActive()
 	{
+		$brand_id = end($this->stack);
+
+		if ($brand_id > 0) {
+			return $this->brand_containers[$brand_id];
+		}
+
+		return null;
+	}
+
+
+	public function getStack()
+	{
+		return $this->stack;
 	}
 
 	/**
 	 * Pushes the Brand into the stack, so that the brand's container is now active
 	 *
 	 * @param Brand $brand
+	 * @return BrandContainer
 	 */
 	public function push(Brand $brand)
 	{
-		// if not already constructed, make in factory, and add the brand id to the stack
+		$brand_id = $brand->getId();
+
+		array_push($this->stack, $brand_id);
+
+		if (!array_key_exists($brand_id, $this->brand_containers)) {
+			$this->brand_containers[$brand_id] = $this->factory->create($brand);
+		}
+
+		return $this->getActive();
 	}
 
 
@@ -103,7 +130,7 @@ class BrandStack
 	 */
 	public function pop()
 	{
-
+		array_pop($this->stack);
 	}
 }
  

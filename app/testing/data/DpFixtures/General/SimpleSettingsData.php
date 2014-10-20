@@ -24,10 +24,20 @@ class SimpleSettingsData extends AbstractFixture
 		$brand->name = 'some_name';
 		$manager->persist($brand);
 
-		$setting = new Setting();
-		$setting->name = '456key';
+		$setting        = new Setting();
+		$setting->name  = '456key';
 		$setting->value = 'brand-setting';
 		$setting->brand = $brand;
+		$manager->persist($setting);
+
+		$brand2 = new Brand();
+		$brand2->name = 'Another Brand';
+		$manager->persist($brand2);
+
+		$setting = new Setting();
+		$setting->name = '456key';
+		$setting->value = 'second brand';
+		$setting->brand = $brand2;
 		$manager->persist($setting);
 
 		$manager->flush();

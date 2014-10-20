@@ -29,68 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\Domain\DomainObject;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Brand\BrandStack;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-/**
- * @property int $id
- * @property string $name
- * @property Blob $logo_blob
- */
-class Brand extends DomainObject
+class BrandStackService
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id = null;
-
-	/**
-	 * @var string the brand name
-	 */
-	protected $name;
-
-	/**
-	 * @var Blob
-	 */
-	protected $logo_blob;
-
-
-	public function getId()
+	public static function create(DeskproContainer $container)
 	{
-		return $this->id;
-	}
-
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, $deep, $visited);
-		$data['logo_blob'] = $this->logo_blob ? $this->logo_blob->toApiData() : null;
-
-		return $data;
-	}
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$builder = new ClassMetadataBuilder($metadata);
-		$builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Brand');
-		$builder->setChangeTrackingPolicyNotify();
-		$builder->setTable('brands');
-
-		$builder->mapId();
-		$builder->mapString('name');
-		$builder->addOwningOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob');
+		return new BrandStack($container->getSystemService('brand_container_factory'));
 	}
 }
