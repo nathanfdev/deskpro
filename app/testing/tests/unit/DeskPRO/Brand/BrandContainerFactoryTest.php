@@ -32,30 +32,24 @@
  * @subpackage Brand
  */
 
-namespace Application\DeskPRO\Brand;
+namespace DpUnitTests\DeskPRO\Brand;
 
-use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\DeskPRO\Brand\BrandContainerFactory;
 
-/**
- * The BrandContainerFactory creates BrandContainers for us
- */
-class BrandContainerFactory
+class BrandContainerFactoryTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
-	 */
-	private $settings_resolver;
-
-
-	public function __construct(SettingsResolver $settings_resolver)
+	public function testConstruction()
 	{
-		$this->settings_resolver = $settings_resolver;
-	}
+		$mockBrand    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+		$mockSettings = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
 
-	public function create(Brand $brand)
-	{
-		return new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand));
+		$mockSettingsResolver = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsResolver');
+		$mockSettingsResolver->shouldReceive('getBrandSettings')->with($mockBrand)->andReturn($mockSettings)->once();
+		$factory           = new BrandContainerFactory($mockSettingsResolver);
+
+		$container = $factory->create($mockBrand);
+
+		$this->assertSame($mockBrand, $container->getBrand());
+		$this->assertSame($mockSettings, $container->getSettings());
 	}
 }
- 

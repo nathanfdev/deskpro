@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,33 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Brand
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\Brand;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\DeskPRO\Brand\BrandContainerFactory;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-/**
- * The BrandContainerFactory creates BrandContainers for us
- */
-class BrandContainerFactory
+class BrandContainerFactoryService
 {
-	/**
-	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
-	 */
-	private $settings_resolver;
-
-
-	public function __construct(SettingsResolver $settings_resolver)
+	public static function create(DeskproContainer $container)
 	{
-		$this->settings_resolver = $settings_resolver;
-	}
-
-	public function create(Brand $brand)
-	{
-		return new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand));
+		return new BrandContainerFactory($container->getSettingsResolver());
 	}
 }
- 
