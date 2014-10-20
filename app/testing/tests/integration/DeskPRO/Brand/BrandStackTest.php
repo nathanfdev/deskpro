@@ -19,7 +19,7 @@ class BrandStackTest extends \DpIntegrationTestCase
 
 	public function runBefore()
 	{
-		$this->helper->enableDatabaseSet('EmptyDB');
+		$this->helper->enableDatabaseSet('EmptyDb');
 		$this->helper->loadFixtures('General/SimpleSettingsData');
 		$this->brands_repo = $this->helper->getSymfonyContainer()->getEm()->getRepository('DeskPRO:Brand');
 		$this->stack = $this->helper->getSymfonyContainer()->getSystemService('brand_stack');

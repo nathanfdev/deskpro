@@ -25,7 +25,7 @@ class BrandSettingsTest extends \DpIntegrationTestCase
 
 	public function runBefore()
 	{
-		$this->helper->enableDatabaseSet('EmptyDB');
+		$this->helper->enableDatabaseSet('EmptyDb');
 		$this->helper->loadFixtures('General/SimpleSettingsData');
 		$this->rep = $this->helper->getSymfonyContainer()->getEm()->getRepository('DeskPRO:Setting');
 		$this->brands_repo = $this->helper->getSymfonyContainer()->getEm()->getRepository('DeskPRO:Brand');
