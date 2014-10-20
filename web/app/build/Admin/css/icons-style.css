@@ -1,10 +1,10 @@
 @font-face {
   font-family: "flaticon-business";
-  src: url("/web/vendor/icons/business-people/flaticon.eot");
-  src: url("/web/vendor/icons/business-people/flaticon.eot#iefix") format("embedded-opentype"), url("/web/vendor/icons/business-people/flaticon.woff") format("woff"), url("/web/vendor/icons/business-people/flaticon.ttf") format("truetype"), url("/web/vendor/icons/business-people/flaticon.svg") format("svg");
+  src: url("../../../../vendor/icons/business-people/flaticon.eot");
+  src: url("../../../../vendor/icons/business-people/flaticon.eot#iefix") format("embedded-opentype"), url("../../../../vendor/icons/business-people/flaticon.woff") format("woff"), url("../../../../vendor/icons/business-people/flaticon.ttf") format("truetype"), url("../../../../vendor/icons/business-people/flaticon.svg") format("svg");
   font-weight: normal;
   font-style: normal;
-  content: "/web/vendor/icons/business-people";
+  content: "../../../../vendor/icons/business-people";
 }
 [class^="flaticon-business"]:before,
 [class*=" flaticon-business"]:before,
@@ -1785,6 +1785,7 @@
 .flaticon-job-woman102:before {
   content: "\e013";
 }
+
 
 @font-face {
   font-family: "flaticon-profile";
