@@ -34,11 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1412565946 extends AbstractBuild
+class Build1413803748 extends AbstractBuild
 {
 	public function run()
 	{
 		$this->out("My Upgrade Class");
-		$this->execMutateSql("ALTER TABLE facebook_pages ADD user_token VARCHAR(256) DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE facebook_pages ADD verify_token VARCHAR(256) DEFAULT NULL");
 	}
 }

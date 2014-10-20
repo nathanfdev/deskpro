@@ -34,11 +34,12 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1412681405 extends AbstractBuild
+class Build1413803740 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("My Upgrade Class");
-		$this->execMutateSql("ALTER TABLE facebook_pages DROP date_page_token_expires");
+		$this->out("Adds a Facebook channel");
+		$this->execMutateSql("CREATE TABLE facebook_apps (id INT AUTO_INCREMENT NOT NULL, app_id VARCHAR(256) DEFAULT NULL, app_secret VARCHAR(256) DEFAULT NULL, app_access_token VARCHAR(256) DEFAULT NULL, name VARCHAR(256) DEFAULT NULL, icon_url VARCHAR(256) DEFAULT NULL, logo_url VARCHAR(256) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("CREATE TABLE facebook_pages (id INT AUTO_INCREMENT NOT NULL, graph_id VARCHAR(256) DEFAULT NULL, page_token VARCHAR(256) DEFAULT NULL, user_graph_id VARCHAR(256) DEFAULT NULL, name VARCHAR(256) DEFAULT NULL, import_wall_posts TINYINT(1) NOT NULL, disable_own_wall_posts TINYINT(1) NOT NULL, import_direct_messages TINYINT(1) NOT NULL, is_enabled TINYINT(1) NOT NULL, is_connected TINYINT(1) NOT NULL, is_tested TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 	}
 }

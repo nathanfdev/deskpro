@@ -34,14 +34,13 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1412568091 extends AbstractBuild
+class Build1413803741 extends AbstractBuild
 {
 	public function run()
 	{
 		$this->out("My Upgrade Class");
-		$this->execMutateSql("ALTER TABLE facebook_apps DROP app_access_token, CHANGE app_id app_id VARCHAR(255) NOT NULL");
-		$this->execMutateSql("CREATE UNIQUE INDEX UNIQ_3E57D977987212D ON facebook_apps (app_id)");
-		$this->execMutateSql("ALTER TABLE facebook_pages CHANGE graph_id graph_id VARCHAR(255) NOT NULL");
-		$this->execMutateSql("CREATE UNIQUE INDEX UNIQ_C5B2A27B99134837 ON facebook_pages (graph_id)");
+		$this->execMutateSql("ALTER TABLE facebook_pages ADD app_id INT DEFAULT NULL, ADD picture_url VARCHAR(256) DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE facebook_pages ADD CONSTRAINT FK_C5B2A27B7987212D FOREIGN KEY (app_id) REFERENCES facebook_apps (id)");
+		$this->execMutateSql("CREATE INDEX IDX_C5B2A27B7987212D ON facebook_pages (app_id)");
 	}
 }
