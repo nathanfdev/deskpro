@@ -1,0 +1,107 @@
+{
+	"package_name": "deskpro_us_saml",
+	"is_native": true,
+	"title": "SAML Authentication",
+	"description": "Enables user authentication by making your helpdesk a SAML Service Provider",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": false,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enabled?",
+			"description": "Enable this user source?",
+			"checkbox_label": "Yes",
+			"native_only": true
+		},
+		{
+			"name": "sso_url",
+			"type": "text",
+			"label": "SSO: Single Sign On URL",
+			"description": "The SSO URL (provided by your SAML IdP)",
+			"native_only": true,
+			"is_required": true
+		},
+		{
+			"name": "slo_url",
+			"type": "text",
+			"label": "SLO: Single Log Off URL",
+			"description": "The SLO URL (provided by your SAML IdP)",
+			"native_only": true
+		},
+		{
+			"name": "issuer_id",
+			"type": "text",
+			"label": "Metadata: Issuer XML metadata URL",
+			"description": "The URL that contains the XML metadata information about your SAML IdP (provided by your SAML IdP)",
+			"native_only": true
+		},
+		{
+			"name": "cert",
+			"type": "textarea",
+			"label": "x509 Certificate",
+			"description": "Your IdP should provide you with their x509 certificate. Please copy and paste it into the box above. Alternatively, if you have downloaded an idp.crt file from your IdP (should be in PEM format), please select it below.",
+			"native_only": true
+		},
+		{
+			"name": "cert_fingerprint",
+			"type": "text",
+			"label": "x509 Certificate Fingerprint",
+			"description": "If you don't have the full certificate, you can instead provide its SHA-1 fingerprint. Your IdP might provide this to you (or execute \"openssl x509 -noout -fingerprint -in 'idp.crt'\" to generate it).",
+			"native_only": true
+		},
+		{
+			"name": "login_custom_text",
+			"type": "text",
+			"label": "Login Button Text",
+			"description": "The text that appears on the button on the login page. Not shown if using the Automatic SSO Method setting. This is also optional - leave blank to show no button.",
+			"native_only": true
+		},
+		{
+			"name": "sso_type",
+			"type": "choice",
+			"label": "SSO Method",
+			"description": "When SSO is enabled, users will be automatically logged-in when they visit DeskPRO.",
+			"native_only": true,
+			"default_value": "none",
+			"options": [
+				{
+					"label": "Disabled",
+					"value": "none"
+				},
+				{
+					"label": "Automatic",
+					"value": "auto"
+				},
+				{
+					"label": "Background",
+					"value": "background"
+				}
+			]
+		},
+		{
+			"name": "auto_agent",
+			"type": "checkbox",
+			"label": "Auto Agent",
+			"checkbox_label": "Automatically create agents if they do not already exist",
+			"usersource_display": "agent",
+			"default_value": true,
+
+			"inline_dependant": {
+				"name": "auto_agent_permission_group",
+				"type": "choice",
+				"label": "Add new agents to this permission group",
+				"options_variable": "permission_groups",
+				"is_required": true
+			}
+		}
+	]
+}

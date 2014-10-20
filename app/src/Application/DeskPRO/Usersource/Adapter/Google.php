@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 
 class Google extends AbstractAdapter
@@ -64,8 +65,8 @@ class Google extends AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			'tpl_login_pull_btn',
-			'tpl_widget_overlay_btn'
+			UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
+			UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN
 		);
 	}
 

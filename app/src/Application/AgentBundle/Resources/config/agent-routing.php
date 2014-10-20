@@ -206,6 +206,14 @@ $collection->create('agent_login_callback', array(
 	'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
+$collection->create(
+	'agent_login_usersource_sso', array(
+		'path'         => '/login/usersource-sso/{usersource_id}',
+		'controller'   => 'UserBundle:Login:usersourceSso',
+		'requirements' => array('usersource_id' => '\\d+'),
+	)
+);
+
 $collection->create('agent_login_adminlogin', array(
 	'path'        => '/login/admin-login/{code}',
 	'controller'  => 'AgentBundle:Login:authAdminLogin',

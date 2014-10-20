@@ -35,27 +35,51 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\UsersourceCollection;
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Auth\Adapter\SamlAdapterInterface;
+use Orb\Auth\Adapter\SsoCapableInterface;
+use Orb\Auth\Adapter\SsoLoginActionInterface;
+use Orb\Auth\Result;
+use Orb\Log\Loggable;
+use Orb\Log\Writer\ArrayWriter;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
 	protected $tpl_prefix = 'UserBundle:Login';
 	protected $route_prefix = 'user';
+	const USERSOURCE_TEST = 'usersource_test';
 
 	/**
 	 * @var \Application\DeskPRO\Controller\Helper\LoginHelper
 	 */
 	protected $login_helper;
+
+	/**
+	 * @var \Application\DeskPRO\Usersource\UsersourceManager
+	 */
+	protected $usersource_manager;
+
+	/**
+	 * @var \Application\DeskPRO\Auth\AuthenticationManager
+	 */
+	protected $auth_manager;
 
 	public function init()
 	{
@@ -66,6 +90,9 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$this->tpl_prefix,
 			$this->route_prefix
 		);
+
+		$this->auth_manager = $this->container->getSystemService('authentication_manager');
+		$this->usersource_manager = $this->container->getSystemService('usersource_manager');
 	}
 
 	protected function loginViaToken()
@@ -124,6 +151,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		return false;
 	}
 
+
 	/**
 	 * Handles showing the login form, and on POST handles login credentials
 	 * through the auth adapters.
@@ -140,6 +168,15 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute('user');
+		}
+
+		if (!$this->session->getPerson()->getId()) {
+			///////////////////////////////////////
+			// SSO Automatic Redirecting
+			//
+			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
+				return $res;
+			}
 		}
 
 		$register = new \Application\UserBundle\Form\Model\Register();
@@ -247,16 +284,73 @@ HTML;
 		}
 
 		if ($this->in->getString('to') == 'admin') {
-			return $this->redirect($this->request->getBaseUrl() . '/admin/login?o');
+			// TODO: move these checkAuthSystem calls to actually call AuthenticationManager
+			// but be careful, auth system will detect the interface automatically when we want to
+			// check different interfaces here (the url is always user interface)
+			if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
+				return $res;
+			}
+			return $this->redirect($this->request->getBaseUrl() . '/admin/login?o=1');
 		} elseif ($this->in->getString('to') == 'agent') {
-			return $this->redirect($this->request->getBaseUrl() . '/agent/login?o');
+			if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
+				return $res;
+			}
+			return $this->redirect($this->request->getBaseUrl() . '/agent/login?o=1');
 		} else {
 			if ($this->in->getString('via') == 'user_chat') {
 				return $this->redirectRoute('user_widget_chat');
 			}
-			return $this->redirectRoute('user');
+			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), true)) {
+				return $res;
+			}
+			return $this->redirectRoute('user', array('o' => '1'));
 		}
 	}
+
+
+	/**
+	 * @param $usersource_id
+	 * @return Response
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	public function samlSingleLogoutServiceAction($usersource_id)
+	{
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+		if (!$usersource) {
+			throw $this->createNotFoundException();
+		}
+		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'), $usersource->type);
+
+		if ($adapter instanceof SamlAdapterInterface) {
+			$this->_logoutPerson();
+
+			return $adapter->performSingleLogOutService();
+		}
+
+		throw $this->createNotFoundException('usersource / adapter not suitable for SLS');
+	}
+
+
+	/**
+	 * @param $usersource_id
+	 * @return Response
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	public function samlMetadataAction($usersource_id)
+	{
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
+		if (!$usersource) {
+			throw $this->createNotFoundException();
+		}
+		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'), $usersource->type);
+
+		if ($adapter instanceof SamlAdapterInterface) {
+			return $adapter->getMetadataXmlResponse();
+		}
+
+		throw $this->createNotFoundException('usersource / adapter not suitable for SLS');
+	}
+
 
 	public function authenticateLocalAction(Request $request, $usersource_id)
 	{
@@ -327,11 +421,11 @@ HTML;
 			$this->session->save();
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
-		
+
 		$identity = $result->getIdentity();
 
 		$person = $identity['person'];
-		
+
 		if ($person->is_disabled || $this->container->getSystemService('email_address_validator')->personHasBannedEmail($person)) {
 			$this->session->set('account_disabled', $person->id);
 			$this->session->save();
@@ -346,7 +440,7 @@ HTML;
 		if (!$person->browser && $browser) {
 			$person->browser = $browser;
 		}
-		
+
 		$this->em->persist($person);
 		$this->em->flush();
 
@@ -488,55 +582,25 @@ HTML;
 
 	public function authLocalInput()
 	{
-		#------------------------------
-		# Auth local
-		#------------------------------
+		$authResult = $this->auth_manager->authenticateFormLogin(
+			$this->in->getString('email'),
+			$this->in->getString('password')
+		);
 
-		if ($this->container->getSetting('core.deskpro_source_enabled') || DP_INTERFACE != 'user') {
-			$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
-			$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
-			$result = $adapter->authenticate();
 
-			if ($result->isValid()) {
-				return $result;
+		// if we are using local auth in the user interface, and we fail, try agent form login sources as well
+		if ('user' === $this->auth_manager->getInterface()) {
+			if (!$authResult->isValid()) {
+				$agentAuthManager = $this->auth_manager->cloneForInterface('agent');
+
+				$authResult = $agentAuthManager->authenticateFormLogin(
+					$this->in->getString('email'),
+					$this->in->getString('password')
+				);
 			}
 		}
 
-		#------------------------------
-		# Auth usersources that accept local input
-		#------------------------------
-
-		$usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
-		foreach ($usersources as $us) {
-
-			/** @var $us \Application\DeskPRO\Entity\Usersource */
-			$adapter = $this->_initUserSourceAdapter($us);
-			$adapter->setFormData(array(
-				'username' => $this->in->getString('email'),
-				'password' => $this->in->getString('password')
-			));
-
-			try {
-				$result = $adapter->authenticate();
-			} catch (\Exception $e) {
-				KernelErrorHandler::logException($e, false);
-				$GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
-				$GLOBALS['DP_AUTH_EXCEPTION'] = $e;
-				continue;
-			}
-
-			if ($result->isValid()) {
-				$login_processor = new LoginProcessor($us, $result->getIdentity());
-				$person = $login_processor->getPerson();
-
-				$identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
-				$result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
-
-				return $result;
-			}
-		}
-
-		return new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE_INVALID_CREDS);
+		return $authResult;
 	}
 
 
@@ -548,11 +612,23 @@ HTML;
 	{
 		$return = $this->in->getString('return');
 
+		if ($usersource_test = $this->in->getBool(self::USERSOURCE_TEST)) {
+			$this->session->setFlash(self::USERSOURCE_TEST, 1);
+		}
+
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 		if (!$usersource) {
 			throw $this->createNotFoundException();
 		}
 		$adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
+
+		#------------------------------
+		# This needs to be an allowed adapter via settings
+		# -----------------------------
+
+		if (!$usersource_test && !$this->auth_manager->isUsableUsersource($usersource)) {
+			throw new \LogicException('it is illegal to use this usersource in this context');
+		}
 
 		#------------------------------
 		# Callback types require us to redirect
@@ -562,6 +638,10 @@ HTML;
 		if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
 			$route_type = 'agent';
 		}
+		// not needed now, might be needed in a future adapter
+		//if ($usersource_test) {
+		//	$route_type = $usersource->type;
+		//}
 
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$result = $adapter->authenticate();
@@ -660,7 +740,17 @@ HTML;
 			throw $this->createNotFoundException();
 		}
 
+		$usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, array());
+		if (!$usersource_test) {
+			$usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
+		}
+
 		$adapter = $this->_initUserSourceAdapter($usersource);
+
+		$arr_writer = new ArrayWriter();
+		if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
+			$adapter->getLogger()->addWriter($arr_writer);
+		}
 
 		// It must be a callback type to be here, so if not redirect back to login
 		if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
@@ -675,8 +765,20 @@ HTML;
 		// Valid
 		if ($result->isValid()) {
 
-			$login_processor = new LoginProcessor($usersource, $result->getIdentity());
+			$login_processor = new LoginProcessor($usersource, $result->getIdentity(), $usersource_test);
 			$person = $login_processor->getPerson();
+
+			if ($usersource_test) {
+				//--------------------------------------
+				// test result
+				//--------------------------------------
+				return $this->render(
+					'DeskPRO:Auth:_sso_test_verified.html.twig', array(
+						'person' => $person,
+						'log'    => $arr_writer->getMessagesAsString()
+					)
+				);
+			}
 
 			$this->_setupUsersourceSession($usersource, $person, $result);
 
@@ -691,6 +793,14 @@ HTML;
 
 		// Error, go back to login
 		} else {
+			if ($usersource_test) {
+				return $this->render(
+					'DeskPRO:Auth:_sso_test_failed.html.twig', array(
+						'log' => implode("\n", $arr_writer->getMessages())
+					)
+				);
+			}
+
 			$this->session->setFlash('login_failed', true);
 			return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
 		}
@@ -721,54 +831,17 @@ HTML;
 		));
 	}
 
-	protected function _initUserSourceAdapter($usersource, $context = null)
+	/**
+	 * @param Usersource $usersource
+	 * @param null       $displayContext
+	 * @return \Orb\Auth\Adapter\AdapterInterface
+	 */
+	protected function _initUserSourceAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
 	{
-		$adapter = $usersource->getAdapter()->getAuthAdapter();
+		/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
+		$factory = $this->container->getSystemService('usersource_auth_adapter_factory');
 
-		if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
-			$adapter->setLogger($this->_getAdapterLogger());
-		}
-
-		if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
-			$adapter->setFormData($_POST);
-		}
-
-		if ($context && $adapter instanceof \Orb\Auth\Adapter\DisplayContextInterface) {
-			$adapter->setDisplayContext($context);
-		}
-
-		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-			$route_type = 'user';
-			if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
-				$route_type = 'agent';
-			}
-
-			$adapter->setCallbackUrl(
-				rtrim($this->container->getSetting('core.deskpro_url'), '/') .
-				$this->generateUrl($route_type . '_login_callback', array('usersource_id' => $usersource['id']), false)
-			);
-		}
-
-		if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
-			$auth_state = new \Orb\Auth\StateHandler\ArrayAccessWrapper($this->session);
-			$auth_state->setClearStateMethod('clear');
-
-			$adapter->setStateHandler($auth_state);
-		}
-
-		return $adapter;
-	}
-
-	protected function _getAdapterLogger()
-	{
-		static $logger = null;
-
-		if ($logger === null) {
-			$logger = new \Orb\Log\Logger();
-			$logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
-		}
-
-		return $logger;
+		return $factory->getAuthAdapter($usersource, $displayContext, $useInterface);
 	}
 
 	############################################################################
@@ -798,7 +871,7 @@ HTML;
 			// been set up yet. For adapters that support it, we can still see if we
 			// can be helpful and redirect to another source they exist in
 			if (!$is_invalid) {
-				$usersources = $this->em->getRepository('DeskPRO:Usersource')->getUserInfoFetchableUsersources();
+				$usersources = $this->auth_manager->getForgotPasswordUsersources();
 				foreach ($usersources as $us) {
 					try {
 						$found = $us->findIdentityByInput($email);
@@ -825,6 +898,7 @@ HTML;
 		// but could also mean they registered through a usersource which means they might
 		// need to use a different reset URL
 		if (!$person->password) {
+			// TODO: this needs to be fixed, with new userassoc finder, and needs to be checked in order
 			$associations = $this->em->getRepository('DeskPRO:PersonUsersourceAssoc')->getAssociationsForPerson($person);
 			$us_names = array();
 
@@ -1086,7 +1160,7 @@ HTML;
 
 		return $this->redirectRoute('user_profile');
 	}
-	
+
 	public function whitelistIpAction($code)
 	{
 		$tmp_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code);
@@ -1098,7 +1172,7 @@ HTML;
 		if(!$person) {
 			throw $this->createNotFoundException();
 		}
-		
+
 		$data = $tmp_data->getData();
 
 		$whitelist_ip = new \Application\DeskPRO\Entity\WhiteListedIp();
@@ -1115,30 +1189,79 @@ HTML;
 
 	############################################################################
 	# Usersource SSO
+	#
+	# This action should ONLY be used when logging in via the background (iframe)
+	# Use the standard callback URL if user is to see the response of this
 	############################################################################
 
 	public function usersourceSsoAction($usersource_id)
 	{
-		/** @var $source \Application\DeskPRO\Entity\Usersource */
-		$source = $this->em->getRepository('DeskPRO:Usersource')->findOneById($usersource_id);
+		// TODO: user auth_manager for this
+		$interface = $this->getInterface();
+		$source = $this
+			->usersource_manager
+			->getAll()
+			->forInterface($interface) // TODO: will always be user interface since this is always a user URL
+			->withCapability(UsersourceInfo::CAPABILITY_SSO_JS)
+			->mustHaveId($usersource_id)
+			->getFirstOrNull()
+		;
 
-		$available = ($source && $source->is_enabled);
-		if ($available) {
-			$available = $source->getAdapter()->isCapable('js_sso');
+		if (!$source) {
+			throw new NotFoundHttpException();
 		}
 
-		if (!$available) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		$adapter = $this->_initUserSourceAdapter($source);
+
+		if (!$adapter instanceof SsoLoginActionInterface) {
+			return new NotFoundHttpException();
 		}
 
-		$adapter = $source->getAdapter()->getAuthAdapter();
+		$arr_writer = new ArrayWriter();
+		$usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, array());
+		if (!$usersource_test) {
+			$usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
+		}
+		if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
+			$adapter->getLogger()->addWriter($arr_writer);
+		}
+
 		$result = $adapter->getSsoLoginActionResult($this);
 
 		if ($result->isValid()) {
-			$login_processor = new LoginProcessor($source, $result->getIdentity());
+			$login_processor = new LoginProcessor($source, $result->getIdentity(), $usersource_test);
 			$person = $login_processor->getPerson();
 
+
+			if ($usersource_test) {
+				//--------------------------------------
+				// test result
+				//--------------------------------------
+				return $this->render('DeskPRO:Auth:_sso_test_verified.html.twig', array(
+						'person' => $person,
+						'log' => $arr_writer->getMessagesAsString()
+					)
+				);
+			}
+
+			//-----------------------------------
+			// log the user in. if background sso, refresh the page.
+			//-----------------------------------
 			$this->_setupUsersourceSession($source, $person, $result);
+
+			if ($adapter->isBackgroundSsoSimpleRefresh()) {
+				return $this->render('DeskPRO:Auth:_sso_refresh.html.twig');
+			}
+		} else {
+			//--------------------------------------
+			// test result
+			//--------------------------------------
+			if ($usersource_test) {
+				return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', array(
+						'log' => implode("\n", $arr_writer->getMessages())
+					)
+				);
+			}
 		}
 
 		$return = $this->in->getString('return');
@@ -1167,5 +1290,18 @@ HTML;
 
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dplogout')->send();
 		\Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-guest-cache')->send();
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	protected function getInterface()
+	{
+		if (defined('DP_INTERFACE')) {
+			return DP_INTERFACE;
+		} else {
+			return null;
+		}
 	}
 }

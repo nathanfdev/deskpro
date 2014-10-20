@@ -2466,8 +2466,53 @@ $collection->create('api_general_settings_save', array(
 ));
 
 ########################################################################################################################
-# Registration Settings
+# Usersources
 ########################################################################################################################
+
+$collection->create('api_usersources_list', array(
+	'path'        => '/usersources/{type}',
+	'controller'  => 'ApiBundle:Usersources:listByType',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_get', array(
+	'path'        => '/usersources/{type}/{id}',
+	'controller'  => 'ApiBundle:Usersources:getUsersource',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_post', array(
+	'path'        => '/usersources/{type}/{id}',
+	'controller'  => 'ApiBundle:Usersources:postUsersource',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_extra_details', array(
+	'path'        => '/usersources/{type}/app-{id}/extra-details',
+	'controller'  => 'ApiBundle:Usersources:getUsersourceExtra',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_iframe', array(
+	'path'        => '/usersources/iframe/code/{interface}/{app_id}',
+	'controller'  => 'ApiBundle:Usersources:getIframe',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_display_order', array(
+	'path'        => '/usersources/display-order',
+	'controller'  => 'ApiBundle:Usersources:updateDisplayOrder',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_available_apps', array(
+	'path'        => '/usersources/available/app-packages/{interface}',
+	'controller'  => 'ApiBundle:Usersources:availableAppPackages',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Registration Settings
 
 $collection->create('api_reg_settings', array(
 	'path'        => '/registration_settings',

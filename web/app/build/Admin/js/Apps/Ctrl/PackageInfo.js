@@ -27,7 +27,24 @@
           pack: '/apps/packages/' + this.packageName
         }).then((function(_this) {
           return function(result) {
-            return _this.pack = result.data.pack['package'];
+            var the_app, _i, _len, _ref, _results;
+            _this.pack = result.data.pack['package'];
+            if (_this.pack.is_usersource_app) {
+              _ref = _this.pack.apps;
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                the_app = _ref[_i];
+                if (the_app.user_usersource) {
+                  _this.pack.user_usersource_app = the_app;
+                }
+                if (the_app.agent_usersource) {
+                  _results.push(_this.pack.agent_usersource_app = the_app);
+                } else {
+                  _results.push(void 0);
+                }
+              }
+              return _results;
+            }
           };
         })(this));
         return promise;

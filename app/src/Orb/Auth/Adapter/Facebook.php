@@ -34,10 +34,10 @@
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\Adapter\SessionStateInterface;
-use \Orb\Auth\Adapter\CallbackInterface;
-use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
+use Application\DeskPRO\Log\Logger;
+use Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
+use Orb\Util\Arrays;
 
 /**
  * Requirements:
@@ -63,11 +63,6 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 	{
 		$this->app_id = $app_id;
 		$this->app_secret = $app_secret;
-
-		$this->fb = new \Facebook(array(
-			'appId'  => $this->app_id,
-			'secret' => $this->app_secret,
-		));
 	}
 
 
@@ -91,10 +86,18 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 	/**
 	 * Initialize the auth process by setting state, and returning a redirect result.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
+		$this->fb = new \Facebook(
+			array(
+				'appId'  => $this->app_id,
+				'secret' => $this->app_secret
+			),
+			$state
+		);
+
 		// Gets a userid or false if no user logged in
 		$user = $this->fb->getUser();
 
@@ -102,11 +105,27 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 		if ($user) {
 			try {
 				$me = $this->fb->api('/me');
-			} catch (\FacebookApiException $e) { }
+			} catch (\FacebookApiException $e) {
+				if ($this->logger) {
+					$this->logger->log(
+						"Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR
+					);
+				}
+			}
 		}
 
 		// Already a user
 		if ($me) {
+
+			if ($this->logger) {
+				$this->logger->log(
+					"No need to redirect, user is already logged in: \n" . trim(
+						Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")
+					),
+					Logger::DEBUG
+				);
+			}
+
 			return $this->_meToResult($me);
 		}
 
@@ -115,8 +134,15 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 			'display' => $this->display,
 			'req_perms' => 'user_about_me,user_birthday,user_website,email',
 		));
-		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
-		return $result;
+
+		if ($this->logger) {
+			$this->logger->log(
+				"Redirecting to: $redirect_url",
+				Logger::DEBUG
+			);
+		}
+
+		return new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
 	}
 
 
@@ -124,21 +150,56 @@ class Facebook extends AbstractCallbackAdatper implements DisplayContextInterfac
 	/**
 	 * Process the callback and return a final result.
 	 *
-	 * @return Orb\Auth\Result
+	 * @return \Orb\Auth\Result
 	 */
 	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
+		$this->fb = new \Facebook(
+			array(
+				'appId'  => $this->app_id,
+				'secret' => $this->app_secret
+			),
+			$state
+		);
+
 		$session = $this->fb->getUser();
+
+		$time_start = microtime(true);
+		if ($this->logger) {
+			$this->logger->log("START Facebook::authenticateCallback", Logger::DEBUG);
+		}
 
 		$me = false;
 		if ($session) {
 			try {
 				$me = $this->fb->api('/me');
-			} catch (\FacebookApiException $e) { }
+			} catch (\FacebookApiException $e) {
+				if ($this->logger) {
+					$this->logger->log(
+						"Exception: {$e->getCode()} {$e->getMessage()}\n{$e->getTraceAsString()}", Logger::ERR
+					);
+				}
+			}
 		}
 
 		if (!$me) {
+			if ($this->logger) {
+				$this->logger->log("No active FB session found. Failing.", Logger::DEBUG);
+			}
 			return new Result(Result::FAILURE, null, array('error_code' => 'failed_session', 'error_message' => 'No active FB session'));
+		}
+
+		if ($this->logger) {
+			$this->logger->log(
+				"Facebook Success: \n" . trim(Arrays::implodeTemplate($me, "{KEY}: {VAL}\n")),
+				Logger::DEBUG
+			);
+		}
+
+		if ($this->logger) {
+			$this->logger->log(
+				sprintf("END Facebook::authenticateCallback (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
+			);
 		}
 
 		return $this->_meToResult($me);

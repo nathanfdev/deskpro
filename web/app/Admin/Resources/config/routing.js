@@ -301,6 +301,39 @@ define(function() {
 	});
 
 	//###
+	//# User Sources
+	//###
+	routes.push({
+		id: 'agents.usersources',
+		url: '/usersources',
+		templateName: 'Usersources/list.html',
+		controller: 'Admin_Usersources_Ctrl_UsersourcesList'
+	});
+
+	routes.push({
+		id: 'agents.usersources.new',
+		url: '/new',
+		templateName: 'Usersources/new.html',
+		controller: 'Admin_Usersources_Ctrl_New'
+	});
+
+	routes.push({
+		id: 'agents.usersources.id',
+		url: '/{id:[\\d\\w]+}',
+		templateName: 'Usersources/edit-instance.html',
+		controller: 'Admin_Usersources_Ctrl_EditInstance'
+	});
+
+	routes.push({
+		id: 'agents.usersources.install',
+		url: '/install/{name:\\w+}'
+		,
+		templateName: 'Apps/package-install.html',
+		controller: 'Admin_Apps_Ctrl_PackageInstall'
+	});
+
+
+	//###
 	//# Agent Login Log
 	//###
 	routes.push({
@@ -1017,29 +1050,29 @@ define(function() {
 	routes.push({
 		id: 'crm.usersources',
 		url: '/usersources',
-		templateName: 'UserReg/usersources.html',
-		controller: 'Admin_UserReg_Ctrl_UsersourceList'
+		templateName: 'Usersources/list.html',
+		controller: 'Admin_Usersources_Ctrl_UsersourcesList'
 	});
 
 	routes.push({
-		id: 'crm.usersources.newtype',
+		id: 'crm.usersources.new',
 		url: '/new',
-		templateName: 'UserReg/usersources-newtype.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		templateName: 'Usersources/new.html',
+		controller: 'Admin_Usersources_Ctrl_New'
 	});
 
 	routes.push({
-		id: 'crm.usersources.deskpro',
-		url: '/deskpro',
-		templateName: 'UserReg/usersources-deskpro.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		id: 'crm.usersources.id',
+		url: '/{id:[\\d\\w]+}',
+		templateName: 'Usersources/edit-instance.html',
+		controller: 'Admin_Usersources_Ctrl_EditInstance'
 	});
 
 	routes.push({
-		id: 'crm.usersources.app',
-		url: '/{id:\\d+}',
-		templateName: 'Apps/instance.html',
-		controller: 'Admin_Apps_Ctrl_EditInstance'
+		id: 'crm.usersources.install',
+		url: '/install/{name:\\w+}',
+		templateName: 'Apps/package-install.html',
+		controller: 'Admin_Apps_Ctrl_PackageInstall'
 	});
 
 	//###

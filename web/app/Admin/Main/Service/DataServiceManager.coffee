@@ -25,6 +25,7 @@ define [
 	'Admin/AgentTeams/DataService/AgentTeams',
 	'Admin/Tasks/DataService/Tasks',
 	'Admin/Labels/DataService/Settings'
+	'Admin/Usersources/DataService/Usersources'
 ], (
 	Strings,
 	DataService_TicketFields,
@@ -51,7 +52,8 @@ define [
 	DataService_AgentGroups,
 	DataService_AgentTeams,
 	DataService_Tasks,
-	DataService_LabelSettings
+	DataService_LabelSettings,
+	DataService_Usersources
 ) ->
 	###
 	# A simple wrapper around the data services

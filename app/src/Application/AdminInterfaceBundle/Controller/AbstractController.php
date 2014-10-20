@@ -103,7 +103,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 				return $this->createJsonResponse($data, 403);
 			} else {
-				return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
+				return $this->standardErrorResponse('The form you are trying to submit has expired. Please go back and try again.');
 			}
 		}
 
@@ -114,6 +114,37 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		}
 
 		return null;
+	}
+
+	/**
+	 * @param string $error_message
+	 * @param string $error_title
+	 * @param int    $code
+	 * @param array  $vars
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())
+	{
+		$tpl_standard = 'UserBundle:Main:error-standard.html.twig';
+		$tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
+
+		$tpl = $tpl_standard;
+		if (App::getTemplating()->exists($tpl_specific)) {
+			$tpl = $tpl_specific;
+		}
+
+		$vars = array_merge(
+			$vars, array(
+				'error_message' => $error_message,
+				'error_title'   => $error_title
+			)
+		);
+
+		$res = $this->render($tpl, $vars);
+
+		$res->setStatusCode($code);
+
+		return $res;
 	}
 
 	protected function _userHasPermissions()
