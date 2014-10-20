@@ -35,29 +35,44 @@
 namespace Application\DeskPRO\Brand;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\NewSettings\SettingsBag;
 
 /**
  * The BrandContainer is a hub that holds all of the information that might be needed in the system that relate to a
- * particular brand. It is the context of the brand in question. It encompasses settings, template resolutionrendering,
- * brand information, and anything else you might want to do with a brand.
- *
- * @package Application\DeskPRO\Brand
+ * particular brand. It is the context of the brand in question. It encompasses settings, template resolution/rendering,
+ * brand information, and anything else you might want to do with a brand. It's created by the BrandFactory.
  */
 class BrandContainer 
 {
+	/**
+	 * @var \Application\DeskPRO\Entity\Brand
+	 */
 	private $brand;
-	private $settings_loader;
-	private $brand_templating;
 
+	/**
+	 * @var \Application\DeskPRO\NewSettings\SettingsBag
+	 */
+	private $settings;
 
-	public function __construct(Brand $brand)
+	public function __construct(Brand $brand, SettingsBag $settings)
 	{
 		$this->brand = $brand;
+		$this->settings = $settings;
+	}
+
+	public function getSetting($setting_name)
+	{
+		return $this->getSettings()->get($setting_name);
 	}
 
 	public function getBrand()
 	{
 		return $this->brand;
+	}
+
+	public function getSettings()
+	{
+		return $this->settings;
 	}
 }
  

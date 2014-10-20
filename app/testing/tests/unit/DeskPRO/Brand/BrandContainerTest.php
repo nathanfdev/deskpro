@@ -39,28 +39,24 @@ use Application\DeskPRO\Brand\BrandContainer;
 
 class BrandContainerTest extends \DpUnitTestCase
 {
-	public function testGetBrand()
+	public function testGetters()
 	{
-		$mockBrand = \Mockery::mock('Application\DeskPRO\Entity\Brand');
-		$bc = new BrandContainer($mockBrand);
+		$mockBrand    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+		$mockSettings = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
+		$bc           = new BrandContainer($mockBrand, $mockSettings);
 
 		$this->assertSame($mockBrand, $bc->getBrand());
+		$this->assertSame($mockSettings, $bc->getSettings());
 	}
 
 	public function testGetSetting()
 	{
-		$this->markTestSkipped('waiting on lower level stuff');
-	}
+		$mockBrand    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+		$mockSettings = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
+		$bc           = new BrandContainer($mockBrand, $mockSettings);
 
+		$mockSettings->shouldReceive('get')->with('setting_name')->andReturn('the val!')->once();
 
-	/**
-	 * @return array
-	 */
-	protected function createBrandContainer()
-	{
-		$mockBrand = \Mockery::mock('Application\DeskPRO\Entity\Brand');
-		$bc        = new BrandContainer($mockBrand);
-
-		return $bc;
+		$this->assertEquals('the val!', $bc->getSetting('setting_name'));
 	}
 }
