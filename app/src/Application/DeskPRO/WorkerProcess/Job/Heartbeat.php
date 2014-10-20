@@ -42,6 +42,16 @@ class Heartbeat extends AbstractJob
 
 	public function run()
 	{
+		if (!isset($GLOBALS['DP_CRON_IGNORE_INTERVAL']) || !$GLOBALS['DP_CRON_IGNORE_INTERVAL']) {
+			$last = App::getSetting('core.last_heartbeat');
+			if ($last && $last > (time() - 85000)) {
+				// already sent it today
+				return;
+			}
+		}
+
+		App::$container->getSettingsHandler()->setSetting('core.last_heartbeat', time());
+
 		$ret_data = \Application\DeskPRO\Service\ErrorReporter::sendHeartbeat();
 
 		if ($ret_data && ($ret_data = @json_decode($ret_data, true))) {
