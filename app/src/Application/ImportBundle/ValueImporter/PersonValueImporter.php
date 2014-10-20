@@ -39,8 +39,9 @@ use Orb\Validator\StringEmail;
 
 class PersonValueImporter extends AbstractValueImporter
 {
+	/** @var array */
 	protected $custom_fields_array = array();
-	
+	/** @var array */
 	protected $supported_custom_field_types = array(
 		'Application\DeskPRO\CustomFields\Handler\Text'
 	);
@@ -77,7 +78,6 @@ class PersonValueImporter extends AbstractValueImporter
 
 		if ($pval->name) {
 			$name = preg_replace('# {2,}#', ' ', $pval->name);
-			$parts = Strings::rexplode(' ', $name, 2);
 			if (!$pval->first_name) {
 				$pval->first_name = $name[0];
 			}

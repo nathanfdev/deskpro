@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\TicketTerms;
 use Orb\Util\Arrays;
@@ -369,17 +370,17 @@ class PersonSearch extends SearcherAbstract
 					$person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
 						SELECT person_id
 						FROM person2usergroups
-						WHERE usergroup_id IN (" . implode(',', $choice) . ")
+						WHERE usergroup_id IN (?)
 						LIMIT 1001
-					");
+					", array($choice), array(Connection::PARAM_INT_ARRAY));
 					if (!$person_ids) {
 						$person_ids = array(0);
 					}
 					$org_ids = App::getDbRead('search.filter.people')->fetchAllCol("
 						SELECT organization_id
 						FROM organization2usergroups
-						WHERE usergroup_id IN (" . implode(',', $choice) . ")
-					");
+						WHERE usergroup_id IN (?)
+					", array($choice), array(Connection::PARAM_INT_ARRAY));
 					if (count($person_ids) == 1001) {
 						// too many, need to do the join method
 						$joins[] = array(
@@ -956,7 +957,7 @@ class PersonSearch extends SearcherAbstract
 					if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
 
 					$any = false;
-					foreach ($person->getContactData('address') as $cd) {
+					foreach ($person->getContactData($field) as $cd) {
 						if ($cd->checkStringMatch($choice)) {
 							$any = true;
 							if ($op == self::OP_NOTCONTAINS) {

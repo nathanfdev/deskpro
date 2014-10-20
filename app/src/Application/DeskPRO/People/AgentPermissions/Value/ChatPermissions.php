@@ -36,10 +36,15 @@ namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 class ChatPermissions implements PermissionValueInterface
 {
+	/** @var bool  */
 	public $use              = false;
+	/** @var bool  */
 	public $view_transcripts = false;
+	/** @var bool  */
 	public $view_unassigned  = false;
+	/** @var bool  */
 	public $view_others      = false;
+	/** @var bool  */
 	public $delete           = false;
 
 	public function getNames()

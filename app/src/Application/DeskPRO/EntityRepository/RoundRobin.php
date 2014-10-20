@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\RoundRobinAgent;
 
 class RoundRobin extends AbstractEntityRepository
 {
+	/** @var array|null */
 	protected $availableAgents = null;
 
 	/**

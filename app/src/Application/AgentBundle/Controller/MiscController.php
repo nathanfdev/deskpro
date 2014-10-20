@@ -237,8 +237,6 @@ class MiscController extends AbstractController
 		);
 		$js[] = 'window.DESKPRO_DATE_FORMATS = ' . json_encode($date_formats) . ';';
 
-		$tr = $this->container->getTranslator();
-
 		$js[] = <<<JS
 function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
 

@@ -43,9 +43,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+	/** @var bool */
 	protected $set_verbose = false;
+	/** @var bool */
 	protected $ignore_interval = false;
+	/** @var OutputInterface */
 	protected $output;
+	/** @var string */
 	protected $cron_id;
 
 	protected function configure()

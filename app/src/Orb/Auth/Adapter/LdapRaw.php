@@ -69,6 +69,9 @@ class LdapRaw implements FormLoginInterface, Loggable
 	 */
 	protected $set_password;
 
+	/**
+	 * @var array
+	 */
 	protected $options = array(
 		self::OPT_HOST               => 'localhost',
 		self::OPT_PORT               => null, // null means default of 389 or 636 if ssl enabled

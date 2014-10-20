@@ -872,7 +872,7 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$trackers = App::getDb()->fetchAllCol("
+		$trackers = $this->em->fetchAllCol("
 			SELECT log
 			FROM ticket_changetracker_logs
 			WHERE ticket_id = ?

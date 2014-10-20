@@ -66,17 +66,7 @@ class UserAgentRequirementCheck
 
 	public static function getInterfaceWarnings(Browser $browser = null, $interface = null)
 	{
-		if (!$browser) {
-			$browser = new \Browser();
-		}
-
-		if ($interface === null) {
-			$interface = DP_INTERFACE;
-		}
-
-		$warnings = array();
-
-		return $warnings;
+		return array();
 	}
 
 	public static function passAdminInterface()

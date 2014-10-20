@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 
 class WorkflowAction extends AbstractAction implements PermissionableAction
 {
+	/** @var int */
 	protected $workflow_id;
 
 	public function __construct($workflow)

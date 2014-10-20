@@ -42,8 +42,11 @@ use Orb\Util\Util;
  */
 class DebugToFile implements \Swift_Events_SendListener
 {
+	/** @var string */
 	protected $filepath;
+	/** @var bool */
 	protected $cancel_send = false;
+	/** @var string|bool */
 	protected $info_file_path = false;
 
 	public function __construct($filepath, $cancel_send = false)

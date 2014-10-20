@@ -38,6 +38,7 @@ use Doctrine\ORM\EntityManager;
 
 class AgentActivity
 {
+	/** @var array */
 	private static $ticket_log_types = array(
 		'changed_agent', 'participant_added', 'participant_removed',
 		'ticket_created', 'ticket_split', 'merged', 'changed_category',

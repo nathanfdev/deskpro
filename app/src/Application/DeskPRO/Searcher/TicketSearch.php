@@ -169,6 +169,9 @@ class TicketSearch extends SearcherAbstract
 	 */
 	protected $is_filter_search = false;
 
+	/**
+	 * @var null|string
+	 */
 	public $_last_sql = null;
 
 	/**
@@ -242,7 +245,7 @@ class TicketSearch extends SearcherAbstract
      */
     public function setLimit($limit)
     {
-        $this->limit = $limit;
+        $this->limit = (int) $limit;
     }
 
 
@@ -1007,10 +1010,8 @@ class TicketSearch extends SearcherAbstract
 
 		$tickets_table = 'tickets';
 
-		$db = App::getDb();
 		$tr = App::getTranslator();
 
-		$wheres = array();
 		$joins = array();
 
 		$wheres_all = array();

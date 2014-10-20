@@ -43,6 +43,7 @@ use Orb\Util\Arrays;
 
 class TicketFeedback extends AbstractEntityRepository
 {
+	/** @var int */
 	protected $per_page = 10;
 
 	/**

@@ -736,7 +736,6 @@ class AppsController extends AbstractController
 		}
 
 		register_shutdown_function(function() use ($tmpdir) {
-				return;
 			if (!is_dir($tmpdir)) {
 				return;
 			}

@@ -364,7 +364,6 @@ class FieldManager
 			$value = !empty($field_data[$f_def['id']]) && $field_data[$f_def['id']] !== 0 && $field_data[$f_def['id']] !== '0' ? $field_data[$f_def['id']] : null;
 
 			$rendered = $value !== null ? $f_def->getHandler()->renderText($value) : null;
-			if ($rendered) $has_value = true;
 
 			$custom_fields[$f_def['id']] = array(
 				'rendered'        => trim($rendered),

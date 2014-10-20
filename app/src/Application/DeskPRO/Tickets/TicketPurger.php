@@ -38,6 +38,7 @@ use Doctrine\DBAL\Connection;
 
 class TicketPurger
 {
+	/** @var \Doctrine\DBAL\Connection  */
 	private $db;
 
 	public function __construct(Connection $db)

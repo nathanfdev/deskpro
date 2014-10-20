@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\OrganizationNote;
@@ -242,12 +243,12 @@ class OrganizationController extends AbstractController
 					$usergroup_ids = array_unique($usergroup_ids);
 
 					// Make sure only valid ones are set
-					$usergroup_ids = $this->container->getDb()->fetchAllCol("
+					$usergroup_ids = $this->container->getDb()->fetchAllCol('
 						SELECT id
 						FROM usergroups
-						WHERE id IN (" . implode(',', $usergroup_ids).")
+						WHERE id IN (?)
 							AND sys_name IS NULL
-					");
+					', array($usergroup_ids), array(Connection::PARAM_INT_ARRAY));
 				}
 
 				$this->container->getDb()->delete('organization2usergroups', array('organization_id' => $org->id));
@@ -656,7 +657,7 @@ class OrganizationController extends AbstractController
 		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
 		if ($orgdomain) {
-			$count = $org_domain_manager->moveNonCompanyUsers($orgdomain);
+			$org_domain_manager->moveNonCompanyUsers($orgdomain);
 		}
 
 		$data = $this->getOrgEmailDisplayData($org);
@@ -680,7 +681,7 @@ class OrganizationController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$count = $org_domain_manager->moveOtherCompanyUsers($orgdomain);
+		$org_domain_manager->moveOtherCompanyUsers($orgdomain);
 
 		$data = $this->getOrgEmailDisplayData($org);
 		return $this->render('AgentBundle:Organization:orgemail-display.html.twig', $data);

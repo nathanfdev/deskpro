@@ -40,6 +40,7 @@ use Orb\Util\Arrays;
 
 class OpenId extends AbstractCallbackAdatper
 {
+	/** @var string */
 	protected $openid_identifier = '';
 
 

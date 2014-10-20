@@ -491,6 +491,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	protected $_sent_to_addresses;
 
+	/**
+	 * @var null|\Application\DeskPRO\Labels\LabelManager
+	 */
 	protected $_label_manager = null;
 
 	/**
@@ -2213,7 +2216,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this['date_status'] = new \DateTime();
 
 		$old_status  = $this->status;
-		$old_hstatus = $this->hidden_status;
 		$old_status_code = $this->getStatusCode();
 
 		if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
@@ -3071,7 +3073,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'date_first_agent_assign'      => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
 			'date_first_agent_reply'       => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
 			'date_last_agent_reply'        => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
-			'date_last_user_reply'         => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
 			'date_last_user_reply'         => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
 			'date_agent_waiting'           => $this->date_agent_waiting ? $this->date_agent_waiting->format('Y-m-d H:i:s') : null,
 			'date_user_waiting'            => $this->date_user_waiting ? $this->date_user_waiting->format('Y-m-d H:i:s') : null,

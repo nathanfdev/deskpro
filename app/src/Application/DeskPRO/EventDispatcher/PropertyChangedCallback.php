@@ -40,6 +40,7 @@ namespace Application\DeskPRO\EventDispatcher;
  */
 class PropertyChangedCallback implements \Doctrine\Common\PropertyChangedListener
 {
+	/** @var Callable */
 	protected $callback;
 
 	public function __construct($callback)

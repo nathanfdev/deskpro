@@ -38,8 +38,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Languages\Build\OneSkyBuild;
-use Application\DeskPRO\Languages\Build\TransifexBuild;
 use Application\InstallBundle\Util\GenBuildManifest;
 use Orb\Types\JsonObjectSerializer;
 use Orb\Util\Arrays;
@@ -49,7 +47,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 
 class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {

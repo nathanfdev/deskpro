@@ -49,6 +49,7 @@ use Application\DeskPRO\Input\Parser\CcListParser;
  */
 class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'person' => 1, 'ticket' => 1, 'language' => 1,
 		'custom_ticket_fields' => 1, 'custom_user_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
@@ -359,18 +360,16 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			$ticket_message['message_raw'] = $this->ticket->message_raw;
 		}
 
-		$attach = null;
-		if ($this->ticket->new_upload) {
-			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
-				$this->ticket->new_upload->getRealPath(),
-				$this->ticket->new_upload->getClientOriginalName(),
-				$this->ticket->new_upload->getClientMimeType()
-			);
-			$blob_id = $blob->getId();
-
-			$attach = new \Application\DeskPRO\Entity\TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $person;
+			$attach = null;
+			if ($this->ticket->new_upload) {
+				$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+					$this->ticket->new_upload->getRealPath(),
+					$this->ticket->new_upload->getClientOriginalName(),
+					$this->ticket->new_upload->getClientMimeType()
+				);
+				$attach = new \Application\DeskPRO\Entity\TicketAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $person;
 
 			$ticket_message->addAttachment($attach);
 		}

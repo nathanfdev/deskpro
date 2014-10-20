@@ -42,31 +42,49 @@ class TicketSettings
 	 */
 	private $settings;
 
+	/** @var bool */
 	public $satisfaction_enabled           = false;
+	/** @var bool */
 	public $satisfaction_agentread         = false;
 
+	/** @var bool */
 	public $kbsuggest_web_enabled          = false;
 
+	/** @var bool */
 	public $timelog_enabled                = false;
+	/** @var bool */
 	public $timelog_autostart              = false;
 
+	/** @var bool */
 	public $billinglog_enabled             = false;
+	/** @var bool */
 	public $billinglog_currency            = false;
 
+	/** @var bool */
 	public $lock_auto_enabled              = false;
+	/** @var bool */
 	public $lock_autorelease_enabled       = false;
+	/** @var bool */
 	public $lock_timeout                   = false;
 
+	/** @var bool */
 	public $ref_enabled                    = false;
+	/** @var bool */
 	public $ref_custom_enabled             = false;
+	/** @var string */
 	public $ref_custom_pattern             = '';
+	/** @var int */
 	public $ref_custom_pattern_digits      = 0;
 
+	/** @var bool */
 	public $add_agent_ccs                  = false;
+	/** @var int */
 	public $gateway_max_email              = 0;
 
+	/** @var array */
 	public $from_email_headers;
 
+	/** @var array|null */
 	public $working_hours = null;
 
 	public $agent_defaults = array(

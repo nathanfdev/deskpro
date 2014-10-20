@@ -710,7 +710,7 @@ class DeskproBlobStorage implements Loggable
 		$adapter = $this->getAdapter($adapter_id);
 
 		try {
-			$data = $adapter->deleteBlob($blob);
+			$adapter->deleteBlob($blob);
 		} catch (\Exception $e) {
 			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete failed: {$e->getCode()} {$e->getMessage()}");
 			if ($ex_on_error) {

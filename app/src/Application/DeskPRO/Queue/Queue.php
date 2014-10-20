@@ -45,6 +45,7 @@ use ZendQueue\Queue as ZendQueue;
  */
 class Queue extends ZendQueue
 {
+	/** @var string */
 	protected $_messageClass = 'Application\DeskPRO\Queue\Message';
 
 	public function send($message)

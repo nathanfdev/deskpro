@@ -185,7 +185,9 @@ class Sla extends DomainObject
 	 */
 	protected $_work_hours_set;
 
-
+	/**
+	 * @var SlaCalculator
+	 */
 	protected $_calc;
 
 	/**

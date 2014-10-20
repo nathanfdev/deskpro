@@ -101,10 +101,19 @@ class PortalPageDisplay extends PageDisplayAbstract
 	 */
 	protected $is_enabled = 0;
 
+	/**
+	 * @var int
+	 */
 	protected $id;
 
+	/**
+	 * @var string
+	 */
 	protected $section = 'sidebar';
 
+	/**
+	 * @var array
+	 */
 	protected $data = array();
 
 	public function addData($key, $value)

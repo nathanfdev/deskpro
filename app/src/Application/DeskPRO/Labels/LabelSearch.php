@@ -110,44 +110,58 @@ class LabelSearch
 
 		if (in_array('ticket', $this->search_types)) {
 			$ids = $this->db->fetchAllCol("
-				SELECT labels_tickets.ticket_id
+				SELECT ticket_id
 				FROM labels_tickets
-				LEFT JOIN tickets ON tickets.id = labels_tickets.ticket_id
-				WHERE labels_tickets.label = ? AND tickets.status IN ('awaiting_agent', 'awaiting_user', 'closed', 'resolved')
-				ORDER BY labels_tickets.ticket_id DESC
-				LIMIT {$this->limit}
-			", array($label));
+				WHERE label = ?
+				ORDER BY ticket_id DESC
+				LIMIT ?
+			", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
 			if ($ids) {
-				$results['ticket'] = $this->em->getRepository('DeskPRO:Ticket')->getByIds($ids, true);
+				/** @var \Application\DeskPRO\EntityRepository\Ticket $rep */
+				$rep = $this->em->getRepository('DeskPRO:Ticket');
+				$results['ticket'] = $rep->findBy(
+					array('id' => $ids, 'status' => array('awaiting_agent', 'awaiting_user', 'closed', 'resolved')),
+					array('id' => 'DESC')
+				);
 			}
 		}
 
 		if (in_array('person', $this->search_types)) {
 			$ids = $this->db->fetchAllCol("
-				SELECT labels_people.person_id
+				SELECT person_id
 				FROM labels_people
-				WHERE labels_people.label = ?
-				ORDER BY labels_people.person_id DESC
-				LIMIT {$this->limit}
-			", array($label));
+				WHERE label = ?
+				ORDER BY person_id DESC
+				LIMIT ?
+			", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
 			if ($ids) {
-				$results['person'] = $this->em->getRepository('DeskPRO:Person')->getByIds($ids, true);
+				/** @var \Application\DeskPRO\EntityRepository\Person $rep */
+				$rep = $this->em->getRepository('DeskPRO:Person');
+				$results['person'] = $rep->findBy(
+					array('id' => $ids),
+					array('id' => 'DESC')
+				);
 			}
 		}
 
 		if (in_array('organization', $this->search_types)) {
 			$ids = $this->db->fetchAllCol("
-				SELECT labels_organizations.organization_id
+				SELECT organization_id
 				FROM labels_organizations
-				WHERE labels_organizations.label = ?
-				ORDER BY labels_organizations.organization_id DESC
-				LIMIT {$this->limit}
-			", array($label));
+				WHERE label = ?
+				ORDER BY organization_id DESC
+				LIMIT ?
+			", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
 			if ($ids) {
-				$results['organization'] = $this->em->getRepository('DeskPRO:Organization')->getByIds($ids, true);
+				/** @var \Application\DeskPRO\EntityRepository\Organization $rep */
+				$rep = $this->em->getRepository('DeskPRO:Organization');
+				$results['organization'] = $rep->findBy(
+					array('id' => $ids),
+					array('id' => 'DESC')
+				);
 			}
 		}
 
@@ -158,8 +172,8 @@ class LabelSearch
 				LEFT JOIN feedback ON feedback.id = labels_feedback.feedback_id
 				WHERE labels_feedback.label = ? AND (feedback.hidden_status NOT IN('spam', 'deleted') OR feedback.hidden_status IS NULL)
 				ORDER BY labels_feedback.feedback_id DESC
-				LIMIT {$this->limit}
-			", array($label));
+				LIMIT ?
+			", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
 			if ($ids) {
 				$results['feedback'] = $this->em->getRepository('DeskPRO:Feedback')->getByIds($ids, true);
@@ -173,8 +187,8 @@ class LabelSearch
 				LEFT JOIN articles ON articles.id = labels_articles.article_id
 				WHERE labels_articles.label = ? AND (articles.hidden_status NOT IN('spam', 'deleted') OR articles.hidden_status IS NULL)
 				ORDER BY labels_articles.article_id DESC
-				LIMIT {$this->limit}
-			", array($label));
+				LIMIT ?
+			", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
 			if ($ids) {
 				$results['article'] = $this->em->getRepository('DeskPRO:Article')->getByIds($ids, true);
@@ -188,8 +202,8 @@ class LabelSearch
 				LEFT JOIN news ON news.id = labels_news.news_id
 				WHERE labels_news.label = ? AND (news.hidden_status NOT IN('spam', 'deleted') OR news.hidden_status IS NULL)
 				ORDER BY labels_news.news_id DESC
-				LIMIT {$this->limit}
-			", array($label));
+				LIMIT ?
+			", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
 			if ($ids) {
 				$results['news'] = $this->em->getRepository('DeskPRO:News')->getByIds($ids, true);
@@ -203,8 +217,8 @@ class LabelSearch
 				LEFT JOIN downloads ON downloads.id = labels_downloads.download_id
 				WHERE labels_downloads.label = ? AND (downloads.hidden_status NOT IN('spam', 'deleted') OR downloads.hidden_status IS NULL)
 				ORDER BY labels_downloads.download_id DESC
-				LIMIT {$this->limit}
-			", array($label));
+				LIMIT ?
+			", array($label, $this->limit), array(\PDO::PARAM_STR, \PDO::PARAM_INT));
 
 			if ($ids) {
 				$results['download'] = $this->em->getRepository('DeskPRO:Download')->getByIds($ids, true);

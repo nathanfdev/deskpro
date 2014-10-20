@@ -375,11 +375,9 @@ class Html extends AbstractRenderer
 
 		foreach ($rows AS $depth => $row) {
 			if ($depth === 0) {
-				$colSpan = ($colSkipCount > 1 ? " colspan=\"$colSkipCount\"" : '');
 				$rowSpan = ($rowSkipCount > 1 ? " rowspan=\"$rowSkipCount\"" : '');
 
 				if ($colSkipCount) {
-					//$row = "<th$colSpan$rowSpan>&nbsp;</th>" . $row;
 					$prefix = '';
 					foreach ($this->_handler->getGroupYColumns() AS $column) {
 						$prefix .= '<th' . $rowSpan . ' class="label">' . $this->_valueRenderer->escapeValue($column['title']) . '</th>';
@@ -619,7 +617,6 @@ class Html extends AbstractRenderer
 		$graphs = array();
 		$isStacked = false;
 		$maxCategoryLength = 0;
-		$categoryAxisTitle = '';
 
 		$firstSel = reset($selectColumns);
 		$valueAxisTitle = $firstSel['title'];

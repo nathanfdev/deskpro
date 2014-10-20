@@ -43,7 +43,9 @@ class ServerMysqlSortOrder
 
 	private $settings;
 
+	/** @var string */
 	public $db_collation = 'utf8_general_ci';
+	/** @var string */
 	public $db_collation_change = '';
 
 	/**

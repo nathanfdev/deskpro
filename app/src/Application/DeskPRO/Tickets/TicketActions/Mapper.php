@@ -41,6 +41,7 @@ use Orb\Util\Strings;
  */
 class Mapper
 {
+	/** @var array */
 	protected $map = array();
 
 	public function addMapName($name, $class)
@@ -65,14 +66,14 @@ class Mapper
 
 			$class = str_replace('_', '-', $name);
 			$class = ucfirst(Strings::dashToCamelCase($class));
+		}
 
-			$action_class = $class . 'Action';
-			$modifier_class = $class . 'Modifier';
-			if (is_class($action_class)) {
-				return $action_class;
-			} elseif (is_class($modifier_class)) {
-				return $modifier_class;
-			}
+		$action_class = $class . 'Action';
+		$modifier_class = $class . 'Modifier';
+		if (is_class($action_class)) {
+			return $action_class;
+		} elseif (is_class($modifier_class)) {
+			return $modifier_class;
 		}
 
 		return null;

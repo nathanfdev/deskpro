@@ -40,6 +40,7 @@ use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVaria
 
 class GlobalVariables extends BaseGlobalVariables
 {
+	/** @var array */
 	protected $variables = array();
 
 	public function setVariable($name, $value)

@@ -39,7 +39,6 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\CheckedOptionsArray;
 
 /**

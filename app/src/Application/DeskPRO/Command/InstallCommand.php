@@ -113,7 +113,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $install_schema = new \Application\InstallBundle\Install\InstallSchema($this->getDb(), $schema, DP_BUILD_TIME);
 
-        $limit = 50;
         $install_schema->setLogger($logger);
 
         $install_schema->run(false);

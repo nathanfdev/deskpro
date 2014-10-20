@@ -35,7 +35,6 @@
 namespace Cloud\ApiBundle\Controller;
 
 use DeskPRO\Kernel\License;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\App;
 

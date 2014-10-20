@@ -44,16 +44,10 @@ class UserExtension extends Extension
 {
 	public function load(array $config, ContainerBuilder $container)
     {
-		$definition = new Definition('Application\\DeskPRO\\PageDisplay\\Page\\PortalPageLoader', array(
-			new Reference('doctrine.orm.default_entity_manager')
-		));
-		$container->setDefinition('deskpro.user_portal_page_loader', $definition);
-
 		$definition = new Definition('Application\\DeskPRO\\PageDisplay\\Page\\PortalPage', array(
 			new Reference('service_container'),
 			new Reference('deskpro.session_person')
 		));
-		$definition->addMethodCall('setLazyLoader', array(new Reference('deskpro.user_portal_page_loader')));
 		$container->setDefinition('deskpro.user_portal_page', $definition);
 	}
 

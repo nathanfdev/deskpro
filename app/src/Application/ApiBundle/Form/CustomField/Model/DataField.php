@@ -36,7 +36,9 @@ namespace Application\ApiBundle\Form\CustomField\Model;
 
 class DataField extends CustomFieldAbstract
 {
+	/** @var  string */
 	public $usersource_id;
+	/** @var  string */
 	public $field_name;
 
 	public function init()

@@ -85,16 +85,6 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 	 */
 	public $__dp_is_preloaded_repos = null;
 
-	/**
-	 * @var array
-	 */
-	private $_iterator_keys;
-
-	/**
-	 * @var int
-	 */
-	private $_iterator_pos = 0;
-
 
 	/**
 	 * Set values from an array

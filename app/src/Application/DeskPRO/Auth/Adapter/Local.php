@@ -59,7 +59,9 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
 	 */
 	protected $logger;
 
+	/** @var string */
 	protected $email = '';
+	/** @var string */
 	protected $password = '';
 
 	public function __construct(EntityManager $em)

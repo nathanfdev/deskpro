@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class AddSlaAction extends AbstractAction
 {
+	/** @var array */
 	protected $sla_ids = array();
 
 	public function __construct($sla_id)

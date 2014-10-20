@@ -41,11 +41,13 @@ use Application\DeskPRO\Entity\TicketMessage;
 
 class NewReply extends \ArrayObject
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'message' => 1, 'new_upload' => 1, 'attach_ids' => 1,
 		'attach_ids_authed' => 1
 	);
 
+	/** @var string */
 	public $message;
 
 	/**
@@ -53,12 +55,17 @@ class NewReply extends \ArrayObject
 	 */
 	public $new_upload = null;
 
+	/** @var array */
 	public $attach_ids = array();
+	/** @var bool */
 	public $attach_ids_authed = false;
 
+	/** @var \Application\DeskPRO\Entity\Ticket */
 	protected $ticket;
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
 
+	/** @var TicketMessage */
 	protected $ticket_message;
 
 	public function __construct(Ticket $ticket, Person $person)
@@ -77,15 +84,12 @@ class NewReply extends \ArrayObject
 		$ticket_message->ip_address = dp_get_user_ip_address();
 		$ticket_message->visitor = App::getSession()->getVisitor();
 
-		$attach = false;
 		if ($this->new_upload) {
 			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
 				$this->new_upload->getRealPath(),
 				$this->new_upload->getClientOriginalName(),
 				$this->new_upload->getClientMimeType()
 			);
-			$blob_id = $blob->getId();
-
 			$attach = new \Application\DeskPRO\Entity\TicketAttachment();
 			$attach['blob'] = $blob;
 			$attach['person'] = $this->person;
@@ -115,8 +119,9 @@ class NewReply extends \ArrayObject
 		}
 
 		if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
-			$ticket_message = $dupe_message;
-		} else {
+			return null;
+		}
+
 			$this->ticket->addMessage($ticket_message);
 
 			if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
@@ -139,7 +144,6 @@ class NewReply extends \ArrayObject
 			App::getOrm()->persist($this->ticket);
 			App::getOrm()->flush();
 			App::getOrm()->commit();
-		}
 	}
 
 	public function getNewMessage()

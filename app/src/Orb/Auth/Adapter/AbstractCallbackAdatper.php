@@ -162,7 +162,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	 *
 	 * @param array                 $callback_data
 	 * @param StateHandlerInterface $state
-	 * @return mixed
+	 * @return \Orb\Auth\Result
 	 */
 	abstract protected function authenticateCallback(array $callback_data, StateHandlerInterface $state);
 
@@ -171,7 +171,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	 * Initialize the auth process by setting state, and returning a redirect result.
 	 *
 	 * @param StateHandlerInterface $state
-	 * @return mixed
+	 * @return \Orb\Auth\Result
 	 */
 	abstract protected function authenticateInitialize(StateHandlerInterface $state);
 

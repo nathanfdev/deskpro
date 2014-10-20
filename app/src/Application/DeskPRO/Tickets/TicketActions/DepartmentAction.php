@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 
 class DepartmentAction extends AbstractAction implements PermissionableAction
 {
+	/** @var int */
 	protected $department_id;
 
 	public function __construct($department)

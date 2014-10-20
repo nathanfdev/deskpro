@@ -41,6 +41,7 @@ namespace Application\DeskPRO\Settings;
  */
 class ServiceUrls
 {
+	/** @var array */
 	protected $urls = array();
 
 

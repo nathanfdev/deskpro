@@ -126,7 +126,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 					if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
 						$person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
 						if ($person && $person->is_agent) {
-							$person_id = $person->id;
 							$this->_setCurrentPerson($person);
 						}
 					}
@@ -389,36 +388,23 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 				App::getDb()->insert('visitor_tracks' , $track);
 				$track['id'] = App::getDb()->lastInsertId();
 
-				$set = array();
-				$set_q = array();
-
-				$set[] = "date_last = ?";
-				$set_q[] = date('Y-m-d H:i:s');
-
-				if ($vis->user_token) {
-					$set[] = "user_token = ?";
-					$set_q[] = $vis->user_token;
-				}
+				$trackRef = App::getContainer()->getEm()->getReference('DeskPRO:VisitorTrack', $track['id']);
+				$vis->date_last = new \DateTime();
+				$vis->last_track = $trackRef;
 
 				if (!$vis->initial_track) {
-					$set[] = "initial_track_id = ?";
-					$set_q[] = $track['id'];
+					$vis->initial_track = $trackRef;
 				}
 
 				if ($track['is_new_visit']) {
-					$set[] = "visit_track_id = ?";
-					$set_q[] = $track['id'];
+					$vis->visit_track = $trackRef;
 				}
-
-				$set[] = "last_track_id = ?";
-				$set_q[] = $track['id'];
 
 				if (!$vis->hint_hidden) {
-					$set[] = "hint_hidden = 0";
-					$set[] = "last_track_id_soft = NULL";
+					$vis->last_track_soft = null;
 				}
 
-				$set[] = "page_count = page_count + 1";
+				$vis['page_count'] = (int) $vis['page_count'] + 1;
 
 				foreach (array(
 					'page_title',
@@ -430,16 +416,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 					'geo_country'
 				) as $field) {
 					if (isset($track[$field])) {
-						$set[] = "`$field` = ?";
-						$set_q[] = $track[$field];
+						$vis[$field] = $track[$field];
+						$params[$field] = $track[$field];
 					}
 				}
-
-				App::getDb()->executeUpdate("
-					UPDATE visitors
-					SET " . implode(', ', $set) . "
-					WHERE id = {$vis->getId()}
-				", $set_q);
+				App::getContainer()->getEm()->flush();
 
 				$vis->new_track_id = $track['id'];
 			}

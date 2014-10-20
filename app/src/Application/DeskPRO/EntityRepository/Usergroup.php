@@ -35,11 +35,14 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Orb\Util\Arrays;
 
 class Usergroup extends AbstractEntityRepository
 {
+	/** @var array|null */
 	protected $_usergroup_names = null;
+	/** @var array|null */
 	protected $_agent_usergroup_names = null;
 
 
@@ -118,7 +121,7 @@ class Usergroup extends AbstractEntityRepository
 	public function getAgentUsergroupNames()
 	{
 		if ($this->_agent_usergroup_names !== null) return $this->_agent_usergroup_names;
-		$db = App::getDb();
+		$db = $this->getEntityManager()->getConnection();
 		$this->_agent_usergroup_names = $db->fetchAllKeyValue("
 			SELECT id, title
 			FROM usergroups
@@ -136,9 +139,9 @@ class Usergroup extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT u
 			FROM DeskPRO:Usergroup u INDEX BY u.id
-			WHERE u.id IN (" . implode(',', $ids) . ")
+			WHERE u.id IN (?)
 			ORDER BY u.id DESC
-		")->execute();
+		")->execute(array($ids));
 	}
 
 
@@ -149,14 +152,16 @@ class Usergroup extends AbstractEntityRepository
 	 */
 	public function getCountsForAll()
 	{
-		$output = App::getDb()->fetchAllKeyValue("
+		/** @var Connection $conn */
+		$conn = $this->getEntityManager()->getConnection();
+		$output = $conn->fetchAllKeyValue("
 			SELECT usergroup_id, COUNT(*)
 			FROM person2usergroups
 			GROUP BY usergroup_id
 		");
 		$output = array_map('intval', $output);
 
-		$results = App::getDb()->fetchAll("
+		$results = $conn->fetchAll("
 			SELECT o2u.usergroup_id, (SELECT COUNT(*) FROM people WHERE people.organization_id = o2u.organization_id) AS total
 			FROM organization2usergroups AS o2u
 		");
@@ -185,27 +190,26 @@ class Usergroup extends AbstractEntityRepository
 	{
 		if (!$ids) return array();
 
-		$ids_comma = implode(',', $ids);
-
-
-		$output = App::getDb()->fetchAllKeyValue("
+		/** @var Connection $conn */
+		$conn = $this->getEntityManager()->getConnection();
+		$output = $conn->fetchAllKeyValue('
 			SELECT usergroup_id, COUNT(*)
 			FROM person2usergroups
-			WHERE usergroup_id IN ($ids_comma)
+			WHERE usergroup_id IN (?)
 			GROUP BY usergroup_id
-		");
+		', array($ids), array(Connection::PARAM_INT_ARRAY));
 		$output = Arrays::castToType($output, 'int', 'int');
 
 		// Org counts
 		// Need to count all members of the org that are not part of the usergroup themselves
-		$results = App::getDb()->fetchAll("
+		$results = $conn->fetchAll('
 			SELECT o2u.usergroup_id, COUNT(*) AS total
 			FROM people
 			LEFT JOIN organization2usergroups AS o2u ON (o2u.organization_id = people.organization_id)
 			LEFT JOIN person2usergroups AS p2u ON (p2u.person_id = people.id AND p2u.usergroup_id = o2u.usergroup_id)
-			WHERE o2u.usergroup_id IN ($ids_comma) AND p2u.person_id IS NULL
+			WHERE o2u.usergroup_id IN (?) AND p2u.person_id IS NULL
 			GROUP BY o2u.usergroup_id
-		");
+		', array($ids), array(Connection::PARAM_INT_ARRAY));
 
 		if ($results) {
 			foreach ($results AS $result) {
@@ -235,14 +239,14 @@ class Usergroup extends AbstractEntityRepository
 	{
 		if (!$ids) return array();
 
-		$ids_comma = implode(',', $ids);
-
-		return App::getDb()->fetchAllKeyValue("
+		/** @var Connection $conn */
+		$conn = $this->getEntityManager()->getConnection();
+		return $conn->fetchAllKeyValue('
 			SELECT usergroup_id, COUNT(*)
 			FROM organization2usergroups
-			WHERE usergroup_id IN ($ids_comma)
+			WHERE usergroup_id IN (?)
 			GROUP BY usergroup_id
-		");
+		', array($ids), array(Connection::PARAM_INT_ARRAY));
 	}
 
 
@@ -254,7 +258,7 @@ class Usergroup extends AbstractEntityRepository
 	 */
 	public function getSortedAgentIds()
 	{
-		return App::getDb()->fetchAllGrouped("
+		return $this->getEntityManager()->getConnection()->fetchAllGrouped("
 			SELECT person2usergroups.usergroup_id, person2usergroups.person_id
 			FROM person2usergroups
 			LEFT JOIN usergroups ON usergroups.id = person2usergroups.usergroup_id

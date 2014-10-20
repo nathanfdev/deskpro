@@ -45,9 +45,11 @@ use Application\DeskPRO\Entity;
  */
 class WidgetHandler implements \ArrayAccess
 {
+	/** @var \Application\DeskPRO\Entity\Widget */
 	protected $widget;
+	/** @var array */
 	protected $options;
-
+	/** @var array */
 	protected $data = array();
 
 	public function __construct(Entity\Widget $widget, array $options = array())

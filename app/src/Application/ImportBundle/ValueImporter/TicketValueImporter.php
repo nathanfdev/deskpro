@@ -233,7 +233,6 @@ class TicketValueImporter extends AbstractValueImporter
 			});
 			
 			if ($tval->participants) {
-				$batch = array();
 				foreach ($tval->participants as $participant) {
 					$participantId = $this->getMappers()->findIdFromMappedValue('person', $participant);
 					
@@ -241,8 +240,6 @@ class TicketValueImporter extends AbstractValueImporter
 						$batch = array('ticket_id' => $ticket_id, 'person_id' => $participantId);
 						$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $participant));
 						$this->getDb()->insert('tickets_participants', $batch);
-					} else {
-						//$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $participant));
 					}
 				}
 			}
@@ -261,7 +258,6 @@ class TicketValueImporter extends AbstractValueImporter
 					$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $tval->person));
 					$record['person_id'] = $messagePersonId;
 				} else {
-					//$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
 					continue;
 				}
 				

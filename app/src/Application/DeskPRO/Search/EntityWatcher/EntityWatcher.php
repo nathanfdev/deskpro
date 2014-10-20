@@ -37,10 +37,10 @@ namespace Application\DeskPRO\Search\EntityWatcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Orb\Filter\FilterInterface;
 
 class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {
+	/** @var array */
 	public static $watched_entities = array(
 		'Application\\DeskPRO\\Entity\\Article' => 1,
 		'Application\\DeskPRO\\Entity\\LabelArticle' => 1,

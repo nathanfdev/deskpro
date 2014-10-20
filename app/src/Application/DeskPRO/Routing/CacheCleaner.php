@@ -42,9 +42,13 @@ namespace Application\DeskPRO\Routing;
  */
 class CacheCleaner
 {
+	/** @var array */
 	protected $routing_files;
+	/** @var array */
 	protected $gen_files;
+	/** @var int */
 	protected $oldest_cache_file;
+	/** @var int */
 	protected $newest_routing_file;
 
 	public function isFresh()

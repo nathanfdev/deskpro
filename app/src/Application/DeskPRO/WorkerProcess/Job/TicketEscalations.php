@@ -50,7 +50,9 @@ class TicketEscalations extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 60;
 
+	/** @var int */
 	protected $count_success;
+	/** @var int */
 	protected $count_failed;
 
 	public function run()

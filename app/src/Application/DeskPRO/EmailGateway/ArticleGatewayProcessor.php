@@ -69,9 +69,21 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 	 */
 	protected $person;
 
+	/**
+	 * @var string
+	 */
 	protected $error;
+	/**
+	 * @var array
+	 */
 	protected $source_info;
+	/**
+	 * @var array
+	 */
 	protected $inline_blobs = array();
+	/**
+	 * @var array
+	 */
 	protected $dupe_inline_blobs = array();
 
 	protected function init()

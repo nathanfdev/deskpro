@@ -44,7 +44,6 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
-use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -482,6 +481,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 */
 	public $email_validating;
 
+	/**
+	 * @var bool
+	 */
 	protected $_updated_org = false;
 	
 	/** @var string */
@@ -894,7 +896,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$shortest = null;
 		$shortest_len = null;
 
-		foreach ($try as $k => $elements) {
+		foreach ($try as $elements) {
 
 			$display = array();
 

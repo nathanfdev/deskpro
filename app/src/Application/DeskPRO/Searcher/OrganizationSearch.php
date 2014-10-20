@@ -468,7 +468,7 @@ class OrganizationSearch extends SearcherAbstract
 					if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
 
 					$any = false;
-					foreach ($org->getContactData('address') as $cd) {
+					foreach ($org->getContactData($field) as $cd) {
 						if ($cd->checkStringMatch($choice)) {
 							$any = true;
 							if ($op == self::OP_NOTCONTAINS) {

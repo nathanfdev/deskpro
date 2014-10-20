@@ -40,7 +40,6 @@ use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class ProcessAbstract
 {

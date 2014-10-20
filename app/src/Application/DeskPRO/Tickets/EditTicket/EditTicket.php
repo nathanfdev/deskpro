@@ -41,6 +41,7 @@ use Application\DeskPRO\TicketLayout\Layout;
 
 class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array('person' => 1, 'ticket' => 1, 'custom_ticket_fields' => 1);
 
 	/**
@@ -64,7 +65,9 @@ class EditTicket implements \Application\DeskPRO\People\PersonContextInterface, 
 	 */
 	public $ticket;
 
+	/** @var array */
 	public $custom_ticket_fields = array();
+	/** @var array */
 	public $custom_user_fields = array();
 
 	/**

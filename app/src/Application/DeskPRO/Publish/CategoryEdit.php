@@ -249,8 +249,9 @@ class CategoryEdit
 		// If theres a check map then we want to verify that the current tree is the same,
 		// or else error out
 		if ($check_map) {
+			$conn = App::getDb();
 			$table = App::getOrm()->getRepository($entity)->getTableName();
-			$current_tree = App::getDb()->fetchAllKeyValue("SELECT id, parent_id FROM $table");
+			$current_tree = $conn->fetchAllKeyValue("SELECT id, parent_id FROM " . $conn->quoteIdentifier($table));
 
 			$accurate = true;
 			foreach ($check_map as $id => $parent_id) {
@@ -355,7 +356,6 @@ class CategoryEdit
 				", array($category_id));
 				break;
 			default:
-				$count = 0;
 				break;
 		}
 

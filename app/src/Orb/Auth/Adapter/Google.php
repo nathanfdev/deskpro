@@ -46,6 +46,7 @@ use Orb\Validator\StringEmail;
  */
 class Google extends AbstractCallbackAdatper implements DisplayContextInterface
 {
+	/** @var string */
 	protected $display = 'page';
 
 	/**

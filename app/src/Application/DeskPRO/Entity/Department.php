@@ -101,7 +101,13 @@ class Department extends DomainObject implements HasPhraseName
 	 */
 	protected $is_chat_enabled = true;
 
+	/**
+	 * @var null|array
+	 */
 	protected $_usergroups = null;
+	/**
+	 * @var null|array
+	 */
 	protected $_people = null;
 
 	/**

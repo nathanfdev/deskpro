@@ -370,7 +370,7 @@ class AppManager implements AppManagerInterface
 	public function getAppPath($app_name, $check_exists = false)
 	{
 		if ($check_exists) {
-			foreach ($this->app_paths as $prefix => $path) {
+			foreach ($this->app_paths as $path) {
 				$p = $path . '/' . $app_name;
 				if (file_exists($p)) {
 					return $p;

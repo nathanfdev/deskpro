@@ -34,6 +34,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckOrgName;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckPriority;
@@ -173,9 +174,9 @@ class Build1400056735 extends AbstractBuild
 					$email_addresses = $this->container->getDb()->fetchAllCol("
 						SELECT email
 						FROM people_emails
-						WHERE person_id IN (".implode(',', $ids).")
+						WHERE person_id IN (?)
 						GROUP BY person_id
-					");
+					", array($ids), array(Connection::PARAM_INT_ARRAY));
 					if ($email_addresses) {
 						$set = new TriggerTermComposite();
 						$set->add(new CheckUserEmail('is', array('email' => $email_addresses)));
@@ -186,8 +187,8 @@ class Build1400056735 extends AbstractBuild
 					$names = $this->container->getDb()->fetchAllCol("
 						SELECT name
 						FROM organizations
-						WHERE id IN (".implode(',', $ids).")
-					");
+						WHERE id IN (?)
+					", array($ids), array(Connection::PARAM_INT_ARRAY));
 					if ($names) {
 						$set = new TriggerTermComposite();
 						$set->add(new CheckOrgName('is', array('name' => $names)));

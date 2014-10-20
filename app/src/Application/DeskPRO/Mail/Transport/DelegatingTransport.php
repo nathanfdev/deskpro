@@ -240,8 +240,6 @@ class DelegatingTransport implements \Swift_Transport, Loggable
 			}
 		}
 
-		$success = false;
-
 		if ($message->getSpecificTransport()) {
 			$tr = $message->getSpecificTransport();
 

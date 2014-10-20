@@ -40,18 +40,28 @@ class PortalSettings
 	 */
 	private $settings;
 
+	/** @var bool */
 	public $portal_enabled;
+	/** @var string */
 	public $favicon_blob_url;
+	/** @var int */
 	public $favicon_blob_id;
 
+	/** @var int */
 	public $show_ratings;
+	/** @var bool */
 	public $publish_comments;
 
+	/** @var bool */
 	public $register_captcha;
+	/** @var bool */
 	public $publish_captcha;
+	/** @var bool */
 	public $always_show_captcha;
 
+	/** @var bool */
 	public $feedback_notify_comments;
+	/** @var bool */
 	public $kb_subscriptions;
 
 	/**
