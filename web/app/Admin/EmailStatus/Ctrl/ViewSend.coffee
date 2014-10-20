@@ -2,10 +2,11 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 	class Admin_EmailStatus_Ctrl_ViewSend extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_EmailStatus_Ctrl_ViewSend'
 		@CTRL_AS = 'ViewSource'
-		@DEPS    = ['$state', '$modal']
+		@DEPS    = ['$state', '$modal', 'DpDateService']
 
 		init: ->
 			@sendmailId = parseInt(@$stateParams.id)
+			@$scope.ds = @DpDateService
 			return
 
 		initialLoad: ->
@@ -13,6 +14,11 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 				@sendmail     = res.data.sendmail
 				@sendmail_raw = res.data.sendmail_raw
 				@log          = res.data.sendmail_log
+				@sendmail.date_created = @DpDateService.local @sendmail.date_created
+				if @sendmail.date_sent
+					@sendmail.date_sent = @DpDateService.local @sendmail.date_sent
+				if @sendmail.date_next_attempt
+					@sendmail.date_next_attempt = @DpDateService.local @sendmail.date_next_attempt
 			)
 
 		delete: ->

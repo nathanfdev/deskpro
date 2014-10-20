@@ -983,7 +983,7 @@ class PersonSearch extends SearcherAbstract
 
 					$has = false;
 					foreach ($person->getLabelManager()->getLabelsArray() as $l) {
-						$l = Strings::utf8_strtolower($l->label);
+						$l = Strings::utf8_strtolower($l);
 						if (isset($choice_labels[$l])) {
 							$has = true;
 							break;

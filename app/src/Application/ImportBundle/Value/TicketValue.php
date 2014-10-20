@@ -131,7 +131,7 @@ class TicketValue
 	/**
 	 * @var \DateTime
 	 */
-	public $date_closed;
+	public $date_archived;
 
 	/**
 	 * @var string

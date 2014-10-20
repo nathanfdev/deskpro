@@ -417,4 +417,15 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 	{
 		return $this->logger;
 	}
+
+
+	/**
+	 * We dont use auto refresh, instead we use return GET param (see LoginController::usersourceSsoAction)
+	 *
+*@return bool
+	 */
+	public function isBackgroundSsoSimpleRefresh()
+	{
+		return false;
+	}
 }

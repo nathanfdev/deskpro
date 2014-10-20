@@ -728,6 +728,14 @@ class DeskproContainer extends Container
 		return $this->getSystemService('person_fields_manager');
 	}
 
+	/**
+	 * @return \Application\DeskPRO\CustomFields\EntityFieldManager
+	 */
+	public function getEntityFieldManager()
+	{
+		return $this->getSystemService('entity_fields_manager');
+	}
+
 
 	/**
 	 * @return \Application\DeskPRO\CustomFields\FieldManager
@@ -935,5 +943,13 @@ class DeskproContainer extends Container
 	public function getTicketActionDefManager()
 	{
 		return $this->getSystemService('ticket_action_def_manager');
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Service\CustomFieldManager
+	 */
+	public function getCustomFieldManager()
+	{
+		return $this->get('dp.custom_fields.manager');
 	}
 }

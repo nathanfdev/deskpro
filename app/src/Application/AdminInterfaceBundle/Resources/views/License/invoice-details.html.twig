@@ -1,0 +1,30 @@
+<div ng-show="show_details" style="border-top: 1px solid #b0c1c9; margin-top: 10px; padding-top: 8px;">
+	{{ ng_var('paymentSummary.line_title') }}<br/>
+	{% if type == 'agents' %}
+		<div style="font-size: 11px;">
+			&bull; Pro-rata rate (of {{ ng_var('planInfo.next_plan.additional_yearly_cost_display') }}) from now until {{ ng_var('planInfo.current_plan.expires | amDateFormat:"MMM D, YYYY"') }}<br/>
+		</div>
+	{% elseif type == 'years' %}
+		<div style="font-size: 11px;">
+			&bull; Your {{ ng_var('paymentSummary.num_agents') }} Agent License costs {{ ng_var('paymentSummary.cost_per_year') }} per year.
+		</div>
+	{% endif %}
+	<div ng-if="paymentSummary.has_vat" style="font-size: 11px; margin-top: 6px;">
+		Sub-Total: {{ ng_var('paymentSummary.cost_display') }}<br/>
+		VAT: {{ ng_var('paymentSummary.cost_vat_display') }}<br/>
+		Total: {{ ng_var('paymentSummary.cost_total_display') }}
+		<div ng-if="paymentSummary.currency != 'usd'">
+			Your credit-card will be charged in {{ ng_var('paymentSummary.currency_display') }}: {{ ng_var('paymentSummary.currency_total_display') }}
+		</div>
+	</div>
+	<div ng-if="!paymentSummary.has_vat" style="font-size: 11px; margin-top: 6px;">
+		Total: {{ ng_var('paymentSummary.cost_total_display') }}
+		<div ng-if="paymentSummary.currency != 'usd'">
+			Your credit-card will be charged in {{ ng_var('paymentSummary.currency_display') }}: {{ ng_var('paymentSummary.currency_total_display') }}
+		</div>
+	</div>
+</div>
+<div ng-show="show_details" style="border-top: 1px solid #b0c1c9; margin-top: 10px; padding-top: 8px; font-size: 11px;">
+	Change your currency by paying this invoice on our website:<br/>
+	<a ng-href="{{ ng_var('paymentSummary.invoice_web_link') }}" target="_blank">{{ ng_var('paymentSummary.invoice_web_link') }}</a>
+</div>

@@ -69,7 +69,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_TICKET_FIELD              = 'ticket_field';
 	const TERM_DATE_CREATED              = 'date_created';
 	const TERM_DATE_RESOLVED             = 'date_resolved';
-	const TERM_DATE_CLOSED               = 'date_closed';
+	const TERM_DATE_ARCHIVED               = 'date_archived';
 	const TERM_DATE_STATUS               = 'date_status';
 	const TERM_DATE_LAST_USER_REPLY      = 'date_last_user_reply';
 	const TERM_DATE_LAST_AGENT_REPLY     = 'date_last_agent_reply';
@@ -923,9 +923,9 @@ class TicketSearch extends SearcherAbstract
 				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
-			case 'ticket.date_closed':
-				$this->add_raw_selects[] = "tickets.date_closed AS status_order";
-				$this->order_summary = $tr->phrase('agent.general.date_created');
+			case 'ticket.date_archived':
+				$this->add_raw_selects[] = "tickets.date_archived AS status_order";
+				$this->order_summary = $tr->phrase('agent.general.date_opened');
 				$order_by = "ORDER BY status_order $dir, id DESC";
 				break;
 
@@ -1197,10 +1197,11 @@ class TicketSearch extends SearcherAbstract
 						$wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
 						$wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', array('resolved'));
 						break;
-					case self::TERM_DATE_CLOSED:
+					case self::TERM_DATE_ARCHIVED:
 						$this->enableArchiveSearch();
-						$this->affected_fields[] = 'ticket.date_closed';
-						$wheres[] = $this->_dateMatch("$tickets_table.date_closed", $op, $choice);
+						$this->affected_fields[] = 'ticket.date_archived';
+						if (!$this->is_testing) $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_archived'), $op, $choice);
+						$wheres[] = $this->_dateMatch("$tickets_table.date_archived", $op, $choice);
 						$wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', array('closed'));
 						break;
 					case self::TERM_DATE_LAST_USER_REPLY:
@@ -2282,9 +2283,9 @@ class TicketSearch extends SearcherAbstract
 					if (!$this->_testStringMatch($ticket['creation_system'], $op, $choice, true, true)) return false;
 					break;
 
-				case self::TERM_DATE_CLOSED:
+				case self::TERM_DATE_ARCHIVED:
 					if ($ticket['status'] != Ticket::STATUS_CLOSED) return false;
-					if (!$this->_testDateMatch($ticket['date_closed'], $op, $choice)) return false;
+					if (!$this->_testDateMatch($ticket['date_archived'], $op, $choice)) return false;
 					break;
 
 				case self::TERM_DATE_RESOLVED:

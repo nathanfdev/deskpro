@@ -3522,143 +3522,7 @@ table.display-table.spaced {
 .urgency-tag.urgency-9  { .lib-urgency-tag(@urgency9_color, @urgency9_borderColor, @urgency9_textColor); }
 .urgency-tag.urgency-10 { .lib-urgency-tag(@urgency10_color, @urgency10_borderColor, @urgency10_textColor); }
 
-
-//######################################################################################################################
-//# Category Builder
-//######################################################################################################################
-
-.dp-category-builder {
-	border: 1px solid #ccc;
-	border-radius: 2px;
-
-	input.dp-cb-input {
-		background: transparent;
-		font-size: 100%;
-		padding: 0px 1px;
-		margin: 0;
-		border: 1px solid transparent;
-		height: auto;
-		border-radius: 1px;
-		cursor: pointer;
-		width: 95%;
-		z-index: 1;
-		position: relative;
-
-		&:focus {
-			background: #fff;
-			border-color: #66afe9;
-			text-decoration: none !important;
-		}
-	}
-
-	.dp-cb-titlewrap:hover input.dp-cb-input {
-		text-decoration: underline;
-	}
-
-	.dp-cb-titlewrap {
-		position: relative;
-		padding: 5px;
-		&:hover {
-			background: #E3E3E3;
-		}
-	}
-
-	.dp-cb-newrow {
-		background: #E3E3E3;
-		border-top: 1px solid darken(#E3E3E3, 10%);
-		padding: 8px;
-
-		.select2-container {
-			margin: 0;
-		}
-
-		input[type="text"] {
-			padding: 0 8px;
-			margin: 0;
-			line-height: 26px;
-			height: 26px;
-			background: #fff;
-			border: 1px solid darken(#E3E3E3, 10%);
-			width: 150px;
-		}
-
-		button.dp-cb-addbtn {
-			height: 26px;
-			padding-top: 0;
-			padding-bottom: 0;
-			line-height: 26px;
-		}
-	}
-
-	.dp-cb-row-indent {
-		display: block;
-		border-top: 1px solid #999;
-		height: 1px;
-		width: 10px;
-		padding-right: 8px;
-		position: absolute;
-		top: 13px;
-		left: 31px;
-	}
-
-	.dp-cb-titlewrap:hover .dp-cb-row-move {
-		color: #888;
-
-		input.dp-cb-input {
-			text-decoration: underline;
-		}
-	}
-	.dp-cb-row-move {
-		position: absolute;
-		left: 5px;
-		top: 0px;
-		font-size: 18px;
-		color: #ccc;
-		cursor: move;
-	}
-
-	ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		li {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-		}
-	}
-
-	.dp-cb-titlewrap:hover .dp-cb-row-controls {
-		color: #888;
-	}
-	.dp-cb-row-controls {
-		position: absolute;
-		top: 2px;
-		right: 6px;
-
-		font-size: 16px;
-		color: #ccc;
-
-		i {
-			cursor: pointer;
-		}
-	}
-
-	ul:empty {
-		display: none;
-	}
-
-	@indent_width: 18px;
-	@indent_base: 25px;
-	@marker_w: 18px;
-	ul li .dp-cb-titlewrap { padding-left: @indent_base; .dp-cb-row-indent { display: none; } }
-	ul ul li .dp-cb-titlewrap { padding-left: @indent_width+@indent_base; .dp-cb-row-indent { display: block; } }
-	ul ul ul li .dp-cb-titlewrap { padding-left: (@indent_width*2)+@indent_base; .dp-cb-row-indent { width: @marker_w*2; } }
-	ul ul ul ul li .dp-cb-titlewrap { padding-left: (@indent_width*3)+@indent_base; .dp-cb-row-indent { width: @marker_w*3; } }
-	ul ul ul ul ul li .dp-cb-titlewrap { padding-left: @indent_width+@indent_base; .dp-cb-row-indent { width: @marker_w*4; } }
-	ul ul ul ul ul ul li .dp-cb-titlewrap { padding-left: @indent_width+@indent_base; .dp-cb-row-indent { width: @marker_w*5; } }
-}
-
+@import "../../../../stylesheets-less/category-builder.less";
 
 //######################################################################################################################
 //# Working Hours widget
@@ -4662,6 +4526,88 @@ table.agent-perms-table {
 			margin: 0;
 		}
 	}
+}
+
+//######################################################################################################################
+//# Credit-card related stuff
+//######################################################################################################################
+
+.creditcard-display {
+	vertical-align: middle;
+
+	.credit-card-type {
+		border: 2px solid #888;
+		padding: 3px;
+		text-transform: uppercase;
+		font-size: 14px;
+		border-radius: 2px;
+		width: 51px;
+		height: 32px;
+		line-height: 24px;
+		display: inline-block;
+		overflow: hidden;
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	.credit-card-type {
+		&.visa, &.visa_electron, &.uke, &.mc, &.mastercard, &.maestro, &.discover, &.amex, &.american-express {
+			border: none;
+			padding: 0;
+			border-radius: 0;
+			text-indent: 1000px;
+		}
+
+		&.visa             { background-image: url("@{img_path}/credit-cards/visa.png"); }
+		&.visa_electron    { background-image: url("@{img_path}/credit-cards/visa_electron.png"); }
+		&.uke              { background-image: url("@{img_path}/credit-cards/uke.png"); }
+		&.mc               { background-image: url("@{img_path}/credit-cards/mastercard.png"); }
+		&.mastercard       { background-image: url("@{img_path}/credit-cards/mastercard.png"); }
+		&.maestro          { background-image: url("@{img_path}/credit-cards/maestro.png"); }
+		&.discover         { background-image: url("@{img_path}/credit-cards/discover.png"); }
+		&.amex             { background-image: url("@{img_path}/credit-cards/amex.png"); }
+		&.american-express { background-image: url("@{img_path}/credit-cards/amex.png"); }
+	}
+
+	.credit-card-num {
+		padding: 0 10px;
+		font-size: 135%;
+		display: inline-block;
+		vertical-align: middle;
+	}
+	.credit-card-expire {
+		font-size: 11px;
+		color: #555;
+		display: inline-block;
+		vertical-align: middle;
+		padding-top: 1px;
+	}
+}
+
+.creditcard-input {
+	position: relative;
+	input { padding-right: 54px; height: 32px; width: 325px; }
+
+	&.visa, &.visa_electron, &.uke, &.mc, &.mastercard, &.maestro, &.discover, &.amex, &.american-express {
+		.credit-card-type {
+			display: block;
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 51px;
+			height: 32px;
+		}
+	}
+
+	&.visa             .credit-card-type { background-image: url("@{img_path}/credit-cards/visa.png"); }
+	&.visa_electron    .credit-card-type { background-image: url("@{img_path}/credit-cards/visa_electron.png"); }
+	&.uke              .credit-card-type { background-image: url("@{img_path}/credit-cards/uke.png"); }
+	&.mc               .credit-card-type { background-image: url("@{img_path}/credit-cards/mastercard.png"); }
+	&.mastercard       .credit-card-type { background-image: url("@{img_path}/credit-cards/mastercard.png"); }
+	&.maestro          .credit-card-type { background-image: url("@{img_path}/credit-cards/maestro.png"); }
+	&.discover         .credit-card-type { background-image: url("@{img_path}/credit-cards/discover.png"); }
+	&.amex             .credit-card-type { background-image: url("@{img_path}/credit-cards/amex.png"); }
+	&.american-express .credit-card-type { background-image: url("@{img_path}/credit-cards/amex.png"); }
 }
 
 //######################################################################################################################

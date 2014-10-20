@@ -1,4 +1,5 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% set authManager = app.authenticationManager %}
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
 {% block breadcrumb %}
 	{% if this_page == 'register' %}
@@ -55,22 +56,40 @@
 		</div>
 	{% endif %}
 
-	{#####################################################################}
+	{% if app.session.hasFlash('login_failed') %}
+		{% set login_failure = app.session.getFlash('login_failed') %}
+		<div class="dp-alert dp-alert-error">
+			{{ phrase('user.profile.login_error') }}
+		</div>
+	{% endif %}
 
+	{#####################################################################}
+	{% if authManager.isAuthVisible %}
 	<section class="dp-well">
 		<header>
-			{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+			{% if authManager.hasLoginIconUsersources %}
 				<div class="dp-connect-with">
-					{{ phrase('user.profile.or_connect_with') }}
-					{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+					{% if authManager.isLoginFormVisible %}
+						{{ phrase('user.profile.or_connect_with') }}
+					{% else %}
+						{{ phrase('user.profile.connect_with') }}
+					{% endif %}
+					{% for usersource in authManager.getLoginIconUsersources %}
 						{{ render_usersource(usersource, 'login_pull_btn') }}
 					{% endfor %}
 				</div>
 			{% endif %}
 			<label>
-				<h3><input type="radio" name="user_type" id="user_type_exist" {% if this_page == 'login' %}checked="checked"{% endif %} /> {{ phrase('user.profile.im_already_registered') }}</h3>
+				<h3>
+					{% if authManager.isLoginFormVisible %}
+						<input type="radio" name="user_type" id="user_type_exist"
+						{% if this_page == 'login' %}checked="checked"{% endif %} />
+					{% endif %}
+					{{ phrase('user.profile.im_already_registered') }}
+				</h3>
 			</label>
 		</header>
+		{% if authManager.isLoginFormVisible %}
 		<article id="user_type_exist_form" class="dp-well dp-well-light" {% if this_page != 'login' %}style="display:none"{% endif %}>
 			{% if app.session.hasFlash('password_reset') %}
 				<div class="dp-alert dp-alert-success">
@@ -107,7 +126,7 @@
 						<td>
 							<div style="padding-bottom: 5px;">
 								{{ phrase('user.profile.password') }}
-								{% if app.getSetting('core.reg_enabled') %}<a style="margin-{% if is_rtl() %}right{% else %}left{% endif %}: 9px;" href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a>{% endif %}
+								{% if authManager.isForgotPasswordVisible %}<a style="margin-{% if is_rtl() %}right{% else %}left{% endif %}: 9px;" href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a>{% endif %}
 							</div>
 							<div>
 								<input type="password" autocomplete="off" value="" name="password" size="20" tabindex="101" />
@@ -122,11 +141,21 @@
 					</tr>
 				</table>
 			</form>
+			{%  if authManager.hasLoginTextButtonUsersources %}
+				<hr>
+				<ul class="dp-unstyled">
+					{% for usersource in authManager.getLoginTextButtonUsersources %}
+						<li style="margin-bottom: 5px">{{ render_usersource(usersource, 'login_text_btn') }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
 		</article>
+		{% endif %}
 	</section>
+	{% endif %}
 
 	{#####################################################################}
-	{% if app.getSetting('core.deskpro_source_enabled') %}
+	{% if authManager.isForgotPasswordVisible %}
 		<section class="dp-well">
 			<header>
 				<label>
@@ -134,6 +163,7 @@
 				</label>
 			</header>
 			<article id="user_type_exist_pass_form" class="dp-well dp-well-light" {% if this_page != 'reset' %}style="display:none"{% endif %}>
+				{% if authManager.isLoginFormVisible %}
 				<form action="{{ path('user_login_resetpass_send') }}" class="form login" method="post" class="with-form-validator">
 					{{ form_token('user_login') }}
 					<table cellspacing="0" cellpadding="0">
@@ -160,12 +190,13 @@
 						<p style="font-size: 90%">{{ phrase('user.profile.reset_password_current_logged_in', {email: app.user.getEmailAddress()}) }}</p>
 					{% endif %}
 				</form>
+				{% endif %}
 			</article>
 		</section>
 	{% endif %}
 
 	{#####################################################################}
-	{% if app.getSetting('core.reg_enabled') %}
+	{% if authManager.isRegistrationFormVisible %}
 		<section class="dp-well">
 			<header>
 				<label>

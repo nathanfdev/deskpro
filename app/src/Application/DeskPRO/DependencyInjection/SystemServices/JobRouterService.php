@@ -37,6 +37,7 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\JobRouter;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
+use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
@@ -73,6 +74,17 @@ class JobRouterService
 				new PersonDetector($em),
 				new TicketDetector($em),
 				$container->getSystemService('ticket_manager')
+			)
+		);
+
+
+		/*************************************
+		 * outgoing_facebook_feed
+		 */
+		$router->addProcessor(
+			new OutgoingFacebookFeedProcessor(
+				$conn,
+				$queue
 			)
 		);
 

@@ -1,23 +1,25 @@
 define ['DeskPRO/Util/Util'], (Util) ->
 	class LayoutEditorField
-		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout) ->
+		constructor: (@scope, @element, @attrs, @ngModel, @$modal, @dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, TicketFieldsPerPerson, TicketFieldsPerOrg) ->
 
 			@scope.ticketFieldTitleFilter = (f) =>
 				@scope.field.field_type == 'ticket_field' and (f.id+'') == (@scope.field.field_id+'')
 			@scope.userFieldTitleFilter = (f) =>
 				@scope.field.field_type == 'user_field' and (f.id+'') == (@scope.field.field_id+'')
+			@scope.CustomFieldTitleFilter = (f) =>
+				@scope.field.field_type == 'custom_field' and (f.id+'') == (@scope.field.field_id+'')
 
-			$q.all([TicketFields.loadList(), UserFields.loadList()]).then( (results) =>
-				tFields = results[0]
-				uFields = results[1]
-
-				@scope.custom_ticket_fields = tFields;
-				@scope.custom_user_fields   = uFields;
+			$q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all()])
+			.then (results) =>
+				@scope.custom_ticket_fields   = results[0]
+				@scope.custom_user_fields     = results[1]
+				@scope.ticket_fields_per_person = results[2]
+				@scope.ticket_fields_per_org  = results[3]
 
 				$timeout(=>
 					@_initEvents()
 				, 1)
-			)
+
 
 		_initEvents: ->
 			if not @scope.isSticky
@@ -119,6 +121,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 		TicketFields = DataService.get('TicketFields')
 		UserFields   = DataService.get('UserFields')
+		TicketFieldsPerPerson = DataService.get 'CustomFields', 'ticket', 'person'
+		TicketFieldsPerOrg = DataService.get 'CustomFields', 'ticket', 'organization'
 
 		directive.link = (scope, element, attrs, ngModel) ->
 			if not scope.field.options                 then scope.field.options = {}
@@ -126,7 +130,20 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			if not scope.field.options.criteria?.terms then scope.field.options.criteria.terms = {}
 			if not scope.field.options.criteria?.mode  then scope.field.options.criteria.mode = 'all'
 
-			handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout)
+			handler = new LayoutEditorField(
+				scope,
+				element,
+				attrs,
+				ngModel,
+				$modal,
+				dpObTypesDefTicketCriteria,
+				TicketFields,
+				UserFields,
+				$q,
+				$timeout,
+				TicketFieldsPerPerson
+				TicketFieldsPerOrg
+			)
 
 		return directive
 	]

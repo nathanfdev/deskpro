@@ -34,8 +34,8 @@
 
 namespace Orb\Auth\Adapter;
 
-use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Log\Loggable;
 use ZendOAuth\OAuth;
 

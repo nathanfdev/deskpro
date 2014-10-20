@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-<form role="form" name="form_props" ng-submit="EditCtrl.doSave()">
+<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.doSave()">
 	<section class="dp-paneblock dp-editpane nomaxw">
 		<article class="form-horizontal dp-form">
 

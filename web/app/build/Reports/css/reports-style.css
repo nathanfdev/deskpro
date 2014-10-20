@@ -11121,6 +11121,128 @@ table.agent-perms-table .toggle-wrap i {
   padding: 0;
   margin: 0;
 }
+.creditcard-display {
+  vertical-align: middle;
+}
+.creditcard-display .credit-card-type {
+  border: 2px solid #888;
+  padding: 3px;
+  text-transform: uppercase;
+  font-size: 14px;
+  border-radius: 2px;
+  width: 51px;
+  height: 32px;
+  line-height: 24px;
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+}
+.creditcard-display .credit-card-type.visa,
+.creditcard-display .credit-card-type.visa_electron,
+.creditcard-display .credit-card-type.uke,
+.creditcard-display .credit-card-type.mc,
+.creditcard-display .credit-card-type.mastercard,
+.creditcard-display .credit-card-type.maestro,
+.creditcard-display .credit-card-type.discover,
+.creditcard-display .credit-card-type.amex,
+.creditcard-display .credit-card-type.american-express {
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  text-indent: 1000px;
+}
+.creditcard-display .credit-card-type.visa {
+  background-image: url("../../../../images/credit-cards/visa.png");
+}
+.creditcard-display .credit-card-type.visa_electron {
+  background-image: url("../../../../images/credit-cards/visa_electron.png");
+}
+.creditcard-display .credit-card-type.uke {
+  background-image: url("../../../../images/credit-cards/uke.png");
+}
+.creditcard-display .credit-card-type.mc {
+  background-image: url("../../../../images/credit-cards/mastercard.png");
+}
+.creditcard-display .credit-card-type.mastercard {
+  background-image: url("../../../../images/credit-cards/mastercard.png");
+}
+.creditcard-display .credit-card-type.maestro {
+  background-image: url("../../../../images/credit-cards/maestro.png");
+}
+.creditcard-display .credit-card-type.discover {
+  background-image: url("../../../../images/credit-cards/discover.png");
+}
+.creditcard-display .credit-card-type.amex {
+  background-image: url("../../../../images/credit-cards/amex.png");
+}
+.creditcard-display .credit-card-type.american-express {
+  background-image: url("../../../../images/credit-cards/amex.png");
+}
+.creditcard-display .credit-card-num {
+  padding: 0 10px;
+  font-size: 135%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.creditcard-display .credit-card-expire {
+  font-size: 11px;
+  color: #555;
+  display: inline-block;
+  vertical-align: middle;
+  padding-top: 1px;
+}
+.creditcard-input {
+  position: relative;
+}
+.creditcard-input input {
+  padding-right: 54px;
+  height: 32px;
+  width: 325px;
+}
+.creditcard-input.visa .credit-card-type,
+.creditcard-input.visa_electron .credit-card-type,
+.creditcard-input.uke .credit-card-type,
+.creditcard-input.mc .credit-card-type,
+.creditcard-input.mastercard .credit-card-type,
+.creditcard-input.maestro .credit-card-type,
+.creditcard-input.discover .credit-card-type,
+.creditcard-input.amex .credit-card-type,
+.creditcard-input.american-express .credit-card-type {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 51px;
+  height: 32px;
+}
+.creditcard-input.visa .credit-card-type {
+  background-image: url("../../../../images/credit-cards/visa.png");
+}
+.creditcard-input.visa_electron .credit-card-type {
+  background-image: url("../../../../images/credit-cards/visa_electron.png");
+}
+.creditcard-input.uke .credit-card-type {
+  background-image: url("../../../../images/credit-cards/uke.png");
+}
+.creditcard-input.mc .credit-card-type {
+  background-image: url("../../../../images/credit-cards/mastercard.png");
+}
+.creditcard-input.mastercard .credit-card-type {
+  background-image: url("../../../../images/credit-cards/mastercard.png");
+}
+.creditcard-input.maestro .credit-card-type {
+  background-image: url("../../../../images/credit-cards/maestro.png");
+}
+.creditcard-input.discover .credit-card-type {
+  background-image: url("../../../../images/credit-cards/discover.png");
+}
+.creditcard-input.amex .credit-card-type {
+  background-image: url("../../../../images/credit-cards/amex.png");
+}
+.creditcard-input.american-express .credit-card-type {
+  background-image: url("../../../../images/credit-cards/amex.png");
+}
 #upgrader {
   width: 100%;
   height: 100%;

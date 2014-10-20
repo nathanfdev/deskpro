@@ -777,12 +777,12 @@ pageMeta.lang = {{ {
 				</td>
 			</tr></tbody>
 			{% endif %}
-			{% if ticket.date_closed %}
+			{% if ticket.date_archived %}
 			<tbody><tr>
 				<th>{{ phrase('agent.general.date_archived') }}:</th>
 				<td>
-					<time class="timeago" datetime="{{ ticket.date_closed|date('c', 'UTC') }}"></time>
-					({{ ticket.date_closed|date }})
+					<time class="timeago" datetime="{{ ticket.date_archived|date('c', 'UTC') }}"></time>
+					({{ ticket.date_archived|date }})
 				</td>
 			</tr></tbody>
 			{% endif %}

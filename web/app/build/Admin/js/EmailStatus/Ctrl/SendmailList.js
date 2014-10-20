@@ -15,7 +15,7 @@
 
       Admin_EmailStatus_Ctrl_SendmailList.CTRL_AS = 'ListCtrl';
 
-      Admin_EmailStatus_Ctrl_SendmailList.DEPS = [];
+      Admin_EmailStatus_Ctrl_SendmailList.DEPS = ['DpDateService'];
 
       Admin_EmailStatus_Ctrl_SendmailList.prototype.init = function() {
         this.filter = {
@@ -80,7 +80,6 @@
             var i, _i, _ref;
             _this.stopSpinner('loading_page', true);
             _this.results = data.sendmail_queue;
-            _this.filter.page = data.page;
             _this.page = data.page;
             _this.num_pages = data.num_pages;
             _this.num_results = data.count;
@@ -91,6 +90,15 @@
             for (i = _i = 0, _ref = _this.num_pages; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
               _this.page_nums.push(i + 1);
             }
+            _this.results.map(function(res) {
+              res.date_created = _this.DpDateService.local(res.date_created);
+              if (res.date_sent) {
+                res.date_sent = _this.DpDateService.local(res.date_sent);
+              }
+              if (res.date_next_attempt) {
+                return res.date_next_attempt = _this.DpDateService.local(res.date_next_attempt);
+              }
+            });
             if (fallbackPrevPage && !_this.results.length && data.page > 1) {
               _this.filter.page = data.page - 1;
               return _this.loadResults();

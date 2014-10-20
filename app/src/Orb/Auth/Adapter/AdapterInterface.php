@@ -39,7 +39,7 @@ interface AdapterInterface
 	/**
 	 * Authenticate a user.
 	 *
-	 * @return
+	 * @return Result
 	 */
 	public function authenticate();
 }

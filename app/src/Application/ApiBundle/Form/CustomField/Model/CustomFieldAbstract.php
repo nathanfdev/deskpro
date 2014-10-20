@@ -67,6 +67,7 @@ abstract class CustomFieldAbstract
 	public $is_agent_field = false;
 	/** @var bool */
 	public $agent_validation_resolve = false;
+	public $display_order = 0;
 
 	/** @var \Application\DeskPRO\Entity\CustomDefAbstract|null */
 	protected $_field = null;

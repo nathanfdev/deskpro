@@ -107,6 +107,8 @@ define [
     	# @return {promise}
 		###
 		saveAccount: ->
+			return if @$scope.form_props.$invalid
+
 			if not @account.id and not @new_is_confirmed and @$scope.form.account_type != 'outgoing'
 				@showNewAccountConfirm()
 				return

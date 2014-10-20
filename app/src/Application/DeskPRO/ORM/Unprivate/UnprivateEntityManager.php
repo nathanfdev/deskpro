@@ -2,36 +2,29 @@
 /* This file has been auto-generated (2014-10-06). See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
 use Doctrine\ORM\Configuration, Doctrine\ORM\ORMException, Doctrine\ORM\UnitOfWork, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Mapping\ClassMetadataFactory;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use Exception;
 use Doctrine\Common\EventManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\LockMode;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Proxy\ProxyFactory;
 use Doctrine\ORM\Query\FilterCollection;
 use Doctrine\Common\Util\ClassUtils;
 class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
 {
-	/** @var \Doctrine\ORM\Configuration  */
     protected $config;
-	/** @var \Doctrine\DBAL\Connection  */
     protected $conn;
-	/** @var ClassMetadataFactory */
     protected $metadataFactory;
-	/** @var \Doctrine\ORM\UnitOfWork  */
     protected $unitOfWork;
-	/** @var EventManager */
     protected $eventManager;
-	/** @var \Doctrine\ORM\Proxy\ProxyFactory  */
     protected $proxyFactory;
-	/** @var \Doctrine\ORM\Repository\RepositoryFactory  */
     protected $repositoryFactory;
-	/** @var Query\Expr */
     protected $expressionBuilder;
-	/** @var bool  */
     protected $closed = false;
-	/** @var FilterCollection */
     protected $filterCollection;
     protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
     {

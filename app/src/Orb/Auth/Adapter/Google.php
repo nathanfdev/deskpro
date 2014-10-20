@@ -34,10 +34,9 @@
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
-
-use \LightOpenID;
+use LightOpenID;
+use Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 

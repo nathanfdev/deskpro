@@ -215,6 +215,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		Array.each(this.currentDisplayModify, function(f) {
 			if (f.field_type == 'ticket_field') {
 				var classname = 'ticket_field_' + f.field_id;
+			} else if (f.field_type == 'custom_field') {
+				var classname = 'custom_field_' + f.field_id;
 			} else {
 				var classname = f.field_type;
 			}
@@ -265,6 +267,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		Array.each(this.currentDisplay, function(f) {
 			if (f.field_type == 'ticket_field') {
 				var classname = 'ticket_field_' + f.field_id;
+			} else if (f.field_type == 'custom_field') {
+				var classname = 'custom_field_' + f.field_id;
 			} else {
 				var classname = f.field_type;
 			}

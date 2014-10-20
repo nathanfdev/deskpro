@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 	class Admin_Agents_Ctrl_Import extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Agents_Ctrl_Import'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = ['$http', '$upload']
+		@DEPS      = ['$http', '$upload', 'DpLicense']
 
 		init: ->
 			@busy = false
@@ -37,13 +37,31 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		sendEmails: (filename) ->
 			@busy = true
+
+			agents = {}
+			@emails.map (email) =>
+				agents[email] = {email: email} # make unique
+
+			@Api.sendPostJson('/agents_bulk/check', {agents: agents, filename: filename}).then( (res) =>
+				@busy = false
+				if res.data.need_plan
+					@DpLicense.openUpgradeLicense('upgrade_plan').then(=>
+						@doSendEmails(filename)
+					)
+				else
+					@doSendEmails(filename)
+			, =>
+				@busy = false
+			)
+
+		doSendEmails: (filename) ->
+			@busy = true
 			@page = 1
 
 			agents = {}
 			@emails.map (email) =>
 				agents[email] = {email: email} # make unique
 
-			# todo redo with agents dataservice (provided in round robin branch)
 			@Api.sendPostJson('/agents_bulk', {agents: agents, filename: filename}).then(
 				(data) =>
 					@busy = false
@@ -66,8 +84,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				() =>
 					@busy = false
 			)
-
-
 
 		submitEmails: ->
 			if !@$scope.Form.$valid then return false

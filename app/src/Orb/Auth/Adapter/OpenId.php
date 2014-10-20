@@ -34,10 +34,9 @@
 
 namespace Orb\Auth\Adapter;
 
-use \Orb\Util\Arrays;
-
-use \Orb\Auth\StateHandler\StateHandlerInterface;
-use \Orb\Auth\Result;
+use Orb\Auth\Result;
+use Orb\Auth\StateHandler\StateHandlerInterface;
+use Orb\Util\Arrays;
 
 class OpenId extends AbstractCallbackAdatper
 {

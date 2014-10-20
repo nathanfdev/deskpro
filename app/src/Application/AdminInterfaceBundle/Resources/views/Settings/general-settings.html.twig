@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.save()">
 	<section class="dp-paneblock dp-listpane">
 	<header>
 		<h3>Settings</h3>
@@ -17,7 +17,7 @@
 			</div>
 			<div class="form-group">
 				<div class="col-lg-12">
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.deskpro_name">
 						<label>
 							<h4>Helpdesk Name</h4>
 						</label>
@@ -25,10 +25,11 @@
 							This is the name of your helpdesk. The name is displayed to users
 							in their browser window title, and is also used in the default footer email template.
 						</span>
-						<input type="text" class="form-control" ng-model="settings.deskpro_name" style="width: 40%" />
+						<input type="text" name="deskpro_name" class="form-control" ng-model="settings.deskpro_name"
+                               style="width: 40%" required autofocus />
 					</div>
 					{% if not app.isCloud() %}
-						<div class="inner-group">
+						<div class="inner-group" dp-error-class="form_props.deskpro_url">
 							<label>
 								<h4>
 									Helpdesk URL
@@ -39,7 +40,8 @@
 								to link to your helpdesk. For example, in email notifications.
 							</span>
 
-							<input type="text" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
+							<input type="text" name="deskpro_url" class="form-control" ng-model="settings.deskpro_url" style="width: 40%"
+                                    required autofocus />
 						</div>
 
                         <div class="inner-group">
@@ -73,16 +75,17 @@
 			</div>
 			<div class="form-group">
 				<div class="col-lg-12">
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.site_name">
 						<label>
 							<h4>Website Name</h4>
 						</label>
 						<span class="help-block">
 							Enter the name of your company or company website.
 						</span>
-						<input type="text" class="form-control" ng-model="settings.site_name" style="width: 40%" />
+						<input type="text" name="site_name" class="form-control" ng-model="settings.site_name"
+                               style="width: 40%" required autofocus />
 					</div>
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.site_url">
 						<label>
 							<h4>
 								Website URL
@@ -91,7 +94,8 @@
 						<span class="help-block">
 							Enter the URL to your company website.
 						</span>
-						<input type="text" class="form-control" ng-model="settings.site_url" style="width: 40%" />
+						<input type="text" name="site_url" class="form-control" ng-model="settings.site_url"
+                               style="width: 40%" required autofocus />
 					</div>
 				</div>
 			</div>
@@ -159,35 +163,40 @@
 							{% endfor %}
 						</select>
 					</div>
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.date_fulltime">
 						<label style="width: 200px;">
 							<h4>Full date and time format</h4>
 						</label>
-						<input type="text" class="form-control" ng-model="settings.date_fulltime" style="width: 210px;" />
+						<input type="text" name="date_fulltime" class="form-control" ng-model="settings.date_fulltime"
+                               style="width: 210px;" required autofocus />
 					</div>
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.date_full">
 						<label style="width: 200px;">
 							<h4>Full date format</h4>
 						</label>
-						<input type="text" class="form-control" ng-model="settings.date_full" style="width: 210px;" />
+						<input type="text" name="date_full" class="form-control" ng-model="settings.date_full"
+                               style="width: 210px;" required autofocus />
 					</div>
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.date_day">
 						<label style="width: 200px;">
 							<h4>Date format</h4>
 						</label>
-						<input type="text" class="form-control" ng-model="settings.date_day" style="width: 210px;" />
+						<input type="text" name="date_day" class="form-control" ng-model="settings.date_day"
+                               style="width: 210px;" required autofocus />
 					</div>
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.date_day_short">
 						<label style="width: 200px;">
 							<h4>Short date format</h4>
 						</label>
-						<input type="text" class="form-control" ng-model="settings.date_day_short" style="width: 210px;" />
+						<input type="text" name="date_day_short" class="form-control" ng-model="settings.date_day_short"
+                               style="width: 210px;" required autofocus />
 					</div>
-					<div class="inner-group">
+					<div class="inner-group" dp-error-class="form_props.date_time">
 						<label style="width: 200px;">
 							<h4>Time format</h4>
 						</label>
-						<input type="text" class="form-control" ng-model="settings.date_time" style="width: 210px;" />
+						<input type="text" name="date_time" class="form-control" ng-model="settings.date_time"
+                               style="width: 210px;" required autofocus />
 					</div>
 				</div>
 			</div>

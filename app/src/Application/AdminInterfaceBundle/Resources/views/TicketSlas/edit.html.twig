@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
@@ -142,10 +142,18 @@
 				<div class="dp-content">
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
-						<ul></ul>
+						<ul>
+                            <li ng-show="form_props.title.$error.required">
+                                {{ phrase('adm.validation.required_title') }}
+                            </li>
+						</ul>
 					</div>
-					<div class="dp-delete-control" ng-if="EditCtrl.sla.id">
-						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.sla.id);">Delete</button>
+					<div class="dp-delete-control" ng-if="EditCtrl.sla.id"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
+						<button class="btn btn-danger"
+                                ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.sla.id);">
+                            Delete
+                        </button>
 					</div>
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving">
