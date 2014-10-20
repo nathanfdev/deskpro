@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="EditCtrl.doSave()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.doSave()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 
@@ -12,7 +12,8 @@
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group" dp-error-class="form_props.title">
-									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title" style="width: 50%;" />
+									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title"
+                                           style="width: 50%;" required autofocus />
 									<span class="help-block">
 										The language title as it appears to users.
 									</span>
@@ -24,7 +25,7 @@
 								<h3>Edit Phrases</h3>
 							</div>
 							<div class="col-lg-9">
-								<div class="inner-group" dp-error-class="form_props.title">
+								<div class="inner-group">
 									<a class="btn btn-info" href="{{ ng_href('setup.phrases', "{id: 'phrases-'+EditCtrl.pack.id}") }}"><i class="fa fa-file-text-o"></i> Edit Phrases</a>
 								</div>
 							</div>
@@ -35,7 +36,8 @@
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group" dp-error-class="form_props.locale">
-									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.locale" style="width: 100px" />
+									<input type="text" class="form-control" name="locale" ng-model="EditCtrl.form.locale"
+                                           style="width: 100px" required autofocus />
 									<span class="help-block">
 										This is the <a href="http://www.w3.org/International/articles/language-tags/">standard locale code</a> for the language.
 									</span>
@@ -150,14 +152,15 @@
 			</article>
 			<footer>
 				<div class="dp-content">
-					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+					<div class="text-danger" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
-							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.validation.required_lang_title') }}</li>
+                            <li ng-show="form_props.locale.$error.required">{{ phrase('adm.validation.required_locale_title') }}</li>
 						</ul>
 					</div>
 
-					<div class="dp-delete-control">
+					<div class="dp-delete-control" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button ng-if="isDefaultLang()" type="button" class="btn btn-danger" tooltip="You cannot uninstall the default language." style="opacity: 0.7;" ng-click="$event.preventDefault(); EditCtrl.startUninstall();">
 							Uninstall Language
 						</button>

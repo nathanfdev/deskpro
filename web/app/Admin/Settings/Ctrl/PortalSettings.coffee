@@ -44,7 +44,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				@settings = angular.copy(@$scope.settings)
 
 				@stopSpinner('saving').then(=>
-					@Growl.success(@getRegisteredMessage('portal_settings'))
+					@Growl.success(@getRegisteredMessage('saved_settings'))
 				)
 			).error( (info, code) =>
 				@stopSpinner('saving', true)

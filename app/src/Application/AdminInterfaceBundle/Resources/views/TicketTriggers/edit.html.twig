@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="TicketTriggersEdit.saveTrigger()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && TicketTriggersEdit.saveTrigger()">
 
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
@@ -178,7 +178,9 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
-							<li ng-show="form_props.title.$error.required">Please enter a title</li>
+							<li ng-show="form_props.title.$error.required">
+                                {{ phrase('adm.validation.required_title') }}
+							</li>
 						</ul>
 					</div>
 					<div class="text-danger ng-hide" ng-show="show_errors">
@@ -203,7 +205,8 @@
 						</div>
 					</div>
 
-					<div class="dp-delete-control" ng-if="TicketTriggersEdit.trigger.id">
+					<div class="dp-delete-control" ng-if="TicketTriggersEdit.trigger.id"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.List.startTriggerDelete(TicketTriggersEdit.trigger.id);">Delete</button>
 					</div>
 
