@@ -233,6 +233,29 @@ class NewsController extends AbstractController
 			case 'undelete':
 				$news->status_code = 'published';
 				break;
+
+			case 'auto-unpub':
+				$date = date_create('@' . $this->in->getUint('end_timestamp'));
+				$action = $this->in->getString('end_action');
+
+				$news->date_end = $date;
+				$news->end_action = $action;
+				break;
+
+			case 'remove-auto-unpub':
+				$news->date_end = null;
+				$news->end_action = null;
+				break;
+
+			case 'auto-pub':
+				$date = date_create('@' . $this->in->getUint('pub_timestamp'));
+
+				$news->date_published = $date;
+				break;
+
+			case 'remove-auto-pub':
+				$news->date_published = null;
+				break;
 		}
 
 		$this->em->persist($news);

@@ -439,6 +439,12 @@ class KbController extends AbstractController
 				$article->end_action = $action;
 				break;
 
+			case 'auto-pub':
+				$date = date_create('@' . $this->in->getUint('pub_timestamp'));
+
+				$article->date_published = $date;
+				break;
+
 			case 'remove-auto-pub':
 				$article->date_published = null;
 				break;
