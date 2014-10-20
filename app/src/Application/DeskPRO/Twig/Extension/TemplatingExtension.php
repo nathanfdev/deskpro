@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Data\Countries;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
@@ -1697,6 +1699,34 @@ window._trackJs = {
 HTML;
 		return $html;
 	}
+
+    public function renderTicketTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
+    {
+        // Simple string, cant be a template so dont waste time evaluating it
+        if (strpos($string, '{{') === false && strpos($string, '{%') === false) {
+            return $string;
+        }
+
+        $vars = array(
+            'performer'     => $context->getPersonContext(),
+            'ticket'        => $ticket,
+            'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
+            'site_name'     => $this->getContainer()->getSetting('core.site_name'),
+            'user_vars'     => $context->getUserVars(),
+        );
+
+        if ($extra_vars) {
+            $vars = array_merge($vars, $extra_vars);
+        }
+
+        try {
+            $rendered = $this->getContainer()->getTwig()->renderStringTemplate($string, $vars);
+        } catch (\Exception $e) {
+            return $string;
+        }
+
+        return $rendered;
+    }
 }
 
 function deskpro_twig_filter_dummy($ret) {
