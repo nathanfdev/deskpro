@@ -597,15 +597,17 @@
       Admin_Main_DataService_BaseListEdit.prototype.get = function(id) {
         var deferred;
         deferred = this.$q.defer();
-        if (id == null) {
-          deferred.resolve(null);
-        } else {
-          this.all().then((function(_this) {
-            return function() {
-              return deferred.resolve(_this.map[id]);
-            };
-          })(this));
-        }
+        this.all().then((function(_this) {
+          return function() {
+            if (!id) {
+              return deferred.resolve(null);
+            }
+          };
+        })(this), (function(_this) {
+          return function() {
+            return deferred.resolve(_this.map[id]);
+          };
+        })(this));
         return deferred.promise;
       };
 

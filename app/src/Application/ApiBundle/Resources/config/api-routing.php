@@ -4066,6 +4066,12 @@ $collection->create('api_api_keys_regenerate', array(
 	'methods'     => array('POST'),
 ));
 
+$collection->create('api_api_keys_replay_log_entry', array(
+    'path'        => '/api_keys/replay/{logEntryId}',
+    'controller'  => 'ApiBundle:ApiKeys:replayLogEntry',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # Tasks
 ########################################################################################################################

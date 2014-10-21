@@ -450,11 +450,10 @@ define [
 		# simple proxy
 		get: (id) ->
 			deferred = @$q.defer()
-
-			if !id?
-				deferred.resolve null
-			else
-				@all().then => deferred.resolve @map[id]
+			@all().then =>
+				deferred.resolve null if !id
+			, =>
+				deferred.resolve @map[id]
 
 			deferred.promise
 
@@ -465,8 +464,10 @@ define [
 			def = @$q.defer()
 
 			@_doSave(data).then(
-				(data) => def.resolve @_addModel data
-				(res) => def.reject res
+				(data) =>
+					def.resolve @_addModel data
+				(res) =>
+					def.reject res
 			)
 
 			def.promise

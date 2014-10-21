@@ -31,15 +31,18 @@
  * @package DeskPRO
  */
 
-namespace Application\DeskPRO\ApiKeys\Form\Type;
+namespace Application\DeskPRO\Form\Type;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ApiKeyPropsType extends AbstractType
+class ApiKeyType extends AbstractType
 {
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
@@ -64,6 +67,13 @@ class ApiKeyPropsType extends AbstractType
 			'multiple' => true, // an array
 			'required' => false,
 		));
+
+		// cleanup extra data
+		$builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event){
+			$data = $event->getData();
+			$form = $event->getForm();
+			$event->setData(array_intersect_key($data, $form->all()));
+		});
 	}
 
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -77,6 +87,6 @@ class ApiKeyPropsType extends AbstractType
 
 	public function getName()
 	{
-		return 'twitter_account';
+		return 'api_key';
 	}
 }
