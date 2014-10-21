@@ -36,10 +36,13 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
+	/** @var string */
 	protected $tpl_prefix = 'AgentBundle:Login';
+	/** @var string */
 	protected $route_prefix = 'agent';
 
 	/**
@@ -58,8 +61,17 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			else return $this->redirectRoute('agent');
 		}
 
+		$has_logged_out = $this->in->checkIsset('o');
+
+		//
+		// SSO Automatic Redirecting
+		//
+		if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), $has_logged_out)) {
+			return $res;
+		}
+
 		// Already logged in
-		if ($this->session->getPerson() && $this->session->getPerson()->is_agent) {
+		if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
 			if ($return) return $this->redirect($return);
 			else return $this->redirectRoute($this->route_prefix);
 		}
@@ -105,8 +117,6 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 			}
 		}
 
-		$has_logged_out = $this->in->checkIsset('o');
-
 		$failed_login_name = false;
 		if ($this->session->has('failed_login_name')) {
 			$failed_login_name = $this->session->get('failed_login_name');
@@ -121,15 +131,16 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
 		$browser_warnings = UserAgentRequirementCheck::getInterfaceWarnings();
 
+
 		return $this->render('AgentBundle:Login:index.html.twig', array(
-			'return'             => $return,
-			'route_prefix'       => $this->route_prefix,
-			'logo_blob'          => $logo_blob,
-			'has_logged_out'     => $has_logged_out,
-			'has_done_reset'     => $has_done_reset,
-			'failed_login_name'  => $failed_login_name,
-			'browser_warnings'   => $browser_warnings,
-			'timeout'            => $this->in->getBool('timeout')
+			'return'                   => $return,
+			'route_prefix'             => $this->route_prefix,
+			'logo_blob'                => $logo_blob,
+			'has_logged_out'           => $has_logged_out,
+			'has_done_reset'           => $has_done_reset,
+			'failed_login_name'        => $failed_login_name,
+			'browser_warnings'         => $browser_warnings,
+			'timeout'                  => $this->in->getBool('timeout')
 		));
 	}
 

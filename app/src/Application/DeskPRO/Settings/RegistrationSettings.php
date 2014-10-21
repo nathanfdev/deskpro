@@ -61,13 +61,37 @@ class RegistrationSettings
 	 */
 	private $everyone_group;
 
+	/**
+	 * @var bool
+	 */
 	public $reg_enabled;
+	/**
+	 * @var bool
+	 */
 	public $reg_required;
+	/**
+	 * @var bool
+	 */
 	public $email_validation;
+	/**
+	 * @var bool
+	 */
 	public $agent_validation;
+	/**
+	 * @var bool
+	 */
 	public $existing_account_login;
+	/**
+	 * @var bool
+	 */
 	public $everyone_group_enabled;
+	/**
+	 * @var bool
+	 */
 	public $email_validation_ticket_web;
+	/**
+	 * @var bool
+	 */
 	public $email_validation_ticket_email;
 
 

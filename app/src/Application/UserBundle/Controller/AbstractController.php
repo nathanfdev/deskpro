@@ -47,6 +47,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public $person;
 
+	/** @var string */
 	protected $search_query = '';
 
 	protected function init()
@@ -92,6 +93,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
 				'ip' => dp_get_user_ip_address()
 			));
+		}
+
+		///////////////////////////////////////////
+		// SSO Automatic Redirecting
+		//
+		if (!$this->person['id']) {
+			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
+				return $res;
+			}
 		}
 
 		if (

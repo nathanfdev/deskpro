@@ -33,6 +33,7 @@ namespace Application\ImportBundle\RecordMapper;
 
 class TicketStatusRecordMapper implements RecordMapperInterface
 {
+	/** @var array  */
 	protected $validStatuses = array(
 		'awaiting_agent',
 		'awaiting_user',

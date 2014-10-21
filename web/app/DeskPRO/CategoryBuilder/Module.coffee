@@ -33,6 +33,7 @@ define [
 				controllerAs: 'CategoryBuilder',
 				scope: {
 					saveFlatArray: '='
+					fieldName: '@fieldName'
 				},
 				link: (scope, iElement, iAttrs, ngModel) ->
 					scope.categoryBuilder.setModel(ngModel)

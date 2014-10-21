@@ -33,6 +33,7 @@ namespace Application\ImportBundle;
 
 class DirectoryIteratorFilter extends \RecursiveFilterIterator
 {
+	/** @var bool  */
 	private $exclude_done = false;
 
 	public function excludeDone()

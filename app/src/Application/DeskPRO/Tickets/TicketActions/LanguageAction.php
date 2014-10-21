@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 
 class LanguageAction extends AbstractAction implements PermissionableAction
 {
+	/** @var int */
 	protected $language_id;
 
 	public function __construct($language)

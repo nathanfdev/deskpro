@@ -42,13 +42,19 @@ use Application\DeskPRO\Entity;
  */
 class AgentPrefs implements \Orb\Helper\ShortCallableInterface
 {
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
+	/** @var array */
 	protected $prefs = array();
 
+	/** @var array */
 	protected $loaded_prefs = array();
+	/** @var array */
 	protected $loaded_pref_prefixes = array();
 
+	/** @var array */
 	protected $preload_ids = array('agent.ticket_signature', 'agent.ticket_signature_html');
+	/** @var array */
 	protected $preload_prefixes = array('agent.ui.flag.');
 
 	public function __construct(Entity\Person $person)

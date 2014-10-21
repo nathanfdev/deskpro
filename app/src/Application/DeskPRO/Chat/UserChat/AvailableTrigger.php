@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use DeskPRO\Kernel\KernelErrorHandler;
 
 class AvailableTrigger
@@ -70,14 +71,13 @@ class AvailableTrigger
 			}
 
 			if ($agent_ids) {
-				$agent_ids_cs = implode(',', $agent_ids);
 
 				// At least one department needs to be allowed for the online agents
-				$ug_ids = App::getDb()->fetchAllCol("
+				$ug_ids = App::getDb()->fetchAllCol('
 					SELECT DISTINCT usergroup_id
 					FROM person2usergroups
-					WHERE person_id IN ($agent_ids_cs)
-				");
+					WHERE person_id IN (?)
+				', array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 				if (!$ug_ids) {
 					$ug_ids = array(0);
 				}
@@ -89,14 +89,13 @@ class AvailableTrigger
 				if (in_array($all1, $ug_ids) || in_array($all2, $ug_ids)) {
 					$dep_check = true;
 				} else {
-					$ug_ids_cs = implode(',', $ug_ids);
 
-					$dep_check = App::getDb()->fetchColumn("
+					$dep_check = App::getDb()->fetchColumn('
 						SELECT department_id
 						FROM department_permissions
-						WHERE (person_id IN ($agent_ids_cs) or usergroup_id IN ($ug_ids_cs)) AND app = 'chat' AND value = '1'
+						WHERE (person_id IN (?) or usergroup_id IN (?)) AND app = "chat" AND value = "1"
 						LIMIT 1
-					");
+					', array($agent_ids, $ug_ids), array(Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY));
 				}
 
 				if ($dep_check) {

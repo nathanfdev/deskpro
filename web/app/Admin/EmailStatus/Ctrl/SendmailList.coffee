@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 	class Admin_EmailStatus_Ctrl_SendmailList extends Admin_Ctrl_Base
 		@CTRL_ID = 'Admin_EmailStatus_Ctrl_SendmailList'
 		@CTRL_AS = 'ListCtrl'
-		@DEPS    = []
+		@DEPS    = ['DpDateService']
 
 		init: ->
 			@filter = {
@@ -55,7 +55,6 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 			promise = @Api.sendGet('/email_status/sendmail', {filter: @filter}).success( (data) =>
 				@stopSpinner('loading_page', true)
 				@results     = data.sendmail_queue
-				@filter.page = data.page
 				@page        = data.page
 				@num_pages   = data.num_pages
 				@num_results = data.count
@@ -66,6 +65,13 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 				@page_nums = []
 				for i in [0...@num_pages]
 					@page_nums.push(i+1)
+
+				@results.map (res) =>
+					res.date_created = @DpDateService.local res.date_created
+					if res.date_sent
+						res.date_sent = @DpDateService.local res.date_sent
+					if res.date_next_attempt
+						res.date_next_attempt = @DpDateService.local res.date_next_attempt
 
 				if fallbackPrevPage and !@results.length and data.page > 1
 					@filter.page = data.page - 1;

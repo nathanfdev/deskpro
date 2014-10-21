@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -73,11 +74,29 @@ class CategoryHierarchy
 	 */
 	protected $cache_tag = null;
 
+	/**
+	 * @var null|array
+	 */
 	protected $_cats = null;
+	/**
+	 * @var null|array
+	 */
 	protected $_cat_hierarchy = null;
+	/**
+	 * @var null|array
+	 */
 	protected $_cat_hierarchy_flat = null;
+	/**
+	 * @var null|array
+	 */
 	protected $_cat_names = null;
+	/**
+	 * @var array
+	 */
 	protected $_cat_ids = array();
+	/**
+	 * @var array
+	 */
 	protected $_cat_parent_map = array();
 
 	public function __construct(EntityManager $em, AbstractEntityRepository $repos, $entity_name, ClassMetadata $class, $cache_tag = null)
@@ -499,11 +518,13 @@ class CategoryHierarchy
 			return array();
 		}
 
-		$cat_ids = App::getDb()->fetchAllCol("
+		$conn = App::getDb();
+		$tbl = $conn->quoteIdentifier($permission_table_name);
+		$cat_ids = $conn->fetchAllCol("
 			SELECT category_id
-			FROM {$permission_table_name}
-			WHERE usergroup_id IN (" . implode(',', $usergroup_ids) . ")
-		");
+			FROM {$tbl}
+			WHERE usergroup_id IN (?)
+		", array($usergroup_ids), array(Connection::PARAM_INT_ARRAY));
 
 		return $cat_ids;
 	}

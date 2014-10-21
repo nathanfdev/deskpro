@@ -129,8 +129,6 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		parent::__construct($params, $driver, $config, $eventManager);
 
-		$db = $this;
-
 		if (isset($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) && $GLOBALS['DP_CONFIG']['debug']['enable_transaction_log']) {
 			$this->transaction_logger = new Logger();
 			if ($GLOBALS['DP_CONFIG']['debug']['enable_transaction_log'] == 'separate_files') {
@@ -208,9 +206,9 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $index
 	 * @return array
 	 */
-	public function fetchAllKeyed($statement, array $params = array(), $index = 'id')
+	public function fetchAllKeyed($statement, array $params = array(), $index = 'id', $types = array())
 	{
-		$statement = $this->executeQuery($statement, $params);
+		$statement = $this->executeQuery($statement, $params, $types);
 		$array = array();
 
 		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -222,19 +220,21 @@ class Connection extends \Doctrine\DBAL\Connection
 	}
 
 
-
 	/**
 	 * Execute a query and return all results grouped into a multi-dimentional array by $group_key.
 	 * Optionally, the sub-array can be indexed by $index_key.
 	 *
-	 * @param string $statement
+	 * @param $statement
 	 * @param array $params
-	 * @param string $group_key
-	 * @param string $index_key
+	 * @param $group_key
+	 * @param null $index_key
+	 * @param null $col_key
+	 * @param array $types
+	 * @return array
 	 */
-	public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null)
+	public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null, $types = array())
 	{
-		$statement = $this->executeQuery($statement, $params);
+		$statement = $this->executeQuery($statement, $params, $types);
 		$array = array();
 
 		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -255,21 +255,20 @@ class Connection extends \Doctrine\DBAL\Connection
 		return $array;
 	}
 
-
-
 	/**
 	 * Execute a query and return a key=>value pair.
-	 *
-	 * @param string $statement
+	 * @param $statement
 	 * @param array $params
-	 * @param string $key_index
-	 * @param string $val_index
+	 * @param array $types
+	 * @param int $key_index
+	 * @param int $val_index
 	 * @param int $mode Change to PDO::FETCH_ASSOC if you want to specify a string indexes
+	 * @param int $nullkey
 	 * @return array
 	 */
-	public function fetchAllKeyValue($statement, array $params = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
+	public function fetchAllKeyValue($statement, array $params = array(), $types = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM, $nullkey = 0)
 	{
-		$statement = $this->executeQuery($statement, $params);
+		$statement = $this->executeQuery($statement, $params, $types);
 		$array = array();
 
 		while ($row = $statement->fetch($mode)) {
@@ -294,9 +293,9 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param int $mode Change to PDO::FETCH_ASSOC if you want to specify a string $index
 	 * @return array
 	 */
-	public function fetchAllCol($statement, array $params = array(), $index = 0, $mode = PDO::FETCH_NUM)
+	public function fetchAllCol($statement, array $params = array(), $types = array(), $index = 0, $mode = PDO::FETCH_NUM)
 	{
-		$statement = $this->executeQuery($statement, $params);
+		$statement = $this->executeQuery($statement, $params, $types);
 		$array = array();
 
 		while ($row = $statement->fetch($mode)) {
@@ -457,28 +456,22 @@ class Connection extends \Doctrine\DBAL\Connection
 	 */
 	public function count($tableName, $where = null)
 	{
-		$this->connect();
-
-		$sql = "SELECT COUNT(*) FROM `$tableName`";
-
-		$params = array();
+		$qb = $this->createQueryBuilder()
+			->select('COUNT(*)')
+			->from($tableName, 't');
+		$eb = $qb->expr();
 
 		if ($where) {
 			if (is_array($where)) {
-				$placeholders = array();
-
 				foreach ($where as $columnName => $value) {
-					$params[] = $value;
-					$placeholders[] = $columnName . ' = ?';
+					$qb->andWhere($eb->eq($columnName, $value));
 				}
-
-				$sql .= " WHERE " . implode(" AND ", $placeholders);
 			} else {
-				$sql .= " WHERE $where";
+				$qb->where($where);
 			}
 		}
 
-		return $this->fetchColumn($sql, $params);
+		return $qb->execute()->fetchColumn();
 	}
 
 	public function countWithPlaceholders($tableName, $where = null, array $params = array())
@@ -496,7 +489,10 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $query
 	 * @param array $params
 	 * @param array $types
-	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile|null $qcp
+	 * @param \Doctrine\DBAL\Cache\QueryCacheProfile $qcp
+	 * @param int $is_retry
+	 * @return \Doctrine\DBAL\Cache\ArrayStatement|\Doctrine\DBAL\Cache\ResultCacheStatement|\Doctrine\DBAL\Driver\Statement
+	 * @throws \Exception
 	 */
 	public function executeQuery($query, array $params = array(), $types = array(), \Doctrine\DBAL\Cache\QueryCacheProfile $qcp = null, $is_retry = 0)
 	{

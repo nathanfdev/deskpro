@@ -44,7 +44,9 @@ use Application\DeskPRO\People\PersonContextInterface;
  */
 class AgentTeamAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
+	/** @var int */
 	protected $agent_team_id;
+	/** @var Person */
 	protected $person_context;
 
 	public function __construct($agent_team)

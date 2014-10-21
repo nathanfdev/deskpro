@@ -175,7 +175,13 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $account;
 
+	/**
+	 * @var array
+	 */
 	protected static $_stubs = array();
+	/**
+	 * @var bool
+	 */
 	protected static $_processing_stubs = false;
 
 	/**
@@ -353,6 +359,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		return $output;
 	}
 
+	/**
+	 * @var array
+	 */
 	protected static $_stub_read = array(
 		'id' => true,
 		'is_stub' => true,

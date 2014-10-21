@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 
 class Dp3Ldap extends AbstractAdapter
@@ -66,7 +67,7 @@ class Dp3Ldap extends AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			'form_login',
+			UsersourceInfo::CAPABILITY_FORM_LOGIN,
 		);
 	}
 

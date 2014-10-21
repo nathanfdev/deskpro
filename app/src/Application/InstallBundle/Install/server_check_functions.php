@@ -302,37 +302,37 @@ function deskpro_install_check_data_writable($data_dir = null)
 
 	// data directory
 	$data_dir = dp_get_data_dir();
-	if (!is_dir($data_dir) OR (!is_writable($data_dir))) {
+	if (!is_dir($data_dir) || (!is_writable($data_dir))) {
 		$failed = true;
 	}
 
 	// debug directory
 	$debug_dir = dp_get_debug_dir();
-	if (!is_dir($debug_dir) OR (!is_writable($debug_dir))) {
+	if (!is_dir($debug_dir) || (!is_writable($debug_dir))) {
 		$failed = true;
 	}
 
 	// log directory
 	$log_dir = dp_get_data_dir();
-	if (!is_dir($log_dir) OR (!is_writable($log_dir))) {
+	if (!is_dir($log_dir) || (!is_writable($log_dir))) {
 		$failed = true;
 	}
 
 	// backup directory
 	$backup_dir = dp_get_data_dir();
-	if (!is_dir($backup_dir) OR (!is_writable($backup_dir))) {
+	if (!is_dir($backup_dir) || (!is_writable($backup_dir))) {
 		$failed = true;
 	}
 
 	// blob directory
 	$blob_dir = dp_get_blob_dir();
-	if (!is_dir($blob_dir) OR (!is_writable($blob_dir))) {
+	if (!is_dir($blob_dir) || (!is_writable($blob_dir))) {
 		$failed = true;
 	}
 
 	// tmp directory
 	$tmp_dir = dp_get_tmp_dir();
-	if (!is_dir($tmp_dir) OR (!is_writable($tmp_dir))) {
+	if (!is_dir($tmp_dir) || (!is_writable($tmp_dir))) {
 		$failed = true;
 	}
 

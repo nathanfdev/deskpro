@@ -39,6 +39,7 @@ use DeskPRO\Kernel\KernelErrorHandler;
 
 class Environment extends \Twig_Environment
 {
+	/** @var bool  */
 	protected $ext_dirty = false;
 
 	public function __construct(\Twig_LoaderInterface $loader = null, $options = array())

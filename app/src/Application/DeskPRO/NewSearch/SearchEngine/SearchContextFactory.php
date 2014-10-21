@@ -73,7 +73,7 @@ class SearchContextFactory
 			$ids = $person->PermissionsManager->NewsCategories->getAllowedCategories();
 			$context->setNewsCategoryIds($ids);
 		}
-		if ($person->hasPerm('download.use')) {
+		if ($person->hasPerm('downloads.use')) {
 			$ids = $person->PermissionsManager->DownloadCategories->getAllowedCategories();
 			$context->setDownloadCategoryIds($ids);
 		}

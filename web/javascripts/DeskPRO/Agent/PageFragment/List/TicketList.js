@@ -1647,12 +1647,12 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 					valB = ticketB.date_resolved_ts;
 				}
 				break;
-			case 'date_closed':
-				if (ticketA.date_closed) {
-					valA = ticketA.date_closed_ts;
+			case 'date_archived':
+				if (ticketA.date_archived) {
+					valA = ticketA.date_archived_ts;
 				}
-				if (ticketB.date_closed) {
-					valB = ticketB.date_closed_ts;
+				if (ticketB.date_archived) {
+					valB = ticketB.date_archived_ts;
 				}
 				break;
 			case 'total_user_waiting':

@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Visitor;
 use Orb\Util\Util;
 
 class FeedbackSearch extends SearcherAbstract
@@ -54,7 +55,13 @@ class FeedbackSearch extends SearcherAbstract
 	const ORDER_DATE  = 'id';
 	const ORDER_NUM_RATINGS = 'num_ratings';
 
+	/**
+	 * @var bool
+	 */
 	protected $include_hidden = false;
+	/**
+	 * @var Visitor
+	 */
 	protected $visitor;
 
 	public function setVisitor($visitor)
@@ -147,7 +154,6 @@ class FeedbackSearch extends SearcherAbstract
 			list ($order_join, $real_order_by) = $order_by;
 
 			$sql .= " $order_join ";
-			$order_by = $real_order_by;
 		}
 
 		#------------------------------

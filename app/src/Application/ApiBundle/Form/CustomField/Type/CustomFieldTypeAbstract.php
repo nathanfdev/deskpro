@@ -56,6 +56,9 @@ abstract class CustomFieldTypeAbstract extends AbstractType
 		$builder->add('required', 'checkbox', array('required' => false));
 		$builder->add('custom_css_classname', 'text', array('required' => false));
 
+	    $builder->add('is_enabled', 'checkbox', array('required' => false));
+	    $builder->add('is_agent_field', 'checkbox', array('required' => false));
+
 		$this->buildCustomFieldForm($builder, $options);
     }
 

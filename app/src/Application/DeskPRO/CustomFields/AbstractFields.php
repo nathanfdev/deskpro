@@ -71,7 +71,6 @@ abstract class AbstractFields
 	public function getFieldsDisplayArray($field_defs, $data_structured = array(), $field_group = null)
 	{
 		$custom_fields = array();
-		$has_value = false;
 		foreach ($field_defs as $f_def) {
 			$default_value = $f_def['default_value'];
 			if ($f_def->getTypeName() == 'hidden') {
@@ -97,9 +96,6 @@ abstract class AbstractFields
 				$form = $f->getForm();
 				$formView = $form->createView();
 			}
-
-			$rendered = $value ? $f_def->getHandler()->renderHtml($value) : null;
-			if ($rendered) $has_value = true;
 
 			$custom_fields[$f_def['id']] = array(
 				'elId'            => Util::requestUniqueIdString(),

@@ -21,8 +21,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 				# Dont list custom apps as "packages"
 				@packages = @packages.filter((x) -> !x.is_custom)
-				@general_packages = @packages.filter((x) -> !(x.tags.indexOf('usersources') != -1 and x.tags.length == 1))
-				@auth_packages = @packages.filter((x) -> x.tags.indexOf('usersources') != -1)
 
 				@apps = result.data.apps.apps.filter((x) -> !x.package.is_custom)
 				@custom_apps = result.data.apps.apps.filter((x) -> x.package.is_custom)

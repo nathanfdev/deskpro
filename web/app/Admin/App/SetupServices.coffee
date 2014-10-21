@@ -1,10 +1,12 @@
 define [
 	'Admin/Main/Service/SessionPing',
+	'Admin/Main/Service/DpDate',
 	'Admin/License/Service/DpLicense',
 	'Admin/Cloud/App/CloudService',
 	'angular'
 ], (
 	Admin_Main_Service_SessionPing,
+	Admin_Main_Service_DpDate,
 	Admin_License_Service_DpLicense,
 	Admin_Cloud_App_CloudService,
 	angular
@@ -17,6 +19,8 @@ define [
 		Module.service('DpLicense', ['Api', '$modal', '$http', '$q', (Api, $modal, $http, $q) ->
 			return new Admin_License_Service_DpLicense(Api, $modal, $http, $q)
 		])
+
+		Module.service('DpDateService', Admin_Main_Service_DpDate)
 
 		Module.service('Cloud', [ ->
 			return new Admin_Cloud_App_CloudService()

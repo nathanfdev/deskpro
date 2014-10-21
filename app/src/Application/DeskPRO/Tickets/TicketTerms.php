@@ -246,8 +246,6 @@ class TicketTerms
 			return true;
 		}
 
-		$info = $tracker->getChangedProperty($term);
-
 		if (strpos($op, '_to') !== false) {
 			// Changed to is the same as testing the current value!
 			$ticket2 = $ticket;
@@ -1729,9 +1727,7 @@ class TicketTerms
 	public function getDescriptions($as_html = false)
 	{
 		$descs = array();
-        $tr = App::getTranslator();
-
-		foreach ($this->terms as $info) {
+        foreach ($this->terms as $info) {
 
 			if (empty($info['type']) || empty($info['op']) || empty($info['options'])) {
 				continue;

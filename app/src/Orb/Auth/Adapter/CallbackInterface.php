@@ -58,4 +58,6 @@ interface CallbackInterface extends AdapterInterface
 	 * @param string $url The URL
 	 */
 	public function setCallbackUrl($url);
+
+	public function getCallbackUrl();
 }

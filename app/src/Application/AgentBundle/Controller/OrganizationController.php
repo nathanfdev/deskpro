@@ -36,12 +36,14 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\OrganizationFile;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Orb\Util\Arrays;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles viewing and editing an org
@@ -52,7 +54,7 @@ class OrganizationController extends AbstractController
 	# view
 	############################################################################
 
-	public function viewAction($organization_id)
+	public function viewAction(Request $request, $organization_id)
 	{
 		$org = $this->getOrgOr404($organization_id);
 
@@ -62,6 +64,13 @@ class OrganizationController extends AbstractController
 
 		$field_manager = $this->container->getSystemService('org_fields_manager');
 		$custom_fields = $field_manager->getDisplayArrayForObject($org);
+
+
+		// org specific custom fields definitions
+		$new_field_manager = $this->container->getCustomFieldManager();
+		$form = $new_field_manager->createDefinitionsFormForContext($org);
+		$custom_fields_definitions = $form->createView();
+
 
 		#------------------------------
 		# Misc info needed
@@ -143,6 +152,7 @@ class OrganizationController extends AbstractController
 			'org_charge_totals'  => $org_charge_totals,
 			'members_count'      => $members_count,
 			'custom_fields'      => $custom_fields,
+			'custom_fields_definitions' => $custom_fields_definitions,
 		));
 	}
 
@@ -233,12 +243,12 @@ class OrganizationController extends AbstractController
 					$usergroup_ids = array_unique($usergroup_ids);
 
 					// Make sure only valid ones are set
-					$usergroup_ids = $this->container->getDb()->fetchAllCol("
+					$usergroup_ids = $this->container->getDb()->fetchAllCol('
 						SELECT id
 						FROM usergroups
-						WHERE id IN (" . implode(',', $usergroup_ids).")
+						WHERE id IN (?)
 							AND sys_name IS NULL
-					");
+					', array($usergroup_ids), array(Connection::PARAM_INT_ARRAY));
 				}
 
 				$this->container->getDb()->delete('organization2usergroups', array('organization_id' => $org->id));
@@ -272,7 +282,7 @@ class OrganizationController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	public function ajaxSaveCustomFieldsAction($organization_id)
+	public function ajaxSaveCustomFieldsAction(Request $request, $organization_id)
 	{
 		if (!$this->person->hasPerm('agent_org.edit')) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -280,21 +290,27 @@ class OrganizationController extends AbstractController
 
 		$org = $this->getOrgOr404($organization_id);
 
-		$this->em->beginTransaction();
-
-		try {
-			$field_manager = $this->container->getSystemService('org_fields_manager');
-			$post_custom_fields = $this->request->request->get('custom_fields', array());
-			if (!empty($post_custom_fields)) {
-				$field_manager->saveFormToObject($post_custom_fields, $org);
-			}
-
-			$this->em->flush();
-			$this->em->commit();
-		} catch (\Exception $e) {
-			$this->em->rollback();
-			throw $e;
+		$field_manager = $this->container->getSystemService('org_fields_manager');
+		$post_custom_fields = $this->request->request->get('custom_fields', array());
+		if (!empty($post_custom_fields)) {
+			$field_manager->saveFormToObject($post_custom_fields, $org);
 		}
+
+		// specific org custom fields definitions
+		$manager = $this->container->getCustomFieldManager();
+		$form = $manager->createDefinitionsFormForContext($org);
+		// fix: jquery removes empty arrays from post request
+		if (!$request->request->has($form->getName())) {
+			$request->request->set($form->getName(), array());
+		}
+		if (!$form->handleRequest($request)->isValid()) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'invalid_custom_fields' => $form->getErrors(true, true)->current(),
+			));
+
+		}
+		$manager->flush($form);
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($org);
 
@@ -641,7 +657,7 @@ class OrganizationController extends AbstractController
 		$orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
 
 		if ($orgdomain) {
-			$count = $org_domain_manager->moveNonCompanyUsers($orgdomain);
+			$org_domain_manager->moveNonCompanyUsers($orgdomain);
 		}
 
 		$data = $this->getOrgEmailDisplayData($org);
@@ -665,7 +681,7 @@ class OrganizationController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
-		$count = $org_domain_manager->moveOtherCompanyUsers($orgdomain);
+		$org_domain_manager->moveOtherCompanyUsers($orgdomain);
 
 		$data = $this->getOrgEmailDisplayData($org);
 		return $this->render('AgentBundle:Organization:orgemail-display.html.twig', $data);

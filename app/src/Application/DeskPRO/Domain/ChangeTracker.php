@@ -47,8 +47,11 @@ use Application\DeskPRO\Entity;
  */
 abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 {
+	/** @var DomainObject */
 	protected $entity;
+	/** @var array */
 	protected $changes = array();
+	/** @var array */
 	public $extra = array();
 
 	public function __construct($entity)

@@ -38,11 +38,12 @@ use Symfony\Component\Console\Formatter\OutputFormatter;
 
 class MaxLineLengthFormatter extends OutputFormatter
 {
+	/** @var int  */
 	public $max_length = 80;
 
 	public function __construct($max_length)
 	{
-		$this->max_length = $max_length;
+		$this->max_length = (int) $max_length;
 	}
 
 	public function format($message)

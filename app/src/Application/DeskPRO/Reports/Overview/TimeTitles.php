@@ -38,6 +38,7 @@ class TimeTitles
 {
 	const LAST_TIME_MARKER   = 1893456000;
 
+	/** @var array  */
 	public static $time_phrases = array(
 		300                    => '< 5 minutes',
 		900                    => '5 - 15 minutes',

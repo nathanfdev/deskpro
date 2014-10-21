@@ -449,7 +449,7 @@ class ErrorReporter
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/ping-install.json');
 			$client->getRequest()->getPost()->fromArray($data);
-			$r = $client->send();
+			$client->send();
 		} catch (\Exception $e) {
 			error_log(sprintf("sendInstallStatusPing %s %s", $e->getCode(), $e->getMessage()));
 		}

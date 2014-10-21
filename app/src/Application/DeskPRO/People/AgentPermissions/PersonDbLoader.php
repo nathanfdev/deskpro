@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\People\AgentPermissions;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 
@@ -108,9 +109,9 @@ class PersonDbLoader
 		$perm_recs = $this->db->fetchAll("
 			SELECT name, usergroup_id, person_id
 			FROM permissions
-			WHERE (usergroup_id IN (" . implode(',', $agent_group_ids) . ") OR person_id = {$this->person->id})
+			WHERE (usergroup_id IN (?) OR person_id = ?)
 				AND value = 1
-		");
+		", array($agent_group_ids, $this->person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
 
 		$this->perms = array(
 			'effective' => array(),

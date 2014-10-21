@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -432,9 +433,9 @@ class TicketResultsDisplay implements PersonContextInterface
 				people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent
 			FROM tickets_messages
 			LEFT JOIN people ON (people.id = tickets_messages.person_id)
-			WHERE tickets_messages.ticket_id IN (" . implode(',', $this->ticket_ids) . ")
+			WHERE tickets_messages.ticket_id IN (?)
 			ORDER BY tickets_messages.id DESC
-		", array(), 'id');
+		", array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
 
 		$this->all_previews = array();
 		foreach ($message_data as $m) {
@@ -523,8 +524,8 @@ class TicketResultsDisplay implements PersonContextInterface
 			$this->person_flagged = App::getDb()->fetchAllKeyValue("
 				SELECT ticket_id, color
 				FROM tickets_flagged
-				WHERE person_id = ? AND ticket_id IN (" . implode(',',$this->ticket_ids) . ")"
-			, array($this->person_context->getId()));
+				WHERE person_id = ? AND ticket_id IN (?)"
+			, array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 		}
 
 		$ticket_id = is_object($ticket) ? $ticket->getId() : $ticket;

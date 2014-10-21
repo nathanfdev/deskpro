@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity;
  */
 class PersonProps implements \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'name' => 1, 'email' => 1
 	);
@@ -53,7 +54,9 @@ class PersonProps implements \ArrayAccess
 	 */
 	public $person_obj;
 
+	/** @var string */
 	public $name = '';
+	/** @var string */
 	public $email = '';
 
 	public function __construct(Entity\Person $person = null)

@@ -176,6 +176,7 @@ class UserRules
 	public function applyRuleToUsers(UserRule $user_rule, $page)
 	{
 		$per_page = 1;
+		$page = (int) $page;
 
 		$email_to_user = App::getDb()->fetchAllKeyValue("
 			SELECT email, person_id

@@ -44,8 +44,11 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 {
 	const ALL = '__ALL__';
 
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
+	/** @var Entity\PersonPref */
 	protected $pref;
+	/** @var string */
 	protected $pref_name;
 
 	public function __construct(Entity\Person $person)
@@ -67,6 +70,7 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 		if (!$this->pref) {
 			$this->pref = $this->person->addPreference($this->pref_name);
 			$this->pref['value'] = array();
+			$person = $this->person;
 
 			App::getOrm()->transactional(function ($em) use ($person) {
 				$em->persist($person);

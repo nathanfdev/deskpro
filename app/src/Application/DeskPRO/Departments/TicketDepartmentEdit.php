@@ -34,9 +34,6 @@
 namespace Application\DeskPRO\Departments;
 
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Tickets\Triggers\TriggerActions;
-use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraints\Callback;

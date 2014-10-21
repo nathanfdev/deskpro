@@ -46,7 +46,9 @@ class ServerReqs
 
 	protected $em;
 
+	/** @var array */
 	protected $web_checks = array();
+	/** @var array */
 	protected $cli_checks = array();
 
 	/**

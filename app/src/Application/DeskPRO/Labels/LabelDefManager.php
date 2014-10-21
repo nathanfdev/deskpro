@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Labels;
 
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
@@ -49,7 +50,10 @@ class LabelDefManager
 	 */
 	protected $em;
 
-	static protected $types = array(
+	/**
+	 * @var array
+	 */
+	static public $types = array(
 		'articles'             => array('table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'),
 		'deals'                => array('table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'),
 		'downloads'            => array('table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'),
@@ -132,14 +136,22 @@ class LabelDefManager
 			throw new \InvalidArgumentException();
 		}
 
-		$parts = array();
-		$parts[] = "SELECT DISTINCT(label) FROM label_defs " . (count($types) < 8 ? "WHERE label_type IN ('" . implode("','", $types) . "')" : '');
+		$parts = array('SELECT DISTINCT(label) FROM label_defs ');
+		$params = array();
+		$qtypes = array();
+
+		if (count($types) < 8) {
+			$parts[0] .= ' WHERE label_type IN (?)';
+			$params[] = $types;
+			$qtypes[] = Connection::PARAM_STR_ARRAY;
+		}
+
 		foreach ($types as $t) {
-			$parts[] = "SELECT DISTINCT(label) FROM labels_$t";
+			$parts[] = 'SELECT DISTINCT(label) FROM ' . $this->db->quoteIdentifier('labels_' . $t);
 		}
 
 		$q = '(' . implode(') UNION (', $parts) . ')';
-		$labels = $this->db->fetchAllCol($q);
+		$labels = $this->db->fetchAllCol($q, $params, $qtypes);
 
 		return $labels;
 	}
@@ -353,7 +365,7 @@ class LabelDefManager
 				$table = self::$types[$t]['table'];
 
 				$this->db->executeUpdate("DELETE FROM label_defs WHERE label_type = ? AND label = ?", array($t, $old_label));
-				$adjusted = $this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
+				$this->db->executeUpdate("UPDATE IGNORE $table SET label = ? WHERE label = ?", array($new_label, $old_label));
 				$this->db->executeUpdate("DELETE FROM $table WHERE label = ?", array($old_label));
 			}
 
@@ -435,9 +447,9 @@ class LabelDefManager
 					}
 
 					$terms_any_new = $r['terms_any'];
-					if ($t == 'tickets') $terms_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
-					if ($t == 'persons') $terms_new = $replace_label_arr($terms_any_new, array('person_label'));
-					if ($t == 'organizations') $terms_new = $replace_label_arr($terms_any_new, array('org_label'));
+					if ($t == 'tickets') $terms_any_new = $replace_label_arr($terms_any_new, array('ticket_label', 'label'));
+					if ($t == 'persons') $terms_any_new = $replace_label_arr($terms_any_new, array('person_label'));
+					if ($t == 'organizations') $terms_any_new = $replace_label_arr($terms_any_new, array('org_label'));
 					if ($terms_any_new != $r['terms']) {
 						$changes['terms_any'] = $terms_any_new;
 					}

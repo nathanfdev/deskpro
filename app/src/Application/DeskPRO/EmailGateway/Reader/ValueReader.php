@@ -38,6 +38,7 @@ use Application\DeskPRO\EmailGateway\Reader\Item;
 
 class ValueReader extends AbstractReader
 {
+	/** @var array  */
 	private $values = array();
 
 	/**

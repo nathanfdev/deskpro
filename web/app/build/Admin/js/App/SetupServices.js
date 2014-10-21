@@ -1,5 +1,5 @@
 (function() {
-  define(['Admin/Main/Service/SessionPing', 'Admin/License/Service/DpLicense', 'Admin/Cloud/App/CloudService', 'angular'], function(Admin_Main_Service_SessionPing, Admin_License_Service_DpLicense, Admin_Cloud_App_CloudService, angular) {
+  define(['Admin/Main/Service/SessionPing', 'Admin/Main/Service/DpDate', 'Admin/License/Service/DpLicense', 'Admin/Cloud/App/CloudService', 'angular'], function(Admin_Main_Service_SessionPing, Admin_Main_Service_DpDate, Admin_License_Service_DpLicense, Admin_Cloud_App_CloudService, angular) {
     return function(Module) {
       Module.service('SessionPing', [
         'Api', function(Api) {
@@ -11,6 +11,7 @@
           return new Admin_License_Service_DpLicense(Api, $modal, $http, $q);
         }
       ]);
+      Module.service('DpDateService', Admin_Main_Service_DpDate);
       Module.service('Cloud', [
         function() {
           return new Admin_Cloud_App_CloudService();

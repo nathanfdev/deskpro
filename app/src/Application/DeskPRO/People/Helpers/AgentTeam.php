@@ -43,7 +43,9 @@ use Orb\Util\Arrays;
  */
 class AgentTeam implements \Orb\Helper\ShortCallableInterface
 {
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
+	/** @var array|null */
 	protected $_agent_team_ids = null;
 
 	public function __construct(Entity\Person $person)
@@ -65,8 +67,8 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
 		$this->_agent_team_ids = App::getDb()->fetchAllCol("
 			SELECT team_id
 			FROM agent_team_members
-			WHERE person_id = {$this->person['id']}
-		");
+			WHERE person_id = ?
+		", array($this->person['id']));
 
 		return $this->_agent_team_ids;
 	}

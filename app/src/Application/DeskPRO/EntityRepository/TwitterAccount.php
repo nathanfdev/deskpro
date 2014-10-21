@@ -38,7 +38,9 @@ use Application\DeskPRO\App;
 
 class TwitterAccount extends AbstractEntityRepository
 {
+	/** @var \Application\DeskPRO\Entity\TwitterAccount|null|bool */
 	protected $_first = false;
+	/** @var array */
 	protected $_all;
 
 	public function getAll()

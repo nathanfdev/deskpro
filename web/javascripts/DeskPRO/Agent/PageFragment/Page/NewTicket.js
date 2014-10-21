@@ -266,6 +266,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				Array.each(fields, function(f) {
 					if (f.field_type == 'ticket_field') {
 						var classname = 'ticket-field-' + f.field_id;
+					} else if (f.field_type == 'custom_field') {
+						var classname = 'custom-field-' + f.field_id;
 					} else {
 						var classname = f.field_type;
 					}
@@ -306,14 +308,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		};
 
 		depSel.on('change', function(ev) {
-			updateFields();
+			self.getCustomFields();
 		});
 
 		$('.ticket-field select', this.wrapper).on('change', function() {
 			updateFields();
 		});
 
-		updateFields();
+		self.getCustomFields();
 
 		//------------------------------
 		// Status menu
@@ -1030,6 +1032,25 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 	},
 
+	getCustomFields: function() {
+		var personId = this.getEl('user_searchbox').find('input.person-id').val(),
+			depId = this.getEl('dep').val() || 0,
+			self = this;
+
+		$.ajax({
+			type: 'GET',
+			url: BASE_URL + 'agent/tickets/new/get-custom-fields-row/' + personId + '/' + depId,
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				var $cont = $('.ticket-field', self.wrapper).parent();
+				$('.ticket-field.custom-field', self.wrapper).remove();
+				$cont.append(html);
+				self.getEl('dep').trigger('change'); // trigger update fields
+			}
+		});
+	},
+
 	placeUserRow: function(html) {
 		var self = this;
 		var searchbox = this.getEl('user_searchbox');
@@ -1069,6 +1090,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.getEl('user_searchbox').find('input.person-id').val(person_id);
 		}
 
+		this.getCustomFields();
 		this.updateUi();
 	},
 

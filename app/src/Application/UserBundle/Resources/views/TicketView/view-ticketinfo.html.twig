@@ -79,7 +79,18 @@
 						{% endif %}
 					{% endif %}
 				{% endfor %}
+
 			{% endif %}
 		{% endfor %}
+
+        {% for f in new_custom_fields %}
+            <tr>
+                <th>{{ form_label(f) }}</th>
+                <td>
+                    {{ render_custom_field(f) }}
+                </td>
+            </tr>
+        {% endfor %}
+
 	</tbody>
 </table>

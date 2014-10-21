@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-    <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+    <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.saveSettings()">
 
     <section class="dp-paneblock dp-listpane">
         <header>
@@ -58,20 +58,22 @@
                             </h3>
                         </div>
 
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.min_length">
                             <label>
                                 <h4>Minimum password length:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.min_length" style="width: 100px; display: inline-block;" /> characters
+                            <input type="number" class="form-control" name="min_length" ng-model="agent.min_length"
+                                   style="width: 100px; display: inline-block;" required integer min="0" /> characters
 							<span class="help-block">
 								The minimum number of characters the password has to be.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.max_age">
                             <label>
                                 <h4>Maximum password age:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.max_age" style="width: 100px; display: inline-block;" /> days
+                            <input type="number" class="form-control" name="max_age" ng-model="agent.max_age"
+                                   style="width: 100px; display: inline-block;" required integer min="0" /> days
 							<span class="help-block">
 								How many days a password can remain unchanged until DeskPRO requires the agent to change it.
 							</span>
@@ -85,38 +87,46 @@
 								When enabled, agents will not be able to change their password to a password they have used in the past.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.require_num_lowercase">
                             <label>
                                 <h4>Require this many lower-case characters:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.require_num_lowercase" style="width: 100px; display: inline-block;" />
+                            <input type="number" class="form-control" name="require_num_lowercase"
+                                   ng-model="agent.require_num_lowercase" style="width: 100px; display: inline-block;"
+                                   required integer min="0" />
 							<span class="help-block">
 								Define the minimum number of lower-case (a-z) characters that must be used in the password.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.require_num_uppercase">
                             <label>
                                 <h4>Require this many upper-case characters:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.require_num_uppercase" style="width: 100px; display: inline-block;" />
+                            <input type="number" class="form-control" name="require_num_uppercase"
+                                   ng-model="agent.require_num_uppercase" style="width: 100px; display: inline-block;"
+                                   required integer min="0" />
 							<span class="help-block">
 								Define the minimum number of upper-case (A-Z) characters that must be used in the password.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.require_num_number">
                             <label>
                                 <h4>Require this many numbers:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.require_num_number" style="width: 100px; display: inline-block;" />
+                            <input type="number" class="form-control" name="require_num_number"
+                                   ng-model="agent.require_num_number" style="width: 100px; display: inline-block;"
+                                   required integer min="0" />
 							<span class="help-block">
 								Define the minimum number of numbers (0-9) that must be used in the password.
 							</span>
                         </div>
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.require_num_symbol">
                             <label>
                                 <h4>Require this many symbols:</h4>
                             </label>
-                            <input type="text" class="form-control" ng-model="agent.require_num_symbol" style="width: 100px; display: inline-block;" />
+                            <input type="number" class="form-control" name="require_num_symbol"
+                                   ng-model="agent.require_num_symbol" style="width: 100px; display: inline-block;"
+                                   required integer min="0" />
 							<span class="help-block">
 								Define the minimum number of symbols (!, @, $, % etc) that must be used in the password.
 							</span>
@@ -137,12 +147,14 @@
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
-                        <div class="inner-group">
+                        <div class="inner-group" dp-error-class="form_props.sessions_lifetime">
                             <label>
                                 <h4>Session Lifetime</h4>
                             </label>
                             <br/>
-                            <input type="text" class="form-control" ng-model="settings.sessions_lifetime" style="width: 150px" /> seconds
+                            <input type="number" name="sessions_lifetime" class="form-control"
+                                   ng-model="settings.sessions_lifetime" style="width: 150px"
+                                   required integer min="0" /> seconds
 							<span class="help-block">
 								Sessions that are not touched for this long will expire. This allows the system
 								to clean up old sessions after users have left the site or closed their browser window.
@@ -240,9 +252,23 @@
     <section class="dp-paneblock dp-listpane">
         <footer>
             <div class="dp-content">
-                <div class="dp-btn-controls">
+
+                <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+                    <p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+                    <ul>
+                        <li ng-show="form_props.sessions_lifetime.$error.required
+                            || form.sessions_lifetime.$error.min
+                            || form_props.sessions_lifetime.$error.integer">
+                            {{ phrase('adm.validation.time') }}
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
                     <div dp-hide-spinning="saving">
-                        <button class="btn btn-primary" ng-click="Settings.saveSettings()">{{ phrase('agent.general.save') }}</button>
+                        <button class="btn btn-primary" dp-submit-form>
+                            {{ phrase('agent.general.save') }}
+                        </button>
                     </div>
                     <div dp-show-spinning="saving">
                         <i class="spinner-flat"></i>

@@ -77,6 +77,7 @@ define([
 	'Admin/CustomFields/Tickets/Ctrl/Edit',
 	'Admin/CustomFields/Chat/Ctrl/Edit',
 	'Admin/CustomFields/User/Ctrl/Edit',
+	'Admin/CustomFields/Entity/Ctrl/Edit',
 	'Admin/CustomFields/Org/Ctrl/Edit',
 	'Admin/Labels/Ctrl/List',
 	'Admin/Labels/Ctrl/Edit',
@@ -100,6 +101,9 @@ define([
 	'Admin/Templates/Ctrl/TemplateList',
 	'Admin/ChannelSms/Ctrl/List',
 	'Admin/ChannelSms/Ctrl/Edit',
+	'Admin/ChannelFacebook/Ctrl/List',
+	'Admin/ChannelFacebook/Ctrl/Edit',
+	'Admin/ChannelFacebook/Ctrl/Create',
 	'Admin/TicketAccounts/Ctrl/List',
 	'Admin/TicketAccounts/Ctrl/Edit',
 	'Admin/TicketAccounts/Ctrl/Settings',
@@ -166,7 +170,11 @@ define([
 	'Admin/Settings/Ctrl/ServerSettings',
 	'Admin/UserGroups/Ctrl/List',
 	'Admin/UserGroups/Ctrl/Edit',
-	'Admin/UserReg/Ctrl/UsersourceList',
+	'Admin/Usersources/Ctrl/UsersourcesList',
+	'Admin/Usersources/Ctrl/Edit',
+	'Admin/Usersources/Ctrl/New',
+	'Admin/Usersources/Ctrl/EditInstance',
+	'Admin/Usersources/Helper/UsersourceTypeDecider',
 	'Admin/ChatFields/Ctrl/List',
 	'Admin/ChatSetup/Ctrl/ChatSetup',
 	'Admin/ChatDeps/Ctrl/List',
@@ -188,6 +196,7 @@ define([
 	'Admin/RoundRobin/Ctrl/List',
 	'Admin/RoundRobin/Ctrl/Edit',
 	'Admin/Icons/Ctrl/List',
+	'Admin/CustomFields/Ctrl/Edit',
 
 	'CloudAdminLoad'
 

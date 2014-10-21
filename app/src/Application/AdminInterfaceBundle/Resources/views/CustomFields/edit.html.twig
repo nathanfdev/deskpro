@@ -1,0 +1,99 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+    <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
+        <section class="dp-paneblock dp-editpane">
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-fill indent">
+                    <div class="panel-body">
+
+                        <div class="form-group" dp-error-class="title">
+                            <div class="col-lg-3">
+                                <h3>{{ phrase('agent.general.title') }} *</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="inner-group" dp-error-class="form_props.title">
+                                    <input type="text" class="form-control" name="title" ng-model="definition.title"
+                                           style="width: 50%;" required autofocus />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group with-border" dp-error-class="description">
+                            <div class="col-lg-3">
+                                <h3>{{ phrase('agent.general.description') }} *</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="inner-group" dp-error-class="form_props.description">
+                                    <textarea class="form-control" name="description" ng-model="definition.description"
+                                          style="width: 50%; height: 80px;" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-3">
+                                <h3>Enabled</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <label>
+                                    <input type="checkbox" ng-model="definition.is_enabled" /> Enable this field
+                                </label>
+                            </div>
+                        </div>
+
+                        {# todo: only for choice type #}
+                        <div class="form-group">
+                            <div class="col-lg-3">
+                                <h3>Options</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <label>
+                                    <input type="radio" name="choices" value="0" ng-model="options.choices" /> Select Box (single selection)
+                                </label>
+                                <br />
+                                <label>
+                                    <input type="radio" name="choices" value="2" ng-model="options.choices" /> Multiple-select Box (multiple selection)
+                                </label>
+                                <br />
+                                <label>
+                                    <input type="radio" name="choices" value="1" ng-model="options.choices" /> Radio Buttons (single selection)
+                                </label>
+                                <br />
+                                <label>
+                                    <input type="radio" name="choices" value="3" ng-model="options.choices" /> Checkboxes (multiple selection)
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </article>
+
+            <footer>
+                <div class="dp-content">
+                    <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+                        <p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+                        <ul>
+                            <li ng-show="form_props.title.$error.required">{{ phrase('adm.custom_fields.title_error') }}</li>
+                            <li ng-show="form_props.description.$error.required">{{ phrase('adm.custom_fields.description_error') }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="dp-delete-control" ng-if="definition.id" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <button class="btn btn-danger" type="button" ng-click="EditCtrl.startDelete();">Delete</button>
+                    </div>
+
+                    <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <div dp-hide-spinning="saving">
+                            <button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+                        </div>
+                        <div dp-show-spinning="saving">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </form>
+    {{ ng_tpl('AdminInterfaceBundle:CustomFields:Common/delete-modal.html.twig', 'CustomField/delete-modal.html') }}
+{% endblock %}

@@ -6,7 +6,7 @@ define [
 	Arrays
 ) ->
 	class InterfaceHandler
-		constructor: (scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger) ->
+		constructor: (scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger, TicketFieldsPerPerson, TicketFieldsPerOrg) ->
 			@scope    = scope
 			@element  = element
 			@ngModel  = ngModel
@@ -82,13 +82,13 @@ define [
 			@ngModel.$render = =>
 				@render()
 
-			$q.all([TicketFields.loadList(), UserFields.loadList()]).then( (results) =>
-				tFields = results[0]
-				uFields = results[1]
-
-				@scope.field_status         = TicketFields.field_enabled;
-				@scope.custom_ticket_fields = tFields;
-				@scope.custom_user_fields   = uFields;
+			$q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all()])
+			.then( (results) =>
+				@scope.field_status             = TicketFields.field_enabled
+				@scope.custom_ticket_fields     = results[0]
+				@scope.custom_user_fields       = results[1]
+				@scope.ticket_fields_per_person = results[2]
+				@scope.ticket_fields_per_org    = results[3]
 
 				$timeout(=>
 					@_reInitTab('user', @els.user_tab)
@@ -426,8 +426,23 @@ define [
 
 			TicketFields = DataService.get('TicketFields')
 			UserFields   = DataService.get('UserFields')
+			TicketFieldsPerPerson = DataService.get 'CustomFields', 'ticket', 'person'
+			TicketFieldsPerOrg = DataService.get 'CustomFields', 'ticket', 'organization'
 
-			interfaceHandler = new InterfaceHandler(scope, element, attrs,  ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger)
+			interfaceHandler = new InterfaceHandler(
+				scope,
+				element,
+				attrs,
+				ngModel,
+				$compile,
+				TicketFields,
+				UserFields,
+				$q,
+				$timeout,
+				logger,
+				TicketFieldsPerPerson
+				TicketFieldsPerOrg
+			)
 
 		return directive
 	]

@@ -40,8 +40,11 @@ use Symfony\Component\Templating\TemplateReferenceInterface;
 
 class TemplateLocator extends BaseTemplateLocator
 {
+	/** @var \Symfony\Component\Config\FileLocatorInterface */
 	protected $locator;
+	/** @var array */
 	protected $cache = array();
+	/** @var array */
 	protected $loaded_list = array();
 
 	public function __construct(FileLocatorInterface $locator, $cacheDir = null)

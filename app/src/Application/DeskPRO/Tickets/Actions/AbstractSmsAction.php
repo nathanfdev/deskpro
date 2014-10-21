@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Sms\SmsMessage;
 use Orb\Util\Util;

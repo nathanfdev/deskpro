@@ -35,7 +35,6 @@
               enable_agent_rememberme: res.data.settings.settings.enable_agent_rememberme,
               enable_user_rememberme: res.data.settings.settings.enable_user_rememberme
             };
-            console.log(_this.$scope.settings);
             _this.$scope.agent = res.data.settings.settings.agent;
             _this.$scope.user = res.data.settings.settings.user;
             _this.$scope.agent.standard_policy = _this.$scope.agent.min_length === 5 && !_this.$scope.agent.max_age && !_this.$scope.agent.forbid_reuse && !_this.$scope.agent.require_num_uppercase && !_this.$scope.agent.require_num_lowercase && !_this.$scope.agent.require_num_number && !_this.$scope.agent.require_num_symbol;
@@ -47,6 +46,9 @@
 
       Admin_Settings_Ctrl_PasswordSettings.prototype.saveSettings = function() {
         var settings;
+        if (this.$scope.form_props.$invalid) {
+          return;
+        }
         this.startSpinner('saving');
         settings = this.$scope.settings;
         settings.agent = Util.clone(this.$scope.agent, true);

@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 
 class UserPageCache
 {
+	/** @var string */
 	protected $_cache_dir = '';
 
 	public function __construct($cache_dir = null)

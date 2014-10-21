@@ -38,18 +38,27 @@ use Orb\Util\Arrays;
 
 class ChoiceField extends CustomFieldAbstract
 {
+	/** @var bool */
 	public $multiple = false;
+	/** @var bool */
 	public $expanded = false;
+	/** @var int */
 	public $min_length;
+	/** @var int */
 	public $max_length;
 
+	/** @var int */
 	public $agent_min_length;
+	/** @var int */
 	public $agent_max_length;
 
+	/** @var string|null */
 	public $field_type = null;
+	/** @var string */
 	public $choices_structure = '';
+	/** @var string */
 	public $choices_removed_structure = '';
-
+	/** @var mixed */
 	public $default_value = null;
 
 	protected function init()

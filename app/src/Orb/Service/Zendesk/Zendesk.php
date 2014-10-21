@@ -214,7 +214,7 @@ class Zendesk
 			usleep(25000);
 		} while ($running > 0);
 
-		foreach ($request_ev as $k => &$ev) {
+		foreach ($request_ev as &$ev) {
 			$ev['output'] = @curl_multi_getcontent($ev['ch']);
 			$ev['http_code'] = @curl_getinfo($ev['ch'], CURLINFO_HTTP_CODE);
 			$ev = $this->_callListeners('postCall', $ev);

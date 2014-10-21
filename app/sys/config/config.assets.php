@@ -145,7 +145,6 @@ $CONFIG['agent_window_sections'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Feedback.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/Deals.js',
 	)
 );
 
@@ -185,7 +184,6 @@ $CONFIG['agent_pages_lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackContentValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
-		'javascripts/DeskPRO/Agent/PageFragment/ListPane/DealList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterSearch.js',
@@ -261,8 +259,6 @@ $CONFIG['agent_pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTweet.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Page/Deal.js',
-		'javascripts/DeskPRO/Agent/PageFragment/Page/NewDeal.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterStatusOverlay.js',
 

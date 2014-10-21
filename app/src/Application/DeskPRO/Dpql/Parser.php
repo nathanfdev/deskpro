@@ -45,7 +45,9 @@ namespace Application\DeskPRO\Dpql;
  */
 class ParseyyToken implements \ArrayAccess
 {
+	/** @var string */
     public $string = '';
+	/** @var array */
     public $metadata = array();
 
     function __construct($s, $m = array())
@@ -1594,8 +1596,7 @@ static public $yy_action = array(
         //mixed $yygotominor;        /* The LHS of the rule reduced */
         //ParseyyStackEntry $yymsp;            /* The top of the parser's stack */
         //int $yysize;                     /* Amount to pop the stack */
-        $yymsp = $this->yystack[$this->yyidx];
-        if (self::$yyTraceFILE && $yyruleno >= 0 
+        if (self::$yyTraceFILE && $yyruleno >= 0
               && $yyruleno < count(self::$yyRuleName)) {
             fprintf(self::$yyTraceFILE, "%sReduce (%d) [%s].\n",
                 self::$yyTracePrompt, $yyruleno,
@@ -1680,7 +1681,7 @@ static public $yy_action = array(
             fprintf(self::$yyTraceFILE, "%sAccept!\n", self::$yyTracePrompt);
         }
         while ($this->yyidx >= 0) {
-            $stack = $this->yy_pop_parser_stack();
+            $this->yy_pop_parser_stack();
         }
         /* Here code is inserted which will be executed whenever the
         ** parser accepts */

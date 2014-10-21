@@ -48,7 +48,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
 		'date_feedback_rating'     => true,
 		'date_created'             => true,
 		'date_resolved'            => true,
-		'date_closed'              => true,
+		'date_archived'            => true,
 		'date_first_agent_assign'  => true,
 		'date_first_agent_reply'   => true,
 		'date_last_agent_reply'    => true,

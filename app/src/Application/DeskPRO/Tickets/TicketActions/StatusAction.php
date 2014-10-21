@@ -44,6 +44,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
  */
 class StatusAction extends AbstractAction implements PermissionableAction
 {
+	/** @var string */
 	protected $status;
 
 	/**
