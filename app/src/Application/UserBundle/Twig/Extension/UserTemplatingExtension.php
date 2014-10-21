@@ -37,6 +37,9 @@ namespace Application\UserBundle\Twig\Extension;
 use Application\DeskPRO\App;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * @deprecated - I put this depreated here in advance as I switch kernels. rewriting portal, wont need this.
+ */
 class UserTemplatingExtension extends \Twig_Extension
 {
     protected $container;
