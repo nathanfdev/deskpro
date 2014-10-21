@@ -10,7 +10,7 @@ set_include_path(
 );
 
 // Composer-managed sources
-require_once DP_ROOT.'/vendor/autoload.php';
+$composer_loader = require_once DP_ROOT.'/vendor/autoload.php';
 require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 
 $loader = new \Orb\Util\ClassLoader();
@@ -150,7 +150,7 @@ AnnotationRegistry::registerLoader(function($class) use ($loader) {
     return class_exists($class, false);
 });
 AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php');
-Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+AnnotationRegistry::registerLoader(array($composer_loader, 'loadClass'));
 
 require DP_ROOT.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
 \Swift_DependencyContainer::getInstance()->register('cache.disk')-> asSharedInstanceOf('Orb\\Mail\\KeyCache\\DiskKeyCache')->withDependencies(array('cache.inputstream', 'tempdir'));
