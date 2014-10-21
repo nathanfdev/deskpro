@@ -45,7 +45,10 @@ class IndexController extends Controller
 	 */
 	public function indexAction()
 	{
-		return new Response('hello world!');
+		$person = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Person')->find(1);
+
+		return new Response(sprintf('hello world! the email of %s is: %s', $person->name,
+			$person->primary_email->email));
     }
 }
  
