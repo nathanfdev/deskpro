@@ -36,6 +36,7 @@ namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
@@ -81,17 +82,24 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 	 */
 	protected $session;
 
+	/**
+	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
+	 */
+	protected $settings_resolver;
+
 	protected $last_save_hash = null;
 
+
 	/**
-	 * @param \Doctrine\ORM\EntityManager $em
-	 * @param null $options
+	 * @param EntityManager    $em
+	 * @param null             $options
+	 * @param SettingsResolver $settings_resolver
 	 */
-	public function __construct(\Doctrine\ORM\EntityManager $em, $options = null, SettingsResolver $settings_resolver)
+	public function __construct(EntityManager $em, $options = null, SettingsResolver $settings_resolver)
 	{
 		$this->em = $em;
 		$this->db = $em->getConnection();
-
+		$this->settings_resolver = $settings_resolver;
 		$cookieDefaults = session_get_cookie_params();
 
 		$cookie_name = 'dpsid';
@@ -171,10 +179,10 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 		}
 
 		// Sessions are deleted on cron, but we'll also enforce it here
-		$cutoff = time() - App::getSetting('core.sessions_lifetime');
+		$cutoff = time() - $this->settings_resolver->getGlobalSettings()->get('core.sessions_lifetime');
 
 		$is_valid = ($session AND $session['date_last']->getTimestamp() > $cutoff);
-		if ($is_valid && App::getSetting('core.session_keepalive_require_page') && $session['date_last_page']) {
+		if ($is_valid && $this->settings_resolver->getGlobalSettings()->get('core.session_keepalive_require_page') && $session['date_last_page']) {
 			if ($session['date_last_page']->getTimestamp() < $cutoff) {
 				$is_valid = false;
 			}
@@ -444,7 +452,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 		}
 
 		if (!$this->session) {
-			$this->session = App::getEntityRepository('DeskPRO:Session')->find($this->getEntityId());
+			$this->session = $this->em->getRepository('DeskPRO:Session')->find($this->getEntityId());
 		}
 
 		return $this->session;
