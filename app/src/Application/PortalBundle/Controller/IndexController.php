@@ -46,7 +46,7 @@ class IndexController extends AbstractController
 	{
 		$person = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Person')->find(1);
 
-		return new Response(sprintf('hello world! the email of %s is: %s', $person->name,
+		return new Response(sprintf('<html><body>hello world! the email of %s is: %s</body></html>', $person->name,
 			$person->primary_email->email));
     }
 }

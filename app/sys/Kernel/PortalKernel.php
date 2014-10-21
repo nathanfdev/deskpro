@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Kernel;
 
+use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -51,17 +52,22 @@ class PortalKernel extends Kernel
 	 */
 	public function registerBundles()
 	{
-		return array(
+		$bundles = array(
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-			new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Symfony\Bundle\MonologBundle\MonologBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 			new \Application\DeskPRO\DeskPROBundle(),
-			new \Application\PortalBundle\PortalBundle()
+			new \Application\PortalBundle\PortalBundle(),
 		);
+
+		if ('dev' === $this->getEnvironment()) {
+			$bundles[] = new WebProfilerBundle();
+		}
+
+		return $bundles;
 	}
 
 
