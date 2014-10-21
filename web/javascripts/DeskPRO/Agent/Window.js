@@ -3972,10 +3972,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				url = BASE_URL + 'agent/tasks/get-section-data.json';
 				break;
 
-			case 'deals_section':
-				url = BASE_URL + 'agent/deals/get-section-data.json';
-				break;
-
 			case 'agent_chat_section':
 				url = BASE_URL + 'agent/agent-chat/get-section-data.json';
 				break;

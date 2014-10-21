@@ -40,6 +40,7 @@ use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -233,6 +234,29 @@ class NewsController extends AbstractController
 			case 'undelete':
 				$news->status_code = 'published';
 				break;
+
+			case 'auto-unpub':
+				$date = date_create('@' . $this->in->getUint('end_timestamp'));
+				$action = $this->in->getString('end_action');
+
+				$news->date_end = $date;
+				$news->end_action = $action;
+				break;
+
+			case 'remove-auto-unpub':
+				$news->date_end = null;
+				$news->end_action = null;
+				break;
+
+			case 'auto-pub':
+				$date = date_create('@' . $this->in->getUint('pub_timestamp'));
+
+				$news->date_published = $date;
+				break;
+
+			case 'remove-auto-pub':
+				$news->date_published = null;
+				break;
 		}
 
 		$this->em->persist($news);
@@ -313,12 +337,12 @@ class NewsController extends AbstractController
 
 		$comment_counts = array();
 		if ($results) {
-			$comment_counts = $this->db->fetchAllKeyValue("
+			$comment_counts = $this->db->fetchAllKeyValue('
 				SELECT article_id, COUNT(*)
 				FROM article_comments
-				WHERE article_id IN (" . implode(',', array_keys($results)) . ")
+				WHERE article_id IN (?)
 				GROUP BY article_id
-			");
+			', array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
 		}
 
 		$cat_usergroups = array();

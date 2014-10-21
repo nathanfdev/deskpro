@@ -93,6 +93,9 @@ class PeopleResultsDisplay
 	 */
 	protected $people_usernames;
 
+	/**
+	 * @var array
+	 */
 	protected $all_fields_data;
 
 	/**

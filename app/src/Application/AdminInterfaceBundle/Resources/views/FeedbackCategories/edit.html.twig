@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="FeedbackCategoriesEdit.saveForm()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && FeedbackCategoriesEdit.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel-body">

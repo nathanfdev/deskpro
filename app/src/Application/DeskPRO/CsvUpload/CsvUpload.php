@@ -131,7 +131,7 @@ class CsvUpload
 			'options'       => $options,
 		);
 
-		$task = $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
+		$this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
 			'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
 			$task_data,
 			'data_import'
@@ -159,7 +159,6 @@ class CsvUpload
 
 			/** @var TaskQueue $task */
 			$task   = end($tasks);
-			$runner = $task->getRunner();
 			$data = $task['task_data'];
 
 			if ('completed' === $task['status'] || 'errored' === $task['status']) {

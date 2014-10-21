@@ -38,9 +38,11 @@ use Application\ImportBundle\Exception\DuplicateValueException;
 
 class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
 {
-
+	/** @var string */
 	protected $mapped_column = 'person_id';
+	/** @var string */
 	protected $mapper_class = 'custom_def_person';
+	/** @var string */
 	protected $data_table = 'custom_data_person';
 
 	/**

@@ -408,7 +408,7 @@ class PublishController extends AbstractController
 	{
 		if ($type !== 'all') {
 			try {
-				$type_info = $this->publish_helper->getCommentTypeInfo($type);
+				$this->publish_helper->getCommentTypeInfo($type);
 			} catch (\Exception $e) {
 				throw $this->createNotFoundException();
 			}
@@ -716,11 +716,6 @@ class PublishController extends AbstractController
 		$curpage = $this->in->getUint('page');
 		if (!$curpage) $curpage = 1;
 
-		$limit = array(
-			'max' => $per_page,
-			'offset' => ($curpage - 1) * $per_page
-		);
-
 		$pageinfo = null;
 		$total = null;
 		if (!$this->request->isPartialRequest()) {
@@ -875,7 +870,6 @@ class PublishController extends AbstractController
 			return $this->createJsonResponse(array('Invalid type'));
 		}
 
-		$class      = App::getEntityClass($entity_name);
 		$repos      = $this->em->getRepository($entity_name);
 		$table      = $repos->getTableName();
 		$perm_table = $repos->getPermissionTableName();
@@ -1049,7 +1043,6 @@ class PublishController extends AbstractController
 
 		$class      = App::getEntityClass($entity_name);
 		$repos      = $this->em->getRepository($entity_name);
-		$table      = $repos->getTableName();
 		$perm_table = $repos->getPermissionTableName();
 
 		#------------------------------
@@ -1211,8 +1204,6 @@ class PublishController extends AbstractController
 
 			$this->em->persist($result_cache);
 			$this->em->flush();
-		} else {
-			$results = $result_cache['results'];
 		}
 
 		$page = $this->in->getUint('p');

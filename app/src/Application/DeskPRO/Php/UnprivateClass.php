@@ -39,8 +39,11 @@ namespace Application\DeskPRO\Php;
  */
 class UnprivateClass
 {
+	/** @var string */
 	protected $code;
+	/** @var string */
 	protected $new_code;
+	/** @var bool */
 	protected $strip_comments = false;
 
 	public function __construct($code)

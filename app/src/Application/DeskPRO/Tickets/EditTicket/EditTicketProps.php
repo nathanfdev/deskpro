@@ -42,18 +42,26 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class EditTicketProps implements \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'subject' => 1, 'department_id' => 1, 'category_id' => 1,
 		'priority_id' => 1, 'product_id' => 1, 'cc_emails' => 1, 'remove_ccs' => 1
 	);
 
+	/** @var string */
 	public $subject = '';
 
+	/** @var int */
 	public $department_id = 0;
+	/** @var int */
 	public $category_id   = 0;
+	/** @var int */
 	public $priority_id   = 0;
+	/** @var int */
 	public $product_id    = 0;
+	/** @var string */
 	public $cc_emails = '';
+	/** @var array */
 	public $remove_ccs = array();
 
 	public function __construct(Ticket $ticket)

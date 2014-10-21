@@ -9,6 +9,7 @@ namespace Application\AgentBundle\Controller;
  */
 class JiraController extends AbstractController
 {
+	/** @var array */
 	protected $meta;
 
 	public function preAction($action, $arguments = null)
@@ -38,12 +39,7 @@ class JiraController extends AbstractController
 			return $this->_processPost($ticket);
 		}
 
-		$em = $this->em;
-
-		$repo = $em->getRepository('Application\DeskPRO\Entity\JiraIssue');
-
 		$meta = $this->getMeta();
-
 		$projects = array();
 		
 		foreach ($meta[$meta['expand']] as $projectParams) {
@@ -73,8 +69,6 @@ class JiraController extends AbstractController
 					strip_tags($message->message) .
 					$divider;
 		}
-		
-		$divider = PHP_EOL . PHP_EOL . str_repeat('=', 60) . PHP_EOL . PHP_EOL;
 		
 		return $this->render('AgentBundle:Jira:export-overlay.html.twig', array(
 			'ticket'		=> $ticket,
@@ -589,8 +583,6 @@ class JiraController extends AbstractController
 	
 	protected function _getAssociatedIssues($ticket_id)
 	{
-		$service = $this->_getService();
-		
 		$ticket	 = $this->_getTicketById($ticket_id);
 		
 		$repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');

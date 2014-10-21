@@ -8,14 +8,16 @@ use Doctrine\Common\Proxy\ProxyDefinition;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Common\Proxy\Proxy as BaseProxy;
 use Application\DeskPRO\ORM\Proxy\ProxyGenerator;
-use Doctrine\ORM\ORMInvalidArgumentException;
 use Doctrine\ORM\Persisters\BasicEntityPersister;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
 class UnprivateProxyFactory extends AbstractProxyFactory
 {
+	/** @var \Doctrine\ORM\EntityManager  */
     protected $em;
+	/** @var \Doctrine\ORM\UnitOfWork  */
     protected $uow;
+	/** @var string  */
     protected $proxyNs;
     public function __construct(EntityManager $em, $proxyDir, $proxyNs, $autoGenerate = false)
     {

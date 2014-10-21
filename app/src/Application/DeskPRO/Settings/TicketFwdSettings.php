@@ -49,8 +49,11 @@ class TicketFwdSettings
 	 */
 	private $email_accounts;
 
+	/** @var int */
 	public $use_account;
+	/** @var bool */
 	public $use_agent_address;
+	/** @var bool */
 	public $process_agent_fwd;
 	public $agent_fwd_subject_regex;
 

@@ -194,7 +194,7 @@ abstract class AbstractBuild
 			$this->container->getDb()->exec($sql);
 		} catch (\Exception $e) {
 			$this->logger->info("SQL: " . $sql);
-			$this->logger->error($e->getMessage());
+			$this->logger->info("Ignored: " . $e->getMessage());
 			if (!$ignore_err) {
 				throw $e;
 			}

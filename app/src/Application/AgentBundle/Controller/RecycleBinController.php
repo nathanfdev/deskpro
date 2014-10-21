@@ -67,7 +67,7 @@ class RecycleBinController extends AbstractController
 			'no_more_results' => $res['no_more_results']
 		);
 
-		return $this->createJsonResponse($res);
+		return $this->createJsonResponse($return_res);
 	}
 
 
@@ -97,12 +97,7 @@ class RecycleBinController extends AbstractController
 			$no_more = true;
 		}
 
-		$deleted_tickets = $this->em->createQuery("
-			SELECT d
-			FROM DeskPRO:TicketDeleted d INDEX BY d.ticket_id
-			LEFT JOIN d.by_person p
-			WHERE d.ticket_id IN (" . implode(',', $results) . ")
-		");
+		$deleted_tickets = array();
 		$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($results);
 
 

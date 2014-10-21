@@ -213,8 +213,6 @@ class TextSnippetsController extends AbstractController
 			$this->container->getObjectLangRepository()->preloadObjectCollection($lang, $snippet_cats);
 		}
 
-		$snippets_count = $this->em->getRepository('DeskPRO:TextSnippet')->countSnippetsForAgent($typename, $this->person);
-
 		$data = array(
 			'snippet_cats'   => array(),
 		);

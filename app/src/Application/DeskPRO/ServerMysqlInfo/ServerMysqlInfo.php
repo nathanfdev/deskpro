@@ -57,7 +57,7 @@ class ServerMysqlInfo
 	 */
 	public function getMysqlInfo()
 	{
-		return $this->db->fetchAllKeyValue("SHOW VARIABLES", array(), 0, 1);
+		return $this->db->fetchAllKeyValue("SHOW VARIABLES", array(), array(), 0, 1);
 	}
 
 

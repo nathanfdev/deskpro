@@ -172,7 +172,6 @@ abstract class AbstractGatewayProcessor
 				$attach->getFileName(),
 				$attach->getMimeType()
 			);
-			$blob_id = $blob->getId();
 
 			$this->logMessage(sprintf("Processed blob %s (%d)", $blob->filename, $blob->id));
 			$this->processed_blobs[$blob->id] = $blob;

@@ -101,9 +101,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 			$allow_rememberme = (bool)App::getSetting('core.enable_user_rememberme');
 		}
 
-		if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id'])) {
+		if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || (!isset($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id']))) {
 			// See if we should carry an agent session
-			if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
+			if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'user' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
 
 				$sid = Entity\Session::getIdFromCode($_COOKIE['dpsid-agent']);
 				if ($sid) {
@@ -126,7 +126,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 					if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
 						$person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
 						if ($person && $person->is_agent) {
-							$person_id = $person->id;
 							$this->_setCurrentPerson($person);
 						}
 					}
@@ -159,6 +158,41 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 							'date_created' => date('Y-m-d H:i:s'),
 							'via_cookie'   => 1
 						));
+					}
+				}
+			// can we carry over an agent session in the user interface?
+			} elseif (!empty($_COOKIE['dpsid']) && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
+				$sid = Entity\Session::getIdFromCode($_COOKIE['dpsid']);
+				if ($sid) {
+					if (App::getSetting('core.session_keepalive_require_page')) {
+						$agent_session = App::getDb()->fetchAssoc(
+							"
+														SELECT person_id, auth
+														FROM sessions
+														WHERE id = ? AND date_last > ? AND date_last_page > ?
+													", array(
+								$sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')),
+								date(time() - App::getSetting('core.sessions_lifetime'))
+							)
+						);
+					} else {
+						$agent_session = App::getDb()->fetchAssoc(
+							"
+														SELECT person_id, auth
+														FROM sessions
+														WHERE id = ? AND date_last > ?
+													", array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')))
+						);
+					}
+
+					list (, $auth) = explode('-', $_COOKIE['dpsid']);
+
+					if ($agent_session && $agent_session['auth'] == $auth && $agent_session['person_id']) {
+						$person = App::getEntityRepository('DeskPRO:Person')->find($agent_session['person_id']);
+						if ($person && $person->is_agent) {
+							$person_id = $person->id;
+							$this->_setCurrentPerson($person);
+						}
 					}
 				}
 			}
@@ -354,36 +388,23 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 				App::getDb()->insert('visitor_tracks' , $track);
 				$track['id'] = App::getDb()->lastInsertId();
 
-				$set = array();
-				$set_q = array();
-
-				$set[] = "date_last = ?";
-				$set_q[] = date('Y-m-d H:i:s');
-
-				if ($vis->user_token) {
-					$set[] = "user_token = ?";
-					$set_q[] = $vis->user_token;
-				}
+				$trackRef = App::getContainer()->getEm()->getReference('DeskPRO:VisitorTrack', $track['id']);
+				$vis->date_last = new \DateTime();
+				$vis->last_track = $trackRef;
 
 				if (!$vis->initial_track) {
-					$set[] = "initial_track_id = ?";
-					$set_q[] = $track['id'];
+					$vis->initial_track = $trackRef;
 				}
 
 				if ($track['is_new_visit']) {
-					$set[] = "visit_track_id = ?";
-					$set_q[] = $track['id'];
+					$vis->visit_track = $trackRef;
 				}
-
-				$set[] = "last_track_id = ?";
-				$set_q[] = $track['id'];
 
 				if (!$vis->hint_hidden) {
-					$set[] = "hint_hidden = 0";
-					$set[] = "last_track_id_soft = NULL";
+					$vis->last_track_soft = null;
 				}
 
-				$set[] = "page_count = page_count + 1";
+				$vis['page_count'] = (int) $vis['page_count'] + 1;
 
 				foreach (array(
 					'page_title',
@@ -395,16 +416,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 					'geo_country'
 				) as $field) {
 					if (isset($track[$field])) {
-						$set[] = "`$field` = ?";
-						$set_q[] = $track[$field];
+						$vis[$field] = $track[$field];
+						$params[$field] = $track[$field];
 					}
 				}
-
-				App::getDb()->executeUpdate("
-					UPDATE visitors
-					SET " . implode(', ', $set) . "
-					WHERE id = {$vis->getId()}
-				", $set_q);
+				App::getContainer()->getEm()->flush();
 
 				$vis->new_track_id = $track['id'];
 			}

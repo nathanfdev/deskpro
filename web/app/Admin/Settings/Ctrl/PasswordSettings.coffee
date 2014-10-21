@@ -21,8 +21,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 					enable_user_rememberme:         res.data.settings.settings.enable_user_rememberme,
 				}
 
-				console.log @$scope.settings
-
 				@$scope.agent = res.data.settings.settings.agent
 				@$scope.user  = res.data.settings.settings.user
 
@@ -46,6 +44,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 			return data_promise
 
 		saveSettings: ->
+			return if @$scope.form_props.$invalid
 			@startSpinner('saving')
 
 			settings = @$scope.settings

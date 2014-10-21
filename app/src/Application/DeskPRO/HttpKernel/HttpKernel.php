@@ -58,9 +58,21 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class HttpKernel extends BaseHttpKernel
 {
+	/**
+	 * @var \Symfony\Component\DependencyInjection\ContainerInterface
+	 */
 	protected $container;
+	/**
+	 * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+	 */
 	protected $dispatcher;
+	/**
+	 * @var \Symfony\Component\HttpKernel\Controller\ControllerResolverInterface
+	 */
 	protected $resolver;
+	/**
+	 * @var \Symfony\Component\HttpFoundation\RequestStack
+	 */
 	protected $requestStack;
 
 

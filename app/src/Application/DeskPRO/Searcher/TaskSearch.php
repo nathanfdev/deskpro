@@ -206,15 +206,12 @@ class TaskSearch extends SearcherAbstract
 	{
 		$org_table = 'tasks';
 
-		$db = App::getDbRead('search.filter.tasks');
 		$tr = App::getTranslator();
 
 		$wheres = array();
 		$joins = array();
 
 		foreach ($this->terms as $info) {
-			$join_id = Util::requestUniqueId();
-			$join_name = "j_$join_id";
 
 			list($term, $op, $choice) = $info;
 
@@ -223,7 +220,6 @@ class TaskSearch extends SearcherAbstract
 			$m = null;
 			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
 				$term = $m[1];
-				$term_id = $m[2];
 			}
 
 			switch ($term) {

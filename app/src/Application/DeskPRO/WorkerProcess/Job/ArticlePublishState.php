@@ -47,15 +47,12 @@ class ArticlePublishState extends AbstractJob
 
 	public function run()
 	{
-		$count_publish = 0;
-		$count_unpublish = 0;
-
 		$article_ids = App::getDb()->fetchAllCol("
 			SELECT articles.id
 			FROM articles
 			WHERE hidden_status = 'unpublished'
-			AND date_published < '" . date('Y-m-d H:i:s') . "'
-		");
+			AND date_published < ?
+		", array(date('Y-m-d H:i:s')));
 
 		$count_publish = count($article_ids);
 		$this->processPublish($article_ids);
@@ -64,8 +61,8 @@ class ArticlePublishState extends AbstractJob
 			SELECT articles.id
 			FROM articles
 			WHERE status = 'published'
-			AND date_end < '" . date('Y-m-d H:i:s') . "'
-		");
+			AND date_end < ?
+		", array(date('Y-m-d H:i:s')));
 
 		$count_unpublish = count($article_ids);
 		$this->processUnpublish($article_ids);

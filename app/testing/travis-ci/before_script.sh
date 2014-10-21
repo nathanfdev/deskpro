@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo service elasticsearch status
+
 echo "Ensuring log files"
 sudo touch /var/log/Xvfb.log
 sudo touch /var/log/firefox.log

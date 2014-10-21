@@ -1,0 +1,8 @@
+{% for f in new_custom_fields %}
+    <tbody class="col fieldprop ticket-field item-on custom-field custom-field-{{f.vars.def.id}} item-on-{{f.vars.def.id}} inline-field" style="clear:both;display: none;">
+        <th>{{ form_label(f) }}</th>
+        <td>
+            {{ render_custom_field_form(f) }}
+        </td>
+    </tbody>
+{% endfor %}

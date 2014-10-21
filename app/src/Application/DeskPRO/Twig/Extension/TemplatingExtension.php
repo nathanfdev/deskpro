@@ -35,19 +35,29 @@
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\UsersourceInfo;
+use Orb\Auth\Adapter\IframeSsoInterface;
+use Orb\Auth\Adapter\JsSsoInterface;
+use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Data\Countries;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormView;
 
 class TemplatingExtension extends \Twig_Extension
 {
+	/** @var \Symfony\Component\DependencyInjection\ContainerInterface */
     protected $container;
+	/** @var array */
 	protected $counter_registry;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
     }
@@ -57,7 +67,10 @@ class TemplatingExtension extends \Twig_Extension
         return $this->container;
     }
 
-    public function getTemplating()
+	/**
+	 * @return \Application\DeskPRO\Templating\Engine
+	 */
+	public function getTemplating()
     {
         return $this->container->get('templating');
     }
@@ -138,10 +151,9 @@ class TemplatingExtension extends \Twig_Extension
 			'match'                            => new \Twig_Function_Method($this, 'match'),
 			'set_tplvar'                       => new \Twig_Function_Method($this, 'set_tplvar', array('is_safe' => array('html'), 'needs_context' => true)),
 			'tpl_source'                       => new \Twig_Function_Method($this, 'getTplSourceTemplate', array('is_safe' => array('html'))),
-			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
 			'ng_plural_phrase'                 => new \Twig_Function_Method($this, 'ngPluralPhrase', array()),
-			'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 			'ng_href'                          => new \Twig_Function_Method($this, 'ngHref', array('is_safe' => array('html'))),
+			'ng_href_var'                      => new \Twig_Function_Method($this, 'ngHrefVar', array('is_safe' => array('html'))),
 			'server_capable'                   => new \Twig_Function_Method($this, 'serverCapable', array('is_safe' => array('html'))),
 
 			'ng_var'                           => new \Twig_Function_Method($this, 'ngVar', array()),
@@ -589,9 +601,20 @@ class TemplatingExtension extends \Twig_Extension
 		return $string;
 	}
 
-	public function renderUsersource($usersource, $type, array $params = array())
+	public function renderUsersource(Usersource $usersource, $type, array $params = array())
 	{
-		return App::getSystemService('usersource_manager')->renderView($usersource, $type, $params);
+		// clean up params
+		$params['usersource'] = $usersource;
+		if (!isset($params['type'])) {
+			$params['type'] = 'user';
+		}
+
+		// get template name
+		$name = $usersource->getAdapter()->getTypename();
+		$tpl  = "DeskPRO:Auth:" . $name . "-" . $type . ".html.twig";
+
+		$html = $this->getTemplating()->render($tpl, $params);
+		return $html;
 	}
 
 	public function slugify($str)
@@ -1032,6 +1055,10 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function renderCustomField($display_array, array $vars = array())
 	{
+		if ($display_array instanceof FormView) {
+			return $display_array->vars['rendered_data'];
+		}
+
 		$handler = $display_array['handler'];
 
 		if (is_object($display_array)) {
@@ -1044,6 +1071,11 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function renderCustomFieldForm($display_array, array $vars = array())
 	{
+		if ($display_array instanceof FormView) {
+			$formExtension = $this->container->get('twig')->getExtension('form');
+			return $formExtension->renderer->searchAndRenderBlock($display_array, 'widget');
+		}
+
 		$handler = $display_array['handler'];
 		$formView = $display_array['formView'];
 
@@ -1057,6 +1089,10 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function renderCustomFieldText($display_array, array $vars = array())
 	{
+		if ($display_array instanceof FormView) {
+			return $display_array->vars['rendered_data'];
+		}
+
 		$handler = $display_array['handler'];
 
 		if (is_object($display_array)) {
@@ -1410,16 +1446,87 @@ class TemplatingExtension extends \Twig_Extension
 		return '';
 	}
 
-	public function getJsSsoLoader()
-	{
-		$person = App::getCurrentPerson();
-		$is_first_page = App::getSession()->isFirstPage();
 
-		$sources = App::getEntityRepository('DeskPRO:Usersource')->getJsSsoUsersources();
-		$output = array();
+	public function getJsSsoLoader($interface = 'user')
+	{
+		///////////////////////////////////////////////////////////////////////
+		// Settings
+		$person = App::getCurrentPerson();
+		$is_first_page = App::getSession()->isFirstPage(); // not to be trusted
+		/** @var \Application\DeskPRO\Auth\AuthSettings $auth_settings */
+		$auth_settings = $this->container->getSystemService('auth_settings');
+		$auth_interface_settings = $interface == 'user' ? $auth_settings->getUserInterfaceSettings() : $auth_settings->getAgentInterfaceSettings();
+		/** @var \Symfony\Component\HttpFoundation\RequestStack $request_stack */
+		$request_stack = $this->getContainer()->get('request_stack');
+
+		///////////////////////////////////////////////////////////////////////
+		// Ensure GET request
+		if (!$request = $request_stack->getCurrentRequest()) {
+			return '';
+		}
+		if ('GET' !== $request->getMethod()) {
+			return '';
+		}
+
+		///////////////////////////////////////////////////////////////////////
+		// If the user just logged out, we don't want to be logging him in immediatly
+		if ($request->query->get('o')) {
+			return '';
+		}
+
+		///////////////////////////////////////////////////////////////////////
+		// Get iFrame Output, if any
+		$iFrameOutput = '';
+		if ($auth_interface_settings->isBackgroundSsoEnabled()) {
+			$adapter = $auth_interface_settings->getSsoAuthAdapter(SsoLoginActionInterface::CONTEXT_BACKGROUND);
+
+			if ($adapter instanceof IframeSsoInterface) {
+				$vars = array_merge(
+					array(
+						'iframe_url' => '',
+						'render'     => true
+					),
+					$adapter->getIframeTemplateParams($is_first_page)
+				);
+
+				$iFrameOutput = $this->getTemplating()->render(
+					'DeskPRO:Auth:_sso_iframe.html.twig',
+					$vars
+				);
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////
+		// Some old apps use this code for background authentication
+		// needs to stay because Magento native app still uses this
+		$legacyOutput = $this->legacyMagentoPluginCode($interface, $person, $is_first_page);
+
+
+		return $iFrameOutput . $legacyOutput;
+	}
+
+	/**
+	 * @param $interface
+	 * @param $person
+	 * @param $is_first_page
+	 * @return array
+	 */
+	protected function legacyMagentoPluginCode($interface, $person, $is_first_page)
+	{
+		/** @var \Application\DeskPRO\Usersource\UsersourceManager $us_manager */
+		$us_manager = $this->container->getSystemService('usersource_manager');
+		$sources    = $us_manager->getAll()->forInterface($interface)->withCapability(
+			UsersourceInfo::CAPABILITY_SSO_JS
+		);
+		$output     = array();
 		foreach ($sources AS $source) {
-			$adapter = $source->getAdapter()->getAuthAdapter();
-			$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person, $is_first_page);
+			/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
+			$factory = $this->container->getSystemService('usersource_auth_adapter_factory');
+			$adapter = $factory->getAuthAdapter($source, SsoLoginActionInterface::CONTEXT_BACKGROUND);
+
+			if ($adapter instanceof JsSsoInterface) {
+				$output[] = $adapter->getSsoHtmlLoaderOutput($source, $this, $person, $is_first_page);
+			}
 		}
 
 		return implode("\n\n", $output);
@@ -1436,7 +1543,7 @@ class TemplatingExtension extends \Twig_Extension
 		$output = array();
 		foreach ($person->usersource_assoc as $assoc) {
 			$us = $assoc->usersource;
-			if (!$us->isCapable('share_session')) {
+			if (!$us->isCapable(UsersourceInfo::CAPABILITY_SHARE_SESSION)) {
 				continue;
 			}
 
@@ -1602,6 +1709,11 @@ class TemplatingExtension extends \Twig_Extension
 		return '{{ state_path(\'' . addslashes($route) . '\', ' . str_replace(array("'", '"'), array('&apos;', '&quot;'), $params) . ') }}';
 	}
 
+	public function ngHrefVar($route_var, $params = '{}')
+	{
+		return '{{ state_path(' . $route_var . ', ' . str_replace(array("'", '"'), array('&apos;', '&quot;'), $params) . ') }}';
+	}
+
 	public function smartWrap($string, $len = 50, $break = null)
 	{
 		if ($break === null) {
@@ -1697,6 +1809,34 @@ window._trackJs = {
 HTML;
 		return $html;
 	}
+
+    public function renderTicketTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
+    {
+        // Simple string, cant be a template so dont waste time evaluating it
+        if (strpos($string, '{{') === false && strpos($string, '{%') === false) {
+            return $string;
+        }
+
+        $vars = array(
+            'performer'     => $context->getPersonContext(),
+            'ticket'        => $ticket,
+            'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
+            'site_name'     => $this->getContainer()->getSetting('core.site_name'),
+            'user_vars'     => $context->getUserVars(),
+        );
+
+        if ($extra_vars) {
+            $vars = array_merge($vars, $extra_vars);
+        }
+
+        try {
+            $rendered = $this->getContainer()->getTwig()->renderStringTemplate($string, $vars);
+        } catch (\Exception $e) {
+            return $string;
+        }
+
+        return $rendered;
+    }
 }
 
 function deskpro_twig_filter_dummy($ret) {

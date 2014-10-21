@@ -32,6 +32,8 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		}
 		this._initActions();
 		this._initLabels();
+		this._initAutoUnpublishOptions();
+		this._initAutoPublishOptions();
 
 		this._initCommentForm();
 
@@ -244,6 +246,187 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		$('.view-user-interface', actions).on('click', function() {
 			window.open(self.meta.permalink);
+		});
+	},
+
+
+	//#################################################################
+	//# Automatic Unpublish
+	//#################################################################
+
+	_initAutoUnpublishOptions: function() {
+		var self = this;
+
+		var optWrap = this.getEl('auto_unpub');
+
+		$('.auto-unpublish-set', optWrap).on('click', function() {
+			self.updateAutoUnPubOptions();
+			$('.auto-unpublish', optWrap).show();
+			$(this).hide();
+		});
+
+		$('.remove-auto-unpublish', optWrap).on('click', function() {
+			self.removeAutoUnPubOptions();
+			$('.auto-unpublish-set', optWrap).show();
+			$('.auto-unpublish', optWrap).hide();
+		});
+
+		var endOpt = $('.auto-unpublish .end-action.opt', optWrap);
+		var m = new DeskPRO.UI.Menu({
+			triggerElement: endOpt,
+			menuElement: $('.end-action-menu', optWrap),
+			onItemClicked: function(info) {
+				var val = $(info.itemEl).data('action');
+				var label = $(info.itemEl).text().trim();
+
+				endOpt.data('val', val);
+				endOpt.text(label);
+
+				self.updateAutoUnPubOptions();
+			}
+		});
+		this.ownObject(m);
+
+		var endDate = $('.auto-unpublish .end-date.opt', optWrap);
+		var dateInput = $('.auto-unpublish .end-date-input', optWrap);
+		dateInput.datepicker({
+			dateFormat: 'M d, yy',
+			onSelect: function(dateText, inst) {
+
+				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
+
+				endDate.data('val', timestamp);
+				endDate.text(dateText);
+
+				self.updateAutoUnPubOptions();
+			}
+		});
+
+		endDate.on('click', function() {
+			$('.auto-unpublish .end-date-input', optWrap).datepicker('show');
+		});
+	},
+
+	removeAutoUnPubOptions: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			type: 'POST',
+			data: {action: 'remove-auto-unpub'},
+			context: this,
+			dataType: 'json'
+		});
+	},
+
+	updateAutoUnPubOptions: function() {
+		var optWrap = this.getEl('auto_unpub');
+		var endTimestamp = $('.auto-unpublish .end-date.opt', optWrap).data('val');
+		var endAction = $('.auto-unpublish .end-action.opt', optWrap).data('val');
+
+		// Still need them to enter an input
+		if (!endTimestamp || !endAction) {
+			return;
+		}
+
+		var data = [];
+		data.push({
+			name: 'action',
+			value: 'auto-unpub'
+		});
+		data.push({
+			name: 'end_action',
+			value: endAction
+		});
+		data.push({
+			name: 'end_timestamp',
+			value: endTimestamp
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			type: 'POST',
+			data: data,
+			context: this,
+			dataType: 'json'
+		});
+	},
+
+
+	//#################################################################
+	//# Automatic Publish
+	//#################################################################
+
+	_initAutoPublishOptions: function() {
+		var self = this;
+
+		var optWrap = this.getEl('auto_pub');
+
+		$('.auto-publish-set', optWrap).on('click', function() {
+			self.updateAutoPubOptions();
+			$('.auto-publish', optWrap).show();
+			$(this).hide();
+		});
+
+		$('.remove-auto-publish', optWrap).on('click', function() {
+			self.removeAutoPubOptions();
+			$('.auto-publish-set', optWrap).show();
+			$('.auto-publish', optWrap).hide();
+		});
+
+		var pubDate = $('.auto-publish .pub-date.opt', optWrap);
+		var dateInput = $('.auto-publish .pub-date-input', optWrap);
+		dateInput.datepicker({
+			dateFormat: 'M d, yy',
+			onSelect: function(dateText, inst) {
+
+				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
+
+				pubDate.data('val', timestamp);
+				pubDate.text(dateText);
+
+				self.updateAutoPubOptions();
+			}
+		});
+
+		pubDate.on('click', function() {
+			$('.auto-publish .pub-date-input', optWrap).datepicker('show');
+		});
+	},
+
+	removeAutoPubOptions: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			type: 'POST',
+			data: {action: 'remove-auto-pub'},
+			context: this,
+			dataType: 'json'
+		});
+	},
+
+	updateAutoPubOptions: function() {
+		var optWrap = this.getEl('auto_pub');
+		var timestamp = $('.auto-publish .pub-date.opt', optWrap).data('val');
+
+		// Still need them to enter an input
+		if (!timestamp) {
+			return;
+		}
+
+		var data = [];
+		data.push({
+			name: 'action',
+			value: 'auto-pub'
+		});
+		data.push({
+			name: 'pub_timestamp',
+			value: timestamp
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			type: 'POST',
+			data: data,
+			context: this,
+			dataType: 'json'
 		});
 	},
 

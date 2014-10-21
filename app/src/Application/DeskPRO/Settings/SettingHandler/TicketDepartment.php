@@ -137,8 +137,8 @@ class TicketDepartment
 				try {
 					$this->db->executeQuery("
 						DELETE FROM phrases
-						WHERE name IN (" . $this->db->quoteIn($ids) . ") AND language_id = 1
-					");
+						WHERE name IN (?) AND language_id = 1
+					", array($ids), array(Connection::PARAM_INT_ARRAY));
 
 					$this->db->batchInsert('phrases', $batch);
 					$this->db->commit();

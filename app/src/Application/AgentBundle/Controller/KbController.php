@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -115,7 +116,7 @@ class KbController extends AbstractController
 		", array($article->id));
 
 		// Existing translations
-		$trans_langs = $this->db->fetchAllCol("SELECT language_id FROM object_lang WHERE ref = 'articles.{$article->getId()}'");
+		$trans_langs = $this->db->fetchAllCol('SELECT language_id FROM object_lang WHERE ref = ?', array('articles.'.$article['id']));
 		$trans_langs[] = $article->language->getId();
 		$trans_langs = array_combine($trans_langs,$trans_langs);
 
@@ -437,6 +438,12 @@ class KbController extends AbstractController
 
 				$article->date_end = $date;
 				$article->end_action = $action;
+				break;
+
+			case 'auto-pub':
+				$date = date_create('@' . $this->in->getUint('pub_timestamp'));
+
+				$article->date_published = $date;
 				break;
 
 			case 'remove-auto-pub':
@@ -847,12 +854,12 @@ class KbController extends AbstractController
 
 		$comment_counts = array();
 		if ($results) {
-			$comment_counts = $this->db->fetchAllKeyValue("
+			$comment_counts = $this->db->fetchAllKeyValue('
 				SELECT article_id, COUNT(*)
 				FROM article_comments
-				WHERE article_id IN (" . implode(',', array_keys($results)) . ")
+				WHERE article_id IN (?)
 				GROUP BY article_id
-			");
+			', array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
 		}
 
 		$cat_usergroups = array();

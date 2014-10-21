@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 	class Admin_Apps_Ctrl_InstallProgress extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_InstallProgress'
 		@CTRL_AS   = 'EmailTemplateEditor'
-		@DEPS      = ['$modalInstance', '$timeout', 'Api', 'pack', 'setting_values']
+		@DEPS      = ['$modalInstance', '$timeout', 'Api', 'pack', 'setting_values', 'usersourceType']
 
 		init: ->
 			@$scope.pack = @pack
@@ -27,6 +27,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 				@closeForSuccess(@info)
 
 			url = "/apps/packages/#{@pack.name}"
+			if @usersourceType then url += '?usersource_type=' + @usersourceType
 			@Api.sendPutJson(url, {settings: @setting_values}).success( (info) =>
 				@markAsDone(info)
 			, (info) =>

@@ -93,6 +93,9 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $persons;
 
+	/**
+	 * @var array
+	 */
 	protected $_cache = array();
 
 	/**

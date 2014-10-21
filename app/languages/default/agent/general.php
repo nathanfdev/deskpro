@@ -165,7 +165,7 @@
 	'agent.general.current_profile_tz'                      => 'The current time according to your profile',
 	'agent.general.date'                                    => 'Date',
 	'agent.general.date_archived'                           => 'Date Archived',
-	'agent.general.date_closed'                             => 'Date Archived',
+	'agent.general.date_archived'                           => 'Date Archived',
 	'agent.general.date_completed'                          => 'Date Completed',
 	'agent.general.date_created'                            => 'Date Created',
 	'agent.general.date_created_newestoldest'               => 'Date Created (newest-oldest)',

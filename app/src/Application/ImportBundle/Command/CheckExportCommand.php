@@ -32,6 +32,7 @@
 namespace Application\ImportBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,6 +42,7 @@ use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 class CheckExportCommand extends ContainerAwareCommand
 {
+	/** @var ProgressBar */
 	protected $progress_bar;
 	
 	/**

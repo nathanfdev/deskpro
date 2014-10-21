@@ -42,9 +42,13 @@ class ServerSettings
 	 */
 	private $settings;
 
+	/** @var bool */
 	public $rewrite_urls = false;
+	/** @var bool */
 	public $redirect_correct_url = true;
+	/** @var string */
 	public $cookie_path = '/';
+	/** @var string */
 	public $cookie_domain = '';
 
 	/**

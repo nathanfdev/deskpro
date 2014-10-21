@@ -4,3 +4,10 @@
 		{{ render_custom_field_form(f) }}
 	</dd>
 {% endfor %}
+
+{% for f in custom_fields_definitions %}
+    <dt class="type-labels">{{ form_label(f) }}</dt>
+    <dd>
+        {{ form_widget(f) }}
+    </dd>
+{% endfor %}

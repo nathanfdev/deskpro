@@ -15,7 +15,7 @@
 
       Admin_Apps_Ctrl_InstallProgress.CTRL_AS = 'EmailTemplateEditor';
 
-      Admin_Apps_Ctrl_InstallProgress.DEPS = ['$modalInstance', '$timeout', 'Api', 'pack', 'setting_values'];
+      Admin_Apps_Ctrl_InstallProgress.DEPS = ['$modalInstance', '$timeout', 'Api', 'pack', 'setting_values', 'usersourceType'];
 
       Admin_Apps_Ctrl_InstallProgress.prototype.init = function() {
         var url;
@@ -62,6 +62,9 @@
           };
         })(this);
         url = "/apps/packages/" + this.pack.name;
+        if (this.usersourceType) {
+          url += '?usersource_type=' + this.usersourceType;
+        }
         return this.Api.sendPutJson(url, {
           settings: this.setting_values
         }).success((function(_this) {

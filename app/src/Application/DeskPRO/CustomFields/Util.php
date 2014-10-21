@@ -54,7 +54,7 @@ class Util
 			$k = 'field_' . $k;
 		});
 
-		return $k;
+		return $data;
 	}
 
 

@@ -58,6 +58,9 @@ use Orb\Util\Arrays;
  */
 class RuleBuilder
 {
+	/**
+	 * @var array
+	 */
 	protected $special_keys = array();
 
 	/**

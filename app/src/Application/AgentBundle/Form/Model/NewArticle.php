@@ -41,16 +41,25 @@ use Application\DeskPRO\Entity\Person;
 
 class NewArticle
 {
+	/** @var string */
 	public $title;
+	/** @var int */
 	public $category_id;
+	/** @var string */
 	public $status;
+	/** @var string */
 	public $content;
+	/** @var int */
 	public $language_id;
 
+	/** @var string */
 	public $slug;
+	/** @var array */
 	public $labels = array();
+	/** @var array */
 	public $attach = array();
 
+	/** @var Article */
 	protected $_article;
 
 	/**

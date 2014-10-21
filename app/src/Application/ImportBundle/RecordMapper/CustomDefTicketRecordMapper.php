@@ -35,6 +35,7 @@ use Doctrine\DBAL\Connection;
 
 class CustomDefTicketRecordMapper extends CommonRecordMapper
 {
+	/** @var  array */
 	protected $cache;
 	
 	/**

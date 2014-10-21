@@ -252,20 +252,26 @@ define [
 			# Ticket Fields
 			#------------------------------
 
+			options = []
 			if @options_data?.ticket_fields
-				options = []
-
 				for f in @options_data.ticket_fields
 					options.push({
 						title: f.title,
 						value: @initFieldGetter('SetTicketField', f)
 					})
 
-				if options.length
-					set_options.push({
-						title: 'Ticket Fields',
-						subOptions: options
+			if @options_data?.contextual_fields
+				for f in @options_data.contextual_fields
+					options.push({
+						title: f.title,
+						value: @initFieldGetter('SetTicketContextualField', f)
 					})
+
+			if options.length
+				set_options.push({
+					title: 'Ticket Fields',
+					subOptions: options
+				})
 
 			#------------------------------
 			# User Fields
@@ -493,6 +499,7 @@ define [
 						round_robin:       '/round_robin/settings',
 						round_robins:      '/round_robin',
 						tasks:             '/tasks/settings'
+						contextual_fields: '/custom_fields'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -514,6 +521,7 @@ define [
 						options_data['round_robin']      = data.round_robin
 						options_data['round_robins']     = data.round_robins
 						options_data['tasks']            = data.tasks
+						options_data['contextual_fields']= data.contextual_fields
 
 						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
@@ -522,6 +530,9 @@ define [
 						if @options_data?.ticket_fields
 							for f in @options_data.ticket_fields
 								@initFieldGetter('SetTicketField', f)
+						if @options_data?.contextual_fields
+							for f in @options_data.contextual_fields
+								@initFieldGetter('SetTicketContextualField', f)
 						if @options_data?.user_fields
 							for f in @options_data.user_fields
 								@initFieldGetter('SetUserField', f)
@@ -996,6 +1007,16 @@ define [
 					return me.loadDataOptions()
 
 				scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+
+					$scope.$watch(
+						() -> $scope.model.agent_ids.all_agents
+						(newVal, oldVal) =>
+							return if !newVal
+							for own k, v of $scope.model.agent_ids
+								continue if 'all_agents' == k
+								$scope.model.agent_ids[k] = false
+					)
+
 					$scope.handleTemplateChange = ->
 						if $scope.model.template == 'CREATE'
 							$scope.model.template = null

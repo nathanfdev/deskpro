@@ -391,3 +391,25 @@
     {% for attrname, attrvalue in attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
 {% endspaceless %}
 {% endblock button_attributes %}
+
+
+
+
+{% block dp_category_builder_widget %}
+    {% spaceless %}
+    {% set prefix = form.parent.parent.vars.name ~ '.' ~ form.parent.vars.name %}
+    <dp-category-builder max-depth="0" ng-model="{{ prefix }}.{{ form.vars.name }}"
+            ng-init="
+                {{ prefix }} = {};
+                {{ prefix }}.{{ form.vars.name }} = [];
+                {% for child in form %}
+                    {{ prefix }}.{{ form.vars.name }}[{{ child.vars.name }}] = {};
+                    {% for el in child %}
+                        {{ prefix }}.{{ form.vars.name }}[{{ child.vars.name }}].{{ el.vars.name }} = '{{ el.vars.value }}';
+                    {% endfor %}
+                {% endfor %}
+            "
+        >
+    </dp-category-builder>
+    {% endspaceless %}
+{% endblock dp_category_builder_widget %}

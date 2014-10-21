@@ -44,8 +44,9 @@ use Orb\Util\Util;
  */
 class ActionsFactory
 {
+	/** @var array */
 	protected $global_options = array();
-
+	/** @var array|null */
 	protected $plugin_actions = null;
 
 	public function addGlobalOption($name, $value)

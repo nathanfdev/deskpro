@@ -73,11 +73,19 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
 		$timeout = intval($this->getActionOption('timeout')) ?: 20;
-		$http_client = new HttpClient($this->getActionOption('url'), array(
-			'timeout' => $timeout
-		));
 
-		$headers = $this->getActionOption('headers');
+        /** @var TemplatingExtension $renderer */
+        $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
+        $url = $renderer->renderTicketTemplate($this->getActionOption('url'), $ticket, $context);
+        $headers = $renderer->renderTicketTemplate($this->getActionOption('headers'), $ticket, $context);
+        $custom_data = $renderer->renderTicketTemplate($this->getActionOption('custom_data') ?: '', $ticket, $context);
+        $username = $renderer->renderTicketTemplate($this->getActionOption('username') ?: '', $ticket, $context);
+        $password = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
+
+        $http_client = new HttpClient($url, array(
+            'timeout' => $timeout
+        ));
+
 		if ($headers) {
 			$headers = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
 		} else {
@@ -90,12 +98,12 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 		$data['event_performer'] = $context->getEventPerformer();
 		$data['event_type']      = $context->getEventType();
 		$data['event_method']    = $context->getEventMethod();
-		$data['custom_data']     = $this->getActionOption('custom_data') ?: '';
+		$data['custom_data']     = $custom_data;
 
 		$request = $http_client->createRequest($this->getActionOption('method') ?: 'POST', null, $headers, $data);
 
-		if ($this->getActionOption('username') || $this->getActionOption('password')) {
-			$request->setAuth($this->getActionOption('username') ?: '', $this->getActionOption('password') ?: '');
+		if ($username || $password) {
+			$request->setAuth($username ?: '', $password ?: '');
 		}
 
 		try {

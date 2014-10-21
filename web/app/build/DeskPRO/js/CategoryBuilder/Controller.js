@@ -203,10 +203,11 @@
 
       DeskPRO_CategoryBuilder_Controller.prototype.renderRow = function(cat) {
         var newRow, rowScope, tpl;
-        tpl = "<li class=\"dp-cb-row\" data-cat-id=\"{{cat.id}}\">\n	<div class=\"dp-cb-titlewrap\">\n		<div class=\"dp-cb-row-move\"><i class=\"fa fa-bars\"></i></div>\n		<div class=\"dp-cb-row-controls\">\n			<i class=\"fa fa-times-circle remove-trigger\"></i>\n		</div>\n		<div class=\"dp-cb-row-indent\"></div>\n		<span class=\"title-id\" title=\"ID\" ng-if=\"cat.id && !cat['@is_new']\">#<span ng-bind=\"cat.id\"></span></span>\n		<span class=\"title-id\" title=\"ID will be generated after you save\" ng-if=\"cat['@is_new']\">?</span>\n		<input type=\"text\" class=\"form-control dp-cb-input\" ng-model=\"cat.title\" placeholder=\"Enter title...\" />\n	</div>\n	<ul ui-sortable=\"sortedListOptions\"></ul>\n</li>";
+        tpl = "<li class=\"dp-cb-row\" data-cat-id=\"{{cat.id}}\">\n	<div class=\"dp-cb-titlewrap\">\n		<div class=\"dp-cb-row-move\"><i class=\"fa fa-bars\"></i></div>\n		<div class=\"dp-cb-row-controls\">\n			<i class=\"fa fa-times-circle remove-trigger\"></i>\n		</div>\n		<div class=\"dp-cb-row-indent\"></div>\n		<span class=\"title-id\" title=\"ID\" ng-if=\"cat.id && !cat['@is_new']\">#<span ng-bind=\"cat.id\"></span></span>\n		<span class=\"title-id\" title=\"ID will be generated after you save\" ng-if=\"cat['@is_new']\">?</span>\n		<input type=\"text\" name=\"{{ fieldName }}\" class=\"form-control dp-cb-input\" ng-model=\"cat.title\" placeholder=\"Enter title...\" />\n	</div>\n	<ul ui-sortable=\"sortedListOptions\"></ul>\n</li>";
         rowScope = this.$scope.$new();
         rowScope.sortedListOptions = this.$scope.sortedListOptions;
         rowScope.cat = cat;
+        rowScope.fieldName = cat.field_name || rowScope.fieldName;
         newRow = this.$compile(tpl)(rowScope);
         newRow.data('catId', cat.id);
         return [newRow, rowScope];

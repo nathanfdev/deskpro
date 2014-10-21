@@ -134,7 +134,6 @@ class TicketSplit implements PersonContextInterface
 
 		if (!count($messages)) {
 			throw new \InvalidArgumentException("No messages", 100);
-			return;
 		}
 
 		$count_all = $this->em->getConnection()->fetchColumn("
@@ -144,7 +143,6 @@ class TicketSplit implements PersonContextInterface
 		", array($this->ticket->id));
 		if ($count_all == count($messages)) {
 			throw new \InvalidArgumentException("Cannot split the entire ticket", 200);
-			return;
 		}
 
 		#------------------------------

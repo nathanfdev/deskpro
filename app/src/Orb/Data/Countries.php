@@ -804,6 +804,9 @@ class Countries
 		'zimbabwe' => 'ZW'
 	);
 
+	/**
+	 * @var array
+	 */
 	protected static $calling_codes = array(
 		array('country' => 'Abkhazia',                                        'country_code' => null,  'calling_code' => '7 840'   ),
 		array('country' => 'Abkhazia',                                        'country_code' => null,  'calling_code' => '7 940'   ),

@@ -37,7 +37,9 @@ use Application\DeskPRO\App;
 
 class Header
 {
+	/** @var string */
 	public $name;
+	/** @var string */
 	public $header_parts;
 
 	public function getName()

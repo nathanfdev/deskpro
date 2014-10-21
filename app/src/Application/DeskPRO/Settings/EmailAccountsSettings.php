@@ -37,6 +37,7 @@ class EmailAccountsSettings
 	 */
 	protected $settings;
 
+	/** @var array  */
 	protected $values = array(
 		'attach_agent_maxsize'   => 26214400,
 		'attach_agent_must_exts' => array(),

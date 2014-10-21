@@ -34,15 +34,13 @@
 
 namespace Orb\Log\Filter;
 
-use Orb\Log\LogItem;
-use Orb\Log\Logger;
-
 
 /**
  * This wraps up a function callback
  */
 class CallbackFormatter extends \Orb\Filter\AbstractFilter
 {
+	/** @var Callable */
 	protected $callback;
 
 	public function __construct($callback)

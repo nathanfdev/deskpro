@@ -36,7 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1401186433 extends AbstractBuild
 {
+	/** @var  array */
 	private $address_map;
+	/** @var  array */
 	private $email_account_ids;
 
 	public function run()

@@ -36,6 +36,7 @@ namespace Orb\Validator;
 
 class StringUrl extends AbstractValidator implements StaticValidator
 {
+	/** @var array  */
 	protected $_protocols = array('http', 'https');
 
 	/**
