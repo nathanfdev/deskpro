@@ -34,20 +34,9 @@
 
 namespace Application\PortalBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 
-class IndexController extends AbstractController
+class AbstractController extends BaseController
 {
-	/**
-	 * @Route("/")
-	 */
-	public function indexAction()
-	{
-		$person = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Person')->find(1);
-
-		return new Response(sprintf('hello world! the email of %s is: %s', $person->name,
-			$person->primary_email->email));
-    }
 }
  
