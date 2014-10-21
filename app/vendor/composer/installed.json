@@ -3685,5 +3685,62 @@
             "propel",
             "search"
         ]
+    },
+    {
+        "name": "sensio/framework-extra-bundle",
+        "version": "v3.0.2",
+        "version_normalized": "3.0.2.0",
+        "target-dir": "Sensio/Bundle/FrameworkExtraBundle",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
+            "reference": "9b22aaee517e80aad3238ea0328458b6f964066f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/9b22aaee517e80aad3238ea0328458b6f964066f",
+            "reference": "9b22aaee517e80aad3238ea0328458b6f964066f",
+            "shasum": ""
+        },
+        "require": {
+            "doctrine/common": "~2.2",
+            "symfony/framework-bundle": "~2.3"
+        },
+        "require-dev": {
+            "symfony/expression-language": "~2.4",
+            "symfony/security-bundle": "~2.4"
+        },
+        "suggest": {
+            "symfony/expression-language": "",
+            "symfony/security-bundle": ""
+        },
+        "time": "2014-09-02 07:11:30",
+        "type": "symfony-bundle",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Sensio\\Bundle\\FrameworkExtraBundle": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            }
+        ],
+        "description": "This bundle provides a way to configure your controllers with annotations",
+        "keywords": [
+            "annotations",
+            "controllers"
+        ]
     }
 ]
