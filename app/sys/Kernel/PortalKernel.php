@@ -59,7 +59,8 @@ class PortalKernel extends Kernel
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 			new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-			new \Application\DeskPRO\DeskPROBundle()
+			new \Application\DeskPRO\DeskPROBundle(),
+			new \Application\PortalBundle\PortalBundle()
 		);
 	}
 

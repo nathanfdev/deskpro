@@ -1,0 +1,2 @@
+portal_routes:
+  resource: "@PortalBundle/Resources/config/portal_routing.yml"
