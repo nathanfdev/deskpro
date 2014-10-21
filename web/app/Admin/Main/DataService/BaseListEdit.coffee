@@ -452,8 +452,9 @@ define [
 			deferred = @$q.defer()
 			@all().then =>
 				deferred.resolve null if !id
-			, =>
 				deferred.resolve @map[id]
+			, =>
+				deferred.resolve @map[id] || null
 
 			deferred.promise
 

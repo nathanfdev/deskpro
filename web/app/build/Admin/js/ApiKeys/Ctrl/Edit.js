@@ -46,8 +46,10 @@
       };
 
       Admin_ApiKeys_Ctrl_Edit.prototype.initialLoad = function() {
-        this.service.keys.get(this.$stateParams.id || null).then((function(_this) {
+        var p1, p2;
+        p1 = this.service.keys.get(this.$stateParams.id || null).then((function(_this) {
           return function(model) {
+            console.log(model);
             if (model == null) {
               return;
             }
@@ -57,11 +59,12 @@
             return _this.form.isAdminManage = _this.form.flags.indexOf('admin_manage') > -1;
           };
         })(this));
-        return this.service.agents.all().then((function(_this) {
+        p2 = this.service.agents.all().then((function(_this) {
           return function(agents) {
             return _this.agents = agents;
           };
         })(this));
+        return this.$q.all([p1, p2]);
       };
 
       Admin_ApiKeys_Ctrl_Edit.prototype.saveForm = function() {

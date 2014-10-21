@@ -600,12 +600,13 @@
         this.all().then((function(_this) {
           return function() {
             if (!id) {
-              return deferred.resolve(null);
+              deferred.resolve(null);
             }
+            return deferred.resolve(_this.map[id]);
           };
         })(this), (function(_this) {
           return function() {
-            return deferred.resolve(_this.map[id]);
+            return deferred.resolve(_this.map[id] || null);
           };
         })(this));
         return deferred.promise;

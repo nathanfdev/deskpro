@@ -31,14 +31,17 @@ define [
 
 
 		initialLoad: ->
-			@service.keys.get(@$stateParams.id || null).then (model) =>
+			p1 = @service.keys.get(@$stateParams.id || null).then (model) =>
+				console.log(model)
 				return if !model?
 				@form = angular.copy model
 				@form.flags = @form.flags || []
 				@form.isSuperUser = @form.flags.indexOf('super') > -1
 				@form.isAdminManage = @form.flags.indexOf('admin_manage') > -1
 
-			@service.agents.all().then (agents) => @agents = agents
+			p2 = @service.agents.all().then (agents) => @agents = agents
+
+			return @$q.all([p1, p2])
 
 
 
