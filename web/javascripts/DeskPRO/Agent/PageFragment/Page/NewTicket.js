@@ -1037,6 +1037,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			depId = this.getEl('dep').val() || 0,
 			self = this;
 
+		if (!personId || !parseInt(personId)) {
+			return;
+		}
+
 		$.ajax({
 			type: 'GET',
 			url: BASE_URL + 'agent/tickets/new/get-custom-fields-row/' + personId + '/' + depId,
