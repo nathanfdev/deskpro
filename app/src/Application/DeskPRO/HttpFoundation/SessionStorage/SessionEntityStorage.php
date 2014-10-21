@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
@@ -86,7 +87,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 	 * @param \Doctrine\ORM\EntityManager $em
 	 * @param null $options
 	 */
-	public function __construct(\Doctrine\ORM\EntityManager $em, $options = null)
+	public function __construct(\Doctrine\ORM\EntityManager $em, $options = null, SettingsResolver $settings_resolver)
 	{
 		$this->em = $em;
 		$this->db = $em->getConnection();
@@ -100,8 +101,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 
 		$this->options['name'] = $cookie_name;
 
-		$cookieDefaults['domain']   = App::getSetting('core.cookie_domain');
-		$cookieDefaults['path']     = App::getSetting('core.cookie_path');
+		$cookieDefaults['domain']   = $settings_resolver->getGlobalSettings()->get('core.cookie_domain');
+		$cookieDefaults['path']     = $settings_resolver->getGlobalSettings()->get('core.cookie_path');
 		$cookieDefaults['httponly'] = true;
 
 		if (\Orb\Util\Web::getRequestProtocol() == 'HTTPS') {
