@@ -1,7 +1,7 @@
 <?php if (!defined('DP_ROOT')) exit('No access');
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
-
+/** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
 ############################################################################
 # Parameters
@@ -30,9 +30,7 @@ $container->setParameter('router.options.generator_dumper_class', 'Application\\
 $container->setParameter('router.options.matcher_dumper_class', 'Application\\DeskPRO\\Routing\\Matcher\\Dumper\\PhpMatcherDumper');
 $container->setParameter('router.options.generator_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
 $container->setParameter('router.options.generator_base_class', 'Application\\DeskPRO\\Routing\\Generator\\UrlGenerator');
-$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
 $container->setParameter('twig.options', array('cache' => '%kernel.cache_dir%../twig-compiled', 'charset' => 'UTF-8', 'debug' => '%kernel.debug%', 'auto_reload' => '%kernel.debug%'));
-$container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('templating.locator.class', 'Application\\DeskPRO\\Templating\\Loader\\TemplateLocator');
 $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');
 $container->setParameter('debug.templating.engine.twig.class', 'Application\\DeskPRO\\Twig\\TwigEngine');
@@ -84,14 +82,6 @@ $definition->setArguments(array(
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 
-// session.storage
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
-$definition->setArguments(array(
-	new Reference('doctrine.orm.entity_manager'),
-	'%session.storage.options%'
-));
-$container->setDefinition('session.storage', $definition);
 
 // deskpro.mail_logger
 $definition = new Definition();
@@ -100,42 +90,6 @@ $definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemS
 $definition->setFactoryMethod('create');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('deskpro.mail_logger', $definition);
-
-// swiftmailer.mailer
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Mail\\Mailer');
-$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailerFactory');
-$definition->setFactoryMethod('create');
-$definition->setArguments(array(
-	new Reference('service_container')
-));
-$container->setDefinition('swiftmailer.mailer', $definition);
-
-// swiftmailer.transport.dp_delegating
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
-$definition->setArguments(array(
-	new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
-));
-$container->setDefinition('swiftmailer.mailer.transport.dp_delegating', $definition);
-
-// doctrine.dbal.connection_factory
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');
-$definition->setArguments(array(
-	'%doctrine.dbal.connection_factory.types%'
-));
-$definition->addMethodCall('setContainer', array(new Reference('service_container')));
-$container->setDefinition('doctrine.dbal.connection_factory', $definition);
-
-// doctrine.orm.default_query_cache
-$definition = new Definition();
-$definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
-$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\ArrayFileCacheFactory');
-$definition->setFactoryMethod('create');
-$definition->setArguments(array('dql'));
-$definition->addMethodCall('registerShutdownCommit');
-$container->setDefinition('doctrine.orm.default_query_cache', $definition);
 
 // deskpro.exception_logger
 $definition = new Definition();
@@ -236,16 +190,6 @@ $definition->setAbstract(true);
 $container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
 
 ############################################################################
-# Cache services
-############################################################################
-
-## NOTE: duplicated in install bundle's DI
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
-$definition->setArguments(array());
-$container->setDefinition('cache.simple_array', $definition);
-
-############################################################################
 # Validators and Constraints
 ############################################################################
 
@@ -313,36 +257,6 @@ $container->loadFromExtension('twig', array(
 	'globals' => array(
 		'experimental_admin_features' => false
 	)
-));
-
-############################################################################
-# Doctrine Configuration
-############################################################################
-
-$container->loadFromExtension('doctrine', array(
-	'orm' => array(
-		'auto_generate_proxy_classes' => false,
-		'default_entity_manager' => 'default',
-		'entity_managers' => array(
-			'default' => array('mappings' => array('DeskPRO' => array('type' => 'staticphp')), 'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory')
-		)
-	),
-	'dbal' => array(
-		'default_connection' => 'default',
-		'connections' => array(
-			'default' => array('host' => 'from_user_config.db', 'logging' => true),
-			'read' => array('host' => 'from_user_config.db_read', 'logging' => true)
-		)
-	)
-));
-
-
-############################################################################
-# Swiftmailer Configuration
-############################################################################
-
-$container->loadFromExtension('swiftmailer', array(
-	'transport' => 'dp_delegating'
 ));
 
 ############################################################################
