@@ -39,6 +39,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
 use Doctrine\DBAL\DBALException;
+use Symfony\Component\HttpFoundation\Request;
 
 class KernelBooter
 {
@@ -251,56 +252,31 @@ class KernelBooter
 			header('Location: ' . $url);
 			exit;
 		} else {
+
+
+
+			//
+			// boot and run portal
+			//
 			define('DP_INTERFACE', 'user');
+			self::bootstrapLib($debug);
+			self::bootstrapEnv();
+			require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
+			$kernel = new PortalKernel($env, $debug);
+			$request = Request::createFromGlobals();
+			$response = $kernel->handle($request);
+			$response->send();
+			$kernel->terminate($request, $response);
+			exit;
+			//
+			// end boot and run portal
+			//
 
-			try {
-				$res = self::_getCachedPageIfAvailable($request, $request_uri, $path, $request_method, function() use ($kernel_class, $env, $debug, &$kernel) {
-					if (!$kernel) {
-						KernelBooter::bootstrapLib($debug);
-						KernelBooter::bootstrapEnv();
 
-						$kernel = new $kernel_class($env, $debug);
-					}
-					return $kernel;
-				});
-			} catch (\Exception $e) {
-				$res = false;
-			}
 
-			if ($res) {
-				header('HTTP/1.1 200 OK');
-				foreach ($res['headers'] AS $key => $headers) {
-					foreach ($headers AS $val) {
-						header("$key: $val");
-					}
-				}
-
-				if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
-					$content = KernelBooter::prepareCachedOutputForOffline($res['content']);
-				} else {
-					$content = KernelBooter::prepareCachedOutput($res);
-				}
-				echo $content;
-
-				global $DP_CONFIG;
-				if (!empty($DP_CONFIG['cache']['page_cache']['enable_hit_log'])) {
-					if (empty($DP_CONFIG['cache']['page_cache']['hit_log_file'])) {
-						$hit_log = dp_get_log_dir() . '/user-page-cache-hit.log';
-					} else {
-						$hit_log = $DP_CONFIG['cache']['page_cache']['hit_log_file'];
-					}
-
-					$fp = @fopen($hit_log, 'a');
-
-					$scheme_host = ($request ? $request->getScheme().'://'.$request->getHttpHost() : self::getScheme().'://'.self::getHttpHost());
-
-					$time = sprintf('%.4f', microtime(true) - DP_START_TIME);
-					fwrite($fp, "[" . gmdate('Y-m-d H:i:s') . "] $scheme_host$request_uri (time: $time)\n");
-					fclose($fp);
-				}
-
-				exit;
-			}
+//			list($kernel, $e, $DP_CONFIG) = self::_oldUserInterfaceBootCode(
+//				$request, $request_uri, $path, $request_method, $kernel_class, $env, $debug, $DP_CONFIG
+//			);
 		}
 
 		// No access to install or dev from cloud
@@ -1680,6 +1656,83 @@ HTML;
 				@unlink(DP_DEBUG_TRACE_FILE);
 			}
 		}
+	}
+
+
+	/**
+	 * @param $request
+	 * @param $request_uri
+	 * @param $path
+	 * @param $request_method
+	 * @param $kernel_class
+	 * @param $env
+	 * @param $debug
+	 * @param $DP_CONFIG
+	 * @return array
+	 */
+	protected static function _oldUserInterfaceBootCode(
+		$request, $request_uri, $path, $request_method, $kernel_class, $env, $debug, $DP_CONFIG
+	) {
+		try {
+			$res = self::_getCachedPageIfAvailable(
+				$request, $request_uri, $path, $request_method,
+				function () use ($kernel_class, $env, $debug, &$kernel) {
+					if (!$kernel) {
+						KernelBooter::bootstrapLib($debug);
+						KernelBooter::bootstrapEnv();
+
+						$kernel = new $kernel_class($env, $debug);
+					}
+
+					return $kernel;
+				}
+			);
+
+			$e = ''; // ??? not sure where $e was coming from but this 500s without this set
+			return array($kernel, $e, $DP_CONFIG);
+		} catch (\Exception $e) {
+			$res = false;
+		}
+
+		return array($kernel, $e, $DP_CONFIG);
+
+		if ($res) {
+			header('HTTP/1.1 200 OK');
+			foreach ($res['headers'] AS $key => $headers) {
+				foreach ($headers AS $val) {
+					header("$key: $val");
+				}
+			}
+
+			if (is_file(dp_get_data_dir() . '/helpdesk-offline.trigger')) {
+				$content = KernelBooter::prepareCachedOutputForOffline($res['content']);
+			} else {
+				$content = KernelBooter::prepareCachedOutput($res);
+			}
+			echo $content;
+
+			global $DP_CONFIG;
+			if (!empty($DP_CONFIG['cache']['page_cache']['enable_hit_log'])) {
+				if (empty($DP_CONFIG['cache']['page_cache']['hit_log_file'])) {
+					$hit_log = dp_get_log_dir() . '/user-page-cache-hit.log';
+				} else {
+					$hit_log = $DP_CONFIG['cache']['page_cache']['hit_log_file'];
+				}
+
+				$fp = @fopen($hit_log, 'a');
+
+				$scheme_host = ($request ? $request->getScheme() . '://' . $request->getHttpHost() : self::getScheme(
+					) . '://' . self::getHttpHost());
+
+				$time = sprintf('%.4f', microtime(true) - DP_START_TIME);
+				fwrite($fp, "[" . gmdate('Y-m-d H:i:s') . "] $scheme_host$request_uri (time: $time)\n");
+				fclose($fp);
+			}
+
+			exit;
+		}
+
+		return array($kernel, $e, $DP_CONFIG);
 	}
 	/**#@-*/
 }
