@@ -3327,9 +3327,9 @@ class TicketController extends AbstractController
 
 		$manager = $this->container->getCustomFieldManager();
 		$new_custom_fields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
-		if ($org = $ticket->person->organization) {
-			$manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
-		}
+//		if ($org = $ticket->person->organization) {
+//			$manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
+//		}
 
 		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
 			'ticket'                 => $ticket,
@@ -3736,6 +3736,8 @@ class TicketController extends AbstractController
 	{
 		if ($person_id) {
 			$person = $this->em->find('DeskPRO:Person', $person_id);
+		} else {
+			$person = new Person(); // mock
 		}
 
 		$layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();

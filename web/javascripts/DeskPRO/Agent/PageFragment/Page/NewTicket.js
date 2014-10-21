@@ -258,7 +258,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var tplSelOrig = this.getEl('message_template_orig');
 
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
-		function updateFields() {
+		self._updateFields = function() {
 			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
 			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());
 
@@ -308,11 +308,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		};
 
 		depSel.on('change', function(ev) {
-			self.getCustomFields();
+			self._updateFields();
 		});
 
 		$('.ticket-field select', this.wrapper).on('change', function() {
-			updateFields();
+			self._updateFields();
 		});
 
 		self.getCustomFields();
@@ -1037,6 +1037,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			depId = this.getEl('dep').val() || 0,
 			self = this;
 
+		if (!personId) return;
+
 		$.ajax({
 			type: 'GET',
 			url: BASE_URL + 'agent/tickets/new/get-custom-fields-row/' + personId + '/' + depId,
@@ -1046,7 +1048,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var $cont = $('.ticket-field', self.wrapper).parent();
 				$('.ticket-field.custom-field', self.wrapper).remove();
 				$cont.append(html);
-				self.getEl('dep').trigger('change'); // trigger update fields
+				self._updateFields(); // trigger update fields
 			}
 		});
 	},

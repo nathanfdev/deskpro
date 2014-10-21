@@ -38,6 +38,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldDefinition as FieldDefinition;
 use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\DBAL\Connection;
+use Doctrine\Common\Util\ClassUtils;
 
 class CustomFieldData extends AbstractEntityRepository
 {
@@ -56,7 +57,7 @@ class CustomFieldData extends AbstractEntityRepository
 			->where('da.owner_id = :owner_id and de.owner_class = :owner_class and rde.is_enabled = 1')
 			->setParameters(array(
 				'owner_id' => (int) $owner['id'], // null -> 0
-				'owner_class' => get_class($owner),
+				'owner_class' => ClassUtils::getClass($owner),
 			));
 
 		if ($layout) {
@@ -71,7 +72,7 @@ class CustomFieldData extends AbstractEntityRepository
 		if ($context) {
 			$qb
 				->andWhere('rde.context_class is null or (de.context_class = :context_class and de.context_id = :cid)')
-				->setParameter('context_class', get_class($context))
+				->setParameter('context_class', ClassUtils::getClass($context))
 				->setParameter('cid', $context['id']);
 		}
 

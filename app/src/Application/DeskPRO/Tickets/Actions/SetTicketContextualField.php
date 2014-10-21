@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Doctrine\Common\Util\ClassUtils;
 
 class SetTicketContextualField extends AbstractSetCustomField
 {
@@ -77,7 +78,7 @@ class SetTicketContextualField extends AbstractSetCustomField
 		if ($def['context_class']) {
 			// todo
 			$formContext = $ticket->person;
-			if ($def['context_class'] !== get_class($formContext)) {
+			if ($def['context_class'] !== ClassUtils::getClass($formContext)) {
 				$formContext = $formContext->organization;
 			}
 

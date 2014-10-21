@@ -37,6 +37,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\DBAL\Connection;
+use \Doctrine\Common\Util\ClassUtils;
 
 class CustomFieldDefinition extends AbstractEntityRepository
 {
@@ -46,7 +47,7 @@ class CustomFieldDefinition extends AbstractEntityRepository
 			->where('d.parent is null')
 			->andWhere('d.owner_class = :owner')
 			->andWhere('d.is_enabled = 1')
-			->setParameter('owner', get_class($object));
+			->setParameter('owner', ClassUtils::getClass($object));
 
 
 		if ($layout) {
@@ -73,11 +74,11 @@ class CustomFieldDefinition extends AbstractEntityRepository
 						or (dc.context_class = :context_class and dc.context_id = :cid)
 					')
 					->setParameter('cid', (int) $context['id'])
-					->setParameter('context_class', get_class($context));
+					->setParameter('context_class', ClassUtils::getClass($context));
 			} else {
 				$qb
 					->andWhere('d.context_class is null or d.context_class = :context_class')
-					->setParameter('context_class', get_class($context));
+					->setParameter('context_class', ClassUtils::getClass($context));
 			}
 
 		} else {

@@ -31,8 +31,6 @@ use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\CustomFieldData;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Form\Type\CustomFields\ChoiceType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\ContextualChoiceDefinitionType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionChildrenType;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionType;
@@ -44,6 +42,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormInterface;
+use Doctrine\Common\Util\ClassUtils;
 
 class CustomFieldManager
 {
@@ -267,7 +266,7 @@ class CustomFieldManager
 		// root definitions
 		$definitions = $this->repDefinition->findBy(array(
 			'parent' => null,
-			'context_class' => get_class($context)
+			'context_class' => ClassUtils::getClass($context)
 		), array('display_order' => 'ASC'));
 
 		$children = $this->buildDefinitionChildrenCollectionForContext($context);
@@ -305,7 +304,7 @@ class CustomFieldManager
 		}
 
 		$_children = $this->repDefinition->findBy(array(
-			'context_class' => get_class($context),
+			'context_class' => ClassUtils::getClass($context),
 			'context_id' => $context['id'],
 		), array('display_order' => 'ASC'));
 
