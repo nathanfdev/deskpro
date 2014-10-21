@@ -70,8 +70,9 @@
 	</style>
 	<script type="text/javascript">
 	$(function () {
+		$('#input_baseUrl').val((window.location.href+"").replace(/api\.html.*?$/, ''));
 		window.swaggerUi = new SwaggerUi({
-			url: "/{{ path('api')|trim('/') }}/docs",
+			url: (window.location.href+"").replace(/api\.html.*?$/, 'docs'),
 			dom_id: "swagger-ui-container",
 			supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
 			onComplete: function(swaggerApi, swaggerUi){
@@ -89,7 +90,7 @@
 			log("key: " + key);
 			if (key && key.trim() != "") {
 				log("added key " + key);
-				window.authorizations.add("key", new ApiKeyAuthorization("api_key", key, "query"));
+				window.authorizations.add("key", new ApiKeyAuthorization("X-DeskPRO-API-Key", key, "header"));
 			}
 		});
 		window.swaggerUi.load();
@@ -101,9 +102,8 @@
 <div id='header'>
 	<div class="swagger-ui-wrap">
 		<a id="logo" href="#">DeskPRO API</a>
-		<form id='api_selector'>
-			<div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
-		</form>
+		<input type="hidden" value="" id="input_baseUrl" />
+		<div style="float:right; margin-top: -2px;"><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text" style="width:280px; font-family: Monaco, Consolas, monospace; border: 1px solid #0f4063; border-radius: 2px; background: #fff; padding: 5px; font-size: 12px;"/></div>
 	</div>
 </div>
 
