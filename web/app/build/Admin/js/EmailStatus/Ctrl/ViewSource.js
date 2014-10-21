@@ -15,10 +15,11 @@
 
       Admin_EmailStatus_Ctrl_ViewSource.CTRL_AS = 'ViewSource';
 
-      Admin_EmailStatus_Ctrl_ViewSource.DEPS = ['$state', '$modal'];
+      Admin_EmailStatus_Ctrl_ViewSource.DEPS = ['$state', '$modal', 'DpDateService'];
 
       Admin_EmailStatus_Ctrl_ViewSource.prototype.init = function() {
         this.sourceId = parseInt(this.$stateParams.id);
+        this.$scope.ds = this.DpDateService;
       };
 
       Admin_EmailStatus_Ctrl_ViewSource.prototype.initialLoad = function() {
@@ -30,7 +31,12 @@
             for (k in _ref) {
               if (!__hasProp.call(_ref, k)) continue;
               v = _ref[k];
-              _results.push(_this[k] = v);
+              if ('date_status' === k || 'date_created' === k) {
+                v = _this.DpDateService.local(v);
+                _results.push(_this[k] = v);
+              } else {
+                _results.push(void 0);
+              }
             }
             return _results;
           };

@@ -87,6 +87,10 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		# Now check the files
 		#------------------------------
 
+		$admin_list = iterator_to_array(Finder::create()->files()->in(array(
+			DP_ROOT.'/src/Application/AdminInterfaceBundle',
+		))->getIterator());
+
 		$agent_list = iterator_to_array(Finder::create()->files()->in(array(
 			DP_ROOT.'/src/Application/AgentBundle',
 		))->getIterator());
@@ -104,19 +108,19 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			$search_lists = array();
 
 			if (strpos($phrase, 'admin.') === 0) {
-				$search_lists[] = 'admin_list';
+				$search_lists[] = $admin_list;
 			} elseif (strpos($phrase, 'agent.') === 0) {
-				$search_lists[] = 'agent_list';
-				$search_lists[] = 'admin_list';
+				$search_lists[] = $agent_list;
+				$search_lists[] = $admin_list;
 			} else {
-				$search_lists[] = 'user_list';
+				$search_lists[] = $user_list;
 			}
 
-			$search_lists[] = 'other_list';
+			$search_lists[] = $other_list;
 
 			$found = false;
-			foreach ($search_lists as $list_name) {
-				foreach ($$list_name as $f) {
+			foreach ($search_lists as $list) {
+				foreach ($list as $f) {
 					/** @var \SplFileInfo $f */
 					$content = file_get_contents($f->getRealPath());
 

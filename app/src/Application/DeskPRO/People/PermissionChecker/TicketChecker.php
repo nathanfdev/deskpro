@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Ticket;
 
 class TicketChecker extends AbstractChecker
 {
+	/** @var array */
 	public static $modify_ops = array(
 		'set_closed',
 		'department',

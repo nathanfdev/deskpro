@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -167,18 +168,18 @@ class CommentHelper
 			return array();
 		}
 
-		$ids = implode(',', $ids);
-
+		/** @var Connection $conn */
+		$conn = $this->em->getConnection();
 		$sql = "
-			SELECT {$this->comment_join_field}, COUNT(*)
-			FROM {$this->comment_table_name}
+			SELECT {$conn->quoteIdentifier($this->comment_join_field)}, COUNT(*)
+			FROM {$conn->quoteIdentifier($this->comment_table_name)}
 			WHERE
-				{$this->comment_join_field} IN ($ids)
+				{$conn->quoteIdentifier($this->comment_join_field)} IN (?)
 				$user_visible
-			GROUP BY {$this->comment_join_field}
+			GROUP BY {$conn->quoteIdentifier($this->comment_join_field)}
 		";
 
-		$counts = $this->em->getConnection()->fetchAllKeyValue($sql);
+		$counts = $conn->fetchAllKeyValue($sql, array($ids), array(Connection::PARAM_INT_ARRAY));
 
 		return $counts;
 	}

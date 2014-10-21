@@ -37,8 +37,11 @@ use Application\DeskPRO\App;
 
 class Subject extends Header
 {
+	/** @var string */
 	public $subject;
+	/** @var string */
 	public $subject_utf8;
+	/** @var string */
 	public $original_charset;
 
 	public function getSubject()

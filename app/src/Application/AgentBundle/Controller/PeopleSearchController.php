@@ -196,10 +196,6 @@ class PeopleSearchController extends AbstractController
 		$vars['display_fields'] = Arrays::removeFalsey($vars['display_fields']);
 		$vars['display_fields'] = array_unique($vars['display_fields']);
 
-		// person defs for columns
-		$user_field_manager = $this->container->getSystemService('person_fields_manager');
-		$person_field_defs = $user_field_manager->getFields();
-
 		$alphabet = $this->getAlphabet();
 		$letters = array();
 

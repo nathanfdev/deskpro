@@ -57,6 +57,7 @@ $loader->registerClassNames(array(
 	'POParser'                        => DP_ROOT.'/vendor-src/simplepo/POParser.php',
 	'TempPoMsgStore'                  => DP_ROOT.'/vendor-src/simplepo/POParser.php',
 	'Emogrifier'                      => DP_ROOT.'/vendor-src/emogrifier/emogrifier.php',
+	'Facebook'                        => DP_ROOT.'/vendor-src/facebook/php-sdk/src/facebook.php',
 
 	'Text_LanguageDetect'             => DP_ROOT.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect.php',
 	'Text_LanguageDetect_Exception'   => DP_ROOT.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',

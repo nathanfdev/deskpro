@@ -44,11 +44,6 @@ class TicketFilterCollection
 	private $filters;
 
 	/**
-	 * @var array
-	 */
-	private $caches = array();
-
-	/**
 	 * @param TicketFilter[] $filters
 	 */
 	public function __construct(array $filters)

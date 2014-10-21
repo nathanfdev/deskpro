@@ -246,6 +246,9 @@ pageMeta.baseId = '{{ baseId }}';
 						</tbody>
 					{% endfor %}
 				{% endif %}
+
+                {% include 'AgentBundle:Ticket:newticket-custom-fields-row.html.twig' with {new_custom_fields: new_custom_fields} %}
+
 			</table>
 		</article>
 	</section>

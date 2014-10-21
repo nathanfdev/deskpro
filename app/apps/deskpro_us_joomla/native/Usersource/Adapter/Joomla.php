@@ -34,8 +34,8 @@
 
 namespace deskpro_us_joomla\Usersource\Adapter;
 
+use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
-use Orb\Auth\Result;
 use \Application\DeskPRO\App;
 
 class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
@@ -87,10 +87,10 @@ class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			'form_login',
-			'get_user_info',
-			'find_identity',
-			'share_session',
+			UsersourceInfo::CAPABILITY_FORM_LOGIN,
+			UsersourceInfo::CAPABILITY_GET_USER_INFO,
+			UsersourceInfo::CAPABILITY_FIND_IDENTITY,
+			UsersourceInfo::CAPABILITY_SHARE_SESSION
 		);
 	}
 }

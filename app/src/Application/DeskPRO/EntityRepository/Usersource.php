@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Usersource\UsersourceCollection;
+use Application\DeskPRO\Usersource\UsersourceInfo;
 
 class Usersource extends AbstractEntityRepository
 {
@@ -48,6 +50,7 @@ class Usersource extends AbstractEntityRepository
 	 *
 	 * @param bool $active
 	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
 	 */
 	public function getAllUsersources($active = true)
 	{
@@ -71,12 +74,25 @@ class Usersource extends AbstractEntityRepository
 		}
 	}
 
+	/**
+	 * @param bool $active
+	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 */
+	public function getAll()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT u
+			FROM DeskPRO:Usersource u
+		")->execute();
+	}
+
 
 	/**
 	 * Fetch all usersources that are capable of logging in using locally-accepted form input.
 	 * That is, they can handle a username/password combo and can process that in real-time.
 	 *
 	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
 	 */
 	public function getLocalInputUsersources()
 	{
@@ -84,7 +100,7 @@ class Usersource extends AbstractEntityRepository
 
 		$ret = array();
 		foreach ($all as $us) {
-			if ($us->getAdapter()->isCapable('form_login')) {
+			if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_FORM_LOGIN)) {
 				$ret[$us->id] = $us;
 			}
 		}
@@ -97,6 +113,7 @@ class Usersource extends AbstractEntityRepository
 	 * This is generally only suitable for services on the same server (and domain).
 	 *
 	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
 	 */
 	public function getCookieInputUsersources()
 	{
@@ -104,7 +121,7 @@ class Usersource extends AbstractEntityRepository
 
 		$ret = array();
 		foreach ($all as $us) {
-			if ($us->getAdapter()->isCapable('cookie_login')) {
+			if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_COOKIE_LOGIN)) {
 				$ret[$us->id] = $us;
 			}
 		}
@@ -116,6 +133,7 @@ class Usersource extends AbstractEntityRepository
 	 * Fetch all usersources that are capable of logging via JS SSO checks.
 	 *
 	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
 	 */
 	public function getJsSsoUsersources()
 	{
@@ -123,7 +141,7 @@ class Usersource extends AbstractEntityRepository
 
 		$ret = array();
 		foreach ($all as $us) {
-			if ($us->getAdapter()->isCapable('js_sso')) {
+			if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_SSO_JS)) {
 				$ret[$us->id] = $us;
 			}
 		}
@@ -137,6 +155,7 @@ class Usersource extends AbstractEntityRepository
 	 * raw data back.
 	 *
 	 * @return \Application\DeskPRO\Entity\Usersource[]
+	 * @deprecated use the UsersourceManager->getAll() and then filter with the returned UsersourceCollection instead
 	 */
 	public function getUserInfoFetchableUsersources()
 	{
@@ -144,7 +163,8 @@ class Usersource extends AbstractEntityRepository
 
 		$ret = array();
 		foreach ($all as $us) {
-			if ($us->getAdapter()->isCapable('form_login')) {
+			// TODO: Is this correct?
+			if ($us->getAdapter()->isCapable(UsersourceInfo::CAPABILITY_FORM_LOGIN)) {
 				$ret[$us->id] = $us;
 			}
 		}
@@ -197,4 +217,22 @@ class Usersource extends AbstractEntityRepository
 
 		return array_keys($this->usersources);
 	}
+
+
+	public function updateDisplayOrders(array $display_orders)
+	{
+		$display_orders = array_values($display_orders);
+
+		$db = $this->_em->getConnection();
+		$db->beginTransaction();
+
+		$x = 0;
+		foreach ($display_orders as $tr_id) {
+			$x += 10;
+			$db->update($this->getTableName(), array('display_order' => $x), array('id' => $tr_id));
+		}
+
+		$db->commit();
+	}
+
 }

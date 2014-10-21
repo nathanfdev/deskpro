@@ -41,21 +41,30 @@ use Application\DeskPRO\People\PersonContextInterface;
 
 class TicketDisplay implements PersonContextInterface
 {
+	/** @var \Application\DeskPRO\Entity\Ticket */
 	protected $ticket;
 
+	/** @var PersonContextInterface */
 	protected $person_context;
+	/** @var string */
 	protected $person_type = 'user';
 
+	/** @var array|null */
 	protected $user_participants;
+	/** @var array|null */
 	protected $agent_participants;
 
+	/** @var array */
 	protected $notes;
+	/** @var array */
 	protected $messages;
+	/** @var array */
 	protected $attachments;
+	/** @var array */
 	protected $message_to_attach;
-
+	/** @var array */
 	protected $user_ratings;
-
+	/** @var array */
 	protected $ignore_attachments = array();
 
 	public function __construct(Ticket $ticket, Person $person)

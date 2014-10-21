@@ -34,7 +34,6 @@
 
 namespace deskpro_us_joomla\Usersource\Auth;
 
-use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;

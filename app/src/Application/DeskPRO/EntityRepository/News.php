@@ -68,16 +68,16 @@ class News extends AbstractEntityRepository
 			$posts = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:News p INDEX BY p.id
-				WHERE p.id IN (" . implode(',', $ids) . ") AND p.category IN (?0) AND p.status = 'published'
+				WHERE p.id IN (?) AND p.category IN (?) AND p.status = 'published'
 				ORDER BY p.id DESC
-			")->execute(array($cat_ids));
+			")->execute(array($ids, $cat_ids));
 		} else {
 			$posts = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:News p INDEX BY p.id
-				WHERE p.id IN (" . implode(',', $ids) . ") AND p.status = 'published'
+				WHERE p.id IN (?) AND p.status = 'published'
 				ORDER BY p.id DESC
-			")->execute();
+			")->execute(array($ids));
 		}
 
 		return $posts;
@@ -90,9 +90,9 @@ class News extends AbstractEntityRepository
 		$unsorted_news = $this->getEntityManager()->createQuery("
 			SELECT n
 			FROM DeskPRO:News n INDEX BY n.id
-			WHERE n.id IN (" . implode(',', $ids) . ")
+			WHERE n.id IN (?)
 			ORDER BY n.id DESC
-		")->execute();
+		")->execute(array($ids));
 
 		$news = array();
 
@@ -133,9 +133,9 @@ class News extends AbstractEntityRepository
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT n
 				FROM DeskPRO:News n INDEX BY n.id
-				WHERE n.status = 'published' AND n.category IN (" . implode(',',$cat_ids) . ")
+				WHERE n.status = 'published' AND n.category IN (?)
 				ORDER BY n.id DESC
-			")->setMaxResults($num)->execute();
+			")->setMaxResults($num)->execute(array($cat_ids));
 		} else {
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT n

@@ -201,6 +201,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $labels;
 
+	/**
+	 * @var null|\Application\DeskPRO\Labels\LabelManager
+	 */
 	protected $_label_manager = null;
 
 	public function __construct()

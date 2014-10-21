@@ -45,6 +45,7 @@ use Orb\Util\Strings;
  */
 class MysqlAdapter extends AbstractAdapter
 {
+	/** @var array */
 	public static $capabilities = array(
 		'searcher_content', 'searcher_content_labels',
 	);

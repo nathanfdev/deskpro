@@ -78,6 +78,9 @@ class HierarchyStructure
 	 */
 	public $children_key = 'children';
 
+	/**
+	 * @var array
+	 */
 	protected $flat_hierarchy = array();
 
 	public function __construct($cats)

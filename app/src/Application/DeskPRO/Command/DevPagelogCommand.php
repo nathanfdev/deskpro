@@ -42,6 +42,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+	/** @var array  */
+	protected $_data_cache = array();
+
 	protected function configure()
 	{
 		$this->setName('dpdev:pagelog');
@@ -50,8 +53,6 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 		$this->addOption('type', null, InputOption::VALUE_REQUIRED,  '[group] The type of URL to group on');
 		$this->addOption('var', null, InputOption::VALUE_REQUIRED,  '[group] The variable to group on ');
 	}
-
-	protected $_data_cache = array();
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
@@ -122,8 +123,6 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 			$url_type = 'raw';
 		}
 
-		$url_field = '';
-
 		switch ($url_type) {
 			case 'raw': $url_field = 'url'; break;
 			case 'noparams': $url_field = 'url_noparams'; break;
@@ -138,8 +137,6 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 		if (!$group_var) {
 			$group_var = 'time';
 		}
-
-		$group_field = '';
 
 		switch ($group_var) {
 			case 'time': $group_field = 'time_total'; break;

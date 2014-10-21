@@ -35,7 +35,6 @@ namespace Application\DeskPRO;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Arrays;
 
 /**
@@ -397,7 +396,9 @@ class App
 		return $settings->get($name);
 	}
 
-
+	/**
+	 * @var array
+	 */
 	protected static $_api_handler_names = array(
 		'tickets'                    => 'Application\\DeskPRO\\Tickets\\Tickets',
 		'tickets.filters'            => 'Application\\DeskPRO\\Tickets\\Filters',

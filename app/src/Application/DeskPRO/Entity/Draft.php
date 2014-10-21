@@ -52,12 +52,19 @@ class Draft extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
+	/** @var Person */
 	protected $person;
+	/** @var string */
 	protected $content_type;
+	/** @var int */
 	protected $content_id;
+	/** @var \DateTime */
 	protected $date_created;
+	/** @var string */
 	protected $message;
+	/** @var string */
 	protected $message_html;
+	/** @var array */
 	protected $extras = array();
 
 	public function __construct()

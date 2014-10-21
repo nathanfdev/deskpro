@@ -34,7 +34,6 @@
  */
 
 namespace Orb\Service\Highrise;
-use Zend\Http\Client\Adapter\Curl;
 
 /**
  * The interface to all Highrise API usage. Specific actions are delegated to Resource

@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Person;
 
 abstract class NewCommentAbstract extends ActionTypeAbstract
 {
+	/** @var \Application\DeskPRO\Entity\CommentAbstract */
 	protected $comment;
 
 

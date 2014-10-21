@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 
 class CleanupAlways extends AbstractJob
 {
@@ -73,23 +74,23 @@ class CleanupAlways extends AbstractJob
 			'agent_chat.new-message'
 		);
 
-		$long_lived_channels = "'" . implode("','", $long_lived_channels) . "'";
-
 		$ids = App::getDb()->fetchAllCol("
 			SELECT id FROM client_messages
 			WHERE (
-				date_created < ? AND channel NOT IN ($long_lived_channels)
+				date_created < ? AND channel NOT IN (?)
 			) OR (
-				date_created < ? AND channel IN ($long_lived_channels)
+				date_created < ? AND channel IN (?)
 			)
-		", array($datetime, $datetime2));
+		",
+			array($datetime, $long_lived_channels, $datetime2, $long_lived_channels),
+			array(\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY, \PDO::PARAM_STR, Connection::PARAM_STR_ARRAY));
 		if ($ids) {
 			$batch_ids = array_chunk($ids, 50, false);
 			foreach ($batch_ids as $ids) {
 				$num = App::getDb()->executeUpdate("
 					DELETE FROM client_messages
-					WHERE id IN (" . implode(',', $ids) . ")
-				");
+					WHERE id IN (?)
+				", array($ids), array(Connection::PARAM_INT_ARRAY));
 
 				if ($num) {
 					$this->logStatus("Cleaned up $num old client messages");

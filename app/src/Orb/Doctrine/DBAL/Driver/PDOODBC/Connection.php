@@ -36,7 +36,9 @@ namespace Orb\Doctrine\DBAL\Driver\PDOODBC;
 
 class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements \Doctrine\DBAL\Driver\Connection
 {
+	/** @var bool|null  */
 	protected $_pdoTransactionsSupport = null;
+	/** @var bool|null  */
 	protected $_pdoLastInsertIdSupport = null;
 
 

@@ -40,8 +40,6 @@ use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\SmsAccount;
 use Application\DeskPRO\Sms\SmsProviderFactory;
-use Orb\Service\Twilio\Twilio;
-use Orb\Sms\Provider\TwilioSmsProvider;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
 use Orb\Util\Strings;

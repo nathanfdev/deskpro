@@ -163,8 +163,8 @@ class TermSummary
 				$summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_resolved'), $op, $choice);
 				break;
 
-			case 'date_closed':
-				$summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_closed'), $op, $choice);
+			case 'date_archived':
+				$summary = $this->_dateRangeSummary($tr->phrase('agent.general.date_archived'), $op, $choice);
 				break;
 
 			case 'date_last_user_reply':
@@ -278,6 +278,7 @@ class TermSummary
 				}
 
 				$choice_str = implode(', ', $choice_str);
+				$summary = $this->_choiceSummary($tr->phrase('agent.general.hidden_status'), $op, $choice_str);
 				break;
 
 			case 'feedback_rating':
@@ -822,8 +823,6 @@ class TermSummary
 	 */
 	protected function _rangeSummary($field, $op, $choice)
 	{
-		$summary = '';
-
 		$choice = (array)$choice;
 		$choice = array_values($choice);
 
@@ -889,8 +888,6 @@ class TermSummary
 	 */
 	public function _dateRangeSummary($field, $op, $choice)
 	{
-		$summary = '';
-
 		$choice = (array)$choice;
 
 		$date1 = null;

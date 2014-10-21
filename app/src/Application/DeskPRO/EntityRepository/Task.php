@@ -36,6 +36,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity;
@@ -234,7 +235,7 @@ class Task extends AbstractEntityRepository
 		$today = Dates::convertToUtcDateTime($today);
 
 		$tomorrow = $person->getDateTime();
-		$tomorrow->setTime(23, 59, 59);
+		$tomorrow->modify('+1 day')->setTime(0, 0, 0);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();
@@ -290,7 +291,7 @@ class Task extends AbstractEntityRepository
 		}
 
 		if (!$is_count) {
-			$result_ids = App::getDb()->fetchAllCol("
+			$result_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
 				FROM tasks
 				WHERE $where_part
@@ -305,7 +306,7 @@ class Task extends AbstractEntityRepository
 
 			return $results;
 		} else {
-			return App::getDb()->fetchColumn("
+			return $this->getEntityManager()->getConnection()->fetchColumn("
 				SELECT COUNT(*)
 				FROM tasks
 				WHERE $where_part
@@ -327,7 +328,7 @@ class Task extends AbstractEntityRepository
 		$today = Dates::convertToUtcDateTime($today);
 
 		$tomorrow = $person->getDateTime();
-		$tomorrow->setTime(23, 59, 59);
+		$tomorrow->modify('+1 day')->setTime(0, 0, 0);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();
@@ -384,7 +385,7 @@ class Task extends AbstractEntityRepository
 		}
 
 		if (!$is_count) {
-			$result_ids = App::getDb()->fetchAllCol("
+			$result_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
 				FROM tasks
 				WHERE $where_part
@@ -399,7 +400,7 @@ class Task extends AbstractEntityRepository
 
 			return $results;
 		} else {
-			return App::getDb()->fetchColumn("
+			return $this->getEntityManager()->getConnection()->fetchColumn("
 				SELECT COUNT(*)
 				FROM tasks
 				WHERE $where_part
@@ -420,7 +421,7 @@ class Task extends AbstractEntityRepository
 		$today = Dates::convertToUtcDateTime($today);
 
 		$tomorrow = $person->getDateTime();
-		$tomorrow->setTime(23, 59, 59);
+		$tomorrow->modify('+1 day')->setTime(0, 0, 0);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();
@@ -477,7 +478,7 @@ class Task extends AbstractEntityRepository
 				}
 			}
 
-			$result_ids = App::getDb()->fetchAllCol("
+			$result_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
 				FROM tasks
 				WHERE $where_part
@@ -513,7 +514,7 @@ class Task extends AbstractEntityRepository
 		$today = Dates::convertToUtcDateTime($today);
 
 		$tomorrow = $person->getDateTime();
-		$tomorrow->setTime(23, 59, 59);
+		$tomorrow->modify('+1 day')->setTime(0, 0, 0);
 		$tomorrow = Dates::convertToUtcDateTime($tomorrow);
 
 		$now = new \DateTime();
@@ -569,7 +570,7 @@ class Task extends AbstractEntityRepository
 		}
 
 		if (!$is_count) {
-			$result_ids = App::getDb()->fetchAllCol("
+			$result_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
 				FROM tasks
 				WHERE $where_part
@@ -595,42 +596,50 @@ class Task extends AbstractEntityRepository
 	public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $person_context, $all = false)
 	{
 		$person_context->loadHelper('Agent');
-		if ($person_context->Agent->getTeamIds()) {
-			$team_ids = $person_context->Agent->getTeamIds();
-		} else {
+		if (!$team_ids = $person_context->Agent->getTeamIds()) {
 			$team_ids = array(0);
 		}
 
-		$team_ids = implode(',', $team_ids);
-
 		if ($all) {
-			$task_ids = App::getDb()->fetchAllCol("
+			$task_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT tasks.id
 				FROM tasks
 				LEFT JOIN task_associations ON task_associations.task_id = tasks.id
 				WHERE
-					((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN ($team_ids)) OR tasks.visibility = 1)
+					((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?)) OR tasks.visibility = 1)
 					AND task_associations.ticket_id = ?
 					ORDER BY tasks.date_due ASC
 			", array(
 				$person_context->getId(),
 				$person_context->getId(),
+				$team_ids,
 				$ticket->getId()
+			), array(
+				\PDO::PARAM_INT,
+				\PDO::PARAM_INT,
+				Connection::PARAM_INT_ARRAY,
+				\PDO::PARAM_INT,
 			));
 		} else {
-			$task_ids = App::getDb()->fetchAllCol("
+			$task_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT tasks.id
 				FROM tasks
 				LEFT JOIN task_associations ON task_associations.task_id = tasks.id
 				WHERE
 					tasks.is_completed = 0
-					AND ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN ($team_ids)) OR tasks.visibility = 1)
+					AND ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?)) OR tasks.visibility = 1)
 					AND task_associations.ticket_id = ?
 					ORDER BY tasks.date_due ASC
 			", array(
 				$person_context->getId(),
 				$person_context->getId(),
+				$team_ids,
 				$ticket->getId()
+			), array(
+				\PDO::PARAM_INT,
+				\PDO::PARAM_INT,
+				Connection::PARAM_INT_ARRAY,
+				\PDO::PARAM_INT,
 			));
 		}
 

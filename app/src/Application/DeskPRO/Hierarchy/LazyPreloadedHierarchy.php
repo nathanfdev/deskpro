@@ -47,11 +47,6 @@ abstract class LazyPreloadedHierarchy
 	 */
 	protected $hierarchy;
 
-	/**
-	 * @var int
-	 */
-	private $default_id;
-
 	public function __construct(EntityManager $em)
 	{
 		$this->em = $em;

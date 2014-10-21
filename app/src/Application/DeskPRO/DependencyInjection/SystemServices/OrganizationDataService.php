@@ -38,9 +38,13 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class OrganizationDataService extends BaseRepositoryService
 {
+	/** @var bool */
 	protected $has_init = false;
+	/** @var array */
 	protected $cats;
+	/** @var array  */
 	protected $cat_ids = array();
+	/** @var array  */
 	protected $filtered_nodes = array();
 
 	public static function create(DeskproContainer $container, array $options = null)

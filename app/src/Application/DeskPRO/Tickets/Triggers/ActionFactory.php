@@ -56,9 +56,9 @@ class ActionFactory
 		if ($type[0] == '@') {
 			$class_name = substr($type, 1);
 		} else {
-			if (preg_match('#^Set(User|Ticket|Org)Field(\d+)$#', $type, $m)) {
-				$class_type = 'Set' . $m[1] . 'Field';
-				$options['field_id'] = $m[2];
+			if (preg_match('#^Set(User|Ticket|Org)(Contextual)?Field(\d+)$#', $type, $m)) {
+				$class_type = 'Set' . $m[1] . $m[2] . 'Field';
+				$options['field_id'] = $m[3];
 			} else {
 				$class_type = $type;
 			}

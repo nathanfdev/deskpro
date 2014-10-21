@@ -7,7 +7,7 @@
 	"api_version": 1,
 	"version": 1,
 	"version_name": "1.0.0",
-	"is_single": true,
+	"is_single": false,
 	"author": {
 		"name": "DeskPRO",
 		"email": "support@deskpro.com",
@@ -37,6 +37,22 @@
 			"description": "",
 			"checkbox_label": "Yes",
 			"native_only": true
+		},
+		{
+			"name": "auto_agent",
+			"type": "checkbox",
+			"label": "Auto Agent",
+			"checkbox_label": "Automatically create agents if they do not already exist",
+			"usersource_display": "agent",
+			"default_value": true,
+
+			"inline_dependant": {
+				"name": "auto_agent_permission_group",
+				"type": "choice",
+				"label": "Add new agents to this permission group",
+				"options_variable": "permission_groups",
+				"is_required": true
+			}
 		}
 	]
 }

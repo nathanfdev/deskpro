@@ -90,6 +90,9 @@
       };
 
       Admin_Languages_Ctrl_Edit.prototype.doSave = function() {
+        if (this.$scope.form_props.$invalid) {
+          return;
+        }
         this.startSpinner('saving');
         return this.$scope.$parent.ListCtrl.saveLanguage(this.id, {
           title: this.form.title,

@@ -109,7 +109,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<li data-action="disable-user" data-flip="{{ phrase('agent.people.enable_account') }}">{{ phrase('agent.people.disable_account') }}</li>
 			{% endif %}
 		{% endif %}
-		{% if perms.reset_password %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
+		{% if perms.reset_password and app.authenticationManager.isRegistrationFormVisible('user') %}<li data-action="reset-password" class="reset-password">{{ phrase('agent.general.reset_password') }}</li>{% endif %}
 		{% if perms.delete %}
 			<li
 				data-action="ban"

@@ -48,12 +48,11 @@
       };
 
       DpApi.prototype._formatUrlObject = function(obj, baseName) {
-        var k, url, v, _results;
+        var k, url, v;
         if (baseName == null) {
           baseName = false;
         }
         url = '';
-        _results = [];
         for (k in obj) {
           if (!__hasProp.call(obj, k)) continue;
           v = obj[k];
@@ -66,13 +65,13 @@
             k = encodeURIComponent(k);
           }
           if (Util.isObject(v)) {
-            _results.push(url += this._formatUrlObject(v, k));
+            url += this._formatUrlObject(v, k);
           } else {
             v = encodeURIComponent(v);
-            _results.push(url += "" + k + "=" + v + "&");
+            url += "" + k + "=" + v + "&";
           }
         }
-        return _results;
+        return url;
       };
 
 

@@ -69,7 +69,7 @@ class Session extends AbstractEntityRepository
 	{
 		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
-		$ids = App::getDb()->fetchAllCol("
+		$ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 			SELECT DISTINCT(sessions.person_id)
 			FROM sessions
 			LEFT JOIN people ON (people.id = sessions.person_id)
@@ -93,24 +93,6 @@ class Session extends AbstractEntityRepository
 		if (!$session_id) {
 			return null;
 		}
-
-		$session = $this->getEntityManager()->createQuery("
-			SELECT session, person, pic, email, vis, org, org_pic, lang
-			FROM DeskPRO:Session session
-
-			LEFT JOIN session.person person
-			LEFT JOIN session.visitor vis
-
-			LEFT JOIN person.picture_blob pic
-			LEFT JOIN person.primary_email email
-
-			LEFT JOIN person.organization org
-			LEFT JOIN org.picture_blob org_pic
-
-			LEFT JOIN person.language lang
-
-			WHERE session.id = :id
-		")->setParameters(array('id' => $session_id))->getOneOrNullResult();
 
 		$session = $this->find($session_id);
 		if (!$session OR !$session->checkSessionCode($sess_code)) {

@@ -1,7 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fill-page-alt.html.twig' %}
 {% block fillpage_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()"
-		xmlns="http://www.w3.org/1999/html">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.save()">
 		<section class="dp-paneblock dp-listpane">
 			<header>
 				<h3>License</h3>

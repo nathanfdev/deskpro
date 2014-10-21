@@ -92,6 +92,11 @@ class CoreExtension extends Extension
 	    $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
 	    $container->setDefinition('deskpro.logger.changelog', $definition);
 
+	    $container
+		    ->register('dp.custom_fields.manager', 'Application\DeskPRO\Service\CustomFieldManager')
+		    ->addArgument(new Reference('doctrine.orm.entity_manager'))
+		    ->addArgument(new Reference('form.factory'));
+
 		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);

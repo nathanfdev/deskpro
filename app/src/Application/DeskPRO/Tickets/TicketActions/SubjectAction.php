@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 
 class SubjectAction extends AbstractAction
 {
+	/** @var string */
 	protected $subject;
 
 	public function __construct($subject)

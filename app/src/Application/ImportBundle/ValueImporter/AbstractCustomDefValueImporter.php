@@ -39,12 +39,17 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 {
-
+	/** @var string */
 	protected $data_table;
+	/** @var string */
 	protected $mapped_column;
+	/** @var mixed */
 	protected $mapped_value;
+	/** @var string */
 	protected $mapper_class;
+	/** @var array */
 	protected $custom_fields_array = array();
+	/** @var array */
 	protected $supported_custom_field_types = array(
 		'Application\DeskPRO\CustomFields\Handler\Text',
 		'Application\DeskPRO\CustomFields\Handler\Choice',

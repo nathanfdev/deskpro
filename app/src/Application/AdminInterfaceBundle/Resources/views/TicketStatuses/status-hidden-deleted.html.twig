@@ -13,7 +13,7 @@
 		</article>
 	</section>
 
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="TicketStatusEdit.saveSettings()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && TicketStatusEdit.saveSettings()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">

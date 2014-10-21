@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 
 class CleanupHourly extends AbstractJob
 {
@@ -125,8 +126,8 @@ class CleanupHourly extends AbstractJob
 			foreach ($batch_ids as $ids) {
 				$num = App::getDb()->executeUpdate("
 					DELETE FROM visitors
-					WHERE id IN (" . implode(',', $ids) . ")
-				");
+					WHERE id IN (?)
+				", array($ids), array(Connection::PARAM_INT_ARRAY));
 
 				if ($num) {
 					$this->logStatus("Cleaned up $num stale visitors");
@@ -236,9 +237,9 @@ class CleanupHourly extends AbstractJob
 			WHERE last_follow_update < ? AND last_follow_update IS NOT NULL
 		", array($cutoff));
 		if ($ids) {
-			$db->executeUpdate("DELETE FROM twitter_users_followers WHERE user_id IN (" . implode(',', $ids) . ')');
-			$db->executeUpdate("DELETE FROM twitter_users_friends WHERE user_id IN (" . implode(',', $ids) . ')');
-			$db->executeUpdate("UPDATE twitter_users SET last_follow_update = NULL WHERE id IN (" . implode(',', $ids) . ')');
+			$db->executeUpdate("DELETE FROM twitter_users_followers WHERE user_id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
+			$db->executeUpdate("DELETE FROM twitter_users_friends WHERE user_id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
+			$db->executeUpdate("UPDATE twitter_users SET last_follow_update = NULL WHERE id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
 		}
 
 		if ($deleted) {

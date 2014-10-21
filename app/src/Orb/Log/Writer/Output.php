@@ -41,6 +41,7 @@ use \Orb\Log\LogItem;
  */
 class Output extends AbstractWriter
 {
+	/** @var bool */
 	protected $html = false;
 	
 	/**

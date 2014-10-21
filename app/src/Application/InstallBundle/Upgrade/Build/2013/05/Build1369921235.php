@@ -143,7 +143,6 @@ class Build1369921235 extends AbstractBuild
 		}
 		if ($batch) {
 			$this->container->getDb()->batchInsert('object_lang', $batch);
-			$batch = array();
 		}
 
 		$this->out("Copy existing snippet cat values to object lang");
@@ -168,7 +167,6 @@ class Build1369921235 extends AbstractBuild
 		}
 		if ($batch) {
 			$this->container->getDb()->batchInsert('object_lang', $batch);
-			$batch = array();
 		}
 
 		#------------------------------

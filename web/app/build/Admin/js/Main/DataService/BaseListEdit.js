@@ -596,15 +596,16 @@
 
       Admin_Main_DataService_BaseListEdit.prototype.get = function(id) {
         var deferred;
-        if (id == null) {
-          return null;
-        }
         deferred = this.$q.defer();
-        this.all().then((function(_this) {
-          return function() {
-            return deferred.resolve(_this.map[id]);
-          };
-        })(this));
+        if (id == null) {
+          deferred.resolve(null);
+        } else {
+          this.all().then((function(_this) {
+            return function() {
+              return deferred.resolve(_this.map[id]);
+            };
+          })(this));
+        }
         return deferred.promise;
       };
 
@@ -639,7 +640,7 @@
       };
 
       Admin_Main_DataService_BaseListEdit.prototype.url = function() {
-        throw new Exception("This method must be implemented by a sub-class");
+        throw '[BaseListEdit:url] This method must be implemented by a sub-class';
       };
 
       Admin_Main_DataService_BaseListEdit.prototype.resolveResponse = function(response) {

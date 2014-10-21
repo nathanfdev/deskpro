@@ -36,7 +36,9 @@ namespace Orb\Doctrine\ORM\Mapping;
 
 class StaticReflectionProperty extends \ReflectionProperty
 {
+	/** @var string */
 	public $_class;
+	/** @var string  */
 	public $_prop;
 
 	public function __construct($class, $prop)

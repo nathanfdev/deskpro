@@ -214,7 +214,7 @@ class TicketSla extends AbstractEntityRepository
 			$end = time();
 		}
 
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT ticket_slas.sla_status, COUNT(*)
 			FROM ticket_slas
 			INNER JOIN tickets ON (ticket_slas.ticket_id = tickets.id)

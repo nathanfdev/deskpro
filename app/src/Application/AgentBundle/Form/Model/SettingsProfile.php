@@ -42,28 +42,48 @@ use Orb\Util\PhoneNumbers;
 
 class SettingsProfile
 {
+	/** @var string */
 	public $name;
+	/** @var \Application\DeskPRO\Entity\PhoneNumber */
 	public $primary_phone_number;
+	/** @var string */
 	public $primary_phone_number_text;
+	/** @var string */
 	public $override_display_name;
+	/** @var string */
 	public $email;
+	/** @var string */
 	public $timezone = 'UTC';
+	/** @var int|null */
 	public $language_id = 0;
+	/** @var string */
 	public $password = '';
+	/** @var string */
 	public $password2 = '';
+	/** @var bool */
 	public $new_picture_blob_id = false;
 
+	/** @var bool */
 	public $ticket_close_reply = false;
+	/** @var bool */
 	public $ticket_close_note = false;
+	/** @var bool */
 	public $hide_claimed_chat = false;
+	/** @var bool */
 	public $ticket_go_next_reply = false;
+	/** @var bool */
 	public $ticket_reverse_order = false;
+	/** @var int */
 	public $default_team_id = 0;
+	/** @var bool */
 	public $reset_api_token = false;
 
+	/** @var int|mixed */
 	public $auto_dismiss_notifications = 60;
 
+	/** @var array */
 	public $new_emails;
+	/** @var array */
 	public $remove_emails;
 
 	/**

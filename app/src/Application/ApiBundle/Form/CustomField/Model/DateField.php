@@ -38,17 +38,28 @@ use Application\DeskPRO\App;
 
 class DateField extends CustomFieldAbstract
 {
+	/** @var string */
     public $default_value = '';
+	/** @var string */
     public $default_mode = 'current';
+	/** @var bool */
 	public $required = false;
+	/** @var bool */
 	public $agent_required  = false;
+	/** @var null */
 	public $date_timezone   = null;
 
+	/** @var string|null */
 	public $date_valid_type       = null;
+	/** @var string|null */
 	public $date_valid_date1      = null;
+	/** @var string|null */
 	public $date_valid_date2      = null;
+	/** @var int|null */
 	public $date_valid_range1     = null;
+	/** @var int|null */
 	public $date_valid_range2     = null;
+	/** @var array|null */
 	public $date_valid_dow        = null;
 
     public function init()

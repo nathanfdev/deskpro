@@ -129,8 +129,6 @@ class PasswordPolicy
 			'require_num_number'    => $this->require_num_number,
 			'require_num_symbol'    => $this->require_num_symbol,
 		);
-
-		$this->verify();
 	}
 
 
