@@ -43,6 +43,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.activityTime = new Date();
 		this.isMobile = false;
 
+		this.appsSidebar = {
+			visible: false,
+			width: 350
+		}
+
 		this.agentNotifyListShown = false;
 
 		this.paneVis = {

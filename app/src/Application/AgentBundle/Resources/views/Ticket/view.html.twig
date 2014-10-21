@@ -71,7 +71,11 @@ pageMeta.lang = {{ {
 	{% include 'AgentBundle:Jira:widget.html.twig' %}
 {% endif %}
 </script>
-<div class="layout-content page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
+<div class="layout-sidebar" id="{{ baseId }}_layout_sidebar">
+	<span class="pin-btn"><i class="fa fa-lock"></i><i class="fa fa-chevron-right"></i></span>
+</div>
+<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>
+<div class="layout-content page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}" id="{{ baseId }}_layout_content">
 <div class="dp-page-content">
 
 {% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
@@ -96,6 +100,7 @@ pageMeta.lang = {{ {
 {% endif %}
 
 <header class="main-header" id="{{ baseId }}_page_header">
+	<div id="{{ baseId }}_layout_sidebar_icons" class="layout-sidebar-icons"><ul></ul></div>
 	{{ dp_app_loc(baseId, 'header.top') }}
 
 	<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>

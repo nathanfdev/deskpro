@@ -238,6 +238,84 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 
 
 		/**
+		 * Render a template to the standard 'app' sidebar.
+		 *
+		 * @param {String}                    tplName
+		 * @param {Function}                  ctrl
+		 * @param {Object}                    ctrlLocals
+		 * @return {promise}
+		 */
+		renderAppTemplate: function(tplName, ctrl, ctrlLocals) {
+			var self = this,
+				$injector = this.getApp().getPlatform().getNgInjector(),
+				runner;
+
+			runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', '$timeout', function($rootScope, $controller, $compile, $q, $timeout) {
+				var tplDeferred, tplPromise,
+					deferred = $q.defer();
+
+				this.deferred = deferred;
+
+				self.loadTemplate(tplName).then(function(tplSource) {
+					var containerId = Orb.getUniqueId('app_context_'),
+						tplScope,
+						tplCtrl,
+						tabElement,
+						updateClassFn;
+
+					tplScope = $rootScope.$new();
+					tplScope.btnClass   = {'is-enabled': true};
+					tplScope.btnImg     = null;
+					tplScope.btnBadge   = null;
+					tplScope.btnText    = null;
+					tplScope.enabled    = true;
+					tplCtrl = $controller(function() {}, { $scope: tplScope });
+
+					tabElement = angular.element('<li data-for="#'+containerId+'" id="'+containerId+'_tab"><span ng-if="btnBadge !== null" class="badge">{{btnBadge}}</span><img ng-if="btnImg !== null" ng-src="{{btnImg}}" /><span ng-if="btnText !== null" ng-bind="btnText"></span></li>');
+
+					tplScope.$watch('enabled', function(n) {
+						tplScope.btnClass['is-enabled'] = !!n;
+						$timeout(function() { self.getFragment().updateAppsSidebar(); });
+					});
+
+					// Need to do this 'manually' because the scope is being applied to children, not the el itself
+					updateClassFn = function(btnClass) {
+						tabElement.removeClass();
+						for (var i in btnClass) {
+							if (btnClass.hasOwnProperty(i)) {
+								if (btnClass[i]) {
+									tabElement.addClass(i);
+								}
+							}
+						}
+					};
+
+					tplScope.$watch('btnClass', updateClassFn, true);
+
+					tabElement.children().data('$ngControllerController', tplCtrl);
+					$compile(tabElement.contents())(tplScope);
+
+					// Then render the usual content box
+					ctrlLocals = ctrlLocals || {};
+					ctrlLocals.containerElementId = containerId;
+					ctrlLocals.$tabScope = tplScope;
+
+					self.renderTemplate('#TAB_layout_sidebar', tplName, ctrl, ctrlLocals).then(function(info) {
+						updateClassFn(tplScope.btnClass);
+						$('#' + self.getFragment().meta.baseId + '_layout_sidebar_icons').find('> ul').first().append(tabElement);
+						deferred.resolve(info);
+						$timeout(function() { self.getFragment().updateAppsSidebar(); });
+					}, function() { deferred.reject(); });
+				}, function() {
+					deferred.reject();
+				});
+			}]);
+
+			return runner.deferred.promise;
+		},
+
+
+		/**
 		 * Render a template to the location defined by the location description in loc
 		 *
 		 * @param {String}                    tplName

@@ -14,6 +14,7 @@ define([
 			this._packageName    = contextParams.packageName;
 			this._scopeName      = contextParams.scope;
 			this._settings       = contextParams.settings;
+			this._assets         = contextParams.assets || {};
 			this._regControllers = {};
 			this._createdControllers = {};
 		},
@@ -85,6 +86,18 @@ define([
 
 
 		/**
+		 * Get the path to a file resource.
+		 *
+		 * @param {String} path
+		 * @returns {String|null}
+		 */
+		getResourcePath: function(path) {
+			var fullPath = this._packageName + '/res/' + path.replace(/^\//, '');
+			return this._assets[fullPath] || null;
+		},
+
+
+		/**
 		 * Return the URL to request handler (for native apps with request handlers)
 		 *
 		 * @param {String}    type   The type: just "agent" at the moment
@@ -148,6 +161,23 @@ define([
 			this._regControllers[type].push([context, params || null]);
 
 			return context;
+		},
+
+
+		/**
+		 * Shortcut for registering an empty context that renders a template to the standard app sidebar.
+		 *
+		 * @param {String} type
+		 * @param {Function} controller
+		 * @param {Object} params
+		 * @return {TabContext}
+		 */
+		registerAppWidget: function(type, templateName, controller, params) {
+			return this.register(type, {
+				init: function() {
+					this.renderAppTemplate(templateName, controller, params);
+				}
+			}, params);
 		},
 
 
