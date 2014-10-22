@@ -35,7 +35,6 @@
 namespace Application\PortalBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends AbstractController
 {
@@ -46,8 +45,11 @@ class IndexController extends AbstractController
 	{
 		$person = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Person')->find(1);
 
-		return new Response(sprintf('<html><body>hello world! the email of %s is: %s</body></html>', $person->name,
-			$person->primary_email->email));
+		return $this->get('templating')->renderResponse('PortalBundle:Index:index.html.twig', array(
+				'name' => $person->name,
+				'email' => $person->primary_email->email
+			)
+		);
     }
 }
  
