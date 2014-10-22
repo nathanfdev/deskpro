@@ -16,9 +16,6 @@ $collection->addCollection($loader->import(DP_ROOT.'/src/Application/UserBundle/
 //
 //
 
-$col = $loader->import(DP_ROOT . '/src/Application/PortalBundle/Resources/config/portal-routing.php');
-$collection->addCollection($col);
-
 $col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php');
 $col->addPrefix('/agent');
 $collection->addCollection($col);
