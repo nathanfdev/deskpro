@@ -1,0 +1,4 @@
+services:
+  templating.portal:
+    class: Application\PortalBundle\Templating\PortalTemplating
+    arguments: [@templating]

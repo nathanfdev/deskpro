@@ -45,7 +45,7 @@ class IndexController extends AbstractController
 	{
 		$person = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Person')->find(1);
 
-		return $this->get('templating')->renderResponse('PortalBundle:Index:index.html.twig', array(
+		return $this->render('PortalBundle:Index:index.html.twig', array(
 				'name' => $person->name,
 				'email' => $person->primary_email->email
 			)

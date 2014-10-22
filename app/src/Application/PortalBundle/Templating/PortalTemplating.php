@@ -32,18 +32,49 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\Controller;
+namespace Application\PortalBundle\Templating;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Templating\EngineInterface;
 
-class AbstractController extends BaseController
+class PortalTemplating implements EngineInterface
 {
-	public function render($view, array $parameters = array(), Response $response = null)
+	/**
+	 * @var \Symfony\Bundle\TwigBundle\TwigEngine
+	 */
+	private $engine;
+
+	public function __construct(TwigEngine $engine)
 	{
-		/** @var \Application\PortalBundle\Templating\PortalTemplating $templating */
-		$templating = $this->container->get('templating.portal');
-		return $templating->renderResponse($view, $parameters, $response);
+		$this->engine = $engine;
+	}
+
+	public function render($name, array $parameters = array())
+	{
+		return $this->engine->render($name, $parameters);
+	}
+
+	public function renderResponse($view, array $parameters = array(), Response $response = null)
+	{
+		if (null === $response) {
+			$response = new Response();
+		}
+
+		$response->setContent($this->render($view, $parameters));
+
+		return $response;
+	}
+
+	public function exists($name)
+	{
+		return $this->engine->exists($name);
+	}
+
+	public function supports($name)
+	{
+		return $this->engine->supports($name);
 	}
 }
  
