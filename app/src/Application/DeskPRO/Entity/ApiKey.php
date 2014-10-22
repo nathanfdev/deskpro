@@ -136,12 +136,9 @@ class ApiKey extends DomainObject
 		$data = parent::toApiData($primary, false, $visited);
 		$data['keyString'] = $this->getKeyString();
 		$data['person'] = $this->person ? $this->person['id'] : null;
-		$data['logs'] = array();
-
-		foreach ($this->logs as $log) {
-			$data['logs'][] = $log->toApiData(true, false);
+		foreach ($this->flags as $f) {
+			$data[$f] = true;
 		}
-
 		return $data;
 	}
 
