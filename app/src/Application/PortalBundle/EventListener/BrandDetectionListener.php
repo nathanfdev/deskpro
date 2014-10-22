@@ -93,6 +93,11 @@ class BrandDetectionListener implements EventSubscriberInterface
 
 	public function onKernelRequest(GetResponseEvent $event)
 	{
+		if (!$event->isMasterRequest()) {
+			// only run this on the master request - we only detect once per request.
+			return;
+		}
+
 		$request = $event->getRequest();
 
 		if (!$brand = $this->detectBrandInRequest($request)) {
