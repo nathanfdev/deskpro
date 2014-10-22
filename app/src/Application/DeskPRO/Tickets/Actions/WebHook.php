@@ -62,7 +62,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 	{
 		$options = new CheckedOptionsArray();
 		$options->addRequiredNames('url');
-		$options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout');
+		$options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type');
 		return $options;
 	}
 
@@ -99,6 +99,10 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 		$data['event_type']      = $context->getEventType();
 		$data['event_method']    = $context->getEventMethod();
 		$data['custom_data']     = $custom_data;
+
+		if ('json' === $this->getActionOption('payload_type')) {
+			$headers['content-type'] = 'application/json';
+		}
 
 		$request = $http_client->createRequest($this->getActionOption('method') ?: 'POST', null, $headers, $data);
 
