@@ -39,6 +39,8 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
 use Doctrine\DBAL\DBALException;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\HttpFoundation\Request;
 
 class KernelBooter
@@ -652,23 +654,52 @@ class KernelBooter
 	 * @param string $env
 	 * @param bool $debug
 	 */
-	public static function bootCli($env = 'prod', $debug = false)
+	public static function bootCli($env = 'prod', $debug = false, $other_kernel = null)
 	{
-		static::ensureCli();
-		$app = static::getCliApp('cmd', $env, $debug);
+		if (!$other_kernel) {
+			static::ensureCli();
+			$app = static::getCliApp('cmd', $env, $debug);
 
-		if (!$app) {
-			return;
+			if (!$app) {
+				return;
+			}
+
+			$GLOBALS['DP_IS_IN_CLI'] = true;
+			$app->setAutoExit(false);
+
+			libxml_disable_entity_loader(false);
+			$return = $app->run();
+			unset($GLOBALS['DP_IS_IN_CLI']);
+
+			return $return;
+		} else {
+			if ($other_kernel == 'portal') {
+				self::bootstrapConfig();
+
+				if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
+					$env   = 'dev';
+					$debug = true;
+				}
+
+				self::bootstrapLib($debug);
+				self::bootstrapEnv();
+
+				$input = new ArgvInput();
+				$env   = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ? : 'dev');
+				$debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(
+						array('--no-debug', '')
+					) && $env !== 'prod';
+
+				require_once DP_ROOT . '/sys/Kernel/PortalKernel.php';
+				$kernel = new PortalKernel($env, $debug);
+
+				$app = new Application($kernel);
+
+				libxml_disable_entity_loader(false); // needed on some machines
+
+				return $app->run($input);
+			}
 		}
-
-		$GLOBALS['DP_IS_IN_CLI'] = true;
-		$app->setAutoExit(false);
-
-		libxml_disable_entity_loader(false);
-		$return = $app->run();
-		unset($GLOBALS['DP_IS_IN_CLI']);
-
-		return $return;
 	}
 
 
