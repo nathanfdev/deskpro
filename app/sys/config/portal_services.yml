@@ -2,3 +2,25 @@ services:
   templating.portal:
     class: Application\PortalBundle\Templating\PortalTemplating
     arguments: [@templating]
+
+  brand_stack:
+    class: Application\DeskPRO\Brand\BrandStack
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BrandStackService
+    factory_method: create
+    arguments: [@service_container]
+
+  brand_repository:
+    class: Application\DeskPRO\EntityRepository\Brand
+    factory_service: doctrine.orm.default_entity_manager
+    factory_method: getRepository
+    arguments: ['DeskPRO:Brand']
+
+  ##
+  ## Event Listeners
+  ##
+
+  brand_detector.listener:
+    class: Application\PortalBundle\EventListener\BrandDetectionListener
+    arguments: [@brand_stack, @settings_resolver, @brand_repository]
+    tags:
+      - { name: kernel.event_subscriber }

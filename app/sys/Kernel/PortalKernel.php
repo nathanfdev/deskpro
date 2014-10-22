@@ -34,7 +34,6 @@
 
 namespace DeskPRO\Kernel;
 
-use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -64,7 +63,7 @@ class PortalKernel extends Kernel
 		);
 
 		if ('dev' === $this->getEnvironment()) {
-			$bundles[] = new WebProfilerBundle();
+			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
 		}
 
 		return $bundles;
