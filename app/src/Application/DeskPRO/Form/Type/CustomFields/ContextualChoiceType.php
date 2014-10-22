@@ -28,10 +28,9 @@
 namespace Application\DeskPRO\Form\Type\CustomFields;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\From;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ContextualChoiceType extends ChoiceType
@@ -63,7 +62,7 @@ class ContextualChoiceType extends ChoiceType
 			->orderBy('d.display_order', 'ASC')
 			->setParameter('parent', $def['id'])
 			->setParameter('owner_class', $def['owner_class'])
-			->setParameter('cc', get_class($ctx))
+			->setParameter('cc', ClassUtils::getClass($ctx))
 			->setParameter('cid', $ctx['id']);
 	}
 
