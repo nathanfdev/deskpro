@@ -687,6 +687,8 @@ class KernelBooter
 
 		$GLOBALS['DP_IS_IN_CLI'] = true;
 		$app->setAutoExit(false);
+
+		libxml_disable_entity_loader(false);
 		$return = $app->run();
 		unset($GLOBALS['DP_IS_IN_CLI']);
 
