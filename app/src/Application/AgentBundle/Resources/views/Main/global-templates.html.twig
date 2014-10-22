@@ -108,7 +108,7 @@
 		class="section-title status-closed"
 		data-status-type="closed"
 		data-option-value="closed"
-	>{{ phrase('agent.tickets.status_closed') }}</li>
+	>{{ phrase('agent.feedback.status_closed') }}</li>
 	{% for cat in app.getDataService('FeedbackStatusCategory').getClosedCategories() %}
 		<li
 			class="status-{{cat.id}}"

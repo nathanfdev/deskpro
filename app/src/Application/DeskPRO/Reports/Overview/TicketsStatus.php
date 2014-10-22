@@ -53,7 +53,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 			'awaiting_agent' => 'Awaiting Agent',
 			'awaiting_user'  => 'Awaiting User',
 			'resolved'       => 'Resolved',
-			'closed'         => 'Archived',
+			'archived'       => 'Archived',
 			'hidden'         => 'Hidden'
 		);
 

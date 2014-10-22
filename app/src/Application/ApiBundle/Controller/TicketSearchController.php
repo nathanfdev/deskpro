@@ -152,7 +152,7 @@ class TicketSearchController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="status[]",
-	 *				description="Requires ticket to be in the specified status. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved.",
+	 *				description="Requires ticket to be in the specified status. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved.",
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="string"

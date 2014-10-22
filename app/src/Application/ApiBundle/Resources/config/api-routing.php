@@ -2891,20 +2891,20 @@ $collection->create('api_ticket_statuses_stats', array(
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_ticket_statuses_closed', array(
-	'path'        => '/ticket_statuses/closed',
-	'controller'  => 'ApiBundle:TicketStatuses:getClosedInfo',
+$collection->create('api_ticket_statuses_archived', array(
+	'path'        => '/ticket_statuses/archived',
+	'controller'  => 'ApiBundle:TicketStatuses:getArchivedInfo',
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_ticket_statuses_closed_savesettings', array(
-	'path'        => '/ticket_statuses/closed/settings',
-	'controller'  => 'ApiBundle:TicketStatuses:saveClosedSettings',
+$collection->create('api_ticket_statuses_archived_savesettings', array(
+	'path'        => '/ticket_statuses/archived/settings',
+	'controller'  => 'ApiBundle:TicketStatuses:saveArchivedSettings',
 	'methods'     => array('POST'),
 ));
 
-$collection->create('api_ticket_statuses_closed_resetsearch', array(
-	'path'        => '/ticket_statuses/closed/reset-search-tables',
+$collection->create('api_ticket_statuses_archived_resetsearch', array(
+	'path'        => '/ticket_statuses/archived/reset-search-tables',
 	'controller'  => 'ApiBundle:TicketStatuses:resetSearchTables',
 	'methods'     => array('POST'),
 ));

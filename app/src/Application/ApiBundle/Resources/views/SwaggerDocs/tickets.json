@@ -281,7 +281,7 @@
                             "name": "status",
                             "type": "string",
                             "required": false,
-                            "description": "Status the ticket is in. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved. Defaults to awaiting_agent."
+                            "description": "Status the ticket is in. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved. Defaults to awaiting_agent."
                         },
                         {
                             "paramType": "query",
@@ -408,7 +408,7 @@
                             "name": "status[]",
                             "type": "string",
                             "required": false,
-                            "description": "Requires ticket to be in the specified status. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved."
+                            "description": "Requires ticket to be in the specified status. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved."
                         },
                         {
                             "paramType": "query",

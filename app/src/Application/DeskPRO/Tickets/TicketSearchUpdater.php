@@ -87,7 +87,7 @@ class TicketSearchUpdater
 		if (!$this->ticket->isArchived()) {
 			$cols = self::$cols;
 			$data = $this->db->fetchAssoc("SELECT {$cols} FROM tickets WHERE id = ?", array($this->ticket->id));
-			if ($data && $data['status'] != 'closed') {
+			if ($data && $data['status'] != 'archived') {
 				$this->db->replace('tickets_search_active', $data);
 			} else {
 				$this->db->delete('tickets_search_active', array('id' => $this->ticket->id));

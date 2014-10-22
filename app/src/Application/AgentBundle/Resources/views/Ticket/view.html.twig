@@ -47,7 +47,7 @@ pageMeta.unlockOnClose = {{ app.getSetting('core_tickets.unlock_on_close') ? 'tr
 pageMeta.baseId = '{{ baseId }}';
 
 pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};
-pageMeta.isClosed = {% if ticket.status == 'closed' %}true{% else %}false{% endif %};
+pageMeta.isArchived = {% if ticket.status == 'archived' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
 {# pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %}; #}
 pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
@@ -286,8 +286,8 @@ pageMeta.lang = {{ {
 				{% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
 					<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_resolved') }}</option>
 				{% endif %}
-				{%  if ticket.status_code == 'closed' %}
-					<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_closed') }}</option>
+				{%  if ticket.status_code == 'archived' %}
+					<option value="archived" {% if ticket.status_code == 'archived' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_archived') }}</option>
 				{% endif %}
 			</select>
 

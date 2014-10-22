@@ -709,13 +709,13 @@ header.page-header .meta-line .status.awaiting_agent span.urgency-10 { .ticket_u
 .layout-content.hidden_spam .urgency-text,
 .layout-content.hidden_validating .urgency-text
 { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
-.layout-content.closed .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_closed_color, @urgency_closed_borderColor, @urgency_closed_textColor); }
+.layout-content.archived .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
 .layout-content.resolved .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
 
 header.page-header .meta-line .status.awaiting_user span             { .ticket_urgency_style(@urgency_user_color, @urgency_user_borderColor, @urgency_user_textColor); }
 header.page-header .meta-line .status.resolved span                  { .ticket_urgency_style(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
 header.page-header .meta-line .status.hidden span                    { .ticket_urgency_style(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
-header.page-header .meta-line .status.closed span                    { .ticket_urgency_style(@urgency_closed_color, @urgency_closed_borderColor, @urgency_closed_textColor); }
+header.page-header .meta-line .status.archived span                  { .ticket_urgency_style(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
 
 .ticket_urgency_style_pill(@color, @borderColor, @textColor) {
 	.gradient(lighten(@color, 10%), @color);
@@ -796,7 +796,7 @@ header.page-header .meta-line .status.closed span                    { .ticket_u
 .status-pill.resolved                  { .ticket_urgency_style_pill(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
 .status-pill.hidden, .status-pill.hidden_deleted, .status-pill.hidden_spam, .status-pill.hidden_validating
 { .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
-.status-pill.closed                    { .ticket_urgency_style_pill(@urgency_closed_color, @urgency_closed_borderColor, @urgency_closed_textColor); }
+.status-pill.archived                  { .ticket_urgency_style_pill(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
 
 .select2-result .urgency-1,
 .select2-choice .urgency-1 { .ticket_urgency_style_pill(@urgency1_color, @urgency1_borderColor, @urgency1_textColor); }
@@ -863,7 +863,7 @@ header.page-header .status.article-status span {
 header.page-header .meta-line .set-hold { display: none; }
 .awaiting_agent header.page-header .meta-line .set-hold { display: block; }
 
-.resolved, .closed, .hidden_spam, .hidden_validating, .hidden_temp, .hidden_deleted {
+.resolved, .archived, .hidden_spam, .hidden_validating, .hidden_temp, .hidden_deleted {
 	header.page-header .ticket-urgency { display: none }
 }
 

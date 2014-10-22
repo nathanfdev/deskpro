@@ -200,14 +200,14 @@ define [
 
 			options = []
 
-			if @options_data.ticket_fields
+			if @options_data?.ticket_fields
 				for f in @options_data.ticket_fields
 					options.push({
 						title: f.title,
 						value: @initFieldGetter('CheckTicketField', f)
 					})
 
-			if @options_data.contextual_fields
+			if @options_data?.contextual_fields
 				for f in @options_data.contextual_fields
 					options.push({
 						title: f.title,

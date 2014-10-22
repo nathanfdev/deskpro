@@ -14,7 +14,7 @@
 	'adm.agents.perm_ticket_use'                                  => 'Can use the ticket system',
 	'adm.agents.perm_ticket_create'                               => 'Can create new tickets',
 	'adm.agents.perm_ticket_reply_mass'                           => 'Can mass-reply to tickets',
-	'adm.agents.perm_ticket_modify_set_closed'                    => 'Can unarchive tickets',
+	'adm.agents.perm_ticket_modify_set_archived'                  => 'Can unarchive tickets',
 	'adm.agents.perm_ticket_reply_own'                            => 'Can reply to owned and team tickets',
 	'adm.agents.perm_ticket_modify_own'                           => 'Can modify owned and team tickets',
 	'adm.agents.perm_ticket_modify_messages_own'                  => 'Can edit and delete messages in owned and team tickets',

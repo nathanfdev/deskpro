@@ -44,7 +44,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option string date1_relative
  * @option string date2_relative
  */
-class FilterDateClosed extends AbstractFilterTerm
+class FilterDateArchived extends AbstractFilterTerm
 {
 	/**
 	 * {@inheritDoc}

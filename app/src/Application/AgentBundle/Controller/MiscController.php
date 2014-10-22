@@ -110,7 +110,7 @@ class MiscController extends AbstractController
 			'awaiting_user' => App::getTranslator()->phrase('agent.tickets.status_awaiting_user'),
 			'hidden' => App::getTranslator()->phrase('agent.tickets.status_hidden'),
 			'resolved' => App::getTranslator()->phrase('agent.tickets.status_resolved'),
-			'closed' => App::getTranslator()->phrase('agent.tickets.status_closed'),
+			'archived' => App::getTranslator()->phrase('agent.tickets.status_archived'),
 		)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.hidden_status = ' . json_encode(array(
 			'deleted' => App::getTranslator()->phrase('agent.tickets.hidden_status_deleted'),

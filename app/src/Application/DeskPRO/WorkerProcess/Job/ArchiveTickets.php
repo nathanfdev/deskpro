@@ -62,7 +62,7 @@ class ArchiveTickets extends AbstractJob
 
 		$details_arr = serialize(array(
 			'old_status' => 'resolved',
-			'new_status' => 'closed'
+			'new_status' => 'archived'
 		));
 
 		$date_created = date('Y-m-d H:i:s');
@@ -84,7 +84,7 @@ class ArchiveTickets extends AbstractJob
 
 			App::getDb()->executeUpdate(sprintf("
 				UPDATE tickets
-				SET status = 'closed', date_archived = '%s' WHERE id IN ($ids_str)
+				SET status = 'archived', date_archived = '%s' WHERE id IN ($ids_str)
 			", $datecut));
 
 			App::getDb()->batchInsert('tickets_logs', $batch);

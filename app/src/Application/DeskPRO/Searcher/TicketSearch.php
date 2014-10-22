@@ -211,7 +211,7 @@ class TicketSearch extends SearcherAbstract
 
 
 	/**
-	 * Search old (closed) tickets that are archived (aka not in the search tables).
+	 * Search old (archived) tickets that are archived (aka not in the search tables).
 	 */
 	public function enableArchiveSearch()
 	{
@@ -220,7 +220,7 @@ class TicketSearch extends SearcherAbstract
 
 
 	/**
-	 * Enables only non-hidden or closed tickets.
+	 * Enables only non-hidden or archived tickets.
 	 */
 	public function enableFilterSearch()
 	{
@@ -299,7 +299,7 @@ class TicketSearch extends SearcherAbstract
 			}
 
 			foreach ($data as $s) {
-				if ($s == 'closed' || strpos($s, 'hidden') === 0) {
+				if ($s == 'archived' || strpos($s, 'hidden') === 0) {
 					return true;
 				}
 			}
@@ -576,7 +576,7 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		if ($this->is_filter_search && !$this->is_archive) {
-			$where .= " AND tickets.status NOT IN ('closed', 'hidden') ";
+			$where .= " AND tickets.status NOT IN ('archived', 'hidden') ";
 		}
 
 		$sql .= " $sql_joins ";
@@ -786,7 +786,7 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		if ($this->is_filter_search && !$this->is_archive) {
-			$where .= " AND tickets.status NOT IN ('closed', 'hidden') ";
+			$where .= " AND tickets.status NOT IN ('archived', 'hidden') ";
 		}
 
 		$sql .= " $sql_joins WHERE $where_perm $where";
@@ -883,7 +883,7 @@ class TicketSearch extends SearcherAbstract
 					CASE WHEN tickets.status =  'awaiting_agent' THEN 1
 					WHEN tickets.status =  'awaiting_user' THEN 2
 					WHEN tickets.status =  'resolved' THEN 3
-					WHEN tickets.status =  'closed' THEN 4
+					WHEN tickets.status =  'archived' THEN 4
 					ELSE 3
 					END AS status_order
 				";
@@ -1202,7 +1202,7 @@ class TicketSearch extends SearcherAbstract
 						$this->affected_fields[] = 'ticket.date_archived';
 						if (!$this->is_testing) $this->summary[] = $this->_dateRangeSummary($tr->phrase('agent.general.date_archived'), $op, $choice);
 						$wheres[] = $this->_dateMatch("$tickets_table.date_archived", $op, $choice);
-						$wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', array('closed'));
+						$wheres[] = $this->_choiceMatch("$tickets_table.status", 'is', array('archived'));
 						break;
 					case self::TERM_DATE_LAST_USER_REPLY:
 						$this->enableArchiveSearch();
@@ -2284,7 +2284,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_DATE_ARCHIVED:
-					if ($ticket['status'] != Ticket::STATUS_CLOSED) return false;
+					if ($ticket['status'] != Ticket::STATUS_ARCHIVED) return false;
 					if (!$this->_testDateMatch($ticket['date_archived'], $op, $choice)) return false;
 					break;
 

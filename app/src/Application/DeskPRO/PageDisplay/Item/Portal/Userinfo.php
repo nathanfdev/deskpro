@@ -50,7 +50,7 @@ class Userinfo extends Template
 		$chat_count       = 0;
 
 		if (!$this->person_context->isGuest()) {
-			$counts = App::getEntityRepository('DeskPRO:Ticket')->getCountInfoForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'closed'));
+			$counts = App::getEntityRepository('DeskPRO:Ticket')->getCountInfoForPerson($this->person_context, array('awaiting_agent', 'awaiting_user', 'resolved', 'archived'));
 			$ticket_count     = $counts['person'];
 			$org_ticket_count = $counts['org'];
 

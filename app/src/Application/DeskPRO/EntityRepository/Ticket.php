@@ -320,7 +320,7 @@ class Ticket extends AbstractEntityRepository
 				SELECT id
 				FROM tickets
 				WHERE id IN (?)
-				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, IF(tickets.status = 'awaiting_agent', tickets.urgency, 0) DESC, tickets.id DESC
+				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden') ASC, IF(tickets.status = 'awaiting_agent', tickets.urgency, 0) DESC, tickets.id DESC
 			", array($ids), array(Connection::PARAM_INT_ARRAY));
 		} elseif ($sort_by && in_array(strtolower($sort_by), $this->_em->getClassMetadata('DeskPRO:Ticket')->getFieldNames())) {
 			$sort_by = strtolower($sort_by);
@@ -378,7 +378,7 @@ class Ticket extends AbstractEntityRepository
 					CASE WHEN tickets.status =  'awaiting_agent' THEN 1
 					WHEN tickets.status =  'awaiting_user' THEN 2
 					WHEN tickets.status =  'resolved' THEN 3
-					WHEN tickets.status =  'closed' THEN 4
+					WHEN tickets.status =  'archived' THEN 4
 					ELSE 3
 					END AS status_order
 			FROM tickets
@@ -527,11 +527,11 @@ class Ticket extends AbstractEntityRepository
 				CASE WHEN `status` =  'awaiting_agent' THEN 1
 				WHEN `status` =  'awaiting_user' THEN 2
 				WHEN `status` =  'resolved' THEN 3
-				WHEN `status` =  'closed' THEN 4
+				WHEN `status` =  'archived' THEN 4
 				ELSE 3
 				END AS status_order
 			FROM tickets
-			WHERE organization_id = {$org->id} AND status IN ('awaiting_agent', 'awaiting_user', 'closed', 'resolved')
+			WHERE organization_id = {$org->id} AND status IN ('awaiting_agent', 'awaiting_user', 'archived', 'resolved')
 			ORDER BY status_order ASC, urgency DESC
 			LIMIT $num
 		", array($org->id));
@@ -597,7 +597,7 @@ class Ticket extends AbstractEntityRepository
 			$status = array(
 				TicketEntity::STATUS_AWAITING_AGENT,
 				TicketEntity::STATUS_AWAITING_USER,
-				TicketEntity::STATUS_CLOSED,
+				TicketEntity::STATUS_ARCHIVED,
 				TicketEntity::STATUS_RESOLVED
 			);
 		}
@@ -676,7 +676,7 @@ class Ticket extends AbstractEntityRepository
 	 * - hidden.spam
 	 * - hidden.awaiting_validation
 	 * - resolved
-	 * - closed
+	 * - archived
 	 * - hidden.deleted
 	 *
 	 * @return array
@@ -687,7 +687,7 @@ class Ticket extends AbstractEntityRepository
 			SELECT IF(status = 'hidden', CONCAT('hidden', '.', hidden_status), status) AS status_code, COUNT(*)
 			FROM tickets
 			WHERE
-				status IN ('awaiting_user', 'closed', 'resolved', 'hidden')
+				status IN ('awaiting_user', 'archived', 'resolved', 'hidden')
 			GROUP BY status_code
 		");
 	}

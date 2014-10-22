@@ -239,8 +239,8 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 						row.find('.ticket-status').addClass('awaiting_user').text('Awaiting User');
 					} else if (ticket.status == 'resolved') {
 						row.find('.ticket-status').addClass('resolved').text('Resolved');
-					} else if (ticket.status == 'closed') {
-						row.find('.ticket-status').addClass('closed').text('Closed');
+					} else if (ticket.status == 'archived') {
+						row.find('.ticket-status').addClass('archived').text('Archived');
 					} else {
 						row.find('.ticket-status').remove();
 					}

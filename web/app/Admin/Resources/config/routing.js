@@ -445,10 +445,10 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'tickets.statuses.closed',
-		url: '/statuses/closed',
-		templateName: 'TicketStatuses/status-closed.html',
-		controller: 'Admin_TicketStatuses_Ctrl_EditClosed'
+		id: 'tickets.statuses.archived',
+		url: '/statuses/archived',
+		templateName: 'TicketStatuses/status-archived.html',
+		controller: 'Admin_TicketStatuses_Ctrl_EditArchived'
 	});
 
 	routes.push({

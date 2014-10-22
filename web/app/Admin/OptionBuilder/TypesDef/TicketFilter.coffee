@@ -92,7 +92,7 @@ define [
 
 			options.push({
 				title: 'Date Archived',
-				value: 'FilterDateClosed'
+				value: 'FilterDateArchived'
 			})
 
 			options.push({
@@ -425,7 +425,7 @@ define [
 			def = @getDateInput(options)
 			return def
 
-		getFilterDateClosed: (options = {}) ->
+		getFilterDateArchived: (options = {}) ->
 			def = @getDateInput(options)
 			return def
 

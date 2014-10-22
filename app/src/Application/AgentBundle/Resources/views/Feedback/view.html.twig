@@ -26,7 +26,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="spam-notice" {% if feedback.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.general.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.tickets.status_closed') }}</button>
+	{{ phrase('agent.general.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.feedback.status_closed') }}</button>
 </div>
 
 {% if feedback.status_code == "hidden.validating" %}
@@ -62,7 +62,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<option value="active.{{cat.id}}" {% if feedback.status_code == 'active.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>
 					{% endfor %}
 				</optgroup>
-				<optgroup label="{{ phrase('agent.tickets.status_closed') }}">
+				<optgroup label="{{ phrase('agent.feedback.status_closed') }}">
 					{% for cat in closed_status_cats %}
 						<option value="closed.{{cat.id}}" {% if feedback.status_code == 'closed.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>
 					{% endfor %}

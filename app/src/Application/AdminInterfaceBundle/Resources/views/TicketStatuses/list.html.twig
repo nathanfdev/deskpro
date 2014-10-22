@@ -15,8 +15,8 @@
 				<li dp-state-mark="tickets.statuses.resolved">
 					<a href="{{ ng_href('tickets.statuses.resolved') }}">{{ phrase('agent.tickets.status_resolved') }}</a>
 				</li>
-				<li dp-state-mark="tickets.statuses.closed">
-					<a href="{{ ng_href('tickets.statuses.closed') }}">{{ phrase('agent.tickets.status_closed') }}</a>
+				<li dp-state-mark="tickets.statuses.archived">
+					<a href="{{ ng_href('tickets.statuses.archived') }}">{{ phrase('agent.tickets.status_archived') }}</a>
 				</li>
 			</ul>
 		</article>
@@ -67,7 +67,7 @@
 			<p>A ticket can have status <strong>Awaiting Validation</strong> if it has been submitted by a user who needs to be validated by an agent or to validate their own email address (these validation requirements depend on your settings under <strong>CRM &gt; Registration</strong>).</p>
 			<p>Tickets can also have their status set to <strong>Spam</strong> or <strong>Deleted</strong>. You can set how long spam or deleted tickets are kept before they are automatically deleted by clicking on the relevant status.</p>
 			<p>You can turn on <strong>archiving</strong> of old, resolved tickets. For very large helpdesks with millions of tickets, archiving can greatly improve performance. Click <strong>Archived</strong> to enable this, and specify how long before resolved tickets are archived.</p>
-			<p>When an old ticket is archived it is given archived status (sometimes referred to as 'closed'). Agents can still view archived tickets from the Tickets app filter pane, and agents with the correct permission can restore archived tickets.</p>
+			<p>When an old ticket is archived it is given archived status. Agents can still view archived tickets from the Tickets app filter pane, and agents with the correct permission can restore archived tickets.</p>
 		</section>
 
 		<section>

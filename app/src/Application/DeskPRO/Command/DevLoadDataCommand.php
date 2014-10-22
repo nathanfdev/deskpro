@@ -686,8 +686,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		5 => 'resolved',
 		6 => 'resolved',
 		7 => 'resolved',
-		8 => 'closed',
-		9 => 'closed',
+		8 => 'archived',
+		9 => 'archived',
 	);
 
 	protected function _loadTicket($i)
@@ -716,7 +716,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			}
 		}
 		if (time() - $date_created->getTimestamp() > 90*86400) {
-			$ticket['status'] = 'closed';
+			$ticket['status'] = 'archived';
 		} else {
 			if (mt_rand(0, 100) == 0) {
 				$ticket['status'] = 'awaiting_agent';

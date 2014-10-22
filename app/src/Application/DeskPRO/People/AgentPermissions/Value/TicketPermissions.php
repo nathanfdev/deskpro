@@ -43,7 +43,7 @@ class TicketPermissions implements PermissionValueInterface
 	/** @var bool  */
 	public $reply_mass                           = false;
 	/** @var bool  */
-	public $modify_set_closed                    = false;
+	public $modify_set_archived                  = false;
 	/** @var bool  */
 	public $reply_own                            = false;
 	/** @var bool  */
@@ -206,7 +206,7 @@ class TicketPermissions implements PermissionValueInterface
 	public function getNames()
 	{
 		return array(
-			'use', 'create', 'reply_mass', 'modify_set_closed',
+			'use', 'create', 'reply_mass', 'modify_set_archived',
 			'reply_own', 'modify_own', 'modify_department_own', 'modify_fields_own', 'modify_assign_agent_own', 'modify_assign_team_own',
 			'modify_assign_self_own', 'modify_cc_own', 'modify_merge_own', 'modify_labels_own', 'modify_slas_own', 'modify_notes_own',
 			'modify_set_hold_own', 'modify_set_awaiting_user_own', 'modify_set_awaiting_agent_own', 'modify_set_resolved_own', 'modify_set_unresolved_own', 'modify_messages_own', 'delete_own',

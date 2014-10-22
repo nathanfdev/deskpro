@@ -121,7 +121,7 @@ class LabelSearch
 				/** @var \Application\DeskPRO\EntityRepository\Ticket $rep */
 				$rep = $this->em->getRepository('DeskPRO:Ticket');
 				$results['ticket'] = $rep->findBy(
-					array('id' => $ids, 'status' => array('awaiting_agent', 'awaiting_user', 'closed', 'resolved')),
+					array('id' => $ids, 'status' => array('awaiting_agent', 'awaiting_user', 'archived', 'resolved')),
 					array('id' => 'DESC')
 				);
 			}

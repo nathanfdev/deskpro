@@ -1625,14 +1625,14 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 					case 'awaiting_agent': valA = 1; break;
 					case 'awaiting_user':  valA = 2; break;
 					case 'resolved':       valA = 3; break;
-					case 'closed':         valA = 4; break;
+					case 'archived':       valA = 4; break;
 					default:               valA = 5; break;
 				}
 				switch (ticketB.status) {
 					case 'awaiting_agent': valB = 1; break;
 					case 'awaiting_user':  valB = 2; break;
 					case 'resolved':       valB = 3; break;
-					case 'closed':         valB = 4; break;
+					case 'archived':       valB = 4; break;
 					default:               valB = 5; break;
 				}
 			case 'date_created':

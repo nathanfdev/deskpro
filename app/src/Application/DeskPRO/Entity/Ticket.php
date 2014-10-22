@@ -133,7 +133,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	const STATUS_AWAITING_AGENT = 'awaiting_agent';
 	const STATUS_AWAITING_USER  = 'awaiting_user';
 	const STATUS_RESOLVED       = 'resolved';
-	const STATUS_CLOSED         = 'closed';
+	const STATUS_ARCHIVED       = 'archived';
 	const STATUS_HIDDEN         = 'hidden';
 
 	const HIDDEN_STATUS_VALIDATING  = 'validating';
@@ -2064,7 +2064,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	public function isArchived()
 	{
-		if ($this->status != 'closed') {
+		if ($this->status != 'archived') {
 			return false;
 		}
 
@@ -2148,7 +2148,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 	/**
 	 * Get how long, in seconds, the ticket was open for. This only applies
-	 * for tikcets that are resolved (or closed).
+	 * for tikcets that are resolved (or archived).
 	 *
 	 * @return int
 	 */
@@ -2239,10 +2239,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			$this->setModelField('date_agent_waiting', null);
 		}
 
-		if ($status == 'closed' && !$this->date_archived) {
+		if ($status == 'archived' && !$this->date_archived) {
 			$this['date_archived'] = new \DateTime();
 		}
-		if ($status != 'closed' && $this->date_archived) {
+		if ($status != 'archived' && $this->date_archived) {
 			$this->setModelField('date_archived', null);
 		}
 
@@ -2265,7 +2265,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		if (!$status || !in_array($status, array(
 			self::STATUS_AWAITING_AGENT,
 			self::STATUS_AWAITING_USER,
-			self::STATUS_CLOSED,
+			self::STATUS_ARCHIVED,
 			self::STATUS_RESOLVED,
 			self::STATUS_HIDDEN
 		))) {
@@ -2772,7 +2772,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 				return 110;
 			case self::STATUS_RESOLVED:
 				return 200;
-			case self::STATUS_CLOSED:
+			case self::STATUS_ARCHIVED:
 				return 210;
 			case self::STATUS_HIDDEN:
 				switch ($hstatus) {

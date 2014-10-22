@@ -127,7 +127,7 @@ define([
 	'Admin/TicketStatuses/Ctrl/List',
 	'Admin/TicketStatuses/Ctrl/EditAwaitingAgent',
 	'Admin/TicketStatuses/Ctrl/EditAwaitingUser',
-	'Admin/TicketStatuses/Ctrl/EditClosed',
+	'Admin/TicketStatuses/Ctrl/EditArchived',
 	'Admin/TicketStatuses/Ctrl/EditHiddenDeleted',
 	'Admin/TicketStatuses/Ctrl/EditHiddenSpam',
 	'Admin/TicketStatuses/Ctrl/EditHiddenValidating',

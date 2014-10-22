@@ -38,7 +38,7 @@ class TicketStatusRecordMapper implements RecordMapperInterface
 		'awaiting_agent',
 		'awaiting_user',
 		'resolved',
-		'closed',
+		'archived',
 		'hidden',
 	);
 	
