@@ -509,6 +509,9 @@ class Service
 		
 		foreach ($jiraIssues as $jiraIssue) {
 			$ticket = $jiraIssue->ticket;
+			if (!$ticket) {
+				continue;
+			}
 			
 			$savedComments = $jiraIssue->comments;
 			
