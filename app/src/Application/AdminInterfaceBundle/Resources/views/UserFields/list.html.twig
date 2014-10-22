@@ -3,12 +3,12 @@
 
     <section class="dp-paneblock dp-listpane">
         <header>
-            <h3 ng-pluralize count="ListCtrl.specific_user_fields.length || 0"
+            <h3 ng-pluralize count="ListCtrl.specific_user_custom_fields.length || 0"
                 when="{{ ng_plural_phrase('adm.custom_fields.count_specific_user_fields') }}">
             </h3>
         </header>
         <article>
-            <ul class="dp-item-list" ui-sortable="ListCtrl.entityFieldListOptions" dp-max-height>
+            <ul class="dp-item-list" ui-sortable="ListCtrl.customFieldListOptions" dp-max-height>
                 <li ng-repeat="field in ListCtrl.specific_user_custom_fields"
                     class="with-drag-handle"
                     dp-state-mark="crm.user_fields.specific.edit.{{ ng_var('field.id') }}"

@@ -3738,6 +3738,8 @@ class TicketController extends AbstractController
 	{
 		if ($person_id) {
 			$person = $this->em->find('DeskPRO:Person', $person_id);
+		} else {
+			$person = new Person(); // mock
 		}
 
 		$layouts = $this->container->getTicketLayoutManager()->getAgentLayouts();
