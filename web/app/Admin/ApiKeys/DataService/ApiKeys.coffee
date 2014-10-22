@@ -6,12 +6,7 @@ define [
 	class Admin_ApiKeys_DataService_ApiKeys extends BaseListEdit
 		@$inject = ['Api', '$q']
 
-
-
-		url: ->
-			'/api_keys'
-
-
+		url: ->'/api_keys'
 
 		replayLogEntry: (entry) ->
 			deferred = @$q.defer()
@@ -25,16 +20,13 @@ define [
 
 			deferred.promise
 
-
-
 		###
 		# Generate new API key code
-	 	#
-	  # @param {Object} model api_key model
-	  # @return {promise}
-	  ###
+		#
+		# @param {Object} model api_key model
+		# @return {promise}
+		###
 		regenerateApiKey: (model) ->
 			@Api.sendPostJson('/api_keys/regenerate/' + model.id).success (data) =>
 				model.code = data.code
 				model.keyString = data.keyString
-

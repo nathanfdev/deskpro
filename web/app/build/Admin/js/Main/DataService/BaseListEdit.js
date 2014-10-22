@@ -669,9 +669,9 @@
       Admin_Main_DataService_BaseListEdit.prototype._doSave = function(model) {
         var deferred, id, method;
         deferred = this.$q.defer();
-        method = 'sendPostJson';
+        method = 'sendPutJson';
         if ((model[this.idProp] != null) && model[this.idProp]) {
-          method = 'sendPutJson';
+          method = 'sendPostJson';
         }
         id = model[this.idProp] || 0;
         this.Api[method](this.url() + ("/" + id), model).success((function(_this) {

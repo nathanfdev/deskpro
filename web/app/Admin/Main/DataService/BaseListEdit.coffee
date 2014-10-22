@@ -516,8 +516,8 @@ define [
 
 		_doSave: (model) ->
 			deferred = @$q.defer()
-			method = 'sendPostJson' # is new
-			method = 'sendPutJson' if model[@idProp]? and model[@idProp]
+			method = 'sendPutJson' # is new
+			method = 'sendPostJson' if model[@idProp]? and model[@idProp]
 
 			id = model[@idProp] || 0
 			@Api[method](@url() + "/#{id}", model).success (data) =>

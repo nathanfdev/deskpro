@@ -34,9 +34,9 @@
 
       /*
       		 * Generate new API key code
-      	 	 *
-      	   * @param {Object} model api_key model
-      	   * @return {promise}
+      		 *
+      		 * @param {Object} model api_key model
+      		 * @return {promise}
        */
 
       Admin_ApiKeys_DataService_ApiKeys.prototype.regenerateApiKey = function(model) {
