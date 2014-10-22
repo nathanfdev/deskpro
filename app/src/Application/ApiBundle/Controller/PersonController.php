@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Orb\Util\Numbers;
