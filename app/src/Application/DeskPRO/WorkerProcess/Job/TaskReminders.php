@@ -116,7 +116,7 @@ class TaskReminders extends AbstractJob
 				WHERE
 					tasks.is_completed = 0
 					AND (tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?) OR (tasks.assigned_agent_id IS NULL AND tasks.person_id = ?)
-					AND tasks.date_due >= ? AND tasks.date_due <= ?'
+					AND tasks.date_due >= ? AND tasks.date_due <= ?
 					AND task_reminder_logs.id IS NULL
 			",
 				array($agent['id'], $team_ids, $agent['id'], $today_utc->format('Y-m-d H:i:s'), $today_end_utc->format('Y-m-d H:i:s')),
