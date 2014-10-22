@@ -69,6 +69,8 @@
                   return _this.$scope.refreshing_lic = false;
                 });
               }
+            }, function() {
+              return _this.$scope.refreshing_lic = false;
             });
           };
         })(this));

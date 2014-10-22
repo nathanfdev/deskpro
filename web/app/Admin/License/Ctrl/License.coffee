@@ -51,6 +51,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 						, =>
 							@$scope.refreshing_lic = false
 						)
+				, =>
+					@$scope.refreshing_lic = false
 				)
 			)
 

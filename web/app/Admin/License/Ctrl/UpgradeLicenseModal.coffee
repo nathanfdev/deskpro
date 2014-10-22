@@ -117,6 +117,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 				if not info.allow_inline_form
 					@$scope.not_online = true
 			, =>
+				@$scope.initial_loading = false
 				@$scope.not_online = true
 			)
 
@@ -173,6 +174,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
 				if not info.allow_inline_form
 					@$scope.not_online = true
 			, =>
+				@$scope.initial_loading = false
 				@$scope.not_online = true
 			)
 
