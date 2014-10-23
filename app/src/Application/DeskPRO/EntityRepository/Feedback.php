@@ -246,7 +246,7 @@ class Feedback extends AbstractEntityRepository
 		$unsorted_feedback = $this->getEntityManager()->createQuery("
 			SELECT i
 			FROM DeskPRO:Feedback i INDEX BY i.id
-			WHERE i.id IN (?)
+			WHERE i.id IN (?0)
 			ORDER BY i.id DESC
 		")->execute(array($ids));
 
