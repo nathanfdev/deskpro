@@ -76,10 +76,6 @@ class CsvUpload
 			return array('error' => 'no_move');
 		}
 
-		if (Strings::getExtension($file->getFilename()) != 'csv') {
-			return array('error' => 'not_csv');
-		}
-
 		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
 			$file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(),
 			$file->getClientOriginalName(),
@@ -205,7 +201,7 @@ class CsvUpload
 		$originalOptions = $options;
 		$options = CsvImport::getOptions($options);
 		$fp           = fopen($csv_path, 'r');
-		$columns      = fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
+		$columns      = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 		$column_count = count($columns);
 
 		$examples      = array();
@@ -213,7 +209,7 @@ class CsvUpload
 
 		for ($i = 0; $i < 100; $i++) {
 
-			$row = fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
+			$row = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 
 			if (!$row) {
 				// eof or can't read properly
