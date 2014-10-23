@@ -49,12 +49,21 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_language"><span>Language</span></li>
 							<li
-									ng-repeat="field in ticket_fields_per_person"
-									ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
-									class="dp-layout-editor-layout-field layout-field"
-									data-field-type="custom_field"
-									data-field-id="{{ ng_var('field.id') }}"
-									>
+								ng-repeat="field in custom_user_fields"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="user_field"
+								data-field-id="{{ ng_var('field.id') }}"
+								>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
+							<li
+								ng-repeat="field in ticket_fields_per_person"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="custom_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
 								<span>{{ ng_var('field.title') }}</span>
 							</li>
 						</ul>
@@ -68,12 +77,12 @@
 					<article>
 						<ul>
 							<li
-									ng-repeat="field in ticket_fields_per_org"
-									ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
-									class="dp-layout-editor-layout-field layout-field"
-									data-field-type="custom_field"
-									data-field-id="{{ ng_var('field.id') }}"
-									>
+								ng-repeat="field in ticket_fields_per_org"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="custom_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
 								<span>{{ ng_var('field.title') }}</span>
 							</li>
 						</ul>
@@ -118,12 +127,21 @@
 					<article>
 						<ul>
 							<li
-									ng-repeat="field in ticket_fields_per_person"
-									ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
-									class="dp-layout-editor-layout-field layout-field"
-									data-field-type="custom_field"
-									data-field-id="{{ ng_var('field.id') }}"
-									>
+								ng-repeat="field in custom_user_fields"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="user_field"
+								data-field-id="{{ ng_var('field.id') }}"
+								>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
+							<li
+								ng-repeat="field in ticket_fields_per_person"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="custom_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
 								<span>{{ ng_var('field.title') }}</span>
 							</li>
 						</ul>
@@ -137,12 +155,12 @@
                     <article>
                         <ul>
                             <li
-                                    ng-repeat="field in ticket_fields_per_org"
-                                    ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
-                                    class="dp-layout-editor-layout-field layout-field"
-                                    data-field-type="custom_field"
-                                    data-field-id="{{ ng_var('field.id') }}"
-                                    >
+								ng-repeat="field in ticket_fields_per_org"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="custom_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
                                 <span>{{ ng_var('field.title') }}</span>
                             </li>
                         </ul>
