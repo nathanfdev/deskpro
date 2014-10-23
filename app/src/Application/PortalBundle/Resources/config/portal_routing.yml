@@ -1,3 +1,9 @@
-portal:
-    resource: "@PortalBundle/Controller"
-    type:     annotation
+portal_index:
+    path: /
+    defaults:
+      _controller: Theme:Portal:index
+
+portal_inherited:
+    path: /inherited
+    defaults:
+      _controller: Theme:Portal:inherited

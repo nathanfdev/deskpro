@@ -1,6 +1,6 @@
 imports:
     - { resource: config.shared.php }
-    - { resource: portal_services.yml }
+    - { resource: @PortalBundle/Resources/config/portal_services.yml }
 
 framework:
     #esi:             ~

@@ -1,3 +1,6 @@
+parameters:
+  router.options.matcher.cache_class: null
+
 services:
   templating.portal:
     class: Application\PortalBundle\Templating\PortalTemplating
@@ -24,3 +27,8 @@ services:
     arguments: [@brand_stack, @settings_resolver, @brand_repository]
     tags:
       - { name: kernel.event_subscriber }
+
+  controller_name_converter:
+      class: Application\PortalBundle\HttpKernel\ControllerNameParser
+      tags: [{name: monolog.logger, channel: request}]
+      arguments: [@kernel, @brand_stack]
