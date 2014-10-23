@@ -32,60 +32,95 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\Themes\Standard;
+namespace Application\PortalBundle\DataCollector;
 
-use Application\PortalBundle\Theme\ThemeInterface;
 
-class StandardTheme implements ThemeInterface
+use Application\DeskPRO\Brand\BrandStack;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\DataCollector\DataCollector;
+
+class PortalCollector extends DataCollector
 {
-	private $parent;
-
-	public function __construct($parent)
-	{
-		$this->parent = $parent;
-	}
-
 	/**
-	 * {@inheritdoc}
+	 * @var \Application\DeskPRO\Brand\BrandStack
 	 */
-	public function getId()
+	private $brand_stack;
+
+
+	public function __construct(BrandStack $brand_stack)
 	{
-		return 'standard';
+		$this->brand_stack = $brand_stack;
 	}
 
 
 	/**
-	 * {@inheritdoc}
+	 * Collects data for the given Request and Response.
+	 *
+	 * @param Request    $request   A Request instance
+	 * @param Response   $response  A Response instance
+	 * @param \Exception $exception An Exception instance
+	 * @api
 	 */
+	public function collect(Request $request, Response $response, \Exception $exception = null)
+	{
+		$brandContainer = $this->brand_stack->getActive();
+		$this->data     = array(
+			'route_name'          => $request->attributes->get('_route'),
+			'executed_controller' => $request->attributes->get('_controller'),
+			'brand_id'            => $brandContainer->getBrand()->id,
+			'brand_name'          => $brandContainer->getBrand()->name,
+			'theme_id'            => $brandContainer->getTheme()->getId(),
+			'theme_name'          => $brandContainer->getTheme()->getName(),
+			'settings'            => $brandContainer->getSettings()->toArray()
+		);
+	}
+
+
+	public function getRoute()
+	{
+		return $this->data['route_name'];
+	}
+
+
+	public function getController()
+	{
+		return $this->data['executed_controller'];
+	}
+
+
+	public function getSettings()
+	{
+		return $this->data['settings'];
+	}
+
+
+	public function getThemeId()
+	{
+		return $this->data['theme_id'];
+	}
+
+
+	public function getThemeName()
+	{
+		return $this->data['theme_name'];
+	}
+
+
+	public function getBrandId()
+	{
+		return $this->data['brand_id'];
+	}
+
+
+	public function getBrandName()
+	{
+		return $this->data['brand_name'];
+	}
+
+
 	public function getName()
 	{
-		return 'Standard';
-	}
-
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getParent()
-	{
-		return $this->parent;
-	}
-
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getBaseTemplateDir()
-	{
-		return __DIR__ . '/Resources/views';
-	}
-
-
-	/**
-	 * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
-	 */
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
+		return 'portal';
 	}
 }
