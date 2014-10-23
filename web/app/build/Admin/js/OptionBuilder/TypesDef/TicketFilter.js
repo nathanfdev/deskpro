@@ -578,7 +578,7 @@
             acc = options[_i];
             opts.push({
               value: acc.id,
-              title: acc.address
+              title: acc.use_email_address || acc.address
             });
           }
           return opts;
