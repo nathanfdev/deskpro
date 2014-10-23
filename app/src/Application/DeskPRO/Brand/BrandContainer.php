@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsBag;
+use Application\PortalBundle\Theme\ThemeResolver;
 
 /**
  * The BrandContainer is a hub that holds all of the information that might be needed in the system that relate to a
@@ -54,10 +55,23 @@ class BrandContainer
 	 */
 	private $settings;
 
-	public function __construct(Brand $brand, SettingsBag $settings)
+	/**
+	 * @var \Application\PortalBundle\Theme\ThemeResolver
+	 */
+	private $theme_resolver;
+
+	/**
+	 * @var \Application\PortalBundle\Theme\ThemeInterface
+	 */
+	private $theme;
+
+
+	public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver)
 	{
 		$this->brand = $brand;
 		$this->settings = $settings;
+		$this->theme_resolver = $theme_resolver;
+		$this->theme = $theme_resolver->getThemeById($brand->theme_id);
 	}
 
 	public function getSetting($setting_name)
@@ -73,6 +87,11 @@ class BrandContainer
 	public function getSettings()
 	{
 		return $this->settings;
+	}
+
+	public function resolveController($controller)
+	{
+		return $this->theme_resolver->controller($this->theme, $controller);
 	}
 }
  

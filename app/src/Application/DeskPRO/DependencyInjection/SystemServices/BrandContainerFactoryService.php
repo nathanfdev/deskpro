@@ -36,11 +36,13 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\Brand\BrandContainerFactory;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\PortalBundle\Theme\ThemeRepository;
+use Application\PortalBundle\Theme\ThemeResolver;
 
 class BrandContainerFactoryService
 {
 	public static function create(DeskproContainer $container)
 	{
-		return new BrandContainerFactory($container->getSettingsResolver());
+		return new BrandContainerFactory($container->getSettingsResolver(), new ThemeResolver(new ThemeRepository()));
 	}
 }

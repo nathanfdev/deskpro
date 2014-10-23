@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\PortalBundle\Theme\ThemeResolver;
 
 /**
  * The BrandContainerFactory creates BrandContainers for us
@@ -47,15 +48,21 @@ class BrandContainerFactory
 	 */
 	private $settings_resolver;
 
+	/**
+	 * @var \Application\PortalBundle\Theme\ThemeResolver
+	 */
+	private $theme_resolver;
 
-	public function __construct(SettingsResolver $settings_resolver)
+
+	public function __construct(SettingsResolver $settings_resolver, ThemeResolver $theme_resolver)
 	{
 		$this->settings_resolver = $settings_resolver;
+		$this->theme_resolver = $theme_resolver;
 	}
 
 	public function create(Brand $brand)
 	{
-		return new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand));
+		return new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand), $this->theme_resolver);
 	}
 }
  
