@@ -18,6 +18,13 @@ services:
     factory_method: getRepository
     arguments: ['DeskPRO:Brand']
 
+
+  portal_loadder.twig:
+    class: Application\PortalBundle\Twig\PortalLoader
+    arguments: [@brand_stack]
+    tags:
+      - { name: twig.loader }
+
   ##
   ## Event Listeners
   ##
