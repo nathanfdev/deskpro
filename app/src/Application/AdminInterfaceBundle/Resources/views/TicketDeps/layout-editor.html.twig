@@ -61,7 +61,7 @@
 					</article>
 				</div>
 
-				<div class="group">
+				<div class="group" ng-if="ticket_fields_per_org.length">
 					<header>
 						<h3>{{ phrase('adm.custom_fields.org_fields') }} &middot; <a href="#/crm/org_fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
 					</header>
@@ -130,7 +130,7 @@
 					</article>
 				</div>
 
-                <div class="group">
+                <div class="group" ng-if="ticket_fields_per_org.length">
                     <header>
                         <h3>{{ phrase('adm.custom_fields.org_fields') }} &middot; <a href="#/crm/org_fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
                     </header>
