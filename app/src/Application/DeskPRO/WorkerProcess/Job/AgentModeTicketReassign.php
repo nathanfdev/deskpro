@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Doctrine\DBAL\Connection;
 
 /**
  * When an agent enters vacation mode or is deleted, we have to re-assign their awaiting_agent tickets
