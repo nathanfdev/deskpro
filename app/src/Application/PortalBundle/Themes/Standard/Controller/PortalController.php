@@ -37,14 +37,12 @@ namespace Application\PortalBundle\Themes\Standard\Controller;
 
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class PortalController extends AbstractController
 {
 	public function indexAction(Request $request)
 	{
-		$theme_id = $this->get('brand_stack')->getActive()->getBrand()->theme_id;
-		return new Response('I am overriding a base controller because I belong in the Standard theme!<br><br>Your current theme is: ' . $theme_id . '<br>route name: '.$request->attributes->get('_route').'<br>Executed controller: ' . $request->attributes->get('_controller'));
+		return $this->render('Theme:Portal:something.html.twig');
 	}
 }
  

@@ -77,7 +77,7 @@ class StandardTheme implements ThemeInterface
 	 */
 	public function getBaseTemplateDir()
 	{
-		return '../../src/Application/PortalBundle/Themes/Standard/Resources/views';
+		return __DIR__ . '/Resources/views';
 	}
 
 
