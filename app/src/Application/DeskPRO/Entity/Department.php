@@ -400,11 +400,17 @@ class Department extends DomainObject implements HasPhraseName
 	public function getPhraseName($property = null, Translate $translate)
 	{
 		if (!$property) {
-
 			$property = 'title';
 		}
 
 		$phrase_name = 'obj_department.' . $this->id . '_' . $property;
+
+		if ($property == 'user') {
+			return array(
+				'obj_department.' . $this->id . '_user',
+				'obj_department.' . $this->id . '_title',
+			);
+		}
 
 		return $phrase_name;
 	}
