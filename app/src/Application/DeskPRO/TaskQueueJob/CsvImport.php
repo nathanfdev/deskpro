@@ -44,6 +44,7 @@ class CsvImport extends AbstractJob
 	 */
 	protected $_custom_fields;
 
+	/** @var array */
 	static protected $options = array(
 		'delimeter' => array(
 			'comma' => ',',
@@ -55,6 +56,7 @@ class CsvImport extends AbstractJob
 		),
 	);
 
+	/** @var array */
 	static protected $defaults = array(
 		'delimeter' => 'comma',
 		'enclosure' => 'semicolon',

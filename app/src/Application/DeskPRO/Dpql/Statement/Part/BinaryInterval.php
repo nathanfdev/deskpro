@@ -58,8 +58,14 @@ class BinaryInterval extends AbstractPart
 	 */
 	public $lhs;
 
+	/**
+	 * @var int
+	 */
 	public $amount;
 
+	/**
+	 * @var string
+	 */
 	public $unit;
 
 	/**

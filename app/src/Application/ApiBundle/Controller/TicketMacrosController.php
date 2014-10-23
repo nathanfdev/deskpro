@@ -36,7 +36,6 @@ namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketMacro;
-use Application\DeskPRO\Tickets\Macros\MacroActions;
 
 class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
 {

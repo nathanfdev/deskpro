@@ -244,9 +244,12 @@
                 _this.query_error = null;
                 _this.rendered_result = _this.$sce.trustAsHtml(data.rendered_result || '');
               }
-              _this.skipDirtyState();
               if (is_new) {
-                _this.$state.go('builder');
+                _this.$state.go('builder.edit', {
+                  id: data.id,
+                  type: 'custom',
+                  params: ''
+                });
               }
               _this.stopSpinner('builder_loading', true);
               _this.stopSpinner('query_loading', true);

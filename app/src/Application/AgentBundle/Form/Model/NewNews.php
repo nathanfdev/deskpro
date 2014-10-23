@@ -40,16 +40,24 @@ use Application\DeskPRO\Entity\Person;
 
 class NewNews
 {
+	/** @var string */
 	public $title;
+	/** @var int */
 	public $category_id;
+	/** @var string */
 	public $status;
+	/** @var string */
 	public $content = '';
 
+	/** @var string */
 	public $slug;
+	/** @var string */
 	public $labels_json;
+	/** @var array */
 	public $labels = array();
+	/** @var array */
 	public $attach = array();
-
+	/** @var News */
 	protected $_news;
 
 	/**

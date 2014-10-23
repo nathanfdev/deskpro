@@ -26,3 +26,30 @@
 		<p ng-show="errors.db_username || errors.db_password" class="text-danger">Please enter your database username and password.</p>
 	</div>
 </div>
+
+<div ng-if="Ctrl.usersourceType == 'agent'">
+
+	<div class="form-group">
+		<div class="col-lg-4">
+			<h3>Auto Agent</h3>
+		</div>
+		<div class="col-lg-8">
+			<label>
+				<input type="checkbox" ng-model="setting_values.auto_agent" />
+				Automatically create agents if they do not already exist
+			</label>
+
+			<div ng-show="setting_values.auto_agent">
+				Add new agents to this permission group
+				<select
+					ng-model="setting_values.auto_agent_permission_group"
+					ng-options="obj.value as obj.label for obj in Ctrl.permission_groups"
+					ng-required="true"
+					>
+				</select>
+			</div>
+		</div>
+	</div>
+
+
+</div>

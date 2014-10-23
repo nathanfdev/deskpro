@@ -27,7 +27,7 @@ define ->
 			restrict: 'E',
 			template: """
 				<div class="dp-filesize-unit">
-					<input type="text" ng-model="size_num" class="form-control size_num" />
+					<input type="text" ng-model="size_num" name="size_num" class="form-control size_num" required autofocus />
 					<select
 						ng-model="size_unit"
 						ui-select2

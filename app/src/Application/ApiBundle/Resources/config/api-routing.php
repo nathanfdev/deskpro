@@ -19,6 +19,12 @@ $collection->create('api_docs_home', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_getagentsforkey', array(
+	'path'        => '/get-agents-for-key.json',
+	'controller'  => 'ApiBundle:Docs:getAgentsForKey',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_discover', array(
 	'path'        => '/discover',
 	'controller'  => 'ApiBundle:Test:discover',
@@ -2466,8 +2472,53 @@ $collection->create('api_general_settings_save', array(
 ));
 
 ########################################################################################################################
-# Registration Settings
+# Usersources
 ########################################################################################################################
+
+$collection->create('api_usersources_list', array(
+	'path'        => '/usersources/{type}',
+	'controller'  => 'ApiBundle:Usersources:listByType',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_get', array(
+	'path'        => '/usersources/{type}/{id}',
+	'controller'  => 'ApiBundle:Usersources:getUsersource',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_post', array(
+	'path'        => '/usersources/{type}/{id}',
+	'controller'  => 'ApiBundle:Usersources:postUsersource',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_extra_details', array(
+	'path'        => '/usersources/{type}/app-{id}/extra-details',
+	'controller'  => 'ApiBundle:Usersources:getUsersourceExtra',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_iframe', array(
+	'path'        => '/usersources/iframe/code/{interface}/{app_id}',
+	'controller'  => 'ApiBundle:Usersources:getIframe',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_usersources_display_order', array(
+	'path'        => '/usersources/display-order',
+	'controller'  => 'ApiBundle:Usersources:updateDisplayOrder',
+	'methods'     => array('POST'),
+));
+
+$collection->create('api_usersources_available_apps', array(
+	'path'        => '/usersources/available/app-packages/{interface}',
+	'controller'  => 'ApiBundle:Usersources:availableAppPackages',
+	'methods'     => array('GET'),
+));
+
+########################################################################################################################
+# Registration Settings
 
 $collection->create('api_reg_settings', array(
 	'path'        => '/registration_settings',
@@ -2846,20 +2897,20 @@ $collection->create('api_ticket_statuses_stats', array(
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_ticket_statuses_closed', array(
-	'path'        => '/ticket_statuses/closed',
-	'controller'  => 'ApiBundle:TicketStatuses:getClosedInfo',
+$collection->create('api_ticket_statuses_archived', array(
+	'path'        => '/ticket_statuses/archived',
+	'controller'  => 'ApiBundle:TicketStatuses:getArchivedInfo',
 	'methods'     => array('GET'),
 ));
 
-$collection->create('api_ticket_statuses_closed_savesettings', array(
-	'path'        => '/ticket_statuses/closed/settings',
-	'controller'  => 'ApiBundle:TicketStatuses:saveClosedSettings',
+$collection->create('api_ticket_statuses_archived_savesettings', array(
+	'path'        => '/ticket_statuses/archived/settings',
+	'controller'  => 'ApiBundle:TicketStatuses:saveArchivedSettings',
 	'methods'     => array('POST'),
 ));
 
-$collection->create('api_ticket_statuses_closed_resetsearch', array(
-	'path'        => '/ticket_statuses/closed/reset-search-tables',
+$collection->create('api_ticket_statuses_archived_resetsearch', array(
+	'path'        => '/ticket_statuses/archived/reset-search-tables',
 	'controller'  => 'ApiBundle:TicketStatuses:resetSearchTables',
 	'methods'     => array('POST'),
 ));
@@ -3047,6 +3098,52 @@ $collection->create(
 	'api_channel_sms_setup_and_test_twilio', array(
 		'path'       => '/channel/sms/setup-and-test/twilio',
 		'controller' => 'ApiBundle:ChannelSms:setupAndTestTwilio',
+		'methods'    => array('POST'),
+	)
+);
+
+########################################################################################################################
+# Facebook Channel
+########################################################################################################################
+
+$collection->create(
+	'api_channel_facebook_pages', array(
+		'path'       => '/channel/facebook/pages',
+		'controller' => 'ApiBundle:ChannelFacebook:list',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_facebook_pages_post', array(
+		'path'       => '/channel/facebook/pages',
+		'controller' => 'ApiBundle:ChannelFacebook:create',
+		'methods'    => array('POST'),
+	)
+);
+
+$collection->create(
+	'api_channel_facebook_page_get', array(
+		'path'       => '/channel/facebook/page/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelFacebook:get',
+		'methods'    => array('GET'),
+	)
+);
+
+$collection->create(
+	'api_channel_facebook_page_delete', array(
+		'path'       => '/channel/facebook/page/{id}',
+		'requirements' => array('id' => '\d+'),
+		'controller' => 'ApiBundle:ChannelFacebook:delete',
+		'methods'    => array('DELETE'),
+	)
+);
+
+$collection->create(
+	'api_channel_facebook_page_save', array(
+		'path'       => '/channel/facebook/page/{id}',
+		'controller' => 'ApiBundle:ChannelFacebook:save',
 		'methods'    => array('POST'),
 	)
 );
@@ -3960,7 +4057,7 @@ $collection->create('api_api_keys_get', array(
 $collection->create('api_api_keys_save', array(
 	'path'        => '/api_keys/{id}',
 	'controller'  => 'ApiBundle:ApiKeys:save',
-	'methods'     => array('POST'),
+	'methods'     => array('POST', 'PUT'),
 ));
 
 $collection->create('api_api_keys_delete', array(
@@ -3973,6 +4070,12 @@ $collection->create('api_api_keys_regenerate', array(
 	'path'        => '/api_keys/regenerate/{id}',
 	'controller'  => 'ApiBundle:ApiKeys:regenerate',
 	'methods'     => array('POST'),
+));
+
+$collection->create('api_api_keys_replay_log_entry', array(
+    'path'        => '/api_keys/replay/{logEntryId}',
+    'controller'  => 'ApiBundle:ApiKeys:replayLogEntry',
+    'methods'     => array('GET'),
 ));
 
 ########################################################################################################################
@@ -4038,6 +4141,58 @@ $collection->create('api_user_fields_setenabled', array(
 $collection->create('api_user_fields_update_order', array(
 	'path'        => '/user_fields/display-order',
 	'controller'  => 'ApiBundle:UserFields:saveDisplayOrder',
+	'methods'     => array('POST'),
+));
+
+########################################################################################################################
+# CRM New Custom Fields
+########################################################################################################################
+
+$collection->create('api_custom_fields', array(
+	'path'        => '/custom_fields',
+	'controller'  => 'ApiBundle:CustomFields:list',
+	'methods'     => array('GET'),
+));
+
+$collection->create('api_custom_fields_children', array(
+	'path'         => '/custom_fields/{id}/children',
+	'controller'   => 'ApiBundle:CustomFields:children',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_custom_fields_children', array(
+	'path'         => '/custom_fields/{id}/children',
+	'controller'   => 'ApiBundle:CustomFields:addChild',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('POST'),
+));
+
+$collection->create('api_custom_fields_get', array(
+	'path'         => '/custom_fields/{id}',
+	'controller'   => 'ApiBundle:CustomFields:get',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('GET'),
+));
+
+$collection->create('api_custom_fields_save', array(
+	'path'         => '/custom_fields/{id}',
+	'controller'   => 'ApiBundle:CustomFields:save',
+	'requirements' => array('id' => '\\d+'),
+	'defaults'     => array('id' => 0),
+	'methods'      => array('PUT', 'POST'),
+));
+
+$collection->create('api_custom_fields_delete', array(
+	'path'         => '/custom_fields/{id}',
+	'controller'   => 'ApiBundle:CustomFields:delete',
+	'requirements' => array('id' => '\\d+'),
+	'methods'      => array('DELETE'),
+));
+
+$collection->create('api_custom_fields_update_order', array(
+	'path'        => '/custom_fields/display-order',
+	'controller'  => 'ApiBundle:CustomFields:saveDisplayOrder',
 	'methods'     => array('POST'),
 ));
 

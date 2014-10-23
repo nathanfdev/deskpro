@@ -39,7 +39,6 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
-use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -77,6 +76,12 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 		$isNotificationsDisabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
 		foreach ($agent_ids as $aid) {
+
+			if ('all_agents' === $aid) {
+				$agents = $this->getContainer()->getAgentData()->getAgents();
+				break;
+			}
+
 			if ($aid == 'notify_list') {
 
 				if ($isNotificationsDisabled) continue;

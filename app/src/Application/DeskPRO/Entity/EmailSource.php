@@ -284,7 +284,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 			case self::ERR_AUTORESPONDER:       return 'Auto-repsonse';
 			case self::ERR_SPAM:                return 'Spam';
 			case self::ERR_REQUIRE_REG:         return 'User Requires Registration';
-			case self::ERR_OBJ_CLOSED:          return 'Ticket Closed';
+			case self::ERR_OBJ_CLOSED:          return 'Ticket Archived';
 			case self::ERR_OBJ_DELETED:         return 'Ticket Deleted';
 			case self::ERR_OBJ_UNKNOWN:         return 'Unknown Ticket';
 			case self::ERR_AUTH_INVALID:        return 'Invalid Auth Code';

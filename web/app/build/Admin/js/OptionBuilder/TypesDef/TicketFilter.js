@@ -84,7 +84,7 @@
         });
         options.push({
           title: 'Date Archived',
-          value: 'FilterDateClosed'
+          value: 'FilterDateArchived'
         });
         options.push({
           title: 'Date Of Last Agent Reply',
@@ -469,7 +469,7 @@
         return def;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDateClosed = function(options) {
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getFilterDateArchived = function(options) {
         var def;
         if (options == null) {
           options = {};
@@ -578,7 +578,7 @@
             acc = options[_i];
             opts.push({
               value: acc.id,
-              title: acc.address
+              title: acc.use_email_address || acc.address
             });
           }
           return opts;

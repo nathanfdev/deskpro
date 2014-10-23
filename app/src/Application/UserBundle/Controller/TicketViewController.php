@@ -40,6 +40,7 @@ use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\UserBundle\Form\NewTicketReplyType;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class TicketViewController extends AbstractController
@@ -182,6 +183,8 @@ class TicketViewController extends AbstractController
 	 */
 	public function viewTicket(Ticket $ticket, array $display_data = array())
 	{
+		/** @var Request $request */
+		$request = $this->get('request');
         $is_pdf = $this->in->getBool('pdf');
 
 		$is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
@@ -216,6 +219,17 @@ class TicketViewController extends AbstractController
 
 		$user_participants = $ticket->getUserParticipants();
 		$vars['user_participants'] = $user_participants;
+
+		$layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
+		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+
+		// new custom fields
+		$new_field_manager = $this->container->getCustomFieldManager();
+		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $this->person, $layout);
+		if ($org = $this->person->organization) {
+			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, $layout));
+		}
+		$vars['new_custom_fields'] = $new_custom_fields->createView();
 
         if($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_user:view_ticket.html.twig', $vars);
@@ -256,8 +270,6 @@ class TicketViewController extends AbstractController
             return $response;
         }
 
-		$layout = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
-		$layout = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
 		$vars['page_display'] = $layout;
 
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');
@@ -275,9 +287,6 @@ class TicketViewController extends AbstractController
 			);
 			$newticket_formtype = new \Application\UserBundle\Form\EditTicketType($this->person);
 			$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
-
-			$errors = array();
-			$error_fields = array();
 
 			$layouts = $this->container->getTicketLayoutManager()->getUserLayouts();
 			$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $layouts->compileJsObj() . ";";
@@ -306,12 +315,17 @@ class TicketViewController extends AbstractController
 				$validator = new \Application\UserBundle\Validator\NewTicketValidator();
 				$validator->enableEditMode();
 				$validator->setLayout($default_page);
-				$form->handleRequest($this->get('request'));
+				$form->handleRequest($request);
+
+				if (!$request->request->has($new_custom_fields->getName())) {
+					$request->request->set($new_custom_fields->getName(), array());
+				}
+				$new_custom_fields->handleRequest($request);
 
 				$newticket->custom_ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
 				$newticket->custom_user_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
 
-				if ($validator->isValid($newticket)) {
+				if ($validator->isValid($newticket) && $new_custom_fields->isValid()) {
 					$newticket->save();
 
 					$is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));

@@ -44,6 +44,13 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 	{
 		if ($this->session->getPerson()->getId()) {
 			return $this->redirectRoute('user');
+		} else {
+			///////////////////////////////////////
+			// SSO Automatic Redirecting
+			//
+			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
+				return $res;
+			}
 		}
 
 		if (!$this->container->getSetting('core.reg_enabled')) {

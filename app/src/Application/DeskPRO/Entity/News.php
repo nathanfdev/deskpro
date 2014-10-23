@@ -74,6 +74,17 @@ class News extends ContentAbstract implements HighlightableModelInterface
      */
     protected $_search_highlights;
 
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_end;
+
+	/**
+	 * @var string
+	 */
+	protected $end_action = null;
+
+
 	public function getContentHtml()
 	{
 		$content = $this->getContent();
@@ -229,6 +240,8 @@ class News extends ContentAbstract implements HighlightableModelInterface
 		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
 		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
 		$metadata->mapField(array( 'fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_published', ));
+		$metadata->mapField(array( 'fieldName' => 'date_end', 'type' => 'datetime', 'nullable' => true, 'columnName' => 'date_end', ));
+		$metadata->mapField(array( 'fieldName' => 'end_action', 'type' => 'string', 'length' => 10, 'nullable' => true, 'columnName' => 'end_action', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsRevision', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'news',  ));

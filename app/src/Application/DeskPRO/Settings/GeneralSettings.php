@@ -41,32 +41,53 @@ class GeneralSettings
 	 */
 	private $settings;
 
+	/** @var string */
 	public $deskpro_name;
+	/** @var string */
 	public $deskpro_url;
+	/** @var bool */
 	public $helpdesk_disabled;
+	/** @var string */
 	public $helpdesk_disabled_message;
+	/** @var string */
 	public $site_name;
+	/** @var string */
 	public $site_url;
 
+	/** @var string */
 	public $default_from_email;
 
+	/** @var string */
 	public $default_timezone;
+	/** @var string */
 	public $task_reminder_time;
 
+	/** @var string */
 	public $date_fulltime;
+	/** @var string */
 	public $date_full;
+	/** @var string */
 	public $date_day;
+	/** @var string */
 	public $date_day_short;
+	/** @var string */
 	public $date_time;
 
+	/** @var array */
 	public $attach_user_must_exts = array();
+	/** @var array */
 	public $attach_user_not_exts = array();
+	/** @var int */
 	public $attach_user_maxsize;
 
+	/** @var array */
 	public $attach_agent_must_exts = array();
+	/** @var array */
 	public $attach_agent_not_exts = array();
+	/** @var int */
 	public $attach_agent_maxsize;
 
+	/** @var bool */
 	protected $isCloud;
 
 	/**

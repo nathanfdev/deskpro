@@ -14,6 +14,7 @@ class PrePostEvent extends Event
 	 */
 	private $response;
 
+	/** @var array  */
 	public $info = array();
 
 	public function get($k)

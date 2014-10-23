@@ -27,6 +27,8 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\DeskPRO\App\AppManager;
+use Application\DeskPRO\App\AppManipulatorContext;
 use Application\DeskPRO\App\InstanceInstaller;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\NativeAppsSync;
@@ -35,6 +37,7 @@ use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Imagine\Image\Box as ImageBox;
@@ -164,9 +167,15 @@ class AppsController extends AbstractController
 		# Get installed app instances
 		#------------------------------
 
+		$appManager = $this->container->getAppManager();
 		$data['apps'] = array();
 		foreach ($manager->getPackageApps($package->name) as $app) {
-			$data['apps'][] = $app->toApiData(false);
+			$app = $app->toApiData(false);
+			if ($package->isUsersource()) {
+				$app['user_usersource'] = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_USER);
+				$app['agent_usersource'] = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_AGENT);
+			}
+			$data['apps'][] = $app;
 		}
 
 		if ($data['apps']) {
@@ -227,17 +236,24 @@ class AppsController extends AbstractController
 		}
 
 		$package = $manager->getPackage($name);
+		$inputTitle = $this->in->getString('settings.dp_app.title');
+		$settings   = $this->in->getCleanValueArray('settings');
+		$usersource_type = $this->in->getString('usersource_type');
 
-		if ($package->is_single && $manager->getPackageApps($name)) {
+		if ($package->isUsersource() && !$usersource_type) {
+			return $this->createApiErrorResponse(
+				'invalid_argument', "$name is a usersource app and therefore you must provide the 'usersource_type' param in your request"
+			);
+		}
+
+		if (!$package->isUsersource() && $package->is_single && $manager->getPackageApps($name)) {
 			return $this->createApiErrorResponse('already_installed', "$name is already installed and the app has is_single=true");
 		}
 
-		$instance_installer = new InstanceInstaller($manager, $package, $this->em);
-		$app = $instance_installer->install(
-			$this->in->getString('settings.dp_app.title'),
-			$this->in->getCleanValueArray('settings'),
-			$this->container
-		);
+		$context = new AppManipulatorContext($settings, $inputTitle);
+		$context->setUsersourceType($usersource_type);
+
+		$app = $this->getAppManipulator()->installInstance($package, $context);
 
 		return $this->createApiCreateResponse(
 			array('id' => $app->id),
@@ -279,70 +295,14 @@ class AppsController extends AbstractController
 		}
 
 		$app = $manager->getApp($id);
-		$package = $app->package;
+		$settings_form = $this->in->getCleanValueArray('settings');
+		$inputTitle    = $this->in->getString('settings.dp_app.title');
+		$saveAssets    = $this->in->getCleanValueArray('save_assets');
 
-		$settings = InstanceInstaller::readAppSettings($app->package, $this->in->getCleanValueArray('settings'));
+		$context = new AppManipulatorContext($settings_form, $inputTitle);
+		$context->setSaveAssets($saveAssets);
 
-		$app->title = $this->in->getString('settings.dp_app.title') ?: $app->package->title;
-
-		$context = null;
-		$handler = null;
-
-		if ($app->package->native_name) {
-			$native_app = $manager->getNativeApp($app);
-			$class = $native_app->getConfig()->getInstallerHandlerClass();
-			if ($class) {
-				$context = new InstallerContext($this->container, $native_app, $this->in->getCleanValueArray('settings'));
-				$handler = new $class($app->package['settings_def']);
-			}
-		}
-
-		if ($handler) {
-			$settings = $handler->processSettings($context, $settings);
-		}
-		$app->setSettings($settings ?: array());
-
-		$this->em->persist($app);
-		$this->em->flush();
-
-		if ($handler) {
-			$handler->updateSettings($context);
-		}
-
-		// If this is a custom app, we can update assets from here as well
-		if ($package->is_custom) {
-			$blob_storage = $this->container->getBlobStorage();
-			$assets = $package->assets;
-			$assets = Arrays::keyFromData($assets, 'id');
-			$save_assets = $this->in->getCleanValueArray('save_assets');
-
-			$remove_blobs = array();
-
-			foreach ($save_assets as $asset_info) {
-				if (!isset($assets[$asset_info['id']])) {
-					continue;
-				}
-
-				$asset = $assets[$asset_info['id']];
-				$old_blob = $asset->blob;
-
-				$asset->blob = $blob_storage->createBlobRecordFromString(
-					$asset_info['content'],
-					$old_blob->filename,
-					$old_blob->content_type
-				);
-
-				$this->em->persist($asset);
-				$this->em->flush($asset);
-				$remove_blobs[] = $old_blob;
-			}
-
-			$this->em->flush();
-
-			foreach ($remove_blobs as $blob) {
-				$blob_storage->deleteBlobRecord($blob);
-			}
-		}
+		$this->getAppManipulator()->updateInstance($app, $context);
 
 		return $this->createApiSuccessResponse();
 	}
@@ -362,34 +322,7 @@ class AppsController extends AbstractController
 
 		$app = $manager->getApp($id);
 
-		if ($app->package->native_name) {
-			$native_app = $manager->getNativeApp($app);
-			$class = $native_app->getConfig()->getInstallerHandlerClass();
-			if ($class) {
-				$context = new InstallerContext($this->container, $native_app);
-				$handler = new $class($app->package['settings_def']);
-				$handler->uninstall($context);
-			}
-		}
-
-		$this->em->remove($app);
-		$this->em->flush();
-
-		// If the package is a custom package, then uninstalling the app
-		// ininstalls the package too
-		if ($app->package->is_custom) {
-			$package = $app->package;
-			// Remove all assets from blob storage
-			$blob_storage = $this->container->getBlobStorage();
-			foreach ($package->assets as $asset) {
-				try {
-					$blob_storage->deleteBlobRecord($asset->blob);
-				} catch (\Exception $e) {}
-			}
-
-			$this->em->remove($package);
-			$this->em->flush();
-		}
+		$this->getAppManipulator()->uninstallInstance($app);
 
 		return $this->createApiDeleteResponse(array('old_id' => $id));
 	}
@@ -653,11 +586,11 @@ class AppsController extends AbstractController
 			$this->generateUrl('api_apps_instance', array('id' => $app->id))
 		);
 	}
-
-
 	####################################################################################################################
 	# exec-package-action
+
 	####################################################################################################################
+
 
 	public function execPackageAction(Request $request, $name, $action)
 	{
@@ -693,7 +626,6 @@ class AppsController extends AbstractController
 
 		return $result;
 	}
-
 
 	####################################################################################################################
 	# exec-app-action
@@ -738,7 +670,7 @@ class AppsController extends AbstractController
 	####################################################################################################################
 	# rsync-packages
 	####################################################################################################################
-	
+
 	public function resyncPackagesAction()
 	{
 		$logger = new Logger('apps');
@@ -804,7 +736,6 @@ class AppsController extends AbstractController
 		}
 
 		register_shutdown_function(function() use ($tmpdir) {
-				return;
 			if (!is_dir($tmpdir)) {
 				return;
 			}
@@ -873,5 +804,17 @@ class AppsController extends AbstractController
 		return $this->createApiCreateResponse(array(
 			'package_name' => $def->name,
 		), $this->generateUrl('api_apps_package', array('name' => $def->name)));
+	}
+
+
+	/**
+	 * @return \Application\Deskpro\App\AppManipulator
+	 */
+	protected function getAppManipulator()
+	{
+		/** @var \Application\Deskpro\App\AppManipulator $app_manipulator */
+		$app_manipulator = $this->container->getSystemService('app_manipulator');
+
+		return $app_manipulator;
 	}
 }

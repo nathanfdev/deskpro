@@ -59,6 +59,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 		save: ->
 
+			return if @$scope.form_props.$invalid
+
 			@$scope.url_error = false
 			@startSpinner('saving')
 

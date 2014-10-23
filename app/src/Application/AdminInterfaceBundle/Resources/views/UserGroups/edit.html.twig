@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<nav class="dp-blocktabs">
 				<ul>
@@ -35,7 +35,7 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.group.id">
+					<div class="dp-delete-control" ng-if="EditCtrl.group.id" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
 					</div>
 

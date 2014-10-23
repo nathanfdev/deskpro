@@ -137,6 +137,9 @@ class Message extends \Orb\Mail\Message
 					// then the repository wont contain the new agent when sending this welcome.
 					'DeskPRO:emails_agent:agent-welcome.html.twig' => 1,
 
+					// When an agent is created via a usersource, they are not yet in the agent repository
+					'DeskPRO:emails_agent:agent-welcome-usersource.html.twig' => 1,
+
 					// Server / Test email can be sent to anyone
 					'DeskPRO:emails_agent:test-email.html.twig' => 1,
 				);

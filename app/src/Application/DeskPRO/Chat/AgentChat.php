@@ -46,8 +46,11 @@ use Application\DeskPRO\Entity\Session;
  */
 class AgentChat
 {
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
+	/** @var \Application\DeskPRO\Entity\Session */
 	protected $session;
+	/** @var bool */
 	protected $suppress_offline_email = false;
 
 	public function __construct(Person $person, Session $session)

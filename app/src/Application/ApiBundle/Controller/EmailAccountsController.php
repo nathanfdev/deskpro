@@ -45,11 +45,11 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Orb\Util\Env;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Orb\Validator\StringEmail;
 
 class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
 {
+	/** @var array|null */
 	protected $emailSettings = null;
 
 	/**

@@ -157,6 +157,7 @@
           };
         })(this), (function(_this) {
           return function() {
+            _this.$scope.initial_loading = false;
             return _this.$scope.not_online = true;
           };
         })(this));
@@ -222,6 +223,7 @@
           };
         })(this), (function(_this) {
           return function() {
+            _this.$scope.initial_loading = false;
             return _this.$scope.not_online = true;
           };
         })(this));

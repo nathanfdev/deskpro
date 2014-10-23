@@ -36,8 +36,11 @@ namespace Application\ApiBundle\Form\CustomField\Model;
 
 class HiddenField extends CustomFieldAbstract
 {
+	/** @var string  */
 	public $default_value = '';
+	/** @var null  */
 	public $cookie_name   = null;
+	/** @var null  */
 	public $param_name    = null;
 
 	public function init()

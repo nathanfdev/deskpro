@@ -82,7 +82,7 @@
         {{ _self.perm_row('ticket', 'use') }}
 		{{ _self.perm_row('ticket', 'create') }}
 		{{ _self.perm_row('ticket', 'reply_mass') }}
-		{{ _self.perm_row('ticket', 'modify_set_closed') }}
+		{{ _self.perm_row('ticket', 'modify_set_archived') }}
 		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
 			{{ _self.perm_row('ticket', 'modify_billing') }}
 		{% endif %}

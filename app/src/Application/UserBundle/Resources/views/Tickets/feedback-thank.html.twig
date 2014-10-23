@@ -23,7 +23,7 @@
 				<br />
 
 				<p>
-					{% if ticket.status != 'resolved' and ticket.status != 'closed' %}
+					{% if ticket.status != 'resolved' and ticket.status != 'archived' %}
 						<button class="dp-btn" type="submit">{{ phrase('user.tickets.feedback_close_btn') }}</button>
 
 						&nbsp;

@@ -35,8 +35,6 @@
 namespace Orb\Mail\Transport;
 
 use Application\DeskPRO\App;
-use \Orb\Mail\Message;
-
 use \Orb\Util\Strings;
 use \Orb\Util\Util;
 
@@ -45,6 +43,7 @@ use \Orb\Util\Util;
  */
 class QueueTransport implements \Swift_Transport
 {
+	/** @var \Swift_Events_EventDispatcher */
 	protected $_event_dispatcher;
 
 	public function __construct(\Swift_Events_EventDispatcher $event_dispatcher)

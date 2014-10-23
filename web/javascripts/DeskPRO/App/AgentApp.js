@@ -2,22 +2,28 @@ define([
 	'angular',
 	'angularAnimate',
 	'angularBootstrap',
+	'angularUISortable',
 	'DeskPRO/Util/Functions',
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',
 	'DeskPRO/Service/LabelDefinition',
-	'ngContextMenu'
+	'ngContextMenu',
+	'DeskPRO/CategoryBuilder/Module'
 ], function(
 	angular,
 	x1,
 	x2,
+	x3,
 	Functions,
 	Strings,
 	DeskPRO_Directive_DpLabel,
     DeskPRO_Service_LabelDefinition,
-    ngContextMenu
+    ngContextMenu,
+    DpCategoryBuilder
 	) {
-	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu']);
+	var AgentApp = angular.module('AgentApp', [
+		'ngAnimate', 'ui.bootstrap', 'ui.sortable', 'ng-context-menu', 'deskpro.category_builder'
+	]);
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor

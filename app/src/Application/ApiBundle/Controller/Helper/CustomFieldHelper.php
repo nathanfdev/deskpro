@@ -84,10 +84,11 @@ class CustomFieldHelper
 				$editfield->default_option = $this->in->getString('default_option');
 			}
 
+			// todo
+			if (empty($form_data['handler_class'])) {
+				$form_data['handler_class'] = $editfield->handler_class ?: $field['handler_class'];
+			}
 			$form->submit($form_data);
-
-			$editfield->is_enabled = $this->in->getBool('is_enabled');
-			$editfield->is_agent_field = $this->in->getBool('is_agent_field');
 			$editfield->save();
 
 			$this->em->getConnection()->commit();

@@ -254,8 +254,6 @@ abstract class AbstractFetcher
 					'email.eml',
 					'message/rfc822'
 				);
-				$blob_id = $blob->getId();
-
 				// Unset the content now, its not used from here on out
 				$raw_message->content = '';
 
@@ -271,7 +269,6 @@ abstract class AbstractFetcher
 					'email.eml',
 					'message/rfc822'
 				);
-				$blob_id = $blob->getId();
 			}
 
 			$source->blob = $blob;

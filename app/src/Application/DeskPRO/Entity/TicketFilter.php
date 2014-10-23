@@ -355,7 +355,7 @@ class TicketFilter extends DomainObject
 	public static function getArchiveTableFilterNames()
 	{
 		return array(
-			'archive_closed',
+			'archive_archived',
 			'archive_validating',
 			'archive_spam',
 			'archive_deleted'

@@ -63,6 +63,9 @@ class PeopleResults
 	 */
 	protected $order_by = null;
 
+	/**
+	 * @var int
+	 */
 	protected $perPage;
 
 	/**

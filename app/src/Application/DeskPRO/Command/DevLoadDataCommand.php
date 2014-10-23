@@ -70,12 +70,33 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		$this->addOption('wordlist', null, InputOption::VALUE_REQUIRED, 'Optional path to a wordlist file with one word per line. Specify "database" to fetch from a database connection as specified in config.php', '');
 	}
 
+	/**
+	 * @var array
+	 */
 	protected $_data_cache = array();
+	/**
+	 * @var array
+	 */
 	protected $_batch_insert = array();
+	/**
+	 * @var array
+	 */
 	protected $_batch_insert_ignore = array();
+	/**
+	 * @var array
+	 */
 	protected $_batch_insert_label_def = array();
+	/**
+	 * @var null|int
+	 */
 	protected $_start_ts = null;
+	/**
+	 * @var null|int
+	 */
 	protected $_date_offset = null;
+	/**
+	 * @var string
+	 */
 	protected $_wordlist_file;
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -665,8 +686,8 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 		5 => 'resolved',
 		6 => 'resolved',
 		7 => 'resolved',
-		8 => 'closed',
-		9 => 'closed',
+		8 => 'archived',
+		9 => 'archived',
 	);
 
 	protected function _loadTicket($i)
@@ -695,7 +716,7 @@ class DevLoadDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
 			}
 		}
 		if (time() - $date_created->getTimestamp() > 90*86400) {
-			$ticket['status'] = 'closed';
+			$ticket['status'] = 'archived';
 		} else {
 			if (mt_rand(0, 100) == 0) {
 				$ticket['status'] = 'awaiting_agent';

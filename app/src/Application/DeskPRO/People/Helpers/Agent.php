@@ -45,14 +45,22 @@ use Application\DeskPRO\Entity;
  */
 class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Helper\ShortCallableInterface
 {
+	/** @var Entity\Person */
 	protected $person;
+	/** @var array|null */
 	protected $_access = null;
+	/** @var array|null */
 	protected $_agent_teams = null;
+	/** @var array|null */
 	protected $_agent_team_ids = null;
+	/** @var array */
 	protected $_snippets;
+	/** @var Entity\TicketMacro */
 	protected $_macros;
 
+	/** @var array|null */
 	protected $_dep_allowed_ids = null;
+	/** @var array|null */
 	protected $_dep_disallowed_ids = null;
 
 	public function __construct(Entity\Person $person)

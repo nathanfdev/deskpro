@@ -36,9 +36,13 @@ namespace Application\DeskPRO\People\UserPermissions\Value;
 
 class ArticlePermissions implements PermissionValueInterface
 {
+	/** @var bool  */
 	public $use                 = false;
+	/** @var bool  */
 	public $rate                = false;
+	/** @var bool  */
 	public $comment             = false;
+	/** @var bool  */
 	public $no_comment_validate = false;
 
 	public function getNames()

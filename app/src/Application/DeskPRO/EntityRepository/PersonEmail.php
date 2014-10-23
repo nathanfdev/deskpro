@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\DBAL\LockMode;
 
 class PersonEmail extends AbstractEntityRepository
@@ -75,21 +76,19 @@ class PersonEmail extends AbstractEntityRepository
 		$results = array_combine($domains, array_fill(0, count($domains), 0));
 
 		if (!$domains) {
-			if ($is_single) {
+			if ($single) {
 				return 0;
 			} else {
 				return $results;
 			}
 		}
 
-		$domains = App::getDb()->quoteIn($d);
-
-		$results = array_merge($results, App::getDb()->fetchAllKeyValue("
+		$results = array_merge($results, $this->getEntityManager()->getConnection()->fetchAllKeyValue('
 			SELECT email_domain, COUNT(*) as count
 			FROM email_domain
-			WHERE email_domain IN ($domains)
+			WHERE email_domain IN (?)
 			GROUP BY email_domain
-		"));
+		', array($domains), array(Connection::PARAM_STR_ARRAY)));
 
 		if ($single) {
 			return array_pop($results);
@@ -125,18 +124,15 @@ class PersonEmail extends AbstractEntityRepository
 
 		// Init all to zero
 		$results = array_combine($domains, array_fill(0, count($domains), 0));
-
-		$domains = App::getDb()->quoteIn($domains);
-
 		$org = is_object($org) ? $org->id : $org;
 
-		$results = array_merge($results, App::getDb()->fetchAllKeyValue("
+		$results = array_merge($results, $this->getEntityManager()->getConnection()->fetchAllKeyValue('
 			SELECT people_emails.email_domain, COUNT(DISTINCT people.id) as count
 			FROM people_emails
-			LEFT JOIN people ON (people.id = people_emails.person_id)
-			WHERE people_emails.email_domain IN ($domains) AND people.organization_id != ? AND people.organization_id IS NOT NULL
+			JOIN people ON (people.id = people_emails.person_id)
+			WHERE people_emails.email_domain IN (?) AND people.organization_id != ? AND people.organization_id IS NOT NULL
 			GROUP BY people_emails.email_domain
-		", array($org)));
+		', array($domains, $org), array(Connection::PARAM_STR_ARRAY, \PDO::PARAM_INT)));
 
 		if ($single) {
 			return array_pop($results);

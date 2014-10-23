@@ -114,7 +114,7 @@ abstract class AbstractSubgroupedTableOverviewStat extends AbstractTableOverview
 		foreach ($this->getValues() as $master_group => $sub_info) {
 			$group_max[$master_group]   = 0;
 			$group_total[$master_group] = 0;
-			foreach ($sub_info as $subid => $count) {
+			foreach ($sub_info as $count) {
 				$group_total[$master_group] += $count;
 				if ($count > $group_max[$master_group]) {
 					$group_max[$master_group] = $count;

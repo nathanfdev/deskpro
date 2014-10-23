@@ -85,6 +85,9 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
+	/**
+	 * @var string
+	 */
 	protected $results_type;
 
 	public function __construct()

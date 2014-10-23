@@ -65,7 +65,13 @@ class TwitterStream extends AbstractJob
 	 */
 	protected $twitter_service;
 
+	/**
+	 * @var array
+	 */
 	protected $accounts = array();
+	/**
+	 * @var array
+	 */
 	protected $twitter = array();
 
 	public function run()
@@ -303,7 +309,6 @@ class TwitterStream extends AbstractJob
 		$target = $data->target;
 
 		$eventType = $data->event;
-		$createdAt = $data->created_at;
 
 		// Check source user exists
 		$sourceUser = $this->findUser($source->id_str);

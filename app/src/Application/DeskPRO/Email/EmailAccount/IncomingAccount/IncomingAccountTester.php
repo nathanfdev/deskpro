@@ -184,7 +184,8 @@ class IncomingAccountTester
 				'user'     => $account_config->user,
 				'password' => $account_config->password,
 				'port'     => $account_config->port,
-				'ssl'      => $account_config->secure_mode,
+				'secure'   => $account_config->secure_mode,
+				'no_validation' => $account_config->no_validation,
 				'logger'   => $this->logger,
 				'test_mode' => true,
 			));

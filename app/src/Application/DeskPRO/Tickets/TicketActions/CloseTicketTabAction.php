@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class CloseTicketTabAction extends AbstractAction
 {
+	/** @var \Application\DeskPRO\Tickets\TicketChangeTracker */
 	protected $tracker;
 
 	public function __construct(\Application\DeskPRO\Tickets\TicketChangeTracker $tracker = null)

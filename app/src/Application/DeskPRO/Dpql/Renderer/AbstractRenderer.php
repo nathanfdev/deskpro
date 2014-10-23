@@ -40,6 +40,7 @@ use Application\DeskPRO\Dpql\Results;
 
 abstract class AbstractRenderer
 {
+	/** @var array */
 	protected static $_rendererMap = array(
 		'csv' => 'Csv',
 		'html' => 'Html',

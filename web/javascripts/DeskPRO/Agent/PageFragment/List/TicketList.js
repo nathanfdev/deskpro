@@ -1625,14 +1625,14 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 					case 'awaiting_agent': valA = 1; break;
 					case 'awaiting_user':  valA = 2; break;
 					case 'resolved':       valA = 3; break;
-					case 'closed':         valA = 4; break;
+					case 'archived':       valA = 4; break;
 					default:               valA = 5; break;
 				}
 				switch (ticketB.status) {
 					case 'awaiting_agent': valB = 1; break;
 					case 'awaiting_user':  valB = 2; break;
 					case 'resolved':       valB = 3; break;
-					case 'closed':         valB = 4; break;
+					case 'archived':       valB = 4; break;
 					default:               valB = 5; break;
 				}
 			case 'date_created':
@@ -1647,12 +1647,12 @@ DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil = {
 					valB = ticketB.date_resolved_ts;
 				}
 				break;
-			case 'date_closed':
-				if (ticketA.date_closed) {
-					valA = ticketA.date_closed_ts;
+			case 'date_archived':
+				if (ticketA.date_archived) {
+					valA = ticketA.date_archived_ts;
 				}
-				if (ticketB.date_closed) {
-					valB = ticketB.date_closed_ts;
+				if (ticketB.date_archived) {
+					valB = ticketB.date_archived_ts;
 				}
 				break;
 			case 'total_user_waiting':

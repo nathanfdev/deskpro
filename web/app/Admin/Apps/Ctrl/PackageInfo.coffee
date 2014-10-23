@@ -13,6 +13,13 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				pack: '/apps/packages/' + @packageName,
 			}).then( (result) =>
 				@pack = result.data.pack['package']
+				if @pack.is_usersource_app
+					for the_app in @pack.apps
+						if the_app.user_usersource
+							@pack.user_usersource_app = the_app
+						if the_app.agent_usersource
+							@pack.agent_usersource_app = the_app
+
 			)
 
 			return promise

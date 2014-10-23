@@ -42,6 +42,7 @@ use Symfony\Component\Routing\RequestContext;
  */
 class UrlGenerator extends BaseUrlGenerator
 {
+	/** @var ObjectUrlGenerator|null */
 	protected $object_url_generator = null;
 
 	public function setContext(RequestContext $context)

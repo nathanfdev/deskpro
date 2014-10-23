@@ -691,8 +691,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	},
 
 	updateAutoPubOptions: function() {
-		var optWrap = this.getEl('auto_unpub');
-		var timestamp = $('.auto-unpublish .end-date.opt', optWrap).data('val');
+		var optWrap = this.getEl('auto_pub');
+		var timestamp = $('.auto-publish .pub-date.opt', optWrap).data('val');
 
 		// Still need them to enter an input
 		if (!timestamp) {

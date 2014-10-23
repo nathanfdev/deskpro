@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class RemoveParticipants extends AbstractAction
 {
+	/** @var array */
 	protected $remove_people_ids;
 
 	public function __construct(array $remove_participants)

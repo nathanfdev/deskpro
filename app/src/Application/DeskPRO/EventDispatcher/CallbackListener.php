@@ -40,6 +40,7 @@ namespace Application\DeskPRO\EventDispatcher;
  */
 class CallbackListener
 {
+	/** @var Callable */
 	protected $callback;
 
 	public function __construct($callback)

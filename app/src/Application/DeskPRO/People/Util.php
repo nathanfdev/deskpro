@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 
 class Util
@@ -191,16 +192,16 @@ class Util
 			$all_ug_perms = $db->fetchAllKeyValue("
 				SELECT name, value
 				FROM permissions
-				WHERE usergroup_id IN (" . implode(',', $ug_ids) .")
+				WHERE usergroup_id IN (?)
 				ORDER BY value DESC
-			");
+			", array($ug_ids), array(Connection::PARAM_INT_ARRAY));
 
 			$ug_perms = $db->fetchAllGrouped("
 				SELECT usergroup_id, name, value
 				FROM permissions
 				LEFT JOIN usergroups ON (usergroups.id = permissions.id)
-				WHERE usergroup_id IN (" . implode(',', $ug_ids) . ")
-			", array(), 'usergroup_id', 'name', 'value');
+				WHERE usergroup_id IN (?)
+			", array($ug_ids), 'usergroup_id', 'name', 'value', array(Connection::PARAM_INT_ARRAY));
 		} else {
 			$all_ug_perms = array();
 			$usergroups = array();
@@ -211,7 +212,7 @@ class Util
 			SELECT name, value
 			FROM permissions
 			WHERE person_id = ?
-		", array($agent->id));
+		", array($agent['id']));
 
 		$ug_perm_matrix = array();
 

@@ -22,8 +22,6 @@ define [
 			return promise
 
 		saveForm: ->
-			if not @$scope.form_props.$valid
-				return
 
 			is_new = !@user_rule.id
 			promise = @userRulesData.saveFormModel(@user_rule, @form)

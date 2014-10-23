@@ -123,9 +123,6 @@ class IncomingSmsProcessor extends AbstractJobProcessor
 	 */
 	public function process(array $data, array $job)
 	{
-		$context = new ExecutorContext();
-		$context->setEventMethod(ExecutorContext::METHOD_SMS);
-
 		/************************************
 		 * Detect SMS Account
 		 */
@@ -147,8 +144,10 @@ class IncomingSmsProcessor extends AbstractJobProcessor
 		if (!$from_person = $this->person_detector->detectWithFromNumber($from_number)) {
 			$from_person = $this->person_detector->createPersonWithNumber($from_number);
 		}
-		$context->setPersonContext($from_person);
 
+		// note: event type changed below
+		$context = $this->ticket_manager->createSystemExecutorContext('', ExecutorContext::METHOD_SMS);
+		$context->setPersonContext($from_person);
 
 		/************************************
 		 * Detect an existing ticket to reply to, or create a new ticket

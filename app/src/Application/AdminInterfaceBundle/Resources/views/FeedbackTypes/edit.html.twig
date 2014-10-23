@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="FeedbackTypesEdit.saveFeedbackType()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && FeedbackTypesEdit.saveFeedbackType()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
@@ -56,7 +56,7 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="FeedbackTypesEdit.feedback_type.id">
+					<div class="dp-delete-control" ng-if="FeedbackTypesEdit.feedback_type.id" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger"
 								ng-click="$event.preventDefault(); $parent.FeedbackTypesList.startDelete(FeedbackTypesEdit.feedback_type);">
 							Delete

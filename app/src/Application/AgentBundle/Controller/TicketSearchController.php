@@ -45,6 +45,7 @@ use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Handles ticket searches
@@ -1365,8 +1366,7 @@ class TicketSearchController extends AbstractController
     protected function _outputCsv($vars, $results_helper) {
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition', 'attachment; filename=tickets.csv');
-        $response->sendHeaders();
+		$response->headers->set('Content-Disposition', 'attachment; filename="tickets.csv"');
 
         $display_fields = array(
             'id',
@@ -1396,7 +1396,7 @@ class TicketSearchController extends AbstractController
             'urgency',
             'date_created',
             'date_resolved',
-            'date_closed',
+            'date_archived',
             'date_first_agent_assign',
             'date_first_agent_reply',
             'date_last_agent_reply',
@@ -1459,11 +1459,9 @@ class TicketSearchController extends AbstractController
         fputcsv($temp, $row);
         rewind($temp);
         $response->setContent(fgets($temp));
-        $response->sendContent();
         ftruncate($temp, 0);
         $chunk_size = 1024;
         $page = 1;
-        $count = $results_helper->getCount();
 
         // This behaves unexpectly. If the total number of tickets is less than the page size it will always return all
         // of the tickets regardless of the page setting.
@@ -1473,8 +1471,6 @@ class TicketSearchController extends AbstractController
         else {
             $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
         }
-
-        $got = count($tickets);
 
         while(!empty($tickets)) {
             $ticket = array_shift($tickets);
@@ -1596,25 +1592,10 @@ class TicketSearchController extends AbstractController
 
             fputcsv($temp, $row);
             rewind($temp);
-            $response->setContent(fgets($temp));
-            $response->sendContent();
+            $response->setContent($response->getContent() . fgets($temp));
             ftruncate($temp, 0);
-
-            if(empty($tickets) && $got < $count) {
-                $this->container->getEm()->clear();
-
-                if($vars['is_grouped_result']) {
-                    $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page++, $chunk_size);
-                }
-                else {
-                    $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
-                }
-
-                $got += count($tickets);
-            }
         }
 
-        $response->setContent('');
         fclose($temp);
 
         return $response;
@@ -1743,7 +1724,6 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
-		$is_partial = true;
 		$tpl = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
 
 		$ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay(array($ticket->id => $ticket));
@@ -1843,12 +1823,6 @@ class TicketSearchController extends AbstractController
 	{
 		$macro_id = $this->in->getUint('macro_id');
 		$macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
-
-		$tickets = null;
-		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
-		if ($ticket_ids) {
-			$tickets = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-		}
 
 		$data = array();
 		$data['raw_actions'] = array();

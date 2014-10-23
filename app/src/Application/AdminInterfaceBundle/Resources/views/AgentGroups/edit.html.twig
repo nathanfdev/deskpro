@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 
 			<nav class="dp-blocktabs">
@@ -56,11 +56,14 @@
 					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
 						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
 						<ul>
-							<li ng-show="form_props.group.$error.required || form_props.group.$error.not_blank">Please enter a name</li>
+							<li ng-show="form_props.title.$error.required || form_props.title.$error.not_blank">
+                                {{ phrase('adm.validation.required_name') }}
+                            </li>
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.group.id && !EditCtrl.group.sys_name">
+					<div class="dp-delete-control" ng-if="EditCtrl.group.id && !EditCtrl.group.sys_name"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
 					</div>
 

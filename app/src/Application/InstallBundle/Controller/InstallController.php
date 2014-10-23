@@ -68,7 +68,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	/**
 	 * @return \Orb\Log\Logger
 	 */
-	public function getLogger($reset = false)
+	protected function getLogger($reset = false)
 	{
 		static $logger = null;
 
@@ -87,7 +87,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		return $logger;
 	}
 
-	public function ensureNotInstalled()
+	protected function ensureNotInstalled()
 	{
 		try {
 			$this->getDb()->connect();
@@ -109,7 +109,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		return true;
 	}
 
-	public function ensureCorrectBuild()
+	protected function ensureCorrectBuild()
 	{
 		if (!defined('DP_BUILD_TIME')) {
 			return;
@@ -891,9 +891,13 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 			throw $e;
 		}
 
-		$agent = $this->getDb()->fetchAssoc("SELECT * FROM people LIMIT 1");
-
 		$base_url = $this->get('request')->getBaseUrl();
+		try {
+			if ($this->container->get('deskpro.core.settings')->get('core.rewrite_urls')) {
+				$base_url = str_replace('/index.php', '', $base_url);
+			}
+		} catch (\Exception $e) {}
+
 
 		$this->sendInstallReport();
 
@@ -916,7 +920,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		return $res;
 	}
 
-	public function sendInstallReport($exception = null)
+	protected function sendInstallReport($exception = null)
 	{
 		if ($exception) {
 			$errinfo = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($exception);
@@ -968,7 +972,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	/**
 	 * @return \Application\DeskPRO\Input\Reader
 	 */
-	public function getIn()
+	protected function getIn()
 	{
 		return $this->container->get('deskpro.core.input_reader');
 	}
@@ -976,7 +980,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	/**
 	 * @return \Application\DeskPRO\DBAL\Connection
 	 */
-	public function getDb()
+	protected function getDb()
 	{
 		return $this->container->get('database_connection');
 	}
@@ -984,7 +988,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 	/**
 	 * @return \Doctrine\ORM\EntityManager
 	 */
-	public function getOrm()
+	protected function getOrm()
 	{
 		return $this->container->get('doctrine.orm.entity_manager');
 	}

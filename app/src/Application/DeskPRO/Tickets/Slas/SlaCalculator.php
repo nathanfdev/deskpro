@@ -180,8 +180,8 @@ class SlaCalculator
 			$dates[] = time();
 		}
 
-		if ($ticket->date_closed) {
-			$dates[] = $ticket->date_closed->getTimestamp();
+		if ($ticket->date_archived) {
+			$dates[] = $ticket->date_archived->getTimestamp();
 		}
 
 		if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
@@ -247,8 +247,8 @@ class SlaCalculator
 			}
 		}
 
-		if ($ticket->date_closed) {
-			$times[] = $ticket->date_closed->getTimestamp();
+		if ($ticket->date_archived) {
+			$times[] = $ticket->date_archived->getTimestamp();
 		}
 
 		if ($ticket->status == 'resolved' && $ticket->date_resolved) {

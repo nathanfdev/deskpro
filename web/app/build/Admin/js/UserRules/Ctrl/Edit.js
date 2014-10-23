@@ -37,9 +37,6 @@
 
       Admin_UserRules_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise;
-        if (!this.$scope.form_props.$valid) {
-          return;
-        }
         is_new = !this.user_rule.id;
         promise = this.userRulesData.saveFormModel(this.user_rule, this.form);
         this.startSpinner('saving');

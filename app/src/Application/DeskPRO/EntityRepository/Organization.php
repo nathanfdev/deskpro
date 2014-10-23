@@ -41,6 +41,7 @@ use Orb\Util\Numbers;
 
 class Organization extends AbstractEntityRepository
 {
+	/** @var array|null */
 	protected $_organization_names = null;
 
 	public function findOneByName($name)
@@ -61,7 +62,7 @@ class Organization extends AbstractEntityRepository
 	public function getOrganizationNames($for_ids = null)
 	{
 		if ($this->_organization_names == null) {
-			$db = App::getDb();
+			$db = $this->getEntityManager()->getConnection();
 			$this->_organization_names = $db->fetchAllKeyValue("
 				SELECT id, name
 				FROM organizations
@@ -101,9 +102,9 @@ class Organization extends AbstractEntityRepository
 		$orgs = $this->getEntityManager()->createQuery("
 			SELECT o
 			FROM DeskPRO:Organization o INDEX BY o.id
-			WHERE o.id IN(" . implode(',', $ids) . ")
+			WHERE o.id IN(?)
 			ORDER BY o.id ASC
-		")->execute();
+		")->execute(array($ids));
 
 		return $orgs;
 	}

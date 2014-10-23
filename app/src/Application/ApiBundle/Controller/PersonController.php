@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Orb\Util\Numbers;
@@ -821,8 +822,6 @@ class PersonController extends AbstractController
 		if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($other_person)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
-		$old_person_id = $other_person['id'];
 
 		$merge = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
 		$merge->merge();

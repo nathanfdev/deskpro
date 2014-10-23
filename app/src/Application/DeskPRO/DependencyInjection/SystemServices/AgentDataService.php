@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -155,8 +156,8 @@ class AgentDataService
 			$this->agent_to_groups = $this->db->fetchAllGrouped("
 				SELECT person_id, usergroup_id
 				FROM person2usergroups
-				WHERE person_id IN (" . implode(',', $this->ids) . ")
-			", array(), 'person_id', null, 'usergroup_id');
+				WHERE person_id IN (?)
+			", array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
 		}
 	}
 
@@ -189,11 +190,9 @@ class AgentDataService
 	{
 		$ret = array();
 
-		if ($for_ids) {
-			foreach ($this->getAgents() as $agent) {
-				if ($for_ids === null || in_array($agent->getId(), $for_ids)) {
-					$ret[$agent->getId()] = $agent->getDisplayName();
-				}
+		foreach ($this->getAgents() as $agent) {
+			if ($for_ids === null || in_array($agent->getId(), $for_ids)) {
+				$ret[$agent->getId()] = $agent->getDisplayName();
 			}
 		}
 
@@ -334,7 +333,7 @@ class AgentDataService
 			FROM sessions s
 			INNER JOIN people p ON (s.person_id = p.id)
 			WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
-		", array($cutoff), 0, 0);
+		", array($cutoff), array(), 0, 0);
 
 		return $this->online_agent_ids;
 	}

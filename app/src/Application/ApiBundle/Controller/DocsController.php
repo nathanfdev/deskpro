@@ -81,6 +81,32 @@ class DocsController extends AbstractController
 	}
 
 	####################################################################################################################
+	# get-agents-for-key
+	####################################################################################################################
+
+	public function getAgentsForKeyAction()
+	{
+		$apikey = $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($this->in->getString('key'));
+		if ($apikey) {
+			if ($apikey->isFlagSet('super')) {
+				$agents = $this->container->getAgentData()->getNames();
+			} else {
+				$agents = array();
+				$agents[$apikey->person->id] = $apikey->person->getDisplayName();
+			}
+			$default_id = $apikey->person ? $apikey->person->id : 0;
+		} else {
+			$agents = array();
+			$default_id = 0;
+		}
+
+		return $this->createJsonResponse(array(
+			'names'      => $agents,
+			'default_id' => $default_id,
+		));
+	}
+
+	####################################################################################################################
 
 	private function getResourcePath($res)
 	{

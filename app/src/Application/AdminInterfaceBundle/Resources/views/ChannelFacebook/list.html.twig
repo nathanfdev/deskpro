@@ -1,0 +1,65 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+<section class="dp-paneblock dp-listpane">
+	<header>
+		<nav>
+			<span class="status-pinger saved-ping" dp-ping-flash="save_page"><i
+				class="fa fa-check-square-o-square"></i> {{ phrase('admin.channels.facebook_page_saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+		</nav>
+		<h3 ng-pluralize count="ChannelFacebookList.pages.length || 0"
+			when="{{ ng_plural_phrase('admin.channels.facebook_x_pages') }}"></h3>
+	</header>
+	<article>
+		<p class="dp-empty-list-notice" ng-if="!ChannelFacebookList.pages.length">
+			{{ phrase('admin.channels.facebook_no_pages_yet') }}
+		</p>
+		<ul class="dp-item-list" ng-if="ChannelFacebookList.pages.length">
+			<li ng-repeat="page in ChannelFacebookList.pages"
+				dp-state-mark="tickets.channel_facebook.edit.{{ ng_var('page.id') }}" data-id="{{ ng_var('page.id') }}">
+				<a href="{{ ng_href('tickets.channel_facebook.edit', '{id: page.id}') }}">
+					<div class="pull-right">
+						<em class="tag tag-warn" ng-show="!page.is_enabled">{{ phrase('admin.general.disabled') }}</em>
+					</div>
+					<span class="title-text">
+						<span class="title-id" style="vertical-align: middle" title="ID">#{{ ng_var('page.id') }}</span>
+						<img style="width: 32px; height: 32px;" width="32" height="32" ng-src="{{ ng_var('page.picture_url') }}" />
+						{{ ng_var('page.name') }}
+					</span>
+				</a>
+			</li>
+		</ul>
+		<div class="dp-add-control">
+			<a class="btn btn-default" href="{{ ng_href('tickets.channel_facebook.create') }}"
+				ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('admin.channels.facebook_new_page') }}</a>
+		</div>
+	</article>
+</section>
+
+<section class="dp-paneblock dp-panelink">
+	<a href="{{ ng_href('tickets.channel_facebook.incoming_log') }}">
+		<em><i class="fa fa-chevron-down"></i></em>
+		<h3>{{ phrase('admin.channels.facebook_incoming_log') }}</h3>
+	</a>
+</section>
+
+<section class="dp-paneblock dp-panelink">
+	<a href="{{ ng_href('tickets.channel_facebook.outgoing_log') }}">
+		<em><i class="fa fa-chevron-down"></i></em>
+		<h3>{{ phrase('admin.channels.facebook_outgoing_log') }}</h3>
+	</a>
+</section>
+
+{% endblock %}
+{% block listpane_help %}
+<header>
+	<h1>{{ phrase('admin.channels.facebook_help_header_title') }}</h1>
+
+	<p>{{ phrase('admin.channels.facebook_help_header_desc') }}</p>
+</header>
+<article>
+	<section>
+		{{ phrase('admin.channels.facebook_help_extended') }}
+	</section>
+</article>
+{% endblock %}

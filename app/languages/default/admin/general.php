@@ -6,6 +6,7 @@
 	'admin.general.alphabetical'                        => 'Alphabetical',
 	'admin.general.app_agents'                          => 'Agents',
 	'admin.general.enabled'                             => 'Enabled',
+	'admin.general.disabled'                            => 'Disabled',
 	'admin.general.apps'                                => 'Apps',
 	'admin.general.apps_agents'                         => 'Agents',
 	'admin.general.apps_chat'                           => 'Chat',

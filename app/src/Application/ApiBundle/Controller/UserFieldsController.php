@@ -62,7 +62,7 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 		$data = array();
 
 		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$field_manager = $this->container->getPersonFieldManager();
 
 		$custom_fields = $field_manager->getDefinedFields();
 		$data['custom_fields'] = $this->getApiData($custom_fields, false);
@@ -94,7 +94,7 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 	public function saveCustomFieldAction($id)
 	{
 		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$field_manager = $this->container->getPersonFieldManager();
 
 		if ($id) {
 			$field = $this->em->find('DeskPRO:CustomDefPerson', $id);
@@ -151,7 +151,7 @@ class UserFieldsController extends AbstractController implements ProtectedContro
 	public function toggleFieldAction($field_id, $is_enabled)
 	{
 		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$field_manager = $this->container->getPersonFieldManager();
 		$field_manager->setFieldEnabledById($field_id, $is_enabled);
 
 		return $this->createSuccessResponse();

@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 
 class PermissionUtil
 {

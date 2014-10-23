@@ -44,6 +44,7 @@ use Application\DeskPRO\Tickets\TicketChangeTracker;
  */
 class StatusAction extends AbstractAction implements PermissionableAction
 {
+	/** @var string */
 	protected $status;
 
 	/**
@@ -60,7 +61,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
 	public function setStatus($status)
 	{
 		if (!in_array($status, array(
-			'awaiting_agent', 'awaiting_user', 'resolved', 'closed',
+			'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
 			'hidden.spam', 'hidden.validating', 'hidden.deleted'
 		))) {
 			throw new \InvalidArgumentException("Invalid status `$status`");

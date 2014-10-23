@@ -70,8 +70,9 @@
 	</style>
 	<script type="text/javascript">
 	$(function () {
+		$('#input_baseUrl').val((window.location.href+"").replace(/api\.html.*?$/, ''));
 		window.swaggerUi = new SwaggerUi({
-			url: "/{{ path('api')|trim('/') }}/docs",
+			url: (window.location.href+"").replace(/api\.html.*?$/, 'docs'),
 			dom_id: "swagger-ui-container",
 			supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
 			onComplete: function(swaggerApi, swaggerUi){
@@ -87,9 +88,53 @@
 		$('#input_apiKey').change(function() {
 			var key = $('#input_apiKey')[0].value;
 			log("key: " + key);
+
+			$('#select_apiUser').hide().empty().on('change', function() {
+				window.authorizations.add("user", new ApiKeyAuthorization("X-DeskPRO-Agent-ID", $(this).val() || "", "header"));
+			});
+			window.authorizations.remove("key");
+			window.authorizations.remove("user");
+
 			if (key && key.trim() != "") {
 				log("added key " + key);
-				window.authorizations.add("key", new ApiKeyAuthorization("api_key", key, "query"));
+				window.authorizations.add("key", new ApiKeyAuthorization("X-DeskPRO-API-Key", key, "header"));
+
+				$.ajax({
+					url: '{{ path('api_getagentsforkey') }}?key=' + key,
+					type: 'GET',
+					dataType: 'json',
+					success: function(data) {
+						var sel = $('#select_apiUser').empty(), opt, id, selected = parseInt(data.default_id || 0), got = false;
+
+						if (data.names) {
+							for (var i in data.names) {
+								if (data.names.hasOwnProperty(i)) {
+									id = parseInt(i);
+									opt = $('<option />');
+									opt.attr('value', id);
+									opt.text(data.names[i]);
+
+									if (!got && (id == selected || !selected)) {
+										opt.attr('selected', true);
+									}
+									sel.append(opt);
+								}
+							}
+						}
+
+						if (sel.find('option').length > 1) {
+							sel.show();
+						}
+
+						window.authorizations.add("user", new ApiKeyAuthorization("X-DeskPRO-Agent-ID", sel.val() || "", "header"));
+					},
+					error: function() {
+						alert('Invalid API key');
+						$('#input_apiKey').val('');
+						window.authorizations.remove("key");
+						window.authorizations.remove("user");
+					}
+				});
 			}
 		});
 		window.swaggerUi.load();
@@ -101,9 +146,11 @@
 <div id='header'>
 	<div class="swagger-ui-wrap">
 		<a id="logo" href="#">DeskPRO API</a>
-		<form id='api_selector'>
-			<div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
-		</form>
+		<input type="hidden" value="" id="input_baseUrl" />
+		<div style="float:right; margin-top: -2px;">
+			<input placeholder="api_key" id="input_apiKey" name="apiKey" type="text" style="width:280px; font-family: Monaco, Consolas, monospace; border: 1px solid #0f4063; border-radius: 2px; background: #fff; padding: 5px; font-size: 12px;"/>
+			<select id="select_apiUser" style="display:none"></select>
+		</div>
 	</div>
 </div>
 

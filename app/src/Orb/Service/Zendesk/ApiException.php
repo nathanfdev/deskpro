@@ -41,7 +41,9 @@ class ApiException extends \Exception
 	const INVALID_RESPONSE = 2;
 	const API_ERROR        = 3;
 
+	/** @var string|null */
 	public $api_error_code;
+	/** @var string|null */
 	public $output;
 
 	public function __construct($message = "", $code = 0, $api_error_code = null, $output = null, \Exception $previous = null)

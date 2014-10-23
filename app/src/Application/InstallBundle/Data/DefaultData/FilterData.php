@@ -114,10 +114,10 @@ class FilterData extends AbstractDefaultData
 
 		$filters[] = array(
 			'title'    => 'Archived',
-			'sys_name' => 'archive_closed',
+			'sys_name' => 'archive_archived',
 			'order_by' => 'ticket.urgency:desc',
 			'terms'    => array(
-				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'closed')
+				array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'archived')
 			))
 		);
 

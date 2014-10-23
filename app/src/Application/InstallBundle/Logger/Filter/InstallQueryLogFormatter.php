@@ -36,8 +36,11 @@ namespace Application\InstallBundle\Logger\Filter;
 
 class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 {
+	/** @var float  */
 	public $max_time = 0.1;
+	/** @var int  */
 	public $log_max_type = 100;
+	/** @var array  */
 	public $done_log = array();
 
 	public function filter($log_item)
@@ -82,10 +85,10 @@ class InstallQueryLogFormatter extends \Orb\Filter\AbstractFilter
 					} else {
 						$v = gettype($v);
 					}
-				} else {
-					$len = strlen($v);
-					$params[$k] = 'string(' . $len . ')';
 				}
+
+				$len = strlen($v);
+				$params[$k] = 'string(' . $len . ')';
 			}
 		}
 

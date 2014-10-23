@@ -751,7 +751,7 @@
                             "name": "attach",
                             "type": "string",
                             "required": true,
-                            "description": "Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided."
+                            "description": "Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided."
                         },
                         {
                             "paramType": "query",
@@ -834,7 +834,7 @@
                             "name": "attach",
                             "type": "string",
                             "required": true,
-                            "description": "Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided."
+                            "description": "Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided."
                         },
                         {
                             "paramType": "query",

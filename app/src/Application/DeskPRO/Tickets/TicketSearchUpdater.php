@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketSearchActive;
 
 /**
  * Updates the archive tables
@@ -88,7 +87,7 @@ class TicketSearchUpdater
 		if (!$this->ticket->isArchived()) {
 			$cols = self::$cols;
 			$data = $this->db->fetchAssoc("SELECT {$cols} FROM tickets WHERE id = ?", array($this->ticket->id));
-			if ($data && $data['status'] != 'closed') {
+			if ($data && $data['status'] != 'archived') {
 				$this->db->replace('tickets_search_active', $data);
 			} else {
 				$this->db->delete('tickets_search_active', array('id' => $this->ticket->id));

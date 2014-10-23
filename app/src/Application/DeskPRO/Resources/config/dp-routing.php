@@ -233,4 +233,12 @@ $collection->create(
 	)
 );
 
+$collection->create(
+	'api_channel_facebook_incoming', array(
+		'path'       => '/channel/facebook/incoming',
+		'controller' => 'DeskPRO:ChannelIncoming:facebook',
+		'methods'    => array('POST', 'GET'),
+	)
+);
+
 return $collection;

@@ -64,7 +64,7 @@
           return function() {
             _this.settings = angular.copy(_this.$scope.settings);
             return _this.stopSpinner('saving').then(function() {
-              return _this.Growl.success(_this.getRegisteredMessage('portal_settings'));
+              return _this.Growl.success(_this.getRegisteredMessage('saved_settings'));
             });
           };
         })(this)).error((function(_this) {

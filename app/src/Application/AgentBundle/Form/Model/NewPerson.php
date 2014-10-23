@@ -40,20 +40,30 @@ use Application\DeskPRO\Entity\Person;
 
 class NewPerson
 {
+	/** @var string */
 	public $name;
+	/** @var string */
 	public $email;
 
+	/** @var int */
 	public $organization_id;
+	/** @var string */
 	public $organization_position;
 
+	/** @var string */
 	public $new_organization;
 
+	/** @var array */
 	public $labels = array();
+	/** @var array */
 	public $usergroup_ids = array();
+	/** @var array */
 	public $custom_fields = array();
 
+	/** @var string */
 	public $timezone;
 
+	/** @var Person */
 	protected $_person;
 
 	/**
@@ -124,8 +134,7 @@ class NewPerson
 			$user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 			foreach ($user_field_defs as $field_def) {
 				foreach ($field_def->getHandler()->getDataFromForm($this->custom_fields) as $info) {
-					$d = $person->setCustomData($info[0], $info[1], $info[2]);
-					//$this->_em->persist($d);
+					$person->setCustomData($info[0], $info[1], $info[2]);
 				}
 			}
 		}

@@ -36,6 +36,7 @@ namespace Orb\Validator;
 
 class Choice extends AbstractValidator
 {
+	/** @var  array */
 	protected $valid_choices;
 
 	public function init()

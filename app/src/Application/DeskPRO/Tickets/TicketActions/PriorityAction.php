@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Ticket;
 
 class PriorityAction extends AbstractAction implements PermissionableAction
 {
+	/** @var int */
 	protected $priority_id;
 
 	public function __construct($priority)

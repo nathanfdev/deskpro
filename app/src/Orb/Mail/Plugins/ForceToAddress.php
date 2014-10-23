@@ -42,6 +42,7 @@ use Orb\Util\Util;
  */
 class ForceToAddress implements \Swift_Events_SendListener
 {
+	/** @var mixed */
 	protected $to;
 
 	public function __construct($new_to)

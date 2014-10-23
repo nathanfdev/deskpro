@@ -52,7 +52,7 @@ use Orb\Sms\SmsSender;
 class DeskPROSmsSender extends SmsSender
 {
 	/**
-	 * @var int
+	 * @var int|null
 	 */
 	protected $max_chunks;
 

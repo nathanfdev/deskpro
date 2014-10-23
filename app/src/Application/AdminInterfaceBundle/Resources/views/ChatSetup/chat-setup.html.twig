@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="ChatSetup.save()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && ChatSetup.save()">
 		<section class="dp-paneblock dp-listpane">
 			<header>
 				<h3>Chat Setup</h3>

@@ -40,6 +40,7 @@ namespace Orb\Util;
  */
 class ChainCaller
 {
+	/** @var arrayApplication\UserBundle\Controller\Helper\CommentsAdapter\AbstractComments */
 	protected $_objects = array();
 
 	/**

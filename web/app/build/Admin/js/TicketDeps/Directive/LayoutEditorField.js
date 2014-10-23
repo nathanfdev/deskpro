@@ -4,7 +4,7 @@
   define(['DeskPRO/Util/Util'], function(Util) {
     var LayoutEditorField;
     LayoutEditorField = (function() {
-      function LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout) {
+      function LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, TicketFieldsPerPerson, TicketFieldsPerOrg) {
         this.scope = scope;
         this.element = element;
         this.attrs = attrs;
@@ -21,13 +21,17 @@
             return _this.scope.field.field_type === 'user_field' && (f.id + '') === (_this.scope.field.field_id + '');
           };
         })(this);
-        $q.all([TicketFields.loadList(), UserFields.loadList()]).then((function(_this) {
+        this.scope.CustomFieldTitleFilter = (function(_this) {
+          return function(f) {
+            return _this.scope.field.field_type === 'custom_field' && (f.id + '') === (_this.scope.field.field_id + '');
+          };
+        })(this);
+        $q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all()]).then((function(_this) {
           return function(results) {
-            var tFields, uFields;
-            tFields = results[0];
-            uFields = results[1];
-            _this.scope.custom_ticket_fields = tFields;
-            _this.scope.custom_user_fields = uFields;
+            _this.scope.custom_ticket_fields = results[0];
+            _this.scope.custom_user_fields = results[1];
+            _this.scope.ticket_fields_per_person = results[2];
+            _this.scope.ticket_fields_per_org = results[3];
             return $timeout(function() {
               return _this._initEvents();
             }, 1);
@@ -155,13 +159,15 @@
     })();
     return [
       '$modal', 'dpObTypesDefTicketCriteria', 'DataService', '$q', '$timeout', function($modal, dpObTypesDefTicketCriteria, DataService, $q, $timeout) {
-        var TicketFields, UserFields, directive;
+        var TicketFields, TicketFieldsPerOrg, TicketFieldsPerPerson, UserFields, directive;
         directive = {};
         directive.restrict = 'E';
         directive.replace = true;
         directive.templateUrl = "TicketDeps/layout-editor-field.html";
         TicketFields = DataService.get('TicketFields');
         UserFields = DataService.get('UserFields');
+        TicketFieldsPerPerson = DataService.get('CustomFields', 'ticket', 'person');
+        TicketFieldsPerOrg = DataService.get('CustomFields', 'ticket', 'organization');
         directive.link = function(scope, element, attrs, ngModel) {
           var handler, _ref, _ref1;
           if (!scope.field.options) {
@@ -176,7 +182,7 @@
           if (!((_ref1 = scope.field.options.criteria) != null ? _ref1.mode : void 0)) {
             scope.field.options.criteria.mode = 'all';
           }
-          return handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout);
+          return handler = new LayoutEditorField(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, TicketFieldsPerPerson, TicketFieldsPerOrg);
         };
         return directive;
       }

@@ -36,6 +36,7 @@
     {%- elseif 'usergroups' == property -%}usergroup
     {%- elseif 'first_name' == property -%}first name
     {%- elseif 'last_name' == property -%}last name
+    {%- elseif 'title_prefix' == property -%}title prefix
     {%- else -%}{{ property }}
     {%- endif -%}
 {%- endmacro -%}

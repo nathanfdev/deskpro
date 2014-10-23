@@ -39,6 +39,7 @@ namespace Application\DeskPRO\Translate;
  */
 class SystemLanguage extends \Application\DeskPRO\Entity\Language
 {
+	/** @var SystemLanguage|null */
 	protected static $instance = null;
 	public static function getInstance()
 	{

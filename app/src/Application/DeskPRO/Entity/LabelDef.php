@@ -61,7 +61,7 @@ class LabelDef extends DomainObject
 	/**
 	 * @var string css color
 	 */
-	protected $color;
+	protected $color = '';
 
 	/**
 	 * @var int
@@ -109,12 +109,12 @@ class LabelDef extends DomainObject
 	 */
 	public function setColor($c)
 	{
-		if (!$c) {
-			$this->setModelField('color', null);
+		if (!trim($c)) {
+			$this->setModelField('color', '');
 		} else {
 			$c = trim($c);
 			if ($c === '' || $c === '#') {
-				$this->setModelField('color', null);
+				$this->setModelField('color', '');
 			} else {
 				$this->setModelField('color', $c);
 			}

@@ -36,6 +36,7 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
 
 use Application\DeskPRO\App\Native\NativeApp;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Usersource;
 use Orb\Util\Arrays;
 
 class InstallerContext
@@ -55,16 +56,24 @@ class InstallerContext
 	 */
 	private $raw_form;
 
+	/**
+	 * @var Usersource|null must be preset for "usersources" apps. null otherwise.
+	 */
+	private $usersource;
+
 
 	/**
 	 * @param DeskproContainer $container
-	 * @param NativeApp $native_app
+	 * @param NativeApp        $native_app
+	 * @param array            $raw_form
+	 * @param                  $usersource_type
 	 */
-	public function __construct(DeskproContainer $container, NativeApp $native_app, array $raw_form = array())
+	public function __construct(DeskproContainer $container, NativeApp $native_app = null, array $raw_form = array(), Usersource $usersource = null)
 	{
-		$this->container  = $container;
-		$this->native_app = $native_app;
-		$this->raw_form   = $raw_form;
+		$this->container       = $container;
+		$this->native_app      = $native_app;
+		$this->raw_form        = $raw_form;
+		$this->usersource      = $usersource;
 	}
 
 
@@ -124,6 +133,15 @@ class InstallerContext
 
 
 	/**
+	 * @return Usersource|null
+	 */
+	public function getUsersource()
+	{
+		return $this->usersource;
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\DBAL\Connection
 	 */
 	public function getDb()
@@ -138,5 +156,14 @@ class InstallerContext
 	public function getEm()
 	{
 		return $this->container->getEm();
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Usersource\UsersourceManager
+	 */
+	public function getUsersourceManager()
+	{
+		return $this->container->getSystemService('usersource_manager');
 	}
 }

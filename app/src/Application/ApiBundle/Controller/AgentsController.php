@@ -99,9 +99,10 @@ class AgentsController extends AbstractController implements ProtectedController
 
 				default:
 					$agent_data = $agent->toApiData();
-					$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
-					$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
 			}
+
+			$agent_data['is_online_now'] = $this->container->getAgentData()->isAgentOnline($agent);
+			$agent_data['is_available_chat'] = isset($online_agents_userchat[$agent->id]);
 
 			if ($this->in->getBool('with_perms')) {
 				$perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);

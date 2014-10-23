@@ -36,7 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350488520 extends AbstractBuild
 {
+	/** @var array  */
 	protected $deps = array();
+	/** @var array  */
 	protected $id_map = array();
 
 	public function run()

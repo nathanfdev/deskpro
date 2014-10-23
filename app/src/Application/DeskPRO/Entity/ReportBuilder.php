@@ -322,10 +322,6 @@ class ReportBuilder extends DomainObject
 	 */
 	public function isFavorited(Person $person = null)
 	{
-		if ($person === null) {
-			$person = App::getCurrentPerson();
-		}
-
 		return false;
 	}
 

@@ -596,13 +596,17 @@
 
       Admin_Main_DataService_BaseListEdit.prototype.get = function(id) {
         var deferred;
-        if (id == null) {
-          return null;
-        }
         deferred = this.$q.defer();
         this.all().then((function(_this) {
           return function() {
+            if (!id) {
+              deferred.resolve(null);
+            }
             return deferred.resolve(_this.map[id]);
+          };
+        })(this), (function(_this) {
+          return function() {
+            return deferred.resolve(_this.map[id] || null);
           };
         })(this));
         return deferred.promise;
@@ -639,7 +643,7 @@
       };
 
       Admin_Main_DataService_BaseListEdit.prototype.url = function() {
-        throw new Exception("This method must be implemented by a sub-class");
+        throw '[BaseListEdit:url] This method must be implemented by a sub-class';
       };
 
       Admin_Main_DataService_BaseListEdit.prototype.resolveResponse = function(response) {
@@ -665,9 +669,9 @@
       Admin_Main_DataService_BaseListEdit.prototype._doSave = function(model) {
         var deferred, id, method;
         deferred = this.$q.defer();
-        method = 'sendPostJson';
+        method = 'sendPutJson';
         if ((model[this.idProp] != null) && model[this.idProp]) {
-          method = 'sendPutJson';
+          method = 'sendPostJson';
         }
         id = model[this.idProp] || 0;
         this.Api[method](this.url() + ("/" + id), model).success((function(_this) {

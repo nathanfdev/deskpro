@@ -132,7 +132,8 @@ span.gear{
 	left: 0;
 	z-index: 2;
 	background-color: #ECEEF0;
-	overflow: auto;
+	overflow: hidden;
+	overflow-y: auto;
 }
 #dp_content_wrap > div.tabViewDetailContent > .with-scrollbar {
 	position: absolute;
@@ -708,13 +709,13 @@ header.page-header .meta-line .status.awaiting_agent span.urgency-10 { .ticket_u
 .layout-content.hidden_spam .urgency-text,
 .layout-content.hidden_validating .urgency-text
 { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
-.layout-content.closed .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_closed_color, @urgency_closed_borderColor, @urgency_closed_textColor); }
+.layout-content.archived .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
 .layout-content.resolved .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
 
 header.page-header .meta-line .status.awaiting_user span             { .ticket_urgency_style(@urgency_user_color, @urgency_user_borderColor, @urgency_user_textColor); }
 header.page-header .meta-line .status.resolved span                  { .ticket_urgency_style(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
 header.page-header .meta-line .status.hidden span                    { .ticket_urgency_style(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
-header.page-header .meta-line .status.closed span                    { .ticket_urgency_style(@urgency_closed_color, @urgency_closed_borderColor, @urgency_closed_textColor); }
+header.page-header .meta-line .status.archived span                  { .ticket_urgency_style(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
 
 .ticket_urgency_style_pill(@color, @borderColor, @textColor) {
 	.gradient(lighten(@color, 10%), @color);
@@ -795,7 +796,7 @@ header.page-header .meta-line .status.closed span                    { .ticket_u
 .status-pill.resolved                  { .ticket_urgency_style_pill(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
 .status-pill.hidden, .status-pill.hidden_deleted, .status-pill.hidden_spam, .status-pill.hidden_validating
 { .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
-.status-pill.closed                    { .ticket_urgency_style_pill(@urgency_closed_color, @urgency_closed_borderColor, @urgency_closed_textColor); }
+.status-pill.archived                  { .ticket_urgency_style_pill(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
 
 .select2-result .urgency-1,
 .select2-choice .urgency-1 { .ticket_urgency_style_pill(@urgency1_color, @urgency1_borderColor, @urgency1_textColor); }
@@ -862,7 +863,7 @@ header.page-header .status.article-status span {
 header.page-header .meta-line .set-hold { display: none; }
 .awaiting_agent header.page-header .meta-line .set-hold { display: block; }
 
-.resolved, .closed, .hidden_spam, .hidden_validating, .hidden_temp, .hidden_deleted {
+.resolved, .archived, .hidden_spam, .hidden_validating, .hidden_temp, .hidden_deleted {
 	header.page-header .ticket-urgency { display: none }
 }
 
@@ -8252,5 +8253,147 @@ a.assign-self-link {
 			padding: 0;
 			border: none;
 		}
+	}
+}
+
+.layout-content {
+	z-index: 1;
+}
+.with-apps-sidebar {
+	overflow: hidden !important;
+	overflow-x: hidden !important;
+	overflow-y: hidden !important;
+
+	.layout-content {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+		overflow: hidden;
+		overflow-y: auto;
+	}
+
+	.layout-sidebar-icons { display: block; }
+}
+
+.layout-sidebar .pin-btn {
+	.fa-lock { display: block; }
+	.fa-chevron-right { display: none; }
+}
+.with-docked-apps-sidebar .layout-sidebar .pin-btn {
+	.fa-lock { display: none; }
+	.fa-chevron-right { display: block; }
+}
+
+.layout-sidebar-icons {
+	display: none;
+	position: absolute;
+	top: 0; right: 0;
+
+	ul {
+		margin: 0;
+		padding: 0;
+		float: right;
+		li {
+			position: relative;
+			margin: 8px;
+			display: block;
+			float: right;
+			cursor: pointer;
+
+			img {
+				border: none;
+				border-radius: 3px;
+				-moz-background-clip: padding;
+				-webkit-background-clip: padding-box;
+				background-clip: padding-box;
+			}
+
+			.badge {
+				position: absolute;
+				top: -7px; right: -7px;
+				display: block;
+				padding: 3px 4px;
+				font-size: 12px;
+				font-weight: bold;
+				line-height: 100%;
+				color: #ffffff;
+				text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+				white-space: nowrap;
+				vertical-align: baseline;
+				background: #fb0016;
+				-webkit-border-radius: 3px;
+				-moz-border-radius: 3px;
+				border-radius: 3px;
+				-moz-background-clip: padding;
+				-webkit-background-clip: padding-box;
+				background-clip: padding-box;
+				z-index: 1;
+				border: 1px solid #fff;
+			}
+		}
+	}
+}
+
+.layout-sidebar-sizer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 5px;
+	cursor: ew-resize;
+	z-index: 9999999;
+	overflow: hidden;
+	border-left: 2px solid transparent;
+	margin-right: -5px;
+	display: none;
+
+	&:hover, &.dragging {
+		border-left: 2px solid #555;
+	}
+}
+
+.layout-sidebar {
+	display: none;
+	background: #fff;
+	border-left: 1px solid #aeaeb4;
+	box-shadow: 0px 0px 19px 0px rgba(0,0,0,0.39);
+
+	width: 350px;
+	position: absolute;
+	top: 0; right: 0; bottom: 0;
+	z-index: 999999;
+
+	.pin-btn {
+		display: block;
+		position: absolute;
+		top: 9px;
+		right: 10px;
+
+		color: #959a9e;
+		cursor: pointer;
+
+		&:hover {
+			color: #444;
+		}
+	}
+
+	section {
+		header {
+			background: #d4d5da;
+
+			h4 {
+				font-size: 14px;
+				padding: 6px;
+				margin: 0;
+			}
+		}
+	}
+}
+
+.with-docked-apps-sidebar {
+	.layout-sidebar-icons {
+		right: 4px;
+	}
+	.layout-sidebar {
+		display: block;
+		box-shadow: none;
 	}
 }
