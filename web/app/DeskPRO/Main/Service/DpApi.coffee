@@ -109,7 +109,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			http_params.url    = url
 			@prepareHttpParams(http_params)
 
-			return @$http(http_params)
+			@sendRequest http_params
 
 
 		###
@@ -146,7 +146,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 			http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
-			return @$http(http_params)
+			@sendRequest http_params
 
 
 		###
@@ -165,7 +165,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			http_params.data   = post_data
 			@prepareHttpParams(http_params)
 
-			return @$http(http_params)
+			@sendRequest http_params
 
 
 		###
@@ -202,7 +202,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
 			http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
-			return @$http(http_params)
+			@sendRequest http_params
 
 
 		###
@@ -221,7 +221,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			http_params.data   = post_data
 			@prepareHttpParams(http_params)
 
-			return @$http(http_params)
+			@sendRequest http_params
 
 
 		###
@@ -238,4 +238,11 @@ define ['DeskPRO/Util/Util'], (Util) ->
 			http_params.url    = url
 			@prepareHttpParams(http_params)
 
-			return @$http(http_params)
+			@sendRequest http_params
+
+
+
+		sendRequest: (http_params) ->
+			result = @$http http_params
+			result.error (data, status, headers, config) -> window.location.reload(true) if 403 == status
+			result
