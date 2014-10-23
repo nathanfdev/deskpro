@@ -110,7 +110,8 @@ class BrandDetectionListener implements EventSubscriberInterface
 	public static function getSubscribedEvents()
 	{
 		return array(
-			KernelEvents::REQUEST => array('onKernelRequest', 30) // high priority, but called after the RouterListener
+			// high priority, must be called BEFORE RouterListener (which is 32)
+			KernelEvents::REQUEST => array('onKernelRequest', 33)
 		);
 	}
 }
