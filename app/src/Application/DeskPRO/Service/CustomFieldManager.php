@@ -266,7 +266,8 @@ class CustomFieldManager
 		// root definitions
 		$definitions = $this->repDefinition->findBy(array(
 			'parent' => null,
-			'context_class' => ClassUtils::getClass($context)
+			'context_class' => ClassUtils::getClass($context),
+			'is_enabled' => true,
 		), array('display_order' => 'ASC'));
 
 		$children = $this->buildDefinitionChildrenCollectionForContext($context);

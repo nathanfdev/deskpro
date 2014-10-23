@@ -83,6 +83,7 @@ class EntityChangeTrackingListener implements EventSubscriber
 			'last_name' => true,
 			'password' => true,
 			'is_disabled' => true,
+			'title_prefix' => true,
 
 			'picture_blob' => true,
 			'organization' => true,

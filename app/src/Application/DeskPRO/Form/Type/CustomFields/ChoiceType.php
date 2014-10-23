@@ -150,49 +150,74 @@ class ChoiceType extends CustomFieldType
 		$form = $event->getForm();
 		$allowAdd = $form->getConfig()->getOption('allow_add');
 
-		if ($allowAdd && isset($data['value']) && !is_numeric($data['value'])) {
+		if ($allowAdd && isset($data['value'])) {
 
-			// first, string comparison
 			/** @var EntityChoiceList $choices */
-			$choices = $form->get('value')->getConfig()->getOption('choice_list')->getChoices();
-			$check = strtolower($data['value']);
-			$newVal = null;
+			$choices = $form->getConfig()->getOption('choice_list')->getChoices();
+			$this->handleChoice($form, $choices, $data['value']);
+			$form->remove('value');
+			$form->add('value', 'entity', array_merge($this->getValueOptions(), array(
+				'class' => 'DeskPRO:CustomFieldDefinition',
+				'choices' => $choices,
+			)));
+
+			$event->setData($data);
+		}
+
+		parent::onPreSubmit($event);
+	}
+
+	/**
+	 * select choice or add new if not exist
+	 * @param FormInterface $form
+	 * @param array $choices
+	 * @param $data
+	 */
+	protected function handleChoice(FormInterface $form, array &$choices, &$data)
+	{
+		if (!$data) {
+			return;
+		}
+
+		if (is_array($data)) {
+			foreach ($data as &$dataEl) {
+				$this->handleChoice($form, $choices, $dataEl);
+			}
+
+			return;
+		}
+
+		$check = strtolower($data);
+		$newVal = isset($choices[$data]) ? $choices[$data] : null;
+
+		// first, string comparison
+		if (!$newVal) {
 			foreach ($choices as $choice) {
 				/** @var CustomFieldDefinition $choice */
 				if (strtolower($choice['title']) === $check) {
 					$newVal = $choice['id'];
 				}
 			}
-
-			// then, add new choice to list
-			if (!$newVal) {
-				$newDef = clone $this->definition;
-				$newDef['id'] = null;
-				$newDef->parent = $this->definition;
-				$newDef->children = new ArrayCollection();
-				$newDef['title'] = $data['value'];
-
-				if ($context = $form->getConfig()->getOption('context')) {
-					$newDef['context_id'] = $context['id'];
-				}
-
-				$form->get('value')->getConfig()->getOption('em')->persist($newDef);
-				$form->get('value')->getConfig()->getOption('em')->flush($newDef);
-				$newVal = $newDef['id'];
-				$choices[$newVal] = $newDef;
-
-
-				$form->remove('value');
-				$form->add('value', 'entity', array_merge($this->getValueOptions(), array(
-					'class' => 'DeskPRO:CustomFieldDefinition',
-					'choices' => $choices,
-				)));
-			}
-
-			$data['value'] = $newVal;
-			$event->setData($data);
 		}
 
-		parent::onPreSubmit($event);
+		// then, add new choice to list
+		if (!$newVal) {
+			$newDef = clone $this->definition;
+			$newDef['id'] = null;
+			$newDef->parent = $this->definition;
+			$newDef->children = new ArrayCollection();
+			$newDef['title'] = $data['value'];
+
+			if ($context = $form->getConfig()->getOption('context')) {
+				$newDef['context_id'] = $context['id'];
+			}
+
+			$form->get('value')->getConfig()->getOption('em')->persist($newDef);
+			$form->get('value')->getConfig()->getOption('em')->flush($newDef);
+			$newVal = $newDef['id'];
+			$choices[$newVal] = $newDef;
+		}
+
+		$data = $newVal;
 	}
 }

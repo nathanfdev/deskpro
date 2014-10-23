@@ -892,6 +892,12 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
 		}
 
 		$base_url = $this->get('request')->getBaseUrl();
+		try {
+			if ($this->container->get('deskpro.core.settings')->get('core.rewrite_urls')) {
+				$base_url = str_replace('/index.php', '', $base_url);
+			}
+		} catch (\Exception $e) {}
+
 
 		$this->sendInstallReport();
 
