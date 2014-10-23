@@ -99,7 +99,6 @@ class AppManipulator
 		$instance_updater = new InstanceUpdater($this->manager, $app, $this->em);
 		$instance_updater->update($inputTitle, $settings, $this->container);
 
-
 		// If this is a custom app, we can update assets from here as well
 		if ($app->package->is_custom) {
 			$blob_storage = $this->container->getBlobStorage();
