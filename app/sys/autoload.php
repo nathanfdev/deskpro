@@ -150,7 +150,9 @@ AnnotationRegistry::registerLoader(function($class) use ($loader) {
     return class_exists($class, false);
 });
 AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php');
-AnnotationRegistry::registerLoader(array($composer_loader, 'loadClass'));
+if (is_callable(array($composer_loader, 'loadClass'))) {
+	AnnotationRegistry::registerLoader(array($composer_loader, 'loadClass'));
+}
 
 require DP_ROOT.'/vendor/swiftmailer/swiftmailer/lib/swift_required.php';
 \Swift_DependencyContainer::getInstance()->register('cache.disk')-> asSharedInstanceOf('Orb\\Mail\\KeyCache\\DiskKeyCache')->withDependencies(array('cache.inputstream', 'tempdir'));
