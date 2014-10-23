@@ -103,11 +103,12 @@ class ThemeResolver
 	 */
 	public function templatePath(ThemeInterface $theme, $name)
 	{
-		if (
-			is_string($name)
-			&& 'Theme:' === substr($name, 0, 6)
-			&& 3 === count($parts = explode(':', $name))
-		) {
+		if (!is_string($name) || 3 !== count($parts = explode(':', $name)))
+		{
+			return null;
+		}
+
+		if ('Theme:' === substr($name, 0, 6)) {
 			$controller = $parts[1];
 			$filename   = $parts[2];
 
@@ -120,11 +121,8 @@ class ThemeResolver
 			return $this->tryParent($theme, $name);
 		}
 
-		if (
-			is_string($name)
-			&& 'ThemeParent:' === substr($name, 0, 12)
-			&& 3 === count($parts = explode(':', $name))
-		) {
+		// you can refer to the parent theme by prefixing "ThemeParent:" instead of "Theme:"
+		if ('ThemeParent:' === substr($name, 0, 12)) {
 			$converted_theme_name = 'Theme:' . substr($name, 12);
 			return $this->tryParent($theme, $converted_theme_name);
 		}
@@ -133,6 +131,11 @@ class ThemeResolver
 	}
 
 
+	/**
+	 * @param ThemeInterface $theme
+	 * @param                $name
+	 * @return null|string
+	 */
 	public function tryParent(ThemeInterface $theme, $name)
 	{
 		if ($parent = $theme->getParent()) {
