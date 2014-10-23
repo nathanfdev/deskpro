@@ -114,7 +114,7 @@
             _results = [];
             for (email in _ref) {
               entry = _ref[email];
-              if (entry.id != null) {
+              if (entry.person_id != null) {
                 _this.invited++;
               }
               if ('validation_error' === entry.error_code) {

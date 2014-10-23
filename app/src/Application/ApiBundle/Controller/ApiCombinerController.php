@@ -106,7 +106,7 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 				}
 			}
 
-			if ($load_data) {
+			if ($load_data !== null) {
 				$save_key = $k;
 				if (is_numeric($save_key)) {
 					$save_key = $route_id;

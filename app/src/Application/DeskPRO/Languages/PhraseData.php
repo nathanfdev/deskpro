@@ -82,30 +82,44 @@ class PhraseData
 		}
 
 		$phrase_data = array();
+		$flat_array = $ticket_deps->getFlatArray();
 
-		foreach ($ticket_deps->getFlatArray() as $dep_row) {
-			/** @var \Application\DeskPRO\Entity\Department $dep */
-			$dep   = $dep_row['object'];
+		foreach (array('agent', 'user') as $type) {
+			foreach ($flat_array as $dep_row) {
+				/** @var \Application\DeskPRO\Entity\Department $dep */
+				$dep = $dep_row['object'];
 
-			$id = $phrase_group . '.' . $dep->id;
+				if ($type == 'user') {
+					$id = $phrase_group . '.' . $dep->id . '_user';
+					$id2 = $phrase_group . '.' . $dep->id . '_title';
+					$custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
+					if (!$custom) {
+						$custom = isset($custom_phrases[$id2]) ? $custom_phrases[$id2] : null;
+					}
+				} else {
+					$id = $phrase_group . '.' . $dep->id . '_title';
+					$custom = isset($custom_phrases[$id]) ? $custom_phrases[$id] : null;
+				}
 
-			$row = array(
-				'id'      => $id,
-				'depth'   => $dep_row['depth'],
-				'type'    => 'ticket_department',
-				'type_id' => $dep->id,
-				'default' => $dep->title,
-				'lang'    => $dep->user_title ?: $dep->title,
-				'custom'  => isset($custom_phrases[$id]) ? $custom_phrases[$id] : null,
-			);
+				$row = array(
+					'id'      => $id,
+					'depth'   => $dep_row['depth'],
+					'type'    => 'ticket_department',
+					'type_id' => $dep->id,
+					'default' => $dep->title,
+					'lang'    => $dep->user_title ? : $dep->title,
+					'custom'  => $custom,
+					'type'    => $type,
+				);
 
-			// The default for the language
-			$row['lang_default'] = $row['lang'] ?: $row['default'];
+				// The default for the language
+				$row['lang_default'] = $row['lang'] ? : $row['default'];
 
-			// The actual set value that will be used
-			$row['set'] = $row['custom'] ?: $row['lang_default'];
+				// The actual set value that will be used
+				$row['set'] = $row['custom'] ? : $row['lang_default'];
 
-			$phrase_data[] = $row;
+				$phrase_data[] = $row;
+			}
 		}
 
 		return $phrase_data;

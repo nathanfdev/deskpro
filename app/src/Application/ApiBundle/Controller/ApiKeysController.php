@@ -77,7 +77,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 	public function listAction()
 	{
 		$keys = $this->em->getRepository('DeskPRO:ApiKey')->findAll();
-		return $this->createApiResponse($this->getApiData($keys, false));
+		return $this->createApiResponse($this->getApiData($keys, false) ?: array());
 	}
 
 	###################################################################################################################
