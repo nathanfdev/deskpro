@@ -489,7 +489,13 @@ class TicketEmail
 			$this->logger->info(sprintf("[TicketEmail] Is auto"));
 		}
 
-		$translator->setTemporaryLanguage($this->to_person->getLanguage(), function() use ($message) {
+		if ($this->user_mode == self::MODE_USER) {
+			$lang = $this->ticket->getRealLanguage() ?: $this->to_person->getLanguage();
+		} else {
+			$lang = $this->to_person->getLanguage();
+		}
+
+		$translator->setTemporaryLanguage($lang, function() use ($message) {
 			$message->prepare();
 		});
 
