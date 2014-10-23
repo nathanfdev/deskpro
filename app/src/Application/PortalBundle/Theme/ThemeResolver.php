@@ -66,7 +66,7 @@ class ThemeResolver
 	{
 		if (
 			is_string($input_controller)
-			&& 'Theme' === substr($input_controller, 0, 5)
+			&& 'Theme:' === substr($input_controller, 0, 6)
 			&& 3 === count($parts = explode(':', $input_controller))
 		) {
 			$controller = $parts[1];
@@ -85,6 +85,58 @@ class ThemeResolver
 			}
 
 			throw new \RuntimeException(sprintf('could not resolve theme controller "%s"', $input_controller));
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Get the absolute path to a filename for a theme, with the name format like:
+	 *
+	 * Theme:Portal:index.html.twig
+	 * ThemeParent:Portal:index.html.twig
+	 *
+	 * @param ThemeInterface $theme
+	 * @param                $name
+	 * @return string
+	 */
+	public function templatePath(ThemeInterface $theme, $name)
+	{
+		if (
+			is_string($name)
+			&& 'Theme:' === substr($name, 0, 6)
+			&& 3 === count($parts = explode(':', $name))
+		) {
+			$controller = $parts[1];
+			$filename   = $parts[2];
+
+			$template_file = sprintf('%s/%s/%s', $theme->getBaseTemplateDir(), $controller, $filename);
+
+			if (file_exists($template_file)) {
+				return $template_file;
+			}
+
+			return $this->tryParent($theme, $name);
+		}
+
+		if (
+			is_string($name)
+			&& 'ThemeParent:' === substr($name, 0, 12)
+			&& 3 === count($parts = explode(':', $name))
+		) {
+			$converted_theme_name = 'Theme:' . substr($name, 12);
+			return $this->tryParent($theme, $converted_theme_name);
+		}
+
+		return null;
+	}
+
+
+	public function tryParent(ThemeInterface $theme, $name)
+	{
+		if ($parent = $theme->getParent()) {
+			return $this->templatePath($parent, $name);
 		}
 
 		return null;

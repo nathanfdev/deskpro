@@ -29,74 +29,70 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage Brand
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Brand;
+namespace Application\PortalBundle\Twig;
 
-use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\NewSettings\SettingsBag;
-use Application\PortalBundle\Theme\ThemeResolver;
+use Application\DeskPRO\Brand\BrandStack;
+use Twig_Error_Loader;
 
-/**
- * The BrandContainer is a hub that holds all of the information that might be needed in the system that relate to a
- * particular brand. It is the context of the brand in question. It encompasses settings, template resolution/rendering,
- * brand information, and anything else you might want to do with a brand. It's created by the BrandFactory.
- */
-class BrandContainer 
+class PortalLoader implements \Twig_LoaderInterface
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\Brand
+	 * @var \Application\DeskPRO\Brand\BrandStack
 	 */
-	private $brand;
+	private $brand_stack;
+
+
+	public function __construct(BrandStack $brand_stack)
+	{
+		$this->brand_stack = $brand_stack;
+	}
 
 	/**
-	 * @var \Application\DeskPRO\NewSettings\SettingsBag
+	 * Gets the source code of a template, given its name.
+	 *
+	 * @param string $name The name of the template to load
+	 * @return string The template source code
+	 * @throws Twig_Error_Loader When $name is not found
 	 */
-	private $settings;
+	public function getSource($name)
+	{
+		if ($path = $this->brand_stack->getActive()->resolveTemplatePath((string) $name)) {
+			return file_get_contents($path);
+		}
+
+		throw new Twig_Error_Loader('could not find theme template "'.$name.'"');
+	}
+
 
 	/**
-	 * @var \Application\PortalBundle\Theme\ThemeResolver
+	 * Gets the cache key to use for the cache for a given template name.
+	 *
+	 * @param string $name The name of the template to load
+	 * @return string The cache key
+	 * @throws Twig_Error_Loader When $name is not found
 	 */
-	private $theme_resolver;
+	public function getCacheKey($name)
+	{
+		return $this->brand_stack->getActive()->getBrand()->id.$name;
+	}
+
 
 	/**
-	 * @var \Application\PortalBundle\Theme\ThemeInterface
+	 * Returns true if the template is still fresh.
+	 *
+	 * @param string    $name The template name
+	 * @param timestamp $time The last modification time of the cached template
+	 * @return bool    true if the template is fresh, false otherwise
+	 * @throws Twig_Error_Loader When $name is not found
 	 */
-	private $theme;
-
-
-	public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver)
+	public function isFresh($name, $time)
 	{
-		$this->brand = $brand;
-		$this->settings = $settings;
-		$this->theme_resolver = $theme_resolver;
-		$this->theme = $theme_resolver->getThemeById($brand->theme_id);
-	}
-
-	public function getSetting($setting_name)
-	{
-		return $this->getSettings()->get($setting_name);
-	}
-
-	public function getBrand()
-	{
-		return $this->brand;
-	}
-
-	public function getSettings()
-	{
-		return $this->settings;
-	}
-
-	public function resolveController($controller)
-	{
-		return $this->theme_resolver->controller($this->theme, $controller);
-	}
-
-	public function resolveTemplatePath($name)
-	{
-		return $this->theme_resolver->templatePath($this->theme, $name);
+		// if db source exists and updated_at less than time
+		// or file time
+		return false;
 	}
 }
  
