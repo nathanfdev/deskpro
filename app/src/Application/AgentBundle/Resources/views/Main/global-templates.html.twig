@@ -60,7 +60,7 @@
 			data-country-name="{{ info.country_name }}"
 			data-country-code="{{ info.country_code }}"
 			data-calling-code="{{ info.calling_code }}"
-		><span class="icon-flag icon-flag-{{info.country_code|lower}}">{{ info.calling_code }} {{ info.country_name }}</span></li>
+		><span class="flag flag-{{info.country_code|lower}}">{{ info.calling_code }} {{ info.country_name }}</span></li>
 	{% endfor %}
 </ul>
 
