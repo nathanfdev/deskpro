@@ -37,27 +37,22 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class PortalController extends AbstractController
 {
 	public function indexAction(Request $request)
 	{
-		$theme_id = $this->get('brand_stack')->getActive()->getBrand()->theme_id;
 		$person = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Person')->find(1);
 
-		return new Response(sprintf('persion with id=1 has the name "%s" and the email "%s"<br><br> Your current theme is: %s<br>route name: %s<br>Executed controller:%s', $person->name, $person->primary_email->email, $theme_id, $request->attributes->get(
-			'_route'
-		), $request->attributes->get('_controller')));
+		return $this->render('Theme:Portal:index.html.twig', array('person' => $person));
 	}
 
 
 	public function inheritedAction(Request $request)
 	{
 		$theme_id = $this->get('brand_stack')->getActive()->getBrand()->theme_id;
-		return new Response('this is cool, because this is in the base theme. if your theme is standard, and you see this, you have inherited this page!<br><br> Your current theme is: '.$theme_id .'<br>route name: ' . $request->attributes->get(
-			'_route'
-		) . '<br>Executed controller: ' . $request->attributes->get('_controller'));
+
+		return $this->render('Theme:Portal:inherited.html.twig', array('theme_id' => $theme_id));
 	}
 }
  

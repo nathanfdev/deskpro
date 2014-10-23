@@ -70,7 +70,7 @@ class BaseTheme implements ThemeInterface
 	 */
 	public function getBaseTemplateDir()
 	{
-		return '../../src/Application/PortalBundle/Themes/Base/Resources/views';
+		return __DIR__ . '/Resources/views';
 	}
 
 
