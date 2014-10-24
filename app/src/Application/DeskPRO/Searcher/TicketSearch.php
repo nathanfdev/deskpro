@@ -1740,7 +1740,7 @@ class TicketSearch extends SearcherAbstract
 								$choices_in[] = $this->quoteDbValue($c);
 							}
 							$choices_in = implode(',', $choices_in);
-							if (!$choices_in) $choices_in = '';
+							if (!$choices_in) $choices_in = '\'\'';
 						}
 
 						switch ($op) {
@@ -1860,14 +1860,10 @@ class TicketSearch extends SearcherAbstract
 										$choices_in[] = (int)$c;
 									}
 									$choices_in = implode(',', $choices_in);
+								}
 
-									$choice_str = array();
-									foreach ($field_def->children as $child) {
-										if (in_array($child['id'], $choice)) {
-											$choice_str[] = $child['title'];
-										}
-									}
-									$choice_str = implode(', ', $choice_str);
+								if (!$choices_in) {
+									$choice = 'DP_NO_SELECTION';
 								}
 
 								$field = 'custom_data_ticket_'.$join_id.'.field_id';
