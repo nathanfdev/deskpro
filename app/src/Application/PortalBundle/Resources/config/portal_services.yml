@@ -4,7 +4,7 @@ parameters:
 services:
   templating.portal:
     class: Application\PortalBundle\Templating\PortalTemplating
-    arguments: [@templating]
+    arguments: [@templating.engine.twig]
 
   brand_stack:
     class: Application\DeskPRO\Brand\BrandStack
@@ -23,6 +23,12 @@ services:
     arguments: [@brand_stack]
     tags:
       - { name: twig.loader }
+
+  portal_extension.twig:
+    class: Application\PortalBundle\Twig\PortalExtension
+    arguments: [@brand_stack]
+    tags:
+      - { name: twig.extension }
 
   data_collector.portal:
     class: Application\PortalBundle\DataCollector\PortalCollector
