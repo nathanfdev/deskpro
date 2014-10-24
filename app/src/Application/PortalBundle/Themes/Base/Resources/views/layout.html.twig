@@ -12,7 +12,35 @@
 	rel='stylesheet' type='text/css'>
 <body>
 
-{% block page_content %}{% endblock page_content %}
+<!-- Alerts -->
+<section>
+	<div class="column-full">
+		{{ alerts() }}
+	</div>
+</section>
+
+<!-- Top Nav -->
+<section>
+	<div class="column-full">
+		{{ top_bar() }}
+	</div>
+</section>
+
+<!-- Search & Ticket -->
+<section>
+	<div class="column-full">
+		{{ top_search() }}
+	</div>
+</section>
+
+{% block page_content %}
+	<section>
+		<div class="column-full">
+			{% block inner_content %}
+			{% endblock inner_content %}
+		</div>
+	</section>
+{% endblock page_content %}
 
 </body>
 </html>
