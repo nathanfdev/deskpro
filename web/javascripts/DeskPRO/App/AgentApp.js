@@ -247,7 +247,7 @@ define([
 				if (attrs['tplId'] && cache[attrs['tplId']]) {
 					tpl = cache[attrs['tplId']];
 				} else {
-					tpl = Strings.simpleTemplate(element.html());
+					tpl = Strings.simpleTemplate(element.html(), { isAngular: true });
 					if (attrs['tplId']) {
 						cache[attrs['tplId']] = tpl;
 					}
