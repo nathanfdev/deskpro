@@ -34,27 +34,18 @@
 
 namespace Application\PortalBundle\Themes\Base;
 
+use Application\PortalBundle\Theme\AbstractTheme;
 use Application\PortalBundle\Theme\Tag;
-use Application\PortalBundle\Theme\ThemeInterface;
 
-class BaseTheme implements ThemeInterface
+class BaseTheme extends AbstractTheme
 {
-	/**
-	 * @var Tag[]
-	 */
-	protected $tags;
-
-	public function __construct()
+	public function getTags()
 	{
-		/** @var Tag[] $tags */
-		$tags = array(
+		return array(
 			new Tag('example_tag', 'Theme:Portal:exampleTag')
 		);
-
-		foreach ($tags as $tag) {
-			$this->tags[$tag->getName()] = $tag;
-		}
 	}
+
 
 	/**
 	 * {@inheritdoc}
@@ -73,14 +64,6 @@ class BaseTheme implements ThemeInterface
 		return 'Base';
 	}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getParent()
-	{
-		return null;
-	}
-
 
 	/**
 	 * {@inheritdoc}
@@ -97,17 +80,5 @@ class BaseTheme implements ThemeInterface
 	public function getNamespace()
 	{
 		return __NAMESPACE__;
-	}
-
-
-	/**
-	 * Get the tag for the given tag name.
-	 *
-	 * @param $tag_name
-	 * @return Tag|null
-	 */
-	public function getTag($tag_name)
-	{
-		return isset($this->tags[$tag_name]) ? $this->tags[$tag_name] : null;
 	}
 }

@@ -34,18 +34,10 @@
 
 namespace Application\PortalBundle\Themes\Standard;
 
-use Application\PortalBundle\Theme\Tag;
-use Application\PortalBundle\Theme\ThemeInterface;
+use Application\PortalBundle\Theme\AbstractTheme;
 
-class StandardTheme implements ThemeInterface
+class StandardTheme extends AbstractTheme
 {
-	private $parent;
-
-	public function __construct($parent)
-	{
-		$this->parent = $parent;
-	}
-
 	/**
 	 * {@inheritdoc}
 	 */
@@ -64,12 +56,9 @@ class StandardTheme implements ThemeInterface
 	}
 
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getParent()
+	public function getTags()
 	{
-		return $this->parent;
+		return array();
 	}
 
 
@@ -88,16 +77,5 @@ class StandardTheme implements ThemeInterface
 	public function getNamespace()
 	{
 		return __NAMESPACE__;
-	}
-
-
-	/**
-	 * Get the tag for the given tag name.
-	 *
-	 * @param $tag_name
-	 * @return Tag
-	 */
-	public function getTag($tag_name)
-	{
 	}
 }
