@@ -1,0 +1,26 @@
+
+.panel-tiny {
+  ul {
+    font-weight: 400;
+    margin: 0px;
+    padding: 0px;
+    display: block;
+    margin-left: 10px;
+
+    li {
+      @include whitespace;
+      display: block;
+      height: 2em;
+
+      a {
+        text-decoration: none;
+        color: #717171;
+
+        &:hover {
+          color: #333;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

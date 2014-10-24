@@ -1,0 +1,31 @@
+.tooltip {
+  background: #737373;
+  position: relative;
+  color: #fff;
+  border-radius: 2px;
+  padding: 15px;
+  line-height: 1em; }
+  .tooltip h1 {
+    color: inherit;
+    font-size: 1.1em;
+    font-weight: 400;
+    margin-bottom: 5px; }
+  .tooltip a {
+    color: inherit;
+    opacity: 0.5;
+    font-size: 0.9em;
+    text-decoration: none; }
+    .tooltip a:hover {
+      opacity: 1; }
+  .tooltip:before {
+    content: " ";
+    display: block;
+    width: 0px;
+    height: 0px;
+    border: 4px solid transparent;
+    border-bottom: 4px solid #737373;
+    position: absolute;
+    top: -8px;
+    left: 40px; }
+
+/*# sourceMappingURL=tooltips.css.map */

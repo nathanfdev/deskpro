@@ -1,0 +1,131 @@
+// Main color scheme
+
+
+
+.grey {
+  color: #b6b6b6;
+}
+
+
+
+$button-color: #3575bd;
+$button-color-secondary: #93d06e;
+
+
+
+$surface-main: #f2f2ec;
+$surface-secondary: #f6f6f6;
+
+
+
+
+$grey: #e6e6e6;
+
+
+
+$page-background: #fff;
+
+$text-color: #737373;
+
+
+$divider-color: #e5e5e5;
+
+
+
+$form-input: #f7f7f7;
+
+$button-grey: #e8e8e8;
+$button-text: #fff;
+
+$border-radius-main: 4px;
+$border-radius-small: 2px;
+
+$common-box-shadow-inner: inset 0px 0px 20px 10px rgba(0, 0, 0, 0.05);
+
+
+// Forms
+
+
+// Use for placeholders, disabled
+$text-faded: #d4d4d4;
+
+
+
+// Change the button text color based on the background color
+@function set-button-text-color($color) {
+    @if (lightness( $color ) > 60) {
+      @return #000000;
+    }
+    @else {
+      @return #FFFFFF;
+    }
+}
+
+
+
+
+@mixin button {
+
+}
+
+
+
+
+// Mixins
+
+@mixin whitespace {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin no-whitespace {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin generate-background-and-border($bg) {
+  background: $bg;
+  border: 0px;
+  border-bottom: 1px solid shade($bg, 15%);
+  border-radius: 2px;
+}
+
+
+@mixin make-this-a-button($bg, $text, $padding-vertical, $padding-horizontal) {
+  background: $bg;
+  border: 0px;
+  border-bottom: 1px solid shade($bg, 15%);
+  padding: $padding-vertical $padding-horizontal;
+  display: inline-block;
+  color: $text;
+  border-radius: 2px;
+  text-decoration: none;
+  line-height: 1em;
+  font-size: 0.9em;
+
+  &:hover {
+    background: shade($bg, 5%);
+    color: #fff;
+    border-bottom: 1px solid shade($bg, 15%);
+  }
+}
+
+
+
+
+$form-padding-vertical: 0.75em;
+$form-padding-horizontal: 1em;
+
+$button-secondary-color: #fff;
+
+
+
+
+
+// Font Sizes
+
+$font-small: 0.8em;
+$font-mid: 0.9em;
+$font-default: 1em;

@@ -1,0 +1,97 @@
+// Buttons
+
+
+
+button, .button, input[type="submit"] {
+  @include generate-background-and-border($button-color);
+  color: set-button-text-color($button-color);
+  border-radius: 2px;
+  display: inline-block;
+  line-height: 1em;
+  padding: 1em 2em;
+  width: auto;
+  font-size: 13px;
+  font-weight: 300;
+  text-decoration: none;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+  position: relative;
+
+  &.cancel {
+    background: none;
+    color: #333;
+    border-bottom: 1px solid #fff;
+    text-shadow: none;
+  }
+
+  &.button-blank {
+    border: 1px solid #e0e0e0;
+    background: none;
+    color: #828385;
+    position: relative;
+    text-shadow: none;
+  }
+
+  &.button-dropdown {
+    border: 1px solid #e0e0e0;
+    background: none;
+    color: #828385;
+    position: relative;
+    text-shadow: none;
+
+    .extra {
+      border-left: 1px solid #e0e0e0;
+      padding-left: 10px;
+      position: relative;
+      left: 10px;
+      margin-left: 10px;
+    }
+  }
+
+  &.button-open {
+    border-radius: 0px;
+    border-top: 0px;
+    border-bottom: 0px;
+    color: #3575bd;
+
+    i { margin-left: 10px; }
+  }
+
+  &.button-dropdown-activated {
+    @extend .button-dropdown;
+    position: relative;
+    border: 1px solid #c2c2c2;
+    border-bottom: 0px;
+    z-index: 100;
+    background: #fff;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+
+  &.auth-one {
+    background: #008ca9;
+  }
+
+  &.auth-facebook {
+    background: #4c6fac;
+  }
+
+  &.button-reply {
+
+    &:before {
+      content: ' ';
+      display: block;
+      width: 0px;
+      background: none;
+      border: 5px solid rgba(0, 0, 0, 0);
+      border-right: 5px solid $button-color;
+      position: absolute;
+      left: -8px;
+      top: 40%;
+    }
+  }
+
+  &.button-resolved {
+    @include generate-background-and-border($button-color-secondary);
+  }
+
+}

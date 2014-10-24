@@ -1,0 +1,41 @@
+
+
+
+// Downloads
+
+.front-page-downloads {
+
+
+
+  ul {
+
+    li {
+
+
+      .file-icon {
+        display: inline-block;
+        background: #1d70b7;
+        color: #fff;
+        border-radius: 2px;
+        vertical-align: middle;
+        margin-right: 10px;
+        padding: 5px;
+        text-align: center;
+        min-width: 35px;
+
+        font-size: 9px;
+        font-weight: 500;
+        text-transform: uppercase;
+
+        &.file-download {
+          background: #b6b800;
+        }
+
+        span {
+          line-height: 1em;
+        }
+      }
+
+    }
+  }
+}

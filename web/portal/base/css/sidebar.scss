@@ -1,0 +1,287 @@
+
+
+
+
+
+
+
+
+
+.agents-online {
+  ul {
+    li {
+      margin-bottom: 10px;
+    }
+  }
+
+  ul.simple {
+    li {
+      display: inline-block;
+
+      span.agent-avatar {
+        box-sizing: content-box;
+        border: 3px solid #fff;
+
+        &:hover {
+          border: 3px solid #93d06e;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+
+
+
+.get-in-touch {
+  h2 {
+    margin-top: 10px;
+  }
+}
+
+
+.link-solo {
+  font-size: 1.1em;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-decoration: none;
+  display: inline-block;
+
+  i {
+    margin-right: 5px;
+      font-size: 1.1em;
+  }
+}
+
+.link-facebook {
+  color: #4c6fab;
+}
+
+.link-twitter {
+  color: #6eb9e4;
+}
+
+
+
+
+
+
+
+
+
+// Top articles
+
+.top-articles {
+
+  ul {
+    padding-bottom: 20px;
+    a {
+      color: #333;
+      display: block;
+      line-height: 1.5em;
+      margin-bottom: 5px;
+      //@include whitespace;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+  }
+
+  ul.simple {
+    li {
+      a {
+        @include whitespace;
+        background: url(../img/icon-article.png) no-repeat center left;
+        padding-left: 25px;
+      }
+    }
+  }
+
+
+  .meta {
+    display: block;
+    font-size: 0.9em;
+    color: #cecece;
+    line-height: 1em;
+
+    span:first-of-type {
+      margin-left: 5px;
+    }
+  }
+
+  .button {
+    margin-top: 10px;
+  }
+}
+
+
+
+
+
+
+// Customer satisfaction
+
+.satisfaction-meta {
+  font-weight: 500;
+  margin-top: 5px;
+  span {
+    color: #93d06e;
+  }
+}
+
+
+.happy-faces {
+  border: 1px solid #e7e7e7;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin-top: 10px;
+
+  span {
+    display: inline-block;
+    width: 21px;
+    height: 20px;
+    margin-right: 7px;
+    margin-top: 5px;
+  }
+
+  .happy {
+    background: no-repeat url(../img/icon-face-happy.png);
+  }
+
+  .unhappy {
+    background: no-repeat url(../img/icon-face-unhappy.png);
+  }
+
+  .so-and-so {
+    background: no-repeat url(../img/icon-face-so-and-so.png);
+  }
+}
+
+
+
+
+
+.sidebar {
+  padding-left: 20px;
+
+  .button {
+    width: 100%;
+    text-align: center
+  }
+
+  // From .small-form
+  hr {
+    background: #cecece;
+    border: 0px;
+    height: 1px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  h1 {
+    font-weight: 400;
+    font-size: 1.3em;
+    margin-bottom: 5px;
+    color: #848484;
+  }
+
+  h2 {
+    font-weight: 500;
+  }
+
+  p {
+    font-size: 0.95em;
+    line-height: 1.4em;
+  }
+
+
+  .large-title {
+    border-bottom: 0px;
+    margin-bottom: 0px;
+
+    h1 {
+      left: 0px;
+      top: 0px;
+      padding: 0px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .panel-tiny {
+    ul {
+      margin-left: 0px;
+    }
+  }
+
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 10px;
+
+    a {
+      text-decoration: none;
+      padding-right: 3px;
+
+      &:hover {
+        .focus {
+          @include transition (all 0.5s ease-in-out);
+          opacity: 1;
+          color: #76b153;
+          &:after {
+            @include transition (all 0.5s ease-in-out);
+            background: #76b153;
+          }
+        }
+      }
+    }
+
+    .focus {
+      font-size: 0.8em;
+      color: #cecece;
+      line-height: 0.8em;
+      padding-bottom: 0px;
+      font-weight: 700;
+      opacity: 0.8;
+      position: relative;
+      top: -1px;
+
+      &:after {
+        content: ' ';
+        display: block;
+        bottom: 0px;
+        left: 0px;
+        width: 100%;
+        position: absolute;
+        height: 2px;
+        background: #cecece;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+aside {
+  border-left: 1px dashed #e5e5e5;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+
+
+.knowledge-base {
+  border-top: 1px dashed #e5e5e5;
+  margin-top: 30px;
+  padding: 10px;
+
+  p {
+    opacity: 0.75;
+  }
+}

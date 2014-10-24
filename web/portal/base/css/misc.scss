@@ -1,0 +1,116 @@
+// Inline tags for text
+
+.text-tag {
+  background: #579034;
+  border-radius: 2px;
+  font-weight: 600;
+  color: #f0f0f0;
+  padding: 3px 6px;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  cursor: default;
+  line-height: 1em;
+  position: relative;
+
+  i {
+    position: relative;
+    top: 0px;
+    left: 2px;
+  }
+}
+
+// Adding tags to h1
+h1 {
+  .text-tag {
+    font-size: 10px;
+    background: #93d06e;
+    color: #dbedd2;
+    position: relative;
+    top: -2px;
+    left: 4px;
+
+    &:after {
+      content: " ";
+      width: 0px;
+      height: 0px;
+      display: block;
+      border: 4px solid rgba(0, 0, 0, 0);
+      border-right: 4px solid #93d06e;
+      position: absolute;
+      left: -6px;
+      top: 5px;
+    }
+  }
+}
+
+// Tag with pointy thingy up
+.rating-tag {
+  @extend .text-tag;
+  background: #93d06e;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+// Tag with comment icon
+.comment-tag {
+  @extend .text-tag;
+  background: #3575bd;
+  padding-top: 1px;
+  padding-bottom: 1px;
+
+  i {
+    font-size: 0.9em;
+    top: -1px;
+  }
+}
+
+// Date tag for news list
+.date-tag {
+  @extend .text-tag;
+  background: #e7e7e7;
+  color: #b9b9b9;
+  min-width: 40px;
+  display: inline-block;
+  text-align: center;
+  margin-right: 10px;
+
+  span {
+    color: #cecece;
+    font-size: 0.7em;
+  }
+
+  &:after {
+    content: " ";
+    width: 0px;
+    height: 0px;
+    display: block;
+    border: 4px solid rgba(0, 0, 0, 0);
+    border-left: 4px solid #e7e7e7;
+    position: absolute;
+    right: -8px;
+    top: 5px;
+  }
+}
+
+// Files & file icons
+.file-tag {
+  display: inline-block;
+  min-width: 40px;
+  font-size: 0.6em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-right: 5px;
+}
+
+.file-pdf {
+  background-color: #f44e4e;
+  background-image: url(../img/icon-pdf.png);
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+.file-zip {
+  background-color: #b6b800;
+  background-image: url(../img/icon-zip.png);
+  background-repeat: no-repeat;
+  background-position: 30px center;
+}

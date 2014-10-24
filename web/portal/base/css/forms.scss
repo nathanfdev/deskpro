@@ -1,0 +1,136 @@
+// Basic form styles
+
+
+input[type="text"], input[type="password"], textarea {
+  border: 0px;
+  padding: $form-padding-vertical $form-padding-horizontal;
+  margin-bottom: 10px;
+  font-weight: 300;
+
+  @include placeholder {
+    color: #b0b0b0;
+    font-style: italic;
+    font-size: $font-mid;
+  }
+}
+
+textarea {
+  outline: none;
+  width: 100%;
+  min-height: 110px;
+  border: 0px;
+  font-size: 14px;
+  @include generate-background-and-border(#f8f8f8);
+
+  @include placeholder {
+    color: #b0b0b0;
+    font-style: italic;
+  }
+}
+
+
+
+
+
+// Cramped forms (in a dropdown, in the sidebar etc)
+
+.small-form {
+  margin: 0;
+
+  .button, button {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+
+  hr {
+    background: #e5e5e5;
+    border: 0px;
+    height: 1px;
+  }
+
+  .panel {
+    margin-left: 5px;
+  }
+
+  h1 {
+    font-size: 1.2em;
+  }
+
+  p {
+    line-height: 1.5em;
+  }
+
+  label {
+    display: block;
+    position: relative;
+
+    span {
+      display: block;
+      padding-left: 5px;
+    }
+  }
+
+  .permanent-login {
+    display: block;
+    font-size: 0.85em;
+    margin-left: 5px;
+    position: relative;
+    line-height: 1.5em;
+    top: -3px;
+
+    label {
+      display: inline-block;
+      cursor: pointer;
+    }
+  }
+
+  .secondary-action {
+    font-size: 0.85em;
+    a {
+      margin-left: 5px;
+      text-decoration: none;
+      color: #333;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  input[type="text"], input[type="password"], textarea {
+    border: 1px solid #e0e0e0;
+    width: 100%;
+    border-radius: 4px;
+  }
+
+}
+
+
+// Error handling
+form {
+  .error {
+    .message {
+      display: block;
+      position: absolute;
+      bottom: 10px;
+      right: 0px;
+      background: #de7878;
+      color: #fff;
+      padding-left: 4px;
+      padding-right: 4px;
+      font-size: 0.9em;
+      line-height: 1.5em;
+      font-weight: 500;
+    }
+
+    input[type="text"], input[type="password"] {
+      background: #fff0ec;
+      border: 2px solid #de7878;
+      border-top-right-radius: 0px;
+    }
+  }
+}

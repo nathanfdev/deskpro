@@ -1,0 +1,33 @@
+@media only screen and (max-width: 1023px) {
+  body {
+    background: #fff;
+  }
+
+  .ticket {
+
+    .ticket-agents, .agent-extras {
+      float: none;
+      width: auto;
+      text-align: left;
+
+      &.agent-extras {
+        margin-left: 20px;
+        border-left: 0px solid #fff;
+
+        .agent {
+          margin-left: 0px;
+          margin-right: 0px
+        }
+
+        .agent-avatar {
+          margin-right: 10px;
+        }
+      }
+    }
+
+    .agent {
+      width: auto;
+      margin-left: 20px;
+    }
+  }
+}

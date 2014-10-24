@@ -1,0 +1,158 @@
+// Top search & create ticket panel
+//
+// Add .single-item to .search-and-ticket for showing just the ticket create button
+// or just the search form at 100%
+
+.search-and-ticket {
+  @include clearfix;
+  border: 1px dashed #e1e1e1;
+  border-radius: $border-radius-main;
+  padding: 10px;
+  margin: 0px 0px 50px 0px;
+
+  // Structure
+  // Set widths for the three main boxes (search form, the "or" divider, and the ticket button)
+  .search-box, .or, .ticket {
+    float: left;
+    display: block;
+    @include clearfix;
+
+    &.search-box { width: 65%;  }
+    &.or { width: 5%; }
+    &.ticket { width: 30%; }
+
+    // Responsive Styles
+    @media screen and (max-width: 760px) {// This applies to the class it's into
+      float: none;
+
+      &.search-box, &.ticket { width: 100%; }
+
+      &.or {
+        padding: 0;
+        margin: 10px 0px;
+        width: 100%;
+
+        &:before, &:after {
+          width: 42%;
+          height: 1px;
+          top: 5px;
+        }
+
+        &:before { left: 0px; }
+        &:after { left: auto; right: 0px; }
+      }
+    }// End Responsive Styles
+  }
+
+  &.single-item {// Use this class when you only need just the ticker or form
+    .search-box, .or, .ticket {
+      width: 100%;
+    }
+  }
+  // End Structure
+
+
+  $top-search-common-line-height: 20px;
+  // Basis for all input and buttons so they're always the same height
+  input[type="text"], button, .button-ticket {
+    font-size: 14px;// Use pixels because icon font does not have the same baseline height and ends up increasing the padding
+    padding: 1.3em 2em;
+    border: 0px;
+    border-radius: 2px;
+    border-bottom: 1px solid shade($form-input, 7.5%);
+    vertical-align: top;
+    font-family: "open sans";
+    line-height: $top-search-common-line-height;
+    margin-bottom: 0px;
+
+    i {
+      line-height: $top-search-common-line-height
+    }
+  }
+
+  form.search-box {
+    margin-bottom: 0px;
+
+    // Use float instead of inline block to avoid the need for extra styles if there's no ticket
+    input[type="text"], button {
+      left: 0px;
+      float: left;
+    }
+
+    input[type="text"] {
+      background: $form-input;
+      border-radius: 2px;
+      color: #333;
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+      width: 80%;
+
+      @include placeholder {
+        color: $text-faded;
+        font-style: italic;
+        font-weight: 100;
+      }
+    }
+
+    button {
+      background: shade($form-input, 5%);
+      padding-left: 0px;
+      padding-right: 0px;
+      border-bottom-right-radius: 0px;
+      border-bottom-left-radius: 0px;
+      color: #cecece;
+      width: 20%;
+
+      &:hover {
+        box-shadow: $common-box-shadow-inner;
+      }
+    }
+  }
+
+  .or {
+    font-weight: 700;
+    text-transform: uppercase;
+    position: relative;
+    text-align: center;
+    padding: 1.8em 0em;
+    line-height: 1em;
+    font-size: 0.8em;
+
+    &:before, &:after {
+      content: " ";
+      display: block;
+      width: 1px;
+      height: 16px;
+      background: $button-grey;
+      position: absolute;
+      left: 50%;
+    }
+
+    &:before { top: 0px; }
+    &:after { bottom: 0px; }
+  }
+
+  .button-ticket {
+    @include generate-background-and-border($button-color);
+    //color: $button-text;
+    color: set-button-text-color($button-color);
+    border-radius: $border-radius-small;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    font-weight: 300;
+
+    // Get rid of extra padding to fit as much text as possible on this button (to acommodate translations etc), max ~25 characters
+    // right now, would need to edit the width for the button for more
+    padding-left: 5px;
+    padding-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+      box-shadow: $common-box-shadow-inner;
+    }
+  }
+}

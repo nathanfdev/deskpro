@@ -1,0 +1,57 @@
+
+.brand {
+  h1 {
+    font-weight: 300;
+    font-size: 1.5em;
+    padding-left: 20px;
+    position: absolute;
+    bottom: 20px;
+  }
+}
+
+.top-bar {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  margin-bottom: 20px;
+  color: #828385;
+  position: relative;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    text-align: right;
+
+    img { vertical-align: middle; }
+
+    li {
+      display: inline;
+      margin-left: 5px;
+      text-align: left;
+      position: relative;
+    }
+  }
+
+
+  .language-dropdown {
+    background: #fff;
+
+    li {
+      display: block;
+
+      a {
+        color: #bfc0c0;
+        padding: 0;
+        text-decoration: none;
+
+        &.active-language {
+          color: #828385;
+        }
+
+        &:hover {
+          color: #444;
+        }
+      }
+    }
+  }
+}

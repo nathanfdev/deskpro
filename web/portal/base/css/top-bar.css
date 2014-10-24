@@ -1,0 +1,39 @@
+.brand h1 {
+  font-weight: 300;
+  font-size: 1.5em;
+  padding-left: 20px;
+  position: absolute;
+  bottom: 20px; }
+
+.top-bar {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  margin-bottom: 20px;
+  color: #828385;
+  position: relative; }
+  .top-bar ul {
+    margin: 0;
+    padding: 0;
+    text-align: right; }
+    .top-bar ul img {
+      vertical-align: middle; }
+    .top-bar ul li {
+      display: inline;
+      margin-left: 5px;
+      text-align: left;
+      position: relative; }
+  .top-bar .language-dropdown {
+    background: #fff; }
+    .top-bar .language-dropdown li {
+      display: block; }
+      .top-bar .language-dropdown li a {
+        color: #bfc0c0;
+        padding: 0;
+        text-decoration: none; }
+        .top-bar .language-dropdown li a.active-language {
+          color: #828385; }
+        .top-bar .language-dropdown li a:hover {
+          color: #444; }
+
+/*# sourceMappingURL=top-bar.css.map */

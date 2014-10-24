@@ -1,0 +1,63 @@
+.alerts {
+  font-size: 0.9em;
+  font-weight: 400;
+
+  a.all-tickets {
+    border-bottom: 2px solid #d9dada;
+    padding-bottom: 1px;
+    text-decoration: none;
+  }
+
+  .ticket-title {
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .post-content {
+    font-style: italic;
+    opacity: 0.7;
+  }
+
+  .all-tickets {
+    margin-left: 15px;
+    font-size: $font-mid;
+  }
+}
+
+.alert {
+  @include generate-background-and-border(#f9f9f6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+  padding: 0.75em 1em;
+  display: block;
+  border-radius: 2px;
+  text-decoration: none;
+  color: $text-color;
+  padding-right: 50px;
+  position: relative;
+  margin-bottom: 10px;
+
+  strong {
+    color: #828385;
+  }
+
+  i {
+    position: absolute;
+    right: 20px;
+    top: 36%;
+    color: #444;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+//

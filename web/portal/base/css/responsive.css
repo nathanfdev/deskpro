@@ -1,0 +1,21 @@
+@media only screen and (max-width: 1023px) {
+  body {
+    background: #fff; }
+
+  .ticket .ticket-agents, .ticket .agent-extras {
+    float: none;
+    width: auto;
+    text-align: left; }
+    .ticket .ticket-agents.agent-extras, .ticket .agent-extras.agent-extras {
+      margin-left: 20px;
+      border-left: 0px solid #fff; }
+      .ticket .ticket-agents.agent-extras .agent, .ticket .agent-extras.agent-extras .agent {
+        margin-left: 0px;
+        margin-right: 0px; }
+      .ticket .ticket-agents.agent-extras .agent-avatar, .ticket .agent-extras.agent-extras .agent-avatar {
+        margin-right: 10px; }
+  .ticket .agent {
+    width: auto;
+    margin-left: 20px; } }
+
+/*# sourceMappingURL=responsive.css.map */
