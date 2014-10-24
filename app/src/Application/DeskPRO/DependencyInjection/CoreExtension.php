@@ -208,7 +208,12 @@ class CoreExtension extends Extension
 	protected function loadEntityListeners(ContainerBuilder $container)
 	{
 		$container
-			->register('dp.entity_lister.person_log', 'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener')
+			->register('dp.entity_lister.person_changelog', 'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener')
+			->addArgument(new Reference('service_container'))
+			->addTag('doctrine.entity_listener');
+
+		$container
+			->register('dp.entity_lister.person_contact_data_changelog', 'Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener')
 			->addArgument(new Reference('service_container'))
 			->addTag('doctrine.entity_listener');
 	}

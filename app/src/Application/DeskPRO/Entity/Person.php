@@ -1350,7 +1350,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 */
 	public function addContactData(PersonContactData $contact_data)
 	{
-		$this['contact_data']->add($contact_data);
+		$this->contact_data->add($contact_data);
 		$contact_data['person'] = $this;
 		$this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
 	}

@@ -47,6 +47,9 @@ abstract class EntityChangeLogListener
 	/** @var array */
 	protected $queued_updates = array();
 
+	/** @var array  */
+	protected $queued_deletions = array();
+
 	/** @var \Application\DeskPRO\Monolog\Logger  */
 	protected $logger;
 
@@ -127,18 +130,27 @@ abstract class EntityChangeLogListener
 	{
 		$oid = spl_object_hash($entity);
 
-		foreach (array('inserts', 'updates') as $type) {
-			if (!isset($this->{'queued_' . $type}[$oid])) {
-				continue;
-			}
-
-			$entry = $this->{'queued_' . $type}[$oid];
-			$this->logger->info($entry);
-			foreach ($entry->children as $child) {
-				$this->logger->info($child);
-			}
-
-			unset($this->{'queued_' . $type}[$oid]);
+		foreach (array('inserts', 'updates', 'deletions') as $type) {
+			$this->doFlush($oid, $type);
 		}
+	}
+
+	/**
+	 * @param $oid
+	 * @param $type
+	 */
+	protected function doFlush($oid, $type)
+	{
+		if (!isset($this->{'queued_' . $type}[$oid])) {
+			return;
+		}
+
+		$entry = $this->{'queued_' . $type}[$oid];
+		$this->logger->info($entry);
+		foreach ($entry->children as $child) {
+			$this->logger->info($child);
+		}
+
+		unset($this->{'queued_' . $type}[$oid]);
 	}
 } 

@@ -72,7 +72,15 @@
                 {% elseif 'picture_blob' == entry.details.property %}
                     Changed Picture
                 {% elseif 'contact_data' == entry.details.property %}
-                    Set {{ _self.contact_prop(entry.details.new) }} to {{ _self.contact_val(entry.details.new) }}
+	                {% if null == entry.details.old %}
+		                Added {{ _self.contact_prop(entry.details.new) }} {{ _self.contact_val(entry.details.new) }}
+	                {% elseif null == entry.details.new %}
+		                Removed {{ _self.contact_prop(entry.details.old) }} {{ _self.contact_val(entry.details.old) }}
+	                {% else %}
+		                Changed {{ _self.contact_prop(entry.details.new) }}
+		                from {{ _self.contact_val(entry.details.old) }}
+		                to {{ _self.contact_val(entry.details.new) }}
+	                {% endif %}
                 {% elseif 'is_disabled' == entry.details.property %}
                     User {% if entry.details.new %}disabled{% else %}enabled{% endif %}
                 {% elseif 'custom_data' == entry.details.property %}

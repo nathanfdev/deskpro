@@ -950,10 +950,6 @@ class PersonController extends AbstractController
 					$contact_data = new PersonContactData();
 					$contact_data->contact_type = $type;
 					$contact_data->applyFormData($input);
-
-					$contact_data->person = $person;
-
-					$this->em->persist($contact_data);
 					$person->addContactData($contact_data);
 
 					$added[] = $contact_data;
@@ -967,13 +963,13 @@ class PersonController extends AbstractController
 				}
 
 				$person->contact_data[$id]->applyFormData($input);
-				$this->em->persist($person->contact_data[$id]);
 			}
 
 			// Removing values
 			foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
 				if ($cd = $person->contact_data->get($id)) {
 					$person->removeContactData($cd);
+					// todo: should be removed implicitly
 					$this->em->remove($cd);
 
 					if (isset($contact_data_array[$cd->contact_type][$cd->id])) {

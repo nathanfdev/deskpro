@@ -63,7 +63,7 @@ class LogEvent extends DomainObject implements Loggable
 	protected $details;
 
 	/** @var BaseLogEvent */
-	protected $_event;
+	public $_event;
 
 	public function __construct(BaseLogEvent $event, Person $person = null)
 	{
