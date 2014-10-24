@@ -1,6 +1,53 @@
-{% extends 'TwigBundle::layout.html.twig' %}
+{% extends 'Theme::layout.html.twig' %}
 
-{% block body %}
-home page! But check out the standard theme. It doesn't overwrite this template. Insrtead, it overwrites the controller
-	and renders a different theme template.
-{% endblock %}
+{% block page_content %}
+	<!-- Alerts -->
+	<section>
+		<div class="column-full">
+			{{ alerts() }}
+		</div>
+	</section>
+
+	<!-- Top Nav -->
+	<section>
+		<div class="column-full">
+			<viewer path="blocks/top-bar/top-bar.html"></viewer>
+		</div>
+	</section>
+
+	<!-- Search & Ticket -->
+	<section>
+		<div class="column-full">
+			<viewer path="blocks/top-search/top-search.html"></viewer>
+		</div>
+	</section>
+
+	<!-- Full width news -->
+	<section>
+		<div class="column-full">
+			<viewer path="blocks/news/news.html"></viewer>
+		</div>
+	</section>
+
+
+	<!-- Knowledge Base -->
+	<section>
+		<viewer path="blocks/kb/kb-list-articles.html"></viewer>
+	</section>
+
+	<!-- Three Columns -->
+	<section>
+		<div class="column-third">
+			<viewer path="blocks/news/news-tiny.html"></viewer>
+		</div>
+
+		<div class="column-third">
+			<viewer path="blocks/feedback/feedback.html"></viewer>
+		</div>
+
+		<div class="column-third omega">
+			<viewer path="blocks/downloads/downloads.html"></viewer>
+		</div>
+	</section>
+
+{% endblock page_content %}
