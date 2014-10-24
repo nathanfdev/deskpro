@@ -30,6 +30,11 @@ namespace Application\DeskPRO\Entity\EventListener;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\ApiBundle\Request\RequestAuth;
+use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
+use Application\DeskPRO\People\PersonGuest;
+use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 abstract class EntityChangeLogListener
 {
