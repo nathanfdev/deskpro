@@ -54,11 +54,11 @@ class PortalExtension extends \Twig_Extension
 	public function getFunctions()
 	{
 		return array(
-			new \Twig_SimpleFunction('*', array($this, 'processPortalTag'))
+			new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html')))
 		);
 	}
 
-	public function processPortalTag($tag_name, $arguments)
+	public function processPortalTag($tag_name, $arguments = array())
 	{
 		return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
 	}
