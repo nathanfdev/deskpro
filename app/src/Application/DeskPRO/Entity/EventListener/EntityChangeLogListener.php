@@ -31,10 +31,13 @@ namespace Application\DeskPRO\Entity\EventListener;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\ApiBundle\Request\RequestAuth;
+use Application\DeskPRO\Entity\LogEvent;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Application\DeskPRO\People\PersonGuest;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
+use Application\DeskPRO\Log\Event\Base as BaseLogEvent;
 
 abstract class EntityChangeLogListener
 {
@@ -101,6 +104,23 @@ abstract class EntityChangeLogListener
 	}
 
 	/**
+	 *
+	 */
+	protected function tryToGetApiKeyFromContext()
+	{
+		$c = $this->container;
+		/** @var RequestAuth $auth */
+		try {
+			if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
+				if ($apiUser = $auth->getApiUser()) {
+					return $apiUser->api_key;
+				}
+			}
+		} catch (InactiveScopeException $e) {
+		}
+	}
+
+	/**
 	 * @param DomainObject $entity
 	 * @return array
 	 */
@@ -122,6 +142,14 @@ abstract class EntityChangeLogListener
 			$ret[$change->getField()] = $change;
 		}
 		return $ret;
+	}
+
+	protected function createLogEntry(BaseLogEvent $event, Person $performer = null)
+	{
+		$performer = $this->getContextPerson() ?: $performer;
+		$key = $this->tryToGetApiKeyFromContext();
+
+		return new LogEvent($event, $performer, $key);
 	}
 
 	/**

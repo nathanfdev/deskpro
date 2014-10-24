@@ -13,6 +13,7 @@
 {%- endmacro -%}
 
 {%- macro contact_val(item) -%}
+	<span class="new-val">
     {%- if item is empty or item.contact_type is not defined -%}
     {%- elseif 'twitter' == item.contact_type or 'instant_message' == item.contact_type or 'skype' == item.contact_type -%}
         {{ item.username }}
@@ -27,6 +28,7 @@
     {%- elseif 'facebook' == item.contact_type or 'linked_in' == item.contact_type -%}{{ item.display }}
     {%- elseif 'website' == item.contact_type -%}{{ item.url }}
     {%- endif -%}
+	</span>
 {%- endmacro -%}
 
 {%- macro prop(property) -%}
@@ -51,7 +53,7 @@
         <div class="{{ entry.event }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
             <address>
                 {% for key, val in entry.details %}
-                    <strong><abbr title="{{ key }}">{{ key }}</abbr></strong>: {{ val }}<br/>
+                    <strong><abbr title="{{ key }}">{{ key }}</abbr></strong>: <span class="new-val">{{ val }}</span><br/>
                 {% endfor %}
             </address>
         </div>
@@ -82,11 +84,11 @@
 		                to {{ _self.contact_val(entry.details.new) }}
 	                {% endif %}
                 {% elseif 'is_disabled' == entry.details.property %}
-                    User {% if entry.details.new %}disabled{% else %}enabled{% endif %}
+                    User <span class="new-val">{% if entry.details.new %}disabled{% else %}enabled{% endif %}</span>
                 {% elseif 'custom_data' == entry.details.property %}
-                    Set <strong>{{ entry.details.new.title }}</strong> to {{ entry.details.new.value }}
+                    Set <strong>{{ entry.details.new.title }}</strong> to <span class="new-val">{{ entry.details.new.value }}</span>
                 {% else %}
-                    Set {{ _self.prop(entry.details.property) }} to {{ entry.details.new }}
+                    Set {{ _self.prop(entry.details.property) }} to <span class="new-val">{{ entry.details.new }}</span>
                 {% endif %}
             </div>
         </div>
@@ -101,11 +103,11 @@
             <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
                 Added
                 {% if 'contact_data' == entry.details.property %}
-                    {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
+                    {{ _self.contact_prop(item) }} <span class="new-val">{{ _self.contact_val(item) }}</span>
                 {% elseif 'custom_data' == entry.details.property %}
-                    <strong>{{ item.title }}</strong>: {{ item.value }}
+                    <strong>{{ item.title }}</strong>: <span class="new-val">{{ item.value }}</span>
                 {% else %}
-                    {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
+                    {{ _self.prop(entry.details.property) }} <span class="new-val">{{ item }}</span>
                 {% endif %}
             </div>
         </div>
@@ -119,9 +121,9 @@
             <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
                 Removed
                 {% if 'contact_data' == entry.details.property %}
-                    {{ _self.contact_prop(item) }} {{ _self.contact_val(item) }}
+                    {{ _self.contact_prop(item) }} <span class="new-val">{{ _self.contact_val(item) }}</span>
                 {% elseif 'custom_data' == entry.details.property %}
-                    <strong>{{ item.title }}</strong>: {{ item.value }}
+                    <strong>{{ item.title }}</strong>: <span class="new-val">{{ item.value }}</span>
                 {% else %}
                     {{ _self.prop(entry.details.property) ~ ' ' ~ item }}
                 {% endif %}

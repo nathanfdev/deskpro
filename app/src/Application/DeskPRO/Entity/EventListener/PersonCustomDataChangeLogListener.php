@@ -67,7 +67,7 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
 
 		$val = $this->custom_field_manager->renderTextForData($data);
 		$change = new ChangeArray('custom_data', null, $val);
-		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
+		$entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
 		$this->queued_updates[spl_object_hash($data)] = $entry;
 	}
 
@@ -86,7 +86,7 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
 	{
 		$val = $this->custom_field_manager->renderTextForData($data);
 		$change = new ChangeArray('custom_data', null, $val);
-		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
+		$entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
 		$this->queued_inserts[spl_object_hash($data)] = $entry;
 	}
 

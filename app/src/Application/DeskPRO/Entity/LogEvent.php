@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\ApiBundle\ApiUser;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Log\Loggable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -62,12 +63,15 @@ class LogEvent extends DomainObject implements Loggable
 
 	protected $details;
 
+	protected $api_key;
+
 	/** @var BaseLogEvent */
 	protected $_event;
 
-	public function __construct(BaseLogEvent $event, Person $person = null)
+	public function __construct(BaseLogEvent $event, Person $person = null, ApiKey $apiKey = null)
 	{
 		$this['timestamp'] = time();
+		$this['api_key'] = $apiKey ? $apiKey->code : null;
 		$this->person = $person;
 		$this->children = new ArrayCollection();
 
@@ -123,6 +127,7 @@ class LogEvent extends DomainObject implements Loggable
 		$metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'options' => array('unsigned' => true)));
 		$metadata->mapField(array( 'fieldName' => 'event', 'type' => 'string', 'nullable' => false));
 		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'nullable' => true));
+		$metadata->mapField(array( 'fieldName' => 'api_key', 'type' => 'string', 'nullable' => true));
 		$metadata->mapField(array( 'fieldName' => 'subject_id', 'type' => 'integer', 'nullable' => true, 'options' => array('unsigned' => true)));
 		$metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'nullable' => false));
 

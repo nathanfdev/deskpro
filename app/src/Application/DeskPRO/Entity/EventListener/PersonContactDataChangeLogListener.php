@@ -59,7 +59,7 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
 		}
 
 		$change = new ChangeObject('contact_data', $old, $data);
-		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
+		$entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
 		$this->queued_updates[spl_object_hash($data)] = $entry;
 	}
 
@@ -77,7 +77,7 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
 	public function onPrePersist(PersonContactData $data)
 	{
 		$change = new ChangeObject('contact_data', null, $data);
-		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
+		$entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
 		$this->queued_inserts[spl_object_hash($data)] = $entry;
 	}
 
@@ -95,7 +95,7 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
 	public function onPreRemove(PersonContactData $data)
 	{
 		$change = new ChangeObject('contact_data', $data, null);
-		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
+		$entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
 		$this->queued_deletions[spl_object_hash($data)] = $entry;
 	}
 

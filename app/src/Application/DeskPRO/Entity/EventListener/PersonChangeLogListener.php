@@ -66,7 +66,7 @@ class PersonChangeLogListener extends EntityChangeLogListener
 		$entry = $this->getUpdateLogEntry($person);
 
 		foreach ($changes as $change) {
-			$child = new LogEvent(new EntityUpdated($person, $change), $this->getContextPerson() ?: $person);
+			$child = $this->createLogEntry(new EntityUpdated($person, $change), $person);
 			$entry->children->add($child);
 			$child->parent = $entry;
 		}
@@ -94,9 +94,9 @@ class PersonChangeLogListener extends EntityChangeLogListener
 			return;
 		}
 
-		$entry = new LogEvent(new EntityCreated($person), $this->getContextPerson() ?: $person);
+		$entry = $this->createLogEntry(new EntityCreated($person), $person);
 		foreach ($changes as $change) {
-			$child = new LogEvent(new EntityUpdated($person, $change), $this->getContextPerson() ?: $person);
+			$child = $this->createLogEntry(new EntityUpdated($person, $change), $person);
 			$entry->children->add($child);
 			$child->parent = $entry;
 		}
@@ -120,7 +120,7 @@ class PersonChangeLogListener extends EntityChangeLogListener
 	{
 		$oid = spl_object_hash($person);
 		if (!isset($this->queued_updates[$oid])) {
-			$this->queued_updates[$oid] = new LogEvent(new EntityUpdated($person), $this->getContextPerson() ?: $person);
+			$this->queued_updates[$oid] = $this->createLogEntry(new EntityUpdated($person), $person);
 		}
 		return $this->queued_updates[$oid];
 	}
