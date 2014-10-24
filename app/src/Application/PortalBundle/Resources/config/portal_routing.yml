@@ -1,9 +1,19 @@
+# Main
 portal_index:
     path: /
     defaults:
       _controller: Theme:Portal:index
 
-portal_inherited:
-    path: /inherited
+# Knowledgebase
+portal_kb:
+    path: /kb
     defaults:
-      _controller: Theme:Portal:inherited
+      _controller: Theme:Articles:index
+portal_kb_browse:
+    path: /kb/{slug}
+    defaults:
+      _controller: Theme:Articles:browse
+portal_kb_view:
+    path: /kb/posts/{slug}
+    defaults:
+      _controller: Theme:Articles:view
