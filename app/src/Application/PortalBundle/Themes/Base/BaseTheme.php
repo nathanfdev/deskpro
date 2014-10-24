@@ -42,7 +42,9 @@ class BaseTheme extends AbstractTheme
 	public function getTags()
 	{
 		return array(
-			new Tag('alerts', 'Theme:Portal:alerts')
+			new Tag('alerts', 'Theme:Portal:alerts'),
+			new Tag('top_bar', 'Theme:Portal:topBar'),
+			new Tag('top_search', 'Theme:Portal:topSearch'),
 		);
 	}
 
