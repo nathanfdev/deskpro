@@ -115,7 +115,7 @@ class TaskReminders extends AbstractJob
 				LEFT JOIN task_reminder_logs ON (task_reminder_logs.task_id = tasks.id)
 				WHERE
 					tasks.is_completed = 0
-					AND (tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?) OR (tasks.assigned_agent_id IS NULL AND tasks.person_id = ?)
+					AND (tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?) OR (tasks.assigned_agent_id IS NULL AND tasks.person_id = ?))
 					AND tasks.date_due >= ? AND tasks.date_due <= ?
 					AND task_reminder_logs.id IS NULL
 			",
