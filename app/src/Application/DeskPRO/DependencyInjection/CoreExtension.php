@@ -97,10 +97,15 @@ class CoreExtension extends Extension
 		    ->addArgument(new Reference('doctrine.orm.entity_manager'))
 		    ->addArgument(new Reference('form.factory'));
 
+	    $container
+		    ->register('dp.doctrine.entity_listener_resolver', 'Application\DeskPRO\ORM\ContainerAwareEntityListenerResolver')
+		    ->addArgument(new Reference('service_container'));
+
 		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
+	    $this->loadEntityListeners($container);
     }
 
 	protected function loadPeople(ContainerBuilder $container)
@@ -199,6 +204,17 @@ class CoreExtension extends Extension
 		$definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
 		$definition->addMethodCall('setArrayStringSeparator', array('.'));
 		$container->setDefinition('deskpro.core.input_reader', $definition);
+	}
+
+	/**
+	 * Sets up entity listeners
+	 */
+	protected function loadEntityListeners(ContainerBuilder $container)
+	{
+		$container
+			->register('dp.entity_lister.person', 'Application\DeskPRO\Entity\EventListener\PersonEntityListener')
+			->addArgument(new Reference('service_container'))
+			->addTag('doctrine.entity_listener');
 	}
 
 

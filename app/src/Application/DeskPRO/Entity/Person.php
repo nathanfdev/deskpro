@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -2716,6 +2717,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person';
+
 		$metadata->setPrimaryTable(array(
 			'name' => 'people',
 			'indexes' => array(
@@ -2724,11 +2726,15 @@ class Person extends DomainObject implements HighlightableModelInterface
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+
 		$metadata->addLifecycleCallback('_initPersonLogger', 'postLoad');
 		$metadata->addLifecycleCallback('_presavePerson', 'prePersist');
 		$metadata->addLifecycleCallback('_postPersist', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
+
+		$metadata->addEntityListener(Events::postUpdate, 'Application\DeskPRO\Entity\EventListener\PersonEntityListener', 'onPostUpdate');
+
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'gravatar_url', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gravatar_url', ));
 		$metadata->mapField(array( 'fieldName' => 'disable_picture', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_picture', ));
