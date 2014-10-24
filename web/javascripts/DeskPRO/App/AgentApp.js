@@ -817,7 +817,7 @@ define([
 					recentOpen = true;
 					var wrap = $('#recent_tabs_menu');
 					wrap.addClass('active').show();
-					wrap.width($el.width() - 2);
+					wrap.width(Math.max($el.width() - 2, 560));
 					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 					var closeFn = function() {
@@ -837,7 +837,7 @@ define([
 					notifsOpen = true;
 					var wrap = $('#dp_header_notify_wrap');
 					wrap.addClass('active').show();
-					wrap.width($el.width() - 2);
+					wrap.width(Math.max($el.width() - 2, 560));
 					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 					DeskPRO_Window.notifications.resetElements();
