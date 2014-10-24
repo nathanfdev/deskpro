@@ -17,3 +17,21 @@ portal_kb_view:
     path: /kb/posts/{slug}
     defaults:
       _controller: Theme:Articles:view
+
+# Downloads
+portal_downloads:
+    path: /downloads
+    defaults:
+      _controller: Theme:Downloads:index
+portal_downloads_browse:
+    path: /downloads/{slug}
+    defaults:
+      _controller: Theme:Downloads:browse
+portal_downloads_view:
+    path: /downloads/files/{slug}
+    defaults:
+      _controller: Theme:Downloads:view
+portal_downloads_download:
+    path: /downloads/files/{slug}/download
+    defaults:
+      _controller: Theme:Downloads:download
