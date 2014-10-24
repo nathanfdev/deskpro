@@ -102,10 +102,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 	{
 		$db = $this->getContainer()->getDb();
 
-		$output->writeln("Making sure core.redirect_correct_url is off");
-		$this->getContainer()->getSettingsHandler()->setSetting('core.redirect_correct_url', 0);
-		$output->writeln("-> OK");
-
 		$output->writeln("Nulling email accounts -> Blank POP3 account with mailcatcher smtp");
 
 		$incoming = new Pop3Config();

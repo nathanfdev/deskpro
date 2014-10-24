@@ -393,6 +393,7 @@ class DpKernel extends AbstractKernel
 		if (
 			(isset($GLOBALS['DP_CONFIG']['disable_url_corrections']) && $GLOBALS['DP_CONFIG']['disable_url_corrections'])
 			|| strpos($request->getPathInfo(), '/admin/') === 0
+			|| strpos($request->getPathInfo(), '/agent/login') === 0
 			|| strpos($request->getPathInfo(), '/api/') === 0
 			|| (defined('DP_INTERFACE') && DP_INTERFACE == 'admin')
 		) {
@@ -427,11 +428,6 @@ class DpKernel extends AbstractKernel
 
 		$is_installed = App::getSetting('core.setup_initial');
 		if (!$is_installed) {
-			return null;
-		}
-
-		$redirect_corrections = App::getSetting('core.redirect_correct_url');
-		if (!$redirect_corrections) {
 			return null;
 		}
 

@@ -65,6 +65,28 @@
 		});
 	</script>
 {% endblock %}
+
+{% block pre_content %}
+	<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 650px; border-radius: 3px;">
+		<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure Login Form</h2>
+		<p>
+			You are currently viewing an insecure login form.
+		</p>
+		<br/>
+		<p>
+			Your site is configured with a secure HTTPS URL, but you are currently viewing the insecure version instead.
+		</p>
+		<br/>
+		<p>
+			Unless there is a specific reason to use the insecure version, you should click the button
+			below to navigate to your secure HTTPS site.
+		</p>
+		<div style="text-align: center;">
+			<a href="">Go to secure login form &rarr;</a>
+		</div>
+	</div>
+{% endblock %}
+
 {% block content %}
 
 {##############################################################################################################}
