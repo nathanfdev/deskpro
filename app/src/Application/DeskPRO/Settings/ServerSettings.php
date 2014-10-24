@@ -44,8 +44,6 @@ class ServerSettings
 
 	/** @var bool */
 	public $rewrite_urls = false;
-	/** @var bool */
-	public $redirect_correct_url = true;
 	/** @var string */
 	public $cookie_path = '/';
 	/** @var string */
@@ -67,7 +65,6 @@ class ServerSettings
 	public function resetSettings()
 	{
 		$this->rewrite_urls         = (bool)$this->settings->get('core.rewrite_urls');
-		$this->redirect_correct_url = (bool)$this->settings->get('core.redirect_correct_url');
 
 		$this->cookie_path = $this->settings->get('core.cookie_path');
 		if ($this->cookie_path === null) {
@@ -88,7 +85,6 @@ class ServerSettings
 	{
 		$export_settings = array(
 			'rewrite_urls'                    => $this->rewrite_urls,
-			'redirect_correct_url'            => $this->redirect_correct_url,
 			'cookie_path'                     => $this->cookie_path,
 			'cookie_domain'                   => $this->cookie_domain,
 		);
@@ -115,7 +111,6 @@ class ServerSettings
 	public function saveSettings()
 	{
 		$this->settings->setSetting('core.rewrite_urls', Util::boolInt($this->rewrite_urls));
-		$this->settings->setSetting('core.redirect_correct_url', Util::boolInt($this->redirect_correct_url));
 		$this->settings->setSetting('core.cookie_path', $this->cookie_path);
 		$this->settings->setSetting('core.cookie_domain', $this->cookie_domain);
 	}

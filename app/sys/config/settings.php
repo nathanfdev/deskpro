@@ -103,11 +103,6 @@
 	'core.deskpro_name' => 'DeskPRO',
 
 	/**
-	 * Redirect to correct URL (domain and https)
-	 */
-	'core.redirect_correct_url' => false,
-
-	/**
 	 * The optional tagline or sub-title of the helpdesk
 	 */
 	'core.deskpro_tagline' => '',
