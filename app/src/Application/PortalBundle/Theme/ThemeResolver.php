@@ -176,7 +176,7 @@ class ThemeResolver
 			array('_controller' => $tag->getControllerName())
 		);
 
-		return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST);
+		return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();
 	}
 
 
