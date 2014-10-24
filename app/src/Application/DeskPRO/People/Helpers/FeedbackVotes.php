@@ -208,7 +208,9 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
 				SELECT object_id, rating
 				FROM ratings
 				WHERE visitor_id = ? AND object_type = 'feedback' AND object_id IN (?)
-			", array($this->visitor['id']), array(Connection::PARAM_INT_ARRAY));
+			",
+			array($this->visitor['id'], $ids),
+			array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 		} else {
 			$vote_info = array_combine($ids, array_fill(0, count($ids), 0));
 		}
