@@ -674,7 +674,6 @@ class FieldManager
 			$custom_data[$value_type] = $value;
 
 			$object->addCustomData($custom_data);
-			$this->em->persist($custom_data);
 		}
 
 		$custom_data[$value_type] = $value;

@@ -63,30 +63,27 @@ class PersonChangeLogListener extends EntityChangeLogListener
 			return;
 		}
 
-		$entry = new LogEvent(new EntityUpdated($person), $this->getContextPerson() ?: $person);
+		$entry = $this->getUpdateLogEntry($person);
+
 		foreach ($changes as $change) {
 			$child = new LogEvent(new EntityUpdated($person, $change), $this->getContextPerson() ?: $person);
 			$entry->children->add($child);
 			$child->parent = $entry;
 		}
-
-		$this->queued_updates[spl_object_hash($person)] = $entry;
 	}
 
 	/**
 	 * @param Person $person
-	 * @param LifecycleEventArgs $event
 	 */
-	public function onPostUpdate(Person $person, LifecycleEventArgs $event)
+	public function onPostUpdate(Person $person)
 	{
 		$this->flush($person);
 	}
 
 	/**
 	 * @param Person $person
-	 * @param LifecycleEventArgs $event
 	 */
-	public function onPrePersist(Person $person, LifecycleEventArgs $event)
+	public function onPrePersist(Person $person)
 	{
 		// do not handle persisted entity
 		if ($person['id']) {
@@ -109,10 +106,22 @@ class PersonChangeLogListener extends EntityChangeLogListener
 
 	/**
 	 * @param Person $person
-	 * @param LifecycleEventArgs $event
 	 */
-	public function onPostPersist(Person $person, LifecycleEventArgs $event)
+	public function onPostPersist(Person $person)
 	{
 		$this->flush($person);
+	}
+
+	/**
+	 * @param Person $person
+	 * @return null
+	 */
+	public function getUpdateLogEntry(Person $person)
+	{
+		$oid = spl_object_hash($person);
+		if (!isset($this->queued_updates[$oid])) {
+			$this->queued_updates[$oid] = new LogEvent(new EntityUpdated($person), $this->getContextPerson() ?: $person);
+		}
+		return $this->queued_updates[$oid];
 	}
 } 

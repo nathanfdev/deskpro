@@ -36,7 +36,16 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 class PersonContactDataChangeLogListener extends EntityChangeLogListener
 {
-	protected $parent_log_entry;
+	/**
+	 * @var PersonChangeLogListener
+	 */
+	protected $person_log_listener;
+
+	public function __construct(DeskproContainer $container)
+	{
+		parent::__construct($container);
+		$this->person_log_listener = $container->get('dp.entity_lister.person_changelog');
+	}
 
 	/**
 	 * @param PersonContactData $data
@@ -56,18 +65,16 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
 
 	/**
 	 * @param PersonContactData $data
-	 * @param LifecycleEventArgs $event
 	 */
-	public function onPostUpdate(PersonContactData $data, LifecycleEventArgs $event)
+	public function onPostUpdate(PersonContactData $data)
 	{
 		$this->flush($data);
 	}
 
 	/**
 	 * @param PersonContactData $data
-	 * @param LifecycleEventArgs $event
 	 */
-	public function onPrePersist(PersonContactData $data, LifecycleEventArgs $event)
+	public function onPrePersist(PersonContactData $data)
 	{
 		$change = new ChangeObject('contact_data', null, $data);
 		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
@@ -76,18 +83,16 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
 
 	/**
 	 * @param PersonContactData $data
-	 * @param LifecycleEventArgs $event
 	 */
-	public function onPostPersist(PersonContactData $data, LifecycleEventArgs $event)
+	public function onPostPersist(PersonContactData $data)
 	{
 		$this->flush($data);
 	}
 
 	/**
 	 * @param PersonContactData $data
-	 * @param LifecycleEventArgs $event
 	 */
-	public function onPreRemove(PersonContactData $data, LifecycleEventArgs $event)
+	public function onPreRemove(PersonContactData $data)
 	{
 		$change = new ChangeObject('contact_data', $data, null);
 		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
@@ -96,9 +101,8 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
 
 	/**
 	 * @param PersonContactData $data
-	 * @param LifecycleEventArgs $event
 	 */
-	public function onPostRemove(PersonContactData $data, LifecycleEventArgs $event)
+	public function onPostRemove(PersonContactData $data)
 	{
 		$this->flush($data);
 	}
@@ -115,29 +119,19 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
 
 		/** @var LogEvent $entry */
 		$entry = $this->{'queued_' . $type}[$oid];
+		$person = $entry->getEventObject()->getSubject();
+		$parentEntry = $this->person_log_listener->getUpdateLogEntry($person);
 
-		if (!$this->parent_log_entry) {
-			$contextPerson = $entry->person;
-			$person = $entry->_event->getSubject();
-			$this->parent_log_entry = new LogEvent(new EntityUpdated($person), $contextPerson);
-		}
-
-		$this->parent_log_entry->children->add($entry);
-		$entry->parent = $this->parent_log_entry;
+		$parentEntry->children->add($entry);
+		$entry->parent = $parentEntry;
 
 		unset($this->{'queued_' . $type}[$oid]);
 
 		/**
-		 * we do only one single flush, and only when all queued actions added as child to parent_log_entry
+		 * we do only one single flush, and only when all queued actions added as child to $parentEntry
 		 */
 		if (!count($this->queued_inserts) && !count($this->queued_updates) && !count($this->queued_deletions)) {
-
-			$this->logger->info($this->parent_log_entry);
-
-			foreach ($this->parent_log_entry->children as $child) {
-				$this->logger->info($child);
-			}
-			$this->parent_log_entry = null;
+			$this->person_log_listener->onPostUpdate($person);
 		}
 	}
 } 

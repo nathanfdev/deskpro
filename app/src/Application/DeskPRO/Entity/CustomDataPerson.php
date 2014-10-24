@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -81,5 +82,19 @@ class CustomDataPerson extends CustomDataAbstract
 		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'field', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'field_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
 		$metadata->mapManyToOne(array( 'fieldName' => 'root_field', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefPerson', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'root_field_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+
+		$events = array(
+			Events::prePersist,
+			Events::postPersist,
+			Events::preUpdate,
+			Events::postUpdate,
+		);
+		foreach ($events as $event) {
+			$metadata->addEntityListener(
+				$event,
+				'Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener',
+				'on' . ucfirst($event)
+			);
+		}
 	}
 }

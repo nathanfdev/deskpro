@@ -27,113 +27,75 @@
 
 namespace Application\DeskPRO\Entity\EventListener;
 
-
+use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Domain\DomainObject;
-use Application\ApiBundle\Request\RequestAuth;
-use Application\DeskPRO\HttpFoundation\Session;
-use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
-use Application\DeskPRO\People\PersonGuest;
-use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
+use Application\DeskPRO\Entity\LogEvent;
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Log\Event\EntityUpdated;
+use Application\DeskPRO\ORM\StateChange\ChangeArray;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 
-abstract class EntityChangeLogListener
+class PersonCustomDataChangeLogListener extends EntityChangeLogListener
 {
-	/** @var  DeskproContainer */
-	protected $container;
+	/**
+	 * @var PersonChangeLogListener
+	 */
+	protected $person_log_listener;
 
-	/** @var array */
-	protected $queued_inserts = array();
-
-	/** @var array */
-	protected $queued_updates = array();
-
-	/** @var array  */
-	protected $queued_deletions = array();
-
-	/** @var \Application\DeskPRO\Monolog\Logger  */
-	protected $logger;
+	/**
+	 * @var PersonFieldManager
+	 */
+	protected $custom_field_manager;
 
 	public function __construct(DeskproContainer $container)
 	{
-		$this->container = $container;
-		$this->logger = $container->get('deskpro.logger.changelog');
+		parent::__construct($container);
+		$this->person_log_listener = $container->get('dp.entity_lister.person_changelog');
+		$this->custom_field_manager = $container->getPersonFieldManager();
 	}
 
 	/**
-	 * todo backend context?
+	 * @param CustomDataPerson $data
+	 * @param PreUpdateEventArgs $event
 	 */
-	protected function getContextPerson()
+	public function onPreUpdate(CustomDataPerson $data, PreUpdateEventArgs $event)
 	{
-		$person = $this->tryToGetPersonFromContext();
-
-		// don't even return a PersonGuest
-		if (!$person || $person instanceof PersonGuest) {
-			return null;
+		$old = clone $data;
+		foreach ($event->getEntityChangeSet() as $field => $change) {
+			$old[$field] = $change[0];
 		}
 
-		return $person;
+		$val = $this->custom_field_manager->renderTextForData($data);
+		$change = new ChangeArray('custom_data', null, $val);
+		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
+		$this->queued_updates[spl_object_hash($data)] = $entry;
 	}
 
 	/**
-	 *
+	 * @param CustomDataPerson $data
 	 */
-	protected function tryToGetPersonFromContext()
+	public function onPostUpdate(CustomDataPerson $data)
 	{
-		$c = $this->container;
-		/** @var RequestAuth $auth */
-		try {
-			if ($c->has('deskpro.api.request_auth') && ($auth = $c->get('deskpro.api.request_auth'))) {
-				if ($apiUser = $auth->getApiUser()) {
-					if ($apiUser->person) {
-						return $apiUser->person;
-					}
-				}
-			}
-
-			if ($c->has('session') && ($sess = $c->get('session'))) {
-				/** @var $sess Session */
-				if ($person = $sess->getPerson()) {
-					return $person;
-				}
-			}
-		} catch (InactiveScopeException $e) {
-		}
+		$this->flush($data);
 	}
 
 	/**
-	 * @param DomainObject $entity
-	 * @return array
+	 * @param CustomDataPerson $data
 	 */
-	protected function getChangesForEntity(DomainObject $entity)
+	public function onPrePersist(CustomDataPerson $data)
 	{
-		$ret = array();
-
-		/** @var StateChangeRecorder $stateChangeRecorder */
-		$stateChangeRecorder = $entity->getStateChangeRecorder();
-		if (!$changes = $stateChangeRecorder->getChanges()) {
-			return $ret;
-		}
-
-		foreach ($changes as $change) {
-			if ($change->isSame() || ! isset($this->fields[$change->getField()])) {
-				continue;
-			}
-
-			$ret[$change->getField()] = $change;
-		}
-		return $ret;
+		$val = $this->custom_field_manager->renderTextForData($data);
+		$change = new ChangeArray('custom_data', null, $val);
+		$entry = new LogEvent(new EntityUpdated($data->person, $change), $this->getContextPerson() ?: $data->person);
+		$this->queued_inserts[spl_object_hash($data)] = $entry;
 	}
 
 	/**
-	 * @param DomainObject $entity
+	 * @param CustomDataPerson $data
 	 */
-	protected function flush(DomainObject $entity)
+	public function onPostPersist(CustomDataPerson $data)
 	{
-		$oid = spl_object_hash($entity);
-
-		foreach (array('inserts', 'updates', 'deletions') as $type) {
-			$this->doFlush($oid, $type);
-		}
+		$this->flush($data);
 	}
 
 	/**
@@ -146,12 +108,21 @@ abstract class EntityChangeLogListener
 			return;
 		}
 
+		/** @var LogEvent $entry */
 		$entry = $this->{'queued_' . $type}[$oid];
-		$this->logger->info($entry);
-		foreach ($entry->children as $child) {
-			$this->logger->info($child);
-		}
+		$person = $entry->getEventObject()->getSubject();
+		$parentEntry = $this->person_log_listener->getUpdateLogEntry($person);
+
+		$parentEntry->children->add($entry);
+		$entry->parent = $parentEntry;
 
 		unset($this->{'queued_' . $type}[$oid]);
+
+		/**
+		 * we do only one single flush, and only when all queued actions added as child to $parentEntry
+		 */
+		if (!count($this->queued_inserts) && !count($this->queued_updates) && !count($this->queued_deletions)) {
+			$this->person_log_listener->onPostUpdate($person);
+		}
 	}
 } 
