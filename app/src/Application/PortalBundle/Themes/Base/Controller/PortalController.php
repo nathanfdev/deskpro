@@ -37,6 +37,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PortalController extends AbstractController
 {
@@ -53,6 +54,12 @@ class PortalController extends AbstractController
 		$theme_id = $this->get('brand_stack')->getActive()->getBrand()->theme_id;
 
 		return $this->render('Theme:Portal:inherited.html.twig', array('theme_id' => $theme_id));
+	}
+
+
+	public function exampleTagAction()
+	{
+		return new Response('WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO!');
 	}
 }
  

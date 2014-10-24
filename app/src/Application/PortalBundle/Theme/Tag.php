@@ -32,82 +32,54 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\Themes\Base;
+namespace Application\PortalBundle\Theme;
 
-use Application\PortalBundle\Theme\Tag;
-use Application\PortalBundle\Theme\ThemeInterface;
-
-class BaseTheme implements ThemeInterface
+/**
+ * Contains the configuration for a theme tag
+ */
+class Tag
 {
-	/**
-	 * @var Tag[]
-	 */
-	protected $tags;
+	protected $name;
+	protected $controller_name;
+	protected $esi;
 
-	public function __construct()
-	{
-		/** @var Tag[] $tags */
-		$tags = array(
-			new Tag('example_tag', 'Theme:Portal:exampleTag')
-		);
-
-		foreach ($tags as $tag) {
-			$this->tags[$tag->getName()] = $tag;
-		}
-	}
 
 	/**
-	 * {@inheritdoc}
+	 * @param string $name            the tag's name
+	 * @param string $controller_name Theme:Portal:index
+	 * @param bool   $esi             true if this should be an edge side include
 	 */
-	public function getId()
+	public function __construct($name, $controller_name, $esi = false)
 	{
-		return 'base';
+		$this->name            = $name;
+		$this->controller_name = $controller_name;
+		$this->esi             = $esi;
 	}
 
 
 	/**
-	 * {@inheritdoc}
+	 * @return mixed
 	 */
 	public function getName()
 	{
-		return 'Base';
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getParent()
-	{
-		return null;
+		return $this->name;
 	}
 
 
 	/**
-	 * {@inheritdoc}
+	 * @return mixed
 	 */
-	public function getBaseTemplateDir()
+	public function getControllerName()
 	{
-		return __DIR__ . '/Resources/views';
+		return $this->controller_name;
 	}
 
 
 	/**
-	 * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
+	 * @return boolean
 	 */
-	public function getNamespace()
+	public function isEsi()
 	{
-		return __NAMESPACE__;
-	}
-
-
-	/**
-	 * Get the tag for the given tag name.
-	 *
-	 * @param $tag_name
-	 * @return Tag|null
-	 */
-	public function getTag($tag_name)
-	{
-		return isset($this->tags[$tag_name]) ? $this->tags[$tag_name] : null;
+		return (bool) $this->esi;
 	}
 }

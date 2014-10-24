@@ -74,5 +74,14 @@ interface ThemeInterface
 	 * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
 	 */
 	public function getNamespace();
+
+
+	/**
+	 * Get the tag for the given tag name.
+	 *
+	 * @param $tag_name
+	 * @return Tag|null
+	 */
+	public function getTag($tag_name);
 }
  
