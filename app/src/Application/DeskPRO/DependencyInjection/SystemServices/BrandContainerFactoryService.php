@@ -43,6 +43,6 @@ class BrandContainerFactoryService
 {
 	public static function create(DeskproContainer $container)
 	{
-		return new BrandContainerFactory($container->getSettingsResolver(), new ThemeResolver(new ThemeRepository()));
+		return new BrandContainerFactory($container->getSettingsResolver(), new ThemeResolver($container, new ThemeRepository()));
 	}
 }

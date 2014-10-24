@@ -1,50 +1,61 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO
  *
- * @package DeskPRO
+ * @package    DeskPRO
  * @subpackage Theme
  */
 
 namespace Application\PortalBundle\Theme;
 
-class ThemeResolver 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+
+class ThemeResolver
 {
 	/**
 	 * @var ThemeRepository
 	 */
 	private $theme_repo;
 
-	public function __construct(ThemeRepository $theme_repo)
+	/**
+	 * @var \Symfony\Component\DependencyInjection\ContainerInterface
+	 */
+	private $container;
+
+
+	public function __construct(ContainerInterface $container, ThemeRepository $theme_repo)
 	{
+		$this->container  = $container;
 		$this->theme_repo = $theme_repo;
 	}
+
 
 	/**
 	 * @param $theme_id
@@ -93,7 +104,6 @@ class ThemeResolver
 
 	/**
 	 * Get the absolute path to a filename for a theme, with the name format like:
-	 *
 	 * Theme:Portal:index.html.twig
 	 * ThemeParent:Portal:index.html.twig
 	 *
@@ -103,8 +113,7 @@ class ThemeResolver
 	 */
 	public function templatePath(ThemeInterface $theme, $name)
 	{
-		if (!is_string($name) || 3 !== count($parts = explode(':', $name)))
-		{
+		if (!is_string($name) || 3 !== count($parts = explode(':', $name))) {
 			return null;
 		}
 
@@ -124,6 +133,7 @@ class ThemeResolver
 		// you can refer to the parent theme by prefixing "ThemeParent:" instead of "Theme:"
 		if ('ThemeParent:' === substr($name, 0, 12)) {
 			$converted_theme_name = 'Theme:' . substr($name, 12);
+
 			return $this->tryParent($theme, $converted_theme_name);
 		}
 
@@ -144,5 +154,47 @@ class ThemeResolver
 
 		return null;
 	}
+
+
+	public function processTag(ThemeInterface $theme, $tag_name, array $arguments)
+	{
+		$tag = $this->resolveTag($theme, $tag_name);
+
+		// theme can't process a tag it's being asked to resolve; just silently ignore the tag by return a blank string.
+		if (!$tag instanceof Tag) {
+			return '';
+		}
+
+		if ($tag->isEsi()) {
+			// TODO: render and return an ESI tag for the controller, skipping for now
+		}
+
+
+		$tag_request = $this->container->get('request_stack')->getCurrentRequest()->duplicate(
+			null,
+			null,
+			array('_controller' => $tag->getControllerName())
+		);
+
+		return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST);
+	}
+
+
+	/**
+	 * @param ThemeInterface $theme
+	 * @param                $tag_name
+	 * @return Tag|null      will return null if tag doesn't exist for this theme or its parent heirarchy
+	 */
+	public function resolveTag(ThemeInterface $theme, $tag_name)
+	{
+		if ($tag = $theme->getTag($tag_name)) {
+			return $tag;
+		}
+
+		if ($parent = $theme->getParent()) {
+			return $this->resolveTag($parent, $tag_name);
+		}
+
+		return null;
+	}
 }
- 
