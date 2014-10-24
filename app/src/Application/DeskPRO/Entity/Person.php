@@ -2733,7 +2733,13 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
 
-		$metadata->addEntityListener(Events::postUpdate, 'Application\DeskPRO\Entity\EventListener\PersonEntityListener', 'onPostUpdate');
+		foreach (array(Events::prePersist, Events::postPersist, Events::preUpdate, Events::postUpdate) as $event) {
+			$metadata->addEntityListener(
+				$event,
+				'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
+				'on' . ucfirst($event)
+			);
+		}
 
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'gravatar_url', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gravatar_url', ));
