@@ -10,5 +10,6 @@
 	Executed controller: {{ app.request.attributes.get('_controller') }}
 	<br><br>
 	{% block optional %}
+		{{ example_tag({some:'option'}) }}
 	{% endblock %}
 {% endblock %}
