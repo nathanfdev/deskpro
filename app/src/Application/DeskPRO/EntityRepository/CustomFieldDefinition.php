@@ -69,7 +69,7 @@ class CustomFieldDefinition extends AbstractEntityRepository
 				$qb
 					->leftJoin('d.children', 'dc')
 					->andWhere('
-						d.context_class is null
+						d.context_class is null or d.context_class = :context_class
 						or (d.context_class = :context_class and d.context_id = :cid)
 						or (dc.context_class = :context_class and dc.context_id = :cid)
 					')
