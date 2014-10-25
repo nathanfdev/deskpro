@@ -413,3 +413,28 @@
     </dp-category-builder>
     {% endspaceless %}
 {% endblock dp_category_builder_widget %}
+
+{% block cf_contextual_choice_widget %}
+	{% spaceless %}
+		{{ form_widget(form.children.value) }}
+		{% if form.vars.allow_edit %}
+			<a href="#" onclick="
+					{# todo: should be done in clearer way #}
+					var select = document.getElementById('{{ form.children.value.vars.id }}'),
+						select2 = document.getElementById('s2id_{{ form.children.value.vars.id }}'),
+						input = document.getElementById('{{ form.children.custom_choice.vars.id }}');
+					if (select) select.style.display = 'none';
+					if (select2) select2.style.display = 'none';
+					if (input) {
+						input.style.display = 'inline-block';
+						input.focus();
+					}
+					this.style.display = 'none';
+					return false;
+					">
+				Add another
+			</a>
+			{{ form_widget(form.children.custom_choice) }}
+		{% endif %}
+	{% endspaceless %}
+{% endblock cf_contextual_choice_widget %}

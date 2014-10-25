@@ -66,12 +66,14 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
 		$resolver
 			->setDefaults(array(
 				'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
+				'allow_edit' => false,
 			))
 			->setRequired(array(
 				'persister',
 			))
 			->setOptional(array(
 				'context',
+				'allow_edit',
 			))
 			->setAllowedTypes(array(
 				// todo

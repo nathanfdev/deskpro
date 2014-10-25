@@ -27,12 +27,6 @@ define [
 			@$scope.options =
 				choices: 0
 
-			@$scope.$watch 'options.choices', (newVal, oldVal) =>
-				return if !newVal?
-				@$scope.definition.options = {} if !@$scope.definition.options?
-				@$scope.definition.options.multiple = @options.multiple == (newVal & @options.multiple)
-				@$scope.definition.options.expanded = @options.expanded == (newVal & @options.expanded)
-
 
 
 		initialLoad: ->
@@ -52,6 +46,9 @@ define [
 
 		saveForm: ->
 			is_new = !@$scope.definition.id
+
+			@$scope.definition.options.multiple = @options.multiple == (@$scope.options.choices & @options.multiple)
+			@$scope.definition.options.expanded = @options.expanded == (@$scope.options.choices & @options.expanded)
 
 			promise = @service.set @$scope.definition
 			@startSpinner('saving')

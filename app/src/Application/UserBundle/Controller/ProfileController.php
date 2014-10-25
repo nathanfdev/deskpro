@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\PersonEmailValidating;
 use Application\UserBundle\Form\ProfileType;
+use Symfony\Component\Form\FormInterface;
 
 class ProfileController extends AbstractController implements RequireUserInterface
 {
@@ -152,6 +153,16 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
 		$password_validator = App::$container->getSystemService('password_policy_validator');
 
+		$manager = $this->container->getCustomFieldManager();
+		$definitions_form = $manager->createDefinitionsFormForContext($this->person);
+
+		foreach ($definitions_form as $name => $child) {
+			/** @var FormInterface $child */
+			if (!$child->getConfig()->getOption('allow_edit')) {
+				$definitions_form->remove($name);
+			}
+		}
+
 		return $this->render('UserBundle:Profile:index.html.twig', array(
 			'form'               => $form->createView(),
 			'validating_emails'  => $validating_emails,
@@ -163,7 +174,9 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'org_manager_auto_add' => ($is_org_manager && $this->person->getPref('org.manager_auto_add')),
 			'new_blob_key'       => $new_blob_key,
 			'enable_twitter'     => $enable_twitter,
-			'password_expired'   => $password_validator->isPasswordExpired($this->person)
+			'password_expired'   => $password_validator->isPasswordExpired($this->person),
+
+			'custom_fields_definitions' => $definitions_form->createView(),
 		));
 	}
 

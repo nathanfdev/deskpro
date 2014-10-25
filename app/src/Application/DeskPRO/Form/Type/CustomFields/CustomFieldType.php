@@ -77,8 +77,12 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 					'data-definition-id' => $this->definition['id'],
 				),
 			))
-			->setRequired(array('owner', 'persister'))
-			->setOptional(array('context'))
+			->setRequired(array(
+				'owner', 'persister',
+			))
+			->setOptional(array(
+				'context',
+			))
 			->setAllowedTypes(array(
 				'owner' => 'Application\DeskPRO\Domain\DomainObject',
 				'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
@@ -91,9 +95,11 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 	 */
 	protected function getValueOptions()
 	{
-		return array_merge($this->definition['options'], array(
-			'label' => false,
-		));
+		$options = $this->definition['options'];
+		$options['label'] = false;
+		unset($options['allow_edit']);
+
+		return $options;
 	}
 
 	/**

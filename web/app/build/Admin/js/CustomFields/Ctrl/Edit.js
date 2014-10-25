@@ -29,21 +29,9 @@
           expanded: 1,
           multiple: 2
         };
-        this.$scope.options = {
+        return this.$scope.options = {
           choices: 0
         };
-        return this.$scope.$watch('options.choices', (function(_this) {
-          return function(newVal, oldVal) {
-            if (newVal == null) {
-              return;
-            }
-            if (_this.$scope.definition.options == null) {
-              _this.$scope.definition.options = {};
-            }
-            _this.$scope.definition.options.multiple = _this.options.multiple === (newVal & _this.options.multiple);
-            return _this.$scope.definition.options.expanded = _this.options.expanded === (newVal & _this.options.expanded);
-          };
-        })(this));
       };
 
       Admin_CustomFields_Ctrl_Edit.prototype.initialLoad = function() {
@@ -70,6 +58,8 @@
       Admin_CustomFields_Ctrl_Edit.prototype.saveForm = function() {
         var is_new, promise;
         is_new = !this.$scope.definition.id;
+        this.$scope.definition.options.multiple = this.options.multiple === (this.$scope.options.choices & this.options.multiple);
+        this.$scope.definition.options.expanded = this.options.expanded === (this.$scope.options.choices & this.options.expanded);
         promise = this.service.set(this.$scope.definition);
         this.startSpinner('saving');
         return promise.then((function(_this) {

@@ -106,6 +106,19 @@
 				{% endif %}
 			{% endfor %}
 
+			{% for f in custom_fields_definitions %}
+
+				<div class="dp-control-group">
+					<div class="dp-control-label">
+						<label>{{ form_label(f) }}</label>
+					</div>
+					<div class="dp-controls dp-fill">
+						{{ form_widget(f) }}
+					</div>
+				</div>
+
+			{% endfor %}
+
 			{% if is_org_manager %}
 				<div class="dp-control-group">
 					<div class="dp-controls dp-fill">
