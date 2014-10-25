@@ -1355,6 +1355,9 @@ class PersonController extends AbstractController
 		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('newperson_custom_fields', 'form');
 		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
 
+		$manager = $this->container->getCustomFieldManager();
+		$custom_fields_definitions = $manager->createDefinitionsFormForContext(new Entity\Person());
+
 		$timezone_options = \DateTimeZone::listIdentifiers();
 		$usergroup_names = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
@@ -1363,10 +1366,12 @@ class PersonController extends AbstractController
 			'custom_fields' => $custom_fields,
 			'timezone_options' => $timezone_options,
 			'usergroup_names' => $usergroup_names,
+
+			'custom_fields_definitions' => $custom_fields_definitions->createView(),
 		));
 	}
 
-	public function newPersonSaveAction()
+	public function newPersonSaveAction(Request $request)
 	{
 		if (!$this->person->hasPerm('agent_people.create')) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -1456,6 +1461,16 @@ class PersonController extends AbstractController
 			$newperson->save();
 
 			$person = $newperson->getPerson();
+
+			$manager = $this->container->getCustomFieldManager();
+			$custom_fields_definitions = $manager->createDefinitionsFormForContext($person);
+			// fix: jquery removes empty arrays from post request
+			if (!$request->request->has($custom_fields_definitions->getName())) {
+				$request->request->set($custom_fields_definitions->getName(), array());
+			}
+			if ($custom_fields_definitions->handleRequest($request)->isValid()) {
+				$manager->flush($custom_fields_definitions);
+			}
 
 			$this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
