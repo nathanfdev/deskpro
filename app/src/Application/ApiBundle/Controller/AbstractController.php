@@ -40,6 +40,7 @@ use Application\DeskPRO\Validator\ViolationApiRenderer;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Base API controller.

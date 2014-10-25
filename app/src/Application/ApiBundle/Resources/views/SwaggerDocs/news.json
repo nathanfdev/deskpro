@@ -1,709 +1,709 @@
 {
-    "basePath": "/api",
-    "swaggerVersion": "1.2",
-    "resourcePath": "/news",
-    "apis": [
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/news",
+    "apis":[
         {
-            "path": "/news",
-            "operations": [
+            "path":"/news",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Get list of all News Items",
-                    "nickname": "searchAction",
-                    "type": "array",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Get list of all News Items",
+                    "nickname":"searchAction",
+                    "type":"array",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Category ID that needs to be searched"
+                            "paramType":"query",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Category ID that needs to be searched"
                         },
                         {
-                            "paramType": "query",
-                            "name": "category_id_specific",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Specific Category ID that needs to be searched"
+                            "paramType":"query",
+                            "name":"category_id_specific",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Specific Category ID that needs to be searched"
                         },
                         {
-                            "paramType": "query",
-                            "name": "label",
-                            "type": "string",
-                            "required": false,
-                            "description": "News label that needs to be searched"
+                            "paramType":"query",
+                            "name":"label",
+                            "type":"string",
+                            "required":false,
+                            "description":"News label that needs to be searched"
                         },
                         {
-                            "paramType": "query",
-                            "name": "status",
-                            "type": "string",
-                            "required": false,
-                            "description": "News status that needs to be searched"
+                            "paramType":"query",
+                            "name":"status",
+                            "type":"string",
+                            "required":false,
+                            "description":"News status that needs to be searched"
                         }
                     ],
-                    "notes": "Returns array of all existing News Items"
+                    "notes":"Returns array of all existing News Items"
                 },
                 {
-                    "method": "POST",
-                    "summary": "Add a new News Item",
-                    "nickname": "newNewsAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Add a new News Item",
+                    "nickname":"newNewsAction",
+                    "parameters":[
                         {
-                            "paramType": "body",
-                            "name": "body",
-                            "type": "News",
-                            "required": true,
-                            "description": "News Object to Add"
+                            "paramType":"body",
+                            "name":"body",
+                            "type":"News",
+                            "required":true,
+                            "description":"News Object to Add"
                         }
                     ],
-                    "notes": "Creates a new News Item and returns the ID"
+                    "notes":"Creates a new News Item and returns the ID"
                 }
             ]
         },
         {
-            "path": "/news/categories",
-            "operations": [
+            "path":"/news/categories",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets available news categories",
-                    "nickname": "getCategoriesAction",
-                    "notes": "Retrieves all available news categories"
+                    "method":"GET",
+                    "summary":"Gets available news categories",
+                    "nickname":"getCategoriesAction",
+                    "notes":"Retrieves all available news categories"
                 },
                 {
-                    "method": "POST",
-                    "summary": "Creates a new News category",
-                    "nickname": "postCategoriesAction"
+                    "method":"POST",
+                    "summary":"Creates a new News category",
+                    "nickname":"postCategoriesAction"
                 }
             ]
         },
         {
-            "path": "/news/categories/{category_id}",
-            "operations": [
+            "path":"/news/categories/{category_id}",
+            "operations":[
                 {
-                    "method": "DELETE",
-                    "summary": "Delete News Category by ID",
-                    "nickname": "deleteCategoryAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Delete News Category by ID",
+                    "nickname":"deleteCategoryAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news category that needs to be deleted"
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news category that needs to be deleted"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "News Category not found"
+                            "code":404,
+                            "message":"News Category not found"
                         }
                     ],
-                    "notes": "Deletes a News Category based on ID"
+                    "notes":"Deletes a News Category based on ID"
                 }
             ]
         },
         {
-            "path": "/news/categories/{category_id}/groups",
-            "operations": [
+            "path":"/news/categories/{category_id}/groups",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets groups with access to a news category",
-                    "nickname": "getCategoryGroupsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets groups with access to a news category",
+                    "nickname":"getCategoryGroupsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news category that needs to be searched"
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news category that needs to be searched"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "News Category not found"
+                            "code":404,
+                            "message":"News Category not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Adds a group to a news category",
-                    "nickname": "postCategoryGroupsAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Adds a group to a news category",
+                    "nickname":"postCategoryGroupsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news category where the new group needs to be added"
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news category where the new group needs to be added"
                         },
                         {
-                            "paramType": "path",
-                            "name": "id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the group to add access for."
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the group to add access for."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "News Category not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/news/categories/{category_id}/groups/{group_id}",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Determines if a group has access to a news category",
-                    "nickname": "getCategoryGroupAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news category that needs to be checked"
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "group_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the group that needs to be checked"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Category not found"
-                        }
-                    ]
-                },
-                {
-                    "method": "DELETE",
-                    "summary": "Removes a group's access to a news category",
-                    "nickname": "deleteCategoryGroupAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news category that needs to be checked"
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "group_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the group that needs to be checked"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Category not found"
+                            "code":404,
+                            "message":"News Category not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/news/categories/{catgory_id}",
-            "operations": [
+            "path":"/news/categories/{category_id}/groups/{group_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Find News Category by ID",
-                    "nickname": "getCategoryAction",
-                    "type": "NewsCategory",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Determines if a group has access to a news category",
+                    "nickname":"getCategoryGroupAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news category that needs to be fetched"
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news category that needs to be checked"
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"group_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the group that needs to be checked"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "News Category not found"
+                            "code":404,
+                            "message":"News Category not found"
                         }
-                    ],
-                    "notes": "Returns a News Category based on ID"
+                    ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Update News Category by ID",
-                    "nickname": "postCategoryAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Removes a group's access to a news category",
+                    "nickname":"deleteCategoryGroupAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news category that needs to be updated"
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news category that needs to be checked"
                         },
                         {
-                            "paramType": "path",
-                            "name": "title",
-                            "type": "string",
-                            "required": false,
-                            "description": "Updated category title"
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "parent_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Updated parent ID"
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "display_order",
-                            "type": "string",
-                            "required": false,
-                            "description": "Updated display order"
+                            "paramType":"path",
+                            "name":"group_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the group that needs to be checked"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "News Category not found"
-                        }
-                    ],
-                    "notes": "Updates a News Category based on ID"
-                },
-                {
-                    "method": "GET",
-                    "summary": "Gets news within a news category",
-                    "nickname": "getCategoryNewsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news category that needs to be searched"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Category not found"
+                            "code":404,
+                            "message":"News Category not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/news/validating-comments",
-            "operations": [
+            "path":"/news/categories/{catgory_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets news comments that are awaiting validation",
-                    "nickname": "getValidatingCommentsAction"
-                }
-            ]
-        },
-        {
-            "path": "/news/{news_id}",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Find News by ID",
-                    "nickname": "getNewsAction",
-                    "type": "News",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Find News Category by ID",
+                    "nickname":"getCategoryAction",
+                    "type":"NewsCategory",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be fetched"
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news category that needs to be fetched"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "News Item not found"
+                            "code":404,
+                            "message":"News Category not found"
                         }
                     ],
-                    "notes": "Returns a News Item based on ID"
+                    "notes":"Returns a News Category based on ID"
                 },
                 {
-                    "method": "POST",
-                    "summary": "Updates News Item by ID",
-                    "nickname": "postNewsAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Update News Category by ID",
+                    "nickname":"postCategoryAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be updated"
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news category that needs to be updated"
                         },
                         {
-                            "paramType": "form",
-                            "name": "title",
-                            "type": "string",
-                            "required": false,
-                            "description": "Updated title of the News Item"
+                            "paramType":"path",
+                            "name":"title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Updated category title"
                         },
                         {
-                            "paramType": "form",
-                            "name": "status",
-                            "type": "string",
-                            "required": false,
-                            "description": "Updated status of the News Item"
+                            "paramType":"path",
+                            "name":"parent_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Updated parent ID"
                         },
                         {
-                            "paramType": "form",
-                            "name": "date_published",
-                            "type": "string",
-                            "required": false,
-                            "description": "Updated published date of the News Item"
-                        },
-                        {
-                            "paramType": "form",
-                            "name": "content",
-                            "type": "string",
-                            "required": false,
-                            "description": "Updated content of the News Item"
-                        },
-                        {
-                            "paramType": "form",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Updated category_id of the News Item"
+                            "paramType":"path",
+                            "name":"display_order",
+                            "type":"string",
+                            "required":false,
+                            "description":"Updated display order"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "News Item not found"
+                            "code":404,
+                            "message":"News Category not found"
                         }
                     ],
-                    "notes": "Updated a News Item with form data"
+                    "notes":"Updates a News Category based on ID"
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Delete News by ID",
-                    "nickname": "deleteNewsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets news within a news category",
+                    "nickname":"getCategoryNewsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be deleted"
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news category that needs to be searched"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "News Item not found"
-                        }
-                    ],
-                    "notes": "Deletes a News Item based on ID"
-                }
-            ]
-        },
-        {
-            "path": "/news/{news_id}/comments",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Find all the comments by News ID",
-                    "nickname": "getNewsCommentsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for comments"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Item not found"
-                        }
-                    ],
-                    "notes": "Retrieves all news comments based on News ID"
-                },
-                {
-                    "method": "POST",
-                    "summary": "Adds a new Comment by News ID",
-                    "nickname": "newNewsCommentAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for comments"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "content",
-                            "type": "string",
-                            "required": true,
-                            "description": "Comment content"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person making the comment"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "status",
-                            "type": "integer",
-                            "required": true,
-                            "description": "status of the comment"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Item not found"
-                        }
-                    ],
-                    "notes": "Creates a news comments based on News ID"
-                }
-            ]
-        },
-        {
-            "path": "/news/{news_id}/comments/{comment_id}",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Find one News comment by News ID and Comment ID",
-                    "nickname": "getNewsCommentAction",
-                    "type": "NewsComment",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for comments"
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the comment that needs to be searched for comments"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Item not found"
-                        }
-                    ],
-                    "notes": "Retrieves a news comments based on News ID and Comment ID"
-                },
-                {
-                    "method": "POST",
-                    "summary": "Updates one News comment by News ID and Comment ID",
-                    "nickname": "postNewsCommentAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for comments"
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the comment that needs to be searched for comments"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "status",
-                            "type": "integer",
-                            "required": false,
-                            "description": "status of the comment"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "content",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Comment content"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Item not found"
-                        }
-                    ]
-                },
-                {
-                    "method": "DELETE",
-                    "summary": "Delete one News comment by News ID and Comment ID",
-                    "nickname": "deleteNewsCommentAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for comments"
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the comment that needs to be searched for comments"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Item not found"
-                        }
-                    ],
-                    "notes": "Deletes a news comments based on News ID and Comment ID"
-                }
-            ]
-        },
-        {
-            "path": "/news/{news_id}/comments/{label}",
-            "operations": [
-                {
-                    "method": "DELETE",
-                    "summary": "Delete one label by News ID and label",
-                    "nickname": "deleteNewsLabelAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for comments"
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the comment that needs to be searched for comments"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Item not found"
-                        }
-                    ],
-                    "notes": "Deletes a news comments based on News ID and Comment ID"
-                }
-            ]
-        },
-        {
-            "path": "/news/{news_id}/labels",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Find all the labels by News ID",
-                    "nickname": "getNewsLabelsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for labels"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Item not found"
-                        }
-                    ],
-                    "notes": "Retrieves all labels based on News ID"
-                },
-                {
-                    "method": "POST",
-                    "summary": "Adds a new Label by News ID",
-                    "nickname": "postNewsLabelsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for comments"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "label",
-                            "type": "string",
-                            "required": true,
-                            "description": "Label"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "News Item not found"
+                            "code":404,
+                            "message":"News Category not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/news/{news_id}/labels/{label}",
-            "operations": [
+            "path":"/news/validating-comments",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Find one Label by News ID and Label",
-                    "nickname": "getNewsLabelAction",
-                    "type": "NewsComment",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets news comments that are awaiting validation",
+                    "nickname":"getValidatingCommentsAction"
+                }
+            ]
+        },
+        {
+            "path":"/news/{news_id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Find News by ID",
+                    "nickname":"getNewsAction",
+                    "type":"News",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "news_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the news item that needs to be searched for comments"
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be fetched"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Returns a News Item based on ID"
+                },
+                {
+                    "method":"POST",
+                    "summary":"Updates News Item by ID",
+                    "nickname":"postNewsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be updated"
                         },
                         {
-                            "paramType": "path",
-                            "name": "label",
-                            "type": "integer",
-                            "required": true,
-                            "description": "label that needs to be searched"
-                        }
-                    ],
-                    "responseMessages": [
+                            "paramType":"form",
+                            "name":"title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Updated title of the News Item"
+                        },
                         {
-                            "code": 404,
-                            "message": "News Item not found"
+                            "paramType":"form",
+                            "name":"status",
+                            "type":"string",
+                            "required":false,
+                            "description":"Updated status of the News Item"
+                        },
+                        {
+                            "paramType":"form",
+                            "name":"date_published",
+                            "type":"string",
+                            "required":false,
+                            "description":"Updated published date of the News Item"
+                        },
+                        {
+                            "paramType":"form",
+                            "name":"content",
+                            "type":"string",
+                            "required":false,
+                            "description":"Updated content of the News Item"
+                        },
+                        {
+                            "paramType":"form",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Updated category_id of the News Item"
                         }
                     ],
-                    "notes": "Retrieves a label based on News ID and Label"
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Updated a News Item with form data"
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Delete News by ID",
+                    "nickname":"deleteNewsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be deleted"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Deletes a News Item based on ID"
+                }
+            ]
+        },
+        {
+            "path":"/news/{news_id}/comments",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Find all the comments by News ID",
+                    "nickname":"getNewsCommentsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for comments"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Retrieves all news comments based on News ID"
+                },
+                {
+                    "method":"POST",
+                    "summary":"Adds a new Comment by News ID",
+                    "nickname":"newNewsCommentAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for comments"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"content",
+                            "type":"string",
+                            "required":true,
+                            "description":"Comment content"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person making the comment"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"status",
+                            "type":"integer",
+                            "required":true,
+                            "description":"status of the comment"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Creates a news comments based on News ID"
+                }
+            ]
+        },
+        {
+            "path":"/news/{news_id}/comments/{comment_id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Find one News comment by News ID and Comment ID",
+                    "nickname":"getNewsCommentAction",
+                    "type":"NewsComment",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for comments"
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the comment that needs to be searched for comments"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Retrieves a news comments based on News ID and Comment ID"
+                },
+                {
+                    "method":"POST",
+                    "summary":"Updates one News comment by News ID and Comment ID",
+                    "nickname":"postNewsCommentAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for comments"
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the comment that needs to be searched for comments"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"status",
+                            "type":"integer",
+                            "required":false,
+                            "description":"status of the comment"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"content",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Comment content"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ]
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Delete one News comment by News ID and Comment ID",
+                    "nickname":"deleteNewsCommentAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for comments"
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the comment that needs to be searched for comments"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Deletes a news comments based on News ID and Comment ID"
+                }
+            ]
+        },
+        {
+            "path":"/news/{news_id}/comments/{label}",
+            "operations":[
+                {
+                    "method":"DELETE",
+                    "summary":"Delete one label by News ID and label",
+                    "nickname":"deleteNewsLabelAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for comments"
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the comment that needs to be searched for comments"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Deletes a news comments based on News ID and Comment ID"
+                }
+            ]
+        },
+        {
+            "path":"/news/{news_id}/labels",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Find all the labels by News ID",
+                    "nickname":"getNewsLabelsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for labels"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Retrieves all labels based on News ID"
+                },
+                {
+                    "method":"POST",
+                    "summary":"Adds a new Label by News ID",
+                    "nickname":"postNewsLabelsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for comments"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"label",
+                            "type":"string",
+                            "required":true,
+                            "description":"Label"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/news/{news_id}/labels/{label}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Find one Label by News ID and Label",
+                    "nickname":"getNewsLabelAction",
+                    "type":"NewsComment",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"news_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the news item that needs to be searched for comments"
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"label",
+                            "type":"integer",
+                            "required":true,
+                            "description":"label that needs to be searched"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"News Item not found"
+                        }
+                    ],
+                    "notes":"Retrieves a label based on News ID and Label"
                 }
             ]
         }

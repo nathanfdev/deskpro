@@ -36,6 +36,9 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\TicketSearch;
+
+use Symfony\Component\HttpFoundation\Response;
+
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -480,6 +483,17 @@ class TicketSearchController extends AbstractController
 
 	/**
 	 * Get a map of filters.
+     *
+     * @SWG\Api(
+     * 	path="/tickets/filters",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get a map of filters",
+     * 		notes="Find all ticket filters (system and custom)",
+     *		type="array",
+     *  )
+     * )
+     *
 	 */
 	public function getFiltersAction()
 	{
@@ -497,12 +511,32 @@ class TicketSearchController extends AbstractController
 	}
 
 
-
-	/**
-	 * Execute a filter and return results.
-	 *
-	 * @param int $filter_id
-	 */
+    /**
+     * Execute a filter and return results.
+     *
+     * @param int $filter_id
+     *
+     * @return Response
+     *
+     * @SWG\Api(
+     *  path="/tickets/filters/{filter_id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary=" Execute a filter and return results",
+     * 		notes="",
+     *		type="array",
+     *		@SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="filter_id[]",
+     *				description="Filter ID should be executed",
+     *				paramType="query",
+     *				required=true,
+     *				type="int"
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function getFilterAction($filter_id)
 	{
 		$page = $this->in->getUint('page');
@@ -530,7 +564,18 @@ class TicketSearchController extends AbstractController
 
 	/**
 	 * Get array of filters and counts
-	 */
+     *
+     * @SWG\Api(
+     * 	path="/tickets/filters/count",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get array of filters and counts",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     *
+     */
 	public function getFilterCountsAction()
 	{
 		$all_counts = App::getApi('tickets.filters')->getAllCountsCustomFilters($this->person);
@@ -549,7 +594,20 @@ class TicketSearchController extends AbstractController
 		return App::getApi('tickets.filters');
 	}
 
-
+    /**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/tickets/quick-stats",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Returns all today created or resolved tickets and tickets awaiting their agent",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     *
+     */
 	public function getQuickStatsAction()
 	{
 		$stats = array();

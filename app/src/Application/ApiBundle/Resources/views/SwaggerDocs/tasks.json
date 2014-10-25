@@ -1,610 +1,610 @@
 {
-    "basePath": "/api",
-    "swaggerVersion": "1.2",
-    "resourcePath": "/tasks",
-    "apis": [
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/tasks",
+    "apis":[
         {
-            "path": "/task/{task_id}",
-            "operations": [
+            "path":"/task/{task_id}",
+            "operations":[
                 {
-                    "method": "POST",
-                    "summary": "Updates a Task.",
-                    "nickname": "postTaskAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Updates a Task.",
+                    "nickname":"postTaskAction",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "ID of the task that needs to be updated"
+                            "paramType":"query",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"ID of the task that needs to be updated"
                         },
                         {
-                            "paramType": "query",
-                            "name": "assigned_agent_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Updated ID of agent assigned to the task."
+                            "paramType":"query",
+                            "name":"assigned_agent_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Updated ID of agent assigned to the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "assigned_agent_team_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Updated ID of agent team assigned to the task."
+                            "paramType":"query",
+                            "name":"assigned_agent_team_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Updated ID of agent team assigned to the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "completed",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "Sets the completed state for the task."
+                            "paramType":"query",
+                            "name":"completed",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Sets the completed state for the task."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task definition not found"
+                            "code":404,
+                            "message":"Task definition not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/tasks",
-            "operations": [
+            "path":"/tasks",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Search for tasks matching criteria",
-                    "nickname": "searchAction",
-                    "type": "array",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Search for tasks matching criteria",
+                    "nickname":"searchAction",
+                    "type":"array",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "assigned_agent_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comma seperated IDs of the agent assigned to the task."
+                            "paramType":"query",
+                            "name":"assigned_agent_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comma seperated IDs of the agent assigned to the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "assigned_agent_team_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comma seperated IDs of the agent assigned to the task."
+                            "paramType":"query",
+                            "name":"assigned_agent_team_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comma seperated IDs of the agent assigned to the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_completed_end",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Maximum Unix timestamp for when the task was completed."
+                            "paramType":"query",
+                            "name":"date_completed_end",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Maximum Unix timestamp for when the task was completed."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_completed_start",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Minimum Unix timestamp for when the task was completed."
+                            "paramType":"query",
+                            "name":"date_completed_start",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Minimum Unix timestamp for when the task was completed."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_created_end",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Maximum Unix timestamp for when the task was created."
+                            "paramType":"query",
+                            "name":"date_created_end",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Maximum Unix timestamp for when the task was created."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_created_start",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Minimum Unix timestamp for when the task was created."
+                            "paramType":"query",
+                            "name":"date_created_start",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Minimum Unix timestamp for when the task was created."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_due_end",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Maximum Unix timestamp for when the task is due."
+                            "paramType":"query",
+                            "name":"date_due_end",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Maximum Unix timestamp for when the task is due."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_due_start",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Minimum Unix timestamp for when the task is due."
+                            "paramType":"query",
+                            "name":"date_due_start",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Minimum Unix timestamp for when the task is due."
                         },
                         {
-                            "paramType": "query",
-                            "name": "is_completed",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "1 to get completed tasks only, 0 to get incomplete tasks only."
+                            "paramType":"query",
+                            "name":"is_completed",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"1 to get completed tasks only, 0 to get incomplete tasks only."
                         },
                         {
-                            "paramType": "query",
-                            "name": "person_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comma seperated IDs of the person that created the task."
+                            "paramType":"query",
+                            "name":"person_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comma seperated IDs of the person that created the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "title[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Text that must be contained in the task title."
+                            "paramType":"query",
+                            "name":"title[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Text that must be contained in the task title."
                         },
                         {
-                            "paramType": "query",
-                            "name": "visibility",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "1 to get public tasks only, 0 to get private tasks only."
+                            "paramType":"query",
+                            "name":"visibility",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"1 to get public tasks only, 0 to get private tasks only."
                         },
                         {
-                            "paramType": "query",
-                            "name": "order",
-                            "type": "string",
-                            "required": false,
-                            "description": "Order of the results. Defaults to task.name:asc"
+                            "paramType":"query",
+                            "name":"order",
+                            "type":"string",
+                            "required":false,
+                            "description":"Order of the results. Defaults to task.name:asc"
                         },
                         {
-                            "paramType": "query",
-                            "name": "cache_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                            "paramType":"query",
+                            "name":"cache_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
                         },
                         {
-                            "paramType": "query",
-                            "name": "page",
-                            "type": "integer",
-                            "required": false,
-                            "description": "The page number of the results to fetch."
+                            "paramType":"query",
+                            "name":"page",
+                            "type":"integer",
+                            "required":false,
+                            "description":"The page number of the results to fetch."
                         }
                     ],
-                    "notes": "Returns list of tasks that matched."
+                    "notes":"Returns list of tasks that matched."
                 },
                 {
-                    "method": "POST",
-                    "summary": "Creates a new task.",
-                    "nickname": "newTaskAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Creates a new task.",
+                    "nickname":"newTaskAction",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "assigned_agent_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of agent assigned to the task."
+                            "paramType":"query",
+                            "name":"assigned_agent_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of agent assigned to the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "assigned_agent_team_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "ID of agent team assigned to the task."
+                            "paramType":"query",
+                            "name":"assigned_agent_team_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"ID of agent team assigned to the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_due",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Unix timestamp of when the task is due."
+                            "paramType":"query",
+                            "name":"date_due",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Unix timestamp of when the task is due."
                         },
                         {
-                            "paramType": "query",
-                            "name": "label[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comma seperated list of Labels to apply to the task."
+                            "paramType":"query",
+                            "name":"label[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comma seperated list of Labels to apply to the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "ticket_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "If specified, the ID of the ticket this task should be associated with."
+                            "paramType":"query",
+                            "name":"ticket_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"If specified, the ID of the ticket this task should be associated with."
                         },
                         {
-                            "paramType": "query",
-                            "name": "title",
-                            "type": "string",
-                            "required": false,
-                            "description": "Title of the task."
+                            "paramType":"query",
+                            "name":"title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Title of the task."
                         },
                         {
-                            "paramType": "query",
-                            "name": "visibility",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "0 for private, 1 for public."
+                            "paramType":"query",
+                            "name":"visibility",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"0 for private, 1 for public."
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/tasks/{task_id}",
-            "operations": [
+            "path":"/tasks/{task_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets a task by task ID.",
-                    "nickname": "getTaskAction",
-                    "type": "Task",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets a task by task ID.",
+                    "nickname":"getTaskAction",
+                    "type":"Task",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be searched."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ],
-                    "notes": "Information about the task by task ID."
+                    "notes":"Information about the task by task ID."
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes a task by ID.",
-                    "nickname": "deleteTaskAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a task by ID.",
+                    "nickname":"deleteTaskAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be deleted."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/tasks/{task_id}/associations",
-            "operations": [
+            "path":"/tasks/{task_id}/associations",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets Task associations.",
-                    "nickname": "getTaskAssociationsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets Task associations.",
+                    "nickname":"getTaskAssociationsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be searched."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ],
-                    "notes": "Information about the task associations by task ID."
+                    "notes":"Information about the task associations by task ID."
                 },
                 {
-                    "method": "GET",
-                    "summary": "Creates a task association.",
-                    "nickname": "postTaskAssociationsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Creates a task association.",
+                    "nickname":"postTaskAssociationsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be searched."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be searched."
                         },
                         {
-                            "paramType": "query",
-                            "name": "ticket_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of ticket to create association with."
+                            "paramType":"query",
+                            "name":"ticket_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of ticket to create association with."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         },
                         {
-                            "code": 500,
-                            "message": "ticket_id is not valid"
+                            "code":500,
+                            "message":"ticket_id is not valid"
                         }
                     ],
-                    "notes": "Creates a task association by task ID."
+                    "notes":"Creates a task association by task ID."
                 }
             ]
         },
         {
-            "path": "/tasks/{task_id}/associations/{association_id}",
-            "operations": [
+            "path":"/tasks/{task_id}/associations/{association_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Determines if a task association exists.",
-                    "nickname": "getTaskAssociationAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Determines if a task association exists.",
+                    "nickname":"getTaskAssociationAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
                         },
                         {
-                            "paramType": "path",
-                            "name": "association_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the association that needs to be checked."
+                            "paramType":"path",
+                            "name":"association_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the association that needs to be checked."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes a task association.",
-                    "nickname": "deleteTaskAssociationAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a task association.",
+                    "nickname":"deleteTaskAssociationAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
                         },
                         {
-                            "paramType": "path",
-                            "name": "association_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the association that needs to be deleted."
+                            "paramType":"path",
+                            "name":"association_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the association that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/tasks/{task_id}/comments",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets task comments by task ID",
-                    "nickname": "getTaskCommentsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Task not found"
-                        }
-                    ]
-                },
-                {
-                    "method": "POST",
-                    "summary": "Creates a task comment by task ID",
-                    "nickname": "postTaskCommentsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment",
-                            "type": "string",
-                            "required": true,
-                            "description": "Text of the comment."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/tasks/{task_id}/comments/{comment_id}",
-            "operations": [
+            "path":"/tasks/{task_id}/comments",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Determines if a task comment exists",
-                    "nickname": "getTaskCommentAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets task comments by task ID",
+                    "nickname":"getTaskCommentsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task comment that needs to be checked."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes a task comment by Task and Comment IDs",
-                    "nickname": "deleteTaskCommentAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Creates a task comment by task ID",
+                    "nickname":"postTaskCommentsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
                         },
                         {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task comment that needs to be deleted."
+                            "paramType":"path",
+                            "name":"comment",
+                            "type":"string",
+                            "required":true,
+                            "description":"Text of the comment."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/tasks/{task_id}/labels",
-            "operations": [
+            "path":"/tasks/{task_id}/comments/{comment_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets task labels by task ID",
-                    "nickname": "getTaskLabelsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Determines if a task comment exists",
+                    "nickname":"getTaskCommentAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task comment that needs to be checked."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Creates a task label by task ID",
-                    "nickname": "postTaskLabelsAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a task comment by Task and Comment IDs",
+                    "nickname":"deleteTaskCommentAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
                         },
                         {
-                            "paramType": "query",
-                            "name": "label",
-                            "type": "string",
-                            "required": true,
-                            "description": "Text of the label."
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task comment that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/tasks/{task_id}/labels/{label}",
-            "operations": [
+            "path":"/tasks/{task_id}/labels",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Determines if a task label exists by task ID",
-                    "nickname": "getTaskLabelAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets task labels by task ID",
+                    "nickname":"getTaskLabelsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "label",
-                            "type": "string",
-                            "required": true,
-                            "description": "Text of the label."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes a task label by task ID",
-                    "nickname": "deleteTaskLabelAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Creates a task label by task ID",
+                    "nickname":"postTaskLabelsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "task_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the task that needs to be checked."
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
                         },
                         {
-                            "paramType": "path",
-                            "name": "label",
-                            "type": "string",
-                            "required": true,
-                            "description": "Text of the label that needs to be deleted."
+                            "paramType":"query",
+                            "name":"label",
+                            "type":"string",
+                            "required":true,
+                            "description":"Text of the label."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Task not found"
+                            "code":404,
+                            "message":"Task not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/tasks/{task_id}/labels/{label}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Determines if a task label exists by task ID",
+                    "nickname":"getTaskLabelAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"label",
+                            "type":"string",
+                            "required":true,
+                            "description":"Text of the label."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Task not found"
+                        }
+                    ]
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Deletes a task label by task ID",
+                    "nickname":"deleteTaskLabelAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"task_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the task that needs to be checked."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"label",
+                            "type":"string",
+                            "required":true,
+                            "description":"Text of the label that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Task not found"
                         }
                     ]
                 }

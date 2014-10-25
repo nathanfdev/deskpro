@@ -1,50 +1,54 @@
 {
-    "apiVersion": null,
-    "swaggerVersion": "1.2",
-    "apis": [
+    "apiVersion":null,
+    "swaggerVersion":"1.2",
+    "apis":[
         {
-            "path": "/api_keys",
-            "description": "Operations about API Keys"
+            "path":"/api_keys",
+            "description":"Operations about API Keys"
         },
         {
-            "path": "/chats",
-            "description": "Operations about Chats"
+            "path":"/chats",
+            "description":"Operations about Chats"
         },
         {
-            "path": "/downloads",
-            "description": "Operations about Downloads"
+            "path":"/downloads",
+            "description":"Operations about Downloads"
         },
         {
-            "path": "/feedback",
-            "description": "Operations about Feedbacks"
+            "path":"/feedback",
+            "description":"Operations about Feedbacks"
         },
         {
-            "path": "/glossary",
-            "description": "Operations about Glossary Words"
+            "path":"/glossary",
+            "description":"Operations about Glossary Words"
         },
         {
-            "path": "/kb",
-            "description": "Operations about Knowledgebase"
+            "path":"/kb",
+            "description":"Operations about Knowledgebase"
         },
         {
-            "path": "/news",
-            "description": "Operations about News Items"
+            "path":"/news",
+            "description":"Operations about News Items"
         },
         {
-            "path": "/organization",
-            "description": "Operations about Organization"
+            "path":"/organization",
+            "description":"Operations about Organization"
         },
         {
-            "path": "/people",
-            "description": "Operations about People/Persons"
+            "path":"/people",
+            "description":"Operations about People/Persons"
         },
         {
-            "path": "/tasks",
-            "description": "Operations about Tasks"
+            "path":"/tasks",
+            "description":"Operations about Tasks"
         },
         {
-            "path": "/tickets",
-            "description": "Operations about Tickets"
+            "path":"/ticket_statuses",
+            "description":"Operations about Ticket status"
+        },
+        {
+            "path":"/tickets",
+            "description":"Operations about Tickets"
         }
     ]
 }

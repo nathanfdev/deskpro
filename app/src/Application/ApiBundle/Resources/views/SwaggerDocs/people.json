@@ -1,1438 +1,1438 @@
 {
-    "basePath": "/api",
-    "swaggerVersion": "1.2",
-    "resourcePath": "/people",
-    "apis": [
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/people",
+    "apis":[
         {
-            "path": "/people",
-            "operations": [
+            "path":"/people",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Search for people matching criteria",
-                    "nickname": "searchAction",
-                    "type": "array",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Search for people matching criteria",
+                    "nickname":"searchAction",
+                    "type":"array",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "address[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires an person's address to contain this value."
+                            "paramType":"query",
+                            "name":"address[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires an person's address to contain this value."
                         },
                         {
-                            "paramType": "query",
-                            "name": "agent_team_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires a person to be a member of this agent team."
+                            "paramType":"query",
+                            "name":"agent_team_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires a person to be a member of this agent team."
                         },
                         {
-                            "paramType": "query",
-                            "name": "alpha[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires a person's last name to start with this letter."
+                            "paramType":"query",
+                            "name":"alpha[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires a person's last name to start with this letter."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_created_end",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Requires a person's account to have been created before this date. Must be specified as a Unix timestamp."
+                            "paramType":"query",
+                            "name":"date_created_end",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Requires a person's account to have been created before this date. Must be specified as a Unix timestamp."
                         },
                         {
-                            "paramType": "query",
-                            "name": "date_created_start",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Requires a person's account to have been created after this date. Must be specified as a Unix timestamp."
+                            "paramType":"query",
+                            "name":"date_created_start",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Requires a person's account to have been created after this date. Must be specified as a Unix timestamp."
                         },
                         {
-                            "paramType": "query",
-                            "name": "email[]",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Requires a person to have an email that contains this value."
+                            "paramType":"query",
+                            "name":"email[]",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Requires a person to have an email that contains this value."
                         },
                         {
-                            "paramType": "query",
-                            "name": "email_domain[]",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Requires a person to have an email with a domain that contains this value."
+                            "paramType":"query",
+                            "name":"email_domain[]",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Requires a person to have an email with a domain that contains this value."
                         },
                         {
-                            "paramType": "query",
-                            "name": "field[#][]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires person custom field to have the specified value in the listed field."
+                            "paramType":"query",
+                            "name":"field[#][]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires person custom field to have the specified value in the listed field."
                         },
                         {
-                            "paramType": "query",
-                            "name": "im[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires an person to have an instant messenger contact that contains this value."
+                            "paramType":"query",
+                            "name":"im[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires an person to have an instant messenger contact that contains this value."
                         },
                         {
-                            "paramType": "query",
-                            "name": "is_agent",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "True to search on agents instead of users."
+                            "paramType":"query",
+                            "name":"is_agent",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"True to search on agents instead of users."
                         },
                         {
-                            "paramType": "query",
-                            "name": "is_agent_confirmed",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "Requires the person to be confirmed by an agent or not."
+                            "paramType":"query",
+                            "name":"is_agent_confirmed",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Requires the person to be confirmed by an agent or not."
                         },
                         {
-                            "paramType": "query",
-                            "name": "label[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires person to be have the specified label."
+                            "paramType":"query",
+                            "name":"label[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires person to be have the specified label."
                         },
                         {
-                            "paramType": "query",
-                            "name": "name[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires an person to have a name that contains this value."
+                            "paramType":"query",
+                            "name":"name[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires an person to have a name that contains this value."
                         },
                         {
-                            "paramType": "query",
-                            "name": "language_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires person to have chosen this language."
+                            "paramType":"query",
+                            "name":"language_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires person to have chosen this language."
                         },
                         {
-                            "paramType": "query",
-                            "name": "organization_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires person to be a member of this organization."
+                            "paramType":"query",
+                            "name":"organization_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires person to be a member of this organization."
                         },
                         {
-                            "paramType": "query",
-                            "name": "phone[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires person to have a phone number that contains this value."
+                            "paramType":"query",
+                            "name":"phone[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires person to have a phone number that contains this value."
                         },
                         {
-                            "paramType": "query",
-                            "name": "usergroup_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires person to be a member of this usergroup."
+                            "paramType":"query",
+                            "name":"usergroup_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires person to be a member of this usergroup."
                         },
                         {
-                            "paramType": "query",
-                            "name": "order",
-                            "type": "string",
-                            "required": false,
-                            "description": "Order of the results. Defaults to accessing person's preference or people.id:asc."
+                            "paramType":"query",
+                            "name":"order",
+                            "type":"string",
+                            "required":false,
+                            "description":"Order of the results. Defaults to accessing person's preference or people.id:asc."
                         },
                         {
-                            "paramType": "query",
-                            "name": "cache_id",
-                            "type": "string",
-                            "required": false,
-                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                            "paramType":"query",
+                            "name":"cache_id",
+                            "type":"string",
+                            "required":false,
+                            "description":"If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
                         },
                         {
-                            "paramType": "query",
-                            "name": "page",
-                            "type": "string",
-                            "required": false,
-                            "description": "The page number of the results to fetch."
+                            "paramType":"query",
+                            "name":"page",
+                            "type":"string",
+                            "required":false,
+                            "description":"The page number of the results to fetch."
                         }
                     ],
-                    "notes": "Returns list of people that matched."
+                    "notes":"Returns list of people that matched."
                 },
                 {
-                    "method": "POST",
-                    "summary": "Creates a new Person.",
-                    "nickname": "newPersonAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Creates a new Person.",
+                    "nickname":"newPersonAction",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "name",
-                            "type": "string",
-                            "required": true,
-                            "description": "Name of the Person."
+                            "paramType":"query",
+                            "name":"name",
+                            "type":"string",
+                            "required":true,
+                            "description":"Name of the Person."
                         },
                         {
-                            "paramType": "query",
-                            "name": "password",
-                            "type": "string",
-                            "required": false,
-                            "description": "Set the password for the person so they can log in."
+                            "paramType":"query",
+                            "name":"password",
+                            "type":"string",
+                            "required":false,
+                            "description":"Set the password for the person so they can log in."
                         },
                         {
-                            "paramType": "query",
-                            "name": "email",
-                            "type": "string",
-                            "required": false,
-                            "description": "Primary email of the person. This cannot already exist."
+                            "paramType":"query",
+                            "name":"email",
+                            "type":"string",
+                            "required":false,
+                            "description":"Primary email of the person. This cannot already exist."
                         },
                         {
-                            "paramType": "query",
-                            "name": "contact_data[#]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Components of a contact detail to add. See the <a href='https://support.deskpro.com/kb/articles/104-setting-contact-data'>Setting Contact Data</a> article for more information."
+                            "paramType":"query",
+                            "name":"contact_data[#]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Components of a contact detail to add. See the <a href='https://support.deskpro.com/kb/articles/104-setting-contact-data'>Setting Contact Data</a> article for more information."
                         },
                         {
-                            "paramType": "query",
-                            "name": "disable_autoresponses",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "If true, disables sending this person automatic notifications when actions are applied to their tickets."
+                            "paramType":"query",
+                            "name":"disable_autoresponses",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"If true, disables sending this person automatic notifications when actions are applied to their tickets."
                         },
                         {
-                            "paramType": "query",
-                            "name": "field[#]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Value for the specified custom person field."
+                            "paramType":"query",
+                            "name":"field[#]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Value for the specified custom person field."
                         },
                         {
-                            "paramType": "query",
-                            "name": "group_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "ID of a usergroup to add this person to."
+                            "paramType":"query",
+                            "name":"group_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"ID of a usergroup to add this person to."
                         },
                         {
-                            "paramType": "query",
-                            "name": "label[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Label to apply to the person."
+                            "paramType":"query",
+                            "name":"label[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Label to apply to the person."
                         },
                         {
-                            "paramType": "query",
-                            "name": "is_disabled",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "If true, sets this person to be disabled (can't login or interact with tickets/chat)."
+                            "paramType":"query",
+                            "name":"is_disabled",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"If true, sets this person to be disabled (can't login or interact with tickets/chat)."
                         },
                         {
-                            "paramType": "query",
-                            "name": "organization",
-                            "type": "string",
-                            "required": false,
-                            "description": "Name of the organization this person should belong to. If this does not exist, one will be created."
+                            "paramType":"query",
+                            "name":"organization",
+                            "type":"string",
+                            "required":false,
+                            "description":"Name of the organization this person should belong to. If this does not exist, one will be created."
                         },
                         {
-                            "paramType": "query",
-                            "name": "organization_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "ID of the organization this person should belong to."
+                            "paramType":"query",
+                            "name":"organization_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"ID of the organization this person should belong to."
                         },
                         {
-                            "paramType": "query",
-                            "name": "organization_position",
-                            "type": "string",
-                            "required": false,
-                            "description": "If the person belongs to an organization, their position within it."
+                            "paramType":"query",
+                            "name":"organization_position",
+                            "type":"string",
+                            "required":false,
+                            "description":"If the person belongs to an organization, their position within it."
                         },
                         {
-                            "paramType": "query",
-                            "name": "summary",
-                            "type": "string",
-                            "required": false,
-                            "description": "Summary of the person's details."
+                            "paramType":"query",
+                            "name":"summary",
+                            "type":"string",
+                            "required":false,
+                            "description":"Summary of the person's details."
                         },
                         {
-                            "paramType": "query",
-                            "name": "timezone",
-                            "type": "string",
-                            "required": false,
-                            "description": "Olson time zone string identifier."
+                            "paramType":"query",
+                            "name":"timezone",
+                            "type":"string",
+                            "required":false,
+                            "description":"Olson time zone string identifier."
                         },
                         {
-                            "paramType": "query",
-                            "name": "send_email",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "Send the user a welcome email (false by default)."
+                            "paramType":"query",
+                            "name":"send_email",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Send the user a welcome email (false by default)."
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/fields",
-            "operations": [
+            "path":"/people/fields",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets available custom person fields",
-                    "nickname": "getFieldsAction"
+                    "method":"GET",
+                    "summary":"Gets available custom person fields",
+                    "nickname":"getFieldsAction"
                 }
             ]
         },
         {
-            "path": "/people/groups",
-            "operations": [
+            "path":"/people/groups",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets available usergroups",
-                    "nickname": "getGroupsAction"
+                    "method":"GET",
+                    "summary":"Gets available usergroups",
+                    "nickname":"getGroupsAction"
                 }
             ]
         },
         {
-            "path": "/people/{person_id}",
-            "operations": [
+            "path":"/people/{person_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets a Person by Person ID.",
-                    "nickname": "getPersonAction",
-                    "type": "Person",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets a Person by Person ID.",
+                    "nickname":"getPersonAction",
+                    "type":"Person",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ],
-                    "notes": "Information about the person by person ID."
+                    "notes":"Information about the person by person ID."
                 },
                 {
-                    "method": "POST",
-                    "summary": "Updates a Person.",
-                    "nickname": "postPersonAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Updates a Person.",
+                    "nickname":"postPersonAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "string",
-                            "required": true,
-                            "description": "ID of the Person."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"string",
+                            "required":true,
+                            "description":"ID of the Person."
                         },
                         {
-                            "paramType": "query",
-                            "name": "name",
-                            "type": "string",
-                            "required": true,
-                            "description": "Name of the Person."
+                            "paramType":"query",
+                            "name":"name",
+                            "type":"string",
+                            "required":true,
+                            "description":"Name of the Person."
                         },
                         {
-                            "paramType": "query",
-                            "name": "disable_autoresponses",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "If true, disables sending this person automatic notifications when actions are applied to their tickets."
+                            "paramType":"query",
+                            "name":"disable_autoresponses",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"If true, disables sending this person automatic notifications when actions are applied to their tickets."
                         },
                         {
-                            "paramType": "query",
-                            "name": "field[#]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Value for the specified custom person field."
+                            "paramType":"query",
+                            "name":"field[#]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Value for the specified custom person field."
                         },
                         {
-                            "paramType": "query",
-                            "name": "is_disabled",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "If true, sets this person to be disabled (can't login or interact with tickets/chat)."
+                            "paramType":"query",
+                            "name":"is_disabled",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"If true, sets this person to be disabled (can't login or interact with tickets/chat)."
                         },
                         {
-                            "paramType": "query",
-                            "name": "organization",
-                            "type": "string",
-                            "required": false,
-                            "description": "Name of the organization this person should belong to. If this does not exist, one will be created."
+                            "paramType":"query",
+                            "name":"organization",
+                            "type":"string",
+                            "required":false,
+                            "description":"Name of the organization this person should belong to. If this does not exist, one will be created."
                         },
                         {
-                            "paramType": "query",
-                            "name": "organization_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "ID of the organization this person should belong to."
+                            "paramType":"query",
+                            "name":"organization_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"ID of the organization this person should belong to."
                         },
                         {
-                            "paramType": "query",
-                            "name": "organization_position",
-                            "type": "string",
-                            "required": false,
-                            "description": "If the person belongs to an organization, their position within it."
+                            "paramType":"query",
+                            "name":"organization_position",
+                            "type":"string",
+                            "required":false,
+                            "description":"If the person belongs to an organization, their position within it."
                         },
                         {
-                            "paramType": "query",
-                            "name": "summary",
-                            "type": "string",
-                            "required": false,
-                            "description": "Summary of the person's details."
+                            "paramType":"query",
+                            "name":"summary",
+                            "type":"string",
+                            "required":false,
+                            "description":"Summary of the person's details."
                         },
                         {
-                            "paramType": "query",
-                            "name": "timezone",
-                            "type": "string",
-                            "required": false,
-                            "description": "Olson time zone string identifier."
+                            "paramType":"query",
+                            "name":"timezone",
+                            "type":"string",
+                            "required":false,
+                            "description":"Olson time zone string identifier."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                },
-                {
-                    "method": "DELETE",
-                    "summary": "Deletes a Person by Person ID.",
-                    "nickname": "deletePersonAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be deleted."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/activity-stream",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets activity stream for a person.",
-                    "nickname": "getPersonActivityStreamAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "page",
-                            "type": "integer",
-                            "required": false,
-                            "description": "The page number of the results to fetch."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/billing-charges",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets billing charges for a person.",
-                    "nickname": "getPersonBillingChargesAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/chats",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets chats by a person.",
-                    "nickname": "getPersonChatsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "cache_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "page",
-                            "type": "integer",
-                            "required": false,
-                            "description": "The page number of the results to fetch."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/clear-session",
-            "operations": [
-                {
-                    "method": "POST",
-                    "summary": "Clears a person's session.",
-                    "nickname": "clearSessionAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ],
-                    "notes": "Clears all sessions for the person, forcing them to log in again. (Only available in DeskPRO #293 and later.)"
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/contact-details",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets contact details for a person.",
-                    "nickname": "getPersonContactDetailsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Creates a contact detail for a person",
-                    "nickname": "postPersonContactDetailsAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a Person by Person ID.",
+                    "nickname":"deletePersonAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "type",
-                            "type": "string",
-                            "required": true,
-                            "description": "Type of contact detail to add."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "data",
-                            "type": "string",
-                            "required": true,
-                            "description": "Contact detail-specific data."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "comment",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comment or label for the contact detail."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/contact-details/{contact_id}",
-            "operations": [
+            "path":"/people/{person_id}/activity-stream",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Determines if contact ID exists for person.",
-                    "nickname": "getPersonContactDetailAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets activity stream for a person.",
+                    "nickname":"getPersonActivityStreamAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "contact_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "Contact ID that needs to be searched."
+                            "paramType":"query",
+                            "name":"page",
+                            "type":"integer",
+                            "required":false,
+                            "description":"The page number of the results to fetch."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/billing-charges",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets billing charges for a person.",
+                    "nickname":"getPersonBillingChargesAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/chats",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets chats by a person.",
+                    "nickname":"getPersonChatsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"cache_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"page",
+                            "type":"integer",
+                            "required":false,
+                            "description":"The page number of the results to fetch."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/clear-session",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Clears a person's session.",
+                    "nickname":"clearSessionAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ],
+                    "notes":"Clears all sessions for the person, forcing them to log in again. (Only available in DeskPRO #293 and later.)"
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/contact-details",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets contact details for a person.",
+                    "nickname":"getPersonContactDetailsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes a contact for a person.",
-                    "nickname": "deletePersonContactDetailAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Creates a contact detail for a person",
+                    "nickname":"postPersonContactDetailsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "contact_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "Contact ID that needs to be deleted."
+                            "paramType":"query",
+                            "name":"type",
+                            "type":"string",
+                            "required":true,
+                            "description":"Type of contact detail to add."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"data",
+                            "type":"string",
+                            "required":true,
+                            "description":"Contact detail-specific data."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"comment",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comment or label for the contact detail."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/emails",
-            "operations": [
+            "path":"/people/{person_id}/contact-details/{contact_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets email records for a person.",
-                    "nickname": "getPersonEmailsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Determines if contact ID exists for person.",
+                    "nickname":"getPersonContactDetailAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"contact_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Contact ID that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Adds an email for a person.",
-                    "nickname": "postPersonEmailsAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a contact for a person.",
+                    "nickname":"deletePersonContactDetailAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "query",
-                            "name": "email",
-                            "type": "string",
-                            "required": true,
-                            "description": "Email address to add to this person. May not be associated with another person."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "comment",
-                            "type": "string",
-                            "required": false,
-                            "description": "A comment or label for the email."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "set_primary",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "If non-0, this email is set as the person's primary email address."
+                            "paramType":"path",
+                            "name":"contact_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Contact ID that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/emails/{email_id}",
-            "operations": [
+            "path":"/people/{person_id}/emails",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets information about an email ID for a person.",
-                    "nickname": "getPersonEmailAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets email records for a person.",
+                    "nickname":"getPersonEmailsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "email_id",
-                            "type": "string",
-                            "required": true,
-                            "description": "Email ID that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Updates an email record for a person.",
-                    "nickname": "postPersonEmailAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Adds an email for a person.",
+                    "nickname":"postPersonEmailsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "email_id",
-                            "type": "string",
-                            "required": true,
-                            "description": "Email ID that needs to be updated."
+                            "paramType":"query",
+                            "name":"email",
+                            "type":"string",
+                            "required":true,
+                            "description":"Email address to add to this person. May not be associated with another person."
                         },
                         {
-                            "paramType": "query",
-                            "name": "comment",
-                            "type": "string",
-                            "required": false,
-                            "description": "A comment or label for the email."
+                            "paramType":"query",
+                            "name":"comment",
+                            "type":"string",
+                            "required":false,
+                            "description":"A comment or label for the email."
                         },
                         {
-                            "paramType": "query",
-                            "name": "set_primary",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "If non-0, this email is set as the person's primary email address."
+                            "paramType":"query",
+                            "name":"set_primary",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"If non-0, this email is set as the person's primary email address."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/emails/{email_id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets information about an email ID for a person.",
+                    "nickname":"getPersonEmailAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"email_id",
+                            "type":"string",
+                            "required":true,
+                            "description":"Email ID that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes an email record for a person",
-                    "nickname": "deletePersonEmailAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Updates an email record for a person.",
+                    "nickname":"postPersonEmailAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "email_id",
-                            "type": "string",
-                            "required": true,
-                            "description": "Email ID that needs to be deleted."
+                            "paramType":"path",
+                            "name":"email_id",
+                            "type":"string",
+                            "required":true,
+                            "description":"Email ID that needs to be updated."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"comment",
+                            "type":"string",
+                            "required":false,
+                            "description":"A comment or label for the email."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"set_primary",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"If non-0, this email is set as the person's primary email address."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/groups",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets the groups for a person.",
-                    "nickname": "getPersonGroupsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Adds a person to a group.",
-                    "nickname": "postPersonGroupsAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes an email record for a person",
+                    "nickname":"deletePersonEmailAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be added."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "query",
-                            "name": "id",
-                            "type": "integer",
-                            "required": true,
-                            "description": " ID of the group to add this person to."
+                            "paramType":"path",
+                            "name":"email_id",
+                            "type":"string",
+                            "required":true,
+                            "description":"Email ID that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/groups/{group_id}",
-            "operations": [
+            "path":"/people/{person_id}/groups",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Determines if a person is a member of a group.",
-                    "nickname": "getPersonGroupAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets the groups for a person.",
+                    "nickname":"getPersonGroupsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "group_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the group that needs to be checked."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Removes a person from a group.",
-                    "nickname": "deletePersonGroupAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Adds a person to a group.",
+                    "nickname":"postPersonGroupsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be added."
                         },
                         {
-                            "paramType": "path",
-                            "name": "group_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the group that needs to be removed."
+                            "paramType":"query",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":" ID of the group to add this person to."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/labels",
-            "operations": [
+            "path":"/people/{person_id}/groups/{group_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets the labels for a person.",
-                    "nickname": "getPersonLabelsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Determines if a person is a member of a group.",
+                    "nickname":"getPersonGroupAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"group_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the group that needs to be checked."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Adds a label for a person.",
-                    "nickname": "postPersonLabelsAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Removes a person from a group.",
+                    "nickname":"deletePersonGroupAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "query",
-                            "name": "label",
-                            "type": "string",
-                            "required": true,
-                            "description": "Label to add"
+                            "paramType":"path",
+                            "name":"group_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the group that needs to be removed."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/labels/{label}",
-            "operations": [
+            "path":"/people/{person_id}/labels",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Determines if a person has a label.",
-                    "nickname": "getPersonLabelAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets the labels for a person.",
+                    "nickname":"getPersonLabelsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "label",
-                            "type": "stirng",
-                            "required": true,
-                            "description": "Label to check"
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Removes a label from a person.",
-                    "nickname": "deletePersonLabelAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Adds a label for a person.",
+                    "nickname":"postPersonLabelsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "label",
-                            "type": "stirng",
-                            "required": true,
-                            "description": "Label that needs to be removed."
+                            "paramType":"query",
+                            "name":"label",
+                            "type":"string",
+                            "required":true,
+                            "description":"Label to add"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/login-token",
-            "operations": [
+            "path":"/people/{person_id}/labels/{label}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets a login token that can be used in a web request to log a user in. Note that the login token is only valid for 5 minutes.",
-                    "nickname": "getLoginTokenAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Determines if a person has a label.",
+                    "nickname":"getPersonLabelAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person to get a login token for"
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"label",
+                            "type":"stirng",
+                            "required":true,
+                            "description":"Label to check"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/notes",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets notes for a person.",
-                    "nickname": "getPersonNotesAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Creates a note for a person.",
-                    "nickname": "postPersonNotesAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Removes a label from a person.",
+                    "nickname":"deletePersonLabelAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "query",
-                            "name": "note",
-                            "type": "string",
-                            "required": true,
-                            "description": "Text of the note to create."
+                            "paramType":"path",
+                            "name":"label",
+                            "type":"stirng",
+                            "required":true,
+                            "description":"Label that needs to be removed."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/picture",
-            "operations": [
+            "path":"/people/{person_id}/login-token",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets a link to a person's picture.",
-                    "nickname": "getPersonPictureAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets a login token that can be used in a web request to log a user in. Note that the login token is only valid for 5 minutes.",
+                    "nickname":"getLoginTokenAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "size",
-                            "type": "integer",
-                            "required": true,
-                            "description": "The maximum size (in pixels) that the picture should be. Defaults to 80."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person to get a login token for"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/notes",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets notes for a person.",
+                    "nickname":"getPersonNotesAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Updates a person's picture.",
-                    "nickname": "postPersonPictureAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Creates a note for a person.",
+                    "nickname":"postPersonNotesAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "form",
-                            "name": "file",
-                            "type": "integer",
-                            "required": true,
-                            "description": "An uploaded image. Required if no blob_id is provided."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "blob_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of a blob record that holds the picture already. Required if no file is provided."
+                            "paramType":"query",
+                            "name":"note",
+                            "type":"string",
+                            "required":true,
+                            "description":"Text of the note to create."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/picture",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets a link to a person's picture.",
+                    "nickname":"getPersonPictureAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"size",
+                            "type":"integer",
+                            "required":true,
+                            "description":"The maximum size (in pixels) that the picture should be. Defaults to 80."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes a person's picture.",
-                    "nickname": "deletePersonPictureAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Updates a person's picture.",
+                    "nickname":"postPersonPictureAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person whose picture needs to be deleted."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/reset-password",
-            "operations": [
-                {
-                    "method": "POST",
-                    "summary": "Resets a person's password.",
-                    "nickname": "resetPasswordAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "password",
-                            "type": "string",
-                            "required": true,
-                            "description": "New password to set for this person."
+                            "paramType":"form",
+                            "name":"file",
+                            "type":"integer",
+                            "required":true,
+                            "description":"An uploaded image. Required if no blob_id is provided."
                         },
                         {
-                            "paramType": "path",
-                            "name": "send_email",
-                            "type": "boolean",
-                            "required": true,
-                            "description": "If specified, controls whether the person will be emailed. Defaults to true."
+                            "paramType":"query",
+                            "name":"blob_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of a blob record that holds the picture already. Required if no file is provided."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/people/{person_id}/slas",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets a list of automatically applied SLAs for a person.",
-                    "nickname": "getPersonSlasAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Adds an SLA to the automatically applied SLAs for a person.",
-                    "nickname": "postPersonSlasAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a person's picture.",
+                    "nickname":"deletePersonPictureAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "sla_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of SLA to add."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person whose picture needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/slas/{sla_id}",
-            "operations": [
+            "path":"/people/{person_id}/reset-password",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Determines if an SLA exists for a person",
-                    "nickname": "getPersonSlaAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Resets a person's password.",
+                    "nickname":"resetPasswordAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "sla_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "SLA ID to check"
+                            "paramType":"path",
+                            "name":"password",
+                            "type":"string",
+                            "required":true,
+                            "description":"New password to set for this person."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"send_email",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"If specified, controls whether the person will be emailed. Defaults to true."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/slas",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets a list of automatically applied SLAs for a person.",
+                    "nickname":"getPersonSlasAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Removes an SLA from a person",
-                    "nickname": "deletePersonSlaAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Adds an SLA to the automatically applied SLAs for a person.",
+                    "nickname":"postPersonSlasAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "sla_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "SLA ID that needs to be removed."
+                            "paramType":"query",
+                            "name":"sla_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of SLA to add."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/tickets",
-            "operations": [
+            "path":"/people/{person_id}/slas/{sla_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets tickets by a person.",
-                    "nickname": "getPersonTicketsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Determines if an SLA exists for a person",
+                    "nickname":"getPersonSlaAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
                         },
                         {
-                            "paramType": "path",
-                            "name": "order",
-                            "type": "integer",
-                            "required": true,
-                            "description": "Order of the results. Defaults to accessing person's preference or people.id:asc."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "cache_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "page",
-                            "type": "integer",
-                            "required": false,
-                            "description": "The page number of the results to fetch."
+                            "paramType":"path",
+                            "name":"sla_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"SLA ID to check"
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Removes an SLA from a person",
+                    "nickname":"deletePersonSlaAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"sla_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"SLA ID that needs to be removed."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/people/{person_id}/vcard",
-            "operations": [
+            "path":"/people/{person_id}/tickets",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets the vCard for a person.",
-                    "nickname": "getPersonVcardAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets tickets by a person.",
+                    "nickname":"getPersonTicketsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the person that needs to be searched."
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"order",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Order of the results. Defaults to accessing person's preference or people.id:asc."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"cache_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"page",
+                            "type":"integer",
+                            "required":false,
+                            "description":"The page number of the results to fetch."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Person not found"
+                            "code":404,
+                            "message":"Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/people/{person_id}/vcard",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets the vCard for a person.",
+                    "nickname":"getPersonVcardAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the person that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Person not found"
                         }
                     ]
                 }

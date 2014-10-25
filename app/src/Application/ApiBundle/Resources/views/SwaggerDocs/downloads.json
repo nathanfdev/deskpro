@@ -1,847 +1,847 @@
 {
-    "basePath": "/api",
-    "swaggerVersion": "1.2",
-    "resourcePath": "/downloads",
-    "apis": [
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/downloads",
+    "apis":[
         {
-            "path": "/download/categories",
-            "operations": [
+            "path":"/download/categories",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets available download categories.",
-                    "nickname": "getCategoriesAction"
+                    "method":"GET",
+                    "summary":"Gets available download categories.",
+                    "nickname":"getCategoriesAction"
                 },
                 {
-                    "method": "POST",
-                    "summary": "Creates a download category.",
-                    "nickname": "postCategoriesAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Creates a download category.",
+                    "nickname":"postCategoriesAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "title",
-                            "type": "integer",
-                            "required": true,
-                            "description": "Title of the category that needs to be created."
+                            "paramType":"path",
+                            "name":"title",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Title of the category that needs to be created."
                         },
                         {
-                            "paramType": "query",
-                            "name": "parent_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category's parent. Use 0 for no parent."
+                            "paramType":"query",
+                            "name":"parent_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category's parent. Use 0 for no parent."
                         },
                         {
-                            "paramType": "query",
-                            "name": "display_order",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Order of display of categories. Lower numbers will be displayed first."
+                            "paramType":"query",
+                            "name":"display_order",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Order of display of categories. Lower numbers will be displayed first."
                         },
                         {
-                            "paramType": "query",
-                            "name": "usergroup_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "comma seperated IDs of user group that has access. If not provided, defaults to all users."
+                            "paramType":"query",
+                            "name":"usergroup_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"comma seperated IDs of user group that has access. If not provided, defaults to all users."
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/download/categories/{category_id}",
-            "operations": [
+            "path":"/download/categories/{category_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets a download category.",
-                    "nickname": "getCategoryAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets a download category.",
+                    "nickname":"getCategoryAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category to look for."
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category to look for."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Download Category not found"
+                            "code":404,
+                            "message":"Download Category not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Updates a download category.",
-                    "nickname": "postCategoryAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Updates a download category.",
+                    "nickname":"postCategoryAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category to look for."
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category to look for."
                         },
                         {
-                            "paramType": "path",
-                            "name": "title",
-                            "type": "integer",
-                            "required": true,
-                            "description": "New Title of the category."
+                            "paramType":"path",
+                            "name":"title",
+                            "type":"integer",
+                            "required":true,
+                            "description":"New Title of the category."
                         },
                         {
-                            "paramType": "query",
-                            "name": "parent_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "New ID of the category's parent. Use 0 for no parent."
+                            "paramType":"query",
+                            "name":"parent_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"New ID of the category's parent. Use 0 for no parent."
                         },
                         {
-                            "paramType": "query",
-                            "name": "display_order",
-                            "type": "integer",
-                            "required": false,
-                            "description": "New Order of display of categories. Lower numbers will be displayed first."
+                            "paramType":"query",
+                            "name":"display_order",
+                            "type":"integer",
+                            "required":false,
+                            "description":"New Order of display of categories. Lower numbers will be displayed first."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Download Category not found"
+                            "code":404,
+                            "message":"Download Category not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "DELETES a download category.",
-                    "nickname": "deleteCategoryAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"DELETES a download category.",
+                    "nickname":"deleteCategoryAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category to look for."
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category to look for."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Download Category not found"
+                            "code":404,
+                            "message":"Download Category not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/download/categories/{category_id}/downloads",
-            "operations": [
+            "path":"/download/categories/{category_id}/downloads",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets downloads within a download category.",
-                    "nickname": "getCategoryDownloadsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets downloads within a download category.",
+                    "nickname":"getCategoryDownloadsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category to look for."
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category to look for."
                         },
                         {
-                            "paramType": "query",
-                            "name": "order",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Order of the results. Defaults to the publishing date."
+                            "paramType":"query",
+                            "name":"order",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Order of the results. Defaults to the publishing date."
                         },
                         {
-                            "paramType": "query",
-                            "name": "cache_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                            "paramType":"query",
+                            "name":"cache_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
                         },
                         {
-                            "paramType": "query",
-                            "name": "page",
-                            "type": "integer",
-                            "required": false,
-                            "description": "The page number of the results to fetch."
+                            "paramType":"query",
+                            "name":"page",
+                            "type":"integer",
+                            "required":false,
+                            "description":"The page number of the results to fetch."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Download Category not found"
+                            "code":404,
+                            "message":"Download Category not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/download/categories/{category_id}/groups",
-            "operations": [
+            "path":"/download/categories/{category_id}/groups",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets groups with access to a download category.",
-                    "nickname": "getCategoryGroupsAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets groups with access to a download category.",
+                    "nickname":"getCategoryGroupsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category to look for."
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category to look for."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Download Category not found"
+                            "code":404,
+                            "message":"Download Category not found"
                         }
                     ]
                 },
                 {
-                    "method": "POST",
-                    "summary": "Adds a group to a download category.",
-                    "nickname": "postCategoryGroupsAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Adds a group to a download category.",
+                    "nickname":"postCategoryGroupsAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category to look for."
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category to look for."
                         },
                         {
-                            "paramType": "query",
-                            "name": "id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the group to add access for."
+                            "paramType":"query",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the group to add access for."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Download Category not found"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "path": "/download/categories/{category_id}/groups/{group_id}",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Determines if a group has access to a download category.",
-                    "nickname": "getCategoryGroupAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category to look for."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "group_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the group to look for."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download Category not found"
-                        }
-                    ]
-                },
-                {
-                    "method": "DELETE",
-                    "summary": "Removes a group's access to a download category.",
-                    "nickname": "deleteCategoryGroupAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the category to look for."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "group_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the group to look for."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download Category not found"
+                            "code":404,
+                            "message":"Download Category not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/download/validating-comments",
-            "operations": [
+            "path":"/download/categories/{category_id}/groups/{group_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets download comments that are awaiting validation.",
-                    "nickname": "getValidatingCommentsAction"
-                }
-            ]
-        },
-        {
-            "path": "/download/{download_id}",
-            "operations": [
-                {
-                    "method": "DELETE",
-                    "summary": "Deletes a Download by ID.",
-                    "nickname": "deleteDownloadAction",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Determines if a group has access to a download category.",
+                    "nickname":"getCategoryGroupAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the Download that needs to be deleted."
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category to look for."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"group_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the group to look for."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Download not found"
+                            "code":404,
+                            "message":"Download Category not found"
+                        }
+                    ]
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Removes a group's access to a download category.",
+                    "nickname":"deleteCategoryGroupAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the category to look for."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"group_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the group to look for."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download Category not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/download/{download_id}/comments",
-            "operations": [
+            "path":"/download/validating-comments",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets the comments for download",
-                    "nickname": "getDownloadCommentsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the Download that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ],
-                    "notes": "Information about the comments by Download ID."
-                },
-                {
-                    "method": "POST",
-                    "summary": "Add a comment for a download entry.",
-                    "nickname": "newDownloadCommentAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download that needs to be searched."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "content",
-                            "type": "integer",
-                            "required": true,
-                            "description": "Text of the comment."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": " ID of the person that owns the comment. If not provided, defaults to the agent making the request."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "status",
-                            "type": "string",
-                            "required": false,
-                            "description": "Status of the comment. Defaults to visible."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ],
-                    "notes": "Creates a download comment by download ID."
+                    "method":"GET",
+                    "summary":"Gets download comments that are awaiting validation.",
+                    "nickname":"getValidatingCommentsAction"
                 }
             ]
         },
         {
-            "path": "/download/{download_id}/comments/{comment_id}",
-            "operations": [
+            "path":"/download/{download_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets info about a specific download comment",
-                    "nickname": "getDownloadCommentAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a Download by ID.",
+                    "nickname":"deleteDownloadAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the Download that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the Download Comment that needs to be searched."
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the Download that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ],
-                    "notes": "Information about a specific download comment by Download ID and Comment ID."
-                },
-                {
-                    "method": "POST",
-                    "summary": "Updates a comment for a download entry.",
-                    "nickname": "postDownloadCommentAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download comment that needs to be updated."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "content",
-                            "type": "integer",
-                            "required": true,
-                            "description": "Text of the comment."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "person_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": " ID of the person that owns the comment. If not provided, defaults to the agent making the request."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "status",
-                            "type": "string",
-                            "required": false,
-                            "description": "Status of the comment. Defaults to visible."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ],
-                    "notes": "Updates a download comment by download ID and comment ID"
-                },
-                {
-                    "method": "DELETE",
-                    "summary": "Deletes a comment for a download entry.",
-                    "nickname": "deleteDownloadCommentAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "comment_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download comment that needs to be deleted."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ],
-                    "notes": "Deletes a download comment by download ID and comment ID"
-                }
-            ]
-        },
-        {
-            "path": "/download/{download_id}/labels",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Gets the labels for download",
-                    "nickname": "getDownloadLabelsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the Download that needs to be searched."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ],
-                    "notes": "Information about a download record's labels by Download ID."
-                },
-                {
-                    "method": "POST",
-                    "summary": "Add a label for a download entry.",
-                    "nickname": "postDownloadLabelsAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download that needs to be searched."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "label",
-                            "type": "string",
-                            "required": true,
-                            "description": "Label to add."
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ],
-                    "notes": "Creates a download label by download ID."
-                }
-            ]
-        },
-        {
-            "path": "/download/{download_id}/labels/{label}",
-            "operations": [
-                {
-                    "method": "GET",
-                    "summary": "Determines if download has a label.",
-                    "nickname": "getDownloadLabelAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "label",
-                            "type": "string",
-                            "required": true,
-                            "description": "Label to search for"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ]
-                },
-                {
-                    "method": "DELETE",
-                    "summary": "Removes a label from download",
-                    "nickname": "deleteDownloadLabelAction",
-                    "parameters": [
-                        {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download that needs to be searched."
-                        },
-                        {
-                            "paramType": "path",
-                            "name": "label",
-                            "type": "string",
-                            "required": true,
-                            "description": "Label that needs to be deleted"
-                        }
-                    ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
+                            "code":404,
+                            "message":"Download not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/downloads",
-            "operations": [
+            "path":"/download/{download_id}/comments",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Search for downloads matching criteria",
-                    "nickname": "searchAction",
-                    "type": "array",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets the comments for download",
+                    "nickname":"getDownloadCommentsAction",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "category_id[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comma seperated IDs of categories to search in"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "category_id_specific[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comma seperated IDs of categories to search in"
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "date_created_end",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Requires the download to have been created before this date. Must be specified as a Unix timestamp."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "date_created_start",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Requires the download to have been created after this date. Must be specified as a Unix timestamp."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "label[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires the download to have this label."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "status[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Requires the download to be in this status. Possible values: new, active, closed, hidden."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "new",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "If non-0, requires the download to be considered new (created within the last month). If 0, this does nothing."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "popular",
-                            "type": "boolean",
-                            "required": false,
-                            "description": "If non-0, requires the download to be considered popular (50 or more downloads). If 0, this does nothing."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "order",
-                            "type": "string",
-                            "required": false,
-                            "description": "Order of the results. Defaults to the publishing date."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "cache_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
-                        },
-                        {
-                            "paramType": "query",
-                            "name": "page",
-                            "type": "integer",
-                            "required": false,
-                            "description": "The page number of the results to fetch."
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the Download that needs to be searched."
                         }
                     ],
-                    "notes": "Returns list of downloads that matched."
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ],
+                    "notes":"Information about the comments by Download ID."
                 },
                 {
-                    "method": "POST",
-                    "summary": "Creates a new download.",
-                    "nickname": "newDownloadAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Add a comment for a download entry.",
+                    "nickname":"newDownloadCommentAction",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "title",
-                            "type": "string",
-                            "required": true,
-                            "description": "Title of the download. "
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download that needs to be searched."
                         },
                         {
-                            "paramType": "query",
-                            "name": "content",
-                            "type": "string",
-                            "required": true,
-                            "description": "Content of the download. Marked up using HTML."
+                            "paramType":"query",
+                            "name":"content",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Text of the comment."
                         },
                         {
-                            "paramType": "query",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Category of the download."
+                            "paramType":"query",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":" ID of the person that owns the comment. If not provided, defaults to the agent making the request."
                         },
                         {
-                            "paramType": "query",
-                            "name": "label[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comma seperated list of Labels to apply to the download."
+                            "paramType":"query",
+                            "name":"status",
+                            "type":"string",
+                            "required":false,
+                            "description":"Status of the comment. Defaults to visible."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ],
+                    "notes":"Creates a download comment by download ID."
+                }
+            ]
+        },
+        {
+            "path":"/download/{download_id}/comments/{comment_id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets info about a specific download comment",
+                    "nickname":"getDownloadCommentAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the Download that needs to be searched."
                         },
                         {
-                            "paramType": "query",
-                            "name": "status",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Status of the download. Defaults to new if not overridden by this or status_category_id."
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the Download Comment that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ],
+                    "notes":"Information about a specific download comment by Download ID and Comment ID."
+                },
+                {
+                    "method":"POST",
+                    "summary":"Updates a comment for a download entry.",
+                    "nickname":"postDownloadCommentAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download that needs to be searched."
                         },
                         {
-                            "paramType": "body",
-                            "name": "attach",
-                            "type": "string",
-                            "required": true,
-                            "description": "Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided."
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download comment that needs to be updated."
                         },
                         {
-                            "paramType": "query",
-                            "name": "attach_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "The ID of an already uploaded file to include with the download. Required if no attach value is provided."
+                            "paramType":"query",
+                            "name":"content",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Text of the comment."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":" ID of the person that owns the comment. If not provided, defaults to the agent making the request."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"status",
+                            "type":"string",
+                            "required":false,
+                            "description":"Status of the comment. Defaults to visible."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ],
+                    "notes":"Updates a download comment by download ID and comment ID"
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Deletes a comment for a download entry.",
+                    "nickname":"deleteDownloadCommentAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"comment_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download comment that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ],
+                    "notes":"Deletes a download comment by download ID and comment ID"
+                }
+            ]
+        },
+        {
+            "path":"/download/{download_id}/labels",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets the labels for download",
+                    "nickname":"getDownloadLabelsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the Download that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ],
+                    "notes":"Information about a download record's labels by Download ID."
+                },
+                {
+                    "method":"POST",
+                    "summary":"Add a label for a download entry.",
+                    "nickname":"postDownloadLabelsAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download that needs to be searched."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"label",
+                            "type":"string",
+                            "required":true,
+                            "description":"Label to add."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ],
+                    "notes":"Creates a download label by download ID."
+                }
+            ]
+        },
+        {
+            "path":"/download/{download_id}/labels/{label}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Determines if download has a label.",
+                    "nickname":"getDownloadLabelAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"label",
+                            "type":"string",
+                            "required":true,
+                            "description":"Label to search for"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ]
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Removes a label from download",
+                    "nickname":"deleteDownloadLabelAction",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download that needs to be searched."
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"label",
+                            "type":"string",
+                            "required":true,
+                            "description":"Label that needs to be deleted"
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/downloads/{download_id}",
-            "operations": [
+            "path":"/downloads",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets a download by download ID.",
-                    "nickname": "getDownloadAction",
-                    "type": "Download",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Search for downloads matching criteria",
+                    "nickname":"searchAction",
+                    "type":"array",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "download_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the download that needs to be searched."
+                            "paramType":"query",
+                            "name":"category_id[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comma seperated IDs of categories to search in"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"category_id_specific[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comma seperated IDs of categories to search in"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"date_created_end",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Requires the download to have been created before this date. Must be specified as a Unix timestamp."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"date_created_start",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Requires the download to have been created after this date. Must be specified as a Unix timestamp."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"label[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires the download to have this label."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"status[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Requires the download to be in this status. Possible values: new, active, closed, hidden."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"new",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"If non-0, requires the download to be considered new (created within the last month). If 0, this does nothing."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"popular",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"If non-0, requires the download to be considered popular (50 or more downloads). If 0, this does nothing."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"order",
+                            "type":"string",
+                            "required":false,
+                            "description":"Order of the results. Defaults to the publishing date."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"cache_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"page",
+                            "type":"integer",
+                            "required":false,
+                            "description":"The page number of the results to fetch."
                         }
                     ],
-                    "responseMessages": [
-                        {
-                            "code": 404,
-                            "message": "Download not found"
-                        }
-                    ],
-                    "notes": "Information about the download by download ID."
+                    "notes":"Returns list of downloads that matched."
                 },
                 {
-                    "method": "POST",
-                    "summary": "Updates a Download by download ID.",
-                    "nickname": "postDownloadAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Creates a new download.",
+                    "nickname":"newDownloadAction",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "title",
-                            "type": "string",
-                            "required": true,
-                            "description": "Title of the download. "
+                            "paramType":"query",
+                            "name":"title",
+                            "type":"string",
+                            "required":true,
+                            "description":"Title of the download. "
                         },
                         {
-                            "paramType": "query",
-                            "name": "content",
-                            "type": "string",
-                            "required": true,
-                            "description": "Content of the download. Marked up using HTML."
+                            "paramType":"query",
+                            "name":"content",
+                            "type":"string",
+                            "required":true,
+                            "description":"Content of the download. Marked up using HTML."
                         },
                         {
-                            "paramType": "query",
-                            "name": "category_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Category of the download."
+                            "paramType":"query",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Category of the download."
                         },
                         {
-                            "paramType": "query",
-                            "name": "label[]",
-                            "type": "string",
-                            "required": false,
-                            "description": "Comma seperated list of Labels to apply to the download."
+                            "paramType":"query",
+                            "name":"label[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comma seperated list of Labels to apply to the download."
                         },
                         {
-                            "paramType": "query",
-                            "name": "status",
-                            "type": "integer",
-                            "required": false,
-                            "description": "Status of the download. Defaults to new if not overridden by this or status_category_id."
+                            "paramType":"query",
+                            "name":"status",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Status of the download. Defaults to new if not overridden by this or status_category_id."
                         },
                         {
-                            "paramType": "body",
-                            "name": "attach",
-                            "type": "string",
-                            "required": true,
-                            "description": "Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided."
+                            "paramType":"body",
+                            "name":"attach",
+                            "type":"string",
+                            "required":true,
+                            "description":"Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided."
                         },
                         {
-                            "paramType": "query",
-                            "name": "attach_id",
-                            "type": "integer",
-                            "required": false,
-                            "description": "The ID of an already uploaded file to include with the download. Required if no attach value is provided."
+                            "paramType":"query",
+                            "name":"attach_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"The ID of an already uploaded file to include with the download. Required if no attach value is provided."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/downloads/{download_id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Gets a download by download ID.",
+                    "nickname":"getDownloadAction",
+                    "type":"Download",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"download_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the download that needs to be searched."
+                        }
+                    ],
+                    "responseMessages":[
+                        {
+                            "code":404,
+                            "message":"Download not found"
+                        }
+                    ],
+                    "notes":"Information about the download by download ID."
+                },
+                {
+                    "method":"POST",
+                    "summary":"Updates a Download by download ID.",
+                    "nickname":"postDownloadAction",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"title",
+                            "type":"string",
+                            "required":true,
+                            "description":"Title of the download. "
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"content",
+                            "type":"string",
+                            "required":true,
+                            "description":"Content of the download. Marked up using HTML."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"category_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Category of the download."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"label[]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Comma seperated list of Labels to apply to the download."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"status",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Status of the download. Defaults to new if not overridden by this or status_category_id."
+                        },
+                        {
+                            "paramType":"body",
+                            "name":"attach",
+                            "type":"string",
+                            "required":true,
+                            "description":"Attached file that represents the download. See the <a href='https://support.deskpro.com/downloads/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided."
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"attach_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"The ID of an already uploaded file to include with the download. Required if no attach value is provided."
                         }
                     ]
                 }

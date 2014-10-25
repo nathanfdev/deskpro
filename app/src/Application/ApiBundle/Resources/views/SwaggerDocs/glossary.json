@@ -1,180 +1,180 @@
 {
-    "basePath": "/api",
-    "swaggerVersion": "1.2",
-    "resourcePath": "/glossary",
-    "apis": [
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/glossary",
+    "apis":[
         {
-            "path": "/glossary",
-            "operations": [
+            "path":"/glossary",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "List glossary words.",
-                    "nickname": "listAction",
-                    "type": "array",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"List glossary words.",
+                    "nickname":"listAction",
+                    "type":"array",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "word",
-                            "type": "string",
-                            "required": false,
-                            "description": "If specified, gets words containing this string."
+                            "paramType":"query",
+                            "name":"word",
+                            "type":"string",
+                            "required":false,
+                            "description":"If specified, gets words containing this string."
                         }
                     ],
-                    "notes": "Returns list of words that matched."
+                    "notes":"Returns list of words that matched."
                 },
                 {
-                    "method": "POST",
-                    "summary": "Add a glossary word.",
-                    "nickname": "newWordAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Add a glossary word.",
+                    "nickname":"newWordAction",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "definition",
-                            "type": "string",
-                            "required": true,
-                            "description": "Definition of given words."
+                            "paramType":"query",
+                            "name":"definition",
+                            "type":"string",
+                            "required":true,
+                            "description":"Definition of given words."
                         },
                         {
-                            "paramType": "query",
-                            "name": "word[]",
-                            "type": "string",
-                            "required": true,
-                            "description": "Comma seperated list of words to associate with this definition."
+                            "paramType":"query",
+                            "name":"word[]",
+                            "type":"string",
+                            "required":true,
+                            "description":"Comma seperated list of words to associate with this definition."
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/glossary/definitions/{definition_id}",
-            "operations": [
+            "path":"/glossary/definitions/{definition_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets a glossary word definition.",
-                    "nickname": "getDefinitionAction",
-                    "type": "GlossaryWordDefinition",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets a glossary word definition.",
+                    "nickname":"getDefinitionAction",
+                    "type":"GlossaryWordDefinition",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "definition_id",
-                            "type": "string",
-                            "required": true,
-                            "description": "ID of the word defination that needs to be searched."
+                            "paramType":"path",
+                            "name":"definition_id",
+                            "type":"string",
+                            "required":true,
+                            "description":"ID of the word defination that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Glossary definition not found"
+                            "code":404,
+                            "message":"Glossary definition not found"
                         }
                     ],
-                    "notes": "Information about the Glossary Word definition by definition ID, if in the glossary."
+                    "notes":"Information about the Glossary Word definition by definition ID, if in the glossary."
                 },
                 {
-                    "method": "POST",
-                    "summary": "Updates a glossary word definition.",
-                    "nickname": "postDefinitionAction",
-                    "parameters": [
+                    "method":"POST",
+                    "summary":"Updates a glossary word definition.",
+                    "nickname":"postDefinitionAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "definition_id",
-                            "type": "string",
-                            "required": true,
-                            "description": "ID of the word defination that needs to be updated."
+                            "paramType":"path",
+                            "name":"definition_id",
+                            "type":"string",
+                            "required":true,
+                            "description":"ID of the word defination that needs to be updated."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Glossary definition not found"
+                            "code":404,
+                            "message":"Glossary definition not found"
                         }
                     ]
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes a glossary word definition.",
-                    "nickname": "deleteDefinitionAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a glossary word definition.",
+                    "nickname":"deleteDefinitionAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "definition_id",
-                            "type": "string",
-                            "required": true,
-                            "description": "ID of the word defination that needs to be deleted."
+                            "paramType":"path",
+                            "name":"definition_id",
+                            "type":"string",
+                            "required":true,
+                            "description":"ID of the word defination that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Glossary definition not found"
+                            "code":404,
+                            "message":"Glossary definition not found"
                         }
                     ]
                 }
             ]
         },
         {
-            "path": "/glossary/lookup",
-            "operations": [
+            "path":"/glossary/lookup",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Looks up a specific glossary word.",
-                    "nickname": "lookupAction",
-                    "type": "GlossaryWord",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Looks up a specific glossary word.",
+                    "nickname":"lookupAction",
+                    "type":"GlossaryWord",
+                    "parameters":[
                         {
-                            "paramType": "query",
-                            "name": "word",
-                            "type": "string",
-                            "required": true,
-                            "description": "If specified, gets this word."
+                            "paramType":"query",
+                            "name":"word",
+                            "type":"string",
+                            "required":true,
+                            "description":"If specified, gets this word."
                         }
                     ],
-                    "notes": "Information about the word, if in the glossary."
+                    "notes":"Information about the word, if in the glossary."
                 }
             ]
         },
         {
-            "path": "/glossary/{word_id}",
-            "operations": [
+            "path":"/glossary/{word_id}",
+            "operations":[
                 {
-                    "method": "GET",
-                    "summary": "Gets a glossary word by word ID.",
-                    "nickname": "getWordAction",
-                    "type": "GlossaryWord",
-                    "parameters": [
+                    "method":"GET",
+                    "summary":"Gets a glossary word by word ID.",
+                    "nickname":"getWordAction",
+                    "type":"GlossaryWord",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "word_id",
-                            "type": "string",
-                            "required": true,
-                            "description": "ID of the word that needs to be searched."
+                            "paramType":"path",
+                            "name":"word_id",
+                            "type":"string",
+                            "required":true,
+                            "description":"ID of the word that needs to be searched."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Glossary word not found"
+                            "code":404,
+                            "message":"Glossary word not found"
                         }
                     ],
-                    "notes": "Information about the word by word ID, if in the glossary."
+                    "notes":"Information about the word by word ID, if in the glossary."
                 },
                 {
-                    "method": "DELETE",
-                    "summary": "Deletes a glossary word by ID.",
-                    "nickname": "deleteWordAction",
-                    "parameters": [
+                    "method":"DELETE",
+                    "summary":"Deletes a glossary word by ID.",
+                    "nickname":"deleteWordAction",
+                    "parameters":[
                         {
-                            "paramType": "path",
-                            "name": "word_id",
-                            "type": "integer",
-                            "required": true,
-                            "description": "ID of the word that needs to be deleted."
+                            "paramType":"path",
+                            "name":"word_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of the word that needs to be deleted."
                         }
                     ],
-                    "responseMessages": [
+                    "responseMessages":[
                         {
-                            "code": 404,
-                            "message": "Glossary word not found"
+                            "code":404,
+                            "message":"Glossary word not found"
                         }
                     ]
                 }

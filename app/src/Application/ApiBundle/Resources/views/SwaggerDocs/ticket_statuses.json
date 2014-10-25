@@ -1,0 +1,157 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/ticket_statuses",
+    "apis":[
+        {
+            "path":"/ticket_statuses/archived",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Return archivation settings",
+                    "nickname":"getArchivedInfoAction",
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/archived/reset-search-tables",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Clean search status",
+                    "nickname":"resetSearchTablesAction",
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/archived/settings",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Save archivator settings",
+                    "nickname":"saveArchivedSettingsAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"enabled",
+                            "type":"bool",
+                            "required":true,
+                            "description":"Should be tickets be archived?"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"auto_archive_time",
+                            "type":"int",
+                            "required":true,
+                            "description":"When tickets have to be archived?"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/deleted",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Return deleted tickets autopurge settings",
+                    "nickname":"getDeletedInfoAction",
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/deleted/purge",
+            "description":"Purge deleted tickets manually",
+            "operations":[
+                {
+                    "method":"DELETE",
+                    "summary":"Purge deleted tickets manually",
+                    "nickname":"purgeDeletedAction",
+                    "notes":"Will return count for purged tickets"
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/deleted/settings",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Save deleted tickets autopurge settings",
+                    "nickname":"saveDeletedSettingsAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"auto_archive_time",
+                            "type":"int",
+                            "required":true,
+                            "description":"When tickets have to be pruged automatically?"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/spam",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Return spam autodelete settings",
+                    "nickname":"getSpamInfoAction",
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/spam/purge",
+            "description":"Purge spam tickets manually",
+            "operations":[
+                {
+                    "method":"DELETE",
+                    "summary":"Purge spam tickets manually",
+                    "nickname":"purgeSpamAction",
+                    "notes":"Will return count for purged tickets"
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/spam/settings",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Save spam autopurge settings",
+                    "nickname":"saveSpamSettingsAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"auto_archive_time",
+                            "type":"int",
+                            "required":true,
+                            "description":"When spam tickets have to be pruged automatically?"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_statuses/stats",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Overall ticket statistic",
+                    "nickname":"getStatsAction",
+                    "type":"array",
+                    "notes":"Tickets grouped by their status and counted"
+                }
+            ]
+        }
+    ]
+}
