@@ -134,7 +134,7 @@ class CustomFieldManager
 	 * @param Layout $layout
 	 * @return \Symfony\Component\Form\Form
 	 */
-	public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
+	public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null, array $options = array())
 	{
 		$datas = $this->getCustomDataForOwner($owner, $context, $layout);
 
@@ -143,7 +143,7 @@ class CustomFieldManager
 
 		foreach ($this->getDefinitions($owner, $context, $layout) as $def) {
 			/** @var $def CustomFieldDefinition */
-			$builder->add($this->createFieldFormBuilder($def, $owner, $context, $datas));
+			$builder->add($this->createFieldFormBuilder($def, $owner, $context, $datas, $options));
 		}
 
 		$builder

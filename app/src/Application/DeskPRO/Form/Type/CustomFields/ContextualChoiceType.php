@@ -178,6 +178,7 @@ class ContextualChoiceType extends ChoiceType
 			$newDef->parent = $this->definition;
 			$newDef->children = new ArrayCollection();
 			$newDef['title'] = $data['custom_choice'];
+			$newDef['options'] = array();
 
 			if ($context = $form->getConfig()->getOption('context')) {
 				$newDef['context_id'] = $context['id'];

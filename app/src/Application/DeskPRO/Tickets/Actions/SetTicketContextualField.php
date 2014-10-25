@@ -87,8 +87,8 @@ class SetTicketContextualField extends AbstractSetCustomField
 			}
 		}
 
-		$form = $fm->createFieldForm($def, $ticket, $formContext, array('allow_add' => true));
-		$form->submit(array('value' => $value));
+		$form = $fm->createFieldForm($def, $ticket, $formContext, array('allow_edit' => true));
+		$form->submit(array('custom_choice' => $value));
 		if ($form->isValid()) {
 			$fm->flush($form);
 		}

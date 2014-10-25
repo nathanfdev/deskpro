@@ -74,7 +74,6 @@ class ChoiceType extends CustomFieldType
 		parent::setDefaultOptions($resolver);
 		$resolver->setDefaults(array(
 			'data_class' => null,
-			'allow_add' => false,
 			'allow_edit' => false,
 		));
 	}

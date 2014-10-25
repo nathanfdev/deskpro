@@ -121,9 +121,14 @@ class TicketController extends AbstractController
 
 		// new custom fields
 		$new_field_manager = $this->container->getCustomFieldManager();
-		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+		$new_custom_fields = $new_field_manager->createFormForOwner(
+			$ticket, $ticket->person, $layout, array('allow_edit' => true)
+		);
 		if ($org = $ticket->person->organization) {
-			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, $layout));
+			$new_field_manager->merge(
+				$new_custom_fields,
+				$new_field_manager->createFormForOwner($ticket, $org, $layout, array('allow_edit' => true))
+			);
 		}
 
 		#------------------------------
@@ -3751,9 +3756,9 @@ class TicketController extends AbstractController
 
 		$manager = $this->container->getCustomFieldManager();
 		$mock = new Entity\Ticket();
-		$new_custom_fields = $manager->createFormForOwner($mock, $person, $layout);
+		$new_custom_fields = $manager->createFormForOwner($mock, $person, $layout, array('allow_edit' => true));
 		if ($org = $person->organization) {
-			$manager->merge($new_custom_fields, $manager->createFormForOwner($mock, $org, $layout));
+			$manager->merge($new_custom_fields, $manager->createFormForOwner($mock, $org, $layout, array('allow_edit' => true)));
 		}
 
 		return $this->render('AgentBundle:Ticket:newticket-custom-fields-row.html.twig', array(

@@ -76,12 +76,13 @@ abstract class CustomFieldType extends AbstractType implements EventSubscriberIn
 					'data-definition-type' => $this->getName(),
 					'data-definition-id' => $this->definition['id'],
 				),
+				'allow_edit' => false,
 			))
 			->setRequired(array(
 				'owner', 'persister',
 			))
 			->setOptional(array(
-				'context',
+				'context', 'allow_edit',
 			))
 			->setAllowedTypes(array(
 				'owner' => 'Application\DeskPRO\Domain\DomainObject',
