@@ -38,7 +38,6 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
-use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
