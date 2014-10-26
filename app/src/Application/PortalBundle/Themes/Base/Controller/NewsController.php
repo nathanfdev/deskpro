@@ -36,6 +36,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class NewsController extends AbstractController
 {
@@ -54,5 +55,13 @@ class NewsController extends AbstractController
 	public function viewAction($slug)
 	{
 		return $this->render('Theme:News:view.html.twig', array('article' => $slug));
+	}
+
+
+	public function listAction(Request $request)
+	{
+		$count = $request->get('count', 5);
+
+		return $this->render('Theme:News:list.html.twig', array('num' => $count));
 	}
 }

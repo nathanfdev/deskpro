@@ -35,15 +35,9 @@
 namespace Application\PortalBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
-use Symfony\Component\HttpFoundation\Response;
 
 class AbstractController extends BaseController
 {
-	public function render($view, array $parameters = array(), Response $response = null)
-	{
-		/** @var \Application\PortalBundle\Templating\PortalTemplating $templating */
-		$templating = $this->container->get('templating.portal');
-		return $templating->renderResponse($view, $parameters, $response);
-	}
+
 }
  

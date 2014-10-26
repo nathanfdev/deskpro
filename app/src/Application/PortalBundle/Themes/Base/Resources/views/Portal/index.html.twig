@@ -5,28 +5,28 @@
 	<!-- Full width news -->
 	<section>
 		<div class="column-full">
-			<viewer path="blocks/news/news.html"></viewer>
+			{{ news_list({ count: 7 }) }}
 		</div>
 	</section>
 
 
 	<!-- Knowledge Base -->
 	<section>
-		<viewer path="blocks/kb/kb-list-articles.html"></viewer>
+		{{ kb_categories() }}
 	</section>
 
 	<!-- Three Columns -->
 	<section>
 		<div class="column-third">
-			<viewer path="blocks/news/news-tiny.html"></viewer>
+			{{ news_list_small({ count: 5 }) }}
 		</div>
 
 		<div class="column-third">
-			<viewer path="blocks/feedback/feedback.html"></viewer>
+			{{ feedback_list({ count: 5 }) }}
 		</div>
 
 		<div class="column-third omega">
-			<viewer path="blocks/downloads/downloads.html"></viewer>
+			{{ downloads_list({ count: 5 }) }}
 		</div>
 	</section>
 
