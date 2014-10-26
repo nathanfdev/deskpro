@@ -76,11 +76,18 @@ class BrandStack
 	 */
 	private $brand_containers;
 
-	public function __construct(BrandContainerFactory $factory)
+	/**
+	 * @var \Application\DeskPRO\Entity\Brand
+	 */
+	private $default_brand;
+
+
+	public function __construct(BrandContainerFactory $factory, Brand $default_brand)
 	{
 		$this->factory = $factory;
 		$this->stack = array();
 		$this->brand_containers = array();
+		$this->default_brand = $default_brand;
 	}
 
 	/**
@@ -131,6 +138,12 @@ class BrandStack
 	public function pop()
 	{
 		array_pop($this->stack);
+	}
+
+
+	public function getDefault()
+	{
+		return $this->default_brand;
 	}
 }
  

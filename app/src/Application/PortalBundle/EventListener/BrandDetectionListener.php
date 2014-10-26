@@ -36,6 +36,7 @@ namespace Application\PortalBundle\EventListener;
 
 use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Brand;
+use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,12 +64,18 @@ class BrandDetectionListener implements EventSubscriberInterface
 	 */
 	private $brand_repository;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Brand
+	 */
+	private $default_brand;
 
-	public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository)
+
+	public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand)
 	{
 		$this->brand_stack = $brand_stack;
 		$this->settings_resolver = $settings_resolver;
 		$this->brand_repository = $brand_repository;
+		$this->default_brand = $default_brand;
 	}
 
 	/**
@@ -86,9 +93,7 @@ class BrandDetectionListener implements EventSubscriberInterface
 
 	public function getDefaultBrand()
 	{
-		$brand_id = $this->settings_resolver->getGlobalSettings()->get('portal.default_brand');
-
-		return $this->brand_repository->find($brand_id);
+		return $this->default_brand;
 	}
 
 	public function onKernelRequest(GetResponseEvent $event)

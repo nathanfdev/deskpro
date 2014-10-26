@@ -29,40 +29,49 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage Brand
  */
 
-namespace Application\PortalBundle\HttpKernel;
+namespace Application\DeskPRO\Brand;
 
-use Application\DeskPRO\Brand\BrandStack;
-use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser as BaseParser;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Application\DeskPRO\EntityRepository\Brand;
+use Application\DeskPRO\Entity\Brand as BrandEntity;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
-class ControllerNameParser extends BaseParser
+/**
+ * A serive that can quickly hand you the default brand (useful in cases here there is no request listener detecting
+ * the active brand on the stack (CLI)
+ */
+class DefaultBrandFinder
 {
 	/**
-	 * @var \Application\DeskPRO\Brand\BrandStack
+	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
 	 */
-	private $brand_stack;
+	private $settings_resolver;
 
-	public function __construct(KernelInterface $kernel, BrandStack $brand_stack)
+	/**
+	 * @var \Application\DeskPRO\EntityRepository\Brand
+	 */
+	private $brand_repo;
+
+
+	/**
+	 * @param SettingsResolver $settings_resolver
+	 * @param Brand            $brand_repo
+	 */
+	public function __construct(SettingsResolver $settings_resolver, Brand $brand_repo)
 	{
-		parent::__construct($kernel);
-		$this->brand_stack = $brand_stack;
+		$this->settings_resolver = $settings_resolver;
+		$this->brand_repo = $brand_repo;
 	}
 
-	public function parse($controller)
+
+	/**
+	 * @return BrandEntity
+	 */
+	public function getDefaultBrand()
 	{
-		if (!$brandContainer = $this->brand_stack->getActive()) {
-			$brandContainer = $this->brand_stack->getDefault();
-		}
-
-		if ($theme_controller = $brandContainer->resolveController($controller)) {
-			return $theme_controller;
-		}
-
-		return parent::parse($controller);
+		return $this->brand_repo->find($this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1));
 	}
-
 }
  

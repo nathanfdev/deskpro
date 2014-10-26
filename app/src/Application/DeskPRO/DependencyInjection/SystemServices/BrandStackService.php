@@ -41,6 +41,6 @@ class BrandStackService
 {
 	public static function create(DeskproContainer $container)
 	{
-		return new BrandStack($container->getSystemService('brand_container_factory'));
+		return new BrandStack($container->getSystemService('brand_container_factory'), $container->get('default_brand'));
 	}
 }

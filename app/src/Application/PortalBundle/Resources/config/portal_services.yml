@@ -18,6 +18,15 @@ services:
     factory_method: getRepository
     arguments: ['DeskPRO:Brand']
 
+  default_brand_finder:
+    class: Application\DeskPRO\Brand\DefaultBrandFinder
+    arguments: [@settings_resolver, @brand_repository]
+
+  default_brand:
+    class: Application\DeskPRO\Entity\Brand
+    factory_service: default_brand_finder
+    factory_method: getDefaultBrand
+
   portal_loadder.twig:
     class: Application\PortalBundle\Twig\PortalLoader
     arguments: [@brand_stack]
@@ -43,7 +52,7 @@ services:
 
   brand_detector.listener:
     class: Application\PortalBundle\EventListener\BrandDetectionListener
-    arguments: [@brand_stack, @settings_resolver, @brand_repository]
+    arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand]
     tags:
       - { name: kernel.event_subscriber }
 
