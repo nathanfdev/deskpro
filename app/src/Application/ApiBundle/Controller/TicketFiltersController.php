@@ -115,7 +115,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      * 	path="/ticket_filters/{id}",
      * 	@SWG\Operation(
      * 		method="GET",
-     * 		summary="Get trigger filter by Id",
+     * 		summary="Get ticket filter by Id",
      * 		notes="",
      *		type="array",
      *      @SWG\Parameters (
@@ -156,13 +156,13 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      * 	path="/ticket_filters/{id}",
      * 	@SWG\Operation(
      * 		method="POST",
-     * 		summary="Save trigger filter details",
+     * 		summary="Save ticket filter details",
      * 		notes="",
      *		type="array",
      *      @SWG\Parameters (
      *          @SWG\Parameter(
      *				name="id",
-     *				description="Trigger id",
+     *				description="ticket id",
      *				paramType="path",
      *				required=true,
      *				type="integer",
@@ -176,7 +176,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      *			),
      *          @SWG\Parameter(
      *				name="filter.is_global",
-     *				description="Trigger global flag",
+     *				description="ticket global flag",
      *				paramType="query",
      *				required=false,
      *				type="boolean",
@@ -263,13 +263,13 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
      * 	path="/ticket_filters/{id}",
      * 	@SWG\Operation(
      * 		method="DELETE",
-     * 		summary="Delete trigger filter by ID",
+     * 		summary="Delete ticket filter by ID",
      * 		notes="",
      *		type="array",
      *      @SWG\Parameters (
      *          @SWG\Parameter(
      *				name="id",
-     *				description="Trigger filter id",
+     *				description="ticket filter id",
      *				paramType="path",
      *				required=true,
      *				type="integer",
