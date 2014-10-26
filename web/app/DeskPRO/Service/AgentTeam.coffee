@@ -2,15 +2,11 @@ define ->
 	###
   #
   ###
-	class DeskPRO_Service_Person
+	class DeskPRO_Service_AgentTeam
 
-		_persons = []
+		_teams = []
 		_maps =
 			ids: {}
-			agents: {}
-			disabled: {}
-			deleted: {}
-			online: {}
 
 
 
@@ -21,19 +17,18 @@ define ->
 		_load: () ->
 			d = @$q.defer()
 
-			if _persons.length
-				d.resolve _persons
+			if _teams.length
+				d.resolve _teams
 			else
-				@$http.get(BASE_URL + 'agent/person', {params: {is_agent: true}})
+				@$http.get(BASE_URL + 'agent/agent_team', {params: {}})
 				.success (data, status, headers, config) =>
 
 					data = data || []
-					data.map (person) =>
-						i = _persons.length
-						_persons.push person
-						_maps.ids[person.id] = i
-						_maps.agents[person.id] = i # we load only agents for now
-					d.resolve _persons
+					data.map (team) =>
+						i = _teams.length
+						_teams.push team
+						_maps.ids[team.id] = i
+					d.resolve _teams
 
 				.error (data, status, headers, config) =>
 					console.error data, status
@@ -52,9 +47,9 @@ define ->
 
 			@_load().then () =>
 				res = []
-				for person in _persons
+				for team in _teams
 					break if res.length >= limit
-					res.push person if !term.length || person.display_name.toLowerCase().indexOf(term) > -1
+					res.push team if !term.length || team.name.toLowerCase().indexOf(term) > -1
 
 				d.resolve res
 

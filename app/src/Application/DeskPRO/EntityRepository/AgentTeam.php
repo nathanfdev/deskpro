@@ -286,4 +286,25 @@ class AgentTeam extends AbstractEntityRepository
 	{
 		$this->invalidateCaches();
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getTeamsRaw()
+	{
+		$ret = array();
+
+		// todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
+
+		foreach ($this->getTeams() as $team) {
+			/** @var $team \Application\DeskPRO\Entity\AgentTeam */
+			$ret[] = array(
+				'id' => $team['id'],
+				'name' => $team['name'],
+				'picture_url' => $team->getAvatarUrl(16),
+			);
+		}
+
+		return $ret;
+	}
 }

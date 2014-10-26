@@ -2,7 +2,7 @@ define ->
 	###
   #
   ###
-	DeskPRO_Directive_DpTicketQuickActions = ($timeout) ->
+	DeskPRO_Directive_DpTicketQuickActions = ($timeout, PersonService, AgentTeamService) ->
 
 		options =
 			preview_text_height: 62   # 4 lines
@@ -24,17 +24,45 @@ define ->
 					        <br />
 					        <span></span>
 					    </div>
-					    <ul class="previewtext-row actions">
-									<li ng-repeat="action in actions">
-											<a href="#" ng-click="$event.preventDefault(); handleAction(action)">{{ action.title }}</a>
+					    <ul class="previewtext-row actions" style="overflow: visible;">
+									<li ng-repeat="action in actions" style="position: relative;">
+											<a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action) || handleAction(action)">{{ action.title }}</a>
+											<div ng-if="action.select2" ng-show="action.visible" style="position: absolute; width: 150px;">
+													<input type="hidden" ui-select2="action.select2" ng-model="action.model"
+																style="width: 100%;" ng-change="handleAction(action)" />
+											</div>
 									</li>
 							</ul>
-							<input type="hidden" style="width: 200px;position: absolute;bottom: -30px;" />
+
 					</div>
 			'
-			controller: ($scope, $filter, PersonService, $http) ->
+			controller: ($scope, $filter, $http) ->
 				$scope.actions = []
 				me = $scope.$root.app_person_id
+
+				format = (state) ->
+					return state.text if !state.id
+					"<img src='#{state.picture_url}' style='vertical-align: middle' /> <span style='display:inline-block;vertical-align: middle'>#{state.text}</span></div>"
+
+				agentsSelectOptions =
+					query: (query) ->
+						PersonService.find(query.term).then (res) ->
+							res.map (entry) -> entry.text = entry.display_name
+							data = {results: res}
+							query.callback data
+					formatResult: format
+					formatSelection: format
+					escapeMarkup: (m) -> m
+
+				teamsSelectOptions =
+					query: (query) ->
+						AgentTeamService.find(query.term).then (res) ->
+							res.map (entry) -> entry.text = entry.name
+							data = {results: res}
+							query.callback data
+					formatResult: format
+					formatSelection: format
+					escapeMarkup: (m) -> m
 
 				$scope.setTicket = (ticket) ->
 
@@ -58,13 +86,13 @@ define ->
 						return -1 != ticket.actions_allowed.indexOf(action)
 
 					if isAllowed('assign_self') && (!t.agent || t.agent.id != $scope.$root.app_person_id)
-						$scope.actions.push {title: 'Assign Me', params: {agent_id: me}}
+						$scope.actions.push {title: 'Assign Me', params: {agent_id: me}, visible: true }
 
 					if isAllowed('assign_agent')
-						$scope.actions.push {title: 'Assign Agent', params: {agent_id: null}}
+						$scope.actions.push {title: 'Assign Agent', prop: 'agent_id', params: {agent_id: null}, select2: agentsSelectOptions}
 
 					if isAllowed('assign_team')
-						$scope.actions.push {title: 'Assign Team', params: {agent_team_id: null}}
+						$scope.actions.push {title: 'Assign Team', prop: 'agent_team_id', params: {agent_team_id: null}, select2: teamsSelectOptions}
 
 					if isAllowed('set_awaiting_user') && 'awaiting_user' != t.status
 						$scope.actions.push {title: 'Set Awaiting User', params: {status: 'awaiting_user', hidden_status: false}}
@@ -75,29 +103,18 @@ define ->
 					if isAllowed('set_resolved') && 'resolved' != t.status
 						$scope.actions.push {title: 'Set Resolved', params: {status: 'resolved', hidden_status: false}}
 
+				$scope.showDropdown = (action) ->
+					$scope._visibleAction && $scope._visibleAction.visible = false
+					$scope._visibleAction = action
+					action.visible = true
 
 				$scope.handleAction = (action) ->
+					return if action.select2 && !action.model
+					if action.model then action.params[action.prop] = action.model.id
 
-					callback = () ->
-						$http.post("/agent/tickets/#{$scope.ticket_id}/ajax-save-actions", {actions: action.params}).success () ->
-							window.DeskPRO_Window.getMessageChanneler().poller.send();
-						$scope.$root.$emit 'tickets.quick_actions.hide'
-
-
-					switch true
-						when action.params.status? || action.params.agent_id == me
-							console.info 'set status or assign self'
-							callback()
-
-						when null == action.params.agent_id
-							console.info 'assign agent'
-							# show agents dropdown
-							1
-
-						when null == action.params.agent_team_id
-							console.info 'assign team'
-						# show teams dropdown
-							1
+					$http.post("/agent/tickets/#{$scope.ticket_id}/ajax-save-actions", {actions: action.params}).success () ->
+						window.DeskPRO_Window.getMessageChanneler().poller.send();
+					$scope.$root.$emit 'tickets.quick_actions.hide'
 
 
 
@@ -108,7 +125,7 @@ define ->
 				promise = null
 				$preview = $el.find '.previewtext-row > span:eq(0)'
 				$preview.dotdotdot {elipsis: '...', wrap: 'word', height: options.preview_text_height}
-				$select2 = $el.find('input').select2 {data: [{id:0, text: 'test'}]}
+
 
 
 				# events
@@ -137,12 +154,7 @@ define ->
 					promise && $timeout.cancel promise
 
 				$el.on 'mouseleave', (e) ->
-					console.info 'leave'
 					promise = $timeout (=> $el.hide()), options.widget_hide_delay
-
-
-				console.info $select2.data 'select2'
-#				select2 hacks
 
 				$(document).on 'mousemove', '#select2-drop-mask', (e) ->
 					$el.trigger e

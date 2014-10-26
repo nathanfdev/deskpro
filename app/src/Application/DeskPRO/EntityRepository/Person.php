@@ -654,10 +654,7 @@ class Person extends AbstractEntityRepository
 	}
 
 	/**
-	 * Get agent names
-	 *
-	 * @param null $for_ids
-	 * @return mixed
+	 * @return array
 	 */
 	public function getAgentsRaw()
 	{
@@ -668,6 +665,7 @@ class Person extends AbstractEntityRepository
 		foreach ($this->getAgents() as $agent) {
 			/** @var $agent \Application\DeskPRO\Entity\Person */
 			$ret[] = array(
+				'id' => $agent['id'],
 				'display_name' => $agent->getDisplayName(),
 				'picture_url' => $agent->getPictureUrl(16),
 			);

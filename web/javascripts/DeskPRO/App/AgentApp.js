@@ -2,26 +2,30 @@ define([
 	'angular',
 	'angularAnimate',
 	'angularBootstrap',
+	'angularSelect2',
 	'DeskPRO/Util/Functions',
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',
 	'DeskPRO/Service/LabelDefinition',
 	'ngContextMenu',
 	'DeskPRO/Directive/DpTicketQuickActions',
-	'DeskPRO/Service/Person'
+	'DeskPRO/Service/Person',
+	'DeskPRO/Service/AgentTeam'
 ], function(
 	angular,
 	x1,
 	x2,
+	x3,
 	Functions,
 	Strings,
 	DeskPRO_Directive_DpLabel,
     DeskPRO_Service_LabelDefinition,
     ngContextMenu,
     DeskPRO_Directive_DpTicketQuickActions,
-	DeskPRO_Service_Person
+	DeskPRO_Service_Person,
+	DeskPRO_Service_AgentTeam
 	) {
-	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu']);
+	var AgentApp = angular.module('AgentApp', ['ngAnimate', 'ui.bootstrap', 'ng-context-menu', 'ui.select2']);
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor
@@ -1034,6 +1038,7 @@ define([
 		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
 	}]);
 	AgentApp.service('PersonService', DeskPRO_Service_Person);
+	AgentApp.service('AgentTeamService', DeskPRO_Service_AgentTeam);
 
 	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);

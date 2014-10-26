@@ -1521,7 +1521,20 @@ class PersonController extends AbstractController
 	 */
 	public function listAction()
 	{
-		$ret = $this->em->getRepository('DeskPRO:Person')->getAgentsRaw();
+		/** @var \Application\DeskPRO\EntityRepository\Person $rep */
+		$rep = $this->em->getRepository('DeskPRO:Person');
+		$ret = $rep->getAgentsRaw();
+		return $this->createJsonResponse($ret);
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listTeamsAction()
+	{
+		/** @var \Application\DeskPRO\EntityRepository\AgentTeam $rep */
+		$rep = $this->em->getRepository('DeskPRO:AgentTeam');
+		$ret = $rep->getTeamsRaw();
 		return $this->createJsonResponse($ret);
 	}
 }

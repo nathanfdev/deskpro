@@ -978,11 +978,13 @@ JS;
 		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
 		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap"');
 		$rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/vendor/ng-context-menu/src/ng-context-menu"');
+		$rjs->addPathExpr('angularSelect2', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-select2/src/select2"');
 
 		$rjs->addShim('angular', array('exports' => 'angular'));
 		$rjs->addShim('angularAnimate', array('angular'));
 		$rjs->addShim('angularSanitize', array('angular'));
 		$rjs->addShim('angularBootstrap', array('angular'));
+		$rjs->addShim('angularSelect2', array('angular'));
 		$rjs->addShim('ngContextMenu', array('angular'));
 
 		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');

@@ -5,7 +5,7 @@
       *
      */
     var DeskPRO_Directive_DpTicketQuickActions;
-    return DeskPRO_Directive_DpTicketQuickActions = function($timeout) {
+    return DeskPRO_Directive_DpTicketQuickActions = function($timeout, PersonService, AgentTeamService) {
       var options;
       options = {
         preview_text_height: 62,
@@ -15,11 +15,55 @@
         restrict: 'E',
         scope: {},
         replace: true,
-        template: '<div class="dp-stickytip"> <div class="previewtext-row"> <cite> <img src="{{ icon }}" /> <span>{{ name }}</span> <span>{{ status }}</span> <span>{{ time }}</span> </cite> <br /> <span></span> </div> <ul class="previewtext-row actions"> <li ng-repeat="action in actions"> <a href="#" ng-click="$event.preventDefault(); handleAction(action)">{{ action.title }}</a> </li> </ul> <input type="hidden" style="width: 200px;position: absolute;bottom: -30px;" /> </div>',
-        controller: function($scope, $filter, PersonService, $http) {
-          var me;
+        template: '<div class="dp-stickytip"> <div class="previewtext-row"> <cite> <img src="{{ icon }}" /> <span>{{ name }}</span> <span>{{ status }}</span> <span>{{ time }}</span> </cite> <br /> <span></span> </div> <ul class="previewtext-row actions" style="overflow: visible;"> <li ng-repeat="action in actions" style="position: relative;"> <a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action) || handleAction(action)">{{ action.title }}</a> <div ng-if="action.select2" ng-show="action.visible" style="position: absolute; width: 150px;"> <input type="hidden" ui-select2="action.select2" ng-model="action.model" style="width: 100%;" ng-change="handleAction(action)" /> </div> </li> </ul> </div>',
+        controller: function($scope, $filter, $http) {
+          var agentsSelectOptions, format, me, teamsSelectOptions;
           $scope.actions = [];
           me = $scope.$root.app_person_id;
+          format = function(state) {
+            if (!state.id) {
+              return state.text;
+            }
+            return "<img src='" + state.picture_url + "' style='vertical-align: middle' /> <span style='display:inline-block;vertical-align: middle'>" + state.text + "</span></div>";
+          };
+          agentsSelectOptions = {
+            query: function(query) {
+              return PersonService.find(query.term).then(function(res) {
+                var data;
+                res.map(function(entry) {
+                  return entry.text = entry.display_name;
+                });
+                data = {
+                  results: res
+                };
+                return query.callback(data);
+              });
+            },
+            formatResult: format,
+            formatSelection: format,
+            escapeMarkup: function(m) {
+              return m;
+            }
+          };
+          teamsSelectOptions = {
+            query: function(query) {
+              return AgentTeamService.find(query.term).then(function(res) {
+                var data;
+                res.map(function(entry) {
+                  return entry.text = entry.name;
+                });
+                data = {
+                  results: res
+                };
+                return query.callback(data);
+              });
+            },
+            formatResult: format,
+            formatSelection: format,
+            escapeMarkup: function(m) {
+              return m;
+            }
+          };
           $scope.setTicket = function(ticket) {
             var isAllowed, service, t, _ref;
             service = PersonService;
@@ -41,23 +85,28 @@
                 title: 'Assign Me',
                 params: {
                   agent_id: me
-                }
+                },
+                visible: true
               });
             }
             if (isAllowed('assign_agent')) {
               $scope.actions.push({
                 title: 'Assign Agent',
+                prop: 'agent_id',
                 params: {
                   agent_id: null
-                }
+                },
+                select2: agentsSelectOptions
               });
             }
             if (isAllowed('assign_team')) {
               $scope.actions.push({
                 title: 'Assign Team',
+                prop: 'agent_team_id',
                 params: {
                   agent_team_id: null
-                }
+                },
+                select2: teamsSelectOptions
               });
             }
             if (isAllowed('set_awaiting_user') && 'awaiting_user' !== t.status) {
@@ -88,31 +137,28 @@
               });
             }
           };
+          $scope.showDropdown = function(action) {
+            $scope._visibleAction && ($scope._visibleAction.visible = false);
+            $scope._visibleAction = action;
+            return action.visible = true;
+          };
           return $scope.handleAction = function(action) {
-            var callback;
-            callback = function() {
-              $http.post("/agent/tickets/" + $scope.ticket_id + "/ajax-save-actions", {
-                actions: action.params
-              }).success(function() {
-                return window.DeskPRO_Window.getMessageChanneler().poller.send();
-              });
-              return $scope.$root.$emit('tickets.quick_actions.hide');
-            };
-            switch (true) {
-              case (action.params.status != null) || action.params.agent_id === me:
-                console.info('set status or assign self');
-                return callback();
-              case null === action.params.agent_id:
-                console.info('assign agent');
-                return 1;
-              case null === action.params.agent_team_id:
-                console.info('assign team');
-                return 1;
+            if (action.select2 && !action.model) {
+              return;
             }
+            if (action.model) {
+              action.params[action.prop] = action.model.id;
+            }
+            $http.post("/agent/tickets/" + $scope.ticket_id + "/ajax-save-actions", {
+              actions: action.params
+            }).success(function() {
+              return window.DeskPRO_Window.getMessageChanneler().poller.send();
+            });
+            return $scope.$root.$emit('tickets.quick_actions.hide');
           };
         },
         link: function($scope, $el) {
-          var $preview, $select2, promise;
+          var $preview, promise;
           $el.hide();
           promise = null;
           $preview = $el.find('.previewtext-row > span:eq(0)');
@@ -120,14 +166,6 @@
             elipsis: '...',
             wrap: 'word',
             height: options.preview_text_height
-          });
-          $select2 = $el.find('input').select2({
-            data: [
-              {
-                id: 0,
-                text: 'test'
-              }
-            ]
           });
           $scope.$root.$on('tickets.quick_actions.show', function(angularEvent, e, ticket) {
             var offset, _ref, _ref1;
@@ -153,14 +191,12 @@
             return promise && $timeout.cancel(promise);
           });
           $el.on('mouseleave', function(e) {
-            console.info('leave');
             return promise = $timeout(((function(_this) {
               return function() {
                 return $el.hide();
               };
             })(this)), options.widget_hide_delay);
           });
-          console.info($select2.data('select2'));
           return $(document).on('mousemove', '#select2-drop-mask', function(e) {
             return $el.trigger(e);
           });
