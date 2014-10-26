@@ -495,6 +495,17 @@
 	{% else %}
 		has been reopened
 	{% endif %}
+{% elseif log.action_type == 'webhook' %}
+	WebHook <span class="new-val">{{ log.details.url }}</span>
+	<br />
+	Status: {{ log.details.reason }},
+	<span class="new-val expand" data-set=".webhook-details">Details</span>
+	<br />
+	<div class="expand-set webhook-details" style="display: none">
+		<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">
+			<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.content }}</textarea>
+		</div>
+	</div>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

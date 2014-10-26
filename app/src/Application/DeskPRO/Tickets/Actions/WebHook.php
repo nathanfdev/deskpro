@@ -111,9 +111,26 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 		}
 
 		try {
-			$request->send();
+
+			$response = $request->send();
+			$data = array(
+				'url' => $url,
+				'reason' => $response->getReasonPhrase(),
+				'status' => $response->getStatusCode(),
+				'content' => $response->getBody(true),
+			);
+			$ticket->getStateChangeRecorder()->recordData('webhook', $data);
+
 		} catch (\Exception $e) {
+
 			KernelErrorHandler::logException($e, false, 'webhook_' . md5($this->getActionOption('url')));
+			$data = array(
+				'url' => $url,
+				'reason' => $e->getMessage(),
+				'status' => $e->getCode(),
+				'content' => null,
+			);
+			$ticket->getStateChangeRecorder()->recordData('webhook', $data);
 		}
 	}
 
