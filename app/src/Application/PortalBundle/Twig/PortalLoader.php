@@ -59,7 +59,11 @@ class PortalLoader implements \Twig_LoaderInterface
 	 */
 	public function getSource($name)
 	{
-		if ($path = $this->brand_stack->getActive()->resolveTemplatePath((string) $name)) {
+		if (!$brand_container = $this->brand_stack->getActive()) {
+			throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
+		}
+
+		if ($path = $brand_container->resolveTemplatePath((string) $name)) {
 			return file_get_contents($path);
 		}
 
