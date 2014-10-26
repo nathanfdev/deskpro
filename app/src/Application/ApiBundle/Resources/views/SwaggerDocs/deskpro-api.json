@@ -51,6 +51,10 @@
             "description":"Operations about Ticket triggers"
         },
         {
+            "path":"/ticket_urgencies",
+            "description":"Operations about Ticket urgencies"
+        },
+        {
             "path":"/tickets",
             "description":"Operations about Tickets"
         }
