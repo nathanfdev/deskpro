@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,85 +29,18 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Brand as BrandEntity;
-use Application\PortalBundle\Theme\ThemeInterface;
-
-class Template extends AbstractEntityRepository
+class Build1414364121 extends AbstractBuild
 {
-	/**
-	 * @param $name
-	 * @return null|\Application\DeskPRO\Entity\Template
-	 */
-	public function getTemplateByName($name)
+	public function run()
 	{
-		return $this->findOneBy(array('name' => $name));
-	}
-
-	public function getTemplateForStyle($template_name, $style = null)
-	{
-		try {
-			if ($style === null OR $style === 0) {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style IS NULL AND t.name = ?1
-				")->setParameters(array(1=>$template_name));
-			} else {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style = ?1 AND t.name = ?2
-				")->setParameters(array(1=>$style, 2=>$template_name));
-			}
-
-			$r = $q->getSingleResult();
-			return $r;
-		} catch (\Exception $e) {
-			return null;
-		}
-	}
-
-
-	/**
-	 * @param $style
-	 * @return array
-	 * @deprecated
-	 */
-	public function getCustomTemplateNamesInStyle($style)
-	{
-		return array();
-	}
-
-	/**
-	 * @param $style
-	 * @return array
-	 * @deprecated
-	 */
-	public function getCustomTemplateInfoInStyle($style)
-	{
-		return array();
-	}
-
-
-	/**
-	 * @param                $name
-	 * @param BrandEntity    $brand
-	 * @param ThemeInterface $theme
-	 * @return null|Template
-	 */
-	public function getBrandTemplate($name, BrandEntity $brand, ThemeInterface $theme)
-	{
-		return $this->findOneBy(array(
-				'name' => $name,
-				'brand' => $brand,
-				'theme_id' => $theme->getId()
-			)
-		);
+		$this->out("Allow custom templates for brand/theme");
+		$this->execMutateSql("ALTER TABLE templates ADD brand_id INT DEFAULT NULL, ADD theme_id VARCHAR(256) DEFAULT NULL");
+		$this->execMutateSql("ALTER TABLE templates ADD CONSTRAINT FK_6F287D8E44F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id)");
+		$this->execMutateSql("CREATE INDEX IDX_6F287D8E44F5D008 ON templates (brand_id)");
 	}
 }

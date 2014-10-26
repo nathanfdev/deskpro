@@ -18,6 +18,12 @@ services:
     factory_method: getRepository
     arguments: ['DeskPRO:Brand']
 
+  template_repository:
+    class: Application\DeskPRO\EntityRepository\Template
+    factory_service: doctrine.orm.default_entity_manager
+    factory_method: getRepository
+    arguments: ['DeskPRO:Template']
+
   default_brand_finder:
     class: Application\DeskPRO\Brand\DefaultBrandFinder
     arguments: [@settings_resolver, @brand_repository]
@@ -29,7 +35,7 @@ services:
 
   portal_loadder.twig:
     class: Application\PortalBundle\Twig\PortalLoader
-    arguments: [@brand_stack]
+    arguments: [@brand_stack, @template_repository]
     tags:
       - { name: twig.loader }
 

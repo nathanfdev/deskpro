@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Twig;
 
 use Application\DeskPRO\Brand\BrandStack;
+use Application\DeskPRO\EntityRepository\Template;
 use Twig_Error_Loader;
 
 class PortalLoader implements \Twig_LoaderInterface
@@ -44,10 +45,16 @@ class PortalLoader implements \Twig_LoaderInterface
 	 */
 	private $brand_stack;
 
+	/**
+	 * @var \Application\DeskPRO\EntityRepository\Template
+	 */
+	private $template_repo;
 
-	public function __construct(BrandStack $brand_stack)
+
+	public function __construct(BrandStack $brand_stack, Template $template_repo)
 	{
 		$this->brand_stack = $brand_stack;
+		$this->template_repo = $template_repo;
 	}
 
 	/**
@@ -61,6 +68,10 @@ class PortalLoader implements \Twig_LoaderInterface
 	{
 		if (!$brand_container = $this->brand_stack->getActive()) {
 			throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
+		}
+
+		if ($template = $this->template_repo->getBrandTemplate($name, $brand_container->getBrand(), $brand_container->getTheme())) {
+			return $template->template_code;
 		}
 
 		if ($path = $brand_container->resolveTemplatePath((string) $name)) {
