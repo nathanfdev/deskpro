@@ -145,7 +145,7 @@ class ApiSampleDb extends AbstractDbSet
 				($ugid, NULL, '1', 'agent_tickets.delete_own'),
 				($ugid, NULL, '1', 'agent_tickets.delete_unassigned'),
 				($ugid, NULL, '1', 'agent_tickets.delete_followed'),
-				($ugid, NULL, '1', 'agent_tickets.modify_set_closed'),
+				($ugid, NULL, '1', 'agent_tickets.modify_set_archived'),
 				($ugid, NULL, '1', 'agent_tickets.reply_own'),
 				($ugid, NULL, '1', 'agent_tickets.modify_own'),
 				($ugid, NULL, '1', 'agent_tickets.modify_department_own'),
@@ -235,7 +235,7 @@ class ApiSampleDb extends AbstractDbSet
 			VALUES
 				($limitedGId, NULL, '0', 'agent_tickets.use'),
 				($limitedGId, NULL, '0', 'agent_tickets.create'),
-				($limitedGId, NULL, '0', 'agent_tickets.modify_set_closed'),
+				($limitedGId, NULL, '0', 'agent_tickets.modify_set_archived'),
 				($limitedGId, NULL, '0', 'agent_tickets.reply_own'),
 				($limitedGId, NULL, '0', 'agent_tickets.modify_own'),
 				($limitedGId, NULL, '0', 'agent_tickets.modify_department_own'),

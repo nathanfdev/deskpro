@@ -48,7 +48,8 @@ class GeneratorFactory
 	 * @var \Symfony\Component\Console\Input\InputInterface|null
 	 */
 	private $input;
-	
+
+	/** @var array */
 	protected $generators_map = array(
 		'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket',
 		'csv'		=> 'Application\\ImportBundle\\Generator\\Csv',

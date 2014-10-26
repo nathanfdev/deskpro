@@ -373,7 +373,7 @@ class ServerReportFile
 		$sections = array();
 
 		try {
-			$mysqlstatus              = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), 0, 1);
+			$mysqlstatus              = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), array(), 0, 1);
 			$sections['MySQL Status'] = Strings::keyValueAsciiTable($mysqlstatus);
 
 		} catch(\Exception $e) {
@@ -411,7 +411,7 @@ class ServerReportFile
 		$sections = array();
 
 		try {
-			$mysqlinfo                   = App::getDb()->fetchAllKeyValue("SHOW VARIABLES", array(), 0, 1);
+			$mysqlinfo                   = App::getDb()->fetchAllKeyValue("SHOW VARIABLES", array(), array(), 0, 1);
 			$sections['MySQL Variables'] = Strings::keyValueAsciiTable($mysqlinfo);
 
 		} catch(\Exception $e) {

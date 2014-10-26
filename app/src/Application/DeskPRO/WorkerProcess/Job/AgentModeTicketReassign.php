@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
+use Doctrine\DBAL\Connection;
 
 /**
  * When an agent enters vacation mode or is deleted, we have to re-assign their awaiting_agent tickets
@@ -56,15 +56,14 @@ class AgentModeTicketReassign extends AbstractJob
 		#------------------------------
 
 		$agent_ids = App::getDb()->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 1");
-		$agent_ids_c = implode(',', $agent_ids);
 
 		if ($max && $agent_ids) {
 
 			$ticket_ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE status IN ('awaiting_agent', 'awaiting_user') AND agent_id IN ($agent_ids_c)
-			");
+				WHERE status IN ('awaiting_agent', 'awaiting_user') AND agent_id IN (?)
+			", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 
 			foreach ($ticket_ids as $t) {
 				App::getDb()->update(

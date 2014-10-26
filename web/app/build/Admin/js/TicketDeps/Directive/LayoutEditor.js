@@ -4,7 +4,7 @@
   define(['angular', 'DeskPRO/Util/Arrays'], function(angular, Arrays) {
     var InterfaceHandler;
     InterfaceHandler = (function() {
-      function InterfaceHandler(scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger) {
+      function InterfaceHandler(scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger, TicketFieldsPerPerson, TicketFieldsPerOrg) {
         this.scope = scope;
         this.element = element;
         this.ngModel = ngModel;
@@ -101,14 +101,13 @@
             return _this.render();
           };
         })(this);
-        $q.all([TicketFields.loadList(), UserFields.loadList()]).then((function(_this) {
+        $q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all()]).then((function(_this) {
           return function(results) {
-            var tFields, uFields;
-            tFields = results[0];
-            uFields = results[1];
             _this.scope.field_status = TicketFields.field_enabled;
-            _this.scope.custom_ticket_fields = tFields;
-            _this.scope.custom_user_fields = uFields;
+            _this.scope.custom_ticket_fields = results[0];
+            _this.scope.custom_user_fields = results[1];
+            _this.scope.ticket_fields_per_person = results[2];
+            _this.scope.ticket_fields_per_org = results[3];
             return $timeout(function() {
               _this._reInitTab('user', _this.els.user_tab);
               _this._reInitTab('agent', _this.els.agent_tab);
@@ -491,11 +490,13 @@
         directive.replace = true;
         directive.scope = {};
         directive.link = function(scope, element, attrs, ngModel) {
-          var TicketFields, UserFields, interfaceHandler, logger;
+          var TicketFields, TicketFieldsPerOrg, TicketFieldsPerPerson, UserFields, interfaceHandler, logger;
           logger = LoggerManager.get('directive.dpLayoutEditor');
           TicketFields = DataService.get('TicketFields');
           UserFields = DataService.get('UserFields');
-          return interfaceHandler = new InterfaceHandler(scope, element, attrs, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger);
+          TicketFieldsPerPerson = DataService.get('CustomFields', 'ticket', 'person');
+          TicketFieldsPerOrg = DataService.get('CustomFields', 'ticket', 'organization');
+          return interfaceHandler = new InterfaceHandler(scope, element, attrs, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger, TicketFieldsPerPerson, TicketFieldsPerOrg);
         };
         return directive;
       }

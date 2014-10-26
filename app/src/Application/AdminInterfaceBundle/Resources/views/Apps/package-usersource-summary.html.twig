@@ -1,0 +1,29 @@
+<div class="panel panel-fill indent">
+	<div class="panel-body">
+		<div class="form-group">
+			<div style="float: left;">
+				<img ng-src="{{ ng_var('Ctrl.pack.icon_64') }}" alt="Icon" />
+			</div>
+			<div style="margin-left: 69px;">
+				<h2>{{ ng_var('Ctrl.pack.title') }}</h2>
+				<p>
+					by {{ ng_var('Ctrl.pack.author_name') }} &lt;<a href="mailto:{{ ng_var('Ctrl.pack.author_email') }}">{{ ng_var('Ctrl.pack.author_email') }}</a>&gt;
+					&bull; <a ng-href="{{ ng_var('Ctrl.pack.author_link') }}">{{ ng_var('Ctrl.pack.author_link') }}</a>
+				</p>
+				<p ng-bind-html="Ctrl.pack.description">
+				</p>
+				<p>
+					This is a usersource app, which alters the way your users and/or agents register and log into the system. Users and Agents have different authentication configurations. Select the place you'd like this authentication to be configured for.
+				</p>
+					<a class="btn btn-primary" ng-if="!Ctrl.pack.user_usersource_app"
+						href="{{ ng_href('crm.usersources.install', '{name: Ctrl.pack.name}') }}">User Portal</a>
+				<a class="btn btn-primary" ng-if="Ctrl.pack.user_usersource_app"
+						href="{{ ng_href('crm.usersources.id', '{id: Ctrl.pack.user_usersource_app.id}') }}">User Portal</a>
+					<a class="btn btn-primary" ng-if="!Ctrl.pack.agent_usersource_app"
+						href="{{ ng_href('agents.usersources.install', '{name: Ctrl.pack.name}') }}">Agent Interface</a>
+				<a class="btn btn-primary" ng-if="Ctrl.pack.agent_usersource_app"
+						href="{{ ng_href('agents.usersources.id', '{id: Ctrl.pack.agent_usersource_app.id}') }}">Agent Interface</a>
+			</div>
+		</div>
+	</div>
+</div>

@@ -43,9 +43,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
+	/** @var bool */
 	protected $set_verbose = false;
+	/** @var bool */
 	protected $ignore_interval = false;
+	/** @var OutputInterface */
 	protected $output;
+	/** @var string */
 	protected $cron_id;
 
 	protected function configure()
@@ -306,6 +310,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 		$ignore_interval = false;
 		if ($input->getOption('ignore-interval')) {
 			$ignore_interval = true;
+			$GLOBALS['DP_CRON_IGNORE_INTERVAL'] = true;
 		}
 
 		$runner = new \Application\DeskPRO\WorkerProcess\Runner\Standard();

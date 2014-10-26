@@ -236,8 +236,8 @@ class TicketEdit implements PersonContextInterface
 					if ($this->person_context) {
 						$status = true;
 
-						// Switching to or from closed
-						if (($action == 'closed' || $this->ticket->status == 'closed') && !$tcheck->canSetClosed($this->ticket)) {
+						// Switching to or from archived
+						if (($action == 'archived' || $this->ticket->status == 'archived') && !$tcheck->canSetArchived($this->ticket)) {
 							$status = null;
 						}
 						if ($action == 'resolved' && !$tcheck->canModify($this->ticket, 'set_resolved')) {

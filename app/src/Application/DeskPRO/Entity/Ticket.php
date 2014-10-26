@@ -90,7 +90,7 @@ use Orb\Util\WorkHoursSetAll;
  * @property \DateTime $date_feedback_rating
  * @property \DateTime $date_created
  * @property \DateTime $date_resolved
- * @property \DateTime $date_closed
+ * @property \DateTime $date_archived
  * @property \DateTime $date_first_agent_assign
  * @property \DateTime $date_first_agent_reply
  * @property \DateTime $date_last_agent_reply
@@ -133,7 +133,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	const STATUS_AWAITING_AGENT = 'awaiting_agent';
 	const STATUS_AWAITING_USER  = 'awaiting_user';
 	const STATUS_RESOLVED       = 'resolved';
-	const STATUS_CLOSED         = 'closed';
+	const STATUS_ARCHIVED       = 'archived';
 	const STATUS_HIDDEN         = 'hidden';
 
 	const HIDDEN_STATUS_VALIDATING  = 'validating';
@@ -365,7 +365,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	/**
 	 * @var \DateTime
 	 */
-	protected $date_closed = null;
+	protected $date_archived = null;
 
 	/**
 	 * @var \DateTime
@@ -491,6 +491,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	protected $_sent_to_addresses;
 
+	/**
+	 * @var null|\Application\DeskPRO\Labels\LabelManager
+	 */
 	protected $_label_manager = null;
 
 	/**
@@ -2061,7 +2064,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 	 */
 	public function isArchived()
 	{
-		if ($this->status != 'closed') {
+		if ($this->status != 'archived') {
 			return false;
 		}
 
@@ -2145,19 +2148,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 	/**
 	 * Get how long, in seconds, the ticket was open for. This only applies
-	 * for tikcets that are resolved (or closed).
+	 * for tikcets that are resolved (or archived).
 	 *
 	 * @return int
 	 */
 	public function getTimeUntilResolution()
 	{
-		if (!$this->date_resolved && !$this->date_closed) {
+		if (!$this->date_resolved && !$this->date_archived) {
 			return null;
 		}
 
 		$date = $this->date_resolved;
-		if (!$date || ($this->date_closed && $date > $this->date_closed)) {
-			$date = $this->date_closed;
+		if (!$date || ($this->date_archived && $date > $this->date_archived)) {
+			$date = $this->date_archived;
 		}
 
 		$secs = $date->getTimestamp() - $this->date_created->getTimestamp();
@@ -2167,13 +2170,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
 	public function getWorkTimeUntilResolution()
 	{
-		if (!$this->date_resolved && !$this->date_closed) {
+		if (!$this->date_resolved && !$this->date_archived) {
 			return null;
 		}
 
 		$date = $this->date_resolved;
-		if (!$date || ($this->date_closed && $date > $this->date_closed)) {
-			$date = $this->date_closed;
+		if (!$date || ($this->date_archived && $date > $this->date_archived)) {
+			$date = $this->date_archived;
 		}
 
 		return $this->getWorkHoursSet()->getWorkTimeBetween($this->date_created, $date);
@@ -2213,7 +2216,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$this['date_status'] = new \DateTime();
 
 		$old_status  = $this->status;
-		$old_hstatus = $this->hidden_status;
 		$old_status_code = $this->getStatusCode();
 
 		if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
@@ -2237,11 +2239,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			$this->setModelField('date_agent_waiting', null);
 		}
 
-		if ($status == 'closed' && !$this->date_closed) {
-			$this['date_closed'] = new \DateTime();
+		if ($status == 'archived' && !$this->date_archived) {
+			$this['date_archived'] = new \DateTime();
 		}
-		if ($status != 'closed' && $this->date_closed) {
-			$this->setModelField('date_closed', null);
+		if ($status != 'archived' && $this->date_archived) {
+			$this->setModelField('date_archived', null);
 		}
 
 		if ($status == 'resolved' && !$this->date_resolved) {
@@ -2263,7 +2265,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		if (!$status || !in_array($status, array(
 			self::STATUS_AWAITING_AGENT,
 			self::STATUS_AWAITING_USER,
-			self::STATUS_CLOSED,
+			self::STATUS_ARCHIVED,
 			self::STATUS_RESOLVED,
 			self::STATUS_HIDDEN
 		))) {
@@ -2770,7 +2772,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 				return 110;
 			case self::STATUS_RESOLVED:
 				return 200;
-			case self::STATUS_CLOSED:
+			case self::STATUS_ARCHIVED:
 				return 210;
 			case self::STATUS_HIDDEN:
 				switch ($hstatus) {
@@ -3067,11 +3069,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'date_feedback_rating'         => $this->date_feedback_rating ? $this->date_feedback_rating->format('Y-m-d H:i:s') : null,
 			'date_created'                 => $this->date_created->format('Y-m-d H:i:s'),
 			'date_resolved'                => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
-			'date_closed'                  => $this->date_closed ? $this->date_closed->format('Y-m-d H:i:s') : null,
+			'date_archived'                  => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
 			'date_first_agent_assign'      => $this->date_first_agent_assign ? $this->date_first_agent_assign->format('Y-m-d H:i:s') : null,
 			'date_first_agent_reply'       => $this->date_first_agent_reply ? $this->date_first_agent_reply->format('Y-m-d H:i:s') : null,
 			'date_last_agent_reply'        => $this->date_last_agent_reply ? $this->date_last_agent_reply->format('Y-m-d H:i:s') : null,
-			'date_last_user_reply'         => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
 			'date_last_user_reply'         => $this->date_last_user_reply ? $this->date_last_user_reply->format('Y-m-d H:i:s') : null,
 			'date_agent_waiting'           => $this->date_agent_waiting ? $this->date_agent_waiting->format('Y-m-d H:i:s') : null,
 			'date_user_waiting'            => $this->date_user_waiting ? $this->date_user_waiting->format('Y-m-d H:i:s') : null,
@@ -3177,6 +3178,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			if (App::getCurrentPerson()) {
 				$context->setPersonContext(App::getCurrentPerson(), true);
 			}
+			$context->getVars()->set('custom_field_manager', App::$container->getCustomFieldManager());
 
 			$state = $this->getStateChangeRecorder();
 			if ($state->isNewTicket()) {
@@ -3385,8 +3387,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'nullable'   => true,
 		));
 		$metadata->mapField(array(
-			'fieldName'  => 'date_closed',
-			'columnName' => 'date_closed',
+			'fieldName'  => 'date_archived',
+			'columnName' => 'date_archived',
 			'type'       => 'datetime',
 			'nullable'   => true,
 		));

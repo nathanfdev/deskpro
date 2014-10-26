@@ -35,7 +35,9 @@ namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\BigMode;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\TicketTerms;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -368,17 +370,17 @@ class PersonSearch extends SearcherAbstract
 					$person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
 						SELECT person_id
 						FROM person2usergroups
-						WHERE usergroup_id IN (" . implode(',', $choice) . ")
+						WHERE usergroup_id IN (?)
 						LIMIT 1001
-					");
+					", array($choice), array(Connection::PARAM_INT_ARRAY));
 					if (!$person_ids) {
 						$person_ids = array(0);
 					}
 					$org_ids = App::getDbRead('search.filter.people')->fetchAllCol("
 						SELECT organization_id
 						FROM organization2usergroups
-						WHERE usergroup_id IN (" . implode(',', $choice) . ")
-					");
+						WHERE usergroup_id IN (?)
+					", array($choice), array(Connection::PARAM_INT_ARRAY));
 					if (count($person_ids) == 1001) {
 						// too many, need to do the join method
 						$joins[] = array(
@@ -546,7 +548,7 @@ class PersonSearch extends SearcherAbstract
 							$choices_in[] = $db->quote($c);
 						}
 						$choices_in = implode(',', $choices_in);
-						if (!$choices_in) $choices_in = '';
+						if (!$choices_in) $choices_in = '\'\'';
 					}
 
 
@@ -671,29 +673,59 @@ class PersonSearch extends SearcherAbstract
 						case 'id':
 							$join_id = Util::requestUniqueId();
 							$choices_in = array();
-							foreach ((array)$choice as $c) {
-								$choices_in[] = (int)$c;
+
+							if ($choice != 'DP_NO_SELECTION') {
+								$choice = (array)$choice;
+								if (isset($choice["field_{$field->getId()}"])) {
+									$choice = $choice["field_{$field->getId()}"];
+								}
+								if (!is_array($choice)) {
+									$choice = array($choice);
+								}
+								foreach ($choice as $c) {
+									$choices_in[] = (int)$c;
+								}
+								$choices_in = implode(',', $choices_in);
 							}
-							$choices_in = implode(',', $choices_in);
+
+							if (!$choices_in) {
+								$choice = 'DP_NO_SELECTION';
+							}
 
 							$field = 'custom_data_person_'.$join_id.'.field_id';
 							switch ($op) {
 								case self::OP_CONTAINS:
 								case self::OP_IS:
-									$joins[] = array(
-										'custom_data_person',
-										"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
-									);
-									$wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
+									if ($choice == 'DP_NO_SELECTION') {
+										$joins[] = array(
+											'custom_data_person',
+											"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})"
+										);
+										$wheres[] = "custom_data_person_$join_id.id IS NULL";
+									} else {
+										$joins[] = array(
+											'custom_data_person',
+											"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
+										);
+										$wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
+									}
 									break;
 
 								case self::OP_NOTCONTAINS:
 								case self::OP_NOT:
-									$joins[] = array(
-										'custom_data_person',
-										"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
-									);
-									$wheres[] = "custom_data_person_$join_id.id IS NULL";
+									if ($choice == 'DP_NO_SELECTION') {
+										$joins[] = array(
+											'custom_data_person',
+											"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field->id})"
+										);
+										$wheres[] = "custom_data_person_$join_id.id IS NOT NULL";
+									} else {
+										$joins[] = array(
+											'custom_data_person',
+											"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND $field IN ($choices_in))"
+										);
+										$wheres[] = "custom_data_person_$join_id.id IS NULL";
+									}
 									break;
 							}
 							break;
@@ -768,14 +800,12 @@ class PersonSearch extends SearcherAbstract
 	}
 
 
-
 	/**
-	 * Check a specific person against these terms to see if it matches.
-	 *
-	 * @param Person $person
+	 * @param Entity\Person $person
+	 * @param Entity\Ticket $ticket
 	 * @return bool
 	 */
-	public function doesPersontMatch(Entity\Person $person)
+	public function doesPersontMatch(Entity\Person $person, Entity\Ticket $ticket = null)
 	{
 		foreach ($this->terms as $info) {
 			list($term, $op, $choice) = $info;
@@ -957,7 +987,7 @@ class PersonSearch extends SearcherAbstract
 					if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
 
 					$any = false;
-					foreach ($person->getContactData('address') as $cd) {
+					foreach ($person->getContactData($field) as $cd) {
 						if ($cd->checkStringMatch($choice)) {
 							$any = true;
 							if ($op == self::OP_NOTCONTAINS) {
@@ -983,7 +1013,7 @@ class PersonSearch extends SearcherAbstract
 
 					$has = false;
 					foreach ($person->getLabelManager()->getLabelsArray() as $l) {
-						$l = Strings::utf8_strtolower($l->label);
+						$l = Strings::utf8_strtolower($l);
 						if (isset($choice_labels[$l])) {
 							$has = true;
 							break;
@@ -1000,6 +1030,21 @@ class PersonSearch extends SearcherAbstract
 						}
 					}
 
+					break;
+
+				default:
+					if ($ticket) {
+						$terms = new TicketTerms(array(array(
+							'type'    => $term,
+							'op'      => $op,
+							'options' => $choice
+						)));
+						if (!$terms->doesTicketMatch($ticket)) {
+							return false;
+						}
+					} else {
+						return false;
+					}
 					break;
 			}
 		}

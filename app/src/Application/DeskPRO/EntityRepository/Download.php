@@ -68,16 +68,16 @@ class Download extends AbstractEntityRepository
 			$downloads = $this->getEntityManager()->createQuery("
 				SELECT d
 				FROM DeskPRO:Download d INDEX BY d.id
-				WHERE d.id IN (" . implode(',', $ids) . ") AND d.category IN (?0) AND d.status = 'published'
+				WHERE d.id IN (?0) AND d.category IN (?1) AND d.status = 'published'
 				ORDER BY d.id DESC
-			")->execute(array($cat_ids));
+			")->execute(array($ids, $cat_ids));
 		} else {
 			$downloads = $this->getEntityManager()->createQuery("
 				SELECT d
 				FROM DeskPRO:Download d INDEX BY d.id
-				WHERE d.id IN (" . implode(',', $ids) . ")
+				WHERE d.id IN (?0)
 				ORDER BY d.id DESC
-			")->execute();
+			")->execute(array($ids));
 		}
 
 		return $downloads;
@@ -90,9 +90,9 @@ class Download extends AbstractEntityRepository
 		$unsorted_downloads = $this->getEntityManager()->createQuery("
 			SELECT d
 			FROM DeskPRO:Download d INDEX BY d.id
-			WHERE d.id IN (" . implode(',', $ids) . ")
+			WHERE d.id IN (?0)
 			ORDER BY d.id DESC
-		")->execute();
+		")->execute(array($ids));
 
 		$downloads = array();
 

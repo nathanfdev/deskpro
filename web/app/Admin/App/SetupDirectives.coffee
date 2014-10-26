@@ -38,10 +38,14 @@ define [
 	'Admin/Main/Directive/DpChange',
 	'Admin/Main/Directive/DpPhoneNumber',
 	'Admin/Main/Directive/DpRedactor',
+	'Admin/Main/Directive/DpDate',
+	'Admin/Main/Directive/DpReadFile',
 
 	'Admin/Portal/Directive/PortalEditor',
 	'Admin/TicketDeps/Directive/LayoutEditor',
 	'Admin/TicketDeps/Directive/LayoutEditorField',
+
+	'Admin/License/Directive/PaymentFormDirective',
 ], (
 	DeskPRO_Directive_DpClickHref,
 	DeskPRO_Directive_DpClosestNumber,
@@ -82,10 +86,14 @@ define [
 	Admin_Main_Directive_DpChange,
 	Admin_Main_Directive_DpPhoneNumber,
 	Admin_Main_Directive_DpRedactor,
+	Admin_Main_Directive_DpDate,
+	Admin_Main_Directive_DpReadFile,
 
 	Admin_Portal_Directive_PortalEditor,
 	Admin_TicketDeps_Directive_LayoutEditor,
 	Admin_TicketDeps_Directive_LayoutEditorField,
+
+	Admin_License_Directive_PaymentFormDirective
 ) ->
 	return (Module) ->
 		Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref)
@@ -127,11 +135,15 @@ define [
 		Module.directive('dpChange',                       Admin_Main_Directive_DpChange)
 		Module.directive('dpPhoneNumber',                  Admin_Main_Directive_DpPhoneNumber)
 		Module.directive('dpRedactor',                     Admin_Main_Directive_DpRedactor)
+		Module.directive('dpDate',                         Admin_Main_Directive_DpDate)
+		Module.directive('dpReadFile',                     Admin_Main_Directive_DpReadFile)
 
 		Module.directive('dpPortalEditor',                 Admin_Portal_Directive_PortalEditor)
 
 		Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
 		Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
+
+		Module.directive('dpLicensePaymentForm',           Admin_License_Directive_PaymentFormDirective)
 
 		Module.directive('dpToggleShowIds', [ ->
 			return {

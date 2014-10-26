@@ -98,7 +98,12 @@ class ProcessEmailCommand extends ContainerAwareCommand
 		} else {
 
 			if ($input->getOption('file')) {
-				$raw_source = file_get_contents($input->getOption('file'));
+				if (file_exists($input->getOption('file'))) {
+					$raw_source = file_get_contents($input->getOption('file'));
+				} else {
+					$output->writeln("<error>File path does not exist: " . $input->getOption('file') . "</error>");
+					return 1;
+				}
 			} else {
 				$raw_source = '';
 				while (!feof(STDIN)) {

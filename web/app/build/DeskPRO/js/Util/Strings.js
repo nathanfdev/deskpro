@@ -200,6 +200,21 @@
 
 
       /*
+        	 * Escapes HTML and also AngularJS var markers.
+        	 * TODO: Improve this to just escape \{\{ when we upgrade to angular 1.3
+        	 *
+        	 * @param {String} htmlString
+        	 * @return {String}
+       */
+
+      DeskPRO_Util_Strings.prototype.escapeAngularHtml = function(htmlString) {
+        return (htmlString + '').replace(/[&<>"'\/]/g, function(s) {
+          return DeskPRO_Util_Strings.ENTITY_MAP[s];
+        }).replace(/\{\{/g, '{&#8203;{').replace(/\}\}/g, '}&#8203;}');
+      };
+
+
+      /*
         	 * Repeat a str num times
         	 *
         	 * @param {String} str
@@ -377,19 +392,26 @@
         	 *     <%- this.doesnt.exist %>
         	 *   The above wont result in an error, just an empty string. Pass settings.disableSafeVar to disable this.
         	 *
+        	 * - If settings.isAngular is set, then the escaper will escape AngularJS {{interpolation}} chars
+        	 *
         	 * @param {String} text The template text
         	 * @param {Object} settings
         	 * @return Function
        */
 
       DeskPRO_Util_Strings.prototype.simpleTemplate = function(text, settings) {
-        var STRINGS, e, fn, index, render, resolveVar, source;
+        var STRINGS, e, escaper, fn, index, render, resolveVar, source;
         if (settings == null) {
           settings = {};
         }
         STRINGS = this;
+        if (settings.isAngular) {
+          escaper = 'escapeAngularHtml';
+        } else {
+          escaper = 'escapeHtml';
+        }
         index = 0;
-        source = "var __t, __p = '', __j=Array.prototype.join, __escape=Strings.escapeHtml, ";
+        source = "var __t, __p = '', __j=Array.prototype.join, __escape=Strings." + escaper + ", ";
         source += "print=function(){__p+=__j.call(arguments,'');};\n";
         source += "with(obj||{}){\n";
         source += "__p+='";

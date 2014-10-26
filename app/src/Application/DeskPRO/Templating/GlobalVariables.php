@@ -40,6 +40,7 @@ use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVaria
 
 class GlobalVariables extends BaseGlobalVariables
 {
+	/** @var array */
 	protected $variables = array();
 
 	public function setVariable($name, $value)
@@ -163,6 +164,11 @@ class GlobalVariables extends BaseGlobalVariables
 	public function getUsersourceManager()
 	{
 		return App::getSystemService('UsersourceManager');
+	}
+
+	public function getAuthenticationManager()
+	{
+		return App::getSystemService('authentication_manager');
 	}
 
 	public function getTicketFieldManager()

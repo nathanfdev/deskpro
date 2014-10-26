@@ -42,13 +42,19 @@ use Orb\Util\Strings;
  */
 class ForwardCutter
 {
+	/** @var string */
 	protected $body;
+	/** @var bool */
 	protected $is_html;
 
+	/** @var string */
 	protected $forwarded_message;
+	/** @var array */
 	protected $forward_info;
+	/** @var string */
 	protected $reply;
 
+	/** @var string|null */
 	protected $error_code = null;
 
 	/**

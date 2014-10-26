@@ -51,7 +51,7 @@ class Phrase extends AbstractEntityRepository
 				SELECT p
 				FROM DeskPRO:Phrase p
 				WHERE p.language = ?1 AND p.name = ?2
-			")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();;
+			")->setParameters(array(1=>$language, 2=>$phrase_name))->setMaxResults(1)->getOneOrNullResult();
 		}
 	}
 
@@ -80,11 +80,11 @@ class Phrase extends AbstractEntityRepository
 				$group = $parts[0];
 			}
 		}
-		$phrases = App::getDb()->fetchAllKeyValue("
+		$phrases = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
 			SELECT name, COALESCE(phrase, original_phrase) AS phrase
 			FROM phrases
 			WHERE language_id = ? AND groupname = ?
-		", array($language->id, $group));
+		', array($language['id'], $group));
 
 		return $phrases;
 	}

@@ -450,6 +450,224 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		platform.onFragmentEnded(this);
 	},
 
+	updateAppsSidebar: function() {
+		var el = this.getEl('layout_sidebar_icons');
+		if (!el[0] || el.find('li.is-enabled').length == 0) {
+			this.anyAppsSidebar = false;
+			this.fragmentElement.removeClass('with-apps-sidebar with-docked-apps-sidebar');
+			this.fragmentElement.triggerHandler('onNoAppsSidebar');
+			if (this.updateAppSidebarUi) {
+				this.updateAppSidebarUi();
+			}
+		} else {
+			this.anyAppsSidebar = true;
+			this.fragmentElement.addClass('with-apps-sidebar');
+			this.fragmentElement.triggerHandler('onAppsSidebar');
+			this._initAppsSidebar();
+		}
+	},
+
+	_initAppsSidebar: function() {
+		if (this._hasInitAppsSidebar) return;
+
+		var self = this;
+
+		var sidebarEl   = this.getEl('layout_sidebar');
+		var layoutEl    = this.getEl('layout_content');
+		var iconsEl     = this.getEl('layout_sidebar_icons');
+		var sizer       = this.getEl('layout_sidebar_sizer');
+		var isOver      = false;
+		var isPlaceOver = false;
+		var isSizerOver = false;
+		var isSizing     = false;
+		var isClosing   = false;
+		var openTimeout = null;
+		var outTimeout  = null;
+
+		var sizerCalcLeft = function() {
+			var l = parseInt(self.fragmentElement.width()) - parseInt(DeskPRO_Window.appsSidebar.width);
+			return l;
+		};
+
+		var open = function() {
+			if (DeskPRO_Window.appsSidebar.visible || !self.anyAppsSidebar) return;
+
+			self.fragmentElement.addClass('with-apps-sidebar-overlay');
+			sidebarEl.css('right', -DeskPRO_Window.appsSidebar.width).css('width', DeskPRO_Window.appsSidebar.width).show();
+			sidebarEl.stop().animate({right: 0}, {
+				duration: 350,
+				complete: function() {
+					sizer.css('left', sizerCalcLeft()).show();
+					if (!isOver && !isPlaceOver && !outTimeout && !isSizerOver && !isSizing) {
+						outTimeout = window.setTimeout(function() {
+							outTimeout = null;
+							if (!isOver && !isPlaceOver && !isSizerOver && !isSizing) {
+								close();
+							}
+						}, 380);
+					}
+				}
+			})
+		};
+
+		var close = function() {
+			if (DeskPRO_Window.appsSidebar.visible || !self.anyAppsSidebar) return;
+			isClosing = true;
+			sidebarEl.stop().animate({right: -DeskPRO_Window.appsSidebar.width}, {
+				duration: 350,
+				complete: function() {
+					isClosing = false;
+					sidebarEl.hide();
+					sizer.hide();
+					self.fragmentElement.removeClass('with-apps-sidebar-overlay');
+				}
+			})
+		};
+
+		var startCloseTimeout = function() {
+			if (!outTimeout) {
+				outTimeout = window.setTimeout(function() {
+					outTimeout = null;
+					if (!isOver && !isPlaceOver && !isSizerOver && !isSizing) {
+						close();
+					}
+				}, 380);
+			}
+		};
+
+		var cancelCloseTimeout = function() {
+			if (outTimeout) {
+				window.clearTimeout(outTimeout);
+				outTimeout = null;
+			}
+			if (isClosing) {
+				isClosing = false;
+				sidebarEl.stop().animate({right: 0}, {duration: 150});
+				sizer.css('left', sizerCalcLeft()).show();
+			}
+		};
+
+		var togglePin = function() {
+			if (DeskPRO_Window.appsSidebar.visible) {
+				closePin();
+			} else {
+				openPin();
+			}
+		};
+
+		var openPin = function() {
+			if (outTimeout) {
+				window.clearTimeout(outTimeout);
+				outTimeout = null;
+			}
+			if (openTimeout) {
+				window.clearTimeout(openTimeout);
+				openTimeout = null;
+			}
+			sidebarEl.stop().css('right', 0).css('width', DeskPRO_Window.appsSidebar.width).show();
+			DeskPRO_Window.appsSidebar.visible = true;
+			sizer.css('left', sizerCalcLeft()).show();
+			layoutEl.css('right', DeskPRO_Window.appsSidebar.width);
+			self.fragmentElement.removeClass('with-apps-sidebar-overlay');
+			self.fragmentElement.addClass('with-docked-apps-sidebar');
+		};
+
+		var closePin = function() {
+			if (outTimeout) {
+				window.clearTimeout(outTimeout);
+				outTimeout = null;
+			}
+			if (openTimeout) {
+				window.clearTimeout(openTimeout);
+				openTimeout = null;
+			}
+			sidebarEl.stop().hide();
+			DeskPRO_Window.appsSidebar.visible = false;
+			layoutEl.css('right', 0);
+			self.fragmentElement.removeClass('with-apps-sidebar-overlay');
+			self.fragmentElement.removeClass('with-docked-apps-sidebar');
+		};
+
+		var updateUi = function() {
+			if (DeskPRO_Window.appsSidebar.visible && self.anyAppsSidebar) {
+				sidebarEl.stop().css('right', 0).css('width', DeskPRO_Window.appsSidebar.width).show();
+				sizer.css('left', sizerCalcLeft()).show();
+				layoutEl.css('right', DeskPRO_Window.appsSidebar.width);
+				self.fragmentElement.removeClass('with-apps-sidebar-overlay');
+				self.fragmentElement.addClass('with-docked-apps-sidebar');
+			} else {
+				sidebarEl.stop().hide();
+				layoutEl.css('right', 0);
+				self.fragmentElement.removeClass('with-apps-sidebar-overlay');
+				self.fragmentElement.removeClass('with-docked-apps-sidebar');
+			}
+		};
+
+		this.updateAppSidebarUi = updateUi;
+		this.addEvent('activate', function(){
+			updateUi();
+		});
+		updateUi();
+
+		sidebarEl.on('mouseover', function() {
+			isOver = true;
+			cancelCloseTimeout();
+		}).on('mouseout', function() {
+			isOver = false;
+			startCloseTimeout();
+		});
+
+		iconsEl.on('click', function(ev) {
+			ev.stopPropagation();
+			ev.stopImmediatePropagation();
+			ev.preventDefault();
+			togglePin();
+		});
+		sidebarEl.find('.pin-btn').on('click', function(ev) {
+			ev.stopPropagation();
+			ev.stopImmediatePropagation();
+			ev.preventDefault();
+			togglePin();
+		});
+
+		iconsEl.on('mouseover', function() {
+			isPlaceOver = true;
+			openTimeout = window.setTimeout(function() {
+				openTimeout = null;
+				if (isPlaceOver) {
+					open();
+				}
+			}, 250);
+		}).on('mouseout', function() {
+			isPlaceOver = false;
+			if (openTimeout) {
+				window.clearTimeout(openTimeout);
+				openTimeout = null;
+			}
+		});
+
+		sizer.on('mouseover', function() {
+			isSizerOver = true;
+		}).on('mouseout', function() {
+			isSizerOver = false;
+			startCloseTimeout();
+		}).draggable({
+			axis: 'x'
+		}).on('dragstart', function() {
+			sizer.addClass('dragging');
+			isSizing = true;
+		}).on('dragstop', function() {
+			sizer.removeClass('dragging');
+			isSizing = false;
+			var w = self.fragmentElement.width() - sizer.position().left
+			DeskPRO_Window.appsSidebar.width = w;
+			sidebarEl.css('width', w);
+			if (DeskPRO_Window.appsSidebar.visible) {
+				layoutEl.css('right', w);
+			}
+		});
+	},
+
 	destroy: function() {
 
 	}

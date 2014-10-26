@@ -199,6 +199,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public $withNewSubject = '';
 
+	/**
+	 * @var null|int
+	 */
 	protected $_message_length = null;
 
 	public function __construct()
@@ -455,7 +458,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setMessageText($message)
 	{
-		$this->setMessage(nl2br(htmlspecialchars($message)));
+		$this->setMessage(Strings::convert4ByteCharsToHtmlEntities(nl2br(htmlspecialchars($message))));
 	}
 
 	public function setMessage($message)

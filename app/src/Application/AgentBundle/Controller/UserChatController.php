@@ -47,7 +47,9 @@ use Orb\Util\Strings;
 
 class UserChatController extends AbstractController
 {
+	/** @var array */
 	protected $filters  = array('mine', 'assigned', 'missed');
+	/** @var array */
 	protected $groups = array('none', 'department', 'agent', 'date_created', 'total_to_ended');
 
 	public function viewAction($conversation_id)
@@ -339,7 +341,6 @@ class UserChatController extends AbstractController
 		$target = $this->container->getIn()->getCleanValueArray('agent_ids', 'uint', 'discard');
 
 		$add = array_diff($have, $target);
-		$rem = array_diff($target, $have);
 
 		$client_messages = array();
 		if ($add) {
@@ -897,9 +898,6 @@ class UserChatController extends AbstractController
 		if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
-
-		/** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
-		$chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
 		if ($convo->visitor) {
 			$block = $this->em->getRepository('DeskPRO:ChatBlock')->getBlockForVisitor($convo->visitor);

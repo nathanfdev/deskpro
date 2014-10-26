@@ -36,7 +36,6 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Doctrine\DBAL\DBALException;
 
 class Draft extends AbstractEntityRepository
 {

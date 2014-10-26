@@ -37,13 +37,21 @@ use Application\DeskPRO\App;
 
 class Attachment
 {
+	/** @var string */
 	public $tmp_file;
+	/** @var Callable */
 	public $file_contents_callback;
+	/** @var string|null */
 	public $file_contents = null;
+	/** @var string */
 	public $file_name;
+	/** @var string */
 	public $file_name_utf8;
+	/** @var string */
 	public $mime_type;
+	/** @var string */
 	public $original_charset; // with Rfc822 types
+	/** @var string ? */
 	public $content_id;
 
 	public function getFileContents()

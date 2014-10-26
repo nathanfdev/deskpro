@@ -298,7 +298,6 @@ class HtmlMatcher
 			}
 
 			$sel = $token[1];
-			$depth = $token[2];
 
 			if ($sel == ':close') {
 				if ($this->root_state[$id]['closed']) {

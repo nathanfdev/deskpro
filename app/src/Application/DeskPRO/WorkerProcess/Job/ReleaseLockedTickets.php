@@ -46,7 +46,10 @@ class ReleaseLockedTickets extends AbstractJob
 	public function run()
 	{
 		$offset = 60 * 2; // 2 minutes offline offset
-		App::getOrm()->getRepository('DeskPRO:Ticket')->unlockOfflineAgentsTickets($offset);
-		$this->logStatus("Releasing locked tickets");
+		$n = App::getOrm()->getRepository('DeskPRO:Ticket')->unlockOfflineAgentsTickets($offset);
+
+		if ($n) {
+			$this->logStatus("Released $n stale locks");
+		}
 	}
 }

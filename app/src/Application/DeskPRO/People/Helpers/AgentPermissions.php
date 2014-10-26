@@ -42,9 +42,12 @@ use Application\DeskPRO\Entity;
  */
 class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterface
 {
+	/** @var \Application\DeskPRO\Entity\Person */
 	protected $person;
 
+	/** @var array|null */
 	protected $_allowed_ids = null;
+	/** @var array */
 	protected $_disallowed_ids = array();
 
 	public function __construct(Entity\Person $person)

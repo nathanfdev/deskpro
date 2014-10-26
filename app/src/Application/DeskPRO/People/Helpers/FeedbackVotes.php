@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity;
 
@@ -194,21 +195,22 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
 			return $this->feedback_votes;
 		}
 
-
-		$ids_in = implode(',', $ids);
-
 		if ($this->person['id']) {
 			$vote_info = App::getDb()->fetchAllKeyValue("
 				SELECT object_id, rating
 				FROM ratings
-				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id IN ($ids_in)
-			", array($this->person['id'], $this->visitor['id']));
+				WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id IN (?)
+			",
+			array($this->person['id'], $this->visitor['id'], $ids),
+			array(\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 		} elseif ($this->visitor) {
 			$vote_info = App::getDb()->fetchAllKeyValue("
 				SELECT object_id, rating
 				FROM ratings
-				WHERE visitor_id = ? AND object_type = 'feedback' AND object_id IN ($ids_in)
-			", array($this->visitor['id']));
+				WHERE visitor_id = ? AND object_type = 'feedback' AND object_id IN (?)
+			",
+			array($this->visitor['id'], $ids),
+			array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 		} else {
 			$vote_info = array_combine($ids, array_fill(0, count($ids), 0));
 		}

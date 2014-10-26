@@ -70,9 +70,9 @@
 						<dl>
 							<dt style="white-space: nowrap">
 							    {{ phrase('agent.general.agent') }}
-							    <span id="%baseId%_assign_me" class="assign-self-link-wrap">
+							    <span id="%baseId%_assign_me" class="assign-self-link-wrap" data-me="{{ app.user.id }}">
 									&middot;
-									<a class="assign-self-link" data-me="{{ app.user.id }}">
+									<a class="assign-self-link">
 										{{ phrase('agent.general.assign_to_me') }}
 									</a>
 								</span>
@@ -193,7 +193,7 @@
 					{% if app.getSetting('core.use_product') %}
 					<td style="padding-left: 10px;">
 						<dl>
-							<dt>{{ phrase('agent.general.category') }}</dt>
+							<dt>{{ phrase('agent.general.product') }}</dt>
 							<dd>
 								{% include 'AgentBundle:Common:select-product.html.twig' with {
 									'name': 'actions[product]',

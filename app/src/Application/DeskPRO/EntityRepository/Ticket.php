@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
@@ -177,13 +178,13 @@ class Ticket extends AbstractEntityRepository
 			ORDER BY t.id DESC
 		")->setParameters(array($ref."%"))->setMaxResults(10)->execute();
 
-		$new_ticket_ids = App::getDb()->fetchAll("
+		$new_ticket_ids = $this->getEntityManager()->getConnection()->fetchAll("
 			SELECT new_ticket_id
 			FROM tickets_deleted
 			WHERE old_ref LIKE ?
 		", array($ref));
 		if ($new_ticket_ids) {
-			$other_tickets = $this->_em->getRepository('DeskPRO:Ticket')->getByIds($new_ticket_ids);
+			$other_tickets = $this->getByIds($new_ticket_ids);
 			if (count($other_tickets)) {
 				$ret = array();
 				foreach ($tickets as $t) { $ret[$t->getId()] = $t; }
@@ -242,9 +243,9 @@ class Ticket extends AbstractEntityRepository
 		$tickets = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Ticket t INDEX BY t.id
-			WHERE t.id IN(" . implode(',', $ids) . ")
+			WHERE t.id IN(?)
 			ORDER BY t.id ASC
-		")->execute();
+		")->execute(array($ids));
 
 		return $tickets;
 	}
@@ -282,7 +283,7 @@ class Ticket extends AbstractEntityRepository
 	public function getPersonTickets(Entity\Person $person, $limit = null, $sort_by = null, $sort_order = 'DESC')
 	{
 		if ($person->is_agent) {
-			$ids = App::getDb()->fetchAllCol("
+			$ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id
 				FROM tickets
 				WHERE person_id = ?
@@ -290,7 +291,7 @@ class Ticket extends AbstractEntityRepository
 				LIMIT 2000
 			", array($person->id));
 		} else {
-			$ids = App::getDb()->fetchAllCol("
+			$ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id FROM tickets WHERE person_id = ?
 				UNION
 				SELECT ticket_id FROM tickets_participants WHERE person_id = ?
@@ -302,36 +303,37 @@ class Ticket extends AbstractEntityRepository
 		}
 
 		if ($sort_by === 'date_last_reply') {
-			$ids = App::getDb()->fetchAllCol(
-				"
+			$ids = $this->getEntityManager()->getConnection()->fetchAllCol(
+				'
 								SELECT id
 								FROM tickets
-								WHERE id IN (" . implode(',', $ids) . ")
+								WHERE id IN (?)
 				ORDER BY GREATEST(
 +					COALESCE(date_last_user_reply,0),
 +					COALESCE(date_last_agent_reply,0)
 +				) DESC
-			"
-			);
+			',
+			array($ids), array(Connection::PARAM_INT_ARRAY));
+
 		} elseif ($sort_by == 'status') {
 			$ids = App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE id IN (" . implode(',', $ids) . ")
-				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'closed', 'hidden') ASC, IF(tickets.status = 'awaiting_agent', tickets.urgency, 0) DESC, tickets.id DESC
-			");
+				WHERE id IN (?)
+				ORDER BY FIELD(tickets.status, 'awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden') ASC, IF(tickets.status = 'awaiting_agent', tickets.urgency, 0) DESC, tickets.id DESC
+			", array($ids), array(Connection::PARAM_INT_ARRAY));
 		} elseif ($sort_by && in_array(strtolower($sort_by), $this->_em->getClassMetadata('DeskPRO:Ticket')->getFieldNames())) {
 			$sort_by = strtolower($sort_by);
 
 			$sort_order = strtolower($sort_order);
 			$sort_order = in_array($sort_order, array('asc', 'desc')) ? $sort_order : 'DESC';
 
-			$ids = App::getDb()->fetchAllCol("
+			$ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE id IN (" . implode(',', $ids) . ")
+				WHERE id IN (?)
 				ORDER BY $sort_by $sort_order
-			"
+			", array($ids), array(Connection::PARAM_INT_ARRAY)
 			);
 		} else {
 			sort($ids, \SORT_NUMERIC);
@@ -370,22 +372,20 @@ class Ticket extends AbstractEntityRepository
 			return array();
 		}
 
-		$ids_str = implode(',', $ids);
-
-		$ticket_ids = App::getDb()->fetchAllCol("
+		$ticket_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 			SELECT
 				tickets.id,
 					CASE WHEN tickets.status =  'awaiting_agent' THEN 1
 					WHEN tickets.status =  'awaiting_user' THEN 2
 					WHEN tickets.status =  'resolved' THEN 3
-					WHEN tickets.status =  'closed' THEN 4
+					WHEN tickets.status =  'archived' THEN 4
 					ELSE 3
 					END AS status_order
 			FROM tickets
 			LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-			WHERE tickets.person_id IN ($ids_str) OR tickets_participants.person_id IN ($ids_str)
+			WHERE tickets.person_id IN (?0) OR tickets_participants.person_id IN (?0)
 			ORDER BY status_order ASC, tickets.date_status DESC
-		");
+		", array($ids), array(Connection::PARAM_INT_ARRAY));
 
 		if (!$ticket_ids) {
 			return array();
@@ -527,11 +527,11 @@ class Ticket extends AbstractEntityRepository
 				CASE WHEN `status` =  'awaiting_agent' THEN 1
 				WHEN `status` =  'awaiting_user' THEN 2
 				WHEN `status` =  'resolved' THEN 3
-				WHEN `status` =  'closed' THEN 4
+				WHEN `status` =  'archived' THEN 4
 				ELSE 3
 				END AS status_order
 			FROM tickets
-			WHERE organization_id = {$org->id} AND status IN ('awaiting_agent', 'awaiting_user', 'closed', 'resolved')
+			WHERE organization_id = {$org->id} AND status IN ('awaiting_agent', 'awaiting_user', 'archived', 'resolved')
 			ORDER BY status_order ASC, urgency DESC
 			LIMIT $num
 		", array($org->id));
@@ -597,7 +597,7 @@ class Ticket extends AbstractEntityRepository
 			$status = array(
 				TicketEntity::STATUS_AWAITING_AGENT,
 				TicketEntity::STATUS_AWAITING_USER,
-				TicketEntity::STATUS_CLOSED,
+				TicketEntity::STATUS_ARCHIVED,
 				TicketEntity::STATUS_RESOLVED
 			);
 		}
@@ -676,18 +676,18 @@ class Ticket extends AbstractEntityRepository
 	 * - hidden.spam
 	 * - hidden.awaiting_validation
 	 * - resolved
-	 * - closed
+	 * - archived
 	 * - hidden.deleted
 	 *
 	 * @return array
 	 */
 	public function getArchiveCounts()
 	{
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT IF(status = 'hidden', CONCAT('hidden', '.', hidden_status), status) AS status_code, COUNT(*)
 			FROM tickets
 			WHERE
-				status IN ('awaiting_user', 'closed', 'resolved', 'hidden')
+				status IN ('awaiting_user', 'archived', 'resolved', 'hidden')
 			GROUP BY status_code
 		");
 	}
@@ -747,14 +747,12 @@ class Ticket extends AbstractEntityRepository
 			return array();
 		}
 
-		$ids = implode(',', $ids);
-
-		return App::getDb()->fetchAllKeyValue("
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
 			SELECT person_id, COUNT(*)
 			FROM tickets
-			WHERE person_id IN ($ids)
+			WHERE person_id IN (?)
 			GROUP BY person_id
-		");
+		', array($ids), array(Connection::PARAM_INT_ARRAY));
 	}
 
 
@@ -835,7 +833,7 @@ class Ticket extends AbstractEntityRepository
 	 */
 	public function countTicketsByUrgency()
 	{
-		$counts = App::getDb()->fetchAllKeyValue("
+		$counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT urgency, COUNT(*) AS count
 			FROM tickets
 			WHERE status = 'awaiting_agent'
@@ -847,14 +845,16 @@ class Ticket extends AbstractEntityRepository
 
 	/**
 	 * @param int $offlineOffset offset in seconds from now, when the agents considered as 'offline'
+	 * @return int
 	 */
 	public function unlockOfflineAgentsTickets($offlineOffset = 120)
 	{
-		$lockDate = new \DateTime(- (int) $offlineOffset . ' seconds');
-		$this->getEntityManager()->getConnection()->executeQuery('
-			UPDATE tickets t
-			JOIN sessions s ON t.locked_by_agent = s.person_id AND s.date_last IS NOT NULL AND s.date_last < :lockDate
-			SET t.locked_by_agent = NULL, t.date_locked = NULL
-		', array('lockDate' => $lockDate->format('Y-m-d H:i:s')));
+		$datecut = date('Y-m-d H:i:s', strtotime(- (int) $offlineOffset . ' seconds'));
+		return $this->_em->getConnection()->executeUpdate("
+			UPDATE tickets
+			JOIN sessions ON (sessions.person_id = tickets.locked_by_agent AND sessions.date_last IS NOT NULL AND sessions.date_last < ?)
+			SET tickets.locked_by_agent = null, tickets.date_locked = null
+			WHERE tickets.locked_by_agent IS NOT NULL
+		", array($datecut));
 	}
 }

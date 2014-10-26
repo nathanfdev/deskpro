@@ -37,14 +37,19 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\DBAL\DoctrineEvent;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Form\Type\DpCategoryBuilderType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\People\PeopleResultsDisplay;
 use Orb\Util\Arrays;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles viewing and editing a person
@@ -79,8 +84,16 @@ class PersonController extends AbstractController
 		# Custom fields
 		#------------------------------
 
-		$field_manager = $this->container->getSystemService('person_fields_manager');
+		$manager = $this->container->getCustomFieldManager();
+
+		// todo replace with:
+//		 $form = $manager->createFormForOwner($person, $this->person);
+//		 $custom_fields = $form->createView();
+		$field_manager = $this->container->getPersonFieldManager();
 		$custom_fields = $field_manager->getDisplayArrayForObject($person);
+
+		$form = $manager->createDefinitionsFormForContext($person);
+		$custom_fields_definitions = $form->createView();
 
 		#------------------------------
 		# Misc info needed
@@ -321,6 +334,8 @@ class PersonController extends AbstractController
 			'reg_group'                 => $reg_group,
 			'person_object_counts'      => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person),
 			'changelog'                 => $changelog,
+
+			'custom_fields_definitions' => $custom_fields_definitions,
 		));
 	}
 
@@ -604,34 +619,6 @@ class PersonController extends AbstractController
 				}
 
 				$this->em->flush();
-
-//				if ($usergroup_ids) {
-//					$usergroup_ids = array_unique($usergroup_ids);
-//
-//					// Make sure only valid ones are set
-//					$usergroup_ids = $this->db->fetchAllCol("
-//						SELECT id
-//						FROM usergroups
-//						WHERE id IN (" . implode(',', $usergroup_ids).")
-//							AND sys_name IS NULL
-//					");
-//				}
-
-//				$this->container->getDb()->executeUpdate("
-//					DELETE person2usergroups
-//					FROM person2usergroups
-//					LEFT JOIN usergroups ON (usergroups.id = person2usergroups.usergroup_id)
-//					WHERE usergroups.is_agent_group = 0 AND person2usergroups.person_id = ?
-//				", array($person->getId()));
-//
-//				if ($usergroup_ids) {
-//					$inserts = array();
-//					foreach ($usergroup_ids as $uid) {
-//						$inserts[] = array('person_id' => $person->getId(), 'usergroup_id' => $uid);
-//					}
-//
-//					$this->db->batchInsert('person2usergroups', $inserts);
-//				}
 				break;
 
 			case 'remove-usersource':
@@ -729,7 +716,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	public function ajaxSaveCustomFieldsAction($person_id)
+	public function ajaxSaveCustomFieldsAction(Request $request, $person_id)
 	{
 		$person = $this->getPersonOr404($person_id);
 
@@ -752,12 +739,13 @@ class PersonController extends AbstractController
 		}
 
 		/** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
-		$field_manager = $this->container->getSystemService('person_fields_manager');
-		$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
+		$field_manager = $this->container->getPersonFieldManager();
+		$custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : array();
+
 		$invalid_custom_fields = array();
 		$is_valid = true;
 		foreach ($field_manager->getFields() as $field) {
-			$errors = $field->getHandler()->validateFormData($custom_fields ?: array());
+			$errors = $field->getHandler()->validateFormData($custom_fields);
 			foreach ($errors as $code) {
 				$invalid_custom_fields['field_' . $field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
 				$is_valid = false;
@@ -769,6 +757,25 @@ class PersonController extends AbstractController
 				'invalid_custom_fields' => $invalid_custom_fields
 			));
 		}
+
+
+		// specific user custom fields definitions
+		$manager = $this->container->getCustomFieldManager();
+		$form = $manager->createDefinitionsFormForContext($person);
+		// fix: jquery removes empty arrays from post request
+		if (!$request->request->has($form->getName())) {
+			$request->request->set($form->getName(), array());
+		}
+		if (!$form->handleRequest($request)->isValid()) {
+			return $this->createJsonResponse(array(
+				'error' => true,
+				'invalid_custom_fields' => $form->getErrors(true, true)->current(),
+			));
+
+		}
+		$manager->flush($form);
+
+
 
 		if (!empty($custom_fields)) {
 			$field_manager->saveFormToObject($custom_fields, $person);

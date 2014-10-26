@@ -1,0 +1,62 @@
+{
+	"package_name": "deskpro_us_google_plus",
+	"is_native": true,
+	"title": "Google+ Sign-In",
+	"description": "Allows users to log in using their Google account. This is the recommended google authentication app.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": false,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enable User Source",
+			"description": "Enable this usersource?",
+			"native_only": true
+		},
+		{
+			"name": "client_id",
+			"type": "text",
+			"label": "Client ID",
+			"description": "You can find or create this in your google developer console (https://console.developers.google.com/). Once there, follow: APIs & Auth -> Credentials -> OAuth.",
+			"native_only": true
+		},
+		{
+			"name": "client_secret",
+			"type": "text",
+			"label": "Client Secret",
+			"description": "You can find or create this in your google developer console (https://console.developers.google.com/). Once there, follow: APIs & Auth -> Credentials -> OAuth.",
+			"native_only": true
+		},
+		{
+			"name": "google_apps_domain",
+			"type": "text",
+			"label": "Google Apps Domain",
+			"description": "Optionally enter your Google Apps domain (e.g. example.com - no www. or http://) to only allow users from within your organisation to log in. When enabled, normal Google users (e.g., example@gmail.com) will not be allowed.",
+			"native_only": true
+		},
+		{
+			"name": "auto_agent",
+			"type": "checkbox",
+			"label": "Auto Agent",
+			"checkbox_label": "Automatically create agents if they do not already exist",
+			"usersource_display": "agent",
+			"default_value": true,
+
+			"inline_dependant": {
+				"name": "auto_agent_permission_group",
+				"type": "choice",
+				"label": "Add new agents to this permission group",
+				"options_variable": "permission_groups",
+				"is_required": true
+			}
+		}
+	]
+}

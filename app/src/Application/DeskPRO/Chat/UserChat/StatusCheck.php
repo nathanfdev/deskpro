@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
 
 /**
  * Since we dont have an actual chat server that can keep track of clients timing out etc,
@@ -49,9 +51,11 @@ class StatusCheck
 	 * @var \Application\DeskPRO\Entity\ChatConversation
 	 */
 	protected $conversation;
+	/** @var Session */
 	protected $session;
+	/** @var Person */
 	protected $person;
-
+	/** @var bool */
 	protected $is_agent = false;
 
 	public function __construct($conversation, $session)
@@ -96,7 +100,7 @@ class StatusCheck
 
 		if ($last < $cut_close) {
 
-			$msg = $this->conversation->addSystemMessage(
+			$this->conversation->addSystemMessage(
 				App::getTranslator()->phrase('agent.general.msg_user_timeout'),
 				true
 			);

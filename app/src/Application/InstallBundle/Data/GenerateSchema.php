@@ -167,7 +167,6 @@ SQL;
 		$xc = 0;
 		$xt = 0;
 
-		$tables = array();
 		$php_creates  = array();
 		$php_alters   = array();
 		$php_triggers = array();

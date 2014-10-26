@@ -33,6 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class JsonResponse extends Response
 {
+	/** @var array|null */
 	protected $data;
 
 	public function __toString()

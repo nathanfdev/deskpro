@@ -198,7 +198,7 @@ class TicketController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="status",
-	 *				description="Status the ticket is in. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved. Defaults to awaiting_agent.",
+	 *				description="Status the ticket is in. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved. Defaults to awaiting_agent.",
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="string"
@@ -872,7 +872,7 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$trackers = App::getDb()->fetchAllCol("
+		$trackers = $this->em->fetchAllCol("
 			SELECT log
 			FROM ticket_changetracker_logs
 			WHERE ticket_id = ?

@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Reader;
 
 class VCard extends \File_IMC
 {
+	/** @var \Application\DeskPRO\ORM\EntityManager  */
     protected $em;
     
     public function __construct(\Application\DeskPRO\ORM\EntityManager $em)

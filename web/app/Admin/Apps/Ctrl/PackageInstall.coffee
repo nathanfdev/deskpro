@@ -1,15 +1,18 @@
-define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
+define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceTypeDecider'
+], (require, Admin_Ctrl_Base, Admin_Usersources_Helper_UsersourceTypeDecider) ->
 	class Admin_Apps_Ctrl_PackageInstall extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Apps_Ctrl_PackageInstall'
 		@CTRL_AS   = 'Ctrl'
-		@DEPS      = ['$http', 'dpTemplateManager']
+		@DEPS      = ['$state', '$http', 'dpTemplateManager']
 
 		init: ->
 			@packageName = @$stateParams.name.replace(/\.install$/, '');
+			@usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
 			@$scope.getController = => return this
 			@$scope.setPresaveCallback = (callback) => @presaveCallback = callback
 			@$scope.enableCustomFooter = => @$scope.has_own_footer = true
 			@presaveCallback = null
+			@permission_groups = []
 			return
 
 		initialLoad: ->
@@ -17,9 +20,13 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 
 			@Api.sendDataGet({
 				pack: '/apps/packages/' + @packageName,
+				agent_groups: '/agent_groups'
 			}).then( (result) =>
 				@pack = result.data.pack['package']
 				@$scope.pack = @pack
+
+				for val in result.data.agent_groups.groups
+					@permission_groups.push({"value": val.id.toString(), "label": val.title})
 
 				form_template = @packageName + '/Install/install.html'
 				installCtrl = null
@@ -89,7 +96,12 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 				)
 
 		cancelInstall: ->
-			@$state.go('apps.apps.package', {name: @pack.name});
+			if @usersourceType == 'user'
+				@$state.go('crm.usersources')
+			else if @usersourceType == 'agent'
+				@$state.go('agents.usersources')
+			else
+				@$state.go('apps.apps.package', {name: @pack.name});
 
 		doInstall: ->
 			listCtrl = null
@@ -98,16 +110,16 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 
 			setting_values = @$scope.setting_values
 			pack = @pack
+			usersourceType = @usersourceType
 
 			defer = @$q.defer()
 			modalInstance = @$modal.open({
 				templateUrl: @getTemplatePath('Apps/install-progress-modal.html'),
 				controller: 'Admin_Apps_Ctrl_InstallProgress',
 				resolve: {
-					pack: ->
-						return pack
-					setting_values: ->
-						return setting_values
+					pack:           -> pack
+					setting_values: -> setting_values
+					usersourceType: -> usersourceType
 				}
 			}).result.then( (info) =>
 				defer.resolve(info)
@@ -125,7 +137,14 @@ define ['require', 'Admin/Main/Ctrl/Base'], (require, Admin_Ctrl_Base) ->
 					}
 					listCtrl.addAppInstance(instanceInfo)
 
-				@$state.go('apps.apps.instance', {id: info.id});
+				if @usersourceType == 'user'
+					@$scope.$parent?.ListCtrl?.refresh()
+					@$state.go('crm.usersources.id', {id: info.id})
+				else if @usersourceType == 'agent'
+					@$scope.$parent?.ListCtrl?.refresh()
+					@$state.go('agents.usersources.id', {id: info.id})
+				else
+					@$state.go('apps.apps.instance', {id: info.id});
 			)
 
 			return defer.promise

@@ -4,6 +4,7 @@ namespace Orb\Jira;
 
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
+use Application\DeskPRO\ORM\EntityManager;
 use Guzzle\Http\Client;
 use Guzzle\Http\Exception\BadResponseException;
 
@@ -39,9 +40,11 @@ class Service
 	 * @var bool Debug Mode
 	 */
 	protected $_debug	= false;
-	
+
+	/** @var EntityManager */
 	protected $_em;
 
+	/** @var bool */
 	protected $_regEnabled = false;
 
 	/**
@@ -506,6 +509,9 @@ class Service
 		
 		foreach ($jiraIssues as $jiraIssue) {
 			$ticket = $jiraIssue->ticket;
+			if (!$ticket) {
+				continue;
+			}
 			
 			$savedComments = $jiraIssue->comments;
 			

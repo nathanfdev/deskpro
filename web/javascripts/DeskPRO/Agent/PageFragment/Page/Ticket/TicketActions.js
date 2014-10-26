@@ -200,8 +200,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			if (!this.page.meta.ticket_perms.modify_set_awaiting_user) {
 				statusEl.find('option[value="awaiting_user"]').not(':selected').remove();
 			}
-			if (!this.page.meta.ticket_perms.modify_set_closed) {
-				statusEl.find('option[value="closed"]').not(':selected').remove();
+			if (!this.page.meta.ticket_perms.modify_set_archived) {
+				statusEl.find('option[value="archived"]').not(':selected').remove();
 			}
 		}
 

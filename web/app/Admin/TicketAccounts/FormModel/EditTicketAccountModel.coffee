@@ -89,6 +89,7 @@ define [
 					@form.in_imap_account.host        = @account.incoming_account.host
 					@form.in_imap_account.port        = @account.incoming_account.port
 					@form.in_imap_account.secure_mode = @account.incoming_account.secure_mode
+					@form.in_imap_account.no_validation = @account.incoming_account.no_validation
 					@form.in_imap_account.user        = @account.incoming_account.user
 					@form.in_imap_account.password    = @account.incoming_account.password
 					@form.in_imap_account.mode        = @account.incoming_account.mode || 'read'
@@ -167,6 +168,7 @@ define [
 			if form.incoming_type == 'imap'
 				if form.in_imap_account.secure
 					form.in_imap_account.secure_mode = form.in_imap_account.secure_mode || 'ssl'
+					form.in_imap_account.no_validation = form.in_imap_account.no_validation || false
 				else
 					form.in_imap_account.secure_mode = null
 			if form.outgoing_type == 'smtp'

@@ -140,18 +140,18 @@ class Article extends AbstractEntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.id IN (" . implode(',', $ids) . ") AND cat.id IN (?0) AND a.status = 'published'
+				WHERE a.id IN (?0) AND cat.id IN (?1) AND a.status = 'published'
 				ORDER BY a.id DESC
-			")->execute(array($cat_ids));
+			")->execute(array($ids, $cat_ids));
 
 		} else {
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.id IN (" . implode(',', $ids) . ") AND a.status = 'published'
+				WHERE a.id IN (?0) AND a.status = 'published'
 				ORDER BY a.id DESC
-			")->execute();
+			")->execute(array($ids));
 		}
 
 		return $articles;
@@ -165,10 +165,10 @@ class Article extends AbstractEntityRepository
 		$unsorted_articles = $this->getEntityManager()->createQuery("
 			SELECT a
 			FROM DeskPRO:Article a INDEX BY a.id
-			WHERE a.id IN (" . implode(',', $ids) . ")
+			WHERE a.id IN (?0)
 			ORDER BY a.id DESC
 		")->setFetchMode('DeskPRO:ArticleCategory', 'categories', 'EAGER')
-		  ->execute();
+		  ->execute(array($ids));
 
 		$articles = array();
 
@@ -251,9 +251,9 @@ class Article extends AbstractEntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.status = 'published' AND cat.id IN (" . implode(',',$cat_ids) . ")
+				WHERE a.status = 'published' AND cat.id IN (?0)
 				ORDER BY a.id DESC
-			")->setMaxResults($num)->execute();
+			")->setMaxResults($num)->execute(array($cat_ids));
 		} else {
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT a
@@ -275,9 +275,9 @@ class Article extends AbstractEntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.status = 'published' AND cat.id IN (" . implode(',',$cat_ids) . ")
+				WHERE a.status = 'published' AND cat.id IN (?0)
 				ORDER BY a.total_rating DESC
-			")->setMaxResults($num)->execute();
+			")->setMaxResults($num)->execute(array($cat_ids));
 		} else {
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT a

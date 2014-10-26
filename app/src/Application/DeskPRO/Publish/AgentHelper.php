@@ -49,6 +49,7 @@ class AgentHelper implements PersonContextInterface
 	const NEWS      = 'news';
 	const FEEDBACK  = 'feedback';
 
+	/** @var array */
 	protected $enabled_types = array('articles', 'downloads', 'news');
 
 	public function setEnabledTypes(array $types)
@@ -159,17 +160,18 @@ class AgentHelper implements PersonContextInterface
 	 */
 	public function getValidatingContentCount()
 	{
+		$db = App::getDb();
 		foreach ($this->enabled_types as $t) {
+			$table = $db->quoteIdentifier($t);
+			$alias = $db->quoteIdentifier('count_' . $t);
 			$sql_parts[] = "(
 				SELECT COUNT(*)
-				FROM $t
+				FROM $table
 				WHERE hidden_status = 'validating'
-			) AS count_$t";
+			) AS $alias";
 		}
 
 		$sql =  "SELECT " . implode(', ', $sql_parts);
-
-		$db = App::getDb();
 		$results = $db->fetchAssoc($sql);
 
 		return array_sum($results);
@@ -209,11 +211,13 @@ class AgentHelper implements PersonContextInterface
 		# Fetch from each comment table with a union
 		#------------------------------
 
+		$db = App::getDb();
 		foreach ($this->enabled_types as $t) {
 			$t_info = $types[$t];
+			$table = $db->quoteIdentifier($t);
 			$sql_parts[] = "(
 				SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
-				FROM $t AS c
+				FROM $table AS c
 				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
 				WHERE c.hidden_status = 'validating' OR r.status = 'validating'
 			)";
@@ -226,7 +230,6 @@ class AgentHelper implements PersonContextInterface
 			$sql .= " ORDER BY date_created $order_dir";
 		}
 
-		$db = App::getDb();
 		$results = $db->fetchAll($sql);
 
 		return $results;
@@ -246,6 +249,8 @@ class AgentHelper implements PersonContextInterface
 				'offset' => 0
 			);
 		}
+		$offset = (int)$limit['offset'];
+		$limit = (int)$limit['max'];
 
 		$types = $this->getCommentTypeInfo();
 
@@ -263,7 +268,7 @@ class AgentHelper implements PersonContextInterface
 		}
 
 		$sql = implode(' UNION ', $sql_parts);
-		$sql .= "ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+		$sql .= "ORDER BY date_created $order_dir LIMIT {$offset}, {$limit}";
 
 		$db = App::getDb();
 		$results = $db->fetchAll($sql);
@@ -315,19 +320,19 @@ class AgentHelper implements PersonContextInterface
 		$sql_parts = array();
 
 		$types = $this->getCommentTypeInfo();
+		$db = App::getDb();
 
 		foreach ($this->enabled_types as $t) {
 			$t_info = $types[$t];
+			$alias = $db->quoteIdentifier('count_' . $t);
 			$sql_parts[] = "(
 				SELECT COUNT(*)
 				FROM {$t_info['table']}
 				WHERE status = 'validating' OR (status = 'visible' AND is_reviewed = 0)
-			) AS count_$t";
+			) AS $alias";
 		}
 
 		$sql =  "SELECT " . implode(', ', $sql_parts);
-
-		$db = App::getDb();
 		$results = $db->fetchAssoc($sql);
 
 		return array_sum($results);
@@ -347,6 +352,8 @@ class AgentHelper implements PersonContextInterface
 				'offset' => 0
 			);
 		}
+		$offset = (int)$limit['offset'];
+		$limit = (int)$limit['max'];
 
 		$types = $this->getCommentTypeInfo();
 
@@ -364,7 +371,7 @@ class AgentHelper implements PersonContextInterface
 		}
 
 		$sql = implode(' UNION ', $sql_parts);
-		$sql .= "ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+		$sql .= "ORDER BY date_created $order_dir LIMIT {$offset}, {$limit}";
 
 		$db = App::getDb();
 		$results = $db->fetchAll($sql);
@@ -416,19 +423,19 @@ class AgentHelper implements PersonContextInterface
 		$sql_parts = array();
 
 		$types = $this->getCommentTypeInfo();
+		$db = App::getDb();
 
 		foreach ($this->enabled_types as $t) {
 			$t_info = $types[$t];
+			$alias = $db->quoteIdentifier($t);
 			$sql_parts[] = "(
 				SELECT COUNT(*)
 				FROM {$t_info['table']}
 				WHERE status != 'deleted'
-			) AS `$t`";
+			) AS $alias";
 		}
 
 		$sql =  "SELECT " . implode(', ', $sql_parts);
-
-		$db = App::getDb();
 		$results = $db->fetchAssoc($sql);
 
 		$count_all = array_sum($results);
@@ -492,6 +499,10 @@ class AgentHelper implements PersonContextInterface
 				'offset' => 0
 			);
 		}
+		if (null !== $limit) {
+			$offset = (int)$limit['offset'];
+			$limit = (int)$limit['max'];
+		}
 
 		$types = array(
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
@@ -504,9 +515,11 @@ class AgentHelper implements PersonContextInterface
 		# Fetch from each comment table with a union
 		#------------------------------
 
+		$db = App::getDb();
 		foreach ($this->enabled_types as $t) {
 			$t_info = $types[$t];
 			$person_sql = '';
+			$table = $db->quoteIdentifier($t);
 
 			if(!$all) {
 				$person_sql = " AND c.person_id = {$this->person_context['id']}";
@@ -514,7 +527,7 @@ class AgentHelper implements PersonContextInterface
 
 			$sql_parts[] = "(
 				SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
-				FROM $t AS c
+				FROM $table AS c
 				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
 				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
 				GROUP BY c.id
@@ -523,12 +536,11 @@ class AgentHelper implements PersonContextInterface
 
 		$sql = implode(' UNION ', $sql_parts);
 		if ($limit) {
-			$sql .= " ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+			$sql .= " ORDER BY date_created $order_dir LIMIT {$offset}, {$limit}";
 		} else {
 			$sql .= " ORDER BY date_created $order_dir";
 		}
 
-		$db = App::getDb();
 		$results = $db->fetchAll($sql);
 
 		return $results;
@@ -549,10 +561,13 @@ class AgentHelper implements PersonContextInterface
 			'feedback'       => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
 		);
 
+		$db = App::getDb();
 		$sql_parts = array();
 		foreach ($this->enabled_types as $t) {
 			$t_info = $types[$t];
 			$person_sql = '';
+			$table = $db->quoteIdentifier($t);
+			$alias = $db->quoteIdentifier('count_' . $t);
 
 			if($mine) {
 				$person_sql = " AND c.person_id = {$this->person_context['id']}";
@@ -560,15 +575,14 @@ class AgentHelper implements PersonContextInterface
 
 			$sql_parts[] = "(
 				SELECT COUNT(DISTINCT c.id)
-				FROM $t c
+				FROM $table c
 				LEFT JOIN {$t_info['rev_table']} r ON (r.{$t_info['id_field']} = c.id)
 				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
-			) AS count_$t";
+			) AS $alias";
 		}
 
 		$sql =  "SELECT " . implode(', ', $sql_parts);
 
-		$db = App::getDb();
 		$results = $db->fetchAssoc($sql);
 
 		return array_sum($results);

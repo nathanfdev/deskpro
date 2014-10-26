@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 
 class NewTicketReply extends ActionTypeAbstract
 {
+	/** @var \Application\DeskPRO\Entity\TicketMessage */
 	protected $ticket_message;
 
 

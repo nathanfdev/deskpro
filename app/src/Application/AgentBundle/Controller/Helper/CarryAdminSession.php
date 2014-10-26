@@ -38,7 +38,9 @@ use Application\DeskPRO\App;
 
 class CarryAdminSession
 {
+	/** @var string */
 	protected $controller;
+	/** @var string */
 	protected $cookie_name;
 
 	public function __construct($controller, $cookie_name = 'dpsid-agent')

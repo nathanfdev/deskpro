@@ -258,7 +258,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var tplSelOrig = this.getEl('message_template_orig');
 
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
-		function updateFields() {
+		self._updateFields = function() {
 			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
 			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());
 
@@ -266,6 +266,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				Array.each(fields, function(f) {
 					if (f.field_type == 'ticket_field') {
 						var classname = 'ticket-field-' + f.field_id;
+					} else if (f.field_type == 'custom_field') {
+						var classname = 'custom-field-' + f.field_id;
 					} else {
 						var classname = f.field_type;
 					}
@@ -306,14 +308,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		};
 
 		depSel.on('change', function(ev) {
-			updateFields();
+			self._updateFields();
 		});
 
 		$('.ticket-field select', this.wrapper).on('change', function() {
-			updateFields();
+			self._updateFields();
 		});
 
-		updateFields();
+		self.getCustomFields();
 
 		//------------------------------
 		// Status menu
@@ -1030,6 +1032,29 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 	},
 
+	getCustomFields: function() {
+		var personId = this.getEl('user_searchbox').find('input.person-id').val(),
+			depId = this.getEl('dep').val() || 0,
+			self = this;
+
+		if (!personId || !parseInt(personId)) {
+			return;
+		}
+
+		$.ajax({
+			type: 'GET',
+			url: BASE_URL + 'agent/tickets/new/get-custom-fields-row/' + personId + '/' + depId,
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				var $cont = $('.ticket-field', self.wrapper).parent();
+				$('.ticket-field.custom-field', self.wrapper).remove();
+				$cont.append(html);
+				self._updateFields(); // trigger update fields
+			}
+		});
+	},
+
 	placeUserRow: function(html) {
 		var self = this;
 		var searchbox = this.getEl('user_searchbox');
@@ -1069,6 +1094,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.getEl('user_searchbox').find('input.person-id').val(person_id);
 		}
 
+		this.getCustomFields();
 		this.updateUi();
 	},
 

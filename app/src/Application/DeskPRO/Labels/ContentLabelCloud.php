@@ -39,6 +39,7 @@ use Orb\Util\Arrays;
 
 class ContentLabelCloud
 {
+	/** @var array|null */
 	protected $cloud = null;
 	
 	public function getCloud()

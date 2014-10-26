@@ -34,11 +34,12 @@
 
 namespace deskpro_magento\Usersource\Adapter;
 
-use Orb\Auth\Identity;
-use Orb\Auth\Result;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Usersource\Adapter\AbstractAdapter;
+use Application\DeskPRO\Usersource\UsersourceInfo;
+use Orb\Auth\Identity;
 
-class Magento extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
+class Magento extends AbstractAdapter
 {
 	public function getFieldsFromIdentity(Identity $identity)
 	{
@@ -89,11 +90,11 @@ class Magento extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
 	public function getCapabilities()
 	{
 		return array(
-			'form_login',
-			'get_user_info',
-			'find_identity',
-			'cookie_login',
-			'js_sso'
+			UsersourceInfo::CAPABILITY_FORM_LOGIN,
+			UsersourceInfo::CAPABILITY_GET_USER_INFO,
+			UsersourceInfo::CAPABILITY_FIND_IDENTITY,
+			UsersourceInfo::CAPABILITY_COOKIE_LOGIN,
+			UsersourceInfo::CAPABILITY_SSO_JS
 		);
 	}
 }

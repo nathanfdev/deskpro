@@ -110,7 +110,7 @@ class MiscController extends AbstractController
 			'awaiting_user' => App::getTranslator()->phrase('agent.tickets.status_awaiting_user'),
 			'hidden' => App::getTranslator()->phrase('agent.tickets.status_hidden'),
 			'resolved' => App::getTranslator()->phrase('agent.tickets.status_resolved'),
-			'closed' => App::getTranslator()->phrase('agent.tickets.status_closed'),
+			'archived' => App::getTranslator()->phrase('agent.tickets.status_archived'),
 		)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.hidden_status = ' . json_encode(array(
 			'deleted' => App::getTranslator()->phrase('agent.tickets.hidden_status_deleted'),
@@ -236,8 +236,6 @@ class MiscController extends AbstractController
 			'time'      => \Application\DeskPRO\Util::momentJsDateFormat(App::getSetting('core.date_time')),
 		);
 		$js[] = 'window.DESKPRO_DATE_FORMATS = ' . json_encode($date_formats) . ';';
-
-		$tr = $this->container->getTranslator();
 
 		$js[] = <<<JS
 function Orb_Util_TimeAgo_getPhraseFor(type, num, ago) {
@@ -977,6 +975,8 @@ JS;
 		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
 		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
 		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap"');
+
+		$rjs->addPathExpr('angularUISortable', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-sortable/src/sortable"');
 		$rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/vendor/ng-context-menu/src/ng-context-menu"');
 		$rjs->addPathExpr('angularSelect2', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-select2/src/select2"');
 
@@ -985,6 +985,7 @@ JS;
 		$rjs->addShim('angularSanitize', array('angular'));
 		$rjs->addShim('angularBootstrap', array('angular'));
 		$rjs->addShim('angularSelect2', array('angular'));
+		$rjs->addShim('angularUISortable', array('angular'));
 		$rjs->addShim('ngContextMenu', array('angular'));
 
 		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');

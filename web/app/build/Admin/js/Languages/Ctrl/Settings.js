@@ -53,6 +53,10 @@
       };
 
       Admin_Languages_Ctrl_Settings.prototype.saveSettings = function() {
+        console.info('test');
+        if (this.$scope.form_props.$invalid) {
+          return;
+        }
         this.startSpinner('saving_settings');
         return this.Api.sendPost('/settings/values/core.lang_auto_install', {
           value: this.form.lang_auto_install ? '1' : '0'

@@ -38,12 +38,15 @@ class Build1411577850 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Adding avatar feilds to temas and departments");
-		$this->execMutateSql("ALTER TABLE agent_teams ADD avatar_blob_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
-		$this->execMutateSql("CREATE INDEX IDX_AF6C0A203B50817B ON agent_teams (avatar_blob_id)");
-		$this->execMutateSql("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D43B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
-		$this->execMutateSql("CREATE INDEX IDX_16AEB8D43B50817B ON departments (avatar_blob_id)");
+		$did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1411577850 AND name = 'did_pre_alter'");
+		if (!$did_do) {
+			$this->out("Adding avatar feilds to temas and departments");
+			$this->execMutateSql("ALTER TABLE agent_teams ADD avatar_blob_id INT DEFAULT NULL");
+			$this->execMutateSql("ALTER TABLE agent_teams ADD CONSTRAINT FK_AF6C0A203B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+			$this->execMutateSql("CREATE INDEX IDX_AF6C0A203B50817B ON agent_teams (avatar_blob_id)");
+			$this->execMutateSql("ALTER TABLE departments ADD avatar_blob_id INT DEFAULT NULL");
+			$this->execMutateSql("ALTER TABLE departments ADD CONSTRAINT FK_16AEB8D43B50817B FOREIGN KEY (avatar_blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+			$this->execMutateSql("CREATE INDEX IDX_16AEB8D43B50817B ON departments (avatar_blob_id)");
+		}
 	}
 }

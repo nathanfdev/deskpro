@@ -112,6 +112,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 	 */
 	protected $attachments;
 
+	/**
+	 * @var bool
+	 */
 	protected $_is_new = false;
 
     /**
@@ -144,6 +147,28 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 		} else {
 			$this->setModelField('validating', $validating);
 		}
+	}
+
+
+	/**
+	 * Find an existing data record for a field id.
+	 *
+	 * @param int $field_id
+	 * @return CustomDataFeedback
+	 */
+	public function getCustomDataForField($field_id)
+	{
+		if ($field_id instanceof CustomDefFeedback) {
+			$field_id = $field_id['id'];
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id) {
+				return $data;
+			}
+		}
+
+		return null;
 	}
 
 

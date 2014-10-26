@@ -47,6 +47,7 @@ use Orb\Util\CapabilityInformerInterface;
  */
 abstract class AbstractAdapter implements CapabilityInformerInterface, PersonContextInterface
 {
+	/** @var array */
 	public static $capabilities = array();
 
 	/**#@+
@@ -239,7 +240,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	public function getResultObject(ResultInterface $result)
 	{
 		$type_name = $result->getContentType();
-		$type = $this->getContentTypeName($type);
+		$type = $this->getContentType($type_name);
 
 		$object = $type->resultToObject($result);
 

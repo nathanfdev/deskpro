@@ -47,8 +47,8 @@
 				<% if (ticket_display.status == 'resolved') { %>
 					<label>{{ phrase('agent.tickets.status_resolved') }}</label>
 				<% } %>
-				<% if (ticket_display.status == 'closed') { %>
-					<label>{{ phrase('agent.tickets.status_closed') }}</label>
+				<% if (ticket_display.status == 'archived') { %>
+					<label>{{ phrase('agent.tickets.status_archived') }}</label>
 				<% } %>
 				<% if (ticket_display.status == 'hidden' && !ticket_display.hidden_status) { %>
 					<label>{{ phrase('agent.tickets.status_hidden') }}</label>

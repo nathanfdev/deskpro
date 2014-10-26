@@ -82,7 +82,7 @@
         {{ _self.perm_row('ticket', 'use') }}
 		{{ _self.perm_row('ticket', 'create') }}
 		{{ _self.perm_row('ticket', 'reply_mass') }}
-		{{ _self.perm_row('ticket', 'modify_set_closed') }}
+		{{ _self.perm_row('ticket', 'modify_set_archived') }}
 		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
 			{{ _self.perm_row('ticket', 'modify_billing') }}
 		{% endif %}
@@ -104,6 +104,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_own',  {toggleName: 'ticket.modify_own'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_own', {toggleName: 'ticket.modify_own'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_own',       {toggleName: 'ticket.modify_own'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_unresolved_own',     {toggleName: 'ticket.modify_own'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_own') }}
 		{{ _self.perm_row('ticket', 'delete_own', {destructive: true}) }}
 		</tbody>
@@ -124,6 +125,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_followed',  {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_followed', {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_followed',       {toggleName: 'ticket.modify_followed'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_unresolved_followed',     {toggleName: 'ticket.modify_followed'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_followed') }}
 		{{ _self.perm_row('ticket', 'delete_followed', {destructive: true}) }}
 		</tbody>
@@ -145,6 +147,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_unassigned',   {toggleName: 'ticket.modify_unassigned'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_unassigned',  {toggleName: 'ticket.modify_unassigned'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_unresolved_unassigned',      {toggleName: 'ticket.modify_unassigned'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_unassigned') }}
 		{{ _self.perm_row('ticket', 'delete_unassigned', {destructive: true}) }}
 		</tbody>
@@ -166,6 +169,7 @@
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_user_others',  {toggleName: 'ticket.modify_others'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_awaiting_agent_others', {toggleName: 'ticket.modify_others'}) }}
 		{{ _self.perm_row('ticket', 'modify_set_resolved_others',       {toggleName: 'ticket.modify_others'}) }}
+		{{ _self.perm_row('ticket', 'modify_set_unresolved_others',     {toggleName: 'ticket.modify_others'}) }}
 		{{ _self.perm_row('ticket', 'modify_messages_others') }}
 		{{ _self.perm_row('ticket', 'delete_others', {destructive: true}) }}
 		</tbody>

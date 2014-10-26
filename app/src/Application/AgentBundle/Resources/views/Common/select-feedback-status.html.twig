@@ -5,7 +5,7 @@
 			<option value="active.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}
 	</optgroup>
-	<optgroup label="{{ phrase('agent.tickets.status_closed') }}">
+	<optgroup label="{{ phrase('agent.feedback.status_closed') }}">
 		{% for cat in closed_status_cats %}
 			<option value="closed.{{ cat.id }}">{{ cat.title }}</option>
 		{% endfor %}

@@ -40,14 +40,19 @@ use Application\DeskPRO\Entity\Ticket;
 
 class NewParticipant implements \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'first_name' => 1, 'last_name' => 1, 'email' => 1,
 	);
 
+	/** @var string */
 	public $first_name;
+	/** @var string */
 	public $last_name;
+	/** @var string */
 	public $email;
 
+	/** @var \Application\DeskPRO\Entity\Ticket */
 	protected $ticket;
 
 	public function __construct(Ticket $ticket)
@@ -83,7 +88,7 @@ class NewParticipant implements \ArrayAccess
 
 		$ticket->addParticipant($part_person);
 
-		App::getOrm()->transactional(function($em) use ($part_person, $part, $ticket) {
+		App::getOrm()->transactional(function($em) use ($part_person, $part_email, $ticket) {
 			$em->persist($part_person);
 			$em->persist($ticket);
 			$em->flush();

@@ -110,6 +110,7 @@ class Imap extends AbstractFetcher
 
 				if ($imap_config->secure_mode) {
 					$options['secure'] = $imap_config->secure_mode;
+					$options['no_validation'] = $imap_config->no_validation;
 				}
 
 				if ($imap_config->mode == self::MODE_ARCHIVE) {

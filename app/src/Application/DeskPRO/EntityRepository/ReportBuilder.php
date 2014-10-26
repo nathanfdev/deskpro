@@ -333,7 +333,7 @@ class ReportBuilder extends AbstractEntityRepository
 					'awaiting_user' => array('awaiting user', '%s.status = \'awaiting_user\''),
 					'awaiting_agent' => array('awaiting agent', '%s.status = \'awaiting_agent\''),
 					'unresolved' => array('unresolved', '%s.status IN (\'awaiting_user\', \'awaiting_agent\')'),
-					'resolved' => array('resolved', '%s.status IN (\'resolved\', \'closed\')'),
+					'resolved' => array('resolved', '%s.status IN (\'resolved\', \'archived\')'),
 					'hidden' => array('hidden', '%s.status = \'hidden\''),
 					'any' => array('with any status', '1')
 				)

@@ -174,7 +174,7 @@ class TicketListRenderer
 		$data['count_user_replies']      = $ticket->count_user_replies;
 		$data['feedback_rating']         = $ticket->feedback_rating;
 
-		foreach (array('date_feedback_rating', 'date_created', 'date_resolved', 'date_closed', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked') as $field) {
+		foreach (array('date_feedback_rating', 'date_created', 'date_resolved', 'date_archived', 'date_first_agent_assign', 'date_first_agent_reply', 'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status', 'date_locked') as $field) {
 			if ($ticket->$field) {
 				$data[$field] = $ticket->$field->format('Y-m-d H:i:s');
 				$data["{$field}_ts"] = $ticket->$field->getTimestamp();

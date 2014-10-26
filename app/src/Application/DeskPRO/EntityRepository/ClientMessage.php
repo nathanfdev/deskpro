@@ -288,7 +288,7 @@ class ClientMessage extends AbstractEntityRepository
 		$chat_ids = App::getDb()->fetchAllCol("
 			SELECT c.id
 			FROM chat_conversations c
-			LEFT JOIN chat_conversation_to_person AS c2p ON c2p.conversation_id = c.id
+			JOIN chat_conversation_to_person AS c2p ON c2p.conversation_id = c.id
 			WHERE c.agent_id = ? OR c2p.person_id = ?
 		", array($person_id, $person_id));
 

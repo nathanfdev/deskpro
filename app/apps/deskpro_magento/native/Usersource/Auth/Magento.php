@@ -34,6 +34,7 @@
 
 namespace deskpro_magento\Usersource\Auth;
 
+use Doctrine\DBAL\DriverManager;
 use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
@@ -363,12 +364,21 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 				}
 
 				try {
-					$pdo = new \PDO('mysql:host=' . $parts['host'] . ';dbname=' . $parts['dbname'], $parts['username'], $parts['password']);
-					$session_data = $pdo->query('
-						SELECT session_data
-						FROM ' . $parts['table_prefix'] . 'core_session
-						WHERE session_id = ' . $pdo->quote($session)
-					)->fetchColumn();
+					$conn = DriverManager::getConnection(array(
+						'dbname' => $parts['dbname'],
+						'user' => $parts['username'],
+						'password' => $parts['password'],
+						'host' => $parts['host'],
+						'driver' => 'pdo_mysql',
+					));
+
+					$qb = $conn->createQueryBuilder()
+						->select('s.session_date')
+						->from($parts['table_prefix'] . 'core_session', 's')
+						->where('s.session_id = ?')
+						->setParameter(0, $session);
+
+					$session_data = $qb->execute()->fetchColumn();
 				} catch (\Exception $e) {}
 			}
 		}
@@ -406,5 +416,16 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 	public function getLogger()
 	{
 		return $this->logger;
+	}
+
+
+	/**
+	 * We dont use auto refresh, instead we use return GET param (see LoginController::usersourceSsoAction)
+	 *
+*@return bool
+	 */
+	public function isBackgroundSsoSimpleRefresh()
+	{
+		return false;
 	}
 }

@@ -43,8 +43,11 @@ use Orb\Util\Util;
  */
 class DefaultFromAddress implements \Swift_Events_SendListener
 {
+	/** @var string */
 	protected $from;
+	/** @var string */
 	protected $name = '';
+	/** @var \Orb\Log\Logger */
 	protected $logger;
 
 	public function __construct($from, $name = '', Logger $logger = null)
@@ -74,7 +77,7 @@ class DefaultFromAddress implements \Swift_Events_SendListener
 			$from = $message->getFrom();
 
 			if (is_array($from)) {
-				foreach ($from as $k => &$v) {
+				foreach ($from as &$v) {
 					if (!$v) {
 						if ($this->logger) $this->logger->logInfo("[DefaultFromAddress] Setting name");
 						$v = $this->name;

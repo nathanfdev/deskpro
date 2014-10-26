@@ -49,11 +49,15 @@ class OrganizationTwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $twitter_user_id;
 
+	/** @var string */
 	protected $screen_name;
 
+	/** @var bool */
 	protected $is_verified = false;
 
+	/** @var string|null */
 	protected $oauth_token = null;
+	/** @var string|null */
 	protected $oauth_token_secret = null;
 
 

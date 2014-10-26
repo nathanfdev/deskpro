@@ -41,7 +41,7 @@ class SearchLog extends AbstractEntityRepository
 {
 	public function getRatedSearchesFor($object_type, $object_id, $structure = 'all')
 	{
-		$search_ids_to_rating = APp::getDb()->fetchAllKeyValue("
+		$search_ids_to_rating = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT searchlog_id, rating
 			FROM ratings
 			WHERE object_type = ? AND object_id = ? AND searchlog_id IS NOT NULL
@@ -132,7 +132,6 @@ class SearchLog extends AbstractEntityRepository
 
 	public function getByIds(array $ids, $keep_order = false)
 	{
-		$ids = Arrays::castToType($ids, 'int');
 		if (!$ids) {
 			return array();
 		}
@@ -140,8 +139,8 @@ class SearchLog extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT l
 			FROM DeskPRO:SearchLog l
-			WHERE l.id IN (" . implode(',', $ids) . ")
+			WHERE l.id IN (?0)
 			ORDER BY l.id DESC
-		")->execute();
+		")->execute(array($ids));
 	}
 }

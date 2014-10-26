@@ -116,11 +116,6 @@ class Web
 			$filename = 'file';
 		}
 
-		$disp = 'inline';
-		if (!$is_inline) {
-			$disp = 'attachment';
-		}
-
 		$headers['Content-Disposition'] = 'inline; filename="' . str_replace('"', '\\"', $filename) . '"';
 
 		if ($mimetype !== null) {
@@ -187,7 +182,7 @@ class Web
 		static $request_protocol = null;
 
 		if ($request_protocol === null) {
-			if (isset($_SERVER['HTTPS']) AND !empty($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] != 'off') {
+			if (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 				$request_protocol = 'HTTPS';
 			} else {
 				$request_protocol = 'HTTP';
@@ -279,11 +274,11 @@ class Web
 				}
 			}
 
-			if (!$alt_ip AND isset($_SERVER['HTTP_FROM'])) {
+			if (!$alt_ip && isset($_SERVER['HTTP_FROM'])) {
 				$alt_ip = $_SERVER['HTTP_FROM'];
 			}
 
-			if (!$alt_ip AND isset($_SERVER['REMOTE_ADDR'])) {
+			if (!$alt_ip && isset($_SERVER['REMOTE_ADDR'])) {
 				$alt_ip = $_SERVER['REMOTE_ADDR'];
 			}
 		}
@@ -325,20 +320,20 @@ class Web
 	public static function getScriptPath()
 	{
 		// The URL
-		if (isset($_SERVER['REQUEST_URI']) AND $_SERVER['REQUEST_URI']) {
+		if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI']) {
 			$script_path = $_SERVER['REQUEST_URI'];
 		} else	{
-			if (isset($_SERVER['PATH_INFO']) AND $_SERVER['PATH_INFO']) {
+			if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO']) {
 				$script_path = $_SERVER['PATH_INFO'];
 
-			} elseif (isset($_SERVER['REDIRECT_URL']) AND $_SERVER['REDIRECT_URL']) {
+			} elseif (isset($_SERVER['REDIRECT_URL']) && $_SERVER['REDIRECT_URL']) {
 				$script_path = $_SERVER['REDIRECT_URL'];
 
-			} elseif (isset($_SERVER['PHP_SELF']) AND $_SERVER['PHP_SELF']) {
+			} elseif (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF']) {
 				$script_path = $_SERVER['PHP_SELF'];
 			}
 
-			if (isset($_SERVER['QUERY_STRING']) AND $_SERVER['QUERY_STRING']) {
+			if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING']) {
 				$script_path .= '?' . $_SERVER['QUERY_STRING'];
 			}
 		}

@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Email\EmailAccount\IncomingAccount\NoopConfig;
 use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailAccount;

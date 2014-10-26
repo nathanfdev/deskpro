@@ -78,7 +78,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			if (!$this->person->hasPerm('articles.use')) unset($limit_types['article']);
 			if (!$this->person->hasPerm('feedback.use')) unset($limit_types['feedback']);
 			if (!$this->person->hasPerm('news.use')) unset($limit_types['news']);
-			if (!$this->person->hasPerm('download.use')) unset($limit_types['download']);
+			if (!$this->person->hasPerm('downloads.use')) unset($limit_types['download']);
 		}
 
 		return array_values($limit_types);
@@ -249,7 +249,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 
 	public function omnisearch($query_text, array $limit_types = null, $per_page = 25, $page = 1)
 	{
-		$per_page = 25; $page = 1; $top = false;
+		$per_page = 25; $page = 1;
 
 		// Fulltext matches
 		$r = $this->query($query_text, $per_page, $page, $limit_types, true);
@@ -344,7 +344,6 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 			}
 		} else {
 			$total       = 0;
-			$results_raw = array();
 			$results     = array();
 		}
 

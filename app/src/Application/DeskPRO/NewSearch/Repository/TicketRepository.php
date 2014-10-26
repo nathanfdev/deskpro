@@ -77,6 +77,12 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
 			$main_filter->addFilter($perm2);
 		}
 
+		// If user has all perms, then no filters are applied
+		// and the BoolAnd filter will be empty
+		if (!$main_filter->getFilters()) {
+			return array();
+		}
+
 		return $main_filter->toArray();
     }
 } 

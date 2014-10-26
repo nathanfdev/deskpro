@@ -39,6 +39,7 @@
 	'user.profile.lost_qm'                             => 'lost?',
 	'user.profile.new_password'                        => 'New Password',
 	'user.profile.or_connect_with'                     => 'Or connect with',
+	'user.profile.connect_with'                        => 'Connect with',
 	'user.profile.organization_settings'               => 'Organization Settings',
 	'user.profile.password'                            => 'Password',
 	'user.profile.password_mismatch'                   => 'The two password boxes did not contain the same password. Please try again.',

@@ -49,9 +49,13 @@ class ChatConversationSearch extends SearcherAbstract
 	const TERM_TOTAL_TO_ENDED       = 'total_to_ended';
 	const TERM_LABEL                = 'chat_label';
 
+	/** @var string */
 	protected $columns = 'chat_conversations.id';
+	/** @var string|null */
 	protected $groupBy = null;
+	/** @var array */
 	protected $limit = array('start' => null, 'limit' => null);
+	/** @var array */
 	protected $joins = array();
 
 
@@ -190,8 +194,6 @@ class ChatConversationSearch extends SearcherAbstract
 			$dir = self::ORDER_DESC;
 		}
 
-		$order_by = '';
-
 		switch ($type) {
 			default:
 				$order_by = " ORDER BY $type $dir";
@@ -210,8 +212,6 @@ class ChatConversationSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
-		$org_table = 'chat_conversations';
-
 		$db = App::getDbRead('search.filter.chat');
 		$tr = App::getTranslator();
 
@@ -226,7 +226,6 @@ class ChatConversationSearch extends SearcherAbstract
 			$m = null;
 			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
 				$term = $m[1];
-				$term_id = $m[2];
 			}
 
 			switch ($term) {

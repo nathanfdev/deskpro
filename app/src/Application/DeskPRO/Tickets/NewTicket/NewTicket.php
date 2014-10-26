@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Tickets\NewTicket;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
@@ -48,12 +49,18 @@ use Application\DeskPRO\Input\Parser\CcListParser;
  */
 class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \ArrayAccess
 {
+	/** @var array */
 	protected static $prop_names = array(
 		'person' => 1, 'ticket' => 1, 'language' => 1,
 		'custom_ticket_fields' => 1, 'custom_user_fields' => 1, 'new_message' => 1, 'creation_system' => 1, 'creation_system_option' => array(),
 		'require_login' => 1, 'attach_blobs' => 1, 'blobs_inline_ids' => 1, 'gateway' => 1, 'gateway_address' => 1,
 		'sent_to' => 1, 'logger' => 1, 'do_dupe_check' => 1
 	);
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
+	protected $_ticket;
 
 	/**
 	 * @var \Application\DeskPRO\Tickets\NewTicket\PersonProps
@@ -98,7 +105,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 	public $logger;
 	public $do_dupe_check = true;
 
-	public function __construct($creation_system, Entity\Person $person = null)
+	public function __construct($creation_system, Entity\Person $person = null, Entity\Ticket $ticket = null)
 	{
 		if ($person AND !$person['id']) {
 			$person = null;
@@ -106,6 +113,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
 		$this->person = new PersonProps($person);
 		$this->ticket = new TicketProps();
+		$this->_ticket = $ticket;
 
 		$this->creation_system = $creation_system;
 	}
@@ -250,7 +258,8 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 		# Now ticket
 		#------------------------------
 
-		$ticket = new Entity\Ticket();
+
+		$ticket = $this->_ticket ?: new Entity\Ticket();
 		$ticket->disableAutoTicketProcess();
 		if ($this->logger) {
 			$ticket->getTicketLogger()->setLogger($this->logger);
@@ -351,18 +360,16 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 			$ticket_message['message_raw'] = $this->ticket->message_raw;
 		}
 
-		$attach = null;
-		if ($this->ticket->new_upload) {
-			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
-				$this->ticket->new_upload->getRealPath(),
-				$this->ticket->new_upload->getClientOriginalName(),
-				$this->ticket->new_upload->getClientMimeType()
-			);
-			$blob_id = $blob->getId();
-
-			$attach = new \Application\DeskPRO\Entity\TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $person;
+			$attach = null;
+			if ($this->ticket->new_upload) {
+				$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+					$this->ticket->new_upload->getRealPath(),
+					$this->ticket->new_upload->getClientOriginalName(),
+					$this->ticket->new_upload->getClientMimeType()
+				);
+				$attach = new \Application\DeskPRO\Entity\TicketAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $person;
 
 			$ticket_message->addAttachment($attach);
 		}
@@ -478,6 +485,7 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
 		try {
 
+			/** @var TicketFieldManager $field_manager */
 			$field_manager = App::getSystemService('ticket_fields_manager');
 			$post_custom_fields = $this->custom_ticket_fields;
 			if (!empty($post_custom_fields)) {

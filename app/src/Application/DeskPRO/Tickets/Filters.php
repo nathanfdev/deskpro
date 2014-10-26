@@ -242,8 +242,8 @@ class Filters
 			$count = 0;
 
 			switch ($ticket_filter['sys_name']) {
-				case 'archive_closed':
-					$count = isset($prefs['ticket_counts.archive_closed']) ? $prefs['ticket_counts.archive_closed'] : App::getSetting('core_tablecounts.tickets.archive_closed');
+				case 'archive_archived':
+					$count = isset($prefs['ticket_counts.archive_archived']) ? $prefs['ticket_counts.archive_archived'] : App::getSetting('core_tablecounts.tickets.archive_archived');
 					break;
 
 				case 'archive_validating':

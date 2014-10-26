@@ -60,6 +60,7 @@ class DbTablePhpPasswordCheck extends DbTable
 		$db = $this->getDb();
 
 		$is_valid = false;
+		// may require $password_recorder and $db?
 		eval($this->options->get('password_php'));
 		$is_valid = (bool)$is_valid;
 

@@ -76,6 +76,9 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $perms = array();
 
+	/**
+	 * @var null|array
+	 */
 	protected $_usergroup_ids = null;
 
 	public static function newFromLoader(\Application\DeskPRO\People\PermissionLoader\AbstractLoader $loader, $person_id = 0)

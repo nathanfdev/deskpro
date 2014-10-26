@@ -396,7 +396,6 @@ class Util
 			$expire_time = time() + $timeout + mt_rand(1, 10);
 			$expire_time_enc = base_convert($expire_time, 10, 36);
 		} else {
-			$expire_time = 0;
 			$expire_time_enc = 0;
 		}
 
@@ -704,7 +703,7 @@ class Util
 	public static function getClassFilename($classname)
 	{
 		if ($classname instanceof \ReflectionClass) {
-			$relf = $classname;
+			$refl = $classname;
 		} else {
 			$refl = new \ReflectionClass($classname);
 		}

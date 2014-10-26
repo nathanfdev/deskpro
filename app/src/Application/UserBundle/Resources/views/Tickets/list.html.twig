@@ -16,7 +16,7 @@
 				<div style="float:right">
 					{% if ticket.status in ['awaiting_agent', 'awaiting_user'] %}
 						<span class="dp-status dp-status-open">{{ phrase('user.tickets.status_open') }}</span>
-					{% elseif ticket.status in ['resolved', 'closed'] %}
+					{% elseif ticket.status in ['resolved', 'archived'] %}
 						<span class="dp-status dp-status-closed">{{ phrase('user.tickets.status_resolved') }}</span>
 					{% endif %}
 				</div>

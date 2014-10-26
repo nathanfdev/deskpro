@@ -40,6 +40,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 
 class Departments extends AbstractLoader implements NoCache, PersonContextInterface
 {
+	/** @var bool */
 	protected $has_init = false;
 
 	/**

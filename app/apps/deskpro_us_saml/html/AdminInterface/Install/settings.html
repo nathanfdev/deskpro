@@ -1,0 +1,72 @@
+<article class="form-horizontal dp-form">
+	<div class="panel panel-fill indent">
+		<div class="panel-body">
+			<div class="alert alert-info">
+				<strong>SAML Details</strong><br>
+				<div ng-show="!usersource_details.consumer_url">
+					<p>Some identity providers may want you to provide them with our Metadata XML (or URL), Consumer Service URL (ACS), or SLO URL. We cannot provide these to you until you save the settings below with your IdP's Metadata URL and their SSO URL.</p>
+				</div>
+				<div ng-if="usersource_details.consumer_url">
+					<p>Some identity providers may want you to provide them with these details:</p>
+					<table style="width: 100%;">
+						<tr>
+							<td style="width: 30%;">Consumer Service URL (ACS)</td>
+							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
+								value="{{ usersource_details.consumer_url }}" /></td>
+							<td>
+								<button class="btn btn-default btn-sm" clip-copy="usersource_details.consumer_url">Copy URL</button></td>
+						</tr>
+						<tr>
+							<td style="width: 30%;">Single Logout Service URL (SLS)</td>
+							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
+								value="{{ usersource_details.slo_url }}" /></td>
+							<td>
+								<button class="btn btn-default btn-sm" clip-copy="usersource_details.slo_url">Copy URL</button></td>
+						</tr>
+						<tr>
+							<td>Metadata URL (Entity ID)</td>
+							<td><input style="width: 100%" type="text" disabled="disabled"
+								value="{{ usersource_details.metadata_url }}" /></td>
+							<td>
+								<button class="btn btn-default btn-sm" clip-copy="usersource_details.metadata_url">Copy URL</button>
+							</td>
+						</tr>
+					</table>
+
+
+					<button ng-click="showMetadata = true"
+						class="btn btn-default btn-sm"
+						style="margin: auto;">View Metadata
+					</button>
+					<br>
+
+					<div ng-show="showMetadata" style="margin: 20px;">
+						<textarea style="width: 100%; height: 250px;" disabled="disabled">{{ usersource_details.metadata_text }}</textarea>
+					</div>
+				</div>
+			</div>
+
+			<!--#include file="AdminInterface/Install/settings-list.html" -->
+		</div>
+	</div>
+</article>
+<footer class="dp-panelblock-footer">
+	<div class="dp-content">
+		<div class="dp-delete-control">
+			<button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>
+		</div>
+
+		<div class="dp-btn-controls">
+			<div dp-hide-spinning="saving_settings">
+				<button class="btn btn-info" ng-click="openTestModal()"><i class="fa fa-bolt"></i> Test Settings</button>
+				<button class="btn btn-primary" ng-click="Ctrl.saveSettings();">Save Settings</button>
+			</div>
+			<div dp-show-spinning="saving_settings">
+				<i class="spinner-flat"></i>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<script type="text/ng-template"
+	id="deskpro_us_saml/Install/test-settings-modal.html"><!--#include file="AdminInterface/Install/test-modal.html" --></script>

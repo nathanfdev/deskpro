@@ -36,6 +36,7 @@ namespace Orb\Data;
 
 class ContentTypes
 {
+	/** @var array  */
 	protected static $ext_to_contenttype = array(
 		'acx'      => 'application/internet-property-stream',
 		'ai'       => 'application/postscript',

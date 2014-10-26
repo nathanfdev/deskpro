@@ -41,5 +41,6 @@ use Application\DeskPRO\App;
  */
 class DuplicateTicketException extends \Exception
 {
+	/** @var int|null */
 	public $ticket_id = null;
 }
