@@ -46,13 +46,19 @@ class PortalBaseThemeTest extends WebTestCase
 		$client = static::createClient();
 
 		$this->test200codeForPath($client, '/');
+
 		$this->test200codeForPath($client, '/kb');
 		$this->test200codeForPath($client, '/kb/slugggg');
 		$this->test200codeForPath($client, '/kb/posts/slugggggg');
+
 		$this->test200codeForPath($client, '/downloads');
 		$this->test200codeForPath($client, '/downloads/sluggg');
 		$this->test200codeForPath($client, '/downloads/files/adfdfa');
 		$this->test200codeForPath($client, '/downloads/files/asdddd/download');
+
+		$this->test200codeForPath($client, '/news');
+		$this->test200codeForPath($client, '/news/slugggg');
+		$this->test200codeForPath($client, '/news/posts/slugggggg');
 	}
 
 
