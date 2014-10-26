@@ -59,6 +59,13 @@ class PortalBaseThemeTest extends WebTestCase
 		$this->test200codeForPath($client, '/news');
 		$this->test200codeForPath($client, '/news/slugggg');
 		$this->test200codeForPath($client, '/news/posts/slugggggg');
+
+		$this->test200codeForPath($client, '/search');
+
+		$this->test200codeForPath($client, '/new-ticket');
+
+		$this->test200codeForPath($client, '/tickets');
+		$this->test200codeForPath($client, '/tickets/{ref}');
 	}
 
 

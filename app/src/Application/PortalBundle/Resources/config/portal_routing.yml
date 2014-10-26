@@ -49,3 +49,25 @@ portal_news_view:
     path: /news/posts/{slug}
     defaults:
       _controller: Theme:News:view
+
+# Search
+portal_search:
+  path: /search
+  defaults:
+    _controller: Theme:Search:index
+
+# New Ticket
+portal_new_ticket:
+    path: /new-ticket
+    defaults:
+      _controller: Theme:NewTicket:newTicket
+
+# Tickets
+portal_tickets:
+    path: /tickets
+    defaults:
+      _controller: Theme:Tickets:index
+portal_tickets_view:
+    path: /tickets/{ref}
+    defaults:
+      _controller: Theme:Tickets:view
