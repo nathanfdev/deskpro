@@ -47,6 +47,10 @@
             "description":"Operations about Ticket status"
         },
         {
+            "path":"/ticket_triggers",
+            "description":"Operations about Ticket triggers"
+        },
+        {
             "path":"/tickets",
             "description":"Operations about Tickets"
         }

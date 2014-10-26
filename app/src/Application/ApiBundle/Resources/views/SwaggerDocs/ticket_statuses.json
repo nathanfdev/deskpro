@@ -37,14 +37,14 @@
                         {
                             "paramType":"query",
                             "name":"enabled",
-                            "type":"bool",
+                            "type":"boolean",
                             "required":true,
                             "description":"Should be tickets be archived?"
                         },
                         {
                             "paramType":"query",
                             "name":"auto_archive_time",
-                            "type":"int",
+                            "type":"integer",
                             "required":true,
                             "description":"When tickets have to be archived?"
                         }
@@ -88,7 +88,7 @@
                         {
                             "paramType":"query",
                             "name":"auto_archive_time",
-                            "type":"int",
+                            "type":"integer",
                             "required":true,
                             "description":"When tickets have to be pruged automatically?"
                         }
@@ -132,7 +132,7 @@
                         {
                             "paramType":"query",
                             "name":"auto_archive_time",
-                            "type":"int",
+                            "type":"integer",
                             "required":true,
                             "description":"When spam tickets have to be pruged automatically?"
                         }

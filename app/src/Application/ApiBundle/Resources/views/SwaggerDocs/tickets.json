@@ -615,9 +615,9 @@
                     "type":"array",
                     "parameters":[
                         {
-                            "paramType":"query",
-                            "name":"filter_id[]",
-                            "type":"int",
+                            "paramType":"path",
+                            "name":"filter_id",
+                            "type":"integer",
                             "required":true,
                             "description":"Filter ID should be executed"
                         }

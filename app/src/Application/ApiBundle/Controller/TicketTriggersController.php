@@ -41,6 +41,16 @@ use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 
+
+/**
+ * Operations about Ticket triggers
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_triggers",
+ * 	description="Operations about Ticket triggers",
+ * 	basePath="/api"
+ * )
+ */
 class TicketTriggersController extends AbstractController implements ProtectedControllerInterface
 {
 	/**
@@ -52,17 +62,41 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 	}
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
-
+    /**
+     * @param string|null $type
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/{type}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get triggers list grouped by their enable status",
+     * 		notes="This is triggers provided by default system",
+     *		type="array",
+     *      @SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="type",
+     *				description="Event type",
+     *				paramType="path",
+     *				required=true,
+     *				type="string",
+     *              enum="['all', 'newticket', 'newreply', 'update']"
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     */
 	public function listAction($type = null)
 	{
 		if (!$type || $type == 'all') {
 			$type = null;
 		}
 
-		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers($type);
+        /** @var \Application\DeskPRO\EntityRepository\TicketTrigger $ticketRepo */
+        $ticketRepo = $this->em->getRepository('DeskPRO:TicketTrigger');
+        $triggers = $ticketRepo->getTriggers($type);
 
 		$data = $this->getApiData($triggers);
 		$res = array();
@@ -87,10 +121,42 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		return $this->createApiResponse($res);
 	}
 
-	####################################################################################################################
-	# get
-	####################################################################################################################
-
+    /**
+     * @param int $id
+     * @param string|null $special_type
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @todo Porbably I`m not right, but creating trigger for entity, if given has no ones - not crystally clear for user, huh?
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/{special_type}/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get trigger for given special type or just trigger by ID",
+     * 		notes="For entity with no trigger it will be created",
+     *		type="array",
+     *      @SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="special_type",
+     *				description="Filter by type",
+     *				paramType="path",
+     *				required=false,
+     *				type="string",
+     *              enum="['departments', 'departments_changed', 'email_accounts']"
+     *			),
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="ID of given special_type",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     */
 	public function getAction($id, $special_type = null)
 	{
 		switch ($special_type) {
@@ -145,10 +211,144 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		));
 	}
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
-
+    /**
+     * @param int $id
+     * @param string|null $special_type
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/{special_type}/{id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save trigger for given special type",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Trigger id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="special_type",
+     *				description="You can specify group for trigger",
+     *				paramType="path",
+     *				required=false,
+     *				type="string",
+     *              enum="['departments', 'departments_change', 'email_accounts']",
+     *			),
+     *          @SWG\Parameter(
+     *				name="title",
+     *				description="Trigger name",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="event_trigger",
+     *				description="Event type",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *              enum="['newreply', 'newticket', 'update']",
+     *			),
+     *          @SWG\Parameter(
+     *				name="by_agent_mode",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="by_user_mode",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="criteria_sets",
+     *				description="Wenter criteria for this trigger",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="actions",
+     *				description="Which actions this trigger should perform",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers",
+     * 	@SWG\Operation(
+     * 		method="PUT",
+     * 		summary="Create trigger",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Trigger id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="title",
+     *				description="Trigger name",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="event_trigger",
+     *				description="Event type",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *              enum="['newreply', 'newticket', 'update']",
+     *			),
+     *          @SWG\Parameter(
+     *				name="by_agent_mode",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="by_user_mode",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="criteria_sets",
+     *				description="Wenter criteria for this trigger",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="actions",
+     *				description="Which actions this trigger should perform",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     */
 	public function saveAction($id, $special_type = null)
 	{
 		if ($id) {
@@ -339,10 +539,32 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		return $this->createSuccessResponse($ret);
 	}
 
-	####################################################################################################################
-	# delete
-	####################################################################################################################
-
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/{id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete trigger by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Trigger id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function deleteAction($id)
 	{
 		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
@@ -362,6 +584,54 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 	# toggle-trigger
 	####################################################################################################################
 
+    /**
+     * @param $id
+     * @param $is_enabled
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/{id}/enable",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Enable trigger by id",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Trigger id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/{id}/disable",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Disable trigger by id",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Trigger id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     */
 	public function toggleTriggerAction($id, $is_enabled)
 	{
 		$trigger = $this->em->find('DeskPRO:TicketTrigger', $id);
@@ -376,10 +646,53 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		return $this->createSuccessResponse();
 	}
 
-	####################################################################################################################
-	# toggle-trigger-group
-	####################################################################################################################
-
+    /**
+     * @param $special_type
+     * @param $is_enabled - defined by route
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     *
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/{special_type}/enable",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Enable trigger group by its name",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="special_type",
+     *				description="Group name",
+     *				paramType="path",
+     *				required=true,
+     *				type="string",
+     *              enum="['departments','departments_changed','email_accounts']"
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/{special_type}/disable",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Disable trigger group by its name",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="special_type",
+     *				description="Group name",
+     *				paramType="path",
+     *				required=true,
+     *				type="string",
+     *              enum="['departments','departments_changed','email_accounts']"
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function toggleTriggerGroupAction($special_type, $is_enabled)
 	{
 		$is_enabled = (int)$is_enabled;
@@ -413,10 +726,30 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		return $this->createSuccessResponse();
 	}
 
-	####################################################################################################################
-	# save-run-order
-	####################################################################################################################
-
+    /**
+     *
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/run_order",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Rearrange trigger run order and save it",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="run_orders",
+     *				description="Group name",
+     *				paramType="path",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function saveRunOrderAction()
 	{
 		$run_orders = $this->in->getCleanValueArray('run_orders', 'string', 'discard');
@@ -425,10 +758,19 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		return $this->createSuccessResponse();
 	}
 
-	####################################################################################################################
-	# get-custom-actions
-	####################################################################################################################
-
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_triggers/get-custom-actions",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get all user defined actions for triggers",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
 	public function getCustomActionsAction()
 	{
 		$manager = $this->container->getTicketActionDefManager();

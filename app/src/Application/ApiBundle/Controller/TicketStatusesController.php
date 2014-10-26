@@ -68,6 +68,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      * 		summary="Overall ticket statistic",
      * 		notes="Tickets grouped by their status and counted",
      *		type="array",
+     *
      *  )
      * )
      *
@@ -137,14 +138,14 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *				description="Should be tickets be archived?",
      *				paramType="query",
      *				required=true,
-     *				type="bool"
+     *				type="boolean"
      *			),
      *      @SWG\Parameter(
      *				name="auto_archive_time",
      *				description="When tickets have to be archived?",
      *				paramType="query",
      *				required=true,
-     *				type="int"
+     *				type="integer"
      *			),
      *      )
      *  )
@@ -242,7 +243,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *				description="When tickets have to be pruged automatically?",
      *				paramType="query",
      *				required=true,
-     *				type="int"
+     *				type="integer"
      *			),
      *      )
      *  )
@@ -316,7 +317,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
      *				description="When spam tickets have to be pruged automatically?",
      *				paramType="query",
      *				required=true,
-     *				type="int"
+     *				type="integer"
      *			),
      *      )
      *  )

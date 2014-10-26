@@ -527,11 +527,11 @@ class TicketSearchController extends AbstractController
      *		type="array",
      *		@SWG\Parameters (
      *			@SWG\Parameter(
-     *				name="filter_id[]",
+     *				name="filter_id",
      *				description="Filter ID should be executed",
-     *				paramType="query",
+     *				paramType="path",
      *				required=true,
-     *				type="int"
+     *				type="integer"
      *			),
      *      )
      *  )
