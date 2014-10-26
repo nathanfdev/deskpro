@@ -147,6 +147,16 @@ class FreshDb extends AbstractDbSet
 				('core_tickets.enable_like_search_auto', '1'),
 				('user.kb_subscriptions_last', '".time()."');
 		");
+
+		$this->getDb()->exec(
+			"
+						INSERT INTO `brands` (`id`, `name`, `theme_id`)
+						VALUES
+							(1, 'Default Brand', 'base')
+							;
+		"
+		);
+
 		$count++;
 
 		return $count;

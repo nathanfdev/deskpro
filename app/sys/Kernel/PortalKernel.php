@@ -62,7 +62,9 @@ class PortalKernel extends Kernel
 			new \Application\PortalBundle\PortalBundle(),
 		);
 
-		if ('dev' === $this->getEnvironment()) {
+		if ('dev' === $this->getEnvironment()
+			OR
+			'test' === $this->getEnvironment()) {
 			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
 		}
 
