@@ -44,10 +44,15 @@ class PortalBaseThemeTest extends WebTestCase
 	public function testHome()
 	{
 		$client = static::createClient();
-		$crawler = $client->request('GET', '/');
 
-		$this->assertGreaterThan(0, $crawler->filter('body.deskpro')->count());
-		$this->assertEquals(200, $client->getResponse()->getStatusCode());
+		$this->test200codeForPath($client, '/');
+		$this->test200codeForPath($client, '/kb');
+		$this->test200codeForPath($client, '/kb/slugggg');
+		$this->test200codeForPath($client, '/kb/posts/slugggggg');
+		$this->test200codeForPath($client, '/downloads');
+		$this->test200codeForPath($client, '/downloads/sluggg');
+		$this->test200codeForPath($client, '/downloads/files/adfdfa');
+		$this->test200codeForPath($client, '/downloads/files/asdddd/download');
 	}
 
 
@@ -72,5 +77,16 @@ class PortalBaseThemeTest extends WebTestCase
 	{
 		require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
 		return new PortalKernel('test', true);
+	}
+
+
+	/**
+	 * @param $client
+	 * @param $path
+	 */
+	protected function test200codeForPath($client, $path)
+	{
+		$crawler = $client->request('GET', $path);
+		$this->assertEquals(200, $client->getResponse()->getStatusCode());
 	}
 }
