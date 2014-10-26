@@ -741,7 +741,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *      @SWG\Parameters (
      *          @SWG\Parameter(
      *				name="run_orders",
-     *				description="Group name",
+     *				description="",
      *				paramType="path",
      *				required=false,
      *				type="string[]",

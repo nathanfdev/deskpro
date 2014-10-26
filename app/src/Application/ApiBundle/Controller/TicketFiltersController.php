@@ -39,6 +39,17 @@ use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 
+/**
+ * Operations about ticket filters
+ * Class TicketFiltersController
+ * @package Application\ApiBundle\Controller
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_filters",
+ * 	description="Operations about Ticket urgencies",
+ * 	basePath="/api"
+ * )
+ */
 class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {
 	/**
@@ -54,9 +65,24 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 	# list
 	####################################################################################################################
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_filters",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get all defined filters",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
 	public function listAction()
 	{
-		$filters = $this->em->getRepository('DeskPRO:TicketFilter')->getDefinedFilters();
+        /** @var \Application\DeskPRO\EntityRepository\TicketFilter $repo */
+        $repo = $this->em->getRepository('DeskPRO:TicketFilter');
+        $filters = $repo->getDefinedFilters();
 
 		$data = array();
 
@@ -80,10 +106,30 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 		));
 	}
 
-	####################################################################################################################
-	# get
-	####################################################################################################################
 
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_filters/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get trigger filter by Id",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="ID of given filter",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function getAction($id)
 	{
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
@@ -103,10 +149,63 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 		));
 	}
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
-
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @SWG\Api(
+     * 	path="/ticket_filters/{id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save trigger filter details",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Trigger id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.title",
+     *				description="Title for this filter",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.is_global",
+     *				description="Trigger global flag",
+     *				paramType="query",
+     *				required=false,
+     *				type="boolean",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.person_id",
+     *				description="Added person identificator",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.agent_team_id",
+     *				description="Agent team identificator",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="filter.terms",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function saveAction($id)
 	{
 		if ($id) {
@@ -156,10 +255,29 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 		}
 	}
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
-
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_filters/{id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete trigger filter by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Trigger filter id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function removeAction($id)
 	{
 		$filter = $this->em->getRepository('DeskPRO:TicketFilter')->find($id);
@@ -176,14 +294,37 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 		));
 	}
 
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
 
+    /**
+     *
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_filters/display_order",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Rearrange order in which filters are following",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="display_order",
+     *				description="",
+     *				paramType="path",
+     *				required=false,
+     *				type="int[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function saveDisplayOrderAction()
 	{
 		$display_order = $this->in->getCleanValueArray('display_order', 'uint', 'discard');
-		$this->em->getRepository('DeskPRO:TicketFilter')->updateDisplayOrder($display_order);
+        /** @var \Application\DeskPRO\EntityRepository\TicketFilter $repo */
+        $repo = $this->em->getRepository('DeskPRO:TicketFilter');
+        $repo->updateDisplayOrder($display_order);
 
 		return $this->createSuccessResponse();
 	}

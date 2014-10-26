@@ -43,6 +43,10 @@
             "description":"Operations about Tasks"
         },
         {
+            "path":"/ticket_filters",
+            "description":"Operations about Ticket urgencies"
+        },
+        {
             "path":"/ticket_statuses",
             "description":"Operations about Ticket status"
         },
