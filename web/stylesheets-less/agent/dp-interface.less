@@ -4568,7 +4568,7 @@ blockquote {
 	.rounded(2px);
 	z-index: 10000;
 
-	max-width: 400px;
+	max-width: 425px;
 
 	-webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.25);
 	box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.25);
@@ -4599,7 +4599,24 @@ blockquote {
 			font-weight: bold;
 			margin-right: 15px;
 			display: inline-block;
+			img {
+				vertical-align: bottom;
+			}
 		}
+	}
+	ul.actions > li {
+		padding: 0 3px;
+		margin: 0;
+		border-left: 1px solid #ccc;
+		float: left;
+	}
+	ul.actions > li:first-child {
+		border-left: none;
+	}
+	ul.actions > li:after {
+		content: "";
+		display: table;
+		clear: both;
 	}
 }
 

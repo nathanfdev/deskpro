@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller\JsonRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Util;
 use Orb\Util\Arrays;
@@ -67,6 +68,11 @@ class TicketListRenderer
 	 */
 	private $ticket_display;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Person|null
+	 */
+	protected $person;
+
 
 	/**
 	 * @param TicketResultsDisplay $ticket_display
@@ -77,6 +83,7 @@ class TicketListRenderer
 		$this->container = App::getContainer();
 		$this->em = App::getContainer()->getEm();
 		$this->db = App::getContainer()->getDb();
+		$this->person = $this->container->get('session')->getPerson();
 	}
 
 
@@ -301,16 +308,19 @@ class TicketListRenderer
 					'preview_text'     => $m['preview_text'],
 					'date_created'     => $m['date_created']->format('Y-m-d H:i:s'),
 					'date_created_ts'  => $m['date_created']->getTimestamp(),
+					'status'           => $m['status'],
 				),
 				'person' => array(
 					'id'            => $m['person_id'],
 					'display_name'  => $m['display_name'],
 					'is_agent'      => $m['is_agent'],
+					'picture_url_16' => $m['picture_url_16'],
 				),
 			);
 		}
 
 		$data['flag'] = $this->ticket_display->getFlaggedColor($ticket);
+		$this->renderAvailableActions($ticket, $data);
 
 		return $data;
 	}
@@ -372,5 +382,21 @@ class TicketListRenderer
 		}
 
 		return $data;
+	}
+
+	protected function renderAvailableActions(Ticket $ticket, array &$display)
+	{
+		$display['actions_allowed'] = array();
+		if (!$this->person) {
+			return;
+		}
+		/** @var TicketChecker $checker */
+		$checker = $this->person->PermissionsManager->TicketChecker;
+		$actions = array('set_resolved', 'set_awaiting_user', 'set_awaiting_agent', 'assign_self', 'assign_agent', 'assign_team');
+		foreach ($actions as $action) {
+			if ($checker->canModify($ticket, $action)) {
+				$display['actions_allowed'][] = $action;
+			}
+		}
 	}
 }

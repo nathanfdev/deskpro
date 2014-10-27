@@ -36,6 +36,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -109,7 +110,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 				return $this->createJsonResponse($data, 403);
 			} else {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+				throw new AccessDeniedException;
 			}
 		}
 
