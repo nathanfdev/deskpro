@@ -294,6 +294,14 @@ class TicketViewController extends AbstractController
 			$default_page = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
 			$default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::EDIT_TICKET, $ticket);
 
+			// new custom fields, without layout (handled on client side)
+			$new_field_manager = $this->container->getCustomFieldManager();
+			$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $this->person);
+			if ($org = $this->person->organization) {
+				$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org));
+			}
+			$vars['new_custom_fields'] = $new_custom_fields->createView();
+
 			if ($default_page) {
 				$page_data_field_ids = array();
 				foreach ($default_page as $field) {
