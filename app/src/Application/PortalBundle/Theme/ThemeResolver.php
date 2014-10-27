@@ -171,7 +171,7 @@ class ThemeResolver
 
 		$current_request = $this->container->get('request_stack')->getCurrentRequest();
 		$tag_request = $current_request->duplicate(
-			null,
+			$tag->getParams(),
 			null,
 			array_merge(
 				$arguments, // switch these args to allow tags to change controller
