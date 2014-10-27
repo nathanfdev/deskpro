@@ -102,7 +102,7 @@ class Organization extends AbstractEntityRepository
 		$orgs = $this->getEntityManager()->createQuery("
 			SELECT o
 			FROM DeskPRO:Organization o INDEX BY o.id
-			WHERE o.id IN(?)
+			WHERE o.id IN(?0)
 			ORDER BY o.id ASC
 		")->execute(array($ids));
 
