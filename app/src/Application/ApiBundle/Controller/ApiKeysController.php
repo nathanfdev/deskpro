@@ -167,6 +167,27 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 
 
 	####################################################################################################################
+	# get-logs
+	####################################################################################################################
+
+	public function getLogsAction($id)
+	{
+		/** @var $key ApiKey */
+		if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+			throw $this->createNotFoundException();
+		}
+
+		$logs = $this->em->getRepository('DeskPRO:ApiKeyLog')->getLogsForKey($key);
+
+		$logs = $this->getApiData($logs);
+
+		return $this->createSuccessResponse(array(
+			'logs' => $logs
+		));
+	}
+
+
+	####################################################################################################################
 	# regenerate
 	####################################################################################################################
 

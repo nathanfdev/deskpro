@@ -32,7 +32,6 @@ define [
 
 		initialLoad: ->
 			p1 = @service.keys.get(@$stateParams.id || null).then (model) =>
-				console.log(model)
 				return if !model?
 				@form = angular.copy model
 				@form.flags = @form.flags || []
@@ -40,6 +39,12 @@ define [
 				@form.isAdminManage = @form.flags.indexOf('admin_manage') > -1
 
 			p2 = @service.agents.all().then (agents) => @agents = agents
+
+			# Load logs separately
+			if @$stateParams.id
+				@service.keys.getLogs({id: @$stateParams.id}).then((data) =>
+					@logs = data.logs
+				)
 
 			return @$q.all([p1, p2])
 

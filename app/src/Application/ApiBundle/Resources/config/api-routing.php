@@ -4066,6 +4066,12 @@ $collection->create('api_api_keys_delete', array(
 	'methods'     => array('DELETE'),
 ));
 
+$collection->create('api_api_keys_logs', array(
+	'path'        => '/api_keys/{id}/logs',
+	'controller'  => 'ApiBundle:ApiKeys:getLogs',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_api_keys_regenerate', array(
 	'path'        => '/api_keys/regenerate/{id}',
 	'controller'  => 'ApiBundle:ApiKeys:regenerate',
