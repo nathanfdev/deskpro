@@ -77,9 +77,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			@$scope.show_lic_error = false
 			@startSpinner('saving')
 			@Api.sendPost("dp_license", postData).success(=>
-				@reloadLicData().then(=>
-					@stopSpinner('saving').then(=>
-						@Growl.success(@getRegisteredMessage('saved_lic'))
+				@DpLicense.getLicInfo(true).then(
+					@reloadLicData().then(=>
+						@stopSpinner('saving').then(=>
+							@Growl.success(@getRegisteredMessage('saved_lic'))
+						)
 					)
 				)
 			).error( (data) =>
