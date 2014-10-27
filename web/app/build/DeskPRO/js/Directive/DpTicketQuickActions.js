@@ -15,7 +15,7 @@
         restrict: 'E',
         scope: {},
         replace: true,
-        template: '<div class="dp-stickytip"> <div class="previewtext-row"> <cite> <img src="{{ icon }}" /> <span>{{ name }}</span> <span>{{ status }}</span> <span>{{ time }}</span> </cite> <br /> <span></span> </div> <ul class="previewtext-row actions" style="overflow: visible;"> <li ng-repeat="action in actions" style="position: relative;"> <a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action) || handleAction(action)">{{ action.title }}</a> <div ng-if="action.select2" ng-show="action.visible" style="position: absolute; width: 150px;"> <input type="hidden" ui-select2="action.select2" ng-model="action.model" style="width: 100%;" ng-change="handleAction(action)" /> </div> </li> </ul> </div>',
+        template: "<div class=\"dp-stickytip\">\n	<header>\n		<cite>\n			<img src=\"{{ icon }}\" />\n			<span>{{ name }}</span>\n			<span>{{ status }}</span>\n			<span>{{ time }}</span>\n		</cite>\n	</header>\n	<article><div class=\"preview-text\"></div></article>\n	<footer>\n		<ul class=\"actions\">\n			<li ng-repeat=\"action in actions\" style=\"position: relative;\">\n				<a href=\"#\" ng-click=\"$event.preventDefault(); action.select2 && showDropdown(action) || handleAction(action)\">{{ action.title }}<i ng-if=\"action.select2\" class=\"fa fa-caret-down\"></i></a>\n				<div ng-if=\"action.select2\" ng-show=\"action.visible\" style=\"position: absolute; width: 250px; bottom: -28px; left: -1px;\">\n					<input type=\"hidden\" ui-select2=\"action.select2\" ng-model=\"action.model\" style=\"width: 100%;\" ng-change=\"handleAction(action)\" />\n				</div>\n			</li>\n		</ul>\n	<footer>\n</div>",
         controller: function($scope, $filter, $http) {
           var agentsSelectOptions, format, me, teamsSelectOptions;
           $scope.actions = [];
@@ -65,8 +65,7 @@
             }
           };
           $scope.setTicket = function(ticket) {
-            var isAllowed, service, t, _ref;
-            service = PersonService;
+            var isAllowed, t, _ref;
             t = ticket;
             $scope.icon = t.previews[0].person.picture_url_16;
             $scope.name = t.previews[0].person.display_name;
@@ -161,7 +160,7 @@
           var $preview, promise;
           $el.hide();
           promise = null;
-          $preview = $el.find('.previewtext-row > span:eq(0)');
+          $preview = $el.find('.preview-text').first();
           $preview.dotdotdot({
             elipsis: '...',
             wrap: 'word',
@@ -177,12 +176,8 @@
             offset = $(e.target).offset();
             offset.top += $(e.target).height();
             $el.css(offset);
-            DP_DEBUG && console.time('bind quick actions data');
             $scope.setTicket(ticket);
-            DP_DEBUG && console.timeEnd('bind quick actions data');
-            DP_DEBUG && console.time('update quick actions preview text');
-            $preview.text((_ref1 = ticket.previews[0].message) != null ? _ref1.preview_text : void 0).trigger('update');
-            return DP_DEBUG && console.timeEnd('update quick actions preview text');
+            return $preview.text((_ref1 = ticket.previews[0].message) != null ? _ref1.preview_text : void 0).trigger('update');
           });
           $scope.$root.$on('tickets.quick_actions.hide', function() {
             return $el.trigger('mouseleave');

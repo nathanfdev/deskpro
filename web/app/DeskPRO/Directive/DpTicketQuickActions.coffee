@@ -12,30 +12,29 @@ define ->
 			restrict: 'E'
 			scope: {}
 			replace: true
-			template: '
-					<div class="dp-stickytip">
-					    <div class="previewtext-row">
-					        <cite>
-					            <img src="{{ icon }}" />
-					            <span>{{ name }}</span>
-					            <span>{{ status }}</span>
-					            <span>{{ time }}</span>
-					        </cite>
-					        <br />
-					        <span></span>
-					    </div>
-					    <ul class="previewtext-row actions" style="overflow: visible;">
-									<li ng-repeat="action in actions" style="position: relative;">
-											<a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action) || handleAction(action)">{{ action.title }}</a>
-											<div ng-if="action.select2" ng-show="action.visible" style="position: absolute; width: 150px;">
-													<input type="hidden" ui-select2="action.select2" ng-model="action.model"
-																style="width: 100%;" ng-change="handleAction(action)" />
-											</div>
-									</li>
-							</ul>
-
-					</div>
-			'
+			template: """
+				<div class="dp-stickytip">
+					<header>
+						<cite>
+							<img src="{{ icon }}" />
+							<span>{{ name }}</span>
+							<span>{{ status }}</span>
+							<span>{{ time }}</span>
+						</cite>
+					</header>
+					<article><div class="preview-text"></div></article>
+					<footer>
+						<ul class="actions">
+							<li ng-repeat="action in actions" style="position: relative;">
+								<a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action) || handleAction(action)">{{ action.title }}<i ng-if="action.select2" class="fa fa-caret-down"></i></a>
+								<div ng-if="action.select2" ng-show="action.visible" style="position: absolute; width: 250px; bottom: -28px; left: -1px;">
+									<input type="hidden" ui-select2="action.select2" ng-model="action.model" style="width: 100%;" ng-change="handleAction(action)" />
+								</div>
+							</li>
+						</ul>
+					<footer>
+				</div>
+			"""
 			controller: ($scope, $filter, $http) ->
 				$scope.actions = []
 				me = $scope.$root.app_person_id
@@ -65,8 +64,6 @@ define ->
 					escapeMarkup: (m) -> m
 
 				$scope.setTicket = (ticket) ->
-
-					service = PersonService
 					t = ticket
 
 					# update scope vars
@@ -89,7 +86,7 @@ define ->
 						$scope.actions.push {title: 'Assign Me', params: {agent_id: me}, visible: true }
 
 					if isAllowed('assign_agent')
-						$scope.actions.push {title: 'Assign Agent', prop: 'agent_id', params: {agent_id: null}, select2: agentsSelectOptions}
+						$scope.actions.push {title: 'Assign Agent', prop: 'agent_id', params: {agent_id: null}, select2: agentsSelectOptions }
 
 					if isAllowed('assign_team')
 						$scope.actions.push {title: 'Assign Team', prop: 'agent_team_id', params: {agent_team_id: null}, select2: teamsSelectOptions}
@@ -119,14 +116,11 @@ define ->
 
 
 			link: ($scope, $el) ->
-
 				# init
 				$el.hide()
 				promise = null
-				$preview = $el.find '.previewtext-row > span:eq(0)'
+				$preview = $el.find('.preview-text').first()
 				$preview.dotdotdot {elipsis: '...', wrap: 'word', height: options.preview_text_height}
-
-
 
 				# events
 				$scope.$root.$on 'tickets.quick_actions.show', (angularEvent, e, ticket) ->
@@ -139,13 +133,8 @@ define ->
 					offset.top += $(e.target).height()
 					$el.css offset
 
-					DP_DEBUG && console.time 'bind quick actions data'
 					$scope.setTicket ticket
-					DP_DEBUG && console.timeEnd 'bind quick actions data'
-
-					DP_DEBUG && console.time 'update quick actions preview text'
 					$preview.text(ticket.previews[0].message?.preview_text).trigger 'update'
-					DP_DEBUG && console.timeEnd 'update quick actions preview text'
 
 				$scope.$root.$on 'tickets.quick_actions.hide', ->
 					$el.trigger 'mouseleave'
