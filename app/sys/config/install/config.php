@@ -62,6 +62,13 @@ $definition->setArguments(array(
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
 $container->setDefinition('doctrine.dbal.connection_factory', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
+$definition->setArguments(array(
+		new Reference('service_container')
+	));
+$container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
+
 // deskpro.interface_value
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\InterfaceValue');

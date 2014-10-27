@@ -157,6 +157,13 @@ $definition->setArguments(array(
 $definition->addMethodCall('setPrefix', array('dres', new Reference('deskpro.interface_value')));
 $container->setDefinition('default_result_cache', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
+$definition->setArguments(array(
+	new Reference('service_container')
+));
+$container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
+
 // browser_sniffer
 $definition = new Definition();
 $definition->setClass('Browser');
