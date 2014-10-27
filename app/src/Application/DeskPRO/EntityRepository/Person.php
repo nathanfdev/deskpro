@@ -120,6 +120,21 @@ class Person extends AbstractEntityRepository
 
 
 	/**
+	 * Gets a count of active agents (suitable for license checks)
+	 *
+	 * @return int
+	 */
+	public function getActiveAgentsCount()
+	{
+		return $this->_em->getConnection()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent = 1 AND is_deleted = 0
+		");
+	}
+
+
+	/**
 	 * Give a department and get back the agents that are in that department.
 	 *
 	 * Currently this is defined as anyone with a "FULL" permission to the

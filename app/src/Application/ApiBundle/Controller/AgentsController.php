@@ -315,12 +315,8 @@ class AgentsController extends AbstractController implements ProtectedController
 
 				// Check license
 				$max_agents = License::getLicense()->getMaxAgents();
-				if ($max_agents) {
-					$active_agents = $this->container->getDb()->fetchColumn("
-						SELECT COUNT(*)
-						FROM people
-						WHERE is_agent = 1 AND is_deleted = 0
-					");
+				if ($max_agents && $max_agents < 100) {
+					$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
 
 					if ($active_agents >= $max_agents) {
 						return $this->createApiErrorInfoResponse('license_exceeded', 'You have used all available agent seats that your license allows', array(
@@ -706,6 +702,21 @@ class AgentsController extends AbstractController implements ProtectedController
 
 		if (!$agent || !$agent->is_agent || !$agent->is_deleted) {
 			throw $this->createNotFoundException();
+		}
+
+		$max_agents = License::getLicense()->getMaxAgents();
+
+		if ($max_agents && $max_agents < 100) {
+			$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
+
+			if ($active_agents >= $max_agents) {
+				return $this->createApiErrorInfoResponse(
+					'license_exceeded', 'You have used all available agent seats that your license allows', array(
+						'agent_seats'    => $max_agents,
+						'agents_created' => $active_agents,
+					)
+				);
+			}
 		}
 
 		$agent->is_deleted = false;
