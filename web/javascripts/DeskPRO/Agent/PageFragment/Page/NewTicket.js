@@ -308,7 +308,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		};
 
 		depSel.on('change', function(ev) {
-			self._updateFields();
+			self.getCustomFields();
 		});
 
 		$('.ticket-field select', this.wrapper).on('change', function() {
