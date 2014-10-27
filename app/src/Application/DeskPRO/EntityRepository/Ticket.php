@@ -243,7 +243,7 @@ class Ticket extends AbstractEntityRepository
 		$tickets = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Ticket t INDEX BY t.id
-			WHERE t.id IN(?)
+			WHERE t.id IN(?0)
 			ORDER BY t.id ASC
 		")->execute(array($ids));
 
