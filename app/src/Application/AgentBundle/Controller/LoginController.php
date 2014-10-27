@@ -140,16 +140,16 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 		$now_scheme = strtolower($request->getScheme());
 		if ($now_scheme != 'https') {
 			$urlinfo = parse_url(App::getSetting('core.deskpro_url'));
-			if ($urlinfo && !empty($urlinfo['host']) && !empty($urlinfo['scheme'])) {
+			if ($urlinfo && !empty($urlinfo['scheme'])) {
 				$correct_scheme = strtolower($urlinfo['scheme']);
-				if ($correct_scheme) {
+				if ($correct_scheme && $correct_scheme != $now_scheme) {
 					$switch_to_https = true;
 				}
 			}
 		}
 
 		// If not an admin, just redirect the agent to https
-		if ($switch_to_https && $return && strpos($return, 'admin') == false) {
+		if ($switch_to_https && (!$return || strpos($return, 'admin') === false)) {
 			$now_path = $request->getPathInfo();
 			if (strpos($request->getRequestUri(), '/index.php/') !== false) {
 				$now_path = '/index.php' . $now_path;
