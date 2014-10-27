@@ -26,8 +26,8 @@ define ->
 					<footer>
 						<ul class="actions">
 							<li ng-repeat="action in actions" style="position: relative;">
-								<a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action) || handleAction(action)">{{ action.title }}<i ng-if="action.select2" class="fa fa-caret-down"></i></a>
-								<div ng-if="action.select2" ng-show="action.visible" style="position: absolute; width: 250px; bottom: -28px; left: -1px;">
+								<a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action, $event) || handleAction(action)">{{ action.title }}<i ng-if="action.select2" class="fa fa-caret-down"></i></a>
+								<div ng-if="action.select2" ng-show="action === visible" style="position: absolute; width: 250px; bottom: -28px; left: -1px;">
 									<input type="hidden" ui-select2="action.select2" ng-model="action.model" style="width: 100%;" ng-change="handleAction(action)" />
 								</div>
 							</li>
@@ -83,13 +83,13 @@ define ->
 						return -1 != ticket.actions_allowed.indexOf(action)
 
 					if isAllowed('assign_self') && (!t.agent || t.agent.id != $scope.$root.app_person_id)
-						$scope.actions.push {title: 'Assign Me', params: {agent_id: me}, visible: true }
+						$scope.actions.push {title: 'Assign Me', params: {agent_id: me} }
 
 					if isAllowed('assign_agent')
-						$scope.actions.push {title: 'Assign Agent', prop: 'agent_id', params: {agent_id: null}, select2: agentsSelectOptions }
+						$scope.actions.push {title: 'Assign Agent', prop: 'agent_id', params: {}, select2: agentsSelectOptions }
 
 					if isAllowed('assign_team')
-						$scope.actions.push {title: 'Assign Team', prop: 'agent_team_id', params: {agent_team_id: null}, select2: teamsSelectOptions}
+						$scope.actions.push {title: 'Assign Team', prop: 'agent_team_id', params: {}, select2: teamsSelectOptions}
 
 					if isAllowed('set_awaiting_user') && 'awaiting_user' != t.status
 						$scope.actions.push {title: 'Set Awaiting User', params: {status: 'awaiting_user', hidden_status: false}}
@@ -100,10 +100,7 @@ define ->
 					if isAllowed('set_resolved') && 'resolved' != t.status
 						$scope.actions.push {title: 'Set Resolved', params: {status: 'resolved', hidden_status: false}}
 
-				$scope.showDropdown = (action) ->
-					$scope._visibleAction && $scope._visibleAction.visible = false
-					$scope._visibleAction = action
-					action.visible = true
+					$scope.updateWidth()
 
 				$scope.handleAction = (action) ->
 					return if action.select2 && !action.model
@@ -121,6 +118,11 @@ define ->
 				promise = null
 				$preview = $el.find('.preview-text').first()
 				$preview.dotdotdot {elipsis: '...', wrap: 'word', height: options.preview_text_height}
+				$actions = $el.find 'footer > ul.actions:first'
+
+				$scope.updateWidth = () ->
+					$el.css 'max-width', '650px'
+					$timeout (-> $el.css 'max-width', $actions.outerWidth(true) + 'px'), 1
 
 				# events
 				$scope.$root.$on 'tickets.quick_actions.show', (angularEvent, e, ticket) ->
@@ -135,6 +137,20 @@ define ->
 
 					$scope.setTicket ticket
 					$preview.text(ticket.previews[0].message?.preview_text).trigger 'update'
+
+				$scope.showDropdown = (action, $event) ->
+					$scope.visible = action
+
+					# open dropdown
+					$input = $($event.target).next().children('input')
+					$timeout(
+						->
+							$input.off 'select2-open'
+							$input.on 'select2-open', ->
+								$timeout (-> promise && $timeout.cancel promise), 10 # prevent mouseleave in FF
+							$input.select2 'open'
+						1
+					) if $input.length
 
 				$scope.$root.$on 'tickets.quick_actions.hide', ->
 					$el.trigger 'mouseleave'
