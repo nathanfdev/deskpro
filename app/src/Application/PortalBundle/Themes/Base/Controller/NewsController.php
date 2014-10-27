@@ -62,6 +62,22 @@ class NewsController extends AbstractController
 	{
 		$count = $request->get('count', 5);
 
-		return $this->render('Theme:News:list.html.twig', array('num' => $count));
+		$news = $this->getNewsRepo()->getNewest($count);
+		$total = $this->getNewsRepo()->countPublished();
+
+		return $this->render('Theme:News:list.html.twig', array(
+				'news_count_total' => $total,
+				'news_articles' => $news
+			)
+		);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\News
+	 */
+	protected function getNewsRepo()
+	{
+		return $this->getDoctrine()->getRepository('DeskPRO:News');
 	}
 }

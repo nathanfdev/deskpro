@@ -148,6 +148,16 @@ class News extends AbstractEntityRepository
 		return $articles;
 	}
 
+
+	public function countPublished()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT COUNT(n) as cc
+			FROM DeskPRO:News n
+			WHERE n.status = 'published'
+		")->getSingleScalarResult();
+	}
+
 	public function getReportAssociations()
 	{
 		return array(
