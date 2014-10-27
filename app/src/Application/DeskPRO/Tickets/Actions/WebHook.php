@@ -101,10 +101,14 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 		$data['custom_data']     = $custom_data;
 
 		if ('json' === $this->getActionOption('payload_type')) {
+			$data = json_encode($data);
 			$headers['content-type'] = 'application/json';
+		} else {
+			$headers['content-type'] = 'application/x-www-form-urlencoded';
 		}
 
-		$request = $http_client->createRequest($this->getActionOption('method') ?: 'POST', null, $headers, $data);
+		$request = new \Guzzle\Http\Message\EntityEnclosingRequest($this->getActionOption('method') ?: 'POST', $url, $headers);
+		$request->setBody($data);
 
 		if ($username || $password) {
 			$request->setAuth($username ?: '', $password ?: '');
@@ -112,7 +116,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 
 		try {
 
-			$response = $request->send();
+			$response = $http_client->send($request);
 			$data = array(
 				'url' => $url,
 				'reason' => $response->getReasonPhrase(),

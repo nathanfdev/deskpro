@@ -192,9 +192,9 @@ class NewTicketController extends AbstractController
 
 	    // specific user custom fields (but can be used for any sort of custom fields)
 	    $manager = $this->container->getCustomFieldManager();
-	    $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person, $default_page);
+	    $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person);
 	    if ($org = $this->person->organization) {
-		    $manager->merge($new_custom_fields_form, $manager->createFormForOwner($ticket, $org, $default_page));
+		    $manager->merge($new_custom_fields_form, $manager->createFormForOwner($ticket, $org));
 	    }
 
 		$captcha_html = '';

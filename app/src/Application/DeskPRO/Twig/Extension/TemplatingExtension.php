@@ -1055,7 +1055,7 @@ class TemplatingExtension extends \Twig_Extension
 	public function renderCustomField($display_array, array $vars = array())
 	{
 		if ($display_array instanceof FormView) {
-			return $display_array->vars['rendered_data'];
+			return isset($display_array->vars['rendered_data']) ? $display_array->vars['rendered_data'] : null;
 		}
 
 		$handler = $display_array['handler'];

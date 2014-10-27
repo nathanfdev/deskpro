@@ -27,11 +27,14 @@
 
 namespace Application\DeskPRO\Form\Type\CustomFields\Definitions;
 
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CustomFieldDefinitionType extends AbstractType implements EventSubscriberInterface
@@ -129,5 +132,20 @@ class CustomFieldDefinitionType extends AbstractType implements EventSubscriberI
 	public function getName()
 	{
 		return 'cf_definition';
+	}
+
+	/**
+	 * @param FormView $view
+	 * @param FormInterface $form
+	 * @param array $options
+	 */
+	public function buildView(FormView $view, FormInterface $form, array $options)
+	{
+		$view->vars['rendered_data'] = null;
+
+		if (!($data = $form->getData()) instanceof CustomFieldDefinition) {
+			return;
+		}
+		$view->vars['rendered_data'] = $data['title'];
 	}
 }

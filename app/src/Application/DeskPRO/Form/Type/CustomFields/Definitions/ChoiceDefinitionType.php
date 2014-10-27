@@ -30,6 +30,8 @@ namespace Application\DeskPRO\Form\Type\CustomFields\Definitions;
 use Application\DeskPRO\Form\Type\DpCategoryBuilderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ChoiceDefinitionType extends CustomFieldDefinitionType
@@ -99,5 +101,16 @@ class ChoiceDefinitionType extends CustomFieldDefinitionType
 	public function getName()
 	{
 		return 'cf_definition_choice';
+	}
+
+	/**
+	 * @param FormView $view
+	 * @param FormInterface $form
+	 * @param array $options
+	 */
+	public function buildView(FormView $view, FormInterface $form, array $options)
+	{
+		parent::buildView($view, $form, $options);
+		$view->vars['rendered_data'] = $form->get('_children')->count() . ' Options';
 	}
 }

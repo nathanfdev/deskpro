@@ -340,6 +340,15 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @param string $t
+	 */
+	public function setTitle($t)
+	{
+		$this->title = $t ?: '';
+		$this->setModelField('title', $this->title);
+	}
+
 
 	/**
 	 * Returns the task's assigned agent's id.

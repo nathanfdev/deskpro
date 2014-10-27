@@ -15,6 +15,13 @@
         </tr>
     {% endfor %}
 
+	{% for f in custom_fields_definitions %}
+		<tr>
+			<th>{{ form_label(f) }}</th>
+			<td>{{ render_custom_field(f) }}</td>
+		</tr>
+	{% endfor %}
+
 	<tr>
 		<th>{{ phrase('agent.general.timezone') }}</th>
 		<td>

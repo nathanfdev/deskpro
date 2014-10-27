@@ -15,7 +15,7 @@
         restrict: 'E',
         scope: {},
         replace: true,
-        template: "<div class=\"dp-stickytip\">\n	<header>\n		<cite>\n			<img src=\"{{ icon }}\" />\n			<span>{{ name }}</span>\n			<span>{{ status }}</span>\n			<span>{{ time }}</span>\n		</cite>\n	</header>\n	<article><div class=\"preview-text\"></div></article>\n	<footer>\n		<ul class=\"actions\">\n			<li ng-repeat=\"action in actions\" style=\"position: relative;\">\n				<a href=\"#\" ng-click=\"$event.preventDefault(); action.select2 && showDropdown(action) || handleAction(action)\">{{ action.title }}<i ng-if=\"action.select2\" class=\"fa fa-caret-down\"></i></a>\n				<div ng-if=\"action.select2\" ng-show=\"action.visible\" style=\"position: absolute; width: 250px; bottom: -28px; left: -1px;\">\n					<input type=\"hidden\" ui-select2=\"action.select2\" ng-model=\"action.model\" style=\"width: 100%;\" ng-change=\"handleAction(action)\" />\n				</div>\n			</li>\n		</ul>\n	<footer>\n</div>",
+        template: "<div class=\"dp-stickytip\">\n	<header>\n		<cite>\n			<img src=\"{{ icon }}\" />\n			<span>{{ name }}</span>\n			<span>{{ status }}</span>\n			<span>{{ time }}</span>\n		</cite>\n	</header>\n	<article><div class=\"preview-text\"></div></article>\n	<footer>\n		<ul class=\"actions\">\n			<li ng-repeat=\"action in actions\" style=\"position: relative;\">\n				<a href=\"#\" ng-click=\"$event.preventDefault(); action.select2 && showDropdown(action, $event) || handleAction(action)\">{{ action.title }}<i ng-if=\"action.select2\" class=\"fa fa-caret-down\"></i></a>\n				<div ng-if=\"action.select2\" ng-show=\"action === visible\" style=\"position: absolute; width: 250px; bottom: -28px; left: -1px;\">\n					<input type=\"hidden\" ui-select2=\"action.select2\" ng-model=\"action.model\" style=\"width: 100%;\" ng-change=\"handleAction(action)\" />\n				</div>\n			</li>\n		</ul>\n	<footer>\n</div>",
         controller: function($scope, $filter, $http) {
           var agentsSelectOptions, format, me, teamsSelectOptions;
           $scope.actions = [];
@@ -84,17 +84,14 @@
                 title: 'Assign Me',
                 params: {
                   agent_id: me
-                },
-                visible: true
+                }
               });
             }
             if (isAllowed('assign_agent')) {
               $scope.actions.push({
                 title: 'Assign Agent',
                 prop: 'agent_id',
-                params: {
-                  agent_id: null
-                },
+                params: {},
                 select2: agentsSelectOptions
               });
             }
@@ -102,9 +99,7 @@
               $scope.actions.push({
                 title: 'Assign Team',
                 prop: 'agent_team_id',
-                params: {
-                  agent_team_id: null
-                },
+                params: {},
                 select2: teamsSelectOptions
               });
             }
@@ -127,7 +122,7 @@
               });
             }
             if (isAllowed('set_resolved') && 'resolved' !== t.status) {
-              return $scope.actions.push({
+              $scope.actions.push({
                 title: 'Set Resolved',
                 params: {
                   status: 'resolved',
@@ -135,11 +130,7 @@
                 }
               });
             }
-          };
-          $scope.showDropdown = function(action) {
-            $scope._visibleAction && ($scope._visibleAction.visible = false);
-            $scope._visibleAction = action;
-            return action.visible = true;
+            return $scope.updateWidth();
           };
           return $scope.handleAction = function(action) {
             if (action.select2 && !action.model) {
@@ -157,7 +148,7 @@
           };
         },
         link: function($scope, $el) {
-          var $preview, promise;
+          var $actions, $preview, promise;
           $el.hide();
           promise = null;
           $preview = $el.find('.preview-text').first();
@@ -166,6 +157,13 @@
             wrap: 'word',
             height: options.preview_text_height
           });
+          $actions = $el.find('footer > ul.actions:first');
+          $scope.updateWidth = function() {
+            $el.css('max-width', '650px');
+            return $timeout((function() {
+              return $el.css('max-width', $actions.outerWidth(true) + 'px');
+            }), 1);
+          };
           $scope.$root.$on('tickets.quick_actions.show', function(angularEvent, e, ticket) {
             var offset, _ref, _ref1;
             promise && $timeout.cancel(promise);
@@ -179,6 +177,22 @@
             $scope.setTicket(ticket);
             return $preview.text((_ref1 = ticket.previews[0].message) != null ? _ref1.preview_text : void 0).trigger('update');
           });
+          $scope.showDropdown = function(action, $event) {
+            var $input;
+            $scope.visible = action;
+            $input = $($event.target).next().children('input');
+            if ($input.length) {
+              return $timeout(function() {
+                $input.off('select2-open');
+                $input.on('select2-open', function() {
+                  return $timeout((function() {
+                    return promise && $timeout.cancel(promise);
+                  }), 10);
+                });
+                return $input.select2('open');
+              }, 1);
+            }
+          };
           $scope.$root.$on('tickets.quick_actions.hide', function() {
             return $el.trigger('mouseleave');
           });
