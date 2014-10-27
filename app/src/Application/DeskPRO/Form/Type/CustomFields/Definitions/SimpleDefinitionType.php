@@ -28,6 +28,7 @@
 namespace Application\DeskPRO\Form\Type\CustomFields\Definitions;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -110,7 +111,7 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 		}
 
 		if ($context = $event->getForm()->getConfig()->getOption('context')) {
-			$definition['context_class'] = get_class($context);
+			$definition['context_class'] = ClassUtils::getClass($context);
 			$definition['context_id'] = $context['id'];
 		}
 

@@ -761,19 +761,19 @@ class PersonController extends AbstractController
 
 		// specific user custom fields definitions
 		$manager = $this->container->getCustomFieldManager();
-		$custom_fields_definitions = $manager->createDefinitionsFormForContext($person);
+		$form = $manager->createDefinitionsFormForContext($person);
 		// fix: jquery removes empty arrays from post request
-		if (!$request->request->has($custom_fields_definitions->getName())) {
-			$request->request->set($custom_fields_definitions->getName(), array());
+		if (!$request->request->has($form->getName())) {
+			$request->request->set($form->getName(), array());
 		}
-		if (!$custom_fields_definitions->handleRequest($request)->isValid()) {
+		if (!$form->handleRequest($request)->isValid()) {
 			return $this->createJsonResponse(array(
 				'error' => true,
-				'invalid_custom_fields' => $custom_fields_definitions->getErrors(true, true)->current(),
+				'invalid_custom_fields' => $form->getErrors(true, true)->current(),
 			));
 
 		}
-		$manager->flush($custom_fields_definitions);
+		$manager->flush($form);
 
 
 
@@ -797,7 +797,7 @@ class PersonController extends AbstractController
 				'timezone_options' => $timezone_options,
 				'person' => $person,
 				'custom_fields' => $custom_fields,
-				'custom_fields_definitions' => $custom_fields_definitions->createView(),
+				'custom_fields_definitions' => $form->createView(),
 			))
 		));
 	}
