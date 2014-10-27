@@ -19,6 +19,7 @@ define [
 			@$scope.definition =
 				form_type: 'contextual_choice'
 				context_class: data.context
+				options: {}
 
 			@options =
 				expanded: 1
