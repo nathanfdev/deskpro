@@ -5,8 +5,8 @@
 	'adm.custom_fields.ticket_fields'                   => 'Ticket Fields',
 	'adm.custom_fields.user_fields'                     => 'User Fields',
 	'adm.custom_fields.org_fields'                      => 'Organization Fields',
-	'adm.custom_fields.specific_user_fields'            => 'Specific User Fields',
-	'adm.custom_fields.count_specific_user_fields'      => '{{count}} Specific User Custom Field|{{count}} Specific User Custom Fields',
-	'adm.custom_fields.specific_org_fields'             => 'Specific Organization Fields',
-	'adm.custom_fields.count_specific_org_fields'       => '{{count}} Specific Organization Custom Field|{{count}} Specific Organization Custom Fields',
+	'adm.custom_fields.specific_user_fields'            => 'Per-User Fields',
+	'adm.custom_fields.count_specific_user_fields'      => '{{count}} Per-User Custom Field|{{count}} Per-User Custom Fields',
+	'adm.custom_fields.specific_org_fields'             => 'Per-Organization Fields',
+	'adm.custom_fields.count_specific_org_fields'       => '{{count}} Per-Organization Custom Field|{{count}} Per-Organization Custom Fields',
 );
