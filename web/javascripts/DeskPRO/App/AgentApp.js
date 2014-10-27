@@ -2,11 +2,16 @@ define([
 	'angular',
 	'angularAnimate',
 	'angularBootstrap',
+	'angularSelect2',
 	'angularUISortable',
 	'DeskPRO/Util/Functions',
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',
 	'DeskPRO/Service/LabelDefinition',
+	'ngContextMenu',
+	'DeskPRO/Directive/DpTicketQuickActions',
+	'DeskPRO/Service/Person',
+	'DeskPRO/Service/AgentTeam',
 	'ngContextMenu',
 	'DeskPRO/CategoryBuilder/Module'
 ], function(
@@ -14,15 +19,25 @@ define([
 	x1,
 	x2,
 	x3,
+	x4,
 	Functions,
 	Strings,
 	DeskPRO_Directive_DpLabel,
     DeskPRO_Service_LabelDefinition,
     ngContextMenu,
+    DeskPRO_Directive_DpTicketQuickActions,
+	DeskPRO_Service_Person,
+	DeskPRO_Service_AgentTeam,
+    ngContextMenu,
     DpCategoryBuilder
 	) {
 	var AgentApp = angular.module('AgentApp', [
-		'ngAnimate', 'ui.bootstrap', 'ui.sortable', 'ng-context-menu', 'deskpro.category_builder'
+		'ngAnimate', 
+		'ui.bootstrap', 
+		'ui.sortable', 
+		'ng-context-menu', 
+		'deskpro.category_builder',
+		'ui.select2'
 	]);
 
 	//-------------------------------------------------------------------------
@@ -38,6 +53,10 @@ define([
 	AgentApp.factory('dpAppAssetInterceptor', [function() {
 		return  {
 			request: function(config) {
+				if (!window.AppPlatform) {
+					return config;
+				}
+
 				var assetPath = window.AppPlatform.getAssetPath(config.url);
 				if (assetPath) {
 					console.log("[dpAppAssetInterceptor] %s -> %s", config.url, assetPath);
@@ -45,7 +64,6 @@ define([
 					config.dpIsAppAsset = true;
 				} else {
 					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/')
-					config.headers['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 				}
 
 				return config;
@@ -54,6 +72,8 @@ define([
 	}]);
 
 	AgentApp.config(['$httpProvider', function($httpProvider) {
+		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+		$httpProvider.defaults.headers.common['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 		$httpProvider.interceptors.push('dpAppAssetInterceptor');
 	}]);
 
@@ -247,7 +267,7 @@ define([
 				if (attrs['tplId'] && cache[attrs['tplId']]) {
 					tpl = cache[attrs['tplId']];
 				} else {
-					tpl = Strings.simpleTemplate(element.html());
+					tpl = Strings.simpleTemplate(element.html(), { isAngular: true });
 					if (attrs['tplId']) {
 						cache[attrs['tplId']] = tpl;
 					}
@@ -817,7 +837,7 @@ define([
 					recentOpen = true;
 					var wrap = $('#recent_tabs_menu');
 					wrap.addClass('active').show();
-					wrap.width($el.width() - 2);
+					wrap.width(Math.max($el.width() - 2, 560));
 					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 					var closeFn = function() {
@@ -837,7 +857,7 @@ define([
 					notifsOpen = true;
 					var wrap = $('#dp_header_notify_wrap');
 					wrap.addClass('active').show();
-					wrap.width($el.width() - 2);
+					wrap.width(Math.max($el.width() - 2, 560));
 					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
 					DeskPRO_Window.notifications.resetElements();
@@ -1030,8 +1050,11 @@ define([
 	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
 		return new DeskPRO_Service_LabelDefinition($q, $http.get('/agent/labels/definitions'));
 	}]);
+	AgentApp.service('PersonService', DeskPRO_Service_Person);
+	AgentApp.service('AgentTeamService', DeskPRO_Service_AgentTeam);
 
 	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
+	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
 
 	return AgentApp;
 });

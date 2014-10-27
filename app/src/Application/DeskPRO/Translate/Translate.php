@@ -709,11 +709,20 @@ class Translate implements PersonContextInterface
 			return $object->getPhrase($this, $language);
 
 		} else if ($object instanceof HasPhraseName) {
-			$phrase_name = $object->getPhraseName($property, $this);
+			$phrase_name_raw = $object->getPhraseName($property, $this);
 			$phrase_text = false;
+			$phrase_name = false;
 
-			if ($phrase_name && $this->hasPhrase($phrase_name, $language)) {
-				$phrase_text = $this->phrase($phrase_name, array(), $language);
+			if (!is_array($phrase_name_raw)) {
+				$phrase_name_raw = array($phrase_name_raw);
+			}
+
+			foreach ($phrase_name_raw as $use_phrase_name) {
+				if ($use_phrase_name && $this->hasPhrase($use_phrase_name, $language)) {
+					$phrase_text = $this->phrase($use_phrase_name, array(), $language);
+					$phrase_name = $use_phrase_name;
+					break;
+				}
 			}
 
 			if (!$phrase_text) {

@@ -183,7 +183,7 @@ class TicketsController extends AbstractController
 					SELECT m, p
 					FROM DeskPRO:TicketMessage m
 					JOIN m.person p
-					WHERE m.id IN (?)
+					WHERE m.id IN (?0)
 					GROUP BY m.ticket
 					ORDER BY m.id DESC
 				")->execute(array($last_mesasge_ids));
@@ -297,7 +297,7 @@ class TicketsController extends AbstractController
 					SELECT m, p
 					FROM DeskPRO:TicketMessage m
 					LEFT JOIN m.person p
-					WHERE m.id IN (?)
+					WHERE m.id IN (?0)
 					GROUP BY m.ticket
 					ORDER BY m.id DESC
 				")->execute(array($last_mesasge_ids));

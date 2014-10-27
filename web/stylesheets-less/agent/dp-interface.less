@@ -4563,12 +4563,13 @@ blockquote {
 .dp-stickytip {
 	position: absolute;
 	background-color: #fff;
-	border: 1px solid #888;
+	border: 1px solid #b1b3b7;
+	border-radius: 3px;
 	padding: 0;
 	.rounded(2px);
 	z-index: 10000;
 
-	max-width: 400px;
+	max-width: 425px;
 
 	-webkit-box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.25);
 	box-shadow:  1px 1px 3px 1px rgba(0, 0, 0, 0.25);
@@ -4588,17 +4589,68 @@ blockquote {
 		font-size: 11px;
 	}
 
-	.previewtext-row {
-		line-height: 130%;
-		margin: 8px;
-		overflow: auto;
-
+	header {
+		background: #eff0f3;
+		border-bottom: 1px solid #d0d3d7;
+		padding-left: 5px;
 		cite {
+			display: block;
+			line-height: 25px;
 			font-style: normal;
 			text-decoration: none;
 			font-weight: bold;
 			margin-right: 15px;
-			display: inline-block;
+			img {
+				vertical-align: text-bottom;
+			}
+		}
+	}
+
+	article {
+		padding: 8px;
+
+		.preview-text {
+			line-height: 130%;
+			overflow: auto;
+		}
+	}
+
+	footer {
+		background: #eff0f3;
+		border: none;
+		ul.actions {
+			border-top: 1px solid #d0d3d7;
+			display: block;
+			li {
+				background: #eff0f3;
+				font-size: 11px;
+				padding: 1px 5px;
+				margin: 0;
+				border-left: 1px solid #d0d3d7;
+				float: left;
+
+				&:first-child {
+					border-left: none;
+				}
+				&:after {
+					content: "";
+					display: table;
+					clear: both;
+				}
+
+				a {
+					color: #929399;
+					&:hover {
+						text-decoration: none;
+						color: #505154;
+					}
+
+					i {
+						position: relative;
+						right: -3px;
+					}
+				}
+			}
 		}
 	}
 }

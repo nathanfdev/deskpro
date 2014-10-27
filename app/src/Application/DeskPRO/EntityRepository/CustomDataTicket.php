@@ -69,7 +69,7 @@ class CustomDataTicket extends AbstractEntityRepository
 			SELECT d
 			FROM DeskPRO:CustomDataTicket d
 			LEFT JOIN d.ticket t
-			WHERE d.ticket.id IN (?)
+			WHERE d.ticket.id IN (?0)
 		")->execute(array($ids));
 
 		if (!$raw) {

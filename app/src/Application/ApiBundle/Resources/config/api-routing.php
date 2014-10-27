@@ -19,6 +19,12 @@ $collection->create('api_docs_home', array(
 	'methods'     => array('GET'),
 ));
 
+$collection->create('api_getagentsforkey', array(
+	'path'        => '/get-agents-for-key.json',
+	'controller'  => 'ApiBundle:Docs:getAgentsForKey',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_discover', array(
 	'path'        => '/discover',
 	'controller'  => 'ApiBundle:Test:discover',
@@ -4051,7 +4057,7 @@ $collection->create('api_api_keys_get', array(
 $collection->create('api_api_keys_save', array(
 	'path'        => '/api_keys/{id}',
 	'controller'  => 'ApiBundle:ApiKeys:save',
-	'methods'     => array('POST'),
+	'methods'     => array('POST', 'PUT'),
 ));
 
 $collection->create('api_api_keys_delete', array(

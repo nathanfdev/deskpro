@@ -139,7 +139,7 @@ class SearchLog extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT l
 			FROM DeskPRO:SearchLog l
-			WHERE l.id IN (?)
+			WHERE l.id IN (?0)
 			ORDER BY l.id DESC
 		")->execute(array($ids));
 	}

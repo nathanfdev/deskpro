@@ -34,6 +34,8 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Form\Type\ApiKeyType;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Exception\ValidationException;
@@ -55,7 +57,10 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 	 */
 	public function getPermissionStrategy()
 	{
-		return new AdminManagePermission();
+		$multi = new MultiPermissions();
+		$multi->addPermissionStrategy(new AdminManagePermission());
+		$multi->addPermissionStrategy(new PassPermission(), 'getAgentsForKeyAction');
+		return $multi;
 	}
 
 
@@ -77,7 +82,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 	public function listAction()
 	{
 		$keys = $this->em->getRepository('DeskPRO:ApiKey')->findAll();
-		return $this->createApiResponse($this->getApiData($keys, false));
+		return $this->createApiResponse($this->getApiData($keys, false) ?: array());
 	}
 
 	###################################################################################################################

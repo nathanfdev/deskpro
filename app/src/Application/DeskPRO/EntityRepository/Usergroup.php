@@ -139,7 +139,7 @@ class Usergroup extends AbstractEntityRepository
 		return $this->getEntityManager()->createQuery("
 			SELECT u
 			FROM DeskPRO:Usergroup u INDEX BY u.id
-			WHERE u.id IN (?)
+			WHERE u.id IN (?0)
 			ORDER BY u.id DESC
 		")->execute(array($ids));
 	}

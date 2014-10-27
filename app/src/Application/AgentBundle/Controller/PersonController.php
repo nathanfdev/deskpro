@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\DBAL\DoctrineEvent;
@@ -44,6 +45,7 @@ use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Form\Type\DpCategoryBuilderType;
 use Application\DeskPRO\Log\Event\UserMerged;
+use Application\DeskPRO\People\PeopleResultsDisplay;
 use Orb\Util\Arrays;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\FormEvent;
@@ -1529,5 +1531,28 @@ class PersonController extends AbstractController
 		}
 
 		return $person;
+	}
+
+	/**
+	 * todo: we use this only for agents now
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listAction()
+	{
+		/** @var \Application\DeskPRO\EntityRepository\Person $rep */
+		$rep = $this->em->getRepository('DeskPRO:Person');
+		$ret = $rep->getAgentsRaw();
+		return $this->createJsonResponse($ret);
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listTeamsAction()
+	{
+		/** @var \Application\DeskPRO\EntityRepository\AgentTeam $rep */
+		$rep = $this->em->getRepository('DeskPRO:AgentTeam');
+		$ret = $rep->getTeamsRaw();
+		return $this->createJsonResponse($ret);
 	}
 }

@@ -1,40 +1,5 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
-
-    <section class="dp-paneblock dp-listpane">
-        <header>
-            <h3 ng-pluralize count="ListCtrl.specific_org_fields.length || 0"
-                when="{{ ng_plural_phrase('adm.custom_fields.count_specific_org_fields') }}">
-            </h3>
-        </header>
-        <article>
-            <ul class="dp-item-list" ui-sortable="ListCtrl.customFieldListOptions" dp-max-height>
-                <li ng-repeat="field in ListCtrl.specific_org_custom_fields"
-                    class="with-drag-handle"
-                    dp-state-mark="crm.org_fields.specific.edit.{{ ng_var('field.id') }}"
-                    data-id="{{ ng_var('field.id') }}">
-                    <a href="{{ ng_href('crm.org_fields.specific.edit', '{id: field.id}') }}">
-                        <i class="fa fa-bars drag-handle"></i>
-                        <div class="pull-right">
-                            <em class="tag tag-warn" ng-show="!field.is_enabled">Disabled</em>
-                        </div>
-                        <h4>
-                            <span class="title-id" title="ID">#{{ ng_var('field.id') }}</span>
-                            <span class="title-text">{{ ng_var('field.title') }}</span>
-                        </h4>
-                    </a>
-                </li>
-            </ul>
-            <div class="dp-add-control">
-                <a class="btn btn-default" href="{{ ng_href('crm.org_fields.specific.gocreate') }}"
-                   ng-class="{'active': isStateActive('crm.org_fields.specific.create') }">
-                    <i class="fa fa-plus"></i>
-                    {{ phrase('agent.general.add') }}
-                </a>
-            </div>
-        </article>
-    </section>
-
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
@@ -63,6 +28,40 @@
 			<div class="dp-add-control">
 				<a class="btn btn-default" href="{{ ng_href('crm.org_fields.gocreate') }}"
 				   ng-class="{'active': isStateActive('.create') }">
+					<i class="fa fa-plus"></i>
+					{{ phrase('agent.general.add') }}
+				</a>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.specific_org_fields.length || 0"
+				when="{{ ng_plural_phrase('adm.custom_fields.count_specific_org_fields') }}">
+			</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.customFieldListOptions" dp-max-height>
+				<li ng-repeat="field in ListCtrl.specific_org_custom_fields"
+					class="with-drag-handle"
+					dp-state-mark="crm.org_fields.specific.edit.{{ ng_var('field.id') }}"
+					data-id="{{ ng_var('field.id') }}">
+					<a href="{{ ng_href('crm.org_fields.specific.edit', '{id: field.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!field.is_enabled">Disabled</em>
+						</div>
+						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('field.id') }}</span>
+							<span class="title-text">{{ ng_var('field.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('crm.org_fields.specific.gocreate') }}"
+					ng-class="{'active': isStateActive('crm.org_fields.specific.create') }">
 					<i class="fa fa-plus"></i>
 					{{ phrase('agent.general.add') }}
 				</a>

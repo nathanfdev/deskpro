@@ -68,14 +68,14 @@ class News extends AbstractEntityRepository
 			$posts = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:News p INDEX BY p.id
-				WHERE p.id IN (?) AND p.category IN (?) AND p.status = 'published'
+				WHERE p.id IN (?0) AND p.category IN (?1) AND p.status = 'published'
 				ORDER BY p.id DESC
 			")->execute(array($ids, $cat_ids));
 		} else {
 			$posts = $this->getEntityManager()->createQuery("
 				SELECT p
 				FROM DeskPRO:News p INDEX BY p.id
-				WHERE p.id IN (?) AND p.status = 'published'
+				WHERE p.id IN (?0) AND p.status = 'published'
 				ORDER BY p.id DESC
 			")->execute(array($ids));
 		}
@@ -90,7 +90,7 @@ class News extends AbstractEntityRepository
 		$unsorted_news = $this->getEntityManager()->createQuery("
 			SELECT n
 			FROM DeskPRO:News n INDEX BY n.id
-			WHERE n.id IN (?)
+			WHERE n.id IN (?0)
 			ORDER BY n.id DESC
 		")->execute(array($ids));
 
@@ -133,7 +133,7 @@ class News extends AbstractEntityRepository
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT n
 				FROM DeskPRO:News n INDEX BY n.id
-				WHERE n.status = 'published' AND n.category IN (?)
+				WHERE n.status = 'published' AND n.category IN (?0)
 				ORDER BY n.id DESC
 			")->setMaxResults($num)->execute(array($cat_ids));
 		} else {

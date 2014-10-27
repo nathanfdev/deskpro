@@ -140,7 +140,7 @@ class Article extends AbstractEntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.id IN (?) AND cat.id IN (?) AND a.status = 'published'
+				WHERE a.id IN (?0) AND cat.id IN (?1) AND a.status = 'published'
 				ORDER BY a.id DESC
 			")->execute(array($ids, $cat_ids));
 
@@ -149,7 +149,7 @@ class Article extends AbstractEntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.id IN (?) AND a.status = 'published'
+				WHERE a.id IN (?0) AND a.status = 'published'
 				ORDER BY a.id DESC
 			")->execute(array($ids));
 		}
@@ -165,7 +165,7 @@ class Article extends AbstractEntityRepository
 		$unsorted_articles = $this->getEntityManager()->createQuery("
 			SELECT a
 			FROM DeskPRO:Article a INDEX BY a.id
-			WHERE a.id IN (?)
+			WHERE a.id IN (?0)
 			ORDER BY a.id DESC
 		")->setFetchMode('DeskPRO:ArticleCategory', 'categories', 'EAGER')
 		  ->execute(array($ids));
@@ -251,7 +251,7 @@ class Article extends AbstractEntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.status = 'published' AND cat.id IN (?)
+				WHERE a.status = 'published' AND cat.id IN (?0)
 				ORDER BY a.id DESC
 			")->setMaxResults($num)->execute(array($cat_ids));
 		} else {
@@ -275,7 +275,7 @@ class Article extends AbstractEntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.status = 'published' AND cat.id IN (?)
+				WHERE a.status = 'published' AND cat.id IN (?0)
 				ORDER BY a.total_rating DESC
 			")->setMaxResults($num)->execute(array($cat_ids));
 		} else {

@@ -618,7 +618,7 @@ define [
 				for acc in options
 					opts.push({
 						value: acc.id,
-						title: acc.address
+						title: acc.use_email_address || acc.address
 					})
 
 				return opts

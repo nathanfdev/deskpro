@@ -99,7 +99,7 @@ class UrlGenerator extends BaseUrlGenerator
 
 		// Make sure index.php is in links
 		$deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
-		if (!App::getSetting('core.rewrite_urls') && !preg_match('#index\.php$#', $deskpro_url)) {
+		if (!App::getSetting('core.rewrite_urls') && !@$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#index\.php$#', $deskpro_url)) {
 			$deskpro_url .= '/index.php';
 		}
 

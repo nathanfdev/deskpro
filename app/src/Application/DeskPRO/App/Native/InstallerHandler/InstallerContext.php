@@ -68,7 +68,7 @@ class InstallerContext
 	 * @param array            $raw_form
 	 * @param                  $usersource_type
 	 */
-	public function __construct(DeskproContainer $container, NativeApp $native_app, array $raw_form = array(), Usersource $usersource = null)
+	public function __construct(DeskproContainer $container, NativeApp $native_app = null, array $raw_form = array(), Usersource $usersource = null)
 	{
 		$this->container       = $container;
 		$this->native_app      = $native_app;

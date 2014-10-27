@@ -2355,10 +2355,13 @@ class TicketController extends AbstractController
 		);
 
 		$comment = $this->in->getString('billing_comment');
-		
-		$charge->charge_time	= $time;
-		$charge->amount		= $amount;
-		$charge->comment	= $comment;
+
+		$charge->comment = $comment;
+		if ($charge->charge_time) {
+			$charge->charge_time = $time;
+		} else {
+			$charge->amount = $amount;
+		}
 		
 		$ticket_log = new TicketLog();
 		$ticket_log->ticket      = $ticket;
@@ -2366,13 +2369,13 @@ class TicketController extends AbstractController
 		$ticket_log->action_type = 'modify_billing';
 		$ticket_log->id_object   = $charge->id;
 		$ticket_log->details     = array(
-			'charge_id'	=> $charge->id,
-			'old_amount'	=> $old_amount,
-			'old_time'	=> $old_time,
-			'new_amount'	=> $charge->amount,
-			'new_time'	=> $charge->charge_time,
-			'old_comment'	=> $old_comment,
-			'new_comment'	=> $charge->comment
+			'charge_id'    => $charge->id,
+			'old_amount'   => $old_amount,
+			'old_time'     => $old_time,
+			'new_amount'   => $charge->amount,
+			'new_time'	   => $charge->charge_time,
+			'old_comment'  => $old_comment,
+			'new_comment'  => $charge->comment
 		);
 		
 		$this->em->persist($charge);

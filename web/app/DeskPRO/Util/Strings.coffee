@@ -155,6 +155,19 @@ define ->
 
 
 		###
+    	# Escapes HTML and also AngularJS var markers.
+    	# TODO: Improve this to just escape \{\{ when we upgrade to angular 1.3
+    	#
+    	# @param {String} htmlString
+    	# @return {String}
+    	###
+		escapeAngularHtml: (htmlString) ->
+			return (htmlString+'').replace(/[&<>"'\/]/g, (s) ->
+				return DeskPRO_Util_Strings.ENTITY_MAP[s];
+			).replace(/\{\{/g, '{&#8203;{').replace(/\}\}/g, '}&#8203;}');
+
+
+		###
     	# Repeat a str num times
     	#
     	# @param {String} str
@@ -319,14 +332,22 @@ define ->
     	#     <%- this.doesnt.exist %>
     	#   The above wont result in an error, just an empty string. Pass settings.disableSafeVar to disable this.
     	#
+    	# - If settings.isAngular is set, then the escaper will escape AngularJS {{interpolation}} chars
+    	#
     	# @param {String} text The template text
     	# @param {Object} settings
     	# @return Function
 		###
 		simpleTemplate: (text, settings = {}) ->
 			STRINGS = @
+
+			if settings.isAngular
+				escaper = 'escapeAngularHtml'
+			else
+				escaper = 'escapeHtml'
+
 			index = 0
-			source = "var __t, __p = '', __j=Array.prototype.join, __escape=Strings.escapeHtml, "
+			source = "var __t, __p = '', __j=Array.prototype.join, __escape=Strings.#{escaper}, "
 			source += "print=function(){__p+=__j.call(arguments,'');};\n"
 			source += "with(obj||{}){\n";
 			source += "__p+='"
