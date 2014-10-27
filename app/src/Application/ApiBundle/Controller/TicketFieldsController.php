@@ -96,9 +96,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 		return $this->createApiResponse($data);
 	}
 
-	####################################################################################################################
-	# get-custom-field
-	####################################################################################################################
 
     /**
      * @param $id
@@ -205,9 +202,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 		}
 	}
 
-	####################################################################################################################
-	# delete-custom-field
-	####################################################################################################################
+
     /**
      * @param $id
      * @return Response
@@ -246,10 +241,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
 		return $this->createApiDeleteResponse();
 	}
-
-	####################################################################################################################
-	# toggleField
-	####################################################################################################################
 
     /**
      * @param $field_id

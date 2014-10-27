@@ -195,21 +195,21 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *				description="Criteria for trigger run",
      *				paramType="query",
      *				required=false,
-     *				type="array",
+     *				type="string",
      *			),
      *          @SWG\Parameter(
      *				name="terms_any",
      *				description="Filter",
      *				paramType="query",
      *				required=false,
-     *				type="array",
+     *				type="string",
      *			),
      *          @SWG\Parameter(
      *				name="actions",
      *				description="Array of actions to perform",
      *				paramType="query",
      *				required=false,
-     *				type="array",
+     *				type="string",
      *			),
      *      )
      *  )
@@ -249,21 +249,21 @@ class TicketEscalationsController extends AbstractController implements Protecte
      *				description="Criteria for trigger run",
      *				paramType="query",
      *				required=false,
-     *				type="array",
+     *				type="string",
      *			),
      *          @SWG\Parameter(
      *				name="terms_any",
      *				description="Filter",
      *				paramType="query",
      *				required=false,
-     *				type="array",
+     *				type="string",
      *			),
      *          @SWG\Parameter(
      *				name="actions",
      *				description="Array of actions to perform",
      *				paramType="query",
      *				required=false,
-     *				type="array",
+     *				type="string",
      *			),
      *      )
      *  )
@@ -356,12 +356,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
 		));
 	}
 
-	####################################################################################################################
-	# toggle-trigger
-	####################################################################################################################
-
     /**
-     *
      * Enable/disable escalation.
      * @param $id
      * @param $is_enabled - controlled by router
@@ -421,10 +416,6 @@ class TicketEscalationsController extends AbstractController implements Protecte
 
 		return $this->createSuccessResponse();
 	}
-
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
 
     /**
      * @return Response

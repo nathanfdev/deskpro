@@ -580,10 +580,6 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 		return $this->createSuccessResponse(array('old_id' => $old_id));
 	}
 
-	####################################################################################################################
-	# toggle-trigger
-	####################################################################################################################
-
     /**
      * @param $id
      * @param $is_enabled

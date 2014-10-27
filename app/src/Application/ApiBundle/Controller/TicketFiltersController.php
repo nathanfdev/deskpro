@@ -61,10 +61,6 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
 	}
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
-
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      *

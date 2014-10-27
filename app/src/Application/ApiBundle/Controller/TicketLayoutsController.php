@@ -243,14 +243,14 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      *				description="Layout user",
      *				paramType="query",
      *				required=false,
-     *				type="array",
+     *				type="string",
      *			),
      *          @SWG\Parameter(
      *				name="layout[agent]",
      *				description="Layout agent",
      *				paramType="query",
      *				required=false,
-     *				type="array",
+     *				type="string",
      *			),
      *      )
      *  )
