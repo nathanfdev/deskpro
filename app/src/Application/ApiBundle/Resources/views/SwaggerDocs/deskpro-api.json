@@ -43,8 +43,24 @@
             "description":"Operations about Tasks"
         },
         {
+            "path":"/ticket_escalations",
+            "description":"Operations about Ticket escalations"
+        },
+        {
+            "path":"/ticket_fields",
+            "description":"Operations about Ticket fields"
+        },
+        {
             "path":"/ticket_filters",
             "description":"Operations about Ticket urgencies"
+        },
+        {
+            "path":"/ticket_layout",
+            "description":"Operations about Ticket layouts"
+        },
+        {
+            "path":"/ticket_macros",
+            "description":"Operations about Ticket macros"
         },
         {
             "path":"/ticket_statuses",

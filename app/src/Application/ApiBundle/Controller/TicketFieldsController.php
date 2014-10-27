@@ -40,6 +40,17 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 
+use \Symfony\Component\HttpFoundation\Response;
+
+/**
+ * Operations about Ticket fields
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/ticket_fields",
+ * 	description="Operations about Ticket fields",
+ * 	basePath="/api"
+ * )
+ */
 class TicketFieldsController extends AbstractController implements ProtectedControllerInterface
 {
 	/**
@@ -54,10 +65,19 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	}
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
-
+    /**
+     * @return Response;
+     *
+     * @SWG\Api(
+     * 	path="/ticket_fields",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get list of ticket fields, including custom fields",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
 	public function listAction()
 	{
 		$data = array();
@@ -80,6 +100,32 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	# get-custom-field
 	####################################################################################################################
 
+    /**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @SWG\Api(
+     * 	path="/ticket_fields/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get custom ticket field by Id",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Custom field id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function getCustomFieldAction($id)
 	{
 		$field = $this->em->find('DeskPRO:CustomDefTicket', $id);
@@ -93,10 +139,43 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 		return $this->createApiResponse($data);
 	}
 
-	####################################################################################################################
-	# save-custom-field
-	####################################################################################################################
+    /**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @SWG\Api(
+     * 	path="/ticket_fields/{id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Save custom ticket field by ID",
+     * 		notes="All you will pass in this query will be saved",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Custom field id",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
 
+     * @SWG\Api(
+     * 	path="/ticket_fields",
+     * 	@SWG\Operation(
+     * 		method="PUT",
+     * 		summary="Create custom ticket field",
+     * 		notes="All you will pass in this query will be saved",
+     *		type="array",
+     *  )
+     * )
+     */
 	public function saveCustomFieldAction($id)
 	{
 		if ($id) {
@@ -129,7 +208,32 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	####################################################################################################################
 	# delete-custom-field
 	####################################################################################################################
-
+    /**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @SWG\Api(
+     * 	path="/ticket_fields/{id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete custom field by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Custom field ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function deleteCustomFieldAction($id)
 	{
 		$field = $this->em->find('DeskPRO:CustomDefTicket', $id);
@@ -147,6 +251,37 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 	# toggleField
 	####################################################################################################################
 
+    /**
+     * @param $field_id
+     * @param $is_enabled
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/ticket_fields/set-enabled/{field_id}/{is_enabled}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Set custom field enabled/disabled",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Custom field ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="is_enabled",
+     *				description="Enabled marker",
+     *				paramType="path",
+     *				required=true,
+     *				type="boolean",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function toggleFieldAction($field_id, $is_enabled)
 	{
 		$field_manager = $this->container->getSystemService('ticket_fields_manager');

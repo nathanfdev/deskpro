@@ -3373,7 +3373,7 @@ $collection->create('api_ticket_triggers_disabletriggergroup', array(
 	'path'         => '/ticket_triggers/{special_type}/disable',
 	'defaults'     => array('is_enabled' => false),
 	'controller'   => 'ApiBundle:TicketTriggers:toggleTriggerGroup',
-	'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)', 'id' => '\d+'),
+	'requirements' => array('special_type' => '(departments|departments_changed|email_accounts)'),
 	'methods'      => array('POST'),
 ));
 
@@ -3512,6 +3512,7 @@ $collection->create('api_ticket_macros_create', array(
 $collection->create('api_ticket_macros_get', array(
 	'path'         => '/ticket_macros/{id}',
 	'controller'   => 'ApiBundle:TicketMacros:get',
+    'requirements' => array('id' => '\d+'),
 	'methods'      => array('GET'),
 ));
 
@@ -3524,6 +3525,7 @@ $collection->create('api_ticket_macros_save', array(
 $collection->create('api_ticket_macros_delete', array(
 	'path'         => '/ticket_macros/{id}',
 	'controller'   => 'ApiBundle:TicketMacros:remove',
+    'requirements' => array('id' => '\d+'),
 	'methods'      => array('DELETE'),
 ));
 
