@@ -41,6 +41,6 @@ class NewTicketController extends AbstractController
 {
 	public function newTicketAction()
 	{
-		return $this->render('Theme:NewTicket:new-ticket.html.twig');
+		return $this->render('Theme:NewTicket:new_ticket.html.twig');
 	}
 }

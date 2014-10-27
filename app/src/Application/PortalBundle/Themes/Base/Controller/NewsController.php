@@ -62,12 +62,18 @@ class NewsController extends AbstractController
 	{
 		$count = $request->get('count', 5);
 
-		$news = $this->getNewsRepo()->getNewest($count);
+		$news  = $this->getNewsRepo()->getNewest($count);
 		$total = $this->getNewsRepo()->countPublished();
 
-		return $this->render('Theme:News:list.html.twig', array(
+		$template = 'Theme:News:list.html.twig';
+		if ('1' == $request->query->get('render_small')) {
+			$template = 'Theme:News:list_small.html.twig';
+		}
+
+		return $this->render(
+			$template, array(
 				'news_count_total' => $total,
-				'news_articles' => $news
+				'news_articles'    => $news
 			)
 		);
 	}

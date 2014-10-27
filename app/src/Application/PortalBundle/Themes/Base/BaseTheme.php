@@ -46,6 +46,7 @@ class BaseTheme extends AbstractTheme
 			new Tag('top_bar', 'Theme:Portal:topBar'),
 			new Tag('top_search', 'Theme:Portal:topSearch'),
 			new Tag('news_list', 'Theme:News:list'),
+			new Tag('news_list_small', 'Theme:News:list', array('render_small' => '1')),
 		);
 	}
 

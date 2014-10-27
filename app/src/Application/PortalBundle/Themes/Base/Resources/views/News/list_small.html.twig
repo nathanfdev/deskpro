@@ -1,0 +1,16 @@
+<article class="panel-tiny front-page-news-tiny">
+	<div class="large-title clearfix"><h1>News</h1></div>
+
+	<ul>
+		{% for item in news_articles %}
+		<li>
+			<span class="date-tag"><span>{{ item.date_published | date('M') }}</span> {{ item.date_published | date('j') }}</span><a href="#">{{ item.title }}</a>
+		</li>
+		{% endfor %}
+	</ul>
+
+	<div class="list-meta">
+		<a href="#">View <span>{{ news_count_total }}</span> articles<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+	</div>
+
+</article>
