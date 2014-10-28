@@ -86,8 +86,12 @@ class BlobStorageService
 			$client = S3Client::factory(array(
 				'key'          => $container->getSetting('core.filestorage_s3_key'),
 				'secret'       => $container->getSetting('core.filestorage_s3_secret'),
+				'request.options' => array(
+					'connect_timeout' => 15,
+					'timeout'         => 120,
+				),
 				'curl.options' => array(
-					CURLOPT_CONNECTTIMEOUT => 40,
+					CURLOPT_CONNECTTIMEOUT => 15,
 					CURLOPT_TIMEOUT        => 120,
 				)
 			));
