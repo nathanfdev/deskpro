@@ -158,7 +158,8 @@ define ->
 								$timeout (-> promise && $timeout.cancel promise), 10 # prevent mouseleave in FF
 								$(document).on 'mousemove.quick-actions-select2', '#select2-drop-mask, #select2-drop', (e) ->
 									$el.trigger e
-							$input.on 'select2-close', () ->
+							$input.on 'select2-close', ->
+								$scope.$root.$emit 'tickets.quick_actions.hide'
 								$(document).off 'mousemove.quick-actions-select2'
 								$(document).off 'click.quick-actions-select2'
 

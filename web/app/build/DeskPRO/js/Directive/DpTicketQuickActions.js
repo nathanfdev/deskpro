@@ -202,6 +202,7 @@
                   });
                 });
                 $input.on('select2-close', function() {
+                  $scope.$root.$emit('tickets.quick_actions.hide');
                   $(document).off('mousemove.quick-actions-select2');
                   return $(document).off('click.quick-actions-select2');
                 });
