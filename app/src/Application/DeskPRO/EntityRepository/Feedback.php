@@ -287,6 +287,17 @@ class Feedback extends AbstractEntityRepository
 		return $feedback;
 	}
 
+	public function countNotClosedNotHidden()
+	{
+		return $this->getEntityManager()->createQuery(
+			"
+						SELECT COUNT(n) as cc
+						FROM DeskPRO:Feedback n
+						WHERE n.status != 'closed' AND n.status != 'hidden'
+					"
+		)->getSingleScalarResult();
+	}
+
 
 	public function getNewest($status, $num = 10, $node = false)
 	{

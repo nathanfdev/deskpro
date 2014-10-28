@@ -1,0 +1,18 @@
+<article class="panel-tiny feedback front-page-feedback">
+	<div class="large-title clearfix"><h1>Feedback</h1></div>
+
+	<ul>
+		{% for item in feedback %}
+		<li>
+			<span class="thumbs"><i class="fa fa-thumbs-up"></i> {{ item.popularity }}</span>
+			<a href="#">{{ item.title }}</a>
+		</li>
+		{% endfor %}
+	</ul>
+
+	<div class="list-meta">
+		<a href="#">View <span>{{ count_feedback }}</span> feedback items<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+	</div>
+
+
+</article>
