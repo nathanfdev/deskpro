@@ -82,6 +82,17 @@
         return d.promise;
       };
 
+      DeskPRO_Service_Person.prototype.get = function(id) {
+        var d;
+        d = this.$q.defer();
+        this._load().then((function(_this) {
+          return function() {
+            return d.resolve(_persons[_maps.ids[id]] || null);
+          };
+        })(this));
+        return d.promise;
+      };
+
       return DeskPRO_Service_Person;
 
     })();

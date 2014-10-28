@@ -8,8 +8,8 @@
             <nav class="dp-blocktabs responsive">
                 <ul>
                     <li class="active" dp-tab-btn="api.keys"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('adm.api_keys.keys_title') }}</a></li>
-                    <li class="pipe" ng-if="EditCtrl.form.logs && EditCtrl.form.logs.length">|</li>
-                    <li dp-tab-btn="api.logs" ng-if="EditCtrl.form.logs && EditCtrl.form.logs.length">
+                    <li class="pipe" ng-if="EditCtrl.logs && EditCtrl.logs.length">|</li>
+                    <li dp-tab-btn="api.logs" ng-if="EditCtrl.logs && EditCtrl.logs.length">
 	                    <a href="#"><i class="fa fa-key"></i> {{ phrase('adm.api_keys.logs_title') }}</a>
                     </li>
                 </ul>
@@ -155,7 +155,7 @@
                 </div>
                 <div dp-tab-body="api.logs">
                     <ul class="dp-item-list">
-                        <li dp-li-group-section ng-repeat="item in EditCtrl.form.logs">
+                        <li dp-li-group-section ng-repeat="item in EditCtrl.logs">
                             <a href="#" class="toggle" ng-click="$event.preventDefault();">
                                 <div class="row" ng-class="!item.response.status && 'text-danger'">
                                     <div class="col-lg-4">{{ ng_var('item.request.method') }}</div>

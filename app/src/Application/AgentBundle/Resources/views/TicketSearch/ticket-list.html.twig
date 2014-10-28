@@ -20,11 +20,13 @@
 				<div class="realtime-indicator half-realtime" ng-show="halfrealtime && massActionsOpen">
 					<em>Limited real-time updating</em>
 					<div dp-sticky-tip offset-top="18" right-align>
-						<div class="previewtext-row" style="max-width: 200px;">
+						<article>
+							<div class="content-text" style="max-width: 200px;">
 							While you are working with mass actions, no <em>new</em> tickets will appear in this list.
-							<br/><br/>
-							Updates to tickets <em>already</em> in the list will still appear in real-time as they change.
-						</div>
+								<br/><br/>
+								Updates to tickets <em>already</em> in the list will still appear in real-time as they change.
+							</div>
+						</article>
 					</div>
 				</div>
 				<div class="realtime-indicator" ng-class="{'realtime-on': realtime}" ng-hide="halfrealtime || massActionsOpen">
@@ -33,21 +35,25 @@
 							<em>Real-time updates are enabled</em>
 							<i class="icon-retweet"></i>
 							<div dp-sticky-tip offset-top="25" right-align>
-								<div class="previewtext-row">
-									With real-time updates enabled, this list will update with new information as
-									tickets are updated in the helpdesk.
-								</div>
+								<article>
+									<div class="content-text">
+										With real-time updates enabled, this list will update with new information as
+										tickets are updated in the helpdesk.
+									</div>
+								</article>
 							</div>
 						</div>
 						<div ng-show="!realtime">
 							<em>Real-time updates are disabled</em>
 							<i class="icon-retweet"></i>
 							<div dp-sticky-tip offset-top="25" right-align>
-								<div class="previewtext-row">
-									With real-time updates disabled, this list will remain static and unchanged.
-									You will see a warning at the top of the list when changes have been detected,
-									but you will need to manually refresh the list to see updates.
-								</div>
+								<article>
+									<div class="content-text">
+										With real-time updates disabled, this list will remain static and unchanged.
+										You will see a warning at the top of the list when changes have been detected,
+										but you will need to manually refresh the list to see updates.
+									</div>
+								</article>
 							</div>
 						</div>
 					</span>

@@ -20,6 +20,15 @@ define [
 
 			deferred.promise
 
+		getLogs: (entry) ->
+			deferred = @$q.defer()
+
+			@Api.sendGet("/api_keys/#{entry.id}/logs").success((data, status, headers, config) =>
+				deferred.resolve(data, status)
+			).error((data, status, headers, config) -> deferred.reject(data, status))
+
+			deferred.promise
+
 		###
 		# Generate new API key code
 		#

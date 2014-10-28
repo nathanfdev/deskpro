@@ -49,7 +49,6 @@
         var p1, p2;
         p1 = this.service.keys.get(this.$stateParams.id || null).then((function(_this) {
           return function(model) {
-            console.log(model);
             if (model == null) {
               return;
             }
@@ -64,6 +63,15 @@
             return _this.agents = agents;
           };
         })(this));
+        if (this.$stateParams.id) {
+          this.service.keys.getLogs({
+            id: this.$stateParams.id
+          }).then((function(_this) {
+            return function(data) {
+              return _this.logs = data.logs;
+            };
+          })(this));
+        }
         return this.$q.all([p1, p2]);
       };
 

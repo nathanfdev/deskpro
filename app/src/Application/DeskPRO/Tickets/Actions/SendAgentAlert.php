@@ -198,6 +198,8 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 		$tpl = $this->getContainer()->getTemplating();
 		$tr  = $this->getContainer()->getTranslator();
 
+		$alert_records = array();
+
 		foreach ($agents as $agent) {
 			if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
 				continue;
@@ -218,14 +220,22 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
 			if ($alert) {
 				$sent_count++;
-
 				$em->persist($alert);
 
-				$cm = $alert_sender->createClientMessage($agent, 'tickets', $alert_data, $alert);
+				$alert_records[] = array($agent, $alert_data, $alert);
+			}
+		}
+
+		$em->flush();
+
+		if ($alert_records) {
+			foreach ($alert_records	as $rec) {
+				$cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
 				if ($cm) {
 					$em->persist($cm);
 				}
 			}
+			$em->flush();
 		}
 
 		$context->getLogger()->info(sprintf("[SendAgentAlert] Sent %d alerts in %.3fs", $sent_count, microtime(true)-$start_time));

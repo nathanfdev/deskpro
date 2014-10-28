@@ -29,68 +29,36 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Templating
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Twig\Extension;
 
-use Application\DeskPRO\App;
-use Doctrine\ORM\Query;
-use Application\DeskPRO\Entity;
+use Symfony\Bridge\Twig\Extension\RoutingExtension as BaseRoutingExtension;
 
-class ApiKeyLog extends AbstractEntityRepository
+class RoutingExtension extends BaseRoutingExtension
 {
-	const LIMIT = 50;
-
 	/**
-	 * clean old records
+	 * Custom getPath to eat exception when not in debug mode.
+	 *
+	 * This is because people can screw up their site if they edit templates and then try to render
+	 * a malformed link. In that scenario, better to not fatal error.
+	 *
+	 * @param string $name
+	 * @param array $parameters
+	 * @param bool  $relative
+	 * @return string
+	 * @throws \Exception
 	 */
-	public function cleanup()
+	public function getPath($name, $parameters = array(), $relative = false)
 	{
-		$limit = self::LIMIT;
-
-		$key_ids = App::$container->getDb()->fetchAllCol('
-			SELECT key_id
-			FROM api_key_log
-			GROUP BY key_id
-			HAVING COUNT(*) > ?
-		', array($limit), array(\PDO::PARAM_INT));
-
-		if (!$key_ids) {
-			return 0;
-		}
-
-		foreach ($key_ids as $key_id) {
-			$lid = App::$container->getDb()->fetchColumn("
-				SELECT id
-				FROM api_key_log
-				WHERE key_id = ?
-				ORDER BY id DESC
-				LIMIT $limit, 1
-			", array($key_id));
-
-			if ($lid) {
-				App::$container->getDb()->executeUpdate("
-					DELETE FROM api_key_log
-					WHERE key_id = ? AND id <= ?
-				", array($key_id, $lid));
+		try {
+			return parent::getPath($name, $parameters, $relative);
+		} catch (\Exception $e) {
+			if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
+				throw $e;
 			}
+			return '';
 		}
-	}
-
-
-	/**
-	 * @param Entity\ApiKey $api_key
-	 * @param int           $limit
-	 * @return Entity\ApiKeyLog[]
-	 */
-	public function getLogsForKey(Entity\ApiKey $api_key, $limit = 100)
-	{
-		return $this->_em->createQuery("
-			SELECT l
-			FROM DeskPRO:ApiKeyLog l
-			WHERE l.key = ?0
-			ORDER BY l.id DESC
-		")->setMaxResults($limit)->execute(array($api_key));
 	}
 }

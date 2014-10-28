@@ -197,7 +197,7 @@ class ChatConversation extends AbstractEntityRepository
 		$conversations = $this->getEntityManager()->createQuery("
 			SELECT c
 			FROM DeskPRO:ChatConversation c INDEX BY c.id
-			WHERE c.id IN(?)
+			WHERE c.id IN(?0)
 			ORDER BY c.id DESC
 		")->execute(array($conversation_ids));
 

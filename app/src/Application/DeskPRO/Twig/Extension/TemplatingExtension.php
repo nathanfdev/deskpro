@@ -165,7 +165,6 @@ class TemplatingExtension extends \Twig_Extension
 
 			// override so we can suppress errors where templates are out of date
 			'url'  => new \Twig_Function_Method($this, 'getUrl'),
-            'path' => new \Twig_Function_Method($this, 'getPath'),
         );
     }
 

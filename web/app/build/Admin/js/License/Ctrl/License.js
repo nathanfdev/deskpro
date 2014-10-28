@@ -99,11 +99,11 @@
         this.startSpinner('saving');
         return this.Api.sendPost("dp_license", postData).success((function(_this) {
           return function() {
-            return _this.reloadLicData().then(function() {
+            return _this.DpLicense.getLicInfo(true).then(_this.reloadLicData().then(function() {
               return _this.stopSpinner('saving').then(function() {
                 return _this.Growl.success(_this.getRegisteredMessage('saved_lic'));
               });
-            });
+            }));
           };
         })(this)).error((function(_this) {
           return function(data) {

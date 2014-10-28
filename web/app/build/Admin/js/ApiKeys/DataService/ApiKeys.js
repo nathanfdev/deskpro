@@ -31,6 +31,19 @@
         return deferred.promise;
       };
 
+      Admin_ApiKeys_DataService_ApiKeys.prototype.getLogs = function(entry) {
+        var deferred;
+        deferred = this.$q.defer();
+        this.Api.sendGet("/api_keys/" + entry.id + "/logs").success((function(_this) {
+          return function(data, status, headers, config) {
+            return deferred.resolve(data, status);
+          };
+        })(this)).error(function(data, status, headers, config) {
+          return deferred.reject(data, status);
+        });
+        return deferred.promise;
+      };
+
 
       /*
       		 * Generate new API key code
