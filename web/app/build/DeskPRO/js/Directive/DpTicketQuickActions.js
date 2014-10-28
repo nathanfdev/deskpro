@@ -148,7 +148,7 @@
           };
         },
         link: function($scope, $el) {
-          var $actions, $preview, promise;
+          var $actions, $preview, promise, showTimeout;
           $el.hide();
           promise = null;
           $preview = $el.find('.preview-text').first();
@@ -164,18 +164,26 @@
               return $el.css('max-width', $actions.outerWidth(true) + 'px');
             }), 1);
           };
-          $scope.$root.$on('tickets.quick_actions.show', function(angularEvent, e, ticket) {
-            var offset, _ref, _ref1;
+          showTimeout = null;
+          $scope.$root.$on('tickets.quick_actions.show', function(angularEvent, e, ticket, delay) {
+            var _ref;
             promise && $timeout.cancel(promise);
             if (!(ticket != null ? (_ref = ticket.previews) != null ? _ref.length : void 0 : void 0)) {
               return;
             }
-            $el.show();
-            offset = $(e.target).offset();
-            offset.top += $(e.target).height();
-            $el.css(offset);
-            $scope.setTicket(ticket);
-            return $preview.text((_ref1 = ticket.previews[0].message) != null ? _ref1.preview_text : void 0).trigger('update');
+            if (showTimeout) {
+              $timeout.cancel(showTimeout);
+            }
+            showTimeout = null;
+            return showTimeout = $timeout(function() {
+              var offset, _ref1;
+              $el.show();
+              offset = $(e.target).offset();
+              offset.top += $(e.target).height();
+              $el.css(offset);
+              $scope.setTicket(ticket);
+              return $preview.text((_ref1 = ticket.previews[0].message) != null ? _ref1.preview_text : void 0).trigger('update');
+            }, delay);
           });
           $scope.showDropdown = function(action, $event) {
             var $input;
@@ -202,7 +210,11 @@
             }
           };
           $scope.$root.$on('tickets.quick_actions.hide', function() {
-            return $el.trigger('mouseleave');
+            $el.trigger('mouseleave');
+            if (showTimeout) {
+              $timeout.cancel(showTimeout);
+            }
+            return showTimeout = null;
           });
           $el.on('mousemove', function(e) {
             return promise && $timeout.cancel(promise);

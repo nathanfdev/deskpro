@@ -124,19 +124,26 @@ define ->
 					$el.css 'max-width', '650px'
 					$timeout (-> $el.css 'max-width', $actions.outerWidth(true) + 'px'), 1
 
+				showTimeout = null
+
 				# events
-				$scope.$root.$on 'tickets.quick_actions.show', (angularEvent, e, ticket) ->
+				$scope.$root.$on 'tickets.quick_actions.show', (angularEvent, e, ticket, delay) ->
 					promise && $timeout.cancel promise
 					return if !ticket?.previews?.length
 
-					# show and update position
-					$el.show()
-					offset = $(e.target).offset()
-					offset.top += $(e.target).height()
-					$el.css offset
+					if showTimeout then $timeout.cancel(showTimeout)
+					showTimeout = null
 
-					$scope.setTicket ticket
-					$preview.text(ticket.previews[0].message?.preview_text).trigger 'update'
+					showTimeout = $timeout(->
+						# show and update position
+						$el.show()
+						offset = $(e.target).offset()
+						offset.top += $(e.target).height()
+						$el.css offset
+
+						$scope.setTicket ticket
+						$preview.text(ticket.previews[0].message?.preview_text).trigger 'update'
+					, delay)
 
 				$scope.showDropdown = (action, $event) ->
 					$scope.visible = action
@@ -161,6 +168,8 @@ define ->
 
 				$scope.$root.$on 'tickets.quick_actions.hide', ->
 					$el.trigger 'mouseleave'
+					if showTimeout then $timeout.cancel(showTimeout)
+					showTimeout = null
 
 				$el.on 'mousemove', (e) ->
 					promise && $timeout.cancel promise
