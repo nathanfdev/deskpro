@@ -106,7 +106,7 @@ class FakeContentData implements FixtureInterface
 			if ($i > 4) $i = 1;
 			$article           = new Article();
 			$cat               = 'kb_category' . $i;
-			$article->category = $$cat;
+			$article->setCategories(array($$cat));
 			$article->title    = $title;
 			$article->person = $this->person;
 			$article->content  = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lobortis velit id lobortis aliquet. In vel elit vel ex ornare viverra. Morbi scelerisque arcu eros, at varius turpis vulputate non. Praesent ultrices pharetra mattis. Nullam euismod nunc nulla, in cursus nibh aliquet nec. Cras a hendrerit ex. Donec sit amet lectus eu turpis lobortis commodo. Curabitur ut consequat turpis, quis tempus ipsum. Aenean aliquam turpis ligula, eu ullamcorper purus ultricies quis. Fusce eleifend lorem vel eros aliquam pretium. Pellentesque sodales dictum nulla volutpat egestas.';
@@ -177,6 +177,7 @@ class FakeContentData implements FixtureInterface
 			$feedback           = new Feedback();
 			$feedback->category = $cat;
 			$feedback->title    = $title;
+			$feedback->recalculatePopularity();
 			$feedback->content  = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut lobortis velit id lobortis aliquet. In vel elit vel ex ornare viverra. Morbi scelerisque arcu eros, at varius turpis vulputate non. Praesent ultrices pharetra mattis. Nullam euismod nunc nulla, in cursus nibh aliquet nec. Cras a hendrerit ex. Donec sit amet lectus eu turpis lobortis commodo. Curabitur ut consequat turpis, quis tempus ipsum. Aenean aliquam turpis ligula, eu ullamcorper purus ultricies quis. Fusce eleifend lorem vel eros aliquam pretium. Pellentesque sodales dictum nulla volutpat egestas.';
 			$feedback->setStatus(Feedback::STATUS_PUBLISHED);
 			$feedback->person = $this->person;
