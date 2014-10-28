@@ -183,6 +183,18 @@ class Download extends AbstractEntityRepository
 		return $counts;
 	}
 
+
+	public function countPublished()
+	{
+		return $this->getEntityManager()->createQuery(
+			"
+						SELECT COUNT(n) as cc
+						FROM DeskPRO:Download n
+						WHERE n.status = 'published'
+					"
+		)->getSingleScalarResult();
+	}
+
 	public function getReportAssociations()
 	{
 		return array(

@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -61,5 +62,35 @@ class DownloadsController extends AbstractController
 	public function downloadAction($slug)
 	{
 		return new Response('downlading file...');
+	}
+
+
+	public function listAction(Request $request)
+	{
+		$count = $request->get('count', 5);
+
+		$downloads  = $this->getDownloadsRepo()->getNewest($count);
+		$total = $this->getDownloadsRepo()->countPublished();
+
+		$template = 'Theme:Downloads:list.html.twig';
+		if ('1' == $request->query->get('render_small')) {
+			$template = 'Theme:Downloads:list_small.html.twig';
+		}
+
+		return $this->render(
+			$template, array(
+				'count_downloads' => $total,
+				'downloads'    => $downloads
+			)
+		);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Download
+	 */
+	protected function getDownloadsRepo()
+	{
+		return $this->getDoctrine()->getRepository('DeskPRO:Download');
 	}
 }

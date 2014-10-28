@@ -1,0 +1,16 @@
+<article class="panel-tiny front-page-downloads">
+	<div class="large-title clearfix"><h1>Downloads</h1></div>
+
+	<ul>
+		{% for dl in downloads %}
+		<li>
+			<span class="text-tag file-tag file-pdf">.pdf</span>
+			<a href="#">{{ dl.title }}</a>
+		</li>
+		{% endfor %}
+	</ul>
+
+	<div class="list-meta">
+		<a href="#">View <span>{{ count_downloads }}</span> downloads<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+	</div>
+</article>
