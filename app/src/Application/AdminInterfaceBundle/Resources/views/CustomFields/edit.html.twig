@@ -44,7 +44,7 @@
                         {# todo: only for choice type #}
                         <div class="form-group">
                             <div class="col-lg-3">
-                                <h3>Options</h3>
+                                <h3>Type</h3>
                             </div>
                             <div class="col-lg-9">
                                 <label>
@@ -62,14 +62,19 @@
                                 <label>
                                     <input type="radio" name="choices" value="3" ng-model="options.choices" /> Checkboxes (multiple selection)
                                 </label>
-
-	                            <br />
-	                            <br />
-	                            <label>
-		                            <input type="checkbox" ng-model="definition.options.allow_edit" /> User can change values
-	                            </label>
                             </div>
                         </div>
+
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>Options</h3>
+							</div>
+							<div class="col-lg-9">
+								<label>
+									<input type="checkbox" ng-model="definition.options.allow_edit" /> Allow users to add values themselves
+								</label>
+							</div>
+						</div>
 
                     </div>
                 </div>
