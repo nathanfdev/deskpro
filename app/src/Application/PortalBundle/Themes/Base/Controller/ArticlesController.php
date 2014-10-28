@@ -36,6 +36,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class ArticlesController extends AbstractController
 {
@@ -54,5 +55,63 @@ class ArticlesController extends AbstractController
 	public function viewAction($slug)
 	{
 		return $this->render('Theme:Articles:view.html.twig', array('article' => $slug));
+	}
+
+
+	public function listAction(Request $request)
+	{
+		$count = $request->get('count', 5);
+
+		$news  = $this->getArticlesRepo()->getNewest($count);
+		$total = $this->getArticlesRepo()->countPublished();
+
+		$template = 'Theme:Articles:list.html.twig';
+		if ('1' == $request->query->get('render_small')) {
+			$template = 'Theme:Articles:list_small.html.twig';
+		}
+
+		return $this->render(
+			$template, array(
+				'news_count_total' => $total,
+				'news_articles'    => $news
+			)
+		);
+	}
+
+
+	public function categoriesAction(Request $request)
+	{
+		$count = $request->get('articles_count', 5);
+
+		$cats  = $this->getArticleCategoryRepo()->findAll();
+
+		$cat_articles = array();
+		foreach ($cats as $cat) {
+			$cat_articles[] = array('category' => $cat, 'articles' => $this->getArticlesRepo()->getInNode($cat));
+		}
+
+		return $this->render(
+			'Theme:Articles:categories.html.twig', array(
+				'data' => $cat_articles
+			)
+		);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Article
+	 */
+	protected function getArticlesRepo()
+	{
+		return $this->getDoctrine()->getRepository('DeskPRO:Article');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\ArticleCategory
+	 */
+	protected function getArticleCategoryRepo()
+	{
+		return $this->getDoctrine()->getRepository('DeskPRO:ArticleCategory');
 	}
 }

@@ -327,6 +327,18 @@ class Article extends AbstractEntityRepository
 		return $counts;
 	}
 
+
+	public function countNotClosedNotHidden()
+	{
+		return $this->getEntityManager()->createQuery(
+			"
+						SELECT COUNT(n) as cc
+						FROM DeskPRO:Article n
+						WHERE n.status != 'closed' AND n.status != 'hidden'
+					"
+		)->getSingleScalarResult();
+	}
+
 	public function getReportAssociations()
 	{
 		return array(
