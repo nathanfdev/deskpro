@@ -439,13 +439,21 @@ class TicketResultsDisplay implements PersonContextInterface
 		", array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
 
 		$extra_people = array();
+		$extra_people_ids = array();
+		$agent_data = App::$container->getAgentData();
 		foreach ($message_data as $m) {
 			if (!isset($this->people[$m['person_id']])) {
-				$extra_people[] = $m['person_id'];
+				if ($agent_data->has($m['person_id'])) {
+					$extra_people[$m['person_id']] = $agent_data->get($m['person_id']);
+				} else {
+					$extra_people_ids[] = $m['person_id'];
+				}
 			}
 		}
-		if ($extra_people) {
-			$this->people = array_merge($this->people, App::getDataService('Person')->getPeopleResultsFromIds($extra_people));
+		if ($extra_people_ids) {
+			foreach (App::getDataService('Person')->getPeopleResultsFromIds($extra_people) as $k => $v) {
+				$extra_people[$k] = $v;
+			}
 		}
 
 		$this->all_previews = array();
@@ -477,10 +485,12 @@ class TicketResultsDisplay implements PersonContextInterface
 
 			$m['preview_text'] = $this->_getMessagePreviewText($m['message'], 750);
 
-			$m['preview_text'] = $this->_getMessagePreviewText($m['message'], 750);
-			$m['picture_url_16'] = isset($this->people[$m['person_id']])
-				? $this->people[$m['person_id']]->getPictureUrl(16)
-				: null;
+			$m['picture_url_16'] = null;
+			if (isset($this->people[$m['person_id']])) {
+				$m['picture_url_16'] = $this->people[$m['person_id']]->getPictureUrl(16);
+			} elseif (isset($extra_people[$m['person_id']])) {
+				$m['picture_url_16'] = $extra_people[$m['person_id']]->getPictureUrl(16);
+			}
 
 			$this->all_previews[$m['ticket_id']][] = $m;
 		}
