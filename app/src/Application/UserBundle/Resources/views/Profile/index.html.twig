@@ -8,6 +8,23 @@
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_profile') }}">{{ phrase('user.profile.profile') }}</a></li>
 {% endblock %}
 {% block page_title %}{{ phrase('user.profile.your_profile') }}{% endblock %}
+
+{% form_theme custom_fields_definitions _self %}
+{% block cf_definition_contextual_choice_widget %}
+	{% spaceless %}
+
+		{% for child in form._children %}
+			{{ form_row(child, {attr: {style: 'margin-bottom:5px;'} }) }}
+		{% endfor %}
+
+		{% set idx = form._children|length %}
+		<input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][id]" value="cb_1" />
+		<input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][display_order]" value="10" />
+		<input type="text" name="{{ form._children.vars.full_name }}[{{ idx }}][title]" style="width: 73%;" />&nbsp;
+		<button type="submit" class="dp-btn dp-btn-default">Add</button>
+	{% endspaceless %}
+{% endblock cf_definition_contextual_choice_widget %}
+
 {% block content %}
 
 {% if password_expired %}
@@ -29,7 +46,7 @@
 					{{ phrase('user.profile.invalid_name') }}
 				</div>
 			{% endif %}
-			{% if profile_saved %}
+			{% if app.session.flashbag.get('profile_saved') %}
 				<div class="dp-alert dp-alert-success">
 					{{ phrase('user.profile.profile_saved') }}
 				</div>

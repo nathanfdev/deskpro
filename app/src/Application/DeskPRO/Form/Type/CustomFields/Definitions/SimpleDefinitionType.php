@@ -46,7 +46,7 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 	{
 		$builder
 			->add('id', 'hidden')
-			->add('title')
+			->add('title', 'text', array('label' => false,))
 			->add('display_order', 'hidden')
 		;
 		$builder->addEventSubscriber($this);
@@ -94,7 +94,6 @@ class SimpleDefinitionType extends AbstractType implements EventSubscriberInterf
 		}
 
 		$data = array_intersect_key($data, $event->getForm()->all());
-
 		if (isset($data['id']) && (int) $data['id'] < 1) {
 			$data['id'] = null;
 		}

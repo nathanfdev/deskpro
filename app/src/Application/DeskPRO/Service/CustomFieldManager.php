@@ -345,4 +345,12 @@ class CustomFieldManager
 	{
 		return $this->repDefinition->findOneBy(array('id' => $fieldId, 'is_enabled' => true));
 	}
+
+	/**
+	 * @return FormFactory
+	 */
+	public function getFormFactory()
+	{
+		return $this->ff;
+	}
 }

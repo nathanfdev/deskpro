@@ -109,7 +109,8 @@ class ResizeFormListener extends BaseListener
 	    // Remove all empty rows
 	    if ($this->allowDelete) {
 		    foreach ($form as $name => $child) {
-			    if (!isset($data[$name]) && $child->getData() instanceof DomainObject) {
+			    // todo $data[$name]['title'] is very rare! only for DpCategoryBuilderType
+			    if (!isset($data[$name]) || empty($data[$name]['title']) && $child->getData() instanceof DomainObject) {
 				    $this->persister->remove($child->getData());
 				    $form->remove($name);
 			    }
@@ -119,7 +120,12 @@ class ResizeFormListener extends BaseListener
 	    // Add all additional rows
 	    if ($this->allowAdd) {
 		    foreach ($data as $name => $value) {
-			    if (!$form->has($name)) {
+
+			    // todo: very strange issue. might be php bug
+			    if (!$name) continue;
+
+			    // todo $value['title'] is very rare! only for DpCategoryBuilderType
+			    if (!$form->has($name) && !empty($value['title'])) {
 				    $form->add($name, $this->type, array_replace(array(
 					    'property_path' => '['.$name.']',
 				    ), $this->options));
