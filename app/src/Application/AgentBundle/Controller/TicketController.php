@@ -122,12 +122,12 @@ class TicketController extends AbstractController
 		// new custom fields
 		$new_field_manager = $this->container->getCustomFieldManager();
 		$new_custom_fields = $new_field_manager->createFormForOwner(
-			$ticket, $ticket->person, $layout, array('allow_edit' => true)
+			$ticket, $ticket->person, null, array('allow_edit' => true)
 		);
 		if ($org = $ticket->person->organization) {
 			$new_field_manager->merge(
 				$new_custom_fields,
-				$new_field_manager->createFormForOwner($ticket, $org, $layout, array('allow_edit' => true))
+				$new_field_manager->createFormForOwner($ticket, $org, null, array('allow_edit' => true))
 			);
 		}
 
@@ -1942,10 +1942,10 @@ class TicketController extends AbstractController
 							$this->em->persist($ticket);
 						}
 
-						$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+						$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout, array('allow_edit' => true));
 						if ($org = $ticket->person->organization) {
 							$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
-								$ticket, $org, $layout
+								$ticket, $org, $layout, array('allow_edit' => true)
 							));
 						}
 						$new_custom_fields->handleRequest($this->get('request'));
@@ -1966,11 +1966,9 @@ class TicketController extends AbstractController
 
 		$custom_fields = $field_manager->getDisplayArrayForObject($ticket);
 
-		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, $layout);
+		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $ticket->person, null, array('allow_edit' => true));
 		if ($org = $ticket->person->organization) {
-			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner(
-				$ticket, $org, $layout
-			));
+			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org, null, array('allow_edit' => true)));
 		}
 
 		$data = array('data' => array());
