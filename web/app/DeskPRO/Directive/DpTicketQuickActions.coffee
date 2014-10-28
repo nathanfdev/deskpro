@@ -67,11 +67,8 @@ define ->
 					t = ticket
 
 					# update scope vars
-					# todo remove person data from ticket previews (we need id only)
-					PersonService.get(t.previews[0].person.id).then (agent) ->
-						$scope.icon = agent.picture_url
-						$scope.name = agent.display_name
-
+					$scope.icon = t.previews[0].person.picture_url_16
+					$scope.name = t.previews[0].person.display_name
 					$scope.status = t.previews[0].message.status
 					$scope.time = $filter('formatTimestampAgo')(t.previews[0].message.date_created_ts)
 
