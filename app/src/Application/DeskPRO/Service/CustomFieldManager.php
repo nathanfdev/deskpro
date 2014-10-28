@@ -90,10 +90,10 @@ class CustomFieldManager
 	 */
 	public function getCustomDataForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
 	{
-		$datas = new ArrayCollection();
+		$datas = array();
 
 		if (!$owner['id']) {
-			return $datas;
+			return new ArrayCollection();
 		}
 
 		// fetch fields values
@@ -101,18 +101,14 @@ class CustomFieldManager
 			/** @var $data CustomFieldData */
 			$rootId = $data->root_definition['id'];
 
-			if (!$datas->containsKey($rootId)) {
-				$datas[$rootId] = $data;
+			if (!isset($datas[$rootId])) {
+				$datas[$rootId] = array($data);
 			} else {
-				if ($datas[$rootId] instanceof CustomFieldData) {
-					$datas[$rootId] = array($datas[$rootId]);
-				}
-
 				$datas[$rootId][] = $data;
 			}
 		}
 
-		return $datas;
+		return new ArrayCollection($datas);
 	}
 
 	/**
@@ -176,11 +172,15 @@ class CustomFieldManager
 		if (null === $datas) {
 			$datas = new ArrayCollection();
 			if ($childData = $this->repData->getFieldData($definition, $owner, $context)) {
-				$datas->set($definition['id'], count($childData) > 1 ? $childData : $childData[0]);
+				$datas->set($definition['id'], $childData);
 			}
 		}
 
-		$data = $datas->containsKey($definition['id']) ? $datas->get($definition['id']) : null;
+		$multiple = isset($definition['options']['multiple']) && $definition['options']['multiple'];
+		$data = $datas->get($definition['id']);
+		if (!$multiple && is_array($data)) {
+			$data = reset($data);
+		}
 		$options = array_merge($options, array(
 			'owner' => $owner,
 			'context' => $context,

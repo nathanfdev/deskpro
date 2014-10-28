@@ -279,6 +279,13 @@ class TicketViewController extends AbstractController
 		$custom_user_fields_form = $this->get('form.factory')->createNamedBuilder('custom_user_fields', 'form');
 		$custom_user_fields = $user_field_manager->getDisplayArrayForObject($ticket->person, $custom_user_fields_form);
 
+		// new custom fields, without layout (handled on client side)
+		$new_field_manager = $this->container->getCustomFieldManager();
+		$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $this->person);
+		if ($org = $this->person->organization) {
+			$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org));
+		}
+
 		$tpl = 'UserBundle:TicketView:view.html.twig';
 		if ($this->in->getBool('edit')) {
 
@@ -293,14 +300,6 @@ class TicketViewController extends AbstractController
 
 			$default_page = $this->container->getTicketLayoutManager()->getUserLayouts()->getLayout($ticket->department ? $ticket->department->id : 0);
 			$default_page = LayoutDisplay::createFromLayout($default_page, LayoutDisplay::EDIT_TICKET, $ticket);
-
-			// new custom fields, without layout (handled on client side)
-			$new_field_manager = $this->container->getCustomFieldManager();
-			$new_custom_fields = $new_field_manager->createFormForOwner($ticket, $this->person);
-			if ($org = $this->person->organization) {
-				$new_field_manager->merge($new_custom_fields, $new_field_manager->createFormForOwner($ticket, $org));
-			}
-			$vars['new_custom_fields'] = $new_custom_fields->createView();
 
 			if ($default_page) {
 				$page_data_field_ids = array();
@@ -325,16 +324,19 @@ class TicketViewController extends AbstractController
 				$validator->setLayout($default_page);
 				$form->handleRequest($request);
 
-				if (!$request->request->has($new_custom_fields->getName())) {
-					$request->request->set($new_custom_fields->getName(), array());
-				}
-				$new_custom_fields->handleRequest($request);
-
 				$newticket->custom_ticket_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
 				$newticket->custom_user_fields = $this->in->getCleanValueArray('custom_fields', 'raw', 'string');
 
-				if ($validator->isValid($newticket) && $new_custom_fields->isValid()) {
+				if ($validator->isValid($newticket)) {
 					$newticket->save();
+
+					if (!$request->request->has($new_custom_fields->getName())) {
+						$request->request->set($new_custom_fields->getName(), array());
+					}
+					$new_custom_fields->handleRequest($request);
+					if ($new_custom_fields->isValid()) {
+						$new_field_manager->flush($new_custom_fields);
+					}
 
 					$is_participant = ($this->person->id == $ticket->person->id || $ticket->hasParticipantPerson($this->person->id));
 					if (!$is_participant && !$is_org_manager) {
@@ -360,6 +362,8 @@ class TicketViewController extends AbstractController
 				'errors' => $errors,
 				'error_fields' => $error_fields,
 				'ticket_display_js' => $ticket_display_js,
+
+				'new_custom_fields' => $new_custom_fields->createView(),
 			));
 
 			$tpl = 'UserBundle:TicketView:view-modify.html.twig';

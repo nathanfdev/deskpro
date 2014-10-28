@@ -209,10 +209,6 @@ class NewTicketController extends AbstractController
 			}
 
 			$form->handleRequest($request);
-			if (!$request->request->has($new_custom_fields_form->getName())) {
-				$request->request->set($new_custom_fields_form->getName(), array());
-			}
-			$new_custom_fields_form->handleRequest($this->get('request'));
 
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
@@ -233,9 +229,17 @@ class NewTicketController extends AbstractController
 				$trap_fail = true;
 			}
 
-			if ($new_custom_fields_form->isValid() && $validator->isValid($newticket) && !$trap_fail) {
+			if ($validator->isValid($newticket) && !$trap_fail) {
 				try {
 					$ticket = $newticket->save();
+
+					if (!$request->request->has($new_custom_fields_form->getName())) {
+						$request->request->set($new_custom_fields_form->getName(), array());
+					}
+					$new_custom_fields_form->handleRequest($this->get('request'));
+					if ($new_custom_fields_form->isValid()) {
+						$manager->flush($new_custom_fields_form);
+					}
 
 				} catch (DuplicateTicketException $e) {
 					// Double submit detected, just continue on

@@ -190,7 +190,10 @@ class ContextualChoiceType extends ChoiceType
 			$choices[$newVal] = $newDef;
 		}
 
+		if ($newVal && $form->get('value')->getConfig()->getOption('multiple')) {
+			$newVal = (array) $newVal;
+		}
 		$data['value'] = $newVal;
-		$data['custom_choice'] = null;
+		unset($data['custom_choice']);
 	}
 }
