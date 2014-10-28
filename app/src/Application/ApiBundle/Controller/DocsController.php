@@ -39,6 +39,15 @@ namespace Application\ApiBundle\Controller;
  */
 class DocsController extends AbstractController
 {
+	protected function init()
+	{
+		$this->em       = $this->get('doctrine.orm.entity_manager');
+		$this->db       = $this->get('database_connection');
+		$this->in       = $this->get('deskpro.core.input_reader');
+		$this->cleaner  = $this->get('deskpro.core.input_cleaner');
+		$this->settings = $this->get('deskpro.core.settings');
+	}
+
 	public function preAction($action, $arguments = null)
 	{
 		return null;
