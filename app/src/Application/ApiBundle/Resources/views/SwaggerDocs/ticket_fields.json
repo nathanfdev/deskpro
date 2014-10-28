@@ -1,0 +1,107 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/ticket_fields",
+    "apis":[
+        {
+            "path":"/ticket_fields",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get list of ticket fields, including custom fields",
+                    "nickname":"listAction",
+                    "type":"array",
+                    "notes":""
+                },
+                {
+                    "method":"PUT",
+                    "summary":"Create custom ticket field",
+                    "nickname":"saveCustomFieldAction",
+                    "type":"array",
+                    "notes":"All you will pass in this query will be saved"
+                }
+            ]
+        },
+        {
+            "path":"/ticket_fields/set-enabled/{field_id}/{is_enabled}",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Set custom field enabled/disabled",
+                    "nickname":"toggleFieldAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Custom field ID"
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"is_enabled",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"Enabled marker"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_fields/{id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get custom ticket field by Id",
+                    "nickname":"getCustomFieldAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Custom field id"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"POST",
+                    "summary":"Save custom ticket field by ID",
+                    "nickname":"saveCustomFieldAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Custom field id"
+                        }
+                    ],
+                    "notes":"All you will pass in this query will be saved"
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Delete custom field by ID",
+                    "nickname":"deleteCustomFieldAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Custom field ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        }
+    ]
+}

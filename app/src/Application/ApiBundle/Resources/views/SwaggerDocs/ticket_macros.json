@@ -1,0 +1,95 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/ticket_macros",
+    "apis":[
+        {
+            "path":"/ticket_layouts/{dep_id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get macros by ID",
+                    "nickname":"getAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Layout ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_macros",
+            "operations":[
+                {
+                    "method":"PUT",
+                    "summary":"Create new macros",
+                    "nickname":"saveAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Macros name"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"is_global",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Mark/unmark macros as global"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"person_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Set macros owner"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/ticket_macros/{id}",
+            "operations":[
+                {
+                    "method":"DELETE",
+                    "summary":"Delete macros by ID",
+                    "nickname":"removeAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Macros ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get list of ticket macroses",
+                    "nickname":"listAction",
+                    "type":"array",
+                    "notes":""
+                }
+            ]
+        }
+    ]
+}

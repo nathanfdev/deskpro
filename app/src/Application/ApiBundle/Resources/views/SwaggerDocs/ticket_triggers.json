@@ -1,0 +1,357 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/ticket_triggers",
+    "apis":[
+        {
+            "path":"/ticket_triggers",
+            "operations":[
+                {
+                    "method":"PUT",
+                    "summary":"Create trigger",
+                    "nickname":"saveAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Trigger id"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Trigger name"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"event_trigger",
+                            "type":"string",
+                            "required":false,
+                            "description":"Event type",
+                            "enum":[
+                                "newreply",
+                                "newticket",
+                                "update"
+                            ]
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"by_agent_mode",
+                            "type":"string[]",
+                            "required":false,
+                            "description":""
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"by_user_mode",
+                            "type":"string[]",
+                            "required":false,
+                            "description":""
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"criteria_sets",
+                            "type":"string[]",
+                            "required":false,
+                            "description":"Wenter criteria for this trigger"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"actions",
+                            "type":"string[]",
+                            "required":false,
+                            "description":"Which actions this trigger should perform"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/get-custom-actions",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get all user defined actions for triggers",
+                    "nickname":"getCustomActionsAction",
+                    "type":"array",
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/run_order",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Rearrange trigger run order and save it",
+                    "nickname":"saveRunOrderAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"run_orders",
+                            "type":"string[]",
+                            "required":false,
+                            "description":""
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/{id}",
+            "operations":[
+                {
+                    "method":"DELETE",
+                    "summary":"Delete trigger by ID",
+                    "nickname":"deleteAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Trigger id"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/{id}/disable",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Disable trigger by id",
+                    "nickname":"toggleTriggerAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Trigger id"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/{id}/enable",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Enable trigger by id",
+                    "nickname":"toggleTriggerAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Trigger id"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/{special_type}/disable",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Disable trigger group by its name",
+                    "nickname":"toggleTriggerGroupAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"special_type",
+                            "type":"string",
+                            "required":true,
+                            "description":"Group name",
+                            "enum":[
+                                "departments",
+                                "departments_changed",
+                                "email_accounts"
+                            ]
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/{special_type}/enable",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Enable trigger group by its name",
+                    "nickname":"toggleTriggerGroupAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"special_type",
+                            "type":"string",
+                            "required":true,
+                            "description":"Group name",
+                            "enum":[
+                                "departments",
+                                "departments_changed",
+                                "email_accounts"
+                            ]
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/{special_type}/{id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get trigger for given special type or just trigger by ID",
+                    "nickname":"getAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"special_type",
+                            "type":"string",
+                            "required":false,
+                            "description":"Filter by type",
+                            "enum":[
+                                "departments",
+                                "departments_changed",
+                                "email_accounts"
+                            ]
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of given special_type"
+                        }
+                    ],
+                    "notes":"For entity with no trigger it will be created"
+                },
+                {
+                    "method":"POST",
+                    "summary":"Save trigger for given special type",
+                    "nickname":"saveAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Trigger id"
+                        },
+                        {
+                            "paramType":"path",
+                            "name":"special_type",
+                            "type":"string",
+                            "required":false,
+                            "description":"You can specify group for trigger",
+                            "enum":[
+                                "departments",
+                                "departments_change",
+                                "email_accounts"
+                            ]
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Trigger name"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"event_trigger",
+                            "type":"string",
+                            "required":false,
+                            "description":"Event type",
+                            "enum":[
+                                "newreply",
+                                "newticket",
+                                "update"
+                            ]
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"by_agent_mode",
+                            "type":"string[]",
+                            "required":false,
+                            "description":""
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"by_user_mode",
+                            "type":"string[]",
+                            "required":false,
+                            "description":""
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"criteria_sets",
+                            "type":"string[]",
+                            "required":false,
+                            "description":"Wenter criteria for this trigger"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"actions",
+                            "type":"string[]",
+                            "required":false,
+                            "description":"Which actions this trigger should perform"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_triggers/{type}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get triggers list grouped by their enable status",
+                    "nickname":"listAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"type",
+                            "type":"string",
+                            "required":true,
+                            "description":"Event type",
+                            "enum":[
+                                "all",
+                                "newticket",
+                                "newreply",
+                                "update"
+                            ]
+                        }
+                    ],
+                    "notes":"This is triggers provided by default system"
+                }
+            ]
+        }
+    ]
+}

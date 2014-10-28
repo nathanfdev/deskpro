@@ -1,0 +1,128 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/ticket_filters",
+    "apis":[
+        {
+            "path":"/ticket_filters",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get all defined filters",
+                    "nickname":"listAction",
+                    "type":"array",
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_filters/display_order",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Rearrange order in which filters are following",
+                    "nickname":"saveDisplayOrderAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"display_order",
+                            "type":"int[]",
+                            "required":false,
+                            "description":""
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_filters/{id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get ticket filter by Id",
+                    "nickname":"getAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ID of given filter"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"POST",
+                    "summary":"Save ticket filter details",
+                    "nickname":"saveAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ticket id"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"filter.title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Title for this filter"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"filter.is_global",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"ticket global flag"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"filter.person_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Added person identificator"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"filter.agent_team_id",
+                            "type":"integer",
+                            "required":false,
+                            "description":"Agent team identificator"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"filter.terms",
+                            "type":"integer[]",
+                            "required":false,
+                            "description":""
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Delete ticket filter by ID",
+                    "nickname":"removeAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"ticket filter id"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        }
+    ]
+}

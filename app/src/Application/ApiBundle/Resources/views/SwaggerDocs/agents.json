@@ -1,0 +1,437 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/agents",
+    "apis":[
+        {
+            "path":"/agents",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get agents list",
+                    "nickname":"listAgentsAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"full",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Display full agents information right in list"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"basic",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Display full agents information right in list"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"with_perms",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Display agent permissions"
+                        }
+                    ],
+                    "notes":"You can use full or basic query param for display settings. Default is 'normal'"
+                },
+                {
+                    "method":"PUT",
+                    "summary":"Create new agent",
+                    "nickname":"saveAgentAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"skip_email",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"Do not send email to new user"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"quick_add",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"Add 'all perms' group"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"perm_overrides",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"Save permission overrides"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"dep_perm_overrides",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"Save department permission overrides"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"agent[emails]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent data - emails"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"agent[primary_phone_number_text]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent data - phone number"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"agent[email]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent data - email"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[signature_html]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent signature"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[timezone]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent timezone"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[unset_picture]",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Delete agent picture"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[set_picture_blob]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Picture blob"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/agents/deleted",
+            "description":"Return list of deleted agents",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get deleted agents list",
+                    "nickname":"listDeletedAgentsAction",
+                    "type":"array",
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/agents/deleted/{id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get deleted agent by ID",
+                    "nickname":"getDeletedAgentAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/agents/deleted/{id}/undelete",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Undelete existing agent by ID",
+                    "nickname":"undeleteAgentAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/agents/{id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get agent by ID",
+                    "nickname":"getAgentAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"POST",
+                    "summary":"Update existing agent by ID",
+                    "nickname":"saveAgentAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"quick_add",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"Add 'all perms' group"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"perm_overrides",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"Save permission overrides"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"dep_perm_overrides",
+                            "type":"boolean",
+                            "required":true,
+                            "description":"Save department permission overrides"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"agent[emails]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent data - emails"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"agent[primary_phone_number_text]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent data - phone number"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"agent[email]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent data - email"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[signature_html]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent signature"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[timezone]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent timezone"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[unset_picture]",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Delete agent picture"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[set_picture_blob]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Picture blob"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/agents/{id}/delete",
+            "operations":[
+                {
+                    "method":"DELETE",
+                    "summary":"Delete agent and move it to deleted list",
+                    "nickname":"deleteAgentAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/agents/{id}/delete/to-user",
+            "operations":[
+                {
+                    "method":"DELETE",
+                    "summary":"Delete agent and move it to users list",
+                    "nickname":"deleteAgentAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/agents/{id}/login-token",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Generate login token to agent with ID = id",
+                    "nickname":"generateLoginTokenAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/agents/{id}/notify-prefs/get-tables",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get agent notification preferences",
+                    "nickname":"getNotifyPrefsAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/agents/{id}/profile",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Update existing agent profile by ID",
+                    "nickname":"saveAgentProfileAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[signature_html]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent signature"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[timezone]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Agent timezone"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[unset_picture]",
+                            "type":"boolean",
+                            "required":false,
+                            "description":"Delete agent picture"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"profile[set_picture_blob]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Picture blob"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/agents/{id}/reset-password",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Reset agent profile by ID",
+                    "nickname":"resetPasswordAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent ID"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

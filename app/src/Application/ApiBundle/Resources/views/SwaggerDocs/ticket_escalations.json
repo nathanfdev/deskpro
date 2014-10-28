@@ -1,0 +1,230 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/ticket_escalations",
+    "apis":[
+        {
+            "path":"/ticket_escalations",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get list of ticket escalations",
+                    "nickname":"listAction",
+                    "type":"array",
+                    "notes":""
+                },
+                {
+                    "method":"PUT",
+                    "summary":"Create new escalation",
+                    "nickname":"saveAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Escalation name"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"event_trigger",
+                            "type":"string",
+                            "required":false,
+                            "description":"Event trigger name"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"event_trigger_time",
+                            "type":"integer",
+                            "required":false,
+                            "description":"When to run event_trigger"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"terms",
+                            "type":"string",
+                            "required":false,
+                            "description":"Criteria for trigger run"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"terms_any",
+                            "type":"string",
+                            "required":false,
+                            "description":"Filter"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"actions",
+                            "type":"string",
+                            "required":false,
+                            "description":"Array of actions to perform"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_escalations/run_order",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Update escalation run order",
+                    "nickname":"saveRunOrderAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"run_order",
+                            "type":"integer[]",
+                            "required":true,
+                            "description":"Escalation ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_escalations/{id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get escalation by ID",
+                    "nickname":"getAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Escalation ID"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"POST",
+                    "summary":"Update existing escalation by ID",
+                    "nickname":"saveAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Escalation ID"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"title",
+                            "type":"string",
+                            "required":false,
+                            "description":"Escalation name"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"event_trigger",
+                            "type":"string",
+                            "required":false,
+                            "description":"Event trigger name"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"event_trigger_time",
+                            "type":"integer",
+                            "required":false,
+                            "description":"When to run event_trigger"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"terms",
+                            "type":"string",
+                            "required":false,
+                            "description":"Criteria for trigger run"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"terms_any",
+                            "type":"string",
+                            "required":false,
+                            "description":"Filter"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"actions",
+                            "type":"string",
+                            "required":false,
+                            "description":"Array of actions to perform"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Delete escalation by ID",
+                    "nickname":"deleteAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Escalation ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_escalations/{id}/disable",
+            "description":"Enable/disable escalation.",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Disable escalation by id",
+                    "nickname":"toggleEscalationAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Escalation ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_escalations/{id}/enable",
+            "description":"Enable/disable escalation.",
+            "operations":[
+                {
+                    "method":"POST",
+                    "summary":"Enable escalation by id",
+                    "nickname":"toggleEscalationAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Escalation ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        }
+    ]
+}

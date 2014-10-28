@@ -1,0 +1,166 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/ticket_layout",
+    "apis":[
+        {
+            "path":"/ticket_layouts/default",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get default ticket layout",
+                    "nickname":"getAction",
+                    "type":"array",
+                    "notes":""
+                },
+                {
+                    "method":"POST",
+                    "summary":"Update default ticket layout",
+                    "nickname":"saveAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"dep_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Department ID"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"layout[user]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Layout user"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"layout[agent]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Layout agent"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_layouts/fields/{field_id}",
+            "description":"Get field use statistic",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get field use statistic",
+                    "nickname":"getFieldStatusAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"field_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Field ID"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"POST",
+                    "summary":"Save field status",
+                    "nickname":"saveFieldStatusAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"field_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Field ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_layouts/stats",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Show layout statistic by departments",
+                    "nickname":"getLayoutStatsAction",
+                    "type":"array",
+                    "notes":""
+                }
+            ]
+        },
+        {
+            "path":"/ticket_layouts/{dep_id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get ticket layout for given department",
+                    "nickname":"getAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"dep_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Ticket department ID"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"POST",
+                    "summary":"Update existing department layout by department ID",
+                    "nickname":"saveAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"dep_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Department ID"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"layout[user]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Layout user"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"layout[agent]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Layout agent"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Delete department ticket layout by department ID",
+                    "nickname":"deleteAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"dep_id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"department ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        }
+    ]
+}

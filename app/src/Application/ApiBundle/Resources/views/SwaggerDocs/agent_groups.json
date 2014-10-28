@@ -1,0 +1,149 @@
+{
+    "basePath":"/api",
+    "swaggerVersion":"1.2",
+    "resourcePath":"/agent_groups",
+    "apis":[
+        {
+            "path":"/agent_groups",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get agent groups list",
+                    "nickname":"listAction",
+                    "type":"array",
+                    "notes":""
+                },
+                {
+                    "method":"PUT",
+                    "summary":"Create new agent group",
+                    "nickname":"saveGroupAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"query",
+                            "name":"group[title]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Group title"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"group[perms]",
+                            "type":"string[]",
+                            "required":false,
+                            "description":"Group permissions"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"group[person_ids]",
+                            "type":"integer[]",
+                            "required":false,
+                            "description":"Agents who belongs to this group"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"dep_perms[tickets]",
+                            "type":"integer[]",
+                            "required":false,
+                            "description":"Department tickets belongs to this group"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"dep_perms[chat]",
+                            "type":"string[]",
+                            "required":false,
+                            "description":""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path":"/agent_groups/{id}",
+            "operations":[
+                {
+                    "method":"GET",
+                    "summary":"Get group by ID",
+                    "nickname":"getGroupAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Group ID"
+                        }
+                    ],
+                    "notes":""
+                },
+                {
+                    "method":"POST",
+                    "summary":"Update existing agent group by ID",
+                    "nickname":"saveGroupAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent group ID"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"group[title]",
+                            "type":"string",
+                            "required":false,
+                            "description":"Group title"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"group[perms]",
+                            "type":"string[]",
+                            "required":false,
+                            "description":"Group permissions"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"group[person_ids]",
+                            "type":"integer[]",
+                            "required":false,
+                            "description":"Agents who belongs to this group"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"dep_perms[tickets]",
+                            "type":"integer[]",
+                            "required":false,
+                            "description":"Department tickets belongs to this group"
+                        },
+                        {
+                            "paramType":"query",
+                            "name":"dep_perms[chat]",
+                            "type":"string[]",
+                            "required":false,
+                            "description":""
+                        }
+                    ]
+                },
+                {
+                    "method":"DELETE",
+                    "summary":"Delete agent group by ID",
+                    "nickname":"deleteGroupAction",
+                    "type":"array",
+                    "parameters":[
+                        {
+                            "paramType":"path",
+                            "name":"id",
+                            "type":"integer",
+                            "required":true,
+                            "description":"Agent group ID"
+                        }
+                    ],
+                    "notes":""
+                }
+            ]
+        }
+    ]
+}
