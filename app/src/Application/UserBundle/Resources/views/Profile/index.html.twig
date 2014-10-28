@@ -14,7 +14,7 @@
 	{% spaceless %}
 
 		{% for child in form._children %}
-			{{ form_row(child, {attr: {style: 'margin-bottom:5px;'} }) }}
+			{{ form_widget(child, {attr: {style: 'margin-bottom:5px;'} }) }}
 		{% endfor %}
 
 		{% set idx = form._children|length %}
