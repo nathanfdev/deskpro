@@ -1047,7 +1047,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				var $cont = $('.ticket-field', self.wrapper).parent();
+				var $cont = self.getEl('fields_container');
 				$('.ticket-field.custom-field', self.wrapper).remove();
 				$cont.append(html);
 				self._updateFields(); // trigger update fields
