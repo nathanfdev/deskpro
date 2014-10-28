@@ -50,7 +50,7 @@ define ->
 			term = term.toLowerCase()
 			d = @$q.defer()
 
-			@_load().then () =>
+			@_load().then =>
 				res = []
 				for person in _persons
 					break if res.length >= limit
@@ -58,6 +58,13 @@ define ->
 
 				d.resolve res
 
+			d.promise
+
+
+
+		get: (id) ->
+			d = @$q.defer()
+			@_load().then => d.resolve _persons[_maps.ids[id]] || null
 			d.promise
 
 

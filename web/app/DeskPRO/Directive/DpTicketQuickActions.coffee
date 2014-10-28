@@ -67,8 +67,11 @@ define ->
 					t = ticket
 
 					# update scope vars
-					$scope.icon = t.previews[0].person.picture_url_16
-					$scope.name = t.previews[0].person.display_name
+					# todo remove person data from ticket previews (we need id only)
+					PersonService.get(t.previews[0].person.id).then (agent) ->
+						$scope.icon = agent.picture_url
+						$scope.name = agent.display_name
+
 					$scope.status = t.previews[0].message.status
 					$scope.time = $filter('formatTimestampAgo')(t.previews[0].message.date_created_ts)
 
@@ -146,8 +149,15 @@ define ->
 					$timeout(
 						->
 							$input.off 'select2-open'
+							$input.off 'select2-close'
 							$input.on 'select2-open', ->
 								$timeout (-> promise && $timeout.cancel promise), 10 # prevent mouseleave in FF
+								$(document).on 'mousemove.quick-actions-select2', '#select2-drop-mask, #select2-drop', (e) ->
+									$el.trigger e
+							$input.on 'select2-close', () ->
+								$(document).off 'mousemove.quick-actions-select2'
+								$(document).off 'click.quick-actions-select2'
+
 							$input.select2 'open'
 						1
 					) if $input.length
@@ -160,7 +170,4 @@ define ->
 
 				$el.on 'mouseleave', (e) ->
 					promise = $timeout (=> $el.hide()), options.widget_hide_delay
-
-				$(document).on 'mousemove', '#select2-drop-mask', (e) ->
-					$el.trigger e
 		}
