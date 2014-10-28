@@ -157,9 +157,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 				if (!$request->request->has($definitions_form->getName())) {
 					$request->request->set($definitions_form->getName(), array());
 				}
-				if ($definitions_form->handleRequest($request)->isValid()) {
-					$manager->flush($definitions_form);
-				}
+				$definitions_form->handleRequest($request);
+				$manager->flush($definitions_form);
 
 				$this->session->setFlash('profile_saved', true);
 				return $this->redirect($this->generateUrl('user_profile'));
