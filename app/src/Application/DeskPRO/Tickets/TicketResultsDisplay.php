@@ -438,6 +438,16 @@ class TicketResultsDisplay implements PersonContextInterface
 			ORDER BY tickets_messages.id DESC
 		", array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
 
+		$extra_people = array();
+		foreach ($message_data as $m) {
+			if (!isset($this->people[$m['person_id']])) {
+				$extra_people[] = $m['person_id'];
+			}
+		}
+		if ($extra_people) {
+			$this->people = array_merge($this->people, App::getDataService('Person')->getPeopleResultsFromIds($extra_people));
+		}
+
 		$this->all_previews = array();
 		foreach ($message_data as $m) {
 			if (!isset($this->all_previews[$m['ticket_id']])) {
@@ -465,7 +475,7 @@ class TicketResultsDisplay implements PersonContextInterface
 				$m['display_name'] = 'User';
 			}
 
-
+			$m['preview_text'] = $this->_getMessagePreviewText($m['message'], 750);
 
 			$m['preview_text'] = $this->_getMessagePreviewText($m['message'], 750);
 			$m['picture_url_16'] = isset($this->people[$m['person_id']])
