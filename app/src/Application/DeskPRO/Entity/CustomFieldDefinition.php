@@ -281,7 +281,12 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
-		$metadata->setPrimaryTable(array( 'name' => 'custom_field_definition', ));
+		$metadata->setPrimaryTable(array(
+			'name' => 'custom_field_definition',
+			'indexes' => array(
+				'context_idx' => array('columns' => array('context_class', 'context_id'))
+			)
+		));
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldDefinition';
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
