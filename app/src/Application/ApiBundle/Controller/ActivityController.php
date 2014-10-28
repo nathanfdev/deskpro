@@ -36,12 +36,42 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Orb\Util\Arrays;
+use \Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Operations about activity
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/activity",
+ * 	description="Operations about activity",
+ * 	basePath="/api"
+ * )
+ */
 class ActivityController extends AbstractController
 {
-	/**
-	 * @param int $since
-	 */
+    /**
+     * @param int $since
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/activity/{since}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get activity since given time",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="since",
+     *				description="Since what time",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function getActivityAction($since)
 	{
 		if (!$since) {
@@ -77,6 +107,30 @@ class ActivityController extends AbstractController
 		return $this->createApiResponse(array('last_id' => $last_id, 'alerts' => $alerts));
 	}
 
+
+    /**
+     * @return Response
+     * @throws \Exception
+     *
+     * @SWG\Api(
+     * 	path="/activity/dismiss",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Dismiss activities by their IDs",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="dismiss_ids",
+     *				description="Escalation ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="string|integer[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function dismissAction()
 	{
 		// Could be a json encoded array

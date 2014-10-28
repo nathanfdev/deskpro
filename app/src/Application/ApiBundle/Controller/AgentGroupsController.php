@@ -43,6 +43,18 @@ use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Orb\Util\Arrays;
 
+use \Symfony\Component\HttpFoundation\Response;
+
+/**
+ * Operations about agent groups
+ * Simple CRUD controller
+ *
+ * @SWG\Resource(
+ * 	resourcePath="/agent_groups",
+ * 	description="Operations about agent groups",
+ * 	basePath="/api"
+ * )
+ */
 class AgentGroupsController extends AbstractController implements ProtectedControllerInterface
 {
 	/**
@@ -56,11 +68,19 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		return $multi;
 	}
 
-
-	####################################################################################################################
-	# list
-	####################################################################################################################
-
+    /**
+     * @return Response
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get agent groups list",
+     * 		notes="",
+     *		type="array",
+     *  )
+     * )
+     */
 	public function listAction()
 	{
 		$ugs = $this->em->createQuery("
@@ -95,11 +115,32 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		return $this->createApiResponse($data);
 	}
 
-
-	###################################################################################################################
-	# get
-	####################################################################################################################
-
+    /**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get group by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Group ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function getGroupAction($id)
 	{
 		$group = $this->em->find('DeskPRO:Usergroup', $id);
@@ -129,11 +170,113 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		return $this->createApiResponse(array('group' => $data));
 	}
 
-
-	####################################################################################################################
-	# save-group
-	####################################################################################################################
-
+    /**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups/{id}",
+     * 	@SWG\Operation(
+     * 		method="POST",
+     * 		summary="Update existing agent group by ID",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent group ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[title]",
+     *				description="Group title",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[perms]",
+     *				description="Group permissions",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[person_ids]",
+     *				description="Agents who belongs to this group",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perms[tickets]",
+     *				description="Department tickets belongs to this group",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perms[chat]",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *      )
+     *  )
+     * )
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups",
+     * 	@SWG\Operation(
+     * 		method="PUT",
+     * 		summary="Create new agent group",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="group[title]",
+     *				description="Group title",
+     *				paramType="query",
+     *				required=false,
+     *				type="string",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[perms]",
+     *				description="Group permissions",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="group[person_ids]",
+     *				description="Agents who belongs to this group",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perms[tickets]",
+     *				description="Department tickets belongs to this group",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer[]",
+     *			),
+     *          @SWG\Parameter(
+     *				name="dep_perms[chat]",
+     *				description="",
+     *				paramType="query",
+     *				required=false,
+     *				type="string[]",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function saveGroupAction($id)
 	{
 		if ($id) {
@@ -260,11 +403,32 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
 		}
 	}
 
-
-	####################################################################################################################
-	# delete-group
-	####################################################################################################################
-
+    /**
+     * @param $id
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @SWG\Api(
+     * 	path="/agent_groups/{id}",
+     * 	@SWG\Operation(
+     * 		method="DELETE",
+     * 		summary="Delete agent group by ID",
+     * 		notes="",
+     *		type="array",
+     *      @SWG\Parameters (
+     *          @SWG\Parameter(
+     *				name="id",
+     *				description="Agent group ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer",
+     *			),
+     *      )
+     *  )
+     * )
+     */
 	public function deleteGroupAction($id)
 	{
 		$group = $this->em->find('DeskPRO:Usergroup', $id);

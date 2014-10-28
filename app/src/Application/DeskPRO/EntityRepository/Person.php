@@ -106,6 +106,9 @@ class Person extends AbstractEntityRepository
 		return isset($agents[$id]) ? $agents[$id] : null;
 	}
 
+    /**
+     * @return \Application\DeskPro\Entity\Person[]
+     */
 	public function getDeletedAgents()
 	{
 		$deleted_agents = $this->getEntityManager()->createQuery("
@@ -314,6 +317,10 @@ class Person extends AbstractEntityRepository
 		return $person;
 	}
 
+    /**
+     * @param array $emails
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
 	public function findByEmails(array $emails)
 	{
 		if (!$emails) return array();
@@ -324,6 +331,11 @@ class Person extends AbstractEntityRepository
 		')->setParameter('emails', $emails)->getResult();
 	}
 
+    /**
+     * @param $email
+     * @param null|int $limit
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
 	public function searchByEmailStartingWith($email, $limit = null)
 	{
 		$email = str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
@@ -337,6 +349,11 @@ class Person extends AbstractEntityRepository
 		")->setParameter(1, $email)->setMaxResults($limit)->execute();
 	}
 
+    /**
+     * @param $email
+     * @param null|int $limit
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
 	public function searchByEmail($email, $limit = null)
 	{
 		$email = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $email) . '%';
@@ -351,6 +368,10 @@ class Person extends AbstractEntityRepository
 	}
 
 
+    /**
+     * @param array $ids
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
 	public function getPeopleFromIds(array $ids)
 	{
 		if (!$ids) return array();
@@ -365,6 +386,10 @@ class Person extends AbstractEntityRepository
 		return $people;
 	}
 
+    /**
+     * @param array $ids
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
 	public function getPeopleResultsFromIds(array $ids)
 	{
 		if (!$ids) return array();

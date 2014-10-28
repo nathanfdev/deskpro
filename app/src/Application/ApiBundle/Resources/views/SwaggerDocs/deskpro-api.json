@@ -3,6 +3,18 @@
     "swaggerVersion":"1.2",
     "apis":[
         {
+            "path":"/activity",
+            "description":"Operations about activity"
+        },
+        {
+            "path":"/agent_groups",
+            "description":"Operations about agent groups"
+        },
+        {
+            "path":"/agents",
+            "description":"Operations about agents"
+        },
+        {
             "path":"/api_keys",
             "description":"Operations about API Keys"
         },

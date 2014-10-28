@@ -144,21 +144,14 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
+     *
      * @SWG\Api(
-     * 	path="/ticket_macros/{id}",
+     * 	path="/ticket_macros",
      * 	@SWG\Operation(
-     * 		method="POST",
-     * 		summary="Update existing macros by ID",
-     * 		notes="If no ID passed then new macros will be created. If person_id is invalid then macro will be marked global.",
+     * 		method="PUT",
+     * 		summary="Create new macros",
      *		type="array",
      *      @SWG\Parameters (
-     *          @SWG\Parameter(
-     *				name="id",
-     *				description="Macros ID",
-     *				paramType="path",
-     *				required=false,
-     *				type="integer",
-     *			),
      *          @SWG\Parameter(
      *				name="title",
      *				description="Macros name",

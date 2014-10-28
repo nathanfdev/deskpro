@@ -860,6 +860,10 @@ $collection->create('api_people_groups', array(
 	'methods'     => array('GET'),
 ));
 
+########################################################################################################################
+# Agents
+########################################################################################################################
+
 $collection->create('api_agents_list', array(
 	'path'        => '/agents',
 	'controller'  => 'ApiBundle:Agents:listAgents',
@@ -935,6 +939,13 @@ $collection->create('api_agents_create', array(
 	'methods'     => array('PUT'),
 ));
 
+$collection->create('api_agents_notifyprefs_gettables', array(
+    'path'        => '/agents/{id}/notify-prefs/get-tables',
+    'controller'  => 'ApiBundle:Agents:getNotifyPrefs',
+    'methods'     => array('GET'),
+));
+
+
 $collection->create('api_agents_create_bulk', array(
 	'path'        => '/agents_bulk',
 	'controller'  => 'ApiBundle:Agents:bulkCreateAgents',
@@ -947,11 +958,7 @@ $collection->create('api_agents_create_bulk_check', array(
 	'methods'     => array('POST'),
 ));
 
-$collection->create('api_agents_notifyprefs_gettables', array(
-	'path'        => '/agents/{id}/notify-prefs/get-tables',
-	'controller'  => 'ApiBundle:Agents:getNotifyPrefs',
-	'methods'     => array('GET'),
-));
+
 
 $collection->create('api_agent_teams_list', array(
 	'path'        => '/agent_teams',
