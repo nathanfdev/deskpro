@@ -378,6 +378,7 @@ abstract class AbstractKernel extends BaseKernel
 
 require_once DP_ROOT.'/sys/Kernel/DpKernel.php';
 require_once DP_ROOT.'/sys/Kernel/InstallKernel.php';
+require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
 
 ###############################################################################
 # License

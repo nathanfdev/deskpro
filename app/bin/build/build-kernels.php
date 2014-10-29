@@ -27,13 +27,14 @@ if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {
 $kernel_classes = array(
 	'DeskPRO\\Kernel\\DpKernel',
 	'DeskPRO\\Kernel\\InstallKernel',
+	'DeskPRO\\Kernel\\PortalKernel',
 );
 
 if ($proc_kernel === null) {
 	$cache_dir = dp_get_cache_dir();
 	echo "Removing existing caches dir $cache_dir ... ";
 
-	$proc = new Symfony\Component\Process\Process('rm -rf dev prod doctrine-proxies prod twig-compiled annotations.php', dp_get_cache_dir());
+	$proc = new Symfony\Component\Process\Process('rm -rf portal dev prod doctrine-proxies prod twig-compiled annotations.php', dp_get_cache_dir());
 	$proc->run();
 	if (!$proc->isSuccessful()) {
 		echo "ERROR\n\n";
