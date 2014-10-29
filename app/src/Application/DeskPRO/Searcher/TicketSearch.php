@@ -1556,6 +1556,7 @@ class TicketSearch extends SearcherAbstract
 							$w .= '(';
 							$w .= "$tickets_table.status = 'hidden' AND ";
 							$w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $hidden_status);
+							$this->enableArchiveSearch();
 							$w .= ')';
 						}
 						$w .= ')';
