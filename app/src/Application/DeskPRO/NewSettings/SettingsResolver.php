@@ -126,6 +126,10 @@ class SettingsResolver
 			$brand_id = $brand_id->id;
 		}
 
+		if (!$brand_id > 0) {
+			throw new \InvalidArgumentException('must have a brand id');
+		}
+
 		$cacheKey = static::CACHE_KEY_BRAND_PREFIX . '.brand' . $brand_id;
 
 		if ($force) {
