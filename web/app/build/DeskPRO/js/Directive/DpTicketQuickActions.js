@@ -148,7 +148,7 @@
           };
         },
         link: function($scope, $el) {
-          var $actions, $preview, promise, showTimeout;
+          var $actions, $mask, $preview, isClicked, isOpenSelect, promise, showTimeout;
           $el.hide();
           promise = null;
           $preview = $el.find('.preview-text').first();
@@ -158,6 +158,18 @@
             height: options.preview_text_height
           });
           $actions = $el.find('footer > ul.actions:first');
+          $mask = $('<div></div>').addClass('select2-drop-mask').css({
+            bottom: 0,
+            right: 0
+          }).hide().appendTo('body');
+          isOpenSelect = false;
+          isClicked = false;
+          $mask.on('click', function(e) {
+            return $('#select2-drop-mask').trigger('mousedown', e);
+          });
+          $el.on('click', function() {
+            return isClicked = true;
+          });
           $scope.updateWidth = function() {
             $el.css('max-width', '650px');
             return $timeout((function() {
@@ -167,6 +179,7 @@
           showTimeout = null;
           $scope.$root.$on('tickets.quick_actions.show', function(angularEvent, e, ticket, delay) {
             var _ref;
+            isClicked = false;
             promise && $timeout.cancel(promise);
             if (!(ticket != null ? (_ref = ticket.previews) != null ? _ref.length : void 0 : void 0)) {
               return;
@@ -194,17 +207,25 @@
                 $input.off('select2-open');
                 $input.off('select2-close');
                 $input.on('select2-open', function() {
-                  $timeout((function() {
-                    return promise && $timeout.cancel(promise);
-                  }), 10);
-                  return $(document).on('mousemove.quick-actions-select2', '#select2-drop-mask, #select2-drop', function(e) {
+                  promise && $timeout.cancel(promise);
+                  isOpenSelect = true;
+                  isClicked = false;
+                  $(document).on('mousemove.quick-actions-select2', '#select2-drop-mask, #select2-drop', function(e) {
                     return $el.trigger(e);
                   });
+                  $('#select2-drop-mask').hide();
+                  return $mask.show();
                 });
-                $input.on('select2-close', function() {
-                  $scope.$root.$emit('tickets.quick_actions.hide');
+                $input.on('select2-close', function(e) {
+                  promise && $timeout.cancel(promise);
+                  isOpenSelect = false;
+                  $mask.hide();
                   $(document).off('mousemove.quick-actions-select2');
-                  return $(document).off('click.quick-actions-select2');
+                  $(document).off('click.quick-actions-select2');
+                  $scope.visible = null;
+                  return $timeout(function() {
+                    return !isClicked && $el.trigger('mouseleave', 10);
+                  });
                 });
                 return $input.select2('open');
               }, 1);
@@ -223,7 +244,8 @@
           return $el.on('mouseleave', function(e) {
             return promise = $timeout(((function(_this) {
               return function() {
-                return $el.hide();
+                !isOpenSelect && $el.hide();
+                return isClicked = false;
               };
             })(this)), options.widget_hide_delay);
           });
