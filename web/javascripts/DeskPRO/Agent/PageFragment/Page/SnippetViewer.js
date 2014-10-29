@@ -513,7 +513,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 						} else {
 							catEl = $('<li><a><span class="label"></span></a><span class="trigger-edit-cat"><i class="icon-cog"></i></span></li>');
 							catEl.addClass('category category-' + cat.id);
-							catEl.data('category-id', cat.id);
+							catEl.data('category-id', cat.id).attr('data-category-id', cat.id);
 							if (shareOpt == 'global') {
 								catEl.data('is-global', 1);
 							} else {
