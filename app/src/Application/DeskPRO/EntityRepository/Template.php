@@ -36,10 +36,16 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
+use Application\DeskPRO\Entity\Template as TemplateEntity;
 use Application\PortalBundle\Theme\ThemeInterface;
 
 class Template extends AbstractEntityRepository
 {
+	/**
+	 * @var array of loaded db templates by brand id. example: $loadedTemplates[$brand_id][$theme_id][$template_name]
+	 */
+	protected $loadedTemplates;
+
 	/**
 	 * @param $name
 	 * @return null|\Application\DeskPRO\Entity\Template
@@ -49,6 +55,13 @@ class Template extends AbstractEntityRepository
 		return $this->findOneBy(array('name' => $name));
 	}
 
+
+	/**
+	 * @param      $template_name
+	 * @param null $style
+	 * @return mixed|null
+	 * @depreated - still in use so cant delete, but styles dont exist anymore so will always return null
+	 */
 	public function getTemplateForStyle($template_name, $style = null)
 	{
 		try {
@@ -99,15 +112,49 @@ class Template extends AbstractEntityRepository
 	 * @param                $name
 	 * @param BrandEntity    $brand
 	 * @param ThemeInterface $theme
-	 * @return null|Template
+	 * @return null|TemplateEntity
 	 */
 	public function getBrandTemplate($name, BrandEntity $brand, ThemeInterface $theme)
 	{
-		return $this->findOneBy(array(
-				'name' => $name,
-				'brand' => $brand,
-				'theme_id' => $theme->getId()
+		$loaded = $this->getLoadedTemplatesForBrand($brand);
+		$theme_id = $theme->getId();
+		if (isset($loaded[$theme_id])) {
+			return isset($loaded[$theme_id][(string)$name]) ? $loaded[$theme_id][(string)$name] : null;
+		}
+
+		return null;
+	}
+
+
+	public function getLoadedTemplatesForBrand(BrandEntity $brand)
+	{
+		if (!isset($this->loadedTemplates[$brand->id])) {
+			$this->loadedTemplates[$brand->id] = $this->loadTemplates($brand);
+		}
+
+		return $this->loadedTemplates[$brand->id];
+	}
+
+
+	protected function loadTemplates(BrandEntity $brand)
+	{
+		$found_brand_templates = $this->findBy(
+			array(
+				'brand'    => $brand
 			)
 		);
+
+		$theme = $brand->theme_id;
+		$saved = array();
+		//TODO: when we need to, you should get a list of all themes injected so that we can do this for every theme
+		//      however, we only need to do that if a brand can switch themes during a request, and I dont think we
+	    //      will ever need to do that? For now, sticking to current brand theme only.
+		$saved[$theme] = array();
+
+		foreach ($found_brand_templates as $template) {
+			$saved[$theme][$template->name] = $template;
+		}
+
+		return $saved;
 	}
 }
