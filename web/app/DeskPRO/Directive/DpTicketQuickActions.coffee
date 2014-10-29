@@ -85,6 +85,9 @@ define ->
 					if isAllowed('assign_self') && (!t.agent || t.agent.id != $scope.$root.app_person_id)
 						$scope.actions.push {title: 'Assign Me', params: {agent_id: me} }
 
+					if isAllowed('assign_agent') && t.agent
+						$scope.actions.push {title: 'Unassign', params: {agent_id: 0} }
+
 					if isAllowed('assign_agent')
 						$scope.actions.push {title: 'Assign Agent', prop: 'agent_id', params: {}, select2: agentsSelectOptions }
 
@@ -123,7 +126,7 @@ define ->
 				# custom mask used to take clicks because the default select2 prevents
 				# event bubbling that we need to detemine if a click happened on the overlay or outside of it
 				$mask = $('<div></div>').addClass('select2-drop-mask').css({bottom: 0, right: 0}).hide().appendTo('body')
-				
+
 				isOpenSelect = false
 				isClicked = false
 

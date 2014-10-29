@@ -87,6 +87,14 @@
                 }
               });
             }
+            if (isAllowed('assign_agent') && t.agent) {
+              $scope.actions.push({
+                title: 'Unassign',
+                params: {
+                  agent_id: 0
+                }
+              });
+            }
             if (isAllowed('assign_agent')) {
               $scope.actions.push({
                 title: 'Assign Agent',
