@@ -89,10 +89,8 @@ class PortalLoader implements \Twig_LoaderInterface
 	 */
 	public function getCacheKey($name)
 	{
-	    if (!$brand = $this->brand_stack->getActive()) {
-		    $this->brand_stack->push($this->brand_stack->getDefault());
-		    $brand = $this->brand_stack->getActive();
-	    }
+	    $brand = $this->getBrandContainer();
+
 		return $brand->getBrand()->theme_id.$name.$this->brand_stack->getActive()->getBrand()->id;
 	}
 
@@ -132,6 +130,10 @@ class PortalLoader implements \Twig_LoaderInterface
 	protected function getBrandContainer()
 	{
 		if (!$brand_container = $this->brand_stack->getActive()) {
+			$this->brand_stack->push($this->brand_stack->getDefault());
+		}
+
+		if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
 			throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
 		}
 

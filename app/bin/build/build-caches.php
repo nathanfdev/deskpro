@@ -26,6 +26,7 @@ if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {
 $kernel_classes = array(
 	'DeskPRO\\Kernel\\DpKernel',
 	'DeskPRO\\Kernel\\InstallKernel',
+	'DeskPRO\\Kernel\\PortalKernel',
 );
 
 if ($proc_kernel === null) {
@@ -58,7 +59,7 @@ if ($proc_kernel === null) {
 	exit(0);
 } else {
 
-	@ini_set('memory_limit', '524288000');
+	@ini_set('memory_limit', -1);
 
 	require_once DP_ROOT . '/sys/load_config.php';
 
