@@ -83,5 +83,14 @@ interface ThemeInterface
 	 * @return Tag|null
 	 */
 	public function getTag($tag_name);
+
+
+	/**
+	 * Get a map of "Theme:x:y.html.twig" => "/abs/path/to/source/twig/file.twig" for all templates that this theme
+	 * can resolve. This means recursively going through the parents for a complete list. See AbstractTheme.
+	 *
+	 * @return array
+	 */
+	public function getTemplateMap();
 }
  

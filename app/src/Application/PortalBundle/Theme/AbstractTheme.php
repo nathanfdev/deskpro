@@ -34,6 +34,8 @@
 
 namespace Application\PortalBundle\Theme;
 
+use Symfony\Component\Finder\Finder;
+
 /**
  * Representation of a DeskPRO Theme
  */
@@ -77,6 +79,31 @@ abstract class AbstractTheme implements ThemeInterface
 	public function getTag($tag_name)
 	{
 		return isset($this->tags[$tag_name]) ? $this->tags[$tag_name] : null;
+	}
+
+
+	public function getTemplateMap()
+	{
+		$temps = array();
+		if (is_dir($this->getBaseTemplateDir())) {
+			$finder = new Finder();
+			$finder->files()->name('*.twig')->in($this->getBaseTemplateDir());
+
+			foreach ($finder as $temp) {
+
+				// turn twig filename/path into Theme:x:y.html.twig syntax
+				$path        = $temp->getRelativePathname();
+				$name        = $temp->getFilename();
+				$path_broken = explode('/', $path);
+				array_pop($path_broken);
+				$ctrl          = implode('/', $path_broken);
+				$template_name = "Theme:$ctrl:$name";
+
+				$temps[$template_name] = $temp->getRealPath();
+			}
+		}
+
+		return $this->getParent() ? array_merge($this->parent->getTemplateMap(), $temps) : $temps;
 	}
 }
  
