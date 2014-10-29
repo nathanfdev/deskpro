@@ -8,9 +8,18 @@ services:
 
   brand_stack:
     class: Application\DeskPRO\Brand\BrandStack
-    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BrandStackService
-    factory_method: create
-    arguments: [@service_container]
+    arguments: [@brand_container_factory, @default_brand]
+
+  theme_resolver:
+    class: Application\PortalBundle\Theme\ThemeResolver
+    arguments: [@service_container, @theme_repository]
+
+  theme_repository:
+    class: Application\PortalBundle\Theme\ThemeRepository
+
+  brand_container_factory:
+    class: Application\DeskPRO\Brand\BrandContainerFactory
+    arguments: [@settings_resolver, @theme_resolver]
 
   brand_repository:
     class: Application\DeskPRO\EntityRepository\Brand
@@ -44,6 +53,18 @@ services:
     arguments: [@brand_stack]
     tags:
       - { name: twig.extension }
+
+  portal_cache.template_map:
+    class: Symfony\Component\Config\ConfigCache
+    arguments:
+      - %kernel.cache_dir%/portalTemplateMap.php
+      - %kernel.debug%
+
+  portal_cache.template_cache_warmer:
+    class: Application\PortalBundle\CacheWarmer\ThemeTemplateCacheWarmer
+    arguments: [@theme_resolver]
+    tags:
+      - { name: 'kernel.cache_warmer' }
 
   data_collector.portal:
     class: Application\PortalBundle\DataCollector\PortalCollector
