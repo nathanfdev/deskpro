@@ -151,14 +151,22 @@ define ->
 					showTimeout = null
 
 					showTimeout = $timeout(->
-						# show and update position
-						$el.show()
+						$scope.setTicket ticket
+						$preview.text(ticket.previews[0].message?.preview_text)
+
+						$el.show().css('visibility', 'hidden')
 						offset = $(e.target).offset()
 						offset.top += $(e.target).height()
+
 						$el.css offset
 
-						$scope.setTicket ticket
-						$preview.text(ticket.previews[0].message?.preview_text).trigger 'update'
+						$timeout(->
+							if (offset.top + $el.outerHeight()) > $(window).height()
+								offset.top -= $el.outerHeight() + $(e.target).height()
+								$el.css offset
+
+							$el.css('visibility', 'visible')
+						)
 					, delay)
 
 				$scope.showDropdown = (action, $event) ->

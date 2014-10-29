@@ -198,12 +198,19 @@
             showTimeout = null;
             return showTimeout = $timeout(function() {
               var offset, _ref1;
-              $el.show();
+              $scope.setTicket(ticket);
+              $preview.text((_ref1 = ticket.previews[0].message) != null ? _ref1.preview_text : void 0);
+              $el.show().css('visibility', 'hidden');
               offset = $(e.target).offset();
               offset.top += $(e.target).height();
               $el.css(offset);
-              $scope.setTicket(ticket);
-              return $preview.text((_ref1 = ticket.previews[0].message) != null ? _ref1.preview_text : void 0).trigger('update');
+              return $timeout(function() {
+                if ((offset.top + $el.outerHeight()) > $(window).height()) {
+                  offset.top -= $el.outerHeight() + $(e.target).height();
+                  $el.css(offset);
+                }
+                return $el.css('visibility', 'visible');
+              });
             }, delay);
           });
           $scope.showDropdown = function(action, $event) {
