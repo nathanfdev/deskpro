@@ -224,7 +224,7 @@ class SearchController extends AbstractController
 		if ($format == 'json') {
 			$data = array('results' => array());
 
-			foreach ($results->getResults() as $item) {
+			foreach ($results as $item) {
 				$data['results'][] = array(
 					'url' => $item->getLink(),
 					'title' => $item->getTitle()
