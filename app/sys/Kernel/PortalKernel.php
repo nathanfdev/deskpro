@@ -111,9 +111,9 @@ class PortalKernel extends Kernel
 
 		if ($cache_dir === null) {
 			if (defined('DPC_IS_CLOUD')) {
-				$cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '-cloud/';
+				$cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '-cloud';
 			} else {
-				$cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '/';
+				$cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '';
 			}
 		}
 
@@ -137,7 +137,7 @@ class PortalKernel extends Kernel
 			// If the container doesnt exist and we're in prod, then means we're installing an update.
 			// Halt now. This prevents the system from trying to generate the cache itself,
 			// even though the new files will be installed in a second.
-			$cache_file = $this->getCacheDir() . $this->getContainerClass() . '.php';
+			$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
 			if (!is_file($cache_file)) {
 				echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
 				exit;
@@ -160,7 +160,7 @@ class PortalKernel extends Kernel
 	protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
 	{
 		// Make sure the cache dirs exist
-		$env_dir = realpath($this->getCacheDir() . '/../');
+		$env_dir = realpath($this->getCacheDir() . '/../../');
 		if (!is_dir($this->getCacheDir())) {
 			mkdir($this->getCacheDir(), 0777, true);
 		}
