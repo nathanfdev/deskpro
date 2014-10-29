@@ -73,7 +73,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 		$agents = array();
 
 		$person_context = $context->getPersonContext();
-		$isNotificationsDisabled = $this->getContainer()->getSetting('agent.disable_notifications');
+		$is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
 		foreach ($agent_ids as $aid) {
 
@@ -84,7 +84,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
 			if ($aid == 'notify_list') {
 
-				if ($isNotificationsDisabled) continue;
+				if ($is_notif_disabled) continue;
 
 				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
 				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
@@ -129,6 +129,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 				$agent_data = $this->getContainer()->getAgentData();
 				$agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
 			}
+		}
+
+		if ($context->getVars()->has('mention_agents')) {
+			$agents = array_merge($agents, array_values($context->getVars()->get('mention_agents')));
 		}
 
 		if (!$agents) {
@@ -209,6 +213,12 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 			return false;
 		};
 
+		if ($context->getVars()->has('mention_agents')) {
+			$mentioned_agents_map = array_fill_keys(array_keys($context->getVars()->get('mention_agents')), true);
+		} else {
+			$mentioned_agents_map = array();
+		}
+
 		foreach ($agents as $agent) {
 			$sent_count++;
 
@@ -235,6 +245,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 			}
 
 			$vars['type_flag'] = $type_flag;
+
+			if (isset($mentioned_agents_map[$agent->id])) {
+				$vars['is_my_mention'] = true;
+			}
 
 			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
 				->setTicket($ticket)
