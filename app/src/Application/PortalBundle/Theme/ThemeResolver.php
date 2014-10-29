@@ -49,23 +49,18 @@ class ThemeResolver
 	 */
 	private $container;
 
+	/**
+	 * @var array
+	 */
+	private $themeTemplateMap;
+
 
 	public function __construct(ContainerInterface $container, ThemeRepository $theme_repo)
 	{
 		$this->container  = $container;
 		$this->theme_repo = $theme_repo;
+		$this->themeTemplateMap = null;
 	}
-
-
-	/**
-	 * @param $theme_id
-	 * @return ThemeInterface
-	 */
-	public function getThemeById($theme_id)
-	{
-		return $this->theme_repo->find($theme_id);
-	}
-
 
 	/**
 	 * @param ThemeInterface $theme
@@ -118,43 +113,67 @@ class ThemeResolver
 		}
 
 		if ('Theme:' === substr($name, 0, 6)) {
-			$controller = $parts[1];
-			$filename   = $parts[2];
-
-			$template_file = sprintf('%s/%s/%s', $theme->getBaseTemplateDir(), $controller, $filename);
-
-			if (file_exists($template_file)) {
-				return $template_file;
-			}
-
-			return $this->tryParent($theme, $name);
+			return $this->getThemeTemplatePath($theme, $name);
 		}
 
 		// you can refer to the parent theme by prefixing "ThemeParent:" instead of "Theme:"
 		if ('ThemeParent:' === substr($name, 0, 12)) {
-			$converted_theme_name = 'Theme:' . substr($name, 12);
-
-			return $this->tryParent($theme, $converted_theme_name);
+			if ($parent = $theme->getParent()) {
+				return $this->templatePath($parent, 'Theme:' . substr($name, 12));
+			}
 		}
 
 		return null;
 	}
 
+
+	public function getThemeTemplateMap()
+	{
+		if (isset($this->themeTemplateMap)) {
+			return $this->themeTemplateMap;
+		}
+
+		// get the cache
+		$mapCache = $this->container->get('portal_cache.template_map');
+
+		// if fresh, we are done, return the stored array and retain it for easy access
+		if (file_exists($mapCache) && !$mapCache->isFresh()) {
+			return $this->themeTemplateMap = require $mapCache;
+		}
+
+		// not fresh, let's gen the whole map
+		// each theme will be resolved now...
+		$this->themeTemplateMap = array();
+		foreach ($this->theme_repo->findAll() as $theme) {
+			$this->themeTemplateMap[$theme->getId()] = $theme->getTemplateMap();
+		}
+
+		$mapCache->write('<?php return ' . var_export($this->themeTemplateMap, true) . ';');
+
+		return $this->themeTemplateMap;
+	}
+
+
+	protected function getThemeTemplatePath(ThemeInterface $theme, $name)
+	{
+		$map = $this->getThemeTemplateMap();
+		if (isset($map[$theme->getId()])
+			&& isset($map[$theme->getId()][$name])
+		) {
+			return $map[$theme->getId()][$name];
+		}
+
+		return null;
+	}
 
 	/**
-	 * @param ThemeInterface $theme
-	 * @param                $name
-	 * @return null|string
+	 * @param $theme_id
+	 * @return ThemeInterface
 	 */
-	public function tryParent(ThemeInterface $theme, $name)
+	public function getThemeById($theme_id)
 	{
-		if ($parent = $theme->getParent()) {
-			return $this->templatePath($parent, $name);
-		}
-
-		return null;
+		return $this->theme_repo->find($theme_id);
 	}
-
 
 	public function processTag(ThemeInterface $theme, $tag_name, array $arguments)
 	{
