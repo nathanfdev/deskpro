@@ -2209,9 +2209,12 @@ class TicketSearch extends SearcherAbstract
 
 					$choice_labels = array();
 					if (!empty($choice['labels'])) {
+						if (!is_array($choice['labels'])) {
+							$choice['labels'] = explode(',', $choice['labels']);
+						}
 						foreach ($choice['labels'] as $l) {
 							$l = Strings::utf8_strtolower($l);
-							$choice_labels[$l] = $l;
+							$choice_labels[$l] = trim($l);
 						}
 					}
 
