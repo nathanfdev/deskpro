@@ -66,9 +66,7 @@ class PortalLoader implements \Twig_LoaderInterface
 	 */
 	public function getSource($name)
 	{
-		if (!$brand_container = $this->brand_stack->getActive()) {
-			throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
-		}
+		$brand_container = $this->getBrandContainer();
 
 		if ($template = $this->template_repo->getBrandTemplate($name, $brand_container->getBrand(), $brand_container->getTheme())) {
 			return $template->template_code;
@@ -91,7 +89,11 @@ class PortalLoader implements \Twig_LoaderInterface
 	 */
 	public function getCacheKey($name)
 	{
-		return $this->brand_stack->getActive()->getBrand()->id.$name;
+	    if (!$brand = $this->brand_stack->getActive()) {
+		    $this->brand_stack->push($this->brand_stack->getDefault());
+		    $brand = $this->brand_stack->getActive();
+	    }
+		return $brand->getBrand()->theme_id.$name.$this->brand_stack->getActive()->getBrand()->id;
 	}
 
 
@@ -105,9 +107,35 @@ class PortalLoader implements \Twig_LoaderInterface
 	 */
 	public function isFresh($name, $time)
 	{
-		// if db source exists and updated_at less than time
-		// or file time
-		return false;
+		$brand_container = $this->getBrandContainer();
+
+		// If a DB template exists, check its update_at value
+		if ($template = $this->template_repo->getBrandTemplate(
+			$name, $brand_container->getBrand(), $brand_container->getTheme()
+		)
+		) {
+			return $template->date_updated->getTimestamp() <= $time;
+		}
+
+		// FOUND A FLAW
+		// if you have a templae in DB and it is deleted, the cached version will still appear due to the below
+		// solution is to mark a template as deleted=1 and have the loader ignore deleted=1 templates.
+
+		return filemtime($brand_container->resolveTemplatePath((string)$name)) <= $time;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Brand\BrandContainer
+	 * @throws \RuntimeException
+	 */
+	protected function getBrandContainer()
+	{
+		if (!$brand_container = $this->brand_stack->getActive()) {
+			throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
+		}
+
+		return $brand_container;
 	}
 }
  
