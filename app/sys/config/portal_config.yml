@@ -2,6 +2,9 @@ imports:
     - { resource: config.shared.php }
     - { resource: @PortalBundle/Resources/config/portal_services.yml }
 
+parameters:
+    doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
+
 framework:
     #esi:             ~
     #translator:      { fallback: "%locale%" }
