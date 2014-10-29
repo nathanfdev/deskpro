@@ -132,17 +132,19 @@ class PortalKernel extends Kernel
 				$routing_cache_cleaner->clearCache();
 			}
 		}
-
-		if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
-			// If the container doesnt exist and we're in prod, then means we're installing an update.
-			// Halt now. This prevents the system from trying to generate the cache itself,
-			// even though the new files will be installed in a second.
-			$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
-			if (!is_file($cache_file)) {
-				echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
-				exit;
-			}
-		}
+//
+//      TODO: SKIPPING THIS - might need to come back to this before we ship?
+//
+//		if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
+//			// If the container doesnt exist and we're in prod, then means we're installing an update.
+//			// Halt now. This prevents the system from trying to generate the cache itself,
+//			// even though the new files will be installed in a second.
+//			$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
+//			if (!is_file($cache_file)) {
+//				echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
+//				exit;
+//			}
+//		}
 
 		// entity loader required to construct symfony container
 		// so enable it temporarily while the container builds
