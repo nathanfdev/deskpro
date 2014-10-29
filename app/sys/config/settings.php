@@ -729,6 +729,29 @@
 	'core_kb.new_time' => '-1 month',
 
 	####################################################################################################################
+	# core_jira
+	####################################################################################################################
+
+	/**
+	 * How many views until an article is considered popular?
+	 */
+	'core_jira.private_key' => '-----BEGIN RSA PRIVATE KEY-----
+MIICXgIBAAKBgQC6yzHCHz3FRHfPlXsftHBVwIpqsGMwSW338sISCUHUIk1CKOf7
+TZX4xilU/XS8rsUx+hS0rhhL5DKwE9WNe6Icot0GjZYa/3X43H5XytHSvEgEKsqZ
+36syXNClrrR7hs0jrCoovMzG2eRzilgBtNoMqgp9KxPWDzfyzZ4WtCnKlQIDAQAB
+AoGAEKAPMLDpJYqfg0lRqRO9P9SgPTivy1dtwzjHDyXlxwS6jZ3ob9SK+ZZhjV/1
+qOmBQZ55g09PeEm6PTO2uR384pqcAm5JwdDpXhacRXvcyqphqapihhJs2mVN9OTm
+qhKiwXgLiBHmtdYYPaMRQJqu1W1rby3PyE0xhW9vbPZ982ECQQDnDwiOXJEC5lWP
+tCLnJWFHqgv7LnCOSGgK9gYR/h4uRDWmmjeROx79CYbc366PiJrS+JSpBh4IRNZy
+dI+05svJAkEAzvT2kRnY3kUo2lBH7lOL3l+O8J9B5cZ35Ae7WxMwepmD0itNJBLf
+yO0xnMwfL1ltcK9PG57Ds9VIdzaAMrPWbQJBAMe5FfNAjlRMVz8dPWJBzGHO2gZn
+sQE8EzsOSFb7KolhimKVQVz3FqUwu/NmIhSNxw5/sribwg/xuNA8cw+yxAkCQQCx
+UTLcuY+VSR4qhrRKnyxsl+Uphtn4G+bm6jT9YGCd+l/2N4F9kepJBekHFeD2OaHJ
+9XpLCOlWcDwJYBnQ10K1AkEAzix8lxez2lFS47c4mRU+mM7MTJCjwskn1H/yS2R1
+4+kyYyGDRzjfHpEeaMRxaq7WpGhUPnfDGEcCSbJEILMLlQ==
+-----END RSA PRIVATE KEY-----',
+
+	####################################################################################################################
 	# agent
 	####################################################################################################################
 
