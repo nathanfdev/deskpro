@@ -190,13 +190,6 @@ class LabelDef extends AbstractEntityRepository
 		$db = $this->getEntityManager()->getConnection();
 
 		$ret = array();
-		$res = $db->executeQuery(sprintf(
-			'SELECT label FROM %s WHERE label_type = :type', $this->getTableName()
-		), array('type' => $type));
-
-		while ($row = $res->fetchColumn(0)) {
-			$ret[] = $row;
-		}
 
 		$table = $this->getLabelTableFromType($type);
 		if ($table) {
@@ -205,14 +198,61 @@ class LabelDef extends AbstractEntityRepository
 				FROM $table
 			");
 			while ($row = $res->fetchColumn(0)) {
-				$ret[] = $row;
+				$ret[strtolower($row)] = $row;
 			}
-			$ret = array_unique($ret);
 		}
 
-		return $ret;
+		$res = $db->executeQuery(sprintf(
+			'SELECT label FROM %s WHERE label_type = :type', $this->getTableName()
+		), array('type' => $type));
+
+		while ($row = $res->fetchColumn(0)) {
+			$ret[strtolower($row)] = $row;
+		}
+
+		return array_values($ret);
 	}
 
+	public function correctLabels($type, array $labels, $allow_new = true)
+	{
+		if (!$labels) {
+			return array();
+		}
+		$db = $this->getEntityManager()->getConnection();
+
+		$ret = array();
+
+		$table = $this->getLabelTableFromType($type);
+		if ($table) {
+			$res = $db->executeQuery("
+				SELECT DISTINCT(label)
+				FROM $table
+				WHERE label IN (?)
+			", array($labels), array(Connection::PARAM_STR_ARRAY));
+			while ($row = $res->fetchColumn(0)) {
+				$ret[strtolower($row)] = $row;
+			}
+		}
+
+		$res = $db->executeQuery(sprintf('
+			SELECT label FROM %s WHERE label_type = ? AND label IN (?)
+		', $this->getTableName()), array($type, $labels), array(\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY));
+
+		while ($row = $res->fetchColumn(0)) {
+			$ret[strtolower($row)] = $row;
+		}
+
+		if ($allow_new) {
+			foreach ($labels as $l) {
+				$ll = strtolower($l);
+				if (!isset($ret[$ll])) {
+					$ret[$ll] = $l;
+				}
+			}
+		}
+
+		return array_values($ret);
+	}
 
 	public function findLabelsByEntityName($entityName)
 	{

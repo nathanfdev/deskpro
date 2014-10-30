@@ -59,7 +59,7 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 */
 	public function setLabel($label)
 	{
-		$label = trim(strtolower($label));
+		$label = trim($label);
 		$label = str_replace(',', '', $label);
 		$this->label = $label;
 	}

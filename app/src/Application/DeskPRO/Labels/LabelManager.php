@@ -111,9 +111,16 @@ class LabelManager
 		}
 	}
 
-	public function addLabel($label)
+	public function addLabel($label, $skip_corrections = false)
 	{
 		$label = self::normalizeLabel($label);
+
+		if (!$skip_corrections) {
+			$rep     = $this->em->getRepository('DeskPRO:LabelDef');
+			$type    = $rep->getTypeByEntityName($this->label_entity_name);
+			$labels  = $rep->correctLabels($type, array($label), true);
+			$label   = array_pop($labels);
+		}
 
 		foreach ($this->entity[$this->labels_property] as $labelobj) {
 			if ($labelobj['label'] == $label) {
@@ -160,8 +167,12 @@ class LabelManager
 
 	public function addLabels(array $labels)
 	{
+		$rep     = $this->em->getRepository('DeskPRO:LabelDef');
+		$type    = $rep->getTypeByEntityName($this->label_entity_name);
+		$labels  = $rep->correctLabels($type, $labels, true);
+
 		foreach ($labels as $label) {
-			$this->addLabel($label);
+			$this->addLabel($label, true);
 		}
 	}
 
@@ -215,16 +226,18 @@ class LabelManager
 		$removed = array_diff($existing_labels, $labels);
 
 		/** @var LabelDef $rep */
-		$rep = $this->em->getRepository('DeskPRO:LabelDef');
-		$type = $rep->getTypeByEntityName($this->label_entity_name);
+		$rep     = $this->em->getRepository('DeskPRO:LabelDef');
+		$type    = $rep->getTypeByEntityName($this->label_entity_name);
 		$perm_name = sprintf('labels.%s.agent_can_create', $type);
-		if (!App::getSetting(sprintf('labels.%s.agent_can_create', $type))) {
-			$allowed = $rep->findLabelsByType($type);
-			$added = array_intersect($added, $allowed);
+
+		if ($added && !App::getSetting(sprintf('labels.%s.agent_can_create', $type))) {
+			$added = $rep->correctLabels($type, $added, false);
+		} else {
+			$added = $rep->correctLabels($type, $added, true);
 		}
 
 		foreach ($added as $added_label) {
-			$this->addLabel($added_label);
+			$this->addLabel($added_label, true);
 		}
 		foreach ($removed as $removed_label) {
 			$this->removeLabel($removed_label);
@@ -233,7 +246,7 @@ class LabelManager
 
 	public static function normalizeLabel($label)
 	{
-		$label = strtolower(trim($label));
+		$label = trim($label);
 		$label = str_replace(',', '', $label);
 
 		return $label;
