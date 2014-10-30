@@ -58,7 +58,7 @@ class BrandStackTest extends \DpUnitTestCase
 		 * As demonstrated below, the BrandStack lets you seamlessly move between different brand "containers" (eg. contexts)
 		 * through runtime. You can push(Brand entity) and pop() in an out of these container contexts.
 		 */
-		$stack = new BrandStack($mockFactory);
+		$stack = new BrandStack($mockFactory, $mockBrand1);
 		$this->assertSame(null, $stack->getActive());
 
 		$stack->push($mockBrand1);

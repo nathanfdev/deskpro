@@ -72,7 +72,6 @@ class BrandContainer
 		$this->brand          = $brand;
 		$this->settings       = $settings;
 		$this->theme_resolver = $theme_resolver;
-		$this->theme          = $theme_resolver->getThemeById($brand->theme_id);
 	}
 
 
@@ -100,7 +99,7 @@ class BrandContainer
 	 */
 	public function getTheme()
 	{
-		return $this->theme;
+		return $this->theme ? $this->theme : $this->theme = $this->theme_resolver->getThemeById($this->getBrand()->theme_id);
 	}
 
 
@@ -119,7 +118,7 @@ class BrandContainer
 	 */
 	public function resolveController($controller)
 	{
-		return $this->theme_resolver->controller($this->theme, $controller);
+		return $this->theme_resolver->controller($this->getTheme(), $controller);
 	}
 
 
@@ -129,12 +128,12 @@ class BrandContainer
 	 */
 	public function resolveTemplatePath($name)
 	{
-		return $this->theme_resolver->templatePath($this->theme, $name);
+		return $this->theme_resolver->templatePath($this->getTheme(), $name);
 	}
 
 
 	public function renderTag($tag_name, array $arguments)
 	{
-		return $this->theme_resolver->processTag($this->theme, $tag_name, $arguments);
+		return $this->theme_resolver->processTag($this->getTheme(), $tag_name, $arguments);
 	}
 }
