@@ -66,6 +66,11 @@ define([
 					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/')
 				}
 
+				if (!config.headers) {
+					config.headers = {}
+				}
+				config.headers['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
+
 				return config;
 			}
 		};
@@ -73,7 +78,6 @@ define([
 
 	AgentApp.config(['$httpProvider', function($httpProvider) {
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-		$httpProvider.defaults.headers.common['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 		$httpProvider.interceptors.push('dpAppAssetInterceptor');
 	}]);
 
