@@ -89,9 +89,8 @@ class InReplyToDetector implements TicketDetectorInterface
 		# Try to find TAC
 		#------------------------------
 
-		$auth_len = Ticket::TAC_AUTHCODE_LEN;
-		$authcode_min_len = $auth_len + 1;
-		$authcode_max_len = $auth_len + 7;
+		$authcode_min_len = Ticket::TAC_AUTHCODE_LEN + 1;
+		$authcode_max_len = Ticket::TAC_AUTHCODE_LEN_MAX;
 
 		$matches = null;
 		if (preg_match_all('#(?<!P)TAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {

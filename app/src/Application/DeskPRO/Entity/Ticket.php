@@ -117,6 +117,7 @@ use Orb\Util\WorkHoursSetAll;
 class Ticket extends DomainObject implements HighlightableModelInterface
 {
 	const TAC_AUTHCODE_LEN = 15;
+	const TAC_AUTHCODE_LEN_MAX = 30;
 
 	const CREATED_WEB_PERSON        = 'web.person';
 	const CREATED_WEB_PERSON_PORTAL = 'web.person.portal';
