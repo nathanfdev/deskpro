@@ -694,12 +694,13 @@ class Translate implements PersonContextInterface
 	 * $property may be null, in which case it's expected to be a 'title' or 'name',
 	 * or the only item on the object that is translatable.
 	 *
-	 * @param stdObject $object The object to get a phrase for
+	 * @param mixed $object The object to get a phrase for
 	 * @param string $property A specific thing in the object to translate
 	 * @param  Language|int $language The Language entity to use, or its id
+	 * @param  bool $fallback_default
 	 * @return string
 	 */
-	public function getPhraseObject($object, $property = null, $language = null)
+	public function getPhraseObject($object, $property = null, $language = null, $fallback_default = true)
 	{
 		#------------------------------
 		# Standard translation interfaces
@@ -726,7 +727,11 @@ class Translate implements PersonContextInterface
 			}
 
 			if (!$phrase_text) {
-				$phrase_text = $object->getPhraseDefault($property, $this);
+				if ($fallback_default) {
+					$phrase_text = $object->getPhraseDefault($property, $this);
+				} else {
+					return '';
+				}
 			}
 
 			if ($phrase_text) return $phrase_text;

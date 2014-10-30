@@ -147,7 +147,7 @@ class PhraseData
 			/** @var \Application\DeskPRO\Entity\TicketCategory $cat */
 			$cat = $cat_row['object'];
 
-			$id = $phrase_group . '.' . $cat->id;
+			$id = $phrase_group . '.' . $cat->id . '_title';
 
 			$row = array(
 				'id'      => $id,
@@ -190,7 +190,7 @@ class PhraseData
 		$phrase_data = array();
 
 		foreach ($ticket_works->getAll() as $work) {
-			$id = $phrase_group . '.' . $work->id;
+			$id = $phrase_group . '.' . $work->id . '_title';
 
 			$row = array(
 				'id'      => $id,
@@ -233,7 +233,7 @@ class PhraseData
 		$phrase_data = array();
 
 		foreach ($ticket_pris->getAll() as $pri) {
-			$id = $phrase_group . '.' . $pri->id;
+			$id = $phrase_group . '.' . $pri->id . '_title';
 
 			$row = array(
 				'id'      => $id,
@@ -279,7 +279,7 @@ class PhraseData
 			/** @var \Application\DeskPRO\Entity\Department $dep */
 			$dep   = $dep_row['object'];
 
-			$id = $phrase_group . '.' . $dep->id;
+			$id = $phrase_group . '.' . $dep->id . '_title';
 
 			$row = array(
 				'id'      => $id,
@@ -325,7 +325,7 @@ class PhraseData
 			/** @var \Application\DeskPRO\Entity\Product $prod */
 			$prod   = $prod_row['object'];
 
-			$id = $phrase_group . '.' . $prod->id;
+			$id = $phrase_group . '.' . $prod->id . '_title';
 
 			$row = array(
 				'id'      => $id,
@@ -380,7 +380,7 @@ class PhraseData
 		}
 
 		$fn_get_rows = function(CustomDefAbstract $field, $depth = 0) use ($phrase_group, $custom_phrases, $fm, &$fn_get_rows) {
-			$id = $phrase_group . '.' . $field->id;
+			$id = $phrase_group . '.' . $field->id . '_title';
 
 			$row = array(
 				'id'      => $id,
@@ -442,7 +442,7 @@ class PhraseData
 		$phrase_data = array();
 
 		foreach ($all_statuses as $status) {
-			$id = $phrase_group . '.' . $status->id;
+			$id = $phrase_group . '.' . $status->id . '_title';
 
 			$row = array(
 				'id'      => $id,
@@ -489,7 +489,7 @@ class PhraseData
 		$phrase_data = array();
 
 		foreach ($all_types as $type) {
-			$id = $phrase_group . '.' . $type->id;
+			$id = $phrase_group . '.' . $type->id . '_title';
 
 			$row = array(
 				'id'      => $id,
@@ -535,7 +535,7 @@ class PhraseData
 			/** @var \Application\DeskPRO\Entity\ArticleCategory $cat */
 			$cat = $all[$cat_row['id']];
 
-			$id = $phrase_group . '.' . $cat->id;
+			$id = $phrase_group . '.' . $cat->id . '_title';
 
 			$row = array(
 				'id'      => $id,
