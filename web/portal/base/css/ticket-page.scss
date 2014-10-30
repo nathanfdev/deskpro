@@ -1,15 +1,4 @@
 // Ticket Page
-//
-// Cmd+F to find below:
-//
-// Ticket Header (Title, status and reference)
-// Agent List
-// Timeline
-// All types of content posts on the timeline
-  // Atachements
-// Customer Satisfaction
-
-
 
 
 
@@ -89,12 +78,6 @@
 
 
 
-
-
-
-
-
-
 // Agents
 // Specfic styles for the tickets page
 // See agents.scss for the original stuff
@@ -120,6 +103,7 @@
 .agent-extras {// The cc'ed people in this ticket
   border-left: 1px solid #e5e5e5;
   text-align: right;
+  padding-top: 7px;
 }
 
 
@@ -346,6 +330,10 @@
     position: relative;
     margin-bottom: 40px;
 
+    p {
+      margin-bottom: 10px;
+    }
+
     h1 {
       font-size: 1.1em;
       margin: 0.6em 0em;
@@ -368,7 +356,7 @@
 
       img {
         position: relative;
-        top: 6px;
+        top: 8px;
         opacity: 0.3;
       }
 
@@ -415,14 +403,15 @@
   .post-rating {
     margin-top: 20px;
     line-height: 1em;
+    font-size: 0.9em;
 
     span {
       font-weight: 400;
 
-      span {
+      .face {
         display: inline-block;
-        width: 19px;
-        height: 19px;
+        width: 20px;
+        height: 20px;
         color: #fff;
         border-radius: 199px;
         text-align: center;
@@ -430,26 +419,18 @@
         padding: 5px;
         font-weight: 600;
         font-size: 11px;
+        color: #fff;
+        margin-right: 3px;
       }
 
       &.helpful {
         color: #93d06e;
-
-        span {
-          background: #93d06e;
-          color: #fff;
-          margin-right: 3px;
-        }
+        .face { background: #93d06e; }
       }
 
       &.unhelpful {
         color: #de7878;
-
-        span {
-          background: #de7878;
-          color: #fff;
-          margin-right: 3px;
-        }
+        .face { background: #de7878; }
       }
     }
 
@@ -460,13 +441,10 @@
         float: right;
         margin-top: -10px;
 
-        &:hover {
-          color: #444;
-        }
+        &:hover { color: #444; }
       }
     }
   }
-  // End "This posted marked as" text
 
   // Atachements
   a.attachement {
@@ -475,10 +453,10 @@
     display: inline-block;
     padding: 5px;
     text-decoration: none;
-    font-size: 0.8em;
     color: #8ca6cd;
-    font-weight: 700;
+    font-weight: 400;
     margin-bottom: 10px;
+    font-size: 0.9em;
 
     &:hover { background: #f1f1f1; }
 
@@ -507,14 +485,10 @@
       &.file-type-pdf {
         background: #ca1e00;
 
-        i {
-          left: 1px;
-        }
+        i { left: 1px; }
       }
 
-      &.file-type-download {
-        background: #1d70b7;
-      }
+      &.file-type-download { background: #1d70b7; }
     }
 
     .attachement-size {

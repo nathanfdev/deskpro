@@ -1,49 +1,71 @@
 // Main color scheme
 
 
-
-.grey {
-  color: #b6b6b6;
-}
-
-
-
-$button-color: #3575bd;
-$button-color-secondary: #93d06e;
-
-
-
-$surface-main: #f2f2ec;
-$surface-secondary: #f6f6f6;
-
-
-
-
 $grey: #e6e6e6;
+.grey { color: $grey; }
+
 
 
 
 $page-background: #fff;
-
 $text-color: #737373;
+$text-color-darker: #5a5a5a;
+$text-color-lighter: #a5a5a5;
 
+// Main button color - used for a lot of links and secondary stuff (some tags etc)
+$button-color: #3575bd;
+$button-color-secondary: #93d06e;
+
+$surface-main: #f2f2ec;
+$surface-secondary: #f6f6f6;
 
 $divider-color: #e5e5e5;
 
-
-
 $form-input: #f7f7f7;
+
+
+
+
+// Test of color scheme
+
+// $page-background: #262626;
+// $text-color: #9d9d9d;
+// $text-color-darker: #717171;
+// $text-color-lighter: #bdbdbd;
+//
+// // Main button color - used for a lot of links and secondary stuff (some tags etc)
+// $button-color: #d29b5e;
+// $button-color-secondary: #da7341;
+//
+// $surface-main: #f2f2ec;
+// $surface-secondary: #f6f6f6;
+//
+// $divider-color: rgba(255, 255, 255, 0.1);
+//
+// section, .wrapper { background: rgba(255, 255, 255, 0.1); padding: 20px; }
+// $form-input: #626262;
+
+
+
+
+
+$color-twitter: #6eb9e4;
+$color-facebook: #4c6fab;
+
+
+
+
+
+
+
 
 $button-grey: #e8e8e8;
 $button-text: #fff;
 
 $border-radius-main: 4px;
 $border-radius-small: 2px;
-
 $common-box-shadow-inner: inset 0px 0px 20px 10px rgba(0, 0, 0, 0.05);
 
-
-// Forms
 
 
 // Use for placeholders, disabled
@@ -51,27 +73,17 @@ $text-faded: #d4d4d4;
 
 
 
-// Change the button text color based on the background color
+// Mixins
+
+// Button text color based on the background color
 @function set-button-text-color($color) {
     @if (lightness( $color ) > 60) {
-      @return #000000;
+      @return #000;
     }
     @else {
-      @return #FFFFFF;
+      @return #fff;
     }
 }
-
-
-
-
-@mixin button {
-
-}
-
-
-
-
-// Mixins
 
 @mixin whitespace {
   white-space: nowrap;
@@ -83,6 +95,12 @@ $text-faded: #d4d4d4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@mixin blank-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 @mixin generate-background-and-border($bg) {

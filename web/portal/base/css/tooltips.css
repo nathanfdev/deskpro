@@ -3,20 +3,11 @@
   position: relative;
   color: #fff;
   border-radius: 2px;
-  padding: 15px;
-  line-height: 1em; }
-  .tooltip h1 {
-    color: inherit;
-    font-size: 1.1em;
-    font-weight: 400;
-    margin-bottom: 5px; }
-  .tooltip a {
-    color: inherit;
-    opacity: 0.5;
-    font-size: 0.9em;
-    text-decoration: none; }
-    .tooltip a:hover {
-      opacity: 1; }
+  padding: 5px 10px;
+  line-height: 1em;
+  display: inline-block;
+  line-height: 1em;
+  font-size: 1em; }
   .tooltip:before {
     content: " ";
     display: block;
@@ -26,6 +17,6 @@
     border-bottom: 4px solid #737373;
     position: absolute;
     top: -8px;
-    left: 40px; }
+    left: 20px; }
 
 /*# sourceMappingURL=tooltips.css.map */

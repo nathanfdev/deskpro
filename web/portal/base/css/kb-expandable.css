@@ -1,28 +1,50 @@
 /*
 Error: Undefined mixin 'clearfix'.
-        on line 7 of ./top-search.scss, in `clearfix'
-        from line 7 of ./top-search.scss
+        on line 25 of ./kb-expandable.scss, in `clearfix'
+        from line 25 of ./kb-expandable.scss
 
-2: //
-3: // Add .single-item to .search-and-ticket for showing just the ticket create button
-4: // or just the search form at 100%
-5: 
-6: .search-and-ticket {
-7:   @include clearfix;
-8:   border: 1px dashed $divider-color;
-9:   border-radius: $border-radius-main;
-10:   padding: 10px;
-11:   margin: 0px 0px 50px 0px;
-12: 
+20: 
+21:     a {
+22:       text-decoration: none;
+23:       color: inherit;
+24:       display: block;
+25:       @include clearfix;
+26: 
+27:       &:hover {
+28:         h1 {
+29:           text-decoration: underline;
+30:         }
 
 Backtrace:
-./top-search.scss:7:in `clearfix'
-./top-search.scss:7
+./kb-expandable.scss:25:in `clearfix'
+./kb-expandable.scss:25
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:338:in `block in visit_mixin'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `block in with_mixin'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `with_mixin'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:336:in `visit_mixin'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block (2 levels) in visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block in visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:418:in `visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block (2 levels) in visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block in visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:418:in `visit_rule'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
@@ -71,4 +93,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'clearfix'.\A         on line 7 of ./top-search.scss, in `clearfix'\A         from line 7 of ./top-search.scss\A \A 2: //\A 3: // Add .single-item to .search-and-ticket for showing just the ticket create button\A 4: // or just the search form at 100%\A 5: \A 6: .search-and-ticket {\A 7:   @include clearfix;\A 8:   border: 1px dashed $divider-color;\A 9:   border-radius: $border-radius-main;\A 10:   padding: 10px;\A 11:   margin: 0px 0px 50px 0px;\A 12: "; }
+  content: "Error: Undefined mixin 'clearfix'.\A         on line 25 of ./kb-expandable.scss, in `clearfix'\A         from line 25 of ./kb-expandable.scss\A \A 20: \A 21:     a {\A 22:       text-decoration: none;\A 23:       color: inherit;\A 24:       display: block;\A 25:       @include clearfix;\A 26: \A 27:       &:hover {\A 28:         h1 {\A 29:           text-decoration: underline;\A 30:         }"; }

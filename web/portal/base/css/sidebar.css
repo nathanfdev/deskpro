@@ -1,61 +1,28 @@
 /*
-Error: Undefined mixin 'whitespace'.
-        on line 95 of ./sidebar.scss, in `whitespace'
-        from line 95 of ./sidebar.scss
+Error: Undefined variable: "$divider-color".
+        on line 6 of ./sidebar.scss
 
-90:   }
-91: 
-92:   ul.simple {
-93:     li {
-94:       a {
-95:         @include whitespace;
-96:         background: url(../img/icon-article.png) no-repeat center left;
-97:         padding-left: 25px;
-98:       }
-99:     }
-100:   }
+1: 
+2: 
+3: 
+4: .sidebar {
+5:   padding-left: 20px;
+6:   border-left: 1px dashed $divider-color;
+7: 
+8:   .button {
+9:     width: 100%;
+10:     text-align: center
+11:   }
 
 Backtrace:
-./sidebar.scss:95:in `whitespace'
-./sidebar.scss:95
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:338:in `block in visit_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `block in with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:336:in `visit_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block (2 levels) in visit_rule'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `map'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block in visit_rule'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:418:in `visit_rule'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block (2 levels) in visit_rule'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `map'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block in visit_rule'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:418:in `visit_rule'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block (2 levels) in visit_rule'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `map'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block in visit_rule'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:418:in `visit_rule'
+./sidebar.scss:6
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `block in _perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
@@ -104,4 +71,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'whitespace'.\A         on line 95 of ./sidebar.scss, in `whitespace'\A         from line 95 of ./sidebar.scss\A \A 90:   }\A 91: \A 92:   ul.simple {\A 93:     li {\A 94:       a {\A 95:         @include whitespace;\A 96:         background: url(../img/icon-article.png) no-repeat center left;\A 97:         padding-left: 25px;\A 98:       }\A 99:     }\A 100:   }"; }
+  content: "Error: Undefined variable: \"$divider-color\".\A         on line 6 of ./sidebar.scss\A \A 1: \A 2: \A 3: \A 4: .sidebar {\A 5:   padding-left: 20px;\A 6:   border-left: 1px dashed $divider-color;\A 7: \A 8:   .button {\A 9:     width: 100%;\A 10:     text-align: center\A 11:   }"; }

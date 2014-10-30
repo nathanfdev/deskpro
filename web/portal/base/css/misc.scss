@@ -64,6 +64,54 @@ h1 {
   }
 }
 
+// View more button
+.list-meta {
+  margin-top: 0.5em;
+  font-size: 0.9em;
+  text-align: right;
+
+  a {
+    opacity: 0.5;
+    display: inline-block;
+    text-decoration: none;
+    color: #aaaaaa;
+    position: relative;
+    left: -5px;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    img {
+      position: relative;
+      top: 4px;
+      left: 5px;
+      opacity: 0.3;
+    }
+
+    span {
+      font-weight: 500;
+      color: #7b7b7b;
+    }
+  }
+}
+
+// All Tables
+table {
+  tr {
+    td {
+      vertical-align: top;
+      padding: 10px 10px;
+
+      &:first-child {
+        text-align: right;
+        color: #c0c0c0;
+        min-width: 210px;
+      }
+    }
+  }
+}
+
 // Date tag for news list
 .date-tag {
   @extend .text-tag;

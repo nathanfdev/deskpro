@@ -1,0 +1,78 @@
+$tab-border: $divider-color;
+
+.tabs {
+  margin-bottom: 20px;
+  ul {
+    @include clearfix;
+    @include blank-list;
+    line-height: 1em;
+    border-bottom: 1px solid $tab-border;
+    padding-left: 20px;
+  }
+
+  .title {
+    font-size: 1.1em;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+
+  .subtitle {
+    font-size: 0.85em;
+    color: #c4c4c4;
+  }
+
+
+  li {
+    display: block;
+    border: 1px solid rgba(255, 255, 255, 0);
+    float: left;
+    position: relative;
+    top: 1px;
+
+    div { display: inline-block; }
+
+    // Dividers
+    &:after {
+      content: " ";
+      display: block;
+      width: 1px;
+      height: 80%;
+      background: $tab-border;
+      position: absolute;
+      right: -2px;
+      top: 10%;
+    }
+
+    &:last-child, &.tab-active {
+      &:after {  display: none; }
+    }
+
+    img {// Needs to be ~18px height for now
+      opacity: 0.3;
+      vertical-align: top;
+      margin-top: 5px;
+      margin-right: 7px;
+    }
+
+    &:hover {
+      .title { color: $button-color; }
+    }
+
+    a {
+      display: block;
+      padding: 15px 20px 10px 20px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    &.tab-active {
+      border: 1px solid $tab-border;
+      border-bottom: 1px solid rgba(255, 255, 255, 0);
+      background: $page-background;
+
+      .title { color: $button-color; }
+    }
+
+    span { display: block; }
+  }
+}

@@ -1,11 +1,12 @@
 // Basic form styles
 
 
-input[type="text"], input[type="password"], textarea {
+input[type="text"], input[type="password"], textarea, select {
   border: 0px;
   padding: $form-padding-vertical $form-padding-horizontal;
   margin-bottom: 10px;
   font-weight: 300;
+  background: $form-input;
 
   @include placeholder {
     color: #b0b0b0;
@@ -17,7 +18,7 @@ input[type="text"], input[type="password"], textarea {
 textarea {
   outline: none;
   width: 100%;
-  min-height: 110px;
+  min-height: 70px;
   border: 0px;
   font-size: 14px;
   @include generate-background-and-border(#f8f8f8);
@@ -27,6 +28,431 @@ textarea {
     font-style: italic;
   }
 }
+
+
+
+
+
+
+
+
+hr.divider {
+  height: 1px;
+  border: 0px;
+  background: #cecece;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.user-logged-in {
+  border-radius: 4px;
+  border: 1px dashed #bdbdbd;
+  background: #f0f0f0;
+  padding: $form-padding-vertical $form-padding-horizontal;
+  display: block;
+  margin-bottom: 20px;
+  text-decoration: none;
+  color: $text-color;
+  position: relative;
+
+  i {
+    font-size: 1.3em;
+    margin-right: 4px;
+    color: #c9c9c9;
+    position: relative;
+    top: 1px;
+  }
+
+  span {
+    color: $button-color;
+    font-weight: 500;
+  }
+
+  div {
+    display: inline-block;
+    color: #fff;
+    background: #4c4c4c;
+    border-radius: 2px;
+    line-height: 1em;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    font-size: 0.9em;
+  }
+
+  @media screen and (max-width: 760px) {
+    text-align: center;
+
+    div {
+      display: block;
+      position: relative;
+      left:0px;
+      top: 0px;
+      margin-top: 10px;
+    }
+
+    i {
+      display: block;
+    }
+  }
+}
+
+
+
+
+
+
+.new-ticket-attachements {
+
+  .title {
+    margin-top: 10px;
+  }
+
+  ul {
+    @include blank-list;
+    margin-bottom: 20px;
+
+    li {
+      margin-left: 20px;
+      position: relative;
+      font-size: 0.9em;
+
+      &:before {
+        content: " ";
+        position: absolute;
+        left: -13px;
+        top: 10px;
+        width: 5px;
+        height: 5px;
+        border-radius: 199px;
+        background: #c0c0c0;
+      }
+    }
+
+    a { text-decoration: none; }
+
+    a:hover { text-decoration: underline; }
+
+
+    .file-size {
+      opacity: 0.5;
+      margin-left: 3px;
+      font-size: 0.9em;
+    }
+  }
+}
+
+.attach-file {
+  // Grab the same styles as the logged in user button
+  @extend .user-logged-in;
+  margin-bottom: 0px;
+}
+
+.remove-attachement {
+  color: inherit;
+  font-size: 0.9em;
+  margin-left: 10px;
+  opacity: 0.3;
+
+  i {
+    margin-right: 3px;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.multiselect {
+  ul.first-level {
+    @include blank-list;
+    border: 2px solid #3575bd;
+    border-radius: 2px;
+
+    a {
+      display: block;
+      text-decoration: none;
+      padding: 5px 10px;
+      color: #000;
+      // border-bottom: 1px solid #cecece;
+      font-weight: 300;
+
+      &:hover, &.active {
+        background: #3575bd;
+        color: #fff;
+        // border-bottom: 1px solid #3575bd;
+      }
+    }
+
+    li {
+      position: relative;
+      i {
+        position: absolute;
+        right: 15px;
+        top: 12px;
+      }
+    }
+  }
+
+  ul.second-level {
+    @extend .first-level;
+    margin-top: 10px;
+    margin-left: 30px;
+    position: relative;
+
+    &:before {
+      content: " ";
+      display: block;
+      width: 10px;
+      height: 20px;
+      border: 1px dotted #c0c0c0;
+      border-top: none;
+      border-right: none;
+      position: absolute;
+      left: -20px;
+      top: 0px;
+    }
+  }
+
+  &.default {
+    ul.first-level {
+    border: 1px solid #c0c0c0;
+    &:hover {
+      border: 1px solid #3575bd;
+    }
+    a {
+      background: #fff;
+      border-radius: 2px;
+      border-bottom: 1px solid #c0c0c0;
+      line-height: normal;
+      padding: $form-padding-vertical $form-padding-horizontal;
+
+      &:hover {
+        background: #3575bd;
+        border-bottom: 1px solid #3575bd;
+      }
+    }
+
+    }
+  }
+
+
+}
+
+
+
+
+
+
+.radio-button {
+  position: relative;
+  display: inline-block;
+  margin-right: 50px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  margin-left: 5px;
+
+
+ input[type="radio"] {
+    display: none;
+    border : 2px solid #93d06e;
+
+    &:checked + label {
+       &:after {
+        display: block;
+        position: absolute;
+        left: 7px;
+        top : 7px;
+        content: "";
+        margin-right: 3px;
+        float: left;
+        background-color: #93d06e;
+        width: 7px;
+        height: 7px;
+        border-radius: 16px;
+        border: 1px solid #93d06e;
+    }
+    }
+  }
+
+  label {
+    cursor: pointer;
+
+    &:before {
+      display: block;
+      content: "";
+      margin-right: 8px;
+      float: left;
+      width: 19px;
+      height:19px;
+      border-radius: 24px;
+      border: 2px solid #93d06e;
+    }
+  }
+}
+
+
+
+.form-help {
+  border-left: 1px solid #e5e5e5;
+  padding: 5px 0px 5px 20px;
+  position: relative;
+  top: -5px;
+
+
+  h1 {
+    font-size: 1em;
+    font-weight: 400;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  p {
+    font-size: 0.9em;
+  }
+}
+
+.form-meta {
+  font-size: 0.9em;
+  padding-left: 10px;
+  line-height: 1em;
+  position :relative;
+  top: -4px;
+  font-style: italic;
+}
+
+.form-ticket {
+
+  header {
+    padding-left: 5px;
+
+    h1 {
+      font-weight: 300;
+      font-size: 1.4em;
+    }
+  }
+
+  label {
+
+  }
+
+  .title {
+    color: #000;
+    padding-left: 5px;
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 0.9em;
+  }
+
+  .subtitle {
+    padding-left: 5px;
+    font-size: 0.9em;
+    display: block;
+    margin-bottom: 5px;
+    line-height: 1em;
+    position: relative;
+    top: -5px;
+  }
+
+  .bucket {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    transition: all 0.30s ease-in-out;
+
+    &:hover {
+      // background: #eaeaea;
+      cursor: pointer;
+    }
+
+    &:focus {
+      background: #f0f0e8;
+      border: 1px solid #3575bd;
+    }
+  }
+
+
+
+  input[type="text"], textarea {
+    background: #fff;
+    border: 1px solid #c0c0c0;
+    border-radius: 2px;
+  }
+
+  select {
+    background: #fff;
+    border: 1px solid #c0c0c0;
+    border-radius: 2px;
+    border-bottom: 1px solid #c0c0c0;
+    padding: $form-padding-vertical $form-padding-horizontal;
+    line-height: normal;
+
+    option {
+      line-height: normal;
+    }
+
+  }
+}
+
+
+
+.error-large {
+  background: #dc7575;
+  color: #fff;
+  padding: $form-padding-vertical $form-padding-horizontal;
+  position: relative;
+  border-radius: 2px;
+  margin-bottom: 10px;
+
+  &:before {
+    content: " ";
+    display: block;
+    width: 0px;
+    border: 4px solid rgba(0, 0, 0, 0);
+    border-bottom: 4px solid #dc7575;
+    position: absolute;
+    top: -8px;
+    left: 40px;
+  }
+}
+
+
+
+
+
 
 
 
@@ -102,7 +528,7 @@ textarea {
   }
 
   input[type="text"], input[type="password"], textarea {
-    border: 1px solid #e0e0e0;
+    border: 1px solid $divider-color;
     width: 100%;
     border-radius: 4px;
   }
