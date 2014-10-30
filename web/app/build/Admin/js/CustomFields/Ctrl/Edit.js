@@ -21,6 +21,7 @@
         var data;
         data = this.$state.current.data;
         this.service = this.DataService.get('CustomFields', data.owner, data.context);
+        this.$scope.context = data.context;
         this.$scope.definition = {
           form_type: 'contextual_choice',
           context_class: data.context,
