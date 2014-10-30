@@ -81,8 +81,6 @@ class ArticlesController extends AbstractController
 
 	public function categoriesAction(Request $request)
 	{
-		$count = $request->get('articles_count', 5);
-
 		$cats  = $this->getArticleCategoryRepo()->findAll();
 
 		$cat_articles = array();
