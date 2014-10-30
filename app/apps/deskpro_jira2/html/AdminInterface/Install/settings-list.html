@@ -2,76 +2,36 @@
 	<div class="col-lg-4">
 		<h3>Base URL</h3>
 	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_url" />
+	<div class="col-lg-8" dp-error-class="form_props.url">
+		<input type="url" name="url" class="form-control" ng-model="setting_values.url"
+               placeholder="https://example.atlassian.net" required />
 		<span class="help-block">
-			<span ng-class="errors.jira_url && 'text-danger'">URL to your JIRA installation.</span>
+			<span>URL to your JIRA installation.</span>
 		</span>
 	</div>
 </div>
 
 <div class="form-group">
 	<div class="col-lg-4">
-		<h3>Your JIRA Username</h3>
+		<h3>Application Link consumer key</h3>
 	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_username" />
+	<div class="col-lg-8" dp-error-class="form_props.consumer_key">
+		<input type="text" name="consumer_key" class="form-control" ng-model="setting_values.consumer_key"
+                required />
 		<span class="help-block">
-			<span ng-class="errors.jira_username && 'text-danger'">Enter your JIRA username.</span>
+			<span>Enter your JIRA Application Link consumer key.</span>
 		</span>
 	</div>
 </div>
 
 <div class="form-group">
-	<div class="col-lg-4">
-		<h3>Your JIRA Password</h3>
-	</div>
-	<div class="col-lg-8">
-		<input type="password" class="form-control" ng-model="setting_values.jira_password" />
+    <div class="col-lg-4">
+        <h3>Application Link Public Key</h3>
+    </div>
+    <div class="col-lg-8">
+        <textarea class="form-control" readonly="readonly">MIICxTCCAi6gAwIBAgIJAJw9+a1S8dAqMA0GCSqGSIb3DQEBBQUAMEwxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEYMBYGA1UEAxMPd3d3LmV4YW1wbGUuY29tMB4XDTE0MTAyOTE5MDcyM1oXDTE1MTAyOTE5MDcyM1owTDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRgwFgYDVQQDEw93d3cuZXhhbXBsZS5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALrLMcIfPcVEd8+Vex+0cFXAimqwYzBJbffywhIJQdQiTUIo5/tNlfjGKVT9dLyuxTH6FLSuGEvkMrAT1Y17ohyi3QaNlhr/dfjcflfK0dK8SAQqypnfqzJc0KWutHuGzSOsKii8zMbZ5HOKWAG02gyqCn0rE9YPN/LNnha0KcqVAgMBAAGjga4wgaswHQYDVR0OBBYEFNb+MNAN24VEyrZX1mOVe7hN2YLFMHwGA1UdIwR1MHOAFNb+MNAN24VEyrZX1mOVe7hN2YLFoVCkTjBMMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxGDAWBgNVBAMTD3d3dy5leGFtcGxlLmNvbYIJAJw9+a1S8dAqMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAWN0qMBDqssXnO7mUTUekyZf799L9ksIAC81phy5nmkeSrZbFJI+wqjQQM1yTz0RiHNvP1hLtV5KkPRDb07y9UCYJRfqymdch1Vt/9g2tWiiI97GasNYFC40w3fCzhYtwwe0duWWpHBDQ7Pn6yBNTBru3zCo2tmYsbM4fo5A/czE=</textarea>
 		<span class="help-block">
-			<span ng-class="errors.jira_password && 'text-danger'">Enter your JIRA password.</span>
+			<span>Copy this key to your JIRA Application Link.</span>
 		</span>
-	</div>
-</div>
-
-<div class="form-group">
-	<div class="col-lg-4">
-		<h3>Default Project</h3>
-	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_default_project" />
-		<span class="help-block">
-			<span ng-class="errors.jira_default_project && 'text-danger'">
-				Enter the key for the default project to use. The key is the unique uppercase string that is used to identify a project.
-			</span>
-		</span>
-	</div>
-</div>
-
-<div class="form-group">
-	<div class="col-lg-4">
-		<h3>Default Tags</h3>
-	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_default_tags" />
-		<span class="help-block">
-			<span ng-class="errors.jira_default_tags && 'text-danger'">
-				Enter tags to add by default when creating new JIRA tickets (optional).
-			</span>
-		</span>
-	</div>
-</div>
-
-<div class="form-group">
-	<div class="col-lg-4">
-		<h3>Default Priority</h3>
-	</div>
-	<div class="col-lg-8">
-		<input type="text" class="form-control" ng-model="setting_values.jira_default_priority" />
-		<span class="help-block">
-			<span ng-class="errors.jira_default_priority && 'text-danger'">
-				Enter priority to add by default when creating new JIRA tickets (optional).
-			</span>
-		</span>
-	</div>
+    </div>
 </div>

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,42 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * DeskPRO
- *
- * @package DeskPRO
- * @category Entities
- */
+namespace Application\DeskPRO\Service;
 
-namespace deskpro_jira2\RequestHandler;
 
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-
-class PackageRequestHandler implements ApiPackageRequestHandlerInterface
+class JIRA
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
-	{
-		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-			case 'check-requirements':
-				return $this->checkRequirementsAction($context);
-			default:
-				throw $context->createNotFoundException();
-		}
-	}
+	const PARAM_ENABLED = 'core.apps_jira.enabled';
 
-
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function checkRequirementsAction(ApiPackageRequestContext $context)
+	public function isEnabled()
 	{
-		return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
+		return $this->settings->get(self::PARAM_ENABLED);
 	}
-}
+} 

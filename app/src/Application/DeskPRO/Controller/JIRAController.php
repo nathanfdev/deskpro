@@ -60,26 +60,24 @@ class JIRAController extends AbstractController
 	{
 		$oauth = new OAuthWrapper($this->settings, $this->generateUrl('jira_token', array(), true));
 
-		if ($verifier = $request->get('oauth_verifier')) {
+		$verifier = $request->get('oauth_verifier');
+		$credentials = $request->getSession()->get('jira_oauth');
 
-			$tempToken = $request->getSession()->get('jira_oauth');
+		if ($verifier && $credentials) {
+
 			$oauth->requestAuthCredentials(
-				$tempToken['oauth_token'],
-				$tempToken['oauth_token_secret'],
+				$credentials['oauth_token'],
+				$credentials['oauth_token_secret'],
 				$verifier
 			);
+			$request->getSession()->remove('jira_oauth');
 
 			return $this->redirectRoute('jira_test');
-
-		} else {
-
-			$auth = $oauth->requestTempCredentials();
-			$request->getSession()->set('jira_oauth', $auth);
-			$url = $oauth->getAuthUrl();
-
-			return $this->redirect($url);
 		}
 
-		die();
+		$credentials = $oauth->requestTempCredentials();
+		$request->getSession()->set('jira_oauth', $credentials);
+
+		return $this->redirect($oauth->getAuthUrl());
 	}
 }

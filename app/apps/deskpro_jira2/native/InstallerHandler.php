@@ -32,10 +32,12 @@
  * @category Entities
  */
 
-namespace deskpro_jira;
+namespace deskpro_jira2;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\JIRA\OAuthWrapper;
+use Application\DeskPRO\Service\JIRA;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
@@ -53,7 +55,12 @@ class InstallerHandler extends AbstractInstallerHandler
 	 */
 	public function uninstall(InstallerContext $context)
 	{
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled', null);
+		$settings = $context->getContainer()->getSettingsHandler();
+
+		$settings->setSetting(JIRA::PARAM_ENABLED, null);
+		$settings->setSetting(OAuthWrapper::PARAM_URL, null);
+		$settings->setSetting(OAuthWrapper::PARAM_CONSUMER, null);
+		$settings->setSetting(OAuthWrapper::PARAM_TOKENS, null);
 	}
 
 
@@ -81,16 +88,17 @@ class InstallerHandler extends AbstractInstallerHandler
 	private function _doInstall(InstallerContext $context)
 	{
 		$enabled = 1;
-		if (!$context->getApp()->getSetting('jira_url') || !$context->getApp()->getSetting('jira_username') || !$context->getApp()->getSetting('jira_password')) {
+		$url = $context->getApp()->getSetting('url');
+		$consumer = $context->getApp()->getSetting('consumer_key');
+		if (!$url || !$consumer) {
 			$enabled = 0;
 		}
 
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled',        $enabled);
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.baseUrl',        rtrim($context->getApp()->getSetting('jira_url'), '/') . '/');
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.username',       $context->getApp()->getSetting('jira_username'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.password',       $context->getApp()->getSetting('jira_password'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultProject', $context->getApp()->getSetting('jira_default_project'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultTags',    $context->getApp()->getSetting('jira_default_tags'));
-		$context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultPriority',$context->getApp()->getSetting('jira_default_priority'));
+		$settings = $context->getContainer()->getSettingsHandler();
+
+		$settings->setSetting(JIRA::PARAM_ENABLED, $enabled);
+		$settings->setSetting(OAuthWrapper::PARAM_URL, $url);
+		$settings->setSetting(OAuthWrapper::PARAM_CONSUMER, $consumer);
+
 	}
 }

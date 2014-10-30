@@ -15,7 +15,14 @@
 	},
 	"settings_def": [
 		{
-			"name": "jira_url",
+			"name": "url",
+			"type": "url",
+			"label": "Base URL",
+			"description": "URL to your JIRA installation",
+			"native_only": true
+		},
+		{
+			"name": "consumer_key",
 			"type": "text",
 			"label": "Base URL",
 			"description": "URL to your JIRA installation",
