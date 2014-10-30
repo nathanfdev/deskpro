@@ -3105,15 +3105,10 @@ class TicketController extends AbstractController
 
 		$attach_attachments = array();
 		$max = App::getSetting('core.sendemail_attach_maxsize');
-		$max_embed = App::getSetting('core.sendemail_embed_maxsize');
 		$size = 0;
 		$attachments = $ticketdisplay->getMessageAttachments($message, true);
 		if ($attachments) {
 			foreach ($attachments as $attach) {
-				if ($attach->is_inline && $attach->blob->filesize > $max_embed) {
-					continue;
-				}
-
 				if ($size + $attach->blob->filesize > $max) {
 					break;
 				}
