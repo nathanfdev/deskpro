@@ -190,12 +190,9 @@ class ThemeResolver
 
 		$current_request = $this->container->get('request_stack')->getCurrentRequest();
 		$tag_request = $current_request->duplicate(
-			$tag->getParams(),
+			array_merge($tag->getParams(), $arguments),
 			null,
-			array_merge(
-				$arguments, // switch these args to allow tags to change controller
-				array('_controller' => $tag->getControllerName())
-			)
+			array('_controller' => $tag->getControllerName())
 		);
 
 		return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();
