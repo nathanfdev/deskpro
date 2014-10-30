@@ -1025,6 +1025,10 @@ class TicketController extends AbstractController
 
 		$action_type = $this->in->getString('options.action');
 		$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
+		if ($this->in->getBool('options.is_note')) {
+			$macro_id = null;
+			$action_type = null;
+		}
 		if ($macro_id) {
 			$action_type = 'macro';
 		} else {
