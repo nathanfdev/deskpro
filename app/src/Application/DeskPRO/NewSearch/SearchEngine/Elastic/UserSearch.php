@@ -37,6 +37,8 @@ use Elastica\Util as ElasticaUtil;
 
 class UserSearch implements UserSearchInterface
 {
+	const MAX_LEN = 315;
+
 	/**
 	 * @var \Elastica\Index
 	 */
@@ -134,6 +136,10 @@ class UserSearch implements UserSearchInterface
 
 		if (!$search->getTypes()) {
 			return new ResultSet();
+		}
+
+		if (isset($query[self::MAX_LEN])) {
+			$query = substr($query, 0, self::MAX_LEN);
 		}
 
 		$bool_query = new Query\Bool();

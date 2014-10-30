@@ -39,6 +39,8 @@ use Orb\Util\OptionsArray;
 
 class UserSearch implements UserSearchInterface
 {
+	const MAX_WORDS = 25;
+
 	/**
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
@@ -108,6 +110,10 @@ class UserSearch implements UserSearchInterface
 
 			$likes[] = "content_search.content LIKE ?";
 			$params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+
+			if (count($likes) >= self::MAX_WORDS) {
+				break;
+			}
 		}
 		if ($likes) {
 			$where = "
@@ -183,6 +189,10 @@ class UserSearch implements UserSearchInterface
 
 			$search_places[] = "tickets_messages.message LIKE ?";
 			$search_params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+
+			if (count($search_params) >= self::MAX_WORDS) {
+				break;
+			}
 		}
 
 		if (!$search_params) {
