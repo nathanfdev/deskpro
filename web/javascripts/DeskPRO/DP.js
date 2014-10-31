@@ -441,6 +441,18 @@ var DP = {
 			options.createSearchChoice = null;
 		}
 
+		if (el.find('optgroup')[0]) {
+			options.matcher = function(term, text, opt){
+				var optg   = opt.parent("optgroup");
+
+				term = STRINGS.stripDiacritics(term).toUpperCase();
+				text = STRINGS.stripDiacritics(text).toUpperCase();
+				var opt_group_text = optg ? STRINGS.stripDiacritics(optg.attr('label')||"").toUpperCase() : null;
+
+				return text.indexOf(term) !== -1 || (opt_group_text && opt_group_text.indexOf(term) !== -1)
+			};
+		}
+
 		el.addClass('with-select2');
 		el.select2(options);
 	}
