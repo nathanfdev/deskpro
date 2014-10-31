@@ -39,9 +39,11 @@ define [
 			)
 
 			@$scope.$watch('EditCtrl.form.zones.admin', =>
+				return if not @form?.zones?
 				@form.zones.reports = @form.zones.reports || @form.zones.admin
 			)
 			@$scope.$watch('EditCtrl.form.zones.reports', =>
+				return if not @form?.zones?
 				@form.zones.reports = @form.zones.reports || @form.zones.admin
 			)
 			return

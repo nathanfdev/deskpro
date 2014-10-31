@@ -62,11 +62,19 @@
         })(this));
         this.$scope.$watch('EditCtrl.form.zones.admin', (function(_this) {
           return function() {
+            var _ref;
+            if (((_ref = _this.form) != null ? _ref.zones : void 0) == null) {
+              return;
+            }
             return _this.form.zones.reports = _this.form.zones.reports || _this.form.zones.admin;
           };
         })(this));
         this.$scope.$watch('EditCtrl.form.zones.reports', (function(_this) {
           return function() {
+            var _ref;
+            if (((_ref = _this.form) != null ? _ref.zones : void 0) == null) {
+              return;
+            }
             return _this.form.zones.reports = _this.form.zones.reports || _this.form.zones.admin;
           };
         })(this));
