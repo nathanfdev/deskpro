@@ -63,14 +63,16 @@ class Address extends AbstractContactData
 	 */
 	public function getTemplateVars(ContactDataAbstract $contact_record)
 	{
-		$address_txt = array(
-			$contact_record->field_1,
-			$contact_record->field_2,
-			$contact_record->field_3,
-			$contact_record->field_4,
+		$segs = array(
+			str_replace("\n", ', ', Strings::standardEol($contact_record->field_1)),
+			implode(', ', Arrays::removeFalsey(array(
+				$contact_record->field_2,
+				$contact_record->field_3,
+				$contact_record->field_4,
+			))),
 			$contact_record->field_5
 		);
-		$address_txt = Arrays::removeFalsey($address_txt);
+		$address_txt = Arrays::removeFalsey($segs);
 		$address_txt = implode("\n", $address_txt);
 
 		$params = array(
