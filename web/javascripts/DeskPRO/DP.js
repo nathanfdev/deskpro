@@ -164,7 +164,7 @@ var DP = {
 					options.addResultClass = 'with-icon';
 					options.formatResult = function(result) {
 						if (typeof result.id === 'undefined') {
-							return Orb.escapeHtml(result.text);
+							return result.text;
 						}
 
 						var opt = el.find('option[value="' + result.id + '"]');
@@ -184,7 +184,7 @@ var DP = {
 						if (opt.data('icon')) {
 							return {type: 'html', value: '<span class="choice-icon" style="background-image: url(' + opt.data('icon') + '); padding-left: ' + (iconSize + 5) + 'px">' + name + '</span>' };
 						} else {
-							return name;
+							return opt.text();
 						}
 					};
 					break;
