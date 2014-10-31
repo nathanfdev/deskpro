@@ -406,7 +406,7 @@ var DP = {
 			}
 		}
 
-		options.formatNoMatches = function() { return ''; }
+		options.formatNoMatches = options.formatNoMatches || function() { return ''; }
 
 		if (el.data('invisible-trigger')) {
 			options.containerCssClass = (options.containerCssClass || '') + ' invisible-trigger';
