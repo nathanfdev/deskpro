@@ -8064,6 +8064,9 @@ nav.dp-blocktabs menu button span i {
     display: none;
   }
 }
+nav.dp-tabletabs {
+  position: relative;
+}
 nav.dp-tabletabs ul {
   list-style-type: none;
   margin: 0 16px;
@@ -8114,6 +8117,24 @@ nav.dp-tabletabs ul li:hover a {
   background: #fff;
   border: 1px solid #bbb;
   border-bottom-color: #fff;
+}
+nav.dp-tabletabs .toggle-all-button {
+  display: block;
+  position: absolute;
+  bottom: 5px;
+  right: 7px;
+  text-align: center;
+}
+nav.dp-tabletabs .toggle-all-button em {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 1px;
+  font-style: normal;
+  color: #888;
+  cursor: pointer;
+}
+nav.dp-tabletabs .toggle-all-button input {
+  display: none;
 }
 .dp-tabletabs-contentwrap {
   border: 1px solid #bbb;

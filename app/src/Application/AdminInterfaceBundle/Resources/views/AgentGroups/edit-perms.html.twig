@@ -71,14 +71,18 @@
             <li dp-tab-btn="main.perms.tasks"><a href="#"><i class="fa fa-calendar-o"></i> {{ phrase('adm.agents.perm_title_tasks') }}</a></li>
             {% endif %}
 		</ul>
+
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tickets', type: 'perms', section: 'ticket'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.people', type: 'perms', section: 'people'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.chat', type: 'perms', section: 'chat'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.publish', type: 'perms', section: 'publish'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.profile', type: 'perms', section: 'general'} %}
+		{% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tasks', type: 'perms', section: 'tasks'} %}
 	</nav>
 
 	{# TICKET PERMISSIONS #}
 	<table class="table table-hover agent-perms-table" dp-tab-body="main.perms.tickets">
 		<tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'ticket'} %}
-
         {{ _self.perm_row('ticket', 'use') }}
 		{{ _self.perm_row('ticket', 'create') }}
 		{{ _self.perm_row('ticket', 'reply_mass') }}
@@ -179,9 +183,6 @@
 	{# PEOPLE PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.people">
 		<tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'people'} %}
-
 		{{ _self.perm_row('people', 'use') }}
 		{{ _self.perm_row('people', 'create') }}
 		{{ _self.perm_row('people', 'edit') }}
@@ -207,9 +208,6 @@
 	{% if app.getSetting('core.apps_chat') %}
 		<table class="table table-hover" dp-tab-body="main.perms.chat">
 			<tbody>
-
-            {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'chat'} %}
-
 			{{ _self.perm_row('chat', 'use') }}
 			{{ _self.perm_row('chat', 'view_transcripts') }}
 			{{ _self.perm_row('chat', 'view_unassigned') }}
@@ -238,9 +236,6 @@
 	{# PUBLISH PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.publish">
 		<tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'publish'} %}
-
 		{{ _self.perm_row('publish', 'create') }}
 		{{ _self.perm_row('publish', 'delete') }}
 		{{ _self.perm_row('publish', 'edit') }}
@@ -252,9 +247,6 @@
 	{# GENERAL PERMISSIONS #}
 	<table class="table table-hover" dp-tab-body="main.perms.profile">
         <tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'general'} %}
-
 		{{ _self.perm_row('general', 'picture') }}
 		{{ _self.perm_row('general', 'signature') }}
 		</tbody>
@@ -264,9 +256,6 @@
     {# TASKS PERMISSIONS #}
     <table class="table table-hover" dp-tab-body="main.perms.tasks">
         <tbody>
-
-        {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {type: 'perms', section: 'tasks'} %}
-
         {{ _self.perm_row('tasks', 'use') }}
         </tbody>
     </table>

@@ -1233,6 +1233,7 @@ nav.dp-blocktabs {
 }
 
 nav.dp-tabletabs {
+	position: relative;
 	ul {
 		list-style-type: none;
 		margin: 0 16px;
@@ -1273,6 +1274,26 @@ nav.dp-tabletabs {
 					border-bottom-color: #fff;
 				}
 			}
+		}
+	}
+
+	.toggle-all-button {
+		display: block;
+		position: absolute;
+		bottom: 5px;
+		right: 7px;
+		text-align: center;
+
+		em {
+			display: block;
+			font-size: 11px;
+			margin-bottom: 1px;
+			font-style: normal;
+			color: #888;
+			cursor: pointer;
+		}
+		input {
+			display: none;
 		}
 	}
 }
