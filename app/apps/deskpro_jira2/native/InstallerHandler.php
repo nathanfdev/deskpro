@@ -58,6 +58,7 @@ class InstallerHandler extends AbstractInstallerHandler
 		$settings = $context->getContainer()->getSettingsHandler();
 
 		$settings->setSetting(JIRA::PARAM_ENABLED, null);
+		$settings->setSetting(JIRA::PARAM_COMMENTS, null);
 		$settings->setSetting(OAuthWrapper::PARAM_URL, null);
 		$settings->setSetting(OAuthWrapper::PARAM_CONSUMER, null);
 		$settings->setSetting(OAuthWrapper::PARAM_TOKENS, null);
@@ -90,6 +91,9 @@ class InstallerHandler extends AbstractInstallerHandler
 		$enabled = 1;
 		$url = $context->getApp()->getSetting('url');
 		$consumer = $context->getApp()->getSetting('consumer_key');
+		$comments = $context->getApp()->getSetting('comments');
+		$meta = $context->getApp()->getSetting('meta');
+
 		if (!$url || !$consumer) {
 			$enabled = 0;
 		}
@@ -97,8 +101,12 @@ class InstallerHandler extends AbstractInstallerHandler
 		$settings = $context->getContainer()->getSettingsHandler();
 
 		$settings->setSetting(JIRA::PARAM_ENABLED, $enabled);
+		$settings->setSetting(JIRA::PARAM_COMMENTS, $comments);
 		$settings->setSetting(OAuthWrapper::PARAM_URL, $url);
 		$settings->setSetting(OAuthWrapper::PARAM_CONSUMER, $consumer);
 
+		if ($meta) {
+			$context->getContainer()->get('dp.jira')->updateMeta($meta);
+		}
 	}
 }

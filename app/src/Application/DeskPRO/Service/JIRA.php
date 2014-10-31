@@ -28,12 +28,82 @@
 namespace Application\DeskPRO\Service;
 
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\JIRA\Api;
+use Application\DeskPRO\JIRA\Meta;
+
 class JIRA
 {
-	const PARAM_ENABLED = 'core.apps_jira.enabled';
+	const PARAM_ENABLED = 'jira.enabled';
+	const PARAM_COMMENTS = 'jira.comments_enabled';
+	const PARAM_META = 'jira.meta';
 
+	/**
+	 * @var DeskproContainer
+	 */
+	protected $container;
+
+	/**
+	 * @var Api|null
+	 */
+	protected $api;
+
+	public function __construct(DeskproContainer $container)
+	{
+		$this->container = $container;
+	}
+
+	/**
+	 * @return mixed
+	 */
 	public function isEnabled()
 	{
 		return $this->settings->get(self::PARAM_ENABLED);
+	}
+
+	/**
+	 * @return Api
+	 */
+	protected function getApi()
+	{
+		if (!$this->api) {
+			$this->api = new Api($this->container->getSettingsHandler());
+		}
+
+		return $this->api;
+	}
+
+	/**
+	 * @param array $properties
+	 * @return Meta
+	 * @throws \Exception
+	 */
+	public function updateMeta(array $properties = array())
+	{
+		$meta = new Meta();
+
+		try {
+			$meta->setEntries('project', $this->getApi()->get('/project'));
+			$meta->setEntries('priority', $this->getApi()->get('/priority'));
+			$meta->setEntries('field', $this->getApi()->get('/field'));
+
+			foreach ($properties as $k => $v) {
+				$meta->setDefault($k, $v);
+			}
+		} catch (\Exception $e) {
+			// silence is a gold
+		}
+
+		$this->container->getSettingsHandler()->setSetting(self::PARAM_META, serialize($meta));
+		return $meta;
+	}
+
+	/**
+	 * @return Meta
+	 */
+	public function getMeta()
+	{
+		$serialized = $this->container->getSetting(self::PARAM_META);
+		return $serialized ? unserialize($serialized) : $this->updateMeta();
 	}
 } 

@@ -18,14 +18,21 @@
 			"name": "url",
 			"type": "url",
 			"label": "Base URL",
-			"description": "URL to your JIRA installation",
+			"description": "URL to your JIRA installation.",
 			"native_only": true
 		},
 		{
 			"name": "consumer_key",
 			"type": "text",
-			"label": "Base URL",
-			"description": "URL to your JIRA installation",
+			"label": "Application Link consumer key",
+			"description": "Enter your JIRA Application Link consumer key.",
+			"native_only": true
+		},
+		{
+			"name": "comments",
+			"type": "checkbox",
+			"label": "Enable comments",
+			"description": "Enable comments.",
 			"native_only": true
 		}
 	]

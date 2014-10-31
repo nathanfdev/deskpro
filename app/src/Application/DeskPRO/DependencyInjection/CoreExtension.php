@@ -93,6 +93,10 @@ class CoreExtension extends Extension
 		    ->addArgument(new Reference('doctrine.orm.entity_manager'))
 		    ->addArgument(new Reference('form.factory'));
 
+	    $container
+		    ->register('dp.jira', 'Application\DeskPRO\Service\JIRA')
+		    ->addArgument(new Reference('service_container'));
+
 		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);

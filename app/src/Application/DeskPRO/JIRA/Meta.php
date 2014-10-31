@@ -25,69 +25,88 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+namespace Application\DeskPRO\JIRA;
 
-namespace Application\DeskPRO\Controller;
 
-use Application\DeskPRO\JIRA\Api;
-use Application\DeskPRO\JIRA\OAuthWrapper;
-use Symfony\Component\HttpFoundation\Request;
-
-class JIRAController extends AbstractController
+class Meta
 {
-	public function testAction(Request $request)
+	/**
+	 * @var array
+	 */
+	protected $project = array();
+	/**
+	 * @var array
+	 */
+	protected $priority = array();
+	/**
+	 * @var array
+	 */
+	protected $field = array();
+
+	protected $default_project;
+	protected $default_priority;
+	protected $default_fields = array();
+
+	/**
+	 * @param $type
+	 * @param array $entries
+	 * @return $this
+	 */
+	public function setEntries($type, array $entries = array())
 	{
-		$api = new Api(
-			$this->settings,
-			$this->generateUrl('jira_token', array(), true)
-		);
-		var_dump($api->get('/project'));
-
-
-		die();
+		$this->{$type} = array();
+		foreach ($entries as $entry) {
+			$this->addEntry($type, $entry);
+		}
+		return $this;
 	}
 
 	/**
-	 * todo
-	 * @param Request $request
-	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+	 * @param $type
+	 * @param array $entry
+	 * @return $this
 	 */
-	public function tokenAction(Request $request)
+	public function addEntry($type, array $entry)
 	{
-		$oauth = new OAuthWrapper($this->settings, $this->generateUrl('jira_token', array(), true));
+		if ('project' !== $type && 'priority' !== $type && 'field' !== $type) return;
 
-		$verifier = $request->get('oauth_verifier');
-		$credentials = $request->getSession()->get('jira_oauth');
-
-		if ($back = $request->get('back_url')) {
-			$request->getSession()->set('jira_back_url', $back);
-		}
-
-		if ($verifier && $credentials) {
-
-			$oauth->requestAuthCredentials(
-				$credentials['oauth_token'],
-				$credentials['oauth_token_secret'],
-				$verifier
-			);
-			$request->getSession()->remove('jira_oauth');
-
-			if ($back = $request->getSession()->get('jira_back_url')) {
-				$request->getSession()->remove('jira_back_url');
-			} else {
-				$back = $this->generateUrl('jira_test');
-			}
-
-			return $this->redirect($back);
-		}
-
-		$credentials = $oauth->requestTempCredentials();
-		$request->getSession()->set('jira_oauth', $credentials);
-
-		return $this->redirect($oauth->getAuthUrl());
+		$this->{$type}[$entry['id']] = $entry;
+		return $this;
 	}
-}
+
+	/**
+	 * todo?
+	 * @param $prop
+	 * @param $value
+	 * @return $this
+	 */
+	public function setDefault($prop, $value)
+	{
+		if (0 !== strpos($prop, 'default_')) return $this;
+		$this->{$prop} = $value;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray()
+	{
+		$ret = array();
+
+		foreach (array('project', 'priority', 'field') as $v) {
+			$ret[$v] = array_values($this->{$v});
+		}
+
+		$ret['default_project'] = isset($this->project[$this->default_project]) ? $this->default_project : null;
+		$ret['default_priority'] = isset($this->priority[$this->default_priority]) ? $this->default_priority : null;
+		$ret['default_fields'] = array();
+
+		foreach ($this->default_fields as $id) {
+			if (isset($this->field[$id])) {
+				$ret['default_fields'][] = $id;
+			}
+		}
+
+		return $ret;
+	}
+} 

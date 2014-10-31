@@ -36,6 +36,10 @@ namespace deskpro_jira2\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\JIRA\OAuthWrapper;
+use Application\DeskPRO\Service\JIRA;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -45,22 +49,80 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 	public function handleApiPackageRequest(ApiPackageRequestContext $context)
 	{
 		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-			case 'check-requirements':
-				return $this->checkRequirementsAction($context);
+			case 'get-meta':
+				return $this->getMetaAction($context);
+			case 'set-meta':
+				return $this->setMetaAction($context);
 			default:
 				throw $context->createNotFoundException();
 		}
 	}
 
+	/**
+	 * check api link connection
+	 * @param DeskproContainer $container
+	 * @return null
+	 */
+	protected function checkErrors(DeskproContainer $container)
+	{
+		$errors = array();
+
+		$back = $container->getRouter()->generateUrl('jira_token');
+		$oauth = new OAuthWrapper($container->getSettingsHandler(), $back);
+		try {
+			$oauth->requestTempCredentials();
+		} catch (\Exception $e) {
+
+			if ($e instanceof ClientErrorResponseException) {
+				$code = $e->getResponse()->getStatusCode();
+
+				if (404 === $code || 403 === $code) {
+					$errors['url'] = true;
+				} else {
+					$errors['api'] = true;
+				}
+
+			} else {
+				$errors['url'] = true;
+			}
+		}
+
+		if (!$errors && !$container->getSetting(OAuthWrapper::PARAM_TOKENS)) {
+			$errors['token'] = true;
+		}
+
+		$container->getSettingsHandler()->setSetting(JIRA::PARAM_ENABLED, (bool) $errors);
+		return $errors ?: null;
+	}
 
 	/**
 	 * @param ApiPackageRequestContext $context
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public function checkRequirementsAction(ApiPackageRequestContext $context)
+	public function getMetaAction(ApiPackageRequestContext $context)
 	{
-		return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
+		if ($errors = $this->checkErrors($context->getContainer())) {
+			return $context->createJsonResponse(array('errors' => $errors));
+		}
+
+		/** @var JIRA $js */
+		$js = $context->getContainer()->get('dp.jira');
+		$meta = $js->getMeta()->toArray();
+
+		return $context->createJsonResponse(array('meta' => $meta));
+	}
+
+	/**
+	 * @param ApiPackageRequestContext $context
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function setMetaAction(ApiPackageRequestContext $context)
+	{
+		/** @var JIRA $js */
+		$js = $context->getContainer()->get('dp.jira');
+		$data = (array) $context->getIn()->getAll('req');
+		$meta = $js->updateMeta($data);
+
+		return $context->createJsonResponse($meta->toArray());
 	}
 }

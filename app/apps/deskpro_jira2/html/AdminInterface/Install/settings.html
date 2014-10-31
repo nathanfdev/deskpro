@@ -1,4 +1,4 @@
-<form name="form_props" ng-submit="form_props.$valid && Ctrl.saveSettings()" novalidate>
+<form name="jira_form" ng-submit="jira_form.$valid && saveSettings()" novalidate>
 <article class="form-horizontal dp-form">
 	<div class="panel panel-fill indent">
 		<div class="panel-body" ng-if="no_curl_support">
@@ -15,6 +15,68 @@
 		</div>
 		<div class="panel-body" ng-if="!no_curl_support">
 			<!--#include file="AdminInterface/Install/settings-list.html" -->
+
+            <div class="form-group">
+                <div class="col-lg-4">
+                    <h3>Config</h3>
+                </div>
+                <div class="col-lg-8">
+
+                    <div ng-show="loading_meta">
+                        <i class="fa fa-refresh fa-spin"></i> API check in progress...
+                    </div>
+                    <div class="text-danger" ng-show="meta_errors.url">
+                        Host is unreachable
+                    </div>
+                    <div class="text-danger" ng-show="meta_errors.api">
+                        Error while connecting to your Application Link, please check your JIRA configuration.
+                    </div>
+
+                    <div ng-show="meta_errors.token">
+                        <br />
+                        <button class="btn btn-primary" type="button" ng-click="getAccessToken()">
+                            Get Access Token
+                        </button>
+                    </div>
+
+
+                    <div class="row" ng-if="meta && !loading_meta">
+                        <div class="col-lg-4">
+                            Default project
+                        </div>
+                        <div class="col-lg-8">
+                            <select ui-select2 style="width: 250px;" ng-model="meta.default_project">
+                                <option ng-repeat="p in meta.project" value="{{ p.id }}">{{ p.name }}</option>
+                            </select>
+                        </div>
+                        <br /><br />
+
+                        <div class="col-lg-4">
+                            Default priority
+                        </div>
+                        <div class="col-lg-8">
+                            <select ui-select2 style="width: 250px;" ng-model="meta.default_priority">
+                                <option ng-repeat="p in meta.priority" value="{{ p.id }}">{{ p.name }}</option>
+                            </select>
+                        </div>
+                        <br /><br />
+
+                        <div class="col-lg-4">
+                            Default Fields
+                        </div>
+                        <div class="col-lg-8">
+                            <label ng-repeat="f in meta.field" style="display: block;">
+                                <input type="checkbox"
+                                       value="{{ f.id }}"
+                                       ng-checked="meta.default_fields.indexOf(f.id) > -1"
+                                       ng-click="toggleField(f)"
+                                        />
+                                {{ f.name }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		</div>
 	</div>
 </article>
@@ -27,7 +89,6 @@
 		<div class="dp-btn-controls">
 			<div dp-hide-spinning="saving_settings">
 				<button class="btn btn-primary" dp-submit-form>Save Settings</button>
-                <button class="btn btn-primary" type="button"><i class="fa fa-reload"></i>Refresh Token</button>
 			</div>
 			<div dp-show-spinning="saving_settings">
 				<i class="spinner-flat"></i>
@@ -36,7 +97,3 @@
 	</div>
 </footer>
 </form>
-
-<script type="text/ng-template" id="deskpro_jira/Install/test-settings-modal.html">
-	<!--#include file="AdminInterface/Install/test-modal.html" -->
-</script>

@@ -38,13 +38,11 @@ class Api
 	const API_BASE_PATH = 'rest/api/2';
 
 	protected $settings;
-	protected $callback_url;
 	protected $oauth;
 
-	public function __construct(Settings $settings, $callbackUrl)
+	public function __construct(Settings $settings)
 	{
 		$this->settings = $settings;
-		$this->callback_url = $callbackUrl;
 	}
 
 	/**
@@ -53,7 +51,7 @@ class Api
 	protected function getOAuth()
 	{
 		if (!$this->oauth) {
-			$this->oauth = new OAuthWrapper($this->settings, $this->callback_url);
+			$this->oauth = new OAuthWrapper($this->settings);
 		}
 
 		return $this->oauth;

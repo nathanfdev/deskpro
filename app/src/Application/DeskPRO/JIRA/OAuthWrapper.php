@@ -32,7 +32,7 @@ class OAuthWrapper
 	protected $client;
 	protected $settings;
 
-	public function __construct(Settings $settings, $callbackUrl)
+	public function __construct(Settings $settings, $callbackUrl = null)
 	{
 		$this->settings = $settings;
 
@@ -44,11 +44,12 @@ class OAuthWrapper
 			throw new \Exception('JIRA private key is required');
 		}
 
-		$this->callback_url = $callbackUrl;
 
 		if ($tokens = $this->settings->get(self::PARAM_TOKENS)) {
 			$this->tokens = unserialize($tokens);
 		}
+
+		$this->callback_url = $callbackUrl;
 		$this->consumer_key = $this->settings->get(self::PARAM_CONSUMER);
 	}
 
@@ -58,7 +59,6 @@ class OAuthWrapper
 	public function requestTempCredentials()
 	{
 		if (!empty($this->tokens['oauth_token'])) {
-			$this->settings->setSetting(self::PARAM_TOKENS, null);
 			$this->tokens = array();
 		}
 
@@ -77,6 +77,8 @@ class OAuthWrapper
 	 */
 	public function requestAuthCredentials($token, $tokenSecret, $verifier)
 	{
+		$this->settings->setSetting(self::PARAM_TOKENS, null);
+
 		$credentials = $this->requestCredentials(
 			$this->base_url . $this->access_tocken_url . '?oauth_callback=' . $this->callback_url . '&oauth_verifier=' . $verifier,
 			$token,
@@ -99,14 +101,20 @@ class OAuthWrapper
 	protected function requestCredentials($url, $token = false, $tokenSecret = false)
 	{
 		$client = $this->getClient($token, $tokenSecret);
-		$response = $client->post($url)->send();
+		try {
+			$response = $client->post($url)->send();
+		} catch(\Exception $e) {
+			// todo handle curl errors
+			throw $e;
+		}
+
 		$body = (string) $response->getBody();
 
 		$tokens = array();
 		parse_str($body, $tokens);
 
 		if (empty($tokens)) {
-			throw new Exception("An error occurred while requesting oauth token credentials");
+			throw new \Exception("An error occurred while requesting oauth token credentials");
 		}
 
 		return $this->tokens = $tokens;
@@ -124,7 +132,8 @@ class OAuthWrapper
 			return $this->client;
 		}
 
-		// todo check $this->tokens['oauth..']
+		$token = $token ?: (isset($this->tokens['oauth_token']) ? $this->tokens['oauth_token'] : null);
+		$secret = $tokenSecret ?: (isset($this->tokens['oauth_token_secret']) ? $this->tokens['oauth_token_secret'] : null);
 
 		$this->client = new Client($this->base_url);
 		$privateKey = $this->private_key;
@@ -132,8 +141,8 @@ class OAuthWrapper
 		$plugin = new OauthPlugin(array(
 			'consumer_key' 		=> $this->consumer_key,
 			'consumer_secret' 	=> $this->consumer_secret,
-			'token' 			=> !$token ? $this->tokens['oauth_token'] : $token,
-			'token_secret' 		=> !$token ? $this->tokens['oauth_token_secret'] : $tokenSecret,
+			'token' 			=> $token,
+			'token_secret' 		=> $secret,
 			'signature_method' => 'RSA-SHA1',
 			'signature_callback' => function($stringToSign, $key) use ($privateKey) {
 
