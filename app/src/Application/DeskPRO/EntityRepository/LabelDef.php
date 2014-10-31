@@ -73,7 +73,7 @@ class LabelDef extends AbstractEntityRepository
 				break;
 
 			case 'feedback':
-				$label_type = 'feedbacks';
+				$label_type = 'feedback';
 				break;
 
 			case 'news':
