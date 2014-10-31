@@ -77,6 +77,13 @@ class TicketController extends AbstractController
 	 *				required=false,
 	 *				type="string"
 	 *			),
+	 * 			@SWG\Parameter(
+	 *				name="overwrite_person_name",
+	 *				description="Set person_name even if the person already exists. This will overwrite a persons name with the one provided in person_name.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="boolean"
+	 *			),
 	 *			@SWG\Parameter(
 	 *				name="person_organization",
 	 *				description="If a person is being created, user this as their organization. If no organization is found with this name, one is created.",
@@ -344,6 +351,9 @@ class TicketController extends AbstractController
 					if ($person->organization) {
 						$this->em->persist($person->organization);
 					}
+				} else if ($this->in->getBool('overwrite_person_name') && $this->in->getString('person_name')) {
+					$person->setName($this->in->getString('person_name'));
+					$this->em->persist($person);
 				}
 			}
 		} else {
