@@ -36,7 +36,7 @@ namespace Application\PortalBundle\Twig;
 
 
 use Application\DeskPRO\Brand\BrandStack;
-use Twig_Environment;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
 class PortalExtension extends \Twig_Extension
 {
@@ -45,10 +45,16 @@ class PortalExtension extends \Twig_Extension
 	 */
 	private $brand_stack;
 
+	/**
+	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
+	 */
+	private $settings_resolver;
 
-	public function __construct(BrandStack $brand_stack)
+
+	public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver)
 	{
 		$this->brand_stack = $brand_stack;
+		$this->settings_resolver = $settings_resolver;
 	}
 
 	public function getFunctions()
@@ -61,6 +67,12 @@ class PortalExtension extends \Twig_Extension
 	public function processPortalTag($tag_name, $arguments = array())
 	{
 		return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
+	}
+
+
+	public function getGlobals()
+	{
+		return array('global_settings' => $this->settings_resolver->getGlobalSettings());
 	}
 
 	public function getName()

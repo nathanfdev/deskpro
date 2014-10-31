@@ -1,6 +1,10 @@
 <header class="top-bar">
 	<div class="brand">
-		<h1>An Excellent Support Center</h1>
+		<a href="{{ path('portal_index') }}">
+			<h1>
+				{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}
+			</h1>
+		</a>
 	</div>
 
 	<ul id="menu">

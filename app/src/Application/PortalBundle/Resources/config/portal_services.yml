@@ -50,7 +50,7 @@ services:
 
   portal_extension.twig:
     class: Application\PortalBundle\Twig\PortalExtension
-    arguments: [@brand_stack]
+    arguments: [@brand_stack, @settings_resolver]
     tags:
       - { name: twig.extension }
 
