@@ -4,18 +4,19 @@
 <div class="column-half{% if loop.index0 % 2 == 1 %} omega{% endif %}">
 	<article class="article-categories">
 		<header>
-			<h1><img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ article_data.category.title }}</h1>
+			<h1>
+				<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ article_data.category.title }}</h1>
 			<hr>
 		</header>
 
 		<ul>
 			{% for article in article_data['articles'] %}
-			<li><a href="#">{{ article.realTitle }}</a></li>
+			<li><a href="{{ path('portal_kb_view', { 'slug': article.urlSlug }) }}">{{ article.realTitle }}</a></li>
 			{% endfor %}
 		</ul>
 
 		<div class="list-meta">
-			<a href="#">View <span>203</span> articles<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+			<a href="{{ path('portal_kb_browse', { 'slug': article_data.category.urlSlug }) }}">View <span>{{ article_data['articles']|length }}</span> articles<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
 		</div>
 	</article>
 </div>

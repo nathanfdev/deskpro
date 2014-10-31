@@ -35,7 +35,10 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
 use Application\PortalBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 
 class ArticlesController extends AbstractController
@@ -46,13 +49,16 @@ class ArticlesController extends AbstractController
 	}
 
 
-	public function browseAction($slug)
+	/**
+	 * @ParamConverter(name="category", options={"urlSlug"="slug"})
+	 */
+	public function browseAction(ArticleCategory $category)
 	{
-		return $this->render('Theme:Articles:browse.html.twig', array('category' => $slug));
+		return $this->render('Theme:Articles:browse.html.twig', array('category' => $category));
 	}
 
 
-	public function viewAction($slug)
+	public function viewAction(Article $slug)
 	{
 		return $this->render('Theme:Articles:view.html.twig', array('article' => $slug));
 	}

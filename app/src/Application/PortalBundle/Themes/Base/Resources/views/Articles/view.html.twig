@@ -1,5 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-<h1>Viewing an Article named "{{ article }}"</h1>
+<h1>{{ article.realTitle }}</h1>
+	<p>Posted by <a href="#">{{ article.person.name }}</a> on {{ article.date_published | date('M j Y') }}</p>
+<p>{{ article.realContent }}</p>
 {% endblock inner_content %}
