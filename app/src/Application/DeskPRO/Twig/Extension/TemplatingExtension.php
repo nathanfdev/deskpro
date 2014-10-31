@@ -205,6 +205,8 @@ class TemplatingExtension extends \Twig_Extension
 			'smart_wrap'             => new \Twig_Filter_Method($this, 'smartWrap'),
 			'json_encode_inhtml'     => new \Twig_Filter_Method($this, 'jsonEncodeInHtml', array('is_safe' => array('html'))),
 
+			'text_wrap_marks'        => new \Twig_Filter_Method($this, 'textWrapMarks'),
+
 			'regex_replace'          => new \Twig_Filter_Method($this, 'regexReplace'),
 
 			'hex2rgb'                => new \Twig_Filter_Method($this, 'hex2rgb'),
@@ -1730,6 +1732,13 @@ class TemplatingExtension extends \Twig_Extension
 	public function jsonEncodeInHtml($data)
 	{
 		return \Application\DeskPRO\Util::jsonEncode($data);
+	}
+
+	public function textWrapMarks($string, $length)
+	{
+		// Inserts a 0-width space at position $length
+		// Browsers will wrap at this point in long strings
+		return preg_replace('/(.{'.$length.'})/u', '$1'.Strings::chrUtf8(8203), $string);
 	}
 
 	public function regexReplace($string, $regex, $replace, $limit = -1)
