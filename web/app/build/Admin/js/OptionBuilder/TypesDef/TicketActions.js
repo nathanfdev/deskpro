@@ -1212,7 +1212,7 @@
           },
           scopeInit: [
             '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-              return $scope.handleTemplateChange = function() {
+              $scope.handleTemplateChange = function() {
                 if ($scope.model.template === 'CREATE') {
                   $scope.model.template = null;
                   $scope.is_creating = true;
@@ -1249,6 +1249,17 @@
                     return $scope.is_creating = false;
                   });
                 }
+              };
+              return $scope.editTemplate = function() {
+                return $modal.open({
+                  templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                  controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                  resolve: {
+                    templateName: function() {
+                      return $scope.model.template;
+                    }
+                  }
+                });
               };
             }
           ],
@@ -1340,7 +1351,7 @@
                   return _results;
                 };
               })(this));
-              return $scope.handleTemplateChange = function() {
+              $scope.handleTemplateChange = function() {
                 if ($scope.model.template === 'CREATE') {
                   $scope.model.template = null;
                   $scope.is_creating = true;
@@ -1377,6 +1388,17 @@
                     return $scope.is_creating = false;
                   });
                 }
+              };
+              return $scope.editTemplate = function() {
+                return $modal.open({
+                  templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                  controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                  resolve: {
+                    templateName: function() {
+                      return $scope.model.template;
+                    }
+                  }
+                });
               };
             }
           ],
@@ -1471,7 +1493,7 @@
           },
           scopeInit: [
             '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-              return $scope.handleTemplateChange = function() {
+              $scope.handleTemplateChange = function() {
                 if ($scope.model.template === 'CREATE') {
                   $scope.model.template = null;
                   $scope.is_creating = true;
@@ -1508,6 +1530,17 @@
                     return $scope.is_creating = false;
                   });
                 }
+              };
+              return $scope.editTemplate = function() {
+                return $modal.open({
+                  templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                  controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                  resolve: {
+                    templateName: function() {
+                      return $scope.model.template;
+                    }
+                  }
+                });
               };
             }
           ],
