@@ -49,16 +49,15 @@ class ArticlesController extends AbstractController
 	}
 
 
-	/**
-	 * @ParamConverter(name="category", options={"urlSlug"="slug"})
-	 */
-	public function browseAction(ArticleCategory $category)
+	public function browseAction($slug)
 	{
+		$id = substr($slug, 0, strpos($slug, '-'));
+		$category = $this->getDoctrine()->getManager()->getRepository('DeskPRO:ArticleCategory')->find($id);
 		return $this->render('Theme:Articles:browse.html.twig', array('category' => $category));
 	}
 
 
-	public function viewAction(Article $slug)
+    function viewAction(Article $slug)
 	{
 		return $this->render('Theme:Articles:view.html.twig', array('article' => $slug));
 	}
@@ -66,20 +65,19 @@ class ArticlesController extends AbstractController
 
 	public function listAction(Request $request)
 	{
-		$count = $request->get('count', 5);
-
-		$news  = $this->getArticlesRepo()->getNewest($count);
-		$total = $this->getArticlesRepo()->countPublished();
+		$cat = $request->get('cat');
+		$category = $this->getDoctrine()->getManager()->getRepository('DeskPRO:ArticleCategory')->find($cat);
+		$news  = $this->getArticlesRepo()->getNewest(null, $category);
 
 		$template = 'Theme:Articles:list.html.twig';
-		if ('1' == $request->query->get('render_small')) {
+		if ('small' == $request->query->get('style')) {
 			$template = 'Theme:Articles:list_small.html.twig';
 		}
 
 		return $this->render(
 			$template, array(
-				'news_count_total' => $total,
-				'news_articles'    => $news
+				'category' => $category,
+				'articles'    => $news
 			)
 		);
 	}
