@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,56 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\BlobStorage\MoveBlobsUtil;
-
-/**
- * Goes through blobs that need to be moved from one storage mechanism to another
- */
-class MoveBlobs extends AbstractJob
+class Build1414747927 extends AbstractBuild
 {
-	const DEFAULT_INTERVAL = 60;
-
 	public function run()
 	{
-		// Signals error handler to log error to standard error log.
-		// Usually errors are logged to blob log, but not to standard error log.
-		// (so automated reporting and such dont send on temporarily issues that arent important).
-		// But if it fails here during the retry, then it means the admin should probably check it out
-
-		$GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'] = true;
-
-		$mover = new MoveBlobsUtil(App::getOrm(), App::getContainer()->getBlobStorage());
-		$mover->setLogger($this->getLogger());
-		$mover->setIgnoreErrors();
-		$mover->setLimit(450);
-		$mover->setLimitTime(60);
-
-		$count = $mover->getCount();
-		if (!$count) {
-			unset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND']);
-			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
-
-			// Nothing to do
-			return;
-		}
-
-		$this->logStatus("$count blobs moved");
-
-		$mover->run();
-
-		$next_id = App::getDb()->fetchColumn("SELECT id FROM blobs WHERE storage_loc_pref IS NOT NULL ORDER BY id ASC LIMIT 1");
-		if ($next_id) {
-			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', $next_id);
-		} else {
-			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
-		}
-
-		unset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND']);
+		$this->out("Add blobs.storage_loc_specific");
+		$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_specific VARCHAR(50) DEFAULT NULL");
 	}
 }

@@ -554,7 +554,12 @@ class Runner
 
 		try {
 			$this->logger->logDebug("Saving log blob...");
-			$log_blob_row = App::$container->getBlobStorage()->createBlobRowFromString($log_messages, 'email-process.log', 'plain/text');
+			$log_blob_row = App::$container->getBlobStorage()->createBlobRowFromString(
+				$log_messages,
+				'email-process.log',
+				'plain/text',
+				array('tag' => 'logs.email_source_log')
+			);
 			$this->logger->logInfo("Log blob {$log_blob_row['id']}");
 
 			$this->ensureSourceStatus($source, array('log_blob_id' => $log_blob_row['id']));
