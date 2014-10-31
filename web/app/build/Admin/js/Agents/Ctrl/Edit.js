@@ -60,6 +60,16 @@
             }
           };
         })(this));
+        this.$scope.$watch('EditCtrl.form.zones.admin', (function(_this) {
+          return function() {
+            return _this.form.zones.reports = _this.form.zones.reports || _this.form.zones.admin;
+          };
+        })(this));
+        this.$scope.$watch('EditCtrl.form.zones.reports', (function(_this) {
+          return function() {
+            return _this.form.zones.reports = _this.form.zones.reports || _this.form.zones.admin;
+          };
+        })(this));
       };
 
       Admin_Agents_Ctrl_Edit.prototype.initialLoad = function() {
@@ -547,7 +557,7 @@
               form = agentFormModel.form;
               if (settings.zones) {
                 _this.form.zones.admin = form.zones.admin;
-                _this.form.zones.reports = form.zones.reports;
+                _this.form.zones.reports = form.zones.reports || form.zones.admin;
               }
               if (settings.teams) {
                 tids = [];

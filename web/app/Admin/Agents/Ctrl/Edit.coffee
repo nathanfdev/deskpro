@@ -37,6 +37,13 @@ define [
 					else
 						@form.email_primary = ''
 			)
+
+			@$scope.$watch('EditCtrl.form.zones.admin', =>
+				@form.zones.reports = @form.zones.reports || @form.zones.admin
+			)
+			@$scope.$watch('EditCtrl.form.zones.reports', =>
+				@form.zones.reports = @form.zones.reports || @form.zones.admin
+			)
 			return
 
 		initialLoad: ->
@@ -368,7 +375,7 @@ define [
 
 					if settings.zones
 						@form.zones.admin   = form.zones.admin
-						@form.zones.reports = form.zones.reports
+						@form.zones.reports = form.zones.reports || form.zones.admin
 
 					if settings.teams
 						tids = []

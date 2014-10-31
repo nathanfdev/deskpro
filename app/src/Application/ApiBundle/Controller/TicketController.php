@@ -82,7 +82,7 @@ class TicketController extends AbstractController
 	 *				description="Set person_name even if the person already exists. This will overwrite a persons name with the one provided in person_name.",
 	 *				paramType="query",
 	 *				required=false,
-	 *				type="boolean"
+	 *				type="boolean	"
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="person_organization",

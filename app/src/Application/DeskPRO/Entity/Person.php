@@ -681,6 +681,19 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 
 	/**
+	 * @param bool $yesno
+	 */
+	public function setCanAdmin($yesno)
+	{
+		if ($yesno) {
+			$this['can_reports'] = true;
+		}
+
+		$this->setModelField('can_admin', $yesno);
+	}
+
+
+	/**
 	 * @return bool|int
 	 */
 	public function getCanBilling()
