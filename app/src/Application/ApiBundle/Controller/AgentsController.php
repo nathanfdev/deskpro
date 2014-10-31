@@ -252,8 +252,9 @@ class AgentsController extends AbstractController implements ProtectedController
 			array_unshift($set_emails, $agent_postdata['email']);
 		}
 
-		$set_emails = array_unique($set_emails);
 		$set_emails = Arrays::removeFalsey($set_emails);
+		$set_emails = Arrays::func($set_emails, 'strtolower');
+		$set_emails = array_unique($set_emails);
 
 		$email_account_manager = $this->container->getEmailAccountManager();
 		$system_addresses = array_filter($set_emails, function($e) use ($email_account_manager) {
