@@ -45,12 +45,20 @@ class BaseTheme extends AbstractTheme
 			new Tag('alerts', 'Theme:Portal:alerts'),
 			new Tag('top_bar', 'Theme:Portal:topBar'),
 			new Tag('top_search', 'Theme:Portal:topSearch'),
-			new Tag('news_list', 'Theme:News:list'),
-			new Tag('kb_cats_home', 'Theme:Articles:categories'),
+			new Tag('news_list', 'Theme:News:list', array('style' => 'posts')),
+
+			new Tag('kb_articles_forcat', 'Theme:Articles:list', array('style' => 'forcat')),
 			new Tag('kb_articles_small', 'Theme:Articles:list', array('style' => 'small')),
-			new Tag('news_list_small', 'Theme:News:list', array('render_small' => '1')),
-			new Tag('downloads_list_small', 'Theme:Downloads:list', array('render_small' => '1')),
-			new Tag('feedback_list_small', 'Theme:Feedback:list', array('render_small' => '1')),
+			new Tag('kb_articles_xsmall', 'Theme:Articles:list', array('style' => 'xsmall')),
+
+			new Tag('kb_cats_home', 'Theme:Articles:categories', array('style' => 'home')),
+			new Tag('kb_cats_summary', 'Theme:Articles:categories', array('style' => 'summary')),
+			new Tag('kb_cats_small', 'Theme:Articles:categories', array('style' => 'small')),
+			new Tag('kb_cats_expander', 'Theme:Articles:categories', array('style' => 'expander')),
+
+			new Tag('news_list_small', 'Theme:News:list', array('style' => 'small')),
+			new Tag('downloads_list_small', 'Theme:Downloads:list', array('style' => 'small')),
+			new Tag('feedback_list_small', 'Theme:Feedback:list', array('style' => 'small')),
 		);
 	}
 
@@ -83,7 +91,7 @@ class BaseTheme extends AbstractTheme
 
 
 	/**
-	 * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
+	 * @return string|null base namespace of theme, like: Application\PortalBundle\Themes\Standard
 	 */
 	public function getNamespace()
 	{

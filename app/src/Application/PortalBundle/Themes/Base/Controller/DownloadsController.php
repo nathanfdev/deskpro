@@ -67,18 +67,15 @@ class DownloadsController extends AbstractController
 
 	public function listAction(Request $request)
 	{
+		$style = $request->get('style');
 		$count = $request->get('count', 5);
 
 		$downloads  = $this->getDownloadsRepo()->getNewest($count);
 		$total = $this->getDownloadsRepo()->countPublished();
 
-		$template = 'Theme:Downloads:list.html.twig';
-		if ('1' == $request->query->get('render_small')) {
-			$template = 'Theme:Downloads:list_small.html.twig';
-		}
-
 		return $this->render(
-			$template, array(
+			sprintf('Theme:Downloads:list_%s.html.twig', $style),
+			array(
 				'count_downloads' => $total,
 				'downloads'    => $downloads
 			)

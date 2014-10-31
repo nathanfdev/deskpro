@@ -46,14 +46,10 @@ class FeedbackController extends AbstractController
 
 		$feedback  = $this->getFeedbackRepo()->getNewest(false, $count);
 		$total = $this->getFeedbackRepo()->countNotClosedNotHidden();
-
-		$template = 'Theme:Feedback:list.html.twig';
-		if ('1' == $request->query->get('render_small')) {
-			$template = 'Theme:Feedback:list_small.html.twig';
-		}
-
+		$style = $request->get('style');
 		return $this->render(
-			$template, array(
+			sprintf('Theme:Feedback:list_%s.html.twig', $style),
+			array(
 				'count_feedback' => $total,
 				'feedback'    => $feedback
 			)

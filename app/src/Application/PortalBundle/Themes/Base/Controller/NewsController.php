@@ -60,18 +60,14 @@ class NewsController extends AbstractController
 
 	public function listAction(Request $request)
 	{
+		$style = $request->get('style');
 		$count = $request->get('count', 5);
 
 		$news  = $this->getNewsRepo()->getNewest($count);
 		$total = $this->getNewsRepo()->countPublished();
 
-		$template = 'Theme:News:list.html.twig';
-		if ('1' == $request->query->get('render_small')) {
-			$template = 'Theme:News:list_small.html.twig';
-		}
-
 		return $this->render(
-			$template, array(
+			sprintf('Theme:News:list_%s.html.twig', $style), array(
 				'news_count_total' => $total,
 				'news_articles'    => $news
 			)
