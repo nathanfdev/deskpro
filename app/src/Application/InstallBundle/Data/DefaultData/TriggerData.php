@@ -43,6 +43,7 @@ use Application\DeskPRO\Tickets\Actions\SetRequireValidation;
 use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgentMessage;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserIsEmailed;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserIsNew;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserValidAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckUserValidEmail;
@@ -126,6 +127,12 @@ class TriggerData extends AbstractDefaultData
 		$trigger->is_enabled = false;
 		$trigger->sys_name = 'default_newticket_userautoreply';
 		$trigger->title = "Send auto-reply confirmation to user";
+
+		$set = new TriggerTermComposite();
+		$set->add(new CheckUserIsEmailed('not'));
+		$set->setOperator('AND');
+		$trigger->terms->addTerm($set);
+
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
 			'do_cc_users' => true,
@@ -145,6 +152,12 @@ class TriggerData extends AbstractDefaultData
 		$trigger->is_enabled = false;
 		$trigger->sys_name = 'default_newreply_userautoreply';
 		$trigger->title = "Send auto-reply confirmation to user";
+
+		$set = new TriggerTermComposite();
+		$set->add(new CheckUserIsEmailed('not'));
+		$set->setOperator('AND');
+		$trigger->terms->addTerm($set);
+
 		$trigger->actions->addAction(new SendUserEmail(array(
 			'template' => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
 			'do_cc_users' => true,

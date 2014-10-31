@@ -72,6 +72,9 @@ class DefaultDataCommand extends ContainerAwareCommand
 			case 'install':
 				$data_proc->runInstall($classname);
 				break;
+			case 'upgrade':
+				$data_proc->runSync($classname);
+				break;
 			case 'sync':
 				$data_proc->runSync($classname);
 				break;
