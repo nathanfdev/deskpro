@@ -107,9 +107,15 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 
 		/** @var JIRA $js */
 		$js = $context->getContainer()->get('dp.jira');
-		$meta = $js->getMeta()->toArray();
+		$api = $js->getApi();
+		$meta = array(
+			'projects' => $api->get('/project'),
+			'priorities' => $api->get('/priority'),
+			'issuetypes' => $api->get('/issuetype'),
+			'fields' => $api->get('/field'),
+		);
 
-		return $context->createJsonResponse(array('meta' => $meta));
+		return $context->createJsonResponse(array('meta' => $meta, 'meta_defaults' => $js->getMeta()->toArray()));
 	}
 
 	/**

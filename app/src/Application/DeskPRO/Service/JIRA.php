@@ -64,7 +64,7 @@ class JIRA
 	/**
 	 * @return Api
 	 */
-	protected function getApi()
+	public function getApi()
 	{
 		if (!$this->api) {
 			$this->api = new Api($this->container->getSettingsHandler());
@@ -83,10 +83,6 @@ class JIRA
 		$meta = new Meta();
 
 		try {
-			$meta->setEntries('project', $this->getApi()->get('/project'));
-			$meta->setEntries('priority', $this->getApi()->get('/priority'));
-			$meta->setEntries('field', $this->getApi()->get('/field'));
-
 			foreach ($properties as $k => $v) {
 				$meta->setDefault($k, $v);
 			}

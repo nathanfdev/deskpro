@@ -92,7 +92,7 @@ class Api
 	 */
 	public function get($endpoint, array $params = array())
 	{
-		return $this->call($endpoint, 'GET', array(), $params);
+		return $this->call($endpoint, 'GET', array(), array('query' => $params));
 	}
 
 	/**

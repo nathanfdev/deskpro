@@ -45,7 +45,10 @@ class JIRAController extends AbstractController
 			$this->settings,
 			$this->generateUrl('jira_token', array(), true)
 		);
-		var_dump($api->get('/project'));
+		$a = $api->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
+		echo '<pre>';
+		var_export($a);
+//		var_dump($a);
 
 
 		die();

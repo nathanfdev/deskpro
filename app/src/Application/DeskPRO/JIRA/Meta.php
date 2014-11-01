@@ -45,7 +45,9 @@ class Meta
 
 	protected $default_project;
 	protected $default_priority;
-	protected $default_fields = array();
+	protected $default_issuetype;
+	protected $default_fields_summary = array();
+	protected $default_fields_list = array();
 
 	/**
 	 * @param $type
@@ -68,7 +70,7 @@ class Meta
 	 */
 	public function addEntry($type, array $entry)
 	{
-		if ('project' !== $type && 'priority' !== $type && 'field' !== $type) return;
+		if ('project' !== $type && 'priority' !== $type && 'fields' !== $type || 'issuetype' !== $type) return;
 
 		$this->{$type}[$entry['id']] = $entry;
 		return $this;
@@ -93,19 +95,14 @@ class Meta
 	{
 		$ret = array();
 
-		foreach (array('project', 'priority', 'field') as $v) {
-			$ret[$v] = array_values($this->{$v});
-		}
+		// todo check fields presence?
 
-		$ret['default_project'] = isset($this->project[$this->default_project]) ? $this->default_project : null;
-		$ret['default_priority'] = isset($this->priority[$this->default_priority]) ? $this->default_priority : null;
-		$ret['default_fields'] = array();
+		$ret['default_project'] = $this->default_project;
+		$ret['default_priority'] = $this->default_priority;
+		$ret['default_issuetype'] = $this->default_issuetype;
 
-		foreach ($this->default_fields as $id) {
-			if (isset($this->field[$id])) {
-				$ret['default_fields'][] = $id;
-			}
-		}
+		$ret['default_fields_summary'] = $this->default_fields_summary;
+		$ret['default_fields_list'] = $this->default_fields_list;
 
 		return $ret;
 	}

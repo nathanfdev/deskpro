@@ -45,8 +45,8 @@
                             Default project
                         </div>
                         <div class="col-lg-8">
-                            <select ui-select2 style="width: 250px;" ng-model="meta.default_project">
-                                <option ng-repeat="p in meta.project" value="{{ p.id }}">{{ p.name }}</option>
+                            <select ui-select2 style="width: 250px;" ng-model="meta_defaults.default_project">
+                                <option ng-repeat="p in meta.projects" value="{{ p.id }}">{{ p.name }}</option>
                             </select>
                         </div>
                         <br /><br />
@@ -55,8 +55,18 @@
                             Default priority
                         </div>
                         <div class="col-lg-8">
-                            <select ui-select2 style="width: 250px;" ng-model="meta.default_priority">
-                                <option ng-repeat="p in meta.priority" value="{{ p.id }}">{{ p.name }}</option>
+                            <select ui-select2 style="width: 250px;" ng-model="meta_defaults.default_priority">
+                                <option ng-repeat="p in meta.priorities" value="{{ p.id }}">{{ p.name }}</option>
+                            </select>
+                        </div>
+                        <br /><br />
+
+                        <div class="col-lg-4">
+                            Default issue type
+                        </div>
+                        <div class="col-lg-8">
+                            <select ui-select2 style="width: 250px;" ng-model="meta_defaults.default_issuetype">
+                                <option ng-repeat="i in meta.issuetypes" value="{{ i.id }}">{{ i.name }}</option>
                             </select>
                         </div>
                         <br /><br />
@@ -65,14 +75,38 @@
                             Default Fields
                         </div>
                         <div class="col-lg-8">
-                            <label ng-repeat="f in meta.field" style="display: block;">
-                                <input type="checkbox"
-                                       value="{{ f.id }}"
-                                       ng-checked="meta.default_fields.indexOf(f.id) > -1"
-                                       ng-click="toggleField(f)"
-                                        />
-                                {{ f.name }}
-                            </label>
+                            <table class="table">
+                                <tr>
+                                    <th>
+                                        Field
+                                    </th>
+                                    <th>
+                                        Summary
+                                    </th>
+                                    <th>
+                                        List
+                                    </th>
+                                </tr>
+                                <tr ng-repeat="f in meta.fields">
+                                    <td>
+                                        {{ f.name }}
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="checkbox"
+                                               value="{{ f.id }}"
+                                               ng-checked="meta_defaults.default_fields_summary.indexOf(f.id) > -1"
+                                               ng-click="toggleField(f, 1)"
+                                                />
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="checkbox"
+                                               value="{{ f.id }}"
+                                               ng-checked="meta_defaults.default_fields_list.indexOf(f.id) > -1"
+                                               ng-click="toggleField(f)"
+                                                />
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>

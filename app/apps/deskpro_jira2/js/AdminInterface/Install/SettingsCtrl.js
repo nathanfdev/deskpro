@@ -20,7 +20,10 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 					$scope.loading_meta = false;
 					$scope.Ctrl.stopSpinner('saving_settings');
 					$scope.meta = res.data.meta;
+					$scope.meta_defaults = res.data.meta_defaults;
 					$scope.meta_errors = res.data.errors;
+
+					console.info($scope.meta);
 				},
 				function() {
 					$scope.loading_meta = false;
@@ -35,7 +38,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			$scope.Ctrl.startSpinner('saving_settings');
 
 			if ($scope.meta && !$scope.meta_errors) {
-				Api.sendPostJson('/apps/packages/deskpro_jira2/set-meta', $scope.meta).then(d.resolve, d.resolve);
+				Api.sendPostJson('/apps/packages/deskpro_jira2/set-meta', $scope.meta_defaults).then(d.resolve, d.resolve);
 			} else {
 				d.resolve();
 			}
@@ -69,11 +72,12 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 			);
 		};
 
-		$scope.toggleField = function(field) {
-			var idx = $scope.meta.default_fields.indexOf(field.id);
+		$scope.toggleField = function(field, isSummary) {
+			var arr = $scope.meta_defaults['default_fields_' + (isSummary ? 'summary' : 'list')];
+			var idx = arr.indexOf(field.id);
 			idx > -1
-				? $scope.meta.default_fields.splice(idx, 1)
-				: $scope.meta.default_fields.push(field.id);
+				? arr.splice(idx, 1)
+				: arr.push(field.id);
 		};
 
 		loadMeta();
