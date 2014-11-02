@@ -356,7 +356,7 @@ class Article extends AbstractEntityRepository
 
 	public function getDataForTagOptions(array $options)
 	{
-		$options['category'] = is_object($options['category']) ? $options['category'] : $this->find($options['category']);
+		$options['category'] = is_object($options['category']) ? $options['category'] : $this->getEntityManager()->getRepository('DeskPRO:ArticleCAtegory')->find($options['category']);
 
 		//
 		// get the articles
@@ -364,6 +364,7 @@ class Article extends AbstractEntityRepository
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('a, cs')->from('DeskPRO:Article', 'a');
 
+		// do our filtering logic
 		$this->filterArticles($qb, $options);
 
 		// count
@@ -396,12 +397,13 @@ class Article extends AbstractEntityRepository
 	protected function filterArticles(QueryBuilder $qb, array $options)
 	{
 		$qb->join('a.categories', 'cs');
-		// just one cat or the cat + all sub cats
-		if ($options['include_subcategories']) {
-			$qb->andWhere(':cat MEMBER OF cs');
-		} else {
-			$qb->andWhere('cs.root = :cat');
-		}
+		// TODO: allow sub categories
+//		just one cat or the cat + all sub cats
+//		if ($options['include_subcategories']) {
+//			$qb->andWhere('EXISTS (SELECT c FROM DeskPRO:ArticleCategory c WHERE c.root = :cat AND a MEMBER OF c.articles)');
+//		} else {
+			$qb->andWhere(':cat MEMBER OF a.categories');
+//		}
 		$qb->setParameter('cat', $options['category']);
 
 		// label
