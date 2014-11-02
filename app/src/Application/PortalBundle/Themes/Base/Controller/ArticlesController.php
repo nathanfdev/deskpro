@@ -36,10 +36,10 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleCategory;
 use Application\PortalBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ArticlesController extends AbstractController
 {
@@ -53,7 +53,7 @@ class ArticlesController extends AbstractController
 	{
 		$id = substr($slug, 0, strpos($slug, '-'));
 		$category = $this->getDoctrine()->getManager()->getRepository('DeskPRO:ArticleCategory')->find($id);
-		return $this->render('Theme:Articles:browse.html.twig', array('category' => $category));
+		return $this->render('Theme:Articles:browse.html.twig', array('cat' => $category));
 	}
 
 
@@ -65,19 +65,47 @@ class ArticlesController extends AbstractController
 
 	public function listAction(Request $request)
 	{
-		$cat = $request->get('cat');
-		$category = $this->getDoctrine()->getManager()->getRepository('DeskPRO:ArticleCategory')->find($cat);
-		$news  = $this->getArticlesRepo()->getNewest(null, $category);
+		$options_resolver = new OptionsResolver();
+		$options_resolver
+			->setRequired(array('category'))
+			->setOptional(array('labelled'))
+			->setDefaults(
+				array(
+					'style'                 => 'small',
+					'include_subcategories' => false,
+					'count'                 => 10,
+					'labelled'              => array(),
+					'sort'                  => 'date desc',
+				)
+			)
+			->setAllowedValues(
+				array(
+					'style' => array('forcat', 'small', 'xsmall')
+				)
+			)
+		;
+		$options = $options_resolver->resolve($request->query->all());
 
-		$template = 'Theme:Articles:list.html.twig';
-		if ('small' == $request->query->get('style')) {
-			$template = 'Theme:Articles:list_small.html.twig';
+		/** @var \Application\DeskPRO\EntityRepository\ArticleCategory $category */
+		$category = $this->getArticleCategoryRepo()->find($options['category']);
+		if ($options['include_subcategories']) {
+			// TODO: respect sort options
+			$articles = $this->getArticlesRepo()->findforRoot($category);
+		} else {
+			// TODO: respect sort options
+			$articles = $this->getArticlesRepo()->getNewest($options['count'], $category);
 		}
 
+		// TODO: optimize these into better DQL that will provide this
+		$total_count = count($articles);
+
+
 		return $this->render(
-			$template, array(
-				'category' => $category,
-				'articles'    => $news
+			sprintf('Theme:Articles:list_%s.html.twig', $options['style']),
+			array(
+				'cat' => $category,
+				'articles' => $articles,
+				'total_count' => $total_count
 			)
 		);
 	}
@@ -85,16 +113,36 @@ class ArticlesController extends AbstractController
 
 	public function categoriesAction(Request $request)
 	{
-		$cats  = $this->getArticleCategoryRepo()->findAll();
+		$options_resolver = new OptionsResolver();
+		$options_resolver
+			->setDefaults(
+				array(
+					'style'                 => 'small',
+					'articles'              => array(
+						'count' => 10,
+						'include_subcategories' => false,
+						'labelled' => array(),
+						'sort'     => 'date desc',
+					),
+					'sort'     => 'title asc',
+				)
+			)
+			->setAllowedValues(
+				array(
+					'style' => array('expander', 'home', 'small', 'summary')
+				)
+			)
+		;
+		$options = $options_resolver->resolve($request->query->all());
 
-		$cat_articles = array();
-		foreach ($cats as $cat) {
-			$cat_articles[] = array('category' => $cat, 'articles' => $this->getArticlesRepo()->getInNode($cat));
-		}
+		/** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
+		$categories = $this->getArticleCategoryRepo()->findAll();
 
 		return $this->render(
-			'Theme:Articles:categories.html.twig', array(
-				'data' => $cat_articles
+			sprintf('Theme:Articles:cats_%s.html.twig', $options['style']),
+			array(
+				'cats' => $categories,
+				'articles_options' => $options['articles']
 			)
 		);
 	}

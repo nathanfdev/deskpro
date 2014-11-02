@@ -1,7 +1,12 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-<h1>{{ article.realTitle }}</h1>
-	<p>Posted by <a href="#">{{ article.person.name }}</a> on {{ article.date_published | date('M j, Y') }}</p>
-<p>{{ article.realContent }}</p>
+	<h1>{{ article.realTitle }}</h1>
+	<p style="margin-bottom: 20px; font-weight: bold;">
+		Posted by <a href="#">{{ article.person.name }}</a>
+		on {{ article.date_published | date('M j, Y') }}
+		in {{ macros.kb_article_cat_list(article) }}
+	</p>
+	<p>{{ article.realContent|raw }}</p>
 {% endblock inner_content %}

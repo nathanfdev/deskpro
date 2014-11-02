@@ -1,0 +1,5 @@
+{% macro kb_article_cat_list(article, sep=',') %}
+	{%- for cat in article.categories -%}
+		<a href="{{ path('portal_kb_browse', {slug: cat.urlSlug}) }}">{{ cat.title }}{%- if not loop.last %}, {% endif -%}</a>
+	{%- endfor -%}
+{% endmacro %}

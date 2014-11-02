@@ -352,4 +352,18 @@ class Article extends AbstractEntityRepository
 			)
 		);
 	}
+
+
+	public function findforRoot($category)
+	{
+		$q = $this->_em->createQuery('
+			SELECT a
+			FROM DeskPRO:Artice a
+			JOIN a.categories cs
+			WHERE cs.root = :cat_root
+		');
+		$q->setParameter('cat_root', $category);
+
+		return $q->execute();
+	}
 }

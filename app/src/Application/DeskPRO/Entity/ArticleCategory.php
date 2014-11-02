@@ -53,6 +53,10 @@ class ArticleCategory extends CategoryAbstract
 	protected $children;
 
 	/**
+	 */
+	protected $articles;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $usergroups;
@@ -110,5 +114,11 @@ class ArticleCategory extends CategoryAbstract
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null', ), ), 'dpApi' => true  ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC', ), ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist','merge'), 'joinTable' => array( 'name' => 'article_category2usergroup', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
+		$metadata->mapManyToMany(
+			array(
+				'fieldName' => 'articles', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
+				'mappedBy'  => 'categories'
+			)
+		);
 	}
 }

@@ -1,0 +1,19 @@
+<div class="column-half">
+	<article class="kb-simple-articles">
+		<ul>
+			{% for cat in cats %}
+				<li>
+					<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
+
+					<h1><a href="#">{{ cat.title }} <span>{{ cat.articles|length }}</span></a></h1>
+			<span class="meta">
+				{% for child_cat in cat.children %}
+					{{ child_cat }}{% if not loop.last %}, {% endif %}
+				{% endfor %}
+			</span>
+				</li>
+
+			{% endfor %}
+		</ul>
+	</article>
+</div>

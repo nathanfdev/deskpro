@@ -20,7 +20,7 @@
 
 	<!-- TEMP -->
 	<section>
-		{{ kb_cats_summary) }}
+		{{ kb_cats_summary() }}
 	</section>
 	<section>
 		{{ kb_cats_small() }}
@@ -29,13 +29,13 @@
 		{{ kb_cats_expander() }}
 	</section>
 	<section>
-		{{ kb_articles_xsmall() }}
+		{{ kb_articles_xsmall({category: 1}) }}
 	</section>
 	<section>
-		{{ kb_articles_small() }}
+		{{ kb_articles_small({category:2}) }}
 	</section>
 	<section>
-		{{ kb_articles_forcat() }}
+		{{ kb_articles_forcat({category:1}) }}
 	</section>
 	<!-- END TEMP -->
 
