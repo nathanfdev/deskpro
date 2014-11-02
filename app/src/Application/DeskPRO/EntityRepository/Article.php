@@ -353,17 +353,47 @@ class Article extends AbstractEntityRepository
 		);
 	}
 
-
-	public function findforRoot($category)
+	public function getDataForTagOptions(array $options)
 	{
-		$q = $this->_em->createQuery('
-			SELECT a
-			FROM DeskPRO:Artice a
-			JOIN a.categories cs
-			WHERE cs.root = :cat_root
-		');
-		$q->setParameter('cat_root', $category);
+		$qb = $this->getEntityManager()->createQueryBuilder();
+		$qb->select('a, cs')->from('DeskPRO:Article', 'a');
+		$qb->join('a.categories', 'cs');
 
-		return $q->execute();
+		// just one cat or the cat + all sub cats
+		if ($options['include_subcategories']) {
+			$qb->andWhere(':cat MEMBER OF cs');
+		} else {
+			$qb->andWhere('cs.root = :cat');
+		}
+		$cat = is_object($options['category']) ? $options['category'] : $this->find($options['category']);
+		$qb->setParameter('cat', $cat);
+
+		// count
+		if ($options['count']) {
+			$qb->setMaxResults($options['count']);
+		}
+
+		// label
+		if ($options['labelled']) {
+			$labelled = is_array($options['labelled']) ? $options['labelled'] : explode(',', $options['labelled']);
+			if (count($labelled)) {
+				$qb->andWhere(
+					'EXISTS (SELECT l FROM DeskPRO:LabelArticle l WHERE l.article = a AND l.label IN (:label_list))'
+				);
+				$qb->setParameter('label_list', $labelled);
+			}
+		}
+
+		// sorting
+		$qb->orderBy(
+			sprintf('a.%s', $options['sort_by']),
+			$options['sort_direction']
+		);
+
+		return array(
+			'articles' => $qb->getQuery()->execute(),
+			'cat' => $cat,
+			'total_count' => 2
+		);
 	}
 }

@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ArticlesController extends AbstractController
@@ -68,14 +69,21 @@ class ArticlesController extends AbstractController
 		$options_resolver = new OptionsResolver();
 		$options_resolver
 			->setRequired(array('category'))
-			->setOptional(array('labelled'))
 			->setDefaults(
 				array(
 					'style'                 => 'small',
 					'include_subcategories' => false,
 					'count'                 => 10,
-					'labelled'              => array(),
-					'sort'                  => 'date desc',
+					'labelled'              => '',
+					'sort'                  => 'date_published desc',
+					'sort_by'               => function (Options $options) {
+												$opts = explode(' ', $options['sort']);
+												return isset($opts[0]) ? trim($opts[0]) : 'date_published';
+											},
+					'sort_direction'        => function (Options $options) {
+												$opts = explode(' ', $options['sort']);
+												return isset($opts[1]) ? trim($opts[1]) : 'desc';
+											},
 				)
 			)
 			->setAllowedValues(
@@ -86,26 +94,15 @@ class ArticlesController extends AbstractController
 		;
 		$options = $options_resolver->resolve($request->query->all());
 
-		/** @var \Application\DeskPRO\EntityRepository\ArticleCategory $category */
-		$category = $this->getArticleCategoryRepo()->find($options['category']);
-		if ($options['include_subcategories']) {
-			// TODO: respect sort options
-			$articles = $this->getArticlesRepo()->findforRoot($category);
-		} else {
-			// TODO: respect sort options
-			$articles = $this->getArticlesRepo()->getNewest($options['count'], $category);
-		}
 
-		// TODO: optimize these into better DQL that will provide this
-		$total_count = count($articles);
-
+		$data = $this->getArticlesRepo()->getDataForTagOptions($options);
 
 		return $this->render(
 			sprintf('Theme:Articles:list_%s.html.twig', $options['style']),
 			array(
-				'cat' => $category,
-				'articles' => $articles,
-				'total_count' => $total_count
+				'cat' => $data['cat'],
+				'articles' => $data['articles'],
+				'total_count' => $data['total_count']
 			)
 		);
 	}
@@ -119,10 +116,7 @@ class ArticlesController extends AbstractController
 				array(
 					'style'                 => 'small',
 					'articles'              => array(
-						'count' => 10,
-						'include_subcategories' => false,
-						'labelled' => array(),
-						'sort'     => 'date desc',
+						'include_subcategories' => false
 					),
 					'sort'     => 'title asc',
 				)
