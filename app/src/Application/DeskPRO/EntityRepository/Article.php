@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Doctrine\ORM\QueryBuilder;
 use Orb\Util\Strings;
 
 class Article extends AbstractEntityRepository
@@ -355,23 +356,53 @@ class Article extends AbstractEntityRepository
 
 	public function getDataForTagOptions(array $options)
 	{
+		$options['category'] = is_object($options['category']) ? $options['category'] : $this->find($options['category']);
+
+		//
+		// get the articles
+		//
 		$qb = $this->getEntityManager()->createQueryBuilder();
 		$qb->select('a, cs')->from('DeskPRO:Article', 'a');
-		$qb->join('a.categories', 'cs');
 
+		$this->filterArticles($qb, $options);
+
+		// count
+		if ($options['count']) {
+			$qb->setMaxResults($options['count']);
+		}
+
+		// sorting
+		$qb->orderBy(
+			sprintf('a.%s', $options['sort_by']),
+			$options['sort_direction']
+		);
+
+		//
+		// count articles with this criteria
+		//
+		$qb_count = $this->getEntityManager()->createQueryBuilder();
+		$qb_count->select('COUNT(a)')->from('DeskPRO:Article', 'a');
+		$this->filterArticles($qb_count, $options);
+
+
+		return array(
+			'articles' => $qb->getQuery()->execute(),
+			'cat' => $options['category'],
+			'total_count' => $qb_count->getQuery()->getSingleScalarResult()
+		);
+	}
+
+
+	protected function filterArticles(QueryBuilder $qb, array $options)
+	{
+		$qb->join('a.categories', 'cs');
 		// just one cat or the cat + all sub cats
 		if ($options['include_subcategories']) {
 			$qb->andWhere(':cat MEMBER OF cs');
 		} else {
 			$qb->andWhere('cs.root = :cat');
 		}
-		$cat = is_object($options['category']) ? $options['category'] : $this->find($options['category']);
-		$qb->setParameter('cat', $cat);
-
-		// count
-		if ($options['count']) {
-			$qb->setMaxResults($options['count']);
-		}
+		$qb->setParameter('cat', $options['category']);
 
 		// label
 		if ($options['labelled']) {
@@ -383,17 +414,5 @@ class Article extends AbstractEntityRepository
 				$qb->setParameter('label_list', $labelled);
 			}
 		}
-
-		// sorting
-		$qb->orderBy(
-			sprintf('a.%s', $options['sort_by']),
-			$options['sort_direction']
-		);
-
-		return array(
-			'articles' => $qb->getQuery()->execute(),
-			'cat' => $cat,
-			'total_count' => 2
-		);
 	}
 }
