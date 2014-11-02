@@ -2,4 +2,9 @@
 
 {% block inner_content %}
 <h1>My Tickets</h1>
+	<ul>
+		<li>
+			<a href="{{ path('portal_tickets_view', { ref: 1 }) }}">An excellent ticket</a>
+		</li>
+	</ul>
 {% endblock inner_content %}

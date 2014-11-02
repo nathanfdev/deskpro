@@ -4,7 +4,7 @@
 			<ul>
 				{% for article in articles %}
 					<li>
-						<h1><a href="#">{{ article.realTitle }}</a></h1>
+						<h1><a href="{{ path('portal_kb_view', { slug:article.urlSlug }) }}">{{ article.realTitle }}</a></h1>
 			        <span class="meta">
 			          Posted <strong>{{ article.date_published | date('M j, Y') }}</strong> by
 				      <a href="{{ path('portal_kb_view', { slug:article.urlSlug }) }}">{{ article.person.name }}</a>

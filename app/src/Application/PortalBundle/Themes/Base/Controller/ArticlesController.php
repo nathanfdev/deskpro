@@ -38,7 +38,6 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -114,6 +113,7 @@ class ArticlesController extends AbstractController
 		$options_resolver
 			->setDefaults(
 				array(
+					'parent'                => null,
 					'style'                 => 'small',
 					'articles'              => array(
 						'include_subcategories' => false
@@ -130,7 +130,11 @@ class ArticlesController extends AbstractController
 		$options = $options_resolver->resolve($request->query->all());
 
 		/** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
-		$categories = $this->getArticleCategoryRepo()->findAll();
+		if ($options['parent']) {
+			$categories = array($this->getArticleCategoryRepo()->find($options['parent']));
+		} else {
+			$categories = $this->getArticleCategoryRepo()->findAll();
+		}
 
 		return $this->render(
 			sprintf('Theme:Articles:cats_%s.html.twig', $options['style']),

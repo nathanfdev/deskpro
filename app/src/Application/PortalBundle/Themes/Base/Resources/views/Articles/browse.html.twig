@@ -1,9 +1,5 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-	<div class="large-title">
-		<h1>{{ cat.title }}</h1>
-	</div>
-
-	{{ kb_articles_small({category: cat.id}) }}
+	{{ kb_cats_expander({parent:cat.id}) }}
 {% endblock inner_content %}
