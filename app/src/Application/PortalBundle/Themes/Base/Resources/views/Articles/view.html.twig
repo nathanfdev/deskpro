@@ -8,5 +8,11 @@
 		on {{ article.date_published | date('M j, Y') }}
 		in {{ macros.kb_article_cat_list(article) }}
 	</p>
+	{% if article.labels|length > 0 %}
+		<p>
+			<strong>Labeld as:</strong>
+			{{ article.labels|join(',') }}
+		</p><br>
+	{% endif %}
 	<p>{{ article.realContent|raw }}</p>
 {% endblock inner_content %}

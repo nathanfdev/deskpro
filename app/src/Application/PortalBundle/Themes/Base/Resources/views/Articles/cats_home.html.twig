@@ -9,7 +9,7 @@
 				<hr>
 			</header>
 
-			{{ kb_articles_forcat({'category':cat.id}|merge(articles_options)) }}
+			{{ kb_articles_forcat({'category':cat.id,'include_subcategories': true}|merge(articles_options)) }}
 		</article>
 	</div>
 {% endfor %}
