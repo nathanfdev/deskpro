@@ -12,35 +12,43 @@
 	rel='stylesheet' type='text/css'>
 <body>
 
-<!-- Alerts -->
-<section>
-	<div class="column-full">
-		{{ alerts() }}
-	</div>
-</section>
+{#
+You can make new layouts (skinny, full-width, etc) by extendign this layout and overriding "body". It allows you
+to keep the same "header" and "footer" to keep css/js/etc consistent among theme layouts
+#}
+{% block body  %}
 
-<!-- Top Nav -->
-<section>
-	<div class="column-full">
-		{{ top_bar() }}
-	</div>
-</section>
-
-<!-- Search & Ticket -->
-<section>
-	<div class="column-full">
-		{{ top_search() }}
-	</div>
-</section>
-
-{% block page_content %}
+	<!-- Alerts -->
 	<section>
 		<div class="column-full">
-			{% block inner_content %}
-			{% endblock inner_content %}
+			{{ alerts() }}
 		</div>
 	</section>
-{% endblock page_content %}
+
+	<!-- Top Nav -->
+	<section>
+		<div class="column-full">
+			{{ top_bar() }}
+		</div>
+	</section>
+
+	<!-- Search & Ticket -->
+	<section>
+		<div class="column-full">
+			{{ top_search() }}
+		</div>
+	</section>
+
+	{% block page_content %}
+		<section>
+			<div class="column-full">
+				{% block inner_content %}
+				{% endblock inner_content %}
+			</div>
+		</section>
+	{% endblock page_content %}
+
+{% endblock body %}
 
 </body>
 </html>
