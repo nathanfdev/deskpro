@@ -37,6 +37,8 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Article;
 use Application\PortalBundle\Controller\AbstractController;
+use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -55,21 +57,14 @@ class ArticlesController extends AbstractController
 		$id = substr($slug, 0, strpos($slug, '-'));
 		$category = $this->getDoctrine()->getManager()->getRepository('DeskPRO:ArticleCategory')->find($id);
 
-		// TODO: get core.portal.articles_per_page
-		$per_page = 25;
-		$page = $request->get('page', 1);
-
-		// find breadcrumbs
-		$breadcrumb_tree = $this->getArticleCategoryRepo()->gatherOrderedBreadcrumbTree($category);
-
-		// fetch articles
-		// TODO: this is actually a pretty decent way to query for the articles we need but need to be EXTRA_LAZY
-		$articles = $category->articles->slice($per_page * ($page - 1), $per_page);
+		// TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
+		$pager = new Pagerfanta(new DoctrineCollectionAdapter($category->articles));
+		$pager->setMaxPerPage(1); // TODO: should come from a brand setting
+		$pager->setCurrentPage($request->get('page', 1));
 
 		return $this->render('Theme:Articles:browse.html.twig', array(
 				'cat' => $category,
-				'articles' => $articles,
-				'breadcrumb_tree' => $breadcrumb_tree
+				'pager' => $pager
 			)
 		);
 	}

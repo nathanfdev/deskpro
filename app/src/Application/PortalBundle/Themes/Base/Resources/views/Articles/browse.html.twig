@@ -2,9 +2,9 @@
 {% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-	{{ macros.kb_article_cat_breadcrumbs(cat, breadcrumb_tree) }}
+	{{ macros.kb_article_cat_breadcrumbs(cat, cat.treeParents) }}
 	<ul>
-		{% for article in articles %}
+		{% for article in pager.currentPageResults %}
 			<li>
 				<a href="{{ path('portal_kb_view', { slug: article.urlSlug }) }}">
 					{{ article.realTitle }}
@@ -12,4 +12,7 @@
 			</li>
 		{% endfor %}
 	</ul>
+	{% if pager.haveToPaginate %}
+		{{ pagerfanta(pager, 'twitter_bootstrap') }}
+	{% endif %}
 {% endblock inner_content %}
