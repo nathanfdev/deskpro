@@ -1,10 +1,487 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-<h1>My Tickets</h1>
-	<ul>
-		<li>
-			<a href="{{ path('portal_tickets_view', { ref: 1 }) }}">An excellent ticket</a>
-		</li>
-	</ul>
+	<div class="column-full">
+
+	<!-- Breadcrumbs -->
+	<div class="column-full">
+		<div>
+			<div class="breadcrumbs">
+				<ul>
+					<li>
+						<a href="#">An Excellent Site</a> <i class="fa fa-angle-right"></i>
+					</li>
+
+					<li>
+						<a href="#">Your Tickets</a>
+					</li>
+				</ul>
+				<hr>
+			</div>
+		</div>
+	</div>
+
+	<!-- Main ticket list header -->
+	<div class="column-full">
+		<div>
+			<header class="section-header">
+				<a href="#" class="switch-link">Switch to organizations</a>
+
+				<h1>Your Tickets</h1>
+			</header>
+		</div>
+	</div>
+
+	<!-- Tabs -->
+	<div class="column-full">
+		<div>
+			<nav class="tabs secondary-tabs">
+				<ul>
+					<li class="tab-active">
+						<a href="#">
+							<div>
+								<span class="title">Open Tickets <div class="text-tag rating-tag">3 awaiting response
+									</div></span>
+							</div>
+						</a>
+					</li>
+
+					<li class="tab-inactive">
+						<a href="#">
+							<div>
+								<span class="title">Resolved</span>
+							</div>
+						</a>
+					</li>
+
+					<li class="tab-solo">
+						<form class="form-filter">
+							<div class="bucket">
+								<span>Filter: </span>
+								<input type="text" placeholder="Type filters here">
+							</div>
+						</form>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+
+	<!-- Base Table -->
+	<div class="column-full">
+		<div><!-- Table Header -->
+			<header class="titled-header">
+				<h1>You need to respond</h1>
+			</header>
+
+			<!-- Table Controls -->
+			<div class="table-meta">
+				<div class="table-controls">
+					<a href="#" class="column-control"></a>
+					<a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
+				</div>
+			</div>
+
+			<!-- Table -->
+			<table class="user-ticket-list">
+				<thead>
+				<tr>
+					<td class="table-header">
+						<a href="#">Department</a> / <a href="#">Subject</a>
+					</td>
+					<td class="table-header right">
+						<a href="#">Last Action</a>
+					</td>
+				</tr>
+				</thead>
+
+				<tbody>
+				<tr class="item-row">
+					<td>
+						<a href="{{ path('portal_tickets_view', { ref: 1 }) }}">
+							<span class="status-tag">A</span>
+							<span class="focus">[Billing]</span> I´m getting a lot of 500 error pages in my sites and
+							virtualmin goes lorel
+						</a>
+					</td>
+
+					<td class="info-block">
+						<a href="{{ path('portal_tickets_view', { ref: 2 }) }}">
+							<img src="./img/avatar.png" class="avatar">
+							<span class="person">Dennis Schipper</span>
+							<span class="date">Yesterday</span>
+						</a>
+					</td>
+				</tr>
+
+				<tr class="item-row">
+					<td>
+						<a href="{{ path('portal_tickets_view', { ref: 3 }) }}">
+							<span class="status-tag">A</span>
+							<span class="focus">[Sales]</span> 502 Bad Gateway nginx/1.4.6 (Ubuntu)
+						</a>
+					</td>
+
+					<td class="info-block">
+						<a href="#">
+							<img src="./img/avatar.png" class="avatar">
+							<span class="person">Dennis Schipper</span>
+							<span class="date">Yesterday</span>
+						</a>
+					</td>
+				</tr>
+
+				<tr class="item-row last-in-line">
+					<td>
+						<a href="{{ path('portal_tickets_view', { ref: 4 }) }}">
+							<span class="status-tag">A</span>
+							<span class="focus">[Sales]</span> My domain only works in certain format.
+						</a>
+					</td>
+
+					<td class="info-block">
+						<a href="#">
+							<img src="./img/avatar.png" class="avatar">
+							<span class="person">Dennis Schipper</span>
+							<span class="date">Yesterday</span>
+						</a>
+					</td>
+				</tr>
+
+				<tr class="first-in-line">
+					<td colspan="2">
+						<div class="table-subheader">
+							<h2>Last Week</h2>
+						</div>
+					</td>
+				</tr>
+
+				<tr class="item-row">
+					<td>
+						<a href="{{ path('portal_tickets_view', { ref: 5 }) }}">
+							<span class="status-tag">A</span>
+							<span class="focus positive">[Resolved]</span><span class="focus">[Sales]</span> My domain
+							only works in certain format.
+						</a>
+					</td>
+
+					<td class="info-block">
+						<a href="#">
+							<img src="./img/avatar.png" class="avatar">
+							<span class="person">Dennis Schipper</span>
+							<span class="date">Yesterday</span>
+						</a>
+					</td>
+				</tr>
+
+
+				<tr class="item-row">
+					<td>
+						<a href="{{ path('portal_tickets_view', { ref: 3 }) }}">
+							<span class="status-tag">A</span>
+							<span class="focus">[Sales]</span> 502 Bad Gateway nginx/1.4.6 (Ubuntu)
+						</a>
+					</td>
+
+					<td class="info-block">
+						<a href="#">
+							<img src="./img/avatar.png" class="avatar">
+							<span class="person">Dennis Schipper</span>
+							<span class="date">Yesterday</span>
+						</a>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- Expanded Table -->
+	<div class="column-full">
+		<div><!-- Expanded Table -->
+			<div class="row">
+				<div class="user-ticket-list-expanded">
+
+					<header class="titled-header">
+						<h1>You need to respond</h1>
+					</header>
+
+
+					<div class="table-meta">
+						<div class="table-controls">
+							<a href="#" class="column-control"></a>
+							<a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
+						</div>
+					</div>
+
+
+					<table class="user-ticket-list">
+						<thead>
+						<tr>
+							<td class="table-header">
+								<a href="#">Department</a> / <a href="#">Subject</a>
+							</td>
+							<td class="table-header right">
+								<a href="#">Last Action</a>
+							</td>
+						</tr>
+						</thead>
+
+						<tbody>
+						<tr class="item-row">
+							<td>
+								<a href="#">
+									<span class="status-tag">A</span>
+									<span class="focus">[Billing]</span> I´m getting a lot of 500 error pages in my
+									sites and virtualmin goes lorel
+								</a>
+							</td>
+
+							<td class="info-block">
+								<a href="#">
+									<img src="./img/avatar.png" class="avatar">
+									<span class="person">Dennis Schipper</span>
+									<span class="date">Yesterday</span>
+								</a>
+							</td>
+						</tr>
+
+						<tr class="item-row">
+							<td>
+								<a href="#">
+									<span class="status-tag">A</span>
+									<span class="focus">[Sales]</span> 502 Bad Gateway nginx/1.4.6 (Ubuntu)
+								</a>
+							</td>
+
+							<td class="info-block">
+								<a href="#">
+									<img src="./img/avatar.png" class="avatar">
+									<span class="person">Dennis Schipper</span>
+									<span class="date">Yesterday</span>
+								</a>
+							</td>
+						</tr>
+
+						<tr class="item-row">
+							<td>
+								<a href="#">
+									<span class="status-tag">A</span>
+									<span class="focus">[Sales]</span> My domain only works in certain format.
+								</a>
+							</td>
+
+							<td class="info-block">
+								<a href="#">
+									<img src="./img/avatar.png" class="avatar">
+									<span class="person">Dennis Schipper</span>
+									<span class="date">Yesterday</span>
+								</a>
+							</td>
+						</tr>
+
+						<tr class="item-row">
+							<td>
+								<a href="#">
+									<span class="status-tag">A</span>
+									<span class="focus positive">[Resolved]</span><span class="focus">[Sales]</span> My
+									domain only works in certain format.
+								</a>
+							</td>
+
+							<td class="info-block">
+								<a href="#">
+									<img src="./img/avatar.png" class="avatar">
+									<span class="person">Dennis Schipper</span>
+									<span class="date">Yesterday</span>
+								</a>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- end expanded -->
+			</div>
+			<!-- End .row -->
+		</div>
+	</div>
+
+
+	<!-- Table with active filters (and tabs) -->
+	<div class="column-full">
+		<div>
+			<nav class="tabs secondary-tabs">
+				<ul>
+					<li class="tab-active">
+						<a href="#">
+							<div>
+								<span class="title">Open Tickets <div class="text-tag rating-tag">3 awaiting response
+									</div></span>
+							</div>
+						</a>
+					</li>
+
+					<li class="tab-inactive">
+						<a href="#">
+							<div>
+								<span class="title">Resolved</span>
+							</div>
+						</a>
+					</li>
+
+					<li class="tab-solo">
+						<form class="form-filter">
+							<div class="bucket">
+								<span>Filter: </span>
+								<input type="text" placeholder="Type filters here">
+							</div>
+						</form>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+	<div class="column-full">
+		<div><!-- Table with active filters -->
+			<header class="titled-header">
+				<h1>You need to respond</h1>
+			</header>
+
+
+			<div class="table-meta">
+				<div class="table-controls">
+					<a href="#" class="column-control"></a>
+					<a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
+				</div>
+			</div>
+
+
+			<table class="user-ticket-list">
+				<thead>
+				<tr>
+					<td class="table-header">
+						<a href="#">Department</a> / <a href="#">Subject</a>
+					</td>
+					<td class="table-header right">
+						<a href="#">Last Action</a>
+					</td>
+				</tr>
+				</thead>
+
+				<tbody>
+				<tr class="first-in-line">
+					<td colspan="2">
+						<div class="filter-warning">
+							<i class="fa fa-eye"></i> You have an active filter on this view. <a href="#">Click here to
+								clear it</a> and see everything.
+						</div>
+					</td>
+				</tr>
+
+
+				<tr class="item-row">
+					<td>
+						<a href="#">
+							<div class="filter-matches">1 Filter Match</div>
+							<span class="status-tag">A</span>
+							<span class="focus">[Sales]</span> 502 Bad Gateway nginx/1.4.6 (Ubuntu)
+						</a>
+					</td>
+
+					<td class="info-block">
+						<a href="#">
+							<img src="./img/avatar.png" class="avatar">
+							<span class="person">Dennis Schipper</span>
+							<span class="date">Yesterday</span>
+						</a>
+					</td>
+				</tr>
+
+				<tr class="item-row">
+					<td>
+						<a href="#">
+							<div class="filter-matches">3 Filter Matches</div>
+							<span class="status-tag">A</span>
+							<span class="focus">[Sales]</span> <span class="marked search">Domain</span> is wrong
+							<div class="filter-text-results">...registrar so the <span
+									class="marked search">domain</span> will just change to <span class="marked search">work with my domain</span>
+								name server......
+							</div>
+						</a>
+					</td>
+
+					<td class="info-block">
+						<a href="#">
+							<img src="./img/avatar.png" class="avatar">
+							<span class="person">Dennis Schipper</span>
+							<span class="date">Yesterday</span>
+						</a>
+					</td>
+				</tr>
+
+				<tr class="item-row">
+					<td>
+						<a href="#">
+							<div class="filter-matches">2 Filter Matches</div>
+							<span class="status-tag">A</span>
+							<span class="focus">[Tech Support]</span> Editing agent name
+							<div class="filter-text-results">...SPF record is a type of <span class="marked search">Domain</span>
+								Name Service (DNS) record that...
+							</div>
+						</a>
+					</td>
+
+					<td class="info-block">
+						<a href="#">
+							<img src="./img/avatar.png" class="avatar">
+							<span class="person">Dennis Schipper</span>
+							<span class="date">Yesterday</span>
+						</a>
+					</td>
+				</tr>
+
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- Pagination -->
+	<div class="column-full">
+		<div>
+			<div class="row">
+				<ul class="pagination">
+					<li class="inactive">
+						<a href="#">Back</a>
+					</li>
+
+					<li class="active-page">
+						<a href="#">1</a>
+					</li>
+
+					<li>
+						<a href="#">2</a>
+					</li>
+
+					<li>
+						<a href="#">...</a>
+					</li>
+
+					<li>
+						<a href="#">22</a>
+					</li>
+
+					<li>
+						<a href="#">23</a>
+					</li>
+
+					<li>
+						<a href="#">Next</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 {% endblock inner_content %}
