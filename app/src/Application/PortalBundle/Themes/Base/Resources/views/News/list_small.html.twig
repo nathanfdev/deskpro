@@ -4,13 +4,13 @@
 	<ul>
 		{% for item in news_articles %}
 		<li>
-			<span class="date-tag"><span>{{ item.date_published | date('M') }}</span> {{ item.date_published | date('j') }}</span><a href="#">{{ item.title }}</a>
+			<span class="date-tag"><span>{{ item.date_published | date('M') }}</span> {{ item.date_published | date('j') }}</span><a href="{{ path('portal_news_view', { slug: item.urlSlug }) }}">{{ item.title }}</a>
 		</li>
 		{% endfor %}
 	</ul>
 
 	<div class="list-meta">
-		<a href="#">View <span>{{ news_count_total }}</span> articles<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+		<a href="{{ path('portal_news') }}">View <span>{{ news_count_total }}</span> articles<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
 	</div>
 
 </article>

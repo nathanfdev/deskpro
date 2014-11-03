@@ -36,25 +36,67 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\PortalBundle\Controller\AbstractController;
+use Doctrine\Common\Collections\ArrayCollection;
+use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 
 class NewsController extends AbstractController
 {
-	public function indexAction()
+	public function indexAction(Request $request)
 	{
-		return $this->render('Theme:News:index.html.twig');
+		$qb = $this->getNewsRepo()->createQueryBuilder('n');
+		$pager = new Pagerfanta(new DoctrineCollectionAdapter(new ArrayCollection($qb->select('n')->getQuery()->execute())));
+		$pager->setCurrentPage($request->get('page', 1));
+		$pager->setMaxPerPage(3);
+
+		return $this->render('Theme:News:index.html.twig',
+			array(
+				'pager' => $pager,
+				'news_articles' => $pager->getCurrentPageResults()
+			)
+		);
 	}
 
 
-	public function browseAction($slug)
+	public function browseAction($slug, Request $request)
 	{
-		return $this->render('Theme:News:browse.html.twig', array('category' => $slug));
+		$id       = substr($slug, 0, strpos($slug, '-'));
+		$category = $this->getNewsCategoriesRepo()->find($id);
+
+		if (!$category) {
+			throw $this->createNotFoundException('news category "' . $slug . '" not found');
+		}
+
+		$qb    = $this->getNewsRepo()->createQueryBuilder('n');
+		$qb->andWhere('n.category = :cat')->setParameter('cat', $category);
+		$pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+		$pager->setCurrentPage($request->get('page', 1));
+		$pager->setMaxPerPage(3);
+
+		return $this->render(
+			'Theme:News:browse.html.twig',
+			array(
+				'cat'           => $category,
+				'pager'         => $pager,
+				'news_articles' => $pager->getCurrentPageResults()
+			)
+		);
 	}
 
 
 	public function viewAction($slug)
 	{
-		return $this->render('Theme:News:view.html.twig', array('article' => $slug));
+		$id       = substr($slug, 0, strpos($slug, '-'));
+		$news = $this->getNewsRepo()->find($id);
+
+		return $this->render('Theme:News:view.html.twig',
+			array(
+				'cat' => $news->category,
+				'article' => $news
+			)
+		);
 	}
 
 
@@ -82,5 +124,13 @@ class NewsController extends AbstractController
 	protected function getNewsRepo()
 	{
 		return $this->getDoctrine()->getRepository('DeskPRO:News');
+	}
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\NewsCategory
+	 */
+	protected function getNewsCategoriesRepo()
+	{
+		return $this->getDoctrine()->getRepository('DeskPRO:NewsCategory');
 	}
 }

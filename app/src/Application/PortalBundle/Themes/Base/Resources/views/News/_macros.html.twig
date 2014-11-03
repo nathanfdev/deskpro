@@ -1,0 +1,37 @@
+{% macro kb_news_cat_breadcrumbs(cat, parents, article) %}
+	<div class="breadcrumbs">
+		<ul>
+			<li>
+				<a href="{{ path('portal_index') }}">{{ global_settings.get('core.deskpro_name') }}</a> <i
+					class="fa fa-angle-right"></i>
+			</li>
+
+			<li>
+				<a href="{{ path('portal_news') }}">News</a>{% if parents|length or cat or article %} <i
+					class="fa fa-angle-right">{% endif %}</i>
+			</li>
+
+
+			{% for parent in parents %}
+				<a href="{{ path('portal_news_browse', { slug:parent.urlSlug }) }}">{{ parent.title }}</a> <i
+				class="fa fa-angle-right"></i>
+			{% endfor %}
+
+			{% if cat %}
+				<li>
+					<a href="{{ path('portal_news_browse', { slug:cat.urlSlug }) }}">{{ cat.title }}</a>
+					{% if article %}
+						<i class="fa fa-angle-right"></i>
+					{% endif %}
+				</li>
+			{% endif %}
+
+			{% if article %}
+				<li>
+					<a href="{{ path('portal_news_view', { slug:article.urlSlug }) }}">{{ article.realTitle }}</a>
+				</li>
+			{% endif %}
+		</ul>
+		<hr>
+	</div>
+{% endmacro %}

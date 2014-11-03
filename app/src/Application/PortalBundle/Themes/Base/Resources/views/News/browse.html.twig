@@ -1,5 +1,19 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:News:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-<h1>Browsing a News Category "{{ category }}"</h1>
+	{{ macros.kb_news_cat_breadcrumbs(cat, cat.treeParents) }}
+	<h1>{{ cat.realTitle }}</h1>
+	<ul>
+		{% for article in news_articles %}
+			<li>
+				<a href="{{ path('portal_news_view', { slug: article.urlSlug }) }}">
+					{{ article.realTitle }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+	{% if pager.haveToPaginate %}
+		{{ pagerfanta(pager, 'twitter_bootstrap') }}
+	{% endif %}
 {% endblock inner_content %}
