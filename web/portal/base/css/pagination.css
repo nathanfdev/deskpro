@@ -1,23 +1,19 @@
 /*
-Error: Undefined mixin 'generate-background-and-border'.
-        on line 37 of ./buttons.scss, in `generate-background-and-border'
-        from line 37 of ./buttons.scss
+Error: Undefined mixin 'blank-list'.
+        on line 2 of ./pagination.scss, in `blank-list'
+        from line 2 of ./pagination.scss
 
-32: 
-33: 
-34: 
-35: 
-36: button, .button, input[type="submit"] {
-37:   @include generate-background-and-border($button-color);
-38:   color: set-button-text-color($button-color);
-39:   border-radius: 2px;
-40:   display: inline-block;
-41:   line-height: 1em;
-42:   padding: 1em 2em;
+1: .pagination {
+2:   @include blank-list;
+3:   margin: 10px 0px;
+4:   border: 1px solid $divider-color;
+5:   border-radius: 2px;
+6:   font-size: 0.9em;
+7:   line-height: 1em;
 
 Backtrace:
-./buttons.scss:37:in `generate-background-and-border'
-./buttons.scss:37
+./pagination.scss:2:in `blank-list'
+./pagination.scss:2
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:338:in `block in visit_mixin'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `block in with_mixin'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
@@ -71,4 +67,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'generate-background-and-border'.\A         on line 37 of ./buttons.scss, in `generate-background-and-border'\A         from line 37 of ./buttons.scss\A \A 32: \A 33: \A 34: \A 35: \A 36: button, .button, input[type=\"submit\"] {\A 37:   @include generate-background-and-border($button-color);\A 38:   color: set-button-text-color($button-color);\A 39:   border-radius: 2px;\A 40:   display: inline-block;\A 41:   line-height: 1em;\A 42:   padding: 1em 2em;"; }
+  content: "Error: Undefined mixin 'blank-list'.\A         on line 2 of ./pagination.scss, in `blank-list'\A         from line 2 of ./pagination.scss\A \A 1: .pagination {\A 2:   @include blank-list;\A 3:   margin: 10px 0px;\A 4:   border: 1px solid $divider-color;\A 5:   border-radius: 2px;\A 6:   font-size: 0.9em;\A 7:   line-height: 1em;"; }

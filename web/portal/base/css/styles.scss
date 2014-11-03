@@ -21,6 +21,8 @@
 @import "misc";
 @import "kb-expandable";
 @import "article-lists";
+@import "user-ticket-list";
+@import "pagination";
 // Misc
 @import "tooltips";
 @import "alerts";
@@ -99,8 +101,30 @@ section, .wrapper {
   @include row();
 }
 
+header {
+  h1 {
+    font-weight: 300;
+    font-size: 1.6em;
+  }
+}
+
+h2 {
+  font-weight: 400;
+}
 
 
+.section-header {
+  margin-bottom: 30px;
+  margin-top: 15px;
+  padding-left: $universal-left-padding;
+}
+
+.section-subheader {
+  margin-bottom: 30px;
+  margin-top: 15px;
+  padding-left: $universal-left-padding;
+
+}
 
 
 

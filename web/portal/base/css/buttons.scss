@@ -2,6 +2,37 @@
 
 
 
+.upload-avatar {
+  display: inline-block;
+  line-height: 1em;
+  background: none repeat scroll 0 0 #fff;
+  border: 1px solid #c0c0c0;
+  border-radius: 2px;
+  padding-left: 140px;
+  position: relative;
+  color: #000;
+  line-height: 1em;
+  padding: 1em 2em;
+  padding-left: 50px;
+  text-align: left;
+  font-weight: 300;
+  text-decoration: none;
+  position: relative;
+
+  img {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    max-height: 30px;
+    max-width: 30px;
+    vertical-align: middle;
+  }
+}
+
+
+
+
+
 button, .button, input[type="submit"] {
   @include generate-background-and-border($button-color);
   color: set-button-text-color($button-color);
@@ -29,6 +60,10 @@ button, .button, input[type="submit"] {
     color: #828385;
     position: relative;
     text-shadow: none;
+  }
+
+  &.button-secondary {
+    background: #494949;
   }
 
   &.button-dropdown {
@@ -67,12 +102,30 @@ button, .button, input[type="submit"] {
     border-bottom-right-radius: 0px;
   }
 
+  &.auth {
+    i {
+      margin-right: 4px;
+      font-size: 1.3em;
+      line-height: 1px;
+      position: relative;
+      top: 2px;
+    }
+  }
+
   &.auth-one {
-    background: #008ca9;
+    @include generate-background-and-border(#008ca9);
   }
 
   &.auth-facebook {
-    background: #4c6fac;
+    @include generate-background-and-border(#4c6fac);
+  }
+
+  &.auth-twitter {
+    @include generate-background-and-border(#00bae4);
+  }
+
+  &.auth-google {
+    @include generate-background-and-border(#d6452e);
   }
 
   &.button-reply {

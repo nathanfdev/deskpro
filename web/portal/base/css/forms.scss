@@ -13,6 +13,11 @@ input[type="text"], input[type="password"], textarea, select {
     font-style: italic;
     font-size: $font-mid;
   }
+
+  &.email {
+    color: $button-color;
+    font-weight: 400;
+  }
 }
 
 textarea {
@@ -189,9 +194,6 @@ hr.divider {
 
 
 
-
-
-
 .multiselect {
   ul.first-level {
     @include blank-list;
@@ -273,6 +275,10 @@ hr.divider {
 
 
 
+
+
+
+
 .radio-button {
   position: relative;
   display: inline-block;
@@ -321,7 +327,6 @@ hr.divider {
 }
 
 
-
 .form-help {
   border-left: 1px solid #e5e5e5;
   padding: 5px 0px 5px 20px;
@@ -343,15 +348,28 @@ hr.divider {
 
 .form-meta {
   font-size: 0.9em;
-  padding-left: 10px;
   line-height: 1em;
-  position :relative;
-  top: -4px;
+  position: relative;
   font-style: italic;
+  float: right;
+  top: 6px;
 }
 
-.form-ticket {
+.form-meta-grey {
+  font-style: normal;
 
+  a {
+    color: $text-color-lighter;
+    text-decoration: none;
+
+    &:hover {
+      color: $text-color;
+    }
+  }
+}
+
+
+.form-ticket {
   header {
     padding-left: 5px;
 
@@ -361,13 +379,13 @@ hr.divider {
     }
   }
 
-  label {
-
+  button, .button {
+    min-width: 180px;
   }
 
   .title {
     color: #000;
-    padding-left: 5px;
+    padding-left: $form-padding-horizontal;
     display: block;
     margin-bottom: 7px;
     font-weight: 0.9em;
@@ -389,7 +407,7 @@ hr.divider {
   }
 
 
-  input[type="text"], select, textarea {
+  input[type="text"], input[type="password"], select, textarea {
     width: 100%;
     transition: all 0.30s ease-in-out;
 
@@ -406,7 +424,7 @@ hr.divider {
 
 
 
-  input[type="text"], textarea {
+  input[type="text"], input[type="password"], textarea {
     background: #fff;
     border: 1px solid #c0c0c0;
     border-radius: 2px;
@@ -426,6 +444,51 @@ hr.divider {
 
   }
 }
+
+
+
+
+
+
+
+
+.form-filter {
+  .bucket {
+    span {
+      display: inline;
+      font-size: 0.9em;
+      margin-right: 3px;
+    }
+  }
+
+  input[type="text"], textarea {
+    background: #fff;
+    border: 1px solid #c0c0c0;
+    border-radius: 2px;
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -455,10 +518,34 @@ hr.divider {
 
 
 
+.remember-me {
+  display: inline-block;
+  vertical-align: top;
+  line-height: 1em;
+  font-size: 0.9em;
+  margin-left: 10px;
 
+  input {
+    margin-right: 2px;
+  }
+}
 
 
 // Cramped forms (in a dropdown, in the sidebar etc)
+
+.permanent-login {
+  display: block;
+  font-size: 0.85em;
+  position: relative;
+  line-height: 1.5em;
+  top: -3px;
+
+  label {
+    display: inline-block;
+    cursor: pointer;
+  }
+}
+
 
 .small-form {
   margin: 0;
@@ -471,6 +558,9 @@ hr.divider {
     margin-bottom: 5px;
   }
 
+  .permanent-login {
+    margin-left: 5px;
+  }
 
   hr {
     background: #e5e5e5;
@@ -500,19 +590,7 @@ hr.divider {
     }
   }
 
-  .permanent-login {
-    display: block;
-    font-size: 0.85em;
-    margin-left: 5px;
-    position: relative;
-    line-height: 1.5em;
-    top: -3px;
 
-    label {
-      display: inline-block;
-      cursor: pointer;
-    }
-  }
 
   .secondary-action {
     font-size: 0.85em;

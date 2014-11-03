@@ -1,33 +1,74 @@
-body {
-  font-size: 1em;
-  font-family: "Ubuntu", helvetica, verdana, sans-serif;
-  line-height: 1.75em;
-  font-size: 0.85em; }
+/*
+Error: Undefined variable: "$divider-color".
+        on line 61 of ./fonts.scss
 
-a {
-  color: #3575bd; }
+56: 
+57: .titled-header {
+58:     margin-bottom: 10px;
+59:     position: relative;
+60:     text-align: center;
+61:     border-bottom: 1px solid $divider-color;
+62:     padding-left: 0px;
+63: 
+64:   h1, h2 {
+65:     font-size: 1.1em;
+66:     font-weight: 400;
 
-h1, h2, h3, h4, h5 {
-  margin: 0;
-  padding: 0; }
-
-h1 {
-  color: #585858; }
-
-h2 {
-  font-size: 1em; }
-
-p {
-  margin: 0;
-  padding: 0; }
-
-ul h1 {
-  font-weight: 400; }
-
-strong {
-  font-weight: 600; }
-
-.grey {
-  color: #d0d0d0; }
-
-/*# sourceMappingURL=fonts.css.map */
+Backtrace:
+./fonts.scss:61
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `block in _perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block (2 levels) in visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block in visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:418:in `visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:52:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:167:in `block in visit_children'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:166:in `visit_children'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:186:in `visit_root'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:157:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:8:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/root_node.rb:36:in `css_tree'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/engine.rb:368:in `_render_with_sourcemap'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/engine.rb:285:in `render_with_sourcemap'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:490:in `update_stylesheet'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:209:in `each'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:470:in `on_file_changed'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:329:in `block in watch'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:276:in `call'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:276:in `_process_changes'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:233:in `block in _wait_for_changes'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:216:in `loop'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:216:in `_wait_for_changes'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:312:in `block in _start_wait_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Undefined variable: \"$divider-color\".\A         on line 61 of ./fonts.scss\A \A 56: \A 57: .titled-header {\A 58:     margin-bottom: 10px;\A 59:     position: relative;\A 60:     text-align: center;\A 61:     border-bottom: 1px solid $divider-color;\A 62:     padding-left: 0px;\A 63: \A 64:   h1, h2 {\A 65:     font-size: 1.1em;\A 66:     font-weight: 400;"; }

@@ -14,13 +14,6 @@ h1, h2, h3, h4, h5 {
   padding: 0;
 }
 
-h1 {
-  color: #585858;
-}
-
-h2 {
-  font-size: 1em;
-}
 
 p {
   margin: 0;
@@ -42,4 +35,55 @@ strong {
 
 .grey {
   color: #d0d0d0;
+}
+
+
+
+
+
+// All the headers
+
+
+h1 {
+  color: #585858;
+}
+
+h2 {
+  color: #585858;
+  font-size: 1em;
+}
+
+
+.titled-header {
+    margin-bottom: 10px;
+    position: relative;
+    text-align: center;
+    border-bottom: 1px solid $divider-color;
+    padding-left: 0px;
+
+  h1, h2 {
+    font-size: 1.1em;
+    font-weight: 400;
+    display: inline-block;
+    background: $page-background;
+    padding-left: 1em;
+    padding-right: 1em;
+    position: relative;
+    top: 10px;
+    z-index: 100;
+    color: $text-color-darker;
+
+  }
+}
+
+.titled-header-left {
+  @extend .titled-header;
+  text-align: left;
+  padding-left: 0px;
+  margin-bottom: 35px;
+  margin-top: 5px;
+
+  h1, h2 {
+    padding-left: $universal-left-padding;
+  }
 }

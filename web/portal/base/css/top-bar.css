@@ -1,21 +1,21 @@
 /*
 Error: Undefined variable: "$divider-color".
-        on line 13 of ./top-bar.scss
+        on line 12 of ./top-bar.scss
 
-8:     bottom: 20px;
-9:   }
-10: }
-11: 
-12: .top-bar {
-13:   border-bottom: 1px solid $divider-color;
-14:   padding-bottom: 20px;
-15:   padding-top: 20px;
-16:   margin-bottom: 20px;
-17:   color: #828385;
-18:   position: relative;
+7:     bottom: 20px;
+8:   }
+9: }
+10: 
+11: .top-bar {
+12:   border-bottom: 1px solid $divider-color;
+13:   padding-bottom: 20px;
+14:   padding-top: 20px;
+15:   margin-bottom: 20px;
+16:   color: #828385;
+17:   position: relative;
 
 Backtrace:
-./top-bar.scss:13
+./top-bar.scss:12
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `block in _perform'
@@ -71,4 +71,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$divider-color\".\A         on line 13 of ./top-bar.scss\A \A 8:     bottom: 20px;\A 9:   }\A 10: }\A 11: \A 12: .top-bar {\A 13:   border-bottom: 1px solid $divider-color;\A 14:   padding-bottom: 20px;\A 15:   padding-top: 20px;\A 16:   margin-bottom: 20px;\A 17:   color: #828385;\A 18:   position: relative;"; }
+  content: "Error: Undefined variable: \"$divider-color\".\A         on line 12 of ./top-bar.scss\A \A 7:     bottom: 20px;\A 8:   }\A 9: }\A 10: \A 11: .top-bar {\A 12:   border-bottom: 1px solid $divider-color;\A 13:   padding-bottom: 20px;\A 14:   padding-top: 20px;\A 15:   margin-bottom: 20px;\A 16:   color: #828385;\A 17:   position: relative;"; }

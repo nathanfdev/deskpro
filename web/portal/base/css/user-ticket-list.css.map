@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAUE,oBAAG;EACD,cAAc,EAAE,MAAM;AASxB,6BAAY;EACV,UAAU,EAAE,KAAK;AAGnB,kDAAe;EACb,OAAO,EAAE,KAAK;AAGhB,yBAAQ;EACN,KAAK,EAAE,IAAI;EACX,MAAM,EAAE,IAAI;EACZ,aAAa,EAAE,KAAK",
+"sources": ["user-ticket-list.scss"],
+"names": [],
+"file": "user-ticket-list.css"
+}

@@ -1,3 +1,7 @@
+.extra-margin {
+  margin-top: 20px;
+  margin-bottom: 20px; }
+
 .text-tag, .rating-tag, .comment-tag, .date-tag {
   background: #579034;
   border-radius: 2px;

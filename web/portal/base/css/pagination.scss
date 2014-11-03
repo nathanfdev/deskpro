@@ -1,0 +1,86 @@
+.pagination {
+  @include blank-list;
+  margin: 10px 0px;
+  border: 1px solid $divider-color;
+  border-radius: 2px;
+  font-size: 0.9em;
+  line-height: 1em;
+  @include clearfix;
+  display: inline-block;
+
+  li {
+    display: block;
+    float: left;
+    border-right: 1px solid $divider-color;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: $text-color-lighter;
+    display: block;
+    padding: 7px 12px;
+  }
+
+  .active-page, a:hover {
+    background: #f6f6f6;
+  }
+
+  .inactive {
+    a { opacity: 0.5;}
+  }
+}
+
+
+
+
+
+.breadcrumbs {
+  margin-bottom: 15px;
+  padding-left: $universal-left-padding;
+
+  ul {
+    @include blank-list;
+    display: inline-block;
+    color: $text-color-darker;
+    background: $page-background;
+    padding-right: 10px;
+    position: relative;
+    z-index: 100;
+  }
+
+  hr {
+    border: 0px;
+    height: 1px;
+    background: $divider-color;
+    position: relative;
+    top: -11px;
+    z-index: 99;
+  }
+
+
+  li {
+    display: inline-block;
+  }
+
+  a {
+    font-size: 0.9em;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  i {
+    position: relative;
+    top: 1px;
+    margin-left: 3px;
+    margin-right: 2px;
+  }
+
+  hr {
+    margin: 0;
+
+  }
+}

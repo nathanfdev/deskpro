@@ -1,28 +1,24 @@
 /*
-Error: Undefined mixin 'generate-background-and-border'.
-        on line 37 of ./buttons.scss, in `generate-background-and-border'
-        from line 37 of ./buttons.scss
+Error: Undefined variable: "$page-background".
+        on line 47 of ./user-ticket-list.scss
 
-32: 
-33: 
-34: 
-35: 
-36: button, .button, input[type="submit"] {
-37:   @include generate-background-and-border($button-color);
-38:   color: set-button-text-color($button-color);
-39:   border-radius: 2px;
-40:   display: inline-block;
-41:   line-height: 1em;
-42:   padding: 1em 2em;
+42: 
+43: .table-controls {
+44:   position: absolute;
+45:   right: 10px;
+46:   top: -20px;
+47:   background: $page-background;
+48:   padding: 0px 5px;
+49: 
+50:   a {
+51:     display: inline-block;
+52:     width: 15px;
 
 Backtrace:
-./buttons.scss:37:in `generate-background-and-border'
-./buttons.scss:37
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:338:in `block in visit_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `block in with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:336:in `visit_mixin'
+./user-ticket-list.scss:47
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
@@ -71,4 +67,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'generate-background-and-border'.\A         on line 37 of ./buttons.scss, in `generate-background-and-border'\A         from line 37 of ./buttons.scss\A \A 32: \A 33: \A 34: \A 35: \A 36: button, .button, input[type=\"submit\"] {\A 37:   @include generate-background-and-border($button-color);\A 38:   color: set-button-text-color($button-color);\A 39:   border-radius: 2px;\A 40:   display: inline-block;\A 41:   line-height: 1em;\A 42:   padding: 1em 2em;"; }
+  content: "Error: Undefined variable: \"$page-background\".\A         on line 47 of ./user-ticket-list.scss\A \A 42: \A 43: .table-controls {\A 44:   position: absolute;\A 45:   right: 10px;\A 46:   top: -20px;\A 47:   background: $page-background;\A 48:   padding: 0px 5px;\A 49: \A 50:   a {\A 51:     display: inline-block;\A 52:     width: 15px;"; }
