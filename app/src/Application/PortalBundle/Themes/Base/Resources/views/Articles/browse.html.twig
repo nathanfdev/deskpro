@@ -3,6 +3,12 @@
 
 {% block inner_content %}
 	{{ macros.kb_article_cat_breadcrumbs(cat, cat.treeParents) }}
+	{%  if cat.children|length > 0 %}
+	    <p>There are {{ cat.children|length }} sub-categories</p>
+	    {% for child in cat.children %}
+		    {{ kb_cats_expander({ parent:child.id }) }}
+	    {% endfor %}
+	{% endif %}
 	<ul>
 		{% for article in pager.currentPageResults %}
 			<li>
