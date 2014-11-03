@@ -1,0 +1,14 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Feedback:_macros.html.twig' as macros %}
+
+{% block inner_content %}
+	{{ macros.kb_feedback_breadcrumbs(feedback) }}
+	<h1>{{ feedback.title }}</h1>
+	<pre>
+		num_comments: {{ feedback.num_comments }}
+		views: {{ feedback.view_count }}
+		status: {{ feedback.status }}
+		total rating: {{ feedback.total_rating }}
+		num ratings: {{ feedback.num_ratings }}
+	</pre>
+{% endblock inner_content %}

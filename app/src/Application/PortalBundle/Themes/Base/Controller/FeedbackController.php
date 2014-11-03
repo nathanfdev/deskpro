@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\Entity\Feedback;
 use Application\PortalBundle\Controller\AbstractController;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -54,6 +55,18 @@ class FeedbackController extends AbstractController
 			array(
 				'pager'     => $pager,
 				'feedbacks' => $pager->getCurrentPageResults()
+			)
+		);
+	}
+
+	public function viewAction($slug)
+	{
+		/** @var \Application\DeskPRO\Entity\Feedback $feedback */
+		$id       = substr($slug, 0, strpos($slug, '-'));
+		$feedback = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Feedback')->find($id);
+		return $this->render(
+			'Theme:Feedback:view.html.twig', array(
+				'feedback' => $feedback
 			)
 		);
 	}

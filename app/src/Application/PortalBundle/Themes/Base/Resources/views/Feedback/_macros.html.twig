@@ -7,15 +7,12 @@
 			</li>
 
 			<li>
-				<a href="{{ path('portal_kb') }}">Feedback</a> <i class="fa fa-angle-right"></i>
+				<a href="{{ path('portal_feedback') }}">Feedback</a> <i class="fa fa-angle-right"></i>
 			</li>
 
 			{% if feedback %}
 				<li>
-					<a href="{{ path('portal_feedback_index', { slug:cat.urlSlug }) }}">{{ cat.title }}</a>
-					{% if article %}
-						<i class="fa fa-angle-right"></i>
-					{% endif %}
+					<a href="{{ path('portal_feedback_view', { slug:feedback.urlSlug }) }}">{{ feedback.title }}</a>
 				</li>
 			{% endif %}
 		</ul>
