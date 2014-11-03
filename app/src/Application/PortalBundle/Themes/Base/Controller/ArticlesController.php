@@ -113,12 +113,11 @@ class ArticlesController extends AbstractController
 		$options_resolver
 			->setDefaults(
 				array(
-					'parent'                => null,
 					'style'                 => 'small',
+					'parent'                => null,
 					'articles'              => array(
 						'include_subcategories' => false
-					),
-					'sort'     => 'title asc',
+					)
 				)
 			)
 			->setAllowedValues(

@@ -1,30 +1,276 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block inner_content %}
+{% block body %}
+
+	<style>
+		section {
+			margin-top: 20px;
+			margin-bottom: 40px;
+		}
+
+		body {
+			background-color: #dcdcdc;
+		}
+
+		div.render {
+			background-color: white;
+		}
+	</style>
+
+	<h1>
+		DeskPRO Theme Tags
+	</h1>
+	<p>You'll want to setup a bunch of content in your DeskPRO database before viewing this to see all of the tags.</p>
+	<p>Load a small data fixtures file: php app/bin/portal-console doc:fix:lo --append
+		--fixtures=app/src/Application/PortalBundle/DataFixtures/ORM </p>
+
+	<ul>
+		<li><a href="#alerts">alerts</a></li>
+		<li><a href="#top_bar">top_bar</a></li>
+		<li><a href="#top_search">top_search</a></li>
+		<li><a href="#news_list">news_list</a></li>
+
+		<li><a href="#kb_articles_forcat">kb_articles_forcat</a></li>
+		<li><a href="#kb_articles_small">kb_articles_small</a></li>
+		<li><a href="#kb_articles_xsmall">kb_articles_xsmall</a></li>
+
+		<li><a href="#kb_cats_home">kb_cats_home</a></li>
+		<li><a href="#kb_cats_summary">kb_cats_summary</a></li>
+		<li><a href="#kb_cats_small">kb_cats_small</a></li>
+		<li><a href="#kb_cats_expander">kb_cats_expander</a></li>
+
+		<li><a href="#news_list_small">news_list_small</a></li>
+		<li><a href="#downloads_list_small">downloads_list_small</a></li>
+		<li><a href="#feedback_list_small">feedback_list_small</a></li>
+	</ul>
 
 
 
-<!-- TEMP -->
-<section>
-	{{ kb_cats_summary() }}
-</section>
-<section>
-	{{ kb_cats_small() }}
-</section>
-<section>
-	{{ kb_cats_expander() }}
-</section>
-<section>
-	{{ kb_articles_xsmall({category: 1}) }}
-</section>
-<section>
-	{{ kb_articles_small({category:2}) }}
-</section>
-<section>
-	{{ kb_articles_forcat({category:1}) }}
-</section>
-<!-- END TEMP -->
+
+	<section id="alerts">
+		<a name="alerts"></a>
+
+		<h1>alerts()</h1>
+
+		<p class="info">
+			Will display alerts, when necesary.
+		</p>
+		<dl class="info">
+			<dt>No arguments</dt>
+		</dl>
+		<div class="render">
+
+			{{ alerts() }}
+
+		</div>
+	</section>
+
+	<section id="top_bar">
+		<a name="top_bar"></a>
+
+		<h1>top_bar()</h1>
+
+		<p class="info">
+			Will render this themes "top bar"
+		</p>
+		<dl class="info">
+			<dt>No arguments</dt>
+		</dl>
+		<div class="render">
+
+			{{ top_bar() }}
+
+		</div>
+	</section>
+
+	<section id="top_search">
+		<a name="top_search"></a>
+
+		<h1>top_search()</h1>
+
+		<p class="info">
+			Will render this theme's "top search bar"
+		</p>
+		<dl class="info">
+			<dt>No arguments</dt>
+		</dl>
+		<div class="render">
+
+			{{ top_search() }}
+
+		</div>
+	</section>
+
+	<section id="news_list">
+		<a name="news_list"></a>
+
+		<h1>news_list()</h1>
+
+		<p class="info">
+			news articles
+		</p>
+		<dl class="info">
+			<dt>count</dt>
+			<dd>number of latest news articles to show</dd>
+		</dl>
+		<div class="render">
+
+			{{ news_list() }}
+
+		</div>
+	</section>
+
+	<section id="kb_articles_forcat">
+		<a name="kb_articles_forcat"></a>
+
+		<h1>kb_articles_forcat($category)</h1>
+
+		<p class="info">
+			article list (Theme:Articles:list_forcat.html.twig)
+		</p>
+		{% set kb_articles_options %}
+		<dl class="info">
+			<dt>category</dt>
+			<dd>REQUIRED - the category to list articles for</dd>
+			<dt>count</dt>
+			<dd>number to show in list</dd>
+			<dt>labelled</dt>
+			<dd>a list of comma separated lable names (e.g. "important,tip,misc") - only articles tagged with at least
+				one of these labels will be included
+			</dd>
+			<dt>sort_by</dt>
+			<dd>a field to sort by. this can be any db field but is used in doctrine query language, so we need to
+				provide a list here. (E.g. "title" or "date_published")
+			</dd>
+			<dt>sort_direction</dt>
+			<dd>DESC for descending or ASC for ascending</dd>
+			<dt>sort</dt>
+			<dd>a shortcut for sorting rather than using both sort_ options - seperate by one space (e.g. "title ASC")
+			</dd>
+			<dt>include_subcategories</dt>
+			<dd>not yet implemented</dd>
+		</dl>
+		{% endset %}
+		<div class="render">
+
+			{{ kb_articles_forcat({category:1}) }}
+
+		</div>
+	</section>
 
 
+
+	<section id="kb_articles_small">
+		<a name="kb_articles_small"></a>
+
+		<h1>kb_articles_small($category)</h1>
+
+		<p class="info">
+			article list (Theme:Articles:list_small.html.twig)
+		</p>
+		{{ kb_articles_options }}
+		<div class="render">
+
+			{{ kb_articles_small({category:1}) }}
+
+		</div>
+	</section>
+
+	<section id="kb_articles_xsmall">
+		<a name="kb_articles_xsmall"></a>
+
+		<h1>kb_articles_small($category)</h1>
+
+		<p class="info">
+			article list (Theme:Articles:list_xsmall.html.twig)
+		</p>
+		{{ kb_articles_options }}
+		<div class="render">
+
+			{{ kb_articles_xsmall({category:1}) }}
+
+		</div>
+	</section>
+
+
+
+	<section id="kb_cats_home">
+		<a name="kb_cats_home"></a>
+
+		<h1>kb_cats_home()</h1>
+
+		<p class="info">
+			article list (Theme:Articles:cats_home.html.twig)
+		</p>
+		{% set kb_cats_options %}
+		<dl class="info">
+			<dt>parent</dt>
+			<dd>a category ID - if you want the list to be for one speicifc category <strong>?</strong></dd>
+			<dt>articles</dt>
+			<dd>ARRAY - some options that you want to use in the "articles" tag (if one is rendered in the theme template it will pass these options)</dd>
+		</dl>
+		{% endset %}
+		<div class="render">
+
+			{{ kb_cats_home() }}
+
+		</div>
+	</section>
+
+
+
+	<section id="kb_cats_summary">
+		<a name="kb_cats_summary"></a>
+
+		<h1>kb_cats_summary()</h1>
+
+		<p class="info">
+			article list (Theme:Articles:cats_summary.html.twig)
+		</p>
+		{{ kb_cats_options }}
+		<div class="render">
+
+			{{ kb_cats_summary() }}
+
+		</div>
+	</section>
+
+
+
+
+	<section id="kb_cats_small">
+		<a name="kb_cats_small"></a>
+
+		<h1>kb_cats_small()</h1>
+
+		<p class="info">
+			article list (Theme:Articles:cats_small.html.twig)
+		</p>
+		{{ kb_cats_options }}
+		<div class="render">
+
+			{{ kb_cats_small() }}
+
+		</div>
+	</section>
+
+
+
+
+	<section id="kb_cats_expander">
+		<a name="kb_cats_expander"></a>
+
+		<h1>kb_cats_expander()</h1>
+
+		<p class="info">
+			article list (Theme:Articles:cats_expander.html.twig)
+		</p>
+		{{ kb_cats_options }}
+		<div class="render">
+
+			{{ kb_cats_expander() }}
+
+		</div>
+	</section>
 
 {% endblock %}
