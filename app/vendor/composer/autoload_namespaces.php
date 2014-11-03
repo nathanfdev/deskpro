@@ -20,6 +20,7 @@ return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Pheanstalk' => array($vendorDir . '/pda/pheanstalk/classes'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
+    'Pagerfanta\\' => array($vendorDir . '/pagerfanta/pagerfanta/src'),
     'PDepend\\' => array($vendorDir . '/pdepend/pdepend/src/main/php'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
     'Leth\\IPAddress' => array($vendorDir . '/leth/ip-address/classes'),
