@@ -61,4 +61,10 @@ class PortalController extends AbstractController
 	{
 		return $this->render('Theme:Portal:top_search.html.twig');
 	}
+
+
+	public function topTabsAction()
+	{
+		return $this->render('Theme:Portal:top_tabs.html.twig');
+	}
 }

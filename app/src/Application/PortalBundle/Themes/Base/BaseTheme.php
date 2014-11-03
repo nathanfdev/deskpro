@@ -45,7 +45,7 @@ class BaseTheme extends AbstractTheme
 			new Tag('alerts', 'Theme:Portal:alerts'),
 			new Tag('top_bar', 'Theme:Portal:topBar'),
 			new Tag('top_search', 'Theme:Portal:topSearch'),
-			new Tag('news_list', 'Theme:News:list', array('style' => 'posts')),
+			new Tag('top_tabs', 'Theme:Portal:topTabs'),
 
 			new Tag('kb_articles_forcat', 'Theme:Articles:list', array('style' => 'forcat')),
 			new Tag('kb_articles_small', 'Theme:Articles:list', array('style' => 'small')),
@@ -56,6 +56,7 @@ class BaseTheme extends AbstractTheme
 			new Tag('kb_cats_small', 'Theme:Articles:categories', array('style' => 'small')),
 			new Tag('kb_cats_expander', 'Theme:Articles:categories', array('style' => 'expander')),
 
+			new Tag('news_list', 'Theme:News:list', array('style' => 'posts')),
 			new Tag('news_list_small', 'Theme:News:list', array('style' => 'small')),
 			new Tag('downloads_list_small', 'Theme:Downloads:list', array('style' => 'small')),
 			new Tag('feedback_list_small', 'Theme:Feedback:list', array('style' => 'small')),
