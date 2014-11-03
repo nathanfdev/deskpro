@@ -59,7 +59,7 @@ class ArticlesController extends AbstractController
 
 		// TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
 		$pager = new Pagerfanta(new DoctrineCollectionAdapter($category->articles));
-		$pager->setMaxPerPage(1); // TODO: should come from a brand setting
+		$pager->setMaxPerPage(5); // TODO: should come from a brand setting
 		$pager->setCurrentPage($request->get('page', 1));
 
 		return $this->render('Theme:Articles:browse.html.twig', array(
