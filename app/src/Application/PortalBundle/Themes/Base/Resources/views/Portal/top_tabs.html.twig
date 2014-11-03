@@ -1,6 +1,6 @@
 <nav class="tabs">
 	<ul>
-		<li class="tab-active">
+		<li{% if url_starts_with == 'kb' %} class="tab-active"{% endif %}>
 			<a href="{{ path('portal_kb') }}">
 				<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
 
@@ -11,7 +11,7 @@
 			</a>
 		</li>
 
-		<li>
+		<li{% if url_starts_with == 'downloads' %} class="tab-active"{% endif %}>
 			<a href="{{ path('portal_downloads') }}">
 				<img src="{{ asset('web/portal/base/img/icon-star.png') }}">
 
@@ -22,7 +22,7 @@
 			</a>
 		</li>
 
-		<li>
+		<li{% if url_starts_with == 'feedback' %} class="tab-active"{% endif %}>
 			<a href="{{ path('portal_feedback') }}">
 				<img src="{{ asset('web/portal/base/img/icon-shield.png') }}">
 
@@ -33,7 +33,7 @@
 			</a>
 		</li>
 
-		<li>
+		<li{% if url_starts_with == 'new-ticket' %} class="tab-active"{% endif %}>
 			<a href="{{ path('portal_new_ticket') }}">
 				<img src="{{ asset('web/portal/base/img/icon-shield.png') }}">
 

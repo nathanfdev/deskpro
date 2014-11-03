@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
 
 class PortalController extends AbstractController
@@ -68,8 +69,13 @@ class PortalController extends AbstractController
 	}
 
 
-	public function topTabsAction()
+	public function topTabsAction(Request $request)
 	{
-		return $this->render('Theme:Portal:top_tabs.html.twig');
+		$path_parts = explode('/', ltrim($request->getPathInfo(), '/'));
+		return $this->render('Theme:Portal:top_tabs.html.twig',
+			array(
+				'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null
+			)
+		);
 	}
 }
