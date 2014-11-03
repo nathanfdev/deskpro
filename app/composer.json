@@ -37,7 +37,8 @@
 		"friendsofsymfony/elastica-bundle": "3.0.*@dev",
 		"fzaninotto/faker": "1.4.*@dev",
 		"sensio/framework-extra-bundle": "~3.0",
-		"pagerfanta/pagerfanta": "~1.0"
+		"pagerfanta/pagerfanta": "~1.0",
+		"white-october/pagerfanta-bundle": "~1.0"
 	},
 	"scripts": {
 		"post-update-cmd":  ["bin/clean-vendors.sh", "bin/hack-vendors.sh"],

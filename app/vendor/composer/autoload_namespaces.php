@@ -10,6 +10,7 @@ return array(
     'ZendXml' => array($vendorDir . '/zendframework/zendxml/library'),
     'ZendQueue' => array($vendorDir . '/zendframework/zend-queue/library'),
     'ZendOAuth' => array($vendorDir . '/zendframework/zendoauth/library'),
+    'WhiteOctober\\PagerfantaBundle' => array($vendorDir . '/white-october/pagerfanta-bundle'),
     'WebDriver' => array($vendorDir . '/instaclick/php-webdriver/lib'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Symfony\\Component\\Icu\\' => array($vendorDir . '/symfony/icu'),

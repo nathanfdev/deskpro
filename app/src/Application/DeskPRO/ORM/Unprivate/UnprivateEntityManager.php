@@ -1,5 +1,5 @@
 <?php
-/* This file has been auto-generated (2014-10-06). See build-vendors-mutate.php */
+/* This file has been auto-generated (2014-11-03). See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
 use Doctrine\ORM\Configuration, Doctrine\ORM\ORMException, Doctrine\ORM\UnitOfWork, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder;
 use Exception;
