@@ -38,6 +38,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DownloadsController extends AbstractController
 {
@@ -49,13 +50,19 @@ class DownloadsController extends AbstractController
 
 	public function browseAction($slug)
 	{
-		return $this->render('Theme:Downloads:browse.html.twig', array('category' => $slug));
+		$id = substr($slug, 0, strpos($slug, '-'));
+		$category = $this->getDownloadCategoriesRepo()->find($id);
+
+		return $this->render('Theme:Downloads:browse.html.twig', array('category' => $category));
 	}
 
 
 	public function viewAction($slug)
 	{
-		return $this->render('Theme:Downloads:view.html.twig', array('file' => $slug));
+		$id       = substr($slug, 0, strpos($slug, '-'));
+		$download = $this->getDownloadsRepo()->find($id);
+
+		return $this->render('Theme:Downloads:view.html.twig', array('download' => $download));
 	}
 
 
@@ -67,17 +74,58 @@ class DownloadsController extends AbstractController
 
 	public function listAction(Request $request)
 	{
-		$style = $request->get('style');
-		$count = $request->get('count', 5);
+		$options_resolver = new OptionsResolver();
+		$options_resolver
+			->setDefaults(
+				array(
+					'count' => 10,
+					'style' => 'small'
+				)
+			)
+			->setAllowedValues(
+				array(
+					'style' => array('small')
+				)
+			);
+		$options = $options_resolver->resolve($request->query->all());
 
-		$downloads  = $this->getDownloadsRepo()->getNewest($count);
+		$downloads  = $this->getDownloadsRepo()->getNewest($options['count']);
 		$total = $this->getDownloadsRepo()->countPublished();
 
 		return $this->render(
-			sprintf('Theme:Downloads:list_%s.html.twig', $style),
+			sprintf('Theme:Downloads:list_%s.html.twig', $options['style']),
 			array(
 				'count_downloads' => $total,
 				'downloads'    => $downloads
+			)
+		);
+	}
+
+
+	public function catsAction(Request $request)
+	{
+		$options_resolver = new OptionsResolver();
+		$options_resolver
+			->setDefaults(
+				array(
+					'parent' => null,
+					'style'  => 'small'
+				)
+			)
+			->setAllowedValues(
+				array(
+					'style' => array('small')
+				)
+			);
+		$options = $options_resolver->resolve($request->query->all());
+
+		$categories      = $this->getDownloadCategoriesRepo()->findBy(array('parent' => $options['parent']));
+
+		return $this->render(
+			sprintf('Theme:Downloads:cats_%s.html.twig', 'small'),
+			array(
+				'cat'        => $options['parent'],
+				'child_cats' => $categories
 			)
 		);
 	}
@@ -89,5 +137,14 @@ class DownloadsController extends AbstractController
 	protected function getDownloadsRepo()
 	{
 		return $this->getDoctrine()->getRepository('DeskPRO:Download');
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\DownloadCategory
+	 */
+	protected function getDownloadCategoriesRepo()
+	{
+		return $this->getDoctrine()->getRepository('DeskPRO:DownloadCategory');
 	}
 }

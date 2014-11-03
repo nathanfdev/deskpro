@@ -1,5 +1,19 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-<h1>Browsing a Downloads "{{ category }}"</h1>
+	<h1>Browsing a Downloads "{{ category.title }}"</h1>
+
+	{% if category.children|length>0 %}
+		{{ downloads_cats_small({ parent: category }) }}
+	{% endif %}
+
+	<ul>
+		{% for download in category.downloads %}
+			<li>
+				<a href="{{ path('portal_downloads_view', { slug: download.urlSlug }) }}">
+					{{ download.title }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
 {% endblock inner_content %}

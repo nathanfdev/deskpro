@@ -4,13 +4,18 @@
 	<ul>
 		{% for dl in downloads %}
 		<li>
-			<span class="text-tag file-tag file-pdf">.pdf</span>
-			<a href="#">{{ dl.title }}</a>
+			{% if dl.blob and dl.blob.extension %}
+			<span class="text-tag file-tag file-{{ dl.blob.extension }}">.{{ dl.blob.extension }}</span>
+			{% else %}
+				{# this is the default if we cant decide what the fie extension is #}
+				<span class="text-tag file-tag">&nbsp;</span>
+			{% endif %}
+			<a href="{{ path('portal_downloads_view', { slug:dl.urlSlug } ) }}">{{ dl.title }}</a>
 		</li>
 		{% endfor %}
 	</ul>
 
 	<div class="list-meta">
-		<a href="#">View <span>{{ count_downloads }}</span> downloads<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+		<a href="{{ path('portal_downloads') }}">View <span>{{ count_downloads }}</span> downloads<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
 	</div>
 </article>

@@ -35,7 +35,6 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
-use Application\DeskPRO\Entity\Feedback;
 use Application\PortalBundle\Controller\AbstractController;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;

@@ -59,7 +59,10 @@ class BaseTheme extends AbstractTheme
 
 			new Tag('news_list', 'Theme:News:list', array('style' => 'posts')),
 			new Tag('news_list_small', 'Theme:News:list', array('style' => 'small')),
+
 			new Tag('downloads_list_small', 'Theme:Downloads:list', array('style' => 'small')),
+			new Tag('downloads_cats_small', 'Theme:Downloads:cats', array('style' => 'small')),
+
 			new Tag('feedback_list_small', 'Theme:Feedback:list', array('style' => 'small')),
 		);
 	}

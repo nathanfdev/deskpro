@@ -53,10 +53,15 @@ class DownloadCategory extends CategoryAbstract
 	protected $children;
 
 	/**
+	 * ArrayCollection
+	 */
+	protected $downloads;
+
+
+	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 */
 	protected $usergroups;
-
 
 
 	############################################################################
@@ -78,5 +83,11 @@ class DownloadCategory extends CategoryAbstract
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null' ), ), 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC', ), ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist','merge'), 'joinTable' => array( 'name' => 'download_category2usergroup', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
+		$metadata->mapOneToMany(
+			array(
+				'fieldName' => 'downloads', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
+				'mappedBy'  => 'category'
+			)
+		);
 	}
 }
