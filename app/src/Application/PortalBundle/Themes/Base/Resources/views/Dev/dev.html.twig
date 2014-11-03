@@ -5,7 +5,7 @@
 	<style>
 		section {
 			margin-top: 20px;
-			margin-bottom: 40px;
+			margin-bottom: 70px;
 		}
 
 		body {
@@ -28,6 +28,8 @@
 		<li><a href="#alerts">alerts</a></li>
 		<li><a href="#top_bar">top_bar</a></li>
 		<li><a href="#top_search">top_search</a></li>
+		<li><a href="#top_tabs">top_tabs</a></li>
+		<li><a href="#get_in_touch">get_in_touch</a></li>
 
 		<li><a href="#kb_articles_forcat">kb_articles_forcat</a></li>
 		<li><a href="#kb_articles_small">kb_articles_small</a></li>
@@ -102,6 +104,42 @@
 		<div class="render">
 
 			{{ top_search() }}
+
+		</div>
+	</section>
+
+	<section id="top_tabs">
+		<a name="top_tabs"></a>
+
+		<h1>top_tabs()</h1>
+
+		<p class="info">
+			Will render "top tabs". These will auto activate the right tab based on request URI.
+		</p>
+		<dl class="info">
+			<dt>No arguments</dt>
+		</dl>
+		<div class="render">
+
+			{{ top_tabs() }}
+
+		</div>
+	</section>
+
+	<section id="get_in_touch">
+		<a name="get_in_touch"></a>
+
+		<h1>get_in_touch()</h1>
+
+		<p class="info">
+			Will render this theme's "get in touch" partial
+		</p>
+		<dl class="info">
+			<dt>No arguments</dt>
+		</dl>
+		<div class="render">
+
+			{{ get_in_touch() }}
 
 		</div>
 	</section>
@@ -258,27 +296,6 @@
 
 		</div>
 	</section>
-
-
-	<section id="news_list_posts">
-		<a name="news_list_posts"></a>
-
-		<h1>news_list_posts()</h1>
-
-		<p class="info">
-			bigger news list (Theme:News:list_posts.html.twig)
-		</p>
-		<ul class="info">
-			<li>count - num to show, null for all</li>
-			<li>sort - NOT YET IMPLEMENTED</li>
-		</ul>
-		<div class="render">
-
-			{{ news_list_posts() }}
-
-		</div>
-	</section>
-
 
 	<section id="news_list">
 		<a name="news_list"></a>
