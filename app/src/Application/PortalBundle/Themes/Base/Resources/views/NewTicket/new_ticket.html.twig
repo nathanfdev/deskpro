@@ -1,7 +1,181 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-	Create a new ticket here.
+	<div class="wrapper">
 
-	<a href="{{ path('portal_tickets') }}">You have an open ticket</a>
+		<div class="column-half-plus">
+			<!-- Every ticket item -->
+			<form class="form-ticket">
+
+				<!-- Ticket header -->
+				<div class="column-full">
+					<div>
+						<header class="section-header">
+							<h1>Contact Us</h1>
+
+							<p>Please complete this form and one of our agents will reply to you by email as soon as
+								possible.</p>
+						</header>
+						<hr class="divider">
+					</div>
+				</div>
+
+				<!-- Single text input with title & blurb -->
+				<div class="column-half">
+					<div>
+						<div class="bucket">
+							<label class="title">Your Name: *</label>
+							<input type="text" placeholder="Your name (required)">
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Single text input with title & blurb -->
+				<div class="column-half omega">
+					<div>
+						<div class="bucket">
+							<p class="form-meta">Already registered? <a href="#">Log In</a>.</p>
+							<label class="title">Your email address *</label>
+							<input type="text" placeholder="Your email address (required)">
+						</div>
+					</div>
+				</div>
+
+				<!-- Select default -->
+				<div class="column-half">
+					<div>
+						<div class="bucket">
+
+							<label class="title">Department</label>
+
+							<div class="multiselect default">
+								<ul class="first-level">
+									<li>
+										<a href="#">Select department for your ticket<i
+												class="fa fa-caret-down"></i></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Select default -->
+				<div class="column-half">
+					<div>
+						<div class="bucket">
+							<div class="title">Multiselect</div>
+							<div class="multiselect">
+								<ul class="first-level">
+									<li>
+										<a href="#">Sales<i class="fa fa-caret-down"></i></a>
+									</li>
+
+									<li>
+										<a href="#">Tech Support</a>
+									</li>
+
+									<li>
+										<a href="#" class="active">Partnerships</a>
+									</li>
+
+									<li>
+										<a href="#">Media Request</a>
+									</li>
+
+									<li>
+										<a href="#">General Questions</a>
+									</li>
+
+									<li>
+										<a href="#">Misc</a>
+									</li>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Single text input with title & blurb -->
+				<div class="column-full">
+					<div>
+						<div class="bucket">
+							<label class="title">Your Name: *</label>
+							<input type="text" placeholder="Your name (required)">
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Textarea -->
+				<div class="column-full">
+					<div>
+						<div class="bucket">
+							<label class="title">What is your question?</label>
+							<textarea placeholder="Say it like you mean it"></textarea>
+						</div>
+					</div>
+				</div>
+
+				<!-- Attachements -->
+				<div class="column-full">
+					<div>
+						<div class="new-ticket-attachements">
+							<a href="#" class="attach-file"><i class="fa fa-link"></i> Click to attach a file (or just
+								drag &amp; drop a file here)</a>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Submit Form -->
+				<div class="column-full">
+					<div>
+						<div class="bucket">
+							<hr class="divider">
+							<button class="button">Submit Ticket</button>
+						</div>
+					</div>
+				</div>
+
+			</form>
+		</div>
+		<!-- end .column-half-plus -->
+
+
+		<!-- Sidebar -->
+		<aside class="sidebar">
+			<div class="row">
+				<div>
+					<div class="get-in-touch">
+						<h1>Get in touch</h1>
+
+						<div>
+							<h2>DeskPRO Ltd.</h2>
+
+							<p>Innovation Warehouse, 1 East Poultry Avenue London, EC1A 9PT, United Kingdom</p>
+
+							<h2>Phone:</h2>
+							(+1) 1-888-DESKPRO<br>
+							(+44) 020-3582-1980
+
+							<h2>Email:</h2>
+							<a href="mailto:">hello@deskpro.com</a><br>
+
+							<h2>On social media</h2>
+							<a href="#" class="link-solo link-facebook"><i class="fa fa-facebook-square"></i>facebook.com/DeskPRO</a><br>
+							<a href="#" class="link-solo link-twitter"><i class="fa fa-twitter-square"></i>twitter.com/DeskPRO</a>
+						</div>
+						<hr>
+					</div>
+				</div>
+			</div>
+		</aside>
+
+
+	</div>
 {% endblock inner_content %}
