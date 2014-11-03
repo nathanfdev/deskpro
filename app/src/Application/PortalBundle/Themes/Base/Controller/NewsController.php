@@ -49,7 +49,7 @@ class NewsController extends AbstractController
 		$qb = $this->getNewsRepo()->createQueryBuilder('n');
 		$pager = new Pagerfanta(new DoctrineCollectionAdapter(new ArrayCollection($qb->select('n')->getQuery()->execute())));
 		$pager->setCurrentPage($request->get('page', 1));
-		$pager->setMaxPerPage(3);
+		$pager->setMaxPerPage(10);
 
 		return $this->render('Theme:News:index.html.twig',
 			array(
