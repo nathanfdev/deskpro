@@ -44,6 +44,17 @@ class PortalController extends AbstractController
 		return $this->render('Theme:Portal:index.html.twig');
 	}
 
+	public function contactAction()
+	{
+		return $this->render('Theme:Portal:contact.html.twig');
+	}
+
+
+	public function getInTouchAction()
+	{
+		return $this->render('Theme:Portal:get_in_touch.html.twig');
+	}
+
 
 	public function alertsAction()
 	{

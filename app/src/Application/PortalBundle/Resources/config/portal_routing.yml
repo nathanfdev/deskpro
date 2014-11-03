@@ -78,6 +78,12 @@ portal_user_profile:
     defaults:
       _controller: Theme:Profile:edit
 
+# Contact
+portal_contact:
+    path: /contact
+    defaults:
+      _controller: Theme:Portal:contact
+
 
 # DEV
 portal_dev:
