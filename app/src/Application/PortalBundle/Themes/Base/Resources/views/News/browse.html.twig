@@ -3,6 +3,9 @@
 
 {% block inner_content %}
 	{{ macros.kb_news_cat_breadcrumbs(cat, cat.treeParents) }}
+	{% if cat.children|length > 0 %}
+		{{ news_cats_small({ parent: cat }) }}
+	{% endif %}
 	<h1>{{ cat.realTitle }}</h1>
 	<ul>
 		{% for article in news_articles %}

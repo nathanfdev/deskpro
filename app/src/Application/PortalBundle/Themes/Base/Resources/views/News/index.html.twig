@@ -4,6 +4,7 @@
 {% block inner_content %}
 	{{ macros.kb_news_cat_breadcrumbs() }}
 	<h1>News</h1>
+		SELECT: {{ news_cats_dropdown() }}
 	<ul>
 		{% for article in news_articles %}
 			<li>

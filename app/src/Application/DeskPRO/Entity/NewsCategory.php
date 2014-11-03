@@ -56,6 +56,11 @@ class NewsCategory extends CategoryAbstract
 	protected $children;
 
 	/**
+	 * ArrayCollection
+	 */
+	protected $articles;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @SWG\Property(name="tags",type="array",@SWG\Items("Usergroup"))
 	 */
@@ -82,5 +87,11 @@ class NewsCategory extends CategoryAbstract
 		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null' ), ), 'dpApi' => true ));
 		$metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC', ), ));
 		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'cascade' => array('persist','merge'), 'joinTable' => array( 'name' => 'news_category2usergroup', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
+		$metadata->mapOneToMany(
+			array(
+				'fieldName' => 'articles', 'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
+				'mappedBy'  => 'category'
+			)
+		);
 	}
 }

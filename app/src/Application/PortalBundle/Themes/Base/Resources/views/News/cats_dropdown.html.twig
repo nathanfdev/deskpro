@@ -1,0 +1,10 @@
+{% if child_cats|length > 0 %}
+	<select id="category-select-box" onChange="javascript: location.href=this.value">
+		<option value="#">---</option>
+	{% for cat in child_cats %}
+		<option value="{{  path('portal_news_browse', { slug: cat.urlSlug }) }}">
+			{{ cat.title }} - [{{ cat.articles|length }}]
+		</option>
+	{% endfor %}
+	</select>
+{% endif %}

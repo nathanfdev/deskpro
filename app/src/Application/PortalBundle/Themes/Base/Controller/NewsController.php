@@ -35,12 +35,14 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\Entity\NewsCategory;
 use Application\PortalBundle\Controller\AbstractController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NewsController extends AbstractController
 {
@@ -81,6 +83,42 @@ class NewsController extends AbstractController
 				'cat'           => $category,
 				'pager'         => $pager,
 				'news_articles' => $pager->getCurrentPageResults()
+			)
+		);
+	}
+
+
+	public function catsAction(Request $request)
+	{
+		$options_resolver = new OptionsResolver();
+		$options_resolver
+			->setDefaults(
+				array(
+					'style' => 'small',
+					'parent' => null
+				)
+			)
+			->setAllowedValues(
+				array(
+					'style' => 'small'
+				)
+			);
+		$options = $options_resolver->resolve($request->query->all());
+
+		if ($category = $options['parent']) {
+			if (!$category instanceof NewsCategory) {
+				$category = $this->getNewsCategoriesRepo()->find($category);
+			}
+			$categories = $category->children;
+		} else {
+			$categories = $this->getNewsCategoriesRepo()->findBy(array('parent' => $category));
+		}
+
+		return $this->render(
+			sprintf('Theme:News:cats_%s.html.twig', $options['style']),
+			array(
+				'cat'        => $category,
+				'child_cats' => $categories
 			)
 		);
 	}
