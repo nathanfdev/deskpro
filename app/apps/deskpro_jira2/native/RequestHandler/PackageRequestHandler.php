@@ -67,8 +67,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 	{
 		$errors = array();
 
+		/** @var JIRA $js */
+		$js = $container->get('dp.jira');
 		$back = $container->getRouter()->generateUrl('jira_token');
-		$oauth = new OAuthWrapper($container->getSettingsHandler(), $back);
+		$oauth = new OAuthWrapper($js, $back);
 		try {
 			$oauth->requestTempCredentials();
 		} catch (\Exception $e) {
@@ -87,11 +89,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 			}
 		}
 
-		if (!$errors && !$container->getSetting(OAuthWrapper::PARAM_TOKENS)) {
+		if (!$errors && !$js->getTokens()) {
 			$errors['token'] = true;
 		}
 
-		$container->getSettingsHandler()->setSetting(JIRA::PARAM_ENABLED, (bool) $errors);
 		return $errors ?: null;
 	}
 

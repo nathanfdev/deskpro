@@ -121,4 +121,18 @@ $collection->create('admin_upgrade_index', array(
 	'controller'  => 'AdminInterfaceBundle:Upgrade:index',
 ));
 
+########################################################################################################################
+# JIRA
+########################################################################################################################
+
+$collection->create('jira_token', array(
+	'path'        => '/jira/request_token',
+	'controller'  => 'AdminInterfaceBundle:Jira:token',
+));
+
+$collection->create('jira_test', array(
+	'path'        => '/jira/call',
+	'controller'  => 'AdminInterfaceBundle:Jira:test',
+));
+
 return $collection;

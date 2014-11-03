@@ -6,17 +6,12 @@
 
 namespace Application\DeskPRO\JIRA;
 
-use Application\DeskPRO\Settings\Settings;
+use Application\DeskPRO\Service\JIRA;
 use Guzzle\Http\Client;
 use Guzzle\Plugin\Oauth\OauthPlugin;
 
 class OAuthWrapper
 {
-	const PARAM_URL        = 'jira.base_url';
-	const PARAM_CONSUMER   = 'jira.consumer_key';
-	const PARAM_KEY        = 'core_jira.private_key';
-	const PARAM_TOKENS      = 'jira.oauth_tokens';
-
 	protected $base_url;
 	protected $private_key;
 	protected $callback_url;
@@ -30,27 +25,27 @@ class OAuthWrapper
 	protected $authorization_url = '/plugins/servlet/oauth/authorize?oauth_token=%s';
 
 	protected $client;
-	protected $settings;
+	protected $service;
 
-	public function __construct(Settings $settings, $callbackUrl = null)
+	public function __construct(JIRA $service, $callbackUrl = null)
 	{
-		$this->settings = $settings;
+		$this->service = $service;
 
-		if (!$this->base_url = $this->settings->get(self::PARAM_URL)) {
+		if (!$this->base_url = $this->service->getUrl()) {
 			throw new \Exception('JIRA base url is required');
 		}
 
-		if (!$this->private_key = $this->settings->get(self::PARAM_KEY)) {
+		if (!$this->private_key = $this->service->getPrivateKey()) {
 			throw new \Exception('JIRA private key is required');
 		}
 
-
-		if ($tokens = $this->settings->get(self::PARAM_TOKENS)) {
-			$this->tokens = unserialize($tokens);
+		if (!$this->consumer_key = $this->service->getConsumerKey()) {
+			throw new \Exception('JIRA consumer key is required');
 		}
 
+
+		$this->tokens = $this->service->getTokens();
 		$this->callback_url = $callbackUrl;
-		$this->consumer_key = $this->settings->get(self::PARAM_CONSUMER);
 	}
 
 	/**
@@ -77,7 +72,7 @@ class OAuthWrapper
 	 */
 	public function requestAuthCredentials($token, $tokenSecret, $verifier)
 	{
-		$this->settings->setSetting(self::PARAM_TOKENS, null);
+		$this->service->setTokens(array());
 
 		$credentials = $this->requestCredentials(
 			$this->base_url . $this->access_tocken_url . '?oauth_callback=' . $this->callback_url . '&oauth_verifier=' . $verifier,
@@ -86,7 +81,7 @@ class OAuthWrapper
 		);
 
 		$this->tokens = $credentials;
-		$this->settings->setSetting(self::PARAM_TOKENS, serialize($credentials));
+		$this->service->setTokens($credentials);
 		return $credentials;
 	}
 

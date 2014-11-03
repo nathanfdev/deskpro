@@ -30,18 +30,9 @@ namespace Application\DeskPRO\JIRA;
 
 class Meta
 {
-	/**
-	 * @var array
-	 */
-	protected $project = array();
-	/**
-	 * @var array
-	 */
-	protected $priority = array();
-	/**
-	 * @var array
-	 */
-	protected $field = array();
+	protected $projects = array();
+
+	protected $priorities = array();
 
 	protected $default_project;
 	protected $default_priority;
@@ -49,31 +40,25 @@ class Meta
 	protected $default_fields_summary = array();
 	protected $default_fields_list = array();
 
-	/**
-	 * @param $type
-	 * @param array $entries
-	 * @return $this
-	 */
-	public function setEntries($type, array $entries = array())
+
+	public function setCreateMeta(array $projects = array())
 	{
-		$this->{$type} = array();
-		foreach ($entries as $entry) {
-			$this->addEntry($type, $entry);
-		}
-		return $this;
+		$this->projects = $projects;
 	}
 
-	/**
-	 * @param $type
-	 * @param array $entry
-	 * @return $this
-	 */
-	public function addEntry($type, array $entry)
+	public function getCreateMeta()
 	{
-		if ('project' !== $type && 'priority' !== $type && 'fields' !== $type || 'issuetype' !== $type) return;
+		return $this->projects;
+	}
 
-		$this->{$type}[$entry['id']] = $entry;
-		return $this;
+	public function setPriorities(array $priorities = array())
+	{
+		$this->priorities = $priorities;
+	}
+
+	public function getPriorities()
+	{
+		return $this->priorities;
 	}
 
 	/**
@@ -104,6 +89,29 @@ class Meta
 		$ret['default_fields_summary'] = $this->default_fields_summary;
 		$ret['default_fields_list'] = $this->default_fields_list;
 
+		$ret['projects'] = $this->projects;
+		$ret['priorities'] = $this->priorities;
+
 		return $ret;
+	}
+
+	static public function fromArray(array $data)
+	{
+		$meta = new self;
+		if (isset($data['projects'])) {
+			$meta->setCreateMeta($data['projects']);
+			unset($data['projects']);
+		}
+
+		if (isset($data['priorities'])) {
+			$meta->setPriorities($data['priorities']);
+			unset($data['priorities']);
+		}
+
+		foreach ($data as $k => $v) {
+			$meta->setDefault($k, $v);
+		}
+
+		return $meta;
 	}
 } 

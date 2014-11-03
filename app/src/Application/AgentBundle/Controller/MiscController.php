@@ -974,7 +974,7 @@ JS;
 		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/app/bower_components/angular/angular.min"');
 		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
 		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
-		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap"');
+		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap-tpls-0.11.2.min"');
 
 		$rjs->addPathExpr('angularUISortable', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-sortable/src/sortable"');
 		$rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/vendor/ng-context-menu/src/ng-context-menu"');

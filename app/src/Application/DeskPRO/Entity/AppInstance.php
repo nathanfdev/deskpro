@@ -137,6 +137,17 @@ class AppInstance extends DomainObject
 		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
 	}
 
+	/**
+	 * @param $name
+	 * @param $value
+	 */
+	public function setSetting($name, $value)
+	{
+		$settings = $this->settings;
+		$settings[$name] = $value;
+		$this->setModelField('settings', $settings);
+	}
+
 
 	/**
 	 * Get settings that we will output to JS (eg non-native only)

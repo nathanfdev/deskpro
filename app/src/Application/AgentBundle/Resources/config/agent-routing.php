@@ -2244,4 +2244,10 @@ $collection->create('agent_label_definitions_list', array(
 	'methods'       => array('GET'),
 ));
 
+$collection->create('agent_jira_meta', array(
+	'path'          => '/jira/meta',
+	'controller'    => 'AgentBundle:Jira:getMeta',
+	'methods'       => array('GET'),
+));
+
 return $collection;

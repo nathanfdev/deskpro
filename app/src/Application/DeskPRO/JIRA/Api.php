@@ -28,7 +28,7 @@
 namespace Application\DeskPRO\JIRA;
 
 
-use Application\DeskPRO\Settings\Settings;
+use Application\DeskPRO\Service\JIRA;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -37,21 +37,21 @@ class Api
 {
 	const API_BASE_PATH = 'rest/api/2';
 
-	protected $settings;
+	protected $service;
 	protected $oauth;
 
-	public function __construct(Settings $settings)
+	public function __construct(JIRA $service)
 	{
-		$this->settings = $settings;
+		$this->service = $service;
 	}
 
 	/**
 	 * @return OAuthWrapper
 	 */
-	protected function getOAuth()
+	public function getOAuth()
 	{
 		if (!$this->oauth) {
-			$this->oauth = new OAuthWrapper($this->settings);
+			$this->oauth = new OAuthWrapper($this->service);
 		}
 
 		return $this->oauth;

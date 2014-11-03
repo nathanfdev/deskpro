@@ -1,6 +1,7 @@
 <?php
 
 namespace Application\AgentBundle\Controller;
+use Application\DeskPRO\Service\JIRA;
 
 /**
  * The JiraController class
@@ -11,6 +12,9 @@ class JiraController extends AbstractController
 {
 	/** @var array */
 	protected $meta;
+
+	/** @var JIRA */
+	protected $service;
 
 	public function preAction($action, $arguments = null)
 	{
@@ -630,5 +634,28 @@ class JiraController extends AbstractController
 			case '@ticket':
 				return $ticket->subject . '(' . $ticket->ref . ')';
 		}
+	}
+
+
+	/**
+	 * @return JIRA
+	 */
+	protected function service()
+	{
+		if (!$this->service) {
+			$this->service = $this->get('dp.jira');
+		}
+
+		return $this->service;
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function getMetaAction()
+	{
+		$meta = $this->service()->getMeta();
+
+		return $this->createJsonResponse($meta->toArray());
 	}
 }

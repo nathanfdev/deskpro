@@ -29,14 +29,18 @@ namespace Application\DeskPRO\Service;
 
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\Meta;
 
 class JIRA
 {
-	const PARAM_ENABLED = 'jira.enabled';
-	const PARAM_COMMENTS = 'jira.comments_enabled';
-	const PARAM_META = 'jira.meta';
+	const PARAM_COMMENTS    = 'comments';
+	const PARAM_META        = 'meta';
+	const PARAM_URL         = 'url';
+	const PARAM_CONSUMER    = 'consumer_key';
+	const PARAM_TOKENS      = 'oauth_tokens';
+	const PARAM_KEY         = 'core_jira.private_key';
 
 	/**
 	 * @var DeskproContainer
@@ -48,6 +52,11 @@ class JIRA
 	 */
 	protected $api;
 
+	/**
+	 * @var AppInstance
+	 */
+	protected $app = false;
+
 	public function __construct(DeskproContainer $container)
 	{
 		$this->container = $container;
@@ -58,7 +67,45 @@ class JIRA
 	 */
 	public function isEnabled()
 	{
-		return $this->settings->get(self::PARAM_ENABLED);
+		return $this->getApp() && $this->getApp()->getSetting(self::PARAM_TOKENS);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function isCommentsEnabled()
+	{
+		return $this->getApp() && $this->getApp()->getSetting(self::PARAM_COMMENTS);
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getConsumerKey()
+	{
+		if (!$app = $this->getApp()) {
+			return null;
+		}
+		return $app->getSetting(self::PARAM_CONSUMER);
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getUrl()
+	{
+		if (!$app = $this->getApp()) {
+			return null;
+		}
+		return $app->getSetting(self::PARAM_URL);
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public function getPrivateKey()
+	{
+		return $this->container->getSetting(self::PARAM_KEY);
 	}
 
 	/**
@@ -67,10 +114,50 @@ class JIRA
 	public function getApi()
 	{
 		if (!$this->api) {
-			$this->api = new Api($this->container->getSettingsHandler());
+			$this->api = new Api($this);
 		}
 
 		return $this->api;
+	}
+
+	/**
+	 * @return AppInstance|null
+	 */
+	protected function getApp()
+	{
+		$rep = $this->container->getEm()->getRepository('DeskPRO:AppInstance');
+		if (false === $this->app) {
+			$this->app = $rep->getInstanceByName('deskpro_jira2');
+		}
+
+		return $this->app;
+	}
+
+	/**
+	 * @return mixed|null
+	 */
+	public function getTokens()
+	{
+		if (!$app = $this->getApp()) {
+			return array();
+		}
+
+		if (!$tokens = $app->getSetting(self::PARAM_TOKENS)) {
+			return array();
+		}
+
+		return $tokens;
+	}
+
+	/**
+	 * @param array $tokens
+	 */
+	public function setTokens(array $tokens)
+	{
+		if ($app = $this->getApp()) {
+			$app->setSetting(self::PARAM_TOKENS, $tokens);
+			$this->container->getEm()->flush($app);
+		}
 	}
 
 	/**
@@ -80,26 +167,50 @@ class JIRA
 	 */
 	public function updateMeta(array $properties = array())
 	{
+		if (!$app = $this->getApp()) {
+			return null;
+		}
+
 		$meta = new Meta();
 
 		try {
+
+			$res = $this->getApi()->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
+			$projects = isset($res['projects']) ? $res['projects'] : array();
+			$meta->setCreateMeta($projects);
+
+			$priority = $this->getApi()->get('/priority');
+			$meta->setPriorities($priority);
+
 			foreach ($properties as $k => $v) {
 				$meta->setDefault($k, $v);
 			}
+
+			$app->setSetting(self::PARAM_META, $meta->toArray());
+			$this->container->getEm()->flush($app);
+
 		} catch (\Exception $e) {
 			// silence is a gold
 		}
 
-		$this->container->getSettingsHandler()->setSetting(self::PARAM_META, serialize($meta));
 		return $meta;
 	}
 
 	/**
-	 * @return Meta
+	 * @return Meta|null
 	 */
 	public function getMeta()
 	{
-		$serialized = $this->container->getSetting(self::PARAM_META);
-		return $serialized ? unserialize($serialized) : $this->updateMeta();
+		if (!$app = $this->getApp()) {
+			return null;
+		}
+
+		if ($metaData = $app->getSetting(self::PARAM_META)) {
+			$meta = Meta::fromArray($metaData);
+		} else {
+			$meta = $this->updateMeta();
+		}
+
+		return $meta;
 	}
 } 

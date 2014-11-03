@@ -48,7 +48,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
 		$scope.getAccessToken = function() {
 			var backUrl = window.location.href;
-			window.location.href = '/jira/request_token?back_url=' + encodeURIComponent(backUrl);
+			window.location.href = '/admin/jira/request_token?back_url=' + encodeURIComponent(backUrl);
 		};
 
 		$scope.setPresaveCallback(function() {

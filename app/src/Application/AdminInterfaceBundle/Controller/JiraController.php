@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,24 +29,61 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage ApiBundle
  */
 
-namespace deskpro_jira2;
+namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 use Application\DeskPRO\JIRA\OAuthWrapper;
 use Application\DeskPRO\Service\JIRA;
+use Symfony\Component\HttpFoundation\Request;
 
-class InstallerHandler extends AbstractInstallerHandler
+class JiraController extends AbstractController
 {
 	/**
-	 * {@inheritDoc}
+	 * todo
+	 * @param Request $request
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
 	 */
-	public function processSettings(InstallerContext $context, array $settings)
+	public function tokenAction(Request $request)
 	{
-		$old = $context->getApp()->getSettings() ?: array();
-		return array_merge($old, $settings);
+		$oauth = new OAuthWrapper($this->get('dp.jira'), $this->generateUrl('jira_token', array(), true));
+
+		$verifier = $request->get('oauth_verifier');
+		$credentials = $request->getSession()->get('jira_oauth');
+
+		if ($back = $request->get('back_url')) {
+			$request->getSession()->set('jira_back_url', $back);
+		}
+
+		if ($verifier && $credentials) {
+
+			$oauth->requestAuthCredentials(
+				$credentials['oauth_token'],
+				$credentials['oauth_token_secret'],
+				$verifier
+			);
+			$request->getSession()->remove('jira_oauth');
+
+			if ($back = $request->getSession()->get('jira_back_url')) {
+				$request->getSession()->remove('jira_back_url');
+			} else {
+				$back = $this->generateUrl('jira_test');
+			}
+
+			return $this->redirect($back);
+		}
+
+		$credentials = $oauth->requestTempCredentials();
+		$request->getSession()->set('jira_oauth', $credentials);
+
+		return $this->redirect($oauth->getAuthUrl());
+	}
+
+	public function testAction()
+	{
+		/** @var JIRA $js */
+		$js = $this->get('dp.jira');
+		die();
 	}
 }
