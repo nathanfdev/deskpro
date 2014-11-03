@@ -72,6 +72,12 @@ portal_tickets_view:
     defaults:
       _controller: Theme:Tickets:view
 
+# Use Profile
+portal_user_profile:
+    path: /profile
+    defaults:
+      _controller: Theme:Profile:edit
+
 
 # DEV
 portal_dev:
