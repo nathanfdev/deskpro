@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\ArticleCategory as CategoryEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Orb\Util\Arrays;
@@ -146,5 +147,13 @@ class ArticleCategory extends AbstractCategoryRepository
 		$counts['0_total'] = $searcher->getCount();
 
 		return $counts;
+	}
+
+
+	public function gatherOrderedBreadcrumbTree(CategoryEntity $category)
+	{
+		// TODO: we should make this more of a query, rather than this which does several requests
+
+		return $category->getTreeParents();
 	}
 }

@@ -37,10 +37,12 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Article categories
  *
+ * @property ArrayCollection $articles
  */
 class ArticleCategory extends CategoryAbstract
 {
@@ -53,6 +55,7 @@ class ArticleCategory extends CategoryAbstract
 	protected $children;
 
 	/**
+	 * ArrayCollection
 	 */
 	protected $articles;
 
@@ -89,6 +92,12 @@ class ArticleCategory extends CategoryAbstract
 	 * @var string
 	 */
 	protected $template_suffix = '';
+
+
+	public function __construct()
+	{
+		$this->articles = new ArrayCollection();
+	}
 
 
 

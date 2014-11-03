@@ -49,11 +49,29 @@ class ArticlesController extends AbstractController
 	}
 
 
-	public function browseAction($slug)
+	public function browseAction($slug, Request $request)
 	{
+		/** @var \Application\DeskPRO\Entity\ArticleCategory $category */
 		$id = substr($slug, 0, strpos($slug, '-'));
 		$category = $this->getDoctrine()->getManager()->getRepository('DeskPRO:ArticleCategory')->find($id);
-		return $this->render('Theme:Articles:browse.html.twig', array('cat' => $category));
+
+		// TODO: get core.portal.articles_per_page
+		$per_page = 25;
+		$page = $request->get('page', 1);
+
+		// find breadcrumbs
+		$breadcrumb_tree = $this->getArticleCategoryRepo()->gatherOrderedBreadcrumbTree($category);
+
+		// fetch articles
+		// TODO: this is actually a pretty decent way to query for the articles we need but need to be EXTRA_LAZY
+		$articles = $category->articles->slice($per_page * ($page - 1), $per_page);
+
+		return $this->render('Theme:Articles:browse.html.twig', array(
+				'cat' => $category,
+				'articles' => $articles,
+				'breadcrumb_tree' => $breadcrumb_tree
+			)
+		);
 	}
 
 
