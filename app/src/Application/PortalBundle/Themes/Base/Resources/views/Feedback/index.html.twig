@@ -1,0 +1,18 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Feedback:_macros.html.twig' as macros %}
+
+{% block inner_content %}
+	{{ macros.kb_feedback_breadcrumbs() }}
+	<ul>
+		{% for feedback in pager.currentPageResults %}
+			<li>
+				<a href="{{ path('portal_feedback_view', { slug: feedback.urlSlug }) }}">
+					{{ feedback.realTitle }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+	{% if pager.haveToPaginate %}
+		{{ pagerfanta(pager, 'twitter_bootstrap') }}
+	{% endif %}
+{% endblock inner_content %}

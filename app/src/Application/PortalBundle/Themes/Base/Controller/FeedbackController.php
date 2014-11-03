@@ -36,10 +36,28 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\PortalBundle\Controller\AbstractController;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 
 class FeedbackController extends AbstractController
 {
+	public function indexAction(Request $request)
+	{
+		$allFeedback = $this->getFeedbackRepo()->createQueryBuilder('f');
+		$pager       = new Pagerfanta(new DoctrineORMAdapter($allFeedback));
+		$pager->setMaxPerPage(3);
+		$pager->setCurrentPage($request->get('page', 1));
+
+		return $this->render(
+			'Theme:Feedback:index.html.twig',
+			array(
+				'pager'     => $pager,
+				'feedbacks' => $pager->getCurrentPageResults()
+			)
+		);
+	}
+
 	public function listAction(Request $request)
 	{
 		$count = $request->get('count', 5);

@@ -50,6 +50,16 @@ portal_news_view:
     defaults:
       _controller: Theme:News:view
 
+# Feedback
+portal_feedback:
+    path: /feedback
+    defaults:
+      _controller: Theme:Feedback:index
+portal_feedback_view:
+    path: /feedback/view/{slug}
+    defaults:
+      _controller: Theme:Feedback:view
+
 # Search
 portal_search:
   path: /search
