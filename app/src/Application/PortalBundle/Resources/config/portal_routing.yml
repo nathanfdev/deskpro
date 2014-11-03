@@ -83,12 +83,6 @@ portal_user_registration:
     defaults:
       _controller: Theme:Profile:register
 
-# Contact
-portal_contact:
-    path: /contact
-    defaults:
-      _controller: Theme:Portal:contact
-
 
 # DEV
 portal_dev:
