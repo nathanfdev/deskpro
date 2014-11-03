@@ -3,5 +3,13 @@
 
 {% block inner_content %}
 	{{ macros.kb_article_cat_breadcrumbs(cat, breadcrumb_tree) }}
-	{#{{ kb_cats_expander({parent:cat.id}) }}#}
+	<ul>
+		{% for article in articles %}
+			<li>
+				<a href="{{ path('portal_kb_view', { slug: article.urlSlug }) }}">
+					{{ article.realTitle }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
 {% endblock inner_content %}

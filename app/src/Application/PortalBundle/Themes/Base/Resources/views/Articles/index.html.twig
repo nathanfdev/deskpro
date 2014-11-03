@@ -1,5 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {% block inner_content %}
+	{{ macros.kb_article_cat_breadcrumbs() }}
 	{{ kb_cats_home() }}
 {% endblock inner_content %}
