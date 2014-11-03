@@ -1,6 +1,8 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Downloads:_macros.html.twig' as macros %}
 
 {% block inner_content %}
+	{{ macros.kb_downloads_cat_breadcrumbs(download.category, download.category.treeParents, download) }}
 	<h1>{{ download.title }}</h1>
 	<p class="info">
 		size: {{ download.readableFileSize }}

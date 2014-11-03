@@ -1,17 +1,21 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Downloads:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-	<h1>Browsing a Downloads "{{ category.title }}"</h1>
+	{{ macros.kb_downloads_cat_breadcrumbs(cat, cat.treeParents) }}
 
-	{% if category.children|length>0 %}
-		{{ downloads_cats_small({ parent: category }) }}
+	<h1>{{ cat.title }}</h1>
+
+	{% if cat.children|length>0 %}
+		<p>There are {{ cat.children|length }} sub-categories</p>
+		{{ downloads_cats_small({ parent: cat.id }) }}
 	{% endif %}
 
 	<ul>
-		{% for download in category.downloads %}
+		{% for download in cat.downloads %}
 			<li>
 				<a href="{{ path('portal_downloads_view', { slug: download.urlSlug }) }}">
-					{{ download.title }}
+					{{ download.realTitle }}
 				</a>
 			</li>
 		{% endfor %}

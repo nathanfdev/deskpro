@@ -1,8 +1,5 @@
 {% for cat in cats %}
-
 	<article class="article-categories-expandable">
-
-
 		<header>
 			<a href="{{ path('portal_kb_browse', { slug: cat.urlSlug }) }}">
 				<h1><img src="{{ asset('web/portal/base/img/icon-star.png') }}">{{ cat.title }}</h1>
@@ -14,7 +11,6 @@
 				</div>
 			</a>
 		</header>
-
 
 		{{ kb_articles_small({'category':cat.id}|merge(articles_options)) }}
 

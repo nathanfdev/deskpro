@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\EntityRepository\DownloadCategory;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,7 +54,10 @@ class DownloadsController extends AbstractController
 		$id = substr($slug, 0, strpos($slug, '-'));
 		$category = $this->getDownloadCategoriesRepo()->find($id);
 
-		return $this->render('Theme:Downloads:browse.html.twig', array('category' => $category));
+		return $this->render('Theme:Downloads:browse.html.twig', array(
+				'cat' => $category
+			)
+		);
 	}
 
 
@@ -62,7 +66,10 @@ class DownloadsController extends AbstractController
 		$id       = substr($slug, 0, strpos($slug, '-'));
 		$download = $this->getDownloadsRepo()->find($id);
 
-		return $this->render('Theme:Downloads:view.html.twig', array('download' => $download));
+		return $this->render('Theme:Downloads:view.html.twig', array(
+				'download' => $download
+			)
+		);
 	}
 
 
@@ -119,12 +126,19 @@ class DownloadsController extends AbstractController
 			);
 		$options = $options_resolver->resolve($request->query->all());
 
-		$categories      = $this->getDownloadCategoriesRepo()->findBy(array('parent' => $options['parent']));
+		if ($category = $options['parent']) {
+			if (!$category instanceof DownloadCategory) {
+				$category = $this->getDownloadCategoriesRepo()->find($category);
+			}
+			$categories = $category->children;
+		} else {
+			$categories = $this->getDownloadCategoriesRepo()->findBy(array('parent' => $category));
+		}
 
 		return $this->render(
-			sprintf('Theme:Downloads:cats_%s.html.twig', 'small'),
+			sprintf('Theme:Downloads:cats_%s.html.twig', $options['style']),
 			array(
-				'cat'        => $options['parent'],
+				'cat'        => $category,
 				'child_cats' => $categories
 			)
 		);
