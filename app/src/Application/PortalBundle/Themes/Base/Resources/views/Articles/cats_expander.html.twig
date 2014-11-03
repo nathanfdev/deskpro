@@ -1,13 +1,25 @@
 {% for cat in cats %}
-	<div class="column-full">
-		<article class="article-categories">
-			<header>
-				<h1>
-					<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ cat.title }}</h1>
-				<hr>
-			</header>
 
-			{{ kb_articles_forcat({'category':cat.id}|merge(articles_options)) }}
-		</article>
-	</div>
+	<article class="article-categories-expandable">
+
+
+		<header>
+			<a href="{{ path('portal_kb_browse', { slug: cat.urlSlug }) }}">
+				<h1><img src="{{ asset('web/portal/base/img/icon-star.png') }}">{{ cat.title }}</h1>
+
+				<div class="article-controls">
+					<span class="article-tag pointy">{{ cat.articles|length }} articles</span>
+
+					<span class="expandable-control"><i class="fa fa-angle-up"></i></span>
+				</div>
+			</a>
+		</header>
+
+
+		{{ kb_articles_small({'category':cat.id}|merge(articles_options)) }}
+
+		<div class="list-meta">
+			<a href="{{ path('portal_kb_browse', { slug: cat.urlSlug }) }}">View <span>{{ cat.articles|length }}</span> articles</a>
+		</div>
+	</article>
 {% endfor %}
