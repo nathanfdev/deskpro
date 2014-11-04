@@ -35,6 +35,8 @@
 namespace Application\PortalBundle\Theme;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
+use Symfony\Component\HttpKernel\Fragment\EsiFragmentRenderer;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ThemeResolver
@@ -184,13 +186,21 @@ class ThemeResolver
 			return '';
 		}
 
+		$current_request = $this->container->get('request_stack')->getCurrentRequest();
+		$query       = array('tag_options' => array_merge($tag->getParams(), $arguments));
+
+		// construct and return the proper ESI tag content
 		if ($tag->isEsi()) {
-			// TODO: render and return an ESI tag for the controller, skipping for now
+			$esi = $this->container->get('fragment.renderer.esi')->render(
+				new ControllerReference($tag->getControllerName(), array(), $query), $current_request
+			);
+
+			return $esi->getContent();
 		}
 
-		$current_request = $this->container->get('request_stack')->getCurrentRequest();
+		// construct and return the actual tag response content
 		$tag_request = $current_request->duplicate(
-			array_merge($tag->getParams(), $arguments),
+			$query,
 			null,
 			array('_controller' => $tag->getControllerName())
 		);
