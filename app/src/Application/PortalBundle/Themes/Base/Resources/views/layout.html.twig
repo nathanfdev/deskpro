@@ -16,7 +16,7 @@
 You can make new layouts (skinny, full-width, etc) by extendign this layout and overriding "body". It allows you
 to keep the same "header" and "footer" to keep css/js/etc consistent among theme layouts
 #}
-{% block body  %}
+{% block body %}
 
 	<!-- Alerts -->
 	<section>
@@ -46,14 +46,22 @@ to keep the same "header" and "footer" to keep css/js/etc consistent among theme
 		</div>
 	</section>
 
-	{% block page_content %}
-		<section>
-			<div class="column-full">
-				{% block inner_content %}
-				{% endblock inner_content %}
-			</div>
-		</section>
-	{% endblock page_content %}
+	<div class="wrapper">
+		<div class="column-half-plus">
+			{% block page_content %}
+				<section>
+					<div class="column-full">
+						{% block inner_content %}
+						{% endblock inner_content %}
+					</div>
+				</section>
+			{% endblock page_content %}
+		</div>
+
+		<aside class="sidebar">
+			{{ sidebar() }}
+		</aside>
+	</div>
 
 {% endblock body %}
 

@@ -69,6 +69,12 @@ class PortalController extends AbstractController
 	}
 
 
+	public function sidebarAction(Request $request)
+	{
+		return $this->render('Theme:Portal:sidebar.html.twig');
+	}
+
+
 	public function topTabsAction(Request $request)
 	{
 		$path_parts = explode('/', ltrim($request->getPathInfo(), '/'));

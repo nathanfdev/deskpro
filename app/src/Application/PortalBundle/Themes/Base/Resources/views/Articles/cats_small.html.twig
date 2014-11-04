@@ -1,5 +1,5 @@
 <ul>
 	{% for cat in cats %}
-		<li><img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ cat.title }}</li>
+		<li><img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ cat.title }} - [{{ cat.articles|length }}]</li>
 	{% endfor %}
 </ul>
