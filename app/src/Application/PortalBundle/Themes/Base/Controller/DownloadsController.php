@@ -94,7 +94,7 @@ class DownloadsController extends AbstractController
 					'style' => array('small')
 				)
 			);
-		$options = $options_resolver->resolve($request->query->all());
+		$options = $options_resolver->resolve($request->query->get('tag_options'));
 
 		$downloads  = $this->getDownloadsRepo()->getNewest($options['count']);
 		$total = $this->getDownloadsRepo()->countPublished();
@@ -124,7 +124,7 @@ class DownloadsController extends AbstractController
 					'style' => array('small')
 				)
 			);
-		$options = $options_resolver->resolve($request->query->all());
+		$options = $options_resolver->resolve($request->query->get('tag_options'));
 
 		if ($category = $options['parent']) {
 			if (!$category instanceof DownloadCategory) {

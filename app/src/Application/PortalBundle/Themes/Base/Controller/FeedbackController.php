@@ -39,6 +39,7 @@ use Application\PortalBundle\Controller\AbstractController;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FeedbackController extends AbstractController
 {
@@ -72,13 +73,26 @@ class FeedbackController extends AbstractController
 
 	public function listAction(Request $request)
 	{
-		$count = $request->get('count', 5);
+		$options_resolver = new OptionsResolver();
+		$options_resolver
+			->setDefaults(
+				array(
+					'style' => 'small',
+					'count' => 5
+				)
+			)
+			->setAllowedValues(
+				array(
+					'style' => array('small')
+				)
+			);
+		$options = $options_resolver->resolve($request->query->get('tag_options'));
 
-		$feedback  = $this->getFeedbackRepo()->getNewest(false, $count);
+		$feedback  = $this->getFeedbackRepo()->getNewest(false, $options['count']);
 		$total = $this->getFeedbackRepo()->countNotClosedNotHidden();
-		$style = $request->get('style');
+
 		return $this->render(
-			sprintf('Theme:Feedback:list_%s.html.twig', $style),
+			sprintf('Theme:Feedback:list_%s.html.twig', $options['style']),
 			array(
 				'count_feedback' => $total,
 				'feedback'    => $feedback

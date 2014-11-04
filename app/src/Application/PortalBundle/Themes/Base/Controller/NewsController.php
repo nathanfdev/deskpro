@@ -103,7 +103,7 @@ class NewsController extends AbstractController
 					'style' => 'small'
 				)
 			);
-		$options = $options_resolver->resolve($request->query->all());
+		$options = $options_resolver->resolve($request->query->get('tag_options'));
 
 		if ($category = $options['parent']) {
 			if (!$category instanceof NewsCategory) {
@@ -140,14 +140,26 @@ class NewsController extends AbstractController
 
 	public function listAction(Request $request)
 	{
-		$style = $request->get('style');
-		$count = $request->get('count', 5);
+		$options_resolver = new OptionsResolver();
+		$options_resolver
+			->setDefaults(
+				array(
+					'style'  => 'small',
+					'count' => 5
+				)
+			)
+			->setAllowedValues(
+				array(
+					'style' => array('posts', 'small')
+				)
+			);
+		$options = $options_resolver->resolve($request->query->get('tag_options'));
 
-		$news  = $this->getNewsRepo()->getNewest($count);
+		$news  = $this->getNewsRepo()->getNewest($options['count']);
 		$total = $this->getNewsRepo()->countPublished();
 
 		return $this->render(
-			sprintf('Theme:News:list_%s.html.twig', $style),
+			sprintf('Theme:News:list_%s.html.twig', $options['style']),
 			array(
 				'news_count_total' => $total,
 				'news_articles'    => $news

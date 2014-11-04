@@ -104,8 +104,7 @@ class ArticlesController extends AbstractController
 				)
 			)
 		;
-		$options = $options_resolver->resolve($request->query->all());
-
+		$options = $options_resolver->resolve($request->query->get('tag_options'));
 
 		$data = $this->getArticlesRepo()->getDataForTagOptions($options);
 
@@ -139,7 +138,7 @@ class ArticlesController extends AbstractController
 				)
 			)
 		;
-		$options = $options_resolver->resolve($request->query->all());
+		$options = $options_resolver->resolve($request->query->get('tag_options'));
 
 		/** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
 		if ($options['parent']) {
