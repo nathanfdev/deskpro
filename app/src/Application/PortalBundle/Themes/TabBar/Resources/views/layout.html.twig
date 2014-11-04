@@ -1,0 +1,14 @@
+{% extends 'ThemeParent::layout.html.twig' %}
+
+{% block content_layout %}
+	<div class="column-full">
+		{% block page_content %}
+			<section>
+				<div class="column-full">
+					{% block inner_content %}
+					{% endblock inner_content %}
+				</div>
+			</section>
+		{% endblock page_content %}
+	</div>
+{% endblock content_layout %}

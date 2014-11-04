@@ -35,8 +35,10 @@
 namespace Application\PortalBundle\Theme;
 
 use Application\PortalBundle\Themes\Base\BaseTheme;
+use Application\PortalBundle\Themes\Sidebar\SidebarTheme;
 use Application\PortalBundle\Themes\Simple\SimpleTheme;
 use Application\PortalBundle\Themes\Standard\StandardTheme;
+use Application\PortalBundle\Themes\TabBar\TabBarTheme;
 
 /**
  * A reporistory of themes.
@@ -56,7 +58,9 @@ class ThemeRepository
 		$this->themes = array(
 			$base = new BaseTheme(),
 			new StandardTheme($base),
-			new SimpleTheme($base)
+			new SimpleTheme($base),
+			new SidebarTheme($base),
+			new TabBarTheme($base),
 		);
 	}
 
