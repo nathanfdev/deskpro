@@ -22,29 +22,52 @@
         this.esc = null;
         this.criteriaTypeDef = this.dpObTypesDefTicketFilter;
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
-        this.criteriaOptionTypes = [];
-        this.actionOptionTypes = [];
+        this.$scope.criteriaOptionTypes = [];
+        this.$scope.actionOptionTypes = [];
         this.criteriaTypeDef.setVar('object_type', 'escalation');
         this.actionsTypeDef.setVar('object_type', 'escalation');
         this.criteriaTypeDef.setVar('object_type', 'escalation');
         return this.actionsTypeDef.setVar('object_type', 'escalation');
       };
 
+      Admin_TicketEscalations_Ctrl_Edit.prototype.updateCriteriaOptionTypes = function() {
+        var opt, set, _i, _j, _len, _len1, _results;
+        set = this.criteriaTypeDef.getOptionsForTypes();
+        this.$scope.criteriaOptionTypes.length = 0;
+        for (_i = 0, _len = set.length; _i < _len; _i++) {
+          opt = set[_i];
+          this.$scope.criteriaOptionTypes.push(opt);
+        }
+        set = this.actionsTypeDef.getOptionsForTypes();
+        this.$scope.actionOptionTypes.length = 0;
+        _results = [];
+        for (_j = 0, _len1 = set.length; _j < _len1; _j++) {
+          opt = set[_j];
+          _results.push(this.$scope.actionOptionTypes.push(opt));
+        }
+        return _results;
+      };
+
       Admin_TicketEscalations_Ctrl_Edit.prototype.initialLoad = function() {
-        this.criteriaTypeDef.loadDataOptions().then((function(_this) {
-          return function() {
-            return _this.criteriaOptionTypes = _this.criteriaTypeDef.getOptionsForTypes();
-          };
-        })(this));
-        this.actionsTypeDef.loadDataOptions().then((function(_this) {
-          return function() {
-            return _this.actionOptionTypes = _this.actionsTypeDef.getOptionsForTypes();
-          };
-        })(this));
-        return this.escData.loadEditEscalationData(this.$stateParams.id || null).then((function(_this) {
+        var loadData, promise, promise2, promise3, promises;
+        loadData = null;
+        promise = this.escData.loadEditEscalationData(this.$stateParams.id || null).then((function(_this) {
           return function(data) {
-            _this.esc = data.escalation;
-            return _this.form = data.form;
+            return loadData = data;
+          };
+        })(this));
+        promise2 = this.criteriaTypeDef.loadDataOptions();
+        promise3 = this.actionsTypeDef.loadDataOptions();
+        promises = [promise, promise2, promise3];
+        return this.$q.all(promises).then((function(_this) {
+          return function() {
+            return _this.$timeout(function() {
+              _this.updateCriteriaOptionTypes();
+              return _this.$timeout(function() {
+                _this.esc = loadData.escalation;
+                return _this.form = loadData.form;
+              });
+            });
           };
         })(this));
       };

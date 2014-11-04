@@ -14,28 +14,45 @@ define [
 
 			@criteriaTypeDef     = @dpObTypesDefTicketFilter
 			@actionsTypeDef      = @dpObTypesDefTicketActions
-			@criteriaOptionTypes = []
-			@actionOptionTypes   = []
+			@$scope.criteriaOptionTypes = []
+			@$scope.actionOptionTypes   = []
 
+			@criteriaTypeDef.setVar('object_type', 'escalation')
+			@actionsTypeDef.setVar('object_type', 'escalation')
 
+			@criteriaTypeDef.setVar('object_type', 'escalation')
+			@actionsTypeDef.setVar('object_type', 'escalation')
 
-			@criteriaTypeDef.setVar('object_type', 'escalation');
-			@actionsTypeDef.setVar('object_type', 'escalation');
+		updateCriteriaOptionTypes: ->
+			set = @criteriaTypeDef.getOptionsForTypes()
+			@$scope.criteriaOptionTypes.length = 0
+			for opt in set
+				@$scope.criteriaOptionTypes.push(opt)
 
-			@criteriaTypeDef.setVar('object_type', 'escalation');
-			@actionsTypeDef.setVar('object_type', 'escalation');
+			set = @actionsTypeDef.getOptionsForTypes()
+			@$scope.actionOptionTypes.length = 0
+			for opt in set
+				@$scope.actionOptionTypes.push(opt)
 
 		initialLoad: ->
-			@criteriaTypeDef.loadDataOptions().then =>
-				@criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
-			@actionsTypeDef.loadDataOptions().then =>
-				@actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
+			loadData = null
+			promise = @escData.loadEditEscalationData(@$stateParams.id || null).then (data) =>
+				loadData = data
 
-			@escData.loadEditEscalationData(@$stateParams.id || null).then (data) =>
-				@esc  = data.escalation
-				@form = data.form
+			promise2 = @criteriaTypeDef.loadDataOptions()
+			promise3 = @actionsTypeDef.loadDataOptions()
 
+			promises = [promise, promise2, promise3]
 
+			return @$q.all(promises).then(=>
+				@$timeout(=>
+					@updateCriteriaOptionTypes()
+					@$timeout(=>
+						@esc  = loadData.escalation
+						@form = loadData.form
+					)
+				)
+			)
 
 		saveForm: ->
 
