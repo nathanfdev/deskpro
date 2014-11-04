@@ -36,13 +36,13 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Symfony\Component\HttpFoundation\Request;
-use Application\PortalBundle\Controller\AbstractController;=
+use Application\PortalBundle\Controller\AbstractController;
 
 class PortalController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->render('Theme:Portal:index.html.twig');;
+		return $this->render('Theme:Portal:index.html.twig');
 	}
 
 
