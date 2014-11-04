@@ -1,6 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
+	{# this page wants to use its own sidebar. how will we deal with that when there is a sidebar in the layout already? #}
 	<div class="wrapper">
 
 		<div class="column-half-plus">
@@ -35,7 +36,8 @@
 				<div class="column-half omega">
 					<div>
 						<div class="bucket">
-							<p class="form-meta">Already registered? <a href="{{ path('portal_user_profile') }}">Log In</a>.</p>
+							<p class="form-meta">Already registered? <a href="{{ path('portal_user_profile') }}">Log
+									In</a>.</p>
 							<label class="title">Your email address *</label>
 							<input type="text" placeholder="Your email address (required)">
 						</div>

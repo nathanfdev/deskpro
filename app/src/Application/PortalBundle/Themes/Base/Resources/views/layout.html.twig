@@ -18,50 +18,57 @@ to keep the same "header" and "footer" to keep css/js/etc consistent among theme
 #}
 {% block body %}
 
-	<!-- Alerts -->
-	<section>
-		<div class="column-full">
-			{{ alerts() }}
-		</div>
-	</section>
+	{% block alerts %}
+		<section>
+			<div class="column-full">
+				{{ alerts() }}
+			</div>
+		</section>
+	{% endblock alerts %}
 
-	<!-- Top Nav -->
-	<section>
-		<div class="column-full">
-			{{ top_bar() }}
-		</div>
-	</section>
+	{% block top_bar %}
+		<section>
+			<div class="column-full">
+				{{ top_bar() }}
+			</div>
+		</section>
+	{% endblock top_bar %}
 
-	<!-- Search & Ticket -->
-	<section>
-		<div class="column-full">
-			{{ top_search() }}
-		</div>
-	</section>
+	{% block top_search %}
+		<section>
+			<div class="column-full">
+				{{ top_search() }}
+			</div>
+		</section>
+	{% endblock top_search %}
 
-	<!-- Top Tabs -->
-	<section>
-		<div class="column-full">
-			{{ top_tabs() }}
-		</div>
-	</section>
 
-	<div class="wrapper">
-		<div class="column-half-plus">
-			{% block page_content %}
-				<section>
-					<div class="column-full">
-						{% block inner_content %}
-						{% endblock inner_content %}
-					</div>
-				</section>
-			{% endblock page_content %}
-		</div>
+	{% block top_tabs %}
+		<section>
+			<div class="column-full">
+				{{ top_tabs() }}
+			</div>
+		</section>
+	{% endblock top_tabs %}
 
-		<aside class="sidebar">
-			{{ sidebar() }}
-		</aside>
-	</div>
+	{% block content_layout %}
+		<div class="wrapper">
+			<div class="column-half-plus">
+				{% block page_content %}
+					<section>
+						<div class="column-full">
+							{% block inner_content %}
+							{% endblock inner_content %}
+						</div>
+					</section>
+				{% endblock page_content %}
+			</div>
+
+			<aside class="sidebar">
+				{{ sidebar() }}
+			</aside>
+		</div>
+	{% endblock content_layout %}
 
 {% endblock body %}
 

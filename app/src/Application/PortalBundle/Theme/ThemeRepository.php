@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Theme;
 
 use Application\PortalBundle\Themes\Base\BaseTheme;
+use Application\PortalBundle\Themes\Simple\SimpleTheme;
 use Application\PortalBundle\Themes\Standard\StandardTheme;
 
 /**
@@ -54,7 +55,8 @@ class ThemeRepository
 	{
 		$this->themes = array(
 			$base = new BaseTheme(),
-			new StandardTheme($base)
+			new StandardTheme($base),
+			new SimpleTheme($base)
 		);
 	}
 
