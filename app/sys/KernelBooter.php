@@ -38,6 +38,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
+use Application\DeskPRO\PortalBundle\HttpKernel\PortalHttpCache;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -265,6 +266,10 @@ class KernelBooter
 			self::bootstrapEnv();
 			require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
 			$kernel = new PortalKernel($env, $debug);
+			if ('dev' === $env) {
+				require_once DP_ROOT . "/src/Application/PortalBundle/HttpKernel/PortalHttpCache.php";
+				$kernel = new PortalHttpCache($kernel);
+			}
 			$request = Request::createFromGlobals();
 			$response = $kernel->handle($request);
 			$response->send();

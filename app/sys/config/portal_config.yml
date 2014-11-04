@@ -6,7 +6,8 @@ parameters:
     doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
 
 framework:
-    #esi:             ~
+    esi:             ~
+    fragments:       { path: /_proxy }
     #translator:      { fallback: "%locale%" }
     secret:          "%secret%"
     router:
@@ -31,7 +32,7 @@ twig:
     strict_variables: "%kernel.debug%"
 
 sensio_framework_extra:
-    router:   { annotations: true }
+    cache:    { annotations: true }
 
 white_october_pagerfanta:
     exceptions_strategy:
