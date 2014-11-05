@@ -262,7 +262,6 @@ class KernelBooter
 			//
 			// boot and run portal
 			//
-			define('DP_INTERFACE', 'user');
 			self::bootstrapLib($debug);
 			self::bootstrapEnv();
 			require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
