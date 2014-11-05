@@ -1590,8 +1590,13 @@
 	),
 
 	1415204989 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/11/Build1415135540.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1415135540'
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/11/Build1415204989.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1415204989'
+	),
+
+	1415210938 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/11/Build1415210938.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\deskpro/www/app/src/Application/InstallBundle/Upgrade/Build/2014/11/Build1415210938'
 	),
 
 );

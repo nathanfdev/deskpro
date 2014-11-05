@@ -317,42 +317,201 @@ class Article extends ContentAbstract implements HighlightableModelInterface
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Article';
-		$metadata->setPrimaryTable(array(
-			'name' => 'articles',
-			'indexes' => array(
-				'date_published_idx'    => array('columns' => array('date_published')),
-				'date_updated_idx'      => array('columns' => array('date_updated')),
-				'date_last_comment_idx' => array('columns' => array('date_last_comment')),
-				'status_idx'            => array('columns' => array('status')),
-			),
-		));
+		$metadata->setPrimaryTable(
+			array(
+				'name'    => 'articles',
+				'indexes' => array(
+					'date_published_idx'    => array('columns' => array('date_published')),
+					'date_updated_idx'      => array('columns' => array('date_updated')),
+					'date_last_comment_idx' => array('columns' => array('date_last_comment')),
+					'status_idx'            => array('columns' => array('status')),
+				),
+			)
+		);
 		$metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'date_end', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_end', ));
-		$metadata->mapField(array( 'fieldName' => 'end_action', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'end_action', ));
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content', ));
-		$metadata->mapField(array( 'fieldName' => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'view_count', ));
-		$metadata->mapField(array( 'fieldName' => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_rating', ));
-		$metadata->mapField(array( 'fieldName' => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_comments', ));
-		$metadata->mapField(array( 'fieldName' => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_ratings', ));
-		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_published', ));
-		$metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_updated', ));
-		$metadata->mapField(array( 'fieldName' => 'date_last_comment', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_last_comment', ));
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'date_end', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true,
+				'columnName' => 'date_end',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'end_action', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'end_action',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+				'columnName' => 'id', 'id' => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'slug',
+				'unique'    => true
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'title',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+				'columnName' => 'content',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+				'columnName' => 'view_count',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
+				'nullable'   => false, 'columnName' => 'total_rating',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
+				'nullable'   => false, 'columnName' => 'num_comments',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+				'columnName' => 'num_ratings',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'status',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'hidden_status',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'date_created',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'date_published',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+				'nullable'   => true, 'columnName' => 'date_updated',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'date_last_comment', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'date_last_comment',
+			)
+		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToMany(array( 'fieldName' => 'categories', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'article_to_categories', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'products', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'joinTable' => array( 'name' => 'article_to_product', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'product_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleRevision', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'article',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'article',  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataArticle', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'article', 'orphanRemoval' => true, 'dpApi' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelArticle', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'article', 'orphanRemoval' => true, ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+		$metadata->mapManyToMany(
+			array(
+				'fieldName' => 'categories', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
+				'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'joinTable' => array(
+				'name'                  => 'article_to_categories', 'schema' => null, 'joinColumns' => array(
+					0 => array(
+						'name'     => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true,
+						'onDelete' => 'cascade', 'columnDefinition' => null,
+					),
+				), 'inverseJoinColumns' => array(
+					0 => array(
+						'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
+						'onDelete' => 'cascade', 'columnDefinition' => null,
+					),
+				),
+			), 'dpApi'      => true
+			)
+		);
+		$metadata->mapManyToMany(
+			array(
+				'fieldName' => 'products', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
+				'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'joinTable' => array(
+				'name'                  => 'article_to_product', 'schema' => null, 'joinColumns' => array(
+					0 => array(
+						'name'     => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true,
+						'onDelete' => 'cascade', 'columnDefinition' => null,
+					),
+				), 'inverseJoinColumns' => array(
+					0 => array(
+						'name'     => 'product_id', 'referencedColumnName' => 'id', 'nullable' => true,
+						'onDelete' => 'cascade', 'columnDefinition' => null,
+					),
+				),
+			), 'dpApi'      => true
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleRevision',
+				'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'article',
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleAttachment',
+				'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'article',
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				'fieldName'     => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
+				'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'article',
+				'orphanRemoval' => true, 'dpApi' => true
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelArticle',
+				'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'article',
+				'orphanRemoval' => true,
+			)
+		);
+		$metadata->mapManyToOne(
+			array(
+				'fieldName'  => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
+				'inversedBy' => null, 'joinColumns' => array(
+				0 => array(
+					'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
+					'onDelete'         => 'set null', 'columnDefinition' => null,
+				),
+			), 'dpApi'       => true
+			)
+		);
+		$metadata->mapManyToOne(
+			array(
+				'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+				'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
+				0 => array(
+					'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
+					'onDelete' => 'cascade', 'columnDefinition' => null,
+				),
+			), 'dpApi'      => true
+			)
+		);
 
 		ObjectTranslatable::loadEntityMetadata($metadata);
 	}

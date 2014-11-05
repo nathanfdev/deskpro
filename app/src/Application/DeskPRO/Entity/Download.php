@@ -377,39 +377,174 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Download';
-		$metadata->setPrimaryTable(array(
-			'name' => 'downloads',
-			'indexes' => array(
-				'date_published_idx' => array( 'columns' => array( 0 => 'date_published', )),
-				'status_idx' => array('columns' => array('status')),
+		$metadata->setPrimaryTable(
+			array(
+				'name'    => 'downloads',
+				'indexes' => array(
+					'date_published_idx' => array('columns' => array(0 => 'date_published',)),
+					'status_idx'         => array('columns' => array('status')),
+				)
 			)
-		));
+		);
 		$metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'num_downloads', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_downloads', ));
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'fileurl', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'fileurl', ));
-		$metadata->mapField(array( 'fieldName' => 'filename', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'filename', ));
-		$metadata->mapField(array( 'fieldName' => 'filesize', 'type' => 'integer', 'nullable' => true, 'columnName' => 'filesize', ));
-		$metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content', ));
-		$metadata->mapField(array( 'fieldName' => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'view_count', ));
-		$metadata->mapField(array( 'fieldName' => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_rating', ));
-		$metadata->mapField(array( 'fieldName' => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_comments', ));
-		$metadata->mapField(array( 'fieldName' => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_ratings', ));
-		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated', ));
-		$metadata->mapField(array( 'fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_published', ));
+		$metadata->mapField(
+			array(
+				'fieldName' => 'num_downloads', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'num_downloads',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+				'columnName' => 'id', 'id' => true,
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'slug', 'unique' => true
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'title',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'fileurl', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'fileurl',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'filename', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'filename',
+			)
+		);
+		$metadata->mapField(
+			array('fieldName' => 'filesize', 'type' => 'integer', 'nullable' => true, 'columnName' => 'filesize',)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+				'columnName' => 'content',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+				'columnName' => 'view_count',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
+				'nullable'   => false, 'columnName' => 'total_rating',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
+				'nullable'   => false, 'columnName' => 'num_comments',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+				'columnName' => 'num_ratings',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'status',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'hidden_status',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'date_created',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'date_updated',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+				'nullable'  => true, 'columnName' => 'date_published',
+			)
+		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadRevision', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'download',  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => NULL, 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelDownload', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'download', 'orphanRemoval' => true, ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+		$metadata->mapManyToOne(
+			array(
+				'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
+				'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
+				0 => array(
+					'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
+					'onDelete' => 'set null', 'columnDefinition' => null,
+				),
+			), 'dpApi'      => true
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadRevision',
+				'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'download',
+			)
+		);
+		$metadata->mapManyToOne(
+			array(
+				'fieldName'  => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => null,
+				'inversedBy' => null, 'joinColumns' => array(
+				0 => array(
+					'name'             => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true,
+					'onDelete'         => null, 'columnDefinition' => null,
+				),
+			),
+			)
+		);
+		$metadata->mapOneToMany(
+			array(
+				'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelDownload',
+				'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'download',
+				'orphanRemoval' => true,
+			)
+		);
+		$metadata->mapManyToOne(
+			array(
+				'fieldName'  => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
+				'inversedBy' => null, 'joinColumns' => array(
+				0 => array(
+					'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
+					'onDelete'         => 'set null', 'columnDefinition' => null,
+				),
+			), 'dpApi'       => true
+			)
+		);
+		$metadata->mapManyToOne(
+			array(
+				'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+				'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
+				0 => array(
+					'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
+					'onDelete' => 'cascade', 'columnDefinition' => null,
+				),
+			), 'dpApi'      => true
+			)
+		);
 
 		$metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
 	}
