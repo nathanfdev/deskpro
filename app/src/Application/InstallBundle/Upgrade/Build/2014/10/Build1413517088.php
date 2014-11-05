@@ -40,8 +40,7 @@ class Build1413517088 extends AbstractBuild
 	{
 		$this->out("Update settings");
 		$this->execMutateSql("ALTER TABLE settings DROP PRIMARY KEY");
-		$this->execMutateSql("ALTER TABLE settings ADD id INT AUTO_INCREMENT NOT NULL");
-		$this->execMutateSql("ALTER TABLE settings ADD PRIMARY KEY (id)");
+		$this->execMutateSql("ALTER TABLE settings ADD id INT PRIMARY KEY AUTO_INCREMENT NOT NULL");
 		$this->execMutateSql("CREATE UNIQUE INDEX unique_settings_per_brand ON settings (name, brand_id)");
 	}
 }

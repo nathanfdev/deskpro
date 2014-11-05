@@ -38,7 +38,7 @@ class Build1412762418 extends AbstractBuild
 {
 	public function run()
 	{
-		if (!defined('DPC_IS_CLOUD') && $this->container->getSetting('elastica.enabled')) {
+		if (!defined('DPC_IS_CLOUD')) {
 			$this->out("Setting ElasticSearch reindex flag");
 			$this->container->getDb()->replace('settings', array(
 					'name'  => 'elastica.requires_reset',

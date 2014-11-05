@@ -40,5 +40,6 @@ class Build1414032169 extends AbstractBuild
 	{
 		$this->out("Brands are themeable");
 		$this->execMutateSql("ALTER TABLE brands ADD theme_id VARCHAR(256) DEFAULT NULL");
+		$this->execMutateSql("UPDATE brands SET theme_id = 'standard'");
 	}
 }
