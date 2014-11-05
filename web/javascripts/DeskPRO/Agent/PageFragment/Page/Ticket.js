@@ -1616,17 +1616,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					ev.stopPropagation();
 					article.addClass('clipped-show');
 				});
-
-				// Images might change the visible height once loaded
-				article.find('img').on('load', function() {
-					self._initTicketMessageClipped(article);
-				});
 			}
 		} else {
 			if (article.hasClass('with-clipped-body')) {
 				article.removeClass('with-clipped-body')
 			}
 		}
+
+		// Images might change the visible height once loaded
+		article.find('img').on('load', function() {
+			self._initTicketMessageClipped(article);
+		});
 	},
 
 	incCount: function(id) {
