@@ -27,7 +27,10 @@
           return function(res) {
             _this.source = res.data.source;
             _this.source_raw = res.data.source_raw;
-            return _this.log = res.data.source_log;
+            _this.source_log = res.data.source_log;
+            _this.source_info = res.data.source_info;
+            _this.ticket = res.data.ticket;
+            return _this.ticket_message = res.data.ticket_message;
           };
         })(this));
       };
