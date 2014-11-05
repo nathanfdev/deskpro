@@ -59,6 +59,11 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	protected $title;
 
 	/**
+	 * @var string
+	 */
+	protected $slug;
+
+	/**
 	 * @var int
 	 */
 	protected $display_order = 0;
@@ -139,6 +144,28 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	public function getRealTitle()
 	{
 		return $this->title;
+	}
+
+
+	public function updateSlug()
+	{
+		$this->slug = Strings::slugifyTitle($this->title);
+		$this->setModelField('slug', $this->slug);
+	}
+
+
+	public function setTitle($title)
+	{
+		$this->title = $title;
+		$this->setModelField('title', $title);
+
+		$this->updateSlug();
+	}
+
+
+	public function getUrlSlug()
+	{
+		return $this->id . '-' . Strings::slugifyTitle($this->title);
 	}
 
 
@@ -243,11 +270,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		}
 
 		return $this->parent;
-	}
-
-	public function getUrlSlug()
-	{
-		return $this->id . '-' . Strings::slugifyTitle($this->title);
 	}
 
 

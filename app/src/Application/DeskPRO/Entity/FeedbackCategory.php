@@ -1,34 +1,34 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at https://www.deskpro.com/eula/                            |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO
  *
- * @package DeskPRO
+ * @package  DeskPRO
  * @category Entities
  */
 
@@ -44,7 +44,6 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
  * Feedback categories
- *
  */
 class FeedbackCategory extends CategoryAbstract implements HasValidationMetadataInterface
 {
@@ -62,10 +61,12 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
 
 	protected $usergroups;
 
+
 	public function __construct()
 	{
 		$this->usergroups = new ArrayCollection();
 	}
+
 
 	/**
 	 * @return FeedbackCategory
@@ -74,8 +75,10 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
 	public static function createFeedbackCategory()
 	{
 		$category = new self();
+
 		return $category;
 	}
+
 
 	/**
 	 * @return \Doctrine\Common\Collections\ArrayCollection
@@ -85,6 +88,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
 	{
 		return $this->usergroups;
 	}
+
 
 	/**
 	 * @param \Application\DeskPRO\Entity\Usergroup $usergroup
@@ -97,6 +101,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
 			$this->usergroups->add($usergroup);
 		}
 	}
+
 
 	/**
 	 * @param \Application\DeskPRO\Entity\Usergroup $usergroup
@@ -128,105 +133,111 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->mapField(
 			array(
-				 'fieldName'  => 'id',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'id',
-				 'id'         => true,
+				'fieldName'  => 'id',
+				'type'       => 'integer',
+				'precision'  => 0,
+				'scale'      => 0,
+				'nullable'   => false,
+				'columnName' => 'id',
+				'id'         => true,
 			)
 		);
 		$metadata->mapField(
 			array(
-				 'fieldName'  => 'title',
-				 'type'       => 'string',
-				 'length'     => 255,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'title',
+				'fieldName'  => 'title',
+				'type'       => 'string',
+				'length'     => 255,
+				'precision'  => 0,
+				'scale'      => 0,
+				'nullable'   => false,
+				'columnName' => 'title',
 			)
 		);
 		$metadata->mapField(
 			array(
-				 'fieldName'  => 'display_order',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'display_order',
+				'fieldName' => 'slug', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+				'nullable'  => false, 'columnName' => 'slug', 'unique' => true
 			)
 		);
 		$metadata->mapField(
 			array(
-				 'fieldName'  => 'depth',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'depth',
+				'fieldName'  => 'display_order',
+				'type'       => 'integer',
+				'precision'  => 0,
+				'scale'      => 0,
+				'nullable'   => false,
+				'columnName' => 'display_order',
 			)
 		);
 		$metadata->mapField(
 			array(
-				 'fieldName'  => 'root',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => true,
-				 'columnName' => 'root',
+				'fieldName'  => 'depth',
+				'type'       => 'integer',
+				'precision'  => 0,
+				'scale'      => 0,
+				'nullable'   => false,
+				'columnName' => 'depth',
+			)
+		);
+		$metadata->mapField(
+			array(
+				'fieldName'  => 'root',
+				'type'       => 'integer',
+				'precision'  => 0,
+				'scale'      => 0,
+				'nullable'   => true,
+				'columnName' => 'root',
 			)
 		);
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 		$metadata->mapManyToOne(
 			array(
-				 'fieldName'    => 'parent',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
-				 'mappedBy'     => null,
-				 'inversedBy'   => 'children',
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'parent_id',
-						 'referencedColumnName' => 'id',
-						 'onDelete'             => 'set null'
-					 ),
-				 ),
+				'fieldName'    => 'parent',
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+				'mappedBy'     => null,
+				'inversedBy'   => 'children',
+				'joinColumns'  => array(
+					0 => array(
+						'name'                 => 'parent_id',
+						'referencedColumnName' => 'id',
+						'onDelete'             => 'set null'
+					),
+				),
 			)
 		);
 		$metadata->mapOneToMany(
 			array(
-				 'fieldName'    => 'children',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
-				 'mappedBy'     => 'parent',
-				 'orderBy'      => array('display_order' => 'ASC',),
+				'fieldName'    => 'children',
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+				'mappedBy'     => 'parent',
+				'orderBy'      => array('display_order' => 'ASC',),
 			)
 		);
 		$metadata->mapManyToMany(
 			array(
-				 'fieldName'    => 'usergroups',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-				 'cascade'      => array('persist', 'merge', 'remove'),
-				 'joinTable'    => array(
-					 'name'               => 'feedback_category2usergroup',
-					 'schema'             => null,
-					 'joinColumns'        => array(
-						 0 => array(
-							 'name'                 => 'category_id',
-							 'referencedColumnName' => 'id',
-							 'nullable'             => true,
-							 'columnDefinition'     => null,
-						 ),
-					 ),
-					 'inverseJoinColumns' => array(
-						 0 => array(
-							 'name'                 => 'usergroup_id',
-							 'referencedColumnName' => 'id',
-							 'nullable'             => true,
-							 'columnDefinition'     => null,
-						 ),
-					 ),
-				 ),
+				'fieldName'    => 'usergroups',
+				'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+				'cascade'      => array('persist', 'merge', 'remove'),
+				'joinTable'    => array(
+					'name'               => 'feedback_category2usergroup',
+					'schema'             => null,
+					'joinColumns'        => array(
+						0 => array(
+							'name'                 => 'category_id',
+							'referencedColumnName' => 'id',
+							'nullable'             => true,
+							'columnDefinition'     => null,
+						),
+					),
+					'inverseJoinColumns' => array(
+						0 => array(
+							'name'                 => 'usergroup_id',
+							'referencedColumnName' => 'id',
+							'nullable'             => true,
+							'columnDefinition'     => null,
+						),
+					),
+				),
 			)
 		);
 	}
