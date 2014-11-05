@@ -5,7 +5,7 @@
 		{% for item in feedback %}
 		<li>
 			<span class="thumbs"><i class="fa fa-thumbs-up"></i> {{ item.popularity }}</span>
-			<a href="{{ path('portal_feedback_view', { slug: item.urlSlug }) }}">{{ item.title }}</a>
+			<a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
 		</li>
 		{% endfor %}
 	</ul>

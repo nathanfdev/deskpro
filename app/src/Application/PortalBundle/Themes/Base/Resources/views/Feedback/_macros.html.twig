@@ -12,7 +12,7 @@
 
 			{% if feedback %}
 				<li>
-					<a href="{{ path('portal_feedback_view', { slug:feedback.urlSlug }) }}">{{ feedback.title }}</a>
+					<a href="{{ path('portal_feedback_view', { slug:feedback.slug }) }}">{{ feedback.title }}</a>
 				</li>
 			{% endif %}
 		</ul>

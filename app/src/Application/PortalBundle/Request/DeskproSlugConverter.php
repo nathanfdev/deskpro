@@ -40,6 +40,7 @@ use Application\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Used to keep legacy slug urls working (1-slug-here) and forward them to the new (slug-here)
@@ -89,6 +90,8 @@ class DeskproSlugConverter implements ParamConverterInterface
 				)
 			);
 		}
+
+		throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $param_class, $slug_attribute_name, $slug_route_param));
 	}
 
 	public function supports(ParamConverter $configuration)

@@ -28,7 +28,7 @@
 
 			{% if download %}
 				<li>
-					<a href="{{ path('portal_downloads_view', { slug:download.urlSlug }) }}">{{ download.realTitle }}</a>
+					<a href="{{ path('portal_downloads_view', { slug:download.slug }) }}">{{ download.realTitle }}</a>
 				</li>
 			{% endif %}
 		</ul>

@@ -31,7 +31,7 @@
 
 			{% if article %}
 			<li>
-				<a href="{{ path('portal_kb_view', { slug:article.urlSlug }) }}">{{ article.realTitle }}</a>
+				<a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a>
 			</li>
 			{% endif %}
 		</ul>

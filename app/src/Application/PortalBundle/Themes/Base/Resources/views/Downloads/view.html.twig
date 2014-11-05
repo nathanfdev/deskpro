@@ -8,5 +8,5 @@
 		size: {{ download.readableFileSize }}
 	</p>
 	<p>{{ download.contentDesc }}</p>
-	<p><a href="{{ path('portal_downloads_download', { slug:download.urlSlug }) }}">Click here to download...</a></p>
+	<p><a href="{{ path('portal_downloads_download', { slug:download.slug }) }}">Click here to download...</a></p>
 {% endblock inner_content %}

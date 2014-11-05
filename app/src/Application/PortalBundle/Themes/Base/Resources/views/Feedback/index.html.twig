@@ -6,7 +6,7 @@
 	<ul>
 		{% for feedback in pager.currentPageResults %}
 			<li>
-				<a href="{{ path('portal_feedback_view', { slug: feedback.urlSlug }) }}">
+				<a href="{{ path('portal_feedback_view', { slug: feedback.slug }) }}">
 					{{ feedback.realTitle }}
 				</a>
 			</li>

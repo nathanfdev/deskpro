@@ -10,7 +10,7 @@
 				{# this is the default if we cant decide what the fie extension is #}
 				<span class="text-tag file-tag">&nbsp;</span>
 			{% endif %}
-			<a href="{{ path('portal_downloads_view', { slug:dl.urlSlug } ) }}">{{ dl.title }}</a>
+			<a href="{{ path('portal_downloads_view', { slug:dl.slug } ) }}">{{ dl.title }}</a>
 		</li>
 		{% endfor %}
 	</ul>

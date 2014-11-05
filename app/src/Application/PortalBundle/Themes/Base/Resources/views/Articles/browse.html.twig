@@ -12,7 +12,7 @@
 	<ul>
 		{% for article in pager.currentPageResults %}
 			<li>
-				<a href="{{ path('portal_kb_view', { slug: article.urlSlug }) }}">
+				<a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
 					{{ article.realTitle }}
 				</a>
 			</li>

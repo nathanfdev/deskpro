@@ -14,7 +14,7 @@
 	<ul>
 		{% for download in cat.downloads %}
 			<li>
-				<a href="{{ path('portal_downloads_view', { slug: download.urlSlug }) }}">
+				<a href="{{ path('portal_downloads_view', { slug: download.slug }) }}">
 					{{ download.realTitle }}
 				</a>
 			</li>

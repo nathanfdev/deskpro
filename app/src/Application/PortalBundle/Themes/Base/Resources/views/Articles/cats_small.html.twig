@@ -1,5 +1,10 @@
 <ul>
 	{% for cat in cats %}
-		<li><img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ cat.title }} - [{{ cat.articles|length }}]</li>
+		<li>
+			<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
+			<a href="{{ path('portal_kb_browse', { slug:cat.slug }) }}">
+				{{ cat.title }} - [{{ cat.articles|length }}]
+			</a>
+		</li>
 	{% endfor %}
 </ul>
