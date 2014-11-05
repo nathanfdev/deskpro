@@ -35,11 +35,12 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
-use Application\DeskPRO\EntityRepository\DownloadCategory;
+use Application\DeskPRO\Entity\DownloadCategory;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class DownloadsController extends AbstractController
 {
@@ -48,12 +49,11 @@ class DownloadsController extends AbstractController
 		return $this->render('Theme:Downloads:index.html.twig');
 	}
 
-
-	public function browseAction($slug)
+	/**
+	 * @ParamConverter(name="category", converter="deskpro_slug")
+	 */
+	public function browseAction(DownloadCategory $category)
 	{
-		$id = substr($slug, 0, strpos($slug, '-'));
-		$category = $this->getDownloadCategoriesRepo()->find($id);
-
 		return $this->render('Theme:Downloads:browse.html.twig', array(
 				'cat' => $category
 			)

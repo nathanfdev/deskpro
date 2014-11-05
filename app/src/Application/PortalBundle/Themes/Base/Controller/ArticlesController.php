@@ -36,12 +36,14 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
 use Application\PortalBundle\Controller\AbstractController;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class ArticlesController extends AbstractController
 {
@@ -51,12 +53,11 @@ class ArticlesController extends AbstractController
 	}
 
 
-	public function browseAction($slug, Request $request)
+	/**
+	 * @ParamConverter(name="category", converter="deskpro_slug")
+	 */
+	public function browseAction(ArticleCategory $category, Request $request)
 	{
-		/** @var \Application\DeskPRO\Entity\ArticleCategory $category */
-		$id = substr($slug, 0, strpos($slug, '-'));
-		$category = $this->getDoctrine()->getManager()->getRepository('DeskPRO:ArticleCategory')->find($id);
-
 		// TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
 		$pager = new Pagerfanta(new DoctrineCollectionAdapter($category->articles));
 		$pager->setMaxPerPage(5); // TODO: should come from a brand setting

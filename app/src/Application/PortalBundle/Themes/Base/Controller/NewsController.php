@@ -43,6 +43,7 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class NewsController extends AbstractController
 {
@@ -62,11 +63,11 @@ class NewsController extends AbstractController
 	}
 
 
-	public function browseAction($slug, Request $request)
+	/**
+	 * @ParamConverter(name="category", converter="deskpro_slug")
+	 */
+	public function browseAction(NewsCategory $category, Request $request)
 	{
-		$id       = substr($slug, 0, strpos($slug, '-'));
-		$category = $this->getNewsCategoriesRepo()->find($id);
-
 		if (!$category) {
 			throw $this->createNotFoundException('news category "' . $slug . '" not found');
 		}
@@ -83,6 +84,21 @@ class NewsController extends AbstractController
 				'cat'           => $category,
 				'pager'         => $pager,
 				'news_articles' => $pager->getCurrentPageResults()
+			)
+		);
+	}
+
+
+	public function viewAction($slug)
+	{
+		$id   = substr($slug, 0, strpos($slug, '-'));
+		$news = $this->getNewsRepo()->find($id);
+
+		return $this->render(
+			'Theme:News:view.html.twig',
+			array(
+				'cat'     => $news->category,
+				'article' => $news
 			)
 		);
 	}
@@ -119,20 +135,6 @@ class NewsController extends AbstractController
 			array(
 				'cat'        => $category,
 				'child_cats' => $categories
-			)
-		);
-	}
-
-
-	public function viewAction($slug)
-	{
-		$id       = substr($slug, 0, strpos($slug, '-'));
-		$news = $this->getNewsRepo()->find($id);
-
-		return $this->render('Theme:News:view.html.twig',
-			array(
-				'cat' => $news->category,
-				'article' => $news
 			)
 		);
 	}
