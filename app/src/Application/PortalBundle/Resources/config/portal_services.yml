@@ -89,6 +89,12 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  redirect_exception.listener:
+    class: Application\PortalBundle\EventListener\RedirectExceptionListener
+    arguments: [@router]
+    tags:
+      - { name: kernel.event_subscriber }
+
   controller_name_converter:
       class: Application\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]
