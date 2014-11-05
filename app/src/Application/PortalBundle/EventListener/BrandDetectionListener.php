@@ -38,6 +38,7 @@ use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -68,14 +69,19 @@ class BrandDetectionListener implements EventSubscriberInterface
 	 * @var \Application\DeskPRO\Entity\Brand
 	 */
 	private $default_brand;
+	/**
+	 * @var \Psr\Log\LoggerInterface
+	 */
+	private $logger;
 
 
-	public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand)
+	public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand, LoggerInterface $logger)
 	{
 		$this->brand_stack = $brand_stack;
 		$this->settings_resolver = $settings_resolver;
 		$this->brand_repository = $brand_repository;
 		$this->default_brand = $default_brand;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -106,10 +112,13 @@ class BrandDetectionListener implements EventSubscriberInterface
 		$request = $event->getRequest();
 
 		if (!$brand = $this->detectBrandInRequest($request)) {
+			$this->logger->info('Brand Detector: can\'t determine brand from request. falling back on default brand');
 			$brand = $this->getDefaultBrand();
 		}
 
 		$this->brand_stack->push($brand);
+
+		$this->logger->info('Brand Detector: initialized brand stack with brand id='.$brand->getId());
 	}
 
 	public static function getSubscribedEvents()

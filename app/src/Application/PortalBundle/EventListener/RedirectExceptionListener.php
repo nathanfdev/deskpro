@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\EventListener;
 
 use Application\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,11 +54,16 @@ class RedirectExceptionListener implements EventSubscriberInterface
 	 * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
 	 */
 	private $url_generator;
+	/**
+	 * @var \Psr\Log\LoggerInterface
+	 */
+	private $logger;
 
 
-	public function __construct(UrlGeneratorInterface $url_generator)
+	public function __construct(UrlGeneratorInterface $url_generator, LoggerInterface $logger)
 	{
 		$this->url_generator = $url_generator;
+		$this->logger = $logger;
 	}
 
 
@@ -75,6 +81,8 @@ class RedirectExceptionListener implements EventSubscriberInterface
 			$e->getRouteParams(),
 			$e->getUrlType()
 		);
+
+		$this->logger->info('PermanentRedirectException caught: 301 redirecting to "'.$url.'"');
 
 		$event->setResponse(new RedirectResponse($url, Response::HTTP_MOVED_PERMANENTLY));
 		$event->stopPropagation();

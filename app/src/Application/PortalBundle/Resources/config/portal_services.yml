@@ -85,13 +85,13 @@ services:
 
   brand_detector.listener:
     class: Application\PortalBundle\EventListener\BrandDetectionListener
-    arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand]
+    arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand, @logger]
     tags:
       - { name: kernel.event_subscriber }
 
   redirect_exception.listener:
     class: Application\PortalBundle\EventListener\RedirectExceptionListener
-    arguments: [@router]
+    arguments: [@router, @logger]
     tags:
       - { name: kernel.event_subscriber }
 
