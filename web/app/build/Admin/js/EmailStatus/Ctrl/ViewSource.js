@@ -25,20 +25,9 @@
       Admin_EmailStatus_Ctrl_ViewSource.prototype.initialLoad = function() {
         return this.Api.sendGet("/email_status/sources/" + this.sourceId + "?with_raw=1").then((function(_this) {
           return function(res) {
-            var k, v, _ref, _results;
-            _ref = res.data;
-            _results = [];
-            for (k in _ref) {
-              if (!__hasProp.call(_ref, k)) continue;
-              v = _ref[k];
-              if ('date_status' === k || 'date_created' === k) {
-                v = _this.DpDateService.local(v);
-                _results.push(_this[k] = v);
-              } else {
-                _results.push(void 0);
-              }
-            }
-            return _results;
+            _this.source = res.data.source;
+            _this.source_raw = res.data.source_raw;
+            return _this.log = res.data.source_log;
           };
         })(this));
       };
