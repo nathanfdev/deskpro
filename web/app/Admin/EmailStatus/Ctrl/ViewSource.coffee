@@ -11,10 +11,12 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
 		initialLoad: ->
 			@Api.sendGet("/email_status/sources/#{@sourceId}?with_raw=1").then( (res) =>
-        for own k,v of res.data
-	        if 'date_status' == k || 'date_created' == k
-		        v = @DpDateService.local v
-          @[k] = v
+				@source         = res.data.source
+				@source_raw     = res.data.source_raw
+				@source_log     = res.data.source_log
+				@source_info    = res.data.source_info
+				@ticket         = res.data.ticket
+				@ticket_message = res.data.ticket_message
 			)
 
 		delete: ->

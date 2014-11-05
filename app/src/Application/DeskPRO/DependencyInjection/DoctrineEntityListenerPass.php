@@ -16,6 +16,10 @@ class DoctrineEntityListenerPass implements CompilerPassInterface
 	 */
 	public function process(ContainerBuilder $container)
 	{
+		if (!$container->has('dp.doctrine.entity_listener_resolver')) {
+			return;
+		}
+
 		$ems = $container->getParameter('doctrine.entity_managers');
 		foreach ($ems as $name => $em) {
 			$container->getDefinition(sprintf('doctrine.orm.%s_configuration', $name))

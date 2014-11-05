@@ -142,6 +142,8 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			var permissionCallback = function(didChange) {
 				var perm;
 
+				Notify.needsPermission = !(Notify.isSupported && Notification.permission === 'granted');
+
 				if (didChange) {
 					perm = didChange;
 				} else {
@@ -178,7 +180,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 			enableButton.click(function(e) {
 				e.preventDefault();
-				notification.requestPermission(
+				Notify.requestPermission(
 					function() { permissionCallback('granted') },
 					function() { permissionCallback('denied') }
 				);
@@ -191,11 +193,6 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 					return;
 				}
 
-				notification.ondisplay = function() {
-					setTimeout(function() {
-						notification.cancel();
-					}, 60 * 1000);
-				};
 				notification.show();
 			});
 		}

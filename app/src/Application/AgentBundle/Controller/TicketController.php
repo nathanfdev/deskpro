@@ -3569,6 +3569,32 @@ class TicketController extends AbstractController
 				$this->em->flush();
 
 				#------------------------------
+				# Billing/time
+				#------------------------------
+
+				if ($this->settings->get('core_tickets.enable_billing') || $this->settings->get('core_tickets.enable_timelog')) {
+					if ($this->in->getString('billing_type') == 'amount') {
+						$amount = $this->in->getFloat('amount');
+						$time = null;
+					} else {
+						$amount = null;
+						$time = (
+							3600 * $this->in->getUint('hours')
+							+ 60 * $this->in->getUint('minutes')
+							+ $this->in->getUint('seconds')
+						);
+					}
+
+					if ($amount || $time) {
+						$charge = $ticket->addCharge($this->person, $time, $amount, $this->in->getString('billing_comment'));
+						if ($charge) {
+							$this->em->persist($ticket);
+							$this->em->flush();
+						}
+					}
+				}
+
+				#------------------------------
 				# Add CC's
 				#------------------------------
 

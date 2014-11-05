@@ -141,6 +141,10 @@ class LabelManager
 			$type_name = 'people';
 		}
 
+		if ($type_name == 'feedbacks') {
+			$type_name = 'feedback';
+		}
+
 		/** @var LabelDef $rep */
 		$rep = $this->em->getRepository('DeskPRO:LabelDef');
 		if ('chat_conversations' === $type_name) {

@@ -146,14 +146,20 @@ class ClientFactory
 	{
 		$config = new OptionsArray($config);
 
-		$client = new Client(array(
+		$client_options = array(
 			'host'      => $config->get('host', 'localhost'),
 			'port'      => $config->get('port', 9200),
 			'path'      => $config->get('path', null),
 			'transport' => $config->get('transport', null),
 			'headers'   => $config->get('headers', array()),
 			'log'       => $config->get('log', null)
-		));
+		);
+
+		if ($config->get('transport') == 'Https') {
+			$client_options['curl'] = array(CURLOPT_SSL_VERIFYPEER => false);
+		}
+
+		$client = new Client($client_options);
 
 		if ($config->get('logger')) {
 			$client->setLogger($config->get('logger'));
