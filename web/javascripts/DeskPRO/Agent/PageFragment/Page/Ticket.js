@@ -1581,7 +1581,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 	},
 
-	_initTicketMessageClipped: function(article) {
+	_initTicketMessageClipped: function(article, isImgUpdate) {
 		var self = this;
 		var h = article.find('div.body-text').height();
 		var doClipping = false;
@@ -1625,9 +1625,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		// Images might change the visible height once loaded
-		article.find('img').on('load', function() {
-			self._initTicketMessageClipped(article);
-		});
+		if (!isImgUpdate) {
+			var throttled = _.throttle(function () { self._initTicketMessageClipped(article, true); }, 1000);
+			article.find('div.body-text').find('img').on('load', function () {
+				throttled();
+			});
+		}
 	},
 
 	incCount: function(id) {
