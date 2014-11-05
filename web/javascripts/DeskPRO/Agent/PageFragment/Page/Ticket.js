@@ -1424,6 +1424,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					ev.preventDefault();
 					fullEl.show();
 					simpleEl.hide();
+					self._initTicketMessageClipped(article);
 					self.updateUi();
 
 					if (!fullEl.hasClass('loaded')) {
@@ -1582,7 +1583,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	_initTicketMessageClipped: function(article) {
 		var self = this;
-		var h = article.find('div.body-text-message').height();
+		var h = article.find('div.body-text').height();
 		var doClipping = false;
 		var allArticles = null, idx;
 		var isFirst = false;
@@ -1619,7 +1620,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		} else {
 			if (article.hasClass('with-clipped-body')) {
-				article.removeClass('with-clipped-body')
+				article.removeClass('with-clipped-body');
 			}
 		}
 
