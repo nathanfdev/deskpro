@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\PortalBundle\Controller\AbstractController;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -88,12 +89,11 @@ class NewsController extends AbstractController
 		);
 	}
 
-
-	public function viewAction($slug)
+	/**
+	 * @ParamConverter(name="news", converter="deskpro_slug")
+	 */
+	public function viewAction(News $news)
 	{
-		$id   = substr($slug, 0, strpos($slug, '-'));
-		$news = $this->getNewsRepo()->find($id);
-
 		return $this->render(
 			'Theme:News:view.html.twig',
 			array(

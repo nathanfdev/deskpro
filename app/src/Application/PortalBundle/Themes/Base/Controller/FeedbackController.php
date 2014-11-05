@@ -35,11 +35,13 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\Entity\Feedback;
 use Application\PortalBundle\Controller\AbstractController;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class FeedbackController extends AbstractController
 {
@@ -59,11 +61,12 @@ class FeedbackController extends AbstractController
 		);
 	}
 
-	public function viewAction($slug)
+
+	/**
+	 * @ParamConverter(name="feedback", converter="deskpro_slug")
+	 */
+	public function viewAction(Feedback $feedback)
 	{
-		/** @var \Application\DeskPRO\Entity\Feedback $feedback */
-		$id       = substr($slug, 0, strpos($slug, '-'));
-		$feedback = $this->getDoctrine()->getManager()->getRepository('DeskPRO:Feedback')->find($id);
 		return $this->render(
 			'Theme:Feedback:view.html.twig', array(
 				'feedback' => $feedback

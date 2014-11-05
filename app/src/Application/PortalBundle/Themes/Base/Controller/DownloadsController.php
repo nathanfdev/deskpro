@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
@@ -61,11 +62,11 @@ class DownloadsController extends AbstractController
 	}
 
 
-	public function viewAction($slug)
+	/**
+	 * @ParamConverter(name="download", converter="deskpro_slug")
+	 */
+	public function viewAction(Download $download)
 	{
-		$id       = substr($slug, 0, strpos($slug, '-'));
-		$download = $this->getDownloadsRepo()->find($id);
-
 		return $this->render('Theme:Downloads:view.html.twig', array(
 				'download' => $download
 			)
@@ -73,7 +74,10 @@ class DownloadsController extends AbstractController
 	}
 
 
-	public function downloadAction($slug)
+	/**
+	 * @ParamConverter(name="download", converter="deskpro_slug")
+	 */
+	public function downloadAction(Download $download)
 	{
 		return new Response('downlading file...');
 	}

@@ -70,10 +70,12 @@ class ArticlesController extends AbstractController
 		);
 	}
 
-
-    function viewAction(Article $slug)
+	/**
+	 * @ParamConverter(name="article", converter="deskpro_slug")
+	 */
+    function viewAction(Article $article)
 	{
-		return $this->render('Theme:Articles:view.html.twig', array('article' => $slug));
+		return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
 	}
 
 
