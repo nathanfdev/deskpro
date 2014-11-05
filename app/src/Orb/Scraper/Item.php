@@ -39,8 +39,11 @@ namespace Orb\Scraper;
  */
 class Item implements \Orb\Scraper\ItemInterface
 {
+	/** @var string */
 	protected $identity;
+	/** @var string */
 	protected $identity_friendly;
+	/** @var array */
 	protected $data;
 
 	public function __construct($identity, $identity_friendly, $data)

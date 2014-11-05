@@ -15,24 +15,22 @@
 
       Admin_EmailStatus_Ctrl_ViewSource.CTRL_AS = 'ViewSource';
 
-      Admin_EmailStatus_Ctrl_ViewSource.DEPS = ['$state', '$modal'];
+      Admin_EmailStatus_Ctrl_ViewSource.DEPS = ['$state', '$modal', 'DpDateService'];
 
       Admin_EmailStatus_Ctrl_ViewSource.prototype.init = function() {
         this.sourceId = parseInt(this.$stateParams.id);
+        this.$scope.ds = this.DpDateService;
       };
 
       Admin_EmailStatus_Ctrl_ViewSource.prototype.initialLoad = function() {
         return this.Api.sendGet("/email_status/sources/" + this.sourceId + "?with_raw=1").then((function(_this) {
           return function(res) {
-            var k, v, _ref, _results;
-            _ref = res.data;
-            _results = [];
-            for (k in _ref) {
-              if (!__hasProp.call(_ref, k)) continue;
-              v = _ref[k];
-              _results.push(_this[k] = v);
-            }
-            return _results;
+            _this.source = res.data.source;
+            _this.source_raw = res.data.source_raw;
+            _this.source_log = res.data.source_log;
+            _this.source_info = res.data.source_info;
+            _this.ticket = res.data.ticket;
+            return _this.ticket_message = res.data.ticket_message;
           };
         })(this));
       };

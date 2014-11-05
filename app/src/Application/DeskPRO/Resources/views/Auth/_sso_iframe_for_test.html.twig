@@ -1,0 +1,11 @@
+{% if render %}
+<script type="text/javascript" id="usersource_auth_test_script_112">
+	var frame = document.createElement("IFRAME");
+	frame.src = "{{ iframe_url|escape('js') }}";
+	frame.height = 500;
+	frame.width = '100%';
+	$(function () {
+		$('#usersource_auth_test_script_112').parent().append(frame);
+	});
+</script>
+{% endif %}

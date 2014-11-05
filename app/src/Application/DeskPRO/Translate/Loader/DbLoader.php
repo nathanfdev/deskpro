@@ -83,6 +83,12 @@ class DbLoader implements LoaderInterface
 			foreach ($groups as $g) {
 				if (empty($this->loaded[$lid][$g])) continue;
 
+				// obj_ translations only apply for specific language
+				// being reuqested (e.g., no english fallthrough)
+				if ($language && $lid != $language->id && substr($g, 0, 4) === 'obj_') {
+					continue;
+				}
+
 				if ($lid != $this->default_lang_id || ($language && $language->getId() == $lid)) {
 					$phrases = array_merge($phrases, $this->loaded[$lid][$g]);
 				} else {

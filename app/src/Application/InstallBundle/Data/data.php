@@ -302,7 +302,7 @@ $em->getConnection()->executeUpdate("
 	VALUES
 		($ugid, NULL, '1', 'agent_tickets.use'),
 		($ugid, NULL, '1', 'agent_tickets.create'),
-		($ugid, NULL, '1', 'agent_tickets.modify_set_closed'),
+		($ugid, NULL, '1', 'agent_tickets.modify_set_archived'),
 		($ugid, NULL, '1', 'agent_tickets.reply_own'),
 		($ugid, NULL, '1', 'agent_tickets.modify_own'),
 		($ugid, NULL, '1', 'agent_tickets.modify_department_own'),

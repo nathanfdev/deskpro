@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Domain;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Translate\HasPhraseName;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Util;
@@ -47,6 +48,7 @@ abstract class DomainObject extends BasicDomainObject
 	const API_MODE_OPT_OUT = 1;
 	const API_MODE_OPT_IN = 2;
 
+	/** @var int */
 	protected $_api_mode = self::API_MODE_OPT_OUT;
 
 	/**
@@ -56,6 +58,9 @@ abstract class DomainObject extends BasicDomainObject
 	 */
 	private $_no_persist = false;
 
+	/**
+	 * @var array
+	 */
 	public $_presave_state = array();
 
 
@@ -218,7 +223,11 @@ abstract class DomainObject extends BasicDomainObject
 				continue;
 			}
 
-			$val = $this[$name];
+			if (method_exists($this, 'getreal'.$name)) {
+				$val = $this->{'getreal'.$name}();
+			} else {
+				$val = $this[$name];
+			}
 
 			if ($val instanceof \DateTime || $field['type'] == 'datetime') {
 				if ($val) {
@@ -232,6 +241,19 @@ abstract class DomainObject extends BasicDomainObject
 				}
 			} else {
 				$values[$name] = $val;
+
+				if ($this instanceof HasPhraseName && ($name == 'title' || $name == 'name') && App::$container->getLanguageData()->isMultiLang()) {
+					$translated = array();
+					foreach (App::$container->getLanguageData()->getAll() as $l) {
+						$p = App::getTranslator()->getPhraseObject($this, $name, $l, false);
+						if ($p && $p != $val) {
+							$translated[] = array('language_id' => $l->id, 'language' => $l->sys_name, $name => $p);
+						}
+					}
+					if ($translated) {
+						$values[$name . '_translated'] = $translated;
+					}
+				}
 			}
 		}
 

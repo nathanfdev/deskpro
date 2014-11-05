@@ -77,10 +77,10 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
 	}
 
 	####################################################################################################################
-	# get-closed-info
+	# get-archived-info
 	####################################################################################################################
 
-	public function getClosedInfoAction()
+	public function getArchivedInfoAction()
 	{
 		$info = array(
 			'enabled'           => (bool)$this->settings->get('core_tickets.use_archive'),
@@ -88,15 +88,15 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
 		);
 
 		return $this->createApiResponse(array(
-			'closed_info' => $info
+			'archived_info' => $info
 		));
 	}
 
 	####################################################################################################################
-	# save-closed-settings
+	# save-archived-settings
 	####################################################################################################################
 
-	public function saveClosedSettingsAction()
+	public function saveArchivedSettingsAction()
 	{
 		$this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
 		$this->settings->setSetting('core_tickets.auto_archive_time', $this->in->getUint('auto_archive_time'));

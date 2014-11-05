@@ -13,7 +13,7 @@
 					<a href="{{ ng_href('apps.api_keys.edit', '{id: api_key.id}') }}">
 						<h4>
 							<span ng-if="api_key.person" class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + api_key.person.picture_url_16 + ')'}" title="{{ ng_var('api_key.person.display_name') }}"></span>
-							<span ng-if="!api_key.person" style="display: inline-block; vertical-align: text-bottom; width: 16px; height: 16px; text-align: center; font-size: 16px;" title="Super User"><span class="fa fa-asterisk"></span></span>
+							<span ng-if="api_key.super" style="display: inline-block; vertical-align: text-bottom; width: 16px; height: 16px; text-align: center; font-size: 16px;" title="Super User"><span class="fa fa-asterisk"></span></span>
 							<span class="title-text">
 								<span ng-if="api_key.note">{{ ng_var('api_key.note') }}</span>
 								<span ng-if="!api_key.note && api_key.person">{{ ng_var('api_key.person.display_name') }}</span>
@@ -31,6 +31,24 @@
 			</div>
 		</article>
 	</section>
+
+	<div class="dp-interface-buttons" style="width: 305px; margin: 10px auto;">
+		<table cellspacing="35" width="100%">
+			<tbody>
+				<tr>
+					<td class="dp-item" width="100%">
+						<article><a href="{{ path('api') }}" target="_blank">
+							<div class="title-wrap"><h3>API Browser</h3></div>
+							<div class="img-wrap"><img src="{{ asset('images/admin/api-screen.png') }}"></div>
+							<strong>
+								Interactive API browser that lists all API endpoints and lets you try them from your browser.
+							</strong>
+						</a></article>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 {% endblock %}
 
 {% block listpane_help %}

@@ -58,8 +58,9 @@
 {% spaceless %}
     <div {{ block('widget_container_attributes') }}>
     {% for child in form %}
-        {{ form_widget(child) }}
-        {{ form_label(child) }}
+	    <label for="{{ child.vars.id }}">
+		    {{ form_widget(child) }} {{ child.vars.label }}
+	    </label>
     {% endfor %}
     </div>
 {% endspaceless %}
@@ -391,3 +392,50 @@
     {% for attrname, attrvalue in attr %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
 {% endspaceless %}
 {% endblock button_attributes %}
+
+
+
+
+{% block dp_category_builder_widget %}
+    {% spaceless %}
+    {% set prefix = form.parent.parent.vars.name ~ '.' ~ form.parent.vars.name %}
+    <dp-category-builder max-depth="0" ng-model="{{ prefix }}.{{ form.vars.name }}"
+            ng-init="
+                {{ prefix }} = {};
+                {{ prefix }}.{{ form.vars.name }} = [];
+                {% for child in form %}
+                    {{ prefix }}.{{ form.vars.name }}[{{ child.vars.name }}] = {};
+                    {% for el in child %}
+                        {{ prefix }}.{{ form.vars.name }}[{{ child.vars.name }}].{{ el.vars.name }} = '{{ el.vars.value }}';
+                    {% endfor %}
+                {% endfor %}
+            "
+        >
+    </dp-category-builder>
+    {% endspaceless %}
+{% endblock dp_category_builder_widget %}
+
+{% block cf_contextual_choice_widget %}
+	{% spaceless %}
+		{{ form_widget(form.children.value) }}
+		{% if form.vars.allow_edit %}
+			<a href="#" onclick="
+					{# todo: should be done in clearer way #}
+					var select = document.getElementById('{{ form.children.value.vars.id }}'),
+						select2 = document.getElementById('s2id_{{ form.children.value.vars.id }}'),
+						input = document.getElementById('{{ form.children.custom_choice.vars.id }}');
+					if (select) select.style.display = 'none';
+					if (select2) select2.style.display = 'none';
+					if (input) {
+						input.style.display = 'inline-block';
+						input.focus();
+					}
+					this.style.display = 'none';
+					return false;
+					">
+				Add another
+			</a>
+			{{ form_widget(form.children.custom_choice) }}
+		{% endif %}
+	{% endspaceless %}
+{% endblock cf_contextual_choice_widget %}

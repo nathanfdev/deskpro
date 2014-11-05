@@ -275,8 +275,6 @@ class PreloadedMysqlCache implements \Doctrine\Common\Cache\Cache
 	{
 		$prefix_id = $this->id_prefix . $id;
 
-		$data = false;
-
 		$is_loaded = false;
 
 		if (array_key_exists($prefix_id, $this->loaded)) {

@@ -14,7 +14,7 @@
 	{% if not show_only or show_only.website %}
 	{% for contact in contact_data.website %}
 		<li class="website {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
-			<a href="{{ contact.url }}" target="_blank">{{ contact.display }}</a> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
+			<a href="{{ contact.url }}" target="_blank">{{ contact.display|text_wrap_marks(20) }}</a> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
 		</li>
 	{% endfor %}
 	{% endif %}

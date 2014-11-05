@@ -97,6 +97,18 @@ pageMeta.baseId = '{{ baseId }}';
                 </div>
                 {% endif %}
 
+	            {% if custom_fields_definitions|length %}
+		            <div class="section title-section" id="{{baseId}}_custom_fields_section">
+			            <div class="content">
+				            {% for f in custom_fields_definitions %}
+					            <h4>{{ form_label(f) }}</h4>
+					            {{ form_widget(f) }}
+					            <br />
+				            {% endfor %}
+			            </div>
+		            </div>
+	            {% endif %}
+
                 <div class="section other-section" id="{{baseId}}_other_section">
                         <div class="content">
                                 {# Tab Container #}

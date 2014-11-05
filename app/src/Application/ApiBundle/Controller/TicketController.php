@@ -77,6 +77,13 @@ class TicketController extends AbstractController
 	 *				required=false,
 	 *				type="string"
 	 *			),
+	 * 			@SWG\Parameter(
+	 *				name="overwrite_person_name",
+	 *				description="Set person_name even if the person already exists. This will overwrite a persons name with the one provided in person_name.",
+	 *				paramType="query",
+	 *				required=false,
+	 *				type="boolean	"
+	 *			),
 	 *			@SWG\Parameter(
 	 *				name="person_organization",
 	 *				description="If a person is being created, user this as their organization. If no organization is found with this name, one is created.",
@@ -198,7 +205,7 @@ class TicketController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="status",
-	 *				description="Status the ticket is in. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved. Defaults to awaiting_agent.",
+	 *				description="Status the ticket is in. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved. Defaults to awaiting_agent.",
 	 *				paramType="query",
 	 *				required=false,
 	 *				type="string"
@@ -344,6 +351,9 @@ class TicketController extends AbstractController
 					if ($person->organization) {
 						$this->em->persist($person->organization);
 					}
+				} else if ($this->in->getBool('overwrite_person_name') && $this->in->getString('person_name')) {
+					$person->setName($this->in->getString('person_name'));
+					$this->em->persist($person);
 				}
 			}
 		} else {
@@ -872,7 +882,7 @@ class TicketController extends AbstractController
 			}
 		}
 
-		$trackers = App::getDb()->fetchAllCol("
+		$trackers = $this->em->fetchAllCol("
 			SELECT log
 			FROM ticket_changetracker_logs
 			WHERE ticket_id = ?

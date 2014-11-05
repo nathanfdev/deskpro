@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Languages\Build;
 
-use Zend\Http\Client as HttpClient;
 use Zend\Http\Request as HttpRequest;
 
 class TransifexBuild extends AbstractBuild

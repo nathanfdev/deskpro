@@ -23,10 +23,10 @@
 	<article>
 		<ul class="dp-item-list dp-icon-list compact">
 			<li ng-repeat="app in ListCtrl.apps" dp-state-mark="apps.apps.instance.{{ ng_var('app.id') }}">
-				<aside>
+				<aside ng-if="!app.package.is_usersource_app">
 					<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}"><img ng-src="{{ ng_var('app.package.icon_32') }}" alt="Icon" /></a>
 				</aside>
-				<div class="content">
+				<div class="content" ng-if="!app.package.is_usersource_app">
 					<h4>
 						<a href="{{ ng_href('apps.apps.instance', '{id: app.id}') }}">
 							<span class="title-text">{{ ng_var('app.title') }}</span>
@@ -71,17 +71,7 @@
 			<button class="btn btn-default btn-xs" ng-click="ListCtrl.showUploadApp()"><i class="fa fa-upload"></i> Upload App</button>
 		</div>
 		<ul class="dp-item-list dp-icon-list">
-			<li ng-repeat="package in ListCtrl.general_packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
-				{{ _self.package_row() }}
-			</li>
-		</ul>
-	</article>
-	<header>
-		<h3>Authentication Apps</h3>
-	</header>
-	<article>
-		<ul class="dp-item-list dp-icon-list">
-			<li ng-repeat="package in ListCtrl.auth_packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.install.{{ ng_var('package.name') }}">
+			<li ng-repeat="package in ListCtrl.packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
 				{{ _self.package_row() }}
 			</li>
 		</ul>
@@ -114,7 +104,7 @@
 		<dl>
 			<dt><em>Q:</em>How do I create my own widgets or apps?</dt>
 			<dd><em>A:</em>
-				See the <a href="https://support.deskpro.com/downloads/files/8-apps-developer-manual-pdf" target="_blank">Apps Developer Manual</a> for details. 
+				See the <a href="https://support.deskpro.com/downloads/files/8-apps-developer-manual-pdf" target="_blank">Apps Developer Manual</a> for details. (Documentation for developing full apps is not yet complete).
 			</dd>
 						<dt><em>Q:</em>How can I use the DeskPRO API?</dt>
 			<dd><em>A:</em>
@@ -126,8 +116,10 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/88"  target="_blank">API Basics</a></li>
-				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/97" target="_blank">DeskPRO PHP API Wrapper</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/88" target="_blank">DeskPRO API documentation</a> on our Knowledgebase</li>
+			<li><i class="fa fa-file-text"></i> <a href="/api/api.html" target="_blank">DeskPRO API Browser</a> - browse API operations and try them interactively</li>
+			<li><i class "fa fa-globe"></i> <a href="https://github.com/DeskPRO/deskpro-api-php" target="_blank">PHP SDK and code examples</a> on GitHub</li>
+			<li><i class "fa fa-globe"></i>  <a href="https://github.com/DeskPRO/DeskPRO-Apps" target="_blank">Example apps</a> on GitHub</li>
 			</ul>
 		</section>
 	</article>

@@ -449,10 +449,12 @@ define [
 
 		# simple proxy
 		get: (id) ->
-			if !id? then return null
 			deferred = @$q.defer()
 			@all().then =>
+				deferred.resolve null if !id
 				deferred.resolve @map[id]
+			, =>
+				deferred.resolve @map[id] || null
 
 			deferred.promise
 
@@ -489,7 +491,7 @@ define [
 
 
 		url: ->
-			throw new Exception("This method must be implemented by a sub-class")
+			throw '[BaseListEdit:url] This method must be implemented by a sub-class'
 
 
 
@@ -514,8 +516,8 @@ define [
 
 		_doSave: (model) ->
 			deferred = @$q.defer()
-			method = 'sendPostJson' # is new
-			method = 'sendPutJson' if model[@idProp]? and model[@idProp]
+			method = 'sendPutJson' # is new
+			method = 'sendPostJson' if model[@idProp]? and model[@idProp]
 
 			id = model[@idProp] || 0
 			@Api[method](@url() + "/#{id}", model).success (data) =>

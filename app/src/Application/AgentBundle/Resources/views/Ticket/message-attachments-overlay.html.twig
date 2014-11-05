@@ -6,11 +6,8 @@
 	<div class="overlay-content" data-confirm="{{ phrase('agent.tickets.delete_attach_confirm') }}">
 		<ul class="attachment-list">
 		{% for attachment in attachments %}
-			<li class="attachment-row {% if attachment.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attachment.blob.extension|default('none')}}{% endif %}">
-				{% if attachment.blob.isImage() %}
-					<a style="float:left; display: inline-block;" href="{{ attachment.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': attachment.blob.auth_id, 'filename': attachment.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
-				{% endif %}
-				<a style="text-overflow: ellipsis;max-width: 303px;overflow: hidden;box-sizing: border-box;display: inline-block;float: left;white-space: nowrap;" href="{{ attachment.blob.download_url }}" target="_blank">{{attachment.blob.filename}}</a>
+			<li class="attachment-row">
+				<a href="{{ attachment.blob.download_url }}" target="_blank">{{attachment.blob.filename}}</a>
 				<span class="size">({{ attachment.blob.readable_filesize }})</span>
 				<div class="attachment-buttons">
 					<span class="is-not-loading"><span class="delete-trigger" data-attachment-id="{{ attachment.id }}"></span></span>

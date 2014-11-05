@@ -108,7 +108,12 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getAvatarUrl($size = 50)
 	{
-		if (!$this->hasAvatar()) return null;
+		if (!$this->hasAvatar()) {
+			return App::get('router')->generate('serve_default_picture', array(
+				's' => $size,
+				'size-fit' => 1,
+			), true);
+		}
 		return $this->avatar->getThumbnailUrl($size);
 	}
 

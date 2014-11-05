@@ -37,9 +37,11 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
+use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewTicketType;
 use Orb\Util\Arrays;
 use Symfony\Component\Form\Exception\OutOfBoundsException;
+use Symfony\Component\HttpFoundation\Request;
 
 class NewTicketController extends AbstractController
 {
@@ -52,6 +54,8 @@ class NewTicketController extends AbstractController
 	 */
     public function newAction($format = 'normal', $for_department_id = 0)
     {
+	    /** @var Request $request */
+	    $request = $this->get('request');
 		if (!$this->person->hasPerm('core.tickets_submit_check')) {
 			return $this->renderLoginOrPermissionError($this->generateUrl('user_tickets_new'));
 		}
@@ -66,9 +70,11 @@ class NewTicketController extends AbstractController
 			$website_url = $GLOBALS['DP_WEBSITE_URL'];
 		}
 
+	    $ticket = new Entity\Ticket();
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			$interface,
-			$this->person
+			$this->person,
+			$ticket
 		);
 		$newticket->setPersonContext($this->person);
 
@@ -184,18 +190,26 @@ class NewTicketController extends AbstractController
 			$custom_user_fields = $ufm->getDisplayArrayForObject($this->person, $custom_user_fields_form, true);
 		}
 
+	    // specific user custom fields (but can be used for any sort of custom fields)
+	    $manager = $this->container->getCustomFieldManager();
+	    $new_custom_fields_form = $manager->createFormForOwner($ticket, $this->person);
+	    if ($org = $this->person->organization) {
+		    $manager->merge($new_custom_fields_form, $manager->createFormForOwner($ticket, $org));
+	    }
+
 		$captcha_html = '';
 		if ($captcha) {
 			$captcha_html = $captcha->getHtml();
 		}
 
-		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
+		if ($request->getMethod() == 'POST' && !$this->in->getBool('no_submit')) {
 
 			if (!$this->consumeRequest('newticket')) {
 				return $this->redirectRoute('user');
 			}
 
-			$form->handleRequest($this->get('request'));
+			$form->handleRequest($request);
+
 			$newticket->ticket->attach_ids = $this->in->getCleanValueArray('attach_ids', 'string', 'discard');
 			$newticket->ticket->attach_ids_authed = true;
 			$newticket->custom_ticket_fields = isset($_POST['newticket_custom_ticket_fields']) ? $_POST['newticket_custom_ticket_fields'] : array();
@@ -216,7 +230,26 @@ class NewTicketController extends AbstractController
 			}
 
 			if ($validator->isValid($newticket) && !$trap_fail) {
-				$ticket = $newticket->save();
+				try {
+					$ticket = $newticket->save();
+
+					if (!$request->request->has($new_custom_fields_form->getName())) {
+						$request->request->set($new_custom_fields_form->getName(), array());
+					}
+					$new_custom_fields_form->handleRequest($this->get('request'));
+					if ($new_custom_fields_form->isValid()) {
+						$manager->flush($new_custom_fields_form);
+					}
+
+				} catch (DuplicateTicketException $e) {
+					// Double submit detected, just continue on
+					$ticket = $this->em->find('DeskPRO:Ticket', $e->ticket_id);
+
+					if (!$ticket) {
+						throw $this->createNotFoundException();
+					}
+				}
+				$manager->flush($new_custom_fields_form);
 				$person = $ticket['person'];
 
 				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
@@ -330,6 +363,8 @@ class NewTicketController extends AbstractController
 
 			'hide_name_field'       => $hide_name_field,
 			'hide_email_field'      => $hide_email_field,
+
+			'new_custom_fields' => $new_custom_fields_form->createView(),
 		));
     }
 

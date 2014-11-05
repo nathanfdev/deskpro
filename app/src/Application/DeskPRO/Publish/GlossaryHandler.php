@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -60,6 +61,9 @@ class GlossaryHandler
 	 */
 	protected $_words = null;
 
+	/**
+	 * @var array
+	 */
 	protected $_defs = array();
 
 	public function __construct(EntityManager $em)
@@ -91,15 +95,13 @@ class GlossaryHandler
 
 		$load = array_diff($words, array_keys($this->_defs));
 		if ($load) {
-			$in_q = array_fill(0, count($load), '?');
-			$in_q = implode(',', $in_q);
 
 			$words = $this->db->fetchAllKeyValue("
 				SELECT word, glossary_word_definitions.definition
 				FROM glossary_words
 				INNER JOIN glossary_word_definitions ON (glossary_words.definition_id = glossary_word_definitions.id)
-				WHERE word IN ($in_q)
-			", $load);
+				WHERE word IN (?)
+			", array($load), array(Connection::PARAM_STR_ARRAY));
 
 			$this->_defs = array_merge($this->_defs, $words);
 		}

@@ -83,6 +83,7 @@
             this.form.in_imap_account.host = this.account.incoming_account.host;
             this.form.in_imap_account.port = this.account.incoming_account.port;
             this.form.in_imap_account.secure_mode = this.account.incoming_account.secure_mode;
+            this.form.in_imap_account.no_validation = this.account.incoming_account.no_validation;
             this.form.in_imap_account.user = this.account.incoming_account.user;
             this.form.in_imap_account.password = this.account.incoming_account.password;
             this.form.in_imap_account.mode = this.account.incoming_account.mode || 'read';
@@ -171,6 +172,7 @@
         if (form.incoming_type === 'imap') {
           if (form.in_imap_account.secure) {
             form.in_imap_account.secure_mode = form.in_imap_account.secure_mode || 'ssl';
+            form.in_imap_account.no_validation = form.in_imap_account.no_validation || false;
           } else {
             form.in_imap_account.secure_mode = null;
           }

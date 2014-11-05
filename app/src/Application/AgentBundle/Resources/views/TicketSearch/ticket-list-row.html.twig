@@ -18,16 +18,10 @@
 		<div class="top-row-left">
 			<h3>
 				<span class="obj-id">#<%= ticket.id %></span>
-				<a class="subject click-through">
+				<a class="subject click-through" ng-mouseenter="$emit('tickets.quick_actions.show', $event, ticket, 900)" ng-mouseleave="$emit('tickets.quick_actions.hide')">
 					<%- ticket.subject %>
 				</a>
 			</h3>
-			<div dp-sticky-tip trigger=".subject" offset-top="18" ng-if="ticket.previews[0]" max-width-calc="previewMaxWidthCalc" no-hover-tip>
-				<div class="previewtext-row" dp-text-overflow overflow-height="62" overflow-manual-init>{# 68 = roughly 4 lines of text at 12px font and 16px line-height #}
-					<cite><%- ticket.previews[0].person.display_name %>:</cite>
-					<%- ticket.previews[0].message.preview_text %>
-				</div>
-			</div>
 		</div>
 		<div class="top-row-right">
 
@@ -53,8 +47,8 @@
 				<% if (ticket_display.status == 'resolved') { %>
 					<label>{{ phrase('agent.tickets.status_resolved') }}</label>
 				<% } %>
-				<% if (ticket_display.status == 'closed') { %>
-					<label>{{ phrase('agent.tickets.status_closed') }}</label>
+				<% if (ticket_display.status == 'archived') { %>
+					<label>{{ phrase('agent.tickets.status_archived') }}</label>
 				<% } %>
 				<% if (ticket_display.status == 'hidden' && !ticket_display.hidden_status) { %>
 					<label>{{ phrase('agent.tickets.status_hidden') }}</label>

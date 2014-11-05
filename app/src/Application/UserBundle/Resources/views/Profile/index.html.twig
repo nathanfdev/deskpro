@@ -3,10 +3,28 @@
  ##}
 {% extends 'UserBundle::layout.html.twig' %}
 {% import 'UserBundle:Common:macros-form.html.twig' as formmacro %}
+{% set authManager = app.authenticationManager %}
 {% block breadcrumb %}
 	<li><span class="dp-divider">{{ language_arrow('right') }}</span> <a href="{{ path('user_profile') }}">{{ phrase('user.profile.profile') }}</a></li>
 {% endblock %}
 {% block page_title %}{{ phrase('user.profile.your_profile') }}{% endblock %}
+
+{% form_theme custom_fields_definitions _self %}
+{% block cf_definition_contextual_choice_widget %}
+	{% spaceless %}
+
+		{% for child in form._children %}
+			{{ form_widget(child, {attr: {style: 'margin-bottom:5px;'} }) }}
+		{% endfor %}
+
+		{% set idx = form._children|length %}
+		<input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][id]" value="cb_1" />
+		<input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][display_order]" value="10" />
+		<input type="text" name="{{ form._children.vars.full_name }}[{{ idx }}][title]" style="width: 73%;" />&nbsp;
+		<button type="submit" class="dp-btn dp-btn-default">Add</button>
+	{% endspaceless %}
+{% endblock cf_definition_contextual_choice_widget %}
+
 {% block content %}
 
 {% if password_expired %}
@@ -28,7 +46,7 @@
 					{{ phrase('user.profile.invalid_name') }}
 				</div>
 			{% endif %}
-			{% if profile_saved %}
+			{% if app.session.flashbag.get('profile_saved') %}
 				<div class="dp-alert dp-alert-success">
 					{{ phrase('user.profile.profile_saved') }}
 				</div>
@@ -103,6 +121,19 @@
 						{% if invalid_custom_fields['field_' ~ f.field_def.id] %}<div class="dp-help-inline dp-error-explain">{{ formmacro.custom_field_errors(invalid_custom_fields, f.field_def, 'field_' ~ f.field_def.id) }}</div>{% endif %}
 					</div>
 				{% endif %}
+			{% endfor %}
+
+			{% for f in custom_fields_definitions %}
+
+				<div class="dp-control-group">
+					<div class="dp-control-label">
+						<label>{{ form_label(f) }}</label>
+					</div>
+					<div class="dp-controls dp-fill">
+						{{ form_widget(f) }}
+					</div>
+				</div>
+
 			{% endfor %}
 
 			{% if is_org_manager %}
@@ -236,7 +267,7 @@
 	</section>
 {% endif %}
 
-{% if app.getSetting('core.deskpro_source_enabled') %}
+{% if authManager.isRegistrationFormVisible %}
 <section class="dp-portal-section">
 	<header>
 		<h1>{{ phrase('user.profile.change_password') }}</h1>

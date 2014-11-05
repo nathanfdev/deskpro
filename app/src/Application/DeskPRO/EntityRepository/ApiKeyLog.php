@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Doctrine\ORM\Query;
+use Application\DeskPRO\Entity;
 
 class ApiKeyLog extends AbstractEntityRepository
 {
@@ -48,12 +49,12 @@ class ApiKeyLog extends AbstractEntityRepository
 	{
 		$limit = self::LIMIT;
 
-		$key_ids = App::$container->getDb()->fetchAllCol("
+		$key_ids = App::$container->getDb()->fetchAllCol('
 			SELECT key_id
 			FROM api_key_log
 			GROUP BY key_id
-			HAVING COUNT(*) > $limit
-		");
+			HAVING COUNT(*) > ?
+		', array($limit), array(\PDO::PARAM_INT));
 
 		if (!$key_ids) {
 			return 0;
@@ -75,5 +76,21 @@ class ApiKeyLog extends AbstractEntityRepository
 				", array($key_id, $lid));
 			}
 		}
+	}
+
+
+	/**
+	 * @param Entity\ApiKey $api_key
+	 * @param int           $limit
+	 * @return Entity\ApiKeyLog[]
+	 */
+	public function getLogsForKey(Entity\ApiKey $api_key, $limit = 100)
+	{
+		return $this->_em->createQuery("
+			SELECT l
+			FROM DeskPRO:ApiKeyLog l
+			WHERE l.key = ?0
+			ORDER BY l.id DESC
+		")->setMaxResults($limit)->execute(array($api_key));
 	}
 }

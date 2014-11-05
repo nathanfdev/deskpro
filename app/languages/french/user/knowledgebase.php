@@ -5,7 +5,7 @@
 	'user.knowledgebase.knowledgebase'                                     => 'Base de connaissances',
 	'user.knowledgebase.link_view-all'                                     => 'Voir 1 article| Voir les {{count}} articles',
 	'user.knowledgebase.related_articles'                                  => 'Articles similaires',
-	'user.knowledgebase.sidebar_description'                               => 'Notre base de connaissances contient 1 article rédigé par notre équipe pour répondre à vos interrogations| Notre base de connaissances contient {{count}} articles rédigés par notre équipe pour répondre à vos interrogations',
+	'user.knowledgebase.sidebar_description'                               => 'Notre base de connaissances contient 1 article rédigé par notre équipe de support pour vous aider à répondre à votre question| Notre base de connaissances contient {{count}} articles rédigés par notre équipe de support pour répondre à votre question',
 	'user.knowledgebase.title'                                             => 'Base de connaissances',
 	'user.knowledgebase.title-articles'                                    => 'Il y a 1 article|Il y a {{count}} articles',
 	'user.knowledgebase.title-articles-paged'                              => 'Vue des articles {{first}} à {{last}} sur {{total}}',

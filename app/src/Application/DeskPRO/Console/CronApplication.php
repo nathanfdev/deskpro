@@ -48,7 +48,9 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class CronApplication extends BaseApplication
 {
+	/** @var \Symfony\Component\HttpKernel\KernelInterface */
 	private $kernel;
+	/** @var bool */
 	private $commandsRegistered = false;
 
 	public function __construct(KernelInterface $kernel)

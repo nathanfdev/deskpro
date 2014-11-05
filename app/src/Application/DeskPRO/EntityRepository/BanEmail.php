@@ -39,6 +39,7 @@ use Doctrine\ORM\Query;
 
 class BanEmail extends AbstractEntityRepository
 {
+	/** @var array */
 	protected $counts = array();
 
 	/**

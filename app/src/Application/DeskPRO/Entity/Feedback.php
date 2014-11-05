@@ -112,6 +112,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 	 */
 	protected $attachments;
 
+	/**
+	 * @var bool
+	 */
 	protected $_is_new = false;
 
     /**

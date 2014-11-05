@@ -10,12 +10,12 @@
 	{% for sys_name,title in {
 		'archive_awaiting_user': 'agent.tickets.status_awaiting_user',
 		'archive_resolved': 'agent.tickets.status_resolved',
-		'archive_closed': 'agent.tickets.status_closed',
+		'archive_archived': 'agent.tickets.status_archived',
 		'archive_validating': 'agent.general.awaiting_validation',
 		'archive_spam': 'agent.general.spam',
 		'archive_deleted': 'agent.general.recycle_bin',
 	} %}
-		{% if (sys_name != 'archive_closed' or app.getSetting('core_tickets.use_archive')) and (sys_name != 'archive_validating' or archive_filter_counts[filter.id]) %}
+		{% if (sys_name != 'archive_archived' or app.getSetting('core_tickets.use_archive')) and (sys_name != 'archive_validating' or archive_filter_counts[filter.id]) %}
 			{% set filter = archive_filters[sys_name] %}
 			<li data-filter-id="{{ filter.id }}" class="is-nav-item with-route filter filter-{{filter.id}} filter-{{filter.sys_name}} nav-filter-{{filter.id}} is-archive-filter" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 				<div class="item">

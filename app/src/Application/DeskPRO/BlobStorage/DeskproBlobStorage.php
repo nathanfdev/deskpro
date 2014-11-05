@@ -40,6 +40,7 @@ use Doctrine\ORM\EntityManager;
 use Orb\Data\ContentTypes;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -61,6 +62,11 @@ class DeskproBlobStorage implements Loggable
 	protected $disabled_adapters = array();
 
 	/**
+	 * @var array
+	 */
+	protected $tag_to_adapter = array();
+
+	/**
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
@@ -76,11 +82,6 @@ class DeskproBlobStorage implements Loggable
 	protected $logger;
 
 	/**
-	 * @var string
-	 */
-	protected $save_copy_path;
-
-	/**
 	 * @param EntityManager $em
 	 */
 	public function __construct(EntityManager $em)
@@ -93,25 +94,33 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
-	 * After a file is saved, copy a second copy to this filepath
-	 *
-	 * The filepath is represented as a full path that a file will be written to. Include
-	 * any of these variables in the path: %ID%, %AUTH%, %BATCH%, %FILENAME%, %DATETIME%
-	 *
-	 * @param string $path
-	 */
-	public function setSaveCopyPath($path)
-	{
-		$this->save_copy_path = $path;
-	}
-
-
-	/**
 	 * @param Logger $logger
 	 */
 	public function setLogger(Logger $logger)
 	{
 		$this->logger = $logger;
+	}
+
+
+	/**
+	 * @param string $tag
+	 * @param string $adapter_id
+	 */
+	public function setAdapterForTag($tag, $adapter_id)
+	{
+		$this->tag_to_adapter[$tag] = $adapter_id;
+	}
+
+
+	/**
+	 * Get the adapter for a tag
+	 *
+	 * @param string $tag
+	 * @return string
+	 */
+	public function getAdapterIdForTag($tag)
+	{
+		return isset($this->tag_to_adapter[$tag]) ? $this->tag_to_adapter[$tag] : null;
 	}
 
 
@@ -152,6 +161,16 @@ class DeskproBlobStorage implements Loggable
 		}
 
 		return $this->adapters[$id];
+	}
+
+
+	/**
+	 * @param string $id
+	 * @return bool
+	 */
+	public function hasAdapter($id)
+	{
+		return isset($this->adapters[$id]);
 	}
 
 
@@ -242,6 +261,31 @@ class DeskproBlobStorage implements Loggable
 
 
 	/**
+	 * @param array $blob_array
+	 * @return array
+	 */
+	private function _getOrderedAdaptersForBlobArray(array $blob_array)
+	{
+		$ret = array();
+
+		foreach ($this->adapters as $id => $ad) {
+			if (isset($this->disabled_adapters[$id])) {
+				continue;
+			}
+			$ret[$id] = $ad;
+		}
+
+		if (!empty($blob_array['storage_loc_pref']) && isset($ret[$blob_array['storage_loc_pref']])) {
+			$ad = $ret[$blob_array['storage_loc_pref']];
+			unset($ret[$blob_array['storage_loc_pref']]);
+			Arrays::unshiftAssoc($ret, $blob_array['storage_loc_pref'], $ad);
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * @param string $source_path
 	 * @param string $filename
 	 * @param string $content_type
@@ -265,6 +309,15 @@ class DeskproBlobStorage implements Loggable
 			}
 		}
 
+		if ($props && !isset($props['storage_loc_specific']) && isset($props['tag'])) {
+			$props['storage_loc_specific'] = $this->getAdapterIdForTag($props['tag']);
+		}
+
+		if ($props && isset($props['storage_loc_specific']) && $this->hasAdapter($props['storage_loc_specific'])) {
+			$blob_entity_tmp->storage_loc_specific = $props['storage_loc_specific'];
+			$blob_entity_tmp->storage_loc_pref     = $props['storage_loc_specific'];
+		}
+
 		$blob_array = $blob_entity_tmp->toDbArray();
 		$this->db->insert('blobs', $blob_array);
 		$blob_array['id'] = $this->db->lastInsertId();
@@ -286,10 +339,7 @@ class DeskproBlobStorage implements Loggable
 		$blob->setMeta('batch', $batch);
 
 		$prev_e = null;
-		foreach ($this->adapters as $adapter_id => $adapter) {
-			if (isset($this->disabled_adapters[$adapter_id])) {
-				continue;
-			}
+		foreach ($this->_getOrderedAdaptersForBlobArray($blob_array) as $adapter_id => $adapter) {
 
 			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Attempting adapter: $adapter_id");
 
@@ -333,8 +383,18 @@ class DeskproBlobStorage implements Loggable
 			$blob_entity_tmp->file_url = $blob->getMeta('file_url');
 		}
 
-		if ($blob_entity_tmp->storage_loc != $this->preferred_adapter_id) {
-			$blob_entity_tmp->storage_loc_pref = $this->preferred_adapter_id;
+		if ($blob_entity_tmp->storage_loc_specific) {
+			if ($blob_entity_tmp->storage_loc != $blob_entity_tmp->storage_loc_specific) {
+				$blob_entity_tmp->storage_loc_pref = $blob_entity_tmp->storage_loc_specific;
+			} else {
+				$blob_entity_tmp->storage_loc_pref = null;
+			}
+		} else {
+			if ($blob_entity_tmp->storage_loc != $this->preferred_adapter_id) {
+				$blob_entity_tmp->storage_loc_pref = $this->preferred_adapter_id;
+			} else {
+				$blob_entity_tmp->storage_loc_pref = null;
+			}
 		}
 
 		$blob_array = array_merge($blob_array, $blob_entity_tmp->toDbArray());
@@ -344,44 +404,6 @@ class DeskproBlobStorage implements Loggable
 		$this->db->update('blobs', $blob_update, array('id' => $blob_array['id']));
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Save success");
-
-		if ($this->save_copy_path) {
-			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Saving copy");
-
-			$batch = (int)(($blob_entity_tmp->id-1) / 1000) + 1;
-			$copy_path = str_replace(
-				array('%ID%', '%AUTH%', '%DATETIME%', '%FILENAME%', '%BATCH%'),
-				array($blob_entity_tmp->id, $blob_entity_tmp->authcode, $blob_entity_tmp->date_created->format('YmdHis'), $blob_entity_tmp->filename, $batch),
-				$this->save_copy_path
-			);
-			$meta_path = $copy_path . '.meta';
-
-			$dirname = dirname($copy_path);
-
-			if (!is_dir($dirname)) {
-				if (!@mkdir($dirname, 0777, true)) {
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Failed to create copy dir: $dirname");
-				}
-			}
-
-			if (is_dir($dirname)) {
-				if (@copy($source_path, $copy_path)) {
-					@chmod($copy_path, 0777);
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Wrote file: $copy_path");
-				} else {
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Failed to write copy file: $copy_path");
-					error_log("Failed to write copy file: $copy_path");
-				}
-
-				if (@file_put_contents($meta_path, json_encode($blob_entity_tmp->toArray(BlobEntity::TOARRAY_ONLY_PRIMATIVES)))) {
-					@chmod($meta_path, 0777);
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Wrote metadata file: $meta_path");
-				} else {
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Failed to write copy file metadata: $meta_path");
-					error_log("Failed to write copy file metadata: $copy_path");
-				}
-			}
-		}
 
 		return $blob_array;
 	}
@@ -431,6 +453,15 @@ class DeskproBlobStorage implements Loggable
 			@unlink($tmpfname);
 		}
 
+		if ($props && !isset($props['storage_loc_specific']) && isset($props['tag'])) {
+			$props['storage_loc_specific'] = $this->getAdapterIdForTag($props['tag']);
+		}
+
+		if ($props && isset($props['storage_loc_specific']) && $this->hasAdapter($props['storage_loc_specific'])) {
+			$blob_entity_tmp->storage_loc_specific = $props['storage_loc_specific'];
+			$blob_entity_tmp->storage_loc_pref     = $props['storage_loc_specific'];
+		}
+
 		$blob_array = $blob_entity_tmp->toDbArray();
 		$this->db->insert('blobs', $blob_array);
 		$blob_array['id'] = $this->db->lastInsertId();
@@ -452,10 +483,7 @@ class DeskproBlobStorage implements Loggable
 		$blob->setMeta('batch', $batch);
 
 		$prev_e = null;
-		foreach ($this->adapters as $adapter_id => $adapter) {
-			if (isset($this->disabled_adapters[$adapter_id])) {
-				continue;
-			}
+		foreach ($this->_getOrderedAdaptersForBlobArray($blob_array) as $adapter_id => $adapter) {
 
 			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Attempting adapter: $adapter_id");
 
@@ -499,8 +527,18 @@ class DeskproBlobStorage implements Loggable
 			$blob_entity_tmp->file_url = $blob->getMeta('file_url');
 		}
 
-		if ($blob_entity_tmp->storage_loc != $this->preferred_adapter_id) {
-			$blob_entity_tmp->storage_loc_pref = $this->preferred_adapter_id;
+		if ($blob_entity_tmp->storage_loc_specific) {
+			if ($blob_entity_tmp->storage_loc != $blob_entity_tmp->storage_loc_specific) {
+				$blob_entity_tmp->storage_loc_pref = $blob_entity_tmp->storage_loc_specific;
+			} else {
+				$blob_entity_tmp->storage_loc_pref = null;
+			}
+		} else {
+			if ($blob_entity_tmp->storage_loc != $this->preferred_adapter_id) {
+				$blob_entity_tmp->storage_loc_pref = $this->preferred_adapter_id;
+			} else {
+				$blob_entity_tmp->storage_loc_pref = null;
+			}
 		}
 
 		$blob_array = array_merge($blob_array, $blob_entity_tmp->toDbArray());
@@ -510,44 +548,6 @@ class DeskproBlobStorage implements Loggable
 		$this->db->update('blobs', $blob_update, array('id' => $blob_array['id']));
 
 		$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Save success");
-
-		if ($this->save_copy_path) {
-			$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Saving copy");
-
-			$batch = (int)(($blob_entity_tmp->id-1) / 1000) + 1;
-			$copy_path = str_replace(
-				array('%ID%', '%AUTH%', '%DATETIME%', '%FILENAME%', '%BATCH%'),
-				array($blob_entity_tmp->id, $blob_entity_tmp->authcode, $blob_entity_tmp->date_created->format('YmdHis'), $blob_entity_tmp->filename, $batch),
-				$this->save_copy_path
-			);
-			$meta_path = $copy_path . '.meta';
-
-			$dirname = dirname($copy_path);
-
-			if (!is_dir($dirname)) {
-				if (!@mkdir($dirname, 0777, true)) {
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Failed to create copy dir: $dirname");
-				}
-			}
-
-			if (is_dir($dirname)) {
-				if (@file_put_contents($copy_path, $source_data)) {
-					@chmod($copy_path, 0777);
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Wrote file: $copy_path");
-				} else {
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Failed to write copy file: $copy_path");
-					error_log("Failed to write copy file: $copy_path");
-				}
-
-				if (@file_put_contents($meta_path, json_encode($blob_entity_tmp->toArray(BlobEntity::TOARRAY_ONLY_PRIMATIVES)))) {
-					@chmod($meta_path, 0777);
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Wrote metadata file: $meta_path");
-				} else {
-					$this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Failed to write copy file metadata: $meta_path");
-					error_log("Failed to write copy file metadata: $copy_path");
-				}
-			}
-		}
 
 		return $blob_array;
 	}
@@ -710,7 +710,7 @@ class DeskproBlobStorage implements Loggable
 		$adapter = $this->getAdapter($adapter_id);
 
 		try {
-			$data = $adapter->deleteBlob($blob);
+			$adapter->deleteBlob($blob);
 		} catch (\Exception $e) {
 			$this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete failed: {$e->getCode()} {$e->getMessage()}");
 			if ($ex_on_error) {

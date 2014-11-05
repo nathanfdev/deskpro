@@ -1,0 +1,1631 @@
+{
+    "basePath": "/api",
+    "swaggerVersion": "1.2",
+    "resourcePath": "/tickets",
+    "apis": [
+        {
+            "path": "/ticket/{ticket_id}/billing-charges",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets billing charges for a Ticket.",
+                    "nickname": "getTicketBillingChargesAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Gets billing charges for a Ticket.",
+                    "nickname": "postTicketBillingChargesAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "time",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Time in seconds to bill. Required if there is no amount."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "amount",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Amount (in admin-specified currency) to bill. Required if there is no time."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "comment",
+                            "type": "string",
+                            "required": false,
+                            "description": "Comment or reason for the charge."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/ticket/{ticket_id}/billing-charges/{charge_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if a charge exists for a ticket.",
+                    "nickname": "getTicketBillingChargeAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "charge_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Charge that needs to be checked."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Deletes a charge for a ticket.",
+                    "nickname": "deleteTicketBillingChargeAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "charge_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Charge that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Creates a new Ticket.",
+                    "nickname": "newTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "ID of person to create ticket for."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_email",
+                            "type": "string",
+                            "required": false,
+                            "description": "If no person_id is given, the ticket is created for a person with this email. If no person is found with this email, one is created."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_name",
+                            "type": "string",
+                            "required": false,
+                            "description": "If a person is being created, use this as their name."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_organization",
+                            "type": "string",
+                            "required": false,
+                            "description": "If a person is being created, user this as their organization. If no organization is found with this name, one is created."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_organization_position",
+                            "type": "string",
+                            "required": false,
+                            "description": "If a person is being created and they belong to an organization, select this as their position."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "subject",
+                            "type": "string",
+                            "required": true,
+                            "description": "Subject of the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "message",
+                            "type": "string",
+                            "required": true,
+                            "description": "First message of the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "message_as_agent",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "If true, the message is considered to be written by the API agent rather than the ticket owner. Defaults to false."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "message_is_html",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "If true, the message parameter is treated as HTML."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "agent_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Agent assigned to the ticket. Defaults to unassigned."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "agent_team_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Agent team the ticket belongs to."
+                        },
+                        {
+                            "paramType": "form",
+                            "name": "attach[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "attach_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "The ID of an already uploaded file to include with the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "category_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Category the ticket is in."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "department_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Department the ticket is in. If not specified, uses the default ticket department."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "field[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Value for the specified field."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Label to apply to the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "language_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Language the ticket is in."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "priority_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Priority of the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "product_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Product the ticket relates to."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status",
+                            "type": "string",
+                            "required": false,
+                            "description": "Status the ticket is in. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved. Defaults to awaiting_agent."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sla_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Adds the SLA to the ticket. Can only add SLAs that agents may manually add."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "urgency",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Urgency of the ticket (1-10)."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "workflow_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Workflow for the ticket."
+                        }
+                    ]
+                },
+                {
+                    "method": "GET",
+                    "summary": "Search for Tickets matching criteria",
+                    "nickname": "searchAction",
+                    "type": "array",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "agent_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be assigned to the specified agent ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "agent_team_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be assigned to an agent in the specific agent team ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "category_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be in the specified category ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "department_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be in the specified department ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "field[#][]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket custom field to have the specified value in the listed field."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be have the specified label."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "language_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be in the specified language ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "organization_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be for the specified organization ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "participant[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be followed by or copied to the specified person ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be created by the specified person ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "priority_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be have the specified priority ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "product_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be for the specified product ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "query",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to contain the specified text within it."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be in the specified status. Possible values are awaiting_user, awaiting_agent, archived, hidden, resolved."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sla_completed",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "If specified, requires the ticket to have the SLA requirement completed (1) or incomplete (0)."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sla_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be have the specified SLA."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sla_status[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be have the specified SLA status. Possible values: ok, warning, fail."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "subject[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket subject to match the string provided."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "urgency[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be have the specified urgency (1-10)."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "workflow_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Requires ticket to be have the specified workflow ID."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "id_min",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Specify min ticket ID (since build 315)"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "id_max",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Specify max ticket ID (since build 315)"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "ref",
+                            "type": "string",
+                            "required": false,
+                            "description": "Specify a ref or the beginning characters of a ref (since build 315)"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_created",
+                            "type": "string",
+                            "required": false,
+                            "description": "Constrains results based on the date the ticket was created."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_resolved",
+                            "type": "string",
+                            "required": false,
+                            "description": "Constrains results based on the date the ticket was first resolved. Unresolved tickets are not included."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_archived",
+                            "type": "string",
+                            "required": false,
+                            "description": "Constrains results based on the date the ticket was first archived. Unarchived tickets are not included."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_status",
+                            "type": "string",
+                            "required": false,
+                            "description": "Constrains results based on the date of the last status change."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_last_agent_reply",
+                            "type": "string",
+                            "required": false,
+                            "description": "Constrains results based on the date of the last agent reply. Tickets without an agent reply are not included."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_last_user_reply",
+                            "type": "string",
+                            "required": false,
+                            "description": "Constrains results based on the date of the last user reply."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "date_last_reply",
+                            "type": "string",
+                            "required": false,
+                            "description": "Constrains results based on the date of the last reply (either a user or agent reply, whichever was latest)."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "order",
+                            "type": "string",
+                            "required": false,
+                            "description": "Order of the results. Defaults to accessing person's preference or ticket.date_created:desc."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "cache_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "If provided, cached results from this result set are used. If it cannot be found or used, the other constraints provided will be used to create a new result set."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "page",
+                            "type": "integer",
+                            "required": false,
+                            "description": "The page number of the results to fetch."
+                        }
+                    ],
+                    "notes": "All constraints are optional. Multiple constraints are AND'd together; multiple values for a single constraint are OR'd."
+                }
+            ]
+        },
+        {
+            "path": "/tickets/categories",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available ticket categories.",
+                    "nickname": "getCategoriesAction"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/departments",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available ticket departments.",
+                    "nickname": "getDepartmentsAction"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/fields",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available custom ticket fields.",
+                    "nickname": "getFieldsAction"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/priorities",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available ticket priorities.",
+                    "nickname": "getPrioritiesAction"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/products",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available ticket products.",
+                    "nickname": "getProductsAction"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/slas",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available ticket SLAs.",
+                    "nickname": "getSlasAction"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/slas/{sla_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets an SLA.",
+                    "nickname": "getSlaAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the SLA that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "There is no SLA with ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/slas/{sla_id}/organizations",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets list of organizations that automatically apply this SLA.",
+                    "nickname": "getSlaOrganizationsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the SLA that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "There is no SLA with ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/slas/{sla_id}/people",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets list of people that automatically apply this SLA.",
+                    "nickname": "getSlaPeopleAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the SLA that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "There is no SLA with ID"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/workflows",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets available ticket workflows.",
+                    "nickname": "getWorkflowsAction"
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a Ticket by Ticket ID.",
+                    "nickname": "getTicketAction",
+                    "type": "Ticket",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ],
+                    "notes": "Information about the ticket by Ticket ID."
+                },
+                {
+                    "method": "POST",
+                    "summary": "Updates a ticket.",
+                    "nickname": "postTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "ID of person to create ticket for."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "subject",
+                            "type": "string",
+                            "required": true,
+                            "description": "A new subject for the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "agent_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Agent assigned to the ticket. Defaults to unassigned."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "agent_team_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Agent team the ticket belongs to."
+                        },
+                        {
+                            "paramType": "form",
+                            "name": "attach[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "category_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Category the ticket is in."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "department_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Department the ticket is in. If not specified, uses the default ticket department."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "field[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "Value for the specified field."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "language_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Language the ticket is in."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "priority_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Priority of the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "product_id",
+                            "type": "string",
+                            "required": false,
+                            "description": "Product the ticket relates to."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "status",
+                            "type": "string",
+                            "required": false,
+                            "description": "Status the ticket is in. Possible values are awaiting_user, awaiting_agent, closed, hidden, resolved. Defaults to awaiting_agent."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "urgency",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Urgency of the ticket (1-10)."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "workflow_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "Workflow for the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "flag",
+                            "type": "string",
+                            "required": false,
+                            "description": "Sets the color of the flag for the this ticket for the API user. Use none to remove the flag."
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "DELETEs a Ticket by Ticket ID.",
+                    "nickname": "deleteTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Person not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/claim",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Assigns a ticket to the API user",
+                    "nickname": "claimTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/labels",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the labels for a ticket.",
+                    "nickname": "getLabelsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds a label to a ticket.",
+                    "nickname": "postLabelsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "Label to add."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/labels/{label}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if the ticket has the label.",
+                    "nickname": "getLabelAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "label to check"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes a label from a ticket.",
+                    "nickname": "deleteLabelAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "label",
+                            "type": "string",
+                            "required": true,
+                            "description": "label that needs to deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/lock",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Locks a ticket.",
+                    "nickname": "lockTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be locked"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/log",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets all logs in a Ticket by Ticket ID.",
+                    "nickname": "getTicketLogsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/merge/{merge_ticket_id}",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Merges the two tickets",
+                    "nickname": "mergeTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be merged with."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "merge_ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be merged."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/messages",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets all messages in a ticket.",
+                    "nickname": "getTicketMessagesAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Replies to a ticket.",
+                    "nickname": "replyTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "message",
+                            "type": "string",
+                            "required": true,
+                            "description": "Message reply text."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "attach[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "If you wish to upload a file with the ticket, you may send the request as multipart/form-data with the file data going to this parameter."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "attach_id[]",
+                            "type": "string",
+                            "required": false,
+                            "description": "The ID of an already uploaded file to include with the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "is_note",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "If true, sets the reply as a note, rather than a public reply. Defaults to false."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "message_as_agent",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "If true, the message is considered to be written by the API agent rather than the ticket owner. Defaults to false."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "message_is_html",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "If true, the message parameter is treated as HTML."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "suppress_user_notify",
+                            "type": "boolean",
+                            "required": false,
+                            "description": "If true, suppresses user notification of the reply. Defaults to false."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/messages/{message_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the specific message",
+                    "nickname": "getTicketMessageAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/messages/{message_id}/details",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a specific message's details",
+                    "nickname": "getTicketMessageDetailsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/participants",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the participants in a ticket.",
+                    "nickname": "getParticipantsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds a participant to a ticket.",
+                    "nickname": "postParticipantsAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "person_id",
+                            "type": "integer",
+                            "required": false,
+                            "description": "ID of the person to add to the ticket."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "email",
+                            "type": "string",
+                            "required": false,
+                            "description": "Email address of the person to add to the ticket. If no person can be found with this email, one will be created."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/participants/{participant_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if a person is participating in a ticket.",
+                    "nickname": "getParticipantAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "participant_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Person that needs to be checked."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Removes a participant from a ticket.",
+                    "nickname": "deleteParticipantAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "participant_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Person that needs to be removed."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/slas",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets a list of automatically applied SLAs for a ticket.",
+                    "nickname": "getTicketSlasAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Adds an SLA to the automatically applied SLAs for a ticket.",
+                    "nickname": "postTicketSlasAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of SLA to add."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/slas/{sla_id}",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Determines if a ticket SLA exists for a ticket.",
+                    "nickname": "getTicketSlaAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the SLA that needs to be checked."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "Deletes a ticket SLA for a ticket.",
+                    "nickname": "deleteTicketSlaAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "path",
+                            "name": "sla_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the SLA that needs to be deleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/spam",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Marks a ticket as spam.",
+                    "nickname": "spamTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be marked spam."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/split",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": " Splits messages from a ticket into a new one.",
+                    "nickname": "splitTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "message_ids[]",
+                            "type": "string",
+                            "required": true,
+                            "description": "ID of a message to split. Specify this parameter multiple times to split multiple messages."
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "subject",
+                            "type": "string",
+                            "required": true,
+                            "description": "subject of the new ticket"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/tasks",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "Gets the tasks for a ticket.",
+                    "nickname": "getTicketTasksAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be searched for Tasks"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                },
+                {
+                    "method": "POST",
+                    "summary": "Create a task for a ticket.",
+                    "nickname": "postTicketTasksAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket where the task needs to be created."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/undelete",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Undeletes a Ticket by Ticket ID.",
+                    "nickname": "undeleteTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be undeleted."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/unlock",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "unLocks a ticket.",
+                    "nickname": "unlockTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be unlocked"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path": "/tickets/{ticket_id}/unspam",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "Removes spam indicator from a ticket",
+                    "nickname": "unspamTicketAction",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "ticket_id",
+                            "type": "integer",
+                            "required": true,
+                            "description": "ID of the Ticket that needs to be unspamed."
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 404,
+                            "message": "Ticket not found"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

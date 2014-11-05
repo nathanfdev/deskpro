@@ -1,0 +1,155 @@
+<div dp-license-payment-form ng-model="paymentForm">
+	<div class="well well-sm" ng-if="form.exist_card">
+		<label style="margin: 0; padding: 0; display: block; font-weight: bold; font-size: 120%;">
+			<input type="radio" ng-model="form.mode" value="exist" style="margin: 0; vertical-align: baseline;" /> Use your existing card
+		</label>
+		<div ng-show="form.mode == 'exist'" style="margin-top: 10px;">
+			<div class="creditcard-display">
+				<span class="credit-card-type {{ ng_var('form.exist_card.type') }}">{{ ng_var('form.exist_card.type') }}</span>
+				<span class="credit-card-num">
+					xxxx xxxx xxxx {{ ng_var('form.exist_card.number') }}
+				</span>
+				<span class="credit-card-expire">Exp: {{ ng_var('form.exist_card.expire_mm') }} / {{ ng_var('form.exist_card.expire_yy') }}</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="well well-sm">
+		<label style="margin: 0; padding: 0; display: block; font-weight: bold; font-size: 120%;" ng-if="form.exist_card">
+			<input type="radio" ng-model="form.mode" value="new" style="margin: 0; vertical-align: baseline;" /> Enter a new card
+		</label>
+		<label style="margin: 0; padding: 0; display: block; font-weight: bold; font-size: 120%;" ng-if="!form.exist_card">
+			Pay by Credit Card
+		</label>
+		<div ng-show="form.mode == 'new'" style="margin-top: 10px;">
+			<table>
+				<tr>
+					<td>Card Number</td>
+					<td>&nbsp;</td>
+					<td>Security Code</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="creditcard-input {{ ng_var('form.new_card.type') }}">
+							<input type="text" class="form-control" ng-model="form.new_card.number" ng-change="numberCharsFn()" />
+							<span class="credit-card-type"></span>
+						</div>
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<input type="text" class="form-control" ng-model="form.new_card.cv2" ng-change="cv2CharsFn()" style="width: 50px;" />
+					</td>
+				</tr>
+				<tr>
+					<td style="padding-top: 9px;">Name on Card</td>
+					<td>&nbsp;</td>
+					<td style="padding-top: 9px;">Expiration</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="text" class="form-control" ng-model="form.new_card.name" />
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<select ui-select2 ng-model="form.new_card.expire_mm">
+							<option value="0">MM</option>
+							<option value="{{ ng_var('m') }}" ng-repeat="m in month_opts">{{ ng_var('m') }}</option>
+						</select> /
+						<select ui-select2 ng-model="form.new_card.expire_yy">
+							<option value="0">YY</option>
+							<option value="{{ ng_var('y') }}" ng-repeat="y in year_opts">{{ ng_var('y') }}</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+
+			<strong style="margin-top: 15px; margin-bottom: 9px; font-size: 115%; display: block;">Billing Address</strong>
+
+			<table>
+				<tr>
+					<td>Country</td>
+				</tr>
+				<tr>
+					<td>
+						<select ui-select2 ng-model="form.address.country" style="width: 325px;">
+							{% for code, name in get_data('countries') %}
+								<option value="{{ code }}">{{ name }}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+			</table>
+
+			<table style="margin-top: 9px;">
+				<tr>
+					<td>Address</td>
+				</tr>
+				<tr>
+					<td>
+						<textarea class="form-control" ng-model="form.address.address" style="height: 48px; width: 325px;"></textarea>
+					</td>
+				</tr>
+			</table>
+
+			<table style="margin-top: 9px;">
+				<tr>
+					<td>City</td>
+					<td width="5">&nbsp;</td>
+					<td>State</td>
+					<td width="5">&nbsp;</td>
+					<td>
+						<span ng-show="form.address.country != 'US'">Post Code</span>
+						<span ng-show="form.address.country == 'US'">ZIP Code</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="text" class="form-control" ng-model="form.address.city" style="width: 110px;" />
+					</td>
+					<td width="5">&nbsp;</td>
+					<td>
+						<div ng-if="form.address.country != 'US'">
+							<input type="text" class="form-control" ng-model="form.address.state" style="width: 110px;" />
+						</div>
+						<div ng-if="form.address.country == 'US'">
+							<select ng-model="form.address.state" ui-select2 style="width: 110px;">
+								{% for code, name in get_data('us_states') %}
+									<option value="{{ code }}">{{ name }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</td>
+					<td width="5">&nbsp;</td>
+					<td>
+						<input type="text" class="form-control" ng-model="form.address.post_code" style="width: 110px;" />
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="alert alert-danger" ng-show="formErrors && formErrors.length">
+	<p>
+		Please correct the following errors with your form:
+	</p>
+	<ul>
+		<li ng-repeat="err in formErrors" ng-switch="err">
+			<span ng-switch-when="number">The card number you entered appears to be invalid.</span>
+			<span ng-switch-when="cv2">The card security number you entered appears to be invalid.</span>
+			<span ng-switch-when="name">Please enter the name exactly how it appears on the card.</span>
+			<span ng-switch-when="expire">Please enter the expiry date as it appears on the card.</span>
+			<span ng-switch-when="country">Please select a billing country</span>
+			<span ng-switch-when="address">Please enter your billing address</span>
+			<span ng-switch-when="city">Please enter your billing city</span>
+			<span ng-switch-when="state">Please select your billing state</span>
+			<span ng-switch-when="post_code">Please enter your billing post code</span>
+			<span ng-switch-default>{{ ng_var('err') }}</span>
+		</li>
+	</ul>
+	<div ng-if="invoice" style="margin-top: 8px;">
+		<p>
+			Having trouble? <a ng-href="{{ ng_var('invoice.link') }}" target="_blank">Click here to pay the invoice online</a>.
+		</p>
+	</div>
+</div>

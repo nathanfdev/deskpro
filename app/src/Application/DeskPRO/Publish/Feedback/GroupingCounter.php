@@ -40,12 +40,15 @@ use Orb\Util\Arrays;
 
 class GroupingCounter
 {
+	/** @var string */
 	protected $grouping1 = 'status';
+	/** @var string */
 	protected $grouping2 = 'category_id';
-
+	/** @var int|null */
 	protected $this_person_id = null;
-
+	/** @var array */
 	protected $terms = array();
+	/** @var array|null */
 	protected $ids = null;
 
 	/**
@@ -55,7 +58,7 @@ class GroupingCounter
 	 */
 	public function setIds(array $ids)
 	{
-		$this->ids = $ids;
+		$this->ids = array_map('intval', $ids);
 	}
 
 	/**
@@ -118,9 +121,6 @@ class GroupingCounter
 
 			$items[$field1_id] = $row;
 		}
-
-		$group1_has = array_unique($group1_has);
-		$group2_has = array_unique($group2_has);
 
 		#------------------------------
 		# Now fetch hierarchy which might be used
@@ -224,17 +224,18 @@ class GroupingCounter
 
 		$grouping1 = $this->grouping1;
 		$grouping2 = $this->grouping2;
+		$db = App::getDb();
 
 		if ($grouping1 == 'status') {
 			$grouping1 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
 		} else {
-			$grouping1 = "feedback.$grouping1";
+			$grouping1 = $db->quoteIdentifier('feedback.' . $grouping1);
 		}
 
 		if ($grouping2 == 'status') {
 			$grouping2 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
 		} else {
-			$grouping2 = "feedback.$grouping2";
+			$grouping2 = $db->quoteIdentifier('feedback.' . $grouping2);
 		}
 
 		$select_fields[] = "COALESCE($grouping1, 0) AS field1";
@@ -259,8 +260,6 @@ class GroupingCounter
 			$where
 			$group_by WITH ROLLUP
 		";
-
-		$db = App::getDb();
 
 		$counts = $db->fetchAll($sql);
 

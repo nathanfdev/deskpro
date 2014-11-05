@@ -34,13 +34,14 @@
 
 namespace Application\DeskPRO;
 use Orb\Util\Strings;
-use Orb\Util\Util;
+use Orb\Util\Util as OrbUtil;
 
 /**
  * Transform markdown-formatted text into html
  */
 class Markdown extends \Markdown_Parser
 {
+	/** @var array */
 	protected $attach_tokens = array();
 
 	/**
@@ -66,7 +67,7 @@ class Markdown extends \Markdown_Parser
 		$m = null;
 		if (preg_match_all('#!\[attach(.*?)\]#', $text, $m)) {
 			foreach ($m[0] as $match) {
-				$token = ":attach-token-" . md5(microtime() . Util::requestUniqueId()) . ":";
+				$token = ":attach-token-" . md5(microtime() . OrbUtil::requestUniqueId()) . ":";
 				$this->attach_tokens[$token] = $match;
 			}
 		}

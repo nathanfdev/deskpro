@@ -483,7 +483,6 @@ abstract class AbstractTriggerTerm implements CriteriaTermInterface, TriggerTerm
 	protected function isDateRangeMatch(Ticket $ticket, ExecutorContextInterface $context, $prop_name, \DateTime $lower, \DateTime $upper)
 	{
 		$opts  = $this->getValueOpArray($ticket, $context, $prop_name);
-		$op    = $opts['op'];
 		$value = $opts['value'];
 
 		$value = $value->getTimestamp();

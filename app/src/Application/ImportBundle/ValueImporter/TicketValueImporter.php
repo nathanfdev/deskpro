@@ -186,7 +186,7 @@ class TicketValueImporter extends AbstractValueImporter
 		
 		//Date fields
 		$record['date_created']		= $tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-		$record['date_closed']		= $tval->date_closed ? $tval->date_closed->format('Y-m-d H:i:s') : null;
+		$record['date_archived']		= $tval->date_archived ? $tval->date_archived->format('Y-m-d H:i:s') : null;
 		$record['date_resolved']	= $tval->date_resolved ? $tval->date_resolved->format('Y-m-d H:i:s') : null;
 		
 		// Org
@@ -233,7 +233,6 @@ class TicketValueImporter extends AbstractValueImporter
 			});
 			
 			if ($tval->participants) {
-				$batch = array();
 				foreach ($tval->participants as $participant) {
 					$participantId = $this->getMappers()->findIdFromMappedValue('person', $participant);
 					
@@ -241,8 +240,6 @@ class TicketValueImporter extends AbstractValueImporter
 						$batch = array('ticket_id' => $ticket_id, 'person_id' => $participantId);
 						$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $participant));
 						$this->getDb()->insert('tickets_participants', $batch);
-					} else {
-						//$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $participant));
 					}
 				}
 			}
@@ -261,7 +258,6 @@ class TicketValueImporter extends AbstractValueImporter
 					$this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $tval->person));
 					$record['person_id'] = $messagePersonId;
 				} else {
-					//$this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
 					continue;
 				}
 				

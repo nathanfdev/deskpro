@@ -39,8 +39,9 @@ use Application\DeskPRO\Entity\Ticket;
 
 class TicketChecker extends AbstractChecker
 {
+	/** @var array */
 	public static $modify_ops = array(
-		'set_closed',
+		'set_archived',
 		'department',
 		'fields',
 		'assign_agent',
@@ -264,9 +265,9 @@ class TicketChecker extends AbstractChecker
 	/**
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
 	 */
-	public function canSetClosed(Ticket $ticket)
+	public function canSetArchived(Ticket $ticket)
 	{
-		if (!$this->person->hasPerm('agent_tickets.modify_set_closed')) {
+		if (!$this->person->hasPerm('agent_tickets.modify_set_archived')) {
 			return false;
 
 		}

@@ -185,7 +185,7 @@ class Builder
 		}
 
 		$error   = false;
-		$results = $this->renderQuery($query, 'html', $error, $params);
+		$this->renderQuery($query, 'html', $error, $params);
 
 		return $error;
 	}

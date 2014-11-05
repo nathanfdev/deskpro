@@ -38,7 +38,6 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
-use DeskPRO\Kernel\KernelErrorHandler;
 
 class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
 {

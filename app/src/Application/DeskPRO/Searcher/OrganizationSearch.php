@@ -294,7 +294,7 @@ class OrganizationSearch extends SearcherAbstract
 							$choices_in[] = $db->quote($c);
 						}
 						$choices_in = implode(',', $choices_in);
-						if (!$choices_in) $choices_in = '';
+						if (!$choices_in) $choices_in = '\'\'';
 					}
 
 					switch ($op) {
@@ -376,29 +376,59 @@ class OrganizationSearch extends SearcherAbstract
 						case 'id':
 							$join_id = Util::requestUniqueId();
 							$choices_in = array();
-							foreach ((array)$choice as $c) {
-								$choices_in[] = (int)$c;
+
+							if ($choice != 'DP_NO_SELECTION') {
+								$choice = (array)$choice;
+								if (isset($choice["field_{$field->getId()}"])) {
+									$choice = $choice["field_{$field->getId()}"];
+								}
+								if (!is_array($choice)) {
+									$choice = array($choice);
+								}
+								foreach ($choice as $c) {
+									$choices_in[] = (int)$c;
+								}
+								$choices_in = implode(',', $choices_in);
 							}
-							$choices_in = implode(',', $choices_in);
+
+							if (!$choices_in) {
+								$choice = 'DP_NO_SELECTION';
+							}
 
 							$field = 'custom_data_organizations_'.$join_id.'.field_id';
 							switch ($op) {
 								case self::OP_CONTAINS:
 								case self::OP_IS:
-									$joins[] = array(
-										'custom_data_organizations',
-										"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
-									);
-									$wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
+									if ($choice == 'DP_NO_SELECTION') {
+										$joins[] = array(
+											'custom_data_organizations',
+											"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})"
+										);
+										$wheres[] = "custom_data_organizations_$join_id.id IS NULL";
+									} else {
+										$joins[] = array(
+											'custom_data_organizations',
+											"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
+										);
+										$wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
+									}
 									break;
 
 								case self::OP_NOTCONTAINS:
 								case self::OP_NOT:
-									$joins[] = array(
-										'custom_data_organizations',
-										"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
-									);
-									$wheres[] = "custom_data_organizations_$join_id.id IS NULL";
+									if ($choice == 'DP_NO_SELECTION') {
+										$joins[] = array(
+											'custom_data_organizations',
+											"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field->id})"
+										);
+										$wheres[] = "custom_data_organizations_$join_id.id IS NOT NULL";
+									} else {
+										$joins[] = array(
+											'custom_data_organizations',
+											"LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND $field IN ($choices_in))"
+										);
+										$wheres[] = "custom_data_organizations_$join_id.id IS NULL";
+									}
 									break;
 							}
 							break;
@@ -468,7 +498,7 @@ class OrganizationSearch extends SearcherAbstract
 					if ($term == self::TERM_CONTACT_PHONE)   $field = 'phone';
 
 					$any = false;
-					foreach ($org->getContactData('address') as $cd) {
+					foreach ($org->getContactData($field) as $cd) {
 						if ($cd->checkStringMatch($choice)) {
 							$any = true;
 							if ($op == self::OP_NOTCONTAINS) {

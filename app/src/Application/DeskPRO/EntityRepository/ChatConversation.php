@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation as ChatConversationEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 
 class ChatConversation extends AbstractEntityRepository
@@ -60,7 +61,7 @@ class ChatConversation extends AbstractEntityRepository
 	 */
 	public function getOpenChatsForAgents()
 	{
-		$counts = App::getDb()->fetchAllKeyValue("
+		$counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT agent_id, COUNT(*) AS cnt
 			FROM chat_conversations
 			WHERE status = ? AND is_agent = 0
@@ -134,36 +135,36 @@ class ChatConversation extends AbstractEntityRepository
 		$agent_ids = App::getDb()->fetchAllCol("
 			SELECT people.id
 			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
-			LEFT JOIN people ON (people.id = convo2.person_id)
-			WHERE convo.person_id = {$agent['id']} AND people.is_agent = 1 AND people.id != {$agent['id']}
-		");
+			JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			JOIN people ON (people.id = convo2.person_id)
+			WHERE convo.person_id = :aid AND people.is_agent = 1 AND people.id != :aid
+		", array('aid' => $agent['id']));
 
-		return App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($agent_ids);
+		return $this->getEntityManager()->getRepository('DeskPRO:Person')->getPeopleFromIds($agent_ids);
 	}
 
 	public function getAgentTeamList($agent)
 	{
-		$agent_team_ids = App::getDb()->fetchAllCol("
+		$agent_team_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
 			SELECT c.agent_team_id
 			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
-			WHERE convo.person_id = {$agent['id']} AND c.agent_team_id IS NOT NULL
-		");
+			JOIN chat_conversations c ON (c.id = convo.conversation_id)
+			WHERE convo.person_id = ? AND c.agent_team_id IS NOT NULL
+		', array($agent['id']));
 
-		return App::getEntityRepository('DeskPRO:AgentTeam')->getByIds($agent_team_ids);
+		return $this->getEntityManager()->getRepository('DeskPRO:AgentTeam')->getByIds($agent_team_ids);
 	}
 
 	public function getAgentChatsForPerson($agent)
 	{
-		$convo_ids = App::getDb()->fetchAllCol("
+		$convo_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
 			SELECT convo.conversation_id
 			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
-			LEFT JOIN people ON (people.id = convo2.person_id)
-			WHERE convo.person_id = {$agent['id']} AND people.is_agent = 1 AND people.id != {$agent['id']}
+			JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			JOIN people ON (people.id = convo2.person_id)
+			WHERE convo.person_id = ? AND people.is_agent = 1 AND people.id != ?
 			ORDER BY convo.conversation_id DESC
-		");
+		', array($agent['id'], $agent['id']));
 
 		if (!$convo_ids) {
 			return array();
@@ -182,12 +183,12 @@ class ChatConversation extends AbstractEntityRepository
 		$sql = "
 			SELECT convo.conversation_id
 			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
-			LEFT JOIN people ON (people.id = convo2.person_id)
-			WHERE convo.person_id = $person1 AND convo2.person_id = $person2
+			JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			JOIN people ON (people.id = convo2.person_id)
+			WHERE convo.person_id = ? AND convo2.person_id = ?
 		";
 
-		$conversation_ids = App::getDb()->fetchAllCol($sql);
+		$conversation_ids = $this->getEntityManager()->getConnection()->fetchAllCol($sql, array($person1, $person2));
 
 		if (!$conversation_ids) {
 			return null;
@@ -196,31 +197,33 @@ class ChatConversation extends AbstractEntityRepository
 		$conversations = $this->getEntityManager()->createQuery("
 			SELECT c
 			FROM DeskPRO:ChatConversation c INDEX BY c.id
-			WHERE c.id IN(" . implode(',', $conversation_ids) . ")
+			WHERE c.id IN(?0)
 			ORDER BY c.id DESC
-		")->execute();
+		")->execute(array($conversation_ids));
 
 		return $conversations;
 	}
 
 	public function getTeamChatsForPerson($agent, $agent_team = null)
 	{
+		/** @var \Application\DeskPRO\DBAL\Connection $conn */
+		$conn = $this->getEntityManager()->getConnection();
 		if ($agent_team === null) {
-			$convo_ids = App::getDb()->fetchAllCol("
+			$convo_ids = $conn->fetchAllCol('
 				SELECT convo.conversation_id
 				FROM chat_conversation_to_person convo
-				LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
-				WHERE convo.person_id = {$agent['id']} AND c.agent_team_id IS NOT NULL
+				JOIN chat_conversations c ON (c.id = convo.conversation_id)
+				WHERE convo.person_id = ? AND c.agent_team_id IS NOT NULL
 				ORDER BY convo.conversation_id DESC
-			");
+			', array($agent['id']));
 		} else {
-			$convo_ids = App::getDb()->fetchAllCol("
+			$convo_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
 				SELECT convo.conversation_id
 				FROM chat_conversation_to_person convo
-				LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
-				WHERE convo.person_id = {$agent['id']} AND c.agent_team_id = {$agent_team['id']}
+				JOIN chat_conversations c ON (c.id = convo.conversation_id)
+				WHERE convo.person_id = ? AND c.agent_team_id = ?
 				ORDER BY convo.conversation_id DESC
-			");
+			', array($agent['id'], $agent_team['id']));
 		}
 
 		return $this->getByIds($convo_ids, true);
@@ -246,26 +249,24 @@ class ChatConversation extends AbstractEntityRepository
 			return $is_array ? array() : 0;
 		}
 
-		$sql = "
-			SELECT convo2.person_id, COUNT(*)
-			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
-			WHERE convo.person_id = {$person->id} AND convo2.person_id IN (" . implode(',', $person_ids) . ")
-			GROUP BY convo2.person_id
-		";
-
-		return App::getDb()->fetchAllKeyValue($sql);
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
+				SELECT convo2.person_id, COUNT(*)
+				FROM chat_conversation_to_person convo
+				JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+				WHERE convo.person_id = ? AND convo2.person_id IN (?)
+				GROUP BY convo2.person_id
+			', array($person['id'], $person_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 	}
 
 	public function getTeamConvoCounts($agent)
 	{
-		return App::getDb()->fetchAllKeyValue("
-			SELECT c.agent_team_id, COUNT(*)
-			FROM chat_conversation_to_person convo
-			LEFT JOIN chat_conversations c ON (c.id = convo.conversation_id)
-			WHERE convo.person_id = {$agent['id']} AND c.agent_team_id IS NOT NULL
-			GROUP BY c.agent_team_id
-		");
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
+				SELECT c.agent_team_id, COUNT(*)
+				FROM chat_conversation_to_person convo
+				JOIN chat_conversations c ON (c.id = convo.conversation_id)
+				WHERE convo.person_id = ? AND c.agent_team_id IS NOT NULL
+				GROUP BY c.agent_team_id
+			', array($agent['id']));
 	}
 
 
@@ -305,6 +306,7 @@ class ChatConversation extends AbstractEntityRepository
 			return null;
 		}
 
+		// todo fix query
 		$sql = "
 			SELECT c.id
 			FROM chat_conversations c
@@ -316,7 +318,7 @@ class ChatConversation extends AbstractEntityRepository
 			LIMIT 1
 		";
 
-		$conversation_id = App::getDb()->fetchColumn($sql);
+		$conversation_id = $this->getEntityManager()->getConnection()->fetchColumn($sql);
 		if (!$conversation_id) {
 			return null;
 		}
@@ -402,19 +404,17 @@ class ChatConversation extends AbstractEntityRepository
 
 	public function getCountForOrganization(OrganizationEntity $org)
 	{
-		return App::getDb()->fetchColumn("
+		return $this->getEntityManager()->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM chat_conversations
 			LEFT JOIN people ON chat_conversations.person_id = people.id
 			WHERE people.organization_id = ? AND chat_conversations.is_agent = 0
 		", array($org->getId()));
-
-		return $chats;
 	}
 
 	public function getCountForPerson(PersonEntity $person)
 	{
-		return App::getDb()->fetchColumn("
+		return $this->getEntityManager()->getConnection()->fetchColumn("
 			SELECT COUNT(*)
 			FROM chat_conversations
 			WHERE person_id = ? AND is_agent = 0

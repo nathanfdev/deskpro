@@ -35,9 +35,13 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\PersonEmailValidating;
+use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
 use Application\UserBundle\Form\ProfileType;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProfileController extends AbstractController implements RequireUserInterface
 {
@@ -48,7 +52,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	/**
 	 * Shows emails, link to edit password, form to edit name and timezone
 	 */
-	public function indexAction()
+	public function indexAction(Request $request)
 	{
 		$form = $this->get('form.factory')->create(new ProfileType(), $this->person);
 		$field_manager = $this->container->getSystemService('person_fields_manager');
@@ -59,7 +63,18 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		$invalid_name = false;
 		$profile_saved = false;
 		$invalid_custom_fields = array();
-		if ($this->get('request')->getMethod() == 'POST') {
+
+		$manager = $this->container->getCustomFieldManager();
+		$definitions_form = $manager->createDefinitionsFormForContext($this->person);
+
+		foreach ($definitions_form as $name => $child) {
+			/** @var FormInterface $child */
+			if (!$child->getConfig()->getOption('allow_edit')) {
+				$definitions_form->remove($name);
+			}
+		}
+
+		if ($request->getMethod() == 'POST') {
 			$form->handleRequest($this->get('request'));
 
 			$is_valid = true;
@@ -139,7 +154,14 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 					$field_manager->saveFormToObject($custom_fields, $this->person);
 				}
 
-				$profile_saved = true;
+				if (!$request->request->has($definitions_form->getName())) {
+					$request->request->set($definitions_form->getName(), array());
+				}
+				$definitions_form->handleRequest($request);
+				$manager->flush($definitions_form);
+
+				$this->session->setFlash('profile_saved', true);
+				return $this->redirect($this->generateUrl('user_profile'));
 			}
 		}
 
@@ -156,14 +178,15 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'form'               => $form->createView(),
 			'validating_emails'  => $validating_emails,
 			'invalid_name'       => $invalid_name,
-			'profile_saved'      => $profile_saved,
 			'custom_fields'      => $custom_fields,
 			'invalid_custom_fields' => $invalid_custom_fields,
 			'is_org_manager'     => $is_org_manager,
 			'org_manager_auto_add' => ($is_org_manager && $this->person->getPref('org.manager_auto_add')),
 			'new_blob_key'       => $new_blob_key,
 			'enable_twitter'     => $enable_twitter,
-			'password_expired'   => $password_validator->isPasswordExpired($this->person)
+			'password_expired'   => $password_validator->isPasswordExpired($this->person),
+
+			'custom_fields_definitions' => $definitions_form->createView(),
 		));
 	}
 

@@ -20,34 +20,42 @@
         return {
           restrict: 'A',
           link: function(scope, element, attrs) {
-            var id_segs, tab_group, tab_val;
+            var full, id_segs, tab_group, tab_val;
             if (!scope.dp_tab_ids) {
               scope.dp_tab_ids = {};
+            }
+            if (!scope.dp_tabs_state) {
+              scope.dp_tabs_state = {};
             }
             id_segs = attrs['dpTabBody'];
             if (!id_segs) {
               return;
             }
+            full = id_segs;
             id_segs = id_segs.split('.');
             tab_val = id_segs.pop();
             tab_group = id_segs.join('.');
             if (scope.dp_tab_ids[tab_group] === tab_val) {
               element.show();
+              scope.dp_tabs_state[full] = true;
             } else {
               element.hide();
+              scope.dp_tabs_state[full] = false;
             }
             return scope.$watch(function() {
               return scope.dp_tab_ids[tab_group];
             }, function(newVal) {
               if (newVal === tab_val) {
                 element.show();
+                scope.dp_tabs_state[full] = true;
                 return element.find('.with-ace-editor').each(function() {
                   var editor;
                   editor = $(this).data('ace-editor');
                   return editor.renderer.updateFull();
                 });
               } else {
-                return element.hide();
+                element.hide();
+                return scope.dp_tabs_state[full] = false;
               }
             });
           }

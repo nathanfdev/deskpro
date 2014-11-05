@@ -106,7 +106,7 @@ class TicketMerge implements PersonContextInterface
 
 		$this->other_ticket_id = $other_ticket->id;
 
-		if ($ticket == $other_ticket) {
+		if ($ticket === $other_ticket) {
 			throw new \InvalidArgumentException("You cannot merge a ticket with itself");
 		}
 	}

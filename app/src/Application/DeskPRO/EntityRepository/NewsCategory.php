@@ -43,6 +43,7 @@ use Orb\Util\Strings;
 
 class NewsCategory extends AbstractCategoryRepository
 {
+	/** @var array|null */
 	protected $all_cats = null;
 
 	/**

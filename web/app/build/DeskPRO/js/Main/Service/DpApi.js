@@ -48,12 +48,11 @@
       };
 
       DpApi.prototype._formatUrlObject = function(obj, baseName) {
-        var k, url, v, _results;
+        var k, url, v;
         if (baseName == null) {
           baseName = false;
         }
         url = '';
-        _results = [];
         for (k in obj) {
           if (!__hasProp.call(obj, k)) continue;
           v = obj[k];
@@ -66,13 +65,13 @@
             k = encodeURIComponent(k);
           }
           if (Util.isObject(v)) {
-            _results.push(url += this._formatUrlObject(v, k));
+            url += this._formatUrlObject(v, k);
           } else {
             v = encodeURIComponent(v);
-            _results.push(url += "" + k + "=" + v + "&");
+            url += "" + k + "=" + v + "&";
           }
         }
-        return _results;
+        return url;
       };
 
 
@@ -162,7 +161,7 @@
         http_params.method = 'GET';
         http_params.url = url;
         this.prepareHttpParams(http_params);
-        return this.$http(http_params);
+        return this.sendRequest(http_params);
       };
 
 
@@ -213,7 +212,7 @@
         http_params.data = data_str;
         this.prepareHttpParams(http_params);
         http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-        return this.$http(http_params);
+        return this.sendRequest(http_params);
       };
 
 
@@ -243,7 +242,7 @@
         http_params.url = url;
         http_params.data = post_data;
         this.prepareHttpParams(http_params);
-        return this.$http(http_params);
+        return this.sendRequest(http_params);
       };
 
 
@@ -295,7 +294,7 @@
         }
         this.prepareHttpParams(http_params);
         http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-        return this.$http(http_params);
+        return this.sendRequest(http_params);
       };
 
 
@@ -325,7 +324,7 @@
         http_params.url = url;
         http_params.data = post_data;
         this.prepareHttpParams(http_params);
-        return this.$http(http_params);
+        return this.sendRequest(http_params);
       };
 
 
@@ -349,7 +348,18 @@
         http_params.method = 'DELETE';
         http_params.url = url;
         this.prepareHttpParams(http_params);
-        return this.$http(http_params);
+        return this.sendRequest(http_params);
+      };
+
+      DpApi.prototype.sendRequest = function(http_params) {
+        var result;
+        result = this.$http(http_params);
+        result.error(function(data, status, headers, config) {
+          if (403 === status) {
+            return window.location.reload(true);
+          }
+        });
+        return result;
       };
 
       return DpApi;

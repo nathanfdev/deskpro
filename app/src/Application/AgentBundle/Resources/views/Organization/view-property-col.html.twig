@@ -47,7 +47,7 @@
 		<div id="{{baseId}}_properties_body">
 			{{ dp_app_loc(baseId, 'properties.body.before') }}
 
-			{% if custom_fields|length %}
+			{% if custom_fields|length or custom_fields_definitions|length %}
 				<dl class="table-list" id="{{baseId}}_custom_fields_rendered">
 					{% include 'AgentBundle:Organization:view-customfields-rendered-rows.html.twig' %}
 				</dl>

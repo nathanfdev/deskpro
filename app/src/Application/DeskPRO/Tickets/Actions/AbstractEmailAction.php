@@ -39,6 +39,7 @@ use Application\DeskPRO\ORM\StateChange\ChangeEmailLog;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
+use Application\DeskPRO\Twig\Extension\TemplatingExtension;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -264,30 +265,9 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 	 */
 	protected function renderStringTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
 	{
-		// Simple string, cant be a template so dont waste time evaluating it
-		if (strpos($string, '{{') === false && strpos($string, '{%') === false) {
-			return $string;
-		}
-
-		$vars = array(
-			'performer'     => $context->getPersonContext(),
-			'ticket'        => $ticket,
-			'helpdesk_name' => $this->getContainer()->getSetting('core.deskpro_name'),
-			'site_name'     => $this->getContainer()->getSetting('core.site_name'),
-			'user_vars'     => $context->getUserVars(),
-		);
-
-		if ($extra_vars) {
-			$vars = array_merge($vars, $extra_vars);
-		}
-
-		try {
-			$rendered = $this->getContainer()->getTwig()->renderStringTemplate($string, $vars);
-		} catch (\Exception $e) {
-			return $string;
-		}
-
-		return $rendered;
+        /** @var TemplatingExtension $renderer */
+        $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
+        return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars);
 	}
 
 

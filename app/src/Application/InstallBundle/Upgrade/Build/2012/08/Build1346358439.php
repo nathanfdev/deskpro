@@ -49,10 +49,10 @@ class Build1346358439 extends AbstractBuild
 			$cid = $this->container->getDb()->fetchColumn("
 				SELECT id
 				FROM departments
-				WHERE parent_id = $pid
+				WHERE parent_id = ?
 				ORDER BY display_order ASC
 				LIMIT 1
-			");
+			", array($pid));
 
 			if ($cid) {
 				$this->container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE department_id = ?', array($cid, $pid));

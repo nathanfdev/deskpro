@@ -15,10 +15,11 @@
 
       Admin_EmailStatus_Ctrl_ViewSend.CTRL_AS = 'ViewSource';
 
-      Admin_EmailStatus_Ctrl_ViewSend.DEPS = ['$state', '$modal'];
+      Admin_EmailStatus_Ctrl_ViewSend.DEPS = ['$state', '$modal', 'DpDateService'];
 
       Admin_EmailStatus_Ctrl_ViewSend.prototype.init = function() {
         this.sendmailId = parseInt(this.$stateParams.id);
+        this.$scope.ds = this.DpDateService;
       };
 
       Admin_EmailStatus_Ctrl_ViewSend.prototype.initialLoad = function() {
@@ -26,7 +27,14 @@
           return function(res) {
             _this.sendmail = res.data.sendmail;
             _this.sendmail_raw = res.data.sendmail_raw;
-            return _this.log = res.data.sendmail_log;
+            _this.log = res.data.sendmail_log;
+            _this.sendmail.date_created = _this.DpDateService.local(_this.sendmail.date_created);
+            if (_this.sendmail.date_sent) {
+              _this.sendmail.date_sent = _this.DpDateService.local(_this.sendmail.date_sent);
+            }
+            if (_this.sendmail.date_next_attempt) {
+              return _this.sendmail.date_next_attempt = _this.DpDateService.local(_this.sendmail.date_next_attempt);
+            }
           };
         })(this));
       };

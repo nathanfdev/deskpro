@@ -15,6 +15,8 @@
 
       Admin_Agents_Ctrl_DeletedRestore.CTRL_AS = 'EditCtrl';
 
+      Admin_Agents_Ctrl_DeletedRestore.DEPS = ['DpLicense'];
+
       Admin_Agents_Ctrl_DeletedRestore.prototype.init = function() {
         this.agentId = parseInt(this.$stateParams.id);
       };
@@ -42,6 +44,15 @@
             return _this.$state.go('agents.agents.edit', {
               id: _this.agentId
             });
+          };
+        })(this), (function(_this) {
+          return function(res) {
+            _this.stopSpinner('saving', true);
+            if (res.data.error_code && res.data.error_code === 'license_exceeded') {
+              return _this.DpLicense.openUpgradeLicense('upgrade_plan').then(function() {
+                return _this.restoreAgent();
+              });
+            }
           };
         })(this));
         return promise;

@@ -404,6 +404,11 @@ final class License
 	/**
 	 * @var string
 	 */
+	private $license_request_code;
+
+	/**
+	 * @var string
+	 */
 	private $license_salt;
 
 	/**
@@ -446,6 +451,19 @@ final class License
 		}
 
 		return DP_MA_SERVER;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public static function getSecureLicServer()
+	{
+		if (!defined('DP_MA_SERVER_SECURE')) {
+			define('DP_MA_SERVER_SECURE', 'https://www.deskpro.com/members');
+		}
+
+		return DP_MA_SERVER_SECURE;
 	}
 
 

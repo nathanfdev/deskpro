@@ -666,7 +666,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			propToggle('form');
 		});
 		$('.save', box).on('click', function() {
-			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).serializeArray();
+			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
+			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
+				formData[$(this).attr('name')] = $(this).val();
+			});
 
 			$('.is-loading', box).show();
 			$('.save', box).hide();
@@ -1022,11 +1025,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				doneInitEdit = true;
 				editBox.find('.remove-trigger').on('click', function(ev) {
 					ev.preventDefault();
-					var me = $(this), li = me.closest('li');
+					var me = $(this), tr = me.closest('tr');
 					if (confirm(me.data('confirm'))) {
 						var formData = []
 						formData.push({ name: 'action', value: 'remove-usersource'} );
-						formData.push({ name: 'usersource_id', value: li.data('us-id') });
+						formData.push({ name: 'usersource_id', value: tr.data('us-id') });
 
 						showSaving();
 						$.ajax({
@@ -1040,10 +1043,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							},
 							success: function(data) {
 
-								usbox.find('.us-' + li.data('us-id')).remove();
+								usbox.find('.us-' + tr.data('us-id')).remove();
 								showNormal();
 
-								if (!displayBox.find('li').length) {
+								if (!displayBox.find('tr').length) {
 									usbox.hide();
 								}
 							}

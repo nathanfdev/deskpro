@@ -198,20 +198,27 @@ define [
 			# Ticket Fields
 			#------------------------------
 
-			if @options_data?.ticket_fields
-				options = []
+			options = []
 
+			if @options_data?.ticket_fields
 				for f in @options_data.ticket_fields
 					options.push({
 						title: f.title,
 						value: @initFieldGetter('CheckTicketField', f)
 					})
 
-				if options.length
-					set_options.push({
-						title: 'Ticket Fields',
-						subOptions: options
+			if @options_data?.contextual_fields
+				for f in @options_data.contextual_fields
+					options.push({
+						title: f.title,
+						value: @initFieldGetter('CheckTicketContextualField', f)
 					})
+
+			if options.length
+				set_options.push({
+					title: 'Ticket Fields',
+					subOptions: options
+				})
 
 			#------------------------------
 			# Person
@@ -470,8 +477,9 @@ define [
 						'usergroups':      '/user_groups',
 						'langs':           '/langs',
 						'email_tpls':      '/email-templates-info'
-						'api_keys':        '/api_keys',
+						'api_keys':        '/api_keys'
 						'ticket_settings': '/ticket_settings'
+						'contextual_fields': '/custom_fields'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -492,11 +500,15 @@ define [
 						options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
 						options_data['api_keys']         = data.api_keys.api_keys
 						options_data['ticket_settings']  = data.ticket_settings?.ticket_settings
+						options_data['contextual_fields']= data.contextual_fields
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
 							for f in @options_data.ticket_fields
 								@initFieldGetter('CheckTicketField', f)
+						if @options_data?.contextual_fields
+							for f in @options_data.contextual_fields
+								@initFieldGetter('CheckTicketContextualField', f)
 						if @options_data?.user_fields
 							for f in @options_data.user_fields
 								@initFieldGetter('CheckUserField', f)
@@ -606,7 +618,7 @@ define [
 				for acc in options
 					opts.push({
 						value: acc.id,
-						title: acc.address
+						title: acc.use_email_address || acc.address
 					})
 
 				return opts

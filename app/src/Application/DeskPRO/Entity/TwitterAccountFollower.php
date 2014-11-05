@@ -60,8 +60,14 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $user;
 
+	/**
+	 * @var int
+	 */
 	protected $follow_order;
 
+	/**
+	 * @var bool
+	 */
 	protected $is_archived = false;
 
 	/**

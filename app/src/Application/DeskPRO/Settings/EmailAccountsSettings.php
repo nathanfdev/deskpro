@@ -37,6 +37,7 @@ class EmailAccountsSettings
 	 */
 	protected $settings;
 
+	/** @var array  */
 	protected $values = array(
 		'attach_agent_maxsize'   => 26214400,
 		'attach_agent_must_exts' => array(),
@@ -44,6 +45,7 @@ class EmailAccountsSettings
 		'attach_user_maxsize'    => 26214400,
 		'attach_user_must_exts'  => array(),
 		'attach_user_not_exts'   => array(),
+		'sendemail_attach_maxsize' => 7340032,
 	);
 
 	public function __construct(Settings $settings)
@@ -55,7 +57,11 @@ class EmailAccountsSettings
 	{
 		$data = array();
 		foreach ($this->values as $k => $v) {
-			$storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
+			if ($k == 'sendemail_attach_maxsize') {
+				$storedValue = $this->settings->get('core.sendemail_attach_maxsize');
+			} else {
+				$storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
+			}
 
 			if (is_int($v)) {
 				$storedValue = (int) $storedValue;
@@ -84,7 +90,12 @@ class EmailAccountsSettings
 				$storeValue = implode(',', $v);
 			}
 			$this->values[$k] = $v;
-			$this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
+
+			if ($k == 'sendemail_attach_maxsize') {
+				$this->settings->setSetting('core.sendemail_attach_maxsize', (int)$storeValue ?: null);
+			} else {
+				$this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
+			}
 		}
 	}
 } 

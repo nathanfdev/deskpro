@@ -37,13 +37,9 @@ namespace Orb\Auth\Adapter;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
-use Orb\Util\Arrays;
-
-use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Util\Strings;
-use Zend\Config\Processor\Filter;
-use Zend\Ldap\Ldap;
 
 class ActiveDirectory implements FormLoginInterface, Loggable
 {
@@ -72,6 +68,9 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	 */
 	protected $set_password;
 
+	/**
+	 * @var array
+	 */
 	protected $options = array(
 		self::OPT_HOST               => 'localhost',
 		self::OPT_PORT               => null, // null means default of 389 or 636 if ssl enabled
@@ -132,7 +131,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
 	 *
 	 * @return Result
 	 */
-	public function Authenticate()
+	public function authenticate()
 	{
 		$res = $this->doAuthenticate();
 

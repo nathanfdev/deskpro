@@ -42,6 +42,7 @@ use Orb\Util\Strings;
  */
 class Basic implements CleanerPlugin
 {
+	/** @var bool */
 	protected $use_utf_funcs = false;
 
 	public function getCleanerId()

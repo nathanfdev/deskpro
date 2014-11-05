@@ -12,7 +12,7 @@ define [
 	class Admin_Agents_Ctrl_Edit extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Agents_Ctrl_Edit'
 		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = []
+		@DEPS      = ['DpLicense']
 
 		init: ->
 			@agentId = parseInt(@$stateParams.id)
@@ -36,6 +36,15 @@ define [
 						@form.email_primary = emails_list[0]
 					else
 						@form.email_primary = ''
+			)
+
+			@$scope.$watch('EditCtrl.form.zones.admin', =>
+				return if not @form?.zones?
+				@form.zones.reports = @form.zones.reports || @form.zones.admin
+			)
+			@$scope.$watch('EditCtrl.form.zones.reports', =>
+				return if not @form?.zones?
+				@form.zones.reports = @form.zones.reports || @form.zones.admin
 			)
 			return
 
@@ -368,7 +377,7 @@ define [
 
 					if settings.zones
 						@form.zones.admin   = form.zones.admin
-						@form.zones.reports = form.zones.reports
+						@form.zones.reports = form.zones.reports || form.zones.admin
 
 					if settings.teams
 						tids = []
@@ -551,11 +560,44 @@ define [
 
 			return formData
 
+		saveAgent: ->
+			if not @$scope.form_props.$valid
+				return
+
+			if @agentId
+				return @doSaveAgent()
+			else
+				d = @$q.defer()
+
+				@startSpinner('saving')
+
+				@DpLicense.getLicInfo(true).then( (licInfo) =>
+					@stopSpinner('saving', true)
+					if licInfo.limits.remain_agents != 0
+						@doSaveAgent().then(->
+							d.resolve()
+						, ->
+							d.reject()
+						)
+					else
+						@DpLicense.openUpgradeLicense('upgrade_plan').then(=>
+							@doSaveAgent().then(->
+								d.resolve()
+							, ->
+								d.reject()
+							)
+						)
+				, =>
+					@stopSpinner('saving', true)
+					d.reject()
+				)
+
+				return d.promise
 
 		###
     	# Saves the agent
 		###
-		saveAgent: ->
+		doSaveAgent: ->
 			if not @$scope.form_props.$valid
 				return
 

@@ -24,7 +24,7 @@
 			<tbody>
 				<tr>
 					<th width="140">Date</th>
-					<td><span am-time-ago="ViewSource.sendmail.date_created" title="{{ ng_var('ViewSource.sendmail.date_created') }}"></span></td>
+					<td><span am-time-ago="ViewSource.sendmail.date_created" title="{{ ng_var('ds.format(ViewSource.sendmail.date_created, "fulltime")') }}"></span></td>
 				</tr>
 				<tr>
 					<th>Status</th>

@@ -46,9 +46,6 @@ class TicketSlas extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 60;
 
-	private $count_failed = 0;
-	private $count_warning = 0;
-
 	public function run()
 	{
 		$GLOBALS['DP_ESCALATION_RUNNING'] = true;

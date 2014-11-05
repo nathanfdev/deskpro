@@ -86,8 +86,12 @@ class BlobStorageService
 			$client = S3Client::factory(array(
 				'key'          => $container->getSetting('core.filestorage_s3_key'),
 				'secret'       => $container->getSetting('core.filestorage_s3_secret'),
+				'request.options' => array(
+					'connect_timeout' => 15,
+					'timeout'         => 120,
+				),
 				'curl.options' => array(
-					CURLOPT_CONNECTTIMEOUT => 40,
+					CURLOPT_CONNECTTIMEOUT => 15,
 					CURLOPT_TIMEOUT        => 120,
 				)
 			));
@@ -143,8 +147,10 @@ class BlobStorageService
 			}
 		}
 
-		if (defined('DP_BLOBSTORAGE_SAVECOPY_PATH')) {
-			$bs->setSaveCopyPath(DP_BLOBSTORAGE_SAVECOPY_PATH);
+		// Store logs in the database if config flag is set
+		if ($log_adapter_id = $container->getSetting('core.filestorage_method_logs')) {
+			$bs->setAdapterForTag('logs.email_source_log', $log_adapter_id);
+			$bs->setAdapterForTag('logs.ticket_proc_log', $log_adapter_id);
 		}
 
 		return $bs;

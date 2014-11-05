@@ -2,6 +2,8 @@
  # The sidebar block that shows the currently logged in user, or the login form if the user isn't logged in.
  ##}
 
+{% set authManager = app.authenticationManager %}
+
 {% if app.user.id %}
 	<section class="dp-sidebar-block dp-userinfo">
 		<header>
@@ -53,10 +55,11 @@
 	</section>
 {% else %}
 	<!--DP_OFFLINE_CACHE_REMOVE_START-->
+	{% if authManager.isAuthVisible %}
 	<section class="dp-sidebar-block">
 		<header>
 			<h3>
-				{% if app.getSetting('core.reg_enabled') %}
+				{% if authManager.isRegistrationFormVisible %}
 					{{ phrase('user.profile.register_or_login_below', {'url': path('user_register')}) }}
 				{% else %}
 					{{ phrase('user.general.login_below') }}
@@ -64,6 +67,7 @@
 			</h3>
 		</header>
 		<article class="dp-written">
+			{% if authManager.isLoginFormVisible %}
 			<div id="dp_login_box" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.LoginBox">
 				<form action="{{ path('user_login_authenticate_local') }}" method="post">
 					<input type="hidden" name="return" value="{{ app.getRequest().getRequestUri() }}" />
@@ -77,7 +81,7 @@
 						</dl>
 						<div class="dp-login-section">
 							<dl>
-								<dt>{{ phrase('user.profile.password') }} {% if app.getSetting('core.deskpro_source_enabled') %}<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></em>{% endif %}</dt>
+								<dt>{{ phrase('user.profile.password') }} {% if authManager.isForgotPasswordVisible %}<em class="forgot"><a href="{{ path('user_login_resetpass') }}">{{ phrase('user.profile.lost_qm') }}</a></em>{% endif %}</dt>
 								<dd><input type="password" autocomplete="off" value="" name="password" id="dp_login_password" size="20" tabindex="51" /></dd>
 							</dl>
 							<div class="dp-btn-row">
@@ -86,10 +90,20 @@
 								{% endif %}
 								<input class="dp-btn" type="submit" value="{{ phrase('user.general.log_in') }}" tabindex="52" />
 							</div>
-							{% if app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+
+							{% if authManager.hasLoginTextButtonUsersources %}
+								<ul class="dp-unstyled"
+									style="border-top: 1px solid #ccc;font-size: 11px;margin-top: 12px;padding-top: 7px;">
+									{% for usersource in authManager.getLoginTextButtonUsersources %}
+										<li style="margin-bottom: 5px">{{ render_usersource(usersource, 'login_text_btn') }}</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+
+							{% if authManager.hasLoginIconUsersources %}
 								<div class="dp-usersource-list">
 									{{ phrase('user.profile.or_connect_with') }}
-									{% for usersource in app.usersourceManager.getWithCapability('tpl_login_pull_btn') %}
+									{% for usersource in authManager.getLoginIconUsersources %}
 										{{ render_usersource(usersource, 'login_pull_btn') }}
 									{% endfor %}
 								</div>
@@ -117,7 +131,37 @@
 					</div>
 				</form>
 			</div>
+			{% else %}
+				<div class="dp-login-section">
+				{% if authManager.hasLoginTextButtonUsersources %}
+					<ul class="dp-unstyled">
+						{% for usersource in authManager.getLoginTextButtonUsersources %}
+							<li style="margin-bottom: 5px">{{ render_usersource(usersource, 'login_text_btn') }}</li>
+						{% endfor %}
+					</ul>
+					{% if authManager.hasLoginIconUsersources %}
+						<div class="dp-usersource-list"
+							style="border-top: 1px solid #ccc;font-size: 11px;margin-top: 12px;padding-top: 7px; text-align: right;">
+							{{ phrase('user.profile.or_connect_with') }}
+							{% for usersource in authManager.getLoginIconUsersources %}
+								{{ render_usersource(usersource, 'login_pull_btn') }}
+							{% endfor %}
+						</div>
+					{% endif %}
+				{% else %}
+					{% if authManager.hasLoginIconUsersources %}
+						<div class="dp-usersource-list">
+							{{ phrase('user.profile.connect_with') }}
+							{% for usersource in authManager.getLoginIconUsersources %}
+								{{ render_usersource(usersource, 'login_pull_btn') }}
+							{% endfor %}
+						</div>
+					{% endif %}
+				{% endif %}
+				</div>
+			{% endif %}
 		</article>
 	</section>
+	{% endif %}
 	<!--DP_OFFLINE_CACHE_REMOVE_END-->
 {% endif %}

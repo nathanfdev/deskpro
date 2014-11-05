@@ -64,7 +64,6 @@ class NewsController extends AbstractController
 		$search_options = array();
 		$search_options['order_by'] = $this->in->getString('order_by');
 
-		$category_id = 0;
 		$category = null;
 
 		if ($slug) {
@@ -94,10 +93,6 @@ class NewsController extends AbstractController
 			$category_id = $this->getContainer()->getSetting('user.portal_default_news_cat');
 			if ($category_id && $structure->hasNewsCategory($category_id)) {
 				$category = $structure->getNewsCategory($category_id);
-			}
-
-			if (!$category) {
-				$category_id = 0;
 			}
 		}
 

@@ -37,9 +37,13 @@ use Application\DeskPRO\App;
 
 class EmailAddress
 {
+	/** @var string */
 	public $email;
+	/** @var string */
 	public $name;
+	/** @var string */
 	public $name_utf8;
+	/** @var string */
 	public $original_charset;
 
 	public function getRealEmail()

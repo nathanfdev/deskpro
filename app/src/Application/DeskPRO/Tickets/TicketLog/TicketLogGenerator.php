@@ -624,6 +624,11 @@ class TicketLogGenerator
 				$log_data['new_status']  = $new['status'];
 				return $log_data;
 
+			case 'webhook':
+				$data = $change instanceof ChangeData ? $change->getData() : array();
+				$data['action_type'] = 'webhook';
+				return $data;
+
 			default:
 				return array();
 		}

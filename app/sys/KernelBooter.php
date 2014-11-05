@@ -255,6 +255,7 @@ class KernelBooter
 			header('Location: ' . $url);
 			exit;
 		} else {
+			define('DP_INTERFACE', 'user');
 
 
 

@@ -281,7 +281,7 @@
 				<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
 				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
 				{% if search_context != 'filter' %}
-					<option value="closed">{{ phrase('agent.tickets.status_closed') }}</option>
+					<option value="archived">{{ phrase('agent.tickets.status_archived') }}</option>
 					<optgroup label="Hidden Tickets">
 						<option value="hidden">Any Hidden Ticket</option>
 						<option value="hidden.deleted">Deleted</option>
@@ -709,8 +709,8 @@
 	</div>
 	{% endif %}
 
-	{% if 'date_closed' not in no_show_fields and not event_trigger %}
-	<div class="builder-type" title="{{ phrase('agent.general.date_closed') }}" data-rule-type="date_closed" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	{% if 'date_archived' not in no_show_fields and not event_trigger %}
+	<div class="builder-type" title="{{ phrase('agent.general.date_archived') }}" data-rule-type="date_archived" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 		<div class="builder-op">
 			<select name="op" class="op">
 				<option value="lte">{{ phrase('agent.general.before') }}</option>

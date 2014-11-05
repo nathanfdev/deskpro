@@ -74,6 +74,17 @@ class News extends ContentAbstract implements HighlightableModelInterface
      */
     protected $_search_highlights;
 
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_end;
+
+	/**
+	 * @var string
+	 */
+	protected $end_action = null;
+
+
 	public function getContentHtml()
 	{
 		$content = $this->getContent();
@@ -219,124 +230,25 @@ class News extends ContentAbstract implements HighlightableModelInterface
 		);
 		$metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
-				'columnName' => 'id', 'id' => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0,
-				'nullable'  => false, 'columnName' => 'slug', 'unique' => true
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-				'nullable'  => false, 'columnName' => 'title',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false,
-				'columnName' => 'content',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
-				'columnName' => 'view_count',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
-				'nullable'   => false, 'columnName' => 'total_rating',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
-				'nullable'   => false, 'columnName' => 'num_comments',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
-				'columnName' => 'num_ratings',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0,
-				'nullable'  => false, 'columnName' => 'status',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0,
-				'nullable'  => true, 'columnName' => 'hidden_status',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
-				'nullable'  => false, 'columnName' => 'date_created',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
-				'nullable'  => true, 'columnName' => 'date_published',
-			)
-		);
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', 'unique' => true ));
+		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+		$metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content', ));
+		$metadata->mapField(array( 'fieldName' => 'view_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'view_count', ));
+		$metadata->mapField(array( 'fieldName' => 'total_rating', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'total_rating', ));
+		$metadata->mapField(array( 'fieldName' => 'num_comments', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_comments', ));
+		$metadata->mapField(array( 'fieldName' => 'num_ratings', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'num_ratings', ));
+		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
+		$metadata->mapField(array( 'fieldName' => 'hidden_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hidden_status', ));
+		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+		$metadata->mapField(array( 'fieldName' => 'date_published', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_published', ));
+		$metadata->mapField(array( 'fieldName' => 'date_end', 'type' => 'datetime', 'nullable' => true, 'columnName' => 'date_end', ));
+		$metadata->mapField(array( 'fieldName' => 'end_action', 'type' => 'string', 'length' => 10, 'nullable' => true, 'columnName' => 'end_action', ));
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(
-			array(
-				'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
-				'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
-				0 => array(
-					'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
-					'onDelete' => 'cascade', 'columnDefinition' => null,
-				),
-			), 'dpApi'      => true
-			)
-		);
-		$metadata->mapOneToMany(
-			array(
-				'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsRevision',
-				'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'news',
-			)
-		);
-		$metadata->mapOneToMany(
-			array(
-				'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelNews',
-				'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'news',
-				'orphanRemoval' => true,
-			)
-		);
-		$metadata->mapManyToOne(
-			array(
-				'fieldName'  => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
-				'inversedBy' => null, 'joinColumns' => array(
-				0 => array(
-					'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
-					'onDelete'         => 'set null', 'columnDefinition' => null,
-				),
-			), 'dpApi'       => true
-			)
-		);
-		$metadata->mapManyToOne(
-			array(
-				'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
-				'mappedBy'  => null, 'inversedBy' => null, 'joinColumns' => array(
-				0 => array(
-					'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
-					'onDelete' => 'cascade', 'columnDefinition' => null,
-				),
-			), 'dpApi'      => true
-			)
-		);
+		$metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsRevision', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'news',  ));
+		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelNews', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'news', 'orphanRemoval' => true, ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
 	}
 }

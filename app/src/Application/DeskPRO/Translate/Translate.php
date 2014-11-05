@@ -694,12 +694,13 @@ class Translate implements PersonContextInterface
 	 * $property may be null, in which case it's expected to be a 'title' or 'name',
 	 * or the only item on the object that is translatable.
 	 *
-	 * @param stdObject $object The object to get a phrase for
+	 * @param mixed $object The object to get a phrase for
 	 * @param string $property A specific thing in the object to translate
 	 * @param  Language|int $language The Language entity to use, or its id
+	 * @param  bool $fallback_default
 	 * @return string
 	 */
-	public function getPhraseObject($object, $property = null, $language = null)
+	public function getPhraseObject($object, $property = null, $language = null, $fallback_default = true)
 	{
 		#------------------------------
 		# Standard translation interfaces
@@ -709,15 +710,28 @@ class Translate implements PersonContextInterface
 			return $object->getPhrase($this, $language);
 
 		} else if ($object instanceof HasPhraseName) {
-			$phrase_name = $object->getPhraseName($property, $this);
+			$phrase_name_raw = $object->getPhraseName($property, $this);
 			$phrase_text = false;
+			$phrase_name = false;
 
-			if ($phrase_name && $this->hasPhrase($phrase_name, $language)) {
-				$phrase_text = $this->phrase($phrase_name, array(), $language);
+			if (!is_array($phrase_name_raw)) {
+				$phrase_name_raw = array($phrase_name_raw);
+			}
+
+			foreach ($phrase_name_raw as $use_phrase_name) {
+				if ($use_phrase_name && $this->hasPhrase($use_phrase_name, $language)) {
+					$phrase_text = $this->phrase($use_phrase_name, array(), $language);
+					$phrase_name = $use_phrase_name;
+					break;
+				}
 			}
 
 			if (!$phrase_text) {
-				$phrase_text = $object->getPhraseDefault($property, $this);
+				if ($fallback_default) {
+					$phrase_text = $object->getPhraseDefault($property, $this);
+				} else {
+					return '';
+				}
 			}
 
 			if ($phrase_text) return $phrase_text;

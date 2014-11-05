@@ -1,0 +1,11 @@
+{% if render %}
+<script type="text/javascript">
+	var frame = document.createElement("IFRAME");
+	frame.src = "{{ iframe_url }}";
+	frame.height = 0;
+	frame.width = 0;
+	$(function () {
+		$('body').append(frame);
+	});
+</script>
+{% endif %}

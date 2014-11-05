@@ -3,8 +3,7 @@
 	<nav class="dp-appnav">
 		<ul>
 
-			{% if experimental_admin_features %}
-			{# normal users wont see this #}
+			{% if app.getSetting('experimental_admin_features') %}
 			<li>
 				<a href="#"><i class="fa fa-tasks"></i> <span>Channels</span> <i class="fa fa-caret-down"></i></a>
 				<ul dp-nav-subnav>
@@ -14,6 +13,9 @@
 					<li dp-state-mark="tickets.channel_sms"><a href="#/tickets/channel_sms"><i
 								class="fa fa-group"></i> <span>SMS</span><i class="fa fa-caret-right"></i></a>
 					</li>
+					<li dp-state-mark="tickets.channel_facebook"><a href="#/tickets/channel_facebook"><i
+								class="fa fa-group"></i> <span>Facebook</span><i class="fa fa-caret-right"></i></a>
+					</li>
 				</ul>
 			</li>
 			{% endif %}
@@ -22,8 +24,7 @@
 			<li dp-state-mark="tickets.ticket_deps"><a href="#/tickets/ticket_deps"><i class="fa fa-briefcase"></i>
 					<span>Departments</span><i class="fa fa-caret-right"></i></a></li>
 
-			{%  if not experimental_admin_features %}
-			{# normal users see this, for now, unless twig global in config.php is set to true #}
+			{%  if not app.getSetting('experimental_admin_features') %}
 			<li dp-state-mark="tickets.ticket_accounts"><a href="#/tickets/ticket_accounts"><i
 						class="fa fa-envelope"></i> <span>Email Accounts</span><i class="fa fa-caret-right"></i></a>
 			</li>

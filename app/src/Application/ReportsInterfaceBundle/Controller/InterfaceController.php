@@ -55,13 +55,7 @@ class InterfaceController extends AbstractController
 			}
 
 			if ($route_info) {
-				$ctrl_name = null;
 				$ctrl_path = $route_info['_controller'];
-				$m = null;
-				if (preg_match('#^Application\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
-					$ctrl_name = $m[1] . ':' . $m[2] . ':' . $m[3];
-				}
-
 				unset($route_info['_controller']);
 				unset($route_info['_route']);
 				$path_vars = $route_info;

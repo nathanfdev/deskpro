@@ -135,6 +135,9 @@
 
       Admin_TicketAccounts_Ctrl_Edit.prototype.saveAccount = function() {
         var is_new, postData, promise, triggerSaver;
+        if (this.$scope.form_props.$invalid) {
+          return;
+        }
         if (!this.account.id && !this.new_is_confirmed && this.$scope.form.account_type !== 'outgoing') {
           this.showNewAccountConfirm();
           return;

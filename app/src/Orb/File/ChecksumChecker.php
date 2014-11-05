@@ -256,7 +256,7 @@ class ChecksumChecker
 		if ($this->file_list) {
 			$array = array();
 			foreach ($this->file_list as $f) {
-				$file = new \SplFileInfo($this->base_dir . $f);
+				$array[] = new \SplFileInfo($this->base_dir . $f);
 			}
 
 			return new \ArrayIterator($array);

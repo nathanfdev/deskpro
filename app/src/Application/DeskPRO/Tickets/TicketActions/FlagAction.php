@@ -44,8 +44,11 @@ use Application\DeskPRO\People\PersonContextInterface;
  */
 class FlagAction extends AbstractAction implements PersonContextInterface, ExecutionContextAware
 {
+	/** @var string */
 	protected $flag;
+	/** @var Person */
 	protected $person_context;
+	/** @var string|null */
 	protected $execution_context = null;
 
 	public function __construct($flag)

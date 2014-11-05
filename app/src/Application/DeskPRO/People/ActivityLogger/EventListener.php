@@ -47,7 +47,6 @@ use Application\DeskPRO\People\ActivityLogger\ActionType\Registered;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
-use Symfony\Component\Security\Acl\Tests\Domain\DomainObject;
 
 class EventListener implements EventSubscriber
 {

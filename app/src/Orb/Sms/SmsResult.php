@@ -53,11 +53,17 @@ class SmsResult
 	 */
 	const SMS_FAIL = 'fail';
 
+	/** @var string */
 	private $status;
+	/** @var string */
 	private $from_number;
+	/** @var string */
 	private $to_number;
+	/** @var string */
 	private $message;
+	/** @var string */
 	private $provider;
+	/** @var array */
 	private $provider_metadata;
 
 	/**

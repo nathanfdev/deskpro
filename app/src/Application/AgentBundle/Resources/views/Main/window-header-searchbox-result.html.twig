@@ -26,8 +26,8 @@
 					<% if (ticket_display.status == 'resolved') { %>
 						<label>{{ phrase('agent.tickets.status_resolved') }}</label>
 					<% } %>
-					<% if (ticket_display.status == 'closed') { %>
-						<label>{{ phrase('agent.tickets.status_closed') }}</label>
+					<% if (ticket_display.status == 'archived') { %>
+						<label>{{ phrase('agent.tickets.status_archived') }}</label>
 					<% } %>
 					<% if (ticket_display.status == 'hidden' && !ticket_display.hidden_status) { %>
 						<label>{{ phrase('agent.tickets.status_hidden') }}</label>
@@ -108,7 +108,7 @@
 {#########################################################################}
 
 <% if (group.type == 'chat_conversation') { var chat = result; %>
-<article class="row-item no-check" route-notabreload="1" data-route="ticket:{{ path('agent_userchat_view', {'conversation_id': '0000'})|replace({'0000': '<%- chat.id %>'})|raw }}">
+<article class="row-item no-check" route-notabreload="1" data-route="page:{{ path('agent_userchat_view', {'conversation_id': '0000'})|replace({'0000': '<%- chat.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>

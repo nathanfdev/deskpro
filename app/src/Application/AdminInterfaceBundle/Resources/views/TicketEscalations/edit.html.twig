@@ -2,7 +2,7 @@
 
 {% block editpane_content %}
 
-	<form role="form" name="form_props" ng-submit="EditCtrl.saveForm()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
@@ -70,7 +70,7 @@
 									<dp-option-builder types-def="EditCtrl.criteriaTypeDef"
 													   save-target="EditCtrl.form.terms"
 													   options="{tag_first: false, tag_after: 'and'}"
-													   option-types="EditCtrl.criteriaOptionTypes">
+													   option-types="criteriaOptionTypes">
 										<add-btn-label>Criteria</add-btn-label>
 									</dp-option-builder>
 								</article>
@@ -87,7 +87,7 @@
 									<dp-option-builder types-def="EditCtrl.criteriaTypeDef"
 										save-target="EditCtrl.form.terms_any"
 										options="{tag_first: false, tag_after: 'or'}"
-										option-types="EditCtrl.criteriaOptionTypes">
+										option-types="criteriaOptionTypes">
 										<add-btn-label>Criteria</add-btn-label>
 									</dp-option-builder>
 								</article>
@@ -119,7 +119,7 @@
 									<dp-option-builder types-def="EditCtrl.actionsTypeDef"
 													   save-target="EditCtrl.form.actions"
 													   options="{tag_first: '', tag_after: 'then'}"
-													   option-types="EditCtrl.actionOptionTypes">
+													   option-types="actionOptionTypes">
 										<add-btn-label>Action</add-btn-label>
 									</dp-option-builder>
 								</article>
@@ -138,8 +138,12 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="EditCtrl.esc.id">
-						<button class="btn btn-danger" ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.esc.id);">Delete</button>
+					<div class="dp-delete-control" ng-if="EditCtrl.esc.id"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
+						<button class="btn btn-danger"
+                                ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.esc.id);">
+                            Delete
+                        </button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">

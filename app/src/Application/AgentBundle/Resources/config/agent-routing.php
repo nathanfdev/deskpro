@@ -206,6 +206,14 @@ $collection->create('agent_login_callback', array(
 	'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
+$collection->create(
+	'agent_login_usersource_sso', array(
+		'path'         => '/login/usersource-sso/{usersource_id}',
+		'controller'   => 'UserBundle:Login:usersourceSso',
+		'requirements' => array('usersource_id' => '\\d+'),
+	)
+);
+
 $collection->create('agent_login_adminlogin', array(
 	'path'        => '/login/admin-login/{code}',
 	'controller'  => 'AgentBundle:Login:authAdminLogin',
@@ -446,6 +454,18 @@ $collection->create('agent_people_ajaxsave_organization', array(
 	'path'          => '/people/{person_id}/ajax-save-organization',
 	'controller'    => 'AgentBundle:Person:ajaxSaveOrganization',
 	'requirements'  => array('person_id' => '\\d+'),
+));
+
+$collection->create('agent_person_list', array(
+	'path'        => '/person',
+	'controller'  => 'AgentBundle:Person:list',
+	'condition'   => 'request.headers.get("X-Requested-With") == "XMLHttpRequest"',
+));
+
+$collection->create('agent_team_list', array(
+	'path'        => '/agent_team',
+	'controller'  => 'AgentBundle:Person:listTeams',
+	'condition'   => 'request.headers.get("X-Requested-With") == "XMLHttpRequest"',
 ));
 
 $collection->create('agent_person_get_tickets', array(
@@ -777,6 +797,11 @@ $collection->create('agent_ticket_new_getpersonrow', array(
 	'controller'  => 'AgentBundle:Ticket:newticketGetPersonRow',
 ));
 
+$collection->create('agent_ticket_new_getcustomfieldsrow', array(
+	'path'        => '/tickets/new/get-custom-fields-row/{person_id}/{department_id}',
+	'controller'  => 'AgentBundle:Ticket:newTicketGetCustomFieldsRow',
+));
+
 $collection->create('agent_ticket_getmessagetpl', array(
 	'path'        => '/tickets/get-message-template/{id}.json',
 	'controller'  => 'AgentBundle:Ticket:getTicketMessageTemplate',
@@ -933,12 +958,6 @@ $collection->create('agent_ticket_changeuser', array(
 	'path'          => '/tickets/{ticket_id}/change-user',
 	'controller'    => 'AgentBundle:Ticket:changeUser',
 	'requirements'  => array('ticket_id' => '\\d+', 'new_person_id' => '\\d+'),
-));
-
-$collection->create('agent_ticket_ajaxsavecustomfields', array(
-	'path'          => '/tickets/{ticket_id}/ajax-save-custom-fields',
-	'controller'    => 'AgentBundle:Ticket:ajaxSaveCustomFields',
-	'requirements'  => array('ticket_id' => '\\d+'),
 ));
 
 $collection->create('agent_ticket_ajaxsavereply', array(
@@ -1415,99 +1434,6 @@ $collection->create('agent_task_ics_delegated_tasks', array(
 	'controller'   => 'AgentBundle:Task:iCal',
 	'defaults'     => array('filter' => 'delegated'),
 	'requirements' => array('authcode' => '.*', 'id' => '^\\d+$')
-));
-
-$collection->create('agent_dealearch_getsectiondata', array(
-	'path'        => '/deal/get-section-data.json',
-	'controller'  => 'AgentBundle:Deal:getSectionData',
-));
-
-$collection->create('agent_deal_list', array(
-	'path'          => '/deals/list/{owner_type}/{deal_status}/{deal_type_id}',
-	'controller'    => 'AgentBundle:Deal:dealList',
-	'defaults'      => array(
-		'owner_type'    => NULL,
-		'deal_status'   => NULL,
-		'deal_type_id'  => NULL,
-	),
-	'requirements'  => array('deal_type_id' => '\\d+'),
-));
-
-$collection->create('agent_deal_view', array(
-	'path'          => '/deal/{deal_id}',
-	'controller'    => 'AgentBundle:Deal:view',
-	'requirements'  => array('deal_id' => '\\d+'),
-	'options'       => array('fragment_name' => 'd'),
-));
-
-$collection->create('agent_deal_ajaxsave_note', array(
-	'path'          => '/deal/{deal_id}/ajax-save-note',
-	'controller'    => 'AgentBundle:Deal:ajaxSaveNote',
-	'requirements'  => array('deal_id' => '\\d+'),
-));
-
-$collection->create('agent_deal_ajax_labels_save', array(
-	'path'          => '/deal/{deal_id}/ajax-save-labels',
-	'controller'    => 'AgentBundle:Deal:ajaxSaveLabels',
-	'requirements'  => array('deal_id' => '\\d+'),
-));
-
-$collection->create('agent_deal_ajaxsavecustomfields', array(
-	'path'          => '/deal/{deal_id}/ajax-save-custom-fields',
-	'controller'    => 'AgentBundle:Deal:ajaxSaveCustomFields',
-	'requirements'  => array('deal_id' => '\\d+'),
-));
-
-$collection->create('agent_deal_set_agent_parts', array(
-	'path'        => '/deals/{deal_id}/{agent_id}/set-agent-parts.json',
-	'controller'  => 'AgentBundle:Deal:setAgentParticipants',
-));
-
-$collection->create('agent_deal_ajaxsave', array(
-	'path'          => '/deals/{deal_id}/ajax-save',
-	'controller'    => 'AgentBundle:Deal:ajaxSave',
-	'requirements'  => array('deal_id' => '\\d+'),
-));
-
-$collection->create('agent_deal_new', array(
-	'path'        => '/deals/new',
-	'controller'  => 'AgentBundle:Deal:new',
-	'options'     => array('fragment_name' => 'nt'),
-));
-
-$collection->create('agent_deal_new_save', array(
-	'path'        => '/deals/new/save',
-	'controller'  => 'AgentBundle:Deal:newSave',
-));
-
-$collection->create('agent_deal_new_getpersonrow', array(
-	'path'        => '/deals/new/get-person-row/{person_id}',
-	'controller'  => 'AgentBundle:Deal:newdealGetPersonRow',
-));
-
-$collection->create('agent_deal_new_getorganizationrow', array(
-	'path'        => '/deals/new/get-organization-row/{org_id}',
-	'controller'  => 'AgentBundle:Deal:newdealGetOrganizationRow',
-));
-
-$collection->create('agent_deal_create_setpersonrow', array(
-	'path'        => '/deals/new/create-person-row/{person_id}',
-	'controller'  => 'AgentBundle:Deal:newdealCreatePersonRow',
-));
-
-$collection->create('agent_deal_new_setpersonrow', array(
-	'path'        => '/deals/new/set-person-row/{person_id}',
-	'controller'  => 'AgentBundle:Deal:newdealSetPersonRow',
-));
-
-$collection->create('agent_deal_new_setorganizationrow', array(
-	'path'        => '/deals/new/set-organization-row/{org_id}',
-	'controller'  => 'AgentBundle:Deal:newdealSetOrganizationRow',
-));
-
-$collection->create('agent_deal_create_setorganizationrow', array(
-	'path'        => '/deals/new/create-organization-row/{org_id}',
-	'controller'  => 'AgentBundle:Deal:newdealCreateOrganizationRow',
 ));
 
 $collection->create('agent_publish_getsectiondata', array(

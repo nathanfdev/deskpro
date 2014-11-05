@@ -47,7 +47,7 @@ pageMeta.unlockOnClose = {{ app.getSetting('core_tickets.unlock_on_close') ? 'tr
 pageMeta.baseId = '{{ baseId }}';
 
 pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};
-pageMeta.isClosed = {% if ticket.status == 'closed' %}true{% else %}false{% endif %};
+pageMeta.isArchived = {% if ticket.status == 'archived' %}true{% else %}false{% endif %};
 pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
 {# pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %}; #}
 pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
@@ -71,7 +71,11 @@ pageMeta.lang = {{ {
 	{% include 'AgentBundle:Jira:widget.html.twig' %}
 {% endif %}
 </script>
-<div class="layout-content page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
+<div class="layout-sidebar" id="{{ baseId }}_layout_sidebar">
+	<span class="pin-btn"><i class="fa fa-lock"></i><i class="fa fa-chevron-right"></i></span>
+</div>
+<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>
+<div class="layout-content page-ticket {% if ticket.isLocked(app.user) %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}" id="{{ baseId }}_layout_content">
 <div class="dp-page-content">
 
 {% set locked_self = (ticket.locked_by_agent and ticket.locked_by_agent.id == app.user.id) %}
@@ -96,6 +100,7 @@ pageMeta.lang = {{ {
 {% endif %}
 
 <header class="main-header" id="{{ baseId }}_page_header">
+	<div id="{{ baseId }}_layout_sidebar_icons" class="layout-sidebar-icons"><ul></ul></div>
 	{{ dp_app_loc(baseId, 'header.top') }}
 
 	<div id="{{baseId}}_locked_message" {% if not ticket.locked_by_agent %}style="display: none"{% endif %} {% if locked_self %}data-locked-self="1"{% endif %}>
@@ -281,8 +286,8 @@ pageMeta.lang = {{ {
 				{% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
 					<option value="resolved" {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_resolved') }}</option>
 				{% endif %}
-				{%  if ticket.status_code == 'closed' %}
-					<option value="closed" {% if ticket.status_code == 'closed' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_closed') }}</option>
+				{%  if ticket.status_code == 'archived' %}
+					<option value="archived" {% if ticket.status_code == 'archived' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_archived') }}</option>
 				{% endif %}
 			</select>
 
@@ -777,12 +782,12 @@ pageMeta.lang = {{ {
 				</td>
 			</tr></tbody>
 			{% endif %}
-			{% if ticket.date_closed %}
+			{% if ticket.date_archived %}
 			<tbody><tr>
 				<th>{{ phrase('agent.general.date_archived') }}:</th>
 				<td>
-					<time class="timeago" datetime="{{ ticket.date_closed|date('c', 'UTC') }}"></time>
-					({{ ticket.date_closed|date }})
+					<time class="timeago" datetime="{{ ticket.date_archived|date('c', 'UTC') }}"></time>
+					({{ ticket.date_archived|date }})
 				</td>
 			</tr></tbody>
 			{% endif %}

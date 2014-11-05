@@ -40,7 +40,6 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Mail\Mailer;
 use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\TicketLayout\TicketLayoutManager;
@@ -192,8 +191,6 @@ class TicketEmailBuilder
 	public function setToPeople(array $people)
 	{
 		throw new \RuntimeException();
-		$this->options->set('to_people', $people);
-		return $this;
 	}
 
 	/**

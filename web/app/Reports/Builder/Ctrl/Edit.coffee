@@ -197,9 +197,8 @@ define [
 						@query_error = null
 						@rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
 
-					@skipDirtyState()
 					if is_new
-						@$state.go('builder')
+						@$state.go 'builder.edit', {id: data.id, type: 'custom', params: ''}
 
 					@stopSpinner('builder_loading', true)
 					@stopSpinner('query_loading', true)

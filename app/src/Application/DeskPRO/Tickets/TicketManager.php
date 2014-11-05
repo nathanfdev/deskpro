@@ -38,7 +38,6 @@ use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketProcLog;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
@@ -121,6 +120,8 @@ class TicketManager
 		$this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($container->getEm());
 		$this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container->getDb(), $container->getTicketFilterChangeDetector());
 		$this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($container->getAgentData()->getIds(), $container->getDb());
+
+		$this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
 	}
 
 
@@ -332,6 +333,7 @@ class TicketManager
 
 		$this->em->persist($ticket);
 		$this->em->flush();
+		$this->auto_vars['custom_field_manager']->flush();
 
 		foreach ($this->post_save_actions as $action) {
 			$context->getLogger()->info(sprintf("[TicketManager:postsaveaction] %s", Util::getBaseClassname($action)));
@@ -398,7 +400,12 @@ class TicketManager
 			$log_text = $context->getLogger()->getSavedMessages();
 			if ($log_text) {
 				try {
-					$blob = $this->blob_storage->createBlobRecordFromString($log_text, 'ticket-manager.' . date('Y-m-d.H-i-s') . '.' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '.log', 'plain/text');
+					$blob = $this->blob_storage->createBlobRecordFromString(
+						$log_text,
+						'ticket-manager.' . date('Y-m-d.H-i-s') . '.' . Strings::random(4, Strings::CHARS_ALPHA_IU) . '.log',
+						'plain/text',
+						array('tag' => 'logs.ticket_proc_log')
+					);
 				} catch (\Exception $e) {
 					$blob = null;
 					KernelErrorHandler::logException($e);

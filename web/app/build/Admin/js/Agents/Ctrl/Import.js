@@ -15,7 +15,7 @@
 
       Admin_Agents_Ctrl_Import.CTRL_AS = 'Ctrl';
 
-      Admin_Agents_Ctrl_Import.DEPS = ['$http', '$upload'];
+      Admin_Agents_Ctrl_Import.DEPS = ['$http', '$upload', 'DpLicense'];
 
       Admin_Agents_Ctrl_Import.prototype.init = function() {
         this.busy = false;
@@ -59,6 +59,38 @@
       Admin_Agents_Ctrl_Import.prototype.sendEmails = function(filename) {
         var agents;
         this.busy = true;
+        agents = {};
+        this.emails.map((function(_this) {
+          return function(email) {
+            return agents[email] = {
+              email: email
+            };
+          };
+        })(this));
+        return this.Api.sendPostJson('/agents_bulk/check', {
+          agents: agents,
+          filename: filename
+        }).then((function(_this) {
+          return function(res) {
+            _this.busy = false;
+            if (res.data.need_plan) {
+              return _this.DpLicense.openUpgradeLicense('upgrade_plan').then(function() {
+                return _this.doSendEmails(filename);
+              });
+            } else {
+              return _this.doSendEmails(filename);
+            }
+          };
+        })(this), (function(_this) {
+          return function() {
+            return _this.busy = false;
+          };
+        })(this));
+      };
+
+      Admin_Agents_Ctrl_Import.prototype.doSendEmails = function(filename) {
+        var agents;
+        this.busy = true;
         this.page = 1;
         agents = {};
         this.emails.map((function(_this) {
@@ -82,7 +114,7 @@
             _results = [];
             for (email in _ref) {
               entry = _ref[email];
-              if (entry.id != null) {
+              if (entry.person_id != null) {
                 _this.invited++;
               }
               if ('validation_error' === entry.error_code) {

@@ -166,7 +166,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 			$ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('closed', 'resolved', 'hidden')
+				WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
 				ORDER BY id DESC
 				LIMIT 20
 			", array($subject_re, $subject_re, $this->_time_cutoff)));
@@ -237,7 +237,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 			$ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
 				SELECT id
 				FROM tickets
-				WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('closed', 'resolved', 'hidden')
+				WHERE (subject = ? OR original_subject = ?) AND date_created > ? AND status NOT IN ('archived', 'resolved', 'hidden')
 				ORDER BY id DESC
 				LIMIT 20
 			", array($subject_re, $subject_re, $this->_time_cutoff)));

@@ -368,7 +368,6 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveNoteAction()
 	{
-		$success = false;
 		$error = null;
 		$html = null;
 

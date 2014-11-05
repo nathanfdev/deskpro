@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Publish;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
@@ -353,18 +354,13 @@ class Structure implements PersonContextInterface
 		//	return $counts;
 		//}
 
-		$in_cats = '';
-		if ($category) {
-			$in_cats = implode(',', $category->getTreeIds(true));
-		}
-
 		if ($category) {
 			$counts = $this->db->fetchAllKeyValue("
 				SELECT status, COUNT(*)
 				FROM feedback
-				WHERE category_id IN ($in_cats) AND hidden_status IS NULL
+				WHERE category_id IN (?) AND hidden_status IS NULL
 				GROUP BY status
-			");
+			", array($category->getTreeIds(true)), array(Connection::PARAM_INT_ARRAY));
 		} else {
 			$counts = $this->db->fetchAllKeyValue("
 				SELECT status, COUNT(*)
@@ -380,9 +376,9 @@ class Structure implements PersonContextInterface
 			$counts_status_cats = $this->db->fetchAllKeyValue("
 				SELECT status_category_id, COUNT(*)
 				FROM feedback
-				WHERE status_category_id IS NOT NULL AND category_id IN ($in_cats)
+				WHERE status_category_id IS NOT NULL AND category_id IN (?)
 				GROUP BY status_category_id
-			");
+			", array($category->getTreeIds(true)), array(Connection::PARAM_INT_ARRAY));
 		} else {
 			$counts_status_cats = $this->db->fetchAllKeyValue("
 				SELECT status_category_id, COUNT(*)

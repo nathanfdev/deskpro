@@ -36,6 +36,7 @@ namespace Application\DeskPRO\CustomFields;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -102,6 +103,12 @@ class FieldManager
 	protected $real_all_fields = null;
 
 	/**
+	 * person context
+	 * @var Person
+	 */
+	protected $person;
+
+	/**
 	 * @param \Doctrine\ORM\EntityManager $em
 	 */
 	public function __construct(EntityManager $em, array $options)
@@ -124,6 +131,10 @@ class FieldManager
 		$this->init();
 	}
 
+	public function setContextPerson(Person $person)
+	{
+		$this->person = $person;
+	}
 
 	/**
 	 * @return string
@@ -219,21 +230,6 @@ class FieldManager
 					$this->field_to_children[$p][$f->getId()] = $f;
 				}
 			}
-
-			// Choice fields that have no options are considered disabled
-			/*foreach ($this->fields as $f) {
-				if ($f->isChoiceType()) {
-					if (!$this->getFieldChildren($f)) {
-						unset(
-							$this->all_fields[$f->getId()],
-							$this->real_all_fields[$f->getId()],
-							$this->fields[$f->getId()],
-							$this->real_fields[$f->getId()],
-							$this->field_to_children[$f->getId()]
-						);
-					}
-				}
-			}*/
 		}
 
 		return $this->fields;
@@ -368,7 +364,6 @@ class FieldManager
 			$value = !empty($field_data[$f_def['id']]) && $field_data[$f_def['id']] !== 0 && $field_data[$f_def['id']] !== '0' ? $field_data[$f_def['id']] : null;
 
 			$rendered = $value !== null ? $f_def->getHandler()->renderText($value) : null;
-			if ($rendered) $has_value = true;
 
 			$custom_fields[$f_def['id']] = array(
 				'rendered'        => trim($rendered),
@@ -679,7 +674,6 @@ class FieldManager
 			$custom_data[$value_type] = $value;
 
 			$object->addCustomData($custom_data);
-			$this->em->persist($custom_data);
 		}
 
 		$custom_data[$value_type] = $value;

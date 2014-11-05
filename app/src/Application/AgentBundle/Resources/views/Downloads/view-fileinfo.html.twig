@@ -13,7 +13,11 @@
 
 		<dt>{{ phrase('agent.general.download_url') }}:</dt>
 		<dd>
-			<a href="{{ path('user_downloads_file_download', {slug: download.url_slug}) }}" target="_blank" title="{{ download.blob.content_type }}">{{ helpdesk_url(download.blob.download_url) }}</a>
+			{% if download.fileurl %}
+				<a href="{{ download.fileurl }}" target="_blank">{{ download.fileurl }}</a>
+			{% else %}
+				<a href="{{ download.blob.getDownloadUrl() }}" target="_blank" title="{{ download.blob.content_type }}">{{ download.blob.getDownloadUrl(true) }}</a>
+			{% endif %}
 		</dd>
 	</dl>
 {% else %}

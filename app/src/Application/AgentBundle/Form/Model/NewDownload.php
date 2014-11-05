@@ -41,20 +41,33 @@ use Orb\Util\Web;
 
 class NewDownload
 {
+	/** @var string */
 	public $title = '';
+	/** @var int */
 	public $category_id;
+	/** @var string */
 	public $status;
+	/** @var string */
 	public $content = '';
 
+	/** @var string|null */
 	public $fileurl = null;
+	/** @var string|null */
 	public $filename = null;
+	/** @var int|null */
 	public $filesize = null;
 
+	/** @var string */
 	public $slug;
+	/** @var string */
 	public $labels_json;
+	/** @var array */
 	public $labels = array();
+
+	/** @var int|null */
 	public $attach = null;
 
+	/** @var Download */
 	protected $_download;
 
 	/**

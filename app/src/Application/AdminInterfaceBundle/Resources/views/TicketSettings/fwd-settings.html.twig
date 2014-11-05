@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Fwd.save()">
+<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Fwd.save()">
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<h3>Ticket Forwarding &mdash; Inbound</h3>

@@ -16,7 +16,7 @@
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, opt, options, set_options, typeFunc, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8;
+        var f, opt, options, set_options, typeFunc, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
         if (types == null) {
           types = [];
         }
@@ -192,8 +192,8 @@
           title: 'Trigger Control',
           subOptions: options
         });
+        options = [];
         if ((_ref2 = this.options_data) != null ? _ref2.ticket_fields : void 0) {
-          options = [];
           _ref3 = this.options_data.ticket_fields;
           for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
             f = _ref3[_i];
@@ -202,18 +202,28 @@
               value: this.initFieldGetter('SetTicketField', f)
             });
           }
-          if (options.length) {
-            set_options.push({
-              title: 'Ticket Fields',
-              subOptions: options
+        }
+        if ((_ref4 = this.options_data) != null ? _ref4.contextual_fields : void 0) {
+          _ref5 = this.options_data.contextual_fields;
+          for (_j = 0, _len1 = _ref5.length; _j < _len1; _j++) {
+            f = _ref5[_j];
+            options.push({
+              title: f.title,
+              value: this.initFieldGetter('SetTicketContextualField', f)
             });
           }
         }
-        if ((_ref4 = this.options_data) != null ? _ref4.user_fields : void 0) {
+        if (options.length) {
+          set_options.push({
+            title: 'Ticket Fields',
+            subOptions: options
+          });
+        }
+        if ((_ref6 = this.options_data) != null ? _ref6.user_fields : void 0) {
           options = [];
-          _ref5 = this.options_data.user_fields;
-          for (_j = 0, _len1 = _ref5.length; _j < _len1; _j++) {
-            f = _ref5[_j];
+          _ref7 = this.options_data.user_fields;
+          for (_k = 0, _len2 = _ref7.length; _k < _len2; _k++) {
+            f = _ref7[_k];
             options.push({
               title: f.title,
               value: this.initFieldGetter('SetUserField', f)
@@ -226,7 +236,7 @@
             });
           }
         }
-        if ((_ref6 = this.options_data) != null ? (_ref7 = _ref6.tasks) != null ? _ref7.enabled : void 0 : void 0) {
+        if ((_ref8 = this.options_data) != null ? (_ref9 = _ref8.tasks) != null ? _ref9.enabled : void 0 : void 0) {
           options = [];
           options.push({
             title: 'Create Task',
@@ -239,9 +249,9 @@
         }
         if ((typesData != null ? typesData.dynamicOptions : void 0) != null) {
           options = [];
-          _ref8 = typesData.dynamicOptions;
-          for (_k = 0, _len2 = _ref8.length; _k < _len2; _k++) {
-            opt = _ref8[_k];
+          _ref10 = typesData.dynamicOptions;
+          for (_l = 0, _len3 = _ref10.length; _l < _len3; _l++) {
+            opt = _ref10[_l];
             options.push({
               title: opt.action_title,
               value: opt.action_name
@@ -483,10 +493,11 @@
               'email_tpls': '/email-templates-info',
               round_robin: '/round_robin/settings',
               round_robins: '/round_robin',
-              tasks: '/tasks/settings'
+              tasks: '/tasks/settings',
+              contextual_fields: '/custom_fields'
             }).then((function(_this) {
               return function(result) {
-                var data, f, options_data, _i, _j, _len, _len1, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
+                var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
                 data = result.data;
                 options_data = {};
                 options_data['agents'] = data.agents.agents;
@@ -507,6 +518,7 @@
                 options_data['round_robin'] = data.round_robin;
                 options_data['round_robins'] = data.round_robins;
                 options_data['tasks'] = data.tasks;
+                options_data['contextual_fields'] = data.contextual_fields;
                 options_data['ticket_dep_options'] = _this.standardOptionsFormatter(options_data['ticket_deps']);
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
@@ -516,11 +528,18 @@
                     _this.initFieldGetter('SetTicketField', f);
                   }
                 }
-                if ((_ref8 = _this.options_data) != null ? _ref8.user_fields : void 0) {
-                  _ref9 = _this.options_data.user_fields;
-                  _results = [];
+                if ((_ref8 = _this.options_data) != null ? _ref8.contextual_fields : void 0) {
+                  _ref9 = _this.options_data.contextual_fields;
                   for (_j = 0, _len1 = _ref9.length; _j < _len1; _j++) {
                     f = _ref9[_j];
+                    _this.initFieldGetter('SetTicketContextualField', f);
+                  }
+                }
+                if ((_ref10 = _this.options_data) != null ? _ref10.user_fields : void 0) {
+                  _ref11 = _this.options_data.user_fields;
+                  _results = [];
+                  for (_k = 0, _len2 = _ref11.length; _k < _len2; _k++) {
+                    f = _ref11[_k];
                     _results.push(_this.initFieldGetter('SetUserField', f));
                   }
                   return _results;
@@ -833,7 +852,7 @@
             acc = options[_i];
             opts.push({
               value: acc.id,
-              title: acc.address
+              title: acc.use_email_address || acc.address
             });
           }
           return opts;
@@ -1193,7 +1212,7 @@
           },
           scopeInit: [
             '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-              return $scope.handleTemplateChange = function() {
+              $scope.handleTemplateChange = function() {
                 if ($scope.model.template === 'CREATE') {
                   $scope.model.template = null;
                   $scope.is_creating = true;
@@ -1230,6 +1249,17 @@
                     return $scope.is_creating = false;
                   });
                 }
+              };
+              return $scope.editTemplate = function() {
+                return $modal.open({
+                  templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                  controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                  resolve: {
+                    templateName: function() {
+                      return $scope.model.template;
+                    }
+                  }
+                });
               };
             }
           ],
@@ -1300,7 +1330,28 @@
           },
           scopeInit: [
             '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-              return $scope.handleTemplateChange = function() {
+              $scope.$watch(function() {
+                return $scope.model.agent_ids.all_agents;
+              }, (function(_this) {
+                return function(newVal, oldVal) {
+                  var k, v, _ref, _results;
+                  if (!newVal) {
+                    return;
+                  }
+                  _ref = $scope.model.agent_ids;
+                  _results = [];
+                  for (k in _ref) {
+                    if (!__hasProp.call(_ref, k)) continue;
+                    v = _ref[k];
+                    if ('all_agents' === k) {
+                      continue;
+                    }
+                    _results.push($scope.model.agent_ids[k] = false);
+                  }
+                  return _results;
+                };
+              })(this));
+              $scope.handleTemplateChange = function() {
                 if ($scope.model.template === 'CREATE') {
                   $scope.model.template = null;
                   $scope.is_creating = true;
@@ -1337,6 +1388,17 @@
                     return $scope.is_creating = false;
                   });
                 }
+              };
+              return $scope.editTemplate = function() {
+                return $modal.open({
+                  templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                  controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                  resolve: {
+                    templateName: function() {
+                      return $scope.model.template;
+                    }
+                  }
+                });
               };
             }
           ],
@@ -1431,7 +1493,7 @@
           },
           scopeInit: [
             '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-              return $scope.handleTemplateChange = function() {
+              $scope.handleTemplateChange = function() {
                 if ($scope.model.template === 'CREATE') {
                   $scope.model.template = null;
                   $scope.is_creating = true;
@@ -1468,6 +1530,17 @@
                     return $scope.is_creating = false;
                   });
                 }
+              };
+              return $scope.editTemplate = function() {
+                return $modal.open({
+                  templateUrl: DP_BASE_ADMIN_URL + '/load-view/Templates/modal-email-editor.html',
+                  controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                  resolve: {
+                    templateName: function() {
+                      return $scope.model.template;
+                    }
+                  }
+                });
               };
             }
           ],

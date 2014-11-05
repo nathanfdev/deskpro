@@ -88,12 +88,15 @@ class EditAgent
 	 * @var \Application\DeskPRO\Entity\Usergroup[]
 	 */
 	public $agent_groups;
-
+	
 	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam
 	 */
 	public $primary_team;
 
+	/**
+	 * @var array
+	 */
 	public $notification_settings;
 
 
@@ -215,7 +218,7 @@ class EditAgent
 		if ($this->agent_groups instanceof ArrayCollection) {
 			$this->agent_groups = $this->agent_groups->toArray();
 		}
-		$set = $group_coll_helper->setCollection($this->agent_groups);
+		$group_coll_helper->setCollection($this->agent_groups);
 
 		#------------------------------
 		# Email addresses
@@ -247,7 +250,14 @@ class EditAgent
 
 		$primary_email_address = strtolower(Arrays::getFirstItem($this->emails));
 		foreach ($agent->emails as $email) {
-			if (strtolower($email->email) == $primary_email_address && !$agent->primary_email) {
+			if (strtolower($email->email) == $primary_email_address) {
+				$agent->primary_email = $email;
+				break;
+			}
+		}
+
+		if (!$agent->primary_email) {
+			foreach ($agent->emails as $email) {
 				$agent->primary_email = $email;
 				break;
 			}

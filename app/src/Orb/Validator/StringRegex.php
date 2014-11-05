@@ -36,6 +36,7 @@ namespace Orb\Validator;
 
 class StringRegex extends AbstractValidator
 {
+	/** @var  string */
 	protected $regex;
 
 	public function init()

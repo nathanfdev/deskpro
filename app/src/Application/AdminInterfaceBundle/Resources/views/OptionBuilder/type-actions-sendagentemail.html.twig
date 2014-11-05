@@ -24,6 +24,12 @@
 									</optgroup>
 								</select>
 								<span ng-if="is_creating">Creating a new template</span>
+								<span ng-if="!is_creating && model.template" style="margin-left: 3px;">
+									<a class="inline-edit-link expanded" ng-click="editTemplate()">
+										<i class="fa fa-pencil"></i>
+										<em>edit template</em>
+									</a>
+								</span>
 							</td>
 						</tr>
 						<tr>
@@ -81,6 +87,13 @@
 											<i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the teams of the agent that caused this trigger to run."></i>
 										</label>
 									</li>
+                                    <li ng-if="object_type != 'escalation'">
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.all_agents" />
+                                            All Agents
+                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to all agents."></i>
+                                        </label>
+                                    </li>
 								</ul>
 							</td>
 						</tr>

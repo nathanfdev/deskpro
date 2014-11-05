@@ -70,11 +70,12 @@ class HtmlPurifier implements CleanerPlugin
 		if ($type == 'html_email') {
 			$value = str_replace('<pre', '<div', $value);
 			$value = str_replace('</pre>', '</div>', $value);
+		}
 
+		if ($type == 'html_email_postclean') {
 			// Replace tokens that look like PTAC's
-			$auth_len = Ticket::TAC_AUTHCODE_LEN;
-			$authcode_min_len = $auth_len + 1;
-			$authcode_max_len = $auth_len + 7;
+			$authcode_min_len = Ticket::TAC_AUTHCODE_LEN + 1;
+			$authcode_max_len = Ticket::TAC_AUTHCODE_LEN_MAX;
 
 			// (#TOKEN) becomes [#TOKEN] to stop normal
 			// gateway code detection on it
@@ -85,6 +86,7 @@ class HtmlPurifier implements CleanerPlugin
 
 		if ($type == 'html_email_postclean') {
 			$value = Strings::postDomDocument($value);
+			$value = Strings::convert4ByteCharsToHtmlEntities($value);
 			return $value;
 		}
 
@@ -223,6 +225,7 @@ class HtmlPurifier implements CleanerPlugin
 			$value = Strings::trimHtmlAdvanced($value);
 		}
 
+		$value = Strings::convert4ByteCharsToHtmlEntities($value);
 		return $value;
 	}
 

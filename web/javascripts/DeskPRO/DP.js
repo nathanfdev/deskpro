@@ -164,7 +164,7 @@ var DP = {
 					options.addResultClass = 'with-icon';
 					options.formatResult = function(result) {
 						if (typeof result.id === 'undefined') {
-							return Orb.escapeHtml(result.text);
+							return result.text;
 						}
 
 						var opt = el.find('option[value="' + result.id + '"]');
@@ -184,7 +184,7 @@ var DP = {
 						if (opt.data('icon')) {
 							return {type: 'html', value: '<span class="choice-icon" style="background-image: url(' + opt.data('icon') + '); padding-left: ' + (iconSize + 5) + 'px">' + name + '</span>' };
 						} else {
-							return name;
+							return opt.text();
 						}
 					};
 					break;
@@ -406,7 +406,7 @@ var DP = {
 			}
 		}
 
-		options.formatNoMatches = function() { return ''; }
+		options.formatNoMatches = options.formatNoMatches || function() { return ''; }
 
 		if (el.data('invisible-trigger')) {
 			options.containerCssClass = (options.containerCssClass || '') + ' invisible-trigger';
@@ -439,6 +439,18 @@ var DP = {
 
 		if (el[0] && 'SELECT' !== el[0].tagName && 1 !== el.data('allow-new') && !options.allowCreate) {
 			options.createSearchChoice = null;
+		}
+
+		if (el.find('optgroup')[0]) {
+			options.matcher = function(term, text, opt){
+				var optg   = opt.parent("optgroup");
+
+				term = STRINGS.stripDiacritics(term).toUpperCase();
+				text = STRINGS.stripDiacritics(text).toUpperCase();
+				var opt_group_text = optg ? STRINGS.stripDiacritics(optg.attr('label')||"").toUpperCase() : null;
+
+				return text.indexOf(term) !== -1 || (opt_group_text && opt_group_text.indexOf(term) !== -1)
+			};
 		}
 
 		el.addClass('with-select2');

@@ -38,7 +38,9 @@ namespace Application\DeskPRO;
  */
 class LazyContainer
 {
+	/** @var array */
 	protected $items = array();
+	/** @var array */
 	protected $wait_items = array();
 
 	public function add($id, $loader)

@@ -38,6 +38,13 @@ define(function() {
 		controller: 'Admin_License_Ctrl_License'
 	});
 
+	routes.push({
+		id: 'license_go',
+		url: '/go-license',
+		template: '',
+		controller: ['$state', function ($state) { $state.go('license'); }]
+	});
+
 	//##################################################################################################################
 	// Main Nav
 	//##################################################################################################################
@@ -301,6 +308,39 @@ define(function() {
 	});
 
 	//###
+	//# User Sources
+	//###
+	routes.push({
+		id: 'agents.usersources',
+		url: '/usersources',
+		templateName: 'Usersources/list.html',
+		controller: 'Admin_Usersources_Ctrl_UsersourcesList'
+	});
+
+	routes.push({
+		id: 'agents.usersources.new',
+		url: '/new',
+		templateName: 'Usersources/new.html',
+		controller: 'Admin_Usersources_Ctrl_New'
+	});
+
+	routes.push({
+		id: 'agents.usersources.id',
+		url: '/{id:[\\d\\w]+}',
+		templateName: 'Usersources/edit-instance.html',
+		controller: 'Admin_Usersources_Ctrl_EditInstance'
+	});
+
+	routes.push({
+		id: 'agents.usersources.install',
+		url: '/install/{name:\\w+}'
+		,
+		templateName: 'Apps/package-install.html',
+		controller: 'Admin_Apps_Ctrl_PackageInstall'
+	});
+
+
+	//###
 	//# Agent Login Log
 	//###
 	routes.push({
@@ -412,10 +452,10 @@ define(function() {
 	});
 
 	routes.push({
-		id: 'tickets.statuses.closed',
-		url: '/statuses/closed',
-		templateName: 'TicketStatuses/status-closed.html',
-		controller: 'Admin_TicketStatuses_Ctrl_EditClosed'
+		id: 'tickets.statuses.archived',
+		url: '/statuses/archived',
+		templateName: 'TicketStatuses/status-archived.html',
+		controller: 'Admin_TicketStatuses_Ctrl_EditArchived'
 	});
 
 	routes.push({
@@ -899,6 +939,45 @@ define(function() {
 
 
 	//###
+	//# Facebook Channel
+	//###
+	routes.push({
+		id: 'tickets.channel_facebook',
+		url: '/channel_facebook',
+		templateName: 'ChannelFacebook/list.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_List'
+	});
+
+	routes.push({
+		id: 'tickets.channel_facebook.outgoing_log',
+		url: '/channel_facebook',
+		templateName: 'ChannelFacebook/create.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_facebook.incoming_log',
+		url: '/channel_facebook',
+		templateName: 'ChannelFacebook/create.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'tickets.channel_facebook.create',
+		url: '/create',
+		templateName: 'ChannelFacebook/create.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_Create'
+	});
+
+	routes.push({
+		id: 'tickets.channel_facebook.edit',
+		url: '/{id:[0-9]+}',
+		templateName: 'ChannelFacebook/edit.html',
+		controller: 'Admin_ChannelFacebook_Ctrl_Edit'
+	});
+
+
+	//###
 	//# Ticket Accounts
 	//###
 	routes.push({
@@ -1017,29 +1096,29 @@ define(function() {
 	routes.push({
 		id: 'crm.usersources',
 		url: '/usersources',
-		templateName: 'UserReg/usersources.html',
-		controller: 'Admin_UserReg_Ctrl_UsersourceList'
+		templateName: 'Usersources/list.html',
+		controller: 'Admin_Usersources_Ctrl_UsersourcesList'
 	});
 
 	routes.push({
-		id: 'crm.usersources.newtype',
+		id: 'crm.usersources.new',
 		url: '/new',
-		templateName: 'UserReg/usersources-newtype.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		templateName: 'Usersources/new.html',
+		controller: 'Admin_Usersources_Ctrl_New'
 	});
 
 	routes.push({
-		id: 'crm.usersources.deskpro',
-		url: '/deskpro',
-		templateName: 'UserReg/usersources-deskpro.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		id: 'crm.usersources.id',
+		url: '/{id:[\\d\\w]+}',
+		templateName: 'Usersources/edit-instance.html',
+		controller: 'Admin_Usersources_Ctrl_EditInstance'
 	});
 
 	routes.push({
-		id: 'crm.usersources.app',
-		url: '/{id:\\d+}',
-		templateName: 'Apps/instance.html',
-		controller: 'Admin_Apps_Ctrl_EditInstance'
+		id: 'crm.usersources.install',
+		url: '/install/{name:\\w+}',
+		templateName: 'Apps/package-install.html',
+		controller: 'Admin_Apps_Ctrl_PackageInstall'
 	});
 
 	//###
@@ -1081,6 +1160,7 @@ define(function() {
 	routes.push({
 		id: 'crm.user_fields',
 		url: '/user_fields',
+		data: {owner: 'ticket', context: 'person'},
 		templateName: 'UserFields/list.html',
 		controller: 'Admin_UserFields_Ctrl_List'
 	});
@@ -1108,12 +1188,44 @@ define(function() {
 		controller: 'Admin_CustomFields_User_Ctrl_Edit'
 	});
 
+	routes.push({
+		id: 'crm.user_fields.specific',
+		url: '/specific',
+		abstract: true
+	});
+
+	routes.push({
+		id: 'crm.user_fields.specific.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('crm.user_fields.specific.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'crm.user_fields.specific.create',
+		url: '/create',
+		data: {owner: 'ticket', context: 'person'},
+		templateName: 'CustomFields/edit.html',
+		controller: 'Admin_CustomFields_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.user_fields.specific.edit',
+		url: '/{id:[0-9]+}',
+		data: {owner: 'ticket', context: 'person'},
+		templateName: 'CustomFields/edit.html',
+		controller: 'Admin_CustomFields_Ctrl_Edit'
+	});
+
 	//###
 	//# Fields::Orgs
 	//###
 	routes.push({
 		id: 'crm.org_fields',
 		url: '/org_fields',
+		data: {owner: 'ticket', context: 'organization'},
 		templateName: 'OrgFields/list.html',
 		controller: 'Admin_OrgFields_Ctrl_List'
 	});
@@ -1139,6 +1251,37 @@ define(function() {
 		url: '/{id:[0-9]+}',
 		templateName: 'CustomFields/Org/edit.html',
 		controller: 'Admin_CustomFields_Org_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.org_fields.specific',
+		url: '/specific',
+		abstract: true
+	});
+
+	routes.push({
+		id: 'crm.org_fields.specific.gocreate',
+		url: '/go-create',
+		template: '',
+		controller: ['$state', '$stateParams', function ($state, $stateParams) {
+			$state.go('crm.org_fields.specific.create', $stateParams);
+		}]
+	});
+
+	routes.push({
+		id: 'crm.org_fields.specific.create',
+		url: '/create',
+		data: {owner: 'ticket', context: 'organization'},
+		templateName: 'CustomFields/edit.html',
+		controller: 'Admin_CustomFields_Ctrl_Edit'
+	});
+
+	routes.push({
+		id: 'crm.org_fields.specific.edit',
+		url: '/{id:[0-9]+}',
+		data: {owner: 'ticket', context: 'organization'},
+		templateName: 'CustomFields/edit.html',
+		controller: 'Admin_CustomFields_Ctrl_Edit'
 	});
 
 	//###

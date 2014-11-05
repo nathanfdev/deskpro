@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="Settings.save()">
+	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.save()">
 	<section class="dp-paneblock dp-listpane">
 	<header>
 		<h3>Server Settings</h3>
@@ -24,27 +24,6 @@
 						</label>
 						<span class="help-block">
 							If your server supports it, you can enable this option to remove the <code>/index.php/</code> segment in all helpdesk URLs.
-						</span>
-					</div>
-					<div class="inner-group">
-						<label>
-							<input type="checkbox" ng-model="settings.redirect_correct_url" />
-							<h4>
-								Always redirect to helpdesk URL
-								{% if 'https://' in app.getSetting('core.deskpro_url') %}and always use a secure connection (https){% endif %}
-							</h4>
-						</label>
-						<span class="help-block">
-							When enabled, the helpdesk will ensure all users are using your helpdesk URL ({{ app.getSetting('core.deskpro_url') }}).
-							{% if 'https://' in app.getSetting('core.deskpro_url') %}
-								Since you are using secure connections (your url begins with <code>https://</code>),
-								this means any user that tries to browse your site using an insecure connection (using jsut <code>http://</code>)
-								will be automatically redirected to your secure site instead.
-							{% else %}
-								This is most useful for cases where multiple domains might map to the same site. For example, often <code>www.example.com</code>
-								and <code>example.com</code> will point to the same site. But in most cases, you want to auto-redirect 'non-www' links to the 'www'
-								link so everyone is always using the same URL.
-							{% endif %}
 						</span>
 					</div>
 				</div>

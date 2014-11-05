@@ -6,6 +6,7 @@ define [
 	'Admin/FeedbackCategories/DataService/FeedbackCategories',
 	'Admin/ChannelSms/DataService/SmsAccounts',
 	'Admin/Brand/DataService/Brands',
+	'Admin/ChannelFacebook/DataService/FacebookPages',
 	'Admin/TicketAccounts/DataService/TicketAccounts',
 	'DeskPRO/Service/LabelDefinition'
 
@@ -21,6 +22,7 @@ define [
 	Admin_FeedbackCategories_DataService_FeedbackCategories,
 	Admin_ChannelSms_DataService_SmsAccounts,
 	Admin_Brand_DataService_Brands,
+	Admin_ChannelFacebook_DataService_FacebookPages,
 	Admin_TicketAccounts_DataService_TicketAccounts,
 	DeskPRO_Service_LabelDefinition
 
@@ -53,6 +55,10 @@ define [
 
 		Module.service('BrandData', ['em', 'Api', '$q', (em, Api, $q) ->
 			return new Admin_Brand_DataService_Brands(em, Api, $q)
+		])
+
+		Module.service('FacebookPagesData', ['em', 'Api', '$q', (em, Api, $q) ->
+			return new Admin_ChannelFacebook_DataService_FacebookPages(em, Api, $q)
 		])
 	
 		Module.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->

@@ -57,7 +57,6 @@ class LogItemEntity extends \Orb\Log\Writer\AbstractWriter
 
 				if (($message_len + $data_len) * 2 >= $max_size) {
 					$data = null;
-					$data_len = 0;
 				}
 			}
 

@@ -35,6 +35,7 @@
 
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Imagine\Image\Box;
 use Orb\Data\ContentTypes;
@@ -754,7 +755,8 @@ class FilestorageLoader extends LoaderAbstract
 
 		$base_path = dp_get_blob_dir();
 
-		$filepath = $base_path . DIRECTORY_SEPARATOR . $batch . DIRECTORY_SEPARATOR . $batch.$authcode . $blob_id . $namehash;
+		$filepath_part = $batch . DIRECTORY_SEPARATOR . $batch.$authcode . $blob_id . $namehash;
+		$filepath = $base_path . DIRECTORY_SEPARATOR . $filepath_part;
 
 		$filename_safe = Strings::utf8_accents_to_ascii($filename);
 		$filename_safe = preg_replace('#[^a-zA-Z0-9\-_\.]#', '-', $filename_safe);
@@ -860,6 +862,13 @@ class FilestorageLoader extends LoaderAbstract
 
 		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
 			header("X-Sendfile: $filepath");
+		} else if (isset($DP_CONFIG['filestorage_use_xaccel_redirect']) && $DP_CONFIG['filestorage_use_xaccel_redirect']) {
+			$redirect_path = str_replace(
+				array('{path}', '{fullpath}'),
+				array("/$filepath_part", $filepath),
+				$DP_CONFIG['filestorage_use_xaccel_redirect']
+			);
+			header("X-Accel-Redirect: $redirect_path");
 		} else {
 			readfile($filepath);
 		}
@@ -986,16 +995,48 @@ class FilestorageLoader extends LoaderAbstract
 		}
 
 		if (!empty($blob['file_url']) && $blob['file_url']) {
+
+			if (isset($DP_CONFIG['filestorage_use_xaccel_redirect_url']) && $DP_CONFIG['filestorage_use_xaccel_redirect_url'] && ($this->local_mode || @$DP_CONFIG['filestorage_proxy_through']) && ($pathinfo = @parse_url($blob['file_url']))) {
+				$redirect_path = str_replace(
+					array('{scheme}', '{domain}', '{path}'),
+					array(strtolower($pathinfo['scheme']) ?: 'http', $pathinfo['domain'], $pathinfo['path']),
+					$DP_CONFIG['filestorage_use_xaccel_redirect_url']
+				);
+				$this->sendHeaders($blob);
+				header("X-Accel-Redirect: $redirect_path");
+				exit;
+			}
+
 			// Need to send through this controller if its a download
 			// request and the file is usually stored with an inline disposition
-			if ($this->local_mode || (!empty($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type']))) {
-				$this->sendHeaders($blob);
-				$fp = @fopen($blob['file_url'], 'r');
+			if ($this->local_mode || @$DP_CONFIG['filestorage_proxy_through']) {
+				$context = stream_context_create(array(
+					'http'=> array('timeout' => 10.0) // read timeout. we do it in chunks, so this is rather low
+				));
+
+				$time_start = time();
+				$max_time   = 30;
+
+				$buf = '';
+				$fail = false;
+
+				$fp = @fopen($blob['file_url'], 'r', false, $context);
 				while (!@feof($fp)) {
-					echo @fread($fp, 1024);
+					$buf .= @fread($fp, 1024);
+					if ($max_time > (time() - $time_start)) {
+						break;
+						$fail = true;
+					}
 				}
 				@fclose($fp);
-				exit;
+
+				if (!$fail) {
+					$this->sendHeaders($blob);
+					echo $buf;
+					exit;
+				}
+
+				$buf = null;
 			}
 
 			header("HTTP/1.1 301 Moved Permanently");
@@ -1053,6 +1094,7 @@ class FilestorageLoader extends LoaderAbstract
 		// folder we store blobs in
 		$base_path = dp_get_blob_dir();
 
+		$filepath_part = $blob['save_path'];
 		$filepath = $base_path . DIRECTORY_SEPARATOR . $blob['save_path'];
 
 		$this->addLogMessage("Expecting file path: %s", $filepath);
@@ -1068,6 +1110,13 @@ class FilestorageLoader extends LoaderAbstract
 
 		if (isset($DP_CONFIG['filestorage_use_xsendfile']) && $DP_CONFIG['filestorage_use_xsendfile']) {
 			header("X-Sendfile: $filepath");
+		} else if (isset($DP_CONFIG['filestorage_use_xaccel_redirect']) && $DP_CONFIG['filestorage_use_xaccel_redirect']) {
+			$redirect_path = str_replace(
+				array('{path}', '{fullpath}'),
+				array("/$filepath_part", $filepath),
+				$DP_CONFIG['filestorage_use_xaccel_redirect']
+			);
+			header("X-Accel-Redirect: $redirect_path");
 		} else {
 			readfile($filepath);
 		}
@@ -1336,8 +1385,13 @@ class FilestorageLoader extends LoaderAbstract
 		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
 		header('Content-Length: ' . $filesize);
 		header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
-		header('Expires: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
-		header('Cache-Control: max-age=31556926,private');
+
+		// if not in dev mode, cache assets
+		$is_dev = dp_get_config('debug.dev');
+		if (!$is_dev) {
+			header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
+			header('Cache-Control: max-age=31556926,private');
+		}
 
 		if ($content !== null) {
 			echo $content;

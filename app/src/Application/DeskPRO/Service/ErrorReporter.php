@@ -395,19 +395,11 @@ class ErrorReporter
 	/**
 	 * Sends a heartbeat
 	 */
-	public static function sendHeartbeat(&$result = null)
+	public static function sendHeartbeat()
 	{
 		if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
 			return '';
 		}
-
-		$last = App::getSetting('core.last_heartbeat');
-		if (!$last || $last > (time() - 86040)) {
-			// already sent it today
-			return;
-		}
-
-		App::$container->getSettingsHandler()->setSetting('core.last_heartbeat', time());
 
 		$data = self::getBasicData();
 
@@ -421,6 +413,7 @@ class ErrorReporter
 			$data['setting_core_filestorage_method'] = App::getSetting('core.filestorage_method');
 		}
 
+		$data['setting_elastica_enabled'] = App::getSetting('elastica.enabled');
 		$data['setting_core_deskpro_url'] = App::getSetting('core.deskpro_url');
 		$data['db_id_hash'] = md5(DP_DATABASE_HOST . DP_DATABASE_NAME . DP_DATABASE_USER);
 		$data['license_code'] = App::getSetting('core.license');
@@ -456,7 +449,7 @@ class ErrorReporter
 			$client->setMethod(\Zend\Http\Request::METHOD_POST);
 			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/data-submit/ping-install.json');
 			$client->getRequest()->getPost()->fromArray($data);
-			$r = $client->send();
+			$client->send();
 		} catch (\Exception $e) {
 			error_log(sprintf("sendInstallStatusPing %s %s", $e->getCode(), $e->getMessage()));
 		}

@@ -67,6 +67,7 @@ class TaskController extends AbstractController
 
     public function getSectionDataAction()
 	{
+		/** @var \Application\DeskPRO\EntityRepository\Task $task_repository */
         $task_repository = $this->em->getRepository('DeskPRO:Task');
         $person = $this->person;
 
@@ -149,6 +150,8 @@ class TaskController extends AbstractController
 
 			if (!empty($task_data['date_due']) && !empty($task_data['time_due'])) {
 				$task_data['date_due'] .= ' ' . $task_data['time_due'];
+			} else {
+				$task_data['date_due'] .= ' 23:59:59';
 			}
 
 			// remove extra
@@ -201,7 +204,7 @@ class TaskController extends AbstractController
     {
         $task_type = false;
 
-		$per_page         = 5;
+		$per_page         = 100;
 		$page             = $this->in->getUInt('page') ?: 1;
 		$completed_page   = $this->in->getUInt('completed_page') ?: 1;
 		$offset           = ($page - 1) * $per_page;

@@ -39,14 +39,6 @@ use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 
-/**
-* @SWG\Resource(
-* 	resourcePath="/tasks",
-* 	description="Operations about Tasks",
-* 	basePath="/api/tasks"
-* )
-*/
-
 class TasksController extends AbstractController implements ProtectedControllerInterface
 {
 	const KEY_ENABLED = 'core.apps_tasks';

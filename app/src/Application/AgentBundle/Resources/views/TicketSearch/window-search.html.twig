@@ -14,7 +14,7 @@
 				<option selected="selected" value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
 				<option selected="selected" value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
 				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-				{% if app.getSetting('core_tickets.use_archive') %}<option value="closed">{{ phrase('agent.tickets.status_closed') }}</option>{% endif %}
+				{% if app.getSetting('core_tickets.use_archive') %}<option value="archived">{{ phrase('agent.tickets.status_archived') }}</option>{% endif %}
 				<option value="hidden.awaiting_validation">{{ phrase('agent.tickets.status_hidden_validating') }}</option>
 				<option value="hidden.spam">{{ phrase('agent.tickets.status_hidden_spam') }}</option>
 				<option value="hidden.deleted">{{ phrase('agent.tickets.status_hidden_deleted') }}</option>
@@ -25,7 +25,7 @@
 					<li><label><input class="widget-val" type="checkbox" value="awaiting_agent" /> {{ phrase('agent.tickets.status_awaiting_agent') }}</label></li>
 					<li><label><input class="widget-val" type="checkbox" value="awaiting_user" /> {{ phrase('agent.tickets.status_awaiting_user') }}</label></li>
 					<li><label><input class="widget-val" type="checkbox" value="resolved" /> {{ phrase('agent.tickets.status_resolved') }}</label></li>
-					{% if app.getSetting('core_tickets.use_archive') %}<li><label><input class="widget-val" type="checkbox" value="closed" /> {{ phrase('agent.tickets.status_closed') }}</label></li>{% endif %}
+					{% if app.getSetting('core_tickets.use_archive') %}<li><label><input class="widget-val" type="checkbox" value="archived" /> {{ phrase('agent.tickets.status_archived') }}</label></li>{% endif %}
 				</ul>
 
 				<div class="alt-options">

@@ -24,7 +24,7 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 			}
 		}
 
-		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved closed hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
+		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved archived hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
 
 		$('input.status:first', this.ticketPage.valueForm).val(value);
 		$('input.hidden_status:first', this.ticketPage.valueForm).val(hidden_status);

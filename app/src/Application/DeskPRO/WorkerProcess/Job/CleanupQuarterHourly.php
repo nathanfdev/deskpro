@@ -109,7 +109,7 @@ class CleanupQuarterHourly extends AbstractJob
 		$counts['tickets.archive_validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
 		$counts['tickets.archive_spam']       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
 		$counts['tickets.archive_deleted']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
-		$counts['tickets.archive_closed']     = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'closed'");
+		$counts['tickets.archive_archived']   = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'archived'");
 		$counts['people']                     = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `people`");
 
 		foreach ($counts as $k => $v) {

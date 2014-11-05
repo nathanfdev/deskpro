@@ -18,25 +18,25 @@ use Symfony\Component\ClassLoader\ClassCollectionLoader;
 
 $bootstrap_file = DP_ROOT.'/sys/bootstrap.php';
 if (file_exists($bootstrap_file)) {
-    unlink($bootstrap_file);
+	unlink($bootstrap_file);
 }
 
 $files = array(
-    'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface',
-    // Cannot be included because annotations will parse the big compiled class file
-    //'Symfony\\Component\\DependencyInjection\\ContainerAware',
-    'Symfony\\Component\\DependencyInjection\\ContainerInterface',
-    'Symfony\\Component\\DependencyInjection\\Container',
-    'Symfony\\Component\\HttpKernel\\HttpKernelInterface',
-    'Symfony\\Component\\HttpKernel\\KernelInterface',
-    'Symfony\\Component\\HttpKernel\\Kernel',
-    'Symfony\\Component\\ClassLoader\\ClassCollectionLoader',
-    'Symfony\\Component\\ClassLoader\\UniversalClassLoader',
-    'Symfony\\Component\\HttpKernel\\Bundle\\Bundle',
-    'Symfony\\Component\\HttpKernel\\Bundle\\BundleInterface',
-    'Symfony\\Component\\Config\\ConfigCache',
-    // cannot be included as commands are discovered based on the path to this class via Reflection
-    //'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle',
+	'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface',
+	// Cannot be included because annotations will parse the big compiled class file
+	//'Symfony\\Component\\DependencyInjection\\ContainerAware',
+	'Symfony\\Component\\DependencyInjection\\ContainerInterface',
+	'Symfony\\Component\\DependencyInjection\\Container',
+	'Symfony\\Component\\HttpKernel\\HttpKernelInterface',
+	'Symfony\\Component\\HttpKernel\\KernelInterface',
+	'Symfony\\Component\\HttpKernel\\Kernel',
+	'Symfony\\Component\\ClassLoader\\ClassCollectionLoader',
+	'Symfony\\Component\\ClassLoader\\UniversalClassLoader',
+	'Symfony\\Component\\HttpKernel\\Bundle\\Bundle',
+	'Symfony\\Component\\HttpKernel\\Bundle\\BundleInterface',
+	'Symfony\\Component\\Config\\ConfigCache',
+	// cannot be included as commands are discovered based on the path to this class via Reflection
+	//'Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle',
 
 	'Twig_Extension_Core',
 

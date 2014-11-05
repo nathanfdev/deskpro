@@ -11,12 +11,14 @@ DeskPRO.Agent.RuleBuilder.TermAbstract = new Orb.Class({
 			ruleBuilder: null,
 			rowEl: null,
 			rowId: null,
-			opMenu: null
+			opMenu: null,
+			tpl: null
 		};
 
 		if (options) this.setOptions(options);
 
 		this.ruleBuilder = this.options.ruleBuilder;
+		this.tpl = this.options.tpl;
 		this.rowEl = $(this.options.rowEl);
 		this.rowId = this.options.rowId;
 		this.opMenu = this.options.opMenu;

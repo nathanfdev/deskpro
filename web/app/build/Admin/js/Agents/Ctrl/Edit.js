@@ -19,7 +19,7 @@
 
       Admin_Agents_Ctrl_Edit.CTRL_AS = 'EditCtrl';
 
-      Admin_Agents_Ctrl_Edit.DEPS = [];
+      Admin_Agents_Ctrl_Edit.DEPS = ['DpLicense'];
 
       Admin_Agents_Ctrl_Edit.prototype.init = function() {
         this.agentId = parseInt(this.$stateParams.id);
@@ -58,6 +58,24 @@
                 return _this.form.email_primary = '';
               }
             }
+          };
+        })(this));
+        this.$scope.$watch('EditCtrl.form.zones.admin', (function(_this) {
+          return function() {
+            var _ref;
+            if (((_ref = _this.form) != null ? _ref.zones : void 0) == null) {
+              return;
+            }
+            return _this.form.zones.reports = _this.form.zones.reports || _this.form.zones.admin;
+          };
+        })(this));
+        this.$scope.$watch('EditCtrl.form.zones.reports', (function(_this) {
+          return function() {
+            var _ref;
+            if (((_ref = _this.form) != null ? _ref.zones : void 0) == null) {
+              return;
+            }
+            return _this.form.zones.reports = _this.form.zones.reports || _this.form.zones.admin;
           };
         })(this));
       };
@@ -547,7 +565,7 @@
               form = agentFormModel.form;
               if (settings.zones) {
                 _this.form.zones.admin = form.zones.admin;
-                _this.form.zones.reports = form.zones.reports;
+                _this.form.zones.reports = form.zones.reports || form.zones.admin;
               }
               if (settings.teams) {
                 tids = [];
@@ -815,12 +833,51 @@
         return formData;
       };
 
+      Admin_Agents_Ctrl_Edit.prototype.saveAgent = function() {
+        var d;
+        if (!this.$scope.form_props.$valid) {
+          return;
+        }
+        if (this.agentId) {
+          return this.doSaveAgent();
+        } else {
+          d = this.$q.defer();
+          this.startSpinner('saving');
+          this.DpLicense.getLicInfo(true).then((function(_this) {
+            return function(licInfo) {
+              _this.stopSpinner('saving', true);
+              if (licInfo.limits.remain_agents !== 0) {
+                return _this.doSaveAgent().then(function() {
+                  return d.resolve();
+                }, function() {
+                  return d.reject();
+                });
+              } else {
+                return _this.DpLicense.openUpgradeLicense('upgrade_plan').then(function() {
+                  return _this.doSaveAgent().then(function() {
+                    return d.resolve();
+                  }, function() {
+                    return d.reject();
+                  });
+                });
+              }
+            };
+          })(this), (function(_this) {
+            return function() {
+              _this.stopSpinner('saving', true);
+              return d.reject();
+            };
+          })(this));
+          return d.promise;
+        }
+      };
+
 
       /*
         	 * Saves the agent
        */
 
-      Admin_Agents_Ctrl_Edit.prototype.saveAgent = function() {
+      Admin_Agents_Ctrl_Edit.prototype.doSaveAgent = function() {
         var postData, promise;
         if (!this.$scope.form_props.$valid) {
           return;

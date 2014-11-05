@@ -43,6 +43,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.activityTime = new Date();
 		this.isMobile = false;
 
+		this.appsSidebar = {
+			visible: false,
+			width: 350
+		}
+
 		this.agentNotifyListShown = false;
 
 		this.paneVis = {
@@ -3970,10 +3975,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			case 'tasks_section':
 				url = BASE_URL + 'agent/tasks/get-section-data.json';
-				break;
-
-			case 'deals_section':
-				url = BASE_URL + 'agent/deals/get-section-data.json';
 				break;
 
 			case 'agent_chat_section':

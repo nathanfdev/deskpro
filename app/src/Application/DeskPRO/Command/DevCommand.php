@@ -38,15 +38,15 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Languages\Build\OneSkyBuild;
-use Application\DeskPRO\Languages\Build\TransifexBuild;
 use Application\InstallBundle\Util\GenBuildManifest;
 use Orb\Types\JsonObjectSerializer;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Swagger\Swagger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
 
 class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
@@ -54,8 +54,11 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 	{
 		$this->setName('dpdev');
 		$this->addOption('regen-build-manifest', null, InputOption::VALUE_NONE, 'Regenerate build-manifest.php file');
+		$this->addOption('touch-build-time', null, InputOption::VALUE_NONE, 'Sets build-time.php file to now');
 		$this->addOption('testdb-safe', null, InputOption::VALUE_NONE, 'Removes or rewrites some common settings to make the database safe to use');
 		$this->addOption('testdb-rewrite-emails', null, InputOption::VALUE_REQUIRED, 'Rewrites all email addresses to be at the domain provided. someone@example.com becomes someone-at-example-com@domain.com');
+		$this->addOption('move-build-scripts', null, InputOption::VALUE_REQUIRED, 'Comma-separated list of build scripts to re-timestamp from now. This is useful when merging an old branch and you want to move buildscripts "up".');
+		$this->addOption('build-api-docs', null, InputOption::VALUE_NONE, 'Builds Swagger resource files');
 		$this->addOption('preview', null, InputOption::VALUE_NONE, 'Preview');
 	}
 
@@ -78,10 +81,16 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 	{
 		if ($input->getOption('regen-build-manifest')) {
 			return $this->regenBuildManifestAction($input, $output);
+		} elseif ($input->getOption('touch-build-time')) {
+			return $this->touchBuildTimeAction($input, $output);
 		} elseif ($input->getOption('testdb-safe')) {
 			return $this->testdbSafeAction($input, $output);
 		} elseif ($input->getOption('testdb-rewrite-emails')) {
 			return $this->testdbRewriteEmailsAction($input, $output);
+		} elseif ($input->getOption('build-api-docs')) {
+			return $this->buildApiDocsAction($input, $output);
+		} elseif ($input->getOption('move-build-scripts')) {
+			return $this->moveBuildScriptsAction($input, $output);
 		} else {
 			$output->write("<error>Unknown command</error>");
 			return 1;
@@ -92,10 +101,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 	private function testdbSafeAction(InputInterface $input, OutputInterface $output)
 	{
 		$db = $this->getContainer()->getDb();
-
-		$output->writeln("Making sure core.redirect_correct_url is off");
-		$this->getContainer()->getSettingsHandler()->setSetting('core.redirect_correct_url', 0);
-		$output->writeln("-> OK");
 
 		$output->writeln("Nulling email accounts -> Blank POP3 account with mailcatcher smtp");
 
@@ -230,5 +235,131 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 				return 1;
 			}
 		}
+	}
+
+
+	/**
+	 * @param InputInterface  $input
+	 * @param OutputInterface $output
+	 * @return int
+	 */
+	private function touchBuildTimeAction(InputInterface $input, OutputInterface $output)
+	{
+		$time = time();
+		$build_file = DP_ROOT.'/sys/config/build-time.php';
+		file_put_contents($build_file, '<?php define("DP_BUILD_TIME", '.$time.'); ');
+
+		echo "Updated: $build_file\n";
+		return 0;
+	}
+
+
+	/**
+	 * @param InputInterface  $input
+	 * @param OutputInterface $output
+	 * @return int
+	 */
+	private function buildApiDocsAction(InputInterface $input, OutputInterface $output)
+	{
+		$start_time = microtime(true);
+
+		$save_path = DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs';
+
+		$output->writeln("Generating Swagger resources");
+		$output->writeln("-> Path: $save_path");
+
+		$output->writeln("Removing old files");
+		$fs = new Filesystem();
+		$fs->remove($save_path);
+		$fs->mkdir($save_path, 0755);
+		$output->writeln("-> OK");
+
+		$output->writeln("Scanning ...");
+		$swagger = new Swagger(DP_ROOT.'/src/Application/ApiBundle');
+		$output->writeln("-> OK");
+
+		$output->writeln("Generating resource-list.json...");
+		file_put_contents($save_path.'/deskpro-api.json', $swagger->getResourceList(array('output' => 'json')));
+		$fs->chmod($save_path.'/deskpro-api.json', 0644);
+
+		$output->writeln("-> OK");
+
+		foreach ($swagger->getResourceNames() as $res) {
+			$output->writeln("Generating $res.json...");
+			file_put_contents($save_path."/$res.json", $swagger->getResource($res, array('output' => 'json')));
+			$fs->chmod($save_path."/$res.json", 0644);
+			$output->writeln("-> OK");
+		}
+
+		$output->writeln(sprintf("All done in %.4fs", microtime(true)-$start_time));
+
+		return 0;
+	}
+
+
+	/**
+	 * @param InputInterface  $input
+	 * @param OutputInterface $output
+	 * @return int
+	 */
+	private function moveBuildScriptsAction(InputInterface $input, OutputInterface $output)
+	{
+		$builds_root   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
+		$build_ids_raw = explode(',', trim($input->getOption('move-build-scripts', ''), ','));
+		$build_ids     = array();
+
+		$get_file_path = function($v) use ($builds_root) {
+			$y = @date('Y', $v);
+			$m = @date('m', $v);
+			return $builds_root . "/$y/$m/Build$v.php";
+		};
+
+		foreach ($build_ids_raw as $bid) {
+			$b = preg_replace('/[^0-9]/', '', $bid);
+			$file = $get_file_path($b);
+			if (!$b || !$file) {
+				$output->writeln("<error>Invalid build script: $bid</error>");
+				return 1;
+			}
+			if (!is_file($file)) {
+				$output->writeln("<error>Invalid build script: $bid -- No file: $file</error>");
+				return 1;
+			}
+
+			$build_ids[] = $b;
+		}
+
+		if (!$build_ids) {
+			$output->writeln("<error>No builds specified</error>");
+			return 1;
+		}
+
+		sort($build_ids, SORT_NUMERIC);
+
+		$start = time();
+		foreach ($build_ids as $bid) {
+			$start++;
+			$new_bid = $start;
+
+			$file = $get_file_path($bid);
+			$new_file = $get_file_path($new_bid);
+
+			$output->writeln("<info>$bid -> $new_bid</info>");
+
+			rename($file, $new_file);
+			$output->writeln("\tOld Path: $file");
+			$output->writeln("\tNew Path: $new_file");
+			$output->writeln("");
+
+			$f = file_get_contents($new_file);
+			$f = str_replace('Build'.$bid, 'Build'.$new_bid, $f);
+			file_put_contents($new_file, $f);
+		}
+
+		$output->writeln("Done");
+		$output->writeln("You will now want to regen the build-time and build-manifest:");
+		$output->writeln("\tphp cmd.php dpdev --touch-build-time");
+		$output->writeln("\tphp cmd.php dpdev --regen-build-manifest");
+		return 0;
 	}
 }

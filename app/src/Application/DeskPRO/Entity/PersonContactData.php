@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -58,6 +59,23 @@ class PersonContactData extends ContactDataAbstract
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+
+		$events = array(
+			Events::prePersist,
+			Events::postPersist,
+			Events::preUpdate,
+			Events::postUpdate,
+			Events::preRemove,
+			Events::postRemove
+		);
+		foreach ($events as $event) {
+			$metadata->addEntityListener(
+				$event,
+				'Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener',
+				'on' . ucfirst($event)
+			);
+		}
+
 		$metadata->setPrimaryTable(array( 'name' => 'people_contact_data', ));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 		$metadata->addLifecycleCallback('_preSave', 'prePersist');

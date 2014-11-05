@@ -2,6 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 	class Admin_Agents_Ctrl_DeletedRestore extends Admin_Ctrl_Base
 		@CTRL_ID   = 'Admin_Agents_Ctrl_DeletedRestore'
 		@CTRL_AS   = 'EditCtrl'
+		@DEPS      = ['DpLicense']
 
 		init: ->
 			@agentId = parseInt(@$stateParams.id)
@@ -24,6 +25,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 			promise.then( =>
 				@stopSpinner('saving', true)
 				@$state.go('agents.agents.edit', {id: @agentId})
+			, (res) =>
+				@stopSpinner('saving', true)
+				if res.data.error_code and res.data.error_code == 'license_exceeded'
+					@DpLicense.openUpgradeLicense('upgrade_plan').then(=>
+						@restoreAgent()
+					)
 			)
 			return promise
 

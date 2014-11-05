@@ -56,7 +56,7 @@ class MoveBlobs extends AbstractJob
 		$mover = new MoveBlobsUtil(App::getOrm(), App::getContainer()->getBlobStorage());
 		$mover->setLogger($this->getLogger());
 		$mover->setIgnoreErrors();
-		$mover->setLimit(10);
+		$mover->setLimit(450);
 		$mover->setLimitTime(60);
 
 		$count = $mover->getCount();

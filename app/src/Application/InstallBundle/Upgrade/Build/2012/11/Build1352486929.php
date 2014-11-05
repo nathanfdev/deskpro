@@ -34,6 +34,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\DBAL\Connection;
+
 class Build1352486929 extends AbstractBuild
 {
 	public function run()
@@ -53,13 +55,13 @@ class Build1352486929 extends AbstractBuild
 			$this->container->getDb()->executeUpdate("
 				UPDATE tickets
 				SET department_id = ?
-				WHERE department_id IN (" . implode(',', $chat_deps) . ")
-			", array($default_department));
+				WHERE department_id IN (?)
+			", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 			$this->container->getDb()->executeUpdate("
 				UPDATE tickets_search_active
 				SET department_id = ?
-				WHERE department_id IN (" . implode(',', $chat_deps) . ")
-			", array($default_department));
+				WHERE department_id IN (?)
+			", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 		}
 	}
 }

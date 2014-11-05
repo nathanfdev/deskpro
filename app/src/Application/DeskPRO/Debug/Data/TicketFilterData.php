@@ -42,7 +42,7 @@ class TicketFilterData implements DataInterface
 		$filter_data = App::getDb()->fetchAll("SELECT * FROM ticket_filters ORDER BY id ASC");
 		foreach ($filter_data as &$d) {
 			if ($d['terms']) {
-				$d['terms'] = @unserialize($d['terms']);
+				$d['terms'] = @json_decode($d['terms'], true);
 			}
 		}
 

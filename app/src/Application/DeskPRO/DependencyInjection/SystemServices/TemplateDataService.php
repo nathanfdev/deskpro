@@ -38,6 +38,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class TemplateDataService extends BaseRepositoryService
 {
+	/** @var array|null */
 	protected $custom_emails = null;
 
 	public static function create(DeskproContainer $container, array $options = null)

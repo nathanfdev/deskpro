@@ -44,6 +44,7 @@ class ObjectUrlGenerator
 	const CONTEXT_AGENT = 'agent';
 	const CONTEXT_USER  = 'user';
 
+	/** @var \Symfony\Component\Routing\Generator\UrlGenerator */
 	protected $generator;
 
 	public function __construct(BaseUrlGenerator $generator)
@@ -53,8 +54,6 @@ class ObjectUrlGenerator
 
 	public function generateObjectUrl($object, array $params = array(), $context = null)
 	{
-		$typename = get_class($object);
-
 		if ($object instanceof \Application\DeskPRO\Entity\Article) {
 			if ($context == 'agent') {
 				$params['article_id'] = $object['id'];

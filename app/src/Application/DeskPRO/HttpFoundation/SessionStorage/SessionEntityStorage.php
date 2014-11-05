@@ -46,8 +46,11 @@ use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
  */
 class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface
 {
+	/** @var bool */
 	public $noSave = false;
+	/** @var bool */
 	protected $started = false;
+	/** @var bool */
 	protected $closed = false;
 
 	/**
@@ -294,7 +297,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
 	 */
 	public function read($id)
 	{
-		$sid = self::getIdFromCode($id);
 		if ($this->session && $this->session->getSessionCode() == $id) {
 			$session = $this->session;
 		} else {

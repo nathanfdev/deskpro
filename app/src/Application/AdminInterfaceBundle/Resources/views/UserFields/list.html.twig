@@ -1,13 +1,17 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
-	<section class="dp-paneblock dp-listpane">
+
+    <section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<span dp-ping-flash="display_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				<span dp-ping-flash="display_orders" class="saved-ping">
+                    <i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}
+                </span>
 				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="ListCtrl.custom_fields.length || 0"
-				when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}"></h3>
+				when="{{ ng_plural_phrase('adm.general.count_custom_fields') }}">
+            </h3>
 		</header>
 		<article>
 			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions" dp-max-height>
@@ -20,13 +24,50 @@
 						<div class="pull-right">
 							<em class="tag tag-warn" ng-show="!field.is_enabled">Disabled</em>
 						</div>
-						<h4><span class="title-id" title="ID">#{{ ng_var('field.id') }}</span> <span class="title-text">{{ ng_var('field.title') }}</span></h4>
+						<h4>
+                            <span class="title-id" title="ID">#{{ ng_var('field.id') }}</span>
+                            <span class="title-text">{{ ng_var('field.title') }}</span>
+                        </h4>
 					</a>
 				</li>
 			</ul>
 			<div class="dp-add-control">
 				<a class="btn btn-default" href="{{ ng_href('crm.user_fields.gocreate') }}"
-				   ng-class="{'active': isStateActive('.create') }">
+				   ng-class="{'active': isStateActive('crm.user_fields.create') }">
+					<i class="fa fa-plus"></i>
+					{{ phrase('agent.general.add') }}
+				</a>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3 ng-pluralize count="ListCtrl.specific_user_custom_fields.length || 0"
+				when="{{ ng_plural_phrase('adm.custom_fields.count_specific_user_fields') }}">
+			</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="ListCtrl.customFieldListOptions" dp-max-height>
+				<li ng-repeat="field in ListCtrl.specific_user_custom_fields"
+					class="with-drag-handle"
+					dp-state-mark="crm.user_fields.specific.edit.{{ ng_var('field.id') }}"
+					data-id="{{ ng_var('field.id') }}">
+					<a href="{{ ng_href('crm.user_fields.specific.edit', '{id: field.id}') }}">
+						<i class="fa fa-bars drag-handle"></i>
+						<div class="pull-right">
+							<em class="tag tag-warn" ng-show="!field.is_enabled">Disabled</em>
+						</div>
+						<h4>
+							<span class="title-id" title="ID">#{{ ng_var('field.id') }}</span>
+							<span class="title-text">{{ ng_var('field.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('crm.user_fields.specific.gocreate') }}"
+					ng-class="{'active': isStateActive('crm.user_fields.specific.create') }">
 					<i class="fa fa-plus"></i>
 					{{ phrase('agent.general.add') }}
 				</a>
@@ -43,22 +84,30 @@
 	
 		<section>
 			<p>You can choose if both agents and users can view and edit the field, or if it is for agents only. You can also have the helpdesk update a custom field with <strong>triggers</strong>, <strong>escalations</strong> or <strong>SLAs</strong>.</p>
-			<p>You can add custom user fields to the user and agent ticket form layouts in <strong>Tickets > Departments</strong>.</p>
+			<p>You'll need to add your custom user fields to the user and agent ticket form layouts in <strong>Tickets > Departments</strong>.</p>
 			
 		</section>
 		
 	<section>
 		<h2><span>FAQ</span></h2>
 		<dl>
+			<dt><em>Q:</em>What's a "per-user" field?</dt>
+			<dd><em>A:</em>
+				A per-user field is a multiple-choice field that can have different options for each user. For example, it could be a "Pets" field that lets one user select from "Shadow" and "Felix", while a different user has the values "Fido" and "Tigger". Define each user's values from their profile in the agent interface. Optionally, you can let users edit their own values.
+			</dd>
+		
+		
 			<dt><em>Q:</em>My helpdesk uses multiple languages and some of these fields are not being translated; how do I fix this?</dt>
 			<dd><em>A:</em>
 				You need to enter a translated version of any field values/names you have defined. Go to <strong>Setup > Languages</strong>; click on each language you have installed beyond the default, click <strong>Edit Phrases</strong>, and enter a custom translation.
 			</dd>
+			
 			<dt><em>Q:</em>I set up a field but it is not showing up on the ticket creation forms.</dt>
 			<dd><em>A:</em>
 				Make sure you have added the field in the Departments section Layout Editor. If users can't see the field, check that the
 				<strong>Agent Only Field</strong> setting is not enabled.
 			</dd>
+			
 			<dt><em>Q:</em>What does the <strong>Match regular expression</strong> setting on custom text fields do?</dt>
 			<dd><em>A:</em>
 				A regular expression lets you define a pattern that user/agent input must match. For example, if you expect an 8-digit account number starting with 9, you can use a regular expression to make sure input matches that format. See the manual section on <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#field-data-validation" target="_blank">Field data validation</a> for more details.

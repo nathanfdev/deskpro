@@ -33,17 +33,21 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
-use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class AppsController extends AbstractController
 {
-
+	/**
+	 * creates and outputs AppPackage as *.zip
+	 * @param Request $request
+	 * @param $name
+	 * @return BinaryFileResponse
+	 * @throws NotFoundHttpException
+	 * @throws \Exception
+	 */
 	public function downloadPackageAction(Request $request, $name)
 	{
 		$rep = $this->em->getRepository('DeskPRO:AppPackage');
@@ -51,7 +55,7 @@ class AppsController extends AbstractController
 			throw new NotFoundHttpException;
 		}
 
-		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . time() . '-' . mt_rand(1000,9999);
+		$tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $package['name'] . '-' . mt_rand(1000,9999);
 		if (!@mkdir($tmpdir)) {
 			throw new \Exception('Failed to create extraction directory');
 		}

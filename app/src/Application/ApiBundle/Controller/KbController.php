@@ -248,7 +248,7 @@ class KbController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="attach[]",
-	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided.",
 	 *				paramType="body",
 	 *				required=true,
 	 *				type="string"
@@ -310,15 +310,6 @@ class KbController extends AbstractController
 	{
 		$errors = array();
 		$article = new Article();
-
-		$lang_id = $this->in->getUint('language_id');
-		$lang = null;
-		if ($lang_id) {
-			$lang = $this->container->getLanguageData()->get($lang_id);
-		}
-		if (!$lang) {
-			$lang = $this->container->getLanguageData()->getDefault();
-		}
 
 		$set_title    = null;
 		$set_content  = null;
@@ -519,7 +510,7 @@ class KbController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="attach[]",
-	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided.",
 	 *				paramType="body",
 	 *				required=true,
 	 *				type="string"
@@ -1095,7 +1086,7 @@ class KbController extends AbstractController
 	 *			),
 	 *			@SWG\Parameter(
 	 *				name="attach",
-	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</> for more information on sending files to the API. Required if no attach_id is provided.",
+	 *				description="Attached file that represents the article. See the <a href='https://support.deskpro.com/articles/articles/88-api-basics'>API Basics</a> for more information on sending files to the API. Required if no attach_id is provided.",
 	 *				paramType="body",
 	 *				required=true,
 	 *				type="string"
@@ -1120,8 +1111,6 @@ class KbController extends AbstractController
 		if (is_array($file)) {
 			$file = reset($file);
 		}
-
-		$blob = false;
 
 		if ($file) {
 			$accept = $this->container->getAttachmentAccepter();

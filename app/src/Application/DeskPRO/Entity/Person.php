@@ -38,13 +38,13 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Data\FreeEmailProviders;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
-use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -482,6 +482,9 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 */
 	public $email_validating;
 
+	/**
+	 * @var bool
+	 */
 	protected $_updated_org = false;
 	
 	/** @var string */
@@ -674,6 +677,19 @@ class Person extends DomainObject implements HighlightableModelInterface
 		}
 
 		$this->setModelField('is_agent', $yesno);
+	}
+
+
+	/**
+	 * @param bool $yesno
+	 */
+	public function setCanAdmin($yesno)
+	{
+		if ($yesno) {
+			$this['can_reports'] = true;
+		}
+
+		$this->setModelField('can_admin', $yesno);
 	}
 
 
@@ -894,7 +910,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$shortest = null;
 		$shortest_len = null;
 
-		foreach ($try as $k => $elements) {
+		foreach ($try as $elements) {
 
 			$display = array();
 
@@ -1347,7 +1363,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	 */
 	public function addContactData(PersonContactData $contact_data)
 	{
-		$this['contact_data']->add($contact_data);
+		$this->contact_data->add($contact_data);
 		$contact_data['person'] = $this;
 		$this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
 	}
@@ -2661,7 +2677,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 			'is_deleted'     => $this->is_deleted,
 			'is_disabled'    => $this->is_disabled,
 			'date_last_login' => $this->date_last_login ? $this->date_last_login->format('Y-m-d H:i:s') : null,
-			'primary_email'  => array('id' => $this->primary_email->id, 'email' => $this->primary_email->email),
+			'primary_email'  => array('id' => $this->primary_email ? $this->primary_email->id : null, 'email' => $this->primary_email ? $this->primary_email->email : null),
 			'picture_url'    => $this->getPictureUrl(),
 			'picture_url_80' => $this->getPictureUrl(80),
 			'picture_url_64' => $this->getPictureUrl(64),
@@ -2714,6 +2730,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Person';
+
 		$metadata->setPrimaryTable(array(
 			'name' => 'people',
 			'indexes' => array(
@@ -2722,11 +2739,23 @@ class Person extends DomainObject implements HighlightableModelInterface
 			)
 		));
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+
 		$metadata->addLifecycleCallback('_initPersonLogger', 'postLoad');
 		$metadata->addLifecycleCallback('_presavePerson', 'prePersist');
 		$metadata->addLifecycleCallback('_postPersist', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
+
+		if (defined('DP_INTERFACE') && DP_INTERFACE != 'install') {
+			foreach (array(Events::prePersist, Events::postPersist, Events::preUpdate, Events::postUpdate) as $event) {
+				$metadata->addEntityListener(
+					$event,
+					'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
+					'on' . ucfirst($event)
+				);
+			}
+		}
+
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'gravatar_url', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'gravatar_url', ));
 		$metadata->mapField(array( 'fieldName' => 'disable_picture', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'disable_picture', ));

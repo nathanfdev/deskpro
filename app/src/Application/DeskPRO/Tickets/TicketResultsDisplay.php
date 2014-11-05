@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -428,19 +429,45 @@ class TicketResultsDisplay implements PersonContextInterface
 
 		$message_data = $this->db->fetchAllKeyed("
 			SELECT
-				DISTINCT(tickets_messages.ticket_id), tickets_messages.id, tickets_messages.ticket_id, tickets_messages.date_created, tickets_messages.message,
-				people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent
+				tickets_messages.id, tickets_messages.ticket_id, tickets_messages.date_created, tickets_messages.message,
+				people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent,
+				tickets_messages.is_agent_note
 			FROM tickets_messages
 			LEFT JOIN people ON (people.id = tickets_messages.person_id)
-			WHERE tickets_messages.ticket_id IN (" . implode(',', $this->ticket_ids) . ")
+			WHERE tickets_messages.ticket_id IN (?)
 			ORDER BY tickets_messages.id DESC
-		", array(), 'id');
+		", array($this->ticket_ids), 'id', array(Connection::PARAM_INT_ARRAY));
+
+		$extra_people = array();
+		$extra_people_ids = array();
+		$agent_data = App::$container->getAgentData();
+		foreach ($message_data as $m) {
+			if (!isset($this->people[$m['person_id']])) {
+				if ($agent_data->has($m['person_id'])) {
+					$extra_people[$m['person_id']] = $agent_data->get($m['person_id']);
+				} else {
+					$extra_people_ids[] = $m['person_id'];
+				}
+			}
+		}
+		if ($extra_people_ids) {
+			foreach (App::getDataService('Person')->getPeopleResultsFromIds($extra_people) as $k => $v) {
+				$extra_people[$k] = $v;
+			}
+		}
 
 		$this->all_previews = array();
 		foreach ($message_data as $m) {
 			if (!isset($this->all_previews[$m['ticket_id']])) {
 				$this->all_previews[$m['ticket_id']] = array();
 			}
+
+			$m['status'] = $m['is_agent_note']
+				? 'wrote a note'
+				: ($this->tickets[$m['ticket_id']]->date_created->format('Y-m-d H:i:s') === $m['date_created']
+					? 'created ticket'
+					: 'replied'
+				);
 
 			$m['date_created'] = \DateTime::createFromFormat('Y-m-d H:i:s', $m['date_created']);
 
@@ -457,6 +484,13 @@ class TicketResultsDisplay implements PersonContextInterface
 			}
 
 			$m['preview_text'] = $this->_getMessagePreviewText($m['message'], 750);
+
+			$m['picture_url_16'] = null;
+			if (isset($this->people[$m['person_id']])) {
+				$m['picture_url_16'] = $this->people[$m['person_id']]->getPictureUrl(16);
+			} elseif (isset($extra_people[$m['person_id']])) {
+				$m['picture_url_16'] = $extra_people[$m['person_id']]->getPictureUrl(16);
+			}
 
 			$this->all_previews[$m['ticket_id']][] = $m;
 		}
@@ -523,8 +557,8 @@ class TicketResultsDisplay implements PersonContextInterface
 			$this->person_flagged = App::getDb()->fetchAllKeyValue("
 				SELECT ticket_id, color
 				FROM tickets_flagged
-				WHERE person_id = ? AND ticket_id IN (" . implode(',',$this->ticket_ids) . ")"
-			, array($this->person_context->getId()));
+				WHERE person_id = ? AND ticket_id IN (?)"
+			, array($this->person_context->getId(), $this->ticket_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
 		}
 
 		$ticket_id = is_object($ticket) ? $ticket->getId() : $ticket;

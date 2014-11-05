@@ -35,15 +35,18 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\BigMode;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
+use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;
 
 class Person extends AbstractEntityRepository
 {
+	/** @var IdentityHelper */
 	protected $identity_helper;
 
 
@@ -113,6 +116,21 @@ class Person extends AbstractEntityRepository
 		")->execute();
 
 		return $deleted_agents;
+	}
+
+
+	/**
+	 * Gets a count of active agents (suitable for license checks)
+	 *
+	 * @return int
+	 */
+	public function getActiveAgentsCount()
+	{
+		return $this->_em->getConnection()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent = 1 AND is_deleted = 0
+		");
 	}
 
 
@@ -208,14 +226,12 @@ class Person extends AbstractEntityRepository
 			return array();
 		}
 
-		$for_ids = array_map('intval', $for_ids);
-
-		return App::getDb()->fetchAllKeyValue('
+		return $this->getEntityManager()->getConnection()->fetchAllKeyValue('
 			SELECT id, name
 			FROM people
-			WHERE id IN (' . implode(',', $for_ids) . ')
+			WHERE id IN (?)
 			ORDER BY name
-		');
+		', array($for_ids), array(Connection::PARAM_INT_ARRAY));
 	}
 
 
@@ -274,7 +290,7 @@ class Person extends AbstractEntityRepository
 	{
 		$datecut = date('Y-m-d H:i:s', time() - App::getSetting('core_chat.agent_timeout'));
 
-		$agent_ids = App::getDb()->fetchAllCol("
+		$agent_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
 			SELECT DISTINCT(person_id)
 			FROM sessions
 			WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1
@@ -490,19 +506,19 @@ class Person extends AbstractEntityRepository
 
 		// Only one person
 		if (count($bottom_group) == 1) {
-			return App::findEntity('DeskPRO:Person', $bottom_group[0]);
+			return $this->find($bottom_group[0]);
 		}
 
 		// Otherwise, we'll fetch the person who hasnt had a chat in a while
-		$id = App::getDb()->fetchColumn("
+		$id = $this->getEntityManager()->getConnection()->fetchColumn("
 			SELECT agent_id
 			FROM chat_conversations
-			WHERE agent_id IN (" . implode(',', $bottom_group) . ") AND status = ?
+			WHERE agent_id IN (?) AND status = 'ended'
 			ORDER BY date_ended DESC
 			LIMIT 1
-		", array('ended'));
+		", array($bottom_group), 0, array(Connection::PARAM_INT_ARRAY));
 
-		return App::findEntity('DeskPRO:Person', $id);
+		return $this->find($id);
 	}
 
 	/**
@@ -651,5 +667,26 @@ class Person extends AbstractEntityRepository
 		}
 
 		return array();
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAgentsRaw()
+	{
+		$ret = array();
+
+		// todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
+
+		foreach ($this->getAgents() as $agent) {
+			/** @var $agent \Application\DeskPRO\Entity\Person */
+			$ret[] = array(
+				'id' => $agent['id'],
+				'display_name' => $agent->getDisplayName(),
+				'picture_url' => $agent->getPictureUrl(16),
+			);
+		}
+
+		return $ret;
 	}
 }

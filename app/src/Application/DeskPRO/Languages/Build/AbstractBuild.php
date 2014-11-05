@@ -50,11 +50,6 @@ abstract class AbstractBuild
 	private $logger;
 
 	/**
-	 * @var array
-	 */
-	private $diff_track = array();
-
-	/**
 	 * @param string $id
 	 * @return array
 	 */

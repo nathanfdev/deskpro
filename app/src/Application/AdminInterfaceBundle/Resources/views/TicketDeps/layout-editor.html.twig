@@ -10,7 +10,7 @@
 			<div class="form-elements">
 				<div class="group">
 					<header>
-						<h3>Ticket Fields &middot; <a href="#/tickets/fields">Manage Fields</a></h3>
+						<h3>{{ phrase('adm.custom_fields.ticket_fields') }} &middot; <a href="#/tickets/fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
 					</header>
 					<article>
 						<ul>
@@ -37,9 +37,10 @@
 						</ul>
 					</article>
 				</div>
+
 				<div class="group">
 					<header>
-						<h3>User Fields &middot; <a href="#/crm/user_fields">Manage Fields</a></h3>
+						<h3>{{ phrase('adm.custom_fields.user_fields') }} &middot; <a href="#/crm/user_fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
 					</header>
 					<article>
 						<ul>
@@ -53,12 +54,41 @@
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="user_field"
 								data-field-id="{{ ng_var('field.id') }}"
+								>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
+							<li
+								ng-repeat="field in ticket_fields_per_person"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="custom_field"
+								data-field-id="{{ ng_var('field.id') }}"
 							>
 								<span>{{ ng_var('field.title') }}</span>
 							</li>
 						</ul>
 					</article>
 				</div>
+
+				<div class="group" ng-if="ticket_fields_per_org.length">
+					<header>
+						<h3>{{ phrase('adm.custom_fields.org_fields') }} &middot; <a href="#/crm/org_fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
+					</header>
+					<article>
+						<ul>
+							<li
+								ng-repeat="field in ticket_fields_per_org"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="custom_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
+						</ul>
+					</article>
+				</div>
+
 			</div>
 			<div class="form-worksheet">
 				<ul></ul>
@@ -66,9 +96,10 @@
 		</article>
 		<article class="agent-form" ng-show="form_tab == 'agent'">
 			<div class="form-elements">
+
 				<div class="group">
 					<header>
-						<h3>Ticket Fields &middot; <a href="#/tickets/fields">Manage Fields</a></h3>
+						<h3>{{ phrase('adm.custom_fields.ticket_fields') }} &middot; <a href="#/tickets/fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
 					</header>
 					<article>
 						<ul>
@@ -88,6 +119,54 @@
 						</ul>
 					</article>
 				</div>
+
+				<div class="group">
+					<header>
+						<h3>{{ phrase('adm.custom_fields.user_fields') }} &middot; <a href="#/crm/user_fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
+					</header>
+					<article>
+						<ul>
+							<li
+								ng-repeat="field in custom_user_fields"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="user_field"
+								data-field-id="{{ ng_var('field.id') }}"
+								>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
+							<li
+								ng-repeat="field in ticket_fields_per_person"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="custom_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
+								<span>{{ ng_var('field.title') }}</span>
+							</li>
+						</ul>
+					</article>
+				</div>
+
+                <div class="group" ng-if="ticket_fields_per_org.length">
+                    <header>
+                        <h3>{{ phrase('adm.custom_fields.org_fields') }} &middot; <a href="#/crm/org_fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
+                    </header>
+                    <article>
+                        <ul>
+                            <li
+								ng-repeat="field in ticket_fields_per_org"
+								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								class="dp-layout-editor-layout-field layout-field"
+								data-field-type="custom_field"
+								data-field-id="{{ ng_var('field.id') }}"
+							>
+                                <span>{{ ng_var('field.title') }}</span>
+                            </li>
+                        </ul>
+                    </article>
+                </div>
+
 			</div>
 			<div class="form-worksheet">
 				<div style="margin: 10px 10px 4px 10px;">

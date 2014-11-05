@@ -45,8 +45,11 @@ class SendmailQueue extends AbstractJob
 {
 	const DEFAULT_INTERVAL = 60;
 
+	/** @var int */
 	protected $count_success = 0;
+	/** @var int */
 	protected $count_failed = 0;
+	/** @var int */
 	protected $time_start = 0;
 
 	public function run()

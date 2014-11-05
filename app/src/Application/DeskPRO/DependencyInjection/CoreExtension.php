@@ -81,10 +81,6 @@ class CoreExtension extends Extension
 		));
 		$container->setDefinition('deskpro.person_activity_logger', $definition);
 
-	    $definition = new Definition('Application\\DeskPRO\\ORM\\EventListener\\EntityChangeTrackingListener', array(new Reference('service_container')));
-	    $definition->addTag('doctrine.event_subscriber');
-	    $container->setDefinition('deskpro.orm.event_listener.log_entity_changes', $definition);
-
 	    $definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', array(new Reference('doctrine.orm.entity_manager')));
 		$container->setDefinition('deskpro.log_handler.log_event', $definition);
 
@@ -92,10 +88,16 @@ class CoreExtension extends Extension
 	    $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
 	    $container->setDefinition('deskpro.logger.changelog', $definition);
 
+	    $container
+		    ->register('dp.custom_fields.manager', 'Application\DeskPRO\Service\CustomFieldManager')
+		    ->addArgument(new Reference('doctrine.orm.entity_manager'))
+		    ->addArgument(new Reference('form.factory'));
+
 		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
+	    $this->loadEntityListeners($container);
     }
 
 	protected function loadPeople(ContainerBuilder $container)
@@ -194,6 +196,30 @@ class CoreExtension extends Extension
 		$definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
 		$definition->addMethodCall('setArrayStringSeparator', array('.'));
 		$container->setDefinition('deskpro.core.input_reader', $definition);
+	}
+
+	/**
+	 * Sets up entity listeners
+	 */
+	protected function loadEntityListeners(ContainerBuilder $container)
+	{
+		$container
+			->register('dp.entity_lister.person_changelog',
+				'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener')
+			->addArgument(new Reference('service_container'))
+			->addTag('doctrine.entity_listener');
+
+		$container
+			->register('dp.entity_lister.person_contact_data_changelog',
+				'Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener')
+			->addArgument(new Reference('service_container'))
+			->addTag('doctrine.entity_listener');
+
+		$container
+			->register('dp.entity_lister.person_custo_data_changelog',
+				'Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener')
+			->addArgument(new Reference('service_container'))
+			->addTag('doctrine.entity_listener');
 	}
 
 

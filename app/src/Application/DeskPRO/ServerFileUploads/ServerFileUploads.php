@@ -260,17 +260,17 @@ class ServerFileUploads
 		switch ($options->get('method', 'db')) {
 			case 'db':
 				$settings->setSetting('core.filestorage_method', 'db');
-				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 'db' WHERE storage_loc != 'db'");
+				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 'db' WHERE storage_loc != 'db' AND storage_loc_specific IS NULL");
 				break;
 
 			case 'fs':
 				$settings->setSetting('core.filestorage_method', 'fs');
-				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 'fs' WHERE storage_loc != 'fs'");
+				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 'fs' WHERE storage_loc != 'fs' AND storage_loc_specific IS NULL");
 				break;
 
 			case 's3':
 				$settings->setSetting('core.filestorage_method', 's3');
-				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 's3' WHERE storage_loc != 's3'");
+				$db->executeUpdate("UPDATE blobs SET storage_loc_pref = 's3' WHERE storage_loc != 's3' AND storage_loc_specific IS NULL");
 				$settings->setSetting('core.filestorage_s3_key',    $options->get('s3_key', null));
 				$settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
 				$settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));

@@ -46,7 +46,9 @@ use Doctrine\DBAL\Connection;
  */
 class EntityManager extends UnprivateEntityManager
 {
+	/** @var array */
 	protected $_delayedInsert = array();
+	/** @var array */
 	protected $_delayedUpdate = array();
 
 	protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)

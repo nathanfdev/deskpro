@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 
 class AgentTeam extends AbstractEntityRepository
@@ -128,7 +129,7 @@ class AgentTeam extends AbstractEntityRepository
 
 	public function getTeamCounts()
 	{
-		$counts = App::getDb()->fetchAllKeyValue("
+		$counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 			SELECT team_id, COUNT(*)
 			FROM agent_team_members
 			LEFT JOIN people ON (people.id = agent_team_members.person_id)
@@ -152,11 +153,11 @@ class AgentTeam extends AbstractEntityRepository
 				WHERE team_id = ?
 			", array($team_id));
 		} else {
-			$agent_ids = App::getDb()->fetchAllCol("
+			$agent_ids = App::getDb()->fetchAllCol('
 				SELECT person_id
 				FROM agent_team_members
-				WHERE team_id IN (" . implode(',', $team_id) . ")
-			");
+				WHERE team_id IN (?)
+			', array($team_id), array(Connection::PARAM_INT_ARRAY));
 		}
 
 		return $agent_ids;
@@ -214,15 +215,13 @@ class AgentTeam extends AbstractEntityRepository
 		}
 
 		if (!$agent_ids) return array();
-		$agent_ids = implode(',', $agent_ids);
 
-
-		$team_ids = App::getDb()->fetchAllCol("
+		$team_ids = App::getDb()->fetchAllCol('
 			SELECT team_id
 			FROM agent_team_members
-			WHERE person_id IN ($agent_ids)
+			WHERE person_id IN (?)
 			GROUP BY team_id
-		");
+		', array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 
 		return $team_ids;
 	}
@@ -285,5 +284,26 @@ class AgentTeam extends AbstractEntityRepository
 	public function invalidateFromQuery($sql)
 	{
 		$this->invalidateCaches();
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getTeamsRaw()
+	{
+		$ret = array();
+
+		// todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
+
+		foreach ($this->getTeams() as $team) {
+			/** @var $team \Application\DeskPRO\Entity\AgentTeam */
+			$ret[] = array(
+				'id' => $team['id'],
+				'name' => $team['name'],
+				'picture_url' => $team->getAvatarUrl(16),
+			);
+		}
+
+		return $ret;
 	}
 }

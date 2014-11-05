@@ -1,44 +1,110 @@
 define [
-	'Admin/Main/Ctrl/Base'
+		'Admin/Main/Ctrl/Base'
+		'angular'
 ], (
-	Admin_Ctrl_Base
-) ->
+		Admin_Ctrl_Base
+    angular
+	) ->
+
 	class Admin_ApiKeys_Ctrl_Edit extends Admin_Ctrl_Base
-		@CTRL_ID   = 'Admin_ApiKeys_Ctrl_Edit'
-		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['$stateParams']
+		@CTRL_ID = 'Admin_ApiKeys_Ctrl_Edit'
+		@CTRL_AS = 'EditCtrl'
+		@DEPS = ['$stateParams']
 
 		init: ->
-			@keyData = @DataService.get('ApiKeys')
-			@api_key = null
+			@agents = []
+			@form = {isSuperUser: false, flags: []}
+
+			@service =
+				keys:   @DataService.get 'ApiKeys'
+				agents: @DataService.get 'Agents'
+
+			@$scope.replayLogEntry = (entry) =>
+				return if !entry?.id?
+				entry.response = null
+
+				@service.keys.replayLogEntry(entry).then(
+					(data) => entry.response = data
+					=> entry.response = {status: null, content: null}
+				)
+
+
 
 		initialLoad: ->
-			promise = @keyData.loadEditApiKeyData(@$stateParams.id || null).then( (data) =>
-				@api_key  = data.api_key
-				@form = data.form
-			)
-			return promise
+			p1 = @service.keys.get(@$stateParams.id || null).then (model) =>
+				return if !model?
+				@form = angular.copy model
+				@form.flags = @form.flags || []
+				@form.isSuperUser = @form.flags.indexOf('super') > -1
+				@form.isAdminManage = @form.flags.indexOf('admin_manage') > -1
+
+			p2 = @service.agents.all().then (agents) => @agents = agents
+
+			# Load logs separately
+			if @$stateParams.id
+				@service.keys.getLogs({id: @$stateParams.id}).then((data) =>
+					@logs = data.logs
+				)
+
+			return @$q.all([p1, p2])
+
+
 
 		saveForm: ->
-			if not @$scope.form_props.$valid
-				return
+			is_new = !@form.id
+			@form.flags = []
 
-			is_new = !@api_key.id
-			promise = @keyData.saveFormModel(@api_key, @form)
+			if @form.isSuperUser
+				@form.flags.push 'super'
+			if @form.isAdminManage
+				@form.flags.push 'admin_manage'
 
-			@startSpinner('saving')
-			promise.then(
+			@startSpinner 'saving'
+			@service.keys.set(@form).then(
 				=>
-					@stopSpinner('saving', true).then => @Growl.success 'Saved'
+					@stopSpinner 'saving', true
+					@Growl.success 'Saved'
 					@skipDirtyState()
-					if is_new then @$state.go('apps.api_keys.gocreate')
+					if is_new then @$state.go 'apps.api_keys.gocreate'
 				=>
-					@stopSpinner('saving', true).then => @Growl.error 'Error'
+					@stopSpinner 'saving', true
+					@Growl.error 'Error'
 			)
+
+
+
+		###
+		# Show the delete dlg
+		###
+		startDelete: (for_key_id) ->
+			@service.keys.get(for_key_id).then (key) =>
+				return if !key?
+
+				inst = @$modal.open({
+					templateUrl: @getTemplatePath('ApiKeys/delete-modal.html'),
+					controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+						$scope.confirm = ->
+							$modalInstance.close()
+
+						$scope.dismiss = ->
+							$modalInstance.dismiss()
+					]
+				});
+
+				inst.result.then =>
+					@service.keys.remove(key).then(
+						=>
+							@$state.go 'apps.api_keys'
+						(data) =>
+							@applyErrorResponseToView data
+					)
+
+
 
 		regenerateApiKey: ->
-			@keyData.regenerateApiKey(@api_key, @form).success( =>
+			@service.keys.regenerateApiKey(@form).success =>
 				@Growl.success("API Key regenerated")
-			)
+
+
 
 	Admin_ApiKeys_Ctrl_Edit.EXPORT_CTRL()

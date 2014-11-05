@@ -264,7 +264,7 @@
 		<article id="{{baseId}}_files_tab" class="on">
 			<div class="notes-wrap profile-files-wrap">
 				<ul id="{{baseId}}_files_initial">
-					{% for file in person_files %}
+					{% for file in org_files %}
 						{% include 'AgentBundle:Person:file-row.html.twig' with { 'file' : file } %}
 					{% else %}
 						<li class="note profile-file-row empty-notice"><p style="padding:10px;">No files.</p></li>

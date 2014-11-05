@@ -64,6 +64,8 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			self.fireEvent('change', self.getLabels());
 		});
 
+		var allowNew = !(this.input[0] && 'SELECT' !== this.input.tagName && 1 !== this.input.data('allow-new'));
+
 		DP.select(this.input, {
 			tags: tagSource,
 			multiple: true,
@@ -91,6 +93,13 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 					$compile(container.parent())(DeskPRO_Window.$scope);
 				}]);
 				return name;
+			},
+			formatNoMatches: function() {
+				if (allowNew) {
+					return 'Press enter to create a new label.';
+				} else {
+					return 'You are not allowed to create new labels. Please use an existing label.'
+				}
 			}
 		});
 	},
