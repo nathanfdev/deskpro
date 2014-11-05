@@ -13,11 +13,29 @@
       'DpDateService', '$parse', function(ds, $parse) {
         return {
           restrict: 'A',
+          scope: {
+            dpDate: "=dpDate"
+          },
           link: function(scope, el, attr) {
-            var c, format;
-            c = $parse(attr.dpDate)(scope);
-            format = attr.format;
-            return el.text(ds.format(c, format));
+            var format, update;
+            format = attr.format || "fulltime";
+            update = function() {
+              var datestr, result;
+              datestr = scope.dpDate;
+              result = null;
+              if (datestr) {
+                result = ds.format(datestr, format);
+              }
+              if (result) {
+                return el.text(ds.format(datestr, format));
+              } else if (datestr) {
+                return el.text(datestr);
+              }
+            };
+            update();
+            return scope.$watch('dpDate', function() {
+              return update();
+            });
           }
         };
       }
