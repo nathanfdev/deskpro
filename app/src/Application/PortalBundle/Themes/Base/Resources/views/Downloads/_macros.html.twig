@@ -13,13 +13,13 @@
 
 
 			{% for parent in parents %}
-				<a href="{{ path('portal_downloads_browse', { slug:parent.urlSlug }) }}">{{ parent.title }}</a> <i
+				<a href="{{ path('portal_downloads_browse', { slug:parent.slug }) }}">{{ parent.title }}</a> <i
 				class="fa fa-angle-right"></i>
 			{% endfor %}
 
 			{% if cat %}
 				<li>
-					<a href="{{ path('portal_downloads_browse', { slug:cat.urlSlug }) }}">{{ cat.title }}</a>
+					<a href="{{ path('portal_downloads_browse', { slug:cat.slug }) }}">{{ cat.title }}</a>
 					{% if download %}
 						<i class="fa fa-angle-right"></i>
 					{% endif %}

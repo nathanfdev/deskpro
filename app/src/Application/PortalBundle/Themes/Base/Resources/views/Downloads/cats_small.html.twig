@@ -2,7 +2,7 @@
 <ul>
 	{% for cat in child_cats %}
 		<li>
-			<a href="{{ path('portal_downloads_browse', { slug: cat.urlSlug }) }}">
+			<a href="{{ path('portal_downloads_browse', { slug: cat.slug }) }}">
 				<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ cat.title }} - [{{ cat.downloads|length }}]
 			</a>
 		</li>

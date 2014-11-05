@@ -7,7 +7,7 @@
 	<p style="margin-bottom: 20px; font-weight: bold;">
 		Posted by <a href="#">{{ article.person.name }}</a>
 		on {{ article.date_published | date('M j, Y') }}
-		in <a href="{{ path('portal_news_view', { slug:article.category.urlSlug }) }}">
+		in <a href="{{ path('portal_news_view', { slug:article.category.slug }) }}">
 			{{ article.category.realTitle }}
 		</a>
 	</p>

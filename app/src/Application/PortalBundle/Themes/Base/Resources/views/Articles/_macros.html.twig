@@ -1,6 +1,6 @@
 {% macro kb_article_cat_list(article, sep=',') %}
 	{%- for cat in article.categories -%}
-		<a href="{{ path('portal_kb_browse', {slug: cat.urlSlug}) }}">{{ cat.title }}{%- if not loop.last %}, {% endif -%}</a>
+		<a href="{{ path('portal_kb_browse', {slug: cat.slug}) }}">{{ cat.title }}{%- if not loop.last %}, {% endif -%}</a>
 	{%- endfor -%}
 {% endmacro %}
 
@@ -17,12 +17,12 @@
 
 
 			{% for parent in parents %}
-				<a href="{{ path('portal_kb_browse', { slug:parent.urlSlug }) }}">{{ parent.title }}</a> <i class="fa fa-angle-right"></i>
+				<a href="{{ path('portal_kb_browse', { slug:parent.slug }) }}">{{ parent.title }}</a> <i class="fa fa-angle-right"></i>
 			{% endfor %}
 
 			{% if cat %}
 			<li>
-				<a href="{{ path('portal_kb_browse', { slug:cat.urlSlug }) }}">{{ cat.title }}</a>
+				<a href="{{ path('portal_kb_browse', { slug:cat.slug }) }}">{{ cat.title }}</a>
 				{% if article %}
 					<i class="fa fa-angle-right"></i>
 				{% endif %}
