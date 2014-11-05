@@ -340,4 +340,5 @@ abstract class NodeDefinition implements NodeParentInterface
      * @throws InvalidDefinitionException When the definition is invalid
      */
     abstract protected function createNode();
+
 }

@@ -85,4 +85,5 @@ class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTransform
 
         return $value;
     }
+
 }

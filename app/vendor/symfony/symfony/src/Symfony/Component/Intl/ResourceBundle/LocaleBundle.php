@@ -15,8 +15,6 @@ namespace Symfony\Component\Intl\ResourceBundle;
  * Default implementation of {@link LocaleBundleInterface}.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class LocaleBundle extends AbstractBundle implements LocaleBundleInterface
 {

@@ -117,8 +117,6 @@ class DateTimeType extends AbstractType
                 'empty_value',
                 'required',
                 'translation_domain',
-                'invalid_message',
-                'invalid_message_parameters',
             )));
 
             $timeOptions = array_intersect_key($options, array_flip(array(
@@ -130,8 +128,6 @@ class DateTimeType extends AbstractType
                 'empty_value',
                 'required',
                 'translation_domain',
-                'invalid_message',
-                'invalid_message_parameters',
             )));
 
             if (null !== $options['date_widget']) {

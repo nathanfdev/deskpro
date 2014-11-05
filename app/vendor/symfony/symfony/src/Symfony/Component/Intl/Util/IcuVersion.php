@@ -101,7 +101,5 @@ class IcuVersion
     /**
      * Must not be instantiated.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

@@ -19,9 +19,7 @@ class FormUtil
     /**
      * This class should not be instantiated
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Returns whether the given data is empty.

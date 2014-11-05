@@ -22,6 +22,7 @@ use Symfony\Component\Form\FormEvent;
  */
 class TranslationCollectionFormListener implements EventSubscriberInterface
 {
+
     private $i18nClass;
     private $languages;
 

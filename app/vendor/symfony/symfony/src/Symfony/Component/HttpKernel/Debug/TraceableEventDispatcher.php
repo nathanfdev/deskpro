@@ -65,8 +65,7 @@ class TraceableEventDispatcher extends BaseTraceableEventDispatcher
                 // which must be caught.
                 try {
                     $this->stopwatch->openSection($token);
-                } catch (\LogicException $e) {
-                }
+                } catch (\LogicException $e) {}
                 break;
         }
     }
@@ -90,8 +89,7 @@ class TraceableEventDispatcher extends BaseTraceableEventDispatcher
                 $token = $event->getResponse()->headers->get('X-Debug-Token');
                 try {
                     $this->stopwatch->stopSection($token);
-                } catch (\LogicException $e) {
-                }
+                } catch (\LogicException $e) {}
                 break;
         }
     }

@@ -243,4 +243,5 @@ class NodeBuilder implements NodeParentInterface
 
         return $class;
     }
+
 }

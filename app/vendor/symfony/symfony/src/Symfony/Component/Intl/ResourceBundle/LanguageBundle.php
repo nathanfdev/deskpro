@@ -15,8 +15,6 @@ namespace Symfony\Component\Intl\ResourceBundle;
  * Default implementation of {@link LanguageBundleInterface}.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class LanguageBundle extends AbstractBundle implements LanguageBundleInterface
 {

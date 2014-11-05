@@ -515,7 +515,8 @@ class S3Client extends AbstractClient
             ->setTransferOptions($options->toArray())
             ->addOptions($options['params'])
             ->setOption('ACL', $acl)
-            ->build();
+            ->build()
+            ->upload();
 
         if ($options['before_upload']) {
             $transfer->getEventDispatcher()->addListener(
@@ -524,7 +525,7 @@ class S3Client extends AbstractClient
             );
         }
 
-        return $transfer->upload();
+        return $transfer;
     }
 
     /**

@@ -56,10 +56,6 @@ class YamlFileLoader extends FileLoader
 
         // parameters
         if (isset($content['parameters'])) {
-            if (!is_array($content['parameters'])) {
-                throw new InvalidArgumentException(sprintf('The "parameters" key should contain an array in %s. Check your YAML syntax.', $file));
-            }
-
             foreach ($content['parameters'] as $key => $value) {
                 $this->container->setParameter($key, $this->resolveServices($value));
             }
@@ -97,15 +93,7 @@ class YamlFileLoader extends FileLoader
             return;
         }
 
-        if (!is_array($content['imports'])) {
-            throw new InvalidArgumentException(sprintf('The "imports" key should contain an array in %s. Check your YAML syntax.', $file));
-        }
-
         foreach ($content['imports'] as $import) {
-            if (!is_array($import)) {
-                throw new InvalidArgumentException(sprintf('The values in the "imports" key should be arrays in %s. Check your YAML syntax.', $file));
-            }
-
             $this->setCurrentDir(dirname($file));
             $this->import($import['resource'], null, isset($import['ignore_errors']) ? (bool) $import['ignore_errors'] : false, $file);
         }
@@ -121,10 +109,6 @@ class YamlFileLoader extends FileLoader
     {
         if (!isset($content['services'])) {
             return;
-        }
-
-        if (!is_array($content['services'])) {
-            throw new InvalidArgumentException(sprintf('The "services" key should contain an array in %s. Check your YAML syntax.', $file));
         }
 
         foreach ($content['services'] as $id => $service) {
@@ -147,13 +131,7 @@ class YamlFileLoader extends FileLoader
             $this->container->setAlias($id, substr($service, 1));
 
             return;
-        }
-
-        if (!is_array($service)) {
-            throw new InvalidArgumentException(sprintf('A service definition must be an array or a string starting with "@" but %s found for service "%s" in %s. Check your YAML syntax.', gettype($service), $id, $file));
-        }
-
-        if (isset($service['alias'])) {
+        } elseif (isset($service['alias'])) {
             $public = !array_key_exists('public', $service) || (bool) $service['public'];
             $this->container->setAlias($id, new Alias($service['alias'], $public));
 
@@ -227,10 +205,6 @@ class YamlFileLoader extends FileLoader
         }
 
         if (isset($service['calls'])) {
-            if (!is_array($service['calls'])) {
-                throw new InvalidArgumentException(sprintf('Parameter "calls" must be an array for service "%s" in %s. Check your YAML syntax.', $id, $file));
-            }
-
             foreach ($service['calls'] as $call) {
                 $args = isset($call[1]) ? $this->resolveServices($call[1]) : array();
                 $definition->addMethodCall($call[0], $args);
@@ -239,14 +213,10 @@ class YamlFileLoader extends FileLoader
 
         if (isset($service['tags'])) {
             if (!is_array($service['tags'])) {
-                throw new InvalidArgumentException(sprintf('Parameter "tags" must be an array for service "%s" in %s. Check your YAML syntax.', $id, $file));
+                throw new InvalidArgumentException(sprintf('Parameter "tags" must be an array for service "%s" in %s.', $id, $file));
             }
 
             foreach ($service['tags'] as $tag) {
-                if (!is_array($tag)) {
-                    throw new InvalidArgumentException(sprintf('A "tags" entry must be an array for service "%s" in %s. Check your YAML syntax.', $id, $file));
-                }
-
                 if (!isset($tag['name'])) {
                     throw new InvalidArgumentException(sprintf('A "tags" entry is missing a "name" key for service "%s" in %s.', $id, $file));
                 }
@@ -256,7 +226,7 @@ class YamlFileLoader extends FileLoader
 
                 foreach ($tag as $attribute => $value) {
                     if (!is_scalar($value) && null !== $value) {
-                        throw new InvalidArgumentException(sprintf('A "tags" attribute must be of a scalar-type for service "%s", tag "%s", attribute "%s" in %s. Check your YAML syntax.', $id, $name, $attribute, $file));
+                        throw new InvalidArgumentException(sprintf('A "tags" attribute must be of a scalar-type for service "%s", tag "%s", attribute "%s" in %s.', $id, $name, $attribute, $file));
                     }
                 }
 
@@ -315,7 +285,7 @@ class YamlFileLoader extends FileLoader
         }
 
         if (!is_array($content)) {
-            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid. It should contain an array. Check your YAML syntax.', $file));
+            throw new InvalidArgumentException(sprintf('The service file "%s" is not valid.', $file));
         }
 
         foreach (array_keys($content) as $namespace) {
@@ -341,9 +311,9 @@ class YamlFileLoader extends FileLoader
     /**
      * Resolves services.
      *
-     * @param string|array $value
+     * @param string $value
      *
-     * @return array|string|Reference
+     * @return Reference
      */
     private function resolveServices($value)
     {

@@ -152,6 +152,7 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         return $this->kernel;
     }
 
+
     /**
      * Gets the Esi instance
      *
@@ -461,12 +462,6 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
         // is always called from the same process as the backend.
         $request->server->set('REMOTE_ADDR', '127.0.0.1');
 
-        // make sure HttpCache is a trusted proxy
-        if (!in_array('127.0.0.1', $trustedProxies = Request::getTrustedProxies())) {
-            $trustedProxies[] = '127.0.0.1';
-            Request::setTrustedProxies($trustedProxies);
-        }
-
         // always a "master" request (as the real master request can be in cache)
         $response = $this->kernel->handle($request, HttpKernelInterface::MASTER_REQUEST, $catch);
         // FIXME: we probably need to also catch exceptions if raw === true
@@ -607,6 +602,8 @@ class HttpCache implements HttpKernelInterface, TerminableInterface
      *
      * @param Request  $request  A Request instance
      * @param Response $response A Response instance
+     *
+     * @return Response A Response instance
      */
     private function restoreResponseBody(Request $request, Response $response)
     {

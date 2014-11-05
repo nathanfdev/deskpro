@@ -287,6 +287,7 @@ class UniversalClassLoader
                     return $file;
                 }
             }
+
         } else {
             // PEAR-like class name
             $normalizedClass = str_replace('_', DIRECTORY_SEPARATOR, $class).'.php';

@@ -15,8 +15,6 @@ namespace Symfony\Component\Intl\ResourceBundle;
  * Default implementation of {@link RegionBundleInterface}.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class RegionBundle extends AbstractBundle implements RegionBundleInterface
 {

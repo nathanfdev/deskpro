@@ -136,6 +136,7 @@ class PoFileLoader extends ArrayLoader implements LoaderInterface
                 $size = strpos($line, ']');
                 $item['translated'][(int) substr($line, 7, 1)] = substr($line, $size + 3, -1);
             }
+
         }
         // save last item
         $this->addMessage($messages, $item);
@@ -171,7 +172,7 @@ class PoFileLoader extends ArrayLoader implements LoaderInterface
                 $messages[stripcslashes($item['ids']['plural'])] = stripcslashes(implode('|', $plurals));
             }
         } elseif (!empty($item['ids']['singular'])) {
-            $messages[stripcslashes($item['ids']['singular'])] = stripcslashes($item['translated']);
+              $messages[stripcslashes($item['ids']['singular'])] = stripcslashes($item['translated']);
         }
     }
 }

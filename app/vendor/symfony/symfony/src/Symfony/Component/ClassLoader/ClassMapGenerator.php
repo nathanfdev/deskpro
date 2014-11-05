@@ -71,6 +71,7 @@ class ClassMapGenerator
             foreach ($classes as $class) {
                 $map[$class] = $path;
             }
+
         }
 
         return $map;

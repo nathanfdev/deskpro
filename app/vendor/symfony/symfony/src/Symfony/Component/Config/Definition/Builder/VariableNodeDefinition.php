@@ -61,4 +61,5 @@ class VariableNodeDefinition extends NodeDefinition
 
         return $node;
     }
+
 }

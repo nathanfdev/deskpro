@@ -284,10 +284,10 @@ class Response
             // Fix Content-Type
             $charset = $this->charset ?: 'UTF-8';
             if (!$headers->has('Content-Type')) {
-                $headers->set('Content-Type', 'text/html; charset='.$charset);
+                $headers->set('Content-Type', 'text/html; charset=' . $charset);
             } elseif (0 === stripos($headers->get('Content-Type'), 'text/') && false === stripos($headers->get('Content-Type'), 'charset')) {
                 // add the charset
-                $headers->set('Content-Type', $headers->get('Content-Type').'; charset='.$charset);
+                $headers->set('Content-Type', $headers->get('Content-Type') . '; charset=' . $charset);
             }
 
             // Fix Content-Length
@@ -1077,16 +1077,12 @@ class Response
             return false;
         }
 
-        $notModified   = false;
-        $lastModified  = $this->headers->get('Last-Modified');
-        $modifiedSince = $request->headers->get('If-Modified-Since');
-
+        $lastModified = $request->headers->get('If-Modified-Since');
+        $notModified = false;
         if ($etags = $request->getEtags()) {
-            $notModified = in_array($this->getEtag(), $etags) || in_array('*', $etags);
-        }
-
-        if ($modifiedSince && $lastModified) {
-            $notModified = strtotime($modifiedSince) >= strtotime($lastModified) && (!$etags || $notModified);
+            $notModified = (in_array($this->getEtag(), $etags) || in_array('*', $etags)) && (!$lastModified || $this->headers->get('Last-Modified') == $lastModified);
+        } elseif ($lastModified) {
+            $notModified = $lastModified == $this->headers->get('Last-Modified');
         }
 
         if ($notModified) {

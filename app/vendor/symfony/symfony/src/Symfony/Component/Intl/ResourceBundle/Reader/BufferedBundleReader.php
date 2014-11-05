@@ -15,8 +15,6 @@ use Symfony\Component\Intl\ResourceBundle\Util\RingBuffer;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class BufferedBundleReader implements BundleReaderInterface
 {
@@ -45,7 +43,7 @@ class BufferedBundleReader implements BundleReaderInterface
      */
     public function read($path, $locale)
     {
-        $hash = $path.'//'.$locale;
+        $hash = $path . '//' . $locale;
 
         if (!isset($this->buffer[$hash])) {
             $this->buffer[$hash] = $this->reader->read($path, $locale);

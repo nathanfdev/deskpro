@@ -15,8 +15,6 @@ namespace Symfony\Component\Intl\ResourceBundle;
  * Default implementation of {@link CurrencyBundleInterface}.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class CurrencyBundle extends AbstractBundle implements CurrencyBundleInterface
 {

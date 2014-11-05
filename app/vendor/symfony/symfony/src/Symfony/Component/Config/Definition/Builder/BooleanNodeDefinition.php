@@ -39,4 +39,5 @@ class BooleanNodeDefinition extends ScalarNodeDefinition
     {
         return new BooleanNode($this->name, $this->parent);
     }
+
 }

@@ -19,8 +19,6 @@ use Symfony\Component\Intl\ResourceBundle\Writer\PhpBundleWriter;
  * Compiles a number of resource bundles based on predefined compilation rules.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class BundleTransformer
 {
@@ -57,7 +55,7 @@ class BundleTransformer
         $filesystem->mkdir($context->getBinaryDir());
 
         foreach ($this->rules as $rule) {
-            $filesystem->mkdir($context->getBinaryDir().'/'.$rule->getBundleName());
+            $filesystem->mkdir($context->getBinaryDir() . '/' . $rule->getBundleName());
 
             $resources = (array) $rule->beforeCompile($context);
 
@@ -70,7 +68,7 @@ class BundleTransformer
                     ));
                 }
 
-                $compiler->compile($resource, $context->getBinaryDir().'/'.$rule->getBundleName());
+                $compiler->compile($resource, $context->getBinaryDir() . '/' . $rule->getBundleName());
             }
 
             $rule->afterCompile($context);
@@ -86,11 +84,11 @@ class BundleTransformer
         $filesystem->mkdir($context->getStubDir());
 
         foreach ($this->rules as $rule) {
-            $filesystem->mkdir($context->getStubDir().'/'.$rule->getBundleName());
+            $filesystem->mkdir($context->getStubDir() . '/' . $rule->getBundleName());
 
             $data = $rule->beforeCreateStub($context);
 
-            $phpWriter->write($context->getStubDir().'/'.$rule->getBundleName(), 'en', $data);
+            $phpWriter->write($context->getStubDir() . '/' . $rule->getBundleName(), 'en', $data);
 
             $rule->afterCreateStub($context);
         }

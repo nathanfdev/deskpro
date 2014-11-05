@@ -21,8 +21,6 @@ use Symfony\Component\Intl\Util\IcuVersion;
  * The rule for compiling the currency bundle.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class CurrencyBundleTransformationRule implements TransformationRuleInterface
 {
@@ -43,12 +41,12 @@ class CurrencyBundleTransformationRule implements TransformationRuleInterface
         // in ICU <= 4.2
         if (IcuVersion::compare($context->getIcuVersion(), '4.2', '<=', 1)) {
             return array(
-                $context->getSourceDir().'/misc/supplementalData.txt',
-                $context->getSourceDir().'/locales',
+                $context->getSourceDir() . '/misc/supplementalData.txt',
+                $context->getSourceDir() . '/locales'
             );
         }
 
-        return $context->getSourceDir().'/curr';
+        return $context->getSourceDir() . '/curr';
     }
 
     /**
@@ -59,8 +57,8 @@ class CurrencyBundleTransformationRule implements TransformationRuleInterface
         // \ResourceBundle does not like locale names with uppercase chars, so rename
         // the resource file
         // See: http://bugs.php.net/bug.php?id=54025
-        $fileName = $context->getBinaryDir().'/curr/supplementalData.res';
-        $fileNameLower = $context->getBinaryDir().'/curr/supplementaldata.res';
+        $fileName = $context->getBinaryDir() . '/curr/supplementalData.res';
+        $fileNameLower = $context->getBinaryDir() . '/curr/supplementaldata.res';
 
         $context->getFilesystem()->rename($fileName, $fileNameLower);
     }

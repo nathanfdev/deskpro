@@ -12,6 +12,7 @@
 use Symfony\Component\Intl\Globals\IntlGlobals;
 
 if (!function_exists('intl_is_failure')) {
+
     /**
      * Stub implementation for the {@link intl_is_failure()} function of the intl
      * extension.
@@ -75,4 +76,5 @@ if (!function_exists('intl_is_failure')) {
     {
         return IntlGlobals::getErrorName($errorCode);
     }
+
 }

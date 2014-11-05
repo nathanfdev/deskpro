@@ -12,7 +12,7 @@
 namespace Symfony\Component\Security\Core\Tests\Authentication\Provider;
 
 use Symfony\Component\Security\Core\Authentication\Provider\RememberMeAuthenticationProvider;
-use Symfony\Component\Security\Core\Exception\DisabledException;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Role\Role;
 
 class RememberMeAuthenticationProviderTest extends \PHPUnit_Framework_TestCase
@@ -45,14 +45,15 @@ class RememberMeAuthenticationProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Symfony\Component\Security\Core\Exception\DisabledException
+     * @expectedException \Symfony\Component\Security\Core\Exception\AccountExpiredException
      */
-    public function testAuthenticateWhenPreChecksFails()
+    public function testAuthenticateWhenPostChecksFails()
     {
         $userChecker = $this->getMock('Symfony\Component\Security\Core\User\UserCheckerInterface');
         $userChecker->expects($this->once())
-            ->method('checkPreAuth')
-            ->will($this->throwException(new DisabledException()));
+                    ->method('checkPostAuth')
+                    ->will($this->throwException(new AccountExpiredException()))
+        ;
 
         $provider = $this->getProvider($userChecker);
 
@@ -64,7 +65,8 @@ class RememberMeAuthenticationProviderTest extends \PHPUnit_Framework_TestCase
         $user = $this->getMock('Symfony\Component\Security\Core\User\UserInterface');
         $user->expects($this->exactly(2))
              ->method('getRoles')
-             ->will($this->returnValue(array('ROLE_FOO')));
+             ->will($this->returnValue(array('ROLE_FOO')))
+        ;
 
         $provider = $this->getProvider();
 
@@ -84,14 +86,16 @@ class RememberMeAuthenticationProviderTest extends \PHPUnit_Framework_TestCase
             $user
                 ->expects($this->any())
                 ->method('getRoles')
-                ->will($this->returnValue(array()));
+                ->will($this->returnValue(array()))
+            ;
         }
 
         $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\RememberMeToken', array('getProviderKey'), array($user, 'foo', $key));
         $token
             ->expects($this->once())
             ->method('getProviderKey')
-            ->will($this->returnValue('foo'));
+            ->will($this->returnValue('foo'))
+        ;
 
         return $token;
     }

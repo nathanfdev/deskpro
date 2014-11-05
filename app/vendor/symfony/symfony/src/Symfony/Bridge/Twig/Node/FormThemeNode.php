@@ -35,5 +35,6 @@ class FormThemeNode extends \Twig_Node
             ->raw(', ')
             ->subcompile($this->getNode('resources'))
             ->raw(");\n");
+        ;
     }
 }

@@ -92,8 +92,7 @@ class UserPasswordValidatorTest extends AbstractConstraintValidatorTest
 
         $this->validator->validate('secret', $constraint);
 
-        $this->buildViolation('myMessage')
-            ->assertRaised();
+        $this->assertViolation('myMessage');
     }
 
     /**

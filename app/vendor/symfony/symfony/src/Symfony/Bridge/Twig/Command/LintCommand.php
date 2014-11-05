@@ -132,7 +132,6 @@ EOF
             $twig->setLoader($realLoader);
         } catch (\Twig_Error $e) {
             $twig->setLoader($realLoader);
-
             return array('template' => $template, 'file' => $file, 'valid' => false, 'exception' => $e);
         }
 

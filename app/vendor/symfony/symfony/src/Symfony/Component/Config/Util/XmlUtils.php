@@ -95,10 +95,9 @@ class XmlUtils
                 }
                 throw new \InvalidArgumentException(implode("\n", $messages), 0, $e);
             }
-        }
 
-        libxml_clear_errors();
-        libxml_use_internal_errors($internalErrors);
+            libxml_use_internal_errors($internalErrors);
+        }
 
         return $dom;
     }

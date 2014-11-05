@@ -21,8 +21,6 @@ use Symfony\Component\Intl\Exception\OutOfBoundsException;
  * then the second and so on.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class RingBuffer implements \ArrayAccess
 {

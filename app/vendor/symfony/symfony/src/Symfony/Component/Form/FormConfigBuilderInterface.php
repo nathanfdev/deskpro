@@ -212,7 +212,7 @@ interface FormConfigBuilderInterface extends FormConfigInterface
     /**
      * Sets the initial data of the form.
      *
-     * @param mixed $data The data of the form in application format.
+     * @param array $data The data of the form in application format.
      *
      * @return self The configuration object.
      */

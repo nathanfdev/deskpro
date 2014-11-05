@@ -11,41 +11,23 @@
 
 namespace Symfony\Component\Intl\ResourceBundle\Util;
 
-use Symfony\Component\Intl\Exception\OutOfBoundsException;
-
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 class RecursiveArrayAccess
 {
     public static function get($array, array $indices)
     {
         foreach ($indices as $index) {
-            // Use array_key_exists() for arrays, isset() otherwise
-            if (is_array($array)) {
-                if (array_key_exists($index, $array)) {
-                    $array = $array[$index];
-                    continue;
-                }
-            } elseif ($array instanceof \ArrayAccess) {
-                if (isset($array[$index])) {
-                    $array = $array[$index];
-                    continue;
-                }
+            if (!$array instanceof \ArrayAccess && !is_array($array)) {
+                return;
             }
 
-            throw new OutOfBoundsException(sprintf(
-                'The index %s does not exist.',
-                $index
-            ));
+            $array = $array[$index];
         }
 
         return $array;
     }
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

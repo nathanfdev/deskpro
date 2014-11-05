@@ -70,17 +70,9 @@ class ViolationPath implements \IteratorAggregate, PropertyPathInterface
                         break;
                     }
 
-                    // All the following index items (regardless if .children is
-                    // explicitly used) are children and grand-children
-                    for (; $i < $l && $path->isIndex($i); ++$i) {
-                        $this->elements[] = $elements[$i];
-                        $this->isIndex[] = true;
-                        $this->mapsForm[] = true;
-                    }
-
-                    // Rewind the pointer as the last element above didn't match
-                    // (even if the pointer was moved forward)
-                    --$i;
+                    $this->elements[] = $elements[$i];
+                    $this->isIndex[] = true;
+                    $this->mapsForm[] = true;
                 } elseif ('data' === $elements[$i] && $path->isProperty($i)) {
                     // Skip element "data"
                     ++$i;

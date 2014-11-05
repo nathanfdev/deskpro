@@ -15,8 +15,6 @@ namespace Symfony\Component\Intl\ResourceBundle\Transformer;
  * Stores contextual information for resource bundle compilation.
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
- *
- * @internal
  */
 interface CompilationContextInterface
 {
