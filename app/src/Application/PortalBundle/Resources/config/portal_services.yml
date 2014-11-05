@@ -42,6 +42,12 @@ services:
     factory_service: default_brand_finder
     factory_method: getDefaultBrand
 
+  param_converter.deskpro_slug:
+    class: Application\PortalBundle\Request\DeskproSlugConverter
+    arguments: [@doctrine.orm.default_entity_manager]
+    tags:
+      - { name: request.param_converter, priority: -1, converter: deskpro_slug }
+
   portal_loadder.twig:
     class: Application\PortalBundle\Twig\PortalLoader
     arguments: [@brand_stack, @template_repository]
