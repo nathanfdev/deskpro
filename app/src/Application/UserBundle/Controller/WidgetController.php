@@ -261,7 +261,7 @@ class WidgetController extends AbstractController
 
 			return $this->createJsonResponse(array(
 				'ticket_id' => $ticket->id,
-				'email' => $ticket->person->email
+				'email' => $ticket->person->getPrimaryEmailAddress()
 			));
 		} else {
 			$error_fields = $validator->getErrorGroups(true);
