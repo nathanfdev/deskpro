@@ -362,6 +362,36 @@
         return _results;
       };
 
+      Admin_Agents_Ctrl_Edit.prototype.hasSomePerms = function(typename, permname) {
+        var name, suffix, val, _ref, _ref1, _ref2, _ref3, _ref4;
+        suffix = permname.replace(/^.*?_(.*?)$/, '$1');
+        if (!suffix || !((((_ref = this.ugEffectivePerms) != null ? _ref[typename] : void 0) != null) || (this.perm_form[typename] != null))) {
+          return;
+        }
+        suffix = "_" + suffix;
+        if (((_ref1 = this.ugEffectivePerms) != null ? _ref1[typename] : void 0) != null) {
+          _ref2 = this.ugEffectivePerms[typename];
+          for (name in _ref2) {
+            if (!__hasProp.call(_ref2, name)) continue;
+            val = _ref2[name];
+            if (val && name.indexOf(suffix) !== -1) {
+              return true;
+            }
+          }
+        }
+        if (((_ref3 = this.perm_form) != null ? _ref3[typename] : void 0) != null) {
+          _ref4 = this.perm_form[typename];
+          for (name in _ref4) {
+            if (!__hasProp.call(_ref4, name)) continue;
+            val = _ref4[name];
+            if (val && name.indexOf(suffix) !== -1) {
+              return true;
+            }
+          }
+        }
+        return false;
+      };
+
 
       /*
         	 * When a permission is updated, we need to update the hasPermOverrides status.

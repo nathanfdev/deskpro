@@ -9433,6 +9433,12 @@ ul.dp-display-list li i {
 .dp-switch.switch-on label {
   margin-left: 21px;
 }
+.dp-switch.switch-some {
+  background-color: #E0C787;
+}
+.dp-switch.switch-some label {
+  margin-left: 12px;
+}
 .dp-switch.locked label span {
   display: block;
   font-family: FontAwesome;
