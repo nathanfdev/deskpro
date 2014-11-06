@@ -3792,20 +3792,6 @@ class TicketController extends AbstractController
 		));
 	}
 
-	public function getTicketMessageTemplateAction($id)
-	{
-		$message_template = $this->em->find('DeskPRO:TicketMessageTemplate', $id);
-		if (!$message_template) {
-			$message_template = new \Application\DeskPRO\Entity\TicketMessageTemplate();
-		}
-
-		return $this->createJsonResponse(array(
-			'id' => $message_template->getId(),
-			'message' => $message_template->message,
-			'subject' => $message_template->subject
-		));
-	}
-
 	public function lockTicketAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);

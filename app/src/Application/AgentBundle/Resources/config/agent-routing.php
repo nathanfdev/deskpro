@@ -802,11 +802,6 @@ $collection->create('agent_ticket_new_getcustomfieldsrow', array(
 	'controller'  => 'AgentBundle:Ticket:newTicketGetCustomFieldsRow',
 ));
 
-$collection->create('agent_ticket_getmessagetpl', array(
-	'path'        => '/tickets/get-message-template/{id}.json',
-	'controller'  => 'AgentBundle:Ticket:getTicketMessageTemplate',
-));
-
 $collection->create('agent_ticket_update_drafts', array(
 	'path'        => '/tickets/update-drafts',
 	'controller'  => 'AgentBundle:Ticket:updateDrafts',
