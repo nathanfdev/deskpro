@@ -1,7 +1,12 @@
 <?php
 
 namespace Application\AgentBundle\Controller;
+use Application\DeskPRO\Entity\JiraIssue;
+use Application\DeskPRO\JIRA\ApiErrorsException;
 use Application\DeskPRO\Service\JIRA;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * The JiraController class
@@ -10,16 +15,13 @@ use Application\DeskPRO\Service\JIRA;
  */
 class JiraController extends AbstractController
 {
-	/** @var array */
-	protected $meta;
-
 	/** @var JIRA */
 	protected $service;
 
 	public function preAction($action, $arguments = null)
 	{
-		if (!$this->settings->get('core.apps_jira.enabled')) {
-			throw $this->createNotFoundException();
+		if (!$this->service()->isEnabled()) {
+			throw new NotFoundHttpException;
 		}
 		return parent::preAction($action, $arguments);
 	}
@@ -512,7 +514,7 @@ class JiraController extends AbstractController
 	 * @param int $ticket_id The corresponding ticket id
 	 * @param string $issue_id The corresponding jira issue id
 	 */
-	public function unlinkAction($ticket_id, $issue_id)
+	public function _unlinkAction($ticket_id, $issue_id)
 	{
 		$ticket = $this->_getTicketById($ticket_id);
 		
@@ -657,5 +659,169 @@ class JiraController extends AbstractController
 		$meta = $this->service()->getMeta();
 
 		return $this->createJsonResponse($meta->toArray());
+	}
+
+	/**
+	 * @param Request $request
+	 * @param $ticketId
+	 * @return \Symfony\Component\HttpFoundation\Response
+     * @throws NotFoundHttpException
+	 */
+	public function createIssueAction(Request $request, $ticketId)
+	{
+		if (!$ticket = $this->em->find('DeskPRO:Ticket', $ticketId)) {
+			throw new NotFoundHttpException;
+		}
+
+		try {
+
+			$issueData = $this->service()->getApi()->createIssueJson($request->getContent());
+			return $this->linkAction($ticketId, $issueData['id']);
+
+		} catch (\Exception $e) {
+
+			if ($e instanceof ApiErrorsException) {
+				return $this->createJsonResponse(array('errors' => $e->errors), 400);
+			} else {
+				return $this->createJsonResponse(array('errors' => (array) $e->getMessage()), $e->getCode());
+			}
+		}
+	}
+
+	/**
+	 * @param $ticketId
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws NotFoundHttpException
+	 */
+	public function issuesAction($ticketId)
+	{
+		$issues = $this->em->getRepository('DeskPRO:JiraIssue')->findBy(array('ticket' => $ticketId));
+		$map = array();
+		foreach ($issues as $issue) {
+			$map[$issue['issue_id']] = $issue;
+		}
+
+		$result = null;
+		if ($map) {
+			$result = $this->service()->searchIssues(sprintf('id IN (%s)', implode(',', array_keys($map))));
+			// cleanup deleted issues
+			foreach ($result['issues'] as $data) {
+				unset($map[$data['id']]);
+			}
+			foreach ($map as $issue) {
+				$this->em->remove($issue);
+			}
+			$this->em->flush();
+		}
+
+		return $this->createJsonResponse($result);
+	}
+
+	/**
+	 * @param Request $request
+	 * @param $ticketId
+	 * @param $issueId
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws NotFoundHttpException
+	 */
+	public function addCommentAction(Request $request, $ticketId, $issueId)
+	{
+		$rep = $this->em->getRepository('DeskPRO:JiraIssue');
+
+		if (!$issueId) {
+			$issues = $rep->findBy(array('ticket' => $ticketId));
+		} else {
+			if (!$issue = $rep->findOneBy(array('ticket' => $ticketId, 'issue_id' => $issueId))) {
+				throw new NotFoundHttpException;
+			}
+			$issues = array($issue);
+		}
+
+		$js = $this->service();
+		$message = $request->getContent();
+		$response = array('body' => '');
+		foreach ($issues as $issue) {
+			$response = $js->createComment($issue['issue_id'], $message);
+		}
+
+		return $this->createJsonResponse($response);
+	}
+
+	/**
+	 * search by issue key
+	 * @param Request $request
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function searchAction(Request $request)
+	{
+		if (!preg_match('/[A-Z]+\-\d+/', $request->get('q'), $matches)) {
+			return $this->createJsonResponse(null);
+		}
+
+		// todo search all matches?
+		$issueId = reset($matches);
+		try {
+			$result = $this->service()->searchIssues('issuekey = ' . $issueId);
+			$result = !empty($result['issues']) ? reset($result['issues']) : null;
+		} catch (\Exception $e) {
+			$result = null;
+		}
+
+		return $this->createJsonResponse($result);
+	}
+
+	/**
+	 * link issue to ticket
+	 * @param $ticketId
+	 * @param $issueId
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws NotFoundHttpException
+	 */
+	public function linkAction($ticketId, $issueId)
+	{
+		if (!$ticket = $this->em->find('DeskPRO:Ticket', $ticketId)) {
+			throw new NotFoundHttpException;
+		}
+
+		$result = $this->service()->searchIssues('id = ' . $issueId);
+
+		$rep = $this->em->getRepository('DeskPRO:JiraIssue');
+		$issue = $rep->findOneBy(array('ticket' => $ticketId, 'issue_id' => $issueId));
+		if (!$issue) {
+			// todo move to event listener (should hanlde webhooks too)
+			$issue = new JiraIssue();
+			$issue['issue_id'] = $issueId;
+			$issue->ticket = $ticket;
+
+			$this->em->persist($issue);
+			$this->em->flush($issue);
+		}
+
+		return $this->createJsonResponse($result);
+	}
+
+	/**
+	 * unlink issue
+	 * @param $ticketId
+	 * @param $issueId
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws NotFoundHttpException
+	 */
+	public function unlinkAction($ticketId, $issueId)
+	{
+		if (!$ticket = $this->em->find('DeskPRO:Ticket', $ticketId)) {
+			throw new NotFoundHttpException;
+		}
+
+		$rep = $this->em->getRepository('DeskPRO:JiraIssue');
+		$issue = $rep->findOneBy(array('ticket' => $ticketId, 'issue_id' => $issueId));
+		if (!$issue) {
+			throw new NotFoundHttpException;
+		}
+
+		$this->em->remove($issue);
+		$this->em->flush($issue);
+
+		return $this->createJsonResponse(true);
 	}
 }

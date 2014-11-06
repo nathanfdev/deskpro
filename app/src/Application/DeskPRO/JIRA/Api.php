@@ -30,8 +30,8 @@ namespace Application\DeskPRO\JIRA;
 
 use Application\DeskPRO\Service\JIRA;
 use Guzzle\Http\Exception\ClientErrorResponseException;
+use Guzzle\Http\Message\EntityEnclosingRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class Api
 {
@@ -62,8 +62,9 @@ class Api
 	 * @param string $method
 	 * @param array $headers
 	 * @param array $params
+	 * @throws \Exception
 	 */
-	public function call($endpoint, $method = 'GET', array $headers = array(), array $params = array())
+	public function call($endpoint, $method = 'GET', array $headers = array(), $params = array())
 	{
 		try {
 
@@ -76,12 +77,18 @@ class Api
 			$code = $e->getResponse()->getStatusCode();
 
 			if (404 === $code) {
-				throw new NotFoundHttpException;
+				throw new NotFoundHttpException($e->getResponse()->getReasonPhrase());
 			}
 
-			if (in_array($code, array(400, 401, 403))) {
-				throw new AuthenticationException;
+			// todo log error message
+			// $json['errorMessages']
+			$json = $e->getResponse()->json();
+
+			if (!empty($json['errors'])) {
+				throw new ApiErrorsException($json['errors']);
 			}
+
+			throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
 		}
 	}
 
@@ -102,7 +109,7 @@ class Api
 	 */
 	public function post($endpoint, array $params = array())
 	{
-		return $this->call($endpoint, 'POST', array(), $params);
+		return $this->call($endpoint, 'POST', array('content-type' => 'application/json'), json_encode($params));
 	}
 
 	/**
@@ -112,7 +119,7 @@ class Api
 	 */
 	public function put($endpoint, array $params = array())
 	{
-		return $this->call($endpoint, 'PUT', array(), $params);
+		return $this->call($endpoint, 'PUT', array('content-type' => 'application/json'), json_encode($params));
 	}
 
 	/**
@@ -123,5 +130,24 @@ class Api
 	public function delete($endpoint, array $params = array())
 	{
 		return $this->call($endpoint, 'DELETE', array(), $params);
+	}
+
+	/**
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function createIssue(array $data)
+	{
+		return $this->post('/issue', $data);
+	}
+
+	/**
+	 * @param $json
+	 * @throws ApiErrorsException
+	 * @throws \Exception
+	 */
+	public function createIssueJson($json)
+	{
+		return $this->call('/issue', 'POST', array('content-type' => 'application/json'), $json);
 	}
 } 

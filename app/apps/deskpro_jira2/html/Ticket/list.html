@@ -8,55 +8,41 @@
             Create JIRA Issue
         </button>
 
-        <input type="text" placeholder="Enter JIRA Issue" style="display:block; margin: 0 auto;" />
-
-        <button style="display:block; margin: 0 auto;">
+        <input type="text" placeholder="Enter JIRA Issue" ng-model="search_issue" style="display:block; margin: 0 auto;" />
+        <div ng-show="404 === search_issue_state">Issue not found</div>
+        <div ng-show="1 === search_issue_state">spinner</div>
+        <button style="display:block; margin: 0 auto;" ng-click="search()">
             Link to JIRA Issue
+        </button>
+
+
+        <div ng-show="issues.loading">-> spinner <-</div>
+        <ul ng-show="!issues.loading">
+            <li ng-repeat="issue in issues" ng-click="issueModal(issue)">
+                <div ng-if="meta.default_fields_list.indexOf('issuekey') > -1">Key: {{ issue.key }}</div>
+                <div ng-repeat="field in meta.default_fields_list">{{ issues.names[field] }}: {{ issue.fields[field] }}</div>
+            </li>
+        </ul>
+
+        <button style="display:block; margin: 0 auto;" ng-click="sendCommentModal()">
+            Send Comment
         </button>
 
 	</article>
 </section>
 
 <script type="text/ng-template" id="deskpro_jira2/Ticket/create-issue-modal.html">
-    <div class="modal-header">
-        <h3 class="modal-title">New JIRA Issue:</h3>
-    </div>
-    <div class="modal-body">
+    <!--#include file="Ticket/create-issue-modal.html" -->
+</script>
 
-        <label style="display: block; margin: 10px 0;">
-            Project:
-            <select ng-model="issue.project"
-                    ng-options="project as project.name for project in meta.projects">
-            </select>
-        </label>
+<script type="text/ng-template" id="deskpro_jira2/Ticket/issue-details-modal.html">
+    <!--#include file="Ticket/issue-details-modal.html" -->
+</script>
 
-        <label style="display: block; margin: 10px 0;">
-            Issue Type:
-            <select ng-model="issue.issuetype"
-                    ng-options="type as type.name for type in issue.project.issuetypes">
-            </select>
-        </label>
+<script type="text/ng-template" id="deskpro_jira2/Ticket/link-issue-modal.html">
+    <!--#include file="Ticket/link-issue-modal.html" -->
+</script>
 
-        <label ng-if="meta.default_fields_summary.indexOf('priority') > -1" style="display: block; margin: 10px 0;">
-            Priority:
-            <select ng-model="issue.issuetype"
-                    ng-options="type as type.name for type in issue.project.issuetypes">
-            </select>
-        </label>
-
-        <label ng-if="meta.default_fields_summary.indexOf('summary') > -1" style="display: block; margin: 10px 0;">
-            Summary:
-            <input type="text" ng-model="issue.summary" />
-        </label>
-
-        <label ng-repeat="field in issue.issuetype.filtered_fields" style="display: block; margin: 10px 0;">
-            {{ field.name }}
-        </label>
-
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="confirm()">Confirm</button>
-        <button class="btn btn-warning" ng-click="dismiss()">Cancel</button>
-    </div>
-
+<script type="text/ng-template" id="deskpro_jira2/Ticket/send-comment-modal.html">
+    <!--#include file="Ticket/send-comment-modal.html" -->
 </script>

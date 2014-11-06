@@ -1,0 +1,19 @@
+<form name="comment_form" ng-submit="comment_form.$valid && confirm()">
+
+    <div class="modal-header">
+        <h3 class="modal-title">Send Comment:</h3>
+    </div>
+
+    <div class="modal-body">
+
+        <textarea name="message" ng-model="message" required></textarea>
+
+        <br />
+
+        <button dp-submit-form>
+            Send
+        </button>
+
+    </div>
+
+</form>

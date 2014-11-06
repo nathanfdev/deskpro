@@ -1,12 +1,25 @@
-define(function() {
+define([
+	'angular',
+	'deskpro_jira2/Ticket/CreateIssueCtrl',
+	'deskpro_jira2/Ticket/Issues'
+], function(
+	angular,
+	CreateIssueCtrl,
+    Issues
+	) {
 	return function($scope, $tabScope, $ticket, $http, $modal, $app, $timeout, $q) {
 		$tabScope.btnImg = $app.getResourcePath('jira.png');
 
 		var metaDeferred = $q.defer(),
-			metaPromise = metaDeferred.promise;
+			metaPromise = metaDeferred.promise,
+			issues = new Issues($http, $q, $ticket);
+
+		$scope.issues = issues;
 
 		$http.get('/agent/jira/meta')
 			.success(function(data, status, headers, config){
+				console.info(data);
+				$scope.meta = data;
 				metaDeferred.resolve(data);
 			})
 			.error(function(data, status, headers, config){
@@ -14,64 +27,63 @@ define(function() {
 				metaDeferred.resolve();
 			});
 
+		$scope.search = function(){
+			$scope.search_issue_state = 1;
+			issues.search($scope.search_issue).then(function(issue){
+				if (!issue) {
+					return $scope.search_issue_state = 404;
+				}
+
+				$scope.search_issue_state = 0;
+
+				$modal.open({
+					templateUrl: 'deskpro_jira2/Ticket/link-issue-modal.html',
+					controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+						metaPromise.then(function(meta){
+							$scope.meta = meta;
+							$scope.issue = issue;
+						});
+					}]
+				});
+			});
+		};
+
 		$scope.createIssueModal = function(){
 			$modal.open({
 				templateUrl: 'deskpro_jira2/Ticket/create-issue-modal.html',
+				controller: CreateIssueCtrl,
+				resolve: {
+					$ticket: function() { return $ticket; },
+					meta: function() { return metaPromise; },
+					issues: function() { return issues; }
+				}
+			});
+		};
+
+
+
+		$scope.issueModal = function(issue){
+			$modal.open({
+				templateUrl: 'deskpro_jira2/Ticket/issue-details-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-
-					$scope.issue = {
-						project: null,
-						issuetype: null,
-						summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject
-					};
-
-					$scope.$watch('issue.project', function(project){
-						$scope.issue.issuetype = null;
-						if (!project) return;
-
-						var types = project.issuetypes || [];
-						for (var i = 0; i < types.length; i++) {
-							var type = types[i];
-							if (type.id == $scope.meta.default_issuetype) {
-								$scope.issue.issuetype = type;
-								break;
-							}
-						}
-
-						if (!$scope.issue.issuetype && $scope.issue.project.issuetypes.length) {
-							$scope.issue.issuetype = $scope.issue.project.issuetypes[0];
-						}
-					});
-
-					$scope.$watch('issue.issuetype', function(type){
-						if (!type) return;
-						if (type.filtered_fields) return;
-
-						type.filtered_fields = [];
-						$.each(type.fields, function(id, field){
-							if (['project', 'summary', 'priority', 'issuetype'].indexOf(id) > -1) return;
-							if (!field.required && $scope.meta.default_fields_summary.indexOf(id) === -1) return;
-							type.filtered_fields.push(field);
-						});
-					});
-
-
 					metaPromise.then(function(meta){
-						console.info(meta);
-
 						$scope.meta = meta;
-
-						for (var i = 0; i < $scope.meta.projects.length; i++) {
-							var project = $scope.meta.projects[i];
-							if (project.id == meta.default_project) {
-								$scope.issue.project = project;
-								break;
-							}
-						}
+						$scope.issue = issue;
 					});
+				}]
+			});
+		};
 
 
-					$scope.dismiss = function() { $modalInstance.dismiss(); };
+
+		$scope.sendCommentModal = function(){
+			$modal.open({
+				templateUrl: 'deskpro_jira2/Ticket/send-comment-modal.html',
+				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+					$scope.confirm = function(){
+						issues.sendComment($scope.message);
+						$modalInstance.dismiss();
+					};
 				}]
 			});
 		};

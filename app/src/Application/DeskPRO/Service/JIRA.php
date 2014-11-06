@@ -171,26 +171,21 @@ class JIRA
 			return null;
 		}
 
-		$meta = new Meta();
-
 		try {
 
 			$res = $this->getApi()->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
-			$projects = isset($res['projects']) ? $res['projects'] : array();
-			$meta->setCreateMeta($projects);
-
 			$priority = $this->getApi()->get('/priority');
-			$meta->setPriorities($priority);
+			$properties['projects'] = isset($res['projects']) ? $res['projects'] : array();
+			$properties['priorities'] = $priority;
 
-			foreach ($properties as $k => $v) {
-				$meta->setDefault($k, $v);
-			}
+			$meta = Meta::fromArray($properties);
 
 			$app->setSetting(self::PARAM_META, $meta->toArray());
 			$this->container->getEm()->flush($app);
 
 		} catch (\Exception $e) {
-			// silence is a gold
+			// todo
+			throw $e;
 		}
 
 		return $meta;
@@ -212,5 +207,47 @@ class JIRA
 		}
 
 		return $meta;
+	}
+
+
+
+
+	// todo move these methods to Api?
+
+	/**
+	 * @param $jql
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function searchIssues($jql)
+	{
+		try {
+			$result = $this->getApi()->post('/search', array(
+				'jql' => $jql,
+				'fields' => $this->getMeta()->getAllFields(),
+				'expand' => array('names'),
+			));
+		} catch (\Exception $e) {
+			// todo
+			throw $e;
+		}
+
+		return $result;
+	}
+
+	public function createComment($issueId, $message)
+	{
+		try {
+
+			$result = $this->getApi()->post('/issue/' . $issueId . '/comment?expand=renderedBody', array(
+				'body' => $message,
+			));
+
+		} catch (\Exceptions $e) {
+			// todo
+			throw $e;
+		}
+
+		return $result;
 	}
 } 

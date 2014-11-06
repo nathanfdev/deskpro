@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,74 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\DeskPRO\JIRA;
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage
+ */
 
+namespace Application\InstallBundle\Upgrade\Build;
 
-
-class Meta
+class Build1415056082 extends AbstractBuild
 {
-	/**
-	 * create meta-data
-	 * @var array
-	 */
-	protected $projects = array();
-
-	/**
-	 * list of priorities
-	 * @var array
-	 */
-	protected $priorities = array();
-
-	protected $default_project;
-	protected $default_priority;
-	protected $default_issuetype;
-	protected $default_fields_summary = array();
-	protected $default_fields_list = array();
-
-	protected $system_fields = array(
-		'project',
-		'issuetype',
-		'priority',
-		'summary',
-	);
-
-	/**
-	 * @return array
-	 */
-	public function toArray()
+	public function run()
 	{
-		$ret = array();
-
-		$ref = new \ReflectionObject($this);
-		foreach ($ref->getProperties() as $prop) {
-			$name = $prop->getName();
-			$ret[$name] = $this->{$name};
-		}
-
-		return $ret;
+		$this->out("Upgrade JIRA Issues");
+		$this->execMutateSql("ALTER TABLE jira_issues DROP FOREIGN KEY FK_88385CE2700047D2");
+		$this->execMutateSql("DROP INDEX issue_id_idx ON jira_issues");
+		$this->execMutateSql("ALTER TABLE jira_issues DROP issue_id, DROP last_synced;");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD CONSTRAINT FK_88385CE2700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD issue_id VARCHAR(255) NOT NULL, CHANGE created created DATETIME NOT NULL;");
 	}
-
-	/**
-	 * @param array $data
-	 * @return Meta
-	 */
-	static public function fromArray(array $data)
-	{
-		$meta = new self;
-		unset($data['system_fields']);
-		foreach ($data as $k => $v) {
-			if (property_exists($meta, $k)) {
-				$meta->{$k} = $v;
-			}
-		}
-		return $meta;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getAllFields()
-	{
-		return array_values(array_unique(array_merge($this->system_fields, $this->default_fields_summary, $this->default_fields_list)));
-	}
-} 
+}
