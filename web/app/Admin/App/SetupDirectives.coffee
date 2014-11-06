@@ -25,6 +25,7 @@ define [
 	'Admin/Main/Directive/DpLiGroupSection',
 	'Admin/Main/Directive/DpListAutoload',
 	'Admin/Main/Directive/DpMaxHeight',
+	'Admin/Main/Directive/DpMatchMinHeight',
 	'Admin/Main/Directive/DpOpenPhraseEditor',
 	'Admin/Main/Directive/DpOrderMenu',
 	'Admin/Main/Directive/DpPingFlash',
@@ -73,6 +74,7 @@ define [
 	Admin_Main_Directive_DpLiGroupSection,
 	Admin_Main_Directive_DpListAutoload,
 	Admin_Main_Directive_DpMaxHeight,
+	Admin_Main_Directive_DpMatchMinHeight,
 	Admin_Main_Directive_DpOpenPhraseEditor,
 	Admin_Main_Directive_DpOrderMenu,
 	Admin_Main_Directive_DpPingFlash,
@@ -122,6 +124,7 @@ define [
 		Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)
 		Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload)
 		Module.directive('dpMaxHeight',                    Admin_Main_Directive_DpMaxHeight)
+		Module.directive('dpMatchMinHeight',               Admin_Main_Directive_DpMatchMinHeight)
 		Module.directive('dpOpenPhraseEditor',             Admin_Main_Directive_DpOpenPhraseEditor)
 		Module.directive('dpOrderMenu',                    Admin_Main_Directive_DpOrderMenu)
 		Module.directive('dpPingFlash',                    Admin_Main_Directive_DpPingFlash)
