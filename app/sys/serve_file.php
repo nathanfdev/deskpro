@@ -1023,9 +1023,9 @@ class FilestorageLoader extends LoaderAbstract
 				$fp = @fopen($blob['file_url'], 'r', false, $context);
 				while (!@feof($fp)) {
 					$buf .= @fread($fp, 1024);
-					if ($max_time > (time() - $time_start)) {
-						break;
+					if ((time() - $time_start) > $max_time) {
 						$fail = true;
+						break;
 					}
 				}
 				@fclose($fp);
