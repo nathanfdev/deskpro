@@ -32,12 +32,16 @@
  * @subpackage
  */
 
-namespace Application\LanguageRoutingBundle;
+namespace Application\LanguageBundle\DependencyInjection;
 
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 
-class LanguageRoutingBundle extends Bundle
+class LanguageExtension extends Extension
 {
+	public function load(array $config, ContainerBuilder $container)
+	{
+	}
 }
  

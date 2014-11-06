@@ -32,24 +32,12 @@
  * @subpackage
  */
 
-namespace Application\LanguageRoutingBundle\DependencyInjection;
+namespace Application\LanguageBundle;
 
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class LanguageRoutingExtension extends Extension
+class LanguageBundle extends Bundle
 {
-	/**
-	 * Loads a specific configuration.
-	 *
-	 * @param array            $config    An array of configuration values
-	 * @param ContainerBuilder $container A ContainerBuilder instance
-	 * @throws \InvalidArgumentException When provided tag is not defined in this extension
-	 * @api
-	 */
-	public function load(array $config, ContainerBuilder $container)
-	{
-	}
 }
  
