@@ -97,7 +97,6 @@ class CoreExtension extends Extension
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
-	    $this->loadEntityListeners($container);
     }
 
 	protected function loadPeople(ContainerBuilder $container)
@@ -197,32 +196,6 @@ class CoreExtension extends Extension
 		$definition->addMethodCall('setArrayStringSeparator', array('.'));
 		$container->setDefinition('deskpro.core.input_reader', $definition);
 	}
-
-	/**
-	 * Sets up entity listeners
-	 */
-	protected function loadEntityListeners(ContainerBuilder $container)
-	{
-		$container
-			->register('dp.entity_lister.person_changelog',
-				'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener')
-			->addArgument(new Reference('service_container'))
-			->addTag('doctrine.entity_listener');
-
-		$container
-			->register('dp.entity_lister.person_contact_data_changelog',
-				'Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener')
-			->addArgument(new Reference('service_container'))
-			->addTag('doctrine.entity_listener');
-
-		$container
-			->register('dp.entity_lister.person_custo_data_changelog',
-				'Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener')
-			->addArgument(new Reference('service_container'))
-			->addTag('doctrine.entity_listener');
-	}
-
-
 
 	/**
 	 * Sets up the settings loader

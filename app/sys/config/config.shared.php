@@ -63,6 +63,15 @@ $definition->setArguments(
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
 $container->setDefinition('doctrine.dbal.connection_factory', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
+$definition->setArguments(
+	array(
+		new Reference('service_container')
+	)
+);
+$container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
+
 // doctrine.orm.default_query_cache
 $definition = new Definition();
 $definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
@@ -71,6 +80,23 @@ $definition->setFactoryMethod('create');
 $definition->setArguments(array('dql'));
 $definition->addMethodCall('registerShutdownCommit');
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
+
+// entity listeners
+$definition = new Definition();
+$definition->setClass('Application\DeskPRO\Entity\EventListener\PersonChangeLogListener');
+$definition->setArguments(array(new Reference('service_container')));
+$definition->addTag('doctrine.entity_listener');
+$container->setDefinition('dp.entity_lister.person_changelog', $definition);
+$definition = new Definition();
+$definition->setClass('Application\DeskPRO\Entity\EventListener\PersonContactDataChangeLogListener');
+$definition->setArguments(array(new Reference('service_container')));
+$definition->addTag('doctrine.entity_listener');
+$container->setDefinition('dp.entity_lister.person_contact_data_changelog', $definition);
+$definition = new Definition();
+$definition->setClass('Application\DeskPRO\Entity\EventListener\PersonCustomDataChangeLogListener');
+$definition->setArguments(array(new Reference('service_container')));
+$definition->addTag('doctrine.entity_listener');
+$container->setDefinition('dp.entity_lister.person_custo_data_changelog', $definition);
 
 
 ############################################################################
