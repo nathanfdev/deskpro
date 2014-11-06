@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5b2e6c26ff669cb1cff42c27f53539c7",
+    "hash": "d3b27c1519cfd08706d3e0649052fda0",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1969,16 +1969,16 @@
         },
         {
             "name": "league/url",
-            "version": "3.1.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/url.git",
-                "reference": "53e87bdcfa5dd9709ce538f5680fed6e34eef0b4"
+                "reference": "7db72779ffede58ff0bd1fa143394b05f84c0bc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/url/zipball/53e87bdcfa5dd9709ce538f5680fed6e34eef0b4",
-                "reference": "53e87bdcfa5dd9709ce538f5680fed6e34eef0b4",
+                "url": "https://api.github.com/repos/thephpleague/url/zipball/7db72779ffede58ff0bd1fa143394b05f84c0bc5",
+                "reference": "7db72779ffede58ff0bd1fa143394b05f84c0bc5",
                 "shasum": ""
             },
             "require": {
@@ -2022,7 +2022,7 @@
                 "php",
                 "url"
             ],
-            "time": "2014-09-02 07:57:45"
+            "time": "2014-10-23 09:06:12"
         },
         {
             "name": "leth/ip-address",
@@ -4003,6 +4003,7 @@
         "friendsofsymfony/elastica-bundle": 20,
         "fzaninotto/faker": 20,
         "firebase/php-jwt": 20,
+        "league/url": 20,
         "google/apiclient": 20
     },
     "prefer-stable": false,

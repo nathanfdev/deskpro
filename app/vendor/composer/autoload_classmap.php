@@ -7,7 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'BaseFacebook' => $vendorDir . '/facebook/php-sdk/src/base_facebook.php',
-    'BasicProvider' => $vendorDir . '/lightopenid/lightopenid/provider/example.php',
     'Collator' => $vendorDir . '/symfony/symfony/src/Symfony/Component/Intl/Resources/stubs/Collator.php',
     'ElementNotSelectableException' => $vendorDir . '/facebook/webdriver/lib/WebDriverExceptions.php',
     'ElementNotVisibleException' => $vendorDir . '/facebook/webdriver/lib/WebDriverExceptions.php',
@@ -2455,7 +2454,6 @@ return array(
     'MySource_Sniffs_PHP_GetRequestDataSniff' => $vendorDir . '/squizlabs/php_codesniffer/CodeSniffer/Standards/MySource/Sniffs/PHP/GetRequestDataSniff.php',
     'MySource_Sniffs_PHP_ReturnFunctionValueSniff' => $vendorDir . '/squizlabs/php_codesniffer/CodeSniffer/Standards/MySource/Sniffs/PHP/ReturnFunctionValueSniff.php',
     'MySource_Sniffs_Strings_JoinStringsSniff' => $vendorDir . '/squizlabs/php_codesniffer/CodeSniffer/Standards/MySource/Sniffs/Strings/JoinStringsSniff.php',
-    'MysqlProvider' => $vendorDir . '/lightopenid/lightopenid/provider/example-mysql.php',
     'NoAlertOpenException' => $vendorDir . '/facebook/webdriver/lib/WebDriverExceptions.php',
     'NoCollectionException' => $vendorDir . '/facebook/webdriver/lib/WebDriverExceptions.php',
     'NoScriptResultException' => $vendorDir . '/facebook/webdriver/lib/WebDriverExceptions.php',
