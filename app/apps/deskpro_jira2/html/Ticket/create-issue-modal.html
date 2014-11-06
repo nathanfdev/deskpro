@@ -20,14 +20,6 @@
             </select>
         </label>
 
-        <label ng-if="meta.default_fields_summary.indexOf('priority') > -1" style="display: block; margin: 10px 0;">
-            Priority:
-            <select ng-model="issue.priority"
-                    ng-options="priority as priority.name for priority in meta.priorities"
-                    required>
-            </select>
-        </label>
-
         <label ng-if="meta.default_fields_summary.indexOf('summary') > -1" style="display: block; margin: 10px 0;">
             Summary:
             <input type="text" ng-model="issue.summary" required />

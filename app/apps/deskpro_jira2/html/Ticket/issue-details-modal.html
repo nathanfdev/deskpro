@@ -5,14 +5,14 @@
 
     <ul>
         <li ng-repeat="(k, v) in issue.fields">
-            {{ k }}: {{ v }}
+            {{ k }}: {{ render(v) }}
         </li>
     </ul>
 
     <form name="comment_form" ng-submit="comment_form.$valid && sendMessage()">
         <textarea name="message" ng-model="message" required></textarea>
         <br />
-        <button dp-submit-form></button>
+        <button dp-submit-form>Add Comment</button>
     </form>
 
 

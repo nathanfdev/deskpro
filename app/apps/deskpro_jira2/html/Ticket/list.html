@@ -20,7 +20,8 @@
         <ul ng-show="!issues.loading">
             <li ng-repeat="issue in issues" ng-click="issueModal(issue)">
                 <div ng-if="meta.default_fields_list.indexOf('issuekey') > -1">Key: {{ issue.key }}</div>
-                <div ng-repeat="field in meta.default_fields_list">{{ issues.names[field] }}: {{ issue.fields[field] }}</div>
+                <div ng-repeat="field in meta.default_fields_list">{{ issues.names[field] }}: {{ render(issue.fields[field]) }}</div>
+                <div>-</div>
             </li>
         </ul>
 

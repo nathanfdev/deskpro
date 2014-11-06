@@ -16,6 +16,10 @@ define([
 
 		$scope.issues = issues;
 
+		var render = function(data) {
+			return 'object' == typeof data ? '[object]' : data;
+		};
+
 		$http.get('/agent/jira/meta')
 			.success(function(data, status, headers, config){
 				console.info(data);
@@ -43,6 +47,7 @@ define([
 							$scope.meta = meta;
 							$scope.issue = issue;
 						});
+						$scope.render = render;
 					}]
 				});
 			});
@@ -70,6 +75,7 @@ define([
 						$scope.meta = meta;
 						$scope.issue = issue;
 					});
+					$scope.render = render;
 				}]
 			});
 		};
@@ -87,5 +93,7 @@ define([
 				}]
 			});
 		};
+
+		$scope.render = render;
 	}
 });

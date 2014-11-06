@@ -37,14 +37,7 @@ class Meta
 	 */
 	protected $projects = array();
 
-	/**
-	 * list of priorities
-	 * @var array
-	 */
-	protected $priorities = array();
-
 	protected $default_project;
-	protected $default_priority;
 	protected $default_issuetype;
 	protected $default_fields_summary = array();
 	protected $default_fields_list = array();
@@ -52,7 +45,6 @@ class Meta
 	protected $system_fields = array(
 		'project',
 		'issuetype',
-		'priority',
 		'summary',
 	);
 

@@ -23,22 +23,8 @@ define(function() {
 			}
 		}
 
-		if (meta.default_priority) {
-			for (var i = 0; i < $scope.meta.priorities.length; i++) {
-				var priority = $scope.meta.priorities[i];
-				if (priority.id == meta.default_priority) {
-					$scope.issue.priority = priority;
-					break;
-				}
-			}
-		}
-
 		if (!$scope.issue.project && $scope.meta.projects.length) {
 			$scope.issue.project = $scope.meta.projects[0];
-		}
-
-		if (!$scope.issue.priority && $scope.meta.priorities.length) {
-			$scope.issue.priority = $scope.meta.priorities[0];
 		}
 /**** end of init defaults ****/
 
@@ -83,7 +69,6 @@ define(function() {
 			var fields = angular.copy($scope.issue);
 			fields.project = {id: fields.project.id};
 			fields.issuetype = {id: fields.issuetype.id};
-			fields.priority = {id: fields.priority.id};
 
 			issues.create({fields: fields}).then(function(){ $modalInstance.dismiss(); });
 		};

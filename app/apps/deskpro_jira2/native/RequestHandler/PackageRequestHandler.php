@@ -111,7 +111,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 		$api = $js->getApi();
 		$meta = array(
 			'projects' => $api->get('/project'),
-			'priorities' => $api->get('/priority'),
 			'issuetypes' => $api->get('/issuetype'),
 			'fields' => $api->get('/field'),
 		);

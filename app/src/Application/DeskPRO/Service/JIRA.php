@@ -71,14 +71,6 @@ class JIRA
 	}
 
 	/**
-	 * @return mixed
-	 */
-	public function isCommentsEnabled()
-	{
-		return $this->getApp() && $this->getApp()->getSetting(self::PARAM_COMMENTS);
-	}
-
-	/**
 	 * @return string|null
 	 */
 	public function getConsumerKey()

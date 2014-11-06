@@ -27,13 +27,6 @@
 			"label": "Application Link consumer key",
 			"description": "Enter your JIRA Application Link consumer key.",
 			"native_only": true
-		},
-		{
-			"name": "comments",
-			"type": "checkbox",
-			"label": "Enable comments",
-			"description": "Enable comments.",
-			"native_only": true
 		}
 	]
 }
