@@ -947,6 +947,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			depId = this.getEl('dep').val() || 0,
 			self = this;
 
+		self._updateFields();
+
 		if (!personId || !parseInt(personId)) {
 			return;
 		}
