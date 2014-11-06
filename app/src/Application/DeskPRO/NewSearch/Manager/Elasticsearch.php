@@ -92,10 +92,12 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
 				if ($model == 'DeskPRO:Ticket' && $this->person) {
 					$result = $ent_repos->findTicketId($q);
 
-					$this->person->loadHelper('PermissionsManager');
-					if (!$this->person->PermissionsManager->TicketChecker->canView($result)) {
-						$result = null;
-					}
+                    if ($result) {
+                        $this->person->loadHelper('PermissionsManager');
+                        if (!$this->person->PermissionsManager->TicketChecker->canView($result)) {
+                            $result = null;
+                        }
+                    }
 				} else {
 					$result = $ent_repos->findById($q);
 				}
