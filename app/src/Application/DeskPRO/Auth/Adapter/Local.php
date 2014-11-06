@@ -71,11 +71,22 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
 
 	/**
 	 * Sets the data got from a form
+	 *
+	 * @param array $form_data
 	 */
 	public function setFormData(array $form_data)
 	{
-		$identifier = isset($form_data['username']) ? $form_data['username'] : $form_data['email'];
-		$this->setCredentials($identifier, $form_data['password']);
+		if (isset($form_data['username'])) {
+			$identifier = $form_data['username'];
+		} else if (isset($form_data['email'])) {
+			$identifier = $form_data['email'];
+		} else {
+			$identifier = '';
+		}
+
+		$password = isset($form_data['password']) ? $form_data['password'] : '';
+
+		$this->setCredentials($identifier, $password);
 	}
 
 	public function setCredentials($email, $password)
