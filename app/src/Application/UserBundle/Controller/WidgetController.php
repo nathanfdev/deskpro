@@ -37,6 +37,7 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\UserBundle\Form\NewFeedbackType;
 use Application\UserBundle\Form\NewTicketType;
 
@@ -255,7 +256,16 @@ class WidgetController extends AbstractController
 		$validator->enableWidgetMode();
 
 		if ($validator->isValid($newticket)) {
-			$ticket = $newticket->save();
+			try {
+				$ticket = $newticket->save();
+			} catch (DuplicateTicketException $e) {
+				// Double submit detected, just continue on
+				$ticket = $this->em->find('DeskPRO:Ticket', $e->ticket_id);
+
+				if (!$ticket) {
+					throw $this->createNotFoundException();
+				}
+			}
 
 			$GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
