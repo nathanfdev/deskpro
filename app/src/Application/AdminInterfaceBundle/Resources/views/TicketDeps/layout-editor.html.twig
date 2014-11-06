@@ -7,7 +7,7 @@
 	</nav>
 	<section>
 		<article class="user-form" ng-show="form_tab == 'user'">
-			<div class="form-elements">
+			<div class="form-elements" dp-match-min-height watched-as="sidebar_user">
 				<div class="group">
 					<header>
 						<h3>{{ phrase('adm.custom_fields.ticket_fields') }} &middot; <a href="#/tickets/fields"><i class="fa fa-cog" title="Manage Fields"></i></a></h3>
@@ -91,11 +91,11 @@
 
 			</div>
 			<div class="form-worksheet">
-				<ul></ul>
+				<ul dp-match-min-height watch="sidebar_user"></ul>
 			</div>
 		</article>
 		<article class="agent-form" ng-show="form_tab == 'agent'">
-			<div class="form-elements">
+			<div class="form-elements" dp-match-min-height watched-as="sidebar_agent">
 
 				<div class="group">
 					<header>
@@ -175,7 +175,7 @@
 						add and arrange additional fields any way you want.
 					</div>
 				</div>
-				<ul></ul>
+				<ul dp-match-min-height watch="sidebar_agent"></ul>
 			</div>
 		</article>
 		<div style="clear:both;height:10px;overflow:hidden;">&nbsp;</div>
