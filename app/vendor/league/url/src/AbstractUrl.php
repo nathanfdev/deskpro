@@ -33,56 +33,56 @@ abstract class AbstractUrl implements UrlInterface
     /**
     * Scheme
     *
-    * @var League\Url\Components\Scheme
+    * @var \League\Url\Components\Scheme
     */
     protected $scheme;
 
     /**
     * User
     *
-    * @var League\Url\Components\User
+    * @var \League\Url\Components\User
     */
     protected $user;
 
     /**
     * Pass
     *
-    * @var League\Url\Components\Pass
+    * @var \League\Url\Components\Pass
     */
     protected $pass;
 
     /**
      * Host
      *
-     * @var League\Url\Components\Host
+     * @var \League\Url\Components\Host
      */
     protected $host;
 
     /**
      * Port
      *
-     *@var League\Url\Components\Port
+     *@var \League\Url\Components\Port
      */
     protected $port;
 
     /**
      * Path
      *
-     * @var League\Url\Components\Path
+     * @var \League\Url\Components\Path
      */
     protected $path;
 
     /**
      * Query
      *
-     * @var League\Url\Components\Query
+     * @var \League\Url\Components\Query
      */
     protected $query;
 
     /**
      * Fragment
      *
-     * @var League\Url\Components\Fragment
+     * @var \League\Url\Components\Fragment
      */
     protected $fragment;
 
@@ -169,7 +169,7 @@ abstract class AbstractUrl implements UrlInterface
      *
      * @param string $url a string or an object that implement the __toString method
      *
-     * @return AbstractUrl
+     * @return static
      *
      * @throws RuntimeException If the URL can not be parse
      */
@@ -178,10 +178,11 @@ abstract class AbstractUrl implements UrlInterface
         $url = (string) $url;
         $url = trim($url);
         $original_url = $url;
+        $url = self::sanitizeUrl($url);
 
         //if no valid scheme is found we add one
-        if (!empty($url) && !preg_match(',^('.UrlConstants::SCHEME_REGEXP.':)?//,i', $url)) {
-            $url = '//'.$url;
+        if (is_null($url)) {
+            throw new RuntimeException(sprintf('The given URL: `%s` could not be parse', $original_url));
         }
         $components = @parse_url($url);
         if (false === $components) {
@@ -213,12 +214,28 @@ abstract class AbstractUrl implements UrlInterface
         );
     }
 
+    protected static function sanitizeUrl($url)
+    {
+        if ('' == $url || strpos($url, '//') === 0) {
+            return $url;
+        } elseif (! preg_match(',^((http|ftp|ws)s?:),i', $url, $matches)) {
+            return '//'.$url;
+        }
+
+        $scheme_length = strlen($matches[0]);
+        if (strpos(substr($url, $scheme_length), '//') === 0) {
+            return $url;
+        }
+
+        return null;
+    }
+
     /**
      * Return a instance of Url from a server array
      *
      * @param array $server the server array
      *
-     * @return AbstractUrl
+     * @return static
      *
      * @throws RuntimeException If the URL can not be parse
      */

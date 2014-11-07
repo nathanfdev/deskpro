@@ -111,6 +111,9 @@ abstract class AbstractSegment extends AbstractArray implements ArrayAccess
 
     /**
      * ArrayAccess Interface method
+     *
+     * @param int|string $offset
+     * @param mixed $value
      */
     public function offsetSet($offset, $value)
     {
@@ -181,21 +184,22 @@ abstract class AbstractSegment extends AbstractArray implements ArrayAccess
      */
     protected function formatRemoveSegment($data)
     {
-        return $this->sanitizeValue($this->validateSegment($data, $this->delimiter));
+        return $this->sanitizeValue($this->validateSegment($data));
     }
 
     /**
      * Validate data before insertion into a URL segment based component
      *
-     * @param mixed  $data      the data to insert
-     * @param string $delimiter a single character delimiter
+     * @param mixed $data the data to insert
      *
      * @return array
      *
      * @throws \RuntimeException if the data is not valid
      */
-    protected function validateSegment($data, $delimiter)
+    protected function validateSegment($data)
     {
+        $delimiter = $this->delimiter;
+
         return $this->convertToArray($data, function ($str) use ($delimiter) {
             if ('' == $str) {
                 return array();
@@ -214,7 +218,7 @@ abstract class AbstractSegment extends AbstractArray implements ArrayAccess
      * @param array   $left         the original array
      * @param array   $value        the data to prepend
      * @param string  $whence       the value of the data to prepend before
-     * @param integer $whence_index the occurence index for $whence
+     * @param integer $whence_index the occurrence index for $whence
      *
      * @return array
      */
@@ -240,7 +244,7 @@ abstract class AbstractSegment extends AbstractArray implements ArrayAccess
      * @param array   $right        the original array
      * @param array   $value        the data to prepend
      * @param string  $whence       the value of the data to prepend before
-     * @param integer $whence_index the occurence index for $whence
+     * @param integer $whence_index the occurrence index for $whence
      *
      * @return array
      */
