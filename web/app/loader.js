@@ -68,7 +68,9 @@ requirejs.config({
 		"AdminUpgrade":                    "app/build/AdminUpgrade/js",
 		"AdminStart":                      "app/build/AdminStart/js",
 		"Reports":                         "app/build/Reports/js",
-		"ReportsRouting":                  "app/Reports/Resources/config/routing"
+		"ReportsRouting":                  "app/Reports/Resources/config/routing",
+
+		"TestAngularLoad":                 "testing/integration/admin/common/TestAngularLoad"
 	},
 	"shim": {
 		"angular":                         {"exports" : "angular", "deps": ["jquery"]},
