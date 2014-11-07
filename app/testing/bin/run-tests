@@ -18,7 +18,7 @@ echo "Running Unit Tests"
 echo "=========================="
 echo ""
 
-bin/codecept run unit --coverage --xml
+bin/codecept run unit
 
 if [[ $? -ne 0 ]] ; then
 	echo "!!! Unit Test Failure !!!"
@@ -36,7 +36,7 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo "=========================="
 	echo ""
 
-	bin/codecept run integration --coverage --xml
+	bin/codecept run integration
 
 	if [[ $? -ne 0 ]] ; then
 		echo "!!! Unit Integration Failure !!!"
@@ -62,39 +62,16 @@ if [ $IS_ERROR -ne 1 ] ; then
 	echo ""
 
 	bin/codecept run acceptance
-	#bin/codecept run acceptance --coverage --xml
+	#bin/codecept run acceptance
 
 	if [[ $? -ne 0 ]] ; then
 		echo "!!! Acceptance Tests Failure !!!"
 		IS_ERROR=1
 	fi
 
-	#if [ -f logs/coverage.xml ]; then
-	#	mv logs/coverage.xml logs/coverage-clover/acceptance-tests-coverage.xml
-	#fi
-fi
-
-if [ $IS_ERROR -ne 1 ] ; then
-	echo ""
-	echo "========================"
-	echo "Running Product Tests"
-	echo "========================"
-	echo ""
-
-	bin/codecept run product
-	#bin/codecept run product --coverage --xml
-
-	if [[ $? -ne 0 ]] ; then
-		echo "!!! Product Tests Failure !!!"
-		IS_ERROR=1
+	if [ -f logs/coverage.xml ]; then
+		mv logs/coverage.xml logs/coverage-clover/acceptance-tests-coverage.xml
 	fi
-
-	#if [ -f logs/coverage.xml ]; then
-	#	mv logs/coverage.xml logs/coverage-clover/product-tests-coverage.xml
-	#fi
 fi
 
-if [ $IS_ERROR -ne 0 ] ; then
-	exit 1
-fi
 exit 0

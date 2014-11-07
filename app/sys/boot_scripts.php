@@ -144,4 +144,8 @@ switch ($_GET['_sys']) {
 	case 'message':
 		require DP_ROOT.'/sys/scripts/message.php';
 		break;
+
+	case 'testmode':
+		require DP_ROOT.'/sys/scripts/testmode.php';
+		break;
 }
