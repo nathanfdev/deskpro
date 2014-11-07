@@ -46,6 +46,8 @@ class Meta
 		'project',
 		'issuetype',
 		'summary',
+		'comment',
+		'description',
 	);
 
 	/**

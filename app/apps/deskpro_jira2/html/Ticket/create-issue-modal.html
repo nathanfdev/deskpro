@@ -20,9 +20,14 @@
             </select>
         </label>
 
-        <label ng-if="meta.default_fields_summary.indexOf('summary') > -1" style="display: block; margin: 10px 0;">
-            Summary:
+        <label style="display: block; margin: 10px 0;">
+            {{ names.summary }}:
             <input type="text" ng-model="issue.summary" required />
+        </label>
+
+        <label ng-if="issue.issuetype.fields.description && (meta.default_fields_summary.indexOf('description') > -1 || issue.issuetype.fields.description.required)" style="display: block; margin: 10px 0;">
+            {{ names.description }}:
+            <textarea ng-model="issue.description"></textarea>
         </label>
 
         <label ng-repeat="field in issue.issuetype.filtered_fields" style="display: block; margin: 10px 0;">

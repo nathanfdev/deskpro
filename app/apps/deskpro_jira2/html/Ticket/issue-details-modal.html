@@ -4,16 +4,35 @@
 <div class="modal-body">
 
     <ul>
-        <li ng-repeat="(k, v) in issue.fields">
-            {{ k }}: {{ render(v) }}
+        <li ng-if="isFieldEnabled('summary', 'issuekey')">
+            Key: {{ issue.key }}
+        </li>
+        <li ng-if="isFieldEnabled('summary', 'summary')">
+            {{ names.summary }}: {{ issue.summary }}
+        </li>
+        <li ng-if="isFieldEnabled('summary', 'description')">
+            {{ names.description }}: {{ issue.description }}
+        </li>
+        <li ng-repeat="field in issue.filtered_fields">
+            {{ names[field.id] }}: {{ render(field.value) }}
         </li>
     </ul>
 
-    <form name="comment_form" ng-submit="comment_form.$valid && sendMessage()">
-        <textarea name="message" ng-model="message" required></textarea>
-        <br />
-        <button dp-submit-form>Add Comment</button>
-    </form>
+    <div ng-if="issue.fields.comment">
+        <ul>
+            <li ng-repeat="comment in issue.fields.comment.comments">
 
+                {{ comment.body }}
+            </li>
+        </ul>
+
+
+        <div ng-show="sending_comment">->spinner<-</div>
+        <form name="comment_form" ng-submit="comment_form.$valid && sendComment(message); message = null;" ng-show="!sending_comment">
+            <textarea name="message" ng-model="message" required></textarea>
+            <br />
+            <button dp-submit-form>Add Comment</button>
+        </form>
+    </div>
 
 </div>

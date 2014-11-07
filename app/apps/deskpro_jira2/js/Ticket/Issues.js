@@ -81,15 +81,10 @@ define(['angular'], function(angular){
 			console.info(msg);
 			$http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg)
 				.success(function (data, status, headers, config) {
-					console.info(data);
-
-					// todo add comment to issue(s)
-
-					d.resolve(true);
+					d.resolve(data);
 				})
 				.error(function (data, status, headers, config) {
 					console.error(data);
-
 					d.resolve();
 				});
 

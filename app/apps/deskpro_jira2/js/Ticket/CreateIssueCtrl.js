@@ -3,8 +3,10 @@ define(function() {
 	return function($scope, $modalInstance, $ticket, meta, issues) {
 
 		console.info(meta);
+		console.info($ticket);
 
 		$scope.meta = meta;
+		$scope.names = issues.names;
 		$scope.issue = {
 			project: null,
 			issuetype: null,
@@ -56,7 +58,7 @@ define(function() {
 
 			type.filtered_fields = [];
 			$.each(type.fields, function (id, field) {
-				if (['project', 'summary', 'priority', 'issuetype'].indexOf(id) > -1) return;
+				if (meta.system_fields.indexOf(id) > -1) return;
 				if (!field.required && $scope.meta.default_fields_summary.indexOf(id) === -1) return;
 				type.filtered_fields.push(field);
 			});

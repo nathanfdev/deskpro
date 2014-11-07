@@ -12,18 +12,27 @@ define([
 
 		var metaDeferred = $q.defer(),
 			metaPromise = metaDeferred.promise,
-			issues = new Issues($http, $q, $ticket);
+			issues = new Issues($http, $q, $ticket),
+			enabled = {list: {}, summary: {}};
 
 		$scope.issues = issues;
 
 		var render = function(data) {
+			if (!data) return data;
 			return 'object' == typeof data ? '[object]' : data;
 		};
+
+		var isFieldEnabled = function(type, field) {
+			return undefined !== enabled[type][field];
+		};
+		$scope.isFieldEnabled = isFieldEnabled;
 
 		$http.get('/agent/jira/meta')
 			.success(function(data, status, headers, config){
 				console.info(data);
 				$scope.meta = data;
+				data.default_fields_list.each(function(field){ enabled.list[field] = 1; });
+				data.default_fields_summary.each(function(field){ enabled.summary[field] = 1; });
 				metaDeferred.resolve(data);
 			})
 			.error(function(data, status, headers, config){
@@ -46,8 +55,20 @@ define([
 						metaPromise.then(function(meta){
 							$scope.meta = meta;
 							$scope.issue = issue;
+							$scope.names = issues.names;
+
+							if (!issue.filtered_fields) {
+								issue.filtered_fields = [];
+								$.each(issue.fields, function (id, field) {
+									if (meta.system_fields.indexOf(id) > -1) return;
+									if (isFieldEnabled('summary', id)) {
+										issue.filtered_fields.push({id: id, value: field});
+									}
+								});
+							}
 						});
 						$scope.render = render;
+						$scope.isFieldEnabled = isFieldEnabled;
 					}]
 				});
 			});
@@ -74,8 +95,30 @@ define([
 					metaPromise.then(function(meta){
 						$scope.meta = meta;
 						$scope.issue = issue;
+						$scope.sending_comment = false;
+						$scope.names = issues.names;
+
+						if (!issue.filtered_fields) {
+							issue.filtered_fields = [];
+							$.each(issue.fields, function (id, field) {
+								if (meta.system_fields.indexOf(id) > -1) return;
+								if (isFieldEnabled('summary', id)) {
+									issue.filtered_fields.push({id: id, value: field});
+								}
+							});
+						}
+
+						$scope.sendComment = function(msg){
+							if (!issue.fields.comment) return false;
+							$scope.sending_comment = true;
+							issues.sendComment(msg, issue.id).then(function(data){
+								$scope.sending_comment = false;
+								data && issue.fields.comment.comments.push(data);
+							});
+						};
 					});
 					$scope.render = render;
+					$scope.isFieldEnabled = isFieldEnabled;
 				}]
 			});
 		};
@@ -86,8 +129,8 @@ define([
 			$modal.open({
 				templateUrl: 'deskpro_jira2/Ticket/send-comment-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-					$scope.confirm = function(){
-						issues.sendComment($scope.message);
+					$scope.confirm = function(msg){
+						issues.sendComment(msg);
 						$modalInstance.dismiss();
 					};
 				}]
