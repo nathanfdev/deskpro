@@ -75,13 +75,21 @@ define(['angular'], function(angular){
 		 * @param issue
 		 * @returns {*}
 		 */
-		this.sendComment = function(msg, issueId) {
+		this.sendComment = function(msg, issue) {
 			var d = $q.defer();
-			issueId = issueId || 0;
+			issueId = issue ? issue.id : 0;
 
 			console.info(msg);
 			$http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg)
 				.success(function (data, status, headers, config) {
+					if (data) {
+						if (issue) {
+							issue.fields.comment && issue.fields.comment.comments.push(data);
+						} else {
+							self.each(function(issue){ issue.fields.comment && issue.fields.comment.comments.push(data); });
+						}
+					}
+
 					d.resolve(data);
 				})
 				.error(function (data, status, headers, config) {
@@ -131,6 +139,22 @@ define(['angular'], function(angular){
 				.error(function (data, status, headers, config) {
 					console.error(data);
 					d.reject(status);
+				});
+
+			return d.promise;
+		};
+
+		this.unlink = function(issue) {
+			var d = $q.defer();
+
+			$http.delete('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
+				.success(function (data, status, headers, config) {
+					self.splice(self.indexOf(issue), 1);
+					d.resolve();
+				})
+				.error(function (data, status, headers, config) {
+					console.error(data);
+					d.resolve();
 				});
 
 			return d.promise;

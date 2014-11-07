@@ -822,6 +822,6 @@ class JiraController extends AbstractController
 		$this->em->remove($issue);
 		$this->em->flush($issue);
 
-		return $this->createJsonResponse(true);
+		return $this->createJsonResponse('success');
 	}
 }

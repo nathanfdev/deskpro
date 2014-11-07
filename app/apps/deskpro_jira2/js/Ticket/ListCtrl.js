@@ -55,6 +55,7 @@ define([
 					if (!issue) {
 						return $scope.search_issue_state = 404;
 					}
+					$scope.search_issue = null;
 					$scope.search_issue_state = 0;
 					var $parent = $scope;
 
@@ -65,6 +66,7 @@ define([
 								$scope.meta = meta;
 								$scope.issue = issue;
 								$scope.names = issues.names;
+								$parent.search_issue_state = 1;
 
 								if (!issue.filtered_fields) {
 									issue.filtered_fields = [];
@@ -93,6 +95,13 @@ define([
 				}
 			);
 		};
+
+
+		$scope.unlink = function(issue) {
+			$scope.search_issue_state = 1;
+			issues.unlink(issue).then(function() { $scope.search_issue_state = 0; });
+		};
+
 
 		$scope.createIssueModal = function() {
 			$modal.open({
@@ -131,10 +140,7 @@ define([
 						$scope.sendComment = function(msg) {
 							if (!issue.fields.comment) return false;
 							$scope.sending_comment = true;
-							issues.sendComment(msg, issue.id).then(function(data) {
-								$scope.sending_comment = false;
-								data && issue.fields.comment.comments.push(data);
-							});
+							issues.sendComment(msg, issue).then(function() { $scope.sending_comment = false; });
 						};
 					});
 					$scope.render = render;
@@ -156,6 +162,9 @@ define([
 				}]
 			});
 		};
+
+
+
 
 		$scope.render = render;
 	}
