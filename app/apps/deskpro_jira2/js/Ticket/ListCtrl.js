@@ -28,53 +28,73 @@ define([
 		$scope.isFieldEnabled = isFieldEnabled;
 
 		$http.get('/agent/jira/meta')
-			.success(function(data, status, headers, config){
+			.success(function(data, status, headers, config) {
 				console.info(data);
 				$scope.meta = data;
-				data.default_fields_list.each(function(field){ enabled.list[field] = 1; });
-				data.default_fields_summary.each(function(field){ enabled.summary[field] = 1; });
+				data.default_fields_list.each(function(field) { enabled.list[field] = 1; });
+				data.default_fields_summary.each(function(field) { enabled.summary[field] = 1; });
 				metaDeferred.resolve(data);
 			})
-			.error(function(data, status, headers, config){
+			.error(function(data, status, headers, config) {
 				console.error(data);
 				metaDeferred.resolve();
 			});
 
-		$scope.search = function(){
+		$scope.search = function() {
 			$scope.search_issue_state = 1;
-			issues.search($scope.search_issue).then(function(issue){
-				if (!issue) {
-					return $scope.search_issue_state = 404;
+
+			for (var i = 0; i < issues.length; i++) {
+				if ($scope.search_issue.indexOf(issues[i].key) > -1) {
+					return $scope.search_issue_state = 409;
 				}
+			}
 
-				$scope.search_issue_state = 0;
+			issues.search($scope.search_issue).then(
+				function(issue) {
 
-				$modal.open({
-					templateUrl: 'deskpro_jira2/Ticket/link-issue-modal.html',
-					controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-						metaPromise.then(function(meta){
-							$scope.meta = meta;
-							$scope.issue = issue;
-							$scope.names = issues.names;
+					if (!issue) {
+						return $scope.search_issue_state = 404;
+					}
+					$scope.search_issue_state = 0;
+					var $parent = $scope;
 
-							if (!issue.filtered_fields) {
-								issue.filtered_fields = [];
-								$.each(issue.fields, function (id, field) {
-									if (meta.system_fields.indexOf(id) > -1) return;
-									if (isFieldEnabled('summary', id)) {
-										issue.filtered_fields.push({id: id, value: field});
-									}
-								});
-							}
-						});
-						$scope.render = render;
-						$scope.isFieldEnabled = isFieldEnabled;
-					}]
-				});
-			});
+					$modal.open({
+						templateUrl: 'deskpro_jira2/Ticket/link-issue-modal.html',
+						controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+							metaPromise.then(function(meta) {
+								$scope.meta = meta;
+								$scope.issue = issue;
+								$scope.names = issues.names;
+
+								if (!issue.filtered_fields) {
+									issue.filtered_fields = [];
+									$.each(issue.fields, function (id, field) {
+										if (meta.system_fields.indexOf(id) > -1) return;
+										if (isFieldEnabled('summary', id)) {
+											issue.filtered_fields.push({id: id, value: field});
+										}
+									});
+								}
+
+								$scope.confirm = function() {
+									$scope.search_issue_state = 1;
+									$modalInstance.dismiss();
+
+									issues.link(issue).then(
+										function(){ $parent.search_issue_state = 0; },
+										function(status){ $parent.search_issue_state = status; }
+									);
+								};
+							});
+							$scope.render = render;
+							$scope.isFieldEnabled = isFieldEnabled;
+						}]
+					});
+				}
+			);
 		};
 
-		$scope.createIssueModal = function(){
+		$scope.createIssueModal = function() {
 			$modal.open({
 				templateUrl: 'deskpro_jira2/Ticket/create-issue-modal.html',
 				controller: CreateIssueCtrl,
@@ -88,11 +108,11 @@ define([
 
 
 
-		$scope.issueModal = function(issue){
+		$scope.issueModal = function(issue) {
 			$modal.open({
 				templateUrl: 'deskpro_jira2/Ticket/issue-details-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-					metaPromise.then(function(meta){
+					metaPromise.then(function(meta) {
 						$scope.meta = meta;
 						$scope.issue = issue;
 						$scope.sending_comment = false;
@@ -108,10 +128,10 @@ define([
 							});
 						}
 
-						$scope.sendComment = function(msg){
+						$scope.sendComment = function(msg) {
 							if (!issue.fields.comment) return false;
 							$scope.sending_comment = true;
-							issues.sendComment(msg, issue.id).then(function(data){
+							issues.sendComment(msg, issue.id).then(function(data) {
 								$scope.sending_comment = false;
 								data && issue.fields.comment.comments.push(data);
 							});
@@ -125,11 +145,11 @@ define([
 
 
 
-		$scope.sendCommentModal = function(){
+		$scope.sendCommentModal = function() {
 			$modal.open({
 				templateUrl: 'deskpro_jira2/Ticket/send-comment-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-					$scope.confirm = function(msg){
+					$scope.confirm = function(msg) {
 						issues.sendComment(msg);
 						$modalInstance.dismiss();
 					};

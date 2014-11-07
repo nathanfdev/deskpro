@@ -2186,39 +2186,6 @@ $collection->create('agent_apps_run', array(
 	'requirements'  => array('app_id' => '\\d+'),
 ));
 
-$collection->create('jira_widget', array(
-	'path'          => '/jira/widget/{ticket_id}',
-	'controller'    => 'AgentBundle:Jira:widget',
-	'defaults'		=> array('ticket_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+'),
-));
-
-$collection->create('jira_export', array(
-	'path'          => '/jira/export/{ticket_id}',
-	'controller'    => 'AgentBundle:Jira:export',
-	'defaults'		=> array('ticket_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+'),
-));
-
-$collection->create('jira_unlink', array(
-	'path'          => '/jira/unlink/{ticket_id}/{issue_id}',
-	'controller'    => 'AgentBundle:Jira:unlink',
-	'defaults'		=> array('ticket_id' => '-1', 'issue_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+', 'issue_id' => '\\d+'),
-));
-
-$collection->create('jira_lookup', array(
-	'path'          => '/jira/lookup',
-	'controller'    => 'AgentBundle:Jira:lookup',
-));
-
-$collection->create('jira_fetchcomments', array(
-	'path'          => '/jira/issue/{ticket_id}/fetchcomments',
-	'controller'    => 'AgentBundle:Jira:getComments',
-	'defaults'		=> array('ticket_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+'),
-));
-
 $collection->create('agent_label_definitions_list', array(
 	'path'          => '/labels/definitions',
 	'controller'    => 'AgentBundle:Labels:listDefinitions',

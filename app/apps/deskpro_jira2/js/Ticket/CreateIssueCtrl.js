@@ -10,8 +10,7 @@ define(function() {
 		$scope.issue = {
 			project: null,
 			issuetype: null,
-			summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject,
-			priority: null
+			summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject
 		};
 
 /**** init defaults ****/
@@ -66,13 +65,16 @@ define(function() {
 
 		$scope.confirm = function () {
 
-			// todo run spinner
+			$scope.sending = true;
 
 			var fields = angular.copy($scope.issue);
 			fields.project = {id: fields.project.id};
 			fields.issuetype = {id: fields.issuetype.id};
 
-			issues.create({fields: fields}).then(function(){ $modalInstance.dismiss(); });
+			issues.create({fields: fields}).then(
+				function(){ $scope.sending = false; $modalInstance.dismiss(); },
+				function(){ $scope.sending = false; /* todo show errors */ }
+			);
 		};
 	};
 });

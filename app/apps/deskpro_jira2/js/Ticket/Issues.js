@@ -8,6 +8,7 @@ define(['angular'], function(angular){
 		this.loading = false;
 		this.names = {};
 
+		// todo? add map to ids
 
 		/**
 		 * loads list of issues according to current ticket
@@ -54,15 +55,15 @@ define(['angular'], function(angular){
 					console.info(data);
 
 					if (data) {
+						if (data.names) self.names = data.names;
 						data.issues && data.issues.each(function(issue){ self.push(issue); data = issue; });
-						self.names = data.names;
 					}
 
 					d.resolve(data);
 				})
 				.error(function (data, status, headers, config) {
 					console.error(data);
-					d.resolve();
+					d.reject(data);
 				});
 
 			return d.promise;
@@ -101,14 +102,14 @@ define(['angular'], function(angular){
 			$http.get('/agent/jira/search?q=' + window.encodeURI(q))
 				.success(function (data, status, headers, config) {
 					console.info(data);
-
-
-
+					if (data) {
+						if (data.names) self.names = data.names;
+						data.issues && data.issues.each(function(issue){ data = issue; });
+					}
 					d.resolve(data);
 				})
 				.error(function (data, status, headers, config) {
 					console.error(data);
-
 					d.resolve();
 				});
 
@@ -116,7 +117,23 @@ define(['angular'], function(angular){
 		};
 
 		this.link = function(issue) {
+			var d = $q.defer();
 
+			$http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
+				.success(function (data, status, headers, config) {
+					console.info(data);
+					if (data) {
+						if (data.names) self.names = data.names;
+						data.issues && data.issues.each(function(issue){ self.push(issue); data = issue; });
+					}
+					d.resolve(data);
+				})
+				.error(function (data, status, headers, config) {
+					console.error(data);
+					d.reject(status);
+				});
+
+			return d.promise;
 		};
 
 		this.load();

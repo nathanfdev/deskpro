@@ -10,6 +10,7 @@
 
         <input type="text" placeholder="Enter JIRA Issue" ng-model="search_issue" style="display:block; margin: 0 auto;" />
         <div ng-show="404 === search_issue_state">Issue not found</div>
+        <div ng-show="407 === search_issue_state">Issue already linked</div>
         <div ng-show="1 === search_issue_state">spinner</div>
         <button style="display:block; margin: 0 auto;" ng-click="search()">
             Link to JIRA Issue

@@ -762,7 +762,6 @@ class JiraController extends AbstractController
 		$issueId = reset($matches);
 		try {
 			$result = $this->service()->searchIssues('issuekey = ' . $issueId);
-			$result = !empty($result['issues']) ? reset($result['issues']) : null;
 		} catch (\Exception $e) {
 			$result = null;
 		}
@@ -783,19 +782,20 @@ class JiraController extends AbstractController
 			throw new NotFoundHttpException;
 		}
 
+		$rep = $this->em->getRepository('DeskPRO:JiraIssue');
+		if ($issue = $rep->findOneBy(array('ticket' => $ticketId, 'issue_id' => $issueId))) {
+			return $this->createJsonResponse(null, 407);
+		}
+
+		// check if issue exists in jira
 		$result = $this->service()->searchIssues('id = ' . $issueId);
 
-		$rep = $this->em->getRepository('DeskPRO:JiraIssue');
-		$issue = $rep->findOneBy(array('ticket' => $ticketId, 'issue_id' => $issueId));
-		if (!$issue) {
-			// todo move to event listener (should hanlde webhooks too)
-			$issue = new JiraIssue();
-			$issue['issue_id'] = $issueId;
-			$issue->ticket = $ticket;
+		$issue = new JiraIssue();
+		$issue['issue_id'] = $issueId;
+		$issue->ticket = $ticket;
 
-			$this->em->persist($issue);
-			$this->em->flush($issue);
-		}
+		$this->em->persist($issue);
+		$this->em->flush($issue);
 
 		return $this->createJsonResponse($result);
 	}

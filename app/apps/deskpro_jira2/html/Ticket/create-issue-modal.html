@@ -36,7 +36,11 @@
 
         <br />
 
-        <button class="btn btn-primary" dp-submit-form style="display: block; margin: 0 auto;">Create JIRA Issue</button>
+        <div ng-show="sending">->spinner<-</div>
+        <button class="btn btn-primary" dp-submit-form style="display: block; margin: 0 auto;"
+                ng-show="!sending">
+            Create JIRA Issue
+        </button>
 
     </div>
 </form>
