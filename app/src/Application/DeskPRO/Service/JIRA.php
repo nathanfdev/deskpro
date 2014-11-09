@@ -167,8 +167,10 @@ class JIRA
 
 			$res = $this->getApi()->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
 			$priority = $this->getApi()->get('/priority');
+			$fields = $this->getApi()->get('/field');
 			$properties['projects'] = isset($res['projects']) ? $res['projects'] : array();
 			$properties['priorities'] = $priority;
+			$properties['fields'] = $fields;
 
 			$meta = Meta::fromArray($properties);
 
@@ -217,7 +219,7 @@ class JIRA
 			$result = $this->getApi()->post('/search', array(
 				'jql' => $jql,
 				'fields' => $this->getMeta()->getAllFields(),
-				'expand' => array('names'),
+				'expand' => array('names', 'renderedFields'),
 			));
 		} catch (\Exception $e) {
 			// todo

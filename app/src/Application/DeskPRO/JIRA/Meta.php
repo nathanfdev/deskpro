@@ -37,6 +37,12 @@ class Meta
 	 */
 	protected $projects = array();
 
+	/**
+	 * schema for fields
+	 * @var array
+	 */
+	protected $fields = array();
+
 	protected $default_project;
 	protected $default_issuetype;
 	protected $default_fields_summary = array();

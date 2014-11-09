@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings'], function(Strings) {
+define(function() {
 	return ['$scope', 'Api', '$q', '$modal', function($scope, Api, $q, $modal) {
 
 		$scope.enableCustomFooter();

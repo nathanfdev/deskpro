@@ -4,17 +4,8 @@
 <div class="modal-body">
 
     <ul>
-        <li ng-if="isFieldEnabled('summary', 'issuekey')">
-            Key: {{ issue.key }}
-        </li>
-        <li ng-if="isFieldEnabled('summary', 'summary')">
-            {{ names.summary }}: {{ issue.summary }}
-        </li>
-        <li ng-if="isFieldEnabled('summary', 'description')">
-            {{ names.description }}: {{ issue.description }}
-        </li>
         <li ng-repeat="field in issue.filtered_fields">
-            {{ names[field.id] }}: {{ render(field.value) }}
+            {{ meta.fieldName(field.id) }}: {{ meta.fieldValue(field.id, field.value) }}
         </li>
     </ul>
 
