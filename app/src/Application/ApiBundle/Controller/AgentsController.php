@@ -315,15 +315,19 @@ class AgentsController extends AbstractController implements ProtectedController
 				$agent = new Person();
 
 				// Check license
-				$max_agents = License::getLicense()->getMaxAgents();
-				if ($max_agents && $max_agents < 100) {
-					$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
+				if (!defined('DPC_IS_CLOUD')) {
+					$max_agents = License::getLicense()->getMaxAgents();
+					if ($max_agents && $max_agents < 100) {
+						$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
 
-					if ($active_agents >= $max_agents) {
-						return $this->createApiErrorInfoResponse('license_exceeded', 'You have used all available agent seats that your license allows', array(
-							'agent_seats'    => $max_agents,
-							'agents_created' => $active_agents,
-						));
+						if ($active_agents >= $max_agents) {
+							return $this->createApiErrorInfoResponse(
+								'license_exceeded', 'You have used all available agent seats that your license allows', array(
+									'agent_seats' => $max_agents,
+									'agents_created' => $active_agents,
+								)
+							);
+						}
 					}
 				}
 			}
