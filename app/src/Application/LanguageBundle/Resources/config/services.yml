@@ -1,0 +1,22 @@
+services:
+  language_router:
+    public: false
+    class: Application\LanguageBundle\Routing\Router
+    decorates: router
+    arguments: [@language_router.inner, @language_manager]
+
+  language_manager:
+    class: Application\LanguageBundle\Language\LanguageManager
+    arguments: [@deskpro.core.translate]
+
+  deskpro.core.translate_loader_system:
+    class: Application\DeskPRO\Translate\Loader\SystemLoader
+    arguments: [ [ %kernel.root_dir% ~ '/../languages' ] ]
+
+  deskpro.core.translate_loader:
+    class: Application\DeskPRO\Translate\Loader\DeskproLoader
+    arguments: [ @deskpro.core.translate_loader_system ]
+
+  deskpro.core.translate:
+    class: Application\DeskPRO\Translate\Translate
+    arguments: [ @deskpro.core.translate_loader, @event_dispatcher ]

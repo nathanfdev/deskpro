@@ -35,8 +35,59 @@
 namespace Application\LanguageBundle\Language;
 
 
-class LanguageManager 
-{
+use Application\DeskPRO\Translate\Translate;
 
+class LanguageManager
+{
+	/**
+	 * @var \Application\DeskPRO\Translate\Translate
+	 */
+	private $translate;
+
+	public function __construct(Translate $translate)
+	{
+		var_dump($translate->phrase('user.general.go_back'));exit;
+		$this->translate = $translate;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function isMultiLanguagePortal()
+	{
+		return false;
+	}
+
+	/**
+	 * @param string $lang_code an arbitrary lang string
+	 * @return bool
+	 */
+	public function isLanguageSupported($lang_code)
+	{
+		$lang_code = $this->normalizeLanguageCode($lang_code);
+	}
+
+
+	/**
+	 * @param string $lang_code an arbitrary lang string
+	 * @return \Application\DeskPRO\Entity\Language
+	 */
+	public function getLanguage($lang_code)
+	{
+		$lang_code = $this->normalizeLanguageCode($lang_code);
+	}
+
+
+	/**
+	 * Turns an arbitrary lang string into a more normailzed lang string that we use internally for URLs.
+	 *
+	 * @param string $lang_code
+	 * @return string
+	 */
+	public function normalizeLanguageCode($lang_code)
+	{
+		return $lang_code;
+	}
 }
  
