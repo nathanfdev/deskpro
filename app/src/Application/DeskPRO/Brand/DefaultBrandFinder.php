@@ -71,7 +71,13 @@ class DefaultBrandFinder
 	 */
 	public function getDefaultBrand()
 	{
-		return $this->brand_repo->find($this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1));
+		try {
+			return $this->brand_repo->find(
+				$this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1)
+			);
+		} catch (\Exception $e) {
+			return new BrandEntity();
+		}
 	}
 }
  

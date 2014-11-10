@@ -84,6 +84,13 @@ class Brand extends DomainObject
 	}
 
 
+	public function __construct($name = 'Default Brand', $theme_id = 'standard')
+	{
+		$this->id = 0;
+		$this->name = $name;
+		$this->theme_id = $theme_id;
+	}
+
 	############################################################################
 	# Doctrine Metadata
 	############################################################################
