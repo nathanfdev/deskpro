@@ -13,7 +13,6 @@ define(function(){
 			fields: {},
 
 			fieldName: function(id) {
-				return id;
 				if (this.fields[id]) return this.fields[id].name;
 			},
 			fieldValue: function(id, val) {
@@ -21,10 +20,10 @@ define(function(){
 
 				var fieldMeta = meta.fields[id];
 				if (fieldMeta && fieldMeta.schema) {
-					return meta.renderSchema(fieldMeta.schema, val);
+                    val = meta.renderSchema(fieldMeta.schema, val);
 				}
 
-				return val ? val.toString() : null;
+				return 'object' === typeof val ? val.toString() : val;
 			},
 			renderSchema: function(schema, val) {
 				var types = {
@@ -44,11 +43,14 @@ define(function(){
 							return types[schema.items] ? types[schema.items](val) : val;
 						}
 					},
+					datetime: function(val) { return new Date(val).toString() },
+					date: function(val) { return new Date(val).toString() },
 
 					project: function(val) { if (val) return val.name; },
 					issuetype: function(val) { if (val) return val.name; },
 					status: function(val) { if (val) return val.name; },
 					priority: function(val) { if (val) return val.name; },
+                    resolution: function(val) { if (val) return val.name; },
 					user: function(val) { if (val) return val.displayName; },
 
 					progress: function(val) { if (val) return val.progress + ' of ' + val.total; },
@@ -64,11 +66,19 @@ define(function(){
 		$http.get('/agent/jira/meta')
 			.success(function(data, status, headers, config) {
 
+				// fields metadata
 				if (data.fields) {
 					data.fields.each(function (field) {
 						field._list = data.default_fields_list.indexOf(field.id) > -1;
 						field._summary = data.default_fields_summary.indexOf(field.id) > -1;
 						meta.fields[field.id] = field;
+					});
+				}
+
+				// 'create' metadata
+				if (data.projects) {
+					data.projects.each(function (project) {
+						meta.projects.push(project);
 					});
 				}
 

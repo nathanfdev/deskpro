@@ -1,12 +1,11 @@
 define(function() {
 
-	return function($scope, $modalInstance, $ticket, meta, issues) {
+	return function($scope, $modalInstance, $ticket, $meta, issues) {
 
-		console.info(meta);
+		console.info($meta);
 		console.info($ticket);
 
-		$scope.meta = meta;
-		$scope.names = issues.names;
+		$scope.meta = $meta;
 		$scope.issue = {
 			project: null,
 			issuetype: null,
@@ -14,18 +13,18 @@ define(function() {
 		};
 
 /**** init defaults ****/
-		if (meta.default_project) {
-			for (var i = 0; i < $scope.meta.projects.length; i++) {
-				var project = $scope.meta.projects[i];
-				if (project.id == meta.default_project) {
+		if ($meta.default_project) {
+			for (var i = 0; i < $meta.projects.length; i++) {
+				var project = $meta.projects[i];
+				if (project.id == $meta.default_project) {
 					$scope.issue.project = project;
 					break;
 				}
 			}
 		}
 
-		if (!$scope.issue.project && $scope.meta.projects.length) {
-			$scope.issue.project = $scope.meta.projects[0];
+		if (!$scope.issue.project && $meta.projects.length) {
+			$scope.issue.project = $meta.projects[0];
 		}
 /**** end of init defaults ****/
 
@@ -40,7 +39,7 @@ define(function() {
 			var types = project.issuetypes || [];
 			for (var i = 0; i < types.length; i++) {
 				var type = types[i];
-				if (type.id == $scope.meta.default_issuetype) {
+				if (type.id == $meta.default_issuetype) {
 					$scope.issue.issuetype = type;
 					break;
 				}
@@ -57,8 +56,8 @@ define(function() {
 
 			type.filtered_fields = [];
 			$.each(type.fields, function (id, field) {
-				if (meta.system_fields.indexOf(id) > -1) return;
-				if (!field.required && $scope.meta.default_fields_summary.indexOf(id) === -1) return;
+				if ($meta.system_fields.indexOf(id) > -1) return;
+				if (!field.required && $meta.default_fields_summary.indexOf(id) === -1) return;
 				type.filtered_fields.push(field);
 			});
 		});

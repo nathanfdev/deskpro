@@ -86,16 +86,22 @@ class JiraController extends AbstractController
 		$js = $this->get('dp.jira');
 		$api = $js->getApi();
 
-		$meta = $js->getMeta()->toArray();
+		$ret = $api->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
 
-		$ret = $api->post('/search', array(
-			'jql' => sprintf('id IN (%s)', implode(',', array(10525, 10526))),
-			'fields' => $meta['default_fields_summary'],
-			'expand' => array('renderedFields'),
-		));
 
-		echo '<pre>';
-		var_export($ret);
+//		$meta = $js->getMeta()->toArray();
+//
+//		$ret = $api->post('/search', array(
+//			'jql' => sprintf('id IN (%s)', implode(',', array(10525, 10526))),
+//			'fields' => $meta['default_fields_summary'],
+//			'expand' => array('renderedFields'),
+//		));
+
+		echo '<script type="text/javascript">
+			var a = ' . json_encode($ret) . ';
+			console.log(a.projects[1].issuetypes[0].fields);
+		</script>';
+//		var_export($ret);
 
 		die();
 	}
