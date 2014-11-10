@@ -91,7 +91,11 @@ class BrandDetectionListener implements EventSubscriberInterface
 	public function detectBrandInRequest(Request $request)
 	{
 		if ($brand_id = $request->query->get('brand', null)) {
-			return $this->brand_repository->find($brand_id);
+			try {
+				return $this->brand_repository->find($brand_id);
+			} catch (\Exception $e) {
+				return null;
+			}
 		}
 
 		return null;

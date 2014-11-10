@@ -82,14 +82,18 @@ class BrandSettingsLoader implements SettingsLoaderInterface
 		return $this->cache->get(
 			$cacheKey,
 			function() use ($conn, $brand_id) {
-				return $conn->fetchAllKeyValue(
+				try {
+					return $conn->fetchAllKeyValue(
 						"
 							SELECT name, value
 							FROM settings
 							WHERE brand_id = :brand_id
 						",
-					array('brand_id' => $brand_id)
-				);
+						array('brand_id' => $brand_id)
+					);
+				} catch (\Exception $e) {
+					return array();
+				}
 			}
 		);
 	}

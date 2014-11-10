@@ -82,13 +82,18 @@ class DbGlobalSettingsTableLoader implements SettingsLoaderInterface
 		return $this->cache->get(
 			$this->cacheKey,
 			function() use ($conn) {
-				return $conn->fetchAllKeyValue(
+				try {
+					return $conn->fetchAllKeyValue(
 						"
 							SELECT name, value
 							FROM settings
 							WHERE brand_id IS NULL
 						"
-				);
+					);
+				} catch (\Exception $e) {
+					// during install and such, we expect this to happen when no "settings" table exists
+					return array();
+				}
 			}
 		);
 	}

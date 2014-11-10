@@ -99,7 +99,7 @@ class BrandStack
 	{
 		$brand_id = end($this->stack);
 
-		if ($brand_id > 0) {
+		if (false !== $brand_id) {
 			return $this->brand_containers[$brand_id];
 		}
 

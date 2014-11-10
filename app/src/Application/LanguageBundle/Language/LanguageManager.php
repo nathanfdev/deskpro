@@ -46,7 +46,6 @@ class LanguageManager
 
 	public function __construct(Translate $translate)
 	{
-		var_dump($translate->phrase('user.general.go_back'));exit;
 		$this->translate = $translate;
 	}
 

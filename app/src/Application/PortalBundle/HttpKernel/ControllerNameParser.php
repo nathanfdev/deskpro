@@ -53,11 +53,15 @@ class ControllerNameParser extends BaseParser
 
 	public function parse($controller)
 	{
-		if (!$brandContainer = $this->brand_stack->getActive()) {
-			$brandContainer = $this->brand_stack->getDefault();
+		if (!$brand_container = $this->brand_stack->getActive()) {
+			$this->brand_stack->push($this->brand_stack->getDefault());
 		}
 
-		if ($theme_controller = $brandContainer->resolveController($controller)) {
+		if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
+			throw new \RuntimeException('no brand is active in the brand stack. cannot parse theme controller.');
+		}
+
+		if ($theme_controller = $brand_container->resolveController($controller)) {
 			return $theme_controller;
 		}
 

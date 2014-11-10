@@ -127,7 +127,7 @@ class SettingsResolver
 		}
 
 		if (!$brand_id > 0) {
-			throw new \InvalidArgumentException('must have a brand id');
+			$brand_id = 0;
 		}
 
 		$cacheKey = static::CACHE_KEY_BRAND_PREFIX . '.brand' . $brand_id;
@@ -144,7 +144,8 @@ class SettingsResolver
 			function () use ($brand_settings_resolver, $global_settings, $brand_id, $force) {
 				$global_settings_array = $global_settings->toArray();
 
-				$brand_settings_array = array_merge($global_settings_array, $brand_settings_resolver->load($force, $brand_id));
+				$brand_settings = $brand_id ? $brand_settings_resolver->load($force, $brand_id) : array();
+				$brand_settings_array = array_merge($global_settings_array, $brand_settings);
 
 				return new SettingsBag($brand_settings_array);
 			}
