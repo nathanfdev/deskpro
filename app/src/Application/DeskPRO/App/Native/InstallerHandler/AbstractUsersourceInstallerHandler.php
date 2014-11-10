@@ -82,7 +82,7 @@ abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandl
 	public function setupAutoAgent(Usersource $us, $auto_agent, $permission_group_id)
 	{
 		if ($context = $this->context) {
-			if ($auto_agent) {
+			if (Usersource::TYPE_AGENT == $us->type && $auto_agent) {
 				$us->auto_agent   = true;
 
 				// PERMISSION GROUPS

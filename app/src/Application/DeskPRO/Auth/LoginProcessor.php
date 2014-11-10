@@ -290,7 +290,7 @@ class LoginProcessor
 		$this->person['is_user'] = true;
 		$this->person->setLastLoginAt();
 
-		if ($this->usersource->auto_agent) {
+		if (Usersource::TYPE_AGENT == $this->usersource->type && $this->usersource->auto_agent) {
 			$agentChecker = App::getSystemService('agent_checker');
 			if ($agentChecker->addAgentSeat($this->person)) {
 				$this->person['is_agent']  = true;

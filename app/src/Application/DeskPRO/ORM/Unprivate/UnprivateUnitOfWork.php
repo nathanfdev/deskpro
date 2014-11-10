@@ -1,5 +1,5 @@
 <?php
-/* This file has been auto-generated (2014-11-06). See build-vendors-mutate.php */
+/* This file has been auto-generated (2014-11-07). See build-vendors-mutate.php */
 namespace Application\DeskPRO\ORM\Unprivate;
 use Doctrine\ORM\Configuration, Doctrine\ORM\Persisters, Doctrine\ORM\EntityManager, Doctrine\ORM\Events, Doctrine\ORM\Event, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder, Doctrine\ORM\PersistentCollection, Doctrine\ORM\ORMInvalidArgumentException, Doctrine\ORM\ORMException, Doctrine\ORM\OptimisticLockException, Doctrine\ORM\TransactionRequiredException, Doctrine\ORM\EntityNotFoundException;
 use Exception;

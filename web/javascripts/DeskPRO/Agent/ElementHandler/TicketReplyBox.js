@@ -323,6 +323,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				storedNoteText = textarea.val();
 				textarea.val(storedReplyText || '');
 			}
+
+			var actionsRow = self.getElById('actions_row');
+			if (actionsRow.find('ul').find('li')[0]) {
+				actionsRow.show();
+			}
 		});
 
 		this.getElById('replybox_notetab_btn').on('click', function() {
@@ -330,6 +335,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				return;
 			}
 			replyMode = 'note';
+
+			self.getElById('actions_row').hide();
 
 			self.el.addClass('dp-note-on');
 			$(this).addClass('on');

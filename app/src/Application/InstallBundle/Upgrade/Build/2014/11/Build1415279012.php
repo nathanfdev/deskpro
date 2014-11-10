@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,28 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class TicketMessageTemplate extends AbstractEntityRepository
+class Build1415279012 extends AbstractBuild
 {
-	public function getTitles()
+	public function run()
 	{
-		return $this->_em->getConnection()->fetchAllKeyValue("
-			SELECT id, title
-			FROM ticket_message_templates
-			ORDER BY title ASC
-		");
-	}
-
-	public function getAll()
-	{
-		return $this->_em->createQuery("
-			SELECT t
-			FROM DeskPRO:TIcketMessageTemplate t
-			ORDER BY t.title ASC
-		")->execute();
+		$this->out("Remove old ticket_message_templates table (macros now work on newticket)");
+		$this->execMutateSql("DROP TABLE ticket_message_templates");
 	}
 }

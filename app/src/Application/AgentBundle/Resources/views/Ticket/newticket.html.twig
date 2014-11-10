@@ -395,27 +395,6 @@ pageMeta.baseId = '{{ baseId }}';
 							<ul></ul>
 							<br class="clear"/>
 						</li>
-						{% if app.getDataService('TicketMessageTemplate').getTitles() %}
-						<li class="with-select2" id="{{ baseId }}_message_template_holder_row">
-							<label>{{ phrase('agent.general.template') }}:</label>
-							<div id="{{baseId}}_message_template_holder" style="visibility: hidden;">
-								<div style="display: none">
-									<select id="{{baseId}}_message_template_orig">
-										<option value="0">{{ phrase('agent.general.blank') }}</option>
-										{% for tpl in app.getDataService('TicketMessageTemplate').getAll() %}
-											<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title|default('Untitled #' ~ tpl.id) }}</option>
-										{% endfor %}
-									</select>
-								</div>
-								<select id="{{baseId}}_message_template" name="using_template">
-									<option value="0">{{ phrase('agent.general.blank') }}</option>
-									{% for tpl in app.getDataService('TicketMessageTemplate').getAll() %}
-										<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title|default('Untitled #' ~ tpl.id) }}</option>
-									{% endfor %}
-								</select>
-							</div>
-						</li>
-						{% endif %}
 						<li class="subject-row">
 							<label>{{ phrase('agent.general.subject') }}:</label>
 							<div>

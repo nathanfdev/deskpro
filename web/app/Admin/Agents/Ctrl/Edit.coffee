@@ -242,6 +242,23 @@ define [
 							if pval
 								@ugEffectivePerms[type][pname] = pval
 
+		hasSomePerms: (typename, permname) ->
+			suffix = permname.replace(/^.*?_(.*?)$/, '$1')
+			return if not suffix or not (@ugEffectivePerms?[typename]? || @perm_form[typename]?)
+
+			suffix = "_" + suffix
+
+			if @ugEffectivePerms?[typename]?
+				for own name, val of @ugEffectivePerms[typename]
+					if val and name.indexOf(suffix) != -1
+						return true
+
+			if @perm_form?[typename]?
+				for own name, val of @perm_form[typename]
+					if val and name.indexOf(suffix) != -1
+						return true
+
+			return false
 
 		###
     	# When a permission is updated, we need to update the hasPermOverrides status.

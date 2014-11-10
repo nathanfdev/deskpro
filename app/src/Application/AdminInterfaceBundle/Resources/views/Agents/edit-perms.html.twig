@@ -35,6 +35,10 @@
 					locked-tip-e="(EditCtrl.perm_form.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ opts.toggleName }} || EditCtrl.ugEffectivePerms.{{ typename }}.{{ permname }}) && 'This permission is locked because you have enabled the parent permission' || 'This permission is locked because this agent is part of a usergroup with this perimssion'"
 				{% else %}
 					locked-tip="This permission is locked because this agent is part of a usergroup with this perimssion"
+
+					{% if opts.showToggler %}
+						is-some="EditCtrl.hasSomePerms('{{ typename }}', '{{ permname }}')"
+					{% endif %}
 				{% endif %}
 			/>
 		</td>

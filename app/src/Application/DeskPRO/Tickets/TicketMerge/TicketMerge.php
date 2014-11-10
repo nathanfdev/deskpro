@@ -260,9 +260,10 @@ class TicketMerge implements PersonContextInterface
 		$context = $this->ticket_manager->createAgentExecutorContext($this->person, 'noop', 'web');
 		$this->ticket_manager->saveTicket($this->other_ticket, $context);
 
-		$this->em->remove($this->other_ticket);
-		$this->em->flush();
+		$this->em->detach($this->other_ticket);
+		$this->other_ticket->id = null;
 
+		$this->db->delete('tickets', array('id' => $old_id));
 		$this->db->delete('tickets_search_active', array('id' => $old_id));
 	}
 
