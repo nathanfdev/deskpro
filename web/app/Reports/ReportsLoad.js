@@ -6,7 +6,7 @@ define([
 	'angularSelect2',
 	'angularUiRouter',
 	'angularUiSortable',
-	'angularMoment',
+	'angular-moment',
 	'angularFileUpload',
 	'angularSlider',
 

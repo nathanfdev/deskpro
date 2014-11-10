@@ -1,12 +1,58 @@
 define [
 	'angular',
 	'ZeroClipboard',
+
+	'angularAnimate',
+	'angularSanitize',
+	'angularBootstrap',
+	'angularSelect2',
+	'angularUiAce',
+	'angularUiRouter',
+	'angularUiSortable',
+	'angular-moment',
+	'angularFileUpload',
+	'angularSlider',
+	'angularSelectize',
+	'angularGrid',
+	'ngFileUpload',
+	'angularUiDatetime',
+
+	'moment',
+	'momentTimezone',
+	'aceEditor',
+
+	'jquery',
+	'jqueryUi',
+	'underscore',
+	'stacktrace',
+
+	'microplugin',
+	'sifter',
+	'selectize',
+
+	'ZeroClipboard',
+	'ngClip',
+
+	'bootstrapTooltip',
+
+	'select2',
+	'toastr',
+
+	'DeskPRO/OptionBuilder/Module',
+	'DeskPRO/CategoryBuilder/Module',
 ], (
 	angular,
 	ZeroClipboard
 ) ->
 
-	window.ZeroClipboard = ZeroClipboard;
+	window.ZeroClipboard = ZeroClipboard
+
+	# Set path for ace editor
+	if ace
+		ace.config.set("basePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict")
+		ace.config.set("modePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict")
+		ace.config.set("themePath",  DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict")
+		ace.config.set("workerPath", DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict")
 
 	AdminModule = angular.module('Admin_App', [
 		'ngAnimate',
@@ -20,7 +66,6 @@ define [
 		'angularMoment',
 		'blueimp.fileupload',
 		'angularFileUpload',
-		'uiSlider',
 		'selectize'
 		'ngGrid',
 		'deskpro.option_builder',

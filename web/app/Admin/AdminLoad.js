@@ -1,44 +1,5 @@
 define([
 	'angular',
-	'angularAnimate',
-	'angularSanitize',
-	'angularBootstrap',
-	'angularSelect2',
-	'angularUiAce',
-	'angularUiRouter',
-	'angularUiSortable',
-	'angularMoment',
-	'angularFileUpload',
-	'angularSlider',
-	'angularSelectize',
-	'angularGrid',
-	'ngFileUpload',
-	'angularUiDatetime',
-
-	'moment',
-	'momentTimezone',
-	'aceEditor',
-
-	'jquery',
-	'jqueryUi',
-	'underscore',
-	'stacktrace',
-
-	'microplugin',
-	'sifter',
-	'selectize',
-
-	'ZeroClipboard',
-	'ngClip',
-
-	'bootstrapTooltip',
-
-	'select2',
-	'toastr',
-
-	'DeskPRO/OptionBuilder/Module',
-	'DeskPRO/CategoryBuilder/Module',
-
 	'Admin/App/App',
 
 	'Admin/Apps/Ctrl/List',
@@ -211,13 +172,6 @@ define([
 
 	return {
 		start: function() {
-
-			// Set path for ace editor
-			ace.config.set("basePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
-			ace.config.set("modePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
-			ace.config.set("themePath",  DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
-			ace.config.set("workerPath", DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict");
-
 			var loadingEl = document.getElementById('dp_loading');
 			loadingEl.parentNode.removeChild(loadingEl);
 			loadingEl = null;
