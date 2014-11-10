@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -32,14 +32,44 @@
  * @subpackage
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\InstallBundle\Data\DefaultData;
 
-class Build1413325526 extends AbstractBuild
+
+use Application\DeskPRO\Entity\Usersource;
+
+class BrandData extends AbstractDefaultData
 {
-	public function run()
+	public function runInstallViaUpgrade()
 	{
-		$this->out("Adds brands");
-		$this->execMutateSql("CREATE TABLE brands (id INT AUTO_INCREMENT NOT NULL, logo_blob_id INT DEFAULT NULL, name VARCHAR(256) DEFAULT NULL, UNIQUE INDEX UNIQ_7EA24434D91464D5 (logo_blob_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE brands ADD CONSTRAINT FK_7EA24434D91464D5 FOREIGN KEY (logo_blob_id) REFERENCES blobs (id)");
+		$this->installDefaultBrand();
+	}
+
+
+	public function runInstall()
+	{
+		$this->installDefaultBrand();
+	}
+
+
+	public function runReset()
+	{
+	}
+
+
+	public function runSync()
+	{
+	}
+
+
+	private function installDefaultBrand()
+	{
+		$num_brands = $this->getDb()->query('select count(*) from brand')->fetchColumn();
+
+		if ($num_brands > 0) {
+			return null;
+		}
+
+		$this->getDb()->exec("INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')");
 	}
 }
+ 
