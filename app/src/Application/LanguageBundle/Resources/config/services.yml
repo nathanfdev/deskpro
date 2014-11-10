@@ -13,9 +13,15 @@ services:
     class: Application\DeskPRO\Translate\Loader\SystemLoader
     arguments: [ [ %kernel.root_dir% ~ '/../languages' ] ]
 
+  deskpro.core.translate_loader_db:
+    class: Application\DeskPRO\Translate\Loader\DbLoader
+    arguments: [ @doctrine.dbal.default_connection ]
+
   deskpro.core.translate_loader:
     class: Application\DeskPRO\Translate\Loader\DeskproLoader
-    arguments: [ @deskpro.core.translate_loader_system ]
+    calls:
+     - [setSystemLoader, [@deskpro.core.translate_loader_system] ]
+     - [setDbLoader, [@deskpro.core.translate_loader_db] ]
 
   deskpro.core.translate:
     class: Application\DeskPRO\Translate\Translate
