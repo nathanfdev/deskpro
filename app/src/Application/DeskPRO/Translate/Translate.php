@@ -784,46 +784,7 @@ class Translate implements PersonContextInterface
 	 */
 	public function phrase($phrase_name, array $vars = array(), $language = null)
 	{
-        $debug = App::getConfig('debug.language_test_mode');
-
-		if (!$debug && defined('DP_INTERFACE') && DP_INTERFACE == 'agent' && strpos($phrase_name, 'agent') === 0) {
-			try {
-				$debug = App::getSetting('core.agent_translate_debug');
-			} catch (\Exception $e) {}
-		}
-
-		if (!$debug && isset($_COOKIE['dp_dev_langdebug'])) {
-			$debug = $_COOKIE['dp_dev_langdebug'];
-		}
-
-		if ($debug == 'user' AND $phrase_name != 'agent.general.x_is_y') {
-			if (substr($phrase_name, 0, 4) != 'user') {
-				echo $phrase_name;
-				die();
-			}
-		}
-
-		if ($debug == 'japanese') {
-
-			// Don't try this as single string array. PHP can't handle UTF8 like that :).
-			$chars = array(
-				'一', '丁', '丂', '七', '丄', '丅', '万', '丈', '三', '上', '下', '丌', '不', '与', '丏', '丐', '丑', '丒',
-				'且', '丕', '世', '丗', '丘', '丙', '丞', '丟', '両', '丣', '两', '並', '丨', '丩', '个', '丫', '丬', '中',
-				'丮', '丯', '丰', '丱', '串', '丳', '临', '丵', '丶', '丸', '丹', '主', '丼', '丿', '乀', '乁', '乂', '乃',
-				'乄', '久', '乇', '么', '之', '乍', '乎', '乏', '乑', '乕', '乖', '乗', '乘', '乙', '乚', '乜', '九', '乞',
-				'也', '乢', '乣', '乨', '乩', '乱', '乳', '乴', '乵', '乹', '乾', '乿', '亀', '亂', '了', '予', '争', '亊',
-				'事', '二', '亍', '于');
-
-			$output = '';
-
-			for($i = 0; $i < 4; $i++) {
-				$output .= $chars[rand(0, count($chars) - 1)];
-			}
-
-			return $output;
-		}
-
-		if (is_object($phrase_name) OR (is_array($phrase_name) AND is_object($phrase_name[0]))) {
+		if (is_object($phrase_name) || (is_array($phrase_name) && is_object($phrase_name[0]))) {
 			if (is_array($phrase_name)) {
 				list ($object, $property) = $phrase_name;
 			} else {
@@ -864,49 +825,6 @@ class Translate implements PersonContextInterface
 			foreach ($m as $match) {
 				$phrase_text = str_replace($match[0], '{{' . $match[1] . '}}', $phrase_text);
 			}
-		}
-
-		if ($debug == 'double_length') {
-			return $phrase_text . ' ' . $phrase_text;
-		} else if ($debug == 'half_length') {
-			$length = strlen($phrase_text);
-			return substr($phrase_text, round($length / 2));
-		} else if($debug == 'package') {
-			if(!is_string($phrase_name)) {
-				return '!'.strtoupper(typeof($phrase_name)).'!';
-			}
-			else {
-				$parts = explode('.', $phrase_name);
-				return '!'.strtoupper($parts[0]).'!';
-			}
-		} else if($debug == 'package_prefix') {
-			$p_prefixes = array(
-				'agent' => 'Ѯ',
-				'admin' => 'Ѿ',
-				'user' => 'Ѱ',
-				'object' => 'Ѳ',
-				'resource' => 'Ѻ',
-				'array' => 'Г',
-				'unknown' => 'Ц',
-			);
-
-			if(!is_scalar($phrase_name)) {
-				$package = typeof($phrase_name);
-			}
-			else {
-				$parts = explode('.', $phrase_name);
-				$package = $parts[0];
-			}
-
-			if(!isset($p_prefixes[$package])) {
-				$package = 'unknown';
-			}
-
-			return $p_prefixes[$package].$phrase_text;
-		} else if ($debug == 'prefix') {
-			return '@'.$phrase_text;
-		} else if ($debug == 'wrap') {
-			return '^'.$phrase_text . '^';
 		}
 
 		return $phrase_text;
