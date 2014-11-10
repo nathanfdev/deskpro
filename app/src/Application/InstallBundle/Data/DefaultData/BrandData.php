@@ -63,7 +63,7 @@ class BrandData extends AbstractDefaultData
 
 	private function installDefaultBrand()
 	{
-		$num_brands = $this->getDb()->query('select count(*) from brand')->fetchColumn();
+		$num_brands = $this->getDb()->query('select count(*) from brands')->fetchColumn();
 
 		if ($num_brands > 0) {
 			return null;
