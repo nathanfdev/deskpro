@@ -116,9 +116,13 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 		// there IS a potential language in the url path
 		if ($code = $split['language_code']) {
+			if (!$this->language_manager->isMultiLanguagePortal()) {
+				$this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
+			}
+
 			$urlLanguage = $this->language_manager->getLanguage($code);
 
-			// let the language manager negotiate what the proper language fro this request is
+			// let the language manager negotiate what the proper language for this request is
 			$properLanguage = $this->language_manager->negotiateLanguage($request, $urlLanguage);
 
 			if ($properLanguage->getTwoLetterLanguageCode() != $urlLanguage->getTwoLetterLanguageCode()) {
@@ -141,13 +145,11 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	}
 
 
-	protected function throwRedirectExceptionTo(Language $language, $url)
+	protected function throwRedirectExceptionTo(Language $language = null, $url)
 	{
+		$pre = $language ? '/' . $language->getTwoLetterLanguageCode() : '';
 		throw new RedirectToUrlException(
-			sprintf(
-				'/%s%s', $language->getTwoLetterLanguageCode(),
-				$url
-			)
+			$pre . $url
 		);
 	}
 
