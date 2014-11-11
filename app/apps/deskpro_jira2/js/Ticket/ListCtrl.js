@@ -11,12 +11,6 @@ define([
 		var issues = $scope.issues = new Issues($ticket);
 		$scope.meta = $meta;
 
-		var isFieldEnabled = function(type, field) {
-			return $meta.fields[field] && $meta.fields[field]['_' + type];
-		};
-		$scope.isFieldEnabled = isFieldEnabled;
-
-
 
 
 		/**
@@ -55,7 +49,7 @@ define([
 								issue.filtered_fields = [];
 								$.each(issue.fields, function (id, field) {
 									if ('comment' === id) return;
-									if (isFieldEnabled('summary', id)) {
+									if ($meta.isEnabled('summary', id)) {
 										issue.filtered_fields.push({id: id, value: field});
 									}
 								});
@@ -70,8 +64,6 @@ define([
 									function(status){ $parent.search_issue_state = status; }
 								);
 							};
-
-							$scope.isFieldEnabled = isFieldEnabled;
 						}]
 					});
 				}
@@ -123,7 +115,7 @@ define([
 						issue.filtered_fields = [];
 						$.each(issue.fields, function (id, field) {
 							if ('comment' === id) return;
-							if (isFieldEnabled('summary', id)) {
+							if ($meta.isEnabled('summary', id)) {
 								issue.filtered_fields.push({id: id, value: field});
 							}
 						});
@@ -134,8 +126,6 @@ define([
 						$scope.sending_comment = true;
 						issues.sendComment(msg, issue).then(function() { $scope.sending_comment = false; });
 					};
-
-					$scope.isFieldEnabled = isFieldEnabled;
 				}]
 			});
 		};

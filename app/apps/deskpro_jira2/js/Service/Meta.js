@@ -60,7 +60,11 @@ define(function(){
 
 				if (types[schema.type]) return types[schema.type](val);
 				return val ? val.toString() : null;
-			}
+			},
+            isEnabled: function(type, id) {
+                var fields = meta['default_fields_' + type];
+                return fields && fields.indexOf(id) > -1;
+            }
 		};
 
 		$http.get('/agent/jira/meta')
@@ -84,6 +88,7 @@ define(function(){
 
 				data.default_fields_list.each(function(id) { meta.default_fields_list.push(id); });
 				data.default_fields_summary.each(function(id) { meta.default_fields_summary.push(id); });
+                data.system_fields.each(function(id) { meta.system_fields.push(id); });
 				meta.default_issuetype = data.default_issuetype;
 				meta.default_project = data.default_project;
 

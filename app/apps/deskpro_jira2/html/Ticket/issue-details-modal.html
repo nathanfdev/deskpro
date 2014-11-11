@@ -4,12 +4,16 @@
 <div class="modal-body">
 
     <ul>
+        <li ng-if="meta.isEnabled('summary', 'issuekey')">
+            {{ meta.fieldName('issuekey') }}: {{ issue.key }}
+        </li>
         <li ng-repeat="field in issue.filtered_fields">
             {{ meta.fieldName(field.id) }}: {{ meta.fieldValue(field.id, field.value) }}
         </li>
     </ul>
 
     <div ng-if="issue.fields.comment">
+        <h4>{{ meta.fieldName('comment') }}:</h4>
         <ul>
             <li ng-repeat="comment in issue.fields.comment.comments">
 
