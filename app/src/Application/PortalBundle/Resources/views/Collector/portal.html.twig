@@ -1,24 +1,19 @@
 {% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
 
 {% block toolbar %}
-	{#{% set request_handler %}#}
-	{#{% if collector.controller.class is defined %}#}
-		{#{% set link = collector.controller.file|file_link(collector.controller.line) %}#}
-		{#<span#}
-			{#class="sf-toolbar-info-class sf-toolbar-info-with-next-pointer">{{ collector.controller.class|abbr_class }}</span>#}
-		{#<span class="sf-toolbar-info-method"#}
-			{#onclick="{% if link %}window.location='{{link|e('js')}}';window.event.stopPropagation();return false;{% endif %}">#}
-                {#{{ collector.controller.method }}#}
-            {#</span>#}
-	{#{% else %}#}
-		{#<span class="sf-toolbar-info-class">{{ collector.controller }}</span>#}
-	{#{% endif %}#}
-	{#{% endset %}#}
-	{#{% set request_status_code_color = (400 > collector.statuscode) ? ((200 == collector.statuscode) ? 'green' : 'yellow') : 'red' %}#}
-	{#{% set request_route = collector.route ? collector.route : 'NONE' %}#}
 	{% set icon %}
-	<span class="sf-toolbar-status sf-toolbar-info-piece-additional">{{ collector.themeName }} Theme</span>
-	<span class="sf-toolbar-status sf-toolbar-status-green">{{ collector.brandName }}</span>
+	<span class="sf-toolbar-icon">
+
+	<span class="sf-toolbar-info-piece-additional-detail">
+	<span class="sf-toolbar-info-with-delimiter">{{ collector.themeName }} Theme</span>
+	<span class="sf-toolbar-info-with-delimiter">{{ collector.brandName }}</span>
+	<span>
+		<img
+			src="{{ asset('web/images/flags/'~collector.languageImage) }}"
+			alt="{{ collector.languageCode }}" />
+	</span>
+	</span>
+	</span>
 	{% endset %}
 	{% set text %}
 	{% spaceless %}
@@ -30,6 +25,14 @@
 			<b>Brand ID</b>
 			{{ collector.brandId }}
 		</div>
+		<div class="sf-toolbar-info-piece">
+			<b>Language</b>
+			<img
+				src="{{ asset('web/images/flags/'~collector.languageImage) }}"
+				alt="{{ collector.languageCode }}" />
+			{{ collector.languageCode }} -
+			{{ collector.languageId }}
+		</div>
 	{% endspaceless %}
 	{% endset %}
 	{% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
@@ -40,7 +43,7 @@
     <span class="icon"><img
 		    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAcCAQAAACn1QXuAAAD2UlEQVR42p2Ve0zTVxTHKS4+KCBqNomCClgEJJAYkznQQIFaWltAiigsxGUgMy6b45HWV4UKUoP1yaMS0DqniVpngKlEMoMzW2Z0QTf4Ax/bdCzFCpQWq60U+Xp/baG/EoGf3vPH7/b3PffTc++55/w8xg+wji4W3ImDw4S3DgSD5fGhA+wcbRxclqsB+30RnmWcda1JPWn1poj8e3TYlvb/l6edTdSLWvYHgcUIdSwiuduxOOdu/n90WF7350648J+a0ClxYNWECglgahP+OyUOPpm34sDMNt6Ez+QwjniAKSzFgKWTw6L33x/3/yMHzU09l/XKlykj7krlXURNDlsEaVm/a8Fh48trUEEKGY4Zb5SaXUpZH4oROAlKvjijPu9GQfcY6jkOQoBlWIgARCAVVbtNo1rxky9/lqiV/hMmQfwXfRtZQxYVVoItC5aUpO8rDIcvYvUNqcN0n7TfJkyC+5lUdYIH9hlOkn3bCWbVCoJLLX9C9+FZEcoIpj2HYHh9XT92ZbUEFl7XSvfhD2EVI5imFh/DX948+lvWhgAEHL3kBrNhNSOYvImCdSgEb+wbGrmjomCFv46DrWn6hN+2QY6ZDYH8Tt6Dv+c4Yfn9bofbN8ABG/xHjYcMKmNHC0Tw/XOF0Ez3+VaH2BMZ1Ezclaynnm1x8LTDBo7U65Tm0tejrltPwwvzIcQO7EIKFsB3c8uoprAqzZruwQpE1cnpeMVxxZLNc8mFQQy2W9Tb+1xSplbjD18EEvM7sjTjuksp6rXVDBeVN29s5ztjFY1VSILpfJAHZiFkG1lAtyTD+gvZsix5emPSC3flm6v3JGvfxNvn+8zDt/HLFR3XUYI6RFPltERkYFro4j6Itdd5JB6JzaaGBAKUFtorpOsHRNoLveAxU1jRQ6xFQbaVNNFBpICN6YjZ00UpN0swj4KFPK/MtTJBffXKoETk3mouiYw7cmoLpsGzNVFkth+NpTKWgnkjof9MnjOflRYqsy4rfV1udebZatIgHhyB0XmylsyL2VXJjtQReMNWe9uGH5JN3ytMubY6HS7J9HSYTI/L1c9ybQoTQfEwG2HN52p7KixuEQ91PH5wEYkE5sRxUYJaFCCr4g+6o+o2slEMNVHjCYqF+RBjJ87m0OI/2YnvwMVCgnLi2AjCcgQgpGen1Mh1bATSgV4pghGISKKyqT6Gj+CHRUj/grT66sGOp7tIjOpmhGEGqYLxA174DOW4gjZiP6EMn2LWO7pz+O8N2nYcQhGq7v+ITZg3wYcPPghFDKibGUNm3u/qq5hL1PWIxgJEIRZBmE69fQsyes/JMSWb+gAAAABJRU5ErkJggg=="
 		    alt="Request"></span>
-    <strong>Portal/Theme/Brand</strong>
+    <strong>Portal</strong>
 </span>
 {% endblock %}
 
@@ -49,8 +52,8 @@
 	<table>
 		<tr>
 			<th>&nbsp;</th>
-			<th>Name</th>
-			<th>ID</th>
+			<th>Name / Value</th>
+			<th>Entity / ID</th>
 		</tr>
 		<tr>
 			<th>Theme</th>
@@ -61,6 +64,14 @@
 			<th>Brand</th>
 			<td>{{ collector.brandName }}</td>
 			<td>{{ collector.brandId }}</td>
+		</tr>
+		<tr>
+			<th>Language</th>
+			<td><img
+					src="{{ asset('web/images/flags/'~collector.languageImage) }}"
+					alt="{{ collector.languageCode }}" />
+				{{ collector.languageCode }}</td>
+			<td>{{ collector.languageId }}</td>
 		</tr>
 	</table>
 

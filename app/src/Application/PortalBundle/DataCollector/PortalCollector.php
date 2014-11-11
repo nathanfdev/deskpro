@@ -36,6 +36,7 @@ namespace Application\PortalBundle\DataCollector;
 
 
 use Application\DeskPRO\Brand\BrandStack;
+use Application\LanguageBundle\Language\LanguageStack;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -46,11 +47,16 @@ class PortalCollector extends DataCollector
 	 * @var \Application\DeskPRO\Brand\BrandStack
 	 */
 	private $brand_stack;
+	/**
+	 * @var \Application\LanguageBundle\Language\LanguageStack
+	 */
+	private $language_stack;
 
 
-	public function __construct(BrandStack $brand_stack)
+	public function __construct(BrandStack $brand_stack, LanguageStack $language_stack)
 	{
 		$this->brand_stack = $brand_stack;
+		$this->language_stack = $language_stack;
 	}
 
 
@@ -65,6 +71,7 @@ class PortalCollector extends DataCollector
 	public function collect(Request $request, Response $response, \Exception $exception = null)
 	{
 		$brandContainer = $this->brand_stack->getActive();
+		$language = $this->language_stack->getActive();
 		$this->data     = array(
 			'route_name'          => $request->attributes->get('_route'),
 			'executed_controller' => $request->attributes->get('_controller'),
@@ -72,10 +79,28 @@ class PortalCollector extends DataCollector
 			'brand_name'          => $brandContainer->getBrand()->name,
 			'theme_id'            => $brandContainer->getTheme()->getId(),
 			'theme_name'          => $brandContainer->getTheme()->getName(),
+			'language_code'       => $language ? $language->getTwoLetterLanguageCode() : 'N/A',
+			'language_id'         => $language ? $language->getId() : 'N/A',
+			'language_img'        => $language ? $language->flag_image : null,
 			'settings'            => $brandContainer->getSettings()->toArray()
 		);
 	}
 
+
+	public function getLanguageCode()
+	{
+		return $this->data['language_code'];
+	}
+
+	public function getLanguageImage()
+	{
+		return $this->data['language_img'];
+	}
+
+	public function getLanguageId()
+	{
+		return $this->data['language_id'];
+	}
 
 	public function getRoute()
 	{

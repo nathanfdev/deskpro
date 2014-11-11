@@ -74,7 +74,7 @@ services:
 
   data_collector.portal:
     class: Application\PortalBundle\DataCollector\PortalCollector
-    arguments: [@brand_stack]
+    arguments: [@brand_stack, @language_stack]
     tags:
       - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }
 
