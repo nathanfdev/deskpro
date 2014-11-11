@@ -38,7 +38,10 @@ class Build1414747927 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Add blobs.storage_loc_specific");
-		$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_specific VARCHAR(50) DEFAULT NULL");
+		$did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1413803749 AND name = 'did_pre_alter'");
+		if (!$did_do) {
+			$this->out("Add blobs.storage_loc_specific");
+			$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_specific VARCHAR(50) DEFAULT NULL");
+		}
 	}
 }
