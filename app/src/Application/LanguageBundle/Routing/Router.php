@@ -69,7 +69,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	 */
 	public function matchRequest(Request $request)
 	{
-		// TODO: perhaps limit this sort of things to GET only?
+		// TODO: perhaps limit this sort of things to GET only? Almost sure yes?
 		$language_stack = $this->language_manager->getLanguageStack();
 		$extractor      = new UrlMatcher();
 		$split          = $extractor->extractLanguageCode($request->getPathInfo());
@@ -83,33 +83,29 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 			if (!$url_language = $this->language_manager->getLanguage($code)) {
 				// no language exists and enabled in this system
 				$this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
-
 			}
 
 			$language_stack->push($url_language);
-
-			// there is NOT a potential langauge in the url path
-		} else {
-
-			// reidrect:
-
-			// session last_lang
-
-			// find and user auth persons preference
-
-			// failing that, find http.lang
-
-			// failing that: default
-
-			$language_stack->push($language_stack->getDefaultLanguage());
-
-			if ($this->language_manager->isMultiLanguagePortal()) {
-				// TODO: a negotiation with the language manager should happen here instead of just using default lang
-				$this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
-			}
+			return $this->match($split['remaining_pathinfo']);
 		}
 
-		return $this->match($split['remaining_pathinfo']);
+		if (!$this->language_manager->isMultiLanguagePortal()) {
+			// since there is no language code and it is not multi portal, we will proceed as normal here...
+			// should we push the default language onto the stack here anyway? right now its a null stack.
+			return $this->match($split['remaining_pathinfo']);
+		}
+
+		// now we know its a multi lang desk and there was no long code, so we need to decide about where to redirect:
+
+		// 1. impl. session last_lang
+		// 2. authorized persons preference
+		// 3. failing that, negotiate with http.lang
+		// else:
+		$language = $language_stack->getDefaultLanguage();
+
+		$language_stack->push($language);
+		$this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
+
 	}
 
 
