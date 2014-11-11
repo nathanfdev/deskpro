@@ -1,34 +1,34 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
-| a British company located in London, England.                            |
-|                                                                          |
-| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
-|                                                                          |
-| The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
-|                                                                          |
-| By using this software, you acknowledge having read the license          |
-| and agree to be bound thereby.                                           |
-|                                                                          |
-| Please note that DeskPRO is not free software. We release the full       |
-| source code for our software because we trust our users to pay us for    |
-| the huge investment in time and energy that has gone into both creating  |
-| this software and supporting our customers. By providing the source code |
-| we preserve our customers' ability to modify, audit and learn from our   |
-| work. We have been developing DeskPRO since 2001, please help us make it |
-| another decade.                                                          |
-|                                                                          |
-| Like the work you see? Think you could make it better? We are always     |
-| looking for great developers to join us: http://www.deskpro.com/jobs/    |
-|                                                                          |
-| ~ Thanks, Everyone at Team DeskPRO                                       |
-\**************************************************************************/
+ * | DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+ * | a British company located in London, England.                            |
+ * |                                                                          |
+ * | All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+ * |                                                                          |
+ * | The license agreement under which this software is released              |
+ * | can be found at http://www.deskpro.com/license                           |
+ * |                                                                          |
+ * | By using this software, you acknowledge having read the license          |
+ * | and agree to be bound thereby.                                           |
+ * |                                                                          |
+ * | Please note that DeskPRO is not free software. We release the full       |
+ * | source code for our software because we trust our users to pay us for    |
+ * | the huge investment in time and energy that has gone into both creating  |
+ * | this software and supporting our customers. By providing the source code |
+ * | we preserve our customers' ability to modify, audit and learn from our   |
+ * | work. We have been developing DeskPRO since 2001, please help us make it |
+ * | another decade.                                                          |
+ * |                                                                          |
+ * | Like the work you see? Think you could make it better? We are always     |
+ * | looking for great developers to join us: http://www.deskpro.com/jobs/    |
+ * |                                                                          |
+ * | ~ Thanks, Everyone at Team DeskPRO                                       |
+ * \**************************************************************************/
 
 /**
  * DeskPRO
  *
- * @package DeskPRO
+ * @package    DeskPRO
  * @subpackage Portal
  */
 
@@ -40,8 +40,6 @@ use Application\LanguageBundle\Language\LanguageManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
@@ -61,25 +59,8 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 	public function __construct(BaseRouter $router, LanguageManager $language_manager)
 	{
-		$this->router = $router;
+		$this->router           = $router;
 		$this->language_manager = $language_manager;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setContext(RequestContext $context)
-	{
-		$this->router->setContext($context);
-	}
-
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getContext()
-	{
-		return $this->router->getContext();
 	}
 
 
@@ -90,8 +71,8 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	{
 		// TODO: perhaps limit this sort of things to GET only?
 		$language_stack = $this->language_manager->getLanguageStack();
-		$extractor = new UrlMatcher();
-		$split     = $extractor->extractLanguageCode($request->getPathInfo());
+		$extractor      = new UrlMatcher();
+		$split          = $extractor->extractLanguageCode($request->getPathInfo());
 
 		// there IS a potential language in the url path
 		if ($code = $split['language_code']) {
@@ -107,7 +88,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 			$language_stack->push($url_language);
 
-		// there is NOT a potential langauge in the url path
+			// there is NOT a potential langauge in the url path
 		} else {
 
 			// reidrect:
@@ -133,30 +114,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 
 	/**
-	 * Throw an exception that will be caught by our kernel.exception listener
-	 *
-	 * @param Language $language
-	 * @param          $url
-	 * @throws RedirectToUrlException
-	 */
-	protected function throwRedirectExceptionTo(Language $language = null, $url)
-	{
-		$pre = $language ? '/' . $language->getTwoLetterLanguageCode() : '';
-		throw new RedirectToUrlException(
-			$pre . $url
-		);
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getRouteCollection()
-	{
-		return $this->router->getRouteCollection();
-	}
-
-
-	/**
 	 * {@inheritdoc}
 	 */
 	public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
@@ -168,7 +125,9 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 		}
 
 		if (!$this->language_manager->getLanguageStack()->getActive()) {
-			$this->language_manager->getLanguageStack()->push($this->language_manager->getLanguageStack()->getDefaultLanguage());
+			$this->language_manager->getLanguageStack()->push(
+				$this->language_manager->getLanguageStack()->getDefaultLanguage()
+			);
 		}
 
 		// TODO: note the $referenceType - we need to do much more involved url inspection/manipulation
@@ -189,38 +148,62 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 
 	/**
-	 * Tries to match a URL path with a set of routes.
-	 * If the matcher can not find information, it must throw one of the exceptions documented
-	 * below.
+	 * Throw an exception that will be caught by our kernel.exception listener
 	 *
-	 * @param string $path_info The path info to be parsed (raw format, i.e. not urldecoded)
-	 * @return array An array of parameters
-	 * @throws ResourceNotFoundException If the resource could not be found
-	 * @throws MethodNotAllowedException If the resource was found but the request method is not allowed
-	 * @api
+	 * @param Language $language
+	 * @param          $url
+	 * @throws RedirectToUrlException
 	 */
-	public function match($path_info)
+	protected function throwRedirectExceptionTo(Language $language = null, $url)
 	{
-		$extractor = new UrlMatcher();
-		$split = $extractor->extractLanguageCode($path_info);
-
-		if ($split['language_code']) {
-			print "FIX ME";
-			// TODO: this method isnt used but we should fulfil the contract regardless. perhaps funnel all of these into matchRequst()
-		}
-
-		return $this->router->match($path_info);
+		$pre = $language ? '/' . $language->getTwoLetterLanguageCode() : '';
+		throw new RedirectToUrlException(
+			$pre . $url
+		);
 	}
 
 
 	/**
-	 * Warms up the cache.
-	 *
-	 * @param string $cacheDir The cache directory
+	 * {@inheritdoc}
+	 */
+	public function setContext(RequestContext $context)
+	{
+		$this->router->setContext($context);
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getContext()
+	{
+		return $this->router->getContext();
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function match($path_info)
+	{
+		return $this->matchRequest(Request::create($path_info));
+	}
+
+
+	/**
+	 * {@inheritdoc}
 	 */
 	public function warmUp($cacheDir)
 	{
 		$this->router->warmUp($cacheDir);
 	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getRouteCollection()
+	{
+		return $this->router->getRouteCollection();
+	}
 }
- 

@@ -98,7 +98,7 @@ class LanguageManager
 
 
 	/**
-	 * Turns an arbitrary lang string into a more normailzed lang string that we use internally for URLs.
+	 * Turns an arbitrary lang string into a more normalized lang string that we use internally for URLs.
 	 *
 	 * @param string $lang_code
 	 * @return string
