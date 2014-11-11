@@ -40,9 +40,27 @@ class JIRA
 	const PARAM_URL         = 'url';
 	const PARAM_CONSUMER    = 'consumer_key';
 	const PARAM_TOKENS      = 'oauth_tokens';
-	const PARAM_KEY         = 'core_jira.private_key';
+    const PARAM_KEY         = 'core_jira.private_key';
 
-	/**
+    protected $allowed = array(
+        'project',
+        'issuekey',
+        'issuetype',
+        'summary',
+        'description',
+        'created',
+        'updated',
+        'priority',
+        'status',
+        'labels',
+        'environment',
+        'comment',
+        'resolution',
+        'resolutiondate',
+        'duedate',
+    );
+
+    /**
 	 * @var DeskproContainer
 	 */
 	protected $container;
@@ -170,7 +188,12 @@ class JIRA
 			$fields = $this->getApi()->get('/field');
 			$properties['projects'] = isset($res['projects']) ? $res['projects'] : array();
 			$properties['priorities'] = $priority;
-			$properties['fields'] = $fields;
+
+            $keys = array_flip($this->allowed);
+            $fields = array_filter($fields, function($a) use ($keys) {
+                return isset($keys[$a['id']]) || 0 === strpos($a['id'], 'customfield_');
+            });
+			$properties['fields'] = array_values($fields);
 
 			$meta = Meta::fromArray($properties);
 

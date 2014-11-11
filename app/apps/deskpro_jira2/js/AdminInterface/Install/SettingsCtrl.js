@@ -10,9 +10,20 @@ define(function() {
 			$scope.definitions[def.name] = def;
 		}
 
+        $scope.$watch('meta_defaults.default_project', function(val){
+            if (!val || !val[1]) return;
+            for (var i = 0; i < $scope.meta.projects.length; i++) {
+                var project = $scope.meta.projects[i];
+                if ($scope.meta_defaults.default_project === project.id) {
+                    $scope.meta.issuetypes = project.issuetypes;
+                }
+            }
+        });
+
 		var loadMeta = function(){
 			$scope.loading_meta = true;
 			$scope.meta_errors = null;
+            $scope.meta_defaults = null;
 			$scope.Ctrl.startSpinner('saving_settings');
 
 			return Api.sendGet('/apps/packages/deskpro_jira2/get-meta').then(
@@ -20,10 +31,14 @@ define(function() {
 					$scope.loading_meta = false;
 					$scope.Ctrl.stopSpinner('saving_settings');
 					$scope.meta = res.data.meta;
-					$scope.meta_defaults = res.data.meta_defaults;
-					$scope.meta_errors = res.data.errors;
 
-					console.info($scope.meta);
+					$scope.meta_defaults = {
+                        default_fields_list: $scope.meta.default_fields_list,
+                        default_fields_summary: $scope.meta.default_fields_summary,
+                        default_project: $scope.meta.default_project,
+                        default_issuetype: $scope.meta.default_issuetype
+                    };
+					$scope.meta_errors = res.data.errors;
 				},
 				function() {
 					$scope.loading_meta = false;
