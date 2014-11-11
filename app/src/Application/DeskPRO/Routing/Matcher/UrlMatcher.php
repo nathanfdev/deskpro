@@ -40,7 +40,7 @@ class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
 	/** @var bool|null  */
 	protected $got_locale = null;
 
-	public function match($pathinfo)
+	public function match($path_info)
 	{
 		#------------------------------
 		# We check for locale prefix in user section
@@ -57,25 +57,25 @@ class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
 
 		$check_for_locale = true;
 		foreach ($nocheck_sections as $s) {
-			if (strpos($pathinfo, $s) === 0) {
+			if (strpos($path_info, $s) === 0) {
 				$check_for_locale = false;
 			}
 		}
 
 		if ($check_for_locale) {
-			$locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
+			$locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $path_info, 1);
 			if ($locale) {
-				$locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $pathinfo, 1);
+				$locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $path_info, 1);
 			}
 
 			if ($locale) {
 				$this->got_locale = $locale;
 
 				// Remove it from the
-				$pathinfo = preg_replace('#^/(.*?)/#', '/', $pathinfo);
+				$path_info = preg_replace('#^/(.*?)/#', '/', $path_info);
 			}
 		}
 
-		return parent::match($pathinfo);
+		return parent::match($path_info);
 	}
 }
