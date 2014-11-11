@@ -35,6 +35,9 @@
 namespace Application\LanguageBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\DeskPRO\Translate\SystemLanguage;
 
 /**
  * The LanguageStack is a way of managing changes in the "active" Language during runtime. It works similar to a stack
@@ -60,8 +63,7 @@ use Application\DeskPRO\Entity\Language;
 class LanguageStack
 {
 	/**
-	 * @var \array
-	 */
+	 * @var array
 	private $stack;
 
 	/**
@@ -70,16 +72,30 @@ class LanguageStack
 	private $languages;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Language
+	 * @var SettingsResolver
+	 */
+	private $settings_resolver;
+
+	/**
+	 * @var \Application\DeskPRO\EntityRepository\Language
+	 */
+	private $language_repo;
+
+	/**
+	 * only stores the reference for quick access in the case of multiple calls to getDefaultLanguage(), do not
+	 * use this prop directly
+	 *
+	 * @var \Application\DeskPRO\Entity\Language|null
 	 */
 	private $default_language;
 
 
-	public function __construct(Language $default)
+	public function __construct(SettingsResolver $settings_resolver, LanguageRepo $language_repo)
 	{
 		$this->stack = array();
 		$this->languages = array();
-		$this->default_language = $default;
+		$this->settings_resolver = $settings_resolver;
+		$this->language_repo = $language_repo;
 	}
 
 	/**
@@ -133,9 +149,30 @@ class LanguageStack
 	}
 
 
-	public function getDefault()
+	/**
+	 * Can find the default system language. You should use the stack directly, but if nothing is on the stack
+	 * and you need to find the set default language, use this.
+	 *
+	 * @return Language
+	 */
+	public function getDefaultLanguage()
 	{
-		return $this->default_language;
+		if ($this->default_language) {
+			return $this->default_language;
+		}
+
+		$lang = null;
+		if ($id = $this->settings_resolver->getGlobalSettings()->get('core.default_language_id')) {
+			if ($lang = $this->language_repo->find($id)) {
+				return $this->default_language = $lang;
+			}
+		}
+
+		if ($lang = $this->language_repo->find(1)) {
+			return $this->default_language = $lang;
+		}
+
+		return SystemLanguage::getInstance();
 	}
 }
  
