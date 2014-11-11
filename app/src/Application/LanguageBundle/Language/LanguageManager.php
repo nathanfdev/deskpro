@@ -34,19 +34,26 @@
 
 namespace Application\LanguageBundle\Language;
 
-
+use Application\DeskPRO\Translate\SystemLanguage;
 use Application\DeskPRO\Translate\Translate;
+use Application\DeskPRO\Entity\Language;
 
 class LanguageManager
 {
 	/**
-	 * @var \Application\DeskPRO\Translate\Translate
+	 * @var Translate
 	 */
 	private $translate;
 
-	public function __construct(Translate $translate)
+	/**
+	 * @var LanguageStack
+	 */
+	private $language_stack;
+
+	public function __construct(Translate $translate, LanguageStack $language_stack)
 	{
 		$this->translate = $translate;
+		$this->language_stack = $language_stack;
 	}
 
 
@@ -55,7 +62,7 @@ class LanguageManager
 	 */
 	public function isMultiLanguagePortal()
 	{
-		return false;
+		return true;
 	}
 
 	/**
@@ -70,11 +77,13 @@ class LanguageManager
 
 	/**
 	 * @param string $lang_code an arbitrary lang string
-	 * @return \Application\DeskPRO\Entity\Language
+	 * @return Language
 	 */
 	public function getLanguage($lang_code)
 	{
 		$lang_code = $this->normalizeLanguageCode($lang_code);
+
+		return $this->language_stack->getDefault();
 	}
 
 
@@ -87,6 +96,26 @@ class LanguageManager
 	public function normalizeLanguageCode($lang_code)
 	{
 		return $lang_code;
+	}
+
+
+	/**
+	 * @param $request
+	 * @param $urlLanguage
+	 * @return Language
+	 */
+	public function negotiateLanguage($request, $urlLanguage)
+	{
+		return $urlLanguage;
+	}
+
+
+	/**
+	 * @return LanguageStack
+	 */
+	public function getLanguageStack()
+	{
+		return $this->language_stack;
 	}
 }
  

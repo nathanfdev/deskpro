@@ -5,9 +5,18 @@ services:
     decorates: router
     arguments: [@language_router.inner, @language_manager]
 
+  default_language:
+    class: Application\DeskPRO\Entity\Language
+    factory_class: Application\DeskPRO\Translate\SystemLanguage
+    factory_method: getInstance
+
+  language_stack:
+    class: Application\LanguageBundle\Language\LanguageStack
+    arguments: [@default_language]
+
   language_manager:
     class: Application\LanguageBundle\Language\LanguageManager
-    arguments: [@deskpro.core.translate]
+    arguments: [@deskpro.core.translate, @language_stack]
 
   deskpro.core.translate_loader_system:
     class: Application\DeskPRO\Translate\Loader\SystemLoader
