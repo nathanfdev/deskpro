@@ -145,6 +145,12 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
 	}
 
 
+	public function getTwoLetterLanguageCode()
+	{
+		return substr($this->locale, 0, 2);
+	}
+
+
 	/**
 	 * Return a unique ID that we can use to look up translations for this object
 	 *
