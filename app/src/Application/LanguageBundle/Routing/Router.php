@@ -40,14 +40,10 @@ use Application\LanguageBundle\Language\LanguageManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
-use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\RouterInterface;
 
 class Router implements WarmableInterface, RouterInterface, RequestMatcherInterface
@@ -70,10 +66,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	}
 
 	/**
-	 * Sets the request context.
-	 *
-	 * @param RequestContext $context The context
-	 * @api
+	 * {@inheritdoc}
 	 */
 	public function setContext(RequestContext $context)
 	{
@@ -82,10 +75,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 
 	/**
-	 * Gets the request context.
-	 *
-	 * @return RequestContext The context
-	 * @api
+	 * {@inheritdoc}
 	 */
 	public function getContext()
 	{
@@ -94,21 +84,10 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 
 	/**
-	 * Tries to match a request with a set of routes.
-	 * If the matcher can not find information, it must throw one of the exceptions documented
-	 * below.
-	 *
-	 * @param Request $request The request to match
-	 * @return array An array of parameters
-	 * @throws ResourceNotFoundException If no matching resource could be found
-	 * @throws MethodNotAllowedException If a matching resource was found but the request method is not allowed
+	 * {@inheritdoc}
 	 */
 	public function matchRequest(Request $request)
 	{
-		// the router ALWAYS does either:
-		// 1. pushes a language to use for the request into the language stack
-		// or
-		// 2. redirects the user to a more appropriate url, averting the rest of the current request
 		// TODO: perhaps limit this sort of things to GET only?
 		$language_stack = $this->language_manager->getLanguageStack();
 		$extractor = new UrlMatcher();
@@ -120,20 +99,28 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 				$this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
 			}
 
-			$urlLanguage = $this->language_manager->getLanguage($code);
+			if (!$url_language = $this->language_manager->getLanguage($code)) {
+				// no language exists and enabled in this system
+				$this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
 
-			// let the language manager negotiate what the proper language for this request is
-			$properLanguage = $this->language_manager->negotiateLanguage($request, $urlLanguage);
-
-			if ($properLanguage->getTwoLetterLanguageCode() != $urlLanguage->getTwoLetterLanguageCode()) {
-				$this->throwRedirectExceptionTo($properLanguage, $split['remaining_pathinfo']);
 			}
 
-			$language_stack->push($urlLanguage);
+			$language_stack->push($url_language);
 
 		// there is NOT a potential langauge in the url path
 		} else {
-			$language_stack->push($language_stack->getDefault());
+
+			// reidrect:
+
+			// session last_lang
+
+			// find and user auth persons preference
+
+			// failing that, find http.lang
+
+			// failing that: default
+
+			$language_stack->push($language_stack->getDefaultLanguage());
 
 			if ($this->language_manager->isMultiLanguagePortal()) {
 				// TODO: a negotiation with the language manager should happen here instead of just using default lang
@@ -145,6 +132,13 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	}
 
 
+	/**
+	 * Throw an exception that will be caught by our kernel.exception listener
+	 *
+	 * @param Language $language
+	 * @param          $url
+	 * @throws RedirectToUrlException
+	 */
 	protected function throwRedirectExceptionTo(Language $language = null, $url)
 	{
 		$pre = $language ? '/' . $language->getTwoLetterLanguageCode() : '';
@@ -154,9 +148,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	}
 
 	/**
-	 * Gets the RouteCollection instance associated with this Router.
-	 *
-	 * @return RouteCollection A RouteCollection instance
+	 * {@inheritdoc}
 	 */
 	public function getRouteCollection()
 	{
@@ -165,26 +157,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 
 	/**
-	 * Generates a URL or path for a specific route based on the given parameters.
-	 * Parameters that reference placeholders in the route pattern will substitute them in the
-	 * path or host. Extra params are added as query string to the URL.
-	 * When the passed reference type cannot be generated for the route because it requires a different
-	 * host or scheme than the current one, the method will return a more comprehensive reference
-	 * that includes the required params. For example, when you call this method with $referenceType = ABSOLUTE_PATH
-	 * but the route requires the https scheme whereas the current scheme is http, it will instead return an
-	 * ABSOLUTE_URL with the https scheme and the current host. This makes sure the generated URL matches
-	 * the route in any case.
-	 * If there is no route with the given name, the generator must throw the RouteNotFoundException.
-	 *
-	 * @param string      $name                    The name of the route
-	 * @param mixed       $parameters              An array of parameters
-	 * @param bool|string $referenceType           The type of reference to be generated (one of the constants)
-	 * @return string The generated URL
-	 * @throws RouteNotFoundException              If the named route doesn't exist
-	 * @throws MissingMandatoryParametersException When some parameters are missing that are mandatory for the route
-	 * @throws InvalidParameterException           When a parameter value for a placeholder is not correct because
-	 *                                             it does not match the requirement
-	 * @api
+	 * {@inheritdoc}
 	 */
 	public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
 	{
@@ -194,13 +167,16 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 			return $generated;
 		}
 
-		// TODO: note the $referenceType - we need to do much more involved url inspection/manipulation here for diff
-		// url types
+		if (!$this->language_manager->getLanguageStack()->getActive()) {
+			$this->language_manager->getLanguageStack()->push($this->language_manager->getLanguageStack()->getDefaultLanguage());
+		}
+
+		// TODO: note the $referenceType - we need to do much more involved url inspection/manipulation
 		switch ($referenceType) {
 			case self::ABSOLUTE_PATH:
 				return sprintf(
 					'/%s%s',
-					$this->language_manager->getLanguageStack()->getActive()->getTwoLetterLanguageCode(),
+					$this->language_manager->getLanguageStack()->getActive()->getUrlPrefix(),
 					$generated
 				);
 
@@ -230,6 +206,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 		if ($split['language_code']) {
 			print "FIX ME";
+			// TODO: this method isnt used but we should fulfil the contract regardless. perhaps funnel all of these into matchRequst()
 		}
 
 		return $this->router->match($path_info);
