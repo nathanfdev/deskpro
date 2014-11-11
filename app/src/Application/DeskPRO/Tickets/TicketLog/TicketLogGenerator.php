@@ -40,6 +40,7 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeData;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\Util;
 
 class TicketLogGenerator
 {
@@ -92,11 +93,18 @@ class TicketLogGenerator
 		$logs[] = $group;
 
 		if ($this->state->isNewTicket() || $this->context->getEventType() == 'newticket') {
-			$log = $this->getLogFromData(array(
+			$data = array(
 				'action_type' => 'ticket_created',
 				'id_after'    => $this->ticket->id,
 				'ticket_id'   => $this->ticket->id,
-			));
+				'event_performer' => $this->context->getEventPerformer(),
+				'event_method'    => $this->context->getEventMethod(),
+			);
+			if ($this->context->getEventMethod() == 'email' && $this->context->getEmailContext() && $this->context->getEmailContext()->getDeliveredAddresses()) {
+				$data['email_to']   = array_map(function($a) { return $a->email; }, $this->context->getEmailContext()->getReceivedAddresses());
+				$data['email_from'] = Util::flatMap($this->context->getEmailContext()->getRealFromAddress(), function($v) { return $v->email; });
+			}
+			$log = $this->getLogFromData($data);
 			$log->parent = $group;
 			$logs[] = $log;
 		}
