@@ -351,7 +351,7 @@ define [
 				for f in @options_data.org_fields
 					options.push({
 						title: f.title,
-						value: @initFieldGetter('OrgField', f)
+						value: @initFieldGetter('CheckOrgField', f)
 					})
 
 				if options.length

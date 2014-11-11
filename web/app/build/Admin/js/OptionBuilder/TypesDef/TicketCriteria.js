@@ -297,7 +297,7 @@
             f = _ref9[_l];
             options.push({
               title: f.title,
-              value: this.initFieldGetter('OrgField', f)
+              value: this.initFieldGetter('CheckOrgField', f)
             });
           }
           if (options.length) {
