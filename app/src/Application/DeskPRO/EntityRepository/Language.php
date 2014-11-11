@@ -44,6 +44,17 @@ class Language extends AbstractEntityRepository
 	/** @var \Application\DeskPRO\Entity\Language|null */
 	protected $default_lang = null;
 
+
+	public function countPortalLanguages()
+	{
+		return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true')->getSingleScalarResult();
+	}
+
+	public function getDefaultPortalLanguage()
+	{
+		return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true')->getSingleScalarResult();
+	}
+
 	/**
 	 * @return array
 	 */
@@ -127,5 +138,24 @@ class Language extends AbstractEntityRepository
 			$db->rollback();
 			throw $e;
 		}
+	}
+
+	public function getForLangCode($lang_code)
+	{
+		if (!strlen($lang_code) == 2) {
+			$lang_code = substr($lang_code, 0, 2);
+		}
+
+		if ($lang_code == 'en') {
+			$lang_code = 'en_US';
+		}
+
+		if ($lang_code == 'es') {
+			$lang_code = 'ES_es';
+		}
+
+		$r = $this->findOneBy(array('locale' => $lang_code));
+//		var_dump($lang_code, $r);exit;
+		return $r;
 	}
 }
