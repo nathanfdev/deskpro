@@ -186,7 +186,27 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	 */
 	public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
 	{
-		return $this->router->generate($name, $parameters, $referenceType);
+		$generated = $this->router->generate($name, $parameters, $referenceType);
+
+		if (!$this->language_manager->isMultiLanguagePortal()) {
+			return $generated;
+		}
+
+		// TODO: note the $referenceType - we need to do much more involved url inspection/manipulation here for diff
+		// url types
+		switch ($referenceType) {
+			case self::ABSOLUTE_PATH:
+				return sprintf(
+					'/%s%s',
+					$this->language_manager->getLanguageStack()->getActive()->getTwoLetterLanguageCode(),
+					$generated
+				);
+
+			default:
+				throw new \InvalidArgumentException(
+					'we only support generating ABSOLUTE PATH urls at this time, see LanguageBundle\'s Router'
+				);
+		}
 	}
 
 
