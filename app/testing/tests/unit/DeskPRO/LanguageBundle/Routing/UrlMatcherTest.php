@@ -29,44 +29,37 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage Language
  */
 
-namespace Application\LanguageBundle\Routing;
+namespace DpUnitTests\DeskPRO\LanguageBundle\Routing;
 
-use Application\LanguageBundle\Language\LanguageManager;
-use Orb\Util\Strings;
-use Symfony\Component\HttpFoundation\Request;
+use Application\LanguageBundle\Routing\UrlMatcher;
 
-class UrlMatcher
+class UrlMatcherTest extends \DpUnitTestCase
 {
-	public function extractLanguageCode($pathinfo)
+	public function testExtractsLanguage()
 	{
-		$return = array(
-			'language_code' => null,
-			'remaining_pathinfo' => $pathinfo
+		$matcher = new UrlMatcher();
+
+		$this->assertEquals(
+			array('language_code' => 'en', 'remaining_pathinfo' => '/kb/articles/article-five'),
+			$matcher->extractLanguageCode('/en/kb/articles/article-five')
 		);
 
-		$locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
+		$this->assertEquals(
+			array('language_code' => 'en', 'remaining_pathinfo' => '/'),
+			$matcher->extractLanguageCode('/en')
+		);
 
-		if ($locale && 'kb' !== $locale) {
-			$return['language_code']      = $locale;
-			$return['remaining_pathinfo'] = preg_replace('#^/(.*?)/#', '/', $pathinfo);
+		$this->assertEquals(
+			array('language_code' => 'en', 'remaining_pathinfo' => '/'),
+			$matcher->extractLanguageCode('/en/')
+		);
 
-			return $return;
-		}
-
-		$locale = Strings::extractRegexMatch('#^/([a-z]{2})$#', $pathinfo, 1);
-		if ($locale && 'kb' !== $locale) {
-			$return['language_code']      = $locale;
-			$return['remaining_pathinfo'] = '/';
-		}
-
-//		if ($locale) {
-//			$locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2})/#', $pathinfo, 1);
-//		}
-
-		return $return;
+		$this->assertEquals(
+			array('language_code' => null, 'remaining_pathinfo' => '/kb/articles/article-five'),
+			$matcher->extractLanguageCode('/kb/articles/article-five')
+		);
 	}
 }
- 

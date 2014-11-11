@@ -35,6 +35,7 @@
 namespace Application\LanguageBundle\Routing;
 
 
+use Application\DeskPRO\Entity\Language;
 use Application\LanguageBundle\Language\LanguageManager;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,9 +105,51 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	 */
 	public function matchRequest(Request $request)
 	{
-		return $this->router->matchRequest($request);
+		// the router ALWAYS does either:
+		// 1. pushes a language to use for the request into the language stack
+		// or
+		// 2. redirects the user to a more appropriate url, averting the rest of the current request
+		// TODO: perhaps limit this sort of things to GET only?
+		$language_stack = $this->language_manager->getLanguageStack();
+		$extractor = new UrlMatcher();
+		$split     = $extractor->extractLanguageCode($request->getPathInfo());
+
+		// there IS a potential language in the url path
+		if ($code = $split['language_code']) {
+			$urlLanguage = $this->language_manager->getLanguage($code);
+
+			// let the language manager negotiate what the proper language fro this request is
+			$properLanguage = $this->language_manager->negotiateLanguage($request, $urlLanguage);
+
+			if ($properLanguage->getTwoLetterLanguageCode() != $urlLanguage->getTwoLetterLanguageCode()) {
+				$this->throwRedirectExceptionTo($properLanguage, $split['remaining_pathinfo']);
+			}
+
+			$language_stack->push($urlLanguage);
+
+		// there is NOT a potential langauge in the url path
+		} else {
+			$language_stack->push($language_stack->getDefault());
+
+			if ($this->language_manager->isMultiLanguagePortal()) {
+				// TODO: a negotiation with the language manager should happen here instead of just using default lang
+				$this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
+			}
+		}
+
+		return $this->match($split['remaining_pathinfo']);
 	}
 
+
+	protected function throwRedirectExceptionTo(Language $language, $url)
+	{
+		throw new RedirectToUrlException(
+			sprintf(
+				'/%s%s', $language->getTwoLetterLanguageCode(),
+				$url
+			)
+		);
+	}
 
 	/**
 	 * Gets the RouteCollection instance associated with this Router.
@@ -152,15 +195,22 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	 * If the matcher can not find information, it must throw one of the exceptions documented
 	 * below.
 	 *
-	 * @param string $pathinfo The path info to be parsed (raw format, i.e. not urldecoded)
+	 * @param string $path_info The path info to be parsed (raw format, i.e. not urldecoded)
 	 * @return array An array of parameters
 	 * @throws ResourceNotFoundException If the resource could not be found
 	 * @throws MethodNotAllowedException If the resource was found but the request method is not allowed
 	 * @api
 	 */
-	public function match($pathinfo)
+	public function match($path_info)
 	{
-		return $this->router->match($pathinfo);
+		$extractor = new UrlMatcher();
+		$split = $extractor->extractLanguageCode($path_info);
+
+		if ($split['language_code']) {
+			print "FIX ME";
+		}
+
+		return $this->router->match($path_info);
 	}
 
 

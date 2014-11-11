@@ -35,3 +35,9 @@ services:
   deskpro.core.translate:
     class: Application\DeskPRO\Translate\Translate
     arguments: [ @deskpro.core.translate_loader, @event_dispatcher ]
+
+  redirect_exception.language.listener:
+    class: Application\LanguageBundle\EventListener\RedirectExceptionListener
+    arguments: [@logger]
+    tags:
+      - { name: kernel.event_subscriber }

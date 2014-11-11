@@ -34,39 +34,28 @@
 
 namespace Application\LanguageBundle\Routing;
 
-use Application\LanguageBundle\Language\LanguageManager;
-use Orb\Util\Strings;
-use Symfony\Component\HttpFoundation\Request;
 
-class UrlMatcher
+class RedirectToUrlException extends \InvalidArgumentException
 {
-	public function extractLanguageCode($pathinfo)
+	/**
+	 * @var string
+	 */
+	private $url;
+
+
+	public function __construct($url)
 	{
-		$return = array(
-			'language_code' => null,
-			'remaining_pathinfo' => $pathinfo
-		);
+		parent::__construct('301 - Found', 301);
+		$this->url = $url;
+	}
 
-		$locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
 
-		if ($locale && 'kb' !== $locale) {
-			$return['language_code']      = $locale;
-			$return['remaining_pathinfo'] = preg_replace('#^/(.*?)/#', '/', $pathinfo);
-
-			return $return;
-		}
-
-		$locale = Strings::extractRegexMatch('#^/([a-z]{2})$#', $pathinfo, 1);
-		if ($locale && 'kb' !== $locale) {
-			$return['language_code']      = $locale;
-			$return['remaining_pathinfo'] = '/';
-		}
-
-//		if ($locale) {
-//			$locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2})/#', $pathinfo, 1);
-//		}
-
-		return $return;
+	/**
+	 * @return string
+	 */
+	public function getUrl()
+	{
+		return $this->url;
 	}
 }
  
