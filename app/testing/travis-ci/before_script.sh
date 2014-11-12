@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DIR_ROOT=`pwd`
+
 sudo service elasticsearch status
 
 echo "Ensuring log files"
@@ -41,6 +43,14 @@ echo "Ensuring permissions"
 chmod -R 0777 data
 chmod -R 0777 app/sys/cache
 echo "--> Done"
+
+echo "Installing node modules"
+sudo npm install -g gulp bower
+
+echo "Building web assets"
+cd $DIR_ROOT/web
+gulp
+cd $DIR_ROOT
 
 echo "Installing Apache"
 sudo apt-get update
