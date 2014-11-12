@@ -42,6 +42,17 @@ $container->setParameter('twig.extension.trans.class', 'Application\\DeskPRO\\Tw
 # Services
 ############################################################################
 
+// session.storage
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
+$definition->setArguments(
+	array(
+		new Reference('doctrine.orm.entity_manager'),
+		'%session.storage.options%',
+		new Reference('settings_resolver')
+	)
+);
+$container->setDefinition('session.storage', $definition);
 
 // twig.helpers.deskpro_templating
 $definition = new Definition();

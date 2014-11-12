@@ -14,16 +14,6 @@ $container->setParameter('locale', 'en');
 # This config is shared between kernels (DpKernel and PortalKernel)
 ####################################################################
 
-// session.storage
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\HttpFoundation\\SessionStorage\\SessionEntityStorage');
-$definition->setArguments(array(
-new Reference('doctrine.orm.entity_manager'),
-'%session.storage.options%',
-new Reference('settings_resolver')
-));
-$container->setDefinition('session.storage', $definition);
-
 // settings
 $definition = new Definition();
 $definition->setClass('Application\DeskPRO\NewSettings\SettingsResolver');

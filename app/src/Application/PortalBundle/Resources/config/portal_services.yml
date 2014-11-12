@@ -1,5 +1,8 @@
 parameters:
   router.options.matcher.cache_class: null
+  portal.session.name: sess_data
+
+### This file will be split / cleaned up into more logical files. Hard to follow at the moment with all these service defs piled together.
 
 services:
   templating.portal:
@@ -99,3 +102,11 @@ services:
       class: Application\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]
       arguments: [@kernel, @brand_stack]
+
+  ##
+  ## Session Handler
+  ##
+
+  session.handler.dbal:
+    class: Application\PortalBundle\Session\DbalSessionHandler
+    arguments: [@doctrine.dbal.default_connection, %portal.session.name%]

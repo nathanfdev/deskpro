@@ -22,7 +22,7 @@ framework:
     trusted_hosts:   ~
     trusted_proxies: ~
     session:
-        handler_id:  ~
+        handler_id:  session.handler.dbal
     fragments:       ~
     http_method_override: true
 
