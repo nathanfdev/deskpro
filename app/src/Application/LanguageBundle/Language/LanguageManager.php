@@ -56,12 +56,18 @@ class LanguageManager
 	 */
 	private $language_repo;
 
+	/**
+	 * @var bool
+	 */
+	private $multi_langauge;
+
 
 	public function __construct(Translate $translate, LanguageStack $language_stack, LanguageRepo $language_repo)
 	{
 		$this->translate = $translate;
 		$this->language_stack = $language_stack;
 		$this->language_repo = $language_repo;
+		$this->multi_langauge = null;
 	}
 
 
@@ -70,7 +76,11 @@ class LanguageManager
 	 */
 	public function isMultiLanguagePortal()
 	{
-		return $this->language_repo->countPortalLanguages() > 1;
+		if ($this->multi_langauge !== null) {
+			return $this->multi_langauge;
+		}
+
+		return $this->multi_langauge = ($this->language_repo->countPortalLanguages() > 1);
 	}
 
 	/**
