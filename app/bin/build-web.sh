@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
 cd $DIR_ROOT/web
