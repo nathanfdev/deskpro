@@ -16,9 +16,25 @@ require_once DP_ROOT . '/sys/load_config.php';
 // Remove log stuff
 $rm_paths = array(
 	dp_get_cache_dir().'/dev',
-	dp_get_cache_dir().'/prod/classes.map'
+	dp_get_cache_dir().'/prod/classes.map',
+	DP_WEB_ROOT.'/web/node_modules',
 );
 
 foreach ($rm_paths as $p) {
-	system('rm -rf ' . $p);
+	$cmd = 'rm -rf ' . $p;
+	echo "-> $cmd";
+	system($cmd);
+	echo "\n";
+}
+
+$cmd = "clean-vendors.sh";
+echo "-> $cmd\n";
+
+$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT.'/app/bin');
+$proc->setTimeout(600);
+$proc->run($output_realtime);
+
+if (!$proc->isSuccessful()) {
+	echo ("\nDetected error. Quitting.\n");
+	exit($proc->getExitCode());
 }

@@ -16,10 +16,10 @@ require DP_ROOT . '/bin/build/php-path.php';
 
 foreach ($build_js as $info) {
 
-	$cmd = "r.js -o rjs-config.js out={$info['out']} name={$info['name']}";
+	$cmd = "build-web.sh";
 	echo "-> $cmd\n";
 
-	$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT.'/app/bin/build-web.sh');
+	$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT.'/app/bin');
 	$proc->setTimeout(600);
 	$proc->run($output_realtime);
 
