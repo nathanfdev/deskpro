@@ -12,6 +12,7 @@ define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
 define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 
 require DP_ROOT . '/bin/build/inc.php';
+require_once DP_ROOT . '/sys/load_config.php';
 require DP_ROOT . '/bin/build/php-path.php';
 
 // Remove log stuff

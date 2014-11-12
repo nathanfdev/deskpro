@@ -133,7 +133,7 @@ gulp.task('loader', function() {
 // RJS
 //------------------------------
 
-gulp.task('rjs', ['coffee', 'loader'], function() {
+gulp.task('rjs', /*['coffee', 'loader'],*/ function() {
 	var loadFiles = [
 		'./app/Admin/AdminLoad.js',
 		'./app/Admin/Cloud/CloudAdminLoad.js',
@@ -148,12 +148,12 @@ gulp.task('rjs', ['coffee', 'loader'], function() {
 		.pipe(using({prefix: '<< Build --'}))
 		.pipe(rjs(rjsConfig.config))
 		.pipe(rename(function(path) {
-			switch (path.basename) {
-				case 'AdminLoad.js':        path.dirname = 'Admin'; break;
-				case 'CloudAdminLoad.js':   path.dirname = 'Admin/Cloud'; break;
-				case 'AdminUpgradeLoad.js': path.dirname = 'AdminUpgrade'; break;
-				case 'AdminStartLoad.js':   path.dirname = 'AdminStart'; break;
-				case 'ReportsLoad.js':      path.dirname = 'Reports'; break;
+			switch (path.basename.replace(/\.js$/, '')) {
+				case 'AdminLoad':        path.dirname = 'Admin'; break;
+				case 'CloudAdminLoad':   path.dirname = 'Admin/Cloud'; break;
+				case 'AdminUpgradeLoad': path.dirname = 'AdminUpgrade'; break;
+				case 'AdminStartLoad':   path.dirname = 'AdminStart'; break;
+				case 'ReportsLoad':      path.dirname = 'Reports'; break;
 			}
 
 			if (path.extname != '.map') {
