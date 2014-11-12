@@ -60,7 +60,15 @@ class PortalController extends AbstractController
 
 	public function topBarAction()
 	{
-		return $this->render('Theme:Portal:top_bar.html.twig');
+		$available = $this->get('language_repository')->findAll();
+		$current = $this->get('language_stack')->getActive();
+
+		return $this->render('Theme:Portal:top_bar.html.twig',
+			array(
+				'enabled_languages' => $available,
+				'current_language' => $current
+			)
+		);
 	}
 
 

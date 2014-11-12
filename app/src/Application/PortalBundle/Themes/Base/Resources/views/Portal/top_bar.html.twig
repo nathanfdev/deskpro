@@ -17,10 +17,14 @@
 		</li>
 
 		<li>
-			<a href="#" class="button button-dropdown button-dropdown-language">
-				<span class="text">English</span>
-				<span class="extra"><i class="fa fa-caret-down"></i></span>
-			</a>
+			<select onchange="location.href='/'+this.value" class="button button-dropdown button-dropdown-language">
+				{% for language in enabled_languages %}
+					<option value="{{ language.urlPrefix }}"
+						{% if language.urlPrefix == current_language.urlPrefix %}selected="selected"{% endif %}>
+						{{ language.title|capitalize }}
+					</option>
+				{% endfor %}
+			</select>
 		</li>
 
 	</ul>
