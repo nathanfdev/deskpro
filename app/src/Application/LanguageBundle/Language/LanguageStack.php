@@ -141,6 +141,17 @@ class LanguageStack
 
 
 	/**
+	 * A common use case is to switch to the default language (routing for ex.) quickly. This is a convenience method.
+	 *
+	 * @return Language
+	 */
+	public function pushDefault()
+	{
+		return $this->push($this->getDefaultLanguage());
+	}
+
+
+	/**
 	 * Reverts pops the state, making the previous language container active.
 	 */
 	public function pop()

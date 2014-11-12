@@ -90,8 +90,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 		}
 
 		if (!$this->language_manager->isMultiLanguagePortal()) {
-			// since there is no language code and it is not multi portal, we will proceed as normal here...
-			// should we push the default language onto the stack here anyway? right now its a null stack.
+			$language_stack->pushDefault();
 			return $this->router->match($split['remaining_pathinfo']);
 		}
 
@@ -101,9 +100,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 		// 2. authorized persons preference
 		// 3. failing that, negotiate with http.lang
 		// else:
-		$language = $language_stack->getDefaultLanguage();
-
-		$language_stack->push($language);
+		$language_stack->pushDefault();
 		$this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
 	}
 
@@ -119,10 +116,9 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 			return $generated;
 		}
 
-		if (!$this->language_manager->getLanguageStack()->getActive()) {
-			$this->language_manager->getLanguageStack()->push(
-				$this->language_manager->getLanguageStack()->getDefaultLanguage()
-			);
+		$language_stack = $this->language_manager->getLanguageStack();
+		if (!$language_stack->getActive()) {
+			$language_stack->pushDefault();
 		}
 
 		// TODO: note the $referenceType - we need to do much more involved url inspection/manipulation
